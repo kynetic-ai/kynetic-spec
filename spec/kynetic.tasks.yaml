@@ -763,6 +763,68 @@ tasks:
     created_at: '2026-01-14T22:20:00Z'
     notes: []
     todos: []
+  - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3N
+    slugs:
+      - task-meta-spec
+    title: Design meta-spec concept for agent/project definitions
+    type: spike
+    description: |
+      Explore and define a "meta-spec" - a section of the spec that governs
+      how work happens, separate from what's being built.
+
+      The distinction:
+      - Spec: What we're building (features, requirements, constraints)
+      - Meta-spec: How we work (agents, workflows, conventions)
+
+      What belongs in meta-spec:
+      - Agent definitions (roles, capabilities, when to use)
+      - Workflows (session start, handoff, review protocols)
+      - Conventions (naming, tagging, commit style, note-writing)
+      - Scratchpad/context (current focus, open questions, threads)
+      - Project-level decisions that aren't product decisions
+
+      Structure options:
+      1. spec/meta/ directory with separate files
+      2. Single meta.yaml with sections
+      3. Top-level meta: key in manifest
+      4. Separate manifest (kynetic.meta.yaml)
+
+      Questions to resolve:
+      - How does meta-spec relate to CLAUDE.md / AGENTS.md?
+      - Should meta-spec be a kspec primitive or convention?
+      - Can meta-specs be shared/inherited across projects?
+      - How do agents discover and use meta-spec?
+
+      Outcome:
+      - Clear definition of what meta-spec is
+      - Proposed structure/location
+      - Relationship to existing files (CLAUDE.md, etc.)
+      - Maybe: spec items defining meta-spec as a feature
+    derivation: manual
+    status: pending
+    blocked_by: []
+    depends_on: []
+    context:
+      - '@task-session-start'
+      - '@task-kspec-skill'
+    priority: 2
+    complexity: 2
+    tags:
+      - design
+      - dx
+      - architecture
+    vcs_refs: []
+    created_at: '2026-01-14T22:40:00Z'
+    notes:
+      - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3P
+        created_at: '2026-01-14T22:40:00Z'
+        author: '@claude'
+        content: |
+          Origin: Session wrap-up discussion about context continuity.
+          Realized that session protocols, agent workflows, and project
+          conventions are distinct from product specs but need a home.
+          Meta-spec separates "what we build" from "how we work."
+    todos: []
   - _ulid: 01KEZAT35YG043XQMCH0GXPJZD
     slugs:
       - task-session-start
