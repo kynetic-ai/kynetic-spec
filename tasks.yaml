@@ -1,0 +1,105 @@
+- _ulid: 01KEYQSD2QJCNGRKSR38V0E3BM
+  slugs:
+    - bootstrap-parser
+  title: Create bootstrap parser/CLI
+  type: epic
+  spec_ref: '@kynetic-spec'
+  status: completed
+  blocked_by: []
+  closed_reason: Initial implementation done
+  depends_on: []
+  context: []
+  priority: 1
+  complexity: 3
+  tags:
+    - bootstrap
+    - mvp
+  vcs_refs:
+    - ref: bootstrap-parser
+      type: branch
+  created_at: '2025-01-14T09:00:00Z'
+  started_at: '2025-01-14T09:00:00Z'
+  completed_at: '2026-01-14T17:10:51.871Z'
+  notes:
+    - _ulid: 01KEYQSD2TAHQ74JEZ722V5KPY
+      created_at: '2025-01-14T09:01:00Z'
+      author: '@agent'
+      content: |
+        Starting implementation of the bootstrap parser.
+        Using TypeScript, Zod for schemas, commander.js for CLI.
+  todos: []
+- _ulid: 01KEYQSD2TC1XH3RXM8T54P5QN
+  slugs:
+    - write-tests
+  title: Write comprehensive tests
+  type: task
+  spec_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on:
+    - '@bootstrap-parser'
+  context: []
+  priority: 2
+  tags:
+    - testing
+  vcs_refs: []
+  created_at: '2025-01-14T09:30:00Z'
+  started_at: '2026-01-14T17:11:01.249Z'
+  notes:
+    - _ulid: 01KEYQTNDGXTD68MHPK30C1BS1
+      created_at: '2026-01-14T17:11:06.417Z'
+      content: Added schema and parser tests - 29 passing
+      supersedes: null
+  todos: []
+- _ulid: 01KEYQSD2TAQ0BQN7DJMD8SMVJ
+  slugs:
+    - add-validation
+  title: Add spec validation command
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@bootstrap-parser'
+  context: []
+  priority: 3
+  tags:
+    - cli
+  vcs_refs: []
+  created_at: '2025-01-14T09:35:00Z'
+  notes: []
+  todos: []
+- _ulid: 01KEYQSD2VBRKR98R4E7ZFB3AB
+  slugs:
+    - blocked-example
+  title: Example blocked task
+  type: task
+  spec_ref: null
+  status: blocked
+  blocked_by:
+    - Waiting on external API spec
+  depends_on: []
+  context: []
+  priority: 4
+  tags: []
+  vcs_refs: []
+  created_at: '2025-01-14T09:40:00Z'
+  notes: []
+  todos: []
+- title: Add todo commands
+  type: task
+  spec_ref: null
+  priority: 2
+  slugs:
+    - add-todos
+  tags:
+    - cli
+  _ulid: 01KEYQV4DYQ29J9VEQ32PEZKC0
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-14T17:11:21.790Z'
+  notes: []
+  todos: []

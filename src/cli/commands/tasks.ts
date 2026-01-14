@@ -1,0 +1,138 @@
+import { Command } from 'commander';
+import {
+  initContext,
+  loadAllTasks,
+  getReadyTasks,
+} from '../../parser/index.js';
+import {
+  output,
+  formatTaskList,
+  error,
+  info,
+} from '../output.js';
+import type { TaskStatus } from '../../schema/index.js';
+
+/**
+ * Register the 'tasks' command group
+ */
+export function registerTasksCommands(program: Command): void {
+  const tasks = program
+    .command('tasks')
+    .description('Query and list tasks');
+
+  // kspec tasks list
+  tasks
+    .command('list')
+    .description('List all tasks')
+    .option('-s, --status <status>', 'Filter by status')
+    .option('-t, --type <type>', 'Filter by type')
+    .option('--tag <tag>', 'Filter by tag')
+    .option('-v, --verbose', 'Show more details')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        let taskList = await loadAllTasks(ctx);
+
+        // Apply filters
+        if (options.status) {
+          taskList = taskList.filter(t => t.status === options.status);
+        }
+        if (options.type) {
+          taskList = taskList.filter(t => t.type === options.type);
+        }
+        if (options.tag) {
+          taskList = taskList.filter(t => t.tags.includes(options.tag));
+        }
+
+        output(taskList, () => formatTaskList(taskList, options.verbose));
+      } catch (err) {
+        error('Failed to list tasks', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec tasks ready
+  tasks
+    .command('ready')
+    .description('List tasks that are ready to work on')
+    .option('-v, --verbose', 'Show more details')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const allTasks = await loadAllTasks(ctx);
+        const readyTasks = getReadyTasks(allTasks);
+
+        output(readyTasks, () => {
+          if (readyTasks.length === 0) {
+            info('No tasks ready - all pending tasks are blocked or have unmet dependencies');
+          } else {
+            formatTaskList(readyTasks, options.verbose);
+          }
+        });
+      } catch (err) {
+        error('Failed to get ready tasks', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec tasks next
+  tasks
+    .command('next')
+    .description('Show the highest-priority ready task')
+    .action(async () => {
+      try {
+        const ctx = await initContext();
+        const allTasks = await loadAllTasks(ctx);
+        const readyTasks = getReadyTasks(allTasks);
+
+        if (readyTasks.length === 0) {
+          output(null, () => info('No tasks ready'));
+        } else {
+          const next = readyTasks[0];
+          output(next, () => {
+            console.log(`${next._ulid.slice(0, 8)} ${next.title}`);
+          });
+        }
+      } catch (err) {
+        error('Failed to get next task', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec tasks blocked
+  tasks
+    .command('blocked')
+    .description('Show blocked tasks')
+    .option('-v, --verbose', 'Show more details')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const allTasks = await loadAllTasks(ctx);
+        const blockedTasks = allTasks.filter(t => t.status === 'blocked');
+
+        output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose));
+      } catch (err) {
+        error('Failed to get blocked tasks', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec tasks in-progress
+  tasks
+    .command('in-progress')
+    .alias('active')
+    .description('Show tasks in progress')
+    .option('-v, --verbose', 'Show more details')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const allTasks = await loadAllTasks(ctx);
+        const activeTasks = allTasks.filter(t => t.status === 'in_progress');
+
+        output(activeTasks, () => formatTaskList(activeTasks, options.verbose));
+      } catch (err) {
+        error('Failed to get active tasks', err);
+        process.exit(1);
+      }
+    });
+}
