@@ -18,6 +18,14 @@ import {
 } from '../schema/index.js';
 
 /**
+ * Task with runtime metadata for source tracking.
+ * _sourceFile is not serialized - it's used to know where to write updates.
+ */
+export interface LoadedTask extends Task {
+  _sourceFile?: string;
+}
+
+/**
  * Parse YAML content into an object
  */
 export function parseYaml<T>(content: string): T {
@@ -157,10 +165,11 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
 }
 
 /**
- * Load all tasks from the project
+ * Load all tasks from the project.
+ * Each task includes _sourceFile metadata for write-back routing.
  */
-export async function loadAllTasks(ctx: KspecContext): Promise<Task[]> {
-  const tasks: Task[] = [];
+export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
+  const tasks: LoadedTask[] = [];
 
   // Look for tasks in root directory
   const taskFiles = await findTaskFiles(ctx.rootDir);
@@ -176,9 +185,11 @@ export async function loadAllTasks(ctx: KspecContext): Promise<Task[]> {
     taskFiles.push(...files);
   }
 
-  // Also look for standalone tasks.yaml
+  // Also look for standalone tasks.yaml and project.tasks.yaml
   const standaloneLocations = [
     path.join(ctx.rootDir, 'tasks.yaml'),
+    path.join(ctx.rootDir, 'project.tasks.yaml'),
+    path.join(ctx.rootDir, 'spec', 'project.tasks.yaml'),
     path.join(ctx.rootDir, 'backlog.tasks.yaml'),
     path.join(ctx.rootDir, 'active.tasks.yaml'),
   ];
@@ -209,7 +220,10 @@ export async function loadAllTasks(ctx: KspecContext): Promise<Task[]> {
       } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
         const parsed = TasksFileSchema.safeParse(raw);
         if (parsed.success) {
-          tasks.push(...parsed.data.tasks);
+          // Add _sourceFile to each task from this file
+          for (const task of parsed.data.tasks) {
+            tasks.push({ ...task, _sourceFile: filePath });
+          }
           continue;
         }
         taskList = (raw as { tasks: unknown[] }).tasks || [];
@@ -221,7 +235,8 @@ export async function loadAllTasks(ctx: KspecContext): Promise<Task[]> {
       for (const taskData of taskList) {
         const result = TaskSchema.safeParse(taskData);
         if (result.success) {
-          tasks.push(result.data);
+          // Add _sourceFile metadata
+          tasks.push({ ...result.data, _sourceFile: filePath });
         }
       }
     } catch (error) {
@@ -235,7 +250,7 @@ export async function loadAllTasks(ctx: KspecContext): Promise<Task[]> {
 /**
  * Find a task by reference (ULID, slug, or short reference)
  */
-export function findTaskByRef(tasks: Task[], ref: string): Task | undefined {
+export function findTaskByRef(tasks: LoadedTask[], ref: string): LoadedTask | undefined {
   // Remove @ prefix if present
   const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
 
@@ -254,49 +269,97 @@ export function findTaskByRef(tasks: Task[], ref: string): Task | undefined {
 }
 
 /**
- * Get the default task file path
+ * Get the default task file path for new tasks without a spec_ref.
+ * New tasks go to spec/project.tasks.yaml (or project.tasks.yaml if no spec dir).
  */
 export function getDefaultTaskFilePath(ctx: KspecContext): string {
-  return path.join(ctx.rootDir, 'tasks.yaml');
+  const specDir = path.join(ctx.rootDir, 'spec');
+  // Prefer spec/project.tasks.yaml if spec directory exists
+  return path.join(specDir, 'project.tasks.yaml');
 }
 
 /**
- * Save a task (update or create)
+ * Strip runtime metadata before serialization
  */
-export async function saveTask(ctx: KspecContext, task: Task): Promise<void> {
-  const taskFilePath = getDefaultTaskFilePath(ctx);
+function stripRuntimeMetadata(task: LoadedTask): Task {
+  const { _sourceFile, ...cleanTask } = task;
+  return cleanTask as Task;
+}
 
-  let tasks: Task[] = [];
+/**
+ * Save a task to its source file (or default location for new tasks).
+ * Preserves file format (tasks: [...] wrapper vs plain array).
+ */
+export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+  // Determine target file: use _sourceFile if present, otherwise default
+  const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
+
+  // Ensure directory exists
+  const dir = path.dirname(taskFilePath);
+  await fs.mkdir(dir, { recursive: true });
+
+  // Load existing tasks from the target file
+  let existingRaw: unknown = null;
+  let useTasksWrapper = false;
 
   try {
-    const raw = await readYamlFile<unknown>(taskFilePath);
-    if (Array.isArray(raw)) {
-      for (const t of raw) {
-        const result = TaskSchema.safeParse(t);
-        if (result.success) {
-          tasks.push(result.data);
-        }
-      }
-    } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
-      const parsed = TasksFileSchema.safeParse(raw);
-      if (parsed.success) {
-        tasks = parsed.data.tasks;
-      }
+    existingRaw = await readYamlFile<unknown>(taskFilePath);
+    // Detect if file uses { tasks: [...] } format
+    if (existingRaw && typeof existingRaw === 'object' && 'tasks' in existingRaw) {
+      useTasksWrapper = true;
     }
   } catch {
     // File doesn't exist, start fresh
   }
 
-  // Update existing or add new
-  const existingIndex = tasks.findIndex(t => t._ulid === task._ulid);
-  if (existingIndex >= 0) {
-    tasks[existingIndex] = task;
-  } else {
-    tasks.push(task);
+  // Parse existing tasks from file
+  let fileTasks: Task[] = [];
+
+  if (existingRaw) {
+    if (Array.isArray(existingRaw)) {
+      for (const t of existingRaw) {
+        const result = TaskSchema.safeParse(t);
+        if (result.success) {
+          fileTasks.push(result.data);
+        }
+      }
+    } else if (useTasksWrapper) {
+      // Try TasksFileSchema first (has kynetic_tasks version)
+      const parsed = TasksFileSchema.safeParse(existingRaw);
+      if (parsed.success) {
+        fileTasks = parsed.data.tasks;
+      } else {
+        // Fall back to raw tasks array (common format without version field)
+        const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
+        if (Array.isArray(rawTasks)) {
+          for (const t of rawTasks) {
+            const result = TaskSchema.safeParse(t);
+            if (result.success) {
+              fileTasks.push(result.data);
+            }
+          }
+        }
+      }
+    }
   }
 
-  // Save as array format (simpler)
-  await writeYamlFile(taskFilePath, tasks);
+  // Strip runtime metadata before saving
+  const cleanTask = stripRuntimeMetadata(task);
+
+  // Update existing or add new
+  const existingIndex = fileTasks.findIndex(t => t._ulid === task._ulid);
+  if (existingIndex >= 0) {
+    fileTasks[existingIndex] = cleanTask;
+  } else {
+    fileTasks.push(cleanTask);
+  }
+
+  // Save in the same format as original (or tasks: wrapper for new files)
+  if (useTasksWrapper) {
+    await writeYamlFile(taskFilePath, { tasks: fileTasks });
+  } else {
+    await writeYamlFile(taskFilePath, fileTasks);
+  }
 }
 
 /**
@@ -339,7 +402,7 @@ export function createNote(content: string, author?: string, supersedes?: string
 /**
  * Check if task dependencies are met
  */
-export function areDependenciesMet(task: Task, allTasks: Task[]): boolean {
+export function areDependenciesMet(task: LoadedTask, allTasks: LoadedTask[]): boolean {
   if (task.depends_on.length === 0) return true;
 
   for (const depRef of task.depends_on) {
@@ -355,7 +418,7 @@ export function areDependenciesMet(task: Task, allTasks: Task[]): boolean {
 /**
  * Check if task is ready (pending + deps met + not blocked)
  */
-export function isTaskReady(task: Task, allTasks: Task[]): boolean {
+export function isTaskReady(task: LoadedTask, allTasks: LoadedTask[]): boolean {
   if (task.status !== 'pending') return false;
   if (task.blocked_by.length > 0) return false;
   return areDependenciesMet(task, allTasks);
@@ -364,7 +427,7 @@ export function isTaskReady(task: Task, allTasks: Task[]): boolean {
 /**
  * Get ready tasks (pending + deps met + not blocked), sorted by priority
  */
-export function getReadyTasks(tasks: Task[]): Task[] {
+export function getReadyTasks(tasks: LoadedTask[]): LoadedTask[] {
   return tasks
     .filter(task => isTaskReady(task, tasks))
     .sort((a, b) => a.priority - b.priority);

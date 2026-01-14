@@ -1,56 +1,42 @@
-# Kynetic Spec - Bootstrap Tasks
-# Initial tasks to make kspec self-hosting (can track its own development)
-#
-# MVP Goal: Run `kspec tasks ready` to see what to work on
-# These tasks are ordered by dependency: foundational work first
-
 tasks:
-  # ============================================================
-  # EPIC: Core Foundation
-  # ============================================================
-  - _ulid: 01JHNKAB00EPIC100000000000
-    slugs: [epic-core-foundation]
-    title: "Core Foundation"
-    type: epic
-    spec_ref: "@core"
-    derivation: manual
-    status: pending
-    priority: 1
-    tags: [mvp, foundation]
-    description: |
-      Foundational work: project setup, schema definitions, ULID generation.
-      Everything else depends on this.
-
   - _ulid: 01JHNKAB01TASK100000000000
-    slugs: [task-project-setup]
-    title: "Set up TypeScript project with Zod"
+    slugs:
+      - task-project-setup
+    title: Set up TypeScript project with Zod
     type: task
-    derivation: manual
-    status: completed
-    priority: 1
-    complexity: 2
-    tags: [mvp, foundation, infra]
-    depends_on: []
-    started_at: "2026-01-14T17:00:00Z"
-    completed_at: "2026-01-14T17:20:00Z"
-    closed_reason: "Bootstrap complete - project fully set up and self-hosting"
     description: |
       Initialize the kspec CLI project:
       - TypeScript + Node.js project structure
       - Zod for schema validation
       - Build tooling (tsup or similar)
       - Basic package.json with bin entry
+    derivation: manual
+    status: completed
+    blocked_by: []
+    closed_reason: Bootstrap complete - project fully set up and self-hosting
+    depends_on: []
+    context: []
+    priority: 1
+    complexity: 2
+    tags:
+      - mvp
+      - foundation
+      - infra
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.951Z'
+    started_at: '2026-01-14T17:00:00Z'
+    completed_at: '2026-01-14T17:20:00Z'
     notes:
       - _ulid: 01KEYRJ953HRYWJ0W4XEG6J9FB
-        created_at: "2026-01-14T17:00:00Z"
-        author: "@claude"
+        created_at: '2026-01-14T17:00:00Z'
+        author: '@claude'
         content: |
           Bootstrap approach: Used parallel subagents working in git worktrees.
           One agent wrote the spec (bootstrap-spec branch), another wrote the
           parser (bootstrap-parser branch). Branches merged after alignment.
       - _ulid: 01KEYRJ95AMA2JDAN9RMJ1Q2R3
-        created_at: "2026-01-14T17:10:00Z"
-        author: "@claude"
+        created_at: '2026-01-14T17:10:00Z'
+        author: '@claude'
         content: |
           Tech stack chosen:
           - TypeScript + Node.js (ESM modules)
@@ -61,8 +47,8 @@ tasks:
           - Vitest for testing
           - chalk for colored output
       - _ulid: 01KEYRJ95AAPYJAY169ERRFSNH
-        created_at: "2026-01-14T17:15:00Z"
-        author: "@claude"
+        created_at: '2026-01-14T17:15:00Z'
+        author: '@claude'
         content: |
           Project structure (~1,500 lines TypeScript):
           - src/schema/ - Zod schemas (common, spec, task)
@@ -70,372 +56,478 @@ tasks:
           - src/cli/ - Command handlers (tasks, task)
           - tests/ - Vitest test suite
       - _ulid: 01KEYRJ95A6VKGXGZ84R6TQ517
-        created_at: "2026-01-14T17:18:00Z"
-        author: "@claude"
+        created_at: '2026-01-14T17:18:00Z'
+        author: '@claude'
         content: |
           Schema alignment fix: Initial mismatch between spec and parser
           (parallel development). Fixed by making created_at optional with
           default, adding description field. First real issue resolved
           using the self-hosting system.
-
+    todos: []
   - _ulid: 01JHNKAB02TASK110000000000
-    slugs: [task-ulid-generation]
-    title: "Implement ULID generation and resolution"
+    slugs:
+      - task-ulid-generation
+    title: Implement ULID generation and resolution
     type: task
-    spec_ref: "@ulid-system"
-    derivation: auto
-    status: pending
-    priority: 1
-    complexity: 2
-    tags: [mvp, core]
-    depends_on: ["@task-project-setup"]
     description: |
       Implement ULID handling:
       - Generate new ULIDs (use ulid library)
       - Shorten ULIDs for display (first 6+ chars)
       - Resolve short ULIDs to full (with ambiguity detection)
-
-  - _ulid: 01JHNKAB03TASK120000000000
-    slugs: [task-slug-system]
-    title: "Implement slug management and resolution"
-    type: task
-    spec_ref: "@slug-system"
+    spec_ref: '@ulid-system'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-project-setup'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, core]
-    depends_on: ["@task-project-setup"]
+    tags:
+      - mvp
+      - core
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    started_at: '2026-01-14T22:18:49.872Z'
+    completed_at: '2026-01-14T22:18:51.210Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB03TASK120000000000
+    slugs:
+      - task-slug-system
+    title: Implement slug management and resolution
+    type: task
     description: |
       Implement slug handling:
       - Validate slug format (lowercase, alphanumeric, hyphens)
       - Build slug-to-ULID index
       - Resolve slugs to ULIDs
       - Detect and report duplicates
-
-  - _ulid: 01JHNKAB04TASK130000000000
-    slugs: [task-reference-resolution]
-    title: "Implement @reference resolution"
-    type: task
-    spec_ref: "@reference-system"
+    spec_ref: '@slug-system'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-project-setup'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, core]
-    depends_on: ["@task-ulid-generation", "@task-slug-system"]
+    tags:
+      - mvp
+      - core
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    started_at: '2026-01-14T22:18:52.551Z'
+    completed_at: '2026-01-14T22:18:53.903Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB04TASK130000000000
+    slugs:
+      - task-reference-resolution
+    title: Implement @reference resolution
+    type: task
     description: |
       Implement reference resolution:
       - Parse @ prefix to extract identifier
       - Try slug lookup first, then ULID prefix
       - Report unresolved references
       - Handle ambiguous references
-
-  # ============================================================
-  # EPIC: Schema and Loading
-  # ============================================================
-  - _ulid: 01JHNKAB05EPIC200000000000
-    slugs: [epic-schema-loading]
-    title: "Schema and Loading"
-    type: epic
-    spec_ref: "@schema"
-    derivation: manual
-    status: pending
-    priority: 1
-    tags: [mvp, schema]
-    depends_on: ["@epic-core-foundation"]
-    description: |
-      Define schemas with Zod, implement YAML loading, build item index.
-
-  - _ulid: 01JHNKAB06TASK200000000000
-    slugs: [task-zod-schemas]
-    title: "Define Zod schemas for spec items"
-    type: task
-    spec_ref: "@zod-schema"
+    spec_ref: '@reference-system'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-ulid-generation'
+      - '@task-slug-system'
+    context: []
     priority: 1
-    complexity: 3
-    tags: [mvp, schema]
-    depends_on: ["@task-project-setup"]
+    complexity: 2
+    tags:
+      - mvp
+      - core
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB06TASK200000000000
+    slugs:
+      - task-zod-schemas
+    title: Define Zod schemas for spec items
+    type: task
     description: |
       Define comprehensive Zod schemas:
       - BaseItem schema (common fields)
       - Type-specific schemas (feature, requirement, etc.)
       - Task schema (with task-specific fields)
       - Nested schemas (status, acceptance_criteria, etc.)
-
-  - _ulid: 01JHNKAB07TASK210000000000
-    slugs: [task-yaml-loading]
-    title: "Implement YAML file loading"
-    type: task
-    spec_ref: "@file-structure"
+    spec_ref: '@zod-schema'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-project-setup'
+    context: []
     priority: 1
     complexity: 3
-    tags: [mvp, schema]
-    depends_on: ["@task-zod-schemas"]
+    tags:
+      - mvp
+      - schema
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    started_at: '2026-01-14T22:18:55.247Z'
+    completed_at: '2026-01-14T22:18:56.562Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB07TASK210000000000
+    slugs:
+      - task-yaml-loading
+    title: Implement YAML file loading
+    type: task
     description: |
       Implement spec loading:
       - Parse manifest (kynetic.yaml)
       - Handle includes (load referenced files)
       - Support glob patterns in includes
       - Build unified item collection
-
-  - _ulid: 01JHNKAB08TASK220000000000
-    slugs: [task-item-indexing]
-    title: "Build item index for queries"
-    type: task
-    derivation: manual
+    spec_ref: '@file-structure'
+    derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-zod-schemas'
+    context: []
     priority: 1
-    complexity: 2
-    tags: [mvp, schema]
-    depends_on: ["@task-yaml-loading", "@task-reference-resolution"]
+    complexity: 3
+    tags:
+      - mvp
+      - schema
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB08TASK220000000000
+    slugs:
+      - task-item-indexing
+    title: Build item index for queries
+    type: task
     description: |
       Build queryable index:
       - Index by ULID (primary key)
       - Index by slug (lookup)
       - Index by type (filtering)
       - Enable efficient lookups
-
-  # ============================================================
-  # EPIC: Validation
-  # ============================================================
-  - _ulid: 01JHNKAB09EPIC300000000000
-    slugs: [epic-validation]
-    title: "Validation System"
-    type: epic
-    spec_ref: "@validation"
     derivation: manual
     status: pending
-    priority: 1
-    tags: [mvp, validation]
-    depends_on: ["@epic-schema-loading"]
-    description: |
-      Schema validation, reference checking, error reporting.
-
-  - _ulid: 01JHNKAB10TASK300000000000
-    slugs: [task-schema-validation]
-    title: "Implement schema validation"
-    type: task
-    spec_ref: "@validation-modes"
-    derivation: auto
-    status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-yaml-loading'
+      - '@task-reference-resolution'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, validation]
-    depends_on: ["@task-zod-schemas", "@task-yaml-loading"]
+    tags:
+      - mvp
+      - schema
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB10TASK300000000000
+    slugs:
+      - task-schema-validation
+    title: Implement schema validation
+    type: task
     description: |
       Implement Zod-based validation:
       - Validate each item against schema
       - Collect all errors (don't fail fast)
       - Format errors with item context
-
-  - _ulid: 01JHNKAB11TASK310000000000
-    slugs: [task-ref-validation]
-    title: "Implement reference validation"
-    type: task
-    spec_ref: "@ref-validation"
+    spec_ref: '@validation-modes'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-zod-schemas'
+      - '@task-yaml-loading'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, validation]
-    depends_on: ["@task-reference-resolution", "@task-item-indexing"]
+    tags:
+      - mvp
+      - validation
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.952Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB11TASK310000000000
+    slugs:
+      - task-ref-validation
+    title: Implement reference validation
+    type: task
     description: |
       Validate all @references:
       - Scan all relationship fields
       - Check each reference resolves
       - Report broken references with context
       - Warn on deprecated targets
-
-  - _ulid: 01JHNKAB12TASK320000000000
-    slugs: [task-validation-output]
-    title: "Implement validation output formatting"
-    type: task
-    spec_ref: "@validation-output"
+    spec_ref: '@ref-validation'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-reference-resolution'
+      - '@task-item-indexing'
+    context: []
     priority: 1
-    complexity: 1
-    tags: [mvp, validation]
-    depends_on: ["@task-schema-validation", "@task-ref-validation"]
+    complexity: 2
+    tags:
+      - mvp
+      - validation
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB12TASK320000000000
+    slugs:
+      - task-validation-output
+    title: Implement validation output formatting
+    type: task
     description: |
       Format validation results:
       - Human-readable output (default)
       - JSON output (--json flag)
       - Exit codes based on severity
-
-  # ============================================================
-  # EPIC: Task System
-  # ============================================================
-  - _ulid: 01JHNKAB13EPIC400000000000
-    slugs: [epic-task-system]
-    title: "Task System"
-    type: epic
-    spec_ref: "@tasks"
-    derivation: manual
-    status: pending
-    priority: 1
-    tags: [mvp, tasks]
-    depends_on: ["@epic-schema-loading"]
-    description: |
-      Task loading, state management, ready computation.
-
-  - _ulid: 01JHNKAB14TASK400000000000
-    slugs: [task-task-loading]
-    title: "Implement task loading from files"
-    type: task
-    spec_ref: "@task-storage"
+    spec_ref: '@validation-output'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-schema-validation'
+      - '@task-ref-validation'
+    context: []
     priority: 1
-    complexity: 2
-    tags: [mvp, tasks]
-    depends_on: ["@task-yaml-loading"]
+    complexity: 1
+    tags:
+      - mvp
+      - validation
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB14TASK400000000000
+    slugs:
+      - task-task-loading
+    title: Implement task loading from files
+    type: task
     description: |
       Load tasks:
       - Find .tasks.yaml files alongside specs
       - Support tasks/ directory structure
       - Merge into unified task collection
       - Index by ULID and slug
-
-  - _ulid: 01JHNKAB15TASK410000000000
-    slugs: [task-ready-computation]
-    title: "Implement ready task computation"
-    type: task
-    spec_ref: "@derived-ready"
+    spec_ref: '@task-storage'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-yaml-loading'
+    context: []
     priority: 1
-    complexity: 3
-    tags: [mvp, tasks]
-    depends_on: ["@task-task-loading", "@task-reference-resolution"]
+    complexity: 2
+    tags:
+      - mvp
+      - tasks
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-14T22:19:00.659Z'
+    completed_at: '2026-01-14T22:19:02.013Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB15TASK410000000000
+    slugs:
+      - task-ready-computation
+    title: Implement ready task computation
+    type: task
     description: |
       Compute ready tasks:
       - Filter to status=pending
       - Check all depends_on are completed
       - Check no blocked_by entries
       - Sort by priority, then created_at
-
-  - _ulid: 01JHNKAB16TASK420000000000
-    slugs: [task-state-transitions]
-    title: "Implement task state transitions"
-    type: task
-    spec_ref: "@task-states"
+    spec_ref: '@derived-ready'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-task-loading'
+      - '@task-reference-resolution'
+    context: []
     priority: 1
-    complexity: 2
-    tags: [mvp, tasks]
-    depends_on: ["@task-task-loading"]
+    complexity: 3
+    tags:
+      - mvp
+      - tasks
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-14T22:19:03.347Z'
+    completed_at: '2026-01-14T22:19:04.657Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB16TASK420000000000
+    slugs:
+      - task-state-transitions
+    title: Implement task state transitions
+    type: task
     description: |
       Implement state machine:
       - Validate transitions (pending->in_progress, etc.)
       - Update timestamps (started_at, completed_at)
       - Write changes back to file
-
-  # ============================================================
-  # EPIC: CLI Foundation
-  # ============================================================
-  - _ulid: 01JHNKAB17EPIC500000000000
-    slugs: [epic-cli-foundation]
-    title: "CLI Foundation"
-    type: epic
-    spec_ref: "@cli"
-    derivation: manual
-    status: pending
-    priority: 1
-    tags: [mvp, cli]
-    depends_on: ["@epic-validation", "@epic-task-system"]
-    description: |
-      CLI command structure, output formatting, basic commands.
-
-  - _ulid: 01JHNKAB18TASK500000000000
-    slugs: [task-cli-framework]
-    title: "Set up CLI framework"
-    type: task
-    spec_ref: "@cli-structure"
+    spec_ref: '@task-states'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-task-loading'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, cli]
-    depends_on: ["@task-project-setup"]
+    tags:
+      - mvp
+      - tasks
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-14T22:19:05.991Z'
+    completed_at: '2026-01-14T22:19:07.297Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB18TASK500000000000
+    slugs:
+      - task-cli-framework
+    title: Set up CLI framework
+    type: task
     description: |
       Set up CLI foundation:
       - Use commander.js or similar
       - Set up resource/action command structure
       - Implement --json flag handling
       - Implement --no-prompt / KSPEC_NO_PROMPT
-
-  - _ulid: 01JHNKAB19TASK510000000000
-    slugs: [task-cmd-init]
-    title: "Implement kspec init command"
-    type: task
-    spec_ref: "@cmd-init"
+    spec_ref: '@cli-structure'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-project-setup'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, cli]
-    depends_on: ["@task-cli-framework"]
+    tags:
+      - mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-14T22:18:57.927Z'
+    completed_at: '2026-01-14T22:18:59.268Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB19TASK510000000000
+    slugs:
+      - task-cmd-init
+    title: Implement kspec init command
+    type: task
     description: |
       Implement initialization:
       - Create spec/kynetic.yaml manifest
       - Create spec/modules/ directory
       - Prompt for project name (unless --no-prompt)
       - Support --single-file option
-
-  - _ulid: 01JHNKAB20TASK520000000000
-    slugs: [task-cmd-validate]
-    title: "Implement kspec validate command"
-    type: task
-    spec_ref: "@cmd-validate"
+    spec_ref: '@cmd-init'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-cli-framework'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, cli]
-    depends_on: ["@task-cli-framework", "@task-validation-output"]
+    tags:
+      - mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB20TASK520000000000
+    slugs:
+      - task-cmd-validate
+    title: Implement kspec validate command
+    type: task
     description: |
       Implement validation command:
       - Run schema and ref validation
       - Support --schema, --refs flags
       - Output errors and warnings
       - Exit with semantic code
-
-  - _ulid: 01JHNKAB21TASK530000000000
-    slugs: [task-cmd-tasks-ready]
-    title: "Implement kspec tasks ready command"
-    type: task
-    spec_ref: "@cmd-tasks-ready"
+    spec_ref: '@cmd-validate'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-cli-framework'
+      - '@task-validation-output'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, cli]
-    depends_on: ["@task-cli-framework", "@task-ready-computation"]
+    tags:
+      - mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB21TASK530000000000
+    slugs:
+      - task-cmd-tasks-ready
+    title: Implement kspec tasks ready command
+    type: task
     description: |
       THE MVP command - show ready tasks:
       - List all ready tasks
       - Show title, priority, spec_ref
       - Support --json output
       - This enables self-hosting!
-
-  - _ulid: 01JHNKAB22TASK540000000000
-    slugs: [task-cmd-task-lifecycle]
-    title: "Implement task lifecycle commands"
-    type: task
-    spec_ref: "@task-commands"
+    spec_ref: '@cmd-tasks-ready'
     derivation: auto
-    status: pending
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-cli-framework'
+      - '@task-ready-computation'
+    context: []
     priority: 1
     complexity: 2
-    tags: [mvp, cli]
-    depends_on: ["@task-cli-framework", "@task-state-transitions"]
+    tags:
+      - mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-14T22:19:08.607Z'
+    completed_at: '2026-01-14T22:19:09.956Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB22TASK540000000000
+    slugs:
+      - task-cmd-task-lifecycle
+    title: Implement task lifecycle commands
+    type: task
     description: |
       Implement state transition commands:
       - kspec task start <ref>
@@ -443,44 +535,97 @@ tasks:
       - kspec task block <ref>
       - kspec task unblock <ref>
       - kspec task cancel <ref>
-
-  # ============================================================
-  # MILESTONE: Self-Hosting MVP
-  # ============================================================
-  - _ulid: 01JHNKAB23MILE000000000000
-    slugs: [milestone-self-hosting]
-    title: "Milestone: Self-Hosting MVP"
-    type: epic
-    derivation: manual
-    status: pending
-    priority: 1
-    tags: [mvp, milestone]
-    depends_on:
-      - "@task-cmd-tasks-ready"
-      - "@task-cmd-validate"
-      - "@task-cmd-task-lifecycle"
-    description: |
-      When this is complete, kspec can track its own development:
-      - `kspec validate` passes on this spec
-      - `kspec tasks ready` shows available work
-      - `kspec task start/complete` tracks progress
-
-      This is the bootstrap milestone - kspec becomes self-hosting.
-
-  # ============================================================
-  # POST-MVP: Additional Features
-  # ============================================================
-  - _ulid: 01JHNKAB24TASK600000000000
-    slugs: [task-cmd-item-crud]
-    title: "Implement item CRUD commands"
-    type: task
-    spec_ref: "@item-commands"
+    spec_ref: '@task-commands'
     derivation: auto
-    status: pending
-    priority: 2
+    status: completed
+    blocked_by: []
+    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    depends_on:
+      - '@task-cli-framework'
+      - '@task-state-transitions'
+    context: []
+    priority: 1
+    complexity: 2
+    tags:
+      - mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-14T22:19:11.259Z'
+    completed_at: '2026-01-14T22:19:12.605Z'
+    notes: []
+    todos: []
+  - _ulid: 01KEZ9514JSG75X4R0BCXYBE1Y
+    slugs:
+      - task-fix-write-location
+    title: Fix task write location routing
+    type: task
+    description: |
+      Fix the mismatch between task read and write locations.
+      Currently all writes go to root/tasks.yaml regardless of
+      where tasks were loaded from.
+
+      Requirements:
+      1. Track source file when loading tasks (_sourceFile metadata)
+      2. Write existing tasks back to their source file
+      3. Route new tasks based on rules:
+         - Has spec_ref → derive location from spec item's file
+           (e.g., spec_ref: @cmd-init in cli.yaml → cli.tasks.yaml)
+         - No spec_ref → project.tasks.yaml (meta/planning work)
+      4. Support moving tasks between files if needed
+
+      Affected code:
+      - src/parser/yaml.ts: loadAllTasks(), saveTask(), getDefaultTaskFilePath()
+      - src/cli/commands/task.ts: all write operations
+    derivation: manual
+    status: completed
+    blocked_by: []
+    depends_on:
+      - '@task-task-loading'
+    context: []
+    priority: 1
     complexity: 3
-    tags: [post-mvp, cli]
-    depends_on: ["@milestone-self-hosting"]
+    tags:
+      - mvp
+      - bug
+      - critical
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.940Z'
+    started_at: '2026-01-14T22:00:00Z'
+    notes:
+      - _ulid: 01KEZ9514JSG75X4R0BCXYBE1Z
+        created_at: '2026-01-14T22:00:00Z'
+        author: '@claude'
+        content: |
+          Implementation in progress:
+          - Added LoadedTask interface with _sourceFile tracking
+          - Modified loadAllTasks() to track source file for each task
+          - Updated saveTask() to write to _sourceFile when present
+          - Changed default path to spec/project.tasks.yaml for new tasks
+          - Fixed bug where tasks: wrapper format wasn't parsed correctly
+      - _ulid: 01KEZ95XGDX6WZXQYSWW0R1YMC
+        created_at: '2026-01-14T22:14:20.942Z'
+        content: Testing write fix - this should update spec/kynetic.tasks.yaml
+        supersedes: null
+      - _ulid: 01KEZ9HT3XT9FYPD1A7J73R87E
+        created_at: '2026-01-14T22:20:50.687Z'
+        content: |-
+          Implementation complete:
+          - LoadedTask interface tracks _sourceFile for each task
+          - loadAllTasks() assigns _sourceFile when loading
+          - saveTask() writes to _sourceFile (or default for new tasks)
+          - Default for new tasks: spec/project.tasks.yaml
+          - Fixed parsing bug for tasks: wrapper without kynetic_tasks version
+          Side effect: YAML reformatting loses comments (tracked in @task-yaml-formatting)
+        supersedes: null
+    todos: []
+    completed_at: '2026-01-14T22:20:52.967Z'
+    closed_reason: Core write routing implemented - tasks save to source file
+  - _ulid: 01JHNKAB24TASK600000000000
+    slugs:
+      - task-cmd-item-crud
+    title: Implement item CRUD commands
+    type: task
     description: |
       Full item management:
       - kspec item add
@@ -488,54 +633,226 @@ tasks:
       - kspec item list
       - kspec item set
       - kspec item delete
-
-  - _ulid: 01JHNKAB25TASK610000000000
-    slugs: [task-cmd-derive]
-    title: "Implement kspec derive command"
-    type: task
-    spec_ref: "@cmd-derive"
+    spec_ref: '@item-commands'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@milestone-self-hosting'
+    context: []
     priority: 2
-    complexity: 2
-    tags: [post-mvp, cli]
-    depends_on: ["@milestone-self-hosting"]
+    complexity: 3
+    tags:
+      - post-mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.954Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB25TASK610000000000
+    slugs:
+      - task-cmd-derive
+    title: Implement kspec derive command
+    type: task
     description: |
       Auto-create tasks from spec items:
       - kspec derive @feature
       - kspec derive --all
       - Idempotent (skip if task exists)
-
-  - _ulid: 01JHNKAB26TASK620000000000
-    slugs: [task-notes-todos]
-    title: "Implement notes and todos"
-    type: task
-    spec_ref: "@task-notes"
+    spec_ref: '@cmd-derive'
     derivation: auto
     status: pending
+    blocked_by: []
+    depends_on:
+      - '@milestone-self-hosting'
+    context: []
     priority: 2
     complexity: 2
-    tags: [post-mvp, tasks]
-    depends_on: ["@milestone-self-hosting"]
+    tags:
+      - post-mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.954Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB26TASK620000000000
+    slugs:
+      - task-notes-todos
+    title: Implement notes and todos
+    type: task
     description: |
       Work log features:
       - kspec task note <ref> "message"
       - kspec todo add/done/promote
       - Append-only with supersession
-
-  - _ulid: 01JHNKAB27TASK630000000000
-    slugs: [task-link-commands]
-    title: "Implement link management commands"
-    type: task
-    spec_ref: "@link-commands"
+    spec_ref: '@task-notes'
     derivation: auto
     status: pending
-    priority: 3
+    blocked_by: []
+    depends_on:
+      - '@milestone-self-hosting'
+    context: []
+    priority: 2
     complexity: 2
-    tags: [post-mvp, cli]
-    depends_on: ["@milestone-self-hosting"]
+    tags:
+      - post-mvp
+      - tasks
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.954Z'
+    notes: []
+    todos: []
+  - _ulid: 01JHNKAB27TASK630000000000
+    slugs:
+      - task-link-commands
+    title: Implement link management commands
+    type: task
     description: |
       Relationship management:
       - kspec link create
       - kspec link list
       - kspec link delete
+    spec_ref: '@link-commands'
+    derivation: auto
+    status: pending
+    blocked_by: []
+    depends_on:
+      - '@milestone-self-hosting'
+    context: []
+    priority: 3
+    complexity: 2
+    tags:
+      - post-mvp
+      - cli
+    vcs_refs: []
+    created_at: '2026-01-14T22:14:20.954Z'
+    notes: []
+    todos: []
+  - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
+    slugs:
+      - task-yaml-formatting
+    title: Preserve YAML formatting and comments on save
+    type: task
+    description: |
+      When saving tasks, the current implementation parses and re-serializes
+      YAML, which loses comments, original formatting, and structure.
+
+      Problems:
+      - Comments (section headers, inline notes) are lost
+      - Original formatting (indentation, key ordering) changes
+      - Blank lines between sections disappear
+
+      Options to explore:
+      1. YAML library that preserves comments (yaml with CST mode)
+      2. Patch-based updates (find and modify specific task in place)
+      3. Accept reformatting for programmatic files only
+      4. Store comments as metadata to re-insert
+
+      This significantly affects user experience for human-edited files.
+    derivation: manual
+    status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-fix-write-location'
+    context: []
+    priority: 2
+    complexity: 3
+    tags:
+      - post-mvp
+      - dx
+    vcs_refs: []
+    created_at: '2026-01-14T22:20:00Z'
+    notes: []
+    todos: []
+  - _ulid: 01KEZ9VV3KTTNVK82ZWPVD3XBD
+    slugs:
+      - task-kspec-skill
+    title: Create Claude Code skill for kspec
+    type: task
+    description: |
+      Build a Claude Code skill that enables natural interaction with kspec.
+      This skill will be both distributed as an installable plugin AND used
+      in this project itself (dogfooding).
+
+      Skill capabilities (evolving):
+      - Query tasks: "what's ready to work on?", "show blocked tasks"
+      - Manage tasks: "start working on X", "complete task X with reason"
+      - Add notes: "add note to task X about what I did"
+      - Navigate specs: "what does feature X require?"
+      - Create tasks: "create a task for implementing Y"
+
+      Distribution:
+      - Installable via Claude Code skill/MCP plugin system
+      - Instructions in markdown format (KSPEC_SKILL.md or similar)
+      - Could be published to a skill registry when available
+
+      Self-hosting:
+      - Use the skill in this project's CLAUDE.md
+      - Current CLAUDE.md already has basic kspec instructions
+      - Skill would be more comprehensive and context-aware
+
+      Implementation:
+      - Start with markdown-based skill definition
+      - Define slash commands (/kspec, /task, /spec)
+      - Include guidance on when to check tasks, add notes, etc.
+      - Evolve based on actual usage patterns
+    derivation: manual
+    status: pending
+    blocked_by: []
+    depends_on: []
+    context: []
+    priority: 2
+    complexity: 2
+    tags:
+      - dx
+      - tooling
+      - claude-code
+    vcs_refs: []
+    created_at: '2026-01-14T22:25:00Z'
+    notes:
+      - _ulid: 01KEZ9VV3KTTNVK82ZWPVD3XBE
+        created_at: '2026-01-14T22:25:00Z'
+        author: '@claude'
+        content: |
+          Context: Claude Code supports skills (markdown instruction files) that
+          can be loaded to give Claude specialized capabilities. The kspec skill
+          would teach Claude how to work with specs and tasks naturally.
+
+          Current CLAUDE.md has basic commands but a dedicated skill would be
+          more comprehensive and could be shared with other kspec users.
+    todos: []
+  - _ulid: 01KEZ9DSD9W7JY4HP92JPY6WAN
+    slugs:
+      - task-integration-testing
+    title: Implement integration testing with fixtures
+    type: task
+    description: |
+      Set up integration testing infrastructure that tests the CLI and
+      library as they are actually used, with fixture-based test data.
+
+      Requirements:
+      1. Create tests/fixtures/ directory with sample specs and tasks
+      2. Copy fixtures to temp directory before each test (don't mutate originals)
+      3. Test CLI commands end-to-end (spawn process, check output/files)
+      4. Test library functions with realistic data structures
+      5. Verify file writes go to correct locations
+      6. Test format preservation (when implemented)
+
+      Testing approach:
+      - Pure integration tests (no mocking)
+      - Fixtures represent real-world usage patterns
+      - Each test gets fresh copy of fixtures
+      - Assert on actual file contents and CLI output
+    derivation: manual
+    status: pending
+    blocked_by: []
+    depends_on: []
+    context: []
+    priority: 2
+    complexity: 2
+    tags:
+      - infra
+      - testing
+    vcs_refs: []
+    created_at: '2026-01-14T22:20:00Z'
+    notes: []
+    todos: []
