@@ -26,17 +26,57 @@ tasks:
     title: "Set up TypeScript project with Zod"
     type: task
     derivation: manual
-    status: pending
+    status: completed
     priority: 1
     complexity: 2
     tags: [mvp, foundation, infra]
     depends_on: []
+    started_at: "2026-01-14T17:00:00Z"
+    completed_at: "2026-01-14T17:20:00Z"
+    closed_reason: "Bootstrap complete - project fully set up and self-hosting"
     description: |
       Initialize the kspec CLI project:
       - TypeScript + Node.js project structure
       - Zod for schema validation
       - Build tooling (tsup or similar)
       - Basic package.json with bin entry
+    notes:
+      - _ulid: 01KEYRJ953HRYWJ0W4XEG6J9FB
+        created_at: "2026-01-14T17:00:00Z"
+        author: "@claude"
+        content: |
+          Bootstrap approach: Used parallel subagents working in git worktrees.
+          One agent wrote the spec (bootstrap-spec branch), another wrote the
+          parser (bootstrap-parser branch). Branches merged after alignment.
+      - _ulid: 01KEYRJ95AMA2JDAN9RMJ1Q2R3
+        created_at: "2026-01-14T17:10:00Z"
+        author: "@claude"
+        content: |
+          Tech stack chosen:
+          - TypeScript + Node.js (ESM modules)
+          - Zod for schema validation
+          - Commander for CLI framework
+          - js-yaml for YAML parsing
+          - ulid for ID generation
+          - Vitest for testing
+          - chalk for colored output
+      - _ulid: 01KEYRJ95AAPYJAY169ERRFSNH
+        created_at: "2026-01-14T17:15:00Z"
+        author: "@claude"
+        content: |
+          Project structure (~1,500 lines TypeScript):
+          - src/schema/ - Zod schemas (common, spec, task)
+          - src/parser/ - YAML loading and file management
+          - src/cli/ - Command handlers (tasks, task)
+          - tests/ - Vitest test suite
+      - _ulid: 01KEYRJ95A6VKGXGZ84R6TQ517
+        created_at: "2026-01-14T17:18:00Z"
+        author: "@claude"
+        content: |
+          Schema alignment fix: Initial mismatch between spec and parser
+          (parallel development). Fixed by making created_at optional with
+          default, adding description field. First real issue resolved
+          using the self-hosting system.
 
   - _ulid: 01JHNKAB02TASK110000000000
     slugs: [task-ulid-generation]
