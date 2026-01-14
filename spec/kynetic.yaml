@@ -1,0 +1,40 @@
+# Kynetic Spec - Bootstrap Specification
+# This is the "genesis spec" - kspec defining itself in its own format
+#
+# Version: 0.1.0-draft
+# This spec is self-hosting: it tracks its own development using
+# the format and conventions it defines.
+
+kynetic: "1.0"
+
+project:
+  name: "Kynetic Spec"
+  version: "0.1.0"
+  status: draft
+  description: |
+    A structured, living specification format designed for collaborative
+    authoring between humans and AI agents. Serves as the single source
+    of truth for project requirements, features, and architecture decisions.
+
+# Module organization:
+# - core: Fundamental primitives (items, IDs, references)
+# - schema: Item types, validation, file structure
+# - tasks: Task system for tracking work
+# - cli: Command-line interface
+includes:
+  - modules/core.yaml
+  - modules/schema.yaml
+  - modules/tasks.yaml
+  - modules/cli.yaml
+
+# Config for this spec
+config:
+  # Validation settings
+  validation:
+    strict_refs: true           # All @references must resolve
+    require_acceptance: false   # Acceptance criteria optional for draft
+
+  # Hook definitions (opt-in via kspec hooks install)
+  hooks:
+    pre-commit: lint
+    commit-msg: validate-refs

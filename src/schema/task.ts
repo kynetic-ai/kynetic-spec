@@ -35,6 +35,7 @@ export const TodoSchema = z.object({
 
 /**
  * Full task schema
+ * Note: created_at defaults to now if not provided (auto-populated on load)
  */
 export const TaskSchema = z.object({
   // Identity
@@ -42,6 +43,9 @@ export const TaskSchema = z.object({
   slugs: z.array(SlugSchema).default([]),
   title: z.string().min(1, 'Title is required'),
   type: TaskTypeSchema.default('task'),
+
+  // Content (doesn't duplicate spec - brief description for standalone context)
+  description: z.string().optional(),
 
   // Spec relationship
   spec_ref: RefSchema.nullable().optional(),
@@ -65,8 +69,8 @@ export const TaskSchema = z.object({
   // VCS references
   vcs_refs: z.array(VcsRefSchema).default([]),
 
-  // Timestamps
-  created_at: DateTimeSchema,
+  // Timestamps (auto-populated if not provided)
+  created_at: DateTimeSchema.default(() => new Date().toISOString()),
   started_at: DateTimeSchema.nullable().optional(),
   completed_at: DateTimeSchema.nullable().optional(),
 
@@ -87,6 +91,9 @@ export const TaskInputSchema = z.object({
   slugs: z.array(SlugSchema).optional(),
   title: z.string().min(1, 'Title is required'),
   type: TaskTypeSchema.optional(),
+
+  // Content
+  description: z.string().optional(),
 
   // Spec relationship
   spec_ref: RefSchema.nullable().optional(),

@@ -1,0 +1,399 @@
+# Core Module - Fundamental Primitives
+# Defines the building blocks: items, identifiers, and references
+
+_ulid: 01JHNK8QW0CORE000000000000
+slugs: [core, core-primitives]
+title: Core Primitives
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  The foundational concepts that everything else builds on:
+  spec items as the fundamental unit, the ULID+slug ID system,
+  and the @reference syntax for linking items together.
+
+features:
+  # ============================================================
+  # SPEC ITEMS - The fundamental unit
+  # ============================================================
+  - _ulid: 01JHNK8QW1ITEM000000000000
+    slugs: [spec-item, item-concept]
+    title: Spec Item
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags: [mvp, core]
+    description: |
+      A spec item is the fundamental unit in Kynetic Spec.
+      Everything - features, requirements, constraints, decisions,
+      tasks - is represented as an item with consistent structure.
+
+    acceptance_criteria:
+      - id: ac-item-1
+        given: any piece of spec content
+        when: it is stored in the spec
+        then: it exists as an item with id, title, type, and content
+
+      - id: ac-item-2
+        given: an item
+        when: it is created
+        then: it has a ULID assigned automatically
+
+    requirements:
+      - _ulid: 01JHNK8QW2ITEM100000000000
+        slugs: [item-required-fields]
+        title: Required Item Fields
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Every item MUST have:
+          - _ulid: Canonical unique identifier (auto-generated)
+          - title: Human-readable name (required, user-provided)
+
+          All other fields are optional with sensible defaults.
+        implements: ["@spec-item"]
+
+      - _ulid: 01JHNK8QW3ITEM200000000000
+        slugs: [item-optional-fields]
+        title: Optional Item Fields
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Items MAY include:
+          - slugs: Human-friendly aliases (array)
+          - type: Item type (feature, requirement, etc.)
+          - status: Maturity and implementation status
+          - priority: high | medium | low
+          - tags: Freeform labels (array)
+          - description: Detailed content (multiline)
+          - acceptance_criteria: Testable conditions (array)
+          - depends_on, implements, relates_to: References (arrays)
+          - traceability: Links to code, tests, commits
+          - created, created_by: Lifecycle metadata
+        implements: ["@spec-item"]
+
+  # ============================================================
+  # ULID SYSTEM - Canonical identifiers
+  # ============================================================
+  - _ulid: 01JHNK8QW4ULID000000000000
+    slugs: [ulid-system, canonical-ids]
+    title: ULID Identifier System
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags: [mvp, core]
+    description: |
+      ULIDs (Universally Unique Lexicographically Sortable Identifiers)
+      serve as the canonical, immutable identifier for every item.
+      They are time-sortable, globally unique, and can be shortened
+      for display like git commit hashes.
+
+    acceptance_criteria:
+      - id: ac-ulid-1
+        given: a new item is created
+        when: no ULID is provided
+        then: a ULID is auto-generated
+
+      - id: ac-ulid-2
+        given: a ULID "01JHNK8QW0CORE000000000000"
+        when: it needs to be displayed briefly
+        then: it can be shortened to "01JHNK" (first 6+ chars)
+
+      - id: ac-ulid-3
+        given: an item's ULID
+        when: the item is modified
+        then: the ULID never changes
+
+    requirements:
+      - _ulid: 01JHNK8QW5ULID100000000000
+        slugs: [ulid-format]
+        title: ULID Format
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          ULIDs are 26-character strings in Crockford base32 encoding.
+          Format: TTTTTTTTTTNNNNNNNNNNNNNNNN
+          - First 10 chars: Timestamp (millisecond precision)
+          - Last 16 chars: Random component
+
+          Example: 01JHNK8QW0CORE000000000000
+        implements: ["@ulid-system"]
+
+      - _ulid: 01JHNK8QW6ULID200000000000
+        slugs: [ulid-immutability]
+        title: ULID Immutability
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Once assigned, a ULID is NEVER changed and NEVER reused.
+          If an item is deprecated, its ULID remains; a superseding
+          item gets a new ULID and links via supersedes relationship.
+        implements: ["@ulid-system"]
+
+      - _ulid: 01JHNK8QW7ULID300000000000
+        slugs: [ulid-shortening]
+        title: ULID Shortening
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          ULIDs can be shortened for display and references, similar
+          to git commit short hashes. The system resolves short ULIDs
+          to full ULIDs, erroring if ambiguous.
+
+          Minimum recommended: 6 characters
+          Full length: 26 characters
+        implements: ["@ulid-system"]
+
+  # ============================================================
+  # SLUG SYSTEM - Human-friendly aliases
+  # ============================================================
+  - _ulid: 01JHNK8QW8SLUG000000000000
+    slugs: [slug-system, item-aliases]
+    title: Slug Alias System
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags: [mvp, core]
+    description: |
+      Slugs are human-friendly aliases that point to ULIDs.
+      They make specs readable and references memorable.
+      Multiple slugs can point to the same item, and slugs
+      can evolve without breaking references (the ULID is canonical).
+
+    acceptance_criteria:
+      - id: ac-slug-1
+        given: an item with ULID "01JHNK8QW0..."
+        when: slug "core-primitives" is assigned
+        then: "@core-primitives" resolves to that item
+
+      - id: ac-slug-2
+        given: an item with slugs ["auth-login", "user-login"]
+        when: either slug is used as a reference
+        then: both resolve to the same item
+
+      - id: ac-slug-3
+        given: a slug "old-name" assigned to an item
+        when: the slug is changed to "new-name"
+        then: references to "@old-name" produce a warning but still resolve
+
+    requirements:
+      - _ulid: 01JHNK8QW9SLUG100000000000
+        slugs: [slug-format]
+        title: Slug Format
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Slugs MUST be lowercase, alphanumeric, with hyphens allowed.
+          Pattern: ^[a-z][a-z0-9-]*$
+
+          Examples: auth-login, user-model, impl-session-v2
+        implements: ["@slug-system"]
+
+      - _ulid: 01JHNKA0W0SLUG200000000000
+        slugs: [slug-uniqueness]
+        title: Slug Uniqueness
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Each slug MUST be unique within the spec. Two items cannot
+          have the same slug. Validation fails if duplicate slugs exist.
+        implements: ["@slug-system"]
+
+      - _ulid: 01JHNKA0W1SLUG300000000000
+        slugs: [slug-resolution]
+        title: Slug Resolution
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          When a reference like "@auth-login" is encountered:
+          1. Check if it matches a slug exactly
+          2. If not found, check if it's a ULID prefix
+          3. If still not found, report broken reference error
+          4. If ambiguous (multiple matches), report ambiguity error
+        implements: ["@slug-system"]
+
+  # ============================================================
+  # REFERENCE SYSTEM - Linking items together
+  # ============================================================
+  - _ulid: 01JHNKA0W2REFS000000000000
+    slugs: [reference-system, at-refs]
+    title: Reference System
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags: [mvp, core]
+    description: |
+      The @reference syntax links items together. References can
+      point to slugs or ULIDs (full or shortened). The system
+      validates that all references resolve to existing items.
+
+    acceptance_criteria:
+      - id: ac-ref-1
+        given: an item with depends_on ["@auth-session"]
+        when: the spec is validated
+        then: the reference is checked against the slug index
+
+      - id: ac-ref-2
+        given: a reference "@01JHNK"
+        when: it's a unique ULID prefix
+        then: it resolves to the full ULID
+
+      - id: ac-ref-3
+        given: a reference to a non-existent item
+        when: validation runs
+        then: an error is reported with the broken reference
+
+    requirements:
+      - _ulid: 01JHNKA0W3REFS100000000000
+        slugs: [ref-syntax]
+        title: Reference Syntax
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          References use the @ prefix to distinguish from plain strings:
+
+          - "@slug-name" - Reference by slug
+          - "@01JHNK" - Reference by short ULID
+          - "@01JHNK8QW0CORE000000000000" - Reference by full ULID
+
+          References appear in relationship fields:
+          depends_on, implements, relates_to, tests, supersedes, blocked_by
+        implements: ["@reference-system"]
+
+      - _ulid: 01JHNKA0W4REFS200000000000
+        slugs: [ref-validation]
+        title: Reference Validation
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          All references MUST be validated:
+          1. Parse @ prefix to extract identifier
+          2. Attempt slug lookup, then ULID prefix lookup
+          3. Report errors for unresolved references
+          4. Report warnings for deprecated targets
+
+          Validation is triggered by `kspec validate --refs`
+        implements: ["@reference-system"]
+
+  # ============================================================
+  # RELATIONSHIP TYPES - Semantic links between items
+  # ============================================================
+  - _ulid: 01JHNKA0W5RELS000000000000
+    slugs: [relationship-types, item-links]
+    title: Relationship Types
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags: [mvp, core]
+    description: |
+      Items link to each other via typed relationships.
+      The hierarchy (module > feature > requirement) is one axis;
+      relationships form a cross-cutting graph for other connections.
+
+    requirements:
+      - _ulid: 01JHNKA0W6RELS100000000000
+        slugs: [rel-depends-on]
+        title: depends_on Relationship
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          "A depends_on B" means A requires B to be completed/available.
+          Used for: ordering work, tracking prerequisites.
+
+          For tasks: Auto-blocks A until B is completed.
+        implements: ["@relationship-types"]
+
+      - _ulid: 01JHNKA0W7RELS200000000000
+        slugs: [rel-implements]
+        title: implements Relationship
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          "A implements B" means A is a realization of B.
+          Used for: requirement-to-task, feature-to-module.
+
+          Enables traceability from high-level to concrete.
+        implements: ["@relationship-types"]
+
+      - _ulid: 01JHNKA0W8RELS300000000000
+        slugs: [rel-relates-to]
+        title: relates_to Relationship
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          "A relates_to B" is a general association without specific semantics.
+          Used for: cross-references, "see also" links.
+        implements: ["@relationship-types"]
+
+      - _ulid: 01JHNKA0W9RELS400000000000
+        slugs: [rel-blocks]
+        title: blocks Relationship
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          "A blocks B" means B cannot proceed while A is unresolved.
+          The inverse of depends_on, used for explicit blocking issues.
+        implements: ["@relationship-types"]
+
+      - _ulid: 01JHNKA1W0RELS500000000000
+        slugs: [rel-tests]
+        title: tests Relationship
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          "A tests B" means A validates or verifies B.
+          Used for: linking test items to features/requirements.
+        implements: ["@relationship-types"]
+
+      - _ulid: 01JHNKA1W1RELS600000000000
+        slugs: [rel-supersedes]
+        title: supersedes Relationship
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          "A supersedes B" means A replaces B, which is now deprecated.
+          The old item's ULID remains stable; the relationship links them.
+        implements: ["@relationship-types"]
