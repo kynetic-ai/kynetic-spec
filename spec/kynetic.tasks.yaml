@@ -514,6 +514,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
+    closed_reason: Implemented as part of schema validation. Human-readable and JSON output both working.
     depends_on:
       - '@task-schema-validation'
       - '@task-ref-validation'
@@ -525,6 +526,8 @@ tasks:
       - validation
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-15T04:02:49.716Z'
+    completed_at: '2026-01-15T04:02:49.716Z'
     notes:
       - _ulid: 01KEZX3RGQN6TCCMBJGZ9HAFJ6
         created_at: '2026-01-15T04:02:41.816Z'
@@ -542,9 +545,6 @@ tasks:
           orphans
         supersedes: null
     todos: []
-    completed_at: '2026-01-15T04:02:49.716Z'
-    closed_reason: Implemented as part of schema validation. Human-readable and JSON output both working.
-    started_at: '2026-01-15T04:02:49.716Z'
   - _ulid: 01JHNKAB14TASK400000000000
     slugs:
       - task-task-loading
@@ -745,7 +745,7 @@ tasks:
       - Exit with semantic code
     spec_ref: '@cmd-validate'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
     depends_on:
       - '@task-cli-framework'
@@ -758,8 +758,22 @@ tasks:
       - cli
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.953Z'
-    notes: []
+    notes:
+      - _ulid: 01KEZX5K4QEDWB9C760H9WW9Z1
+        created_at: '2026-01-15T04:03:41.848Z'
+        author: '@claude'
+        content: |-
+          Already implemented in src/cli/commands/validate.ts. All options working:
+          - --schema: schema conformance check
+          - --refs: reference resolution check
+          - --orphans: unreferenced items check
+          - --strict: treat orphans as errors
+          - Also includes --json for programmatic output and 'lint' alias
+        supersedes: null
     todos: []
+    completed_at: '2026-01-15T04:03:48.236Z'
+    closed_reason: Implemented in src/cli/commands/validate.ts with all specified options plus JSON output.
+    started_at: '2026-01-15T04:03:48.236Z'
   - _ulid: 01JHNKAB21TASK530000000000
     slugs:
       - task-cmd-tasks-ready
