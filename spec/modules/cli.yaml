@@ -735,7 +735,7 @@ features:
         created: '2026-01-15T15:34:40.999Z'
         status:
           implementation: implemented
-  - _ulid: 01KF0WJEHSINBOX00000000000
+  - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
     title: Inbox Commands
@@ -752,7 +752,7 @@ features:
       Inbox items are simple text entries that can be triaged later.
       Storage: project.inbox.yaml (separate file for clean schema).
     requirements:
-      - _ulid: 01KF0WJEHSINBOX10000000000
+      - _ulid: 01KF15N59ESD55YP3PP8EW96AJ
         slugs:
           - cmd-inbox-add
         title: kspec inbox add
@@ -774,7 +774,7 @@ features:
           - kspec inbox add "refactor auth flow" --tag auth --tag refactor
         implements:
           - '@inbox-commands'
-      - _ulid: 01KF0WJEHSINBOX20000000000
+      - _ulid: 01KF15N59E5B55QEM6KVJHGSN5
         slugs:
           - cmd-inbox-list
         title: kspec inbox list
@@ -794,7 +794,7 @@ features:
           encourage dealing with older items.
         implements:
           - '@inbox-commands'
-      - _ulid: 01KF0WJEHSINBOX30000000000
+      - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
         title: kspec inbox promote
@@ -821,7 +821,7 @@ features:
           - kspec inbox promote @01KF0... --title "Improve errors" --priority 2
         implements:
           - '@inbox-commands'
-      - _ulid: 01KF0WJEHSINBOX40000000000
+      - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
         title: kspec inbox delete

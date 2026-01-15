@@ -291,6 +291,10 @@ function findOrphans(
       // Skip entry point types
       if (entryPointTypes.includes(item.type || '')) continue;
 
+      // Skip nested items - they're implicitly referenced by their parent
+      // _path indicates nesting (e.g., "features[0].requirements[2]")
+      if (item._path) continue;
+
       orphans.push({
         ulid: item._ulid,
         title: item.title,
