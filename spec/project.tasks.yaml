@@ -1268,4 +1268,23 @@
         2. If complex/scope-expanding, output spec-first reminder
         3. If simple, output nothing (or minimal context)
       supersedes: null
+    - _ulid: 01KF1CMB7V47SR9RJ2JQ8GM9CE
+      created_at: '2026-01-15T17:53:08.348Z'
+      author: '@claude'
+      content: |-
+        Design decision: Simple injection, let Claude be smart
+
+        Approach:
+        - kspec CLI command (like stop hook) outputs standard reminder
+        - Always injects on every UserPromptSubmit
+        - No filtering/gating - Claude (Opus) is smart enough to apply when relevant
+        - Keep it LEAN to minimize noise
+
+        Draft reminder text options:
+        1. '[spec-check] Before implementing: Does this expand scope? Is there spec coverage?'
+        2. 'If this changes behavior, is there spec coverage?'
+        3. Single question probe that prompts reflection
+
+        Next: Draft the CLI command and hook config
+      supersedes: null
   todos: []
