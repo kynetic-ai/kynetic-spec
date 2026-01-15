@@ -289,3 +289,66 @@
         - --verbose or --full flag on --help
       supersedes: null
   todos: []
+- _ulid: 01KEZKE54QQJQ97TR13DZQ36EZ
+  slugs:
+    - task-inbox-system
+  title: Design inbox/capture system for unstructured ideas
+  type: spike
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - core
+    - process
+  vcs_refs: []
+  created_at: '2026-01-15T01:13:36.663Z'
+  notes:
+    - _ulid: 01KEZKEHF0CCXCGHY8FMS5XPCA
+      created_at: '2026-01-15T01:13:49.281Z'
+      content: |-
+        Concept: Low-friction capture space for ideas that aren't tasks yet.
+
+        Problem:
+        - Creating a task has overhead (title, slug, priority, etc.)
+        - Random ideas get lost or forgotten
+        - Not everything needs to be a task immediately
+
+        Design ideas:
+
+        Structure:
+        - Simple text entries with timestamp
+        - Optional tags/labels
+        - Auto-generated ID
+        - Maybe just: { id, text, created_at, tags? }
+
+        Capture:
+        - kspec inbox add 'random thought about X'
+        - Or even: kspec idea 'random thought'
+        - Minimal friction, just dump and go
+
+        Triage (interactive):
+        - kspec inbox review
+        - Shows items one by one
+        - Actions: promote to task, discard, defer, tag, merge
+
+        Triage (automatic):
+        - Rules-based: 'if tagged #bug, auto-create task'
+        - Time-based: 'items older than 7 days, prompt for review'
+        - AI-assisted: 'suggest task creation for well-formed items'
+
+        Storage:
+        - inbox.yaml or project.inbox.yaml
+        - Simple flat list
+
+        Hierarchy:
+          Inbox (unstructured) → Tasks (work items) → Spec (requirements)
+
+        Example flow:
+        1. kspec inbox add 'maybe we need better error messages'
+        2. Later: kspec inbox review
+        3. Decide: promote to @task-error-messages or discard
+      supersedes: null
+  todos: []
