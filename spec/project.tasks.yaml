@@ -1250,4 +1250,22 @@
 
         This will determine if prompt-type works for our use case or if we need command hook.
       supersedes: null
+    - _ulid: 01KF1CCQD5R1NR29R7C3AAF2SN
+      created_at: '2026-01-15T17:48:58.662Z'
+      author: '@claude'
+      content: |-
+        Spike results:
+        - ok:true → prompt proceeds normally
+        - ok:false → BLOCKS prompt entirely, shows reason to user
+
+        This confirms prompt-type hooks are for GATING (allow/block), not context injection.
+
+        Conclusion: Must use command hook for spec-drift detection.
+        Command hook stdout becomes context without blocking the prompt.
+
+        Next step: Design command hook that:
+        1. Analyzes user prompt (pattern matching or call Haiku via API)
+        2. If complex/scope-expanding, output spec-first reminder
+        3. If simple, output nothing (or minimal context)
+      supersedes: null
   todos: []
