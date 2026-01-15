@@ -1235,4 +1235,19 @@
 
         Awaiting user decision on which path to pursue.
       supersedes: null
+    - _ulid: 01KF1C6BRGHW7VADB095QC9YKP
+      created_at: '2026-01-15T17:45:30.129Z'
+      author: '@claude'
+      content: |-
+        Spike setup complete. Created test-hooks/ folder with:
+        - .claude/settings.json with prompt-type UserPromptSubmit hook
+        - Hook uses Haiku to classify SIMPLE vs COMPLEX requests
+        - Returns ok:false with [SPEC-CHECK] reason for complex requests
+
+        Next: User to test in test-hooks/ folder and report:
+        1. Does ok:false block the prompt or inject context?
+        2. Is the reason visible to Claude?
+
+        This will determine if prompt-type works for our use case or if we need command hook.
+      supersedes: null
   todos: []
