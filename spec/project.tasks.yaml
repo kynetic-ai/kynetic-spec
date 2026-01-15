@@ -1583,6 +1583,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Shadow branch concept implemented with detection, auto-commit infrastructure, error handling,
+    and path resolution. All tests pass.
   depends_on: []
   context: []
   priority: 1
@@ -1592,6 +1595,7 @@
   vcs_refs: []
   created_at: '2026-01-15T22:14:46.459Z'
   started_at: '2026-01-15T23:05:14.190Z'
+  completed_at: '2026-01-15T23:13:57.587Z'
   notes:
     - _ulid: 01KF1YZJS6QZEZVMWCNEFYB2MN
       created_at: '2026-01-15T23:13:50.886Z'
@@ -1627,10 +1631,6 @@
         - Has infrastructure for auto-commit (called by CLI commands)
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T23:13:57.587Z'
-  closed_reason: >-
-    Shadow branch concept implemented with detection, auto-commit infrastructure, error handling,
-    and path resolution. All tests pass.
 - _ulid: 01KF1VKDWJ0G37T95RKAD7R1TZ
   slugs:
     - task-shadow-initialization
@@ -1704,4 +1704,36 @@
   vcs_refs: []
   created_at: '2026-01-15T22:25:38.929Z'
   notes: []
+  todos: []
+- _ulid: 01KF1ZGNP64E3SQJABQPF09T7X
+  slugs:
+    - migrate-to-shadow
+  title: Migrate kspec project to shadow branch
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - infrastructure
+    - one-off
+  vcs_refs: []
+  created_at: '2026-01-15T23:23:10.918Z'
+  notes:
+    - _ulid: 01KF1ZGWAMSDSC14CDMSHXSX3V
+      created_at: '2026-01-15T23:23:17.717Z'
+      author: '@claude'
+      content: |-
+        One-time migration steps:
+        1. Create orphan branch kspec-meta
+        2. Set up .kspec/ worktree pointing to it
+        3. Copy spec/* content to .kspec/
+        4. Initial commit on shadow branch
+        5. Add .kspec/ to .gitignore
+        6. Remove spec/ from main branch (or keep as archive)
+
+        This enables the shadow branch infrastructure and lets this project use itself.
+      supersedes: null
   todos: []
