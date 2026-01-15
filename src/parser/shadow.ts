@@ -461,11 +461,47 @@ export interface ShadowInitOptions {
 }
 
 /**
- * Add .kspec/ to .gitignore if not already present
+ * Check if .gitignore has uncommitted changes
+ */
+async function hasUncommittedGitignore(projectRoot: string): Promise<boolean> {
+  try {
+    // Check both staged and unstaged changes to .gitignore
+    const { stdout } = await execAsync('git status --porcelain .gitignore', {
+      cwd: projectRoot,
+    });
+    return stdout.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Commit only .gitignore with a message
+ */
+async function commitGitignore(projectRoot: string): Promise<void> {
+  await execAsync('git add .gitignore', { cwd: projectRoot });
+  await execAsync('git commit -m "chore: add .kspec/ to .gitignore for shadow branch"', {
+    cwd: projectRoot,
+  });
+}
+
+/**
+ * Add .kspec/ to .gitignore if not already present.
+ * Fails if .gitignore has uncommitted changes.
+ * Commits the change after adding.
  */
 async function ensureGitignore(projectRoot: string): Promise<boolean> {
   const gitignorePath = path.join(projectRoot, '.gitignore');
   const entry = `${SHADOW_WORKTREE_DIR}/`;
+
+  // Fail fast if .gitignore has uncommitted changes
+  if (await hasUncommittedGitignore(projectRoot)) {
+    throw new ShadowError(
+      '.gitignore has uncommitted changes',
+      'GIT_ERROR',
+      'Commit or stash your .gitignore changes before running kspec init.'
+    );
+  }
 
   try {
     let content = '';
@@ -497,8 +533,15 @@ async function ensureGitignore(projectRoot: string): Promise<boolean> {
       : `${content}\n${entry}\n`;
 
     await fs.writeFile(gitignorePath, newContent, 'utf-8');
+
+    // Commit the change
+    await commitGitignore(projectRoot);
+
     return true;
   } catch (error) {
+    if (error instanceof ShadowError) {
+      throw error;
+    }
     throw new ShadowError(
       `Failed to update .gitignore: ${error}`,
       'GIT_ERROR',
