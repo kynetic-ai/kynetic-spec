@@ -1,0 +1,114 @@
+inbox:
+  - _ulid: 01KF150ZY1Z272H5CF55NQ4JBP
+    text: >-
+      Subagent review on task complete - when agent marks task complete, include instructions to
+      spawn review subagent. Subagent runs kspec task review to get task details, linked spec,
+      acceptance criteria, git diff since started_at. Reports gaps between spec and implementation
+      back to main agent. Configurable via setup (opt-in/out). Ties into alignment system.
+    created_at: '2026-01-15T15:40:14.146Z'
+    tags:
+      - review
+      - agents
+      - process
+    added_by: '@claude'
+  - _ulid: 01KF16XGA6SNNRHFPX15N0HE6F
+    text: >-
+      Hook for SessionStart or post-compaction to inject relevant context and subtle instructions.
+      Could auto-run 'kspec session start' or similar to give agent fresh context after memory is
+      compacted.
+    created_at: '2026-01-15T16:13:16.998Z'
+    tags: []
+    added_by: '@claude'
+  - _ulid: 01KF1JG6SVD40TN2J9W2D1PZDD
+    text: >-
+      Reflection prompt on task complete - when completing a task, prompt agent to reflect: Did this
+      address workflow friction? Any new friction discovered? Successes worth noting? More flexible
+      than auto-resolution or explicit linking. Could be a hook or built into task complete flow.
+    created_at: '2026-01-15T19:35:44.189Z'
+    tags:
+      - meta
+      - design
+      - reflection
+    added_by: '@claude'
+  - _ulid: 01KF1JGE1D64QN9G5BKQ9184DP
+    text: >-
+      AGENTS.md standard compatibility - consider complementary approach where AGENTS.md provides
+      instructions and kynetic.meta.yaml provides structured/queryable layer. Revisit when standard
+      matures (currently 20k+ repos adopting).
+    created_at: '2026-01-15T19:35:51.598Z'
+    tags:
+      - meta
+      - standards
+      - research
+    added_by: '@claude'
+  - _ulid: 01KF1JPF8P6VDNPY4S9YAJ797P
+    text: >-
+      Artifacts feature - storage for large files and non-text artifacts tied to specs/tasks. Use
+      cases: reference images, research docs, generated diagrams, data files, PDFs. Unknowns:
+      integration model (spec-ref? task-ref? standalone?), reference syntax (@artifact?),
+      organization (by task? by type? flat?), cleanup/lifecycle (archive with task? manual?),
+      storage location (artifacts/ dir? .kspec/artifacts?), git handling (LFS? gitignore?
+      committed?).
+    created_at: '2026-01-15T19:39:09.462Z'
+    tags:
+      - feature
+      - design
+      - artifacts
+    added_by: '@claude'
+  - _ulid: 01KF1V53RYTWER59VR53W1CSTW
+    text: >-
+      Spec review process: 3 parallel agents (internal fit, prior art comparison, external research)
+      before finalizing major specs. Worked well for shadow branch spec design - should be
+      formalized in meta-spec workflows.
+    created_at: '2026-01-15T22:06:57.823Z'
+    tags:
+      - workflow
+      - meta
+    added_by: '@claude'
+  - _ulid: 01KF1V5CE4QM1AP1PSJX24PV4E
+    text: >-
+      CLI command for creating modules: kspec module add --title 'Shadow Branch' --slug
+      shadow-branch. Would create the module YAML file with proper structure, ULIDs, etc. Currently
+      modules must be created manually.
+    created_at: '2026-01-15T22:07:06.692Z'
+    tags:
+      - cli
+      - feature
+    added_by: '@claude'
+  - _ulid: 01KF1VMPQNCDBFDWKZSVRYNHTY
+    text: >-
+      CLI command for setting task fields: kspec task set @ref --depends-on @other --priority 2.
+      Currently must edit YAML manually.
+    created_at: '2026-01-15T22:15:28.758Z'
+    tags:
+      - cli
+      - feature
+    added_by: '@claude'
+  - _ulid: 01KF1ZKM1WAWHSHVK73F3FE4W5
+    text: >-
+      CLI commands need to call commitIfShadow() after write operations - infrastructure exists but
+      not wired up. Do this when shadow init task enables the feature.
+    created_at: '2026-01-15T23:24:47.548Z'
+    tags:
+      - shadow
+      - cli
+      - wiring
+    added_by: '@claude'
+  - _ulid: 01KF1ZKN1RY5QZV852RRY3QVPV
+    text: >-
+      Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
+      depends_on, implements, relates_to)
+    created_at: '2026-01-15T23:24:48.568Z'
+    tags:
+      - bug
+      - types
+    added_by: '@claude'
+  - _ulid: 01KF1ZM4T387VM3C6NTD3FSF8S
+    text: >-
+      Status alignment sweep needed - 23 spec items have mismatched implementation status (validate
+      shows many implemented features still marked not_started)
+    created_at: '2026-01-15T23:25:04.708Z'
+    tags:
+      - alignment
+      - maintenance
+    added_by: '@claude'
