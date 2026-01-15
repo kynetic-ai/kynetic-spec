@@ -448,6 +448,16 @@ export async function gatherSessionContext(
 
 export interface CheckpointOptions {
   force?: boolean;
+  /** Set when stop hook is already active (retry after previous block) */
+  stopHookActive?: boolean;
+}
+
+/** Claude Code hook input for Stop hooks */
+export interface StopHookInput {
+  session_id?: string;
+  transcript_path?: string;
+  hook_event_name?: string;
+  stop_hook_active?: boolean;
 }
 
 /**
@@ -556,11 +566,21 @@ export async function performCheckpoint(
     );
   }
 
-  const ok = issues.length === 0 || options.force === true;
-  const message =
-    ok
-      ? '[kspec] Session checkpoint passed - ready to end session'
-      : `[kspec] Session checkpoint: ${issues.length} issue(s) need attention`;
+  // Allow stop if:
+  // - No issues found
+  // - --force flag passed
+  // - This is a retry (stop_hook_active = true from previous block)
+  const isRetry = options.stopHookActive === true;
+  const ok = issues.length === 0 || options.force === true || isRetry;
+
+  let message: string;
+  if (isRetry && issues.length > 0) {
+    message = `[kspec] Session checkpoint: ${issues.length} issue(s) acknowledged - allowing stop`;
+  } else if (ok) {
+    message = '[kspec] Session checkpoint passed - ready to end session';
+  } else {
+    message = `[kspec] Session checkpoint: ${issues.length} issue(s) need attention`;
+  }
 
   return {
     ok,
@@ -799,8 +819,61 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
   }
 }
 
+/**
+ * Read stdin if available (non-blocking check for hook input)
+ */
+async function readStdinIfAvailable(): Promise<string | null> {
+  // Check if stdin is a TTY (interactive) - if so, don't try to read
+  if (process.stdin.isTTY) {
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    let data = '';
+    const timeout = setTimeout(() => {
+      process.stdin.removeAllListeners();
+      resolve(data || null);
+    }, 100); // 100ms timeout for stdin
+
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (chunk) => {
+      data += chunk;
+    });
+    process.stdin.on('end', () => {
+      clearTimeout(timeout);
+      resolve(data || null);
+    });
+    process.stdin.on('error', () => {
+      clearTimeout(timeout);
+      resolve(null);
+    });
+    process.stdin.resume();
+  });
+}
+
+/**
+ * Parse Claude Code hook input from stdin
+ */
+function parseHookInput(stdin: string | null): StopHookInput | null {
+  if (!stdin) return null;
+  try {
+    return JSON.parse(stdin.trim()) as StopHookInput;
+  } catch {
+    return null;
+  }
+}
+
 async function sessionCheckpointAction(options: CheckpointOptions): Promise<void> {
   try {
+    // Read stdin for Claude Code hook input
+    const stdin = await readStdinIfAvailable();
+    const hookInput = parseHookInput(stdin);
+
+    // Check if this is a retry (stop hook already active)
+    if (hookInput?.stop_hook_active) {
+      options.stopHookActive = true;
+    }
+
     const ctx = await initContext();
     const result = await performCheckpoint(ctx, options);
 
