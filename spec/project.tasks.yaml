@@ -1096,23 +1096,120 @@
   created_at: '2026-01-15T17:12:15.157Z'
   notes: []
   todos: []
-- title: 'Implement: CLI Command Suggestions on Error'
+- _ulid: 01KF1A9GMNZM8GF8TD95YSDQ7V
+  slugs:
+    - task-cli-command-suggestions-on-error
+  title: 'Implement: CLI Command Suggestions on Error'
   type: task
   spec_ref: '@fuzzy-command-suggest'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-cli-command-suggestions-on-error
-  tags:
-    - dx
-    - cli
-    - errors
-  _ulid: 01KF1A9GMNZM8GF8TD95YSDQ7V
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - dx
+    - cli
+    - errors
   vcs_refs: []
   created_at: '2026-01-15T17:12:16.277Z'
   notes: []
+  todos: []
+- _ulid: 01KF1BBM6X8491F1GS6K79RZYK
+  slugs: []
+  title: Design spec-drift detection hook for user input
+  type: task
+  description: >-
+    Reinforce spec-first workflow - we implemented validate --fix without spec coverage first. Need
+    mechanism to catch this pattern. Ideas: pre-commit hook that warns if code changes without spec
+    changes? Agent instructions that prompt for spec check? Alignment check that flags implemented
+    features without specs?
+  spec_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - design
+    - hooks
+    - spec-first
+  vcs_refs: []
+  created_at: '2026-01-15T17:30:54.045Z'
+  started_at: '2026-01-15T17:31:05.721Z'
+  notes:
+    - _ulid: 01KF1BBXRQW5XZQEAYPC4SVTDZ
+      created_at: '2026-01-15T17:31:03.832Z'
+      author: '@claude'
+      content: |-
+        Refined concept from discussion:
+
+        1. UserPromptSubmit hook fires after user input
+        2. Two-tier approach:
+           - Lightweight gate (prompt-type?) to filter simple requests (typos, questions)
+           - Full analysis only when gate triggers: 'Analyze if this expands spec or creates gaps'
+        3. Goal: Catch spec drift at source rather than after implementation
+
+        Research needed:
+        - Claude Code hook types and capabilities
+        - Prompt type on hooks - how does gating work?
+        - What context is available in UserPromptSubmit hooks?
+      supersedes: null
+    - _ulid: 01KF1BDVKRF6CFAKJ6EPWGWXMY
+      created_at: '2026-01-15T17:32:07.161Z'
+      author: '@claude'
+      content: |-
+        Research findings:
+
+        ## Hook Types Available
+        1. **command** - runs script, stdout added as context
+        2. **prompt** - uses Haiku LLM for intelligent decisions, returns {ok: bool, reason: string}
+
+        ## UserPromptSubmit Capabilities
+        - Fires after user input, before Claude processes
+        - Receives: prompt text, session_id, transcript_path, cwd
+        - Can block (exit 2) or inject context (stdout/additionalContext)
+        - Supports BOTH command and prompt types
+
+        ## Key Insight: Prompt-type IS the gate
+        The prompt type uses Haiku to evaluate conditions - perfect for:
+        - Lightweight filtering of simple vs spec-impacting requests
+        - No script overhead for simple questions
+        - Returns structured decision
+
+        ## Design Pattern Emerging
+        Option A: Single prompt-type hook
+          - Haiku evaluates: 'Is this expanding scope or creating spec gaps?'
+          - If yes, inject spec-first instructions
+          - If no, pass through silently
+
+        Option B: Two-stage (more control)
+          - Stage 1: prompt-type gate (is this simple?)
+          - Stage 2: command hook injects full instructions if gate triggers
+
+        Sources:
+        - https://code.claude.com/docs/en/hooks
+        - https://claude.com/blog/how-to-configure-hooks
+      supersedes: null
+    - _ulid: 01KF1BEHKRVERKCRKJDEFFMKFB
+      created_at: '2026-01-15T17:32:29.688Z'
+      author: '@claude'
+      content: >-
+        Current state: Research complete, awaiting decision on approach.
+
+
+        Two options identified:
+
+        A) Single prompt-type hook - Haiku both gates and injects in one step
+
+        B) Command hook - Script with more control over logic
+
+
+        Next step: User to decide approach preference, then draft concrete prompt/implementation.
+
+
+        Blocking question: Should the hook inject general spec-first reminders, or should it be more
+        specific (e.g., run kspec commands to check coverage)?
+      supersedes: null
   todos: []
