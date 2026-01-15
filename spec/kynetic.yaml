@@ -28,6 +28,7 @@ includes:
   - modules/tasks.yaml
   - modules/cli.yaml
   - modules/meta.yaml
+  - modules/shadow.yaml
 
 # Config for this spec
 config:

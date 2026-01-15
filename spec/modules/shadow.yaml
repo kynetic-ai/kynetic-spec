@@ -1,0 +1,366 @@
+_ulid: 01KF1V1SN0MGR80YA90E7VEM09
+slugs:
+  - shadow-branch
+  - shadow
+title: Shadow Branch
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  Shadow branch for transparent spec/task state auto-tracking.
+  Uses gitignored worktree (.kspec/) pointing to orphan branch (kspec-meta).
+  Separates metadata commits from main branch history.
+
+  Key properties:
+  - Shadow branch has files at root (not nested under spec/)
+  - .kspec/ is a git worktree pointing to the shadow branch
+  - Main branch gitignores .kspec/
+  - All kspec read/write operations target .kspec/
+  - Changes auto-commit to shadow branch
+
+features:
+  - _ulid: 01KF1V1Z87Z7PTG4C68QSMK4EE
+    slugs:
+      - shadow-concept
+    title: Shadow Branch Concept
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags:
+      - infrastructure
+      - git
+    description: |
+      Orphan git branch storing kspec state in gitignored worktree.
+
+      Problem solved:
+      - Commit bloat from task state changes
+      - History pollution on main branch
+      - Review noise in PRs
+
+      Solution:
+      - Orphan branch (kspec-meta) with files at root
+      - .kspec/ worktree always available
+      - Auto-commit on state changes
+      - Main branch never touched by kspec operations
+
+    requirements:
+      - _ulid: 01KF1V1ZJBRPWKF16HEPQG7KHX
+        slugs:
+          - shadow-structure
+        title: Shadow Directory Structure
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Directory layout for shadow branch:
+
+          project/
+            .kspec/                    # Git worktree (gitignored by main)
+              .git -> ../.git/worktrees/.kspec
+              kynetic.yaml             # Root manifest
+              kynetic.tasks.yaml       # Tasks
+              kynetic.meta.yaml        # Meta-spec
+              project.tasks.yaml       # Project tasks
+              project.inbox.yaml       # Inbox
+              modules/
+                core.yaml
+                cli.yaml
+                shadow.yaml
+            src/                       # Normal source (on main branch)
+            tests/
+            .gitignore                 # Contains: .kspec/
+
+          Shadow branch contents (at root):
+          - kynetic.yaml - manifest
+          - *.tasks.yaml - task files
+          - *.inbox.yaml - inbox files
+          - modules/*.yaml - spec modules
+        implements:
+          - '@shadow-concept'
+
+      - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
+        slugs:
+          - shadow-autocommit
+        title: Auto-Commit on State Changes
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          All state-changing kspec commands automatically commit to shadow branch.
+
+          Commit messages by command:
+          - task start @ref      -> "Start @{slug}"
+          - task complete @ref   -> "Complete @{slug}: {reason}"
+          - task note @ref       -> "Note on @{slug}"
+          - task add             -> "Add task: {title}"
+          - inbox add            -> "Inbox: {text}"
+          - inbox promote        -> "Promote to @{slug}"
+          - item add/set/delete  -> "{action} @{slug}"
+          - derive               -> "Derive from @{spec}"
+
+          Implementation:
+          - After write, run: git -C .kspec add -A && git -C .kspec commit -m "..."
+          - Low overhead (local commits only)
+          - Commit includes all changes from the operation
+        implements:
+          - '@shadow-concept'
+
+      - _ulid: 01KF1V2027DTBEBN6A6DCBAT1Q
+        slugs:
+          - shadow-read-path
+        title: Shadow Read Path
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          All kspec read operations target .kspec/ directory.
+
+          Affected operations:
+          - kspec tasks ready
+          - kspec session start
+          - kspec item get
+          - kspec validate
+          - All other reads
+
+          Implementation:
+          - Parser loads YAML from .kspec/kynetic.yaml and includes
+          - Ref resolution uses .kspec/ file paths
+          - Source file tracking uses .kspec/ paths
+        implements:
+          - '@shadow-concept'
+
+      - _ulid: 01KF1V209B3C1C7AB3Y63SPSPB
+        slugs:
+          - shadow-write-path
+        title: Shadow Write Path
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          All kspec write operations target .kspec/ directory.
+
+          - YAML files written to .kspec/
+          - After write, auto-commit triggered
+          - No interaction with main branch's working tree
+        implements:
+          - '@shadow-concept'
+
+      - _ulid: 01KF1V20H5PEMHYR3AEA9FQF6T
+        slugs:
+          - shadow-errors
+        title: Shadow Error Messages
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Clear error messages for common failure scenarios:
+
+          - "Shadow branch not initialized. Run `kspec init` to create."
+          - "Worktree disconnected. Run `kspec shadow repair` to fix."
+          - ".kspec/ directory missing. Run `kspec shadow repair` to recreate."
+
+          Errors should be actionable with clear next steps.
+        implements:
+          - '@shadow-concept'
+
+  - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
+    slugs:
+      - shadow-init
+    title: Shadow Initialization
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags:
+      - infrastructure
+      - cli
+    description: |
+      kspec init creates shadow branch and worktree by default.
+
+      Steps:
+      1. Create orphan branch kspec-meta (if not exists)
+      2. Create git worktree at .kspec/ pointing to shadow branch
+      3. Add .kspec/ to .gitignore
+      4. Create initial manifest and structure in .kspec/
+      5. Initial commit on shadow branch
+    acceptance_criteria:
+      - id: ac-shadow-init-1
+        given: a git repository without shadow branch
+        when: kspec init runs
+        then: orphan branch kspec-meta is created
+      - id: ac-shadow-init-2
+        given: kspec init has run
+        when: checking .kspec/ directory
+        then: it is a valid git worktree pointing to kspec-meta
+      - id: ac-shadow-init-3
+        given: kspec init has run
+        when: checking .gitignore
+        then: .kspec/ is listed
+      - id: ac-shadow-init-4
+        given: shadow branch already exists
+        when: kspec init runs again
+        then: it succeeds without error (idempotent)
+    implements:
+      - '@cmd-init'
+
+    requirements:
+      - _ulid: 01KF1V20ZWB6DG3DAYKHMHM0XN
+        slugs:
+          - shadow-ci
+        title: CI/CD Integration
+        type: constraint
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          CI environments need shadow worktree before running kspec commands.
+
+          CI setup:
+            git worktree add .kspec kspec-meta
+
+          This must be documented in generated README or kspec docs.
+          The worktree is not committed to git, so CI must recreate it.
+        implements:
+          - '@shadow-init'
+          - '@cmd-init'
+
+  - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
+    slugs:
+      - shadow-cli
+    title: Shadow CLI Commands
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: medium
+    tags:
+      - cli
+    description: |
+      CLI commands for shadow branch management.
+      Minimal surface: status, log, repair.
+    implements:
+      - '@cli'
+
+    requirements:
+      - _ulid: 01KF1V21EKDF1VB0BMTHRAH59Z
+        slugs:
+          - shadow-status-cmd
+        title: Shadow Status Command
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec shadow status
+
+          Shows shadow branch health and statistics:
+
+          $ kspec shadow status
+          Shadow Branch: kspec-meta
+          Worktree: .kspec/
+          Status: healthy
+
+          Commits: 147 total
+          Last commit: 2 minutes ago
+            "Note on @impl-login"
+
+          Checks performed:
+          - Worktree exists and is valid
+          - Shadow branch exists
+          - No uncommitted changes (should be none with auto-commit)
+        implements:
+          - '@shadow-cli'
+
+      - _ulid: 01KF1V21P816NQFKF0C8426M0D
+        slugs:
+          - shadow-log-cmd
+        title: Shadow Log Command
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec shadow log [-n <limit>] [--oneline]
+
+          Shows shadow branch commit history:
+
+          $ kspec shadow log
+          abc123 2m ago   Note on @impl-login
+          def456 5m ago   Complete @task-validation
+          ghi789 1h ago   Start @impl-login
+          ...
+
+          Options:
+          - -n, --limit <n>: Number of commits to show
+          - --oneline: Compact format
+          - --json: Structured output
+        implements:
+          - '@shadow-cli'
+
+  - _ulid: 01KF1VBPN5J53QJJM3FTXK2J9R
+    slugs:
+      - shadow-recovery
+    title: Shadow Recovery
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags:
+      - infrastructure
+      - reliability
+    description: |
+      Recovery mechanisms for shadow branch issues.
+      Critical for handling corrupted or missing .kspec/ directory.
+
+    requirements:
+      - _ulid: 01KF1VBR1XMKDJ0K5HYW7RWGQE
+        slugs:
+          - shadow-repair-cmd
+        title: Shadow Repair Command
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec shadow repair
+
+          Re-establishes worktree if .kspec/ is deleted or corrupted:
+          - Recreates worktree link from .git/worktrees/.kspec
+          - Detects and reports common corruption scenarios
+          - Handles: stale locks, orphaned worktrees, detached HEAD
+
+          Acceptance criteria:
+          - Recovers from deleted .kspec/ directory
+          - Reports clear error if shadow branch itself is missing
+          - Idempotent (safe to run multiple times)
+        implements:
+          - '@shadow-recovery'
+
+      - _ulid: 01KF1VBRG99HYJ00CVABVKV0QM
+        slugs:
+          - shadow-validation
+        title: Shadow Branch Validation
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Shadow validation as part of kspec validate.
+
+          Checks:
+          - Worktree exists and is properly linked
+          - Shadow branch exists and is reachable
+          - No uncommitted changes (should be zero with auto-commit)
+          - All spec files valid YAML with correct schema
+        implements:
+          - '@shadow-recovery'
