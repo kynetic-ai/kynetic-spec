@@ -9,6 +9,7 @@ import {
   registerSessionCommands,
   registerInitCommand,
   registerItemCommands,
+  registerValidateCommand,
 } from './commands/index.js';
 
 const program = new Command();
@@ -33,6 +34,7 @@ registerSetupCommand(program);
 registerSessionCommands(program);
 registerInitCommand(program);
 registerItemCommands(program);
+registerValidateCommand(program);
 
 // Parse and execute
 program.parse();

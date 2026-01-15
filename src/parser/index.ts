@@ -3,3 +3,4 @@
 export * from './yaml.js';
 export * from './refs.js';
 export * from './items.js';
+export * from './validate.js';

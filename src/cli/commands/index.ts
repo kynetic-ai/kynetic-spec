@@ -6,3 +6,4 @@ export { registerSetupCommand } from './setup.js';
 export { registerSessionCommands } from './session.js';
 export { registerInitCommand } from './init.js';
 export { registerItemCommands } from './item.js';
+export { registerValidateCommand } from './validate.js';

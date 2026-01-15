@@ -379,7 +379,7 @@ tasks:
       - Format errors with item context
     spec_ref: '@validation-modes'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
     depends_on:
       - '@task-zod-schemas'
@@ -392,8 +392,32 @@ tasks:
       - validation
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.952Z'
-    notes: []
+    started_at: '2026-01-15T03:44:44.224Z'
+    notes:
+      - _ulid: 01KEZW902C94QSBJHMVQAJER00
+        created_at: '2026-01-15T03:48:04.813Z'
+        author: '@claude'
+        content: |-
+          Implemented schema validation module (src/parser/validate.ts):
+          - Schema validation: validates manifests, task files, and spec files against Zod schemas
+          - Reference validation: checks all @references resolve (reuses validateRefs from refs.ts)
+          - Orphan detection: finds items not referenced (excludes tasks/modules as entry points)
+
+          CLI commands:
+          - kspec validate - run all checks
+          - kspec validate --schema - schema only
+          - kspec validate --refs - refs only
+          - kspec validate --orphans - orphans only
+          - kspec validate --strict - treat orphans as errors
+          - kspec lint - alias for validate
+
+          Validation found real issues in kspec's own spec:
+          - 4 broken refs to @milestone-self-hosting (doesn't exist)
+          - 72 orphaned spec items (requirements nested under features - may be false positives)
+        supersedes: null
     todos: []
+    completed_at: '2026-01-15T03:48:11.313Z'
+    closed_reason: Implemented kspec validate with schema, reference, and orphan checks
   - _ulid: 01JHNKAB11TASK310000000000
     slugs:
       - task-ref-validation
