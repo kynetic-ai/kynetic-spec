@@ -555,7 +555,7 @@ features:
         status:
           maturity: draft
           implementation: not_started
-        description: |
+        description: |-
           kspec validate [options]
 
           Options:
@@ -563,9 +563,16 @@ features:
           - --refs: Check all @references resolve
           - --orphans: Find unreferenced items
           - --task-refs: Check task spec_refs resolve
+          - --fix: Auto-fix issues where possible (invalid ULIDs, missing timestamps)
           - --strict: Treat warnings as errors
 
           Default: All checks. Returns errors and warnings.
+
+          Auto-fix behavior (--fix):
+          - Invalid ULIDs: Regenerates with valid ULID
+          - Missing timestamps: Adds created field if neither created nor created_at exists
+          - Excludes test fixtures from auto-fixing
+          - Re-validates after fixes to confirm resolution
         implements:
           - '@validate-commands'
           - '@validation-modes'
@@ -952,11 +959,24 @@ requirements:
 
 
       Output: JSON formatted for Claude Code hook consumption with clear kspec-branded message
-      instructing agent to document progress and commit changes.
+      instructing agent to document progress and commit changes. Uses {"decision": "block",
+      "reason": "..."} format.
 
 
       Installation: kspec setup automatically installs this hook to project-level
-      .claude/settings.json for Claude Code users.
+      .claude/settings.json for Claude Code users. Hook format requires matcher field (even if empty
+      string).
+
+
+      Acceptance Criteria:
+
+      - AC1: Instructions are numbered sequentially based on which issues apply (dynamic numbering,
+      not hardcoded)
+
+      - AC2: Only relevant instructions shown (e.g., if no in_progress tasks, those steps are
+      omitted)
+
+      - AC3: Exit silently with no output when session can end cleanly
     depends_on: []
     implements: []
     relates_to: []
