@@ -459,7 +459,7 @@
   title: Add context/summary to task list output
   type: task
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -469,6 +469,7 @@
     - ux
   vcs_refs: []
   created_at: '2026-01-15T01:18:25.221Z'
+  started_at: '2026-01-15T15:54:54.224Z'
   notes:
     - _ulid: 01KEZKQBGPR60EW929WQ82VE3P
       created_at: '2026-01-15T01:18:38.103Z'
@@ -524,6 +525,21 @@
         Example:
           01KEZKE5 (task-inbox-system) [pending] P2 Design inbox/capture system
             Low-friction capture for ideas before they become tasks
+      supersedes: null
+    - _ulid: 01KF15W3WXNJFBV5DT4XP3092C
+      created_at: '2026-01-15T15:55:02.942Z'
+      author: '@claude'
+      content: >-
+        Starting implementation. Will add summary display to task list using first line of
+        description as fallback. No schema change needed initially.
+      supersedes: null
+    - _ulid: 01KF15YP9GD4J4WQVV37NB31T1
+      created_at: '2026-01-15T15:56:27.313Z'
+      author: '@claude'
+      content: >-
+        Implemented context display in formatTaskList: shows first line of description (truncated to
+        70 chars) indented below each task. Works in tasks ready, tasks list, tasks blocked, etc. No
+        schema change needed - uses existing description field.
       supersedes: null
   todos: []
 - _ulid: 01KEZMRBQYY2WMA44A7QAJGGN6
@@ -701,6 +717,7 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Fixed invalid ULIDs and orphan detection false positives
   depends_on: []
   context: []
   priority: 2
@@ -710,6 +727,7 @@
   vcs_refs: []
   created_at: '2026-01-15T03:51:26.988Z'
   started_at: '2026-01-15T15:49:34.871Z'
+  completed_at: '2026-01-15T15:53:21.366Z'
   notes:
     - _ulid: 01KEZWFEMKKJFE04R5D28581KT
       created_at: '2026-01-15T03:51:36.341Z'
@@ -743,8 +761,6 @@
         considered implicitly referenced by their parent, eliminating false positives.
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T15:53:21.366Z'
-  closed_reason: Fixed invalid ULIDs and orphan detection false positives
 - _ulid: 01KEZYBC1M3KMG9KB47CKQHY07
   slugs:
     - task-bulk-import

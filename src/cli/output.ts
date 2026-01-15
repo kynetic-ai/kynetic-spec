@@ -141,6 +141,16 @@ export function formatTask(task: Task, verbose = false, index?: ReferenceIndex):
 }
 
 /**
+ * Get first line of text, truncated to max length
+ */
+function getFirstLine(text: string | undefined, maxLength: number = 70): string | undefined {
+  if (!text) return undefined;
+  const firstLine = text.split('\n')[0].trim();
+  if (firstLine.length <= maxLength) return firstLine;
+  return firstLine.slice(0, maxLength - 3) + '...';
+}
+
+/**
  * Format a list of tasks
  */
 export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex): void {
@@ -151,6 +161,12 @@ export function formatTaskList(tasks: Task[], verbose = false, index?: Reference
 
   for (const task of tasks) {
     console.log(formatTask(task, verbose, index));
+
+    // Show context line: first line of description (if present)
+    const context = getFirstLine(task.description);
+    if (context) {
+      console.log(chalk.gray(`    ${context}`));
+    }
   }
 
   console.log(chalk.gray(`\n${tasks.length} task(s)`));
