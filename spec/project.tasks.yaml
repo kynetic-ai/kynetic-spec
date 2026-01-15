@@ -459,7 +459,7 @@
   title: Add context/summary to task list output
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -542,6 +542,8 @@
         schema change needed - uses existing description field.
       supersedes: null
   todos: []
+  completed_at: '2026-01-15T15:56:42.202Z'
+  closed_reason: Added context line showing first line of description in task list output
 - _ulid: 01KEZMRBQYY2WMA44A7QAJGGN6
   slugs:
     - task-setup-cmd
