@@ -32,6 +32,26 @@ import type { Note, Todo } from '../../schema/index.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+export interface CheckpointResult {
+  /** Whether session can end cleanly */
+  ok: boolean;
+
+  /** Human-readable message for Claude Code */
+  message: string;
+
+  /** Issues that need attention before stopping */
+  issues: CheckpointIssue[];
+
+  /** Instructions for the agent */
+  instructions: string[];
+}
+
+export interface CheckpointIssue {
+  type: 'uncommitted_changes' | 'in_progress_task' | 'incomplete_todo';
+  description: string;
+  details?: Record<string, unknown>;
+}
+
 export interface SessionContext {
   /** When this context was generated */
   generated_at: string;
@@ -424,7 +444,159 @@ export async function gatherSessionContext(
   };
 }
 
+// ─── Checkpoint ──────────────────────────────────────────────────────────────
+
+export interface CheckpointOptions {
+  force?: boolean;
+}
+
+/**
+ * Perform session checkpoint - check for uncommitted work before ending session.
+ *
+ * This is designed for use as a Claude Code stop hook. It checks for:
+ * - Uncommitted git changes (staged, unstaged, untracked)
+ * - Tasks in in_progress status
+ * - Incomplete todos on active tasks
+ *
+ * Returns a structured result indicating whether the session can end cleanly.
+ */
+export async function performCheckpoint(
+  ctx: KspecContext,
+  options: CheckpointOptions
+): Promise<CheckpointResult> {
+  const issues: CheckpointIssue[] = [];
+  const instructions: string[] = [];
+
+  // Load tasks
+  const allTasks = await loadAllTasks(ctx);
+
+  // Check for in-progress tasks
+  const inProgressTasks = allTasks.filter((t) => t.status === 'in_progress');
+  for (const task of inProgressTasks) {
+    const ref = task.slugs[0] ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
+    issues.push({
+      type: 'in_progress_task',
+      description: `Task ${ref} is still in progress: ${task.title}`,
+      details: {
+        ref,
+        title: task.title,
+        started_at: task.started_at,
+      },
+    });
+
+    // Check for incomplete todos on this task
+    const incompleteTodos = task.todos.filter((t) => !t.done);
+    for (const todo of incompleteTodos) {
+      issues.push({
+        type: 'incomplete_todo',
+        description: `Incomplete todo on ${ref}: ${todo.text}`,
+        details: {
+          task_ref: ref,
+          todo_id: todo.id,
+          text: todo.text,
+        },
+      });
+    }
+  }
+
+  // Check for uncommitted git changes
+  if (isGitRepo(ctx.rootDir)) {
+    const workingTree = getWorkingTreeStatus(ctx.rootDir);
+    if (!workingTree.clean) {
+      const changeCount =
+        workingTree.staged.length +
+        workingTree.unstaged.length +
+        workingTree.untracked.length;
+
+      issues.push({
+        type: 'uncommitted_changes',
+        description: `${changeCount} uncommitted changes in working tree`,
+        details: {
+          staged: workingTree.staged.length,
+          unstaged: workingTree.unstaged.length,
+          untracked: workingTree.untracked.length,
+        },
+      });
+    }
+  }
+
+  // Build instructions based on issues
+  if (issues.length > 0 && !options.force) {
+    instructions.push('Before ending this session, please:');
+
+    const hasInProgress = issues.some((i) => i.type === 'in_progress_task');
+    const hasUncommitted = issues.some((i) => i.type === 'uncommitted_changes');
+    const hasIncompleteTodos = issues.some((i) => i.type === 'incomplete_todo');
+
+    if (hasInProgress) {
+      instructions.push(
+        '1. Add notes to in-progress tasks documenting current state'
+      );
+      instructions.push(
+        '2. Either complete the tasks or leave them in_progress with clear notes for next session'
+      );
+    }
+
+    if (hasIncompleteTodos) {
+      instructions.push(
+        '3. Complete or acknowledge incomplete todos on active tasks'
+      );
+    }
+
+    if (hasUncommitted) {
+      instructions.push('4. Commit your changes with a descriptive message');
+    }
+
+    instructions.push('');
+    instructions.push(
+      'Use: kspec task note @task "Progress notes..." to document state'
+    );
+    instructions.push(
+      'Use: kspec task complete @task --reason "Summary" if task is done'
+    );
+  }
+
+  const ok = issues.length === 0 || options.force === true;
+  const message =
+    ok
+      ? '[kspec] Session checkpoint passed - ready to end session'
+      : `[kspec] Session checkpoint: ${issues.length} issue(s) need attention`;
+
+  return {
+    ok,
+    message,
+    issues,
+    instructions,
+  };
+}
+
 // ─── Output Formatting ───────────────────────────────────────────────────────
+
+function formatCheckpointResult(result: CheckpointResult): void {
+  if (result.ok) {
+    console.log(chalk.green(result.message));
+  } else {
+    console.log(chalk.yellow(result.message));
+    console.log('');
+
+    for (const issue of result.issues) {
+      const icon =
+        issue.type === 'uncommitted_changes'
+          ? chalk.yellow('⚠')
+          : issue.type === 'in_progress_task'
+            ? chalk.blue('●')
+            : chalk.gray('○');
+      console.log(`  ${icon} ${issue.description}`);
+    }
+
+    if (result.instructions.length > 0) {
+      console.log('');
+      for (const instruction of result.instructions) {
+        console.log(chalk.gray(instruction));
+      }
+    }
+  }
+}
 
 function formatSessionContext(ctx: SessionContext, options: SessionOptions): void {
   const isBrief = !options.full;
@@ -627,6 +799,24 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
   }
 }
 
+async function sessionCheckpointAction(options: CheckpointOptions): Promise<void> {
+  try {
+    const ctx = await initContext();
+    const result = await performCheckpoint(ctx, options);
+
+    output(result, () => formatCheckpointResult(result));
+
+    // Exit with non-zero code if issues found and not forced
+    // This allows Claude Code hooks to detect the checkpoint failed
+    if (!result.ok) {
+      process.exit(1);
+    }
+  } catch (err) {
+    error('Failed to run checkpoint', err);
+    process.exit(1);
+  }
+}
+
 /**
  * Register the 'session' command group and aliases
  */
@@ -645,6 +835,12 @@ export function registerSessionCommands(program: Command): void {
     .option('--no-git', 'Skip git commit information')
     .option('-n, --limit <n>', 'Limit items per section', '5')
     .action(sessionStartAction);
+
+  session
+    .command('checkpoint')
+    .description('Pre-stop hook: check for uncommitted work before ending session')
+    .option('--force', 'Allow session end regardless of issues')
+    .action(sessionCheckpointAction);
 
   // Top-level alias: kspec context
   program
