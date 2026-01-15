@@ -33,8 +33,9 @@
   title: Design spec-implementation alignment system
   type: spike
   spec_ref: null
-  status: pending
+  status: completed
   blocked_by: []
+  closed_reason: 'Implemented alignment system: AlignmentIndex, auto-sync, validation, item status command'
   depends_on: []
   context: []
   priority: 2
@@ -43,6 +44,8 @@
     - process
   vcs_refs: []
   created_at: '2026-01-15T00:16:19.442Z'
+  started_at: '2026-01-15T04:44:06.651Z'
+  completed_at: '2026-01-15T04:58:00.774Z'
   notes:
     - _ulid: 01KEZG5N9BTACBWVPNVYDGQ7BC
       created_at: '2026-01-15T00:16:32.556Z'
@@ -111,6 +114,27 @@
         2. Create implementation tasks from the spec
 
         3. Update AGENTS.md with alignment guidance
+      supersedes: null
+    - _ulid: 01KF008TX7EZ1J7AD310T79JPH
+      created_at: '2026-01-15T04:57:53.832Z'
+      author: '@claude'
+      content: >-
+        Implemented spec-implementation alignment system:
+
+
+        1. AlignmentIndex (src/parser/alignment.ts) - bidirectional spec↔task mapping
+
+        2. Auto-sync spec implementation status on task start/complete (--no-sync to skip)
+
+        3. Proactive guidance on task note - reminds to update spec if diverging
+
+        4. kspec validate --alignment - detects orphaned specs and status mismatches
+
+        5. kspec item status @ref - shows implementation progress with linked tasks
+
+
+        Design decisions: auto-sync ON by default, warnings-only (not errors), proactive guidance
+        over pattern detection.
       supersedes: null
   todos: []
 - _ulid: 01KEZH1HE2TKG8Z79XW7G0Y016
@@ -840,5 +864,54 @@
         kynetic.tasks.archive.yaml) to keep the active tasks file clean and focused. Decisions
         needed: naming convention, manual vs automatic archiving, whether to support unarchiving,
         how references to archived tasks should work.
+      supersedes: null
+  todos: []
+- _ulid: 01KF00CWN1R0XTG1R0A42BSXSE
+  slugs:
+    - task-prompt-refactor
+  title: Refactor prompts and guidance text into centralized location
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - dx
+    - refactor
+  vcs_refs: []
+  created_at: '2026-01-15T05:00:06.688Z'
+  notes:
+    - _ulid: 01KF00D5XZPM9VQ145YN34XN3N
+      created_at: '2026-01-15T05:00:16.192Z'
+      author: '@claude'
+      content: >-
+        Scope: Extract all user-facing prompts and guidance text into a centralized location for
+        easier iteration.
+
+
+        Locations to audit:
+
+        - Alignment guidance in task note command
+
+        - Help topics in src/cli/commands/help.ts
+
+        - Error messages across CLI commands
+
+        - Session context section headers/labels
+
+        - Any agent instructions or guidance text
+
+
+        Goals:
+
+        - Single source of truth for copy
+
+        - Easy to review/update wording
+
+        - Potentially support i18n later
+
+        - Consistent tone across commands
       supersedes: null
   todos: []

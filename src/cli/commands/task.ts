@@ -8,6 +8,7 @@ import {
   createTask,
   createNote,
   createTodo,
+  syncSpecImplementationStatus,
   ReferenceIndex,
   type LoadedTask,
 } from '../../parser/index.js';
@@ -17,6 +18,7 @@ import {
   success,
   error,
   warn,
+  info,
 } from '../output.js';
 import type { Task, TaskInput } from '../../schema/index.js';
 
@@ -132,7 +134,8 @@ export function registerTaskCommands(program: Command): void {
   task
     .command('start <ref>')
     .description('Start working on a task (pending -> in_progress)')
-    .action(async (ref: string) => {
+    .option('--no-sync', 'Skip syncing spec implementation status')
+    .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
@@ -160,6 +163,23 @@ export function registerTaskCommands(program: Command): void {
 
         await saveTask(ctx, updatedTask);
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
+
+        // Sync spec implementation status (unless --no-sync)
+        if (options.sync !== false && foundTask.spec_ref) {
+          const updatedTasks = tasks.map(t =>
+            t._ulid === updatedTask._ulid ? { ...t, ...updatedTask } : t
+          );
+          const syncResult = await syncSpecImplementationStatus(
+            ctx,
+            updatedTask as LoadedTask,
+            updatedTasks as LoadedTask[],
+            items,
+            index
+          );
+          if (syncResult) {
+            info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
+          }
+        }
       } catch (err) {
         error('Failed to start task', err);
         process.exit(1);
@@ -171,6 +191,7 @@ export function registerTaskCommands(program: Command): void {
     .command('complete <ref>')
     .description('Complete a task (in_progress -> completed)')
     .option('--reason <reason>', 'Completion reason/notes')
+    .option('--no-sync', 'Skip syncing spec implementation status')
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -203,6 +224,24 @@ export function registerTaskCommands(program: Command): void {
 
         await saveTask(ctx, updatedTask);
         success(`Completed task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
+
+        // Sync spec implementation status (unless --no-sync)
+        if (options.sync !== false && foundTask.spec_ref) {
+          // Update task list to reflect the change we just made
+          const updatedTasks = tasks.map(t =>
+            t._ulid === updatedTask._ulid ? { ...t, ...updatedTask } : t
+          );
+          const syncResult = await syncSpecImplementationStatus(
+            ctx,
+            updatedTask as LoadedTask,
+            updatedTasks as LoadedTask[],
+            items,
+            index
+          );
+          if (syncResult) {
+            info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
+          }
+        }
       } catch (err) {
         error('Failed to complete task', err);
         process.exit(1);
@@ -327,6 +366,16 @@ export function registerTaskCommands(program: Command): void {
 
         await saveTask(ctx, updatedTask);
         success(`Added note to task: ${index.shortUlid(updatedTask._ulid)}`, { note });
+
+        // Proactive alignment guidance for tasks with spec_ref
+        if (foundTask.spec_ref) {
+          console.log('');
+          console.log('\x1b[33m--- Alignment Check ---\x1b[0m');
+          console.log('Did your implementation add anything beyond the original spec?');
+          console.log('If so, consider updating the spec:');
+          console.log(`  kspec item set ${foundTask.spec_ref} --description "Updated description"`);
+          console.log('Or add acceptance criteria for new features.');
+        }
       } catch (err) {
         error('Failed to add note', err);
         process.exit(1);

@@ -8,7 +8,9 @@ import {
   updateSpecItem,
   addChildItem,
   loadAllItems,
+  loadAllTasks,
   ReferenceIndex,
+  AlignmentIndex,
   type LoadedSpecItem,
 } from '../../parser/index.js';
 import type { ItemFilter } from '../../parser/items.js';
@@ -412,6 +414,84 @@ export function registerItemCommands(program: Command): void {
         }
       } catch (err) {
         error('Failed to delete item', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item status - show implementation status with linked tasks
+  item
+    .command('status <ref>')
+    .description('Show implementation status and linked tasks for a spec item')
+    .action(async (ref) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const refIndex = new ReferenceIndex(tasks, items);
+
+        const result = refIndex.resolve(ref);
+        if (!result.ok) {
+          error(`Item not found: ${ref}`);
+          process.exit(1);
+        }
+
+        const foundItem = result.item as LoadedSpecItem;
+
+        // Check if it's a task
+        if ('status' in foundItem && typeof foundItem.status === 'string') {
+          error(`"${ref}" is a task, not a spec item. Use 'kspec task get' instead.`);
+          process.exit(1);
+        }
+
+        // Build alignment index
+        const alignmentIndex = new AlignmentIndex(tasks, items);
+        alignmentIndex.buildLinks(refIndex);
+
+        const summary = alignmentIndex.getImplementationSummary(foundItem._ulid);
+
+        if (!summary) {
+          error('Could not get implementation summary');
+          process.exit(1);
+        }
+
+        output(summary, () => {
+          console.log(chalk.bold(foundItem.title));
+          console.log(chalk.gray('─'.repeat(40)));
+
+          // Status
+          const currentColor = summary.currentStatus === 'implemented' ? chalk.green
+            : summary.currentStatus === 'in_progress' ? chalk.yellow
+              : chalk.gray;
+          const expectedColor = summary.expectedStatus === 'implemented' ? chalk.green
+            : summary.expectedStatus === 'in_progress' ? chalk.yellow
+              : chalk.gray;
+
+          console.log(`Current status:  ${currentColor(summary.currentStatus)}`);
+          console.log(`Expected status: ${expectedColor(summary.expectedStatus)}`);
+
+          if (!summary.isAligned) {
+            console.log(chalk.yellow('\n⚠ Status mismatch - run task complete to sync'));
+          } else {
+            console.log(chalk.green('\n✓ Aligned'));
+          }
+
+          // Linked tasks
+          console.log(chalk.bold('\nLinked Tasks:'));
+          if (summary.linkedTasks.length === 0) {
+            console.log(chalk.gray('  No tasks reference this spec item'));
+          } else {
+            for (const task of summary.linkedTasks) {
+              const statusColor = task.taskStatus === 'completed' ? chalk.green
+                : task.taskStatus === 'in_progress' ? chalk.blue
+                  : chalk.gray;
+              const shortId = task.taskUlid.slice(0, 8);
+              const notes = task.hasNotes ? chalk.gray(' (has notes)') : '';
+              console.log(`  ${statusColor(`[${task.taskStatus}]`)} ${shortId} ${task.taskTitle}${notes}`);
+            }
+          }
+        });
+      } catch (err) {
+        error('Failed to get item status', err);
         process.exit(1);
       }
     });

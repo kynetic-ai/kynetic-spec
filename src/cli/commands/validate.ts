@@ -1,7 +1,59 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { initContext, validate, type ValidationResult } from '../../parser/index.js';
+import {
+  initContext,
+  validate,
+  loadAllTasks,
+  loadAllItems,
+  AlignmentIndex,
+  ReferenceIndex,
+  type ValidationResult,
+  type AlignmentWarning,
+} from '../../parser/index.js';
 import { output, success, error } from '../output.js';
+
+/**
+ * Format alignment warnings for display
+ */
+function formatAlignmentWarnings(warnings: AlignmentWarning[], verbose: boolean): void {
+  if (warnings.length === 0) {
+    console.log(chalk.green('Alignment: OK'));
+    return;
+  }
+
+  console.log(chalk.yellow(`\nAlignment warnings: ${warnings.length}`));
+
+  // Group by type
+  const orphaned = warnings.filter(w => w.type === 'orphaned_spec');
+  const mismatches = warnings.filter(w => w.type === 'status_mismatch');
+  const stale = warnings.filter(w => w.type === 'stale_implementation');
+
+  if (orphaned.length > 0) {
+    console.log(chalk.yellow(`  Orphaned specs (no tasks): ${orphaned.length}`));
+    const shown = verbose ? orphaned : orphaned.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.gray(`    ○ ${w.specTitle}`));
+    }
+    if (!verbose && orphaned.length > 3) {
+      console.log(chalk.gray(`    ... and ${orphaned.length - 3} more`));
+    }
+  }
+
+  if (mismatches.length > 0) {
+    console.log(chalk.yellow(`  Status mismatches: ${mismatches.length}`));
+    for (const w of mismatches) {
+      console.log(chalk.yellow(`    ! ${w.specTitle}`));
+      console.log(chalk.gray(`      ${w.message}`));
+    }
+  }
+
+  if (stale.length > 0) {
+    console.log(chalk.yellow(`  Stale implementation status: ${stale.length}`));
+    for (const w of stale) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+    }
+  }
+}
 
 /**
  * Format validation result for display
@@ -79,6 +131,7 @@ export function registerValidateCommand(program: Command): void {
     .option('--schema', 'Check schema conformance only')
     .option('--refs', 'Check reference resolution only')
     .option('--orphans', 'Find orphaned items only')
+    .option('--alignment', 'Check spec-task alignment')
     .option('-v, --verbose', 'Show detailed output')
     .option('--strict', 'Treat orphans as errors')
     .action(async (options) => {
@@ -92,7 +145,7 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Determine which checks to run
-        const runAll = !options.schema && !options.refs && !options.orphans;
+        const runAll = !options.schema && !options.refs && !options.orphans && !options.alignment;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
@@ -107,6 +160,22 @@ export function registerValidateCommand(program: Command): void {
         }
 
         output(result, () => formatValidationResult(result, options.verbose));
+
+        // Run alignment check if requested or running all checks
+        if (options.alignment || runAll) {
+          const tasks = await loadAllTasks(ctx);
+          const items = await loadAllItems(ctx);
+          const refIndex = new ReferenceIndex(tasks, items);
+          const alignmentIndex = new AlignmentIndex(tasks, items);
+          alignmentIndex.buildLinks(refIndex);
+
+          const alignmentWarnings = alignmentIndex.findAlignmentWarnings();
+          formatAlignmentWarnings(alignmentWarnings, options.verbose);
+
+          // Show alignment stats
+          const stats = alignmentIndex.getStats();
+          console.log(chalk.gray(`\nAlignment stats: ${stats.specsWithTasks}/${stats.totalSpecs} specs have tasks, ${stats.alignedSpecs} aligned`));
+        }
 
         if (!result.valid) {
           process.exit(1);
