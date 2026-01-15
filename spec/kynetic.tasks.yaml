@@ -1307,7 +1307,7 @@ tasks:
       - Include guidance on when to check tasks, add notes, etc.
       - Evolve based on actual usage patterns
     derivation: manual
-    status: in_progress
+    status: completed
     blocked_by: []
     depends_on: []
     context: []
@@ -1396,6 +1396,10 @@ tasks:
           principles. Skill will auto-invoke when Claude detects kspec-related requests.
         supersedes: null
     todos: []
+    completed_at: '2026-01-15T15:48:15.322Z'
+    closed_reason: >-
+      Implemented kspec skill with frontmatter, core workflows, command reference, and key
+      principles
   - _ulid: 01KEZ9DSD9W7JY4HP92JPY6WAN
     slugs:
       - task-integration-testing
