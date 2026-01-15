@@ -86,16 +86,22 @@ Always add notes when completing significant work. This creates an audit trail.
 
 ## Working on This Project
 
-### Check What's Available
+### Starting a Session
+
+Always begin by getting session context:
 
 ```bash
-npx tsx src/cli/index.ts tasks ready
+npx tsx src/cli/index.ts session start
 ```
 
-This shows tasks that are:
-- Status: `pending`
-- All `depends_on` tasks are `completed`
-- Not blocked
+This shows:
+- **Active work**: Tasks currently in progress
+- **Recently completed**: What was just finished
+- **Ready tasks**: What can be picked up next
+- **Recent commits**: Git activity
+- **Working tree**: Uncommitted changes
+
+Options: `--full` for more detail, `--since 1d` to filter by time, `--json` for machine output.
 
 ### Start Working on a Task
 
@@ -146,11 +152,12 @@ Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisio
 
 The goal is for kspec to be fully self-describing:
 
-1. `spec/` defines what kspec should do
-2. `kspec tasks ready` shows what to implement next
-3. Implement it, add notes, mark complete
-4. New tasks unblock
-5. Repeat until spec is fully implemented
+1. `kspec session start` to get context
+2. Pick a task from ready list
+3. `kspec task start @task` to begin
+4. Implement it, add notes as you go
+5. `kspec task complete @task` when done
+6. New tasks unblock, repeat
 
 When working on this project, you ARE using kspec to build kspec. Track your work in the task system.
 

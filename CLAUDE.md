@@ -7,8 +7,8 @@ Read the AGENTS.md file for full project context. Key points:
 ## Quick Start
 
 ```bash
-# See what tasks are ready to work on
-npx tsx src/cli/index.ts tasks ready
+# First: Get session context (active work, ready tasks, recent activity)
+npx tsx src/cli/index.ts session start
 
 # Get details on a specific task
 npx tsx src/cli/index.ts task get @task-slug
