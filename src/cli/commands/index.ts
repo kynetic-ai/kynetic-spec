@@ -3,3 +3,4 @@
 export { registerTasksCommands } from './tasks.js';
 export { registerTaskCommands } from './task.js';
 export { registerSetupCommand } from './setup.js';
+export { registerSessionCommands } from './session.js';

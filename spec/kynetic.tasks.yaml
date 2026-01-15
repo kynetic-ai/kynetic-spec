@@ -158,7 +158,7 @@ tasks:
     notes:
       - _ulid: 01KEZD4BHZFA5E4FQ0182JKXRA
         created_at: '2026-01-14T23:23:24.096Z'
-        author: "@claude"
+        author: '@claude'
         content: >-
           Starting work on reference resolution. User noted that 6-char ULID prefixes aren't
           granular enough since ULIDs created at similar times share timestamp prefixes. Will
@@ -963,8 +963,11 @@ tasks:
       3. Session end → notes persist
       4. Next session start → context available
     derivation: manual
-    status: pending
+    status: completed
     blocked_by: []
+    closed_reason: >-
+      Implemented session start command with all planned features: time utilities, git integration,
+      formatted output with brief/full modes, JSON support, and aliases
     depends_on:
       - '@task-task-loading'
     context:
@@ -977,7 +980,42 @@ tasks:
       - cli
     vcs_refs: []
     created_at: '2026-01-14T22:35:00Z'
-    notes: []
+    started_at: '2026-01-15T02:06:46.355Z'
+    completed_at: '2026-01-15T02:09:53.691Z'
+    notes:
+      - _ulid: 01KEZPN0SZAFZV6915NSW9Q40C
+        created_at: '2026-01-15T02:09:47.328Z'
+        author: '@claude'
+        content: >-
+          Implemented session start command with:
+
+
+          - New utilities: src/utils/time.ts (parseTimeSpec, formatRelativeTime), src/utils/git.ts
+          (getRecentCommits, isGitRepo, getCurrentBranch)
+
+          - Main command: src/cli/commands/session.ts with full SessionContext type, data gathering,
+          and formatted output
+
+          - Commands: `kspec session start`, `kspec session resume`, `kspec context` (alias)
+
+          - Options: --brief (default), --full, --since <time>, --no-git, -n/--limit, --json
+
+          - Output shows: active tasks, recent notes, ready tasks, blocked tasks, git commits, stats
+          summary
+
+          - All tests pass, TypeScript compiles clean
+        supersedes: null
+      - _ulid: 01KEZQV3G3R8B5JSEPH4TYZMKR
+        created_at: '2026-01-15T02:30:35.268Z'
+        author: '@claude'
+        content: |-
+          Added 'Recently Completed' section to session context output:
+
+          - Shows tasks completed recently (filtered by --since if provided, otherwise last N)
+          - Displays completed_at timestamp and closed_reason if present
+          - Appears after 'Active Work' section to show what was just wrapped up
+          - Helps with session handoffs and context continuity
+        supersedes: null
     todos: []
   - _ulid: 01KEZ9VV3KTTNVK82ZWPVD3XBD
     slugs:
@@ -1037,7 +1075,7 @@ tasks:
           more comprehensive and could be shared with other kspec users.
       - _ulid: 01KEZMS39EM9F7BR8KTG2N5SR1
         created_at: '2026-01-15T01:37:03.791Z'
-        author: "@claude"
+        author: '@claude'
         content: >-
           Related to @task-setup-cmd: The skill can include manual setup instructions as fallback if
           kspec setup auto-detection fails. Skill should mention:
