@@ -1423,7 +1423,7 @@ tasks:
       - Each test gets fresh copy of fixtures
       - Assert on actual file contents and CLI output
     derivation: manual
-    status: in_progress
+    status: completed
     blocked_by: []
     depends_on: []
     context: []
@@ -1452,3 +1452,7 @@ tasks:
           lifecycle, task add, items, derive, and session commands. All 82 tests pass.
         supersedes: null
     todos: []
+    completed_at: '2026-01-15T16:02:09.859Z'
+    closed_reason: >-
+      Added integration test suite with fixtures covering validate, tasks, items, derive, and
+      session commands
