@@ -18,7 +18,6 @@ description: |
   - Main branch gitignores .kspec/
   - All kspec read/write operations target .kspec/
   - Changes auto-commit to shadow branch
-
 features:
   - _ulid: 01KF1V1Z87Z7PTG4C68QSMK4EE
     slugs:
@@ -27,7 +26,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: implemented
     priority: high
     tags:
       - infrastructure
@@ -45,7 +44,6 @@ features:
       - .kspec/ worktree always available
       - Auto-commit on state changes
       - Main branch never touched by kspec operations
-
     requirements:
       - _ulid: 01KF1V1ZJBRPWKF16HEPQG7KHX
         slugs:
@@ -54,7 +52,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Directory layout for shadow branch:
 
@@ -81,7 +79,6 @@ features:
           - modules/*.yaml - spec modules
         implements:
           - '@shadow-concept'
-
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
@@ -109,7 +106,6 @@ features:
           - Commit includes all changes from the operation
         implements:
           - '@shadow-concept'
-
       - _ulid: 01KF1V2027DTBEBN6A6DCBAT1Q
         slugs:
           - shadow-read-path
@@ -117,7 +113,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           All kspec read operations target .kspec/ directory.
 
@@ -134,7 +130,6 @@ features:
           - Source file tracking uses .kspec/ paths
         implements:
           - '@shadow-concept'
-
       - _ulid: 01KF1V209B3C1C7AB3Y63SPSPB
         slugs:
           - shadow-write-path
@@ -142,7 +137,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           All kspec write operations target .kspec/ directory.
 
@@ -151,7 +146,6 @@ features:
           - No interaction with main branch's working tree
         implements:
           - '@shadow-concept'
-
       - _ulid: 01KF1V20H5PEMHYR3AEA9FQF6T
         slugs:
           - shadow-errors
@@ -159,7 +153,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Clear error messages for common failure scenarios:
 
@@ -170,7 +164,6 @@ features:
           Errors should be actionable with clear next steps.
         implements:
           - '@shadow-concept'
-
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
@@ -211,7 +204,6 @@ features:
         then: it succeeds without error (idempotent)
     implements:
       - '@cmd-init'
-
     requirements:
       - _ulid: 01KF1V20ZWB6DG3DAYKHMHM0XN
         slugs:
@@ -232,7 +224,6 @@ features:
         implements:
           - '@shadow-init'
           - '@cmd-init'
-
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
@@ -249,7 +240,6 @@ features:
       Minimal surface: status, log, repair.
     implements:
       - '@cli'
-
     requirements:
       - _ulid: 01KF1V21EKDF1VB0BMTHRAH59Z
         slugs:
@@ -279,7 +269,6 @@ features:
           - No uncommitted changes (should be none with auto-commit)
         implements:
           - '@shadow-cli'
-
       - _ulid: 01KF1V21P816NQFKF0C8426M0D
         slugs:
           - shadow-log-cmd
@@ -305,7 +294,6 @@ features:
           - --json: Structured output
         implements:
           - '@shadow-cli'
-
   - _ulid: 01KF1VBPN5J53QJJM3FTXK2J9R
     slugs:
       - shadow-recovery
@@ -321,7 +309,6 @@ features:
     description: |
       Recovery mechanisms for shadow branch issues.
       Critical for handling corrupted or missing .kspec/ directory.
-
     requirements:
       - _ulid: 01KF1VBR1XMKDJ0K5HYW7RWGQE
         slugs:
@@ -345,7 +332,6 @@ features:
           - Idempotent (safe to run multiple times)
         implements:
           - '@shadow-recovery'
-
       - _ulid: 01KF1VBRG99HYJ00CVABVKV0QM
         slugs:
           - shadow-validation

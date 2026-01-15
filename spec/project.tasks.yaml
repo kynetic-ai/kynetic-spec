@@ -1581,7 +1581,7 @@
   type: task
   spec_ref: '@shadow-concept'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1591,8 +1591,46 @@
     - git
   vcs_refs: []
   created_at: '2026-01-15T22:14:46.459Z'
-  notes: []
+  started_at: '2026-01-15T23:05:14.190Z'
+  notes:
+    - _ulid: 01KF1YZJS6QZEZVMWCNEFYB2MN
+      created_at: '2026-01-15T23:13:50.886Z'
+      author: '@claude'
+      content: |-
+        Implemented shadow branch concept foundation:
+
+        1. Created src/parser/shadow.ts with:
+           - Shadow detection (detectShadow, getShadowStatus)
+           - Auto-commit functionality (shadowAutoCommit, commitIfShadow)
+           - Error handling (ShadowError, createShadowError, formatShadowError)
+           - Commit message generation for all kspec operations
+           - Helper utilities (isGitRepo, branchExists, isValidWorktree)
+
+        2. Updated src/parser/yaml.ts:
+           - Extended KspecContext with specDir and shadow fields
+           - initContext now detects shadow branch and sets specDir accordingly
+           - All path functions (getDefaultTaskFilePath, getInboxFilePath) use specDir
+           - loadAllTasks handles shadow mode separately
+           - Added findManifestInDir helper for shadow mode
+
+        3. Added tests/shadow.test.ts with 19 tests covering:
+           - Shadow detection
+           - Status checking
+           - Commit message generation
+           - Error creation
+           - Context initialization
+
+        All 101 tests pass. The system now:
+        - Detects .kspec/ worktree and uses it for all operations
+        - Falls back to traditional spec/ layout when shadow not present
+        - Provides clear error messages for shadow issues
+        - Has infrastructure for auto-commit (called by CLI commands)
+      supersedes: null
   todos: []
+  completed_at: '2026-01-15T23:13:57.587Z'
+  closed_reason: >-
+    Shadow branch concept implemented with detection, auto-commit infrastructure, error handling,
+    and path resolution. All tests pass.
 - _ulid: 01KF1VKDWJ0G37T95RKAD7R1TZ
   slugs:
     - task-shadow-initialization
@@ -1649,20 +1687,20 @@
   created_at: '2026-01-15T22:14:47.906Z'
   notes: []
   todos: []
-- title: Implement recursive derive with auto-dependencies
-  type: task
-  spec_ref: '@cmd-derive'
-  priority: 2
+- _ulid: 01KF1W7AKJ10X9PYFC1EXFF400
   slugs:
     - task-recursive-derive
-  tags:
-    - cli
-    - feature
-  _ulid: 01KF1W7AKJ10X9PYFC1EXFF400
+  title: Implement recursive derive with auto-dependencies
+  type: task
+  spec_ref: '@cmd-derive'
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - cli
+    - feature
   vcs_refs: []
   created_at: '2026-01-15T22:25:38.929Z'
   notes: []

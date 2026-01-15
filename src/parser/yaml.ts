@@ -25,6 +25,13 @@ import {
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
 import { ItemIndex } from './items.js';
+import {
+  type ShadowConfig,
+  detectShadow,
+  shadowAutoCommit,
+  generateCommitMessage,
+  SHADOW_WORKTREE_DIR,
+} from './shadow.js';
 
 /**
  * Spec item with runtime metadata for source tracking.
@@ -147,50 +154,207 @@ export async function findManifest(startDir: string): Promise<string | null> {
 }
 
 /**
- * Context for working with spec/task files
+ * Context for working with spec/task files.
+ *
+ * When shadow branch is enabled:
+ * - rootDir points to the project root (where .kspec/ lives)
+ * - specDir points to .kspec/ (where spec files are read/written)
+ * - All file operations use specDir for resolution
+ *
+ * Without shadow branch:
+ * - rootDir is the project root
+ * - specDir is rootDir/spec/ (traditional layout)
  */
 export interface KspecContext {
+  /** Project root directory */
   rootDir: string;
+  /** Spec files directory (.kspec/ when shadow enabled, otherwise spec/) */
+  specDir: string;
+  /** Path to manifest file */
   manifestPath: string | null;
+  /** Parsed manifest */
   manifest: Manifest | null;
+  /** Shadow branch configuration (null if not using shadow) */
+  shadow: ShadowConfig | null;
 }
 
 /**
- * Initialize context by finding manifest
+ * Initialize context by finding manifest.
+ *
+ * Detection order:
+ * 1. Check for shadow branch (.kspec/ directory)
+ * 2. Fall back to traditional spec/ directory
+ *
+ * When shadow is detected, all operations use .kspec/ as specDir.
  */
 export async function initContext(startDir?: string): Promise<KspecContext> {
   const cwd = startDir || process.cwd();
+
+  // Try to detect shadow branch first
+  const shadow = await detectShadow(cwd);
+
+  if (shadow?.enabled) {
+    // Shadow mode: use .kspec/ for everything
+    const specDir = shadow.worktreeDir;
+    const manifestPath = await findManifestInDir(specDir);
+
+    let manifest: Manifest | null = null;
+    if (manifestPath) {
+      try {
+        const rawManifest = await readYamlFile<unknown>(manifestPath);
+        manifest = ManifestSchema.parse(rawManifest);
+      } catch {
+        // Manifest exists but may be invalid
+      }
+    }
+
+    return {
+      rootDir: shadow.projectRoot,
+      specDir,
+      manifestPath,
+      manifest,
+      shadow,
+    };
+  }
+
+  // Traditional mode: find manifest in spec/ or current directory
   const manifestPath = await findManifest(cwd);
 
   let manifest: Manifest | null = null;
   let rootDir = cwd;
+  let specDir = cwd;
 
   if (manifestPath) {
-    rootDir = path.dirname(manifestPath);
+    const manifestDir = path.dirname(manifestPath);
     // Handle spec/ subdirectory
-    if (path.basename(rootDir) === 'spec') {
-      rootDir = path.dirname(rootDir);
+    if (path.basename(manifestDir) === 'spec') {
+      rootDir = path.dirname(manifestDir);
+      specDir = manifestDir;
+    } else {
+      rootDir = manifestDir;
+      specDir = manifestDir;
     }
 
     try {
       const rawManifest = await readYamlFile<unknown>(manifestPath);
       manifest = ManifestSchema.parse(rawManifest);
-    } catch (error) {
+    } catch {
       // Manifest exists but may be invalid
     }
   }
 
-  return { rootDir, manifestPath, manifest };
+  return { rootDir, specDir, manifestPath, manifest, shadow: null };
+}
+
+/**
+ * Find manifest file within a specific directory (no parent traversal).
+ * Used for shadow mode where we know exactly where to look.
+ */
+async function findManifestInDir(dir: string): Promise<string | null> {
+  const candidates = ['kynetic.yaml', 'kynetic.spec.yaml'];
+
+  for (const candidate of candidates) {
+    const filePath = path.join(dir, candidate);
+    try {
+      await fs.access(filePath);
+      return filePath;
+    } catch {
+      // File doesn't exist, try next
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Load tasks from a single file.
+ * Helper function used by loadAllTasks.
+ */
+async function loadTasksFromFile(filePath: string): Promise<LoadedTask[]> {
+  const tasks: LoadedTask[] = [];
+
+  try {
+    const raw = await readYamlFile<unknown>(filePath);
+
+    // Handle both array format and object format
+    let taskList: unknown[];
+
+    if (Array.isArray(raw)) {
+      taskList = raw;
+    } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
+      const parsed = TasksFileSchema.safeParse(raw);
+      if (parsed.success) {
+        // Add _sourceFile to each task from this file
+        for (const task of parsed.data.tasks) {
+          tasks.push({ ...task, _sourceFile: filePath });
+        }
+        return tasks;
+      }
+      taskList = (raw as { tasks: unknown[] }).tasks || [];
+    } else {
+      // Single task object
+      taskList = [raw];
+    }
+
+    for (const taskData of taskList) {
+      const result = TaskSchema.safeParse(taskData);
+      if (result.success) {
+        // Add _sourceFile metadata
+        tasks.push({ ...result.data, _sourceFile: filePath });
+      }
+    }
+  } catch {
+    // Skip invalid files
+  }
+
+  return tasks;
 }
 
 /**
  * Load all tasks from the project.
  * Each task includes _sourceFile metadata for write-back routing.
+ *
+ * When shadow is enabled, tasks are loaded from .kspec/ (ctx.specDir).
+ * Otherwise, searches in traditional locations (rootDir, spec/, tasks/).
  */
 export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
   const tasks: LoadedTask[] = [];
 
-  // Look for tasks in root directory
+  // When shadow is enabled, look only in specDir
+  if (ctx.shadow?.enabled) {
+    const taskFiles = await findTaskFiles(ctx.specDir);
+
+    // Also check for standalone files in specDir
+    const standaloneLocations = [
+      path.join(ctx.specDir, 'tasks.yaml'),
+      path.join(ctx.specDir, 'project.tasks.yaml'),
+      path.join(ctx.specDir, 'kynetic.tasks.yaml'),
+      path.join(ctx.specDir, 'backlog.tasks.yaml'),
+      path.join(ctx.specDir, 'active.tasks.yaml'),
+    ];
+
+    for (const loc of standaloneLocations) {
+      try {
+        await fs.access(loc);
+        if (!taskFiles.includes(loc)) {
+          taskFiles.push(loc);
+        }
+      } catch {
+        // File doesn't exist
+      }
+    }
+
+    // Deduplicate and load
+    const uniqueFiles = [...new Set(taskFiles)];
+    for (const filePath of uniqueFiles) {
+      const fileTasks = await loadTasksFromFile(filePath);
+      tasks.push(...fileTasks);
+    }
+
+    return tasks;
+  }
+
+  // Traditional mode: look in multiple locations
   const taskFiles = await findTaskFiles(ctx.rootDir);
 
   // Also check common locations
@@ -224,43 +388,12 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
     }
   }
 
-  // Deduplicate
+  // Deduplicate and load
   const uniqueFiles = [...new Set(taskFiles)];
 
   for (const filePath of uniqueFiles) {
-    try {
-      const raw = await readYamlFile<unknown>(filePath);
-
-      // Handle both array format and object format
-      let taskList: unknown[];
-
-      if (Array.isArray(raw)) {
-        taskList = raw;
-      } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
-        const parsed = TasksFileSchema.safeParse(raw);
-        if (parsed.success) {
-          // Add _sourceFile to each task from this file
-          for (const task of parsed.data.tasks) {
-            tasks.push({ ...task, _sourceFile: filePath });
-          }
-          continue;
-        }
-        taskList = (raw as { tasks: unknown[] }).tasks || [];
-      } else {
-        // Single task object
-        taskList = [raw];
-      }
-
-      for (const taskData of taskList) {
-        const result = TaskSchema.safeParse(taskData);
-        if (result.success) {
-          // Add _sourceFile metadata
-          tasks.push({ ...result.data, _sourceFile: filePath });
-        }
-      }
-    } catch (error) {
-      // Skip invalid files
-    }
+    const fileTasks = await loadTasksFromFile(filePath);
+    tasks.push(...fileTasks);
   }
 
   return tasks;
@@ -289,12 +422,12 @@ export function findTaskByRef(tasks: LoadedTask[], ref: string): LoadedTask | un
 
 /**
  * Get the default task file path for new tasks without a spec_ref.
- * New tasks go to spec/project.tasks.yaml (or project.tasks.yaml if no spec dir).
+ *
+ * When shadow enabled: .kspec/project.tasks.yaml
+ * Otherwise: spec/project.tasks.yaml
  */
 export function getDefaultTaskFilePath(ctx: KspecContext): string {
-  const specDir = path.join(ctx.rootDir, 'spec');
-  // Prefer spec/project.tasks.yaml if spec directory exists
-  return path.join(specDir, 'project.tasks.yaml');
+  return path.join(ctx.specDir, 'project.tasks.yaml');
 }
 
 /**
@@ -1133,11 +1266,12 @@ export interface LoadedInboxItem extends InboxItem {
 
 /**
  * Get the inbox file path.
- * Stored in spec/project.inbox.yaml
+ *
+ * When shadow enabled: .kspec/project.inbox.yaml
+ * Otherwise: spec/project.inbox.yaml
  */
 export function getInboxFilePath(ctx: KspecContext): string {
-  const specDir = path.join(ctx.rootDir, 'spec');
-  return path.join(specDir, 'project.inbox.yaml');
+  return path.join(ctx.specDir, 'project.inbox.yaml');
 }
 
 /**

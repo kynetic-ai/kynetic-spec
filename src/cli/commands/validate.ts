@@ -93,7 +93,7 @@ function formatFixResult(result: FixResult): void {
 /**
  * Collect all files that can be fixed
  */
-async function collectFixableFiles(ctx: { rootDir: string; manifest?: { includes?: string[] }; manifestPath?: string }): Promise<string[]> {
+async function collectFixableFiles(ctx: { rootDir: string; specDir?: string; manifest?: { includes?: string[] } | null; manifestPath?: string | null }): Promise<string[]> {
   const files: string[] = [];
 
   // Task files (exclude test fixtures)
