@@ -32,3 +32,25 @@ inbox:
     created_at: '2026-01-15T16:13:16.998Z'
     tags: []
     added_by: '@claude'
+  - _ulid: 01KF1JG6SVD40TN2J9W2D1PZDD
+    text: >-
+      Reflection prompt on task complete - when completing a task, prompt agent to reflect: Did this
+      address workflow friction? Any new friction discovered? Successes worth noting? More flexible
+      than auto-resolution or explicit linking. Could be a hook or built into task complete flow.
+    created_at: '2026-01-15T19:35:44.189Z'
+    tags:
+      - meta
+      - design
+      - reflection
+    added_by: '@claude'
+  - _ulid: 01KF1JGE1D64QN9G5BKQ9184DP
+    text: >-
+      AGENTS.md standard compatibility - consider complementary approach where AGENTS.md provides
+      instructions and kynetic.meta.yaml provides structured/queryable layer. Revisit when standard
+      matures (currently 20k+ repos adopting).
+    created_at: '2026-01-15T19:35:51.598Z'
+    tags:
+      - meta
+      - standards
+      - research
+    added_by: '@claude'
