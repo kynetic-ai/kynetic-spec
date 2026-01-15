@@ -1,5 +1,15 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx src/cli/index.ts session prompt-check"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",

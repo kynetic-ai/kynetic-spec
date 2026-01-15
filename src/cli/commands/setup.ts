@@ -160,7 +160,92 @@ async function installClaudeCodeConfig(author: string): Promise<boolean> {
 }
 
 /**
+ * Install hooks to project-level Claude Code settings (.claude/settings.json)
+ */
+async function installClaudeCodeHooks(projectDir: string): Promise<{ stop: boolean; promptCheck: boolean }> {
+  const configPath = path.join(projectDir, '.claude', 'settings.json');
+  const configDir = path.dirname(configPath);
+
+  const result = { stop: false, promptCheck: false };
+
+  try {
+    // Ensure directory exists
+    await fs.mkdir(configDir, { recursive: true });
+
+    // Read existing config or start fresh
+    let config: Record<string, unknown> = {};
+    try {
+      const existing = await fs.readFile(configPath, 'utf-8');
+      config = JSON.parse(existing);
+    } catch {
+      // File doesn't exist or invalid JSON, start fresh
+    }
+
+    // Get or create hooks object
+    const hooks = (config.hooks as Record<string, unknown[]>) || {};
+
+    // Install UserPromptSubmit hook (spec-first reminder)
+    const promptCheckCommand = 'npx tsx src/cli/index.ts session prompt-check';
+    const existingPromptHooks = hooks.UserPromptSubmit as Array<{ hooks?: Array<{ command?: string }> }> | undefined;
+    const promptAlreadyInstalled = existingPromptHooks?.some(
+      (entry) => entry.hooks?.some((hook) => hook.command?.includes('session prompt-check'))
+    );
+
+    if (!promptAlreadyInstalled) {
+      hooks.UserPromptSubmit = [
+        ...(existingPromptHooks || []),
+        {
+          hooks: [
+            {
+              type: 'command',
+              command: promptCheckCommand,
+            },
+          ],
+        },
+      ];
+      result.promptCheck = true;
+    } else {
+      result.promptCheck = true; // Already configured
+    }
+
+    // Install Stop hook (checkpoint)
+    const stopHookCommand = 'npx tsx src/cli/index.ts session checkpoint --json';
+    const existingStopHooks = hooks.Stop as Array<{ matcher?: string; hooks?: Array<{ command?: string }> }> | undefined;
+    const stopAlreadyInstalled = existingStopHooks?.some(
+      (entry) => entry.hooks?.some((hook) => hook.command?.includes('session checkpoint'))
+    );
+
+    if (!stopAlreadyInstalled) {
+      hooks.Stop = [
+        ...(existingStopHooks || []),
+        {
+          matcher: '',
+          hooks: [
+            {
+              type: 'command',
+              command: stopHookCommand,
+            },
+          ],
+        },
+      ];
+      result.stop = true;
+    } else {
+      result.stop = true; // Already configured
+    }
+
+    config.hooks = hooks;
+
+    // Write back
+    await fs.writeFile(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+    return result;
+  } catch {
+    return result;
+  }
+}
+
+/**
  * Install stop hook to project-level Claude Code settings (.claude/settings.json)
+ * @deprecated Use installClaudeCodeHooks instead
  */
 async function installClaudeCodeStopHook(projectDir: string): Promise<boolean> {
   const configPath = path.join(projectDir, '.claude', 'settings.json');
@@ -418,7 +503,7 @@ export function registerSetupCommand(program: Command): void {
           }
           if (installHooks) {
             console.log(`  Project config: ${path.join(projectDir, '.claude', 'settings.json')}`);
-            console.log(`  Stop hook: kspec session checkpoint`);
+            console.log(`  Hooks: UserPromptSubmit (prompt-check), Stop (checkpoint)`);
           }
           return;
         }
@@ -434,11 +519,14 @@ export function registerSetupCommand(program: Command): void {
         let installed = false;
         let hooksInstalled = false;
 
+        let hooksResult: { stop: boolean; promptCheck: boolean } | null = null;
+
         switch (detected.type) {
           case 'claude-code':
             installed = await installClaudeCodeConfig(author);
             if (installHooks) {
-              hooksInstalled = await installClaudeCodeStopHook(projectDir);
+              hooksResult = await installClaudeCodeHooks(projectDir);
+              hooksInstalled = hooksResult.stop || hooksResult.promptCheck;
             }
             break;
 
@@ -476,10 +564,12 @@ export function registerSetupCommand(program: Command): void {
             configPath: detected.configPath,
           });
 
-          if (hooksInstalled) {
-            success(`Installed stop hook to .claude/settings.json`, {
-              hook: 'Stop',
-              command: 'kspec session checkpoint',
+          if (hooksInstalled && hooksResult) {
+            const installedHooks: string[] = [];
+            if (hooksResult.promptCheck) installedHooks.push('UserPromptSubmit (prompt-check)');
+            if (hooksResult.stop) installedHooks.push('Stop (checkpoint)');
+            success(`Installed hooks to .claude/settings.json`, {
+              hooks: installedHooks,
             });
           }
 
