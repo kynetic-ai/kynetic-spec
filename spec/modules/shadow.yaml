@@ -180,11 +180,10 @@ features:
       kspec init creates shadow branch and worktree by default.
 
       Steps:
-      1. Create orphan branch kspec-meta (if not exists)
-      2. Create git worktree at .kspec/ pointing to shadow branch
-      3. Add .kspec/ to .gitignore
-      4. Create initial manifest and structure in .kspec/
-      5. Initial commit on shadow branch
+      1. Add .kspec/ to .gitignore and commit (fails if .gitignore is dirty)
+      2. Create git worktree at .kspec/ with orphan branch kspec-meta
+      3. Create initial manifest and structure in .kspec/
+      4. Initial commit on shadow branch
     acceptance_criteria:
       - id: ac-shadow-init-1
         given: a git repository without shadow branch
@@ -196,12 +195,16 @@ features:
         then: it is a valid git worktree pointing to kspec-meta
       - id: ac-shadow-init-3
         given: kspec init has run
-        when: checking .gitignore
-        then: .kspec/ is listed
+        when: checking git log
+        then: .gitignore change is committed to main branch
       - id: ac-shadow-init-4
         given: shadow branch already exists
         when: kspec init runs again
         then: it succeeds without error (idempotent)
+      - id: ac-shadow-init-5
+        given: .gitignore has uncommitted changes
+        when: kspec init runs
+        then: it fails with error explaining the issue
     implements:
       - '@cmd-init'
     requirements:
