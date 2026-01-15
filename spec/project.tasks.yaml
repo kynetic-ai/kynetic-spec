@@ -699,7 +699,7 @@
   title: Review and fix orphaned spec items
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -743,6 +743,8 @@
         considered implicitly referenced by their parent, eliminating false positives.
       supersedes: null
   todos: []
+  completed_at: '2026-01-15T15:53:21.366Z'
+  closed_reason: Fixed invalid ULIDs and orphan detection false positives
 - _ulid: 01KEZYBC1M3KMG9KB47CKQHY07
   slugs:
     - task-bulk-import
