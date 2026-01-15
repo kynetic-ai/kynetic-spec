@@ -921,6 +921,9 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
+    closed_reason: >-
+      Implemented item CRUD (add/set/delete) with full nested structure support. Items can be added
+      under any parent, updated in place, and deleted from the YAML tree.
     depends_on: []
     context: []
     priority: 2
@@ -931,6 +934,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.954Z'
     started_at: '2026-01-15T04:10:34.580Z'
+    completed_at: '2026-01-15T04:20:09.513Z'
     notes:
       - _ulid: 01KEZY3GS10994BNNMY1HAVMFT
         created_at: '2026-01-15T04:20:02.466Z'
@@ -952,10 +956,6 @@ tasks:
           Tested: add feature under @core, set description/status, delete - all work correctly.
         supersedes: null
     todos: []
-    completed_at: '2026-01-15T04:20:09.513Z'
-    closed_reason: >-
-      Implemented item CRUD (add/set/delete) with full nested structure support. Items can be added
-      under any parent, updated in place, and deleted from the YAML tree.
   - _ulid: 01JHNKAB25TASK610000000000
     slugs:
       - task-cmd-derive
@@ -1322,6 +1322,25 @@ tasks:
           This ensures task state stays consistent even when sessions end unexpectedly.
           Could use 'kspec tasks in-progress' to detect, then inject a prompt like:
           'You have in-progress tasks without recent notes. Please update them before ending.'
+        supersedes: null
+      - _ulid: 01KEZYGZ4ECJXCPS5CKX5CBHE0
+        created_at: '2026-01-15T04:27:23.151Z'
+        author: '@claude'
+        content: >-
+          Related: @task-bulk-import
+
+
+          If bulk import is implemented, the skill should teach agents about:
+
+          - Using 'kspec import' for rapid spec capture during design discussions
+
+          - The simplified YAML format for quick item authoring
+
+          - When to use import vs individual 'item add' commands
+
+
+          If skill is implemented first, bulk import should update the skill file with new
+          capabilities.
         supersedes: null
     todos: []
   - _ulid: 01KEZ9DSD9W7JY4HP92JPY6WAN

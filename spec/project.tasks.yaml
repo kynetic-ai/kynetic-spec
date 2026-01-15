@@ -790,4 +790,28 @@
 
         This enables rapid spec capture during brainstorming without CLI friction.
       supersedes: null
+    - _ulid: 01KEZYGFD1EV5PK78Y17X3WB6K
+      created_at: '2026-01-15T04:27:07.042Z'
+      author: '@claude'
+      content: |-
+        Acceptance criteria:
+
+        1. Clear documentation
+           - Help text explains simplified format
+           - Examples in 'kspec help import' / 'kspec help design'
+           - Error messages guide users to correct format
+
+        2. Skill integration
+           - If @task-kspec-skill is done first: update skill output to include import command for bulk spec capture
+           - If this is done first: document the format/workflow so skill can reference it
+
+        3. Format validation
+           - Validates structure before creating items
+           - Clear errors for invalid nesting (e.g., constraint under constraint)
+           - --dry-run shows exactly what would be created
+
+        4. Idempotency consideration
+           - Decide: error on duplicate slug? skip? update?
+           - Document the behavior clearly
+      supersedes: null
   todos: []
