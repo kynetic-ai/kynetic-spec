@@ -242,12 +242,12 @@
       supersedes: null
     - _ulid: 01KEZM3K5W1BXE1GQSNDBB7TQE
       created_at: '2026-01-15T01:25:19.164Z'
-      author: "@claude"
+      author: '@claude'
       content: Testing author auto-detection - this note should show git user.name
       supersedes: null
     - _ulid: 01KEZM5DWGP1AK0ZKCKRC79J92
       created_at: '2026-01-15T01:26:19.281Z'
-      author: "@claude"
+      author: '@claude'
       content: >-
         Implemented author auto-detection:
 
@@ -488,7 +488,7 @@
   notes:
     - _ulid: 01KEZMRPC9B4D43CSYVEMY5G03
       created_at: '2026-01-15T01:36:50.570Z'
-      author: "@claude"
+      author: '@claude'
       content: |-
         Design for kspec setup command:
 
@@ -523,7 +523,7 @@
       supersedes: null
     - _ulid: 01KEZN5K8S6XEY464Y0NTHMK1V
       created_at: '2026-01-15T01:43:53.370Z'
-      author: "@claude"
+      author: '@claude'
       content: >-
         Implemented kspec setup command (src/cli/commands/setup.ts):
 
@@ -595,5 +595,35 @@
 
         Updated detection to check all three markers. Verified working - setup now correctly detects
         and configures Claude Code.
+      supersedes: null
+  todos: []
+- _ulid: 01KEZWDHPHN82718XXDX6VM7ZH
+  slugs: []
+  title: Fix broken @milestone-self-hosting references in spec
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - bug
+    - critical
+  vcs_refs: []
+  created_at: '2026-01-15T03:50:33.936Z'
+  notes:
+    - _ulid: 01KEZWDT9JV9X118ETETZXN1YY
+      created_at: '2026-01-15T03:50:42.739Z'
+      author: '@claude'
+      content: |-
+        Found by kspec validate - 4 tasks reference @milestone-self-hosting which doesn't exist.
+
+        Options:
+        1. Create the milestone item in the spec
+        2. Remove/update the depends_on references
+        3. Replace with a different existing reference
+
+        Run 'kspec validate --refs' to see all broken references.
       supersedes: null
   todos: []
