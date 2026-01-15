@@ -111,3 +111,59 @@
         3. Update AGENTS.md with alignment guidance
       supersedes: null
   todos: []
+- _ulid: 01KEZH1HE2TKG8Z79XW7G0Y016
+  slugs:
+    - task-local-cli-setup
+  title: Set up local CLI development workflow
+  type: task
+  spec_ref: null
+  status: completed
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - dx
+    - cli
+  vcs_refs: []
+  created_at: '2026-01-15T00:31:46.114Z'
+  started_at: '2026-01-15T00:32:00.757Z'
+  notes:
+    - _ulid: 01KEZH1T305WYZZE596KNCQZK3
+      created_at: '2026-01-15T00:31:54.976Z'
+      content: |-
+        Goal: Enable kspec and kspec-dev commands for local usage.
+
+        Plan:
+        1. Verify/fix build process (npm run build)
+        2. Test global install (npm install -g .)
+        3. Document shell alias for kspec-dev
+        4. Add dev script to package.json for portability
+
+        Setup:
+        - kspec: stable built version via global install
+        - kspec-dev: alias to tsx src/cli/index.ts (live source)
+      supersedes: null
+    - _ulid: 01KEZH3MA5QPXCA6A6535W51Q5
+      created_at: '2026-01-15T00:32:54.598Z'
+      content: |-
+        Completed setup:
+
+        1. Fixed TypeScript build error (cast through unknown)
+        2. Build works: npm run build
+        3. Global install works: npm install -g .
+        4. kspec command available globally
+
+        Usage:
+        - Stable: kspec tasks ready
+        - Dev: npm run dev -- tasks ready
+
+        Optional shell alias for convenience (add to ~/.bashrc or ~/.zshrc):
+          alias kspec-dev='npx tsx /home/chapel/Projects/kynetic-spec/src/cli/index.ts'
+
+        To update stable version:
+          npm run build && npm install -g .
+      supersedes: null
+  todos: []
+  completed_at: '2026-01-15T00:33:00.493Z'
+  closed_reason: Build fixed, global install working, documented usage

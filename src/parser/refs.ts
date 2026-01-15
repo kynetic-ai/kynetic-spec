@@ -283,7 +283,7 @@ const REF_FIELDS = [
  */
 function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }> {
   const refs: Array<{ field: string; ref: string }> = [];
-  const obj = item as Record<string, unknown>;
+  const obj = item as unknown as Record<string, unknown>;
 
   for (const field of REF_FIELDS) {
     const value = obj[field];
