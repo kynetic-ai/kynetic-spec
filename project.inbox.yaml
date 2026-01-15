@@ -84,16 +84,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF1ZKM1WAWHSHVK73F3FE4W5
-    text: >-
-      CLI commands need to call commitIfShadow() after write operations - infrastructure exists but
-      not wired up. Do this when shadow init task enables the feature.
-    created_at: '2026-01-15T23:24:47.548Z'
-    tags:
-      - shadow
-      - cli
-      - wiring
-    added_by: '@claude'
   - _ulid: 01KF1ZKN1RY5QZV852RRY3QVPV
     text: >-
       Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
