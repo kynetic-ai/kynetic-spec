@@ -2,3 +2,4 @@
 
 export * from './yaml.js';
 export * from './refs.js';
+export * from './items.js';

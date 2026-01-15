@@ -18,6 +18,7 @@ import {
   type Note,
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
+import { ItemIndex } from './items.js';
 
 /**
  * Spec item with runtime metadata for source tracking.
@@ -762,4 +763,21 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
   const items = await loadAllItems(ctx);
   const index = new ReferenceIndex(tasks, items);
   return { index, tasks, items };
+}
+
+/**
+ * Build both ReferenceIndex and ItemIndex from context.
+ * Use this when you need query capabilities in addition to reference resolution.
+ */
+export async function buildIndexes(ctx: KspecContext): Promise<{
+  refIndex: ReferenceIndex;
+  itemIndex: ItemIndex;
+  tasks: LoadedTask[];
+  items: LoadedSpecItem[];
+}> {
+  const tasks = await loadAllTasks(ctx);
+  const items = await loadAllItems(ctx);
+  const refIndex = new ReferenceIndex(tasks, items);
+  const itemIndex = new ItemIndex(tasks, items);
+  return { refIndex, itemIndex, tasks, items };
 }
