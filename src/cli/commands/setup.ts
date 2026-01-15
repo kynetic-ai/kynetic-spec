@@ -185,7 +185,7 @@ async function installClaudeCodeStopHook(projectDir: string): Promise<boolean> {
     // Get or create hooks object
     const hooks = (config.hooks as Record<string, unknown[]>) || {};
 
-    // Check if Stop hook already exists with our command (new format: matcher + hooks array)
+    // Check if Stop hook already exists with our command
     const existingStopHooks = hooks.Stop as Array<{ matcher?: object; hooks?: Array<{ command?: string }> }> | undefined;
     const alreadyInstalled = existingStopHooks?.some(
       (entry) => entry.hooks?.some((hook) => hook.command?.includes('session checkpoint'))
@@ -195,11 +195,10 @@ async function installClaudeCodeStopHook(projectDir: string): Promise<boolean> {
       return true; // Already configured
     }
 
-    // Add our stop hook using new Claude Code hooks format (matcher + hooks array)
+    // Add our stop hook using Claude Code hooks format
     hooks.Stop = [
       ...(existingStopHooks || []),
       {
-        matcher: {},
         hooks: [
           {
             type: 'command',
