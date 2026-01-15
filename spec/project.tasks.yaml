@@ -1473,6 +1473,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Shadow branch spec designed and validated. Created spec/modules/shadow.yaml with full feature
+    coverage. Ready for implementation task derivation.
   depends_on: []
   context: []
   priority: 1
@@ -1483,6 +1486,7 @@
   vcs_refs: []
   created_at: '2026-01-15T19:50:26.465Z'
   started_at: '2026-01-15T22:04:41.086Z'
+  completed_at: '2026-01-15T22:07:27.124Z'
   notes:
     - _ulid: 01KF1KBDKYMFBZGVQ9ZSTTJH9G
       created_at: '2026-01-15T19:50:35.903Z'
@@ -1553,7 +1557,95 @@
         Next: Derive implementation tasks from this spec.
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T22:07:27.124Z'
-  closed_reason: >-
-    Shadow branch spec designed and validated. Created spec/modules/shadow.yaml with full feature
-    coverage. Ready for implementation task derivation.
+- _ulid: 01KF1VK66CXYWN9SRW8P4NMR3A
+  slugs:
+    - task-shadow-branch
+  title: 'Implement: Shadow Branch'
+  type: task
+  spec_ref: '@shadow-branch'
+  derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-15T22:14:39.052Z'
+  notes: []
+  todos: []
+- _ulid: 01KF1VKDDVHT0TFD2DCP611V6M
+  slugs:
+    - task-shadow-branch-concept
+  title: 'Implement: Shadow Branch Concept'
+  type: task
+  spec_ref: '@shadow-concept'
+  derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - infrastructure
+    - git
+  vcs_refs: []
+  created_at: '2026-01-15T22:14:46.459Z'
+  notes: []
+  todos: []
+- _ulid: 01KF1VKDWJ0G37T95RKAD7R1TZ
+  slugs:
+    - task-shadow-initialization
+  title: 'Implement: Shadow Initialization'
+  type: task
+  spec_ref: '@shadow-init'
+  derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - infrastructure
+    - cli
+  vcs_refs: []
+  created_at: '2026-01-15T22:14:46.930Z'
+  notes: []
+  todos: []
+- _ulid: 01KF1VKEC2FJ6EY61B45QJ1BXZ
+  slugs:
+    - task-shadow-cli-commands
+  title: 'Implement: Shadow CLI Commands'
+  type: task
+  spec_ref: '@shadow-cli'
+  derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+  vcs_refs: []
+  created_at: '2026-01-15T22:14:47.425Z'
+  notes: []
+  todos: []
+- title: 'Implement: Shadow Recovery'
+  type: task
+  spec_ref: '@shadow-recovery'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-shadow-recovery
+  tags:
+    - infrastructure
+    - reliability
+  _ulid: 01KF1VKEV2FW62HJR7CBRNJGFZ
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-15T22:14:47.906Z'
+  notes: []
+  todos: []
