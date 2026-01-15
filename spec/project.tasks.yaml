@@ -627,3 +627,36 @@
         Run 'kspec validate --refs' to see all broken references.
       supersedes: null
   todos: []
+- _ulid: 01KEZWF5GDFGJXAGXMBPJRK1KS
+  slugs: []
+  title: Review and fix orphaned spec items
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - dx
+  vcs_refs: []
+  created_at: '2026-01-15T03:51:26.988Z'
+  notes:
+    - _ulid: 01KEZWFEMKKJFE04R5D28581KT
+      created_at: '2026-01-15T03:51:36.341Z'
+      author: '@claude'
+      content: |-
+        Found by kspec validate --orphans - 72 spec items not referenced by anything.
+
+        These are mostly requirements nested under features. They should either:
+        1. Be referenced by tasks (spec_ref) or other items
+        2. Be removed if no longer relevant
+        3. Have the parent feature reference them explicitly
+
+        Run 'kspec validate --orphans -v' to see full list.
+
+        Note: May need to improve orphan detection to handle nested items better - 
+        requirements inside a feature could be considered 'referenced' implicitly.
+      supersedes: null
+  todos: []
