@@ -544,8 +544,9 @@ tasks:
       - Support --single-file option
     spec_ref: '@cmd-init'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
+    closed_reason: Implemented init command with full scaffolding, prompts, and all CLI options per spec
     depends_on:
       - '@task-cli-framework'
     context: []
@@ -556,7 +557,46 @@ tasks:
       - cli
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.953Z'
-    notes: []
+    started_at: '2026-01-15T03:21:03.159Z'
+    completed_at: '2026-01-15T03:23:08.625Z'
+    notes:
+      - _ulid: 01KEZTV4M6NVQVFBWAJFJKAQZV
+        created_at: '2026-01-15T03:23:02.150Z'
+        author: '@claude'
+        content: >-
+          Implemented kspec init command with all specified options:
+
+          - --name <name>: Set project name
+
+          - --single-file: Create kynetic.yaml only (no modules directory)
+
+          - --no-prompt: Skip interactive prompts
+
+          - --force: Overwrite existing files
+
+          - [directory]: Optional target directory
+
+
+          Generated files:
+
+          - spec/kynetic.yaml (manifest with project metadata, includes, config)
+
+          - spec/<dirname>.tasks.yaml (empty tasks file)
+
+          - spec/modules/main.yaml (starter module with example item, unless --single-file)
+
+
+          Uses Node's built-in readline for interactive prompts. Derives default project name from
+          directory name (kebab-case to Title Case).
+        supersedes: null
+      - _ulid: 01KEZV2Y8H47MPF28P4DNS2BAZ
+        created_at: '2026-01-15T03:27:17.778Z'
+        author: '@claude'
+        content: |-
+          Fixed file naming to use project slug:
+          - 'My Cool Project' → my-cool-project.yaml, my-cool-project.tasks.yaml
+          - Consistent with kynetic-spec's own pattern (kynetic.yaml for 'Kynetic Spec')
+        supersedes: null
     todos: []
   - _ulid: 01JHNKAB20TASK520000000000
     slugs:

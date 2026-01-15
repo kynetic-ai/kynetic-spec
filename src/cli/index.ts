@@ -7,6 +7,7 @@ import {
   registerTaskCommands,
   registerSetupCommand,
   registerSessionCommands,
+  registerInitCommand,
 } from './commands/index.js';
 
 const program = new Command();
@@ -29,6 +30,7 @@ registerTasksCommands(program);
 registerTaskCommands(program);
 registerSetupCommand(program);
 registerSessionCommands(program);
+registerInitCommand(program);
 
 // Parse and execute
 program.parse();
