@@ -196,19 +196,40 @@ Run this after 'kspec init' to set up agent integration.
   item: {
     title: 'Spec Item Commands',
     description: `
-Query and inspect spec items (features, requirements, constraints).
+CRUD operations on spec items (features, requirements, constraints).
 
 Commands:
-  item get <ref>    Show item details
-  item list         List all spec items
+  item list          List all spec items (with filters)
+  item get <ref>     Show item details
+  item add           Create a new item under a parent
+  item set <ref>     Update an item's fields
+  item delete <ref>  Delete an item
+  item types         Show item types and counts
+  item tags          Show tags and counts
 
 Spec items define WHAT to build. Tasks track the WORK of building.
-Tasks reference spec items via the spec_ref field.
+Items are nested: modules contain features, features contain requirements.
+
+Add Options:
+  --under <ref>      Parent item to add under (required)
+  --title <title>    Item title (required)
+  --type <type>      feature, requirement, constraint, decision
+  --slug <slug>      Human-friendly slug
+  --tag <tag>        Tags (repeatable)
+  --as <field>       Child field override (e.g., requirements)
+
+Set Options:
+  --title, --type, --slug, --priority, --tag, --description
+  --status <impl>    not_started, in_progress, implemented, verified
+  --maturity <m>     draft, proposed, stable, deprecated
 `,
     examples: [
-      'kspec item get @ref-validation',
-      'kspec item list',
       'kspec item list --type feature',
+      'kspec item get @ref-validation',
+      'kspec item add --under @core --title "New Feature" --type feature',
+      'kspec item add --under @spec-item --title "New Req" --type requirement',
+      'kspec item set @my-feature --status implemented',
+      'kspec item delete @old-feature',
     ],
     seeAlso: ['refs', 'task'],
   },

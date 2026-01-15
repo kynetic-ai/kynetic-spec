@@ -3,11 +3,17 @@ import chalk from 'chalk';
 import {
   initContext,
   buildIndexes,
+  createSpecItem,
+  deleteSpecItem,
+  updateSpecItem,
+  addChildItem,
+  loadAllItems,
+  ReferenceIndex,
   type LoadedSpecItem,
 } from '../../parser/index.js';
 import type { ItemFilter } from '../../parser/items.js';
-import type { ItemType, Maturity, ImplementationStatus } from '../../schema/index.js';
-import { output, error, isJsonMode } from '../output.js';
+import type { ItemType, Maturity, ImplementationStatus, SpecItemInput } from '../../schema/index.js';
+import { output, error, success, warn, isJsonMode } from '../output.js';
 
 /**
  * Format a spec item for display
@@ -236,6 +242,176 @@ export function registerItemCommands(program: Command): void {
         );
       } catch (err) {
         error('Failed to get tags', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item add - create a new spec item under a parent
+  item
+    .command('add')
+    .description('Create a new spec item under a parent')
+    .requiredOption('--under <ref>', 'Parent item reference (e.g., @core-primitives)')
+    .requiredOption('--title <title>', 'Item title')
+    .option('--type <type>', 'Item type (feature, requirement, constraint, decision)', 'feature')
+    .option('--slug <slug>', 'Human-friendly slug')
+    .option('--priority <priority>', 'Priority (high, medium, low)')
+    .option('--tag <tag...>', 'Tags')
+    .option('--description <desc>', 'Description')
+    .option('--as <field>', 'Child field override (e.g., requirements, constraints)')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const { refIndex, items } = await buildIndexes(ctx);
+
+        // Find the parent item
+        const parentResult = refIndex.resolve(options.under);
+        if (!parentResult.ok) {
+          error(`Parent item not found: ${options.under}`);
+          process.exit(1);
+        }
+
+        const parent = parentResult.item as LoadedSpecItem;
+
+        // Check it's not a task
+        if ('status' in parent && typeof parent.status === 'string') {
+          error(`"${options.under}" is a task. Items can only be added under spec items.`);
+          process.exit(1);
+        }
+
+        const input: SpecItemInput = {
+          title: options.title,
+          type: options.type as ItemType,
+          slugs: options.slug ? [options.slug] : [],
+          priority: options.priority,
+          tags: options.tag || [],
+          description: options.description,
+        };
+
+        const newItem = createSpecItem(input);
+        const result = await addChildItem(ctx, parent, newItem, options.as);
+
+        // Build index including the new item for accurate short ULID
+        const index = new ReferenceIndex([], [...items, result.item as LoadedSpecItem]);
+        success(`Created item: ${index.shortUlid(result.item._ulid)} under @${parent.slugs[0] || parent._ulid.slice(0, 8)}`, {
+          item: result.item,
+          path: result.path,
+        });
+      } catch (err) {
+        error('Failed to create item', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item set - update a spec item field
+  item
+    .command('set <ref>')
+    .description('Update a spec item field')
+    .option('--title <title>', 'Set title')
+    .option('--type <type>', 'Set type')
+    .option('--slug <slug>', 'Add a slug')
+    .option('--priority <priority>', 'Set priority')
+    .option('--tag <tag...>', 'Set tags (replaces existing)')
+    .option('--description <desc>', 'Set description')
+    .option('--status <status>', 'Set implementation status (not_started, in_progress, implemented, verified)')
+    .option('--maturity <maturity>', 'Set maturity (draft, proposed, stable, deprecated)')
+    .action(async (ref, options) => {
+      try {
+        const ctx = await initContext();
+        const { refIndex, items } = await buildIndexes(ctx);
+
+        const result = refIndex.resolve(ref);
+        if (!result.ok) {
+          error(`Item not found: ${ref}`);
+          process.exit(1);
+        }
+
+        const foundItem = result.item as LoadedSpecItem;
+
+        // Check if it's a task (tasks should use task commands)
+        if ('status' in foundItem && typeof foundItem.status === 'string') {
+          error(`"${ref}" is a task. Use 'kspec task' commands instead.`);
+          process.exit(1);
+        }
+
+        // Build updates object
+        const updates: Partial<SpecItemInput> = {};
+
+        if (options.title) updates.title = options.title;
+        if (options.type) updates.type = options.type as ItemType;
+        if (options.slug) {
+          updates.slugs = [...(foundItem.slugs || []), options.slug];
+        }
+        if (options.priority) updates.priority = options.priority;
+        if (options.tag) updates.tags = options.tag;
+        if (options.description) updates.description = options.description;
+
+        // Handle status updates
+        if (options.status || options.maturity) {
+          const currentStatus = foundItem.status && typeof foundItem.status === 'object'
+            ? foundItem.status
+            : {};
+          updates.status = {
+            ...currentStatus,
+            ...(options.status && { implementation: options.status }),
+            ...(options.maturity && { maturity: options.maturity }),
+          };
+        }
+
+        if (Object.keys(updates).length === 0) {
+          warn('No updates specified');
+          return;
+        }
+
+        const updated = await updateSpecItem(ctx, foundItem, updates);
+        success(`Updated item: ${refIndex.shortUlid(updated._ulid)}`, { item: updated });
+      } catch (err) {
+        error('Failed to update item', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item delete - delete a spec item
+  item
+    .command('delete <ref>')
+    .description('Delete a spec item (including nested items)')
+    .option('--force', 'Skip confirmation')
+    .action(async (ref, options) => {
+      try {
+        const ctx = await initContext();
+        const { refIndex, items } = await buildIndexes(ctx);
+
+        const result = refIndex.resolve(ref);
+        if (!result.ok) {
+          error(`Item not found: ${ref}`);
+          process.exit(1);
+        }
+
+        const foundItem = result.item as LoadedSpecItem;
+
+        // Check if it's a task
+        if ('status' in foundItem && typeof foundItem.status === 'string') {
+          error(`"${ref}" is a task. Use 'kspec task cancel' instead.`);
+          process.exit(1);
+        }
+
+        if (!foundItem._sourceFile) {
+          error('Cannot delete item: no source file tracked');
+          process.exit(1);
+        }
+
+        // Warn about nested children being deleted too
+        // TODO: could add a check here for child items
+
+        const deleted = await deleteSpecItem(ctx, foundItem);
+        if (deleted) {
+          success(`Deleted item: ${foundItem.title}`, { deleted: true, ulid: foundItem._ulid });
+        } else {
+          error('Failed to delete item');
+          console.log(chalk.gray('Edit the source file directly: ' + foundItem._sourceFile));
+          process.exit(1);
+        }
+      } catch (err) {
+        error('Failed to delete item', err);
         process.exit(1);
       }
     });

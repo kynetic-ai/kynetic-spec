@@ -747,6 +747,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
+    closed_reason: Implemented in src/cli/commands/validate.ts with all specified options plus JSON output.
     depends_on:
       - '@task-cli-framework'
       - '@task-validation-output'
@@ -758,6 +759,8 @@ tasks:
       - cli
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.953Z'
+    started_at: '2026-01-15T04:03:48.236Z'
+    completed_at: '2026-01-15T04:03:48.236Z'
     notes:
       - _ulid: 01KEZX5K4QEDWB9C760H9WW9Z1
         created_at: '2026-01-15T04:03:41.848Z'
@@ -771,9 +774,6 @@ tasks:
           - Also includes --json for programmatic output and 'lint' alias
         supersedes: null
     todos: []
-    completed_at: '2026-01-15T04:03:48.236Z'
-    closed_reason: Implemented in src/cli/commands/validate.ts with all specified options plus JSON output.
-    started_at: '2026-01-15T04:03:48.236Z'
   - _ulid: 01JHNKAB21TASK530000000000
     slugs:
       - task-cmd-tasks-ready
@@ -919,7 +919,7 @@ tasks:
       - kspec item delete
     spec_ref: '@item-commands'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
     depends_on: []
     context: []
@@ -930,8 +930,32 @@ tasks:
       - cli
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.954Z'
-    notes: []
+    started_at: '2026-01-15T04:10:34.580Z'
+    notes:
+      - _ulid: 01KEZY3GS10994BNNMY1HAVMFT
+        created_at: '2026-01-15T04:20:02.466Z'
+        author: '@claude'
+        content: |-
+          Implemented full item CRUD with nested structure support:
+
+          - item add: Creates items under a parent (--under @parent)
+          - item set: Updates fields including status/maturity
+          - item delete: Removes items from nested structures
+
+          Key implementation details:
+          - Added _path tracking to LoadedSpecItem for navigating nested YAML
+          - parsePath/navigateToPath helpers for tree navigation
+          - addChildItem() adds to parent's features/requirements/etc array
+          - updateSpecItem() modifies items in place
+          - deleteSpecItem() removes from parent array via splice
+
+          Tested: add feature under @core, set description/status, delete - all work correctly.
+        supersedes: null
     todos: []
+    completed_at: '2026-01-15T04:20:09.513Z'
+    closed_reason: >-
+      Implemented item CRUD (add/set/delete) with full nested structure support. Items can be added
+      under any parent, updated in place, and deleted from the YAML tree.
   - _ulid: 01JHNKAB25TASK610000000000
     slugs:
       - task-cmd-derive

@@ -15,6 +15,7 @@ import {
   type TaskInput,
   type Manifest,
   type SpecItem,
+  type SpecItemInput,
   type Note,
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
@@ -23,9 +24,11 @@ import { ItemIndex } from './items.js';
 /**
  * Spec item with runtime metadata for source tracking.
  * _sourceFile is not serialized - it's used to know where to write updates.
+ * _path tracks location within the file for nested items (e.g., "features[0].requirements[2]")
  */
 export interface LoadedSpecItem extends SpecItem {
   _sourceFile?: string;
+  _path?: string;
 }
 
 /**
@@ -613,11 +616,13 @@ const NESTED_ITEM_FIELDS = [
 /**
  * Recursively extract all spec items from a raw YAML structure.
  * Items can be nested under modules/features/requirements/etc.
+ * Tracks the path within the file for each item.
  */
 export function extractItemsFromRaw(
   raw: unknown,
   sourceFile: string,
-  items: LoadedSpecItem[] = []
+  items: LoadedSpecItem[] = [],
+  currentPath: string = ''
 ): LoadedSpecItem[] {
   if (!raw || typeof raw !== 'object') {
     return items;
@@ -627,30 +632,39 @@ export function extractItemsFromRaw(
   if ('_ulid' in raw && typeof (raw as Record<string, unknown>)._ulid === 'string') {
     const result = SpecItemSchema.safeParse(raw);
     if (result.success) {
-      items.push({ ...result.data, _sourceFile: sourceFile });
+      items.push({
+        ...result.data,
+        _sourceFile: sourceFile,
+        _path: currentPath || undefined,
+      });
     }
 
     // Even if the item itself was added, also extract nested items
     const rawObj = raw as Record<string, unknown>;
     for (const field of NESTED_ITEM_FIELDS) {
       if (field in rawObj && Array.isArray(rawObj[field])) {
-        for (const nested of rawObj[field] as unknown[]) {
-          extractItemsFromRaw(nested, sourceFile, items);
+        const arr = rawObj[field] as unknown[];
+        for (let i = 0; i < arr.length; i++) {
+          const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
+          extractItemsFromRaw(arr[i], sourceFile, items, nestedPath);
         }
       }
     }
   } else if (Array.isArray(raw)) {
-    // Array of items
-    for (const item of raw) {
-      extractItemsFromRaw(item, sourceFile, items);
+    // Array of items at root level
+    for (let i = 0; i < raw.length; i++) {
+      const itemPath = currentPath ? `${currentPath}[${i}]` : `[${i}]`;
+      extractItemsFromRaw(raw[i], sourceFile, items, itemPath);
     }
   } else {
     // Object that might contain item arrays (like manifest with modules/features/etc)
     const rawObj = raw as Record<string, unknown>;
     for (const field of NESTED_ITEM_FIELDS) {
       if (field in rawObj && Array.isArray(rawObj[field])) {
-        for (const nested of rawObj[field] as unknown[]) {
-          extractItemsFromRaw(nested, sourceFile, items);
+        const arr = rawObj[field] as unknown[];
+        for (let i = 0; i < arr.length; i++) {
+          const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
+          extractItemsFromRaw(arr[i], sourceFile, items, nestedPath);
         }
       }
     }
@@ -780,4 +794,309 @@ export async function buildIndexes(ctx: KspecContext): Promise<{
   const refIndex = new ReferenceIndex(tasks, items);
   const itemIndex = new ItemIndex(tasks, items);
   return { refIndex, itemIndex, tasks, items };
+}
+
+// ============================================================
+// SPEC ITEM CRUD (supports nested structures)
+// ============================================================
+
+/**
+ * Strip runtime metadata from spec item before serialization
+ */
+function stripSpecItemMetadata(item: LoadedSpecItem): SpecItem {
+  const { _sourceFile, _path, ...cleanItem } = item;
+  return cleanItem as SpecItem;
+}
+
+/**
+ * Parse a path string into segments.
+ * e.g., "features[0].requirements[2]" -> [["features", 0], ["requirements", 2]]
+ */
+function parsePath(pathStr: string): Array<[string, number]> {
+  const segments: Array<[string, number]> = [];
+  const regex = /(\w+)\[(\d+)\]/g;
+  let match;
+  while ((match = regex.exec(pathStr)) !== null) {
+    segments.push([match[1], parseInt(match[2], 10)]);
+  }
+  return segments;
+}
+
+/**
+ * Navigate to a location in a YAML structure using a path.
+ * Returns the parent object and the array containing the target item.
+ */
+function navigateToPath(
+  root: unknown,
+  pathStr: string
+): { parent: Record<string, unknown>; array: unknown[]; index: number } | null {
+  if (!pathStr) return null;
+
+  const segments = parsePath(pathStr);
+  if (segments.length === 0) return null;
+
+  let current: unknown = root;
+
+  // Navigate to the parent of the last segment
+  for (let i = 0; i < segments.length - 1; i++) {
+    const [field, index] = segments[i];
+    if (typeof current !== 'object' || current === null) return null;
+    const obj = current as Record<string, unknown>;
+    if (!Array.isArray(obj[field])) return null;
+    current = (obj[field] as unknown[])[index];
+  }
+
+  // Get the final array and index
+  const [finalField, finalIndex] = segments[segments.length - 1];
+  if (typeof current !== 'object' || current === null) return null;
+  const parent = current as Record<string, unknown>;
+  if (!Array.isArray(parent[finalField])) return null;
+
+  return {
+    parent,
+    array: parent[finalField] as unknown[],
+    index: finalIndex,
+  };
+}
+
+/**
+ * Find an item by ULID in a nested YAML structure.
+ * Returns the path segments to reach it.
+ */
+function findItemInStructure(
+  root: unknown,
+  ulid: string,
+  currentPath: string = ''
+): { path: string; item: Record<string, unknown> } | null {
+  if (!root || typeof root !== 'object') return null;
+
+  const obj = root as Record<string, unknown>;
+
+  // Check if this is the item we're looking for
+  if (obj._ulid === ulid) {
+    return { path: currentPath, item: obj };
+  }
+
+  // Search nested item fields
+  for (const field of NESTED_ITEM_FIELDS) {
+    if (Array.isArray(obj[field])) {
+      const arr = obj[field] as unknown[];
+      for (let i = 0; i < arr.length; i++) {
+        const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
+        const result = findItemInStructure(arr[i], ulid, nestedPath);
+        if (result) return result;
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Create a new spec item with auto-generated fields
+ */
+export function createSpecItem(input: SpecItemInput): SpecItem {
+  return {
+    _ulid: input._ulid || ulid(),
+    slugs: input.slugs || [],
+    title: input.title,
+    type: input.type,
+    status: input.status,
+    priority: input.priority,
+    tags: input.tags || [],
+    description: input.description,
+    depends_on: input.depends_on || [],
+    implements: input.implements || [],
+    relates_to: input.relates_to || [],
+    tests: input.tests || [],
+    created: input.created || new Date().toISOString(),
+    created_by: input.created_by,
+  };
+}
+
+/**
+ * Map from item type to the field name used to store children of that type.
+ */
+const TYPE_TO_CHILD_FIELD: Record<string, string> = {
+  feature: 'features',
+  requirement: 'requirements',
+  constraint: 'constraints',
+  decision: 'decisions',
+  module: 'modules',
+};
+
+/**
+ * Add a spec item as a child of a parent item.
+ * @param parent The parent item to add under
+ * @param child The new child item to add
+ * @param childField Optional field name override (defaults based on child.type)
+ */
+export async function addChildItem(
+  ctx: KspecContext,
+  parent: LoadedSpecItem,
+  child: SpecItem,
+  childField?: string
+): Promise<{ item: SpecItem; path: string }> {
+  if (!parent._sourceFile) {
+    throw new Error('Parent item has no source file');
+  }
+
+  const field = childField || TYPE_TO_CHILD_FIELD[child.type || 'feature'] || 'features';
+
+  // Load the raw YAML
+  const raw = await readYamlFile<unknown>(parent._sourceFile);
+
+  // Find the parent in the structure
+  let parentObj: Record<string, unknown>;
+  let parentPath: string;
+
+  if (parent._path) {
+    const nav = navigateToPath(raw, parent._path);
+    if (!nav) {
+      throw new Error(`Could not navigate to parent path: ${parent._path}`);
+    }
+    parentObj = nav.array[nav.index] as Record<string, unknown>;
+    parentPath = parent._path;
+  } else {
+    // Parent is the root item
+    parentObj = raw as Record<string, unknown>;
+    parentPath = '';
+  }
+
+  // Ensure the child field array exists
+  if (!Array.isArray(parentObj[field])) {
+    parentObj[field] = [];
+  }
+
+  // Add the child
+  const childArray = parentObj[field] as unknown[];
+  const cleanChild = stripSpecItemMetadata(child as LoadedSpecItem);
+  childArray.push(cleanChild);
+
+  // Calculate the new child's path
+  const childIndex = childArray.length - 1;
+  const childPath = parentPath ? `${parentPath}.${field}[${childIndex}]` : `${field}[${childIndex}]`;
+
+  // Write back
+  await writeYamlFile(parent._sourceFile, raw);
+
+  return { item: cleanChild, path: childPath };
+}
+
+/**
+ * Update a spec item in place within its source file.
+ * Works with nested structures using the _path field.
+ */
+export async function updateSpecItem(
+  ctx: KspecContext,
+  item: LoadedSpecItem,
+  updates: Partial<SpecItemInput>
+): Promise<SpecItem> {
+  if (!item._sourceFile) {
+    throw new Error('Item has no source file');
+  }
+
+  // Load the raw YAML
+  const raw = await readYamlFile<unknown>(item._sourceFile);
+
+  // Find the item in the structure (use stored path or search by ULID)
+  let targetObj: Record<string, unknown>;
+
+  if (item._path) {
+    const nav = navigateToPath(raw, item._path);
+    if (!nav) {
+      throw new Error(`Could not navigate to path: ${item._path}`);
+    }
+    targetObj = nav.array[nav.index] as Record<string, unknown>;
+  } else {
+    // Item might be the root, or we need to find it
+    const found = findItemInStructure(raw, item._ulid);
+    if (found) {
+      targetObj = found.item;
+    } else if ((raw as Record<string, unknown>)._ulid === item._ulid) {
+      targetObj = raw as Record<string, unknown>;
+    } else {
+      throw new Error(`Could not find item ${item._ulid} in structure`);
+    }
+  }
+
+  // Apply updates (but never change _ulid)
+  for (const [key, value] of Object.entries(updates)) {
+    if (key !== '_ulid' && key !== '_sourceFile' && key !== '_path') {
+      targetObj[key] = value;
+    }
+  }
+
+  // Write back
+  await writeYamlFile(item._sourceFile, raw);
+
+  return { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+}
+
+/**
+ * Delete a spec item from its source file.
+ * Works with nested structures using the _path field.
+ */
+export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): Promise<boolean> {
+  if (!item._sourceFile) {
+    return false;
+  }
+
+  try {
+    const raw = await readYamlFile<unknown>(item._sourceFile);
+
+    // If item has a path, navigate to it and remove from parent array
+    if (item._path) {
+      const nav = navigateToPath(raw, item._path);
+      if (!nav) {
+        return false;
+      }
+      // Remove the item from the array
+      nav.array.splice(nav.index, 1);
+      await writeYamlFile(item._sourceFile, raw);
+      return true;
+    }
+
+    // No path - try to find it by ULID
+    const found = findItemInStructure(raw, item._ulid);
+    if (found && found.path) {
+      const nav = navigateToPath(raw, found.path);
+      if (nav) {
+        nav.array.splice(nav.index, 1);
+        await writeYamlFile(item._sourceFile, raw);
+        return true;
+      }
+    }
+
+    // Maybe it's a root-level array item
+    if (Array.isArray(raw)) {
+      const index = raw.findIndex((i: unknown) =>
+        typeof i === 'object' && i !== null && (i as Record<string, unknown>)._ulid === item._ulid
+      );
+      if (index >= 0) {
+        raw.splice(index, 1);
+        await writeYamlFile(item._sourceFile, raw);
+        return true;
+      }
+    }
+
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Save a spec item - either updates existing or adds to parent.
+ * For new items, use addChildItem instead.
+ */
+export async function saveSpecItem(ctx: KspecContext, item: LoadedSpecItem): Promise<void> {
+  // If item has a source file and path, it's an update
+  if (item._sourceFile && item._path) {
+    await updateSpecItem(ctx, item, item);
+    return;
+  }
+
+  // Otherwise, this is more complex - would need a parent
+  throw new Error('Cannot save new item without parent. Use addChildItem instead.');
 }
