@@ -11,6 +11,7 @@ import {
   registerItemCommands,
   registerValidateCommand,
   registerHelpCommand,
+  registerDeriveCommand,
 } from './commands/index.js';
 
 const program = new Command();
@@ -37,6 +38,7 @@ registerInitCommand(program);
 registerItemCommands(program);
 registerValidateCommand(program);
 registerHelpCommand(program);
+registerDeriveCommand(program);
 
 // Parse and execute
 program.parse();

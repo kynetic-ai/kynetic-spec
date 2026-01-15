@@ -915,3 +915,20 @@
         - Consistent tone across commands
       supersedes: null
   todos: []
+- title: 'Implement: kspec task delete'
+  type: task
+  spec_ref: '@cmd-task-delete'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-task-delete
+  tags: []
+  _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-15T12:55:07.303Z'
+  notes: []
+  todos: []

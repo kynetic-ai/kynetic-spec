@@ -145,6 +145,104 @@ npx tsx src/cli/index.ts validate --refs    # Check references only
 npx tsx src/cli/index.ts validate --schema  # Check schema only
 ```
 
+## Spec-First Development
+
+The spec defines what to build. Tasks track the work. When these drift apart, problems compound.
+
+**Core principle**: If you're changing behavior and the spec doesn't cover it, update the spec first.
+
+### When This Flow Applies
+
+Any change that affects behavior:
+- Adding new functionality
+- Modifying existing behavior
+- Fixing bugs that reveal spec gaps
+- Removing or deprecating features
+
+This flow bridges spec-reality gaps **in the moment** rather than after the fact.
+
+### Step 1: Check the Spec
+
+Before implementing, ask: **Does the spec cover this?**
+
+```bash
+kspec item get @relevant-item    # Check existing spec
+kspec item list --tag feature    # Browse related items
+```
+
+- **Spec exists and matches** → Derive task, proceed
+- **Spec exists but outdated** → Update spec first
+- **No spec exists** → Create spec first (if behavior change) or task directly (if infra)
+
+### Step 2: Reflect and Clarify
+
+When spec work is needed, use `AskUserQuestion` to align with the user:
+
+- Present your interpretation of the change
+- State where it fits in the spec hierarchy
+- Note any assumptions about scope/behavior
+- Offer options:
+  - **Dive deeper**: Answer questions to define precisely
+  - **Fill gaps**: Agent uses existing patterns to complete spec
+  - **Just task**: Skip spec for now (appropriate for infra, spikes, unclear scope)
+
+### Step 3: Update or Create Spec
+
+```bash
+# Update existing item
+kspec item set @existing-item --description "Updated behavior..."
+
+# Or create new item under appropriate parent
+kspec item add --under @parent --title "New capability" --type requirement
+```
+
+**Consider granularity**: Large changes should be multiple spec items, not one monolithic entry.
+
+### Step 4: Derive Task
+
+Check before deriving:
+
+1. **Existing coverage**: Does a task already implement this spec?
+2. **Task size**: Should the spec be broken down further?
+
+```bash
+kspec derive @spec-item
+```
+
+The task inherits context from the spec via `spec_ref`.
+
+### Handling Different Request Types
+
+| Situation | Flow |
+|-----------|------|
+| Clear behavior change | Check spec → Update/create spec → Derive task |
+| Vague idea, unclear scope | Create spike task → Explore → Spec when clear |
+| Infra/internal (no user impact) | Create task directly, no spec needed |
+| Bug revealing spec gap | Fix bug → Update spec to match reality |
+
+### Spike Tasks (for unclear scope)
+
+When scope is nebulous, explore first:
+
+```bash
+kspec task add --type spike --title "Explore: ..."
+```
+
+Spike outcomes become spec items, then derive implementation tasks.
+
+*Note: An inbox system for capturing raw ideas is planned but not yet implemented.*
+
+### Default: Always Confirm
+
+Ask before creating or modifying spec items. Present what would change and get confirmation. Future project onboarding may configure more autonomous behavior.
+
+### Why This Matters
+
+- Spec stays accurate as source of truth
+- Tasks trace back to defined behavior
+- Future agents/sessions understand what was built and why
+- Drift is caught immediately, not discovered later
+
 ## Design Decisions
 
 Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:

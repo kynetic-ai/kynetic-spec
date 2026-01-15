@@ -1,8 +1,7 @@
-# CLI Module - Command Line Interface
-# Defines the kspec CLI commands and behavior
-
 _ulid: 01KEZCJPHVBKRZQ7VVBF84H51Z
-slugs: [cli, cli-module]
+slugs:
+  - cli
+  - cli-module
 title: CLI Interface
 type: module
 status:
@@ -12,27 +11,26 @@ description: |
   The kspec CLI is the primary interface to Kynetic Spec.
   Follows git's plumbing/porcelain model: low-level primitives
   for scripts/agents, high-level commands for humans.
-
 features:
-  # ============================================================
-  # CLI DESIGN - Core principles
-  # ============================================================
   - _ulid: 01KEZCJPHW3CSMXYZT01FP76BM
-    slugs: [cli-design]
+    slugs:
+      - cli-design
     title: CLI Design Principles
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       The CLI is designed for both human and agent use.
       Consistent structure, predictable output, clear errors.
-
     requirements:
       - _ulid: 01KEZCJPHWP32HK8MR38P2WSSJ
-        slugs: [cli-structure]
+        slugs:
+          - cli-structure
         title: Command Structure
         type: requirement
         status:
@@ -50,10 +48,11 @@ features:
           - kspec item add --type feature --title "Login"
           - kspec task start @impl-login
           - kspec tasks ready
-        implements: ["@cli-design"]
-
+        implements:
+          - '@cli-design'
       - _ulid: 01KEZCJPHWKVBFSAEP0MMH57DQ
-        slugs: [cli-json-output]
+        slugs:
+          - cli-json-output
         title: JSON Output Mode
         type: requirement
         status:
@@ -69,10 +68,11 @@ features:
           - success: boolean
           - data: The result
           - errors: Array of error objects (if any)
-        implements: ["@cli-design"]
-
+        implements:
+          - '@cli-design'
       - _ulid: 01KEZCJPHWB81SAWT4ZGCV75FC
-        slugs: [cli-exit-codes]
+        slugs:
+          - cli-exit-codes
         title: Semantic Exit Codes
         type: requirement
         status:
@@ -89,10 +89,11 @@ features:
           - 5: Conflict (already exists, etc.)
 
           Scripts can handle specific cases.
-        implements: ["@cli-design"]
-
+        implements:
+          - '@cli-design'
       - _ulid: 01KEZCJPHWBEEP2BYRP6YVNK9F
-        slugs: [cli-agent-features]
+        slugs:
+          - cli-agent-features
         title: Agent-Friendly Features
         type: requirement
         status:
@@ -108,38 +109,36 @@ features:
           - --quiet: Suppress non-essential output
 
           Agents should be able to use kspec without interaction.
-        implements: ["@cli-design"]
-
-  # ============================================================
-  # ITEM COMMANDS - CRUD for spec items
-  # ============================================================
+        implements:
+          - '@cli-design'
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
-    slugs: [item-commands]
+    slugs:
+      - item-commands
     title: Item Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       CRUD operations for spec items.
       The foundation of CLI functionality.
-
     acceptance_criteria:
       - id: ac-item-cmd-1
         given: valid item data
         when: kspec item add runs
         then: item is created with auto-generated ULID
-
       - id: ac-item-cmd-2
         given: an existing item @login
         when: kspec item get @login runs
         then: full item data is displayed
-
     requirements:
       - _ulid: 01KEZCJPHXGMME0BZ5C65R5QH8
-        slugs: [item-add]
+        slugs:
+          - item-add
         title: kspec item add
         type: requirement
         status:
@@ -156,10 +155,11 @@ features:
           - --parent <ref>: Nest under parent item
 
           Returns created item (with generated ULID).
-        implements: ["@item-commands"]
-
+        implements:
+          - '@item-commands'
       - _ulid: 01KEZCJPHXKYVVP0YWF261A8N3
-        slugs: [item-get]
+        slugs:
+          - item-get
         title: kspec item get
         type: requirement
         status:
@@ -173,10 +173,11 @@ features:
           - --format <fmt>: Output format (yaml, json)
 
           Resolves @reference, displays full item.
-        implements: ["@item-commands"]
-
+        implements:
+          - '@item-commands'
       - _ulid: 01KEZCJPHXT212CZV6W64YJFAQ
-        slugs: [item-list]
+        slugs:
+          - item-list
         title: kspec item list
         type: requirement
         status:
@@ -192,10 +193,11 @@ features:
           - --has-field <field>: Items with field present
 
           Returns list of matching items.
-        implements: ["@item-commands"]
-
+        implements:
+          - '@item-commands'
       - _ulid: 01KEZCJPHX678F01J6TZE5SX1Q
-        slugs: [item-set]
+        slugs:
+          - item-set
         title: kspec item set
         type: requirement
         status:
@@ -209,10 +211,11 @@ features:
           - --data <yaml/json>: Patch with data
 
           Updates item in place. Use for status changes, etc.
-        implements: ["@item-commands"]
-
+        implements:
+          - '@item-commands'
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
-        slugs: [item-delete]
+        slugs:
+          - item-delete
         title: kspec item delete
         type: requirement
         status:
@@ -226,27 +229,27 @@ features:
           - --cascade: Delete children too
 
           Warns if item has references. Consider deprecation instead.
-        implements: ["@item-commands"]
-
-  # ============================================================
-  # TASK COMMANDS - Work item lifecycle
-  # ============================================================
+        implements:
+          - '@item-commands'
   - _ulid: 01JHNKA8W6CTSK000000000000
-    slugs: [task-commands]
+    slugs:
+      - task-commands
     title: Task Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       Commands for task lifecycle management.
       State transitions, queries, notes, todos.
-
     requirements:
       - _ulid: 01JHNKA8W7CTSK100000000000
-        slugs: [task-add]
+        slugs:
+          - task-add
         title: kspec task add
         type: requirement
         status:
@@ -263,10 +266,11 @@ features:
           - --priority <n>: Priority (1-5)
 
           Creates task in pending status.
-        implements: ["@task-commands"]
-
+        implements:
+          - '@task-commands'
       - _ulid: 01JHNKA8W8CTSK200000000000
-        slugs: [task-start]
+        slugs:
+          - task-start
         title: kspec task start
         type: requirement
         status:
@@ -278,11 +282,13 @@ features:
           Transitions task from pending to in_progress.
           Sets started_at timestamp.
           Fails if task is blocked or already in_progress.
-        implements: ["@task-commands"]
-        depends_on: ["@state-in-progress"]
-
+        implements:
+          - '@task-commands'
+        depends_on:
+          - '@state-in-progress'
       - _ulid: 01JHNKA8W9CTSK300000000000
-        slugs: [task-complete]
+        slugs:
+          - task-complete
         title: kspec task complete
         type: requirement
         status:
@@ -296,11 +302,13 @@ features:
 
           Transitions task to completed status.
           Sets completed_at timestamp.
-        implements: ["@task-commands"]
-        depends_on: ["@state-completed"]
-
+        implements:
+          - '@task-commands'
+        depends_on:
+          - '@state-completed'
       - _ulid: 01JHNKA9W0CTSK400000000000
-        slugs: [task-block]
+        slugs:
+          - task-block
         title: kspec task block
         type: requirement
         status:
@@ -314,11 +322,13 @@ features:
 
           Transitions task to blocked status.
           Adds reason to blocked_by array.
-        implements: ["@task-commands"]
-        depends_on: ["@state-blocked"]
-
+        implements:
+          - '@task-commands'
+        depends_on:
+          - '@state-blocked'
       - _ulid: 01JHNKA9W1CTSK500000000000
-        slugs: [task-unblock]
+        slugs:
+          - task-unblock
         title: kspec task unblock
         type: requirement
         status:
@@ -329,10 +339,11 @@ features:
 
           Transitions task from blocked back to in_progress (or pending).
           Clears blocked_by array.
-        implements: ["@task-commands"]
-
+        implements:
+          - '@task-commands'
       - _ulid: 01JHNKA9W2CTSK600000000000
-        slugs: [task-cancel]
+        slugs:
+          - task-cancel
         title: kspec task cancel
         type: requirement
         status:
@@ -346,28 +357,48 @@ features:
 
           Transitions task to cancelled status.
           Terminal state.
-        implements: ["@task-commands"]
-        depends_on: ["@state-cancelled"]
+        implements:
+          - '@task-commands'
+        depends_on:
+          - '@state-cancelled'
+      - _ulid: 01KF0VJEHSCEQ5SVD6XRYV81M1
+        slugs:
+          - cmd-task-delete
+        title: kspec task delete
+        type: requirement
+        tags: []
+        description: |-
+          kspec task delete <ref> [options]
 
-  # ============================================================
-  # QUERY COMMANDS - Finding things
-  # ============================================================
+          Options:
+          - --force: Skip confirmation
+          - --dry-run: Show what would be deleted
+
+          Removes task from source file. Confirmation required unless --force.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-15T12:55:00.409Z'
   - _ulid: 01JHNKA9W3CQRY000000000000
-    slugs: [query-commands]
+    slugs:
+      - query-commands
     title: Query Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       Commands for querying spec and task data.
       The primary interface for understanding what exists and what's ready.
-
     requirements:
       - _ulid: 01JHNKA9W4CQRY100000000000
-        slugs: [cmd-tasks-ready]
+        slugs:
+          - cmd-tasks-ready
         title: kspec tasks ready
         type: requirement
         status:
@@ -382,10 +413,12 @@ features:
           - no blocked_by entries
 
           THE primary command for agents and humans.
-        implements: ["@query-commands", "@query-ready"]
-
+        implements:
+          - '@query-commands'
+          - '@query-ready'
       - _ulid: 01JHNKA9W5CQRY200000000000
-        slugs: [cmd-tasks-next]
+        slugs:
+          - cmd-tasks-next
         title: kspec tasks next
         type: requirement
         status:
@@ -396,10 +429,12 @@ features:
 
           Returns single highest-priority ready task.
           Useful for "give me something to do" workflow.
-        implements: ["@query-commands", "@query-next"]
-
+        implements:
+          - '@query-commands'
+          - '@query-next'
       - _ulid: 01JHNKA9W6CQRY300000000000
-        slugs: [cmd-tasks-list]
+        slugs:
+          - cmd-tasks-list
         title: kspec tasks list
         type: requirement
         status:
@@ -410,10 +445,11 @@ features:
 
           General task listing with filters.
           See @query-filters for filter options.
-        implements: ["@query-commands"]
-
+        implements:
+          - '@query-commands'
       - _ulid: 01JHNKA9W7CQRY400000000000
-        slugs: [cmd-tasks-blocked]
+        slugs:
+          - cmd-tasks-blocked
         title: kspec tasks blocked
         type: requirement
         status:
@@ -424,27 +460,26 @@ features:
 
           Returns all blocked tasks with their blockers.
           Useful for identifying what's stuck.
-        implements: ["@query-commands"]
-
-  # ============================================================
-  # LINK COMMANDS - Managing relationships
-  # ============================================================
+        implements:
+          - '@query-commands'
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
-    slugs: [link-commands]
+    slugs:
+      - link-commands
     title: Link Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [cli]
+    tags:
+      - cli
     description: |
       Commands for managing relationships between items.
       Create, query, and remove links.
-
     requirements:
       - _ulid: 01KEZCJPHXWK4N7K72F0CFWBGN
-        slugs: [link-create]
+        slugs:
+          - link-create
         title: kspec link create
         type: requirement
         status:
@@ -458,10 +493,11 @@ features:
 
           Creates relationship from source to target.
           Updates the source item's relationship array.
-        implements: ["@link-commands"]
-
+        implements:
+          - '@link-commands'
       - _ulid: 01KEZCJPHY64RH5PPE6WJSPH03
-        slugs: [link-list]
+        slugs:
+          - link-list
         title: kspec link list
         type: requirement
         status:
@@ -476,10 +512,11 @@ features:
           - --type <type>: Filter by relationship type
 
           Shows relationships matching filters.
-        implements: ["@link-commands"]
-
+        implements:
+          - '@link-commands'
       - _ulid: 01KEZCJPHYBD2BSED0D9ZHRMGQ
-        slugs: [link-delete]
+        slugs:
+          - link-delete
         title: kspec link delete
         type: requirement
         status:
@@ -492,27 +529,27 @@ features:
           - --type <type>: Specific relationship type to remove
 
           Removes relationship. Updates source item.
-        implements: ["@link-commands"]
-
-  # ============================================================
-  # VALIDATION COMMANDS - Checking spec integrity
-  # ============================================================
+        implements:
+          - '@link-commands'
   - _ulid: 01KEZCJPHYBMBBKESVKBBV4CGM
-    slugs: [validate-commands]
+    slugs:
+      - validate-commands
     title: Validation Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       Commands for validating spec and task integrity.
       Essential for CI and pre-commit checks.
-
     requirements:
       - _ulid: 01KEZCJPHYHN29QV8C088GVGD1
-        slugs: [cmd-validate]
+        slugs:
+          - cmd-validate
         title: kspec validate
         type: requirement
         status:
@@ -529,10 +566,12 @@ features:
           - --strict: Treat warnings as errors
 
           Default: All checks. Returns errors and warnings.
-        implements: ["@validate-commands", "@validation-modes"]
-
+        implements:
+          - '@validate-commands'
+          - '@validation-modes'
       - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
-        slugs: [cmd-lint]
+        slugs:
+          - cmd-lint
         title: kspec lint
         type: requirement
         status:
@@ -547,32 +586,32 @@ features:
 
           Combines validation with style checks.
           Good for CI: kspec lint --strict
-        implements: ["@validate-commands"]
-
-  # ============================================================
-  # DERIVE COMMANDS - Creating tasks from specs
-  # ============================================================
+        implements:
+          - '@validate-commands'
   - _ulid: 01JHNKAA05CDRV000000000000
-    slugs: [derive-commands]
+    slugs:
+      - derive-commands
     title: Derive Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       Commands for deriving tasks from spec items.
       Explicit, on-demand task creation.
-
     requirements:
       - _ulid: 01JHNKAA06CDRV100000000000
-        slugs: [cmd-derive]
+        slugs:
+          - cmd-derive
         title: kspec derive
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec derive <ref> [options]
           kspec derive --all [options]
@@ -583,27 +622,28 @@ features:
 
           Creates task(s) with spec_ref pointing to item(s).
           Idempotent by default.
-        implements: ["@derive-commands", "@derive-command"]
-
-  # ============================================================
-  # INIT AND CONFIG - Setup commands
-  # ============================================================
+        implements:
+          - '@derive-commands'
+          - '@derive-command'
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
-    slugs: [init-commands]
+    slugs:
+      - init-commands
     title: Init and Config Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, cli]
+    tags:
+      - mvp
+      - cli
     description: |
       Commands for initializing and configuring kspec.
       Project setup and configuration management.
-
     requirements:
       - _ulid: 01KEZCJPHYDTPQ34W8FRXQ9GKX
-        slugs: [cmd-init]
+        slugs:
+          - cmd-init
         title: kspec init
         type: requirement
         status:
@@ -621,10 +661,11 @@ features:
           - spec/modules/ (if not --single-file)
 
           Interactive prompts unless --no-prompt.
-        implements: ["@init-commands"]
-
+        implements:
+          - '@init-commands'
       - _ulid: 01KEZCJPHYZKAW6006AM7P5KWT
-        slugs: [cmd-hooks]
+        slugs:
+          - cmd-hooks
         title: kspec hooks
         type: requirement
         status:
@@ -637,4 +678,5 @@ features:
 
           Reads hooks from manifest config section.
           Sets up git hooks for validation.
-        implements: ["@init-commands"]
+        implements:
+          - '@init-commands'
