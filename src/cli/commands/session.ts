@@ -22,7 +22,9 @@ import {
   isGitRepo,
   getRecentCommits,
   getCurrentBranch,
+  getWorkingTreeStatus,
   type GitCommit,
+  type GitWorkingTree,
 } from '../../utils/index.js';
 import type { Note } from '../../schema/index.js';
 
@@ -52,6 +54,9 @@ export interface SessionContext {
 
   /** Recent git commits */
   recent_commits: CommitSummary[];
+
+  /** Working tree status */
+  working_tree: GitWorkingTree | null;
 
   /** Summary statistics */
   stats: SessionStats;
@@ -297,6 +302,7 @@ export async function gatherSessionContext(
   // Get git info
   let branch: string | null = null;
   let recentCommits: CommitSummary[] = [];
+  let workingTree: GitWorkingTree | null = null;
 
   if (showGit && isGitRepo(ctx.rootDir)) {
     branch = getCurrentBranch(ctx.rootDir);
@@ -314,6 +320,8 @@ export async function gatherSessionContext(
       message: c.message,
       author: c.author,
     }));
+
+    workingTree = getWorkingTreeStatus(ctx.rootDir);
   }
 
   return {
@@ -325,6 +333,7 @@ export async function gatherSessionContext(
     blocked_tasks: blockedTasks,
     recently_completed: recentlyCompleted,
     recent_commits: recentCommits,
+    working_tree: workingTree,
     stats,
   };
 }
@@ -452,6 +461,38 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
         `  ${chalk.yellow(commit.hash)} ${commit.message} ${chalk.gray(`(${age}, ${commit.author})`)}`
       );
     }
+  }
+
+  // Working tree section
+  if (ctx.working_tree && !ctx.working_tree.clean) {
+    console.log(chalk.bold.yellow('\n--- Working Tree ---'));
+
+    if (ctx.working_tree.staged.length > 0) {
+      console.log(chalk.green('  Staged:'));
+      for (const file of ctx.working_tree.staged) {
+        console.log(`    ${chalk.green(file.status[0].toUpperCase())} ${file.path}`);
+      }
+    }
+
+    if (ctx.working_tree.unstaged.length > 0) {
+      console.log(chalk.red('  Modified:'));
+      for (const file of ctx.working_tree.unstaged) {
+        console.log(`    ${chalk.red(file.status[0].toUpperCase())} ${file.path}`);
+      }
+    }
+
+    if (ctx.working_tree.untracked.length > 0) {
+      console.log(chalk.gray('  Untracked:'));
+      const limit = isBrief ? 5 : ctx.working_tree.untracked.length;
+      for (const path of ctx.working_tree.untracked.slice(0, limit)) {
+        console.log(`    ${chalk.gray('?')} ${path}`);
+      }
+      if (isBrief && ctx.working_tree.untracked.length > limit) {
+        console.log(chalk.gray(`    ... and ${ctx.working_tree.untracked.length - limit} more`));
+      }
+    }
+  } else if (ctx.working_tree?.clean) {
+    console.log(chalk.gray('\n--- Working Tree: Clean ---'));
   }
 
   console.log(''); // Final newline

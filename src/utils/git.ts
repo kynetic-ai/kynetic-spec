@@ -12,6 +12,19 @@ export interface GitCommit {
   author: string;
 }
 
+export interface GitFileStatus {
+  path: string;
+  status: 'modified' | 'added' | 'deleted' | 'renamed' | 'untracked';
+  staged: boolean;
+}
+
+export interface GitWorkingTree {
+  clean: boolean;
+  staged: GitFileStatus[];
+  unstaged: GitFileStatus[];
+  untracked: string[];
+}
+
 /**
  * Check if current directory is in a git repository
  */
@@ -88,5 +101,85 @@ export function getRecentCommits(options: {
     });
   } catch {
     return [];
+  }
+}
+
+/**
+ * Get the working tree status (staged, unstaged, untracked files)
+ */
+export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
+  const result: GitWorkingTree = {
+    clean: true,
+    staged: [],
+    unstaged: [],
+    untracked: [],
+  };
+
+  try {
+    const output = execSync('git status --porcelain', {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+
+    if (!output) {
+      return result;
+    }
+
+    result.clean = false;
+
+    for (const line of output.split('\n')) {
+      if (!line) continue;
+
+      const indexStatus = line[0];
+      const workTreeStatus = line[1];
+      // Path starts after status codes - trim to normalize
+      const path = line.slice(2).trim();
+
+      // Untracked files
+      if (indexStatus === '?' && workTreeStatus === '?') {
+        result.untracked.push(path);
+        continue;
+      }
+
+      // Staged changes (index has changes)
+      if (indexStatus !== ' ' && indexStatus !== '?') {
+        result.staged.push({
+          path,
+          status: parseStatusCode(indexStatus),
+          staged: true,
+        });
+      }
+
+      // Unstaged changes (work tree has changes)
+      if (workTreeStatus !== ' ' && workTreeStatus !== '?') {
+        result.unstaged.push({
+          path,
+          status: parseStatusCode(workTreeStatus),
+          staged: false,
+        });
+      }
+    }
+
+    return result;
+  } catch {
+    return result;
+  }
+}
+
+function parseStatusCode(
+  code: string
+): 'modified' | 'added' | 'deleted' | 'renamed' | 'untracked' {
+  switch (code) {
+    case 'M':
+      return 'modified';
+    case 'A':
+      return 'added';
+    case 'D':
+      return 'deleted';
+    case 'R':
+      return 'renamed';
+    default:
+      return 'modified';
   }
 }

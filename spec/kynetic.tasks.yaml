@@ -1016,6 +1016,18 @@ tasks:
           - Appears after 'Active Work' section to show what was just wrapped up
           - Helps with session handoffs and context continuity
         supersedes: null
+      - _ulid: 01KEZRJ7JAJXY6TBKH7MNE14YM
+        created_at: '2026-01-15T02:43:13.098Z'
+        author: '@claude'
+        content: |-
+          Added 'Working Tree' section showing git status:
+
+          - Shows staged files (green), modified/unstaged files (red), untracked files (gray)
+          - Appears at the end of session context
+          - Shows 'Working Tree: Clean' when no uncommitted changes
+          - Respects --no-git flag
+          - Untracked files limited to 5 in brief mode
+        supersedes: null
     todos: []
   - _ulid: 01KEZ9VV3KTTNVK82ZWPVD3XBD
     slugs:
