@@ -276,6 +276,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented kspec help command with extended help for all commands and concepts. Includes
+    examples, descriptions, and see-also links.
   depends_on: []
   context: []
   priority: 2
@@ -286,6 +289,7 @@
   vcs_refs: []
   created_at: '2026-01-15T01:00:18.326Z'
   started_at: '2026-01-15T04:05:43.315Z'
+  completed_at: '2026-01-15T04:08:36.081Z'
   notes:
     - _ulid: 01KEZJP4TRJN1QM76D8N3AWC0Z
       created_at: '2026-01-15T01:00:29.913Z'
@@ -343,10 +347,6 @@
         Unknown topics show error with available options.
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T04:08:36.081Z'
-  closed_reason: >-
-    Implemented kspec help command with extended help for all commands and concepts. Includes
-    examples, descriptions, and see-also links.
 - _ulid: 01KEZKE54QQJQ97TR13DZQ36EZ
   slugs:
     - task-inbox-system
@@ -683,5 +683,111 @@
 
         Note: May need to improve orphan detection to handle nested items better - 
         requirements inside a feature could be considered 'referenced' implicitly.
+      supersedes: null
+  todos: []
+- _ulid: 01KEZYBC1M3KMG9KB47CKQHY07
+  slugs:
+    - task-bulk-import
+  title: Design bulk item import from simplified YAML
+  type: spike
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - design
+    - dx
+    - cli
+  vcs_refs: []
+  created_at: '2026-01-15T04:24:19.764Z'
+  notes:
+    - _ulid: 01KEZYBSKSTZS50XQ32BZA4PZP
+      created_at: '2026-01-15T04:24:33.657Z'
+      author: '@claude'
+      content: >-
+        Design idea: Bulk item import from simplified YAML
+
+
+        Use case: During design sessions, quickly capture multiple related items without running
+        individual CLI commands.
+
+
+        Proposed format (simplified subset):
+
+        ```yaml
+
+        # kspec import --under @core --file design.yaml
+
+        # or: kspec import --under @core < design.yaml
+
+
+        features:
+          - title: User Authentication
+            slug: auth
+            description: Handle user login/logout
+            requirements:
+              - title: Password must be hashed
+                slug: password-hash
+              - title: Session expires after 24h
+                slug: session-expiry
+            constraints:
+              - title: No plaintext passwords in logs
+
+          - title: API Rate Limiting
+            slug: rate-limit
+            tags: [security, api]
+            requirements:
+              - title: 100 requests per minute per user
+        ```
+
+
+        Key simplifications from full spec:
+
+        - No ULIDs (auto-generated)
+
+        - No status (defaults to draft/not_started)
+
+        - Nested structure matches item relationships
+
+        - Minimal required fields (just title)
+
+        - Optional slug, tags, description
+
+
+        Command options:
+
+        - `kspec import --under @parent --file items.yaml`
+
+        - `kspec import --under @parent --stdin` (pipe from editor)
+
+        - `--dry-run` to preview what would be created
+
+        - `--format` to output the simplified format from existing items (reverse)
+      supersedes: null
+    - _ulid: 01KEZYC3E9FPKNCNT8ZD957C7X
+      created_at: '2026-01-15T04:24:43.723Z'
+      author: '@claude'
+      content: |-
+        Design session workflow concept:
+
+        1. Start a design session:
+           `kspec design start --under @module-name`
+           Opens $EDITOR with template, or starts interactive mode
+
+        2. Write items in simplified format (see above)
+
+        3. On save/exit:
+           - Validates structure
+           - Shows preview of items to create
+           - Asks for confirmation
+           - Creates all items under the parent
+
+        Alternative: pipe from any source
+           `cat design-notes.yaml | kspec import --under @core`
+           `pbpaste | kspec import --under @core`  # from clipboard
+
+        This enables rapid spec capture during brainstorming without CLI friction.
       supersedes: null
   todos: []
