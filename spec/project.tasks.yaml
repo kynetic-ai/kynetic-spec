@@ -1212,4 +1212,27 @@
         Blocking question: Should the hook inject general spec-first reminders, or should it be more
         specific (e.g., run kspec commands to check coverage)?
       supersedes: null
+    - _ulid: 01KF1BW6E9N2BMDWE4KB03TM26
+      created_at: '2026-01-15T17:39:57.002Z'
+      author: '@claude'
+      content: |-
+        Deep research on prompt-type hooks complete.
+
+        Key finding: Haiku gets LIMITED context in prompt-type hooks:
+        - Just the hook input JSON (prompt text, session_id, cwd)
+        - NOT conversation history or project files
+        - Response format: {ok: bool, reason: string}
+
+        Uncertainty identified:
+        - For Stop hooks, ok=false means 'keep working' and reason becomes context
+        - For UserPromptSubmit, ok=false might BLOCK the prompt entirely
+        - Need to test empirically or use command hook for predictability
+
+        Three options on table:
+        A) Command hook - full control, stdout becomes context
+        B) Test prompt-type empirically - quick spike to see behavior
+        C) Hybrid - command hook that calls Haiku for gating
+
+        Awaiting user decision on which path to pursue.
+      supersedes: null
   todos: []
