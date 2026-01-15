@@ -1322,4 +1322,18 @@
 
         Pending: User verification that reminder appears in context without blocking
       supersedes: null
+    - _ulid: 01KF1D23HH6H8QVDZ6ZBZNV89J
+      created_at: '2026-01-15T18:00:39.217Z'
+      author: '@claude'
+      content: |-
+        Testing successful:
+        - Hook fires on UserPromptSubmit
+        - Reminder appears as 'UserPromptSubmit hook success: [kspec] Before implementing...'
+        - Claude saw it and considered spec coverage before diving in
+
+        Remaining work for production use:
+        - Add hook to main project .claude/settings.json
+        - Consider portability (absolute path vs detection)
+        - Could clean up test-hooks/ folder
+      supersedes: null
   todos: []
