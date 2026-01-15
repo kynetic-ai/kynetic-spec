@@ -274,7 +274,7 @@
   title: Implement tiered CLI help (default + full with examples)
   type: task
   spec_ref: null
-  status: pending
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -285,6 +285,7 @@
     - docs
   vcs_refs: []
   created_at: '2026-01-15T01:00:18.326Z'
+  started_at: '2026-01-15T04:05:43.315Z'
   notes:
     - _ulid: 01KEZJP4TRJN1QM76D8N3AWC0Z
       created_at: '2026-01-15T01:00:29.913Z'
@@ -326,7 +327,26 @@
         - Separate 'kspec help <topic>' command
         - --verbose or --full flag on --help
       supersedes: null
+    - _ulid: 01KEZXECCA6JM6DQH862HJGXAH
+      created_at: '2026-01-15T04:08:29.835Z'
+      author: '@claude'
+      content: |-
+        Implemented extended help system:
+        - kspec help: Lists all topics (commands + concepts)
+        - kspec help <topic>: Shows detailed help with examples
+
+        Topics:
+        - Commands: task, tasks, validate, session, init, setup, item
+        - Concepts: refs, statuses, workflow
+
+        Each topic includes description, examples, and 'see also' links.
+        Unknown topics show error with available options.
+      supersedes: null
   todos: []
+  completed_at: '2026-01-15T04:08:36.081Z'
+  closed_reason: >-
+    Implemented kspec help command with extended help for all commands and concepts. Includes
+    examples, descriptions, and see-also links.
 - _ulid: 01KEZKE54QQJQ97TR13DZQ36EZ
   slugs:
     - task-inbox-system
@@ -604,6 +624,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Removed 4 bogus @milestone-self-hosting dependencies from post-mvp tasks. Milestones aren't
+    implemented yet, and these tasks are already properly prioritized via P2/P3 + post-mvp tags.
   depends_on: []
   context: []
   priority: 1
@@ -613,6 +636,7 @@
   vcs_refs: []
   created_at: '2026-01-15T03:50:33.936Z'
   started_at: '2026-01-15T03:53:47.502Z'
+  completed_at: '2026-01-15T03:54:20.726Z'
   notes:
     - _ulid: 01KEZWDT9JV9X118ETETZXN1YY
       created_at: '2026-01-15T03:50:42.739Z'
@@ -628,10 +652,6 @@
         Run 'kspec validate --refs' to see all broken references.
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T03:54:20.726Z'
-  closed_reason: >-
-    Removed 4 bogus @milestone-self-hosting dependencies from post-mvp tasks. Milestones aren't
-    implemented yet, and these tasks are already properly prioritized via P2/P3 + post-mvp tags.
 - _ulid: 01KEZWF5GDFGJXAGXMBPJRK1KS
   slugs: []
   title: Review and fix orphaned spec items
