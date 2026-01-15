@@ -1461,3 +1461,57 @@
            - Should threads/questions persist or reset?
       supersedes: null
   todos: []
+- _ulid: 01KF1KB4D199B61AKJ17RM7YFN
+  slugs: []
+  title: Design shadow branch for meta tracking
+  type: spike
+  description: >-
+    Shadow branch for auto-commit meta tracking - orphan branch (e.g., kspec-meta) that only
+    contains spec/ directory. Auto-commits on kspec commands go to shadow branch, keeping main
+    history clean. Reading task/spec state always pulls from shadow branch. Solves commit bloat
+    problem for auto-tracking. Works with git directly or jj. Could be configured during kspec init.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - architecture
+    - git
+    - infrastructure
+  vcs_refs: []
+  created_at: '2026-01-15T19:50:26.465Z'
+  notes:
+    - _ulid: 01KF1KBDKYMFBZGVQ9ZSTTJH9G
+      created_at: '2026-01-15T19:50:35.903Z'
+      author: '@claude'
+      content: |-
+        Design questions to explore:
+
+        1. Branch model:
+           - Orphan branch (kspec-meta) with only spec/ directory?
+           - Or separate worktree?
+           - jj compatibility?
+
+        2. Auto-commit triggers:
+           - After every kspec command that modifies state?
+           - Batched (end of session)?
+           - Configurable?
+
+        3. Reading state:
+           - Always pull from shadow branch?
+           - Merge strategy when main changes spec files?
+
+        4. Initialization:
+           - kspec init --shadow-branch?
+           - kspec setup configures it?
+
+        5. Artifacts integration:
+           - Shadow branch as home for artifacts/?
+           - Enables large files without LFS on main?
+
+        6. Migration:
+           - How to move existing project to shadow branch model?
+      supersedes: null
+  todos: []
