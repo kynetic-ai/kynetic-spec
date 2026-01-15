@@ -17,6 +17,7 @@ import {
   type SpecItem,
   type SpecItemInput,
   type Note,
+  type Todo,
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
 import { ItemIndex } from './items.js';
@@ -451,6 +452,20 @@ export function createNote(content: string, author?: string, supersedes?: string
     author: author ?? getAuthor(),
     content,
     supersedes: supersedes || null,
+  };
+}
+
+/**
+ * Create a new todo item.
+ * The id should be the next available id for the task's todos array.
+ */
+export function createTodo(id: number, text: string, addedBy?: string): Todo {
+  return {
+    id,
+    text,
+    done: false,
+    added_at: new Date().toISOString(),
+    added_by: addedBy ?? getAuthor(),
   };
 }
 

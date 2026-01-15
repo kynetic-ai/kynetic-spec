@@ -993,8 +993,9 @@ tasks:
       - Append-only with supersession
     spec_ref: '@task-notes'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
+    closed_reason: Implemented todo commands for task management
     depends_on: []
     context: []
     priority: 2
@@ -1004,8 +1005,27 @@ tasks:
       - tasks
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.954Z'
-    notes: []
-    todos: []
+    started_at: '2026-01-15T04:30:32.052Z'
+    completed_at: '2026-01-15T04:33:54.181Z'
+    notes:
+      - _ulid: 01KEZYWPCFD1QCH08QF5Z5C9RQ
+        created_at: '2026-01-15T04:33:47.408Z'
+        author: '@claude'
+        content: >-
+          Implemented todo commands: task todos (list), task todo add, task todo done, task todo
+          undone. Added createTodo helper. Updated extended help for task and workflow topics.
+        supersedes: null
+    todos:
+      - id: 1
+        text: Test adding a todo item
+        done: false
+        added_at: '2026-01-15T04:31:54.074Z'
+        added_by: '@claude'
+      - id: 2
+        text: Another test todo
+        done: false
+        added_at: '2026-01-15T04:32:32.173Z'
+        added_by: '@claude'
   - _ulid: 01JHNKAB27TASK630000000000
     slugs:
       - task-link-commands

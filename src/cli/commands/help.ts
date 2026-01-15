@@ -29,10 +29,18 @@ Commands:
   task cancel <ref>    Cancel a task with a reason
   task note <ref>      Add a work log note to a task
   task notes <ref>     Show all notes for a task
+  task todos <ref>     Show all todos (checklist items) for a task
+  task todo add        Add a todo to a task
+  task todo done       Mark a todo as done
+  task todo undone     Mark a todo as not done
 
 Task References:
   Tasks can be referenced by slug (@task-slug) or ULID prefix (@01KEZ).
   The @ prefix is optional in commands.
+
+Notes vs Todos:
+  - Notes: Append-only work log entries for tracking progress and findings
+  - Todos: Lightweight checklist items that emerge during work
 
 Blocking vs Dependencies:
   - blocked_by: Manual blockers (strings like "waiting on design review")
@@ -46,8 +54,9 @@ Blocking vs Dependencies:
       'kspec task start @my-task',
       'kspec task note @my-task "Investigated root cause, found issue in auth module"',
       'kspec task complete @my-task --reason "Fixed by updating token validation"',
-      'kspec task block @my-task --reason "Waiting on API spec from backend team"',
-      'kspec task unblock @my-task',
+      'kspec task todo add @my-task "Review error handling"',
+      'kspec task todo done @my-task 1',
+      'kspec task todos @my-task',
     ],
     seeAlso: ['tasks', 'refs', 'statuses'],
   },
@@ -307,9 +316,15 @@ Starting a session:
 Working on a task:
   1. kspec task start @task  # Mark as in_progress
   2. kspec task note @task "Starting work on X..."
-  3. Do the work
+  3. Do the work (use todos for tracking sub-items)
   4. kspec task note @task "Completed X, approach was Y..."
   5. kspec task complete @task --reason "Summary"
+
+Using todos during work:
+  kspec task todo add @task "Review error handling"
+  kspec task todo add @task "Add tests"
+  kspec task todo done @task 1
+  kspec task todos @task
 
 Creating new tasks:
   kspec task add --title "Task name" --spec-ref @item --priority 2

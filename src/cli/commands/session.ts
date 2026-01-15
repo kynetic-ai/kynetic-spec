@@ -26,7 +26,7 @@ import {
   type GitCommit,
   type GitWorkingTree,
 } from '../../utils/index.js';
-import type { Note } from '../../schema/index.js';
+import type { Note, Todo } from '../../schema/index.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -42,6 +42,9 @@ export interface SessionContext {
 
   /** Recent notes from active tasks */
   recent_notes: NoteSummary[];
+
+  /** Incomplete todos from active tasks */
+  active_todos: TodoSummary[];
 
   /** Tasks ready to be picked up */
   ready_tasks: ReadyTaskSummary[];
@@ -70,6 +73,8 @@ export interface ActiveTaskSummary {
   spec_ref: string | null;
   note_count: number;
   last_note_at: string | null;
+  todo_count: number;
+  incomplete_todos: number;
 }
 
 export interface NoteSummary {
@@ -79,6 +84,15 @@ export interface NoteSummary {
   created_at: string;
   author: string | null;
   content: string;
+}
+
+export interface TodoSummary {
+  task_ref: string;
+  task_title: string;
+  id: number;
+  text: string;
+  added_at: string;
+  added_by: string | null;
 }
 
 export interface ReadyTaskSummary {
@@ -135,6 +149,7 @@ function toActiveTaskSummary(
 ): ActiveTaskSummary {
   const lastNote =
     task.notes.length > 0 ? task.notes[task.notes.length - 1] : null;
+  const incompleteTodos = task.todos.filter(t => !t.done).length;
   return {
     ref: index.shortUlid(task._ulid),
     title: task.title,
@@ -143,6 +158,8 @@ function toActiveTaskSummary(
     spec_ref: task.spec_ref || null,
     note_count: task.notes.length,
     last_note_at: lastNote ? lastNote.created_at : null,
+    todo_count: task.todos.length,
+    incomplete_todos: incompleteTodos,
   };
 }
 
@@ -232,6 +249,38 @@ function collectRecentNotes(
     .slice(0, options.limit);
 }
 
+function collectIncompleteTodos(
+  tasks: LoadedTask[],
+  index: ReferenceIndex,
+  options: { limit: number }
+): TodoSummary[] {
+  const allTodos: TodoSummary[] = [];
+
+  for (const task of tasks) {
+    for (const todo of task.todos) {
+      // Only include incomplete todos
+      if (todo.done) continue;
+
+      allTodos.push({
+        task_ref: index.shortUlid(task._ulid),
+        task_title: task.title,
+        id: todo.id,
+        text: todo.text,
+        added_at: todo.added_at,
+        added_by: todo.added_by || null,
+      });
+    }
+  }
+
+  // Sort by added_at descending (most recent first), take limit
+  return allTodos
+    .sort(
+      (a, b) =>
+        new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+    )
+    .slice(0, options.limit);
+}
+
 /**
  * Gather session context data
  */
@@ -269,6 +318,13 @@ export async function gatherSessionContext(
     allTasks.filter((t) => t.status === 'in_progress'),
     index,
     { limit: options.full ? limit * 2 : limit, since: sinceDate }
+  );
+
+  // Get incomplete todos from active tasks
+  const activeTodos = collectIncompleteTodos(
+    allTasks.filter((t) => t.status === 'in_progress'),
+    index,
+    { limit: options.full ? limit * 2 : limit }
   );
 
   // Get ready tasks
@@ -329,6 +385,7 @@ export async function gatherSessionContext(
     branch,
     active_tasks: activeTasks,
     recent_notes: recentNotes,
+    active_todos: activeTodos,
     ready_tasks: readyTasks,
     blocked_tasks: blockedTasks,
     recently_completed: recentlyCompleted,
@@ -421,6 +478,14 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
       if (isBrief && lines.length > maxLines) {
         console.log(chalk.gray(`    ... (${lines.length - maxLines} more lines)`));
       }
+    }
+  }
+
+  // Incomplete todos section
+  if (ctx.active_todos.length > 0) {
+    console.log(chalk.bold.yellow('\n--- Incomplete Todos ---'));
+    for (const todo of ctx.active_todos) {
+      console.log(`  ${chalk.yellow('[ ]')} ${todo.task_ref}#${todo.id}: ${todo.text}`);
     }
   }
 

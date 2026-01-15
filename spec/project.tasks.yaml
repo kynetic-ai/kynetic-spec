@@ -815,3 +815,30 @@
            - Document the behavior clearly
       supersedes: null
   todos: []
+- _ulid: 01KEZZ5BDD2Y6NZ8K8065GPHVX
+  slugs:
+    - task-archive
+  title: Archive completed tasks to separate file
+  type: spike
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - dx
+    - tasks
+  vcs_refs: []
+  created_at: '2026-01-15T04:38:31.085Z'
+  notes:
+    - _ulid: 01KEZZ5KJ4BZER0DSRWKWE2WGF
+      created_at: '2026-01-15T04:38:39.429Z'
+      author: '@claude'
+      content: >-
+        Idea: Move completed/cancelled tasks to a separate archive file (e.g.,
+        kynetic.tasks.archive.yaml) to keep the active tasks file clean and focused. Decisions
+        needed: naming convention, manual vs automatic archiving, whether to support unarchiving,
+        how references to archived tasks should work.
+      supersedes: null
+  todos: []

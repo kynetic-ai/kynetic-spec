@@ -7,6 +7,7 @@ import {
   saveTask,
   createTask,
   createNote,
+  createTodo,
   ReferenceIndex,
   type LoadedTask,
 } from '../../parser/index.js';
@@ -358,6 +359,171 @@ export function registerTaskCommands(program: Command): void {
         });
       } catch (err) {
         error('Failed to get notes', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec task todos <ref>
+  task
+    .command('todos <ref>')
+    .description('Show todos for a task')
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        output(foundTask.todos, () => {
+          if (foundTask.todos.length === 0) {
+            console.log('No todos');
+          } else {
+            for (const todo of foundTask.todos) {
+              const status = todo.done ? '[x]' : '[ ]';
+              const doneInfo = todo.done && todo.done_at ? ` (done ${todo.done_at})` : '';
+              console.log(`${status} ${todo.id}. ${todo.text}${doneInfo}`);
+            }
+          }
+        });
+      } catch (err) {
+        error('Failed to get todos', err);
+        process.exit(1);
+      }
+    });
+
+  // Create subcommand group for todo operations
+  const todoCmd = task
+    .command('todo')
+    .description('Manage task todos');
+
+  // kspec task todo add <ref> <text>
+  todoCmd
+    .command('add <ref> <text>')
+    .description('Add a todo to a task')
+    .option('--author <author>', 'Todo author')
+    .action(async (ref: string, text: string, options) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // Calculate next ID (max existing + 1, or 1 if none)
+        const nextId = foundTask.todos.length > 0
+          ? Math.max(...foundTask.todos.map(t => t.id)) + 1
+          : 1;
+
+        const todo = createTodo(nextId, text, options.author);
+
+        const updatedTask: Task = {
+          ...foundTask,
+          todos: [...foundTask.todos, todo],
+        };
+
+        await saveTask(ctx, updatedTask);
+        success(`Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`, { todo });
+      } catch (err) {
+        error('Failed to add todo', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec task todo done <ref> <id>
+  todoCmd
+    .command('done <ref> <id>')
+    .description('Mark a todo as done')
+    .action(async (ref: string, idStr: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        const id = parseInt(idStr, 10);
+        if (isNaN(id)) {
+          error(`Invalid todo ID: ${idStr}`);
+          process.exit(3);
+        }
+
+        const todoIndex = foundTask.todos.findIndex(t => t.id === id);
+        if (todoIndex === -1) {
+          error(`Todo #${id} not found`);
+          process.exit(3);
+        }
+
+        if (foundTask.todos[todoIndex].done) {
+          warn(`Todo #${id} is already done`);
+          return;
+        }
+
+        const updatedTodos = [...foundTask.todos];
+        updatedTodos[todoIndex] = {
+          ...updatedTodos[todoIndex],
+          done: true,
+          done_at: new Date().toISOString(),
+        };
+
+        const updatedTask: Task = {
+          ...foundTask,
+          todos: updatedTodos,
+        };
+
+        await saveTask(ctx, updatedTask);
+        success(`Marked todo #${id} as done`, { todo: updatedTodos[todoIndex] });
+      } catch (err) {
+        error('Failed to mark todo as done', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec task todo undone <ref> <id>
+  todoCmd
+    .command('undone <ref> <id>')
+    .description('Mark a todo as not done')
+    .action(async (ref: string, idStr: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        const id = parseInt(idStr, 10);
+        if (isNaN(id)) {
+          error(`Invalid todo ID: ${idStr}`);
+          process.exit(3);
+        }
+
+        const todoIndex = foundTask.todos.findIndex(t => t.id === id);
+        if (todoIndex === -1) {
+          error(`Todo #${id} not found`);
+          process.exit(3);
+        }
+
+        if (!foundTask.todos[todoIndex].done) {
+          warn(`Todo #${id} is not done`);
+          return;
+        }
+
+        const updatedTodos = [...foundTask.todos];
+        updatedTodos[todoIndex] = {
+          ...updatedTodos[todoIndex],
+          done: false,
+          done_at: undefined,
+        };
+
+        const updatedTask: Task = {
+          ...foundTask,
+          todos: updatedTodos,
+        };
+
+        await saveTask(ctx, updatedTask);
+        success(`Marked todo #${id} as not done`, { todo: updatedTodos[todoIndex] });
+      } catch (err) {
+        error('Failed to mark todo as not done', err);
         process.exit(1);
       }
     });
