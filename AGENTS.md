@@ -300,6 +300,69 @@ Ask before creating or modifying spec items. Present what would change and get c
 - Future agents/sessions understand what was built and why
 - Drift is caught immediately, not discovered later
 
+## Staying Aligned During Work
+
+Work rarely follows a straight line. User questions lead to follow-ups, implementations reveal gaps, and scope naturally expands. The key is recognizing these moments and keeping the system in sync.
+
+### Recognizing Scope Expansion
+
+**Watch for these patterns:**
+
+- User asks a follow-up that requires touching different code
+- "While I'm here, I should also..." thoughts
+- Modifying a file that wasn't part of the original task
+- Adding functionality the spec doesn't mention
+
+**Example - What went wrong:**
+```
+Task: Implement session checkpoint command
+  → Completed checkpoint, committed
+  → User: "Does setup command install this hook?"
+  → Modified setup.ts to add hook installation
+  → Committed without checking if setup had spec coverage
+  → Result: Undocumented feature, spec gap
+```
+
+**Example - Better approach:**
+```
+Task: Implement session checkpoint command
+  → Completed checkpoint, committed
+  → User: "Does setup command install this hook?"
+  → Before coding: "Let me check if setup has spec coverage"
+  → kspec item list | grep setup → No results
+  → "This is new scope. I'll note it on the checkpoint task
+     and capture a spec gap in inbox before proceeding"
+  → Add note, capture inbox item, then implement
+```
+
+### Before Modifying Code Outside Your Task
+
+Quick mental checklist:
+1. **Is this file part of my current task?** If not, you're expanding scope
+2. **Does this command/feature have spec coverage?** `kspec item list | grep <name>`
+3. **Should I note this expansion?** Almost always yes
+
+This takes seconds and prevents drift from compounding.
+
+### When You Realize You Missed Something
+
+It happens. When you notice after the fact:
+1. Add a note to the relevant task explaining what was added
+2. Check for spec gaps and capture them (inbox or new spec item)
+3. Commit the documentation update
+
+The goal isn't perfection - it's maintaining enough context that future sessions can understand what happened.
+
+### Why This Matters More Than It Seems
+
+Each undocumented change is small. But they accumulate:
+- Specs drift from reality
+- Tasks don't reflect actual work done
+- Future agents lack context for decisions
+- The self-hosting loop breaks down
+
+Taking 30 seconds to note scope expansion saves hours of archaeology later.
+
 ## Design Decisions
 
 Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:
