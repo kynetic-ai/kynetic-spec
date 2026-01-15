@@ -287,6 +287,10 @@ export function registerItemCommands(program: Command): void {
           priority: options.priority,
           tags: options.tag || [],
           description: options.description,
+          depends_on: [],
+          implements: [],
+          relates_to: [],
+          tests: [],
         };
 
         const newItem = createSpecItem(input);

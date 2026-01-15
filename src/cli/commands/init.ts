@@ -3,6 +3,12 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as readline from 'node:readline/promises';
 import { success, error, info, warn } from '../output.js';
+import {
+  initializeShadow,
+  getGitRoot,
+  isGitRepo,
+  SHADOW_WORKTREE_DIR,
+} from '../../parser/shadow.js';
 
 /**
  * Default manifest template
@@ -125,23 +131,11 @@ export function registerInitCommand(program: Command): void {
     .option('--single-file', 'Create manifest only (no modules directory)')
     .option('--no-prompt', 'Skip interactive prompts, use defaults')
     .option('--force', 'Overwrite existing files')
+    .option('--no-shadow', 'Skip shadow branch setup (create spec/ in main branch)')
     .action(async (directory, options) => {
       try {
         const targetDir = directory || process.cwd();
-        const specDir = path.join(targetDir, 'spec');
-
-        // Check if spec already exists
-        try {
-          await fs.access(specDir);
-          if (!options.force) {
-            error(`spec/ directory already exists in ${targetDir}`);
-            console.log('Use --force to overwrite existing files');
-            process.exit(1);
-          }
-          warn('Overwriting existing spec files');
-        } catch {
-          // Directory doesn't exist, good to proceed
-        }
+        const useShadow = options.shadow !== false;
 
         // Determine project name
         let projectName = options.name;
@@ -155,49 +149,138 @@ export function registerInitCommand(program: Command): void {
           projectName = deriveProjectName(targetDir);
         }
 
-        const singleFile = options.singleFile || false;
-        const slug = toSlug(projectName);
+        // Shadow branch mode (default for git repos)
+        if (useShadow) {
+          const gitRoot = getGitRoot(targetDir);
 
-        info(`Initializing kspec project: ${projectName}`);
+          if (!gitRoot) {
+            if (await isGitRepo(targetDir)) {
+              error('Could not determine git root directory');
+              process.exit(1);
+            }
+            // Not a git repo - fall back to non-shadow mode with warning
+            warn('Not a git repository. Using non-shadow mode (spec/ in main branch).');
+            await initNonShadow(targetDir, projectName, options);
+            return;
+          }
 
-        // Create spec directory
-        await fs.mkdir(specDir, { recursive: true });
+          info(`Initializing kspec project: ${projectName}`);
+          console.log('  Mode: Shadow branch (kspec-meta → .kspec/)');
 
-        // Create manifest
-        const manifestPath = path.join(specDir, `${slug}.yaml`);
-        await fs.writeFile(manifestPath, generateManifest(projectName, singleFile), 'utf-8');
-        console.log(`  Created ${path.relative(targetDir, manifestPath)}`);
+          const result = await initializeShadow(gitRoot, {
+            projectName,
+            force: options.force,
+          });
 
-        // Create tasks file
-        const tasksPath = path.join(specDir, `${slug}.tasks.yaml`);
-        await fs.writeFile(tasksPath, generateTasksFile(projectName), 'utf-8');
-        console.log(`  Created ${path.relative(targetDir, tasksPath)}`);
+          if (!result.success) {
+            error(`Shadow initialization failed: ${result.error}`);
+            process.exit(1);
+          }
 
-        if (!singleFile) {
-          // Create modules directory and main module
-          const modulesDir = path.join(specDir, 'modules');
-          await fs.mkdir(modulesDir, { recursive: true });
+          if (result.alreadyExists) {
+            info('Shadow branch already initialized');
+          } else {
+            if (result.branchCreated) {
+              console.log('  Created orphan branch: kspec-meta');
+            }
+            if (result.worktreeCreated) {
+              console.log(`  Created worktree: ${SHADOW_WORKTREE_DIR}/`);
+            }
+            if (result.gitignoreUpdated) {
+              console.log('  Updated .gitignore');
+            }
+            if (result.initialCommit) {
+              console.log('  Created initial spec files');
+            }
+          }
 
-          const mainModulePath = path.join(modulesDir, 'main.yaml');
-          await fs.writeFile(mainModulePath, generateMainModule(projectName), 'utf-8');
-          console.log(`  Created ${path.relative(targetDir, mainModulePath)}`);
+          const slug = toSlug(projectName);
+
+          success(`Initialized kspec project in ${SHADOW_WORKTREE_DIR}/`, {
+            projectName,
+            mode: 'shadow',
+            branch: 'kspec-meta',
+          });
+
+          console.log('\nNext steps:');
+          console.log(`  1. Edit ${SHADOW_WORKTREE_DIR}/${slug}.yaml to customize your project`);
+          console.log(`  2. Add spec items to ${SHADOW_WORKTREE_DIR}/modules/main.yaml`);
+          console.log('  3. Run `kspec tasks ready` to see available tasks');
+          console.log('\nNote: Spec files live in .kspec/ (gitignored) and commit to kspec-meta branch');
+        } else {
+          // Non-shadow mode (legacy)
+          await initNonShadow(targetDir, projectName, options);
         }
-
-        success(`Initialized kspec project in ${path.relative(process.cwd(), specDir) || 'spec/'}`, {
-          projectName,
-          specDir,
-          singleFile,
-        });
-
-        console.log('\nNext steps:');
-        console.log(`  1. Edit spec/${slug}.yaml to customize your project`);
-        if (!singleFile) {
-          console.log('  2. Add spec items to spec/modules/main.yaml');
-        }
-        console.log(`  ${singleFile ? '2' : '3'}. Run \`kspec tasks ready\` to see available tasks`);
       } catch (err) {
         error('Failed to initialize project', err);
         process.exit(1);
       }
     });
+}
+
+/**
+ * Initialize in non-shadow mode (spec/ in main branch)
+ */
+async function initNonShadow(
+  targetDir: string,
+  projectName: string,
+  options: { force?: boolean; singleFile?: boolean }
+): Promise<void> {
+  const specDir = path.join(targetDir, 'spec');
+
+  // Check if spec already exists
+  try {
+    await fs.access(specDir);
+    if (!options.force) {
+      error(`spec/ directory already exists in ${targetDir}`);
+      console.log('Use --force to overwrite existing files');
+      process.exit(1);
+    }
+    warn('Overwriting existing spec files');
+  } catch {
+    // Directory doesn't exist, good to proceed
+  }
+
+  const singleFile = options.singleFile || false;
+  const slug = toSlug(projectName);
+
+  info(`Initializing kspec project: ${projectName}`);
+  console.log('  Mode: Non-shadow (spec/ in main branch)');
+
+  // Create spec directory
+  await fs.mkdir(specDir, { recursive: true });
+
+  // Create manifest
+  const manifestPath = path.join(specDir, `${slug}.yaml`);
+  await fs.writeFile(manifestPath, generateManifest(projectName, singleFile), 'utf-8');
+  console.log(`  Created ${path.relative(targetDir, manifestPath)}`);
+
+  // Create tasks file
+  const tasksPath = path.join(specDir, `${slug}.tasks.yaml`);
+  await fs.writeFile(tasksPath, generateTasksFile(projectName), 'utf-8');
+  console.log(`  Created ${path.relative(targetDir, tasksPath)}`);
+
+  if (!singleFile) {
+    // Create modules directory and main module
+    const modulesDir = path.join(specDir, 'modules');
+    await fs.mkdir(modulesDir, { recursive: true });
+
+    const mainModulePath = path.join(modulesDir, 'main.yaml');
+    await fs.writeFile(mainModulePath, generateMainModule(projectName), 'utf-8');
+    console.log(`  Created ${path.relative(targetDir, mainModulePath)}`);
+  }
+
+  success(`Initialized kspec project in ${path.relative(process.cwd(), specDir) || 'spec/'}`, {
+    projectName,
+    specDir,
+    singleFile,
+    mode: 'non-shadow',
+  });
+
+  console.log('\nNext steps:');
+  console.log(`  1. Edit spec/${slug}.yaml to customize your project`);
+  if (!singleFile) {
+    console.log('  2. Add spec items to spec/modules/main.yaml');
+  }
+  console.log(`  ${singleFile ? '2' : '3'}. Run \`kspec tasks ready\` to see available tasks`);
 }
