@@ -783,3 +783,34 @@ features:
           Removes inbox item. Use when idea is no longer relevant.
         implements:
           - '@inbox-commands'
+requirements:
+  - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
+    slugs:
+      - cmd-session-checkpoint
+    title: kspec session checkpoint
+    type: requirement
+    tags: []
+    description: >-
+      Pre-stop hook for Claude Code integration.
+
+
+      Checks for uncommitted work before allowing session to end:
+
+      - Uncommitted git changes (staged, unstaged, untracked)
+
+      - Tasks in in_progress status
+
+      - Incomplete todos on active tasks
+
+
+      One-time trigger: Reads hook arguments to detect if already triggered. First trigger blocks
+      with instructions, subsequent triggers allow stop.
+
+
+      Output: JSON formatted for Claude Code hook consumption with clear kspec-branded message
+      instructing agent to document progress and commit changes.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-15T14:17:25.508Z'

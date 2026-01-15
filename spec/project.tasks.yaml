@@ -379,6 +379,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented inbox capture system with add/list/get/promote/delete commands, session integration,
+    and updated agent instructions
   depends_on: []
   context: []
   priority: 2
@@ -388,6 +391,7 @@
   vcs_refs: []
   created_at: '2026-01-15T01:13:36.663Z'
   started_at: '2026-01-15T13:44:31.243Z'
+  completed_at: '2026-01-15T13:55:46.105Z'
   notes:
     - _ulid: 01KEZKEHF0CCXCGHY8FMS5XPCA
       created_at: '2026-01-15T01:13:49.281Z'
@@ -449,10 +453,6 @@
         Promote flow: inbox add -> inbox promote -> creates task and deletes inbox item
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T13:55:46.105Z'
-  closed_reason: >-
-    Implemented inbox capture system with add/list/get/promote/delete commands, session integration,
-    and updated agent instructions
 - _ulid: 01KEZKPYY5694TA8P0KFP1FYXN
   slugs:
     - task-list-context
@@ -948,5 +948,22 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-15T12:55:07.303Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec session checkpoint'
+  type: task
+  spec_ref: '@cmd-session-checkpoint'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-session-checkpoint
+  tags: []
+  _ulid: 01KF109NY9BC079GKVN05Y1MV7
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-15T14:17:35.944Z'
   notes: []
   todos: []
