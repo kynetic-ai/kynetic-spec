@@ -680,6 +680,61 @@ features:
           Sets up git hooks for validation.
         implements:
           - '@init-commands'
+      - _ulid: 01KF14PTK6XWQPE0ZG32WMVJRK
+        slugs:
+          - cmd-setup
+        title: kspec setup
+        type: requirement
+        tags:
+          - mvp
+          - cli
+        description: >-
+          kspec setup [options]
+
+
+          Configures agent environment for kspec. Auto-detects the running agent and installs
+          appropriate configuration.
+
+
+          Agent Detection:
+
+          - claude-code (via CLAUDECODE, CLAUDE_CODE_ENTRYPOINT, etc.)
+
+          - aider (via AIDER_* env vars)
+
+          - cline/roo-code (VS Code extensions)
+
+          - copilot-cli, gemini-cli, codex-cli, opencode, amp
+
+
+          Actions:
+
+          - Sets KSPEC_AUTHOR in agent config file (e.g., ~/.claude/settings.json)
+
+          - For Claude Code: installs stop hook to .claude/settings.json (project-level)
+
+          - Prints manual instructions for agents without config file support
+
+
+          Options:
+
+          - --dry-run: Show what would be done without making changes
+
+          - --author <author>: Custom author string (default: auto-detected like @claude, @aider)
+
+          - --no-hooks: Skip installing Claude Code stop hook
+
+          - --force: Overwrite existing configuration
+
+
+          Exit codes follow @cli-exit-codes.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-15T15:34:40.999Z'
+        status:
+          implementation: implemented
   - _ulid: 01KF0WJEHSINBOX00000000000
     slugs:
       - inbox-commands

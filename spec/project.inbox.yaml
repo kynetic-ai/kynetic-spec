@@ -8,12 +8,3 @@ inbox:
       - search
       - dx
     added_by: '@claude'
-  - _ulid: 01KF12GBCN6GH1VTRC1QH6PEXE
-    text: >-
-      Setup command needs spec coverage - currently undocumented. Handles KSPEC_AUTHOR config and
-      now stop hook installation. Multi-agent support (claude-code, aider, cline, etc.)
-    created_at: '2026-01-15T14:56:11.670Z'
-    tags:
-      - spec
-      - cli
-    added_by: '@claude'
