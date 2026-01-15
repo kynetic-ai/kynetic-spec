@@ -98,6 +98,7 @@ This shows:
 - **Active work**: Tasks currently in progress
 - **Recently completed**: What was just finished
 - **Ready tasks**: What can be picked up next
+- **Inbox items**: Ideas awaiting triage (oldest first)
 - **Recent commits**: Git activity
 - **Working tree**: Uncommitted changes
 
@@ -216,21 +217,77 @@ The task inherits context from the spec via `spec_ref`.
 | Situation | Flow |
 |-----------|------|
 | Clear behavior change | Check spec → Update/create spec → Derive task |
-| Vague idea, unclear scope | Create spike task → Explore → Spec when clear |
+| Vague idea, unclear scope | Capture in inbox → Triage later → Promote when ready |
 | Infra/internal (no user impact) | Create task directly, no spec needed |
 | Bug revealing spec gap | Fix bug → Update spec to match reality |
 
-### Spike Tasks (for unclear scope)
+### Inbox (for unclear scope or quick capture)
 
-When scope is nebulous, explore first:
+The inbox is a low-friction capture space for ideas that aren't tasks yet. Use it liberally - the cost of capture is near zero, and good ideas often emerge from rough notes.
+
+#### When to Use Inbox
+
+**Use inbox when:**
+- You have a vague idea but no clear scope
+- Something comes up mid-task that you don't want to forget
+- The user mentions something that might be worth doing later
+- You notice a potential improvement but it's not the current focus
+- You're unsure if it's worth doing at all
+
+**Skip inbox and create a task directly when:**
+- The scope is clear and actionable
+- It's blocking current work
+- The user explicitly asked for it to be done
+- It's infrastructure/cleanup with obvious next steps
+
+#### Commands
 
 ```bash
-kspec task add --type spike --title "Explore: ..."
+# Quick capture - just dump the thought
+kspec inbox add "maybe we need better error messages"
+kspec inbox add "refactor auth flow" --tag auth --tag refactor
+
+# List items (oldest first to encourage triage)
+kspec inbox list
+
+# Get full details on an item
+kspec inbox get @01KF0...
+
+# Promote to task when ready
+kspec inbox promote @01KF0... --title "Improve error messages" --priority 2
+
+# Delete if no longer relevant
+kspec inbox delete @01KF0...
 ```
 
-Spike outcomes become spec items, then derive implementation tasks.
+#### Triage Workflow
 
-*Note: An inbox system for capturing raw ideas is planned but not yet implemented.*
+Session context shows inbox items oldest-first deliberately - older items deserve attention. During triage, for each item ask:
+
+1. **Is this still relevant?** → If not, delete it
+2. **Is the scope clear now?** → If yes, promote to task
+3. **Does it need spec work first?** → Create/update spec, then derive task
+4. **Still unclear?** → Leave it, add a tag, revisit later
+
+Promote with full context when you can:
+```bash
+# Good: provides enough for the task to be actionable
+kspec inbox promote @01KF0... \
+  --title "Add retry logic to API client" \
+  --priority 2 \
+  --spec-ref @api-client \
+  --tag reliability
+
+# The original inbox text becomes the task description
+```
+
+#### Philosophy
+
+The inbox exists because **not every idea deserves immediate structure**. Creating a task has overhead - title, priority, maybe spec work. The inbox lets you capture without that friction.
+
+But inbox items shouldn't live forever. Regular triage (during session start, between tasks, end of session) keeps the inbox useful. An inbox with 50 stale items is just noise.
+
+**Rule of thumb**: If an inbox item survives 3+ triage sessions without action, either promote it with a clear scope or delete it - it's probably not important enough.
 
 ### Default: Always Confirm
 

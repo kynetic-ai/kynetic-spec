@@ -10,9 +10,11 @@ import {
   initContext,
   loadAllTasks,
   loadAllItems,
+  loadInboxItems,
   getReadyTasks,
   ReferenceIndex,
   type LoadedTask,
+  type LoadedInboxItem,
   type KspecContext,
 } from '../../parser/index.js';
 import { output, error, info } from '../output.js';
@@ -60,6 +62,9 @@ export interface SessionContext {
 
   /** Working tree status */
   working_tree: GitWorkingTree | null;
+
+  /** Inbox items awaiting triage (oldest first) */
+  inbox_items: InboxSummary[];
 
   /** Summary statistics */
   stats: SessionStats;
@@ -131,6 +136,15 @@ export interface SessionStats {
   ready: number;
   blocked: number;
   completed: number;
+  inbox_items: number;
+}
+
+export interface InboxSummary {
+  ref: string;
+  text: string;
+  created_at: string;
+  tags: string[];
+  added_by: string | null;
 }
 
 export interface SessionOptions {
@@ -295,6 +309,7 @@ export async function gatherSessionContext(
   // Load all data
   const allTasks = await loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
+  const inboxItems = await loadInboxItems(ctx);
   const index = new ReferenceIndex(allTasks, items);
 
   // Compute stats
@@ -304,6 +319,7 @@ export async function gatherSessionContext(
     ready: getReadyTasks(allTasks).length,
     blocked: allTasks.filter((t) => t.status === 'blocked').length,
     completed: allTasks.filter((t) => t.status === 'completed').length,
+    inbox_items: inboxItems.length,
   };
 
   // Get active tasks
@@ -380,6 +396,18 @@ export async function gatherSessionContext(
     workingTree = getWorkingTreeStatus(ctx.rootDir);
   }
 
+  // Get inbox items (oldest first to encourage triage)
+  const inboxSummaries: InboxSummary[] = inboxItems
+    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    .slice(0, options.full ? undefined : limit)
+    .map((item) => ({
+      ref: item._ulid.slice(0, 8),
+      text: item.text,
+      created_at: item.created_at,
+      tags: item.tags,
+      added_by: item.added_by || null,
+    }));
+
   return {
     generated_at: new Date().toISOString(),
     branch,
@@ -391,6 +419,7 @@ export async function gatherSessionContext(
     recently_completed: recentlyCompleted,
     recent_commits: recentCommits,
     working_tree: workingTree,
+    inbox_items: inboxSummaries,
     stats,
   };
 }
@@ -410,10 +439,13 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   }
 
   // Stats summary
+  const inboxNote = ctx.stats.inbox_items > 0
+    ? ` | Inbox: ${ctx.stats.inbox_items}`
+    : '';
   console.log(
     chalk.gray(
       `Tasks: ${ctx.stats.in_progress} active, ${ctx.stats.ready} ready, ` +
-        `${ctx.stats.blocked} blocked, ${ctx.stats.completed}/${ctx.stats.total_tasks} completed`
+        `${ctx.stats.blocked} blocked, ${ctx.stats.completed}/${ctx.stats.total_tasks} completed${inboxNote}`
     )
   );
 
@@ -526,6 +558,24 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
         `  ${chalk.yellow(commit.hash)} ${commit.message} ${chalk.gray(`(${age}, ${commit.author})`)}`
       );
     }
+  }
+
+  // Inbox section (oldest first to encourage triage)
+  if (ctx.inbox_items.length > 0) {
+    console.log(chalk.bold.magenta('\n--- Inbox (oldest first) ---'));
+    for (const item of ctx.inbox_items) {
+      const age = formatRelativeTime(new Date(item.created_at));
+      const author = item.added_by ? ` by ${item.added_by}` : '';
+      const tags = item.tags.length > 0 ? chalk.cyan(` [${item.tags.join(', ')}]`) : '';
+      // Truncate text in brief mode
+      let text = item.text;
+      if (isBrief && text.length > 60) {
+        text = text.slice(0, 60).trim() + '...';
+      }
+      console.log(`  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`);
+      console.log(`    ${text}`);
+    }
+    console.log(chalk.gray('  Use: kspec inbox promote <ref> to convert to task'));
   }
 
   // Working tree section

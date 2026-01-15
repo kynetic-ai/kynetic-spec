@@ -680,3 +680,106 @@ features:
           Sets up git hooks for validation.
         implements:
           - '@init-commands'
+  - _ulid: 01KF0WJEHSINBOX00000000000
+    slugs:
+      - inbox-commands
+    title: Inbox Commands
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags:
+      - cli
+      - process
+    description: |
+      Low-friction capture for ideas that aren't tasks yet.
+      Inbox items are simple text entries that can be triaged later.
+      Storage: project.inbox.yaml (separate file for clean schema).
+    requirements:
+      - _ulid: 01KF0WJEHSINBOX10000000000
+        slugs:
+          - cmd-inbox-add
+        title: kspec inbox add
+        type: requirement
+        status:
+          maturity: draft
+          implementation: implemented
+        description: |
+          kspec inbox add <text> [options]
+
+          Options:
+          - --tag <tag>: Add tag(s) for categorization (repeatable)
+
+          Quick capture with minimal friction.
+          Auto-generates ULID, timestamp, and added_by (from KSPEC_AUTHOR or git).
+
+          Examples:
+          - kspec inbox add "maybe we need better error messages"
+          - kspec inbox add "refactor auth flow" --tag auth --tag refactor
+        implements:
+          - '@inbox-commands'
+      - _ulid: 01KF0WJEHSINBOX20000000000
+        slugs:
+          - cmd-inbox-list
+        title: kspec inbox list
+        type: requirement
+        status:
+          maturity: draft
+          implementation: implemented
+        description: |
+          kspec inbox list [options]
+
+          Options:
+          - --tag <tag>: Filter by tag
+          - --limit <n>: Limit results
+          - --oldest: Sort oldest first (default for triage)
+
+          Shows inbox items. Default sort is oldest first to
+          encourage dealing with older items.
+        implements:
+          - '@inbox-commands'
+      - _ulid: 01KF0WJEHSINBOX30000000000
+        slugs:
+          - cmd-inbox-promote
+        title: kspec inbox promote
+        type: requirement
+        status:
+          maturity: draft
+          implementation: implemented
+        description: |
+          kspec inbox promote <ref> [options]
+
+          Options:
+          - --title <title>: Task title (prompts if not provided)
+          - --priority <n>: Priority (1-5)
+          - --spec-ref <ref>: Link to spec item
+          - --type <type>: Task type (task, bug, spike, etc.)
+          - --tag <tag>: Add tag(s) to task
+
+          Converts inbox item to task. Prompts for required fields
+          if not provided via options. Deletes inbox item after
+          successful task creation.
+
+          Examples:
+          - kspec inbox promote @01KF0... (interactive)
+          - kspec inbox promote @01KF0... --title "Improve errors" --priority 2
+        implements:
+          - '@inbox-commands'
+      - _ulid: 01KF0WJEHSINBOX40000000000
+        slugs:
+          - cmd-inbox-delete
+        title: kspec inbox delete
+        type: requirement
+        status:
+          maturity: draft
+          implementation: implemented
+        description: |
+          kspec inbox delete <ref> [options]
+
+          Options:
+          - --force: Skip confirmation
+
+          Removes inbox item. Use when idea is no longer relevant.
+        implements:
+          - '@inbox-commands'

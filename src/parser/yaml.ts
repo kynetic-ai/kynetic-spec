@@ -10,6 +10,8 @@ import {
   TaskInputSchema,
   ManifestSchema,
   SpecItemSchema,
+  InboxItemSchema,
+  InboxFileSchema,
   type Task,
   type TasksFile,
   type TaskInput,
@@ -18,6 +20,8 @@ import {
   type SpecItemInput,
   type Note,
   type Todo,
+  type InboxItem,
+  type InboxItemInput,
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
 import { ItemIndex } from './items.js';
@@ -1114,4 +1118,175 @@ export async function saveSpecItem(ctx: KspecContext, item: LoadedSpecItem): Pro
 
   // Otherwise, this is more complex - would need a parent
   throw new Error('Cannot save new item without parent. Use addChildItem instead.');
+}
+
+// ============================================================
+// INBOX SYSTEM
+// ============================================================
+
+/**
+ * Inbox item with runtime metadata for source tracking.
+ */
+export interface LoadedInboxItem extends InboxItem {
+  _sourceFile?: string;
+}
+
+/**
+ * Get the inbox file path.
+ * Stored in spec/project.inbox.yaml
+ */
+export function getInboxFilePath(ctx: KspecContext): string {
+  const specDir = path.join(ctx.rootDir, 'spec');
+  return path.join(specDir, 'project.inbox.yaml');
+}
+
+/**
+ * Load all inbox items from the project.
+ */
+export async function loadInboxItems(ctx: KspecContext): Promise<LoadedInboxItem[]> {
+  const inboxPath = getInboxFilePath(ctx);
+
+  try {
+    const raw = await readYamlFile<unknown>(inboxPath);
+
+    // Handle { inbox: [...] } format
+    if (raw && typeof raw === 'object' && 'inbox' in raw) {
+      const parsed = InboxFileSchema.safeParse(raw);
+      if (parsed.success) {
+        return parsed.data.inbox.map(item => ({ ...item, _sourceFile: inboxPath }));
+      }
+    }
+
+    // Handle plain array format
+    if (Array.isArray(raw)) {
+      const items: LoadedInboxItem[] = [];
+      for (const item of raw) {
+        const result = InboxItemSchema.safeParse(item);
+        if (result.success) {
+          items.push({ ...result.data, _sourceFile: inboxPath });
+        }
+      }
+      return items;
+    }
+
+    return [];
+  } catch {
+    // File doesn't exist or parse error
+    return [];
+  }
+}
+
+/**
+ * Create a new inbox item with auto-generated fields.
+ */
+export function createInboxItem(input: InboxItemInput): InboxItem {
+  return {
+    _ulid: input._ulid || ulid(),
+    text: input.text,
+    created_at: input.created_at || new Date().toISOString(),
+    tags: input.tags || [],
+    added_by: input.added_by ?? getAuthor(),
+  };
+}
+
+/**
+ * Strip runtime metadata before serialization.
+ */
+function stripInboxMetadata(item: LoadedInboxItem): InboxItem {
+  const { _sourceFile, ...cleanItem } = item;
+  return cleanItem as InboxItem;
+}
+
+/**
+ * Save an inbox item (add or update).
+ */
+export async function saveInboxItem(ctx: KspecContext, item: LoadedInboxItem): Promise<void> {
+  const inboxPath = getInboxFilePath(ctx);
+
+  // Ensure directory exists
+  const dir = path.dirname(inboxPath);
+  await fs.mkdir(dir, { recursive: true });
+
+  // Load existing items
+  let existingItems: InboxItem[] = [];
+
+  try {
+    const raw = await readYamlFile<unknown>(inboxPath);
+    if (raw && typeof raw === 'object' && 'inbox' in raw) {
+      const parsed = InboxFileSchema.safeParse(raw);
+      if (parsed.success) {
+        existingItems = parsed.data.inbox;
+      }
+    } else if (Array.isArray(raw)) {
+      for (const i of raw) {
+        const result = InboxItemSchema.safeParse(i);
+        if (result.success) {
+          existingItems.push(result.data);
+        }
+      }
+    }
+  } catch {
+    // File doesn't exist, start fresh
+  }
+
+  const cleanItem = stripInboxMetadata(item);
+
+  // Update existing or add new
+  const existingIndex = existingItems.findIndex(i => i._ulid === item._ulid);
+  if (existingIndex >= 0) {
+    existingItems[existingIndex] = cleanItem;
+  } else {
+    existingItems.push(cleanItem);
+  }
+
+  // Save with { inbox: [...] } format
+  await writeYamlFile(inboxPath, { inbox: existingItems });
+}
+
+/**
+ * Delete an inbox item by ULID.
+ */
+export async function deleteInboxItem(ctx: KspecContext, ulid: string): Promise<boolean> {
+  const inboxPath = getInboxFilePath(ctx);
+
+  try {
+    const raw = await readYamlFile<unknown>(inboxPath);
+    let existingItems: InboxItem[] = [];
+
+    if (raw && typeof raw === 'object' && 'inbox' in raw) {
+      const parsed = InboxFileSchema.safeParse(raw);
+      if (parsed.success) {
+        existingItems = parsed.data.inbox;
+      }
+    }
+
+    const index = existingItems.findIndex(i => i._ulid === ulid);
+    if (index < 0) {
+      return false;
+    }
+
+    existingItems.splice(index, 1);
+    await writeYamlFile(inboxPath, { inbox: existingItems });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Find an inbox item by reference (ULID or short ULID).
+ */
+export function findInboxItemByRef(
+  items: LoadedInboxItem[],
+  ref: string
+): LoadedInboxItem | undefined {
+  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+
+  return items.find(item => {
+    // Match full ULID
+    if (item._ulid === cleanRef) return true;
+    // Match short ULID (prefix)
+    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return true;
+    return false;
+  });
 }

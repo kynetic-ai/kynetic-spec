@@ -7,7 +7,7 @@ Read the AGENTS.md file for full project context. Key points:
 ## Quick Start
 
 ```bash
-# First: Get session context (active work, ready tasks, recent activity)
+# First: Get session context (active work, ready tasks, inbox, recent activity)
 npx tsx src/cli/index.ts session start
 
 # Get details on a specific task
@@ -23,6 +23,10 @@ npx tsx src/cli/index.ts task complete @task-slug --reason "Summary"
 
 # Create a new task
 npx tsx src/cli/index.ts task add --title "Task title" --spec-ref "@spec-item" --priority 2
+
+# Capture ideas quickly (not yet tasks)
+npx tsx src/cli/index.ts inbox add "idea or random thought"
+npx tsx src/cli/index.ts inbox promote @ref --title "Task title"
 
 # Validate spec files
 npx tsx src/cli/index.ts validate

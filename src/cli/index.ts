@@ -12,6 +12,7 @@ import {
   registerValidateCommand,
   registerHelpCommand,
   registerDeriveCommand,
+  registerInboxCommands,
 } from './commands/index.js';
 
 const program = new Command();
@@ -39,6 +40,7 @@ registerItemCommands(program);
 registerValidateCommand(program);
 registerHelpCommand(program);
 registerDeriveCommand(program);
+registerInboxCommands(program);
 
 // Parse and execute
 program.parse();

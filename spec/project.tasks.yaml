@@ -189,7 +189,7 @@
         - Dev: npm run dev -- tasks ready
 
         Optional shell alias for convenience (add to ~/.bashrc or ~/.zshrc):
-          alias kspec-dev='npx tsx /home/chapel/Projects/kynetic-spec/src/cli/index.ts'
+          alias kspec-dev='npx tsx /path/to/kynetic-spec/src/cli/index.ts'
 
         To update stable version:
           npm run build && npm install -g .
@@ -377,7 +377,7 @@
   title: Design inbox/capture system for unstructured ideas
   type: spike
   spec_ref: null
-  status: pending
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -387,6 +387,7 @@
     - process
   vcs_refs: []
   created_at: '2026-01-15T01:13:36.663Z'
+  started_at: '2026-01-15T13:44:31.243Z'
   notes:
     - _ulid: 01KEZKEHF0CCXCGHY8FMS5XPCA
       created_at: '2026-01-15T01:13:49.281Z'
@@ -434,7 +435,24 @@
         2. Later: kspec inbox review
         3. Decide: promote to @task-error-messages or discard
       supersedes: null
+    - _ulid: 01KF0Z1GYTSQ5HAK0Z5CVA4MZW
+      created_at: '2026-01-15T13:55:40.122Z'
+      author: '@claude'
+      content: |-
+        Implemented inbox capture system with:
+        - Schema: InboxItem with _ulid, text, created_at, tags
+        - Storage: spec/project.inbox.yaml (separate file)
+        - Commands: inbox add, list, get, promote, delete
+        - Session integration: Shows inbox items oldest first in session context
+        - Agent docs: Updated AGENTS.md and CLAUDE.md to use inbox instead of spikes
+
+        Promote flow: inbox add -> inbox promote -> creates task and deletes inbox item
+      supersedes: null
   todos: []
+  completed_at: '2026-01-15T13:55:46.105Z'
+  closed_reason: >-
+    Implemented inbox capture system with add/list/get/promote/delete commands, session integration,
+    and updated agent instructions
 - _ulid: 01KEZKPYY5694TA8P0KFP1FYXN
   slugs:
     - task-list-context
@@ -915,19 +933,19 @@
         - Consistent tone across commands
       supersedes: null
   todos: []
-- title: 'Implement: kspec task delete'
+- _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
+  slugs:
+    - task-kspec-task-delete
+  title: 'Implement: kspec task delete'
   type: task
   spec_ref: '@cmd-task-delete'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-kspec-task-delete
-  tags: []
-  _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-15T12:55:07.303Z'
   notes: []
