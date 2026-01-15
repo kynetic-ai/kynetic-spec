@@ -381,6 +381,7 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
+    closed_reason: Implemented kspec validate with schema, reference, and orphan checks
     depends_on:
       - '@task-zod-schemas'
       - '@task-yaml-loading'
@@ -393,6 +394,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.952Z'
     started_at: '2026-01-15T03:44:44.224Z'
+    completed_at: '2026-01-15T03:48:11.313Z'
     notes:
       - _ulid: 01KEZW902C94QSBJHMVQAJER00
         created_at: '2026-01-15T03:48:04.813Z'
@@ -416,8 +418,6 @@ tasks:
           - 72 orphaned spec items (requirements nested under features - may be false positives)
         supersedes: null
     todos: []
-    completed_at: '2026-01-15T03:48:11.313Z'
-    closed_reason: Implemented kspec validate with schema, reference, and orphan checks
   - _ulid: 01JHNKAB11TASK310000000000
     slugs:
       - task-ref-validation
@@ -431,7 +431,7 @@ tasks:
       - Warn on deprecated targets
     spec_ref: '@ref-validation'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
     depends_on:
       - '@task-reference-resolution'
@@ -444,6 +444,60 @@ tasks:
       - validation
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.953Z'
+    notes:
+      - _ulid: 01KEZWSRT1B1RJRDDX48FF62F0
+        created_at: '2026-01-15T03:57:14.434Z'
+        author: '@claude'
+        content: >-
+          Reference validation was implemented as part of @01JHNKAB10 (schema validation task). The
+          implementation covers:
+
+
+          1. ✅ Parse @ prefix to extract identifier
+
+          2. ✅ Slug lookup, then ULID prefix match resolution
+
+          3. ✅ Error reporting for unresolved/ambiguous references
+
+          4. ⏳ Deprecated target warnings - not implemented (requires deprecated field on items,
+          minor enhancement)
+
+
+          CLI: kspec validate --refs works and successfully found 4 broken @milestone-self-hosting
+          refs which were fixed in @01KEZWDH.
+        supersedes: null
+    todos: []
+    completed_at: '2026-01-15T03:57:21.544Z'
+    closed_reason: >-
+      Implemented as part of schema validation task. Core functionality complete: @ prefix parsing,
+      slug/ULID resolution, error reporting. Deprecated target warnings deferred (minor
+      enhancement).
+    started_at: '2026-01-15T03:57:21.544Z'
+  - _ulid: 01KEZWVQ5PTQY5V5F6ZTSE3Z9S
+    slugs:
+      - task-deprecated-warnings
+    title: Warn on deprecated targets in reference validation
+    type: task
+    description: |
+      Add warnings when references point to deprecated items:
+      - Add deprecated field to item schema (or use implementation: deprecated)
+      - Check resolved targets for deprecated status
+      - Report as warnings (not errors) in validation output
+    spec_ref: '@ref-validation'
+    derivation: manual
+    status: pending
+    blocked_by: []
+    depends_on:
+      - '@task-ref-validation'
+    context: []
+    priority: 3
+    complexity: 1
+    tags:
+      - post-mvp
+      - validation
+      - enhancement
+    vcs_refs: []
+    created_at: '2026-01-15T03:58:00.000Z'
     notes: []
     todos: []
   - _ulid: 01JHNKAB12TASK320000000000
@@ -835,8 +889,7 @@ tasks:
     derivation: auto
     status: pending
     blocked_by: []
-    depends_on:
-      - '@milestone-self-hosting'
+    depends_on: []
     context: []
     priority: 2
     complexity: 3
@@ -861,8 +914,7 @@ tasks:
     derivation: auto
     status: pending
     blocked_by: []
-    depends_on:
-      - '@milestone-self-hosting'
+    depends_on: []
     context: []
     priority: 2
     complexity: 2
@@ -887,8 +939,7 @@ tasks:
     derivation: auto
     status: pending
     blocked_by: []
-    depends_on:
-      - '@milestone-self-hosting'
+    depends_on: []
     context: []
     priority: 2
     complexity: 2
@@ -913,8 +964,7 @@ tasks:
     derivation: auto
     status: pending
     blocked_by: []
-    depends_on:
-      - '@milestone-self-hosting'
+    depends_on: []
     context: []
     priority: 3
     complexity: 2

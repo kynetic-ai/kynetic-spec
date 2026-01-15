@@ -124,18 +124,26 @@ npx tsx src/cli/index.ts task get @task-slug
 npx tsx src/cli/index.ts task notes @task-slug
 ```
 
-## Known Limitations (Bootstrap Code)
+### Create a New Task
 
-This is bootstrap code - not everything works perfectly:
+```bash
+npx tsx src/cli/index.ts task add \
+  --title "Task title" \
+  --spec-ref "@spec-item" \
+  --priority 2 \
+  --slug my-task-slug \
+  --tag mvp --tag feature
+```
 
-1. **File write location**: Updates write to `tasks.yaml` in root, but reads from `spec/kynetic.tasks.yaml`. For now, edit the spec file directly for authoritative changes.
+ULIDs are generated automatically. Use `--spec-ref` to link to a spec item.
 
-2. **ULID validation**: ULIDs must be valid format (26 chars, Crockford base32). Generate real ones with:
-   ```bash
-   node -e "const {ulid} = require('ulid'); console.log(ulid())"
-   ```
+### Validate the Spec
 
-3. **Some CLI commands are stubs**: Check `src/cli/commands/` to see what's actually implemented.
+```bash
+npx tsx src/cli/index.ts validate           # Full validation
+npx tsx src/cli/index.ts validate --refs    # Check references only
+npx tsx src/cli/index.ts validate --schema  # Check schema only
+```
 
 ## Design Decisions
 

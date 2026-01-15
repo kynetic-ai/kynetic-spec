@@ -602,7 +602,7 @@
   title: Fix broken @milestone-self-hosting references in spec
   type: task
   spec_ref: null
-  status: pending
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -612,6 +612,7 @@
     - critical
   vcs_refs: []
   created_at: '2026-01-15T03:50:33.936Z'
+  started_at: '2026-01-15T03:53:47.502Z'
   notes:
     - _ulid: 01KEZWDT9JV9X118ETETZXN1YY
       created_at: '2026-01-15T03:50:42.739Z'
@@ -627,6 +628,10 @@
         Run 'kspec validate --refs' to see all broken references.
       supersedes: null
   todos: []
+  completed_at: '2026-01-15T03:54:20.726Z'
+  closed_reason: >-
+    Removed 4 bogus @milestone-self-hosting dependencies from post-mvp tasks. Milestones aren't
+    implemented yet, and these tasks are already properly prioritized via P2/P3 + post-mvp tags.
 - _ulid: 01KEZWF5GDFGJXAGXMBPJRK1KS
   slugs: []
   title: Review and fix orphaned spec items
