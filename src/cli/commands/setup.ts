@@ -36,13 +36,20 @@ export interface DetectedAgent {
  * Detection priority matters - more specific markers checked first.
  */
 export function detectAgent(): DetectedAgent {
-  // Claude Code: CLAUDE_PROJECT_DIR is set when running in Claude Code
-  if (process.env.CLAUDE_PROJECT_DIR) {
+  // Claude Code: Multiple possible markers
+  // CLAUDECODE=1 is set in CLI sessions
+  // CLAUDE_CODE_ENTRYPOINT indicates entry point (cli, etc.)
+  // CLAUDE_PROJECT_DIR is set in some contexts
+  if (process.env.CLAUDECODE === '1' || process.env.CLAUDE_CODE_ENTRYPOINT || process.env.CLAUDE_PROJECT_DIR) {
     return {
       type: 'claude-code',
       confidence: 'high',
       configPath: path.join(os.homedir(), '.claude', 'settings.json'),
-      envVars: { CLAUDE_PROJECT_DIR: process.env.CLAUDE_PROJECT_DIR },
+      envVars: {
+        ...(process.env.CLAUDECODE && { CLAUDECODE: process.env.CLAUDECODE }),
+        ...(process.env.CLAUDE_CODE_ENTRYPOINT && { CLAUDE_CODE_ENTRYPOINT: process.env.CLAUDE_CODE_ENTRYPOINT }),
+        ...(process.env.CLAUDE_PROJECT_DIR && { CLAUDE_PROJECT_DIR: process.env.CLAUDE_PROJECT_DIR }),
+      },
     };
   }
 

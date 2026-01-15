@@ -464,6 +464,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented kspec setup with auto-detection for Claude Code, Cline, Aider, OpenCode, Copilot
+    CLI, Gemini CLI, Codex CLI. Config installers for each agent type.
   depends_on: []
   context: []
   priority: 2
@@ -473,6 +476,7 @@
   vcs_refs: []
   created_at: '2026-01-15T01:36:39.678Z'
   started_at: '2026-01-15T01:38:26.710Z'
+  completed_at: '2026-01-15T01:44:01.178Z'
   notes:
     - _ulid: 01KEZMRPC9B4D43CSYVEMY5G03
       created_at: '2026-01-15T01:36:50.570Z'
@@ -562,8 +566,26 @@
 
         All tests pass. Build succeeds.
       supersedes: null
+    - _ulid: 01KEZNGE5RCCV1VDBWPWXKYAKX
+      created_at: '2026-01-15T01:49:48.600Z'
+      author: '@claude'
+      content: >-
+        Fix: Updated Claude Code detection to use correct env vars.
+
+
+        Original detection used CLAUDE_PROJECT_DIR which isn't always set.
+
+
+        Actual env vars available in Claude Code CLI session:
+
+        - CLAUDECODE=1 (primary detection marker)
+
+        - CLAUDE_CODE_ENTRYPOINT=cli (indicates entry point)
+
+        - CLAUDE_PROJECT_DIR (not always present)
+
+
+        Updated detection to check all three markers. Verified working - setup now correctly detects
+        and configures Claude Code.
+      supersedes: null
   todos: []
-  completed_at: '2026-01-15T01:44:01.178Z'
-  closed_reason: >-
-    Implemented kspec setup with auto-detection for Claude Code, Cline, Aider, OpenCode, Copilot
-    CLI, Gemini CLI, Codex CLI. Config installers for each agent type.
