@@ -1413,3 +1413,51 @@
         Research finding: Most systems have single capture mechanism. Two risks dilution.
       supersedes: null
   todos: []
+- _ulid: 01KF1H92ZHGBKBJDHMZ8HBW660
+  slugs:
+    - task-session-context-research
+  title: Research session context integration with session start
+  type: spike
+  spec_ref: '@session-context'
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - design
+    - meta
+    - session
+  vcs_refs: []
+  created_at: '2026-01-15T19:14:22.320Z'
+  notes:
+    - _ulid: 01KF1H9D4YG7SZNTHPBKW0EDT6
+      created_at: '2026-01-15T19:14:32.735Z'
+      author: '@claude'
+      content: |-
+        Research questions:
+
+        1. How should .kspec-session relate to kspec session start output?
+           - Merge into existing output?
+           - Separate section?
+           - Only show if file exists?
+
+        2. What triggers context updates?
+           - Explicit commands (meta focus, meta thread)?
+           - Auto-inferred from task start?
+           - Both?
+
+        3. Persistence questions:
+           - Gitignored (ephemeral per-machine)?
+           - Committed (shared across agents)?
+           - Configurable?
+
+        4. Overlap with existing session commands:
+           - session start shows active tasks - is 'focus' redundant?
+           - session checkpoint exists - how does context fit?
+
+        5. Cross-session continuity:
+           - How does context survive compaction/new sessions?
+           - Should threads/questions persist or reset?
+      supersedes: null
+  todos: []
