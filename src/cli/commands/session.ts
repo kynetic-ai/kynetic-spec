@@ -538,23 +538,25 @@ export async function performCheckpoint(
     const hasUncommitted = issues.some((i) => i.type === 'uncommitted_changes');
     const hasIncompleteTodos = issues.some((i) => i.type === 'incomplete_todo');
 
+    let step = 1;
+
     if (hasInProgress) {
       instructions.push(
-        '1. Add notes to in-progress tasks documenting current state'
+        `${step++}. Add notes to in-progress tasks documenting current state`
       );
       instructions.push(
-        '2. Either complete the tasks or leave them in_progress with clear notes for next session'
+        `${step++}. Either complete the tasks or leave them in_progress with clear notes for next session`
       );
     }
 
     if (hasIncompleteTodos) {
       instructions.push(
-        '3. Complete or acknowledge incomplete todos on active tasks'
+        `${step++}. Complete or acknowledge incomplete todos on active tasks`
       );
     }
 
     if (hasUncommitted) {
-      instructions.push('4. Commit your changes with a descriptive message');
+      instructions.push(`${step++}. Commit your changes with a descriptive message`);
     }
 
     instructions.push('');
