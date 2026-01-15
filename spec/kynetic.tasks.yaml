@@ -1142,7 +1142,7 @@ tasks:
       - Relationship to existing files (CLAUDE.md, etc.)
       - Maybe: spec items defining meta-spec as a feature
     derivation: manual
-    status: pending
+    status: completed
     blocked_by: []
     depends_on: []
     context:
@@ -1165,7 +1165,23 @@ tasks:
           Realized that session protocols, agent workflows, and project
           conventions are distinct from product specs but need a home.
           Meta-spec separates "what we build" from "how we work."
+      - _ulid: 01KF1EX3D9T6M55FDMX5PM1BZ8
+        created_at: '2026-01-15T18:32:52.393Z'
+        author: '@claude'
+        content: >-
+          Completed spec design for meta-spec system. Created spec/modules/meta.yaml with 8 features
+          and 32 requirements covering: meta manifest, agent definitions, workflow definitions,
+          conventions, observations (feedback loop), session context, meta CLI commands, and
+          meta-ref integration. Key decisions: separate manifest (kynetic.meta.yaml) that
+          complements prose docs, ephemeral session context in .kspec-session, observations
+          promotable to tasks, unified validation.
+        supersedes: null
     todos: []
+    completed_at: '2026-01-15T18:32:58.727Z'
+    closed_reason: >-
+      Spec design complete with 8 features, 32 requirements. Ready for implementation tasks to be
+      derived.
+    started_at: '2026-01-15T18:32:58.727Z'
   - _ulid: 01KEZAT35YG043XQMCH0GXPJZD
     slugs:
       - task-session-start
@@ -1425,6 +1441,9 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
+    closed_reason: >-
+      Added integration test suite with fixtures covering validate, tasks, items, derive, and
+      session commands
     depends_on: []
     context: []
     priority: 2
@@ -1435,6 +1454,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-14T22:20:00Z'
     started_at: '2026-01-15T15:57:56.272Z'
+    completed_at: '2026-01-15T16:02:09.859Z'
     notes:
       - _ulid: 01KF161NRT90NT32JZJASGXAGM
         created_at: '2026-01-15T15:58:05.083Z'
@@ -1452,7 +1472,3 @@ tasks:
           lifecycle, task add, items, derive, and session commands. All 82 tests pass.
         supersedes: null
     todos: []
-    completed_at: '2026-01-15T16:02:09.859Z'
-    closed_reason: >-
-      Added integration test suite with fixtures covering validate, tasks, items, derive, and
-      session commands
