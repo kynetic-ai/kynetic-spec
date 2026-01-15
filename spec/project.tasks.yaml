@@ -1630,22 +1630,40 @@
   created_at: '2026-01-15T22:14:47.425Z'
   notes: []
   todos: []
-- title: 'Implement: Shadow Recovery'
+- _ulid: 01KF1VKEV2FW62HJR7CBRNJGFZ
+  slugs:
+    - task-shadow-recovery
+  title: 'Implement: Shadow Recovery'
   type: task
   spec_ref: '@shadow-recovery'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-shadow-recovery
   tags:
     - infrastructure
     - reliability
-  _ulid: 01KF1VKEV2FW62HJR7CBRNJGFZ
+  vcs_refs: []
+  created_at: '2026-01-15T22:14:47.906Z'
+  notes: []
+  todos: []
+- title: Implement recursive derive with auto-dependencies
+  type: task
+  spec_ref: '@cmd-derive'
+  priority: 2
+  slugs:
+    - task-recursive-derive
+  tags:
+    - cli
+    - feature
+  _ulid: 01KF1W7AKJ10X9PYFC1EXFF400
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-15T22:14:47.906Z'
+  created_at: '2026-01-15T22:25:38.929Z'
   notes: []
   todos: []

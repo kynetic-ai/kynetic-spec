@@ -618,16 +618,37 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec derive <ref> [options]
           kspec derive --all [options]
 
+          Derives implementation tasks from spec items.
+
+          Behavior:
+          - Recursively creates tasks for item and all children
+          - Features create feature tasks
+          - Requirements create requirement tasks under feature
+          - Auto-sets depends_on based on spec hierarchy:
+            - Requirement tasks depend on parent feature task
+            - Child features depend on parent module task
+          - Skips items that already have tasks (unless --force)
+
           Options:
+          - --recursive: Derive for item and all children (default)
+          - --flat: Only derive for the specified item, no children
           - --force: Create even if task exists
           - --dry-run: Show what would be created
+          - --json: Output created tasks as JSON
 
-          Creates task(s) with spec_ref pointing to item(s).
+          Examples:
+            kspec derive @shadow-branch
+            # Creates tasks for module + all features + all requirements
+            # with proper depends_on relationships
+
+            kspec derive @shadow-concept --flat
+            # Creates single task for just that feature
+
           Idempotent by default.
         implements:
           - '@derive-commands'
