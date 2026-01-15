@@ -1,0 +1,113 @@
+- _ulid: 01KEZFXCM3WEMMRGFDZSJSRARJ
+  slugs:
+    - task-cli-polish
+  title: CLI output refinement and polish
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - ux
+  vcs_refs: []
+  created_at: '2026-01-15T00:12:01.539Z'
+  notes:
+    - _ulid: 01KEZFXP1JPK4VBWDXTK2Q00AP
+      created_at: '2026-01-15T00:12:11.187Z'
+      content: |-
+        Placeholder for CLI refinement work. Known items:
+
+        - Color consistency pass (labels vs values, status colors)
+        - Consider adding spec get command for viewing spec details directly
+        - Review output density/formatting across commands
+        - Potential: depends_on/relates_to expansion in spec view
+      supersedes: null
+  todos: []
+- _ulid: 01KEZG58FJDPVYND9ZWX264WF2
+  slugs:
+    - task-alignment-system
+  title: Design spec-implementation alignment system
+  type: spike
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - core
+    - process
+  vcs_refs: []
+  created_at: '2026-01-15T00:16:19.442Z'
+  notes:
+    - _ulid: 01KEZG5N9BTACBWVPNVYDGQ7BC
+      created_at: '2026-01-15T00:16:32.556Z'
+      content: >-
+        Problem: Spec, tasks, and implementation drift apart over time.
+
+
+        Examples of drift:
+
+        - Task @task-reference-resolution spec says nothing about dynamic ULID shortening, but that
+        became a key implementation detail
+
+        - User requests during implementation add features not in original spec
+
+        - Implementation discoveries change the approach
+
+
+        Goals:
+
+        1. Keep specs as accurate source of truth
+
+        2. Make drift visible and actionable
+
+        3. Guide agents to update specs when deviating
+
+        4. Enable reconciliation after the fact
+
+
+        Potential mechanisms:
+
+
+        PROACTIVE (during work):
+
+        - Task start: show spec, prompt for planned deviations
+
+        - Task complete: verify against acceptance criteria, prompt for spec updates
+
+        - Agent instructions mandating spec updates when deviating
+
+
+        REACTIVE (backprop):
+
+        - kspec reconcile: compare task notes to spec, flag drift
+
+        - Generate spec update suggestions from implementation notes
+
+        - Mark specs 'needs-review' when notes mention unlisted changes
+
+
+        STRUCTURAL:
+
+        - Acceptance criteria as verifiable checkboxes
+
+        - 'implementation_notes' field on spec items
+
+        - Spec versioning when updated post-implementation
+
+        - Deviation tracking on tasks
+
+
+        Deliverables:
+
+        1. Add spec items to spec/modules/ defining alignment features
+
+        2. Create implementation tasks from the spec
+
+        3. Update AGENTS.md with alignment guidance
+      supersedes: null
+  todos: []

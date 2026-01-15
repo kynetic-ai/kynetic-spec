@@ -136,11 +136,15 @@ tasks:
       - Handle ambiguous references
     spec_ref: '@reference-system'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
+    closed_reason: >-
+      Implemented ReferenceIndex with dynamic ULID shortening, proper error handling, and reference
+      validation
     depends_on:
       - '@task-ulid-generation'
       - '@task-slug-system'
+      - '@task-yaml-loading'
     context: []
     priority: 1
     complexity: 2
@@ -149,7 +153,62 @@ tasks:
       - core
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.952Z'
-    notes: []
+    started_at: '2026-01-14T23:23:21.734Z'
+    completed_at: '2026-01-14T23:31:29.287Z'
+    notes:
+      - _ulid: 01KEZD4BHZFA5E4FQ0182JKXRA
+        created_at: '2026-01-14T23:23:24.096Z'
+        content: >-
+          Starting work on reference resolution. User noted that 6-char ULID prefixes aren't
+          granular enough since ULIDs created at similar times share timestamp prefixes. Will
+          implement dynamic prefix expansion for uniqueness.
+        supersedes: null
+      - _ulid: 01KEZDJZRTZ6D3QWY1X7FZH5BG
+        created_at: '2026-01-14T23:31:23.547Z'
+        content: >-
+          Implemented reference resolution system:
+
+
+          1. Created ReferenceIndex class (src/parser/refs.ts) with:
+             - Slug index (slug → ULID mapping)
+             - ULID index for direct lookups
+             - resolve() method with proper error handling (not_found, ambiguous, duplicate_slug)
+             - shortUlid() for dynamic prefix computation (min 8 chars, expands for uniqueness)
+             - validateRefs() to find all broken references in spec
+
+          2. Updated CLI (src/cli/commands/task.ts):
+             - All task commands now use ReferenceIndex for lookups
+             - Better error messages showing ambiguous matches with short ULIDs + slugs
+             - Output uses dynamic short ULIDs
+
+          3. Added comprehensive tests for:
+             - Slug resolution
+             - Full/short ULID resolution
+             - Ambiguity detection
+             - Duplicate slug detection
+             - Reference validation
+
+          The 8-char minimum prefix gets into the random portion of ULIDs, fixing the issue where
+          items created at similar times would have identical 6-char prefixes.
+        supersedes: null
+      - _ulid: 01KEZE05XQQGTDKMRZ2S0BPVNH
+        created_at: '2026-01-14T23:38:35.832Z'
+        content: >-
+          Additional follow-up: Updated all CLI locations to use dynamic shortUlid():
+
+
+          - output.ts: formatTaskRef, formatTask, formatTaskList now accept optional ReferenceIndex
+
+          - tasks.ts: All commands (list, ready, next, blocked, in-progress) build index and pass to
+          formatters
+
+          - task.ts: task add command builds index including new task for accurate short ULID
+
+
+          Short IDs now dynamically expand based on uniqueness within the spec. Items created in the
+          same timestamp batch (e.g., 01JHNKAB*) show 10+ chars, while items with unique prefixes
+          show the minimum 8 chars.
+        supersedes: null
     todos: []
   - _ulid: 01JHNKAB06TASK200000000000
     slugs:
@@ -194,8 +253,11 @@ tasks:
       - Build unified item collection
     spec_ref: '@file-structure'
     derivation: auto
-    status: pending
+    status: completed
     blocked_by: []
+    closed_reason: >-
+      Full spec loading implemented with recursive item extraction, glob includes, and ULID
+      migration
     depends_on:
       - '@task-zod-schemas'
     context: []
@@ -206,7 +268,35 @@ tasks:
       - schema
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.952Z'
-    notes: []
+    started_at: '2026-01-14T23:04:25.740Z'
+    completed_at: '2026-01-14T23:15:14.678Z'
+    notes:
+      - _ulid: 01KEZCN7G9WB9J852E0X90JDXX
+        created_at: '2026-01-14T23:15:08.426Z'
+        content: >-
+          Implemented full YAML spec loading:
+
+          - Added LoadedSpecItem interface for source file tracking
+
+          - Implemented expandIncludePattern() with glob support (*.yaml patterns)
+
+          - Added extractItemsFromRaw() for recursive nested item extraction from
+          modules/features/requirements
+
+          - Implemented loadAllItems() to build unified item collection from manifest + includes
+
+          - Added findItemByRef() and findAnyItemByRef() for item lookup
+
+          - Fixed YAML syntax error in core.yaml (unquoted @references)
+
+          - Created ULID migration script (scripts/migrate-ulids.ts) and migrated 59 invalid ULIDs
+          to valid Crockford base32
+
+          - Added comprehensive tests for spec loading (extractItemsFromRaw, findItemByRef,
+          expandIncludePattern, loadAllItems integration)
+
+          - All 45 tests passing
+        supersedes: null
     todos: []
   - _ulid: 01JHNKAB08TASK220000000000
     slugs:
@@ -580,6 +670,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
+    closed_reason: Core write routing implemented - tasks save to source file
     depends_on:
       - '@task-task-loading'
     context: []
@@ -592,6 +683,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.940Z'
     started_at: '2026-01-14T22:00:00Z'
+    completed_at: '2026-01-14T22:20:52.967Z'
     notes:
       - _ulid: 01KEZ9514JSG75X4R0BCXYBE1Z
         created_at: '2026-01-14T22:00:00Z'
@@ -619,8 +711,6 @@ tasks:
           Side effect: YAML reformatting loses comments (tracked in @task-yaml-formatting)
         supersedes: null
     todos: []
-    completed_at: '2026-01-14T22:20:52.967Z'
-    closed_reason: Core write routing implemented - tasks save to source file
   - _ulid: 01JHNKAB24TASK600000000000
     slugs:
       - task-cmd-item-crud
