@@ -1,113 +1,175 @@
-# Kynetic Spec - Bootstrap Parser
+# Kynetic Spec (kspec)
 
-A minimal TypeScript parser and CLI for the Kynetic Spec format. This is bootstrap code that will be used to track its own development.
+A structured specification and task management system designed for AI-assisted development. kspec provides a YAML-based format for defining project specifications that can be programmatically manipulated, with a task system to track implementation progress.
+
+**Key feature**: kspec is self-hosting - it tracks its own development using itself.
 
 ## Installation
 
+### Quick Start (Development)
+
 ```bash
+# Clone and install
+git clone <repo-url>
+cd kynetic-spec
 npm install
-```
 
-## Usage
-
-Run with `npx tsx` (no build required):
-
-```bash
-# Using npm script
-npm run dev -- <command>
-
-# Direct
+# Run directly with tsx (no build needed)
 npx tsx src/cli/index.ts <command>
+
+# Or use the npm script
+npm run dev -- <command>
 ```
 
-Or build and use globally:
+### Build and Link Globally
 
 ```bash
 npm run build
 npm link
-kspec <command>
-```
 
-## Commands
-
-### List all tasks
-
-```bash
-kspec tasks list
-kspec tasks list --status pending
-kspec tasks list --type bug
-kspec tasks list --verbose
-```
-
-### Show ready tasks
-
-Shows tasks that are pending, have all dependencies met, and are not blocked:
-
-```bash
+# Now available as 'kspec' globally
 kspec tasks ready
-kspec tasks ready --verbose
 ```
 
-### Get next task
-
-Show highest priority ready task:
+## Basic Usage
 
 ```bash
-kspec tasks next
+# See what tasks are ready to work on
+kspec tasks ready
+
+# Get task details
+kspec task get @task-slug
+
+# Task lifecycle
+kspec task start @task-slug
+kspec task note @task-slug "What you're doing..."
+kspec task complete @task-slug --reason "Summary"
+
+# Create a new task
+kspec task add --title "My task" --priority 2 --slug my-task
 ```
 
-### Show blocked/active tasks
+## Agent Integration
+
+kspec is agent-agnostic but designed to work well with AI coding assistants. The key integration point is **author attribution** for notes.
+
+### Quick Setup
+
+Run the setup command to auto-configure your agent environment:
 
 ```bash
-kspec tasks blocked
-kspec tasks in-progress
+kspec setup           # Auto-detect and configure
+kspec setup --dry-run # Preview what would be done
 ```
 
-### Get task details
+The setup command detects which agent you're running in and installs the appropriate configuration.
 
-```bash
-kspec task get <ref>
-kspec task get @my-task-slug
-kspec task get 01KEYQSD
+**Supported agents:**
+- Claude Code (`CLAUDE_PROJECT_DIR`)
+- Cline (`CLINE_ACTIVE`)
+- Gemini CLI (`GEMINI_CLI`)
+- Codex CLI (`CODEX_SANDBOX`)
+- Aider (`AIDER_MODEL`)
+- OpenCode (`OPENCODE_CONFIG_DIR`)
+- Amp (`AMP_API_KEY`)
+- GitHub Copilot CLI
+
+### How Author Detection Works
+
+When adding notes, kspec auto-detects the author using this fallback chain:
+
+1. `KSPEC_AUTHOR` environment variable (explicit config)
+2. `git config user.name` (developer identity)
+3. `USER`/`USERNAME` env var (system user)
+
+### Manual Setup
+
+If auto-setup doesn't work, configure manually:
+
+**Claude Code** - Add to `~/.claude/settings.json`:
+```json
+{
+  "env": {
+    "KSPEC_AUTHOR": "@claude"
+  }
+}
 ```
 
-### Create a task
-
-```bash
-kspec task add --title "My new task"
-kspec task add --title "Fix bug" --type bug --priority 1
-kspec task add --title "Feature" --spec-ref "@feature-id" --slug my-feature
+**Aider** - Add to `~/.aider.conf.yml`:
+```yaml
+env:
+  KSPEC_AUTHOR: "@aider"
 ```
 
-### Task lifecycle
-
+**Other agents** - Set in shell profile:
 ```bash
-# Start working on a task
-kspec task start <ref>
-
-# Complete a task
-kspec task complete <ref>
-kspec task complete <ref> --reason "Implemented in commit abc123"
-
-# Block a task
-kspec task block <ref> --reason "Waiting on API design"
-
-# Unblock a task
-kspec task unblock <ref>
-
-# Cancel a task
-kspec task cancel <ref> --reason "No longer needed"
+export KSPEC_AUTHOR="@agent-name"
 ```
 
-### Notes (work log)
+Convention: Use `@` prefix for agent authors (e.g., `@claude`, `@copilot`) to distinguish from human authors.
+
+## Task Management
+
+### Task States
+
+```
+pending → in_progress → completed
+                ↓
+            blocked → (unblock) → in_progress
+                ↓
+            cancelled
+```
+
+### Commands
 
 ```bash
-# Add a note
-kspec task note <ref> "Found an issue with the middleware"
-kspec task note <ref> "Correction" --supersedes 01NOTE123
+# List tasks
+kspec tasks list                    # All tasks
+kspec tasks list --status pending   # Filter by status
+kspec tasks ready                   # Tasks ready to work on
+kspec tasks next                    # Highest priority ready task
+kspec tasks blocked                 # Blocked tasks
+kspec tasks in-progress             # Active tasks
 
-# View notes
-kspec task notes <ref>
+# Task operations
+kspec task get <ref>                # View details
+kspec task start <ref>              # Begin work
+kspec task complete <ref>           # Mark done
+kspec task block <ref> --reason "..." # Block with reason
+kspec task unblock <ref>            # Remove block
+kspec task cancel <ref>             # Cancel task
+
+# Notes (work log)
+kspec task note <ref> "message"     # Add note
+kspec task notes <ref>              # View notes
+```
+
+### References
+
+Tasks can be referenced by:
+- **Full ULID**: `01KEYQSD2QJCNGRKSR38V0E3BM`
+- **Short ULID**: `01KEYQSD` (unique prefix)
+- **Slug**: `@my-task-slug`
+
+## Task File Format
+
+Tasks are stored in YAML files (`*.tasks.yaml`):
+
+```yaml
+- _ulid: 01KEYQSD2QJCNGRKSR38V0E3BM
+  slugs: [my-task]
+  title: My task title
+  type: task          # task, epic, bug, spike, infra
+  status: pending
+  priority: 2         # 1 (highest) to 5 (lowest)
+  depends_on: ["@other-task"]
+  tags: [mvp]
+  notes:
+    - _ulid: 01KEYRJ953HRYWJ0W4XEG6J9FB
+      created_at: "2026-01-14T17:00:00Z"
+      author: "@claude"
+      content: |
+        Started implementing feature X...
 ```
 
 ## JSON Output
@@ -119,77 +181,42 @@ kspec --json tasks ready
 kspec --json task get @my-task
 ```
 
-## Task File Format
-
-Tasks are stored in YAML format. The CLI looks for:
-- `tasks.yaml` in the project root
-- `*.tasks.yaml` files in the project
-- Files in `tasks/` directory
-
-Example task:
-
-```yaml
-- _ulid: 01KEYQSD2QJCNGRKSR38V0E3BM
-  slugs: [my-task]
-  title: My task title
-  type: task
-  spec_ref: "@feature-id"
-  status: pending
-  blocked_by: []
-  depends_on: ["@other-task"]
-  context: []
-  priority: 2
-  tags: [mvp]
-  vcs_refs:
-    - ref: feature-branch
-      type: branch
-  created_at: "2025-01-14T09:00:00Z"
-  notes: []
-  todos: []
-```
-
-## Testing
-
-```bash
-npm test
-npm run test:watch
-```
-
 ## Project Structure
 
 ```
-src/
-  schema/           # Zod schemas
-    common.ts       # Common types (ULID, slugs, refs)
-    spec.ts         # Spec item schemas
-    task.ts         # Task schemas
-  parser/           # YAML parsing utilities
-    yaml.ts         # Read/write YAML, task operations
-  cli/              # CLI implementation
-    index.ts        # Main entry point
-    output.ts       # Output formatting
-    commands/       # Command implementations
-      tasks.ts      # kspec tasks <action>
-      task.ts       # kspec task <action>
-tests/              # Vitest tests
+kynetic-spec/
+├── spec/                      # kspec's own spec (YAML)
+│   ├── kynetic.yaml          # Root manifest
+│   ├── kynetic.tasks.yaml    # Implementation tasks
+│   └── modules/              # Spec items by domain
+├── src/                       # TypeScript implementation
+│   ├── schema/               # Zod schemas
+│   ├── parser/               # YAML loading
+│   └── cli/                  # Command handlers
+└── tests/                     # Vitest tests
+```
+
+## Development
+
+```bash
+# Run tests
+npm test
+npm run test:watch
+
+# Type check
+npm run build
+
+# Run CLI in dev mode
+npm run dev -- tasks ready
 ```
 
 ## Design Decisions
 
-1. **Library-first**: Core parsing logic is separate from CLI for reuse
-2. **Zod for schemas**: TypeScript-native validation with JSON Schema export
-3. **YAML format**: Human-readable, git-friendly, supports comments
-4. **ULID identifiers**: Time-sortable, globally unique, shortenable
-5. **Slug aliases**: Human-friendly names that map to ULIDs
-6. **Minimal MVP**: Focus on task management for self-hosting
-
-## Dependencies
-
-- `zod` - Schema validation
-- `js-yaml` - YAML parsing
-- `ulid` - ULID generation
-- `commander` - CLI framework
-- `chalk` - Terminal colors
+- **Library-first**: Core parsing logic is separate from CLI for reuse
+- **Zod schemas**: TypeScript-native validation
+- **YAML format**: Human-readable, git-friendly, supports comments
+- **ULID identifiers**: Time-sortable, globally unique, shortenable
+- **Slug aliases**: Human-friendly names that map to ULIDs
 
 ## License
 

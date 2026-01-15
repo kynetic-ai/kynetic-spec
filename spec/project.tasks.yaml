@@ -173,8 +173,11 @@
   title: Auto-detect author from environment (Claude Code integration)
   type: task
   spec_ref: null
-  status: pending
+  status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented getAuthor() with env detection fallback chain, updated createNote() to use it,
+    rewrote README with agent integration docs
   depends_on: []
   context: []
   priority: 3
@@ -183,6 +186,8 @@
     - integration
   vcs_refs: []
   created_at: '2026-01-15T00:50:16.892Z'
+  started_at: '2026-01-15T01:24:19.102Z'
+  completed_at: '2026-01-15T01:26:34.695Z'
   notes:
     - _ulid: 01KEZJ3QN4ZD7TMZ1X4TBMGC52
       created_at: '2026-01-15T00:50:26.597Z'
@@ -229,6 +234,33 @@
         - Document setup in README/CLAUDE.md
 
         - Consider KSPEC_AUTHOR or more generic like GIT_AUTHOR_NAME fallback
+      supersedes: null
+    - _ulid: 01KEZM3K5W1BXE1GQSNDBB7TQE
+      created_at: '2026-01-15T01:25:19.164Z'
+      author: Jacob Chapel
+      content: Testing author auto-detection - this note should show git user.name
+      supersedes: null
+    - _ulid: 01KEZM5DWGP1AK0ZKCKRC79J92
+      created_at: '2026-01-15T01:26:19.281Z'
+      author: Jacob Chapel
+      content: >-
+        Implemented author auto-detection:
+
+
+        - Added getAuthor() helper in src/parser/yaml.ts:410-437
+
+        - Fallback chain: KSPEC_AUTHOR env → git user.name → USER/USERNAME → undefined
+
+        - Updated createNote() to use auto-detected author when not explicitly provided
+
+        - Rewrote README.md with:
+          - Better project intro emphasizing AI-assisted development
+          - Agent Integration section with Claude Code setup instructions
+          - Agent-agnostic approach using KSPEC_AUTHOR env var
+          - Convention of using @ prefix for agent authors
+
+        Approach is agent-agnostic but provides explicit Claude Code instructions. Any agent can set
+        KSPEC_AUTHOR via their env configuration method.
       supersedes: null
   todos: []
 - _ulid: 01KEZJNSGPTVRCMT9NHNPJ93D8
@@ -424,3 +456,114 @@
             Low-friction capture for ideas before they become tasks
       supersedes: null
   todos: []
+- _ulid: 01KEZMRBQYY2WMA44A7QAJGGN6
+  slugs:
+    - task-setup-cmd
+  title: Implement kspec setup command for agent environment configuration
+  type: task
+  spec_ref: null
+  status: completed
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - dx
+    - integration
+  vcs_refs: []
+  created_at: '2026-01-15T01:36:39.678Z'
+  started_at: '2026-01-15T01:38:26.710Z'
+  notes:
+    - _ulid: 01KEZMRPC9B4D43CSYVEMY5G03
+      created_at: '2026-01-15T01:36:50.570Z'
+      author: Jacob Chapel
+      content: |-
+        Design for kspec setup command:
+
+        Purpose: Auto-configure agent environment to work with kspec (primarily KSPEC_AUTHOR).
+
+        Behavior:
+        1. Auto-detect which agent environment we're in
+        2. Install appropriate config for that environment
+        3. Report success/failure
+
+        Detection strategy:
+        - Claude Code: CLAUDE_PROJECT_DIR env var present
+        - Cursor: TBD (research needed)
+        - VS Code + Continue: TBD
+        - Aider: TBD
+        - Generic/unknown: Offer shell profile or skip
+
+        Installation targets:
+        - Claude Code: ~/.claude/settings.json (merge into env.KSPEC_AUTHOR)
+        - Others: TBD based on research
+
+        Fallback:
+        - If can't detect or install, print manual instructions
+        - Agents using skills (e.g., @task-kspec-skill) can provide their own instructions
+
+        Command: kspec setup
+        - No subcommand needed, assumes agent context
+        - Could add --dry-run flag to show what would be done
+        - Could add --force to overwrite existing config
+
+        Related: @task-kspec-skill, @task-author-env (completed)
+      supersedes: null
+    - _ulid: 01KEZN5K8S6XEY464Y0NTHMK1V
+      created_at: '2026-01-15T01:43:53.370Z'
+      author: Jacob Chapel
+      content: >-
+        Implemented kspec setup command (src/cli/commands/setup.ts):
+
+
+        Agent Detection (high confidence markers):
+
+        - Claude Code: CLAUDE_PROJECT_DIR
+
+        - Cline: CLINE_ACTIVE
+
+        - Aider: AIDER_MODEL, AIDER_DARK_MODE
+
+        - OpenCode: OPENCODE_CONFIG_DIR, OPENCODE_CONFIG
+
+
+        Agent Detection (medium confidence):
+
+        - GitHub Copilot CLI: COPILOT_MODEL, GH_TOKEN
+
+        - Gemini CLI: GEMINI_API_KEY
+
+        - Codex CLI: CODEX_SANDBOX, CODEX_HOME
+
+
+        Config installers:
+
+        - Claude Code: ~/.claude/settings.json (JSON merge)
+
+        - Aider: ~/.aider.conf.yml (YAML append)
+
+        - Copilot/Gemini/Codex/OpenCode: Generic JSON config
+
+        - Cline/Roo-Code: Shell profile (manual instructions)
+
+
+        Command options:
+
+        - --dry-run: Show what would be done
+
+        - --author: Override default author (@claude, @aider, etc.)
+
+        - --force: Overwrite existing KSPEC_AUTHOR
+
+
+        Research from subagent also found Amp (Sourcegraph) with AMP_API_KEY and
+        ~/.config/amp/settings.json - could add in future.
+
+
+        All tests pass. Build succeeds.
+      supersedes: null
+  todos: []
+  completed_at: '2026-01-15T01:44:01.178Z'
+  closed_reason: >-
+    Implemented kspec setup with auto-detection for Claude Code, Cline, Aider, OpenCode, Copilot
+    CLI, Gemini CLI, Codex CLI. Config installers for each agent type.

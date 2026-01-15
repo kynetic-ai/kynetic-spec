@@ -1,5 +1,6 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { execSync } from 'node:child_process';
 import yaml from 'js-yaml';
 import { ulid } from 'ulid';
 import { z } from 'zod';
@@ -396,13 +397,54 @@ export function createTask(input: TaskInput): Task {
 }
 
 /**
- * Create a new note entry
+ * Get author from environment with fallback chain.
+ * Priority:
+ *   1. KSPEC_AUTHOR env var (explicit config, agent-agnostic)
+ *   2. git user.name (developer identity)
+ *   3. USER/USERNAME env var (system user)
+ *   4. undefined (will show as 'unknown' in output)
+ *
+ * For Claude Code integration, add to ~/.claude/settings.json:
+ *   { "env": { "KSPEC_AUTHOR": "@claude" } }
+ */
+export function getAuthor(): string | undefined {
+  // 1. Explicit config (works for any agent)
+  if (process.env.KSPEC_AUTHOR) {
+    return process.env.KSPEC_AUTHOR;
+  }
+
+  // 2. Git user.name
+  try {
+    const gitUser = execSync('git config user.name', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+    if (gitUser) {
+      return gitUser;
+    }
+  } catch {
+    // git not available or not in a repo
+  }
+
+  // 3. System user
+  const systemUser = process.env.USER || process.env.USERNAME;
+  if (systemUser) {
+    return systemUser;
+  }
+
+  // 4. No author available
+  return undefined;
+}
+
+/**
+ * Create a new note entry.
+ * If author is not provided, attempts to auto-detect from environment.
  */
 export function createNote(content: string, author?: string, supersedes?: string): Note {
   return {
     _ulid: ulid(),
     created_at: new Date().toISOString(),
-    author,
+    author: author ?? getAuthor(),
     content,
     supersedes: supersedes || null,
   };

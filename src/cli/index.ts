@@ -2,7 +2,7 @@
 
 import { Command } from 'commander';
 import { setJsonMode } from './output.js';
-import { registerTasksCommands, registerTaskCommands } from './commands/index.js';
+import { registerTasksCommands, registerTaskCommands, registerSetupCommand } from './commands/index.js';
 
 const program = new Command();
 
@@ -22,6 +22,7 @@ program
 // Register command groups
 registerTasksCommands(program);
 registerTaskCommands(program);
+registerSetupCommand(program);
 
 // Parse and execute
 program.parse();
