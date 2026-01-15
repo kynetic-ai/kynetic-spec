@@ -21,11 +21,13 @@ project:
 # - schema: Item types, validation, file structure
 # - tasks: Task system for tracking work
 # - cli: Command-line interface
+# - meta: Meta-spec for process definitions (agents, workflows, conventions)
 includes:
   - modules/core.yaml
   - modules/schema.yaml
   - modules/tasks.yaml
   - modules/cli.yaml
+  - modules/meta.yaml
 
 # Config for this spec
 config:
