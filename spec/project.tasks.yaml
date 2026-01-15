@@ -352,3 +352,75 @@
         3. Decide: promote to @task-error-messages or discard
       supersedes: null
   todos: []
+- _ulid: 01KEZKPYY5694TA8P0KFP1FYXN
+  slugs:
+    - task-list-context
+  title: Add context/summary to task list output
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - ux
+  vcs_refs: []
+  created_at: '2026-01-15T01:18:25.221Z'
+  notes:
+    - _ulid: 01KEZKQBGPR60EW929WQ82VE3P
+      created_at: '2026-01-15T01:18:38.103Z'
+      content: >-
+        Problem: Task titles in 'kspec tasks ready' often lack enough context to understand what the
+        task is about.
+
+
+        Current output:
+          01KEZKE5 (task-inbox-system) [pending] P2 Design inbox/capture system
+
+        Options for adding context:
+
+
+        1. Add 'summary' field to task schema
+           - Explicit short description (one line)
+           - User provides at task creation
+           - Pro: intentional, curated
+           - Con: more fields to manage
+
+        2. Auto-extract first line of description
+           - No schema change
+           - Pro: uses existing data
+           - Con: descriptions may not have good first lines
+
+        3. Show resolved spec_ref title
+           - 'implements: Validation Modes'
+           - Pro: connects task to spec
+           - Con: not all tasks have spec_ref
+
+        4. Enhanced verbose mode (-v)
+           - Default: current compact
+           - Verbose: adds context line
+           - Pro: opt-in, keeps default clean
+
+        5. Configurable display
+           - User chooses what to show
+           - Pro: flexible
+           - Con: complexity
+
+        Proposed design:
+
+        - Add optional 'summary' field to tasks (one-liner)
+
+        - In list output, show summary if present
+
+        - Fallback: first line of description (truncated)
+
+        - Verbose mode shows more (spec_ref, tags, etc.)
+
+
+        Example:
+          01KEZKE5 (task-inbox-system) [pending] P2 Design inbox/capture system
+            Low-friction capture for ideas before they become tasks
+      supersedes: null
+  todos: []
