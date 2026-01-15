@@ -718,8 +718,9 @@ features:
 
           - Sets KSPEC_AUTHOR in agent config file (e.g., ~/.claude/settings.json)
 
-          - For Claude Code: installs stop hook to .claude/settings.json (project-level)
-
+          - For Claude Code: installs hooks to .claude/settings.json (project-level):
+            - UserPromptSubmit: spec-first reminder (session prompt-check)
+            - Stop: session checkpoint for uncommitted work
           - Prints manual instructions for agents without config file support
 
 
@@ -729,7 +730,7 @@ features:
 
           - --author <author>: Custom author string (default: auto-detected like @claude, @aider)
 
-          - --no-hooks: Skip installing Claude Code stop hook
+          - --no-hooks: Skip installing Claude Code hooks
 
           - --force: Overwrite existing configuration
 
@@ -985,3 +986,43 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+    requirements:
+      - _ulid: 01KF1D9G8HNSYRTPTPZZ4NVXJ1
+        slugs:
+          - cmd-session-prompt-check
+        title: kspec session prompt-check
+        type: requirement
+        tags: []
+        description: >-
+          UserPromptSubmit hook for spec-first workflow reinforcement.
+
+
+          Outputs a lean reminder on every user prompt: '[kspec] Before implementing behavior
+          changes, check spec coverage. Update spec first if needed.'
+
+
+          Design rationale:
+
+          - Always injects (no filtering) - Claude is smart enough to apply when relevant
+
+          - Minimal token overhead - short, instructive message
+
+          - Non-blocking - context injection, not gating
+
+
+          Installation: kspec setup automatically installs this hook alongside session checkpoint to
+          project-level .claude/settings.json for Claude Code users.
+
+
+          Acceptance Criteria:
+
+          - AC1: Outputs single-line reminder to stdout
+
+          - AC2: No stdin parsing required (stateless)
+
+          - AC3: Installed by setup command as UserPromptSubmit hook
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-15T18:04:41.618Z'
