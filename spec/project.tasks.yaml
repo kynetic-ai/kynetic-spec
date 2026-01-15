@@ -119,6 +119,7 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Build fixed, global install working, documented usage
   depends_on: []
   context: []
   priority: 2
@@ -128,6 +129,7 @@
   vcs_refs: []
   created_at: '2026-01-15T00:31:46.114Z'
   started_at: '2026-01-15T00:32:00.757Z'
+  completed_at: '2026-01-15T00:33:00.493Z'
   notes:
     - _ulid: 01KEZH1T305WYZZE596KNCQZK3
       created_at: '2026-01-15T00:31:54.976Z'
@@ -165,5 +167,125 @@
           npm run build && npm install -g .
       supersedes: null
   todos: []
-  completed_at: '2026-01-15T00:33:00.493Z'
-  closed_reason: Build fixed, global install working, documented usage
+- _ulid: 01KEZJ3E5W74AAF87Q57GTNNM6
+  slugs:
+    - task-author-env
+  title: Auto-detect author from environment (Claude Code integration)
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - dx
+    - integration
+  vcs_refs: []
+  created_at: '2026-01-15T00:50:16.892Z'
+  notes:
+    - _ulid: 01KEZJ3QN4ZD7TMZ1X4TBMGC52
+      created_at: '2026-01-15T00:50:26.597Z'
+      content: >-
+        Problem: Notes created by Claude show author as 'unknown' because there's no way to
+        auto-detect the author.
+
+
+        Research findings - Claude Code environment:
+
+
+        1. Claude Code does NOT set a self-identification env var automatically
+
+
+        2. Two ways to configure it:
+
+           Option A - Settings env (simplest):
+           Add to ~/.claude/settings.json:
+           {
+             "env": {
+               "KSPEC_AUTHOR": "@claude"
+             }
+           }
+
+           Option B - SessionStart hook:
+           {
+             "hooks": {
+               "SessionStart": [{
+                 "type": "command",
+                 "command": "echo 'export KSPEC_AUTHOR=@claude' >> \"\$CLAUDE_ENV_FILE\""
+               }]
+             }
+           }
+
+        3. Available Claude Code variables:
+           - CLAUDE_PROJECT_DIR: project root path
+           - CLAUDE_CODE_REMOTE: 'true' if web/remote session
+           - Hook inputs have session_id, transcript_path, etc.
+
+        Implementation:
+
+        - Update createNote() to check process.env.KSPEC_AUTHOR as default
+
+        - Document setup in README/CLAUDE.md
+
+        - Consider KSPEC_AUTHOR or more generic like GIT_AUTHOR_NAME fallback
+      supersedes: null
+  todos: []
+- _ulid: 01KEZJNSGPTVRCMT9NHNPJ93D8
+  slugs:
+    - task-cli-help
+  title: Implement tiered CLI help (default + full with examples)
+  type: task
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - dx
+    - docs
+  vcs_refs: []
+  created_at: '2026-01-15T01:00:18.326Z'
+  notes:
+    - _ulid: 01KEZJP4TRJN1QM76D8N3AWC0Z
+      created_at: '2026-01-15T01:00:29.913Z'
+      content: |-
+        Design: Two tiers of CLI help
+
+        Default (--help):
+        - Succinct, flags and options only
+        - Quick human reference
+
+        Extended (--help-full or 'kspec help <command>'):
+        - Detailed explanations
+        - Examples
+        - Concept clarifications (e.g., blocked_by vs depends_on)
+        - Edge cases and gotchas
+        - Agent-friendly context that can be pulled into prompts
+
+        Example for 'task unblock':
+
+        Default:
+          kspec task unblock <ref>  Unblock a task
+
+        Extended:
+          kspec task unblock <ref>
+          
+          Clears manual blockers and sets status to pending.
+          
+          Note: This clears the blocked_by field (manual string blockers),
+          NOT depends_on (task references). Dependencies auto-resolve
+          when referenced tasks complete.
+          
+          Example:
+            kspec task block @my-task --reason 'Waiting on design review'
+            kspec task unblock @my-task  # clears all blocked_by entries
+
+        Implementation options:
+        - Commander's .addHelpText() for extended sections
+        - Separate 'kspec help <topic>' command
+        - --verbose or --full flag on --help
+      supersedes: null
+  todos: []
