@@ -3,10 +3,12 @@ import { ulid } from 'ulid';
 import {
   initContext,
   loadAllTasks,
-  findTaskByRef,
+  loadAllItems,
   saveTask,
   createTask,
   createNote,
+  ReferenceIndex,
+  type LoadedTask,
 } from '../../parser/index.js';
 import {
   output,
@@ -16,6 +18,50 @@ import {
   warn,
 } from '../output.js';
 import type { Task, TaskInput } from '../../schema/index.js';
+
+/**
+ * Find a task by reference with detailed error reporting.
+ * Returns the task or exits with appropriate error.
+ */
+function resolveTaskRef(
+  ref: string,
+  tasks: LoadedTask[],
+  index: ReferenceIndex
+): LoadedTask {
+  const result = index.resolve(ref);
+
+  if (!result.ok) {
+    switch (result.error) {
+      case 'not_found':
+        error(`Task not found: ${ref}`);
+        break;
+      case 'ambiguous':
+        error(`Reference "${ref}" is ambiguous. Matches:`);
+        for (const candidate of result.candidates) {
+          const task = tasks.find(t => t._ulid === candidate);
+          const slug = task?.slugs[0] || '';
+          console.error(`  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ''}`);
+        }
+        break;
+      case 'duplicate_slug':
+        error(`Slug "${ref}" maps to multiple items. Use ULID instead:`);
+        for (const candidate of result.candidates) {
+          console.error(`  - ${index.shortUlid(candidate)}`);
+        }
+        break;
+    }
+    process.exit(3);
+  }
+
+  // Check if it's actually a task
+  const task = tasks.find(t => t._ulid === result.ulid);
+  if (!task) {
+    error(`Reference "${ref}" is not a task (it's a spec item)`);
+    process.exit(3);
+  }
+
+  return task;
+}
 
 /**
  * Register the 'task' command group (singular - operations on individual tasks)
@@ -32,15 +78,12 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3); // Exit code 3 = not found
-        }
-
-        output(foundTask, () => formatTaskDetails(foundTask));
+        output(foundTask, () => formatTaskDetails(foundTask, index));
       } catch (err) {
         error('Failed to get task', err);
         process.exit(1);
@@ -60,6 +103,8 @@ export function registerTaskCommands(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
 
         const input: TaskInput = {
           title: options.title,
@@ -73,7 +118,9 @@ export function registerTaskCommands(program: Command): void {
         const newTask = createTask(input);
         await saveTask(ctx, newTask);
 
-        success(`Created task: ${newTask._ulid.slice(0, 8)}`, { task: newTask });
+        // Build index including the new task for accurate short ULID
+        const index = new ReferenceIndex([...tasks, newTask], items);
+        success(`Created task: ${index.shortUlid(newTask._ulid)}`, { task: newTask });
       } catch (err) {
         error('Failed to create task', err);
         process.exit(1);
@@ -87,13 +134,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status === 'in_progress') {
           warn('Task is already in progress');
@@ -114,7 +158,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
-        success(`Started task: ${updatedTask._ulid.slice(0, 8)}`, { task: updatedTask });
+        success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to start task', err);
         process.exit(1);
@@ -129,13 +173,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status === 'completed') {
           warn('Task is already completed');
@@ -160,7 +201,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
-        success(`Completed task: ${updatedTask._ulid.slice(0, 8)}`, { task: updatedTask });
+        success(`Completed task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to complete task', err);
         process.exit(1);
@@ -175,13 +216,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status === 'completed' || foundTask.status === 'cancelled') {
           error(`Cannot block task with status: ${foundTask.status}`);
@@ -195,7 +233,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
-        success(`Blocked task: ${updatedTask._ulid.slice(0, 8)}`, { task: updatedTask });
+        success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to block task', err);
         process.exit(1);
@@ -209,13 +247,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status !== 'blocked') {
           warn('Task is not blocked');
@@ -229,7 +264,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
-        success(`Unblocked task: ${updatedTask._ulid.slice(0, 8)}`, { task: updatedTask });
+        success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to unblock task', err);
         process.exit(1);
@@ -244,13 +279,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status === 'completed' || foundTask.status === 'cancelled') {
           warn(`Task is already ${foundTask.status}`);
@@ -264,7 +296,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
-        success(`Cancelled task: ${updatedTask._ulid.slice(0, 8)}`, { task: updatedTask });
+        success(`Cancelled task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to cancel task', err);
         process.exit(1);
@@ -280,13 +312,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, message: string, options) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         const note = createNote(message, options.author, options.supersedes);
 
@@ -296,7 +325,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
-        success(`Added note to task: ${updatedTask._ulid.slice(0, 8)}`, { note });
+        success(`Added note to task: ${index.shortUlid(updatedTask._ulid)}`, { note });
       } catch (err) {
         error('Failed to add note', err);
         process.exit(1);
@@ -310,13 +339,10 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const foundTask = findTaskByRef(allTasks, ref);
-
-        if (!foundTask) {
-          error(`Task not found: ${ref}`);
-          process.exit(3);
-        }
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
 
         output(foundTask.notes, () => {
           if (foundTask.notes.length === 0) {

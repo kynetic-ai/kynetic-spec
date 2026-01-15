@@ -2,7 +2,9 @@ import { Command } from 'commander';
 import {
   initContext,
   loadAllTasks,
+  loadAllItems,
   getReadyTasks,
+  ReferenceIndex,
 } from '../../parser/index.js';
 import {
   output,
@@ -31,7 +33,11 @@ export function registerTasksCommands(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        let taskList = await loadAllTasks(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+
+        let taskList = tasks;
 
         // Apply filters
         if (options.status) {
@@ -44,7 +50,7 @@ export function registerTasksCommands(program: Command): void {
           taskList = taskList.filter(t => t.tags.includes(options.tag));
         }
 
-        output(taskList, () => formatTaskList(taskList, options.verbose));
+        output(taskList, () => formatTaskList(taskList, options.verbose, index));
       } catch (err) {
         error('Failed to list tasks', err);
         process.exit(1);
@@ -60,13 +66,15 @@ export function registerTasksCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const allTasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(allTasks, items);
         const readyTasks = getReadyTasks(allTasks);
 
         output(readyTasks, () => {
           if (readyTasks.length === 0) {
             info('No tasks ready - all pending tasks are blocked or have unmet dependencies');
           } else {
-            formatTaskList(readyTasks, options.verbose);
+            formatTaskList(readyTasks, options.verbose, index);
           }
         });
       } catch (err) {
@@ -83,6 +91,8 @@ export function registerTasksCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const allTasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(allTasks, items);
         const readyTasks = getReadyTasks(allTasks);
 
         if (readyTasks.length === 0) {
@@ -90,7 +100,7 @@ export function registerTasksCommands(program: Command): void {
         } else {
           const next = readyTasks[0];
           output(next, () => {
-            console.log(`${next._ulid.slice(0, 8)} ${next.title}`);
+            console.log(`${index.shortUlid(next._ulid)} ${next.title}`);
           });
         }
       } catch (err) {
@@ -108,9 +118,11 @@ export function registerTasksCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const allTasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(allTasks, items);
         const blockedTasks = allTasks.filter(t => t.status === 'blocked');
 
-        output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose));
+        output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose, index));
       } catch (err) {
         error('Failed to get blocked tasks', err);
         process.exit(1);
@@ -127,9 +139,11 @@ export function registerTasksCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const allTasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(allTasks, items);
         const activeTasks = allTasks.filter(t => t.status === 'in_progress');
 
-        output(activeTasks, () => formatTaskList(activeTasks, options.verbose));
+        output(activeTasks, () => formatTaskList(activeTasks, options.verbose, index));
       } catch (err) {
         error('Failed to get active tasks', err);
         process.exit(1);
