@@ -1309,6 +1309,9 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
+    closed_reason: >-
+      Implemented kspec skill with frontmatter, core workflows, command reference, and key
+      principles
     depends_on: []
     context: []
     priority: 2
@@ -1320,6 +1323,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-14T22:25:00Z'
     started_at: '2026-01-15T15:46:25.756Z'
+    completed_at: '2026-01-15T15:48:15.322Z'
     notes:
       - _ulid: 01KEZ9VV3KTTNVK82ZWPVD3XBE
         created_at: '2026-01-14T22:25:00Z'
@@ -1396,10 +1400,6 @@ tasks:
           principles. Skill will auto-invoke when Claude detects kspec-related requests.
         supersedes: null
     todos: []
-    completed_at: '2026-01-15T15:48:15.322Z'
-    closed_reason: >-
-      Implemented kspec skill with frontmatter, core workflows, command reference, and key
-      principles
   - _ulid: 01KEZ9DSD9W7JY4HP92JPY6WAN
     slugs:
       - task-integration-testing
@@ -1423,7 +1423,7 @@ tasks:
       - Each test gets fresh copy of fixtures
       - Assert on actual file contents and CLI output
     derivation: manual
-    status: pending
+    status: in_progress
     blocked_by: []
     depends_on: []
     context: []
@@ -1434,5 +1434,21 @@ tasks:
       - testing
     vcs_refs: []
     created_at: '2026-01-14T22:20:00Z'
-    notes: []
+    started_at: '2026-01-15T15:57:56.272Z'
+    notes:
+      - _ulid: 01KF161NRT90NT32JZJASGXAGM
+        created_at: '2026-01-15T15:58:05.083Z'
+        author: '@claude'
+        content: >-
+          Starting work. Will set up integration test infrastructure with fixtures for testing CLI
+          commands end-to-end.
+        supersedes: null
+      - _ulid: 01KF168J8D809S1EVBBSVSYE30
+        created_at: '2026-01-15T16:01:50.862Z'
+        author: '@claude'
+        content: >-
+          Implemented integration testing: created fixtures directory with sample manifest, tasks,
+          and module files. Added integration.test.ts with 19 tests covering validate, task
+          lifecycle, task add, items, derive, and session commands. All 82 tests pass.
+        supersedes: null
     todos: []

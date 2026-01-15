@@ -1,0 +1,12 @@
+kynetic: "1.0"
+
+project:
+  name: "Test Project"
+  version: "0.1.0"
+  status: draft
+  description: A minimal test project for integration testing
+
+includes:
+  - modules/core.yaml
+
+tasks_file: project.tasks.yaml

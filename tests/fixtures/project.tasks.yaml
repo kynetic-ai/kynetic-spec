@@ -1,0 +1,51 @@
+tasks:
+  - _ulid: 01KF1645CA45ZT43W2T6HJMVA1
+    slugs:
+      - test-task-pending
+    title: Test pending task
+    type: task
+    status: pending
+    priority: 2
+    tags:
+      - test
+    description: A task that is pending and ready to work on
+    depends_on: []
+    notes: []
+    todos: []
+    created_at: "2026-01-01T00:00:00Z"
+
+  - _ulid: 01KF1645CB8N4YGP991WD7XS9R
+    slugs:
+      - test-task-blocked
+    title: Test blocked task
+    type: task
+    status: pending
+    priority: 2
+    tags:
+      - test
+    description: A task blocked by another task
+    depends_on:
+      - "@test-task-pending"
+    notes: []
+    todos: []
+    created_at: "2026-01-01T00:00:00Z"
+
+  - _ulid: 01KF1645CBTNCA6ZQ01X8A6SN0
+    slugs:
+      - test-task-completed
+    title: Test completed task
+    type: task
+    status: completed
+    priority: 3
+    tags:
+      - test
+    description: A task that is already completed
+    depends_on: []
+    notes:
+      - _ulid: 01KF1645CBVJA52BZAQ20SZ1V5
+        created_at: "2026-01-01T01:00:00Z"
+        author: "@test"
+        content: Completed the work
+    todos: []
+    created_at: "2026-01-01T00:00:00Z"
+    completed_at: "2026-01-01T02:00:00Z"

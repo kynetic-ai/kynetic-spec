@@ -1,0 +1,35 @@
+_ulid: 01KF1645CB2FQ3F2XTPYVZGCFS
+slugs:
+  - test-core
+title: Core Module
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: Core functionality for testing
+
+features:
+  - _ulid: 01KF1645CBDJYHWBPYWRN3HYPJ
+    slugs:
+      - test-feature
+    title: Test Feature
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    priority: high
+    tags:
+      - test
+    description: A test feature for integration testing
+    requirements:
+      - _ulid: 01KF1645CBKJNPWH1E02WN4MMX
+        slugs:
+          - test-requirement
+        title: Test Requirement
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: A test requirement nested under the feature
+        implements:
+          - "@test-feature"
