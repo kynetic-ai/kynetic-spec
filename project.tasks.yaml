@@ -1731,7 +1731,7 @@
   title: Migrate kspec project to shadow branch
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1741,6 +1741,7 @@
     - one-off
   vcs_refs: []
   created_at: '2026-01-15T23:23:10.918Z'
+  started_at: '2026-01-15T23:42:30.876Z'
   notes:
     - _ulid: 01KF1ZGWAMSDSC14CDMSHXSX3V
       created_at: '2026-01-15T23:23:17.717Z'
@@ -1756,5 +1757,19 @@
 
         This enables the shadow branch infrastructure and lets this project use itself.
       supersedes: null
+    - _ulid: 01KF20NMT1WT68JM4GFZBSS1NN
+      created_at: '2026-01-15T23:43:22.433Z'
+      author: '@claude'
+      content: |-
+        Migration complete:
+        - Created orphan branch kspec-meta
+        - Set up .kspec/ worktree
+        - Copied spec/* content to .kspec/
+        - Committed on shadow branch
+        - Verified kspec commands read from shadow
+
+        spec/ directory remains on main branch as archive.
+      supersedes: null
   todos: []
-  started_at: '2026-01-15T23:42:30.876Z'
+  completed_at: '2026-01-15T23:43:27.840Z'
+  closed_reason: kspec project now uses shadow branch for spec storage
