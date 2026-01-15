@@ -127,7 +127,7 @@ export function detectAgent(): DetectedAgent {
 }
 
 /**
- * Install KSPEC_AUTHOR config for Claude Code
+ * Install KSPEC_AUTHOR config for Claude Code (global settings)
  */
 async function installClaudeCodeConfig(author: string): Promise<boolean> {
   const configPath = path.join(os.homedir(), '.claude', 'settings.json');
@@ -155,6 +155,60 @@ async function installClaudeCodeConfig(author: string): Promise<boolean> {
     await fs.writeFile(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
     return true;
   } catch (err) {
+    return false;
+  }
+}
+
+/**
+ * Install stop hook to project-level Claude Code settings (.claude/settings.json)
+ */
+async function installClaudeCodeStopHook(projectDir: string): Promise<boolean> {
+  const configPath = path.join(projectDir, '.claude', 'settings.json');
+  const configDir = path.dirname(configPath);
+
+  try {
+    // Ensure directory exists
+    await fs.mkdir(configDir, { recursive: true });
+
+    // Read existing config or start fresh
+    let config: Record<string, unknown> = {};
+    try {
+      const existing = await fs.readFile(configPath, 'utf-8');
+      config = JSON.parse(existing);
+    } catch {
+      // File doesn't exist or invalid JSON, start fresh
+    }
+
+    // Build the stop hook command
+    const stopHookCommand = 'npx tsx src/cli/index.ts session checkpoint --json';
+
+    // Get or create hooks object
+    const hooks = (config.hooks as Record<string, unknown[]>) || {};
+
+    // Check if Stop hook already exists with our command
+    const existingStopHooks = hooks.Stop as Array<{ command?: string }> | undefined;
+    const alreadyInstalled = existingStopHooks?.some(
+      (hook) => hook.command?.includes('session checkpoint')
+    );
+
+    if (alreadyInstalled) {
+      return true; // Already configured
+    }
+
+    // Add our stop hook
+    hooks.Stop = [
+      ...(existingStopHooks || []),
+      {
+        type: 'command',
+        command: stopHookCommand,
+      },
+    ];
+    config.hooks = hooks;
+
+    // Write back
+    await fs.writeFile(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+    return true;
+  } catch {
     return false;
   }
 }
@@ -331,10 +385,12 @@ export function registerSetupCommand(program: Command): void {
     .description('Configure agent environment for kspec')
     .option('--dry-run', 'Show what would be done without making changes')
     .option('--author <author>', 'Custom author string (default: auto-detected based on agent)')
+    .option('--no-hooks', 'Skip installing Claude Code stop hook')
     .option('--force', 'Overwrite existing configuration')
     .action(async (options) => {
       try {
         const detected = detectAgent();
+        const projectDir = process.cwd();
 
         console.log(`Detected agent: ${detected.type} (confidence: ${detected.confidence})`);
 
@@ -345,13 +401,18 @@ export function registerSetupCommand(program: Command): void {
         }
 
         const author = options.author || getDefaultAuthor(detected.type);
+        const installHooks = options.hooks !== false && detected.type === 'claude-code';
 
         if (options.dryRun) {
           console.log(`\nWould configure:`);
           console.log(`  Agent: ${detected.type}`);
           console.log(`  Author: ${author}`);
           if (detected.configPath) {
-            console.log(`  Config: ${detected.configPath}`);
+            console.log(`  Global config: ${detected.configPath}`);
+          }
+          if (installHooks) {
+            console.log(`  Project config: ${path.join(projectDir, '.claude', 'settings.json')}`);
+            console.log(`  Stop hook: kspec session checkpoint`);
           }
           return;
         }
@@ -365,10 +426,14 @@ export function registerSetupCommand(program: Command): void {
 
         // Install config based on agent type
         let installed = false;
+        let hooksInstalled = false;
 
         switch (detected.type) {
           case 'claude-code':
             installed = await installClaudeCodeConfig(author);
+            if (installHooks) {
+              hooksInstalled = await installClaudeCodeStopHook(projectDir);
+            }
             break;
 
           case 'aider':
@@ -404,6 +469,14 @@ export function registerSetupCommand(program: Command): void {
             author,
             configPath: detected.configPath,
           });
+
+          if (hooksInstalled) {
+            success(`Installed stop hook to .claude/settings.json`, {
+              hook: 'Stop',
+              command: 'kspec session checkpoint',
+            });
+          }
+
           console.log('\nRestart your agent session for changes to take effect.');
         } else {
           error(`Failed to install config for ${detected.type}`);
