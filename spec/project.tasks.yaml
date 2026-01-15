@@ -1058,4 +1058,61 @@
         .claude/settings.json. Correct format is just {hooks: [{type, command}]} without any
         matcher.
       supersedes: null
+    - _ulid: 01KF1A8CD4XENJWF1HY27RQ027
+      created_at: '2026-01-15T17:11:39.173Z'
+      author: '@claude'
+      content: >-
+        Third fix for stop hook integration:
+
+
+        1. Added 'matcher: ""' field to .claude/settings.json - required by Claude Code hooks format
+
+        2. Updated setup.ts to generate correct format with matcher field  
+
+        3. Changed checkpoint --json output to use Claude Code format: {"decision": "block",
+        "reason": "..."}
+
+
+        Previous attempts missed the matcher field requirement and used wrong output format.
+        Verified by comparing with working hooks in ../kynetic project.
+      supersedes: null
+  todos: []
+- _ulid: 01KF1A9FHN5ZJH5J72C4H4MX4G
+  slugs:
+    - task-fuzzy-item-and-task-search
+  title: 'Implement: Fuzzy Item and Task Search'
+  type: task
+  spec_ref: '@fuzzy-item-search'
+  derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - dx
+    - search
+  vcs_refs: []
+  created_at: '2026-01-15T17:12:15.157Z'
+  notes: []
+  todos: []
+- title: 'Implement: CLI Command Suggestions on Error'
+  type: task
+  spec_ref: '@fuzzy-command-suggest'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-cli-command-suggestions-on-error
+  tags:
+    - dx
+    - cli
+    - errors
+  _ulid: 01KF1A9GMNZM8GF8TD95YSDQ7V
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-15T17:12:16.277Z'
+  notes: []
   todos: []

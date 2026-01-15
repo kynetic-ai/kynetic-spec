@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import { Command } from 'commander';
 import chalk from 'chalk';
 import {
@@ -7,10 +8,14 @@ import {
   loadAllItems,
   AlignmentIndex,
   ReferenceIndex,
+  fixFiles,
+  findTaskFiles,
+  expandIncludePattern,
   type ValidationResult,
   type AlignmentWarning,
+  type FixResult,
 } from '../../parser/index.js';
-import { output, success, error } from '../output.js';
+import { output, success, error, info } from '../output.js';
 
 /**
  * Format alignment warnings for display
@@ -53,6 +58,71 @@ function formatAlignmentWarnings(warnings: AlignmentWarning[], verbose: boolean)
       console.log(chalk.yellow(`    ! ${w.message}`));
     }
   }
+}
+
+/**
+ * Format fix results for display
+ */
+function formatFixResult(result: FixResult): void {
+  if (result.fixesApplied.length === 0) {
+    console.log(chalk.gray('\nNo auto-fixable issues found.'));
+    return;
+  }
+
+  console.log(chalk.cyan(`\n✓ Applied ${result.fixesApplied.length} fix(es) to ${result.filesModified} file(s):`));
+
+  for (const fix of result.fixesApplied) {
+    const typeLabel = {
+      ulid_regenerated: 'ULID regenerated',
+      timestamp_added: 'Timestamp added',
+      status_added: 'Status added',
+    }[fix.type];
+
+    const shortFile = path.basename(fix.file);
+    console.log(chalk.cyan(`  ✓ ${shortFile}:${fix.path} - ${typeLabel}`));
+  }
+
+  if (result.errors.length > 0) {
+    console.log(chalk.yellow(`\nFix errors: ${result.errors.length}`));
+    for (const err of result.errors) {
+      console.log(chalk.yellow(`  ! ${err.file}: ${err.message}`));
+    }
+  }
+}
+
+/**
+ * Collect all files that can be fixed
+ */
+async function collectFixableFiles(ctx: { rootDir: string; manifest?: { includes?: string[] }; manifestPath?: string }): Promise<string[]> {
+  const files: string[] = [];
+
+  // Task files (exclude test fixtures)
+  const taskFiles = await findTaskFiles(ctx.rootDir);
+  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, 'spec'));
+  const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])];
+  files.push(...allTaskFiles.filter(f => !f.includes('fixtures') && !f.includes('test')));
+
+  // Spec files from includes
+  if (ctx.manifest && ctx.manifestPath) {
+    const manifestDir = path.dirname(ctx.manifestPath);
+    const includes = ctx.manifest.includes || [];
+
+    for (const include of includes) {
+      const expandedPaths = await expandIncludePattern(include, manifestDir);
+      files.push(...expandedPaths);
+    }
+  }
+
+  // Inbox file
+  const inboxPath = path.join(ctx.rootDir, 'spec', 'kynetic.inbox.yaml');
+  try {
+    await import('node:fs/promises').then(fs => fs.access(inboxPath));
+    files.push(inboxPath);
+  } catch {
+    // Inbox file doesn't exist, skip
+  }
+
+  return [...new Set(files)];
 }
 
 /**
@@ -132,6 +202,7 @@ export function registerValidateCommand(program: Command): void {
     .option('--refs', 'Check reference resolution only')
     .option('--orphans', 'Find orphaned items only')
     .option('--alignment', 'Check spec-task alignment')
+    .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
     .option('-v, --verbose', 'Show detailed output')
     .option('--strict', 'Treat orphans as errors')
     .action(async (options) => {
@@ -161,6 +232,28 @@ export function registerValidateCommand(program: Command): void {
 
         output(result, () => formatValidationResult(result, options.verbose));
 
+        // Run auto-fix if requested
+        if (options.fix) {
+          const filesToFix = await collectFixableFiles(ctx);
+          const fixResult = await fixFiles(filesToFix);
+          formatFixResult(fixResult);
+
+          // Re-run validation after fixes to show updated status
+          if (fixResult.fixesApplied.length > 0) {
+            console.log(chalk.gray('\nRe-validating after fixes...'));
+            const revalidateResult = await validate(ctx, validateOptions);
+            if (revalidateResult.valid) {
+              console.log(chalk.green.bold('✓ Validation now passes'));
+            } else {
+              console.log(chalk.yellow('Some issues remain after auto-fix'));
+            }
+            // Update result for exit code
+            result.valid = revalidateResult.valid;
+            result.schemaErrors = revalidateResult.schemaErrors;
+            result.refErrors = revalidateResult.refErrors;
+          }
+        }
+
         // Run alignment check if requested or running all checks
         if (options.alignment || runAll) {
           const tasks = await loadAllTasks(ctx);
@@ -189,37 +282,61 @@ export function registerValidateCommand(program: Command): void {
   // Alias: kspec lint
   program
     .command('lint')
-    .description('Alias for validate')
+    .description('Alias for validate with style checks')
     .option('--schema', 'Check schema conformance only')
     .option('--refs', 'Check reference resolution only')
     .option('--orphans', 'Find orphaned items only')
+    .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
     .option('-v, --verbose', 'Show detailed output')
     .option('--strict', 'Treat orphans as errors')
     .action(async (options) => {
-      // Delegate to validate
-      const ctx = await initContext();
+      try {
+        const ctx = await initContext();
 
-      if (!ctx.manifestPath) {
-        error('No kspec manifest found');
-        process.exit(1);
-      }
+        if (!ctx.manifestPath) {
+          error('No kspec manifest found');
+          process.exit(1);
+        }
 
-      const runAll = !options.schema && !options.refs && !options.orphans;
-      const validateOptions = {
-        schema: runAll || options.schema,
-        refs: runAll || options.refs,
-        orphans: runAll || options.orphans,
-      };
+        const runAll = !options.schema && !options.refs && !options.orphans;
+        const validateOptions = {
+          schema: runAll || options.schema,
+          refs: runAll || options.refs,
+          orphans: runAll || options.orphans,
+        };
 
-      const result = await validate(ctx, validateOptions);
+        const result = await validate(ctx, validateOptions);
 
-      if (options.strict && result.orphans.length > 0) {
-        result.valid = false;
-      }
+        if (options.strict && result.orphans.length > 0) {
+          result.valid = false;
+        }
 
-      output(result, () => formatValidationResult(result, options.verbose));
+        output(result, () => formatValidationResult(result, options.verbose));
 
-      if (!result.valid) {
+        // Run auto-fix if requested
+        if (options.fix) {
+          const filesToFix = await collectFixableFiles(ctx);
+          const fixResult = await fixFiles(filesToFix);
+          formatFixResult(fixResult);
+
+          // Re-run validation after fixes
+          if (fixResult.fixesApplied.length > 0) {
+            console.log(chalk.gray('\nRe-validating after fixes...'));
+            const revalidateResult = await validate(ctx, validateOptions);
+            if (revalidateResult.valid) {
+              console.log(chalk.green.bold('✓ Validation now passes'));
+            } else {
+              console.log(chalk.yellow('Some issues remain after auto-fix'));
+            }
+            result.valid = revalidateResult.valid;
+          }
+        }
+
+        if (!result.valid) {
+          process.exit(1);
+        }
+      } catch (err) {
+        error('Lint failed', err);
         process.exit(1);
       }
     });

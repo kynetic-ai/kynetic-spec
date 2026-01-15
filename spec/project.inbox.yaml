@@ -1,13 +1,4 @@
 inbox:
-  - _ulid: 01KF10JT5NDGSD5WGC748JVSW5
-    text: >-
-      Fuzzy search for spec/tasks - would help with finding items when you don't remember exact
-      names
-    created_at: '2026-01-15T14:22:35.190Z'
-    tags:
-      - search
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF150ZY1Z272H5CF55NQ4JBP
     text: >-
       Subagent review on task complete - when agent marks task complete, include instructions to
@@ -32,17 +23,6 @@ inbox:
       - git
       - process
       - architecture
-    added_by: '@claude'
-  - _ulid: 01KF15N09Y8MQSNZP39Z9SAW84
-    text: >-
-      validate --fix option for auto-fixing issues: invalid ULIDs (regenerate), spec format
-      migrations (auto-upgrade schema), missing required fields (add defaults). Makes validation
-      actionable not just diagnostic.
-    created_at: '2026-01-15T15:51:09.887Z'
-    tags:
-      - cli
-      - dx
-      - validation
     added_by: '@claude'
   - _ulid: 01KF16XGA6SNNRHFPX15N0HE6F
     text: >-

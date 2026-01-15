@@ -196,9 +196,11 @@ async function installClaudeCodeStopHook(projectDir: string): Promise<boolean> {
     }
 
     // Add our stop hook using Claude Code hooks format
+    // Note: matcher field is required even if empty string
     hooks.Stop = [
       ...(existingStopHooks || []),
       {
+        matcher: '',
         hooks: [
           {
             type: 'command',

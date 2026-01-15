@@ -17,7 +17,7 @@ import {
   type LoadedInboxItem,
   type KspecContext,
 } from '../../parser/index.js';
-import { output, error, info } from '../output.js';
+import { output, error, info, isJsonMode } from '../output.js';
 import {
   parseTimeSpec,
   formatRelativeTime,
@@ -877,12 +877,23 @@ async function sessionCheckpointAction(options: CheckpointOptions): Promise<void
     const ctx = await initContext();
     const result = await performCheckpoint(ctx, options);
 
-    output(result, () => formatCheckpointResult(result));
-
-    // Exit with non-zero code if issues found and not forced
-    // This allows Claude Code hooks to detect the checkpoint failed
-    if (!result.ok) {
-      process.exit(1);
+    // Output format depends on mode:
+    // - JSON mode (--json): Output Claude Code hook format {"decision": "block", "reason": "..."}
+    // - Human mode: Output formatted checkpoint result
+    if (isJsonMode()) {
+      if (!result.ok) {
+        // Build reason message with issues and instructions
+        const issueLines = result.issues.map(i => `- ${i.description}`).join('\n');
+        const instructionLines = result.instructions.filter(i => i.trim()).join('\n');
+        const reason = `${result.message}\n\nIssues:\n${issueLines}\n\n${instructionLines}`;
+        console.log(JSON.stringify({ decision: 'block', reason }));
+      }
+      // If ok, exit silently (Claude Code expects no output when allowing stop)
+    } else {
+      formatCheckpointResult(result);
+      if (!result.ok) {
+        process.exit(1);
+      }
     }
   } catch (err) {
     error('Failed to run checkpoint', err);

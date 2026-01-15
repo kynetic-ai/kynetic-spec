@@ -838,6 +838,95 @@ features:
           Removes inbox item. Use when idea is no longer relevant.
         implements:
           - '@inbox-commands'
+  - _ulid: 01KF1A8NP424N6FAY64C7T49R2
+    slugs:
+      - fuzzy-matching
+    title: Fuzzy Matching
+    type: feature
+    priority: medium
+    tags:
+      - dx
+      - cli
+    description: >-
+      Infrastructure for fuzzy string matching across kspec. Enables approximate matching for
+      item/task search and CLI command suggestions. Uses Levenshtein distance or similar algorithm
+      for scoring matches.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-15T17:11:48.677Z'
+    requirements:
+      - _ulid: 01KF1A8Z6VHV4TKGS9GNZHSDZA
+        slugs:
+          - fuzzy-item-search
+        title: Fuzzy Item and Task Search
+        type: requirement
+        tags:
+          - dx
+          - search
+        description: >-
+          kspec item list --fuzzy <query>
+
+          kspec tasks list --fuzzy <query>
+
+
+          Enables searching for items/tasks by partial or approximate name match. Useful when you
+          don't remember the exact slug or title.
+
+
+          Behavior:
+
+          - Matches against title, slugs, and description
+
+          - Returns results scored by relevance
+
+          - Configurable threshold for match quality
+
+          - Works with existing filters (--type, --tag, etc.)
+
+
+          Examples:
+
+          - kspec item list --fuzzy 'validashun' → finds @validation-modes
+
+          - kspec tasks list --fuzzy 'sesion' → finds session-related tasks
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-15T17:11:58.428Z'
+      - _ulid: 01KF1A991VFFQ99EBQGQ9XB55D
+        slugs:
+          - fuzzy-command-suggest
+        title: CLI Command Suggestions on Error
+        type: requirement
+        tags:
+          - dx
+          - cli
+          - errors
+        description: |-
+          When user enters an invalid command, suggest close matches.
+
+          Behavior:
+          - On unknown command, compute distance to all valid commands
+          - If close match found (e.g., 'task list' vs 'tasks list'), suggest it
+          - Threshold-based: only suggest if match is close enough
+          - Also handles subcommand typos (e.g., 'inbox ad' → 'inbox add')
+
+          Output format:
+            error: Unknown command 'task list'
+            Did you mean: kspec tasks list?
+
+          Consider also accepting common aliases:
+          - 'task' as alias for 'tasks' (singular/plural flexibility)
+          - 'ls' as alias for 'list'
+          - Other common patterns from git/npm conventions
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-15T17:12:08.507Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
