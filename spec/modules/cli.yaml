@@ -1,7 +1,7 @@
 # CLI Module - Command Line Interface
 # Defines the kspec CLI commands and behavior
 
-_ulid: 01JHNKA7W4CLIM000000000000
+_ulid: 01KEZCJPHVBKRZQ7VVBF84H51Z
 slugs: [cli, cli-module]
 title: CLI Interface
 type: module
@@ -17,7 +17,7 @@ features:
   # ============================================================
   # CLI DESIGN - Core principles
   # ============================================================
-  - _ulid: 01JHNKA7W5CLDS000000000000
+  - _ulid: 01KEZCJPHW3CSMXYZT01FP76BM
     slugs: [cli-design]
     title: CLI Design Principles
     type: feature
@@ -31,7 +31,7 @@ features:
       Consistent structure, predictable output, clear errors.
 
     requirements:
-      - _ulid: 01JHNKA7W6CLDS100000000000
+      - _ulid: 01KEZCJPHWP32HK8MR38P2WSSJ
         slugs: [cli-structure]
         title: Command Structure
         type: requirement
@@ -52,7 +52,7 @@ features:
           - kspec tasks ready
         implements: ["@cli-design"]
 
-      - _ulid: 01JHNKA7W7CLDS200000000000
+      - _ulid: 01KEZCJPHWKVBFSAEP0MMH57DQ
         slugs: [cli-json-output]
         title: JSON Output Mode
         type: requirement
@@ -71,7 +71,7 @@ features:
           - errors: Array of error objects (if any)
         implements: ["@cli-design"]
 
-      - _ulid: 01JHNKA7W8CLDS300000000000
+      - _ulid: 01KEZCJPHWB81SAWT4ZGCV75FC
         slugs: [cli-exit-codes]
         title: Semantic Exit Codes
         type: requirement
@@ -91,7 +91,7 @@ features:
           Scripts can handle specific cases.
         implements: ["@cli-design"]
 
-      - _ulid: 01JHNKA7W9CLDS400000000000
+      - _ulid: 01KEZCJPHWBEEP2BYRP6YVNK9F
         slugs: [cli-agent-features]
         title: Agent-Friendly Features
         type: requirement
@@ -113,7 +113,7 @@ features:
   # ============================================================
   # ITEM COMMANDS - CRUD for spec items
   # ============================================================
-  - _ulid: 01JHNKA8W0CITM000000000000
+  - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs: [item-commands]
     title: Item Commands
     type: feature
@@ -138,7 +138,7 @@ features:
         then: full item data is displayed
 
     requirements:
-      - _ulid: 01JHNKA8W1CITM100000000000
+      - _ulid: 01KEZCJPHXGMME0BZ5C65R5QH8
         slugs: [item-add]
         title: kspec item add
         type: requirement
@@ -158,7 +158,7 @@ features:
           Returns created item (with generated ULID).
         implements: ["@item-commands"]
 
-      - _ulid: 01JHNKA8W2CITM200000000000
+      - _ulid: 01KEZCJPHXKYVVP0YWF261A8N3
         slugs: [item-get]
         title: kspec item get
         type: requirement
@@ -175,7 +175,7 @@ features:
           Resolves @reference, displays full item.
         implements: ["@item-commands"]
 
-      - _ulid: 01JHNKA8W3CITM300000000000
+      - _ulid: 01KEZCJPHXT212CZV6W64YJFAQ
         slugs: [item-list]
         title: kspec item list
         type: requirement
@@ -194,7 +194,7 @@ features:
           Returns list of matching items.
         implements: ["@item-commands"]
 
-      - _ulid: 01JHNKA8W4CITM400000000000
+      - _ulid: 01KEZCJPHX678F01J6TZE5SX1Q
         slugs: [item-set]
         title: kspec item set
         type: requirement
@@ -211,7 +211,7 @@ features:
           Updates item in place. Use for status changes, etc.
         implements: ["@item-commands"]
 
-      - _ulid: 01JHNKA8W5CITM500000000000
+      - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs: [item-delete]
         title: kspec item delete
         type: requirement
@@ -429,7 +429,7 @@ features:
   # ============================================================
   # LINK COMMANDS - Managing relationships
   # ============================================================
-  - _ulid: 01JHNKA9W8CLNK000000000000
+  - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs: [link-commands]
     title: Link Commands
     type: feature
@@ -443,7 +443,7 @@ features:
       Create, query, and remove links.
 
     requirements:
-      - _ulid: 01JHNKA9W9CLNK100000000000
+      - _ulid: 01KEZCJPHXWK4N7K72F0CFWBGN
         slugs: [link-create]
         title: kspec link create
         type: requirement
@@ -460,7 +460,7 @@ features:
           Updates the source item's relationship array.
         implements: ["@link-commands"]
 
-      - _ulid: 01JHNKAA00CLNK200000000000
+      - _ulid: 01KEZCJPHY64RH5PPE6WJSPH03
         slugs: [link-list]
         title: kspec link list
         type: requirement
@@ -478,7 +478,7 @@ features:
           Shows relationships matching filters.
         implements: ["@link-commands"]
 
-      - _ulid: 01JHNKAA01CLNK300000000000
+      - _ulid: 01KEZCJPHYBD2BSED0D9ZHRMGQ
         slugs: [link-delete]
         title: kspec link delete
         type: requirement
@@ -497,7 +497,7 @@ features:
   # ============================================================
   # VALIDATION COMMANDS - Checking spec integrity
   # ============================================================
-  - _ulid: 01JHNKAA02CVLD000000000000
+  - _ulid: 01KEZCJPHYBMBBKESVKBBV4CGM
     slugs: [validate-commands]
     title: Validation Commands
     type: feature
@@ -511,7 +511,7 @@ features:
       Essential for CI and pre-commit checks.
 
     requirements:
-      - _ulid: 01JHNKAA03CVLD100000000000
+      - _ulid: 01KEZCJPHYHN29QV8C088GVGD1
         slugs: [cmd-validate]
         title: kspec validate
         type: requirement
@@ -531,7 +531,7 @@ features:
           Default: All checks. Returns errors and warnings.
         implements: ["@validate-commands", "@validation-modes"]
 
-      - _ulid: 01JHNKAA04CVLD200000000000
+      - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
         slugs: [cmd-lint]
         title: kspec lint
         type: requirement
@@ -588,7 +588,7 @@ features:
   # ============================================================
   # INIT AND CONFIG - Setup commands
   # ============================================================
-  - _ulid: 01JHNKAA07CINIT00000000000
+  - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs: [init-commands]
     title: Init and Config Commands
     type: feature
@@ -602,7 +602,7 @@ features:
       Project setup and configuration management.
 
     requirements:
-      - _ulid: 01JHNKAA08CINIT10000000000
+      - _ulid: 01KEZCJPHYDTPQ34W8FRXQ9GKX
         slugs: [cmd-init]
         title: kspec init
         type: requirement
@@ -623,7 +623,7 @@ features:
           Interactive prompts unless --no-prompt.
         implements: ["@init-commands"]
 
-      - _ulid: 01JHNKAA09CINIT20000000000
+      - _ulid: 01KEZCJPHYZKAW6006AM7P5KWT
         slugs: [cmd-hooks]
         title: kspec hooks
         type: requirement

@@ -174,7 +174,7 @@ features:
   # ============================================================
   # FILE STRUCTURE - How specs are organized on disk
   # ============================================================
-  - _ulid: 01JHNKA2W3FILE000000000000
+  - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs: [file-structure, spec-organization]
     title: File Structure
     type: feature
@@ -188,7 +188,7 @@ features:
       The structure is auto-adaptive: start simple, split when needed.
 
     requirements:
-      - _ulid: 01JHNKA2W4FILE100000000000
+      - _ulid: 01KEZCJPJ3N3M6XZC5F2HMQMF3
         slugs: [single-file-structure]
         title: Single File Structure
         type: requirement
@@ -204,7 +204,7 @@ features:
           All items inline in the manifest.
         implements: ["@file-structure"]
 
-      - _ulid: 01JHNKA2W5FILE200000000000
+      - _ulid: 01KEZCJPJ3X51ZZADWKWFNV4R9
         slugs: [directory-structure]
         title: Directory Structure
         type: requirement
@@ -226,7 +226,7 @@ features:
           Uses `includes` field in manifest to reference files.
         implements: ["@file-structure"]
 
-      - _ulid: 01JHNKA2W6FILE300000000000
+      - _ulid: 01KEZCJPJ3WDMJX9K17J63CYXS
         slugs: [auto-adaptive-structure]
         title: Auto-Adaptive Structure
         type: requirement
@@ -245,7 +245,7 @@ features:
   # ============================================================
   # YAML CONVENTIONS - Safe YAML usage
   # ============================================================
-  - _ulid: 01JHNKA2W7YAML000000000000
+  - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs: [yaml-conventions, yaml-safety]
     title: YAML Conventions
     type: feature
@@ -259,7 +259,7 @@ features:
       These conventions ensure safe, predictable parsing.
 
     requirements:
-      - _ulid: 01JHNKA2W8YAML100000000000
+      - _ulid: 01KEZCJPJ3Z9T0AWQGEJ3GW2WZ
         slugs: [yaml-version]
         title: YAML 1.2 Required
         type: requirement
@@ -276,7 +276,7 @@ features:
           YAML 1.2 is stricter and safer.
         implements: ["@yaml-conventions"]
 
-      - _ulid: 01JHNKA2W9YAML200000000000
+      - _ulid: 01KEZCJPJ3MFX4H51TN64GEB6T
         slugs: [yaml-quoting]
         title: Quote Ambiguous Strings
         type: requirement
@@ -292,7 +292,7 @@ features:
           The linter should catch unquoted ambiguous values.
         implements: ["@yaml-conventions"]
 
-      - _ulid: 01JHNKA3W0YAML300000000000
+      - _ulid: 01KEZCJPJ3M7T6ZNEMTVYBWP96
         slugs: [yaml-multiline]
         title: Multiline with Literal Blocks
         type: requirement
@@ -312,7 +312,7 @@ features:
   # ============================================================
   # VALIDATION - Schema conformance
   # ============================================================
-  - _ulid: 01JHNKA3W1VALD000000000000
+  - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs: [validation, schema-validation]
     title: Schema Validation
     type: feature
@@ -337,7 +337,7 @@ features:
         then: validation fails with error listing broken ref
 
     requirements:
-      - _ulid: 01JHNKA3W2VALD100000000000
+      - _ulid: 01KEZCJPJ3MRSVNT5E9ETQD72W
         slugs: [zod-schema]
         title: Zod Schema Definition
         type: requirement
@@ -354,7 +354,7 @@ features:
         implements: ["@validation"]
         depends_on: ["@spec-item"]
 
-      - _ulid: 01JHNKA3W3VALD200000000000
+      - _ulid: 01KEZCJPJ373KGN2PK8P3XQ929
         slugs: [validation-modes]
         title: Validation Modes
         type: requirement
@@ -371,7 +371,7 @@ features:
           CI should run `kspec validate` or `kspec lint --strict`.
         implements: ["@validation"]
 
-      - _ulid: 01JHNKA3W4VALD300000000000
+      - _ulid: 01KEZCJPJ42RZQPFC962QV2TP3
         slugs: [validation-output]
         title: Validation Output
         type: requirement

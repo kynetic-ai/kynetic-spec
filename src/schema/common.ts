@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 /**
  * ULID pattern - 26 character Crockford base32
+ * Excludes I, L, O, U to avoid confusion with 1, 1, 0, V
  */
 export const ulidPattern = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 

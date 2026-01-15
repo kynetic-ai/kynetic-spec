@@ -1,7 +1,7 @@
 # Core Module - Fundamental Primitives
 # Defines the building blocks: items, identifiers, and references
 
-_ulid: 01JHNK8QW0CORE000000000000
+_ulid: 01KEZCJPHZ86X9PA509GREWDM0
 slugs: [core, core-primitives]
 title: Core Primitives
 type: module
@@ -17,7 +17,7 @@ features:
   # ============================================================
   # SPEC ITEMS - The fundamental unit
   # ============================================================
-  - _ulid: 01JHNK8QW1ITEM000000000000
+  - _ulid: 01KEZCJPHZTTRBTEXCF6WYQYR3
     slugs: [spec-item, item-concept]
     title: Spec Item
     type: feature
@@ -43,7 +43,7 @@ features:
         then: it has a ULID assigned automatically
 
     requirements:
-      - _ulid: 01JHNK8QW2ITEM100000000000
+      - _ulid: 01KEZCJPHZ0X9NQZMED44BM9MT
         slugs: [item-required-fields]
         title: Required Item Fields
         type: requirement
@@ -58,7 +58,7 @@ features:
           All other fields are optional with sensible defaults.
         implements: ["@spec-item"]
 
-      - _ulid: 01JHNK8QW3ITEM200000000000
+      - _ulid: 01KEZCJPHZ67B47NKNJZ8C1H3G
         slugs: [item-optional-fields]
         title: Optional Item Fields
         type: requirement
@@ -82,7 +82,7 @@ features:
   # ============================================================
   # ULID SYSTEM - Canonical identifiers
   # ============================================================
-  - _ulid: 01JHNK8QW4ULID000000000000
+  - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs: [ulid-system, canonical-ids]
     title: ULID Identifier System
     type: feature
@@ -104,7 +104,7 @@ features:
         then: a ULID is auto-generated
 
       - id: ac-ulid-2
-        given: a ULID "01JHNK8QW0CORE000000000000"
+        given: a ULID "01KEZCJPHZ86X9PA509GREWDM0"
         when: it needs to be displayed briefly
         then: it can be shortened to "01JHNK" (first 6+ chars)
 
@@ -114,7 +114,7 @@ features:
         then: the ULID never changes
 
     requirements:
-      - _ulid: 01JHNK8QW5ULID100000000000
+      - _ulid: 01KEZCJPHZH6VQH44813GV3PTC
         slugs: [ulid-format]
         title: ULID Format
         type: requirement
@@ -127,10 +127,10 @@ features:
           - First 10 chars: Timestamp (millisecond precision)
           - Last 16 chars: Random component
 
-          Example: 01JHNK8QW0CORE000000000000
+          Example: 01KEZCJPHZ86X9PA509GREWDM0
         implements: ["@ulid-system"]
 
-      - _ulid: 01JHNK8QW6ULID200000000000
+      - _ulid: 01KEZCJPJ0MZSX946EF3ZPW9TA
         slugs: [ulid-immutability]
         title: ULID Immutability
         type: requirement
@@ -143,7 +143,7 @@ features:
           item gets a new ULID and links via supersedes relationship.
         implements: ["@ulid-system"]
 
-      - _ulid: 01JHNK8QW7ULID300000000000
+      - _ulid: 01KEZCJPJ0W8V4JZRYZFX56DX5
         slugs: [ulid-shortening]
         title: ULID Shortening
         type: requirement
@@ -162,7 +162,7 @@ features:
   # ============================================================
   # SLUG SYSTEM - Human-friendly aliases
   # ============================================================
-  - _ulid: 01JHNK8QW8SLUG000000000000
+  - _ulid: 01KEZCJPJ0K5S6G1QMBXEVC54W
     slugs: [slug-system, item-aliases]
     title: Slug Alias System
     type: feature
@@ -181,7 +181,7 @@ features:
       - id: ac-slug-1
         given: an item with ULID "01JHNK8QW0..."
         when: slug "core-primitives" is assigned
-        then: "@core-primitives" resolves to that item
+        then: '"@core-primitives" resolves to that item'
 
       - id: ac-slug-2
         given: an item with slugs ["auth-login", "user-login"]
@@ -191,10 +191,10 @@ features:
       - id: ac-slug-3
         given: a slug "old-name" assigned to an item
         when: the slug is changed to "new-name"
-        then: references to "@old-name" produce a warning but still resolve
+        then: 'references to "@old-name" produce a warning but still resolve'
 
     requirements:
-      - _ulid: 01JHNK8QW9SLUG100000000000
+      - _ulid: 01KEZCJPJ05XAAVB7JK0G169DP
         slugs: [slug-format]
         title: Slug Format
         type: requirement
@@ -208,7 +208,7 @@ features:
           Examples: auth-login, user-model, impl-session-v2
         implements: ["@slug-system"]
 
-      - _ulid: 01JHNKA0W0SLUG200000000000
+      - _ulid: 01KEZCJPJ1HD0JRARXD5AY3ZAW
         slugs: [slug-uniqueness]
         title: Slug Uniqueness
         type: requirement
@@ -220,7 +220,7 @@ features:
           have the same slug. Validation fails if duplicate slugs exist.
         implements: ["@slug-system"]
 
-      - _ulid: 01JHNKA0W1SLUG300000000000
+      - _ulid: 01KEZCJPJ1RC6G58T2XJCJZWB8
         slugs: [slug-resolution]
         title: Slug Resolution
         type: requirement
@@ -281,7 +281,7 @@ features:
 
           - "@slug-name" - Reference by slug
           - "@01JHNK" - Reference by short ULID
-          - "@01JHNK8QW0CORE000000000000" - Reference by full ULID
+          - "@01KEZCJPHZ86X9PA509GREWDM0" - Reference by full ULID
 
           References appear in relationship fields:
           depends_on, implements, relates_to, tests, supersedes, blocked_by
@@ -307,7 +307,7 @@ features:
   # ============================================================
   # RELATIONSHIP TYPES - Semantic links between items
   # ============================================================
-  - _ulid: 01JHNKA0W5RELS000000000000
+  - _ulid: 01KEZCJPJ1SMT5AJJ2Y6Z0S21K
     slugs: [relationship-types, item-links]
     title: Relationship Types
     type: feature
@@ -322,7 +322,7 @@ features:
       relationships form a cross-cutting graph for other connections.
 
     requirements:
-      - _ulid: 01JHNKA0W6RELS100000000000
+      - _ulid: 01KEZCJPJ16V8C3N97BCEEV6GK
         slugs: [rel-depends-on]
         title: depends_on Relationship
         type: requirement
@@ -336,7 +336,7 @@ features:
           For tasks: Auto-blocks A until B is completed.
         implements: ["@relationship-types"]
 
-      - _ulid: 01JHNKA0W7RELS200000000000
+      - _ulid: 01KEZCJPJ2MKTF1V4PCN9X6Y7K
         slugs: [rel-implements]
         title: implements Relationship
         type: requirement
@@ -350,7 +350,7 @@ features:
           Enables traceability from high-level to concrete.
         implements: ["@relationship-types"]
 
-      - _ulid: 01JHNKA0W8RELS300000000000
+      - _ulid: 01KEZCJPJ2JS9T7PSR30RMDCFE
         slugs: [rel-relates-to]
         title: relates_to Relationship
         type: requirement
@@ -362,7 +362,7 @@ features:
           Used for: cross-references, "see also" links.
         implements: ["@relationship-types"]
 
-      - _ulid: 01JHNKA0W9RELS400000000000
+      - _ulid: 01KEZCJPJ26Q09SD3GCQAXJWP9
         slugs: [rel-blocks]
         title: blocks Relationship
         type: requirement
@@ -374,7 +374,7 @@ features:
           The inverse of depends_on, used for explicit blocking issues.
         implements: ["@relationship-types"]
 
-      - _ulid: 01JHNKA1W0RELS500000000000
+      - _ulid: 01KEZCJPJ2HC490BP03G39SX8R
         slugs: [rel-tests]
         title: tests Relationship
         type: requirement
@@ -386,7 +386,7 @@ features:
           Used for: linking test items to features/requirements.
         implements: ["@relationship-types"]
 
-      - _ulid: 01JHNKA1W1RELS600000000000
+      - _ulid: 01KEZCJPJ2ZJMV482PPMTCSZKN
         slugs: [rel-supersedes]
         title: supersedes Relationship
         type: requirement

@@ -378,7 +378,7 @@ features:
   # ============================================================
   # NOTES - Work log entries
   # ============================================================
-  - _ulid: 01JHNKA6W1NOTE000000000000
+  - _ulid: 01KEZCJPJ4A4QG2DY5F3BBVFVB
     slugs: [task-notes, work-log]
     title: Task Notes
     type: feature
@@ -403,7 +403,7 @@ features:
         then: new note links to old one (old preserved)
 
     requirements:
-      - _ulid: 01JHNKA6W2NOTE100000000000
+      - _ulid: 01KEZCJPJ4WYTKPZZ9FY5A2G13
         slugs: [note-structure]
         title: Note Structure
         type: requirement
@@ -421,7 +421,7 @@ features:
           Notes are never deleted, only superseded.
         implements: ["@task-notes"]
 
-      - _ulid: 01JHNKA6W3NOTE200000000000
+      - _ulid: 01KEZCJPJ4Y0CGNFZREY3QS225
         slugs: [note-cli]
         title: Note CLI Commands
         type: requirement
@@ -439,7 +439,7 @@ features:
   # ============================================================
   # TODOS - Emergent subtasks
   # ============================================================
-  - _ulid: 01JHNKA6W4TODO000000000000
+  - _ulid: 01KEZCJPJ41NHFPF7WV6PF68SW
     slugs: [task-todos, subtask-checklist]
     title: Task Todos
     type: feature
@@ -464,7 +464,7 @@ features:
         then: a new task is created, todo marked promoted_to
 
     requirements:
-      - _ulid: 01JHNKA6W5TODO100000000000
+      - _ulid: 01KEZCJPJ43FJQJZM48Z5KS4NF
         slugs: [todo-structure]
         title: Todo Structure
         type: requirement
@@ -482,7 +482,7 @@ features:
           - promoted_to: @ref if promoted to task (optional)
         implements: ["@task-todos"]
 
-      - _ulid: 01JHNKA6W6TODO200000000000
+      - _ulid: 01KEZCJPJ4WPM1XREVKF00QM2K
         slugs: [todo-cli]
         title: Todo CLI Commands
         type: requirement
