@@ -1287,4 +1287,28 @@
 
         Next: Draft the CLI command and hook config
       supersedes: null
+    - _ulid: 01KF1CTZZJ1PS94DH7PZEC7Z2E
+      created_at: '2026-01-15T17:56:46.195Z'
+      author: '@claude'
+      content: >-
+        Implementation complete:
+
+
+        Added 'kspec session prompt-check' command that outputs:
+
+        [kspec] Before implementing behavior changes, check spec coverage. Update spec first if
+        needed.
+
+
+        Updated test-hooks/.claude/settings.json to use command hook.
+
+
+        Ready for testing:
+
+        1. cd test-hooks && claude
+
+        2. Try any prompt - should see the reminder injected as context
+
+        3. Verify Claude considers it appropriately without blocking
+      supersedes: null
   todos: []

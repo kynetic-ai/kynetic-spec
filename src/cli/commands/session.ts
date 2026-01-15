@@ -865,6 +865,21 @@ function parseHookInput(stdin: string | null): StopHookInput | null {
   }
 }
 
+// ─── Prompt Check (UserPromptSubmit Hook) ────────────────────────────────────
+
+/**
+ * Output spec-first reminder for UserPromptSubmit hook.
+ *
+ * This is a simple context injection - always outputs the reminder,
+ * and Claude (Opus) is smart enough to apply it when relevant.
+ */
+async function sessionPromptCheckAction(): Promise<void> {
+  // Lean, instructive reminder with kspec prefix
+  console.log(
+    '[kspec] Before implementing behavior changes, check spec coverage. Update spec first if needed.'
+  );
+}
+
 async function sessionCheckpointAction(options: CheckpointOptions): Promise<void> {
   try {
     // Read stdin for Claude Code hook input
@@ -927,6 +942,11 @@ export function registerSessionCommands(program: Command): void {
     .description('Pre-stop hook: check for uncommitted work before ending session')
     .option('--force', 'Allow session end regardless of issues')
     .action(sessionCheckpointAction);
+
+  session
+    .command('prompt-check')
+    .description('UserPromptSubmit hook: inject spec-first reminder')
+    .action(sessionPromptCheckAction);
 
   // Top-level alias: kspec context
   program

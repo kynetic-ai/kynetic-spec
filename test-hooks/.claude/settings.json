@@ -4,8 +4,8 @@
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Analyze this user message: $ARGUMENTS\n\nDetermine if this is:\n1. A SIMPLE request (question, typo fix, small clarification) -> respond {\"ok\": true}\n2. A COMPLEX request (new feature, behavior change, multi-file work) -> respond {\"ok\": false, \"reason\": \"[SPEC-CHECK] This looks like scope expansion. Before implementing, check: Does the spec cover this? If not, consider updating spec first.\"}\n\nRespond with JSON only."
+            "type": "command",
+            "command": "npx tsx src/cli/index.ts session prompt-check"
           }
         ]
       }
