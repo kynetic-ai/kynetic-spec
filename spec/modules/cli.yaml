@@ -803,12 +803,16 @@ requirements:
       - Incomplete todos on active tasks
 
 
-      One-time trigger: Reads hook arguments to detect if already triggered. First trigger blocks
-      with instructions, subsequent triggers allow stop.
+      One-time trigger: Reads stop_hook_active from Claude Code stdin JSON to detect retry. First
+      trigger blocks with instructions, subsequent triggers allow stop.
 
 
       Output: JSON formatted for Claude Code hook consumption with clear kspec-branded message
       instructing agent to document progress and commit changes.
+
+
+      Installation: kspec setup automatically installs this hook to project-level
+      .claude/settings.json for Claude Code users.
     depends_on: []
     implements: []
     relates_to: []
