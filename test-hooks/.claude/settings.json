@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx src/cli/index.ts session prompt-check"
+            "command": "cd /home/chapel/Projects/kynetic-spec && npx tsx src/cli/index.ts session prompt-check"
           }
         ]
       }
