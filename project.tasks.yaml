@@ -2561,7 +2561,7 @@
   type: task
   spec_ref: '@commit-guidance'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2573,19 +2573,20 @@
   created_at: '2026-01-16T18:42:59.783Z'
   notes: []
   todos: []
-- title: 'Implement: kspec log'
+  started_at: '2026-01-16T18:43:15.017Z'
+- _ulid: 01KF41WDEXX0NV9VRP6MQ2844J
+  slugs:
+    - task-kspec-log
+  title: 'Implement: kspec log'
   type: task
   spec_ref: '@cmd-log'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-kspec-log
-  tags: []
-  _ulid: 01KF41WDEXX0NV9VRP6MQ2844J
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-16T18:43:01.725Z'
   notes: []
