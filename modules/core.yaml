@@ -212,9 +212,12 @@ features:
         status:
           maturity: draft
           implementation: not_started
-        description: |
-          Each slug MUST be unique within the spec. Two items cannot
-          have the same slug. Validation fails if duplicate slugs exist.
+        description: |-
+          Each slug MUST be unique within the spec. Two items cannot have the same slug.
+
+          Enforcement:
+          - Validation: kspec validate reports duplicate slug errors
+          - Prevention: CLI commands reject duplicate slugs at creation/update time
         implements:
           - '@slug-system'
       - _ulid: 01KEZCJPJ1RC6G58T2XJCJZWB8
