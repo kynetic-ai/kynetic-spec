@@ -544,6 +544,11 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A task exists with ref @test-task
+            when: kspec task delete @test-task --dry-run
+            then: Shows 'Would delete task:' with task title and source file, without actually deleting
       - _ulid: 01KF24HMZXS5XZM7K109MRMEP3
         slugs:
           - task-set
