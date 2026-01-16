@@ -1366,6 +1366,23 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-15T17:12:08.507Z'
+  - _ulid: 01KF3M0JFKF5578HVXEE99F0ZT
+    slugs:
+      - auto-cli-docs
+    title: Auto-Generated CLI Documentation
+    type: feature
+    tags:
+      - dx
+      - documentation
+    description: >-
+      CLI help system that auto-generates command syntax from Commander.js definitions. Eliminates
+      manual sync between code and documentation. Combines auto-generated syntax with curated
+      conceptual content.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-16T14:40:37.876Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
