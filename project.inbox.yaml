@@ -75,15 +75,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF23XXGYQAYQ2KM0MPS3KJG6
-    text: >-
-      Shadow verbose/debug mode: surface auto-commit failures instead of silent catch. Could be
-      --verbose flag on commands or KSPEC_DEBUG env var
-    created_at: '2026-01-16T00:40:19.231Z'
-    tags:
-      - shadow
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF251RANGN7F6R346JFR5ZQY
     text: Add --force flag to inbox delete for batch operations without confirmation prompts
     created_at: '2026-01-16T00:59:53.558Z'
