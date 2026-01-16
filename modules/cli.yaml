@@ -805,6 +805,9 @@ features:
             given: JSON mode enabled
             when: commit guidance would be shown
             then: guidance is suppressed (JSON output only)
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
