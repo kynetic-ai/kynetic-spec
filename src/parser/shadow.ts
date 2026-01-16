@@ -406,7 +406,14 @@ export async function commitIfShadow(
   }
 
   const message = generateCommitMessage(operation, ref, detail);
-  return shadowAutoCommit(shadowConfig.worktreeDir, message);
+  const committed = await shadowAutoCommit(shadowConfig.worktreeDir, message);
+
+  // AC-1: Fire-and-forget push after each commit
+  if (committed) {
+    shadowPushAsync(shadowConfig.worktreeDir);
+  }
+
+  return committed;
 }
 
 /**
@@ -528,6 +535,131 @@ export async function pushShadowBranch(
   } catch {
     return false;
   }
+}
+
+/**
+ * Check if shadow branch has remote tracking configured.
+ * AC-4: Used to determine whether sync should be attempted.
+ */
+export async function hasRemoteTracking(worktreeDir: string): Promise<boolean> {
+  try {
+    const { stdout } = await execAsync(
+      `git config branch.${SHADOW_BRANCH_NAME}.remote`,
+      { cwd: worktreeDir }
+    );
+    return stdout.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Result from a sync operation
+ */
+export interface ShadowSyncResult {
+  success: boolean;
+  pulled: boolean;
+  pushed: boolean;
+  hadConflict: boolean;
+  error?: string;
+}
+
+/**
+ * Fire-and-forget push to remote.
+ * AC-1: Called after each auto-commit when tracking is configured.
+ * Silently ignores errors - the local commit succeeded regardless.
+ */
+export async function shadowPushAsync(worktreeDir: string): Promise<void> {
+  // Check if tracking is configured before attempting push
+  if (!(await hasRemoteTracking(worktreeDir))) {
+    return; // AC-4: silently skip if no tracking
+  }
+
+  try {
+    // Don't await - fire and forget
+    execAsync('git push', { cwd: worktreeDir }).catch(() => {
+      // Silently ignore push failures - local state is correct
+    });
+  } catch {
+    // Ignore
+  }
+}
+
+/**
+ * Pull remote changes to shadow branch.
+ * AC-2: Called at session start to sync before operations.
+ * AC-6: Uses --ff-only first, falls back to --rebase.
+ * AC-3: On conflict, returns failure with suggestion.
+ */
+export async function shadowPull(worktreeDir: string): Promise<ShadowSyncResult> {
+  const result: ShadowSyncResult = {
+    success: false,
+    pulled: false,
+    pushed: false,
+    hadConflict: false,
+  };
+
+  // AC-4: Skip if no remote tracking
+  if (!(await hasRemoteTracking(worktreeDir))) {
+    result.success = true;
+    return result;
+  }
+
+  try {
+    // Try fast-forward only first (cleanest)
+    await execAsync('git pull --ff-only', { cwd: worktreeDir });
+    result.success = true;
+    result.pulled = true;
+    return result;
+  } catch {
+    // Fast-forward failed, try rebase
+  }
+
+  try {
+    // AC-6: Fall back to rebase
+    await execAsync('git pull --rebase', { cwd: worktreeDir });
+    result.success = true;
+    result.pulled = true;
+    return result;
+  } catch {
+    // Rebase failed - likely conflict
+  }
+
+  // AC-3: Conflict detected - abort rebase and report
+  try {
+    await execAsync('git rebase --abort', { cwd: worktreeDir });
+  } catch {
+    // May not be in rebase state, ignore
+  }
+
+  result.hadConflict = true;
+  result.error = 'Sync conflict detected. Run `kspec shadow resolve` to fix.';
+  return result;
+}
+
+/**
+ * Full sync operation: pull then push.
+ * Used by session start and explicit sync commands.
+ */
+export async function shadowSync(worktreeDir: string): Promise<ShadowSyncResult> {
+  // First pull
+  const pullResult = await shadowPull(worktreeDir);
+  if (!pullResult.success) {
+    return pullResult;
+  }
+
+  // Then push (only if tracking configured, checked inside)
+  if (await hasRemoteTracking(worktreeDir)) {
+    try {
+      await execAsync('git push', { cwd: worktreeDir });
+      pullResult.pushed = true;
+    } catch {
+      // Push failed - not a critical error, local state is correct
+      // Could be permissions, network, etc.
+    }
+  }
+
+  return pullResult;
 }
 
 /**

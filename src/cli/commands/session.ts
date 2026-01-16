@@ -29,6 +29,7 @@ import {
   type GitCommit,
   type GitWorkingTree,
 } from '../../utils/index.js';
+import { shadowPull, type ShadowSyncResult } from '../../parser/shadow.js';
 import type { Note, Todo } from '../../schema/index.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -854,6 +855,23 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 async function sessionStartAction(options: SessionOptions): Promise<void> {
   try {
     const ctx = await initContext();
+
+    // AC-2: Pull remote changes before showing session context
+    let syncResult: ShadowSyncResult | null = null;
+    if (ctx.shadow?.enabled) {
+      syncResult = await shadowPull(ctx.shadow.worktreeDir);
+      // AC-3: Warn about conflicts but continue with local state
+      if (syncResult.hadConflict) {
+        console.log(
+          chalk.yellow('⚠ Shadow sync conflict detected. Run `kspec shadow resolve` to fix.')
+        );
+        console.log(chalk.gray('  Continuing with local state...'));
+        console.log('');
+      } else if (syncResult.pulled) {
+        console.log(chalk.gray('ℹ Synced shadow branch from remote'));
+      }
+    }
+
     const sessionCtx = await gatherSessionContext(ctx, options);
 
     output(sessionCtx, () => formatSessionContext(sessionCtx, options));
