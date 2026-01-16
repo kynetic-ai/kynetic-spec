@@ -2715,6 +2715,14 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T22:20:38.685Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T22:20:44.683Z'
+  notes:
+    - _ulid: 01KF4EFGDJNG7FXSDXYYH6X8CJ
+      created_at: '2026-01-16T22:23:10.258Z'
+      author: '@claude'
+      content: >-
+        Implemented secondary sort by creation time for ready tasks. Within the same priority tier,
+        older tasks now come first (FIFO). Added test covering AC @task-queries ac-query-3. Matches
+        kynetic-internal approach.
+      supersedes: null
+  todos: []
