@@ -14,21 +14,23 @@ This project was bootstrapped using itself. The initial implementation was creat
 
 1. Writing a design document (`KYNETIC_SPEC_DESIGN.md`)
 2. Running parallel subagents in git worktrees:
-   - One agent wrote the spec defining kspec (`spec/` directory)
+   - One agent wrote the spec defining kspec
    - One agent wrote the parser/CLI (`src/` directory)
 3. Merging and aligning the outputs
 4. Using `kspec tasks ready` to track further development
 
-The spec files in `spec/` define what kspec should do. The TypeScript code in `src/` implements it. They reference each other.
+The spec files in `.kspec/` define what kspec should do. The TypeScript code in `src/` implements it. They reference each other.
 
 ## Project Structure
 
 ```
 kynetic-spec/
 ├── KYNETIC_SPEC_DESIGN.md    # Comprehensive design document (read this first)
-├── spec/                      # kspec's own spec (YAML)
+├── .kspec/                    # kspec's own spec (shadow branch worktree)
 │   ├── kynetic.yaml          # Root manifest
-│   ├── kynetic.tasks.yaml    # Tasks for implementation
+│   ├── kynetic.tasks.yaml    # Bootstrap tasks
+│   ├── project.tasks.yaml    # Active project tasks
+│   ├── project.inbox.yaml    # Inbox items
 │   └── modules/              # Spec items by domain
 │       ├── core.yaml         # Core primitives (ULIDs, slugs, refs)
 │       ├── schema.yaml       # Item types, validation
@@ -53,8 +55,8 @@ References use `@` prefix: `@task-project-setup` or `@01JHNKAB`
 
 ### Spec Items vs Tasks
 
-- **Spec items** (`spec/modules/*.yaml`): Define WHAT to build - features, requirements, constraints
-- **Tasks** (`spec/kynetic.tasks.yaml`): Track the WORK of building - status, notes, dependencies
+- **Spec items** (`.kspec/modules/*.yaml`): Define WHAT to build - features, requirements, constraints
+- **Tasks** (`.kspec/project.tasks.yaml`): Track the WORK of building - status, notes, dependencies
 
 Tasks reference spec items via `spec_ref` field. They don't duplicate spec content.
 

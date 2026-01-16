@@ -182,9 +182,10 @@ kspec --json task get @my-task
 
 ```
 kynetic-spec/
-├── spec/                      # kspec's own spec (YAML)
+├── .kspec/                    # kspec's own spec (shadow branch worktree)
 │   ├── kynetic.yaml          # Root manifest
-│   ├── kynetic.tasks.yaml    # Implementation tasks
+│   ├── project.tasks.yaml    # Active tasks
+│   ├── project.inbox.yaml    # Inbox items
 │   └── modules/              # Spec items by domain
 ├── src/                       # TypeScript implementation
 │   ├── schema/               # Zod schemas
