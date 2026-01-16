@@ -6,7 +6,7 @@ title: Shadow Branch
 type: module
 status:
   maturity: draft
-  implementation: not_started
+  implementation: implemented
 description: |
   Shadow branch for transparent spec/task state auto-tracking.
   Uses gitignored worktree (.kspec/) pointing to orphan branch (kspec-meta).
