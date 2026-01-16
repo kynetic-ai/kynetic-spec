@@ -75,15 +75,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF1ZM4T387VM3C6NTD3FSF8S
-    text: >-
-      Status alignment sweep needed - 23 spec items have mismatched implementation status (validate
-      shows many implemented features still marked not_started)
-    created_at: '2026-01-15T23:25:04.708Z'
-    tags:
-      - alignment
-      - maintenance
-    added_by: '@claude'
   - _ulid: 01KF22T36K64959Z5Y72GEJ81K
     text: >-
       Process gap: shadow-autocommit spec existed but no task was derived. The derive flow wasn't

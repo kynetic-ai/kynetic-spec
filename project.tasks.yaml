@@ -1872,22 +1872,41 @@
   created_at: '2026-01-16T00:52:39.634Z'
   notes: []
   todos: []
-- title: Fix TypeScript error in item.ts createSpecItem
+- _ulid: 01KF24NV5WD5B27C9S4XVF2M0S
+  slugs: []
+  title: Fix TypeScript error in item.ts createSpecItem
   type: task
-  priority: 2
-  spec_ref: null
-  tags:
-    - bug
   description: >-
     Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
     depends_on, implements, relates_to)
-  _ulid: 01KF24NV5WD5B27C9S4XVF2M0S
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+  vcs_refs: []
+  created_at: '2026-01-16T00:53:23.260Z'
+  notes: []
+  todos: []
+- title: Status alignment sweep - sync spec statuses with implementation
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - maintenance
+  description: >-
+    Status alignment sweep needed - 23 spec items have mismatched implementation status (validate
+    shows many implemented features still marked not_started)
+  _ulid: 01KF24NWZZ5HBDGJ9FESJEAKPR
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T00:53:23.260Z'
+  created_at: '2026-01-16T00:53:25.118Z'
   notes: []
   todos: []
