@@ -15,6 +15,13 @@ import {
   commitIfShadow,
   initializeShadow,
   repairShadow,
+  hasRemote,
+  remoteBranchExists,
+  fetchRemote,
+  hasRemoteTracking,
+  ensureRemoteTracking,
+  shadowPull,
+  shadowSync,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 
@@ -379,6 +386,432 @@ describe('Shadow Branch', () => {
       expect(status.branchExists).toBe(true);
       expect(status.worktreeExists).toBe(false);
       expect(status.error).toContain('worktree missing');
+    });
+  });
+
+  // AC: @shadow-init-remote - Remote detection tests
+  describe('initializeShadow with remote', () => {
+    // Create a bare repo to act as a "remote"
+    const remoteDir = path.join('/tmp', `kspec-remote-test-${Date.now()}`);
+
+    beforeEach(async () => {
+      // Clean up remote directory
+      try {
+        await fs.rm(remoteDir, { recursive: true });
+      } catch {
+        // Doesn't exist
+      }
+    });
+
+    afterEach(async () => {
+      try {
+        await fs.rm(remoteDir, { recursive: true });
+      } catch {
+        // Best effort cleanup
+      }
+    });
+
+    // Helper to set up a bare repo as remote
+    async function setupBareRemote(): Promise<void> {
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+    }
+
+    // Helper to set up a local repo with remote
+    async function setupLocalWithRemote(): Promise<void> {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+    }
+
+    // Helper to push shadow branch to remote
+    async function pushShadowToRemote(): Promise<void> {
+      execSync(`git -C ${testDir}/.kspec push -u origin ${SHADOW_BRANCH_NAME}`, { stdio: 'pipe' });
+    }
+
+    it('hasRemote returns false when no remote configured', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      expect(await hasRemote(testDir)).toBe(false);
+    });
+
+    it('hasRemote returns true when origin exists', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+      expect(await hasRemote(testDir)).toBe(true);
+    });
+
+    it('remoteBranchExists returns false when branch not on remote', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+      expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(false);
+    });
+
+    it('remoteBranchExists returns true after pushing shadow branch', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+
+      // Initialize shadow locally
+      await initializeShadow(testDir);
+
+      // Push to remote
+      await pushShadowToRemote();
+
+      // Now check - need to fetch first
+      await fetchRemote(testDir);
+      expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(true);
+    });
+
+    // AC-1: Remote has shadow branch → creates worktree from it with tracking
+    it('attaches to existing remote shadow branch', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+
+      // Initialize shadow in first repo and push
+      const result1 = await initializeShadow(testDir);
+      expect(result1.success).toBe(true);
+      expect(result1.branchCreated).toBe(true);
+
+      // Push shadow to remote
+      await pushShadowToRemote();
+
+      // Create a "clone" (new repo pointing to same remote)
+      const cloneDir = path.join('/tmp', `kspec-clone-test-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+
+        // Initialize shadow in clone - should attach to remote branch
+        const result2 = await initializeShadow(cloneDir);
+        expect(result2.success).toBe(true);
+        expect(result2.createdFromRemote).toBe(true);
+        expect(result2.branchCreated).toBe(false);
+        expect(result2.worktreeCreated).toBe(true);
+
+        // Verify worktree is healthy
+        const status = await getShadowStatus(cloneDir);
+        expect(status.healthy).toBe(true);
+
+        // Verify tracking is set up
+        const tracking = execSync(`git -C ${cloneDir} config branch.${SHADOW_BRANCH_NAME}.remote`, {
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        }).trim();
+        expect(tracking).toBe('origin');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC-2: Remote exists but no shadow branch → creates orphan and pushes
+    it('creates orphan branch and pushes to remote', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+
+      // Verify no shadow branch on remote yet
+      expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(false);
+
+      // Initialize shadow - should create and push
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+      expect(result.branchCreated).toBe(true);
+      expect(result.pushedToRemote).toBe(true);
+
+      // Verify shadow branch now exists on remote
+      await fetchRemote(testDir);
+      expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(true);
+    });
+
+    // AC-3: No remote configured → creates orphan locally (no push attempt)
+    it('creates orphan locally when no remote configured', async () => {
+      // Just a local git repo, no remote
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+      expect(result.branchCreated).toBe(true);
+      expect(result.pushedToRemote).toBe(false);
+      expect(result.createdFromRemote).toBe(false);
+    });
+
+    // AC-4: Fetches before checking for remote branch
+    it('fetches before checking remote branch existence', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+
+      // Initialize in first repo, push shadow
+      await initializeShadow(testDir);
+      await pushShadowToRemote();
+
+      // Create clone
+      const cloneDir = path.join('/tmp', `kspec-clone-test-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone won't have the remote refs yet until we fetch
+        // The init should fetch automatically
+        const result = await initializeShadow(cloneDir);
+
+        // Should have detected and attached to remote (proves fetch happened)
+        expect(result.success).toBe(true);
+        expect(result.createdFromRemote).toBe(true);
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+  });
+
+  // AC: @shadow-sync - Shadow sync tests
+  describe('shadow sync', () => {
+    const remoteDir = path.join('/tmp', `kspec-sync-remote-${Date.now()}`);
+
+    beforeEach(async () => {
+      try {
+        await fs.rm(remoteDir, { recursive: true });
+      } catch {
+        // Doesn't exist
+      }
+    });
+
+    afterEach(async () => {
+      try {
+        await fs.rm(remoteDir, { recursive: true });
+      } catch {
+        // Best effort
+      }
+    });
+
+    async function setupSyncTest(): Promise<void> {
+      // Create bare remote
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+
+      // Create local repo with remote
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow with remote
+      await initializeShadow(testDir);
+    }
+
+    // AC-4: No remote tracking → sync silently skipped
+    it('hasRemoteTracking returns false when no tracking configured', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow without remote
+      await initializeShadow(testDir);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      expect(await hasRemoteTracking(worktreeDir)).toBe(false);
+    });
+
+    it('hasRemoteTracking returns true when tracking is configured', async () => {
+      await setupSyncTest();
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      expect(await hasRemoteTracking(worktreeDir)).toBe(true);
+    });
+
+    // AC-4: shadowPull succeeds immediately when no tracking
+    it('shadowPull succeeds immediately when no remote tracking', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const result = await shadowPull(worktreeDir);
+
+      expect(result.success).toBe(true);
+      expect(result.pulled).toBe(false);
+      expect(result.hadConflict).toBe(false);
+    });
+
+    // AC-6: shadowPull uses --ff-only first, falls back to --rebase
+    it('shadowPull pulls changes from remote', async () => {
+      await setupSyncTest();
+
+      // Make a change on remote by cloning, modifying, and pushing
+      const cloneDir = path.join('/tmp', `kspec-sync-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Modify a file in the clone's shadow
+        const tasksFile = (await fs.readdir(path.join(cloneDir, '.kspec')))
+          .find(f => f.endsWith('.tasks.yaml'));
+        if (tasksFile) {
+          await fs.appendFile(
+            path.join(cloneDir, '.kspec', tasksFile),
+            '\n# Remote change\n'
+          );
+          execSync('git add -A && git commit -m "Remote change"', {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+          execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+        }
+
+        // Now pull in original repo
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+        const result = await shadowPull(worktreeDir);
+
+        expect(result.success).toBe(true);
+        expect(result.pulled).toBe(true);
+        expect(result.hadConflict).toBe(false);
+
+        // Verify the change was pulled
+        const content = await fs.readFile(path.join(worktreeDir, tasksFile!), 'utf-8');
+        expect(content).toContain('# Remote change');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // shadowSync does pull then push
+    it('shadowSync pulls and pushes', async () => {
+      await setupSyncTest();
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Make a local change
+      const tasksFile = (await fs.readdir(worktreeDir))
+        .find(f => f.endsWith('.tasks.yaml'));
+      if (tasksFile) {
+        await fs.appendFile(
+          path.join(worktreeDir, tasksFile),
+          '\n# Local change\n'
+        );
+        execSync('git add -A && git commit -m "Local change"', {
+          cwd: worktreeDir,
+          stdio: 'pipe',
+        });
+      }
+
+      const result = await shadowSync(worktreeDir);
+
+      expect(result.success).toBe(true);
+      expect(result.pushed).toBe(true);
+
+      // Verify the change was pushed by checking remote
+      const cloneDir = path.join('/tmp', `kspec-verify-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync(`git -C ${cloneDir} checkout ${SHADOW_BRANCH_NAME}`, { stdio: 'pipe' });
+        const content = await fs.readFile(path.join(cloneDir, tasksFile!), 'utf-8');
+        expect(content).toContain('# Local change');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC-8: Auto-configure tracking when main has remote but shadow doesn't
+    it('ensureRemoteTracking sets up tracking when main has remote', async () => {
+      // Create local repo WITHOUT using setupSyncTest (which auto-pushes shadow)
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Add remote to main branch
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow WITHOUT pushing (simulate network failure or manual init)
+      // Create orphan branch manually
+      execSync(`git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Create initial file so it's a valid commit
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: true');
+      execSync('git add -A && git commit -m "initial"', { cwd: worktreeDir, stdio: 'pipe' });
+
+      // Verify no tracking initially
+      expect(await hasRemoteTracking(worktreeDir)).toBe(false);
+
+      // Call ensureRemoteTracking
+      const result = await ensureRemoteTracking(worktreeDir, testDir);
+
+      expect(result).toBe(true);
+      expect(await hasRemoteTracking(worktreeDir)).toBe(true);
+
+      // Verify tracking config
+      const remote = execSync(`git config branch.${SHADOW_BRANCH_NAME}.remote`, {
+        cwd: worktreeDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(remote).toBe('origin');
+    });
+
+    // AC-8: shadowPull auto-configures tracking
+    it('shadowPull auto-configures tracking when main has remote', async () => {
+      // Same setup as above
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+
+      // Create shadow without tracking
+      execSync(`git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: true');
+      execSync('git add -A && git commit -m "initial"', { cwd: worktreeDir, stdio: 'pipe' });
+
+      // Verify no tracking initially
+      expect(await hasRemoteTracking(worktreeDir)).toBe(false);
+
+      // Call shadowPull - should auto-configure tracking
+      const result = await shadowPull(worktreeDir);
+
+      // Pull succeeds (nothing to pull, but tracking now configured)
+      expect(result.success).toBe(true);
+
+      // Tracking should now be configured
+      expect(await hasRemoteTracking(worktreeDir)).toBe(true);
     });
   });
 });

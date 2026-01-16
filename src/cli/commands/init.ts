@@ -180,8 +180,14 @@ export function registerInitCommand(program: Command): void {
           if (result.alreadyExists) {
             info('Shadow branch already initialized');
           } else {
-            if (result.branchCreated) {
+            if (result.createdFromRemote) {
+              console.log('  Attached to existing remote branch: origin/kspec-meta');
+              console.log('  Remote tracking configured');
+            } else if (result.branchCreated) {
               console.log('  Created orphan branch: kspec-meta');
+              if (result.pushedToRemote) {
+                console.log('  Pushed to remote: origin/kspec-meta');
+              }
             }
             if (result.worktreeCreated) {
               console.log(`  Created worktree: ${SHADOW_WORKTREE_DIR}/`);
