@@ -123,3 +123,12 @@ inbox:
       - dx
       - performance
     added_by: '@claude'
+  - _ulid: 01KF3TRCMB5SN4GRM2E9PG5ZGB
+    text: >-
+      task start should output spec context, notes, and AC testing guidance - remind about automated
+      tests not just manual verification
+    created_at: '2026-01-16T16:38:29.772Z'
+    tags:
+      - cli
+      - dx
+    added_by: '@claude'
