@@ -13,6 +13,7 @@ import {
   AlignmentIndex,
   type LoadedSpecItem,
 } from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 import type { ItemFilter } from '../../parser/items.js';
 import type { ItemType, Maturity, ImplementationStatus, SpecItemInput } from '../../schema/index.js';
 import { output, error, success, warn, isJsonMode } from '../output.js';
@@ -298,6 +299,8 @@ export function registerItemCommands(program: Command): void {
 
         // Build index including the new item for accurate short ULID
         const index = new ReferenceIndex([], [...items, result.item as LoadedSpecItem]);
+        const itemSlug = (result.item as LoadedSpecItem).slugs?.[0] || index.shortUlid(result.item._ulid);
+        await commitIfShadow(ctx.shadow, 'item-add', itemSlug);
         success(`Created item: ${index.shortUlid(result.item._ulid)} under @${parent.slugs[0] || parent._ulid.slice(0, 8)}`, {
           item: result.item,
           path: result.path,
@@ -369,6 +372,8 @@ export function registerItemCommands(program: Command): void {
         }
 
         const updated = await updateSpecItem(ctx, foundItem, updates);
+        const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+        await commitIfShadow(ctx.shadow, 'item-set', itemSlug);
         success(`Updated item: ${refIndex.shortUlid(updated._ulid)}`, { item: updated });
       } catch (err) {
         error('Failed to update item', err);
@@ -410,6 +415,8 @@ export function registerItemCommands(program: Command): void {
 
         const deleted = await deleteSpecItem(ctx, foundItem);
         if (deleted) {
+          const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+          await commitIfShadow(ctx.shadow, 'item-delete', itemSlug);
           success(`Deleted item: ${foundItem.title}`, { deleted: true, ulid: foundItem._ulid });
         } else {
           error('Failed to delete item');

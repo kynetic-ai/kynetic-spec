@@ -13,6 +13,7 @@ import {
   ReferenceIndex,
   type LoadedInboxItem,
 } from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 import {
   output,
   success,
@@ -101,6 +102,7 @@ export function registerInboxCommands(program: Command): void {
 
         const item = createInboxItem(input);
         await saveInboxItem(ctx, item);
+        await commitIfShadow(ctx.shadow, 'inbox-add', undefined, text);
 
         success(`Captured: ${shortUlid(item._ulid)}`, { item });
       } catch (err) {
@@ -215,6 +217,7 @@ export function registerInboxCommands(program: Command): void {
           info(`Removed from inbox: ${shortUlid(item._ulid)}`);
         }
 
+        await commitIfShadow(ctx.shadow, 'inbox-promote', task.slugs[0] || index.shortUlid(task._ulid));
         success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, { task });
       } catch (err) {
         error('Failed to promote inbox item', err);
@@ -245,6 +248,7 @@ export function registerInboxCommands(program: Command): void {
 
         const deleted = await deleteInboxItem(ctx, item._ulid);
         if (deleted) {
+          await commitIfShadow(ctx.shadow, 'inbox-delete', shortUlid(item._ulid));
           success(`Deleted inbox item: ${shortUlid(item._ulid)}`);
         } else {
           error('Failed to delete inbox item');

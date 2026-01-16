@@ -12,6 +12,7 @@ import {
   ReferenceIndex,
   type LoadedTask,
 } from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 import {
   output,
   formatTaskDetails,
@@ -120,6 +121,7 @@ export function registerTaskCommands(program: Command): void {
 
         const newTask = createTask(input);
         await saveTask(ctx, newTask);
+        await commitIfShadow(ctx.shadow, 'task-add', newTask.slugs[0] || newTask._ulid.slice(0, 8), newTask.title);
 
         // Build index including the new task for accurate short ULID
         const index = new ReferenceIndex([...tasks, newTask], items);
@@ -162,6 +164,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-start', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
 
         // Sync spec implementation status (unless --no-sync)
@@ -223,6 +226,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-complete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), options.reason);
         success(`Completed task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
 
         // Sync spec implementation status (unless --no-sync)
@@ -273,6 +277,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-block', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to block task', err);
@@ -304,6 +309,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-unblock', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to unblock task', err);
@@ -336,6 +342,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-cancel', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Cancelled task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error('Failed to cancel task', err);
@@ -365,6 +372,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Added note to task: ${index.shortUlid(updatedTask._ulid)}`, { note });
 
         // Proactive alignment guidance for tasks with spec_ref
@@ -472,6 +480,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`, { todo });
       } catch (err) {
         error('Failed to add todo', err);
@@ -521,6 +530,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Marked todo #${id} as done`, { todo: updatedTodos[todoIndex] });
       } catch (err) {
         error('Failed to mark todo as done', err);
@@ -570,6 +580,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Marked todo #${id} as not done`, { todo: updatedTodos[todoIndex] });
       } catch (err) {
         error('Failed to mark todo as not done', err);

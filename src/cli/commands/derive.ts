@@ -9,7 +9,9 @@ import {
   AlignmentIndex,
   type LoadedTask,
   type LoadedSpecItem,
+  type KspecContext,
 } from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 import { output, success, error, warn, info } from '../output.js';
 import type { TaskInput } from '../../schema/index.js';
 
@@ -113,7 +115,7 @@ interface DeriveResult {
  * Returns result describing what happened.
  */
 async function deriveTaskFromSpec(
-  ctx: Awaited<ReturnType<typeof initContext>>,
+  ctx: KspecContext,
   specItem: LoadedSpecItem,
   existingTasks: LoadedTask[],
   items: LoadedSpecItem[],
@@ -168,6 +170,8 @@ async function deriveTaskFromSpec(
   // Create and save the task
   const newTask = createTask(taskInput);
   await saveTask(ctx, newTask);
+  const specSlug = specItem.slugs[0] || specItem._ulid.slice(0, 8);
+  await commitIfShadow(ctx.shadow, 'derive', specSlug);
 
   // Add to existing tasks list for slug collision checks
   existingTasks.push(newTask as LoadedTask);
