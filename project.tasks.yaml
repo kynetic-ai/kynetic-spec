@@ -2603,7 +2603,7 @@
   type: task
   spec_ref: '@shadow-sync'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2640,6 +2640,7 @@
            - rerere.enabled = true
       supersedes: null
   todos: []
+  started_at: '2026-01-16T20:33:00.733Z'
 - _ulid: 01KF47H34C915C7D1KH4QB07MC
   slugs:
     - task-init-remote-detection
@@ -2649,6 +2650,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented remote detection for init command. When remote has kspec-meta, attaches with
+    tracking. When no remote branch exists, creates orphan and pushes to establish tracking.
   depends_on: []
   context: []
   priority: 3
@@ -2656,6 +2660,7 @@
   vcs_refs: []
   created_at: '2026-01-16T20:21:42.156Z'
   started_at: '2026-01-16T20:23:45.823Z'
+  completed_at: '2026-01-16T20:30:32.471Z'
   notes:
     - _ulid: 01KF47HKFPVVV448CRCQ186C3F
       created_at: '2026-01-16T20:21:58.903Z'
@@ -2682,7 +2687,3 @@
            - pushed_to_remote: boolean
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T20:30:32.471Z'
-  closed_reason: >-
-    Implemented remote detection for init command. When remote has kspec-meta, attaches with
-    tracking. When no remote branch exists, creates orphan and pushes to establish tracking.
