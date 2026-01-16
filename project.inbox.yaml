@@ -213,16 +213,6 @@ inbox:
       - workflow
       - testing
     added_by: '@claude'
-  - _ulid: 01KF2BNWXTE8YJVQA5AB9BGEWP
-    text: >-
-      ULID generation helper - when manually adding spec items, easy to use invalid characters (L,
-      I, O, U). Consider: (1) kspec ulid command to generate valid ULIDs, (2) validation error
-      suggesting valid alternatives
-    created_at: '2026-01-16T02:55:45.086Z'
-    tags:
-      - dx
-      - tooling
-    added_by: '@claude'
   - _ulid: 01KF2BNYX4G1AM0K2NPD9ADX4E
     text: >-
       Fix duplicate slug issues - @task-notes and @task-todos map to multiple items. Need to
