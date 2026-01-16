@@ -376,6 +376,10 @@ features:
             given: invalid JSON syntax
             when: kspec item patch @my-item --data 'not json' runs
             then: error with helpful JSON parse message
+          - id: ac-3
+            given: JSON piped via stdin
+            when: echo '{"title":"New"}' | kspec item patch @my-item runs
+            then: stdin JSON is used for update
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
