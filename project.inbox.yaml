@@ -150,3 +150,12 @@ inbox:
       - shadow
       - polish
     added_by: '@claude'
+  - _ulid: 01KF23XXGYQAYQ2KM0MPS3KJG6
+    text: >-
+      Shadow verbose/debug mode: surface auto-commit failures instead of silent catch. Could be
+      --verbose flag on commands or KSPEC_DEBUG env var
+    created_at: '2026-01-16T00:40:19.231Z'
+    tags:
+      - shadow
+      - dx
+    added_by: '@claude'
