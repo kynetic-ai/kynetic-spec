@@ -101,3 +101,14 @@ inbox:
       - dx
       - design
     added_by: '@claude'
+  - _ulid: 01KF3QRS5Z1M8S57M1FJXXFTAJ
+    text: >-
+      AC-driven testing practice - acceptance criteria should guide test coverage. Pattern
+      established: tests annotated with '// AC: @spec-item ac-N' comments for traceability. Consider
+      adding to AGENTS.md workflow guidance.
+    created_at: '2026-01-16T15:46:16.895Z'
+    tags:
+      - process
+      - testing
+      - documentation
+    added_by: '@claude'
