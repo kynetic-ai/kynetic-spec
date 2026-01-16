@@ -210,6 +210,19 @@ features:
           Errors should be actionable with clear next steps.
         implements:
           - '@shadow-concept'
+      - _ulid: 01KF3CTXYNWH7TQMJNQZR0HHA9
+        slugs:
+          - shadow-debug-mode
+        title: Shadow Debug Mode
+        type: requirement
+        tags:
+          - dx
+          - cli
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T12:35:12.982Z'
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
