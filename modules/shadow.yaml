@@ -144,6 +144,10 @@ features:
             given: shadow branch is enabled
             when: kspec item add/set/delete or item ac add/set/remove runs
             then: shadow branch has new commit with appropriate message
+          - id: ac-5
+            given: shadow branch is enabled and spec item @my-spec exists
+            when: kspec derive @my-spec runs
+            then: shadow branch has new commit with message containing the spec ref
       - _ulid: 01KF1V2027DTBEBN6A6DCBAT1Q
         slugs:
           - shadow-read-path
