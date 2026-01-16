@@ -91,7 +91,7 @@ Always add notes when completing significant work. This creates an audit trail.
 Always begin by getting session context:
 
 ```bash
-npx tsx src/cli/index.ts session start
+npm run dev -- session start
 ```
 
 This shows:
@@ -107,28 +107,28 @@ Options: `--full` for more detail, `--since 1d` to filter by time, `--json` for 
 ### Start Working on a Task
 
 ```bash
-npx tsx src/cli/index.ts task start @task-slug
-npx tsx src/cli/index.ts task note @task-slug "Starting work on X..."
+npm run dev -- task start @task-slug
+npm run dev -- task note @task-slug "Starting work on X..."
 ```
 
 ### Complete a Task
 
 ```bash
-npx tsx src/cli/index.ts task note @task-slug "Completed X, approach was Y..."
-npx tsx src/cli/index.ts task complete @task-slug --reason "Brief summary"
+npm run dev -- task note @task-slug "Completed X, approach was Y..."
+npm run dev -- task complete @task-slug --reason "Brief summary"
 ```
 
 ### View Task Details
 
 ```bash
-npx tsx src/cli/index.ts task get @task-slug
-npx tsx src/cli/index.ts task notes @task-slug
+npm run dev -- task get @task-slug
+npm run dev -- task notes @task-slug
 ```
 
 ### Create a New Task
 
 ```bash
-npx tsx src/cli/index.ts task add \
+npm run dev -- task add \
   --title "Task title" \
   --spec-ref "@spec-item" \
   --priority 2 \
@@ -141,9 +141,9 @@ ULIDs are generated automatically. Use `--spec-ref` to link to a spec item.
 ### Validate the Spec
 
 ```bash
-npx tsx src/cli/index.ts validate           # Full validation
-npx tsx src/cli/index.ts validate --refs    # Check references only
-npx tsx src/cli/index.ts validate --schema  # Check schema only
+npm run dev -- validate           # Full validation
+npm run dev -- validate --refs    # Check references only
+npm run dev -- validate --schema  # Check schema only
 ```
 
 ## Spec-First Development

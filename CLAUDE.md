@@ -8,28 +8,28 @@ Read the AGENTS.md file for full project context. Key points:
 
 ```bash
 # First: Get session context (active work, ready tasks, inbox, recent activity)
-npx tsx src/cli/index.ts session start
+npm run dev -- session start
 
 # Get details on a specific task
-npx tsx src/cli/index.ts task get @task-slug
+npm run dev -- task get @task-slug
 
 # When starting work
-npx tsx src/cli/index.ts task start @task-slug
-npx tsx src/cli/index.ts task note @task-slug "What you're doing..."
+npm run dev -- task start @task-slug
+npm run dev -- task note @task-slug "What you're doing..."
 
 # When done
-npx tsx src/cli/index.ts task note @task-slug "What was done, how, why..."
-npx tsx src/cli/index.ts task complete @task-slug --reason "Summary"
+npm run dev -- task note @task-slug "What was done, how, why..."
+npm run dev -- task complete @task-slug --reason "Summary"
 
 # Create a new task
-npx tsx src/cli/index.ts task add --title "Task title" --spec-ref "@spec-item" --priority 2
+npm run dev -- task add --title "Task title" --spec-ref "@spec-item" --priority 2
 
 # Capture ideas quickly (not yet tasks)
-npx tsx src/cli/index.ts inbox add "idea or random thought"
-npx tsx src/cli/index.ts inbox promote @ref --title "Task title"
+npm run dev -- inbox add "idea or random thought"
+npm run dev -- inbox promote @ref --title "Task title"
 
 # Validate spec files
-npx tsx src/cli/index.ts validate
+npm run dev -- validate
 ```
 
 ## Important

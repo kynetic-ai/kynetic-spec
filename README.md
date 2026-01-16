@@ -14,10 +14,7 @@ git clone <repo-url>
 cd kynetic-spec
 npm install
 
-# Run directly with tsx (no build needed)
-npx tsx src/cli/index.ts <command>
-
-# Or use the npm script
+# Run with npm (recommended - works from any project directory)
 npm run dev -- <command>
 ```
 
