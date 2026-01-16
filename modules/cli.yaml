@@ -180,6 +180,10 @@ features:
             given: a spec item @login has acceptance criteria
             when: kspec item get @login runs
             then: acceptance criteria are displayed in the output
+          - id: ac-2
+            given: a valid reference @login exists
+            when: kspec item get @login runs
+            then: displays item title, ULID, slugs, type, status, and description
       - _ulid: 01KEZCJPHXT212CZV6W64YJFAQ
         slugs:
           - item-list
