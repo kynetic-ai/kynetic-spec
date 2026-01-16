@@ -75,15 +75,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF1VMPQNCDBFDWKZSVRYNHTY
-    text: >-
-      CLI command for setting task fields: kspec task set @ref --depends-on @other --priority 2.
-      Currently must edit YAML manually.
-    created_at: '2026-01-15T22:15:28.758Z'
-    tags:
-      - cli
-      - feature
-    added_by: '@claude'
   - _ulid: 01KF1ZKN1RY5QZV852RRY3QVPV
     text: >-
       Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
