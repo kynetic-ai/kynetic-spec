@@ -2090,7 +2090,7 @@
   type: task
   spec_ref: '@slug-uniqueness'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2135,3 +2135,5 @@
         8. Prevention verified: CLI rejects duplicate slugs with clear error messages
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T11:33:16.509Z'
+  closed_reason: Implemented slug uniqueness validation and prevention - all acceptance criteria met
