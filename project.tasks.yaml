@@ -2411,6 +2411,9 @@
   spec_ref: '@alignment-guidance'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Added test coverage reminder to alignment guidance - shows AC count when linked spec has
+    acceptance criteria
   depends_on: []
   context: []
   priority: 3
@@ -2420,6 +2423,7 @@
   vcs_refs: []
   created_at: '2026-01-16T13:45:40.338Z'
   started_at: '2026-01-16T16:43:38.739Z'
+  completed_at: '2026-01-16T16:45:48.960Z'
   notes:
     - _ulid: 01KF3V2TQZ3KMKT6KCQEX8MTY1
       created_at: '2026-01-16T16:44:11.903Z'
@@ -2427,10 +2431,6 @@
       content: Testing alignment guidance with AC count
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T16:45:48.960Z'
-  closed_reason: >-
-    Added test coverage reminder to alignment guidance - shows AC count when linked spec has
-    acceptance criteria
 - _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
   slugs:
     - task-task-completion-guardrails
@@ -2553,4 +2553,23 @@
         **Verification**: npm test, kspec help task (should show all subcommands), kspec help --all,
         add new command and verify it appears without help.ts update
       supersedes: null
+  todos: []
+- title: 'Implement: Commit Message Guidance'
+  type: task
+  spec_ref: '@commit-guidance'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-commit-message-guidance
+  tags:
+    - process
+    - traceability
+  _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T18:42:59.783Z'
+  notes: []
   todos: []
