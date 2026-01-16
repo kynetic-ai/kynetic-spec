@@ -216,14 +216,23 @@ features:
         status:
           maturity: draft
           implementation: not_started
-        description: |
+        description: |-
           kspec item set <ref> [options]
 
-          Options:
-          - --field <path> --value <value>: Set field
-          - --data <yaml/json>: Patch with data
+          Update a spec item's fields.
 
-          Updates item in place. Use for status changes, etc.
+          Options:
+          - --title <title>: Set item title
+          - --type <type>: Set item type
+          - --slug <slug>: Add a slug (can have multiple)
+          - --remove-slug <slug>: Remove a slug
+          - --priority <priority>: Set priority
+          - --tag <tag...>: Set tags (replaces existing)
+          - --description <desc>: Set description
+          - --status <status>: Set implementation status
+          - --maturity <maturity>: Set maturity level
+
+          Updates item in place and auto-commits to shadow branch.
         implements:
           - '@item-commands'
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
