@@ -1421,6 +1421,17 @@ features:
     tests: []
     created: '2026-01-16T16:39:06.324Z'
     description: Testing the derive hint
+  - _ulid: 01KF3TSWFATM805XKFS9PFVRSQ
+    slugs:
+      - test-json-hint
+    title: Test JSON mode hint
+    type: feature
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-16T16:39:18.763Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
