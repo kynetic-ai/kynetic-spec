@@ -328,6 +328,12 @@ export function registerItemCommands(program: Command): void {
           item: result.item,
           path: result.path,
         });
+
+        // Derive hint
+        if (!isJsonMode()) {
+          const refSlug = (result.item as LoadedSpecItem).slugs?.[0] || index.shortUlid(result.item._ulid);
+          console.log(chalk.gray(`\nDerive implementation task? kspec derive @${refSlug}`));
+        }
       } catch (err) {
         error('Failed to create item', err);
         process.exit(1);
@@ -428,6 +434,12 @@ export function registerItemCommands(program: Command): void {
         const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
         await commitIfShadow(ctx.shadow, 'item-set', itemSlug);
         success(`Updated item: ${refIndex.shortUlid(updated._ulid)}`, { item: updated });
+
+        // Derive hint
+        if (!isJsonMode()) {
+          const refSlug = updated.slugs?.[0] || refIndex.shortUlid(updated._ulid);
+          console.log(chalk.gray(`\nDerive implementation task? kspec derive @${refSlug}`));
+        }
       } catch (err) {
         error('Failed to update item', err);
         process.exit(1);

@@ -675,3 +675,136 @@ describe('Integration: item ac', () => {
     expect(acList[0].then).toBe('t');
   });
 });
+
+describe('Integration: task delete', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cmd-task-delete ac-1
+  it('should show dry-run output without deleting', () => {
+    // First create a task to delete
+    kspec('task add --title "Task to Delete" --slug delete-test', tempDir);
+
+    // Verify task exists
+    const before = kspec('tasks list', tempDir);
+    expect(before).toContain('Task to Delete');
+
+    // Run dry-run
+    const output = kspec('task delete @delete-test --dry-run', tempDir);
+    expect(output).toContain('Would delete task');
+    expect(output).toContain('Task to Delete');
+    expect(output).toContain('Source file:');
+
+    // Verify task still exists
+    const after = kspec('tasks list', tempDir);
+    expect(after).toContain('Task to Delete');
+  });
+
+  // AC: @cmd-task-delete ac-2
+  it('should delete task with --force', () => {
+    // First create a task to delete
+    kspec('task add --title "Task to Force Delete" --slug force-delete-test', tempDir);
+
+    // Verify task exists
+    const before = kspec('tasks list', tempDir);
+    expect(before).toContain('Task to Force Delete');
+
+    // Delete with --force
+    const output = kspec('task delete @force-delete-test --force', tempDir);
+    expect(output).toContain('Deleted task');
+    expect(output).toContain('Task to Force Delete');
+
+    // Verify task is gone
+    const after = kspec('tasks list', tempDir);
+    expect(after).not.toContain('Task to Force Delete');
+  });
+
+  it('should reject deleting nonexistent task', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} task delete @nonexistent-task --force`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+});
+
+describe('Integration: derive hints', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @item-derive-hint ac-1
+  it('should show derive hint after item add', () => {
+    const output = kspec(
+      'item add --under @test-core --title "Hint Test Item" --slug hint-test --type feature',
+      tempDir
+    );
+    expect(output).toContain('Created item');
+    expect(output).toContain('Derive implementation task? kspec derive @hint-test');
+  });
+
+  // AC: @item-derive-hint ac-2
+  it('should show derive hint after item set', () => {
+    // First create an item
+    kspec('item add --under @test-core --title "Set Hint Test" --slug set-hint --type feature', tempDir);
+
+    // Update it
+    const output = kspec('item set @set-hint --description "Updated description"', tempDir);
+    expect(output).toContain('Updated item');
+    expect(output).toContain('Derive implementation task? kspec derive @set-hint');
+  });
+
+  it('should not show derive hint in JSON mode', () => {
+    const output = kspec(
+      'item add --under @test-core --title "JSON Hint Test" --slug json-hint --type feature --json',
+      tempDir
+    );
+    expect(output).not.toContain('Derive implementation task?');
+    // Should be valid JSON
+    const parsed = JSON.parse(output);
+    expect(parsed.success).toBe(true);
+  });
+});
+
+describe('Integration: alignment guidance', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @alignment-guidance ac-1
+  it('should show AC count in alignment guidance for task with spec_ref', () => {
+    // Create a spec item with acceptance criteria
+    kspec('item add --under @test-core --title "AC Test Spec" --slug ac-test-spec --type requirement', tempDir);
+    kspec('item ac add @ac-test-spec --given "precondition" --when "action" --then "result"', tempDir);
+    kspec('item ac add @ac-test-spec --given "another" --when "trigger" --then "outcome"', tempDir);
+
+    // Create a task linked to the spec
+    kspec('task add --title "Test AC Task" --spec-ref @ac-test-spec --slug ac-test-task', tempDir);
+    kspec('task start @ac-test-task', tempDir);
+
+    // Add a note (triggers alignment guidance)
+    const output = kspec('task note @ac-test-task "Testing alignment guidance"', tempDir);
+    expect(output).toContain('Alignment Check');
+    expect(output).toContain('Linked spec has 2 acceptance criteria - consider test coverage');
+  });
+});

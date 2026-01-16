@@ -5,6 +5,7 @@ import {
   loadAllTasks,
   loadAllItems,
   saveTask,
+  deleteTask,
   createTask,
   createNote,
   createTodo,
@@ -466,6 +467,60 @@ export function registerTaskCommands(program: Command): void {
       }
     });
 
+  // kspec task delete <ref>
+  task
+    .command('delete <ref>')
+    .description('Delete a task permanently')
+    .option('--force', 'Skip confirmation')
+    .option('--dry-run', 'Show what would be deleted without deleting')
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        const taskDisplay = `${foundTask.title} (${index.shortUlid(foundTask._ulid)})`;
+
+        if (options.dryRun) {
+          info(`Would delete task: ${taskDisplay}`);
+          console.log(`  Source file: ${foundTask._sourceFile}`);
+          console.log(`  Status: ${foundTask.status}`);
+          if (foundTask.notes.length > 0) {
+            console.log(`  Notes: ${foundTask.notes.length}`);
+          }
+          return;
+        }
+
+        // Confirm unless --force
+        if (!options.force) {
+          const readline = await import('readline');
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+
+          const answer = await new Promise<string>((resolve) => {
+            rl.question(`Delete task "${taskDisplay}"? [y/N] `, resolve);
+          });
+          rl.close();
+
+          if (answer.toLowerCase() !== 'y') {
+            info('Deletion cancelled');
+            return;
+          }
+        }
+
+        await deleteTask(ctx, foundTask);
+        await commitIfShadow(ctx.shadow, 'task-delete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), foundTask.title);
+        success(`Deleted task: ${taskDisplay}`);
+      } catch (err) {
+        error('Failed to delete task', err);
+        process.exit(1);
+      }
+    });
+
   // kspec task note <ref> <message>
   task
     .command('note <ref> <message>')
@@ -499,6 +554,16 @@ export function registerTaskCommands(program: Command): void {
           console.log('If so, consider updating the spec:');
           console.log(`  kspec item set ${foundTask.spec_ref} --description "Updated description"`);
           console.log('Or add acceptance criteria for new features.');
+
+          // Check if linked spec has acceptance criteria and remind about test coverage
+          const specResult = index.resolve(foundTask.spec_ref);
+          if (specResult.ok && specResult.item) {
+            const specItem = specResult.item as { acceptance_criteria?: unknown[] };
+            if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+              console.log('');
+              console.log(`Linked spec has ${specItem.acceptance_criteria.length} acceptance criteria - consider test coverage.`);
+            }
+          }
         }
       } catch (err) {
         error('Failed to add note', err);

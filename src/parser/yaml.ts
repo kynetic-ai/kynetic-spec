@@ -515,6 +515,75 @@ export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<voi
 }
 
 /**
+ * Delete a task from its source file.
+ * Requires _sourceFile to know which file to modify.
+ */
+export async function deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+  if (!task._sourceFile) {
+    throw new Error('Cannot delete task without _sourceFile metadata');
+  }
+
+  const taskFilePath = task._sourceFile;
+
+  // Load existing file
+  let existingRaw: unknown = null;
+  let useTasksWrapper = false;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(taskFilePath);
+    if (existingRaw && typeof existingRaw === 'object' && 'tasks' in existingRaw) {
+      useTasksWrapper = true;
+    }
+  } catch {
+    throw new Error(`Task file not found: ${taskFilePath}`);
+  }
+
+  // Parse existing tasks
+  let fileTasks: Task[] = [];
+
+  if (existingRaw) {
+    if (Array.isArray(existingRaw)) {
+      for (const t of existingRaw) {
+        const result = TaskSchema.safeParse(t);
+        if (result.success) {
+          fileTasks.push(result.data);
+        }
+      }
+    } else if (useTasksWrapper) {
+      const parsed = TasksFileSchema.safeParse(existingRaw);
+      if (parsed.success) {
+        fileTasks = parsed.data.tasks;
+      } else {
+        const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
+        if (Array.isArray(rawTasks)) {
+          for (const t of rawTasks) {
+            const result = TaskSchema.safeParse(t);
+            if (result.success) {
+              fileTasks.push(result.data);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Remove the task
+  const originalCount = fileTasks.length;
+  fileTasks = fileTasks.filter(t => t._ulid !== task._ulid);
+
+  if (fileTasks.length === originalCount) {
+    throw new Error(`Task not found in file: ${task._ulid}`);
+  }
+
+  // Save the modified file
+  if (useTasksWrapper) {
+    await writeYamlFile(taskFilePath, { tasks: fileTasks });
+  } else {
+    await writeYamlFile(taskFilePath, fileTasks);
+  }
+}
+
+/**
  * Create a new task with auto-generated fields
  */
 export function createTask(input: TaskInput): Task {
