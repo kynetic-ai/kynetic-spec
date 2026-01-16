@@ -2083,20 +2083,21 @@
         Added 12 integration tests covering all acceptance criteria.
       supersedes: null
   todos: []
-- title: 'Implement: Slug Uniqueness'
+- _ulid: 01KF3916MG8R71TG7SZ5EP6Q5Y
+  slugs:
+    - task-slug-uniqueness
+  title: 'Implement: Slug Uniqueness'
   type: task
   spec_ref: '@slug-uniqueness'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-slug-uniqueness
-  tags: []
-  _ulid: 01KF3916MG8R71TG7SZ5EP6Q5Y
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-16T11:28:44.176Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T11:28:49.260Z'
