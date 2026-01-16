@@ -178,6 +178,22 @@ features:
           This is informational; tasks track actual work.
         implements:
           - '@status-lifecycle'
+      - _ulid: 01KF3H95B873EP62X4A2GBD5FC
+        slugs:
+          - status-cascade
+        title: Cascade Status Updates
+        type: requirement
+        tags:
+          - dx
+          - cli
+        description: >-
+          When updating a parent item's implementation status, CLI offers to cascade the update to
+          nested children. Prevents status drift between parent features and child requirements.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T13:52:53.609Z'
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs:
       - file-structure
