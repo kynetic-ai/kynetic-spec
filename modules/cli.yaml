@@ -1388,6 +1388,12 @@ features:
         given: The CLI program is registered with commands
         when: extractCommandTree() is called
         then: Returns complete tree with names, descriptions, options, arguments, and subcommands
+      - id: ac-2
+        given: A help topic exists for the 'task' command group
+        when: '''kspec help task'' is run'
+        then: >-
+          The Commands section dynamically lists ALL current task subcommands including recent
+          additions
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
