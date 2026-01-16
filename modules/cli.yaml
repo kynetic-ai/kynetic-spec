@@ -425,6 +425,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T00:51:19.234Z'
+        status:
+          implementation: implemented
       - _ulid: 01KF24J46CY5Y7MPN1PXZT2GRB
         slugs:
           - task-note
