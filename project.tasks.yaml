@@ -985,9 +985,9 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-15T12:55:07.303Z'
+  started_at: '2026-01-16T16:35:28.801Z'
   notes: []
   todos: []
-  started_at: '2026-01-16T16:35:28.801Z'
 - _ulid: 01KF109NY9BC079GKVN05Y1MV7
   slugs:
     - task-kspec-session-checkpoint
@@ -2513,4 +2513,20 @@
         **Verification**: npm test, kspec help task (should show all subcommands), kspec help --all,
         add new command and verify it appears without help.ts update
       supersedes: null
+  todos: []
+- title: Test task for deletion
+  type: task
+  spec_ref: null
+  priority: 3
+  slugs:
+    - test-delete-me
+  tags: []
+  _ulid: 01KF3TN8G7KCZXK6GGTWM2PCHD
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T16:36:47.239Z'
+  notes: []
   todos: []

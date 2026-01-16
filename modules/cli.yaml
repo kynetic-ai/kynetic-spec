@@ -541,6 +541,9 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-15T12:55:00.409Z'
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KF24HMZXS5XZM7K109MRMEP3
         slugs:
           - task-set
