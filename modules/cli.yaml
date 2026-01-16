@@ -482,6 +482,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T00:51:25.939Z'
+        status:
+          implementation: implemented
       - _ulid: 01KF24JAEM65BGJ5ZK0QM4XQNN
         slugs:
           - task-todo
