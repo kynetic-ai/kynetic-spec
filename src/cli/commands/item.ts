@@ -188,6 +188,19 @@ export function registerItemCommands(program: Command): void {
             console.log(chalk.gray('\n─── Description ───'));
             console.log(item.description);
           }
+
+          if ('acceptance_criteria' in item && Array.isArray(item.acceptance_criteria) && item.acceptance_criteria.length > 0) {
+            console.log(chalk.gray('\n─── Acceptance Criteria ───'));
+            for (const ac of item.acceptance_criteria) {
+              if (ac && typeof ac === 'object' && 'id' in ac) {
+                const acObj = ac as AcceptanceCriterion;
+                console.log(chalk.cyan(`  [${acObj.id}]`));
+                if (acObj.given) console.log(`    Given: ${acObj.given}`);
+                if (acObj.when) console.log(`    When: ${acObj.when}`);
+                if (acObj.then) console.log(`    Then: ${acObj.then}`);
+              }
+            }
+          }
         });
       } catch (err) {
         error('Failed to get item', err);
