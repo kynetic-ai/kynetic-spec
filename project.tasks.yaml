@@ -2655,5 +2655,29 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-16T20:21:42.156Z'
-  notes: []
+  notes:
+    - _ulid: 01KF47HKFPVVV448CRCQ186C3F
+      created_at: '2026-01-16T20:21:58.903Z'
+      author: '@claude'
+      content: |-
+        Implementation approach:
+
+        1. Add helper function to shadow.ts:
+           - getRemoteShadowBranch(projectRoot) - checks if origin/kspec-meta exists
+
+        2. Modify initializeShadow() flow:
+           a. git fetch origin (if origin exists)
+           b. Check if origin/kspec-meta exists
+           c. If yes: git worktree add .kspec kspec-meta (tracks remote)
+           d. If no: create orphan branch, then git push -u origin kspec-meta
+
+        3. Handle edge cases:
+           - No remote configured -> current behavior (local orphan)
+           - Remote exists but fetch fails -> warn, fall back to local
+           - Push fails after creating -> warn but continue (local works)
+
+        4. Update initializeShadow return type to indicate:
+           - created_from_remote: boolean
+           - pushed_to_remote: boolean
+      supersedes: null
   todos: []
