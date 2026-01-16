@@ -2357,7 +2357,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 2
   tags:
     - cli
     - dx
