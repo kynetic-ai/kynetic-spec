@@ -1347,7 +1347,7 @@
   title: Address spec gaps in meta-spec module
   type: task
   spec_ref: '@meta-spec'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -1375,6 +1375,7 @@
         Priority: Fix these before deriving implementation tasks.
       supersedes: null
   todos: []
+  started_at: '2026-01-16T02:39:46.310Z'
 - _ulid: 01KF1G6M03VD4GE5QSFZ5F4X7V
   slugs:
     - task-inbox-obs-design
@@ -1716,6 +1717,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented shadow CLI commands (status, repair, log) for diagnosing and fixing shadow branch
+    issues
   depends_on: []
   context: []
   priority: 1
@@ -1725,6 +1729,7 @@
   vcs_refs: []
   created_at: '2026-01-15T22:14:47.906Z'
   started_at: '2026-01-16T01:40:13.021Z'
+  completed_at: '2026-01-16T01:42:42.254Z'
   notes:
     - _ulid: 01KF27FBYB72EVJA2G7D2Q6HVP
       created_at: '2026-01-16T01:42:16.780Z'
@@ -1743,10 +1748,6 @@
         commands.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T01:42:42.254Z'
-  closed_reason: >-
-    Implemented shadow CLI commands (status, repair, log) for diagnosing and fixing shadow branch
-    issues
 - _ulid: 01KF1W7AKJ10X9PYFC1EXFF400
   slugs:
     - task-recursive-derive
