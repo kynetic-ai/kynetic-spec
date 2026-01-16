@@ -2409,7 +2409,7 @@
     Alignment check should mention tests - when task has spec_ref with AC, alignment guidance should
     ask about test coverage not just spec updates
   spec_ref: '@alignment-guidance'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2427,6 +2427,10 @@
       content: Testing alignment guidance with AC count
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T16:45:48.960Z'
+  closed_reason: >-
+    Added test coverage reminder to alignment guidance - shows AC count when linked spec has
+    acceptance criteria
 - _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
   slugs:
     - task-task-completion-guardrails
