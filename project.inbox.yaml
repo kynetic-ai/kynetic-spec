@@ -234,3 +234,15 @@ inbox:
       - dx
       - feature
     added_by: '@claude'
+  - _ulid: 01KF385XXAXBD68YSC8V4WHAFK
+    text: >-
+      item get should display acceptance criteria - Currently item get shows description but not AC
+      for spec items. The AC display code exists in output.ts but only runs for tasks (via spec
+      context). Should display AC directly when viewing spec items, similar to how item ac list
+      shows them.
+    created_at: '2026-01-16T11:13:50.506Z'
+    tags:
+      - cli
+      - dx
+      - bug
+    added_by: '@claude'
