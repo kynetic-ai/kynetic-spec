@@ -246,6 +246,10 @@ features:
             given: '--verbose flag is passed and auto-commit fails'
             when: any state-changing command runs
             then: error message is printed to stderr
+          - id: ac-3
+            given: debug mode is not enabled
+            when: auto-commit fails
+            then: no error output is shown (silent failure)
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
