@@ -333,6 +333,10 @@ features:
             given: git remote origin exists and origin/kspec-meta branch exists
             when: user runs kspec init
             then: creates worktree from remote branch with tracking configured
+          - id: ac-2
+            given: git remote origin exists but origin/kspec-meta does not exist
+            when: user runs kspec init
+            then: creates orphan branch locally, pushes to remote to establish tracking
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
