@@ -353,6 +353,20 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T12:57:30.058Z'
+        description: |-
+          kspec item patch <ref> [options]
+
+          Update spec item with JSON data.
+
+          Options:
+          - --data <json>: JSON object with fields to update
+          - --dry-run: Show what would change without writing
+          - --allow-unknown: Allow unknown fields (for extending format)
+
+          Accepts stdin if no --data provided:
+            echo '{"status": {"implementation": "implemented"}}' | kspec item patch @my-item
+
+          Validates input against SpecItemInputSchema (strict by default).
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
