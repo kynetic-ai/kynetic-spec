@@ -2217,22 +2217,41 @@
   created_at: '2026-01-16T12:43:19.670Z'
   notes: []
   todos: []
-- title: 'Implement: kspec item patch'
+- _ulid: 01KF3E5FZ28PFCX9GZX86CZZ2E
+  slugs:
+    - task-kspec-item-patch
+  title: 'Implement: kspec item patch'
   type: task
   spec_ref: '@item-patch'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-kspec-item-patch
   tags:
     - cli
     - dx
-  _ulid: 01KF3E5FZ28PFCX9GZX86CZZ2E
+  vcs_refs: []
+  created_at: '2026-01-16T12:58:27.682Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec task patch'
+  type: task
+  spec_ref: '@task-patch'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-task-patch
+  tags:
+    - cli
+    - dx
+  _ulid: 01KF3E5H5S0ZF46Y6N8YWW9V2P
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T12:58:27.682Z'
+  created_at: '2026-01-16T12:58:28.921Z'
   notes: []
   todos: []
