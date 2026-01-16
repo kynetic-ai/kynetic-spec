@@ -1409,18 +1409,6 @@ features:
         given: A new subcommand is added to Commander definition
         when: '''kspec help <parent>'' is run without updating help.ts'
         then: The new subcommand appears in help output automatically
-  - _ulid: 01KF3TSGAKQDNG8NXK90P9Z98J
-    slugs:
-      - test-derive-hint
-    title: Test derive hint
-    type: feature
-    tags: []
-    depends_on: []
-    implements: []
-    relates_to: []
-    tests: []
-    created: '2026-01-16T16:39:06.324Z'
-    description: Testing the derive hint
   - _ulid: 01KF3TSWFATM805XKFS9PFVRSQ
     slugs:
       - test-json-hint
