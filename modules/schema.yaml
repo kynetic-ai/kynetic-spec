@@ -479,6 +479,9 @@ features:
             given: A task has spec_ref linking to a spec with acceptance_criteria
             when: Alignment guidance is shown (e.g., during task complete)
             then: 'Guidance includes: ''Linked spec has N acceptance criteria - consider test coverage'''
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning

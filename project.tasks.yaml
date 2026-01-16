@@ -2419,9 +2419,14 @@
     - workflow
   vcs_refs: []
   created_at: '2026-01-16T13:45:40.338Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T16:43:38.739Z'
+  notes:
+    - _ulid: 01KF3V2TQZ3KMKT6KCQEX8MTY1
+      created_at: '2026-01-16T16:44:11.903Z'
+      author: '@claude'
+      content: Testing alignment guidance with AC count
+      supersedes: null
+  todos: []
 - _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
   slugs:
     - task-task-completion-guardrails
