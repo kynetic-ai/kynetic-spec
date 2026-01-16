@@ -43,19 +43,6 @@ inbox:
       - workflow
       - meta
     added_by: '@claude'
-  - _ulid: 01KF251T9VW090EAXX88E69H32
-    text: >-
-      Auto-generated CLI documentation - instead of manually listing commands in CLAUDE.md, generate
-      from actual CLI structure. Options: (1) kspec commands output that lists all available
-      commands with brief descriptions, (2) hook that regenerates a CLI_REFERENCE.md on command
-      changes, (3) CLAUDE.md includes a dynamic reference via kspec introspection. Goal: docs stay
-      in sync with implementation automatically.
-    created_at: '2026-01-16T00:59:55.580Z'
-    tags:
-      - dx
-      - meta
-      - documentation
-    added_by: '@claude'
   - _ulid: 01KF28DKM459J41MP8HDMCMEVC
     text: >-
       Spec notes feature - append-only notes on spec items for capturing implementation gotchas,
