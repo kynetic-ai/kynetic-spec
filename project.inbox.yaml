@@ -164,15 +164,6 @@ inbox:
       - validation
       - improvement
     added_by: '@claude'
-  - _ulid: 01KF39Q0XED1F2QY2ZGWYA7KQQ
-    text: >-
-      Consider inbox triage reminder in session start - older items (like the duplicate slug issue)
-      sat unactioned. Maybe surface oldest items more prominently or add triage prompts
-    created_at: '2026-01-16T11:40:39.214Z'
-    tags:
-      - workflow
-      - improvement
-    added_by: '@claude'
   - _ulid: 01KF3FWBRHCKQBRA1WPV94YKGJ
     text: >-
       Spec audit command - validate --audit or separate command to check spec completeness: missing
