@@ -269,7 +269,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           When a reference like "@auth-login" is encountered:
           1. Check if it matches a slug exactly

@@ -2150,6 +2150,9 @@
   spec_ref: '@slug-resolution'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Bug no longer reproducible - slug lookup works immediately after item/task creation in all
+    tested scenarios
   depends_on: []
   context: []
   priority: 2
@@ -2159,6 +2162,7 @@
   vcs_refs: []
   created_at: '2026-01-16T12:08:05.455Z'
   started_at: '2026-01-16T15:11:27.843Z'
+  completed_at: '2026-01-16T15:14:31.437Z'
   notes:
     - _ulid: 01KF3NYESX4563M3QXBV0496N9
       created_at: '2026-01-16T15:14:25.725Z'
@@ -2179,10 +2183,6 @@
         loader changes). All acceptance criteria for @slug-resolution appear to be met.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T15:14:31.437Z'
-  closed_reason: >-
-    Bug no longer reproducible - slug lookup works immediately after item/task creation in all
-    tested scenarios
 - _ulid: 01KF3BAS2XQ4D9Z7KYT4VYGNGA
   slugs: []
   title: Display acceptance criteria in item get output
@@ -2193,7 +2193,7 @@
     context). Should display AC directly when viewing spec items, similar to how item ac list shows
     them.
   spec_ref: '@item-get'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2205,6 +2205,7 @@
   created_at: '2026-01-16T12:08:55.133Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T15:18:56.019Z'
 - _ulid: 01KF3CVS28Q0NVRTAK719S8ZB8
   slugs:
     - task-shadow-debug-mode
