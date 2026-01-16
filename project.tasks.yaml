@@ -2098,6 +2098,17 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-16T11:28:44.176Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T11:28:49.260Z'
+  notes:
+    - _ulid: 01KF391H5H6BZZC7NV89XGZGDB
+      created_at: '2026-01-16T11:28:54.962Z'
+      author: '@claude'
+      content: |-
+        Implementation plan:
+        1. Fix existing duplicate slugs (task-notes, task-todos) in cli.yaml
+        2. Add checkSlugUniqueness helper to src/parser/refs.ts
+        3. Update item add/set commands with validation
+        4. Update task add/set commands with validation
+        5. Add tests to parser.test.ts
+      supersedes: null
+  todos: []
