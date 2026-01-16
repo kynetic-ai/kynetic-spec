@@ -148,6 +148,10 @@ features:
             given: shadow branch is enabled and spec item @my-spec exists
             when: kspec derive @my-spec runs
             then: shadow branch has new commit with message containing the spec ref
+          - id: ac-6
+            given: shadow branch is enabled but commit fails (e.g., git error)
+            when: any state-changing command runs
+            then: command still succeeds, commit failure is silently ignored
       - _ulid: 01KF1V2027DTBEBN6A6DCBAT1Q
         slugs:
           - shadow-read-path
