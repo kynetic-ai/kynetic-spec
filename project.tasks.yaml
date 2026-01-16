@@ -977,7 +977,7 @@
   type: task
   spec_ref: '@cmd-task-delete'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -988,6 +988,8 @@
   started_at: '2026-01-16T16:35:28.801Z'
   notes: []
   todos: []
+  completed_at: '2026-01-16T16:38:22.547Z'
+  closed_reason: Implemented task delete with --force and --dry-run options
 - _ulid: 01KF109NY9BC079GKVN05Y1MV7
   slugs:
     - task-kspec-session-checkpoint
