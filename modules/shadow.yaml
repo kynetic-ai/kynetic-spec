@@ -341,6 +341,10 @@ features:
             given: no git remote configured
             when: user runs kspec init
             then: creates orphan branch locally without remote tracking (current behavior)
+          - id: ac-4
+            given: origin remote exists
+            when: checking for remote shadow branch
+            then: runs git fetch origin to ensure remote refs are up to date
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
