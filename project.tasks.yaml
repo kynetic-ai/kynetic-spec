@@ -2707,6 +2707,7 @@
   spec_ref: '@task-queries'
   status: completed
   blocked_by: []
+  closed_reason: Secondary sort by creation time implemented and tested
   depends_on: []
   context: []
   priority: 2
@@ -2716,6 +2717,7 @@
   vcs_refs: []
   created_at: '2026-01-16T22:20:38.685Z'
   started_at: '2026-01-16T22:20:44.683Z'
+  completed_at: '2026-01-16T22:23:18.516Z'
   notes:
     - _ulid: 01KF4EFGDJNG7FXSDXYYH6X8CJ
       created_at: '2026-01-16T22:23:10.258Z'
@@ -2726,5 +2728,21 @@
         kynetic-internal approach.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T22:23:18.516Z'
-  closed_reason: Secondary sort by creation time implemented and tested
+- title: Fix shadow tests assuming main branch name
+  type: task
+  spec_ref: null
+  priority: 2
+  slugs:
+    - task-shadow-test-git-config
+  tags:
+    - tests
+    - bug
+  _ulid: 01KF4FMBH5NEX6Q7GAVCCZMP8D
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T22:43:17.669Z'
+  notes: []
+  todos: []
