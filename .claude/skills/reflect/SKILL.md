@@ -37,9 +37,31 @@ Identify where things were harder than needed:
 
 *Focus on systemic issues, not one-off mistakes*
 
-### 3. Potential Improvements
+### 3. Check Existing Coverage
 
-For each friction point, consider:
+Before proposing improvements, check if friction points are already tracked:
+
+```bash
+# Search inbox for related items
+npm run dev -- inbox list | grep -i "<keyword>"
+
+# Search tasks for related work
+npm run dev -- task list | grep -i "<keyword>"
+
+# Check ready tasks that might address the issue
+npm run dev -- tasks ready | grep -i "<keyword>"
+```
+
+For each friction point, note if it's:
+- **Already tracked** - reference the existing item/task
+- **Partially covered** - note what's missing
+- **Not tracked** - candidate for capture
+
+This prevents proposing duplicates and surfaces existing work.
+
+### 4. Potential Improvements
+
+For friction points NOT already tracked, consider:
 - Could a CLI command help?
 - Could a skill capture this pattern?
 - Is this a spec gap?
@@ -50,7 +72,7 @@ Propose concrete improvements with:
 - How it would help
 - Rough scope (small/medium/large)
 
-### 4. Discussion
+### 5. Discussion
 
 Present findings to user:
 - Summarize what worked (brief)
@@ -62,7 +84,7 @@ Present findings to user:
 - Any refinements to the idea?
 - Related ideas from user perspective?
 
-### 5. Capture
+### 6. Capture
 
 For improvements worth keeping:
 ```bash
@@ -110,7 +132,11 @@ Structure reflection as:
 1. **[Issue]** - [Description of friction]
 2. ...
 
-### Potential Improvements
+### Already Tracked
+- [Friction point] → existing task/inbox @ref
+- ...
+
+### Potential Improvements (not yet tracked)
 | Idea | Value | Scope |
 |------|-------|-------|
 | [Concrete idea] | [How it helps] | small/medium/large |
@@ -135,6 +161,7 @@ Structure reflection as:
 - Assuming all ideas should be captured
 - Skipping user discussion
 - Forgetting to actually capture approved ideas
+- Proposing improvements already tracked in inbox/tasks
 
 ## Integration
 
