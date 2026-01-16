@@ -252,6 +252,12 @@ features:
             given: A task with spec_ref is completed via 'kspec task complete'
             when: The task is marked completed
             then: 'CLI prompts: ''Update @spec-ref status to implemented? [y/n]'''
+          - id: ac-2
+            given: A task with spec_ref is completed and the linked spec has acceptance_criteria
+            when: The user chooses to update spec status
+            then: >-
+              CLI shows a reminder: 'Linked spec has N acceptance criteria - verify they are
+              covered'
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
