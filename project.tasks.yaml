@@ -2370,3 +2370,22 @@
   created_at: '2026-01-16T13:50:14.068Z'
   notes: []
   todos: []
+- title: 'Implement: Auto-Generated CLI Documentation'
+  type: task
+  spec_ref: '@auto-cli-docs'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-auto-generated-cli-documentation
+  tags:
+    - dx
+    - documentation
+  _ulid: 01KF3M1P812JQQ7C6K4SS8YAZQ
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T14:41:14.496Z'
+  notes: []
+  todos: []
