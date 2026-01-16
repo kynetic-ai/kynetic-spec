@@ -2699,3 +2699,21 @@
            - pushed_to_remote: boolean
       supersedes: null
   todos: []
+- title: Implement secondary sort for ready tasks (oldest first within priority)
+  type: task
+  spec_ref: '@task-queries'
+  priority: 2
+  slugs:
+    - task-ready-secondary-sort
+  tags:
+    - tasks
+    - dx
+  _ulid: 01KF4EAWCX71FKP7ZW5TPEQCN7
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T22:20:38.685Z'
+  notes: []
+  todos: []
