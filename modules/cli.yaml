@@ -729,6 +729,10 @@ features:
             given: valid JSON with priority field
             when: kspec task patch @my-task --data '{"priority":1}' runs
             then: task priority is updated
+          - id: ac-2
+            given: invalid JSON syntax
+            when: kspec task patch @my-task --data 'bad' runs
+            then: error with helpful message
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
