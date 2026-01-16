@@ -167,3 +167,13 @@ inbox:
       - cli
       - dx
     added_by: '@claude'
+  - _ulid: 01KF292BRXGAFQBJGJAJKY8RF6
+    text: >-
+      Test coverage tracking per spec item - link tests to spec items, show coverage in item get,
+      warn when AC lacks tests
+    created_at: '2026-01-16T02:10:07.774Z'
+    tags:
+      - feature
+      - testing
+      - spec
+    added_by: '@claude'
