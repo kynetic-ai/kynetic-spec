@@ -771,6 +771,7 @@
   spec_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Superseded by unified JSON to YAML bulk import spec decision
   depends_on: []
   context: []
   priority: 2
@@ -893,7 +894,6 @@
            - Document the behavior clearly
       supersedes: null
   todos: []
-  closed_reason: Superseded by unified JSON to YAML bulk import spec decision
 - _ulid: 01KEZZ5BDD2Y6NZ8K8065GPHVX
   slugs:
     - task-archive
@@ -1959,7 +1959,7 @@
     Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
     depends_on, implements, relates_to)
   spec_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -1970,6 +1970,7 @@
   created_at: '2026-01-16T00:53:23.260Z'
   notes: []
   todos: []
+  closed_reason: No longer an issue - TypeScript compiles cleanly, createSpecItem call is properly typed
 - _ulid: 01KF24NWZZ5HBDGJ9FESJEAKPR
   slugs: []
   title: Status alignment sweep - sync spec statuses with implementation
