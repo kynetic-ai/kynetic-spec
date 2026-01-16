@@ -93,6 +93,11 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T13:52:39.770Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: User runs 'kspec item add' and creates a new spec item
+            when: The item is created successfully
+            then: 'CLI shows hint: ''Derive implementation task? kspec derive @new-slug'''
   - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs:
       - ulid-system
