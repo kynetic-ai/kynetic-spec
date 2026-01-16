@@ -229,3 +229,12 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF2C7EGJ1N9MQ2AEJZM0KC10
+    text: >-
+      Missing task set command - can't update spec_ref, priority, tags after task creation. Need
+      kspec task set @ref --spec-ref @item --priority N --tag foo
+    created_at: '2026-01-16T03:05:20.146Z'
+    tags:
+      - cli
+      - gap
+    added_by: '@claude'
