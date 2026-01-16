@@ -367,6 +367,11 @@ features:
             echo '{"status": {"implementation": "implemented"}}' | kspec item patch @my-item
 
           Validates input against SpecItemInputSchema (strict by default).
+        acceptance_criteria:
+          - id: ac-1
+            given: valid JSON with status field
+            when: kspec item patch @my-item --data '{"status":{"implementation":"implemented"}}' runs
+            then: item status is updated to implemented
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
