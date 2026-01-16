@@ -2158,9 +2158,27 @@
     - cli
   vcs_refs: []
   created_at: '2026-01-16T12:08:05.455Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T15:11:27.843Z'
+  notes:
+    - _ulid: 01KF3NYESX4563M3QXBV0496N9
+      created_at: '2026-01-16T15:14:25.725Z'
+      author: '@claude'
+      content: >-
+        Investigated thoroughly - cannot reproduce the slug lookup timing bug. Tested:
+
+        1. item add + immediate item get by slug - works
+
+        2. task add + immediate task get by slug - works  
+
+        3. item add + immediate derive from slug - works
+
+        4. The specific slugs mentioned (task-notes, task-todos) now resolve correctly
+
+
+        The bug may have been fixed by earlier work (possibly slug uniqueness validation or other
+        loader changes). All acceptance criteria for @slug-resolution appear to be met.
+      supersedes: null
+  todos: []
 - _ulid: 01KF3BAS2XQ4D9Z7KYT4VYGNGA
   slugs: []
   title: Display acceptance criteria in item get output
