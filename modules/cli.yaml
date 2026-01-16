@@ -549,6 +549,10 @@ features:
             given: A task exists with ref @test-task
             when: kspec task delete @test-task --dry-run
             then: Shows 'Would delete task:' with task title and source file, without actually deleting
+          - id: ac-2
+            given: A task exists with ref @test-task
+            when: kspec task delete @test-task --force
+            then: Task is removed from source file and success message shows deleted task title
       - _ulid: 01KF24HMZXS5XZM7K109MRMEP3
         slugs:
           - task-set
