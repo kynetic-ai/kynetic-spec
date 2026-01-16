@@ -1531,5 +1531,8 @@ requirements:
         relates_to: []
         tests: []
         created: '2026-01-16T03:04:33.272Z'
+        status:
+          maturity: draft
+          implementation: in_progress
     status:
       implementation: implemented

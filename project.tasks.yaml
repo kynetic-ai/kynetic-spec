@@ -2035,6 +2035,7 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T03:01:21.386Z'
+  started_at: '2026-01-16T15:26:58.093Z'
   notes:
     - _ulid: 01KF2C766HA49JZGYWMMPC9TQ0
       created_at: '2026-01-16T03:05:11.634Z'
@@ -2043,8 +2044,25 @@
         Implements spec: @session-start-hints (Contextual Command Hints requirement under
         @cmd-session-start)
       supersedes: null
+    - _ulid: 01KF3PRK5BCRH26N313EFV0GMJ
+      created_at: '2026-01-16T15:28:42.155Z'
+      author: '@claude'
+      content: >-
+        Added Quick Commands section to session start output. Shows contextual commands based on
+        state:
+
+        - If active task: note and complete commands for that task
+
+        - If no active but ready tasks: start command for top ready task
+
+        - If inbox items: promote command for oldest item
+
+        - If dirty working tree: git commit hint
+
+
+        Commands use actual refs from the session context so they're copy-pasteable.
+      supersedes: null
   todos: []
-  started_at: '2026-01-16T15:26:58.093Z'
 - _ulid: 01KF376A8GA0EBKKP9KE1YV9VD
   slugs:
     - task-kspec-item-ac
