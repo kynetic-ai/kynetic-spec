@@ -75,15 +75,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF1ZKN1RY5QZV852RRY3QVPV
-    text: >-
-      Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
-      depends_on, implements, relates_to)
-    created_at: '2026-01-15T23:24:48.568Z'
-    tags:
-      - bug
-      - types
-    added_by: '@claude'
   - _ulid: 01KF1ZM4T387VM3C6NTD3FSF8S
     text: >-
       Status alignment sweep needed - 23 spec items have mismatched implementation status (validate

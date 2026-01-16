@@ -1855,20 +1855,39 @@
         This allows hooks to work from any directory within the project, including .kspec/
       supersedes: null
   todos: []
-- title: 'Implement: kspec task set'
+- _ulid: 01KF24MGJK1E25S29CZRWJDK0Z
+  slugs:
+    - task-kspec-task-set
+  title: 'Implement: kspec task set'
   type: task
   spec_ref: '@task-set'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-kspec-task-set
   tags: []
-  _ulid: 01KF24MGJK1E25S29CZRWJDK0Z
+  vcs_refs: []
+  created_at: '2026-01-16T00:52:39.634Z'
+  notes: []
+  todos: []
+- title: Fix TypeScript error in item.ts createSpecItem
+  type: task
+  priority: 2
+  spec_ref: null
+  tags:
+    - bug
+  description: >-
+    Fix TypeScript error in item.ts:283 - createSpecItem input missing required fields (tests,
+    depends_on, implements, relates_to)
+  _ulid: 01KF24NV5WD5B27C9S4XVF2M0S
+  slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T00:52:39.634Z'
+  created_at: '2026-01-16T00:53:23.260Z'
   notes: []
   todos: []
