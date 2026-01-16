@@ -797,6 +797,10 @@ features:
             given: task has no spec_ref
             when: task complete runs
             then: 'output includes Task: trailer and warning about potential spec gap'
+          - id: ac-3
+            given: task in_progress with uncommitted changes
+            when: session checkpoint runs
+            then: WIP commit guidance included in instructions
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
