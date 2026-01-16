@@ -1383,6 +1383,11 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-16T14:40:37.876Z'
+    acceptance_criteria:
+      - id: ac-1
+        given: The CLI program is registered with commands
+        when: extractCommandTree() is called
+        then: Returns complete tree with names, descriptions, options, arguments, and subcommands
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
