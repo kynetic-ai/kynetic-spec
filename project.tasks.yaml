@@ -979,6 +979,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Implemented task delete with --force and --dry-run options
   depends_on: []
   context: []
   priority: 3
@@ -986,10 +987,9 @@
   vcs_refs: []
   created_at: '2026-01-15T12:55:07.303Z'
   started_at: '2026-01-16T16:35:28.801Z'
+  completed_at: '2026-01-16T16:38:22.547Z'
   notes: []
   todos: []
-  completed_at: '2026-01-16T16:38:22.547Z'
-  closed_reason: Implemented task delete with --force and --dry-run options
 - _ulid: 01KF109NY9BC079GKVN05Y1MV7
   slugs:
     - task-kspec-session-checkpoint
@@ -2423,7 +2423,7 @@
     Prompt for task derivation after spec updates - when spec items are added/modified, consider
     prompting: 'Derive implementation tasks? kspec derive @new-item'
   spec_ref: '@item-derive-hint'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2435,6 +2435,7 @@
   created_at: '2026-01-16T13:50:01.195Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T16:38:31.407Z'
 - _ulid: 01KF3H49HN6B662D0J82JSTRBA
   slugs: []
   title: Add cascade option for status updates on nested items
