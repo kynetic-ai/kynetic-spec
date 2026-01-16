@@ -733,6 +733,10 @@ features:
             given: invalid JSON syntax
             when: kspec task patch @my-task --data 'bad' runs
             then: error with helpful message
+          - id: ac-3
+            given: JSON with unknown field
+            when: kspec task patch @my-task --data '{"unknown":true}' runs
+            then: error about unknown field (strict by default)
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
