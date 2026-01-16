@@ -421,6 +421,10 @@ features:
             given: A spec item exists without acceptance_criteria
             when: kspec validate --completeness runs
             then: 'A warning is shown: ''Item @slug has no acceptance criteria'''
+          - id: ac-2
+            given: A spec item exists without a description
+            when: kspec validate --completeness runs
+            then: 'A warning is shown: ''Item @slug has no description'''
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning
