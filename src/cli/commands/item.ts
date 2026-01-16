@@ -15,7 +15,7 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { ItemFilter } from '../../parser/items.js';
-import type { ItemType, Maturity, ImplementationStatus, SpecItemInput } from '../../schema/index.js';
+import type { ItemType, Maturity, ImplementationStatus, SpecItemInput, AcceptanceCriterion } from '../../schema/index.js';
 import { output, error, success, warn, isJsonMode } from '../output.js';
 
 /**
@@ -503,6 +503,216 @@ export function registerItemCommands(program: Command): void {
         });
       } catch (err) {
         error('Failed to get item status', err);
+        process.exit(1);
+      }
+    });
+
+  // Create subcommand group for acceptance criteria operations
+  const acCmd = item
+    .command('ac')
+    .description('Manage acceptance criteria on spec items');
+
+  // Helper: Generate next AC ID based on existing AC
+  function generateNextAcId(existingAc: AcceptanceCriterion[] | undefined): string {
+    if (!existingAc || existingAc.length === 0) return 'ac-1';
+
+    const numericIds = existingAc
+      .map(ac => ac.id.match(/^ac-(\d+)$/)?.[1])
+      .filter((id): id is string => id !== null && id !== undefined)
+      .map(Number);
+
+    const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+    return `ac-${maxId + 1}`;
+  }
+
+  // Helper: Resolve ref to spec item (not task)
+  async function resolveSpecItem(ref: string): Promise<{ ctx: Awaited<ReturnType<typeof initContext>>; item: LoadedSpecItem; refIndex: ReferenceIndex }> {
+    const ctx = await initContext();
+    const { refIndex, items } = await buildIndexes(ctx);
+
+    const result = refIndex.resolve(ref);
+    if (!result.ok) {
+      error(`Item not found: ${ref}`);
+      process.exit(3);
+    }
+
+    const foundItem = result.item as LoadedSpecItem;
+
+    // Check if it's a task
+    if ('status' in foundItem && typeof foundItem.status === 'string') {
+      error(`Tasks don't have acceptance criteria; "${ref}" is a task`);
+      process.exit(3);
+    }
+
+    return { ctx, item: foundItem, refIndex };
+  }
+
+  // kspec item ac list <ref>
+  acCmd
+    .command('list <ref>')
+    .description('List acceptance criteria for a spec item')
+    .action(async (ref: string) => {
+      try {
+        const { item, refIndex } = await resolveSpecItem(ref);
+        const ac = item.acceptance_criteria || [];
+
+        output(ac, () => {
+          console.log(chalk.bold(`Acceptance Criteria for: ${item.title} (@${item.slugs[0] || refIndex.shortUlid(item._ulid)})`));
+          console.log();
+
+          if (ac.length === 0) {
+            console.log(chalk.gray('No acceptance criteria'));
+          } else {
+            for (const criterion of ac) {
+              console.log(chalk.cyan(`  [${criterion.id}]`));
+              console.log(chalk.gray(`    Given: ${criterion.given}`));
+              console.log(chalk.gray(`    When:  ${criterion.when}`));
+              console.log(chalk.gray(`    Then:  ${criterion.then}`));
+              console.log();
+            }
+          }
+
+          console.log(chalk.gray(`${ac.length} acceptance criteria`));
+        });
+      } catch (err) {
+        error('Failed to list acceptance criteria', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item ac add <ref>
+  acCmd
+    .command('add <ref>')
+    .description('Add an acceptance criterion to a spec item')
+    .option('--id <id>', 'AC identifier (auto-generated if not provided)')
+    .requiredOption('--given <text>', 'The precondition (Given...)')
+    .requiredOption('--when <text>', 'The action/trigger (When...)')
+    .requiredOption('--then <text>', 'The expected outcome (Then...)')
+    .action(async (ref: string, options) => {
+      try {
+        const { ctx, item, refIndex } = await resolveSpecItem(ref);
+        const existingAc = item.acceptance_criteria || [];
+
+        // Determine ID
+        const acId = options.id || generateNextAcId(existingAc);
+
+        // Check for duplicate ID
+        if (existingAc.some(ac => ac.id === acId)) {
+          error(`Acceptance criterion "${acId}" already exists on @${item.slugs[0] || refIndex.shortUlid(item._ulid)}`);
+          process.exit(3);
+        }
+
+        // Create new AC
+        const newAc: AcceptanceCriterion = {
+          id: acId,
+          given: options.given,
+          when: options.when,
+          then: options.then,
+        };
+
+        // Update item with new AC
+        const updatedAc = [...existingAc, newAc];
+        await updateSpecItem(ctx, item, { acceptance_criteria: updatedAc });
+
+        const itemSlug = item.slugs[0] || refIndex.shortUlid(item._ulid);
+        await commitIfShadow(ctx.shadow, 'item-ac-add', itemSlug);
+        success(`Added acceptance criterion: ${acId} to @${itemSlug}`, { ac: newAc });
+      } catch (err) {
+        error('Failed to add acceptance criterion', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item ac set <ref> <ac-id>
+  acCmd
+    .command('set <ref> <acId>')
+    .description('Update an acceptance criterion')
+    .option('--id <newId>', 'Rename the AC ID')
+    .option('--given <text>', 'Update the precondition')
+    .option('--when <text>', 'Update the action/trigger')
+    .option('--then <text>', 'Update the expected outcome')
+    .action(async (ref: string, acId: string, options) => {
+      try {
+        const { ctx, item, refIndex } = await resolveSpecItem(ref);
+        const existingAc = item.acceptance_criteria || [];
+
+        // Find the AC
+        const acIndex = existingAc.findIndex(ac => ac.id === acId);
+        if (acIndex === -1) {
+          error(`Acceptance criterion "${acId}" not found on @${item.slugs[0] || refIndex.shortUlid(item._ulid)}`);
+          process.exit(3);
+        }
+
+        // Check for no updates
+        if (!options.id && !options.given && !options.when && !options.then) {
+          warn('No updates specified');
+          return;
+        }
+
+        // Check for duplicate ID if renaming
+        if (options.id && options.id !== acId && existingAc.some(ac => ac.id === options.id)) {
+          error(`Acceptance criterion "${options.id}" already exists`);
+          process.exit(3);
+        }
+
+        // Build updated AC
+        const updatedAc = [...existingAc];
+        const updatedFields: string[] = [];
+
+        updatedAc[acIndex] = {
+          ...updatedAc[acIndex],
+          ...(options.id && { id: options.id }),
+          ...(options.given && { given: options.given }),
+          ...(options.when && { when: options.when }),
+          ...(options.then && { then: options.then }),
+        };
+
+        if (options.id) updatedFields.push('id');
+        if (options.given) updatedFields.push('given');
+        if (options.when) updatedFields.push('when');
+        if (options.then) updatedFields.push('then');
+
+        // Update item
+        await updateSpecItem(ctx, item, { acceptance_criteria: updatedAc });
+
+        const itemSlug = item.slugs[0] || refIndex.shortUlid(item._ulid);
+        await commitIfShadow(ctx.shadow, 'item-ac-set', itemSlug);
+        success(`Updated acceptance criterion: ${acId} on @${itemSlug} (${updatedFields.join(', ')})`, { ac: updatedAc[acIndex] });
+      } catch (err) {
+        error('Failed to update acceptance criterion', err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item ac remove <ref> <ac-id>
+  acCmd
+    .command('remove <ref> <acId>')
+    .description('Remove an acceptance criterion')
+    .option('--force', 'Skip confirmation')
+    .action(async (ref: string, acId: string, options) => {
+      try {
+        const { ctx, item, refIndex } = await resolveSpecItem(ref);
+        const existingAc = item.acceptance_criteria || [];
+
+        // Find the AC
+        const acIndex = existingAc.findIndex(ac => ac.id === acId);
+        if (acIndex === -1) {
+          error(`Acceptance criterion "${acId}" not found on @${item.slugs[0] || refIndex.shortUlid(item._ulid)}`);
+          process.exit(3);
+        }
+
+        // TODO: Add confirmation prompt when !options.force
+        // For now, proceed with deletion
+
+        // Remove the AC
+        const updatedAc = existingAc.filter(ac => ac.id !== acId);
+        await updateSpecItem(ctx, item, { acceptance_criteria: updatedAc });
+
+        const itemSlug = item.slugs[0] || refIndex.shortUlid(item._ulid);
+        await commitIfShadow(ctx.shadow, 'item-ac-remove', itemSlug);
+        success(`Removed acceptance criterion: ${acId} from @${itemSlug}`, { removed: acId });
+      } catch (err) {
+        error('Failed to remove acceptance criterion', err);
         process.exit(1);
       }
     });

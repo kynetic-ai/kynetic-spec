@@ -409,3 +409,178 @@ describe('Integration: session', () => {
     expect(output).toContain('Ready to Pick Up');
   });
 });
+
+describe('Integration: item ac', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should list acceptance criteria (empty)', () => {
+    const output = kspec('item ac list @test-feature', tempDir);
+    expect(output).toContain('No acceptance criteria');
+    expect(output).toContain('0 acceptance criteria');
+  });
+
+  it('should add acceptance criterion with auto-generated ID', () => {
+    const output = kspec(
+      'item ac add @test-feature --given "a test precondition" --when "action is taken" --then "result is achieved"',
+      tempDir
+    );
+    expect(output).toContain('Added acceptance criterion');
+    expect(output).toContain('ac-1');
+
+    // Verify it was added
+    const listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).toContain('[ac-1]');
+    expect(listOutput).toContain('Given: a test precondition');
+    expect(listOutput).toContain('When:  action is taken');
+    expect(listOutput).toContain('Then:  result is achieved');
+    expect(listOutput).toContain('1 acceptance criteria');
+  });
+
+  it('should add acceptance criterion with custom ID', () => {
+    kspec(
+      'item ac add @test-feature --id my-custom-ac --given "custom given" --when "custom when" --then "custom then"',
+      tempDir
+    );
+
+    const listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).toContain('[my-custom-ac]');
+  });
+
+  it('should reject duplicate AC ID', () => {
+    kspec(
+      'item ac add @test-feature --id unique-ac --given "g" --when "w" --then "t"',
+      tempDir
+    );
+
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item ac add @test-feature --id unique-ac --given "g2" --when "w2" --then "t2"`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  it('should reject adding AC to a task', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item ac add @test-task-pending --given "g" --when "w" --then "t"`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  it('should update acceptance criterion', () => {
+    // First add an AC
+    kspec(
+      'item ac add @test-feature --id ac-to-update --given "original given" --when "original when" --then "original then"',
+      tempDir
+    );
+
+    // Update it
+    const output = kspec(
+      'item ac set @test-feature ac-to-update --then "updated then"',
+      tempDir
+    );
+    expect(output).toContain('Updated acceptance criterion');
+    expect(output).toContain('ac-to-update');
+    expect(output).toContain('(then)');
+
+    // Verify the update
+    const listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).toContain('Then:  updated then');
+  });
+
+  it('should reject updating nonexistent AC', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item ac set @test-feature nonexistent-ac --then "new value"`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  it('should remove acceptance criterion', () => {
+    // First add an AC
+    kspec(
+      'item ac add @test-feature --id ac-to-remove --given "g" --when "w" --then "t"',
+      tempDir
+    );
+
+    // Verify it exists
+    let listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).toContain('[ac-to-remove]');
+
+    // Remove it
+    const output = kspec('item ac remove @test-feature ac-to-remove --force', tempDir);
+    expect(output).toContain('Removed acceptance criterion');
+    expect(output).toContain('ac-to-remove');
+
+    // Verify it's gone
+    listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).not.toContain('[ac-to-remove]');
+    expect(listOutput).toContain('0 acceptance criteria');
+  });
+
+  it('should reject removing nonexistent AC', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item ac remove @test-feature nonexistent-ac --force`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  it('should handle YAML special characters correctly', () => {
+    // Test that colons and other special chars are properly escaped
+    kspec(
+      'item ac add @test-feature --given "user has: credentials" --when "they submit: form" --then "result: success message shown"',
+      tempDir
+    );
+
+    // Should not cause YAML parsing errors
+    const listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).toContain('Given: user has: credentials');
+    expect(listOutput).toContain('Then:  result: success message shown');
+
+    // Validation should pass
+    const validateOutput = kspec('validate --schema', tempDir);
+    expect(validateOutput).toContain('Schema: OK');
+  });
+
+  it('should auto-increment AC IDs correctly', () => {
+    // Add multiple ACs
+    kspec('item ac add @test-feature --given "g1" --when "w1" --then "t1"', tempDir);
+    kspec('item ac add @test-feature --given "g2" --when "w2" --then "t2"', tempDir);
+    kspec('item ac add @test-feature --given "g3" --when "w3" --then "t3"', tempDir);
+
+    const listOutput = kspec('item ac list @test-feature', tempDir);
+    expect(listOutput).toContain('[ac-1]');
+    expect(listOutput).toContain('[ac-2]');
+    expect(listOutput).toContain('[ac-3]');
+    expect(listOutput).toContain('3 acceptance criteria');
+  });
+
+  it('should return JSON output', () => {
+    kspec('item ac add @test-feature --given "g" --when "w" --then "t"', tempDir);
+
+    const acList = kspecJson<Array<{ id: string; given: string; when: string; then: string }>>(
+      'item ac list @test-feature',
+      tempDir
+    );
+
+    expect(Array.isArray(acList)).toBe(true);
+    expect(acList.length).toBe(1);
+    expect(acList[0].id).toBe('ac-1');
+    expect(acList[0].given).toBe('g');
+    expect(acList[0].when).toBe('w');
+    expect(acList[0].then).toBe('t');
+  });
+});
