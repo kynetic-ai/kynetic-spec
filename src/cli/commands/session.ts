@@ -804,6 +804,34 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     console.log(chalk.gray('\n--- Working Tree: Clean ---'));
   }
 
+  // Quick Commands section - contextual hints based on state
+  const hints: string[] = [];
+
+  if (ctx.active_tasks.length > 0) {
+    const ref = ctx.active_tasks[0].ref;
+    hints.push(`kspec task note @${ref} "Progress..."  ${chalk.gray('# document work')}`);
+    hints.push(`kspec task complete @${ref} --reason "..."  ${chalk.gray('# finish task')}`);
+  } else if (ctx.ready_tasks.length > 0) {
+    const ref = ctx.ready_tasks[0].ref;
+    hints.push(`kspec task start @${ref}  ${chalk.gray('# begin work')}`);
+  }
+
+  if (ctx.inbox_items.length > 0) {
+    const ref = ctx.inbox_items[0].ref;
+    hints.push(`kspec inbox promote @${ref} --title "..."  ${chalk.gray('# convert to task')}`);
+  }
+
+  if (ctx.working_tree && !ctx.working_tree.clean) {
+    hints.push(`git add . && git commit -m "..."  ${chalk.gray('# commit changes')}`);
+  }
+
+  if (hints.length > 0) {
+    console.log(chalk.bold.gray('\n--- Quick Commands ---'));
+    for (const hint of hints) {
+      console.log(`  ${hint}`);
+    }
+  }
+
   console.log(''); // Final newline
 }
 
