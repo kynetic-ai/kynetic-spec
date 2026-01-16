@@ -127,6 +127,11 @@ features:
           - Commit includes all changes from the operation
         implements:
           - '@shadow-concept'
+        acceptance_criteria:
+          - id: ac-1
+            given: shadow branch is enabled and task @my-task exists
+            when: kspec task start/complete/block/unblock/cancel/set runs
+            then: shadow branch has new commit with appropriate message
       - _ulid: 01KF1V2027DTBEBN6A6DCBAT1Q
         slugs:
           - shadow-read-path
