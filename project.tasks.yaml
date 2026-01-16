@@ -2736,6 +2736,7 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Fixed git init to explicitly use main branch
   depends_on: []
   context: []
   priority: 2
@@ -2745,6 +2746,7 @@
   vcs_refs: []
   created_at: '2026-01-16T22:43:17.669Z'
   started_at: '2026-01-16T22:43:27.996Z'
+  completed_at: '2026-01-16T22:44:59.246Z'
   notes:
     - _ulid: 01KF4FQAD3DEPZSY1YP77S3BHK
       created_at: '2026-01-16T22:44:54.819Z'
@@ -2754,8 +2756,6 @@
         Tests were failing because git init uses system default branch name which may not be 'main'.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T22:44:59.246Z'
-  closed_reason: Fixed git init to explicitly use main branch
 - _ulid: 01KF4FMKJHW7405WHFKQEJXPX9
   slugs:
     - task-session-ready-limit
@@ -2772,5 +2772,23 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T22:43:25.905Z'
+  notes: []
+  todos: []
+- title: Set up CI test runner for PRs
+  type: task
+  spec_ref: null
+  priority: 2
+  slugs:
+    - task-ci-test-runner
+  tags:
+    - infra
+    - dx
+  _ulid: 01KF4FX1XV16YPFK2RVZVHZDJM
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T22:48:02.747Z'
   notes: []
   todos: []
