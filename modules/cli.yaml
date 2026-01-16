@@ -476,6 +476,26 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T00:51:25.939Z'
+      - _ulid: 01KF24JAEM65BGJ5ZK0QM4XQNN
+        slugs:
+          - task-todo
+        title: kspec task todo
+        type: requirement
+        tags: []
+        description: |-
+          kspec task todo <subcommand>
+
+          Subcommands:
+          - add <ref> <text>: Add a todo to a task
+          - done <ref> <index>: Mark a todo as done
+          - remove <ref> <index>: Remove a todo
+
+          Lightweight checklist items within a task.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T00:51:27.829Z'
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
