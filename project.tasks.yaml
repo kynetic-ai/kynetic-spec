@@ -1813,3 +1813,34 @@
   created_at: '2026-01-15T23:48:27.158Z'
   notes: []
   todos: []
+- _ulid: 01KF229CJV28XAW3KC6NNRRS0M
+  slugs:
+    - task-fix-hook-commands
+  title: Fix hooks to use npm run dev instead of npx tsx
+  type: task
+  spec_ref: null
+  status: completed
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - infrastructure
+    - hooks
+  vcs_refs: []
+  created_at: '2026-01-16T00:11:37.946Z'
+  started_at: '2026-01-16T00:11:44.653Z'
+  notes:
+    - _ulid: 01KF22BWV0YYHT484D61CRTS5J
+      created_at: '2026-01-16T00:13:00.129Z'
+      author: '@claude'
+      content: |-
+        Fixed hooks to use npm run dev instead of npx tsx:
+        - Updated .claude/settings.json (UserPromptSubmit and Stop hooks)
+        - Updated src/cli/commands/setup.ts (3 instances)
+
+        This allows hooks to work from any directory within the project, including .kspec/
+      supersedes: null
+  todos: []
+  completed_at: '2026-01-16T00:13:06.260Z'
+  closed_reason: Hooks now use npm run dev for project-relative execution
