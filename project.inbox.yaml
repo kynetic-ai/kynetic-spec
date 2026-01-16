@@ -75,16 +75,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF22T36K64959Z5Y72GEJ81K
-    text: >-
-      Process gap: shadow-autocommit spec existed but no task was derived. The derive flow wasn't
-      followed during shadow implementation - should have derived tasks from all spec items before
-      implementing.
-    created_at: '2026-01-16T00:20:45.396Z'
-    tags:
-      - process
-      - learning
-    added_by: '@claude'
   - _ulid: 01KF23D85HF7DSY1T1DN5XBHT6
     text: >-
       Shadow auto-commit polish: add missing commit message cases
