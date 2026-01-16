@@ -549,3 +549,6 @@ features:
         given: sync uses git pull
         when: pulling remote changes
         then: uses --ff-only first, falls back to --rebase if needed
+    status:
+      maturity: draft
+      implementation: in_progress

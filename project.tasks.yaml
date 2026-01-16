@@ -2603,7 +2603,7 @@
   type: task
   spec_ref: '@shadow-sync'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2611,6 +2611,7 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-16T20:21:40.147Z'
+  started_at: '2026-01-16T20:33:00.733Z'
   notes:
     - _ulid: 01KF47HHCE64MQQ8JHWAT1SB8Y
       created_at: '2026-01-16T20:21:56.750Z'
@@ -2640,7 +2641,10 @@
            - rerere.enabled = true
       supersedes: null
   todos: []
-  started_at: '2026-01-16T20:33:00.733Z'
+  completed_at: '2026-01-16T20:38:39.176Z'
+  closed_reason: >-
+    Implemented auto-sync: push after commit (fire-and-forget), pull on session start, shadow
+    sync/resolve commands, conflict detection and resolution guidance
 - _ulid: 01KF47H34C915C7D1KH4QB07MC
   slugs:
     - task-init-remote-detection
