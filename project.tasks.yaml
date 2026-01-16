@@ -1936,7 +1936,15 @@
   vcs_refs: []
   created_at: '2026-01-16T00:52:39.634Z'
   started_at: '2026-01-16T03:07:51.083Z'
-  notes: []
+  notes:
+    - _ulid: 01KF2CFYNKXJHADY2SFQAHNVZQ
+      created_at: '2026-01-16T03:09:58.836Z'
+      author: '@claude'
+      content: >-
+        Implemented task set command with options: --title, --spec-ref, --priority, --slug, --tag,
+        --depends-on. Validates spec refs exist and aren't tasks. Immediately used to link task
+        01KF2C05 to its spec.
+      supersedes: null
   todos: []
 - _ulid: 01KF24NV5WD5B27C9S4XVF2M0S
   slugs: []
