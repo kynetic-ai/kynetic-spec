@@ -39,18 +39,22 @@ Identify where things were harder than needed:
 
 ### 3. Check Existing Coverage
 
-Before proposing improvements, check if friction points are already tracked:
+Before proposing improvements, check if friction points are already tracked.
+
+**Search ALL sources** - specs, tasks, AND inbox:
 
 ```bash
-# Search inbox for related items
-npm run dev -- inbox list | grep -i "<keyword>"
+# Search specs - features may already be designed
+npm run dev -- item list -q "<keyword>"
 
-# Search tasks for related work
+# Search ALL tasks (not just ready)
 npm run dev -- task list | grep -i "<keyword>"
 
-# Check ready tasks that might address the issue
-npm run dev -- tasks ready | grep -i "<keyword>"
+# Search inbox for captured ideas
+npm run dev -- inbox list | grep -i "<keyword>"
 ```
+
+**Important:** Don't just search inbox and ready tasks. Specs often already define features that address friction points (e.g., `item patch` covers bulk updates). Search specs first.
 
 For each friction point, note if it's:
 - **Already tracked** - reference the existing item/task
