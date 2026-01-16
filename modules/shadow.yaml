@@ -309,9 +309,25 @@ features:
     tags:
       - infrastructure
       - reliability
-    description: |
-      Recovery mechanisms for shadow branch issues.
-      Critical for handling corrupted or missing .kspec/ directory.
+    description: >-
+      Recovery mechanisms for shadow branch issues. Provides CLI commands for diagnosing and
+      repairing shadow branch problems:
+
+
+      - \`shadow status\`: Check health of shadow branch (branch exists, worktree linked)
+
+      - \`shadow repair\`: Recreate worktree when branch exists but worktree is broken
+
+      - \`shadow log\`: View recent commits on shadow branch
+
+
+      Handles common issues:
+
+      - Worktree directory deleted (recreate from existing branch)
+
+      - Worktree disconnected from git (remove and recreate)
+
+      - Stale worktree references in git
     requirements:
       - _ulid: 01KF1VBR1XMKDJ0K5HYW7RWGQE
         slugs:
