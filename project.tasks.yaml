@@ -2203,9 +2203,20 @@
     - cli
   vcs_refs: []
   created_at: '2026-01-16T12:08:55.133Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T15:18:56.019Z'
+  notes:
+    - _ulid: 01KF3PBMZG1HPH2EPAQ2XKW416
+      created_at: '2026-01-16T15:21:38.032Z'
+      author: '@claude'
+      content: |-
+        Added acceptance criteria display to item get command. Changes:
+        - Added AC section after description in item.ts formatItem output
+        - Uses same format as task get spec context (Given/When/Then)
+        - Only displays when item has acceptance_criteria array with content
+        - Tested with items with and without ACs, and JSON output mode
+        - All 140 tests pass
+      supersedes: null
+  todos: []
 - _ulid: 01KF3CVS28Q0NVRTAK719S8ZB8
   slugs:
     - task-shadow-debug-mode
