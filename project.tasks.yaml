@@ -2357,7 +2357,7 @@
   description: >-
     Bulk status update for nested items - when parent feature is implemented, offer to update child
     requirement statuses
-  spec_ref: null
+  spec_ref: '@status-cascade'
   status: pending
   blocked_by: []
   depends_on: []
