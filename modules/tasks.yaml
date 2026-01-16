@@ -258,6 +258,10 @@ features:
             then: >-
               CLI shows a reminder: 'Linked spec has N acceptance criteria - verify they are
               covered'
+          - id: ac-3
+            given: A task without spec_ref is completed
+            when: The task is marked completed
+            then: No status update prompt is shown (only applies to spec-linked tasks)
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
