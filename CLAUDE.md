@@ -40,3 +40,29 @@ npm run dev -- validate
 4. **Check dependencies** - Tasks have `depends_on` relationships; complete prerequisites first
 5. **Read the design doc** - `KYNETIC_SPEC_DESIGN.md` has comprehensive details
 6. **Spec is source of truth** - `.kspec/` defines what to build; code implements it
+
+## Plan Mode Workflow
+
+When a plan is approved, you MUST translate it to specs before implementing:
+
+```bash
+# 1. Create spec item under appropriate parent
+npm run dev -- item add --under @parent --title "Feature Name" --type feature --slug feature-slug
+
+# 2. Add acceptance criteria (repeat for each AC)
+npm run dev -- item ac add @feature-slug --given "precondition" --when "action" --then "expected result"
+
+# 3. Derive implementation task
+npm run dev -- derive @feature-slug
+
+# 4. Add implementation notes from plan to task
+npm run dev -- task note @task-slug "Implementation approach: ..."
+
+# 5. Begin implementation
+npm run dev -- task start @task-slug
+```
+
+**Plans without specs are incomplete.** The spec with acceptance criteria IS the durable artifact - plan files may not persist across sessions. Always capture:
+- Feature/requirement definitions in spec items
+- Acceptance criteria for testable outcomes
+- Implementation context in task notes
