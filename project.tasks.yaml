@@ -1982,7 +1982,7 @@
     Status alignment sweep needed - 23 spec items have mismatched implementation status (validate
     shows many implemented features still marked not_started)
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -1993,6 +1993,7 @@
   created_at: '2026-01-16T00:53:25.118Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T16:39:40.607Z'
 - _ulid: 01KF2657J2N1SQRFFNBFYQ0XXK
   slugs: []
   title: Fix hooks to use npm run dev -s for clean output
@@ -2425,6 +2426,7 @@
   spec_ref: '@item-derive-hint'
   status: completed
   blocked_by: []
+  closed_reason: Added derive hint after item add and set commands, suppressed in JSON mode
   depends_on: []
   context: []
   priority: 3
@@ -2434,10 +2436,9 @@
   vcs_refs: []
   created_at: '2026-01-16T13:50:01.195Z'
   started_at: '2026-01-16T16:38:31.407Z'
+  completed_at: '2026-01-16T16:39:33.285Z'
   notes: []
   todos: []
-  completed_at: '2026-01-16T16:39:33.285Z'
-  closed_reason: Added derive hint after item add and set commands, suppressed in JSON mode
 - _ulid: 01KF3H49HN6B662D0J82JSTRBA
   slugs: []
   title: Add cascade option for status updates on nested items

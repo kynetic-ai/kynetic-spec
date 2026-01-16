@@ -100,7 +100,7 @@ features:
             then: 'CLI shows hint: ''Derive implementation task? kspec derive @new-slug'''
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs:
       - ulid-system
