@@ -835,6 +835,47 @@ features:
           Useful for identifying what's stuck.
         implements:
           - '@query-commands'
+      - _ulid: 01KF41T5PN7Z6K6SXQK2S8K6DH
+        slugs:
+          - cmd-log
+        title: kspec log
+        type: requirement
+        tags: []
+        description: >-
+          kspec log [ref]
+
+
+          Search git history for commits referencing spec items or tasks. Wraps git log --grep to
+          search for trailer patterns (Task: @ref, Spec: @ref).
+
+
+          Options:
+
+          - <ref>: Task or spec reference to search for
+
+          - --spec <ref>: Search for Spec: trailer specifically
+
+          - --task <ref>: Search for Task: trailer specifically
+
+          - -n, --limit <n>: Limit results (default: 10)
+
+          - --oneline: Compact output format
+
+          - --since <time>: Only commits after date
+
+
+          Examples:
+
+          - kspec log @my-task        # Commits for task
+
+          - kspec log --spec @auth    # Commits for spec item
+
+          - kspec log @task --oneline # Compact format
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T18:41:48.245Z'
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
