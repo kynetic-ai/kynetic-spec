@@ -458,6 +458,22 @@ features:
             then: >-
               A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status
               mismatches')
+      - _ulid: 01KF3H9Z7Z2C1AQBCM4BJT1BAZ
+        slugs:
+          - alignment-guidance
+        title: Alignment Guidance Enhancement
+        type: requirement
+        tags:
+          - dx
+          - workflow
+        description: >-
+          Alignment guidance shown during task workflows includes reminder about test coverage for
+          specs with acceptance criteria.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T13:53:20.127Z'
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning
