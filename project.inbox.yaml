@@ -78,3 +78,15 @@ inbox:
       - testing
       - spec
     added_by: '@claude'
+  - _ulid: 01KF3HG0PHS4N4ME6NXQ4RZTE2
+    text: >-
+      Alignment system spec coverage gap - AlignmentIndex, auto-sync, validation commands (kspec
+      item status, alignment check) were implemented pragmatically without spec. Need to create spec
+      items documenting: alignment concept, AlignmentIndex structure, auto-sync behavior, alignment
+      validation, guidance output format.
+    created_at: '2026-01-16T13:56:38.226Z'
+    tags:
+      - spec-gap
+      - alignment
+      - debt
+    added_by: '@claude'
