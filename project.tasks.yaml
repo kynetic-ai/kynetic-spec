@@ -2423,7 +2423,7 @@
     Prompt for task derivation after spec updates - when spec items are added/modified, consider
     prompting: 'Derive implementation tasks? kspec derive @new-item'
   spec_ref: '@item-derive-hint'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2433,9 +2433,11 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T13:50:01.195Z'
+  started_at: '2026-01-16T16:38:31.407Z'
   notes: []
   todos: []
-  started_at: '2026-01-16T16:38:31.407Z'
+  completed_at: '2026-01-16T16:39:33.285Z'
+  closed_reason: Added derive hint after item add and set commands, suppressed in JSON mode
 - _ulid: 01KF3H49HN6B662D0J82JSTRBA
   slugs: []
   title: Add cascade option for status updates on nested items
