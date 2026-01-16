@@ -500,6 +500,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T00:51:27.829Z'
+        status:
+          implementation: implemented
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
