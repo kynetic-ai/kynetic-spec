@@ -165,20 +165,6 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF380KDX1PQZ6GCE55F1J5JX
-    text: >-
-      JSON-to-YAML bridge utility for bulk/raw writes - Add kspec item patch and kspec task patch
-      commands that accept JSON input for any field(s). Solves the gap problem where CLI doesn't
-      have dedicated commands yet. JSON is easier for agents to generate correctly, still gets
-      proper YAML escaping. Options: merge vs replace (--replace flag), validation before write,
-      nested path support (status.implementation). Example: kspec item patch @ref --json
-      '{"acceptance_criteria": [...]}' or pipe input. High-value DX feature for agent workflows.
-    created_at: '2026-01-16T11:10:55.933Z'
-    tags:
-      - cli
-      - dx
-      - feature
-    added_by: '@claude'
   - _ulid: 01KF39PZJWBAEX1T796YWPK7ER
     text: >-
       Validation should warn about specs missing acceptance criteria - helps catch incomplete specs
