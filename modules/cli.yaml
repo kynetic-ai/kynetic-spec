@@ -372,6 +372,10 @@ features:
             given: valid JSON with status field
             when: kspec item patch @my-item --data '{"status":{"implementation":"implemented"}}' runs
             then: item status is updated to implemented
+          - id: ac-2
+            given: invalid JSON syntax
+            when: kspec item patch @my-item --data 'not json' runs
+            then: error with helpful JSON parse message
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
