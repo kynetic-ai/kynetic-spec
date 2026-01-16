@@ -1,8 +1,7 @@
-# Schema Module - Item Types, Validation, File Structure
-# Defines item types, status lifecycle, and validation rules
-
 _ulid: 01JHNKA1W2SCHM000000000000
-slugs: [schema, schema-module]
+slugs:
+  - schema
+  - schema-module
 title: Schema and Structure
 type: module
 status:
@@ -12,27 +11,27 @@ description: |
   Defines the schema layer: what item types exist, how validation
   works, the file structure options, and the status lifecycle
   for both specs and individual items.
-
 features:
-  # ============================================================
-  # ITEM TYPES - Taxonomy of spec items
-  # ============================================================
   - _ulid: 01JHNKA1W3TYPE000000000000
-    slugs: [item-types, type-system]
+    slugs:
+      - item-types
+      - type-system
     title: Item Type System
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, schema]
+    tags:
+      - mvp
+      - schema
     description: |
       The type field classifies items. Core types are defined,
       but the system is extensible for project-specific types.
-
     requirements:
       - _ulid: 01JHNKA1W4TYPE100000000000
-        slugs: [type-module]
+        slugs:
+          - type-module
         title: Module Type
         type: requirement
         status:
@@ -43,10 +42,11 @@ features:
 
           High-level organizational unit. Groups related features.
           Examples: "Authentication", "API", "Data Export"
-        implements: ["@item-types"]
-
+        implements:
+          - '@item-types'
       - _ulid: 01JHNKA1W5TYPE200000000000
-        slugs: [type-feature]
+        slugs:
+          - type-feature
         title: Feature Type
         type: requirement
         status:
@@ -57,10 +57,11 @@ features:
 
           User-facing capability. Something the system does.
           Examples: "User Login", "Data Export", "Search"
-        implements: ["@item-types"]
-
+        implements:
+          - '@item-types'
       - _ulid: 01JHNKA1W6TYPE300000000000
-        slugs: [type-requirement]
+        slugs:
+          - type-requirement
         title: Requirement Type
         type: requirement
         status:
@@ -71,10 +72,11 @@ features:
 
           Specific, testable requirement. Details how a feature works.
           Examples: "Passwords must be hashed with bcrypt"
-        implements: ["@item-types"]
-
+        implements:
+          - '@item-types'
       - _ulid: 01JHNKA1W7TYPE400000000000
-        slugs: [type-constraint]
+        slugs:
+          - type-constraint
         title: Constraint Type
         type: requirement
         status:
@@ -85,10 +87,11 @@ features:
 
           Limitation or boundary the system must operate within.
           Examples: "Must support 10k concurrent users", "Must use PostgreSQL"
-        implements: ["@item-types"]
-
+        implements:
+          - '@item-types'
       - _ulid: 01JHNKA1W8TYPE500000000000
-        slugs: [type-decision]
+        slugs:
+          - type-decision
         title: Decision Type
         type: requirement
         status:
@@ -100,10 +103,11 @@ features:
           Architectural decision record (ADR-style).
           Captures why a choice was made, alternatives considered.
           Examples: "Use PostgreSQL for persistence", "Choose YAML over JSON"
-        implements: ["@item-types"]
-
+        implements:
+          - '@item-types'
       - _ulid: 01JHNKA1W9TYPE600000000000
-        slugs: [type-task]
+        slugs:
+          - type-task
         title: Task Type
         type: requirement
         status:
@@ -114,29 +118,31 @@ features:
 
           Actionable work item. May be derived from spec items
           or created standalone. See @tasks module for details.
-        implements: ["@item-types"]
-        relates_to: ["@tasks"]
-
-  # ============================================================
-  # STATUS LIFECYCLE - Maturity and implementation states
-  # ============================================================
+        implements:
+          - '@item-types'
+        relates_to:
+          - '@tasks'
   - _ulid: 01JHNKA2W0STAT000000000000
-    slugs: [status-lifecycle, item-status]
+    slugs:
+      - status-lifecycle
+      - item-status
     title: Status Lifecycle
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, schema]
+    tags:
+      - mvp
+      - schema
     description: |
       Items track two dimensions of status:
       - maturity: How stable/reviewed is the spec content?
       - implementation: Is it built? Tested?
-
     requirements:
       - _ulid: 01JHNKA2W1STAT100000000000
-        slugs: [maturity-states]
+        slugs:
+          - maturity-states
         title: Maturity States
         type: requirement
         status:
@@ -151,10 +157,11 @@ features:
           - deprecated: Superseded or no longer relevant
 
           Lifecycle: draft -> proposed -> stable -> deprecated
-        implements: ["@status-lifecycle"]
-
+        implements:
+          - '@status-lifecycle'
       - _ulid: 01JHNKA2W2STAT200000000000
-        slugs: [implementation-states]
+        slugs:
+          - implementation-states
         title: Implementation States
         type: requirement
         status:
@@ -169,27 +176,27 @@ features:
           - verified: Tests pass, reviewed
 
           This is informational; tasks track actual work.
-        implements: ["@status-lifecycle"]
-
-  # ============================================================
-  # FILE STRUCTURE - How specs are organized on disk
-  # ============================================================
+        implements:
+          - '@status-lifecycle'
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
-    slugs: [file-structure, spec-organization]
+    slugs:
+      - file-structure
+      - spec-organization
     title: File Structure
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [schema]
+    tags:
+      - schema
     description: |
       Specs can be organized as single files or directory trees.
       The structure is auto-adaptive: start simple, split when needed.
-
     requirements:
       - _ulid: 01KEZCJPJ3N3M6XZC5F2HMQMF3
-        slugs: [single-file-structure]
+        slugs:
+          - single-file-structure
         title: Single File Structure
         type: requirement
         status:
@@ -202,10 +209,11 @@ features:
             kynetic.yaml    # Or kynetic.spec.yaml
 
           All items inline in the manifest.
-        implements: ["@file-structure"]
-
+        implements:
+          - '@file-structure'
       - _ulid: 01KEZCJPJ3X51ZZADWKWFNV4R9
-        slugs: [directory-structure]
+        slugs:
+          - directory-structure
         title: Directory Structure
         type: requirement
         status:
@@ -224,10 +232,11 @@ features:
                 ADR-001.yaml     # Decision records
 
           Uses `includes` field in manifest to reference files.
-        implements: ["@file-structure"]
-
+        implements:
+          - '@file-structure'
       - _ulid: 01KEZCJPJ3WDMJX9K17J63CYXS
-        slugs: [auto-adaptive-structure]
+        slugs:
+          - auto-adaptive-structure
         title: Auto-Adaptive Structure
         type: requirement
         status:
@@ -240,27 +249,28 @@ features:
           - `kspec split --apply` restructures (with git-friendly renames)
 
           Not MVP - this is a convenience feature.
-        implements: ["@file-structure"]
-
-  # ============================================================
-  # YAML CONVENTIONS - Safe YAML usage
-  # ============================================================
+        implements:
+          - '@file-structure'
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
-    slugs: [yaml-conventions, yaml-safety]
+    slugs:
+      - yaml-conventions
+      - yaml-safety
     title: YAML Conventions
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, schema]
+    tags:
+      - mvp
+      - schema
     description: |
       YAML has pitfalls (Norway problem, type coercion).
       These conventions ensure safe, predictable parsing.
-
     requirements:
       - _ulid: 01KEZCJPJ3Z9T0AWQGEJ3GW2WZ
-        slugs: [yaml-version]
+        slugs:
+          - yaml-version
         title: YAML 1.2 Required
         type: requirement
         status:
@@ -274,10 +284,11 @@ features:
           - "3.14" might become float
 
           YAML 1.2 is stricter and safer.
-        implements: ["@yaml-conventions"]
-
+        implements:
+          - '@yaml-conventions'
       - _ulid: 01KEZCJPJ3MFX4H51TN64GEB6T
-        slugs: [yaml-quoting]
+        slugs:
+          - yaml-quoting
         title: Quote Ambiguous Strings
         type: requirement
         status:
@@ -290,10 +301,11 @@ features:
           - Special values: "null", "~"
 
           The linter should catch unquoted ambiguous values.
-        implements: ["@yaml-conventions"]
-
+        implements:
+          - '@yaml-conventions'
       - _ulid: 01KEZCJPJ3M7T6ZNEMTVYBWP96
-        slugs: [yaml-multiline]
+        slugs:
+          - yaml-multiline
         title: Multiline with Literal Blocks
         type: requirement
         status:
@@ -307,38 +319,37 @@ features:
             It preserves newlines.
 
           This is cleaner than quoted strings with \n.
-        implements: ["@yaml-conventions"]
-
-  # ============================================================
-  # VALIDATION - Schema conformance
-  # ============================================================
+        implements:
+          - '@yaml-conventions'
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
-    slugs: [validation, schema-validation]
+    slugs:
+      - validation
+      - schema-validation
     title: Schema Validation
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, schema]
+    tags:
+      - mvp
+      - schema
     description: |
       Validation ensures specs conform to schema and conventions.
       Schema is defined in Zod (source of truth), exported to JSON Schema.
-
     acceptance_criteria:
       - id: ac-valid-1
         given: a spec with all required fields
         when: kspec validate runs
         then: validation passes with exit code 0
-
       - id: ac-valid-2
         given: a spec with a broken @reference
         when: kspec validate --refs runs
         then: validation fails with error listing broken ref
-
     requirements:
       - _ulid: 01KEZCJPJ3MRSVNT5E9ETQD72W
-        slugs: [zod-schema]
+        slugs:
+          - zod-schema
         title: Zod Schema Definition
         type: requirement
         status:
@@ -351,11 +362,13 @@ features:
           - z.toJSONSchema() exports JSON Schema for docs/external tools
 
           Zod chosen for ecosystem size, type inference, JSON Schema export.
-        implements: ["@validation"]
-        depends_on: ["@spec-item"]
-
+        implements:
+          - '@validation'
+        depends_on:
+          - '@spec-item'
       - _ulid: 01KEZCJPJ373KGN2PK8P3XQ929
-        slugs: [validation-modes]
+        slugs:
+          - validation-modes
         title: Validation Modes
         type: requirement
         status:
@@ -369,10 +382,11 @@ features:
           - (default): All checks
 
           CI should run `kspec validate` or `kspec lint --strict`.
-        implements: ["@validation"]
-
+        implements:
+          - '@validation'
       - _ulid: 01KEZCJPJ42RZQPFC962QV2TP3
-        slugs: [validation-output]
+        slugs:
+          - validation-output
         title: Validation Output
         type: requirement
         status:
@@ -386,27 +400,41 @@ features:
 
           JSON output (--json) for programmatic consumption:
           { "valid": false, "errors": [...], "warnings": [...] }
-        implements: ["@validation"]
-
-  # ============================================================
-  # VERSIONING - Spec and format versions
-  # ============================================================
+        implements:
+          - '@validation'
+      - _ulid: 01KF3GST2YDS6MA1A04WK7A9FJ
+        slugs:
+          - spec-completeness
+        title: Spec Completeness Validation
+        type: requirement
+        tags: []
+        description: >-
+          Validation checks for spec quality beyond schema conformance. Warns about incomplete specs
+          to help maintain spec-as-source-of-truth principle.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T13:44:30.558Z'
   - _ulid: 01JHNKA3W5VERS000000000000
-    slugs: [versioning, spec-versions]
+    slugs:
+      - versioning
+      - spec-versions
     title: Versioning
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [schema]
+    tags:
+      - schema
     description: |
       Two version numbers: format version and spec version.
       Git provides history; tags provide baselines.
-
     requirements:
       - _ulid: 01JHNKA3W6VERS100000000000
-        slugs: [format-version]
+        slugs:
+          - format-version
         title: Format Version
         type: requirement
         status:
@@ -419,10 +447,11 @@ features:
 
           Tools use this to know which schema to apply.
           Breaking format changes bump major version.
-        implements: ["@versioning"]
-
+        implements:
+          - '@versioning'
       - _ulid: 01JHNKA3W7VERS200000000000
-        slugs: [spec-version]
+        slugs:
+          - spec-version
         title: Spec Version
         type: requirement
         status:
@@ -438,10 +467,11 @@ features:
           - MAJOR: Breaking requirement changes
           - MINOR: New requirements, non-breaking clarifications
           - PATCH: Typos, editorial
-        implements: ["@versioning"]
-
+        implements:
+          - '@versioning'
       - _ulid: 01JHNKA3W8VERS300000000000
-        slugs: [git-baselines]
+        slugs:
+          - git-baselines
         title: Git Tag Baselines
         type: requirement
         status:
@@ -453,4 +483,5 @@ features:
           git tag -a spec-v1.0.0 -m "Initial stable release"
 
           Enables: kspec diff --since spec-v1.0.0
-        implements: ["@versioning"]
+        implements:
+          - '@versioning'
