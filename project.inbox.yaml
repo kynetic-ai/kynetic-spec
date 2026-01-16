@@ -132,3 +132,19 @@ inbox:
       - cli
       - dx
     added_by: '@claude'
+  - _ulid: 01KF3WJQJ7HNBNGP0X98PBMFFA
+    text: >-
+      Spec-linked commit format and code annotations - standardize commits to include task/spec refs
+      (e.g., 'Task: @slug', 'Spec: @ref') enabling git log --grep searches. Consider: kspec commit
+      wrapper command that auto-formats message with current task context, code annotation pattern
+      (// Spec: @slug ac-N), retroactive tagging of existing commits, searchable cross-linking
+      between git history and specs. Benefits: specs stay clean (no stale code refs), natural audit
+      trail, powerful search (find all commits for a feature). Related: AC-driven test annotations
+      already using this pattern.
+    created_at: '2026-01-16T17:10:21.511Z'
+    tags:
+      - design
+      - git
+      - dx
+      - workflow
+    added_by: '@claude'
