@@ -123,15 +123,6 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF39PZJWBAEX1T796YWPK7ER
-    text: >-
-      Validation should warn about specs missing acceptance criteria - helps catch incomplete specs
-      early
-    created_at: '2026-01-16T11:40:37.853Z'
-    tags:
-      - validation
-      - improvement
-    added_by: '@claude'
   - _ulid: 01KF3FWBRHCKQBRA1WPV94YKGJ
     text: >-
       Spec audit command - validate --audit or separate command to check spec completeness: missing
