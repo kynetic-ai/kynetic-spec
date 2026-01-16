@@ -1614,6 +1614,9 @@
   derivation: auto
   status: cancelled
   blocked_by: []
+  closed_reason: >-
+    Umbrella task superseded by child feature tasks (shadow-concept, shadow-init, shadow-recovery,
+    shadow-cli) which are all completed
   depends_on: []
   context: []
   priority: 3
@@ -1622,9 +1625,6 @@
   created_at: '2026-01-15T22:14:39.052Z'
   notes: []
   todos: []
-  closed_reason: >-
-    Umbrella task superseded by child feature tasks (shadow-concept, shadow-init, shadow-recovery,
-    shadow-cli) which are all completed
 - _ulid: 01KF1VKDDVHT0TFD2DCP611V6M
   slugs:
     - task-shadow-branch-concept
@@ -2003,6 +2003,15 @@
         Checked task delete and derive hint specs - added missing AC. Found Shadow Branch parent
         task (@task-shadow-branch) might be stale - children all implemented but parent pending.
         Consider closing or repurposing.
+      supersedes: null
+    - _ulid: 01KF3V1GVN66Q8BXZ0QNPV5E8H
+      created_at: '2026-01-16T16:43:29.013Z'
+      author: '@claude'
+      content: >-
+        Updated: shadow-branch module status to implemented, cancelled stale umbrella task.
+        Remaining gap: many core/schema spec items from bootstrap phase still show not_started but
+        are implemented. Full sweep would require going through ~50+ items. Recommend addressing
+        gradually or as a separate larger task.
       supersedes: null
   todos: []
 - _ulid: 01KF2657J2N1SQRFFNBFYQ0XXK
