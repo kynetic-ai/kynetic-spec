@@ -889,6 +889,10 @@ features:
             given: no matching commits exist
             when: kspec log @ref runs
             then: displays 'No commits found' message
+          - id: ac-4
+            given: '--oneline flag provided'
+            when: kspec log @ref --oneline runs
+            then: shows compact hash + subject format
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
