@@ -340,6 +340,19 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KF3E3QPARGX5QWJMT231DCC5
+        slugs:
+          - item-patch
+        title: kspec item patch
+        type: requirement
+        tags:
+          - cli
+          - dx
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T12:57:30.058Z'
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
