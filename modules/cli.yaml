@@ -1522,10 +1522,9 @@ requirements:
         tags: []
         description: >-
           Add a 'Quick Commands' section to session start output showing relevant commands based on
-          current state. Examples: 'kspec task start @ref' when ready tasks exist, 'kspec inbox
-          promote @ref' when inbox has old items, 'kspec item add --under @parent' when working on
-          specs. Commands are discovered from CLI structure, not hardcoded, keeping hints in sync
-          with implementation.
+          current state. Commands are contextual: task note/complete when active work exists, task
+          start when ready tasks available, inbox promote for oldest inbox item, git commit when
+          working tree dirty. Uses actual refs from session context for copy-paste convenience.
         depends_on: []
         implements: []
         relates_to: []
