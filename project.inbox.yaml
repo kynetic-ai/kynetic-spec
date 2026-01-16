@@ -93,16 +93,6 @@ inbox:
       - alignment
       - maintenance
     added_by: '@claude'
-  - _ulid: 01KF20Q3C8N8MAVWSG8FQNCTZJ
-    text: >-
-      Shadow path integration incomplete - kspec init creates the infrastructure but loader still
-      reads/writes to spec/. Need to integrate detectShadow and resolveShadowPath into the yaml
-      loader for full shadow branch support.
-    created_at: '2026-01-15T23:44:10.120Z'
-    tags:
-      - shadow
-      - infrastructure
-    added_by: '@claude'
   - _ulid: 01KF22T36K64959Z5Y72GEJ81K
     text: >-
       Process gap: shadow-autocommit spec existed but no task was derived. The derive flow wasn't
