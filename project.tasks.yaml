@@ -1801,7 +1801,7 @@
     CLI commands need to call commitIfShadow() after write operations - infrastructure exists but
     not wired up. Do this when shadow init task enables the feature.
   spec_ref: '@shadow-autocommit'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1819,6 +1819,11 @@
       content: Testing auto-commit implementation
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T00:28:24.155Z'
+  closed_reason: >-
+    Implemented auto-commit for all state-changing CLI commands: task
+    add/start/complete/note/block/unblock/cancel, inbox add/promote/delete, item add/set/delete, and
+    derive
 - _ulid: 01KF229CJV28XAW3KC6NNRRS0M
   slugs:
     - task-fix-hook-commands
