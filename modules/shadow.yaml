@@ -234,7 +234,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: implemented
     priority: medium
     tags:
       - cli
@@ -251,7 +251,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec shadow status
 
@@ -279,7 +279,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec shadow log [-n <limit>] [--oneline]
 
@@ -304,30 +304,49 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     priority: high
     tags:
       - infrastructure
       - reliability
-    description: >-
-      Recovery mechanisms for shadow branch issues. Provides CLI commands for diagnosing and
-      repairing shadow branch problems:
+    description: |
+      Recovery mechanisms for shadow branch issues. Provides CLI commands for
+      diagnosing and repairing shadow branch problems.
 
-
-      - \`shadow status\`: Check health of shadow branch (branch exists, worktree linked)
-
-      - \`shadow repair\`: Recreate worktree when branch exists but worktree is broken
-
-      - \`shadow log\`: View recent commits on shadow branch
-
+      Commands:
+      - `shadow status`: Check health of shadow branch
+      - `shadow repair`: Recreate worktree when branch exists but worktree broken
+      - `shadow log`: View recent commits on shadow branch
 
       Handles common issues:
-
       - Worktree directory deleted (recreate from existing branch)
-
       - Worktree disconnected from git (remove and recreate)
-
       - Stale worktree references in git
+    acceptance_criteria:
+      - id: ac-recovery-1
+        given: shadow branch exists but .kspec/ directory is deleted
+        when: kspec shadow repair runs
+        then: worktree is recreated from existing branch
+      - id: ac-recovery-2
+        given: .kspec/ exists but .git file is missing or corrupt
+        when: kspec shadow repair runs
+        then: worktree is removed and recreated
+      - id: ac-recovery-3
+        given: shadow branch does not exist
+        when: kspec shadow repair runs
+        then: it fails with error suggesting kspec init
+      - id: ac-recovery-4
+        given: shadow branch is healthy
+        when: kspec shadow repair runs
+        then: it succeeds without changes (idempotent)
+      - id: ac-recovery-5
+        given: shadow branch is healthy
+        when: kspec shadow status runs
+        then: it reports healthy status with all checks passing
+      - id: ac-recovery-6
+        given: shadow branch has issues
+        when: kspec shadow status runs
+        then: it reports the specific issue and suggests repair
     requirements:
       - _ulid: 01KF1VBR1XMKDJ0K5HYW7RWGQE
         slugs:
@@ -336,7 +355,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec shadow repair
 
