@@ -1398,6 +1398,10 @@ features:
         given: The CLI has multiple command groups
         when: '''kspec help --all'' is run'
         then: Output shows every command with all options and descriptions as a full reference
+      - id: ac-4
+        given: An agent needs structured CLI documentation
+        when: '''kspec help --json'' is run'
+        then: Returns JSON with complete command tree for programmatic consumption
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
