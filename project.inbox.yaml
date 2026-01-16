@@ -103,15 +103,6 @@ inbox:
       - process
       - learning
     added_by: '@claude'
-  - _ulid: 01KF22TANHP1FPHHA691K22SRQ
-    text: >-
-      Until auto-commit is wired: manually commit on shadow branch after kspec operations. Run: cd
-      .kspec && git add -A && git commit -m 'message'
-    created_at: '2026-01-16T00:20:53.043Z'
-    tags:
-      - shadow
-      - workaround
-    added_by: '@claude'
   - _ulid: 01KF23D85HF7DSY1T1DN5XBHT6
     text: >-
       Shadow auto-commit polish: add missing commit message cases
