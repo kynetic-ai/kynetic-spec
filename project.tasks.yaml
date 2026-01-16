@@ -1991,9 +1991,17 @@
     - maintenance
   vcs_refs: []
   created_at: '2026-01-16T00:53:25.118Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T16:39:40.607Z'
+  notes:
+    - _ulid: 01KF3V0NCXPTKFV14AS2J88TE3
+      created_at: '2026-01-16T16:43:00.893Z'
+      author: '@claude'
+      content: >-
+        Checked task delete and derive hint specs - added missing AC. Found Shadow Branch parent
+        task (@task-shadow-branch) might be stale - children all implemented but parent pending.
+        Consider closing or repurposing.
+      supersedes: null
+  todos: []
 - _ulid: 01KF2657J2N1SQRFFNBFYQ0XXK
   slugs: []
   title: Fix hooks to use npm run dev -s for clean output
