@@ -251,13 +251,3 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF2BTEADGGZT0WNCT5WHV5GY
-    text: >-
-      YAML @ escaping friction - acceptance criteria with @refs cause YAML parsing errors
-      (interpreted as aliases). Consider: (1) documenting quoting requirements in AGENTS.md, (2)
-      better error message pointing to @-quoting as likely cause
-    created_at: '2026-01-16T02:58:13.965Z'
-    tags:
-      - dx
-      - friction
-    added_by: '@claude'
