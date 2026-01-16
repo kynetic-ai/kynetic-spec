@@ -146,3 +146,16 @@ inbox:
       - dx
       - session
     added_by: '@claude'
+  - _ulid: 01KF2602EJ9H58BR8XYM3R8928
+    text: >-
+      Hook commands need -s flag for npm run dev - the npm preamble (e.g., '> @kynetic/spec@0.1.0
+      dev') breaks hook output parsing. Options: (1) document using 'npm run dev -s' for development
+      hooks, (2) setup command detects dev mode and uses -s, (3) use npx kspec for hooks even in dev
+      (slower but cleaner). Current setup uses 'npx kspec' which works for installed package but dev
+      often uses npm run dev.
+    created_at: '2026-01-16T01:16:26.963Z'
+    tags:
+      - bug
+      - hooks
+      - dx
+    added_by: '@claude'
