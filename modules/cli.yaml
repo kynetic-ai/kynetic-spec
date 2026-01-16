@@ -404,6 +404,27 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T00:51:05.853Z'
+      - _ulid: 01KF24J220BKK8X3QA86N59E4X
+        slugs:
+          - task-get
+        title: kspec task get
+        type: requirement
+        tags: []
+        description: |-
+          kspec task get <ref>
+
+          Displays task details including:
+          - Status and timestamps
+          - Spec reference if linked
+          - Dependencies and blockers
+          - Recent notes summary
+
+          Primary command for inspecting individual tasks.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T00:51:19.234Z'
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
