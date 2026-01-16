@@ -266,6 +266,10 @@ features:
             given: an item exists with slug 'auth-login'
             when: '@auth-login is referenced'
             then: reference resolves to that item
+          - id: ac-3
+            given: no item exists with slug 'nonexistent'
+            when: '@nonexistent is referenced'
+            then: broken reference error is reported
   - _ulid: 01JHNKA0W2REFS000000000000
     slugs:
       - reference-system
