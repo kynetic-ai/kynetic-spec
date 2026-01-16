@@ -2158,25 +2158,44 @@
   created_at: '2026-01-16T12:08:05.455Z'
   notes: []
   todos: []
-- title: Display acceptance criteria in item get output
+- _ulid: 01KF3BAS2XQ4D9Z7KYT4VYGNGA
+  slugs: []
+  title: Display acceptance criteria in item get output
   type: task
-  priority: 2
-  spec_ref: '@item-get'
-  tags:
-    - bug
-    - cli
   description: >-
     item get should display acceptance criteria - Currently item get shows description but not AC
     for spec items. The AC display code exists in output.ts but only runs for tasks (via spec
     context). Should display AC directly when viewing spec items, similar to how item ac list shows
     them.
-  _ulid: 01KF3BAS2XQ4D9Z7KYT4VYGNGA
-  slugs: []
+  spec_ref: '@item-get'
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - cli
+  vcs_refs: []
+  created_at: '2026-01-16T12:08:55.133Z'
+  notes: []
+  todos: []
+- title: 'Implement: Shadow Debug Mode'
+  type: task
+  spec_ref: '@shadow-debug-mode'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-shadow-debug-mode
+  tags:
+    - dx
+    - cli
+  _ulid: 01KF3CVS28Q0NVRTAK719S8ZB8
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T12:08:55.133Z'
+  created_at: '2026-01-16T12:35:40.744Z'
   notes: []
   todos: []
