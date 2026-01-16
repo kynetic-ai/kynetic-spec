@@ -2370,22 +2370,64 @@
   created_at: '2026-01-16T13:50:14.068Z'
   notes: []
   todos: []
-- title: 'Implement: Auto-Generated CLI Documentation'
+- _ulid: 01KF3M1P812JQQ7C6K4SS8YAZQ
+  slugs:
+    - task-auto-generated-cli-documentation
+  title: 'Implement: Auto-Generated CLI Documentation'
   type: task
   spec_ref: '@auto-cli-docs'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-auto-generated-cli-documentation
-  tags:
-    - dx
-    - documentation
-  _ulid: 01KF3M1P812JQQ7C6K4SS8YAZQ
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - dx
+    - documentation
   vcs_refs: []
   created_at: '2026-01-16T14:41:14.496Z'
-  notes: []
+  notes:
+    - _ulid: 01KF3M6D2A60WZXFXHTGCDQQJ2
+      created_at: '2026-01-16T14:43:48.938Z'
+      author: '@claude'
+      content: >-
+        Implementation plan summary:
+
+
+        **Approach**: Commander introspection + curated concepts
+
+        - Source of truth: Commander.js command tree (not help.ts, not cli.yaml)
+
+        - help.ts splits into: auto-generated syntax + curated conceptual content
+
+
+        **Files to create/modify**:
+
+        - src/cli/introspection.ts (NEW) - extractCommandTree(), CommandMeta types
+
+        - src/cli/help/content.ts (NEW) - curated concepts, examples, seeAlso
+
+        - src/cli/commands/help.ts - refactor to use introspection + content
+
+        - src/cli/index.ts - export program for introspection access
+
+
+        **Key types**:
+
+        - CommandMeta: name, fullPath, description, aliases, arguments, options, subcommands
+
+        - HelpContent: title, concept, examples, seeAlso, commandPath (links to Commander)
+
+
+        **What stays manual**: AGENTS.md workflows, conceptual topics (refs, statuses), examples,
+        seeAlso
+
+        **What becomes automatic**: Command/subcommand lists, option lists, full reference, JSON
+        output
+
+
+        **Verification**: npm test, kspec help task (should show all subcommands), kspec help --all,
+        add new command and verify it appears without help.ts update
+      supersedes: null
   todos: []
