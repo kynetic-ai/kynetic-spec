@@ -111,7 +111,7 @@ features:
       - id: ac-1
         given: a test precondition
         when: testing the CLI
-        then: AC is properly saved with correct YAML escaping
+        then: 'AC is properly saved with correct YAML escaping: colons work!'
     requirements:
       - _ulid: 01KEZCJPHZH6VQH44813GV3PTC
         slugs:
