@@ -1347,7 +1347,7 @@
   title: Address spec gaps in meta-spec module
   type: task
   spec_ref: '@meta-spec'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1413,6 +1413,12 @@
         convenience auto-populate
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T02:48:22.565Z'
+  closed_reason: >-
+    Addressed all 7 meta-spec gaps: tightened acceptance criteria with specific outputs, defined
+    observation edge cases, added convention validation strategy, added CRUD primitives, clarified
+    workflow execution model, added meta-ref validation rules, and defined the observation→task
+    resolution loop
 - _ulid: 01KF1G6M03VD4GE5QSFZ5F4X7V
   slugs:
     - task-inbox-obs-design
