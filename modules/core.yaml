@@ -77,6 +77,22 @@ features:
           - created, created_by: Lifecycle metadata
         implements:
           - '@spec-item'
+      - _ulid: 01KF3H8QTT6W0FMEGQ97FH5VYA
+        slugs:
+          - item-derive-hint
+        title: Derive Hint After Item Creation
+        type: requirement
+        tags:
+          - dx
+          - cli
+        description: >-
+          After creating or modifying a spec item, CLI shows a hint suggesting task derivation:
+          'Derive implementation task? kspec derive @new-item'
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T13:52:39.770Z'
   - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs:
       - ulid-system
