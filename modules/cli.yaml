@@ -231,6 +231,28 @@ features:
           Warns if item has references. Consider deprecation instead.
         implements:
           - '@item-commands'
+      - _ulid: 01KF374D6206HGMP55HGE8VNAQ
+        slugs:
+          - item-ac
+        title: kspec item ac
+        type: requirement
+        tags: []
+        description: |-
+          kspec item ac <subcommand>
+
+          Subcommands:
+          - add <ref> --given '...' --when '...' --then '...': Add acceptance criterion
+          - list <ref>: List acceptance criteria for an item
+          - set <ref> <ac-id> [options]: Update an acceptance criterion
+          - remove <ref> <ac-id> [--force]: Remove an acceptance criterion
+
+          Manages acceptance criteria on spec items via CLI.
+          Handles proper YAML escaping to prevent formatting errors.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T10:55:32.034Z'
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
@@ -399,6 +421,35 @@ features:
 
           Modifies task fields without changing state.
           Use for linking tasks to specs, adjusting priority, etc.
+        acceptance_criteria:
+          - id: ac-task-set-1
+            given: a task exists
+            when: kspec task set @task --title 'New Title' runs
+            then: 'task title is updated; outputs "OK Updated task: <ref> (title)"'
+          - id: ac-task-set-2
+            given: a task and spec item exist
+            when: kspec task set @task --spec-ref @spec-item runs
+            then: task spec_ref is set; outputs confirmation with (spec_ref)
+          - id: ac-task-set-3
+            given: a task exists
+            when: kspec task set @task --spec-ref @nonexistent runs
+            then: exits code 3; error "Spec reference not found"
+          - id: ac-task-set-4
+            given: two tasks exist
+            when: kspec task set @task1 --spec-ref @task2 runs
+            then: exits code 3; error "is a task, not a spec item"
+          - id: ac-task-set-5
+            given: a task exists
+            when: kspec task set @task --priority 3 runs
+            then: task priority is updated to 3
+          - id: ac-task-set-6
+            given: a task exists
+            when: kspec task set @task --priority 6 runs
+            then: exits code 3; error "Priority must be between 1 and 5"
+          - id: ac-task-set-7
+            given: a task exists
+            when: kspec task set @task runs with no options
+            then: warns "No changes specified"; no changes saved
         depends_on: []
         implements: []
         relates_to: []
@@ -406,7 +457,7 @@ features:
         created: '2026-01-16T00:51:05.853Z'
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KF24J220BKK8X3QA86N59E4X
         slugs:
           - task-get
