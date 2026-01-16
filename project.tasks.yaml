@@ -2585,6 +2585,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Implemented kspec log command for searching commits by spec/task trailer
   depends_on: []
   context: []
   priority: 3
@@ -2592,7 +2593,23 @@
   vcs_refs: []
   created_at: '2026-01-16T18:43:01.725Z'
   started_at: '2026-01-16T18:45:25.378Z'
+  completed_at: '2026-01-16T18:47:25.556Z'
   notes: []
   todos: []
-  completed_at: '2026-01-16T18:47:25.556Z'
-  closed_reason: Implemented kspec log command for searching commits by spec/task trailer
+- title: 'Implement: Shadow Remote Sync'
+  type: task
+  spec_ref: '@shadow-sync'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-shadow-remote-sync
+  tags: []
+  _ulid: 01KF47H15K28ZM86HX6EJJ0NFT
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T20:21:40.147Z'
+  notes: []
+  todos: []
