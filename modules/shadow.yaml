@@ -345,6 +345,9 @@ features:
             given: origin remote exists
             when: checking for remote shadow branch
             then: runs git fetch origin to ensure remote refs are up to date
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
