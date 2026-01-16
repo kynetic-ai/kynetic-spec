@@ -881,6 +881,10 @@ features:
             given: 'commits exist with Task: @my-task trailer'
             when: kspec log @my-task runs
             then: matching commits are displayed
+          - id: ac-2
+            given: reference is a spec item
+            when: kspec log @spec-item runs
+            then: 'searches for both Spec: trailer and Task: trailers of linked tasks'
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
