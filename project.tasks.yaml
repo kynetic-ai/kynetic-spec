@@ -2514,19 +2514,3 @@
         add new command and verify it appears without help.ts update
       supersedes: null
   todos: []
-- title: Test task for deletion
-  type: task
-  spec_ref: null
-  priority: 3
-  slugs:
-    - test-delete-me
-  tags: []
-  _ulid: 01KF3TN8G7KCZXK6GGTWM2PCHD
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  vcs_refs: []
-  created_at: '2026-01-16T16:36:47.239Z'
-  notes: []
-  todos: []
