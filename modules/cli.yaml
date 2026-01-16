@@ -380,6 +380,30 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-15T12:55:00.409Z'
+      - _ulid: 01KF24HMZXS5XZM7K109MRMEP3
+        slugs:
+          - task-set
+        title: kspec task set
+        type: requirement
+        tags: []
+        description: |-
+          kspec task set <ref> [options]
+
+          Options:
+          - --title <title>: Update task title
+          - --spec-ref <ref>: Link to spec item
+          - --depends-on <refs>: Set dependencies (replaces existing)
+          - --priority <n>: Set priority (1-5)
+          - --slug <slug>: Add a slug alias
+          - --tag <tag>: Add a tag (repeatable)
+
+          Modifies task fields without changing state.
+          Use for linking tasks to specs, adjusting priority, etc.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T00:51:05.853Z'
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
