@@ -384,6 +384,10 @@ features:
             given: '--dry-run flag provided'
             when: kspec item patch @my-item --data '{"title":"New"}' --dry-run runs
             then: shows what would change without writing
+          - id: ac-5
+            given: JSON with unknown field 'foobar'
+            when: kspec item patch @my-item --data '{"foobar":"value"}' runs
+            then: error about unknown field
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
