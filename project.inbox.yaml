@@ -96,13 +96,3 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF3FWD6AFCV066AEJY39XMKX
-    text: >-
-      Status prompt on task complete - when completing a task with spec_ref, prompt to update spec
-      status to implemented. Safer than auto-update, encourages reflection. Could be: 'Spec @ref
-      linked. Update status to implemented? [y/n]'
-    created_at: '2026-01-16T13:28:27.083Z'
-    tags:
-      - workflow
-      - dx
-    added_by: '@claude'
