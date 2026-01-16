@@ -215,7 +215,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |-
           kspec item set <ref> [options]
 
@@ -1533,5 +1533,10 @@ requirements:
         status:
           maturity: draft
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: ready tasks exist in the project
+            when: kspec session start runs
+            then: Quick Commands section shows 'kspec task start @ref' hint
     status:
       implementation: implemented
