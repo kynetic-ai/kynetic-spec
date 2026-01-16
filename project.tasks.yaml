@@ -2298,7 +2298,7 @@
   description: >-
     Alignment check should mention tests - when task has spec_ref with AC, alignment guidance should
     ask about test coverage not just spec updates
-  spec_ref: null
+  spec_ref: '@alignment-guidance'
   status: pending
   blocked_by: []
   depends_on: []
