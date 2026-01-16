@@ -444,6 +444,22 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T00:51:21.422Z'
+      - _ulid: 01KF24J6HENWZ8KS5ZHQHCMA9B
+        slugs:
+          - task-notes
+        title: kspec task notes
+        type: requirement
+        tags: []
+        description: |-
+          kspec task notes <ref>
+
+          Displays all notes for a task in chronological order.
+          Shows timestamp, author, and content for each note.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T00:51:23.823Z'
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
