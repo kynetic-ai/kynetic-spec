@@ -242,3 +242,13 @@ inbox:
       - bug
       - cleanup
     added_by: '@claude'
+  - _ulid: 01KF2BPAAMDP8SV5ASK7H4YFHE
+    text: >-
+      Meta-spec implementation scope - just added ~10 new requirements (CRUD commands, validation,
+      execution model, resolution loop). Consider deriving focused implementation tasks rather than
+      one large task.
+    created_at: '2026-01-16T02:55:58.805Z'
+    tags:
+      - planning
+      - meta
+    added_by: '@claude'
