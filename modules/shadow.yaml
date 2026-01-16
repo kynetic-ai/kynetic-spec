@@ -86,7 +86,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           All state-changing kspec commands automatically commit to shadow branch.
 
