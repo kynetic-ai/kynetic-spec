@@ -2042,20 +2042,21 @@
         @cmd-session-start)
       supersedes: null
   todos: []
-- title: 'Implement: kspec item ac'
+- _ulid: 01KF376A8GA0EBKKP9KE1YV9VD
+  slugs:
+    - task-kspec-item-ac
+  title: 'Implement: kspec item ac'
   type: task
   spec_ref: '@item-ac'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-kspec-item-ac
-  tags: []
-  _ulid: 01KF376A8GA0EBKKP9KE1YV9VD
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-16T10:56:34.576Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T10:56:39.646Z'
