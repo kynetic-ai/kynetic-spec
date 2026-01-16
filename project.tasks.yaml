@@ -2049,7 +2049,7 @@
   type: task
   spec_ref: '@item-ac'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2079,3 +2079,7 @@
         Added 12 integration tests covering all acceptance criteria.
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T11:01:52.278Z'
+  closed_reason: >-
+    Implemented all 4 item ac commands (list/add/set/remove) with proper YAML escaping, auto-ID
+    generation, and 12 integration tests covering all acceptance criteria.
