@@ -134,3 +134,15 @@ inbox:
       - meta
       - documentation
     added_by: '@claude'
+  - _ulid: 01KF2599MNMMBP4EJ7BGA1AZY3
+    text: >-
+      session start command reference section - add a brief 'Quick commands' or 'Available commands'
+      section to session start output. Shows key commands contextually (e.g., 'kspec task start
+      @ref' when there are ready tasks). Keeps docs in sync automatically since it's generated from
+      CLI, not static markdown.
+    created_at: '2026-01-16T01:04:00.662Z'
+    tags:
+      - cli
+      - dx
+      - session
+    added_by: '@claude'
