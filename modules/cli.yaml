@@ -1189,3 +1189,21 @@ requirements:
     relates_to: []
     tests: []
     created: '2026-01-16T03:04:22.540Z'
+    requirements:
+      - _ulid: 01KF2C60QQP8CT8F77PTRGQ7YB
+        slugs:
+          - session-start-hints
+        title: Contextual Command Hints
+        type: requirement
+        tags: []
+        description: >-
+          Add a 'Quick Commands' section to session start output showing relevant commands based on
+          current state. Examples: 'kspec task start @ref' when ready tasks exist, 'kspec inbox
+          promote @ref' when inbox has old items, 'kspec item add --under @parent' when working on
+          specs. Commands are discovered from CLI structure, not hardcoded, keeping hints in sync
+          with implementation.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T03:04:33.272Z'
