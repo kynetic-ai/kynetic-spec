@@ -1170,6 +1170,10 @@ features:
             given: slug 'auth' already exists in spec
             when: kspec module add --title 'Another' --slug auth runs
             then: error about duplicate slug
+          - id: ac-4
+            given: shadow branch is enabled
+            when: module is created
+            then: changes are auto-committed to shadow branch
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
