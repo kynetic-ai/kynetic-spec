@@ -140,3 +140,13 @@ inbox:
       - shadow
       - workaround
     added_by: '@claude'
+  - _ulid: 01KF23D85HF7DSY1T1DN5XBHT6
+    text: >-
+      Shadow auto-commit polish: add missing commit message cases
+      (block/unblock/cancel/inbox-delete), update spec to document all covered commands, consider
+      batching derive --all commits, standardize ref formatting helper
+    created_at: '2026-01-16T00:31:13.074Z'
+    tags:
+      - shadow
+      - polish
+    added_by: '@claude'
