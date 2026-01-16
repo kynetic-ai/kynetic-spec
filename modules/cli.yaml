@@ -687,6 +687,18 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T12:57:31.487Z'
+        description: |-
+          kspec task patch <ref> [options]
+
+          Update task with JSON data.
+
+          Options:
+          - --data <json>: JSON object with fields to update
+          - --dry-run: Show what would change without writing
+          - --allow-unknown: Allow unknown fields (for extending format)
+
+          Accepts stdin if no --data provided.
+          Validates input against TaskInputSchema (strict by default).
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
