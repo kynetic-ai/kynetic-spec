@@ -876,6 +876,11 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T18:41:48.245Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: 'commits exist with Task: @my-task trailer'
+            when: kspec log @my-task runs
+            then: matching commits are displayed
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
