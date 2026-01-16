@@ -1157,6 +1157,11 @@ features:
             kspec module add --title "Auth System" --slug auth
             # Creates modules/auth.yaml
             # Adds to manifest: includes: - modules/auth.yaml
+        acceptance_criteria:
+          - id: ac-1
+            given: valid title and slug provided
+            when: kspec module add --title 'Auth' --slug auth runs
+            then: modules/auth.yaml created with module item structure
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
