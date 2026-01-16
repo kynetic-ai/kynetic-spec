@@ -2596,20 +2596,37 @@
   completed_at: '2026-01-16T18:47:25.556Z'
   notes: []
   todos: []
-- title: 'Implement: Shadow Remote Sync'
+- _ulid: 01KF47H15K28ZM86HX6EJJ0NFT
+  slugs:
+    - task-shadow-remote-sync
+  title: 'Implement: Shadow Remote Sync'
   type: task
   spec_ref: '@shadow-sync'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-16T20:21:40.147Z'
+  notes: []
+  todos: []
+- title: 'Implement: Init Remote Detection'
+  type: task
+  spec_ref: '@shadow-init-remote'
+  derivation: auto
   priority: 3
   slugs:
-    - task-shadow-remote-sync
+    - task-init-remote-detection
   tags: []
-  _ulid: 01KF47H15K28ZM86HX6EJJ0NFT
+  _ulid: 01KF47H34C915C7D1KH4QB07MC
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T20:21:40.147Z'
+  created_at: '2026-01-16T20:21:42.156Z'
   notes: []
   todos: []
