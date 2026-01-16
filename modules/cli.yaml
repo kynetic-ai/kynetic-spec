@@ -388,6 +388,10 @@ features:
             given: JSON with unknown field 'foobar'
             when: kspec item patch @my-item --data '{"foobar":"value"}' runs
             then: error about unknown field
+          - id: ac-6
+            given: JSON with unknown field and --allow-unknown flag
+            when: kspec item patch @my-item --data '{"foobar":"value"}' --allow-unknown runs
+            then: field is written to item
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
