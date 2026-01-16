@@ -192,15 +192,6 @@ inbox:
       - workflow
       - testing
     added_by: '@claude'
-  - _ulid: 01KF2BNYX4G1AM0K2NPD9ADX4E
-    text: >-
-      Fix duplicate slug issues - @task-notes and @task-todos map to multiple items. Need to
-      deduplicate or rename one of each pair.
-    created_at: '2026-01-16T02:55:47.108Z'
-    tags:
-      - bug
-      - cleanup
-    added_by: '@claude'
   - _ulid: 01KF2BPAAMDP8SV5ASK7H4YFHE
     text: >-
       Meta-spec implementation scope - just added ~10 new requirements (CRUD commands, validation,
