@@ -1612,7 +1612,7 @@
   type: task
   spec_ref: '@shadow-branch'
   derivation: auto
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -1622,6 +1622,9 @@
   created_at: '2026-01-15T22:14:39.052Z'
   notes: []
   todos: []
+  closed_reason: >-
+    Umbrella task superseded by child feature tasks (shadow-concept, shadow-init, shadow-recovery,
+    shadow-cli) which are all completed
 - _ulid: 01KF1VKDDVHT0TFD2DCP611V6M
   slugs:
     - task-shadow-branch-concept
