@@ -489,3 +489,8 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-16T20:20:38.087Z'
+    acceptance_criteria:
+      - id: ac-1
+        given: remote tracking is configured for shadow branch
+        when: a state-changing operation commits to shadow branch
+        then: kspec attempts to push to remote (fire-and-forget, errors ignored)
