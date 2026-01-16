@@ -502,3 +502,7 @@ features:
         given: pull encounters a conflict
         when: sync is attempted
         then: local operation succeeds, warning displayed, user directed to run kspec shadow resolve
+      - id: ac-4
+        given: no remote tracking configured
+        when: sync would normally occur
+        then: sync is silently skipped (no error)
