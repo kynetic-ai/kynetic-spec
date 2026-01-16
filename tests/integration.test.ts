@@ -223,6 +223,115 @@ describe('Integration: task add', () => {
   });
 });
 
+describe('Integration: task set', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should update task title', () => {
+    const output = kspec('task set @test-task-pending --title "Updated Title"', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('(title)');
+
+    // Verify title changed
+    const task = kspecJson<{ title: string }>('task get @test-task-pending', tempDir);
+    expect(task.title).toBe('Updated Title');
+  });
+
+  it('should set spec_ref on task', () => {
+    const output = kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('(spec_ref)');
+
+    // Verify spec_ref was set
+    const task = kspecJson<{ spec_ref: string }>('task get @test-task-pending', tempDir);
+    expect(task.spec_ref).toBe('@test-feature');
+  });
+
+  it('should reject nonexistent spec ref', () => {
+    expect(() => {
+      execSync(`npx tsx ${path.join(__dirname, '..', 'src', 'cli', 'index.ts')} task set @test-task-pending --spec-ref @nonexistent`, {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
+    }).toThrow();
+  });
+
+  it('should reject task as spec ref', () => {
+    expect(() => {
+      execSync(`npx tsx ${path.join(__dirname, '..', 'src', 'cli', 'index.ts')} task set @test-task-pending --spec-ref @test-task-blocked`, {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
+    }).toThrow();
+  });
+
+  it('should update priority', () => {
+    kspec('task set @test-task-pending --priority 1', tempDir);
+
+    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    expect(task.priority).toBe(1);
+  });
+
+  it('should reject invalid priority', () => {
+    expect(() => {
+      execSync(`npx tsx ${path.join(__dirname, '..', 'src', 'cli', 'index.ts')} task set @test-task-pending --priority 6`, {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
+    }).toThrow();
+  });
+
+  it('should add slug to task', () => {
+    kspec('task set @test-task-pending --slug my-new-slug', tempDir);
+
+    const task = kspecJson<{ slugs: string[] }>('task get @test-task-pending', tempDir);
+    expect(task.slugs).toContain('my-new-slug');
+  });
+
+  it('should add tags to task', () => {
+    kspec('task set @test-task-pending --tag newtag1 --tag newtag2', tempDir);
+
+    const task = kspecJson<{ tags: string[] }>('task get @test-task-pending', tempDir);
+    expect(task.tags).toContain('newtag1');
+    expect(task.tags).toContain('newtag2');
+  });
+
+  it('should not change task when no options specified', () => {
+    // Get original task state
+    const before = kspecJson<{ title: string; priority: number }>('task get @test-task-pending', tempDir);
+
+    // Run set with no options (warns to stderr, no changes)
+    kspec('task set @test-task-pending', tempDir);
+
+    // Verify nothing changed
+    const after = kspecJson<{ title: string; priority: number }>('task get @test-task-pending', tempDir);
+    expect(after.title).toBe(before.title);
+    expect(after.priority).toBe(before.priority);
+  });
+
+  it('should update multiple fields at once', () => {
+    const output = kspec('task set @test-task-pending --title "Multi Update" --priority 2 --tag multi', tempDir);
+    expect(output).toContain('title');
+    expect(output).toContain('priority');
+    expect(output).toContain('tags');
+
+    const task = kspecJson<{ title: string; priority: number; tags: string[] }>('task get @test-task-pending', tempDir);
+    expect(task.title).toBe('Multi Update');
+    expect(task.priority).toBe(2);
+    expect(task.tags).toContain('multi');
+  });
+});
+
 describe('Integration: items', () => {
   let tempDir: string;
 
