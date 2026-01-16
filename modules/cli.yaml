@@ -724,6 +724,11 @@ features:
 
           Accepts stdin if no --data provided.
           Validates input against TaskInputSchema (strict by default).
+        acceptance_criteria:
+          - id: ac-1
+            given: valid JSON with priority field
+            when: kspec task patch @my-task --data '{"priority":1}' runs
+            then: task priority is updated
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
