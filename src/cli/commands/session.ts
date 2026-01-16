@@ -25,6 +25,7 @@ import {
   getRecentCommits,
   getCurrentBranch,
   getWorkingTreeStatus,
+  formatCommitGuidance,
   type GitCommit,
   type GitWorkingTree,
 } from '../../utils/index.js';
@@ -557,6 +558,19 @@ export async function performCheckpoint(
 
     if (hasUncommitted) {
       instructions.push(`${step++}. Commit your changes with a descriptive message`);
+
+      // Add WIP commit guidance if there are in-progress tasks
+      if (inProgressTasks.length > 0) {
+        const task = inProgressTasks[0];
+        const guidance = formatCommitGuidance(task, { wip: true });
+        instructions.push('');
+        instructions.push('Suggested WIP commit:');
+        instructions.push(`  ${guidance.message}`);
+        instructions.push('');
+        for (const trailer of guidance.trailers) {
+          instructions.push(`  ${trailer}`);
+        }
+      }
     }
 
     instructions.push('');

@@ -22,7 +22,9 @@ import {
   error,
   warn,
   info,
+  isJsonMode,
 } from '../output.js';
+import { formatCommitGuidance, printCommitGuidance } from '../../utils/commit.js';
 import type { Task, TaskInput } from '../../schema/index.js';
 
 /**
@@ -345,6 +347,12 @@ export function registerTaskCommands(program: Command): void {
         await saveTask(ctx, updatedTask);
         await commitIfShadow(ctx.shadow, 'task-complete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), options.reason);
         success(`Completed task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
+
+        // Output commit guidance (suppressed in JSON mode)
+        if (!isJsonMode()) {
+          const guidance = formatCommitGuidance(updatedTask);
+          printCommitGuidance(guidance);
+        }
 
         // Sync spec implementation status (unless --no-sync)
         if (options.sync !== false && foundTask.spec_ref) {

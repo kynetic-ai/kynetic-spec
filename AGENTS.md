@@ -365,6 +365,62 @@ Each undocumented change is small. But they accumulate:
 
 Taking 30 seconds to note scope expansion saves hours of archaeology later.
 
+## Commit Message Convention
+
+When completing tasks, kspec outputs a suggested commit message with trailers:
+
+```
+feat: Feature description
+
+Task: @task-slug
+Spec: @spec-ref
+```
+
+**Why trailers matter:**
+- Enable `kspec log @ref` to find commits by task or spec
+- Create natural audit trail linking code to specs
+- Standard git format (works with `git log --grep`)
+
+**Using the guidance:**
+- `task complete` outputs suggested commit message
+- `session checkpoint` includes WIP commit guidance when needed
+- Copy/adapt the suggestion for your commit
+
+**Searching commits:**
+```bash
+# Find commits related to a task
+kspec log @task-slug
+
+# Find commits related to a spec item
+kspec log @spec-ref
+
+# Compact format
+kspec log @ref --oneline
+```
+
+## Code Annotations
+
+Link code to acceptance criteria using this pattern:
+
+```typescript
+// AC: @spec-item ac-N
+it('should validate input', () => {
+  // Test implementation
+});
+```
+
+**Where to use:**
+- Test files: Mark which AC a test covers
+- Implementation: Mark code implementing specific AC
+
+**Benefits:**
+- Human-readable traceability
+- Makes coverage gaps visible
+- Test descriptions stay concise
+- Pattern is grep-able (`grep -r "AC: @" tests/`)
+
+This pattern is already used in this project's tests.
+
 ## Design Decisions
 
 Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:

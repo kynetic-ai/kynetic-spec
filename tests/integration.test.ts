@@ -808,3 +808,95 @@ describe('Integration: alignment guidance', () => {
     expect(output).toContain('Linked spec has 2 acceptance criteria - consider test coverage');
   });
 });
+
+describe('Integration: commit guidance', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @commit-guidance ac-1
+  it('should show commit guidance with spec_ref after task complete', () => {
+    // Create a spec item
+    kspec('item add --under @test-core --title "Commit Test Spec" --slug commit-test-spec --type requirement', tempDir);
+
+    // Create a task linked to the spec
+    kspec('task add --title "Test Commit Task" --spec-ref @commit-test-spec --slug commit-test-task', tempDir);
+    kspec('task start @commit-test-task', tempDir);
+
+    const output = kspec('task complete @commit-test-task --reason "Done"', tempDir);
+    expect(output).toContain('Suggested Commit');
+    expect(output).toContain('Task: @commit-test-task');
+    expect(output).toContain('Spec: @commit-test-spec');
+  });
+
+  // AC: @commit-guidance ac-2
+  it('should warn about spec gap when no spec_ref', () => {
+    // Create a task without spec_ref
+    kspec('task add --title "Orphan Task" --slug orphan-task', tempDir);
+    kspec('task start @orphan-task', tempDir);
+
+    const output = kspec('task complete @orphan-task --reason "Done"', tempDir);
+    expect(output).toContain('Suggested Commit');
+    expect(output).toContain('Task: @orphan-task');
+    expect(output).toContain('no spec_ref');
+  });
+
+  // AC: @commit-guidance ac-4
+  it('should not show guidance in JSON mode', () => {
+    kspec('task add --title "JSON Test Task" --slug json-test-task', tempDir);
+    kspec('task start @json-test-task', tempDir);
+
+    const output = kspec('task complete @json-test-task --reason "Done" --json', tempDir);
+    expect(output).not.toContain('Suggested Commit');
+    // Should be valid JSON
+    const parsed = JSON.parse(output);
+    expect(parsed.success).toBe(true);
+  });
+});
+
+describe('Integration: kspec log', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    // Initialize git repo for log tests
+    execSync('git init', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cmd-log ac-5
+  it('should error on invalid reference', () => {
+    expect(() => {
+      execSync(`npx tsx ${CLI_PATH} log @nonexistent-ref`, {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+    }).toThrow();
+  });
+
+  // AC: @cmd-log ac-3
+  it('should show no commits found message', () => {
+    const output = kspec('log @test-task-pending', tempDir);
+    expect(output).toContain('No commits found');
+  });
+
+  it('should show log command help', () => {
+    const output = kspec('log --help', tempDir);
+    expect(output).toContain('Search git history');
+    expect(output).toContain('--spec');
+    expect(output).toContain('--task');
+    expect(output).toContain('--oneline');
+  });
+});
