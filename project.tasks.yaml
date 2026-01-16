@@ -2734,7 +2734,7 @@
   title: Fix shadow tests assuming main branch name
   type: task
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2746,20 +2746,21 @@
   created_at: '2026-01-16T22:43:17.669Z'
   notes: []
   todos: []
-- title: Increase session start ready task limit from 5 to 10
-  type: task
-  spec_ref: null
-  priority: 3
+  started_at: '2026-01-16T22:43:27.996Z'
+- _ulid: 01KF4FMKJHW7405WHFKQEJXPX9
   slugs:
     - task-session-ready-limit
-  tags:
-    - cli
-    - dx
-  _ulid: 01KF4FMKJHW7405WHFKQEJXPX9
+  title: Increase session start ready task limit from 5 to 10
+  type: task
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
   vcs_refs: []
   created_at: '2026-01-16T22:43:25.905Z'
   notes: []
