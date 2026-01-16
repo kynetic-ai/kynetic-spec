@@ -240,6 +240,10 @@ features:
             given: item @my-item exists with slugs ['original']
             when: kspec item set @my-item --slug new-slug runs
             then: item now has slugs ['original', 'new-slug']
+          - id: ac-2
+            given: item @my-item exists with slugs ['keep', 'remove']
+            when: kspec item set @my-item --remove-slug remove runs
+            then: item now has slugs ['keep']
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
