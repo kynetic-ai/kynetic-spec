@@ -429,6 +429,12 @@ features:
             given: A parent item has implementation:implemented but children have not_started
             when: kspec validate --completeness runs
             then: A warning is shown about status inconsistency between parent and children
+          - id: ac-4
+            given: Multiple completeness issues exist
+            when: kspec validate --completeness runs
+            then: >-
+              A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status
+              mismatches')
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning
