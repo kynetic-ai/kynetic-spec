@@ -498,3 +498,7 @@ features:
         given: remote tracking is configured
         when: session start runs
         then: kspec pulls remote changes before showing session context
+      - id: ac-3
+        given: pull encounters a conflict
+        when: sync is attempted
+        then: local operation succeeds, warning displayed, user directed to run kspec shadow resolve
