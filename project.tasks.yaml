@@ -2561,7 +2561,7 @@
   type: task
   spec_ref: '@commit-guidance'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2574,6 +2574,8 @@
   started_at: '2026-01-16T18:43:15.017Z'
   notes: []
   todos: []
+  completed_at: '2026-01-16T18:47:18.040Z'
+  closed_reason: Implemented commit guidance output for task complete and session checkpoint
 - _ulid: 01KF41WDEXX0NV9VRP6MQ2844J
   slugs:
     - task-kspec-log
@@ -2589,6 +2591,6 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-16T18:43:01.725Z'
+  started_at: '2026-01-16T18:45:25.378Z'
   notes: []
   todos: []
-  started_at: '2026-01-16T18:45:25.378Z'

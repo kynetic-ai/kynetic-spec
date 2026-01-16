@@ -952,6 +952,9 @@ features:
             given: reference doesn't exist
             when: kspec log @invalid runs
             then: shows error 'Reference not found' with exit code 3
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
