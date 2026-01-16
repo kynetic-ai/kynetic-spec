@@ -2647,7 +2647,7 @@
   type: task
   spec_ref: '@shadow-init-remote'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2681,3 +2681,4 @@
            - pushed_to_remote: boolean
       supersedes: null
   todos: []
+  started_at: '2026-01-16T20:23:45.823Z'
