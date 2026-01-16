@@ -807,7 +807,7 @@ features:
             then: guidance is suppressed (JSON output only)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
