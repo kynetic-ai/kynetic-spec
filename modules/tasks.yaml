@@ -616,6 +616,10 @@ features:
         given: ready tasks exist
         when: kspec tasks next runs
         then: highest priority ready task returned
+      - id: ac-query-3
+        given: multiple ready tasks exist with the same priority
+        when: kspec tasks ready runs
+        then: tasks are ordered by creation time ascending (oldest first within priority tier)
     requirements:
       - _ulid: 01JHNKA7W1TQRY100000000000
         slugs:
