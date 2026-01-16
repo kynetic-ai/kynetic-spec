@@ -2062,6 +2062,14 @@
 
         Commands use actual refs from the session context so they're copy-pasteable.
       supersedes: null
+    - _ulid: 01KF3PRTPJW2VWTC2CTTC36VXK
+      created_at: '2026-01-16T15:28:49.875Z'
+      author: '@claude'
+      content: >-
+        Design note: Spec mentioned 'commands discovered from CLI structure' but implemented
+        pragmatically with state-based hints. True CLI introspection would be complex and the
+        contextual approach delivers the core value - showing relevant next actions.
+      supersedes: null
   todos: []
 - _ulid: 01KF376A8GA0EBKKP9KE1YV9VD
   slugs:
