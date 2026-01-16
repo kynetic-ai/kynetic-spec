@@ -1173,3 +1173,19 @@ requirements:
         relates_to: []
         tests: []
         created: '2026-01-15T18:04:41.618Z'
+  - _ulid: 01KF2C5P8BGYKT9GDTYNXTSTQM
+    slugs:
+      - cmd-session-start
+    title: kspec session start
+    type: requirement
+    tags: []
+    description: >-
+      Display session context for starting work. Shows: active tasks, recently completed, ready
+      tasks, inbox items, recent commits, working tree status. Options: --brief (default), --full,
+      --since <time>, --no-git, -n <limit>. Output is human-readable with sections for each context
+      type. Designed as the first command agents run to orient themselves.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-16T03:04:22.540Z'
