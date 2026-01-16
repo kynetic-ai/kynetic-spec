@@ -177,3 +177,12 @@ inbox:
       - testing
       - spec
     added_by: '@claude'
+  - _ulid: 01KF292JB25VHA206M2NR35WJH
+    text: >-
+      Task completion checklist - prompt or warn when completing task: are AC covered? are there
+      tests? is spec status updated?
+    created_at: '2026-01-16T02:10:14.499Z'
+    tags:
+      - workflow
+      - process
+    added_by: '@claude'
