@@ -2273,7 +2273,7 @@
   title: Implement --remove-slug option for item set
   type: task
   spec_ref: '@item-set'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2297,6 +2297,8 @@
         - All acceptance criteria met
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T15:34:03.056Z'
+  closed_reason: Implemented --remove-slug option with validation for last slug protection
 - _ulid: 01KF3E5FZ28PFCX9GZX86CZZ2E
   slugs:
     - task-kspec-item-patch
