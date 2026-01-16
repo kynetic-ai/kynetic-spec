@@ -2193,7 +2193,7 @@
     context). Should display AC directly when viewing spec items, similar to how item ac list shows
     them.
   spec_ref: '@item-get'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2217,6 +2217,8 @@
         - All 140 tests pass
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T15:21:43.598Z'
+  closed_reason: Implemented acceptance criteria display in item get output
 - _ulid: 01KF3CVS28Q0NVRTAK719S8ZB8
   slugs:
     - task-shadow-debug-mode
