@@ -494,3 +494,7 @@ features:
         given: remote tracking is configured for shadow branch
         when: a state-changing operation commits to shadow branch
         then: kspec attempts to push to remote (fire-and-forget, errors ignored)
+      - id: ac-2
+        given: remote tracking is configured
+        when: session start runs
+        then: kspec pulls remote changes before showing session context
