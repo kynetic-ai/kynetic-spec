@@ -246,3 +246,12 @@ inbox:
       - dx
       - bug
     added_by: '@claude'
+  - _ulid: 01KF39PYM28JD55ESNGKPGCJB8
+    text: >-
+      Add slug rename CLI command - kspec item set --rename-slug <old> <new> to avoid manual YAML
+      edits when renaming slugs
+    created_at: '2026-01-16T11:40:36.866Z'
+    tags:
+      - cli
+      - improvement
+    added_by: '@claude'

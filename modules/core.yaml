@@ -211,7 +211,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |-
           Each slug MUST be unique within the spec. Two items cannot have the same slug.
 
