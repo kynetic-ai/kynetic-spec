@@ -13,6 +13,8 @@ import {
   ShadowError,
   createShadowError,
   commitIfShadow,
+  initializeShadow,
+  repairShadow,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 
@@ -203,6 +205,180 @@ describe('Shadow Branch', () => {
       expect(ctx.shadow).toBeNull();
       expect(ctx.specDir).toBe(specDir);
       expect(ctx.manifestPath).toBe(path.join(specDir, 'kynetic.yaml'));
+    });
+  });
+
+  describe('initializeShadow', () => {
+    it('creates shadow branch and worktree in git repo', async () => {
+      // Initialize git repo with an initial commit
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+
+      expect(result.success).toBe(true);
+      expect(result.branchCreated).toBe(true);
+      expect(result.worktreeCreated).toBe(true);
+      expect(result.gitignoreUpdated).toBe(true);
+
+      // Verify branch exists
+      expect(await branchExists(testDir, SHADOW_BRANCH_NAME)).toBe(true);
+
+      // Verify worktree exists and is valid
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      expect(await isValidWorktree(worktreeDir)).toBe(true);
+
+      // Verify status is healthy
+      const status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+    });
+
+    it('is idempotent - succeeds if already initialized', async () => {
+      // Initialize git repo
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // First init
+      const result1 = await initializeShadow(testDir);
+      expect(result1.success).toBe(true);
+      expect(result1.branchCreated).toBe(true);
+
+      // Second init - should succeed without creating branch again
+      const result2 = await initializeShadow(testDir);
+      expect(result2.success).toBe(true);
+      expect(result2.alreadyExists).toBe(true);
+      expect(result2.branchCreated).toBe(false);
+    });
+
+    it('fails if not a git repo', async () => {
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Not a git repository');
+    });
+  });
+
+  describe('repairShadow', () => {
+    // Helper to set up a healthy shadow branch
+    async function setupHealthyShadow(): Promise<void> {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+    }
+
+    // AC-recovery-1: Branch exists but .kspec/ deleted → repair recreates
+    it('recreates worktree when .kspec/ directory is deleted', async () => {
+      await setupHealthyShadow();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Verify healthy before breaking
+      let status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+
+      // Break: delete the worktree directory
+      // First remove from git worktree list to avoid stale reference
+      execSync(`git worktree remove ${SHADOW_WORKTREE_DIR} --force`, { cwd: testDir, stdio: 'pipe' });
+
+      // Verify broken
+      status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(false);
+      expect(status.branchExists).toBe(true);
+      expect(status.worktreeExists).toBe(false);
+
+      // Repair
+      const result = await repairShadow(testDir);
+      expect(result.success).toBe(true);
+      expect(result.worktreeCreated).toBe(true);
+
+      // Verify healthy again
+      status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+      expect(await isValidWorktree(worktreeDir)).toBe(true);
+    });
+
+    // AC-recovery-2: .kspec/ exists but .git file corrupt → repair recreates
+    it('recreates worktree when .git file is corrupted', async () => {
+      await setupHealthyShadow();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const gitFile = path.join(worktreeDir, '.git');
+
+      // Verify healthy before breaking
+      let status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+
+      // Break: corrupt the .git file
+      await fs.writeFile(gitFile, 'corrupted content');
+
+      // Verify broken
+      status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(false);
+      expect(status.worktreeExists).toBe(true);
+      expect(status.worktreeLinked).toBe(false);
+
+      // Repair
+      const result = await repairShadow(testDir);
+      expect(result.success).toBe(true);
+      expect(result.worktreeCreated).toBe(true);
+
+      // Verify healthy again
+      status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+    });
+
+    // AC-recovery-3: No shadow branch → repair fails suggesting init
+    it('fails with helpful error when shadow branch does not exist', async () => {
+      // Just a git repo without shadow branch
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await repairShadow(testDir);
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('kspec init');
+    });
+
+    // AC-recovery-4: Healthy → repair succeeds without changes (idempotent)
+    it('succeeds without changes when already healthy', async () => {
+      await setupHealthyShadow();
+
+      const result = await repairShadow(testDir);
+      expect(result.success).toBe(true);
+      expect(result.alreadyExists).toBe(true);
+      expect(result.worktreeCreated).toBe(false);
+    });
+
+    // AC-recovery-5: Healthy → status reports healthy
+    it('status reports healthy when shadow is working', async () => {
+      await setupHealthyShadow();
+
+      const status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+      expect(status.branchExists).toBe(true);
+      expect(status.worktreeExists).toBe(true);
+      expect(status.worktreeLinked).toBe(true);
+      expect(status.error).toBeUndefined();
+    });
+
+    // AC-recovery-6: Issues → status reports issue and suggests repair
+    it('status reports specific issue when worktree is broken', async () => {
+      await setupHealthyShadow();
+
+      // Break: remove worktree
+      execSync(`git worktree remove ${SHADOW_WORKTREE_DIR} --force`, { cwd: testDir, stdio: 'pipe' });
+
+      const status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(false);
+      expect(status.branchExists).toBe(true);
+      expect(status.worktreeExists).toBe(false);
+      expect(status.error).toContain('worktree missing');
     });
   });
 });

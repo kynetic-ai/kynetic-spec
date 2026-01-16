@@ -788,11 +788,18 @@ export async function repairShadow(projectRoot: string): Promise<ShadowInitResul
         cwd: projectRoot,
       });
     } catch {
-      // Ignore
+      // Ignore - worktree may not be in git's list
     }
 
-    // Remove directory if exists
+    // Remove directory if exists (handles corrupted .git file case)
     await fs.rm(worktreeDir, { recursive: true, force: true });
+
+    // Prune stale worktree references (cleans up orphaned entries)
+    try {
+      await execAsync('git worktree prune', { cwd: projectRoot });
+    } catch {
+      // Ignore - prune is best-effort
+    }
 
     // Recreate worktree
     await execAsync(
