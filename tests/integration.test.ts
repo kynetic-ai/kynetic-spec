@@ -360,6 +360,78 @@ describe('Integration: items', () => {
     expect(output).toContain('Test Requirement');
     expect(output).toContain('requirement');
   });
+
+  // AC: @item-get ac-1
+  it('should display acceptance criteria in item get output', () => {
+    // First add an AC to the item
+    kspec(
+      'item ac add @test-feature --given "user is logged in" --when "they click logout" --then "session is terminated"',
+      tempDir
+    );
+
+    // Verify item get shows the AC
+    const output = kspec('item get @test-feature', tempDir);
+    expect(output).toContain('Acceptance Criteria');
+    expect(output).toContain('[ac-1]');
+    expect(output).toContain('Given: user is logged in');
+    expect(output).toContain('When: they click logout');
+    expect(output).toContain('Then: session is terminated');
+  });
+});
+
+describe('Integration: item set', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @item-set ac-1
+  it('should add slug to existing slugs', () => {
+    // Create an item with one slug
+    kspec('item add --under @test-core --title "Slug Test" --slug slug-one --type feature', tempDir);
+
+    // Add another slug
+    kspec('item set @slug-one --slug slug-two', tempDir);
+
+    // Verify both slugs exist
+    const output = kspec('item get @slug-one', tempDir);
+    expect(output).toContain('slug-one');
+    expect(output).toContain('slug-two');
+  });
+
+  // AC: @item-set ac-2
+  it('should remove slug from item', () => {
+    // Create an item with one slug, add a second
+    kspec('item add --under @test-core --title "Remove Test" --slug keep-slug --type feature', tempDir);
+    kspec('item set @keep-slug --slug remove-slug', tempDir);
+
+    // Remove the second slug
+    kspec('item set @keep-slug --remove-slug remove-slug', tempDir);
+
+    // Verify only first slug remains
+    const output = kspec('item get @keep-slug', tempDir);
+    expect(output).toContain('keep-slug');
+    expect(output).not.toContain('remove-slug');
+  });
+
+  // AC: @item-set ac-3
+  it('should prevent removing last slug', () => {
+    // Create an item with one slug
+    kspec('item add --under @test-core --title "Last Slug Test" --slug only-slug --type feature', tempDir);
+
+    // Try to remove the only slug
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item set @only-slug --remove-slug only-slug`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
 });
 
 describe('Integration: derive', () => {
@@ -407,6 +479,25 @@ describe('Integration: session', () => {
     const output = kspec('session start', tempDir);
     expect(output).toContain('Session Context');
     expect(output).toContain('Ready to Pick Up');
+  });
+
+  // AC: @session-start-hints ac-1
+  it('should show Quick Commands with ready tasks', () => {
+    const output = kspec('session start', tempDir);
+    // Should show Quick Commands section when ready tasks exist
+    expect(output).toContain('Quick Commands');
+    expect(output).toContain('kspec task start');
+  });
+
+  // AC: @session-start-hints ac-2
+  it('should show Quick Commands for active task', () => {
+    // Start a task
+    kspec('task start @test-task-pending', tempDir);
+
+    const output = kspec('session start', tempDir);
+    expect(output).toContain('Quick Commands');
+    expect(output).toContain('kspec task note');
+    expect(output).toContain('kspec task complete');
   });
 });
 
