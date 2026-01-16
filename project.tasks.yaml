@@ -1929,6 +1929,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented all spec'd options: title, spec-ref, priority, slug, tag, depends-on. Added
+    validation for spec refs. All tests pass.
   depends_on: []
   context: []
   priority: 3
@@ -1936,6 +1939,7 @@
   vcs_refs: []
   created_at: '2026-01-16T00:52:39.634Z'
   started_at: '2026-01-16T03:07:51.083Z'
+  completed_at: '2026-01-16T03:10:09.212Z'
   notes:
     - _ulid: 01KF2CFYNKXJHADY2SFQAHNVZQ
       created_at: '2026-01-16T03:09:58.836Z'
@@ -1946,10 +1950,6 @@
         01KF2C05 to its spec.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T03:10:09.212Z'
-  closed_reason: >-
-    Implemented all spec'd options: title, spec-ref, priority, slug, tag, depends-on. Added
-    validation for spec refs. All tests pass.
 - _ulid: 01KF24NV5WD5B27C9S4XVF2M0S
   slugs: []
   title: Fix TypeScript error in item.ts createSpecItem
@@ -2041,4 +2041,21 @@
         Implements spec: @session-start-hints (Contextual Command Hints requirement under
         @cmd-session-start)
       supersedes: null
+  todos: []
+- title: 'Implement: kspec item ac'
+  type: task
+  spec_ref: '@item-ac'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-item-ac
+  tags: []
+  _ulid: 01KF376A8GA0EBKKP9KE1YV9VD
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T10:56:34.576Z'
+  notes: []
   todos: []
