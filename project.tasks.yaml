@@ -2734,7 +2734,7 @@
   title: Fix shadow tests assuming main branch name
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2754,6 +2754,8 @@
         Tests were failing because git init uses system default branch name which may not be 'main'.
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T22:44:59.246Z'
+  closed_reason: Fixed git init to explicitly use main branch
 - _ulid: 01KF4FMKJHW7405WHFKQEJXPX9
   slugs:
     - task-session-ready-limit
