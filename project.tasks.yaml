@@ -1803,6 +1803,10 @@
   spec_ref: '@shadow-autocommit'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented auto-commit for all state-changing CLI commands: task
+    add/start/complete/note/block/unblock/cancel, inbox add/promote/delete, item add/set/delete, and
+    derive
   depends_on: []
   context: []
   priority: 1
@@ -1812,6 +1816,7 @@
   vcs_refs: []
   created_at: '2026-01-15T23:48:27.158Z'
   started_at: '2026-01-16T00:23:22.200Z'
+  completed_at: '2026-01-16T00:28:24.155Z'
   notes:
     - _ulid: 01KF235X068FJ6FRNAHSEG5P3P
       created_at: '2026-01-16T00:27:12.263Z'
@@ -1819,11 +1824,6 @@
       content: Testing auto-commit implementation
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T00:28:24.155Z'
-  closed_reason: >-
-    Implemented auto-commit for all state-changing CLI commands: task
-    add/start/complete/note/block/unblock/cancel, inbox add/promote/delete, item add/set/delete, and
-    derive
 - _ulid: 01KF229CJV28XAW3KC6NNRRS0M
   slugs:
     - task-fix-hook-commands
@@ -1854,4 +1854,21 @@
 
         This allows hooks to work from any directory within the project, including .kspec/
       supersedes: null
+  todos: []
+- title: 'Implement: kspec task set'
+  type: task
+  spec_ref: '@task-set'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-task-set
+  tags: []
+  _ulid: 01KF24MGJK1E25S29CZRWJDK0Z
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T00:52:39.634Z'
+  notes: []
   todos: []
