@@ -255,20 +255,22 @@ features:
         acceptance_criteria:
           - id: ac-item-ac-add
             given: a spec item exists
-            when: 'kspec item ac add @ref --given "precondition" --when "action" --then "outcome" runs'
-            then: 'AC is added with auto-generated ID; outputs "OK Added acceptance criterion: ac-N to @ref"'
+            when: kspec item ac add @ref --given "precondition" --when "action" --then "outcome" runs
+            then: >-
+              AC is added with auto-generated ID; outputs "OK Added acceptance criterion: ac-N to
+              @ref"
           - id: ac-item-ac-add-id
             given: a spec item exists
-            when: 'kspec item ac add @ref --id custom-id --given "..." --when "..." --then "..." runs'
+            when: kspec item ac add @ref --id custom-id --given "..." --when "..." --then "..." runs
             then: AC is added with the specified ID
           - id: ac-item-ac-add-dup
             given: a spec item with AC id "ac-1" exists
-            when: 'kspec item ac add @ref --id ac-1 --given "..." --when "..." --then "..." runs'
-            then: 'exits code 3; error "Acceptance criterion ac-1 already exists"'
+            when: kspec item ac add @ref --id ac-1 --given "..." --when "..." --then "..." runs
+            then: exits code 3; error "Acceptance criterion ac-1 already exists"
           - id: ac-item-ac-add-task
             given: a task exists (not a spec item)
-            when: 'kspec item ac add @task-ref --given "..." --when "..." --then "..." runs'
-            then: 'exits code 3; error "Tasks don''t have acceptance criteria"'
+            when: kspec item ac add @task-ref --given "..." --when "..." --then "..." runs
+            then: exits code 3; error "Tasks don't have acceptance criteria"
           - id: ac-item-ac-list
             given: a spec item with acceptance criteria
             when: kspec item ac list @ref runs
@@ -279,12 +281,14 @@ features:
             then: displays "No acceptance criteria"
           - id: ac-item-ac-set
             given: a spec item with AC id "ac-1"
-            when: 'kspec item ac set @ref ac-1 --then "new outcome" runs'
-            then: 'AC then field is updated; outputs "OK Updated acceptance criterion: ac-1 on @ref (then)"'
+            when: kspec item ac set @ref ac-1 --then "new outcome" runs
+            then: >-
+              AC then field is updated; outputs "OK Updated acceptance criterion: ac-1 on @ref
+              (then)"
           - id: ac-item-ac-set-notfound
             given: a spec item without AC id "ac-99"
             when: kspec item ac set @ref ac-99 --then "..." runs
-            then: 'exits code 3; error "Acceptance criterion ac-99 not found"'
+            then: exits code 3; error "Acceptance criterion ac-99 not found"
           - id: ac-item-ac-remove
             given: a spec item with AC id "ac-1"
             when: kspec item ac remove @ref ac-1 --force runs
@@ -296,7 +300,7 @@ features:
         created: '2026-01-16T10:55:32.034Z'
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
