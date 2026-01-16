@@ -549,6 +549,10 @@ features:
         given: sync uses git pull
         when: pulling remote changes
         then: uses --ff-only first, falls back to --rebase if needed
+      - id: ac-7
+        given: new shadow branch is created and origin remote exists
+        when: initializeShadow completes
+        then: tracking is configured to origin/kspec-meta regardless of push success
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
