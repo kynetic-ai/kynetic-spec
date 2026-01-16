@@ -510,3 +510,7 @@ features:
         given: shadow branch has unresolved sync conflict
         when: user runs kspec shadow resolve
         then: interactive conflict resolution guides user through resolving conflicts
+      - id: ac-6
+        given: sync uses git pull
+        when: pulling remote changes
+        then: uses --ff-only first, falls back to --rebase if needed
