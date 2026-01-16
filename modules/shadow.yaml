@@ -242,6 +242,10 @@ features:
             given: KSPEC_DEBUG=1 is set and auto-commit fails
             when: any state-changing command runs
             then: error message is printed to stderr
+          - id: ac-2
+            given: '--verbose flag is passed and auto-commit fails'
+            when: any state-changing command runs
+            then: error message is printed to stderr
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
