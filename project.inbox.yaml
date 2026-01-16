@@ -65,16 +65,6 @@ inbox:
       - workflow
       - meta
     added_by: '@claude'
-  - _ulid: 01KF1V5CE4QM1AP1PSJX24PV4E
-    text: >-
-      CLI command for creating modules: kspec module add --title 'Shadow Branch' --slug
-      shadow-branch. Would create the module YAML file with proper structure, ULIDs, etc. Currently
-      modules must be created manually.
-    created_at: '2026-01-15T22:07:06.692Z'
-    tags:
-      - cli
-      - feature
-    added_by: '@claude'
   - _ulid: 01KF251T9VW090EAXX88E69H32
     text: >-
       Auto-generated CLI documentation - instead of manually listing commands in CLAUDE.md, generate
