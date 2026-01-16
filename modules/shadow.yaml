@@ -237,6 +237,11 @@ features:
           - Auto-commit failures are reported to stderr
           - Git operations show underlying commands
           - Useful for diagnosing worktree/branch issues
+        acceptance_criteria:
+          - id: ac-1
+            given: KSPEC_DEBUG=1 is set and auto-commit fails
+            when: any state-changing command runs
+            then: error message is printed to stderr
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
