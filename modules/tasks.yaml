@@ -1,8 +1,7 @@
-# Tasks Module - Work Tracking System
-# Defines the task system: types, states, derivation, notes, todos
-
 _ulid: 01JHNKA3W9TASK000000000000
-slugs: [tasks, task-system]
+slugs:
+  - tasks
+  - task-system
 title: Task System
 type: module
 status:
@@ -12,27 +11,26 @@ description: |
   Tasks are first-class items that track work. They can be derived
   from spec items or created standalone. The task system enables
   kspec to function as a work tracker, not just a spec format.
-
 features:
-  # ============================================================
-  # TASK TYPES - Taxonomy of work items
-  # ============================================================
   - _ulid: 01JHNKA4W0TTPE000000000000
-    slugs: [task-types]
+    slugs:
+      - task-types
     title: Task Types
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, tasks]
+    tags:
+      - mvp
+      - tasks
     description: |
       Tasks have types that indicate their nature and relationship
       to spec items. Some types expect spec linkage; others don't.
-
     requirements:
       - _ulid: 01JHNKA4W1TTPE100000000000
-        slugs: [task-type-task]
+        slugs:
+          - task-type-task
         title: Task Type - task
         type: requirement
         status:
@@ -43,10 +41,11 @@ features:
 
           Atomic unit of work. May be spec-derived or standalone.
           Default task type if not specified.
-        implements: ["@task-types"]
-
+        implements:
+          - '@task-types'
       - _ulid: 01JHNKA4W2TTPE200000000000
-        slugs: [task-type-epic]
+        slugs:
+          - task-type-epic
         title: Task Type - epic
         type: requirement
         status:
@@ -57,10 +56,11 @@ features:
 
           Groups related tasks. Often derived from features.
           Can have subtasks that depends_on it.
-        implements: ["@task-types"]
-
+        implements:
+          - '@task-types'
       - _ulid: 01JHNKA4W3TTPE300000000000
-        slugs: [task-type-bug]
+        slugs:
+          - task-type-bug
         title: Task Type - bug
         type: requirement
         status:
@@ -71,10 +71,11 @@ features:
 
           Defect fix. May or may not link to spec item.
           Used for issues found after implementation.
-        implements: ["@task-types"]
-
+        implements:
+          - '@task-types'
       - _ulid: 01JHNKA4W4TTPE400000000000
-        slugs: [task-type-spike]
+        slugs:
+          - task-type-spike
         title: Task Type - spike
         type: requirement
         status:
@@ -85,10 +86,11 @@ features:
 
           Research or investigation task. Time-boxed exploration.
           Output is knowledge, not code.
-        implements: ["@task-types"]
-
+        implements:
+          - '@task-types'
       - _ulid: 01JHNKA4W5TTPE500000000000
-        slugs: [task-type-infra]
+        slugs:
+          - task-type-infra
         title: Task Type - infra
         type: requirement
         status:
@@ -99,44 +101,42 @@ features:
 
           Infrastructure or tooling work. Not spec-derived.
           Examples: CI setup, dependency updates, tooling.
-        implements: ["@task-types"]
-
-  # ============================================================
-  # TASK STATES - State machine for work items
-  # ============================================================
+        implements:
+          - '@task-types'
   - _ulid: 01JHNKA4W6TSTA000000000000
-    slugs: [task-states, state-machine]
+    slugs:
+      - task-states
+      - state-machine
     title: Task States
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, tasks]
+    tags:
+      - mvp
+      - tasks
     description: |
       Tasks have explicit states (set via commands) and derived
       states (computed from dependencies). The state machine
       controls valid transitions.
-
     acceptance_criteria:
       - id: ac-state-1
         given: a task in pending state
         when: kspec task start is run
         then: task transitions to in_progress
-
       - id: ac-state-2
         given: a task with depends_on another pending task
         when: ready tasks are queried
         then: the dependent task is NOT in the ready list
-
       - id: ac-state-3
         given: a task blocked by dependencies
         when: all dependencies complete
         then: task becomes ready (unblocked)
-
     requirements:
       - _ulid: 01JHNKA4W7TSTA100000000000
-        slugs: [state-pending]
+        slugs:
+          - state-pending
         title: State - pending
         type: requirement
         status:
@@ -147,10 +147,11 @@ features:
 
           Initial state. Work not yet started.
           Transitions: start -> in_progress, cancel -> cancelled
-        implements: ["@task-states"]
-
+        implements:
+          - '@task-states'
       - _ulid: 01JHNKA4W8TSTA200000000000
-        slugs: [state-in-progress]
+        slugs:
+          - state-in-progress
         title: State - in_progress
         type: requirement
         status:
@@ -164,10 +165,11 @@ features:
           - complete -> completed
           - block -> blocked
           - cancel -> cancelled
-        implements: ["@task-states"]
-
+        implements:
+          - '@task-states'
       - _ulid: 01JHNKA4W9TSTA300000000000
-        slugs: [state-blocked]
+        slugs:
+          - state-blocked
         title: State - blocked
         type: requirement
         status:
@@ -181,10 +183,11 @@ features:
           when depends_on items aren't completed.
 
           Transitions: unblock -> in_progress (or pending)
-        implements: ["@task-states"]
-
+        implements:
+          - '@task-states'
       - _ulid: 01JHNKA5W0TSTA400000000000
-        slugs: [state-completed]
+        slugs:
+          - state-completed
         title: State - completed
         type: requirement
         status:
@@ -195,10 +198,11 @@ features:
 
           Work finished successfully. Terminal state.
           Should include closed_reason describing outcome.
-        implements: ["@task-states"]
-
+        implements:
+          - '@task-states'
       - _ulid: 01JHNKA5W1TSTA500000000000
-        slugs: [state-cancelled]
+        slugs:
+          - state-cancelled
         title: State - cancelled
         type: requirement
         status:
@@ -209,10 +213,11 @@ features:
 
           Work abandoned. Terminal state.
           Should include closed_reason explaining why.
-        implements: ["@task-states"]
-
+        implements:
+          - '@task-states'
       - _ulid: 01JHNKA5W2TSTA600000000000
-        slugs: [derived-ready]
+        slugs:
+          - derived-ready
         title: Derived State - ready
         type: requirement
         status:
@@ -224,27 +229,44 @@ features:
 
           `kspec tasks ready` returns tasks in this state.
           This is the primary query for "what can I work on?"
-        implements: ["@task-states"]
-
-  # ============================================================
-  # TASK SCHEMA - Task item structure
-  # ============================================================
+        implements:
+          - '@task-states'
+      - _ulid: 01KF3H24BBZ5JXXMEP8JJS9SEJ
+        slugs:
+          - task-completion-guardrails
+        title: Task Completion Guardrails
+        type: requirement
+        tags:
+          - workflow
+          - dx
+        description: >-
+          When completing a task, CLI provides guardrails to ensure work is properly documented and
+          aligned with spec.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T13:49:03.212Z'
   - _ulid: 01JHNKA5W3TSCH000000000000
-    slugs: [task-schema, task-structure]
+    slugs:
+      - task-schema
+      - task-structure
     title: Task Schema
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, tasks]
+    tags:
+      - mvp
+      - tasks
     description: |
       Tasks are items with additional fields for work tracking.
       Key principle: don't duplicate spec content, reference it.
-
     requirements:
       - _ulid: 01JHNKA5W4TSCH100000000000
-        slugs: [task-spec-ref]
+        slugs:
+          - task-spec-ref
         title: Spec Reference Field
         type: requirement
         status:
@@ -258,10 +280,11 @@ features:
           criteria, etc. Task adds only execution metadata.
 
           Optional for free-form tasks (bug, infra).
-        implements: ["@task-schema"]
-
+        implements:
+          - '@task-schema'
       - _ulid: 01JHNKA5W5TSCH200000000000
-        slugs: [task-work-fields]
+        slugs:
+          - task-work-fields
         title: Work Metadata Fields
         type: requirement
         status:
@@ -277,10 +300,11 @@ features:
           - closed_reason: Why completed/cancelled
 
           These fields don't exist on regular spec items.
-        implements: ["@task-schema"]
-
+        implements:
+          - '@task-schema'
       - _ulid: 01JHNKA5W6TSCH300000000000
-        slugs: [task-timestamps]
+        slugs:
+          - task-timestamps
         title: Task Timestamps
         type: requirement
         status:
@@ -294,10 +318,11 @@ features:
           - completed_at: When status became completed/cancelled
 
           Format: ISO 8601 (2025-01-14T10:00:00Z)
-        implements: ["@task-schema"]
-
+        implements:
+          - '@task-schema'
       - _ulid: 01JHNKA5W7TSCH400000000000
-        slugs: [task-vcs-refs]
+        slugs:
+          - task-vcs-refs
         title: VCS References
         type: requirement
         status:
@@ -313,38 +338,37 @@ features:
               type: commit
 
           Minimal schema, extensible as needed.
-        implements: ["@task-schema"]
-
-  # ============================================================
-  # TASK DERIVATION - Creating tasks from spec items
-  # ============================================================
+        implements:
+          - '@task-schema'
   - _ulid: 01JHNKA5W8TDRV000000000000
-    slugs: [task-derivation, derive-tasks]
+    slugs:
+      - task-derivation
+      - derive-tasks
     title: Task Derivation
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, tasks]
+    tags:
+      - mvp
+      - tasks
     description: |
       Tasks can be derived from spec items via explicit command.
       Not automatic - you run `kspec derive @feature` when ready.
-
     acceptance_criteria:
       - id: ac-derive-1
         given: a feature without derived tasks
         when: kspec derive @feature runs
         then: a task is created with spec_ref pointing to feature
-
       - id: ac-derive-2
         given: a derived task exists for a feature
         when: kspec derive @feature runs again
         then: no duplicate is created (idempotent)
-
     requirements:
       - _ulid: 01JHNKA5W9TDRV100000000000
-        slugs: [derive-command]
+        slugs:
+          - derive-command
         title: Derive Command
         type: requirement
         status:
@@ -359,10 +383,11 @@ features:
           - type: task (or epic for features with children)
           - spec_ref: @<item>
           - derivation: auto
-        implements: ["@task-derivation"]
-
+        implements:
+          - '@task-derivation'
       - _ulid: 01JHNKA6W0TDRV200000000000
-        slugs: [derive-idempotency]
+        slugs:
+          - derive-idempotency
         title: Derivation Idempotency
         type: requirement
         status:
@@ -373,38 +398,36 @@ features:
           - If task with spec_ref to item exists, skip creation
           - Use --force to create additional task anyway
           - Useful for re-running derive without duplicates
-        implements: ["@task-derivation"]
-
-  # ============================================================
-  # NOTES - Work log entries
-  # ============================================================
+        implements:
+          - '@task-derivation'
   - _ulid: 01KEZCJPJ4A4QG2DY5F3BBVFVB
-    slugs: [task-notes, work-log]
+    slugs:
+      - task-notes
+      - work-log
     title: Task Notes
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [tasks]
+    tags:
+      - tasks
     description: |
       Notes are append-only log entries on tasks. Track progress,
       findings, blockers. Critical for agent handoff.
-
     acceptance_criteria:
       - id: ac-note-1
         given: a task in progress
         when: kspec task note @task "Found issue with X"
         then: note is appended to task's notes array
-
       - id: ac-note-2
         given: an earlier note that's wrong
         when: new note added with --supersedes
         then: new note links to old one (old preserved)
-
     requirements:
       - _ulid: 01KEZCJPJ4WYTKPZZ9FY5A2G13
-        slugs: [note-structure]
+        slugs:
+          - note-structure
         title: Note Structure
         type: requirement
         status:
@@ -419,10 +442,11 @@ features:
           - supersedes: ULID of entry this corrects (optional)
 
           Notes are never deleted, only superseded.
-        implements: ["@task-notes"]
-
+        implements:
+          - '@task-notes'
       - _ulid: 01KEZCJPJ4Y0CGNFZREY3QS225
-        slugs: [note-cli]
+        slugs:
+          - note-cli
         title: Note CLI Commands
         type: requirement
         status:
@@ -434,38 +458,36 @@ features:
           kspec task notes <ref>               # Show notes log
 
           JSON output available for all commands.
-        implements: ["@task-notes"]
-
-  # ============================================================
-  # TODOS - Emergent subtasks
-  # ============================================================
+        implements:
+          - '@task-notes'
   - _ulid: 01KEZCJPJ41NHFPF7WV6PF68SW
-    slugs: [task-todos, subtask-checklist]
+    slugs:
+      - task-todos
+      - subtask-checklist
     title: Task Todos
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [tasks]
+    tags:
+      - tasks
     description: |
       Todos are lightweight checklist items that emerge during work.
       Start simple; promote to full tasks when complex.
-
     acceptance_criteria:
       - id: ac-todo-1
         given: a task in progress
         when: kspec todo add @task "Write tests"
         then: todo is added to task's todos array
-
       - id: ac-todo-2
         given: a todo that's complex
         when: kspec todo promote @task <id>
         then: a new task is created, todo marked promoted_to
-
     requirements:
       - _ulid: 01KEZCJPJ43FJQJZM48Z5KS4NF
-        slugs: [todo-structure]
+        slugs:
+          - todo-structure
         title: Todo Structure
         type: requirement
         status:
@@ -480,10 +502,11 @@ features:
           - added_at: When created
           - added_by: Who added it
           - promoted_to: @ref if promoted to task (optional)
-        implements: ["@task-todos"]
-
+        implements:
+          - '@task-todos'
       - _ulid: 01KEZCJPJ4WPM1XREVKF00QM2K
-        slugs: [todo-cli]
+        slugs:
+          - todo-cli
         title: Todo CLI Commands
         type: requirement
         status:
@@ -496,27 +519,26 @@ features:
           kspec task todos <ref>          # List todos
 
           Todos are for quick capture; promote when complex.
-        implements: ["@task-todos"]
-
-  # ============================================================
-  # TASK STORAGE - Where tasks live
-  # ============================================================
+        implements:
+          - '@task-todos'
   - _ulid: 01JHNKA6W7TSTR000000000000
-    slugs: [task-storage]
+    slugs:
+      - task-storage
     title: Task Storage
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [tasks]
+    tags:
+      - tasks
     description: |
       Tasks are stored alongside or separate from specs.
       Auto-adaptive: start alongside, separate when volume grows.
-
     requirements:
       - _ulid: 01JHNKA6W8TSTR100000000000
-        slugs: [task-storage-alongside]
+        slugs:
+          - task-storage-alongside
         title: Storage - Alongside Specs
         type: requirement
         status:
@@ -530,10 +552,11 @@ features:
             auth.tasks.yaml     # Tasks for auth module
 
           Simple, keeps related items together.
-        implements: ["@task-storage"]
-
+        implements:
+          - '@task-storage'
       - _ulid: 01JHNKA6W9TSTR200000000000
-        slugs: [task-storage-separate]
+        slugs:
+          - task-storage-separate
         title: Storage - Separate Directory
         type: requirement
         status:
@@ -552,38 +575,36 @@ features:
               2025-01.yaml
 
           Separates concerns, enables archiving.
-        implements: ["@task-storage"]
-
-  # ============================================================
-  # TASK QUERIES - Finding work
-  # ============================================================
+        implements:
+          - '@task-storage'
   - _ulid: 01JHNKA7W0TQRY000000000000
-    slugs: [task-queries]
+    slugs:
+      - task-queries
     title: Task Queries
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, tasks]
+    tags:
+      - mvp
+      - tasks
     description: |
       The key task query: "what can I work on?"
       `kspec tasks ready` is the primary interface for agents and humans.
-
     acceptance_criteria:
       - id: ac-query-1
         given: tasks with various states and dependencies
         when: kspec tasks ready runs
         then: only tasks that are pending with met dependencies shown
-
       - id: ac-query-2
         given: ready tasks exist
         when: kspec tasks next runs
         then: highest priority ready task returned
-
     requirements:
       - _ulid: 01JHNKA7W1TQRY100000000000
-        slugs: [query-ready]
+        slugs:
+          - query-ready
         title: Ready Tasks Query
         type: requirement
         status:
@@ -598,10 +619,11 @@ features:
           - no manual blocked_by entries
 
           This is THE command for "what can I work on next?"
-        implements: ["@task-queries"]
-
+        implements:
+          - '@task-queries'
       - _ulid: 01JHNKA7W2TQRY200000000000
-        slugs: [query-next]
+        slugs:
+          - query-next
         title: Next Task Query
         type: requirement
         status:
@@ -614,10 +636,11 @@ features:
           Sorting: priority (asc) -> created_at (asc)
 
           Useful for agents: "give me one thing to do"
-        implements: ["@task-queries"]
-
+        implements:
+          - '@task-queries'
       - _ulid: 01JHNKA7W3TQRY300000000000
-        slugs: [query-filters]
+        slugs:
+          - query-filters
         title: Task Query Filters
         type: requirement
         status:
@@ -634,4 +657,5 @@ features:
           - --spec-ref <ref>    # By linked spec item
 
           All queries support --json output.
-        implements: ["@task-queries"]
+        implements:
+          - '@task-queries'
