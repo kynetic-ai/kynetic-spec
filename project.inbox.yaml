@@ -75,13 +75,6 @@ inbox:
       - cli
       - feature
     added_by: '@claude'
-  - _ulid: 01KF251RANGN7F6R346JFR5ZQY
-    text: Add --force flag to inbox delete for batch operations without confirmation prompts
-    created_at: '2026-01-16T00:59:53.558Z'
-    tags:
-      - cli
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF251T9VW090EAXX88E69H32
     text: >-
       Auto-generated CLI documentation - instead of manually listing commands in CLAUDE.md, generate
