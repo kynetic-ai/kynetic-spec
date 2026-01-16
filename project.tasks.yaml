@@ -1987,6 +1987,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Partial sweep complete - fixed shadow module status, cancelled stale task. Full core/schema
+    sweep deferred.
   depends_on: []
   context: []
   priority: 3
@@ -1995,6 +1998,7 @@
   vcs_refs: []
   created_at: '2026-01-16T00:53:25.118Z'
   started_at: '2026-01-16T16:39:40.607Z'
+  completed_at: '2026-01-16T16:43:30.536Z'
   notes:
     - _ulid: 01KF3V0NCXPTKFV14AS2J88TE3
       created_at: '2026-01-16T16:43:00.893Z'
@@ -2014,10 +2018,6 @@
         gradually or as a separate larger task.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T16:43:30.536Z'
-  closed_reason: >-
-    Partial sweep complete - fixed shadow module status, cancelled stale task. Full core/schema
-    sweep deferred.
 - _ulid: 01KF2657J2N1SQRFFNBFYQ0XXK
   slugs: []
   title: Fix hooks to use npm run dev -s for clean output
@@ -2409,7 +2409,7 @@
     Alignment check should mention tests - when task has spec_ref with AC, alignment guidance should
     ask about test coverage not just spec updates
   spec_ref: '@alignment-guidance'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2421,6 +2421,7 @@
   created_at: '2026-01-16T13:45:40.338Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T16:43:38.739Z'
 - _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
   slugs:
     - task-task-completion-guardrails
