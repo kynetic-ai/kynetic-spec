@@ -237,6 +237,10 @@ features:
             given: a slug 'auth-login' exists in the spec
             when: kspec task add --slug auth-login is run
             then: command fails with 'slug already exists' error
+          - id: ac-5
+            given: a slug 'auth-login' exists in the spec
+            when: kspec task set @other --slug auth-login is run
+            then: command fails with 'slug already exists' error
       - _ulid: 01KEZCJPJ1RC6G58T2XJCJZWB8
         slugs:
           - slug-resolution
