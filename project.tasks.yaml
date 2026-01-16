@@ -2027,6 +2027,7 @@
   spec_ref: '@session-start-hints'
   status: completed
   blocked_by: []
+  closed_reason: Added Quick Commands section to session start with contextual hints based on state
   depends_on: []
   context: []
   priority: 2
@@ -2036,6 +2037,7 @@
   vcs_refs: []
   created_at: '2026-01-16T03:01:21.386Z'
   started_at: '2026-01-16T15:26:58.093Z'
+  completed_at: '2026-01-16T15:29:07.419Z'
   notes:
     - _ulid: 01KF2C766HA49JZGYWMMPC9TQ0
       created_at: '2026-01-16T03:05:11.634Z'
@@ -2071,8 +2073,6 @@
         contextual approach delivers the core value - showing relevant next actions.
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T15:29:07.419Z'
-  closed_reason: Added Quick Commands section to session start with contextual hints based on state
 - _ulid: 01KF376A8GA0EBKKP9KE1YV9VD
   slugs:
     - task-kspec-item-ac
@@ -2273,7 +2273,7 @@
   title: Implement --remove-slug option for item set
   type: task
   spec_ref: '@item-set'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2285,6 +2285,7 @@
   created_at: '2026-01-16T12:43:19.670Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T15:31:38.158Z'
 - _ulid: 01KF3E5FZ28PFCX9GZX86CZZ2E
   slugs:
     - task-kspec-item-patch
