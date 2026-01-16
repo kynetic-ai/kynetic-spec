@@ -419,7 +419,7 @@ describe('Shadow Branch', () => {
 
     // Helper to set up a local repo with remote
     async function setupLocalWithRemote(): Promise<void> {
-      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
       await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
@@ -597,7 +597,7 @@ describe('Shadow Branch', () => {
       execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
 
       // Create local repo with remote
-      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
       await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
@@ -737,7 +737,7 @@ describe('Shadow Branch', () => {
       await fs.mkdir(remoteDir, { recursive: true });
       execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
 
-      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
       await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
@@ -783,7 +783,7 @@ describe('Shadow Branch', () => {
       await fs.mkdir(remoteDir, { recursive: true });
       execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
 
-      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
       await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
