@@ -753,6 +753,41 @@ features:
             given: '--allow-unknown flag and unknown field'
             when: kspec task patch @my-task --data '{"unknown":true}' --allow-unknown runs
             then: field is written
+    features:
+      - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
+        slugs:
+          - commit-guidance
+        title: Commit Message Guidance
+        type: feature
+        tags:
+          - process
+          - traceability
+        description: >-
+          Outputs suggested commit messages with standardized trailers after completing tasks or
+          during session checkpoint. Reinforces trailer convention for traceability and enables
+          kspec log searches.
+
+
+          Trailer format:
+
+          - Task: @task-slug (always present)
+
+          - Spec: @spec-ref (if task.spec_ref exists)
+
+
+          When no spec_ref: prompts agent to consider if spec coverage is needed.
+
+
+          Output triggers:
+
+          - task complete: Full commit message suggestion
+
+          - session checkpoint: WIP commit guidance when task in_progress with uncommitted changes
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T18:42:37.515Z'
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
