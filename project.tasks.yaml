@@ -2554,22 +2554,39 @@
         add new command and verify it appears without help.ts update
       supersedes: null
   todos: []
-- title: 'Implement: Commit Message Guidance'
+- _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
+  slugs:
+    - task-commit-message-guidance
+  title: 'Implement: Commit Message Guidance'
   type: task
   spec_ref: '@commit-guidance'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-commit-message-guidance
   tags:
     - process
     - traceability
-  _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
+  vcs_refs: []
+  created_at: '2026-01-16T18:42:59.783Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec log'
+  type: task
+  spec_ref: '@cmd-log'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-log
+  tags: []
+  _ulid: 01KF41WDEXX0NV9VRP6MQ2844J
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T18:42:59.783Z'
+  created_at: '2026-01-16T18:43:01.725Z'
   notes: []
   todos: []
