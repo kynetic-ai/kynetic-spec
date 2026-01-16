@@ -225,6 +225,10 @@ features:
             given: a slug 'auth-login' exists in the spec
             when: validation runs
             then: duplicate slug error is reported if another item also has 'auth-login'
+          - id: ac-2
+            given: a slug 'auth-login' exists in the spec
+            when: kspec item add --slug auth-login is run
+            then: command fails with 'slug already exists' error
       - _ulid: 01KEZCJPJ1RC6G58T2XJCJZWB8
         slugs:
           - slug-resolution
