@@ -235,6 +235,11 @@ features:
           Updates item in place and auto-commits to shadow branch.
         implements:
           - '@item-commands'
+        acceptance_criteria:
+          - id: ac-1
+            given: item @my-item exists with slugs ['original']
+            when: kspec item set @my-item --slug new-slug runs
+            then: item now has slugs ['original', 'new-slug']
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
