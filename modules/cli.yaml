@@ -793,6 +793,10 @@ features:
             given: task has spec_ref
             when: task complete runs
             then: 'output includes both Task: and Spec: trailers'
+          - id: ac-2
+            given: task has no spec_ref
+            when: task complete runs
+            then: 'output includes Task: trailer and warning about potential spec gap'
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
