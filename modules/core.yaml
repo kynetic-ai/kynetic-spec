@@ -108,10 +108,6 @@ features:
         given: an item's ULID
         when: the item is modified
         then: the ULID never changes
-      - id: ac-1
-        given: a test precondition
-        when: testing the CLI
-        then: 'AC is properly saved with correct YAML escaping: colons work!'
     requirements:
       - _ulid: 01KEZCJPHZH6VQH44813GV3PTC
         slugs:
