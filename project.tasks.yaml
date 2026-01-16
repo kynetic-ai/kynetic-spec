@@ -1714,7 +1714,7 @@
   type: task
   spec_ref: '@shadow-recovery'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1743,6 +1743,10 @@
         commands.
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T01:42:42.254Z'
+  closed_reason: >-
+    Implemented shadow CLI commands (status, repair, log) for diagnosing and fixing shadow branch
+    issues
 - _ulid: 01KF1W7AKJ10X9PYFC1EXFF400
   slugs:
     - task-recursive-derive
