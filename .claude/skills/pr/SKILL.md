@@ -98,6 +98,14 @@ Display:
 - Branch name
 - Summary of what was included
 
+## Merge Strategy
+
+Use merge commits (not squash) to preserve kspec trailers:
+- `Task: @task-slug`
+- `Spec: @spec-ref`
+
+These enable `kspec log @ref` to find related commits. Squashing flattens commit messages and loses traceability.
+
 ## Arguments
 
 - `<branch-name>` (optional): Name for the feature branch
