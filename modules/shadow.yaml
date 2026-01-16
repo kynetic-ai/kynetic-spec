@@ -474,3 +474,18 @@ features:
           - All spec files valid YAML with correct schema
         implements:
           - '@shadow-recovery'
+  - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
+    slugs:
+      - shadow-sync
+    title: Shadow Remote Sync
+    type: feature
+    tags: []
+    description: >-
+      Automatic synchronization of shadow branch with remote repository. After each local
+      auto-commit, attempt push to remote. On session start or read operations, pull remote changes
+      first.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-16T20:20:38.087Z'
