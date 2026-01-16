@@ -447,6 +447,10 @@ export interface ShadowInitResult {
   gitignoreUpdated: boolean;
   initialCommit: boolean;
   alreadyExists: boolean;
+  /** Whether shadow was created from existing remote branch */
+  createdFromRemote: boolean;
+  /** Whether new branch was pushed to remote to establish tracking */
+  pushedToRemote: boolean;
   error?: string;
 }
 
@@ -458,6 +462,72 @@ export interface ShadowInitOptions {
   projectName?: string;
   /** Force reinitialize even if exists */
   force?: boolean;
+}
+
+/**
+ * Check if a remote exists (default: origin)
+ */
+export async function hasRemote(projectRoot: string, remoteName = 'origin'): Promise<boolean> {
+  try {
+    const { stdout } = await execAsync(`git remote get-url ${remoteName}`, {
+      cwd: projectRoot,
+    });
+    return stdout.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if a branch exists on a remote
+ */
+export async function remoteBranchExists(
+  projectRoot: string,
+  branchName: string,
+  remoteName = 'origin'
+): Promise<boolean> {
+  try {
+    execSync(`git show-ref --verify --quiet refs/remotes/${remoteName}/${branchName}`, {
+      cwd: projectRoot,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Fetch from remote to ensure refs are up to date.
+ * Returns true if fetch succeeded, false otherwise.
+ */
+export async function fetchRemote(projectRoot: string, remoteName = 'origin'): Promise<boolean> {
+  try {
+    await execAsync(`git fetch ${remoteName}`, {
+      cwd: projectRoot,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Push shadow branch to remote with tracking.
+ * Returns true if push succeeded, false otherwise.
+ */
+export async function pushShadowBranch(
+  worktreeDir: string,
+  remoteName = 'origin'
+): Promise<boolean> {
+  try {
+    await execAsync(`git push -u ${remoteName} ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -640,6 +710,8 @@ export async function initializeShadow(
     gitignoreUpdated: false,
     initialCommit: false,
     alreadyExists: false,
+    createdFromRemote: false,
+    pushedToRemote: false,
   };
 
   // Check if we're in a git repo
@@ -667,6 +739,14 @@ export async function initializeShadow(
 
   const slug = toSlug(projectName);
 
+  // Check for remote shadow branch (AC-4: fetch to ensure refs are up to date)
+  const remoteExists = await hasRemote(projectRoot);
+  let remoteHasShadow = false;
+  if (remoteExists) {
+    await fetchRemote(projectRoot); // Best effort, ignore failures
+    remoteHasShadow = await remoteBranchExists(projectRoot, SHADOW_BRANCH_NAME);
+  }
+
   try {
     // Step 1: Update .gitignore first (before creating .kspec/)
     result.gitignoreUpdated = await ensureGitignore(projectRoot);
@@ -687,16 +767,27 @@ export async function initializeShadow(
         // Ignore - worktree may not exist in git's list
       }
 
-      if (!status.branchExists) {
-        // Create worktree with new orphan branch in one step
-        // This doesn't touch the main workspace at all
+      if (remoteHasShadow) {
+        // AC-1: Remote has shadow branch - create worktree from it with tracking
+        await execAsync(
+          `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
+          { cwd: projectRoot }
+        );
+        // Set up tracking for the branch
+        await execAsync(
+          `git branch --set-upstream-to=origin/${SHADOW_BRANCH_NAME} ${SHADOW_BRANCH_NAME}`,
+          { cwd: projectRoot }
+        );
+        result.createdFromRemote = true;
+      } else if (!status.branchExists) {
+        // AC-2/AC-3: No remote branch or no remote - create orphan branch
         await execAsync(
           `git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`,
           { cwd: projectRoot }
         );
         result.branchCreated = true;
       } else {
-        // Attach to existing branch
+        // Attach to existing local branch
         await execAsync(
           `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
           { cwd: projectRoot }
@@ -706,7 +797,7 @@ export async function initializeShadow(
       result.worktreeCreated = true;
     }
 
-    // Step 3: Create initial structure if empty
+    // Step 3: Create initial structure if empty (only for new branches, not remote)
     const manifestPath = path.join(worktreeDir, `${slug}.yaml`);
     const modulesDir = path.join(worktreeDir, 'modules');
     const moduleFilePath = path.join(modulesDir, 'main.yaml');
@@ -715,9 +806,14 @@ export async function initializeShadow(
 
     let filesCreated = false;
 
-    // Only create files if manifest doesn't exist
+    // Only create files if manifest doesn't exist (remote branches will have files)
     try {
-      await fs.access(manifestPath);
+      // Look for any .yaml manifest file (project name may differ)
+      const files = await fs.readdir(worktreeDir);
+      const hasManifest = files.some(f => f.endsWith('.yaml') && !f.includes('.tasks.') && !f.includes('.inbox.'));
+      if (!hasManifest) {
+        throw new Error('No manifest found');
+      }
     } catch {
       // Manifest doesn't exist, create initial structure
       await fs.mkdir(modulesDir, { recursive: true });
@@ -734,6 +830,11 @@ export async function initializeShadow(
         worktreeDir,
         `Initialize ${projectName} spec`
       );
+    }
+
+    // Step 5: AC-2: Push new branch to remote to establish tracking
+    if (result.branchCreated && remoteExists && !remoteHasShadow) {
+      result.pushedToRemote = await pushShadowBranch(worktreeDir);
     }
 
     result.success = true;
@@ -762,6 +863,8 @@ export async function repairShadow(projectRoot: string): Promise<ShadowInitResul
       gitignoreUpdated: false,
       initialCommit: false,
       alreadyExists: true,
+      createdFromRemote: false,
+      pushedToRemote: false,
     };
   }
 
@@ -774,6 +877,8 @@ export async function repairShadow(projectRoot: string): Promise<ShadowInitResul
       gitignoreUpdated: false,
       initialCommit: false,
       alreadyExists: false,
+      createdFromRemote: false,
+      pushedToRemote: false,
       error: 'Shadow branch does not exist. Run `kspec init` instead.',
     };
   }
@@ -814,6 +919,8 @@ export async function repairShadow(projectRoot: string): Promise<ShadowInitResul
       gitignoreUpdated: false,
       initialCommit: false,
       alreadyExists: false,
+      createdFromRemote: false,
+      pushedToRemote: false,
     };
   } catch (error) {
     return {
@@ -823,6 +930,8 @@ export async function repairShadow(projectRoot: string): Promise<ShadowInitResul
       gitignoreUpdated: false,
       initialCommit: false,
       alreadyExists: false,
+      createdFromRemote: false,
+      pushedToRemote: false,
       error: error instanceof Error ? error.message : String(error),
     };
   }
