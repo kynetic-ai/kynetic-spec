@@ -132,6 +132,102 @@ export function registerTaskCommands(program: Command): void {
       }
     });
 
+  // kspec task set <ref>
+  task
+    .command('set <ref>')
+    .description('Update task fields')
+    .option('--title <title>', 'Update task title')
+    .option('--spec-ref <ref>', 'Link to spec item')
+    .option('--priority <n>', 'Set priority (1-5)')
+    .option('--slug <slug>', 'Add a slug alias')
+    .option('--tag <tag...>', 'Add tags')
+    .option('--depends-on <refs...>', 'Set dependencies (replaces existing)')
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // Build updated task with only provided options
+        const updatedTask: Task = { ...foundTask };
+        const changes: string[] = [];
+
+        if (options.title) {
+          updatedTask.title = options.title;
+          changes.push('title');
+        }
+
+        if (options.specRef) {
+          // Validate the spec ref exists and is a spec item
+          const specResult = index.resolve(options.specRef);
+          if (!specResult.ok) {
+            error(`Spec reference not found: ${options.specRef}`);
+            process.exit(3);
+          }
+          // Check it's not a task
+          const isTask = tasks.some(t => t._ulid === specResult.ulid);
+          if (isTask) {
+            error(`Reference "${options.specRef}" is a task, not a spec item`);
+            process.exit(3);
+          }
+          updatedTask.spec_ref = options.specRef;
+          changes.push('spec_ref');
+        }
+
+        if (options.priority) {
+          const priority = parseInt(options.priority, 10);
+          if (isNaN(priority) || priority < 1 || priority > 5) {
+            error('Priority must be between 1 and 5');
+            process.exit(3);
+          }
+          updatedTask.priority = priority;
+          changes.push('priority');
+        }
+
+        if (options.slug) {
+          if (!updatedTask.slugs.includes(options.slug)) {
+            updatedTask.slugs = [...updatedTask.slugs, options.slug];
+            changes.push('slug');
+          }
+        }
+
+        if (options.tag) {
+          const newTags = options.tag.filter((t: string) => !updatedTask.tags.includes(t));
+          if (newTags.length > 0) {
+            updatedTask.tags = [...updatedTask.tags, ...newTags];
+            changes.push('tags');
+          }
+        }
+
+        if (options.dependsOn) {
+          // Validate all dependency refs
+          for (const depRef of options.dependsOn) {
+            const depResult = index.resolve(depRef);
+            if (!depResult.ok) {
+              error(`Dependency reference not found: ${depRef}`);
+              process.exit(3);
+            }
+          }
+          updatedTask.depends_on = options.dependsOn;
+          changes.push('depends_on');
+        }
+
+        if (changes.length === 0) {
+          warn('No changes specified');
+          return;
+        }
+
+        await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-set', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), changes.join(', '));
+        success(`Updated task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
+      } catch (err) {
+        error('Failed to update task', err);
+        process.exit(1);
+      }
+    });
+
   // kspec task start <ref>
   task
     .command('start <ref>')
