@@ -506,3 +506,7 @@ features:
         given: no remote tracking configured
         when: sync would normally occur
         then: sync is silently skipped (no error)
+      - id: ac-5
+        given: shadow branch has unresolved sync conflict
+        when: user runs kspec shadow resolve
+        then: interactive conflict resolution guides user through resolving conflicts
