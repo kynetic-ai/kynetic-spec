@@ -2092,6 +2092,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Implemented slug uniqueness validation and prevention - all acceptance criteria met
   depends_on: []
   context: []
   priority: 3
@@ -2099,6 +2100,7 @@
   vcs_refs: []
   created_at: '2026-01-16T11:28:44.176Z'
   started_at: '2026-01-16T11:28:49.260Z'
+  completed_at: '2026-01-16T11:33:16.509Z'
   notes:
     - _ulid: 01KF391H5H6BZZC7NV89XGZGDB
       created_at: '2026-01-16T11:28:54.962Z'
@@ -2135,5 +2137,24 @@
         8. Prevention verified: CLI rejects duplicate slugs with clear error messages
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T11:33:16.509Z'
-  closed_reason: Implemented slug uniqueness validation and prevention - all acceptance criteria met
+- title: Fix slug lookup timing - items not resolvable immediately after creation
+  type: task
+  priority: 2
+  spec_ref: '@slug-resolution'
+  tags:
+    - bug
+    - cli
+  description: >-
+    Slug lookup timing bug - newly added spec items via 'item add' aren't immediately resolvable by
+    slug (had to use full ULIDs for task-notes, task-todos). Possible indexing/caching issue in the
+    loader.
+  _ulid: 01KF3B98JFGJQJKC97WD7Y39SR
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-16T12:08:05.455Z'
+  notes: []
+  todos: []

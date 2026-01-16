@@ -104,16 +104,6 @@ inbox:
       - shadow
       - dx
     added_by: '@claude'
-  - _ulid: 01KF251PFVVZFQC6M25H289RTB
-    text: >-
-      Slug lookup timing bug - newly added spec items via 'item add' aren't immediately resolvable
-      by slug (had to use full ULIDs for task-notes, task-todos). Possible indexing/caching issue in
-      the loader.
-    created_at: '2026-01-16T00:59:51.676Z'
-    tags:
-      - bug
-      - cli
-    added_by: '@claude'
   - _ulid: 01KF251RANGN7F6R346JFR5ZQY
     text: Add --force flag to inbox delete for batch operations without confirmation prompts
     created_at: '2026-01-16T00:59:53.558Z'
