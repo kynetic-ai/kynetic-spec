@@ -1125,6 +1125,19 @@ features:
         created: '2026-01-15T15:34:40.999Z'
         status:
           implementation: implemented
+      - _ulid: 01KF3ECD4PQ01ENY5PVSPTKK9X
+        slugs:
+          - cmd-module-add
+        title: kspec module add
+        type: requirement
+        tags:
+          - cli
+          - dx
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T13:02:14.166Z'
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
