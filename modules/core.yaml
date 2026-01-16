@@ -262,6 +262,10 @@ features:
             given: a new item is created with slug 'my-feature'
             when: '@my-feature is referenced immediately after creation'
             then: reference resolves to the newly created item without requiring reload
+          - id: ac-2
+            given: an item exists with slug 'auth-login'
+            when: '@auth-login is referenced'
+            then: reference resolves to that item
   - _ulid: 01JHNKA0W2REFS000000000000
     slugs:
       - reference-system
