@@ -1,17 +1,13 @@
-# Meta-Spec Module - Process Definition System
-# Defines how agents work on projects, enabling self-improvement loops
-#
-# Key insight: Just as tasks track work on spec items, meta-tasks can track
-# work on meta items. This creates a reflexive loop where agents can improve
-# their own workflows based on observed friction and success patterns.
-
 _ulid: 01KF1XMETA0000000000000000
-slugs: [meta, meta-spec, meta-module]
+slugs:
+  - meta
+  - meta-spec
+  - meta-module
 title: Meta-Spec System
 type: module
 status:
   maturity: draft
-  implementation: not_started
+  implementation: in_progress
 description: |
   Meta-spec is the layer that defines HOW work happens, separate from
   WHAT is being built (spec) and tracking WORK (tasks).
@@ -27,20 +23,20 @@ description: |
 
   Meta-spec complements prose docs (CLAUDE.md, AGENTS.md) rather than
   replacing them. Structured definitions + prose guidance work together.
-
 features:
-  # ============================================================
-  # META MANIFEST - The root meta-spec file
-  # ============================================================
   - _ulid: 01KF1XMNF00000000000000000
-    slugs: [meta-manifest, meta-file]
+    slugs:
+      - meta-manifest
+      - meta-file
     title: Meta Manifest
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, meta]
+    tags:
+      - mvp
+      - meta
     description: |
       The meta manifest (kynetic.meta.yaml) is the root file for process
       definitions. It lives alongside kynetic.yaml and defines agents,
@@ -48,21 +44,30 @@ features:
 
       Unlike spec items which define product features, meta items define
       how work is done on the project.
-
     acceptance_criteria:
       - id: ac-meta-manifest-1
         given: a project with kynetic.yaml
-        when: kynetic.meta.yaml is created
-        then: kspec recognizes and loads meta definitions
-
+        when: kynetic.meta.yaml is created with valid structure
+        then: >
+          kspec meta show outputs summary with counts for agents, workflows,
+          conventions, and observations (exit code 0)
       - id: ac-meta-manifest-2
         given: a meta manifest exists
         when: kspec validate runs
-        then: meta-spec is validated alongside product spec
-
+        then: >
+          output includes "Meta: X agents, Y workflows, Z conventions" line;
+          validation errors for meta items use "meta:" prefix to distinguish
+          from spec errors
+      - id: ac-meta-manifest-3
+        given: kynetic.meta.yaml has invalid schema
+        when: kspec validate runs
+        then: >
+          exits with code 1; error message identifies the invalid field path
+          and expected type (e.g., "meta:agents[0].capabilities: expected array")
     requirements:
       - _ulid: 01KF1XMNF10000000000000000
-        slugs: [meta-manifest-format]
+        slugs:
+          - meta-manifest-format
         title: Meta Manifest Format
         type: requirement
         status:
@@ -102,10 +107,11 @@ features:
           ```
 
           Version field enables schema evolution.
-        implements: ["@meta-manifest"]
-
+        implements:
+          - '@meta-manifest'
       - _ulid: 01KF1XMNF20000000000000000
-        slugs: [meta-includes]
+        slugs:
+          - meta-includes
         title: Meta Includes
         type: requirement
         status:
@@ -123,10 +129,11 @@ features:
 
           Allows splitting large meta-specs into focused files.
           Same pattern as spec manifest includes.
-        implements: ["@meta-manifest"]
-
+        implements:
+          - '@meta-manifest'
       - _ulid: 01KF1XMNF30000000000000000
-        slugs: [meta-validation]
+        slugs:
+          - meta-validation
         title: Meta Validation Integration
         type: requirement
         status:
@@ -140,20 +147,22 @@ features:
           - Cross-validation with product spec (meta-refs exist)
 
           Unified validation ensures consistency across both layers.
-        implements: ["@meta-manifest"]
-
-  # ============================================================
-  # AGENT DEFINITIONS - Who works on the project
-  # ============================================================
+        implements:
+          - '@meta-manifest'
   - _ulid: 01KF1XAGT00000000000000000
-    slugs: [agent-definitions, agents]
+    slugs:
+      - agent-definitions
+      - agents
     title: Agent Definitions
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, meta, agents]
+    tags:
+      - mvp
+      - meta
+      - agents
     description: |
       Agent definitions describe the roles, capabilities, and conventions
       for agents (AI or human) working on the project. They're trackable
@@ -161,21 +170,30 @@ features:
 
       This enables structured understanding of who can do what, and
       provides context for workflow decisions.
-
     acceptance_criteria:
       - id: ac-agent-1
-        given: an agent definition exists
+        given: agents are defined in meta manifest
         when: kspec meta agents runs
-        then: all defined agents are listed with capabilities
-
+        then: >
+          outputs table with columns: ID, Name, Capabilities (comma-separated);
+          one row per agent; exit code 0
       - id: ac-agent-2
-        given: a task needs specific capabilities
-        when: agent is assigned
-        then: capabilities can be validated against definition
-
+        given: kspec meta agents --json runs
+        when: agents are defined
+        then: >
+          outputs JSON array with objects containing: id, name, description,
+          capabilities (array), tools (array), session_protocol (object),
+          conventions (array)
+      - id: ac-agent-3
+        given: an agent reference @agent-id is used
+        when: kspec validate runs
+        then: >
+          validates reference resolves to an agent definition;
+          error if reference points to non-agent meta item
     requirements:
       - _ulid: 01KF1XAGT10000000000000000
-        slugs: [agent-schema]
+        slugs:
+          - agent-schema
         title: Agent Schema
         type: requirement
         status:
@@ -209,10 +227,11 @@ features:
           ```
 
           All agents have ULIDs for tracking and references.
-        implements: ["@agent-definitions"]
-
+        implements:
+          - '@agent-definitions'
       - _ulid: 01KF1XAGT20000000000000000
-        slugs: [agent-capabilities]
+        slugs:
+          - agent-capabilities
         title: Agent Capabilities
         type: requirement
         status:
@@ -231,10 +250,11 @@ features:
 
           Projects can define custom capabilities as needed.
           Capabilities inform workflow decisions and task routing.
-        implements: ["@agent-definitions"]
-
+        implements:
+          - '@agent-definitions'
       - _ulid: 01KF1XAGT30000000000000000
-        slugs: [agent-session-protocol]
+        slugs:
+          - agent-session-protocol
         title: Agent Session Protocol
         type: requirement
         status:
@@ -252,20 +272,22 @@ features:
 
           Protocols ensure consistent behavior across sessions.
           Commands are strings (not enforced, just documented).
-        implements: ["@agent-definitions"]
-
-  # ============================================================
-  # WORKFLOW DEFINITIONS - How work is done
-  # ============================================================
+        implements:
+          - '@agent-definitions'
   - _ulid: 01KF1XWKF00000000000000000
-    slugs: [workflow-definitions, workflows]
+    slugs:
+      - workflow-definitions
+      - workflows
     title: Workflow Definitions
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, meta, workflows]
+    tags:
+      - mvp
+      - meta
+      - workflows
     description: |
       Workflows are structured process definitions. They capture the
       steps agents should follow for specific triggers. Unlike prose
@@ -273,21 +295,35 @@ features:
 
       Workflows are trackable - tasks can reference them via --meta-ref
       to track work on improving the workflow itself.
-
     acceptance_criteria:
       - id: ac-workflow-1
-        given: a workflow is defined
+        given: workflows are defined in meta manifest
         when: kspec meta workflows runs
-        then: workflow steps are displayed in order
-
+        then: >
+          outputs table with columns: ID, Trigger, Steps (count);
+          one row per workflow; exit code 0
       - id: ac-workflow-2
-        given: a workflow has friction observations
-        when: patterns emerge
-        then: task can be created with --meta-ref to workflow
-
+        given: kspec meta workflows --verbose runs
+        when: workflows are defined
+        then: >
+          outputs each workflow with full step list; steps show type prefix
+          ([check], [action], [decision]) and content; on_fail shown for checks
+      - id: ac-workflow-3
+        given: a workflow reference @workflow-id is used in meta_ref
+        when: kspec validate runs
+        then: >
+          validates reference resolves to a workflow definition;
+          error message shows "meta_ref must point to workflow, agent, or convention"
+      - id: ac-workflow-4
+        given: kspec meta workflows --json runs
+        when: workflows are defined
+        then: >
+          outputs JSON array with objects containing: id, trigger, description,
+          steps (array of {type, content, on_fail?})
     requirements:
       - _ulid: 01KF1XWKF10000000000000000
-        slugs: [workflow-schema]
+        slugs:
+          - workflow-schema
         title: Workflow Schema
         type: requirement
         status:
@@ -316,10 +352,11 @@ features:
 
           Steps have types: check, action, decision
           on_fail provides guidance when checks fail.
-        implements: ["@workflow-definitions"]
-
+        implements:
+          - '@workflow-definitions'
       - _ulid: 01KF1XWKF20000000000000000
-        slugs: [workflow-steps]
+        slugs:
+          - workflow-steps
         title: Workflow Step Types
         type: requirement
         status:
@@ -339,10 +376,64 @@ features:
 
           Steps are executed in order. Agents interpret them,
           they're not automatically enforced.
-        implements: ["@workflow-definitions"]
+        implements:
+          - '@workflow-definitions'
+      - _ulid: 01KF2XWKF40000000000000000
+        slugs:
+          - workflow-execution-model
+        title: Workflow Execution Model
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Workflows are ADVISORY, not AUTOMATED. This is a deliberate design choice.
 
+          Execution model options:
+
+          1. **Documentation** (default): Workflows exist as reference documentation.
+             Agents read them when relevant, but no runtime enforcement.
+             `kspec meta workflows` displays them for human/agent reference.
+
+          2. **Checklist**: Workflows can be displayed as interactive checklists.
+             `kspec meta run @workflow` presents steps one at a time,
+             agent confirms each step completion. Progress tracked but not enforced.
+
+          3. **Hook integration**: Workflows can inform Claude Code hooks.
+             A hook could query `kspec meta workflows --trigger "commit"`
+             and inject relevant workflow steps into the prompt.
+             Still advisory - hook provides context, agent decides.
+
+          Why not automation?
+          - Workflows describe nuanced processes that require judgment
+          - "Check if spec covers this" can't be reliably automated
+          - Automation creates brittleness; advisory enables adaptation
+          - Trust agents to follow documented processes
+
+          Future: Workflow adherence tracking via observations.
+          Friction observations on workflows indicate where guidance fails.
+          This creates a feedback loop: observe friction → improve workflow.
+
+          ```yaml
+          # Optional execution hints
+          steps:
+            - type: check
+              content: Does the spec cover this change?
+              on_fail: Update spec first
+              execution:
+                mode: prompt  # prompt, silent, or skip
+                timeout: null # Optional timeout for automated checks
+          ```
+
+          execution.mode values:
+          - prompt (default): Show step, wait for confirmation
+          - silent: Log step, don't wait
+          - skip: Skip in checklist mode (documentation only)
+        implements:
+          - '@workflow-definitions'
       - _ulid: 01KF1XWKF30000000000000000
-        slugs: [workflow-triggers]
+        slugs:
+          - workflow-triggers
         title: Workflow Triggers
         type: requirement
         status:
@@ -358,28 +449,58 @@ features:
 
           Triggers are documentation, not automation.
           Agents decide when workflows apply based on context.
-        implements: ["@workflow-definitions"]
-
-  # ============================================================
-  # CONVENTION DEFINITIONS - Project standards
-  # ============================================================
+        implements:
+          - '@workflow-definitions'
   - _ulid: 01KF1XCNV00000000000000000
-    slugs: [convention-definitions, conventions]
+    slugs:
+      - convention-definitions
+      - conventions
     title: Convention Definitions
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [meta, conventions]
+    tags:
+      - meta
+      - conventions
     description: |
       Conventions are project-specific rules and standards. They cover
       naming, formatting, commit style, note-writing, etc. Structured
       conventions can be validated where possible.
-
+    acceptance_criteria:
+      - id: ac-conv-1
+        given: conventions are defined in meta manifest
+        when: kspec meta conventions runs
+        then: >
+          outputs table with columns: Domain, Rules (count), Validation (yes/no);
+          one row per convention; exit code 0
+      - id: ac-conv-2
+        given: kspec meta conventions --domain commits runs
+        when: a commits convention exists
+        then: >
+          outputs only the commits convention with full rules list and examples
+      - id: ac-conv-3
+        given: a convention has validation.type=regex
+        when: kspec validate --conventions runs
+        then: >
+          applies regex pattern to relevant content; reports violations with
+          line/location and expected format
+      - id: ac-conv-4
+        given: a convention has validation.type=prose
+        when: kspec validate --conventions runs
+        then: >
+          skips validation; outputs info: "Skipping prose convention: <domain>"
+      - id: ac-conv-5
+        given: kspec meta conventions --json runs
+        when: conventions are defined
+        then: >
+          outputs JSON array with objects containing: domain, rules (array),
+          examples (array), validation (object or null)
     requirements:
       - _ulid: 01KF1XCNV10000000000000000
-        slugs: [convention-schema]
+        slugs:
+          - convention-schema
         title: Convention Schema
         type: requirement
         status:
@@ -404,10 +525,11 @@ features:
 
           Domains: commits, notes, naming, tags, etc.
           Examples provide concrete guidance.
-        implements: ["@convention-definitions"]
-
+        implements:
+          - '@convention-definitions'
       - _ulid: 01KF1XCNV20000000000000000
-        slugs: [convention-domains]
+        slugs:
+          - convention-domains
         title: Convention Domains
         type: requirement
         status:
@@ -424,20 +546,76 @@ features:
           - documentation: Doc writing standards
 
           Projects can define custom domains as needed.
-        implements: ["@convention-definitions"]
+        implements:
+          - '@convention-definitions'
+      - _ulid: 01KF2XCNV30000000000000000
+        slugs:
+          - convention-validation
+        title: Convention Validation Strategy
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          Conventions support optional validation with domain-specific strategies:
 
-  # ============================================================
-  # OBSERVATIONS - The feedback loop
-  # ============================================================
+          ```yaml
+          - _ulid: 01KF...
+            domain: commits
+            rules:
+              - Use conventional commit format
+            validation:
+              type: regex
+              pattern: "^(feat|fix|docs|style|refactor|test|chore)(\\(.+\\))?:\\s.+"
+              message: "Commit must follow conventional format"
+          ```
+
+          Validation types by domain:
+
+          - commits: regex pattern matching on message
+          - notes: word count range, required sections
+          - naming: regex pattern for slugs/identifiers
+          - tags: enum list of allowed tags
+          - branching: regex pattern for branch names
+          - documentation: prose (advisory only, no automation)
+
+          Validation configuration:
+
+          ```yaml
+          validation:
+            type: regex | enum | range | prose
+            # For regex:
+            pattern: "^pattern$"
+            message: "Error message when validation fails"
+            # For enum:
+            allowed: [value1, value2, value3]
+            # For range:
+            min: 10
+            max: 500
+            unit: words | chars | lines
+          ```
+
+          Validation is optional - conventions without validation field
+          are advisory-only and appear in documentation.
+
+          `kspec validate --conventions` runs all validatable conventions.
+          Prose-type conventions are skipped with info message.
+        implements:
+          - '@convention-definitions'
   - _ulid: 01KF1XFBK00000000000000000
-    slugs: [observations, feedback-loop]
+    slugs:
+      - observations
+      - feedback-loop
     title: Observations
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, meta, feedback]
+    tags:
+      - mvp
+      - meta
+      - feedback
     description: |
       Observations capture feedback about workflows and conventions.
       This is the mechanism for the self-improvement loop - agents
@@ -446,26 +624,66 @@ features:
 
       Observations can be promoted to tasks with --meta-ref, creating
       trackable work to improve processes.
-
     acceptance_criteria:
       - id: ac-obs-1
         given: an agent encounters workflow friction
         when: kspec meta observe friction "description" runs
-        then: observation is recorded with timestamp and author
-
+        then: >
+          outputs "OK Created observation: <ULID-prefix>"; observation stored
+          with fields: _ulid, type, content, created_at (ISO8601), author,
+          resolved (false), workflow_ref (if --workflow provided)
       - id: ac-obs-2
-        given: multiple friction observations exist for a workflow
-        when: patterns emerge
-        then: observation can be promoted to task via kspec meta promote
-
+        given: observations exist
+        when: kspec meta observations runs
+        then: >
+          outputs table with columns: ID, Type, Workflow, Created, Content (truncated);
+          shows only unresolved by default; --all includes resolved
       - id: ac-obs-3
-        given: a workflow improvement is implemented
-        when: kspec meta resolve runs
-        then: related observations are marked resolved
-
+        given: an observation exists
+        when: kspec meta promote @obs --title "Task title" runs
+        then: >
+          creates task with: title from --title, description from observation content,
+          meta_ref from observation's workflow_ref; outputs "OK Created task: <ULID-prefix>";
+          observation updated with promoted_to field pointing to new task
+      - id: ac-obs-4
+        given: an observation exists
+        when: kspec meta resolve @obs "resolution text" runs
+        then: >
+          observation updated with: resolved=true, resolution=text,
+          resolved_at (ISO8601), resolved_by (author); outputs "OK Resolved: <ULID-prefix>"
+      - id: ac-obs-5
+        given: kspec meta observations --json runs
+        when: observations exist
+        then: >
+          outputs JSON array with full observation objects including all fields
+      - id: ac-obs-6
+        given: an observation has already been promoted (has promoted_to field)
+        when: kspec meta promote @obs runs
+        then: >
+          exits with code 1; error message: "Observation already promoted to
+          task <task-ref>; resolve or delete the task first"
+      - id: ac-obs-7
+        given: an observation is already resolved (resolved=true)
+        when: kspec meta resolve @obs runs
+        then: >
+          exits with code 1; error message: "Observation already resolved on
+          <date>: '<resolution-text-truncated>'"
+      - id: ac-obs-8
+        given: an observation is already resolved
+        when: kspec meta promote @obs runs
+        then: >
+          exits with code 1; error message: "Cannot promote resolved observation;
+          use --force to override"
+      - id: ac-obs-9
+        given: an observation has promoted_to pointing to a completed task
+        when: kspec meta resolve @obs runs with no explicit resolution
+        then: >
+          auto-populates resolution from task completion reason if available;
+          prompts for resolution text if task has no completion reason
     requirements:
       - _ulid: 01KF1XFBK10000000000000000
-        slugs: [observation-schema]
+        slugs:
+          - observation-schema
         title: Observation Schema
         type: requirement
         status:
@@ -489,10 +707,11 @@ features:
 
           Types capture the nature of the feedback.
           workflow_ref links to relevant workflow for tracking.
-        implements: ["@observations"]
-
+        implements:
+          - '@observations'
       - _ulid: 01KF1XFBK20000000000000000
-        slugs: [observation-types]
+        slugs:
+          - observation-types
         title: Observation Types
         type: requirement
         status:
@@ -509,10 +728,11 @@ features:
           All types feed the improvement loop. Friction and ideas
           most often lead to workflow changes. Success confirms
           what's working. Questions may reveal documentation gaps.
-        implements: ["@observations"]
-
+        implements:
+          - '@observations'
       - _ulid: 01KF1XFBK30000000000000000
-        slugs: [observation-promotion]
+        slugs:
+          - observation-promotion
         title: Observation Promotion
         type: requirement
         status:
@@ -534,10 +754,11 @@ features:
           - origin: observation_promotion
 
           Original observation marked with promoted_to reference.
-        implements: ["@observations"]
-
+        implements:
+          - '@observations'
       - _ulid: 01KF1XFBK40000000000000000
-        slugs: [observation-resolution]
+        slugs:
+          - observation-resolution
         title: Observation Resolution
         type: requirement
         status:
@@ -558,20 +779,81 @@ features:
 
           Resolved observations remain for history.
           Unresolved observations show in session context.
-        implements: ["@observations"]
+        implements:
+          - '@observations'
+      - _ulid: 01KF2XFBK50000000000000000
+        slugs:
+          - observation-task-loop
+        title: Observation-Task Resolution Loop
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          The observation→task→resolution loop defines how observations connect
+          to tasks and when they get resolved.
 
-  # ============================================================
-  # SESSION CONTEXT - Dynamic state
-  # ============================================================
+          **Promotion creates linkage**:
+          When an observation is promoted to a task:
+          - observation.promoted_to = @task-ref
+          - task.origin = "observation_promotion"
+          - task.description includes observation content
+
+          **Task completion does NOT auto-resolve**:
+          Completing a task does not automatically resolve linked observations.
+          This is intentional:
+          - Task might address the observation partially
+          - Multiple tasks might be needed
+          - Agent should explicitly confirm resolution
+
+          **Explicit resolution required**:
+          After completing the task, agent runs:
+          ```bash
+          kspec meta resolve @obs "Addressed by task @task-ref"
+          ```
+
+          **Convenience: resolve-from-task**:
+          If observation has promoted_to pointing to a completed task:
+          ```bash
+          kspec meta resolve @obs
+          # Auto-populates: "Resolved via task @task-ref: <task.reason>"
+          ```
+          Prompts for resolution text if task has no completion reason.
+
+          **Session context reminder**:
+          When task with origin="observation_promotion" is completed,
+          session context shows reminder:
+          "Consider resolving linked observation: @obs-ref"
+
+          **Querying the loop**:
+          ```bash
+          # Find observations that spawned tasks
+          kspec meta observations --promoted
+
+          # Find tasks from observations
+          kspec tasks list --origin observation_promotion
+
+          # Find unresolved observations with completed tasks
+          kspec meta observations --pending-resolution
+          ```
+
+          This explicit loop ensures observations aren't lost when tasks
+          complete, and creates traceable process improvement history.
+        implements:
+          - '@observations'
   - _ulid: 01KF1XCTX00000000000000000
-    slugs: [session-context, context]
+    slugs:
+      - session-context
+      - context
     title: Session Context
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: medium
-    tags: [meta, context]
+    tags:
+      - meta
+      - context
     description: |
       Session context is ephemeral state tracking current focus,
       active threads, and open questions. Unlike other meta items,
@@ -579,10 +861,10 @@ features:
       that can be gitignored.
 
       Context helps with session continuity and handoff between agents.
-
     requirements:
       - _ulid: 01KF1XCTX10000000000000000
-        slugs: [context-schema]
+        slugs:
+          - context-schema
         title: Context Schema
         type: requirement
         status:
@@ -604,10 +886,11 @@ features:
           ```
 
           Ephemeral by design - not part of project history.
-        implements: ["@session-context"]
-
+        implements:
+          - '@session-context'
       - _ulid: 01KF1XCTX20000000000000000
-        slugs: [context-storage]
+        slugs:
+          - context-storage
         title: Context Storage
         type: requirement
         status:
@@ -623,10 +906,11 @@ features:
 
           This keeps project-level meta (agents, workflows) separate
           from session-level state (focus, threads).
-        implements: ["@session-context"]
-
+        implements:
+          - '@session-context'
       - _ulid: 01KF1XCTX30000000000000000
-        slugs: [context-integration]
+        slugs:
+          - context-integration
         title: Context Integration
         type: requirement
         status:
@@ -647,28 +931,30 @@ features:
           ```
 
           Helps agents quickly understand current state.
-        implements: ["@session-context"]
-
-  # ============================================================
-  # META CLI COMMANDS - Interface to meta-spec
-  # ============================================================
+        implements:
+          - '@session-context'
   - _ulid: 01KF1XCMD00000000000000000
-    slugs: [meta-commands, meta-cli]
+    slugs:
+      - meta-commands
+      - meta-cli
     title: Meta CLI Commands
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, meta, cli]
+    tags:
+      - mvp
+      - meta
+      - cli
     description: |
       CLI commands for interacting with meta-spec. Follow the same
       patterns as existing kspec commands: resource-action structure,
       --json support, semantic exit codes.
-
     requirements:
       - _ulid: 01KF1XCMD10000000000000000
-        slugs: [meta-show]
+        slugs:
+          - meta-show
         title: kspec meta show
         type: requirement
         status:
@@ -685,10 +971,11 @@ features:
           - Session context summary
 
           Quick overview of project process definitions.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD20000000000000000
-        slugs: [meta-agents-cmd]
+        slugs:
+          - meta-agents-cmd
         title: kspec meta agents
         type: requirement
         status:
@@ -702,10 +989,11 @@ features:
           - --capabilities: Group by capabilities
 
           Output shows id, name, capabilities for each agent.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD30000000000000000
-        slugs: [meta-workflows-cmd]
+        slugs:
+          - meta-workflows-cmd
         title: kspec meta workflows
         type: requirement
         status:
@@ -719,10 +1007,11 @@ features:
           - --verbose: Show full steps
 
           Output shows id, trigger, step count for each workflow.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD40000000000000000
-        slugs: [meta-conventions-cmd]
+        slugs:
+          - meta-conventions-cmd
         title: kspec meta conventions
         type: requirement
         status:
@@ -736,10 +1025,11 @@ features:
           - --domain <domain>: Filter by domain
 
           Output shows domain, rule count for each convention.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD50000000000000000
-        slugs: [meta-observe-cmd]
+        slugs:
+          - meta-observe-cmd
         title: kspec meta observe
         type: requirement
         status:
@@ -758,10 +1048,11 @@ features:
 
           Example:
           kspec meta observe friction "Spec-first is slow for typos"
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD60000000000000000
-        slugs: [meta-observations-cmd]
+        slugs:
+          - meta-observations-cmd
         title: kspec meta observations
         type: requirement
         status:
@@ -778,10 +1069,11 @@ features:
           - --json: Structured output
 
           Shows unresolved observations by default.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD70000000000000000
-        slugs: [meta-promote-cmd]
+        slugs:
+          - meta-promote-cmd
         title: kspec meta promote
         type: requirement
         status:
@@ -797,10 +1089,11 @@ features:
 
           Creates task with meta_ref to related workflow.
           Marks observation with promoted_to reference.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD80000000000000000
-        slugs: [meta-resolve-cmd]
+        slugs:
+          - meta-resolve-cmd
         title: kspec meta resolve
         type: requirement
         status:
@@ -817,10 +1110,11 @@ features:
 
           Example:
           kspec meta resolve @obs-123 "Added --quick flag"
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMD90000000000000000
-        slugs: [meta-focus-cmd]
+        slugs:
+          - meta-focus-cmd
         title: kspec meta focus
         type: requirement
         status:
@@ -835,10 +1129,11 @@ features:
           - --clear: Clear current focus
 
           Focus is stored in .kspec-session.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMDA0000000000000000
-        slugs: [meta-thread-cmd]
+        slugs:
+          - meta-thread-cmd
         title: kspec meta thread
         type: requirement
         status:
@@ -854,10 +1149,11 @@ features:
           - clear: Remove all threads
 
           Threads are stored in .kspec-session.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMK00000000000000000
-        slugs: [meta-question-cmd]
+        slugs:
+          - meta-question-cmd
         title: kspec meta question
         type: requirement
         status:
@@ -873,10 +1169,11 @@ features:
           - clear: Remove all questions
 
           Questions are stored in .kspec-session.
-        implements: ["@meta-commands"]
-
+        implements:
+          - '@meta-commands'
       - _ulid: 01KF1XCMX00000000000000000
-        slugs: [meta-context-cmd]
+        slugs:
+          - meta-context-cmd
         title: kspec meta context
         type: requirement
         status:
@@ -896,39 +1193,178 @@ features:
           - --clear: Clear all context
 
           Reads from .kspec-session.
-        implements: ["@meta-commands"]
+        implements:
+          - '@meta-commands'
+      - _ulid: 01KF2XCMG00000000000000000
+        slugs:
+          - meta-get-cmd
+        title: kspec meta get
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec meta get <ref>
 
-  # ============================================================
-  # META-REF INTEGRATION - Linking tasks to meta items
-  # ============================================================
+          Get a meta item by reference:
+          - Works for any meta item type (agent, workflow, convention, observation)
+          - --json: Structured output
+          - --yaml: YAML output (default for complex items)
+
+          Example:
+          kspec meta get @workflow-spec-first
+          kspec meta get @claude
+
+          Unified access to any meta item by reference.
+        implements:
+          - '@meta-commands'
+      - _ulid: 01KF2XCMN00000000000000000
+        slugs:
+          - meta-list-cmd
+        title: kspec meta list
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec meta list [options]
+
+          List all meta items:
+          - --type <type>: Filter by type (agent, workflow, convention, observation)
+          - --json: Structured output
+
+          Output shows: ID, Type, Title/Domain/Trigger (context-dependent)
+
+          Complements type-specific commands (meta agents, meta workflows)
+          with a unified view of all meta items.
+        implements:
+          - '@meta-commands'
+      - _ulid: 01KF2XCMA00000000000000000
+        slugs:
+          - meta-add-cmd
+        title: kspec meta add
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec meta add <type> [options]
+
+          Add a new meta item:
+          - type: agent, workflow, convention (not observation - use meta observe)
+
+          For agents:
+          --id <id> --name <name> --capabilities <cap1,cap2>
+
+          For workflows:
+          --id <id> --trigger <trigger> --description <desc>
+
+          For conventions:
+          --domain <domain> --rules <rule1> --rules <rule2>
+
+          Example:
+          kspec meta add agent --id human --name "Human Developer" --capabilities code,review
+          kspec meta add workflow --id pr-review --trigger "pull request opened"
+
+          ULID generated automatically. Returns created item reference.
+        implements:
+          - '@meta-commands'
+      - _ulid: 01KF2XCMS00000000000000000
+        slugs:
+          - meta-set-cmd
+        title: kspec meta set
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec meta set <ref> [options]
+
+          Update a meta item:
+          - --name <name>: Update name (agents)
+          - --description <desc>: Update description
+          - --capabilities <caps>: Replace capabilities (agents)
+          - --add-capability <cap>: Add capability (agents)
+          - --add-step <step>: Append workflow step
+          - --add-rule <rule>: Add convention rule
+
+          Example:
+          kspec meta set @claude --add-capability design
+          kspec meta set @spec-first --description "Updated process"
+
+          Preserves fields not explicitly changed.
+        implements:
+          - '@meta-commands'
+      - _ulid: 01KF2XCMD00000000000000000
+        slugs:
+          - meta-delete-cmd
+        title: kspec meta delete
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          kspec meta delete <ref> [options]
+
+          Delete a meta item:
+          - --force: Skip confirmation prompt
+          - Validates no dangling references before deletion
+
+          Example:
+          kspec meta delete @workflow-old
+          kspec meta delete @obs-123 --force
+
+          Error if item is referenced by tasks (meta_ref) or observations
+          (workflow_ref). Use --force to override.
+        implements:
+          - '@meta-commands'
   - _ulid: 01KF1XREF00000000000000000
-    slugs: [meta-ref, meta-task-link]
+    slugs:
+      - meta-ref
+      - meta-task-link
     title: Meta Reference Integration
     type: feature
     status:
       maturity: draft
       implementation: not_started
     priority: high
-    tags: [mvp, meta, tasks]
+    tags:
+      - mvp
+      - meta
+      - tasks
     description: |
       Tasks can reference meta items via meta_ref, just like spec_ref.
       This enables tracking work on process improvements - the key to
       the self-improvement loop.
-
     acceptance_criteria:
       - id: ac-meta-ref-1
-        given: a workflow needs improvement
-        when: task is created with --meta-ref @workflow-id
-        then: task is linked to workflow for tracking
-
+        given: "kspec task add --meta-ref @workflow-id runs"
+        when: the @workflow-id is a valid workflow reference
+        then: >
+          task created with meta_ref field set to @workflow-id;
+          outputs "OK Created task: <ULID-prefix>"
       - id: ac-meta-ref-2
-        given: tasks have meta_ref fields
-        when: kspec tasks list --meta-ref @workflow
-        then: tasks linked to that workflow are returned
-
+        given: tasks exist with meta_ref fields
+        when: "kspec tasks list --meta-ref @workflow runs"
+        then: >
+          outputs only tasks where meta_ref matches @workflow;
+          same output format as regular task list
+      - id: ac-meta-ref-3
+        given: "kspec task add --meta-ref @invalid-ref runs"
+        when: the reference does not resolve to a meta item
+        then: >
+          exits with code 1; error message: "meta_ref '@invalid-ref' does not
+          resolve to a valid meta item (agent, workflow, or convention)"
+      - id: ac-meta-ref-4
+        given: "kspec task add --meta-ref @spec-item runs"
+        when: the reference is a product spec item (not meta)
+        then: >
+          exits with code 1; error message: "meta_ref '@spec-item' points to
+          a spec item; use --spec-ref for product spec references"
     requirements:
       - _ulid: 01KF1XREF10000000000000000
-        slugs: [task-meta-ref]
+        slugs:
+          - task-meta-ref
         title: Task meta_ref Field
         type: requirement
         status:
@@ -948,10 +1384,11 @@ features:
 
           meta_ref points to workflow, agent, or convention.
           Enables queries like "what tasks improve this workflow?"
-        implements: ["@meta-ref"]
-
+        implements:
+          - '@meta-ref'
       - _ulid: 01KF1XREF20000000000000000
-        slugs: [task-add-meta-ref]
+        slugs:
+          - task-add-meta-ref
         title: task add --meta-ref
         type: requirement
         status:
@@ -969,10 +1406,11 @@ features:
 
           Creates task with meta_ref linking to meta item.
           Validation ensures meta_ref resolves to valid meta item.
-        implements: ["@meta-ref"]
-
+        implements:
+          - '@meta-ref'
       - _ulid: 01KF1XREF30000000000000000
-        slugs: [meta-ref-queries]
+        slugs:
+          - meta-ref-queries
         title: Meta Reference Queries
         type: requirement
         status:
@@ -987,4 +1425,46 @@ features:
 
           Returns all tasks linked to that workflow.
           Useful for tracking improvement progress.
-        implements: ["@meta-ref"]
+        implements:
+          - '@meta-ref'
+      - _ulid: 01KF2XREF40000000000000000
+        slugs:
+          - meta-ref-validation
+        title: Meta Reference Validation
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        description: |
+          meta_ref field validation rules:
+
+          1. **Reference must resolve**: The @ref must point to an existing item
+             Error: "meta_ref '@xyz' does not resolve to any item"
+
+          2. **Reference must be meta item**: The resolved item must be a meta
+             item (agent, workflow, convention), not a product spec item.
+             Error: "meta_ref '@xyz' points to spec item; use --spec-ref instead"
+
+          3. **Type hints** (optional): For stricter validation, meta_ref can
+             specify expected type:
+             ```yaml
+             meta_ref:
+               ref: "@spec-first"
+               type: workflow  # Validates ref is a workflow
+             ```
+             Error: "meta_ref '@xyz' expected workflow, got agent"
+
+          4. **Validation timing**: Checked on:
+             - `kspec task add --meta-ref`
+             - `kspec validate` (full validation)
+             - `kspec task set --meta-ref` (updates)
+
+          5. **Circular reference prevention**: meta_ref cannot point to
+             the task itself or create reference cycles.
+
+          Implementation: Validation uses the same reference resolution
+          as spec_ref, but filters for meta item types. Meta items are
+          identified by their source file (kynetic.meta.yaml or meta/ includes)
+          or by explicit type markers.
+        implements:
+          - '@meta-ref'

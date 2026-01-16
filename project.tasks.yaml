@@ -1357,6 +1357,7 @@
     - meta
   vcs_refs: []
   created_at: '2026-01-15T18:55:31.003Z'
+  started_at: '2026-01-16T02:39:46.310Z'
   notes:
     - _ulid: 01KF1G6ZRPWPFK0MG6QJ5VBJQS
       created_at: '2026-01-15T18:55:44.919Z'
@@ -1374,8 +1375,44 @@
 
         Priority: Fix these before deriving implementation tasks.
       supersedes: null
+    - _ulid: 01KF2B84GS1T1V6TG4DABC8RNA
+      created_at: '2026-01-16T02:48:14.106Z'
+      author: '@claude'
+      content: >-
+        Addressed all 7 spec gaps identified in the task notes:
+
+
+        1. **Acceptance criteria** - Added specific output formats, field lists, error messages for:
+        meta-manifest (3 ACs), agent-definitions (3 ACs), workflow-definitions (4 ACs), observations
+        (9 ACs), conventions (5 ACs), meta-ref (4 ACs)
+
+
+        2. **Observation edge cases** - Added ACs for: already promoted (ac-obs-6), already resolved
+        (ac-obs-7, ac-obs-8), resolve-from-task convenience (ac-obs-9)
+
+
+        3. **Convention validation strategy** - Added new requirement 'convention-validation' with
+        domain-specific validation types (regex, enum, range, prose)
+
+
+        4. **Low-level meta primitives** - Added CRUD commands: meta get, meta list, meta add, meta
+        set, meta delete
+
+
+        5. **Workflow execution model** - Added 'workflow-execution-model' requirement clarifying
+        advisory nature, three execution options (documentation, checklist, hook integration), and
+        execution.mode field
+
+
+        6. **Meta-ref validation** - Added 'meta-ref-validation' requirement with 5 validation rules
+        including type hints and circular reference prevention
+
+
+        7. **Observation→task loop** - Added 'observation-task-loop' requirement defining the full
+        lifecycle from promotion through resolution, with explicit resolution required and
+        convenience auto-populate
+      supersedes: null
   todos: []
-  started_at: '2026-01-16T02:39:46.310Z'
 - _ulid: 01KF1G6M03VD4GE5QSFZ5F4X7V
   slugs:
     - task-inbox-obs-design
