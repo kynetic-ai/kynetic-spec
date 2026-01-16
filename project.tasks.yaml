@@ -2180,22 +2180,40 @@
   created_at: '2026-01-16T12:08:55.133Z'
   notes: []
   todos: []
-- title: 'Implement: Shadow Debug Mode'
+- _ulid: 01KF3CVS28Q0NVRTAK719S8ZB8
+  slugs:
+    - task-shadow-debug-mode
+  title: 'Implement: Shadow Debug Mode'
   type: task
   spec_ref: '@shadow-debug-mode'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-shadow-debug-mode
   tags:
     - dx
     - cli
-  _ulid: 01KF3CVS28Q0NVRTAK719S8ZB8
+  vcs_refs: []
+  created_at: '2026-01-16T12:35:40.744Z'
+  notes: []
+  todos: []
+- title: Implement --remove-slug option for item set
+  type: task
+  spec_ref: '@item-set'
+  priority: 2
+  slugs:
+    - task-item-set-remove-slug
+  tags:
+    - cli
+    - feature
+  _ulid: 01KF3D9S7PTA6WADMEVNTW6V7D
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T12:35:40.744Z'
+  created_at: '2026-01-16T12:43:19.670Z'
   notes: []
   todos: []
