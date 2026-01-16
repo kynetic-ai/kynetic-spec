@@ -184,6 +184,10 @@ features:
             given: a valid reference @login exists
             when: kspec item get @login runs
             then: displays item title, ULID, slugs, type, status, and description
+          - id: ac-3
+            given: reference @nonexistent does not exist
+            when: kspec item get @nonexistent runs
+            then: exits with error and helpful message
       - _ulid: 01KEZCJPHXT212CZV6W64YJFAQ
         slugs:
           - item-list
