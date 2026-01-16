@@ -257,6 +257,11 @@ features:
           4. If ambiguous (multiple matches), report ambiguity error
         implements:
           - '@slug-system'
+        acceptance_criteria:
+          - id: ac-1
+            given: a new item is created with slug 'my-feature'
+            when: '@my-feature is referenced immediately after creation'
+            then: reference resolves to the newly created item without requiring reload
   - _ulid: 01JHNKA0W2REFS000000000000
     slugs:
       - reference-system
