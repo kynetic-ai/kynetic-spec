@@ -416,6 +416,11 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T13:44:30.558Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: A spec item exists without acceptance_criteria
+            when: kspec validate --completeness runs
+            then: 'A warning is shown: ''Item @slug has no acceptance criteria'''
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning
