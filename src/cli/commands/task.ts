@@ -10,6 +10,7 @@ import {
   createTodo,
   syncSpecImplementationStatus,
   ReferenceIndex,
+  checkSlugUniqueness,
   type LoadedTask,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
@@ -110,6 +111,16 @@ export function registerTaskCommands(program: Command): void {
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
 
+        // Check slug uniqueness if provided
+        if (options.slug) {
+          const refIndex = new ReferenceIndex(tasks, items);
+          const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
+          if (!slugCheck.ok) {
+            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            process.exit(1);
+          }
+        }
+
         const input: TaskInput = {
           title: options.title,
           type: options.type,
@@ -149,6 +160,15 @@ export function registerTaskCommands(program: Command): void {
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // Check slug uniqueness if adding a new slug
+        if (options.slug) {
+          const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
+          if (!slugCheck.ok) {
+            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            process.exit(1);
+          }
+        }
 
         // Build updated task with only provided options
         const updatedTask: Task = { ...foundTask };

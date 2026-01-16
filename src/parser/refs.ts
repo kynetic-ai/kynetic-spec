@@ -367,3 +367,58 @@ export function findDuplicateSlugs(index: ReferenceIndex): Map<string, string[]>
 
   return duplicates;
 }
+
+// ============================================================
+// SLUG UNIQUENESS CHECK
+// ============================================================
+
+/**
+ * Result of checking slug uniqueness
+ */
+export interface SlugCheckSuccess {
+  ok: true;
+}
+
+export interface SlugCheckConflict {
+  ok: false;
+  slug: string;
+  existingUlid: string;
+}
+
+export type SlugCheckResult = SlugCheckSuccess | SlugCheckConflict;
+
+/**
+ * Check if proposed slugs are unique (don't conflict with existing items).
+ *
+ * @param index The reference index to check against
+ * @param slugs Array of proposed slugs to check
+ * @param excludeUlid Optional ULID to exclude from conflict check (for updates)
+ * @returns Success if all slugs are available, or conflict info if one exists
+ */
+export function checkSlugUniqueness(
+  index: ReferenceIndex,
+  slugs: string[],
+  excludeUlid?: string
+): SlugCheckResult {
+  const allSlugs = index.getAllSlugs();
+
+  for (const slug of slugs) {
+    const existingUlids = allSlugs.get(slug);
+    if (existingUlids) {
+      // Filter out the item being updated (if provided)
+      const conflictingUlids = excludeUlid
+        ? existingUlids.filter(ulid => ulid !== excludeUlid)
+        : existingUlids;
+
+      if (conflictingUlids.length > 0) {
+        return {
+          ok: false,
+          slug,
+          existingUlid: conflictingUlids[0],
+        };
+      }
+    }
+  }
+
+  return { ok: true };
+}

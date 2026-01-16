@@ -11,6 +11,7 @@ import {
   loadAllTasks,
   ReferenceIndex,
   AlignmentIndex,
+  checkSlugUniqueness,
   type LoadedSpecItem,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
@@ -281,6 +282,15 @@ export function registerItemCommands(program: Command): void {
           process.exit(1);
         }
 
+        // Check slug uniqueness if provided
+        if (options.slug) {
+          const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
+          if (!slugCheck.ok) {
+            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            process.exit(1);
+          }
+        }
+
         const input: SpecItemInput = {
           title: options.title,
           type: options.type as ItemType,
@@ -340,6 +350,15 @@ export function registerItemCommands(program: Command): void {
         if ('status' in foundItem && typeof foundItem.status === 'string') {
           error(`"${ref}" is a task. Use 'kspec task' commands instead.`);
           process.exit(1);
+        }
+
+        // Check slug uniqueness if adding a new slug
+        if (options.slug) {
+          const slugCheck = checkSlugUniqueness(refIndex, [options.slug], foundItem._ulid);
+          if (!slugCheck.ok) {
+            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            process.exit(1);
+          }
         }
 
         // Build updates object

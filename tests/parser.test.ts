@@ -18,6 +18,7 @@ import {
   ReferenceIndex,
   validateRefs,
   findDuplicateSlugs,
+  checkSlugUniqueness,
   type LoadedSpecItem,
   type LoadedTask,
 } from '../src/parser/index.js';
@@ -1049,5 +1050,128 @@ describe('validateRefs', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].field).toBe('spec_ref');
+  });
+});
+
+// ============================================================
+// SLUG UNIQUENESS CHECK TESTS
+// ============================================================
+
+describe('checkSlugUniqueness', () => {
+  const existingItems: LoadedSpecItem[] = [
+    {
+      _ulid: '01ITEM1000000000000000000',
+      slugs: ['existing-slug', 'another-alias'],
+      title: 'Existing Item',
+      tags: [],
+      depends_on: [],
+      implements: [],
+      relates_to: [],
+      tests: [],
+    },
+    {
+      _ulid: '01ITEM2000000000000000000',
+      slugs: ['other-slug'],
+      title: 'Other Item',
+      tags: [],
+      depends_on: [],
+      implements: [],
+      relates_to: [],
+      tests: [],
+    },
+  ];
+
+  it('should return ok for unique slugs', () => {
+    const index = new ReferenceIndex([], existingItems);
+    const result = checkSlugUniqueness(index, ['brand-new-slug']);
+
+    expect(result.ok).toBe(true);
+  });
+
+  it('should return conflict for existing slug', () => {
+    const index = new ReferenceIndex([], existingItems);
+    const result = checkSlugUniqueness(index, ['existing-slug']);
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.slug).toBe('existing-slug');
+      expect(result.existingUlid).toBe('01ITEM1000000000000000000');
+    }
+  });
+
+  it('should return conflict for existing alias', () => {
+    const index = new ReferenceIndex([], existingItems);
+    const result = checkSlugUniqueness(index, ['another-alias']);
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.slug).toBe('another-alias');
+    }
+  });
+
+  it('should check all slugs and return first conflict', () => {
+    const index = new ReferenceIndex([], existingItems);
+    const result = checkSlugUniqueness(index, ['new-slug', 'existing-slug', 'other-slug']);
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.slug).toBe('existing-slug');
+    }
+  });
+
+  it('should exclude specified ULID from check (for updates)', () => {
+    const index = new ReferenceIndex([], existingItems);
+    // When updating item 01ITEM1..., its own slugs shouldn't conflict
+    const result = checkSlugUniqueness(index, ['existing-slug'], '01ITEM1000000000000000000');
+
+    expect(result.ok).toBe(true);
+  });
+
+  it('should still detect conflicts with other items when excluding ULID', () => {
+    const index = new ReferenceIndex([], existingItems);
+    // When updating item 01ITEM1..., other item's slugs should still conflict
+    const result = checkSlugUniqueness(index, ['other-slug'], '01ITEM1000000000000000000');
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.slug).toBe('other-slug');
+      expect(result.existingUlid).toBe('01ITEM2000000000000000000');
+    }
+  });
+
+  it('should handle empty slugs array', () => {
+    const index = new ReferenceIndex([], existingItems);
+    const result = checkSlugUniqueness(index, []);
+
+    expect(result.ok).toBe(true);
+  });
+
+  it('should work with tasks as well as items', () => {
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: '01TASK1000000000000000000',
+        slugs: ['task-slug'],
+        title: 'Task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 1,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T10:00:00Z',
+        notes: [],
+        todos: [],
+      },
+    ];
+
+    const index = new ReferenceIndex(tasks, existingItems);
+    const result = checkSlugUniqueness(index, ['task-slug']);
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.slug).toBe('task-slug');
+    }
   });
 });
