@@ -175,6 +175,11 @@ features:
           Resolves @reference, displays full item.
         implements:
           - '@item-commands'
+        acceptance_criteria:
+          - id: ac-1
+            given: a spec item @login has acceptance criteria
+            when: kspec item get @login runs
+            then: acceptance criteria are displayed in the output
       - _ulid: 01KEZCJPHXT212CZV6W64YJFAQ
         slugs:
           - item-list
