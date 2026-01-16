@@ -112,6 +112,10 @@ features:
         given: text with "double quotes"
         when: text with 'single quotes'
         then: 'mixed: "quotes" and colons'
+      - id: ac-2
+        given: 'text with #hash and @ref'
+        when: asterisk * and ampersand &
+        then: pipe | and greater >
     requirements:
       - _ulid: 01KEZCJPHZH6VQH44813GV3PTC
         slugs:
