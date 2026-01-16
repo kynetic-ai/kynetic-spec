@@ -2605,6 +2605,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented auto-sync: push after commit (fire-and-forget), pull on session start, shadow
+    sync/resolve commands, conflict detection and resolution guidance
   depends_on: []
   context: []
   priority: 3
@@ -2612,6 +2615,7 @@
   vcs_refs: []
   created_at: '2026-01-16T20:21:40.147Z'
   started_at: '2026-01-16T20:33:00.733Z'
+  completed_at: '2026-01-16T20:38:39.176Z'
   notes:
     - _ulid: 01KF47HHCE64MQQ8JHWAT1SB8Y
       created_at: '2026-01-16T20:21:56.750Z'
@@ -2640,11 +2644,15 @@
            - rebase.autoStash = true
            - rerere.enabled = true
       supersedes: null
+    - _ulid: 01KF493Z1N8BAAWJD2YXP1T8KR
+      created_at: '2026-01-16T20:49:29.141Z'
+      author: '@claude'
+      content: >-
+        Added AC-7 and AC-8 for auto-tracking: ensureRemoteTracking() automatically sets up tracking
+        when main branch has remote but shadow doesn't. Called at start of shadowPull() and
+        shadowPushAsync().
+      supersedes: null
   todos: []
-  completed_at: '2026-01-16T20:38:39.176Z'
-  closed_reason: >-
-    Implemented auto-sync: push after commit (fire-and-forget), pull on session start, shadow
-    sync/resolve commands, conflict detection and resolution guidance
 - _ulid: 01KF47H34C915C7D1KH4QB07MC
   slugs:
     - task-init-remote-detection
