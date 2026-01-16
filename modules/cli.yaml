@@ -1402,6 +1402,10 @@ features:
         given: An agent needs structured CLI documentation
         when: '''kspec help --json'' is run'
         then: Returns JSON with complete command tree for programmatic consumption
+      - id: ac-5
+        given: A new subcommand is added to Commander definition
+        when: '''kspec help <parent>'' is run without updating help.ts'
+        then: The new subcommand appears in help output automatically
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
