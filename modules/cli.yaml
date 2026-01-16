@@ -885,6 +885,10 @@ features:
             given: reference is a spec item
             when: kspec log @spec-item runs
             then: 'searches for both Spec: trailer and Task: trailers of linked tasks'
+          - id: ac-3
+            given: no matching commits exist
+            when: kspec log @ref runs
+            then: displays 'No commits found' message
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
