@@ -2057,6 +2057,25 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-16T10:56:34.576Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T10:56:39.646Z'
+  notes:
+    - _ulid: 01KF37FT3R02BHQY47P1BSB4XT
+      created_at: '2026-01-16T11:01:45.720Z'
+      author: '@claude'
+      content: |-
+        Implemented item ac CLI commands:
+        - item ac list: Shows all AC for a spec item in Given/When/Then format
+        - item ac add: Adds new AC with auto-generated or custom ID
+        - item ac set: Updates existing AC fields (partial updates supported)
+        - item ac remove: Removes AC by ID with optional --force
+
+        Key features:
+        - Proper YAML escaping via js-yaml prevents formatting errors
+        - Auto-increments IDs (ac-1, ac-2, etc.)
+        - Validates spec items vs tasks (rejects tasks)
+        - Shadow branch auto-commit integration
+        - Full JSON output support
+
+        Added 12 integration tests covering all acceptance criteria.
+      supersedes: null
+  todos: []
