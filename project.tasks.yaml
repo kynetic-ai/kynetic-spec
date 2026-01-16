@@ -2705,7 +2705,7 @@
   title: Implement secondary sort for ready tasks (oldest first within priority)
   type: task
   spec_ref: '@task-queries'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2726,3 +2726,5 @@
         kynetic-internal approach.
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T22:23:18.516Z'
+  closed_reason: Secondary sort by creation time implemented and tested
