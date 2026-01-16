@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npm run dev -- session prompt-check"
+            "command": "npm run dev -s -- session prompt-check"
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npm run dev -- session checkpoint --json"
+            "command": "npm run dev -s -- session checkpoint --json"
           }
         ]
       }
