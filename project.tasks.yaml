@@ -2291,23 +2291,42 @@
   created_at: '2026-01-16T13:45:00.025Z'
   notes: []
   todos: []
-- title: Alignment guidance should mention test coverage
+- _ulid: 01KF3GVY7JRH173FB91CQW88D4
+  slugs: []
+  title: Alignment guidance should mention test coverage
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - dx
-    - workflow
   description: >-
     Alignment check should mention tests - when task has spec_ref with AC, alignment guidance should
     ask about test coverage not just spec updates
-  _ulid: 01KF3GVY7JRH173FB91CQW88D4
-  slugs: []
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - dx
+    - workflow
+  vcs_refs: []
+  created_at: '2026-01-16T13:45:40.338Z'
+  notes: []
+  todos: []
+- title: 'Implement: Task Completion Guardrails'
+  type: task
+  spec_ref: '@task-completion-guardrails'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-task-completion-guardrails
+  tags:
+    - workflow
+    - dx
+  _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T13:45:40.338Z'
+  created_at: '2026-01-16T13:49:22.451Z'
   notes: []
   todos: []
