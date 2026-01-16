@@ -1394,6 +1394,10 @@ features:
         then: >-
           The Commands section dynamically lists ALL current task subcommands including recent
           additions
+      - id: ac-3
+        given: The CLI has multiple command groups
+        when: '''kspec help --all'' is run'
+        then: Output shows every command with all options and descriptions as a full reference
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
