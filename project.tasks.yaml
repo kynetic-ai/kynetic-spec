@@ -1910,25 +1910,26 @@
   created_at: '2026-01-16T00:53:25.118Z'
   notes: []
   todos: []
-- title: Fix hooks to use npm run dev -s for clean output
+- _ulid: 01KF2657J2N1SQRFFNBFYQ0XXK
+  slugs: []
+  title: Fix hooks to use npm run dev -s for clean output
   type: task
-  priority: 1
-  spec_ref: null
-  tags:
-    - bug
   description: >-
     Hook commands need -s flag for npm run dev - the npm preamble (e.g., '> @kynetic/spec@0.1.0
     dev') breaks hook output parsing. Options: (1) document using 'npm run dev -s' for development
     hooks, (2) setup command detects dev mode and uses -s, (3) use npx kspec for hooks even in dev
     (slower but cleaner). Current setup uses 'npx kspec' which works for installed package but dev
     often uses npm run dev.
-  _ulid: 01KF2657J2N1SQRFFNBFYQ0XXK
-  slugs: []
-  status: pending
+  spec_ref: null
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - bug
   vcs_refs: []
   created_at: '2026-01-16T01:19:16.033Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T01:19:26.852Z'
