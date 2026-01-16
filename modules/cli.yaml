@@ -248,6 +248,10 @@ features:
             given: item @my-item has only one slug 'only-one'
             when: kspec item set @my-item --remove-slug only-one runs
             then: 'error: cannot remove last slug'
+          - id: ac-4
+            given: item @my-item exists
+            when: kspec item set @my-item --status implemented runs
+            then: item's implementation status is updated to 'implemented'
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
