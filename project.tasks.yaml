@@ -2148,7 +2148,7 @@
     slug (had to use full ULIDs for task-notes, task-todos). Possible indexing/caching issue in the
     loader.
   spec_ref: '@slug-resolution'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2179,6 +2179,10 @@
         loader changes). All acceptance criteria for @slug-resolution appear to be met.
       supersedes: null
   todos: []
+  completed_at: '2026-01-16T15:14:31.437Z'
+  closed_reason: >-
+    Bug no longer reproducible - slug lookup works immediately after item/task creation in all
+    tested scenarios
 - _ulid: 01KF3BAS2XQ4D9Z7KYT4VYGNGA
   slugs: []
   title: Display acceptance criteria in item get output
