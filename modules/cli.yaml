@@ -1166,6 +1166,10 @@ features:
             given: module created successfully
             when: module add completes
             then: manifest includes array has new entry for module file
+          - id: ac-3
+            given: slug 'auth' already exists in spec
+            when: kspec module add --title 'Another' --slug auth runs
+            then: error about duplicate slug
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
