@@ -300,7 +300,7 @@ features:
         created: '2026-01-16T10:55:32.034Z'
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
