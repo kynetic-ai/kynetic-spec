@@ -701,12 +701,20 @@ export function isTaskReady(task: LoadedTask, allTasks: LoadedTask[]): boolean {
 }
 
 /**
- * Get ready tasks (pending + deps met + not blocked), sorted by priority
+ * Get ready tasks (pending + deps met + not blocked), sorted by priority then creation time.
+ * Within the same priority tier, older tasks come first (FIFO).
  */
 export function getReadyTasks(tasks: LoadedTask[]): LoadedTask[] {
   return tasks
     .filter(task => isTaskReady(task, tasks))
-    .sort((a, b) => a.priority - b.priority);
+    .sort((a, b) => {
+      // Primary: priority (lower number = higher priority)
+      if (a.priority !== b.priority) {
+        return a.priority - b.priority;
+      }
+      // Secondary: creation time (older first - FIFO within priority)
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    });
 }
 
 // ============================================================

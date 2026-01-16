@@ -362,6 +362,67 @@ describe('getReadyTasks', () => {
     expect(ready[1].title).toBe('Medium priority');
     expect(ready[2].title).toBe('Low priority');
   });
+
+  // AC: @task-queries ac-query-3
+  it('should sort by creation time within same priority (oldest first)', () => {
+    const tasks: Task[] = [
+      {
+        _ulid: '01TASK100000000000000000',
+        slugs: ['newer-task'],
+        title: 'Newer task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 2,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T12:00:00Z', // Later
+        notes: [],
+        todos: [],
+      },
+      {
+        _ulid: '01TASK200000000000000000',
+        slugs: ['oldest-task'],
+        title: 'Oldest task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 2,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T10:00:00Z', // Earliest
+        notes: [],
+        todos: [],
+      },
+      {
+        _ulid: '01TASK300000000000000000',
+        slugs: ['middle-task'],
+        title: 'Middle task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 2,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T11:00:00Z', // Middle
+        notes: [],
+        todos: [],
+      },
+    ];
+
+    const ready = getReadyTasks(tasks);
+    expect(ready).toHaveLength(3);
+    // Within same priority, oldest first (FIFO)
+    expect(ready[0].title).toBe('Oldest task');
+    expect(ready[1].title).toBe('Middle task');
+    expect(ready[2].title).toBe('Newer task');
+  });
 });
 
 // ============================================================
