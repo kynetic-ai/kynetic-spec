@@ -98,6 +98,10 @@ features:
             given: User runs 'kspec item add' and creates a new spec item
             when: The item is created successfully
             then: 'CLI shows hint: ''Derive implementation task? kspec derive @new-slug'''
+          - id: ac-2
+            given: User runs 'kspec item set @existing-item --description new'
+            when: The item is updated successfully
+            then: 'CLI shows hint: ''Derive implementation task? kspec derive @slug'''
         status:
           maturity: draft
           implementation: implemented
