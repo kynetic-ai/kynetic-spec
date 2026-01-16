@@ -977,7 +977,7 @@
   type: task
   spec_ref: '@cmd-task-delete'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -987,6 +987,7 @@
   created_at: '2026-01-15T12:55:07.303Z'
   notes: []
   todos: []
+  started_at: '2026-01-16T16:35:28.801Z'
 - _ulid: 01KF109NY9BC079GKVN05Y1MV7
   slugs:
     - task-kspec-session-checkpoint
@@ -2275,6 +2276,7 @@
   spec_ref: '@item-set'
   status: completed
   blocked_by: []
+  closed_reason: Implemented --remove-slug option with validation for last slug protection
   depends_on: []
   context: []
   priority: 2
@@ -2284,6 +2286,7 @@
   vcs_refs: []
   created_at: '2026-01-16T12:43:19.670Z'
   started_at: '2026-01-16T15:31:38.158Z'
+  completed_at: '2026-01-16T15:34:03.056Z'
   notes:
     - _ulid: 01KF3Q272QFNST7W09SEMF1NDK
       created_at: '2026-01-16T15:33:57.463Z'
@@ -2297,8 +2300,6 @@
         - All acceptance criteria met
       supersedes: null
   todos: []
-  completed_at: '2026-01-16T15:34:03.056Z'
-  closed_reason: Implemented --remove-slug option with validation for last slug protection
 - _ulid: 01KF3E5FZ28PFCX9GZX86CZZ2E
   slugs:
     - task-kspec-item-patch
