@@ -1724,9 +1724,25 @@
     - reliability
   vcs_refs: []
   created_at: '2026-01-15T22:14:47.906Z'
-  notes: []
-  todos: []
   started_at: '2026-01-16T01:40:13.021Z'
+  notes:
+    - _ulid: 01KF27FBYB72EVJA2G7D2Q6HVP
+      created_at: '2026-01-16T01:42:16.780Z'
+      author: '@claude'
+      content: >-
+        Implemented shadow CLI commands:
+
+        - `shadow status`: Shows health of shadow branch (branch exists, worktree exists, linked)
+
+        - `shadow repair`: Repairs broken worktree when branch still exists
+
+        - `shadow log`: Shows recent commits on shadow branch
+
+
+        The core repair/status logic already existed in parser/shadow.ts. This task wired it to CLI
+        commands.
+      supersedes: null
+  todos: []
 - _ulid: 01KF1W7AKJ10X9PYFC1EXFF400
   slugs:
     - task-recursive-derive
