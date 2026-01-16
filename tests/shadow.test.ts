@@ -19,6 +19,7 @@ import {
   remoteBranchExists,
   fetchRemote,
   hasRemoteTracking,
+  ensureRemoteTracking,
   shadowPull,
   shadowSync,
 } from '../src/parser/shadow.js';
@@ -728,6 +729,89 @@ describe('Shadow Branch', () => {
       } finally {
         await fs.rm(cloneDir, { recursive: true, force: true });
       }
+    });
+
+    // AC-8: Auto-configure tracking when main has remote but shadow doesn't
+    it('ensureRemoteTracking sets up tracking when main has remote', async () => {
+      // Create local repo WITHOUT using setupSyncTest (which auto-pushes shadow)
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Add remote to main branch
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow WITHOUT pushing (simulate network failure or manual init)
+      // Create orphan branch manually
+      execSync(`git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Create initial file so it's a valid commit
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: true');
+      execSync('git add -A && git commit -m "initial"', { cwd: worktreeDir, stdio: 'pipe' });
+
+      // Verify no tracking initially
+      expect(await hasRemoteTracking(worktreeDir)).toBe(false);
+
+      // Call ensureRemoteTracking
+      const result = await ensureRemoteTracking(worktreeDir, testDir);
+
+      expect(result).toBe(true);
+      expect(await hasRemoteTracking(worktreeDir)).toBe(true);
+
+      // Verify tracking config
+      const remote = execSync(`git config branch.${SHADOW_BRANCH_NAME}.remote`, {
+        cwd: worktreeDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(remote).toBe('origin');
+    });
+
+    // AC-8: shadowPull auto-configures tracking
+    it('shadowPull auto-configures tracking when main has remote', async () => {
+      // Same setup as above
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+
+      // Create shadow without tracking
+      execSync(`git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: true');
+      execSync('git add -A && git commit -m "initial"', { cwd: worktreeDir, stdio: 'pipe' });
+
+      // Verify no tracking initially
+      expect(await hasRemoteTracking(worktreeDir)).toBe(false);
+
+      // Call shadowPull - should auto-configure tracking
+      const result = await shadowPull(worktreeDir);
+
+      // Pull succeeds (nothing to pull, but tracking now configured)
+      expect(result.success).toBe(true);
+
+      // Tracking should now be configured
+      expect(await hasRemoteTracking(worktreeDir)).toBe(true);
     });
   });
 });

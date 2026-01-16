@@ -554,6 +554,45 @@ export async function hasRemoteTracking(worktreeDir: string): Promise<boolean> {
 }
 
 /**
+ * Ensure shadow branch has remote tracking configured.
+ * AC-8: If shadow has no tracking but main branch has origin remote,
+ * automatically configure tracking to origin/kspec-meta.
+ *
+ * @param worktreeDir Path to .kspec/ worktree
+ * @param projectRoot Git repository root
+ * @returns true if tracking is now configured (was already or just set up)
+ */
+export async function ensureRemoteTracking(
+  worktreeDir: string,
+  projectRoot: string
+): Promise<boolean> {
+  // Check if already has tracking
+  if (await hasRemoteTracking(worktreeDir)) {
+    return true;
+  }
+
+  // Check if main branch has origin remote
+  if (!(await hasRemote(projectRoot))) {
+    return false;
+  }
+
+  // Set up tracking for shadow branch to origin/kspec-meta
+  try {
+    await execAsync(
+      `git config branch.${SHADOW_BRANCH_NAME}.remote origin`,
+      { cwd: worktreeDir }
+    );
+    await execAsync(
+      `git config branch.${SHADOW_BRANCH_NAME}.merge refs/heads/${SHADOW_BRANCH_NAME}`,
+      { cwd: worktreeDir }
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Result from a sync operation
  */
 export interface ShadowSyncResult {
@@ -567,9 +606,14 @@ export interface ShadowSyncResult {
 /**
  * Fire-and-forget push to remote.
  * AC-1: Called after each auto-commit when tracking is configured.
+ * AC-8: Automatically sets up tracking if main branch has remote.
  * Silently ignores errors - the local commit succeeded regardless.
  */
 export async function shadowPushAsync(worktreeDir: string): Promise<void> {
+  // AC-8: Auto-configure tracking if main has remote but shadow doesn't
+  const projectRoot = path.dirname(worktreeDir);
+  await ensureRemoteTracking(worktreeDir, projectRoot);
+
   // Check if tracking is configured before attempting push
   if (!(await hasRemoteTracking(worktreeDir))) {
     return; // AC-4: silently skip if no tracking
@@ -590,6 +634,7 @@ export async function shadowPushAsync(worktreeDir: string): Promise<void> {
  * AC-2: Called at session start to sync before operations.
  * AC-6: Uses --ff-only first, falls back to --rebase.
  * AC-3: On conflict, returns failure with suggestion.
+ * AC-8: Automatically sets up tracking if main branch has remote.
  */
 export async function shadowPull(worktreeDir: string): Promise<ShadowSyncResult> {
   const result: ShadowSyncResult = {
@@ -599,8 +644,22 @@ export async function shadowPull(worktreeDir: string): Promise<ShadowSyncResult>
     hadConflict: false,
   };
 
+  // AC-8: Auto-configure tracking if main has remote but shadow doesn't
+  const projectRoot = path.dirname(worktreeDir);
+  await ensureRemoteTracking(worktreeDir, projectRoot);
+
   // AC-4: Skip if no remote tracking
   if (!(await hasRemoteTracking(worktreeDir))) {
+    result.success = true;
+    return result;
+  }
+
+  // Check if remote branch exists before attempting pull
+  // Fetch first to ensure refs are up to date
+  await fetchRemote(projectRoot);
+  const remoteHasBranch = await remoteBranchExists(projectRoot, SHADOW_BRANCH_NAME);
+  if (!remoteHasBranch) {
+    // Remote branch doesn't exist yet - nothing to pull, but success
     result.success = true;
     return result;
   }
