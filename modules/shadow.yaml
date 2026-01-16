@@ -87,17 +87,38 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
+        description: |-
           All state-changing kspec commands automatically commit to shadow branch.
 
           Commit messages by command:
+
+          Task lifecycle:
           - task start @ref      -> "Start @{slug}"
           - task complete @ref   -> "Complete @{slug}: {reason}"
+          - task block @ref      -> "Block @{slug}"
+          - task unblock @ref    -> "Unblock @{slug}"
+          - task cancel @ref     -> "Cancel @{slug}"
+          - task set @ref        -> "Update @{slug}"
+
+          Task notes/todos:
           - task note @ref       -> "Note on @{slug}"
           - task add             -> "Add task: {title}"
+          - task todo add        -> "Todo on @{slug}"
+          - task todo done       -> "Todo done on @{slug}"
+          - task todo undone     -> "Todo undone on @{slug}"
+
+          Inbox:
           - inbox add            -> "Inbox: {text}"
           - inbox promote        -> "Promote to @{slug}"
+          - inbox delete         -> "Inbox delete"
+
+          Items:
           - item add/set/delete  -> "{action} @{slug}"
+          - item ac add          -> "AC on @{slug}"
+          - item ac set          -> "AC update on @{slug}"
+          - item ac remove       -> "AC remove on @{slug}"
+
+          Derive:
           - derive               -> "Derive from @{spec}"
 
           Implementation:
