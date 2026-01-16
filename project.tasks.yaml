@@ -2311,22 +2311,42 @@
   created_at: '2026-01-16T13:45:40.338Z'
   notes: []
   todos: []
-- title: 'Implement: Task Completion Guardrails'
+- _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
+  slugs:
+    - task-task-completion-guardrails
+  title: 'Implement: Task Completion Guardrails'
   type: task
   spec_ref: '@task-completion-guardrails'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-task-completion-guardrails
   tags:
     - workflow
     - dx
-  _ulid: 01KF3H2Q4K4G73BAQ072EB56QM
+  vcs_refs: []
+  created_at: '2026-01-16T13:49:22.451Z'
+  notes: []
+  todos: []
+- title: Add derive hint after item add/set commands
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+  description: >-
+    Prompt for task derivation after spec updates - when spec items are added/modified, consider
+    prompting: 'Derive implementation tasks? kspec derive @new-item'
+  _ulid: 01KF3H3WZBY4B3T9SC8Z2C8B6K
+  slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T13:49:22.451Z'
+  created_at: '2026-01-16T13:50:01.195Z'
   notes: []
   todos: []
