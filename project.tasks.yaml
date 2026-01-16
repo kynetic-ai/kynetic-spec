@@ -769,7 +769,7 @@
   title: Design bulk item import from simplified YAML
   type: spike
   spec_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -893,6 +893,7 @@
            - Document the behavior clearly
       supersedes: null
   todos: []
+  closed_reason: Superseded by unified JSON to YAML bulk import spec decision
 - _ulid: 01KEZZ5BDD2Y6NZ8K8065GPHVX
   slugs:
     - task-archive
