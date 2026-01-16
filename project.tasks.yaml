@@ -2274,20 +2274,40 @@
   created_at: '2026-01-16T13:02:50.873Z'
   notes: []
   todos: []
-- title: 'Implement: Spec Completeness Validation'
+- _ulid: 01KF3GTPVSNWS42NKTECY2GZK0
+  slugs:
+    - task-spec-completeness-validation
+  title: 'Implement: Spec Completeness Validation'
   type: task
   spec_ref: '@spec-completeness'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-spec-completeness-validation
   tags: []
-  _ulid: 01KF3GTPVSNWS42NKTECY2GZK0
+  vcs_refs: []
+  created_at: '2026-01-16T13:45:00.025Z'
+  notes: []
+  todos: []
+- title: Alignment guidance should mention test coverage
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - dx
+    - workflow
+  description: >-
+    Alignment check should mention tests - when task has spec_ref with AC, alignment guidance should
+    ask about test coverage not just spec updates
+  _ulid: 01KF3GVY7JRH173FB91CQW88D4
+  slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-16T13:45:00.025Z'
+  created_at: '2026-01-16T13:45:40.338Z'
   notes: []
   todos: []
