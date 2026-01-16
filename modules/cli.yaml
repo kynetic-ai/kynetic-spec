@@ -1538,5 +1538,9 @@ requirements:
             given: ready tasks exist in the project
             when: kspec session start runs
             then: Quick Commands section shows 'kspec task start @ref' hint
+          - id: ac-2
+            given: a task is in progress
+            when: kspec session start runs
+            then: Quick Commands section shows task note and complete hints
     status:
       implementation: implemented
