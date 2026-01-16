@@ -204,3 +204,12 @@ inbox:
       - validation
       - spec
     added_by: '@claude'
+  - _ulid: 01KF293844746R6HCBGB0CB96P
+    text: >-
+      Alignment check should mention tests - when task has spec_ref with AC, alignment guidance
+      should ask about test coverage not just spec updates
+    created_at: '2026-01-16T02:10:36.805Z'
+    tags:
+      - workflow
+      - testing
+    added_by: '@claude'
