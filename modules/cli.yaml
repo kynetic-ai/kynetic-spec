@@ -1138,6 +1138,25 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T13:02:14.166Z'
+        description: |-
+          kspec module add [options]
+
+          Create a new module YAML file.
+
+          Options:
+          - --title <title>: Module title (required)
+          - --slug <slug>: Module slug (required, becomes filename)
+          - --description <desc>: Module description
+          - --tag <tag...>: Tags for the module
+
+          Creates:
+          1. modules/{slug}.yaml with module item
+          2. Adds include to manifest
+
+          Example:
+            kspec module add --title "Auth System" --slug auth
+            # Creates modules/auth.yaml
+            # Adds to manifest: includes: - modules/auth.yaml
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
