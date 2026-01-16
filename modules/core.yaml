@@ -270,6 +270,10 @@ features:
             given: no item exists with slug 'nonexistent'
             when: '@nonexistent is referenced'
             then: broken reference error is reported
+          - id: ac-4
+            given: multiple items share ULID prefix '01KEZ'
+            when: '@01KEZ is referenced'
+            then: ambiguity error is reported listing matching items
   - _ulid: 01JHNKA0W2REFS000000000000
     slugs:
       - reference-system
