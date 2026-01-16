@@ -223,6 +223,20 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T12:35:12.982Z'
+        description: |-
+          Optional verbose output for shadow branch operations.
+
+          By default, auto-commit failures are silent (see @shadow-autocommit ac-6).
+          Debug mode surfaces these errors for troubleshooting.
+
+          Enable via:
+          - KSPEC_DEBUG=1 environment variable
+          - --verbose flag on any command
+
+          When enabled:
+          - Auto-commit failures are reported to stderr
+          - Git operations show underlying commands
+          - Useful for diagnosing worktree/branch issues
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
