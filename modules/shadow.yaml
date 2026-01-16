@@ -313,6 +313,21 @@ features:
         implements:
           - '@shadow-init'
           - '@cmd-init'
+    features:
+      - _ulid: 01KF47G9P4VFQZR8MX8WPN3YZ0
+        slugs:
+          - shadow-init-remote
+        title: Init Remote Detection
+        type: feature
+        tags: []
+        description: >-
+          When running kspec init in a fresh clone, automatically detect if kspec-meta branch exists
+          on remote and attach to it rather than creating a new orphan branch.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-16T20:21:16.100Z'
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
