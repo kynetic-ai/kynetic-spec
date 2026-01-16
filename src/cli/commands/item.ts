@@ -341,6 +341,7 @@ export function registerItemCommands(program: Command): void {
     .option('--title <title>', 'Set title')
     .option('--type <type>', 'Set type')
     .option('--slug <slug>', 'Add a slug')
+    .option('--remove-slug <slug>', 'Remove a slug')
     .option('--priority <priority>', 'Set priority')
     .option('--tag <tag...>', 'Set tags (replaces existing)')
     .option('--description <desc>', 'Set description')
@@ -374,13 +375,33 @@ export function registerItemCommands(program: Command): void {
           }
         }
 
+        // Validate --remove-slug
+        if (options.removeSlug) {
+          const currentSlugs = foundItem.slugs || [];
+          if (!currentSlugs.includes(options.removeSlug)) {
+            error(`Slug '${options.removeSlug}' not found on item`);
+            process.exit(1);
+          }
+          if (currentSlugs.length === 1) {
+            error(`Cannot remove last slug '${options.removeSlug}' - items must have at least one slug`);
+            process.exit(1);
+          }
+        }
+
         // Build updates object
         const updates: Partial<SpecItemInput> = {};
 
         if (options.title) updates.title = options.title;
         if (options.type) updates.type = options.type as ItemType;
-        if (options.slug) {
-          updates.slugs = [...(foundItem.slugs || []), options.slug];
+        if (options.slug || options.removeSlug) {
+          let slugs = [...(foundItem.slugs || [])];
+          if (options.removeSlug) {
+            slugs = slugs.filter(s => s !== options.removeSlug);
+          }
+          if (options.slug) {
+            slugs.push(options.slug);
+          }
+          updates.slugs = slugs;
         }
         if (options.priority) updates.priority = options.priority;
         if (options.tag) updates.tags = options.tag;
