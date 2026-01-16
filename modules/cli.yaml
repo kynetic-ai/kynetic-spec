@@ -737,6 +737,10 @@ features:
             given: JSON with unknown field
             when: kspec task patch @my-task --data '{"unknown":true}' runs
             then: error about unknown field (strict by default)
+          - id: ac-4
+            given: '--allow-unknown flag and unknown field'
+            when: kspec task patch @my-task --data '{"unknown":true}' --allow-unknown runs
+            then: field is written
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
