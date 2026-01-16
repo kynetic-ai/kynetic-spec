@@ -553,6 +553,10 @@ features:
         given: new shadow branch is created and origin remote exists
         when: initializeShadow completes
         then: tracking is configured to origin/kspec-meta regardless of push success
+      - id: ac-8
+        given: shadow branch exists without tracking and main branch has origin remote
+        when: any sync operation is attempted
+        then: tracking is automatically configured to origin/kspec-meta
     status:
       maturity: draft
       implementation: implemented
