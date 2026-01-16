@@ -194,6 +194,13 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-16T13:52:53.609Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: >-
+              A parent item has children and user runs 'kspec item set @parent --implementation
+              implemented'
+            when: The command completes
+            then: 'CLI prompts: ''Update N child items to implemented? [y/n]'''
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs:
       - file-structure
