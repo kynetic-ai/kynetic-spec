@@ -185,7 +185,7 @@ async function installClaudeCodeHooks(projectDir: string): Promise<{ stop: boole
     const hooks = (config.hooks as Record<string, unknown[]>) || {};
 
     // Install UserPromptSubmit hook (spec-first reminder)
-    const promptCheckCommand = 'npx tsx src/cli/index.ts session prompt-check';
+    const promptCheckCommand = 'npm run dev -- session prompt-check';
     const existingPromptHooks = hooks.UserPromptSubmit as Array<{ hooks?: Array<{ command?: string }> }> | undefined;
     const promptAlreadyInstalled = existingPromptHooks?.some(
       (entry) => entry.hooks?.some((hook) => hook.command?.includes('session prompt-check'))
@@ -209,7 +209,7 @@ async function installClaudeCodeHooks(projectDir: string): Promise<{ stop: boole
     }
 
     // Install Stop hook (checkpoint)
-    const stopHookCommand = 'npx tsx src/cli/index.ts session checkpoint --json';
+    const stopHookCommand = 'npm run dev -- session checkpoint --json';
     const existingStopHooks = hooks.Stop as Array<{ matcher?: string; hooks?: Array<{ command?: string }> }> | undefined;
     const stopAlreadyInstalled = existingStopHooks?.some(
       (entry) => entry.hooks?.some((hook) => hook.command?.includes('session checkpoint'))
@@ -265,7 +265,7 @@ async function installClaudeCodeStopHook(projectDir: string): Promise<boolean> {
     }
 
     // Build the stop hook command
-    const stopHookCommand = 'npx tsx src/cli/index.ts session checkpoint --json';
+    const stopHookCommand = 'npm run dev -- session checkpoint --json';
 
     // Get or create hooks object
     const hooks = (config.hooks as Record<string, unknown[]>) || {};

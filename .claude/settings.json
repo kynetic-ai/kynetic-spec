@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx src/cli/index.ts session prompt-check"
+            "command": "npm run dev -- session prompt-check"
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx src/cli/index.ts session checkpoint --json"
+            "command": "npm run dev -- session checkpoint --json"
           }
         ]
       }
