@@ -552,7 +552,7 @@ features:
           implementation: implemented
       - _ulid: 01KF24J6HENWZ8KS5ZHQHCMA9B
         slugs:
-          - task-notes
+          - task-notes-cmd
         title: kspec task notes
         type: requirement
         tags: []
@@ -570,7 +570,7 @@ features:
           implementation: implemented
       - _ulid: 01KF24J8KKT3Y1N6M6JR7ACHQ8
         slugs:
-          - task-todos
+          - task-todos-cmd
         title: kspec task todos
         type: requirement
         tags: []
