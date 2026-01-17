@@ -462,6 +462,121 @@ describe('Integration: derive', () => {
     const listOutput = kspec('tasks list', tempDir);
     expect(listOutput).not.toContain('Implement: Test Feature');
   });
+
+  // AC: @cmd-derive ac-2
+  it('should recursively derive tasks for parent and children', () => {
+    // test-feature has one child: test-requirement
+    const output = kspec('derive @test-feature', tempDir);
+    expect(output).toContain('Created 2 task(s)');
+
+    // Verify both tasks were created
+    const listOutput = kspec('tasks list', tempDir);
+    expect(listOutput).toContain('Test Feature');
+    expect(listOutput).toContain('Test Requirement');
+  });
+
+  // AC: @cmd-derive ac-3
+  it('should only derive single item with --flat', () => {
+    const output = kspec('derive @test-feature --flat', tempDir);
+    expect(output).toContain('Created 1 task(s)');
+
+    // Verify only parent task was created, not child
+    const listOutput = kspec('tasks list', tempDir);
+    expect(listOutput).toContain('Test Feature');
+    expect(listOutput).not.toContain('Test Requirement');
+  });
+
+  // AC: @cmd-derive ac-4, ac-5
+  it('should set depends_on for child tasks', () => {
+    // Derive recursively to create both tasks
+    kspec('derive @test-feature', tempDir);
+
+    // Get the child task details
+    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Child task should depend on parent task
+    expect(task.depends_on).toContain('@task-test-feature');
+  });
+
+  // AC: @cmd-derive ac-6
+  it('should use existing parent task for depends_on', () => {
+    // First derive just the parent
+    kspec('derive @test-feature --flat', tempDir);
+
+    // Then derive the child - should depend on existing parent task
+    kspec('derive @test-requirement', tempDir);
+
+    // Get the child task details
+    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Child task should depend on existing parent task
+    expect(task.depends_on).toContain('@task-test-feature');
+  });
+
+  // AC: @cmd-derive ac-7
+  it('should skip existing tasks without --force', () => {
+    // First derive
+    kspec('derive @test-feature --flat', tempDir);
+
+    // Second derive should skip
+    const output = kspec('derive @test-feature --flat', tempDir);
+    expect(output).toContain('Skipped');
+    expect(output).toContain('task exists');
+  });
+
+  // AC: @cmd-derive ac-8
+  it('should handle partial derivation (some children have tasks)', () => {
+    // Derive the parent flat first
+    kspec('derive @test-feature --flat', tempDir);
+
+    // Now recursive derive the whole tree
+    const output = kspec('derive @test-feature', tempDir);
+
+    // Should create only the child, skip the parent
+    expect(output).toContain('Created 1 task(s)');
+    expect(output).toContain('Skipped 1');
+  });
+
+  // AC: @cmd-derive ac-10
+  it('should show dry-run for recursive derive', () => {
+    const output = kspec('derive @test-feature --dry-run', tempDir);
+    expect(output).toContain('Would create:');
+    expect(output).toContain('Test Feature');
+    expect(output).toContain('Test Requirement');
+    expect(output).toContain('depends:');
+  });
+
+  // AC: @cmd-derive ac-11
+  it('should output JSON with correct format', () => {
+    const output = kspec('derive @test-feature --dry-run --json', tempDir);
+    const results = JSON.parse(output);
+
+    expect(results).toHaveLength(2);
+    expect(results[0]).toHaveProperty('ulid');
+    expect(results[0]).toHaveProperty('slug');
+    expect(results[0]).toHaveProperty('spec_ref');
+    expect(results[0]).toHaveProperty('depends_on');
+    expect(results[0]).toHaveProperty('action');
+
+    // First item (parent) should have no deps
+    expect(results[0].depends_on).toEqual([]);
+
+    // Second item (child) should depend on parent
+    expect(results[1].depends_on).toContain('@task-test-feature');
+  });
+
+  // AC: @cmd-derive ac-13
+  it('should error on invalid reference', () => {
+    expect(() => {
+      execSync(`npx tsx ${CLI_PATH} derive @nonexistent`, {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+    }).toThrow();
+  });
 });
 
 describe('Integration: session', () => {

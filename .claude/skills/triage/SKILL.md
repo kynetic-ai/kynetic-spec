@@ -94,8 +94,14 @@ kspec item ac add @ref --given "..." --when "..." --then "..."
 # Create spec for gap
 kspec item add --under @parent --title "..." --type requirement --slug slug
 
-# Derive task from spec
+# Derive task from spec (recursive by default - includes children)
 kspec derive @spec-ref
+
+# Preview before deriving
+kspec derive @spec-ref --dry-run
+
+# Derive only this spec, not children
+kspec derive @spec-ref --flat
 ```
 
 ## Session Pattern
