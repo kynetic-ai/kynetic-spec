@@ -3348,23 +3348,41 @@
   created_at: '2026-01-17T02:34:36.108Z'
   notes: []
   todos: []
-- title: 'Implement: Meta CLI Commands'
+- _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
+  slugs:
+    - task-meta-cli-commands
+  title: 'Implement: Meta CLI Commands'
   type: task
   spec_ref: '@meta-commands'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-meta-cli-commands
   tags:
     - mvp
     - meta
     - cli
-  depends_on: []
-  _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.133Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta show'
+  type: task
+  spec_ref: '@meta-show'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-meta-show
+  tags: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.133Z'
+  created_at: '2026-01-17T02:34:36.171Z'
   notes: []
   todos: []
