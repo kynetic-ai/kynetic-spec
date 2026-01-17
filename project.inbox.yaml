@@ -433,3 +433,16 @@ inbox:
       - bug
       - hooks
     added_by: '@claude'
+  - _ulid: 01KF6VFK9BP2Y6CDFATSHHWNKN
+    text: >-
+      AC test coverage guidance: Acceptance criteria without corresponding tests are risky - the
+      finalization bug showed code can be unreachable/broken without tests catching it. Consider:
+      (1) Add guidance to AGENTS.md that AC should have tests, (2) Validation warning for specs with
+      AC but no tests linked, (3) Task completion check for test coverage of linked spec AC. The
+      'tests' relationship type exists but isn't enforced.
+    created_at: '2026-01-17T20:48:53.547Z'
+    tags:
+      - process
+      - testing
+      - spec-system
+    added_by: '@claude'
