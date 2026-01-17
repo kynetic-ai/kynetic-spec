@@ -370,3 +370,15 @@ inbox:
       - dx
       - agents
     added_by: '@claude'
+  - _ulid: 01KF6Q6ES226T0NP8B8VA52HZ6
+    text: >-
+      Spec status persistence gap: When task start syncs spec implementation status to in_progress,
+      this change should be committed or included with the task start commit. Currently the status
+      update happens but may not be persisted until later work creates a commit. The gap was noticed
+      when spec went in_progress but wasn't captured in the commit stream.
+    created_at: '2026-01-17T19:33:59.715Z'
+    tags:
+      - workflow
+      - spec
+      - gap
+    added_by: '@claude'
