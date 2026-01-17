@@ -3422,21 +3422,39 @@
   created_at: '2026-01-17T02:34:36.225Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta conventions'
+- _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
+  slugs:
+    - task-kspec-meta-conventions
+  title: 'Implement: kspec meta conventions'
   type: task
   spec_ref: '@meta-conventions-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.253Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta observe'
+  type: task
+  spec_ref: '@meta-observe-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-conventions
+    - task-kspec-meta-observe
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
+  _ulid: 01KF4WVWVWZY4CDA1M83NTX20B
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.253Z'
+  created_at: '2026-01-17T02:34:36.284Z'
   notes: []
   todos: []
