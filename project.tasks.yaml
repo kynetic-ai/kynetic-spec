@@ -3166,21 +3166,41 @@
   created_at: '2026-01-17T02:34:35.812Z'
   notes: []
   todos: []
-- title: 'Implement: Convention Validation Strategy'
+- _ulid: 01KF4WVWE4GXJAT63VMQM91REF
+  slugs:
+    - task-convention-validation-strategy
+  title: 'Implement: Convention Validation Strategy'
   type: task
   spec_ref: '@convention-validation'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-convention-validation-strategy
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - '@task-convention-definitions'
-  _ulid: 01KF4WVWE4GXJAT63VMQM91REF
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.844Z'
+  notes: []
+  todos: []
+- title: 'Implement: Observations'
+  type: task
+  spec_ref: '@observations'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-observations
+  tags:
+    - mvp
+    - meta
+    - feedback
+  depends_on: []
+  _ulid: 01KF4WVWF7BXCMP188Z3P1EPQP
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.844Z'
+  created_at: '2026-01-17T02:34:35.879Z'
   notes: []
   todos: []
