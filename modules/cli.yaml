@@ -1882,6 +1882,10 @@ features:
         given: session metadata
         when: stored
         then: 'includes: task_id (optional), agent_type, status, started_at, ended_at'
+      - id: ac-6
+        given: session ends
+        when: updateSessionStatus(id, status) is called
+        then: updates metadata with status and ended_at timestamp
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
