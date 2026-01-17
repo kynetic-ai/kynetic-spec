@@ -4369,4 +4369,34 @@
            - Chalk colors: blue for agent content, gray for metadata, green for success, red for errors
            - Truncation: 20 lines or 1000 chars with '... (truncated)' indicator
       supersedes: null
+    - _ulid: 01KF6NGXKZ8NA8ED7Z4MT8J0WK
+      created_at: '2026-01-17T19:04:45.440Z'
+      author: '@claude'
+      content: >-
+        Key learnings from kynetic beads history (pitfalls to avoid):
+
+
+        1. FINALIZATION BUG: Agent messages stayed streaming forever because Hub Agent didn't send
+        finalization signal. Fix: Ensure empty string chunk or status event marks message complete.
+
+
+        2. SANITIZATION GAPS: Table elements, KaTeX equation elements were stripped after streaming
+        ended. Fix: Whitelist all HTML elements your rendering produces.
+
+
+        3. INLINE STYLING BLEED: Bold/italic/strikethrough applied to entire line because code used
+        element.lastElementChild instead of data.nodes[data.index]. Fix: Target the actual inline
+        element.
+
+
+        4. LIBRARY FORMAT REQUIREMENTS: streaming-markdown requires newline after $$ for block math.
+        Don't try to fix input format after the fact - guide the source to produce correct format.
+
+
+        5. TEST QUALITY: Permissive assertions like toBeGreaterThanOrEqual(3) couldn't catch bugs.
+        Fix: Use exact assertions with content verification.
+
+
+        6. TREAT LLM OUTPUT AS UNTRUSTED: Even though it's our agent, sanitize like user content.
+      supersedes: null
   todos: []
