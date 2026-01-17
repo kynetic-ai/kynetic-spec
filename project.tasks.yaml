@@ -3039,21 +3039,39 @@
   created_at: '2026-01-17T02:34:35.621Z'
   notes: []
   todos: []
-- title: 'Implement: Workflow Schema'
+- _ulid: 01KF4WVW820TFJ811C566EC6AR
+  slugs:
+    - task-workflow-schema
+  title: 'Implement: Workflow Schema'
   type: task
   spec_ref: '@workflow-schema'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-workflow-definitions'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.650Z'
+  notes: []
+  todos: []
+- title: 'Implement: Workflow Step Types'
+  type: task
+  spec_ref: '@workflow-steps'
+  derivation: auto
   priority: 3
   slugs:
-    - task-workflow-schema
+    - task-workflow-step-types
   tags: []
   depends_on:
     - '@task-workflow-definitions'
-  _ulid: 01KF4WVW820TFJ811C566EC6AR
+  _ulid: 01KF4WVW8TR5MT0GXK7DX26E7R
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.650Z'
+  created_at: '2026-01-17T02:34:35.674Z'
   notes: []
   todos: []
