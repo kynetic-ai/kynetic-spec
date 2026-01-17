@@ -988,6 +988,10 @@ features:
             then: >-
               Each task shows: notes count, most recent note (first 50 chars), pending todos count,
               created_at timestamp
+          - id: ac-2
+            given: A user runs tasks ready with -v (single verbose)
+            when: Tasks are displayed
+            then: 'Current behavior preserved: shows spec_ref, depends_on, tags inline'
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
