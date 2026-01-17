@@ -1815,6 +1815,10 @@ features:
         given: an ACP agent process
         when: client.initialize() is called
         then: returns agent capabilities including supported features
+      - id: ac-2
+        given: an initialized client
+        when: client.newSession({ cwd, _meta }) is called
+        then: creates a new session and returns sessionId
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
