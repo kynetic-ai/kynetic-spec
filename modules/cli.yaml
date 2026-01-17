@@ -1809,7 +1809,7 @@ features:
         then: creates a fresh ACP session so each iteration has a clean context window
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     requirements:
       - _ulid: 01KF6NBAZPZTWADHJJK95B2K6C
         slugs:

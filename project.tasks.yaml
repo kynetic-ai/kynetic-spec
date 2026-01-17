@@ -4616,6 +4616,56 @@
     - ralph
   vcs_refs: []
   created_at: '2026-01-17T22:37:43.345Z'
-  notes: []
-  todos: []
   started_at: '2026-01-17T22:37:50.272Z'
+  notes:
+    - _ulid: 01KF71QGGSETBM4V0ZAF9M1508
+      created_at: '2026-01-17T22:38:04.313Z'
+      author: '@claude'
+      content: >-
+        ## Problem
+
+
+        Running `kspec ralph` with multiple iterations caused "Prompt is too long" errors around
+        iteration 5. The ACP session was reusing a single session across all iterations, causing
+        conversation history to accumulate:
+
+        - Each iteration sent a new prompt with full session context JSON
+
+        - Agent responses, tool calls, and results all persisted in session
+
+        - By iteration 5, cumulative context exceeded Claude's limit
+
+
+        ## Root Cause
+
+
+        In `src/cli/commands/ralph.ts`, `agent.client.newSession()` was inside the `if (!agent)`
+        block, meaning it only ran once when the agent was first spawned. Subsequent iterations
+        reused the same session.
+
+
+        ## Fix
+
+
+        Moved session creation outside the conditional - now runs at the start of each iteration.
+        The agent process is still reused (spawned once) for efficiency, but each iteration gets a
+        fresh context window.
+
+
+        ## Spec Update
+
+
+        Added AC-14 to @cli-ralph: "given a loop iteration starts, when building prompt for the
+        agent, then creates a fresh ACP session so each iteration has a clean context window"
+
+
+        ## Verification
+
+
+        - Build passes
+
+        - All 30 ralph tests pass
+
+        - PR #17 merged
+      supersedes: null
+  todos: []
