@@ -186,3 +186,14 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF4WJJJX7V9JQP1PDX1ZE8AM
+    text: >-
+      PR skill improvements: 1) Ruleset lookup is fragile (fails silently, API may require different
+      permissions). Consider simpler check or just try push and handle rejection. 2) Branch name
+      prompt is overkill - auto-generate from task slug or recent commit, only ask if unclear.
+    created_at: '2026-01-17T02:29:30.845Z'
+    tags:
+      - skill
+      - pr
+      - dx
+    added_by: '@claude'
