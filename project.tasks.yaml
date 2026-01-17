@@ -2927,7 +2927,7 @@
   type: task
   spec_ref: '@meta-manifest'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2939,6 +2939,7 @@
   created_at: '2026-01-17T02:34:35.390Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T23:50:03.334Z'
 - _ulid: 01KF4WVW0YWMRS6R0M19J5B84P
   slugs:
     - task-meta-manifest-format
@@ -4679,6 +4680,7 @@
   spec_ref: '@cli-ralph'
   status: completed
   blocked_by: []
+  closed_reason: Added --focus flag with prominent placement in prompt. Spec AC-15 covers this.
   depends_on: []
   context: []
   priority: 1
@@ -4688,6 +4690,7 @@
   vcs_refs: []
   created_at: '2026-01-17T23:03:01.972Z'
   started_at: '2026-01-17T23:03:07.904Z'
+  completed_at: '2026-01-17T23:03:28.116Z'
   notes:
     - _ulid: 01KF735SGB3C641F8KFH5SJ0KS
       created_at: '2026-01-17T23:03:20.843Z'
@@ -4743,5 +4746,3 @@
         - Verified with `--dry-run --focus "..."` - focus appears correctly in prompt
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T23:03:28.116Z'
-  closed_reason: Added --focus flag with prominent placement in prompt. Spec AC-15 covers this.
