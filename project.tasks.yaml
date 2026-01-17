@@ -2891,21 +2891,39 @@
   created_at: '2026-01-17T02:34:35.390Z'
   notes: []
   todos: []
-- title: 'Implement: Meta Manifest Format'
+- _ulid: 01KF4WVW0YWMRS6R0M19J5B84P
+  slugs:
+    - task-meta-manifest-format
+  title: 'Implement: Meta Manifest Format'
   type: task
   spec_ref: '@meta-manifest-format'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-manifest'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.422Z'
+  notes: []
+  todos: []
+- title: 'Implement: Meta Includes'
+  type: task
+  spec_ref: '@meta-includes'
+  derivation: auto
   priority: 3
   slugs:
-    - task-meta-manifest-format
+    - task-meta-includes
   tags: []
   depends_on:
     - '@task-meta-manifest'
-  _ulid: 01KF4WVW0YWMRS6R0M19J5B84P
+  _ulid: 01KF4WVW1N2XVGXKQHY1PRJVS0
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.422Z'
+  created_at: '2026-01-17T02:34:35.445Z'
   notes: []
   todos: []
