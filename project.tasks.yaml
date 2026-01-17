@@ -2927,21 +2927,41 @@
   created_at: '2026-01-17T02:34:35.445Z'
   notes: []
   todos: []
-- title: 'Implement: Meta Validation Integration'
+- _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
+  slugs:
+    - task-meta-validation-integration
+  title: 'Implement: Meta Validation Integration'
   type: task
   spec_ref: '@meta-validation'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-meta-validation-integration
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - '@task-meta-manifest'
-  _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.476Z'
+  notes: []
+  todos: []
+- title: 'Implement: Agent Definitions'
+  type: task
+  spec_ref: '@agent-definitions'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-agent-definitions
+  tags:
+    - mvp
+    - meta
+    - agents
+  depends_on: []
+  _ulid: 01KF4WVW3HRCGZFPXJ70QF7BC5
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.476Z'
+  created_at: '2026-01-17T02:34:35.505Z'
   notes: []
   todos: []
