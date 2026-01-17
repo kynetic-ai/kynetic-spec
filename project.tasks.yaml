@@ -3330,21 +3330,41 @@
   created_at: '2026-01-17T02:34:36.076Z'
   notes: []
   todos: []
-- title: 'Implement: Context Integration'
+- _ulid: 01KF4WVWPC3Z0KQV25GSGMT1XY
+  slugs:
+    - task-context-integration
+  title: 'Implement: Context Integration'
   type: task
   spec_ref: '@context-integration'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-context-integration
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - '@task-session-context-research'
-  _ulid: 01KF4WVWPC3Z0KQV25GSGMT1XY
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.108Z'
+  notes: []
+  todos: []
+- title: 'Implement: Meta CLI Commands'
+  type: task
+  spec_ref: '@meta-commands'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-meta-cli-commands
+  tags:
+    - mvp
+    - meta
+    - cli
+  depends_on: []
+  _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.108Z'
+  created_at: '2026-01-17T02:34:36.133Z'
   notes: []
   todos: []
