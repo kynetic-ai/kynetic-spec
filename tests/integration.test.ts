@@ -434,6 +434,190 @@ describe('Integration: item set', () => {
   });
 });
 
+describe('Integration: item patch', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @item-patch ac-1
+  it('should update item with --data JSON', () => {
+    // Create a test item
+    kspec('item add --under @test-core --title "Patch Test" --slug patch-test --type feature', tempDir);
+
+    // Patch with status
+    kspec('item patch @patch-test --data \'{"status":{"implementation":"implemented"}}\'', tempDir);
+
+    // Verify update
+    const output = kspec('item get @patch-test', tempDir);
+    expect(output).toContain('implemented');
+  });
+
+  // AC: @item-patch ac-2
+  it('should show error for invalid JSON', () => {
+    kspec('item add --under @test-core --title "JSON Test" --slug json-test --type feature', tempDir);
+
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item patch @json-test --data 'not json'`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  // AC: @item-patch ac-3
+  it('should accept JSON from stdin', () => {
+    kspec('item add --under @test-core --title "Stdin Test" --slug stdin-test --type feature', tempDir);
+
+    execSync(
+      `echo '{"description":"From stdin"}' | npx tsx ${CLI_PATH} item patch @stdin-test`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    const output = kspec('item get @stdin-test', tempDir);
+    expect(output).toContain('From stdin');
+  });
+
+  // AC: @item-patch ac-4
+  it('should preview changes with --dry-run', () => {
+    kspec('item add --under @test-core --title "DryRun Test" --slug dryrun-test --type feature', tempDir);
+
+    const output = kspec('item patch @dryrun-test --data \'{"title":"New Title"}\' --dry-run', tempDir);
+    expect(output).toContain('Would patch');
+
+    // Verify no actual change
+    const item = kspec('item get @dryrun-test', tempDir);
+    expect(item).toContain('DryRun Test');
+    expect(item).not.toContain('New Title');
+  });
+
+  // AC: @item-patch ac-5
+  it('should reject unknown fields by default', () => {
+    kspec('item add --under @test-core --title "Unknown Test" --slug unknown-test --type feature', tempDir);
+
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item patch @unknown-test --data '{"foobar":"value"}'`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  // AC: @item-patch ac-6
+  it('should allow unknown fields with --allow-unknown', () => {
+    kspec('item add --under @test-core --title "AllowUnknown Test" --slug allow-unknown-test --type feature', tempDir);
+
+    // This should not throw
+    kspec('item patch @allow-unknown-test --data \'{"custom_field":"value"}\' --allow-unknown', tempDir);
+  });
+
+  // AC: @item-patch ac-7
+  it('should patch multiple items from JSONL', () => {
+    kspec('item add --under @test-core --title "Bulk Test 1" --slug bulk-test-1 --type feature', tempDir);
+    kspec('item add --under @test-core --title "Bulk Test 2" --slug bulk-test-2 --type feature', tempDir);
+
+    const jsonl = '{"ref":"@bulk-test-1","data":{"priority":"high"}}\\n{"ref":"@bulk-test-2","data":{"priority":"low"}}';
+    const result = execSync(
+      `printf '${jsonl}' | npx tsx ${CLI_PATH} item patch --bulk --json`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    const parsed = JSON.parse(result);
+    expect(parsed.summary.total).toBe(2);
+    expect(parsed.summary.updated).toBe(2);
+  });
+
+  // AC: @item-patch ac-8
+  it('should patch multiple items from JSON array', () => {
+    kspec('item add --under @test-core --title "Array Test 1" --slug array-test-1 --type feature', tempDir);
+    kspec('item add --under @test-core --title "Array Test 2" --slug array-test-2 --type feature', tempDir);
+
+    const json = JSON.stringify([
+      { ref: '@array-test-1', data: { priority: 'high' } },
+      { ref: '@array-test-2', data: { priority: 'low' } }
+    ]);
+    const result = execSync(
+      `echo '${json}' | npx tsx ${CLI_PATH} item patch --bulk --json`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    const parsed = JSON.parse(result);
+    expect(parsed.summary.updated).toBe(2);
+  });
+
+  // AC: @item-patch ac-9
+  it('should continue on error by default in bulk mode', () => {
+    kspec('item add --under @test-core --title "Continue Test" --slug continue-test --type feature', tempDir);
+
+    const jsonl = '{"ref":"@nonexistent","data":{"title":"X"}}\\n{"ref":"@continue-test","data":{"priority":"high"}}';
+    try {
+      const result = execSync(
+        `printf '${jsonl}' | npx tsx ${CLI_PATH} item patch --bulk --json`,
+        { cwd: tempDir, encoding: 'utf-8' }
+      );
+      const parsed = JSON.parse(result);
+      expect(parsed.summary.failed).toBe(1);
+      expect(parsed.summary.updated).toBe(1);
+    } catch (error: unknown) {
+      // Command exits with 1 when there are failures, but stdout has the result
+      const execError = error as { stdout?: string };
+      if (execError.stdout) {
+        const parsed = JSON.parse(execError.stdout);
+        expect(parsed.summary.failed).toBe(1);
+        expect(parsed.summary.updated).toBe(1);
+      } else {
+        throw error;
+      }
+    }
+  });
+
+  // AC: @item-patch ac-10
+  it('should stop on first error with --fail-fast', () => {
+    kspec('item add --under @test-core --title "Failfast Test" --slug failfast-test --type feature', tempDir);
+
+    const jsonl = '{"ref":"@nonexistent","data":{"title":"X"}}\\n{"ref":"@failfast-test","data":{"priority":"high"}}';
+    try {
+      execSync(
+        `printf '${jsonl}' | npx tsx ${CLI_PATH} item patch --bulk --fail-fast --json`,
+        { cwd: tempDir, encoding: 'utf-8' }
+      );
+    } catch (error: unknown) {
+      const execError = error as { stdout?: string };
+      if (execError.stdout) {
+        const parsed = JSON.parse(execError.stdout);
+        expect(parsed.summary.failed).toBe(1);
+        expect(parsed.summary.skipped).toBe(1);
+        expect(parsed.summary.updated).toBe(0);
+      }
+    }
+  });
+
+  // AC: @item-patch ac-11
+  it('should reject task refs', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item patch @test-task-pending --data '{"title":"X"}'`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow(/Not a spec item/);
+  });
+
+  // AC: @item-patch ac-12
+  it('should error on nonexistent ref', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} item patch @nonexistent --data '{"title":"X"}'`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow(/Item not found/);
+  });
+});
+
 describe('Integration: derive', () => {
   let tempDir: string;
 

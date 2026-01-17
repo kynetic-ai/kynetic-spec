@@ -119,6 +119,8 @@ kspec derive --all
 | `tasks ready` | List actionable tasks |
 | `inbox add/list/promote/delete` | Idea capture |
 | `item add/get/set` | Spec item CRUD |
+| `item patch @ref --data '{...}'` | Update item via JSON |
+| `item patch --bulk` | Bulk update from stdin (JSONL/JSON array) |
 | `derive @spec` | Create task(s) from spec (recursive by default) |
 | `derive @spec --flat` | Create single task (no children) |
 | `derive @spec --dry-run` | Preview without creating |

@@ -93,6 +93,12 @@ export const SpecItemInputSchema = SpecItemSchema.omit({ _ulid: true }).extend({
 });
 
 /**
+ * Spec item patch schema (partial fields, passthrough for unknown)
+ * Used by `kspec item patch` for JSON updates
+ */
+export const SpecItemPatchSchema = SpecItemInputSchema.partial().passthrough();
+
+/**
  * Root manifest schema
  */
 export const ManifestSchema = z.object({
@@ -123,4 +129,5 @@ export type ImplementationRef = z.infer<typeof ImplementationRefSchema>;
 export type Traceability = z.infer<typeof TraceabilitySchema>;
 export type SpecItem = z.infer<typeof SpecItemSchema>;
 export type SpecItemInput = z.infer<typeof SpecItemInputSchema>;
+export type SpecItemPatch = z.infer<typeof SpecItemPatchSchema>;
 export type Manifest = z.infer<typeof ManifestSchema>;
