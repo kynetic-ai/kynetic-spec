@@ -1,0 +1,2 @@
+{"ts":1768690974953,"seq":0,"type":"session.start","session_id":"01KF735077H8WK8AMXYD5TYAQG","data":{"adapter":"claude-code-acp","maxLoops":5,"maxRetries":3,"maxFailures":3,"yolo":true,"focus":"Prioritize bug fixes over new features"}}
+{"ts":1768690975011,"seq":1,"type":"session.end","session_id":"01KF735077H8WK8AMXYD5TYAQG","data":{"status":"completed","consecutiveFailures":0}}
