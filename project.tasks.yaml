@@ -2983,21 +2983,39 @@
   created_at: '2026-01-17T02:34:35.532Z'
   notes: []
   todos: []
-- title: 'Implement: Agent Capabilities'
+- _ulid: 01KF4WVW594JJENY62YYW5A5D2
+  slugs:
+    - task-agent-capabilities
+  title: 'Implement: Agent Capabilities'
   type: task
   spec_ref: '@agent-capabilities'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-agent-definitions'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.561Z'
+  notes: []
+  todos: []
+- title: 'Implement: Agent Session Protocol'
+  type: task
+  spec_ref: '@agent-session-protocol'
+  derivation: auto
   priority: 3
   slugs:
-    - task-agent-capabilities
+    - task-agent-session-protocol
   tags: []
   depends_on:
     - '@task-agent-definitions'
-  _ulid: 01KF4WVW594JJENY62YYW5A5D2
+  _ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.561Z'
+  created_at: '2026-01-17T02:34:35.593Z'
   notes: []
   todos: []
