@@ -1784,9 +1784,13 @@ features:
         given: kspec ralph is running
         when: each iteration starts and completes
         then: progress messages are shown (iteration N/M, status, Claudes final message)
+      - id: ac-10
+        given: Claude Code returns an error during iteration
+        when: the error occurs
+        then: retry the iteration up to max-retries times before failing the loop
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
