@@ -12,3 +12,4 @@ export { registerDeriveCommand } from './derive.js';
 export { registerInboxCommands } from './inbox.js';
 export { registerShadowCommands } from './shadow.js';
 export { registerLogCommand } from './log.js';
+export { registerSearchCommand } from './search.js';

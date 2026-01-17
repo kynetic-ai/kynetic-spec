@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import type { Task, TaskStatus } from '../schema/index.js';
 import type { ReferenceIndex } from '../parser/index.js';
+import { grepItem, formatMatchedFields } from '../utils/grep.js';
 
 /**
  * Output options
@@ -153,7 +154,7 @@ function getFirstLine(text: string | undefined, maxLength: number = 70): string 
 /**
  * Format a list of tasks
  */
-export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex): void {
+export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex, grepPattern?: string): void {
   if (tasks.length === 0) {
     console.log(chalk.gray('No tasks found'));
     return;
@@ -162,10 +163,18 @@ export function formatTaskList(tasks: Task[], verbose = false, index?: Reference
   for (const task of tasks) {
     console.log(formatTask(task, verbose, index));
 
-    // Show context line: first line of description (if present)
-    const context = getFirstLine(task.description);
-    if (context) {
-      console.log(chalk.gray(`    ${context}`));
+    // Show matched fields if grep pattern provided
+    if (grepPattern) {
+      const match = grepItem(task as unknown as Record<string, unknown>, grepPattern);
+      if (match && match.matchedFields.length > 0) {
+        console.log(chalk.gray(`    matched: ${formatMatchedFields(match.matchedFields)}`));
+      }
+    } else {
+      // Show context line: first line of description (if present)
+      const context = getFirstLine(task.description);
+      if (context) {
+        console.log(chalk.gray(`    ${context}`));
+      }
     }
   }
 

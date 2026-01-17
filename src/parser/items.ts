@@ -7,6 +7,7 @@
 
 import type { LoadedSpecItem, LoadedTask, AnyLoadedItem } from './yaml.js';
 import type { ItemType, TaskStatus, Maturity, ImplementationStatus } from '../schema/index.js';
+import { grepItem } from '../utils/grep.js';
 
 // ============================================================
 // TYPES
@@ -38,6 +39,8 @@ export interface ItemFilter {
   tasksOnly?: boolean;
   /** Include only spec items (non-tasks) */
   specItemsOnly?: boolean;
+  /** Grep-like regex search across all text content */
+  grepSearch?: string;
 }
 
 /**
@@ -231,6 +234,14 @@ export class ItemIndex {
     if (filter.titleContains) {
       const search = filter.titleContains.toLowerCase();
       results = results.filter(item => item.title.toLowerCase().includes(search));
+    }
+
+    // Apply grep search (regex across all text content)
+    if (filter.grepSearch) {
+      results = results.filter(item => {
+        const match = grepItem(item as Record<string, unknown>, filter.grepSearch!);
+        return match !== null;
+      });
     }
 
     return results;

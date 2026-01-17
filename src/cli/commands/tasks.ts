@@ -13,6 +13,7 @@ import {
   info,
 } from '../output.js';
 import type { TaskStatus } from '../../schema/index.js';
+import { grepItem } from '../../utils/grep.js';
 
 /**
  * Register the 'tasks' command group
@@ -29,6 +30,7 @@ export function registerTasksCommands(program: Command): void {
     .option('-s, --status <status>', 'Filter by status')
     .option('-t, --type <type>', 'Filter by type')
     .option('--tag <tag>', 'Filter by tag')
+    .option('-g, --grep <pattern>', 'Search content with regex pattern')
     .option('-v, --verbose', 'Show more details')
     .action(async (options) => {
       try {
@@ -49,8 +51,14 @@ export function registerTasksCommands(program: Command): void {
         if (options.tag) {
           taskList = taskList.filter(t => t.tags.includes(options.tag));
         }
+        if (options.grep) {
+          taskList = taskList.filter(t => {
+            const match = grepItem(t as unknown as Record<string, unknown>, options.grep);
+            return match !== null;
+          });
+        }
 
-        output(taskList, () => formatTaskList(taskList, options.verbose, index));
+        output(taskList, () => formatTaskList(taskList, options.verbose, index, options.grep));
       } catch (err) {
         error('Failed to list tasks', err);
         process.exit(1);
