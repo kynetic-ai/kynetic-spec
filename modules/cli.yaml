@@ -1878,6 +1878,10 @@ features:
         given: a session exists
         when: readEvents(id) is called
         then: returns all events in sequence order
+      - id: ac-5
+        given: session metadata
+        when: stored
+        then: 'includes: task_id (optional), agent_type, status, started_at, ended_at'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
