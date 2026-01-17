@@ -1850,6 +1850,13 @@ features:
             then: >-
               messages show with visual separation (section header or newline), chalk.blue for
               content, and streaming indicator while incomplete
+          - id: ac-2
+            given: ACP agent streams tool_call and tool_call_update events
+            when: tool calls are displayed in CLI
+            then: >-
+              shows tool name, input summary (command for Bash, path for Read/Write, pattern for
+              Grep/Glob), status indicator (pending/running/completed/failed), and truncated output
+              (first 20 lines or 1000 chars with expansion hint)
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
