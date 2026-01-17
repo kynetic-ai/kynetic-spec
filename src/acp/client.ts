@@ -20,6 +20,7 @@ import type {
   InitializeRequest,
   InitializeResponse,
   JsonRpcNotification,
+  JsonRpcRequest,
   NewSessionRequest,
   NewSessionResponse,
   PromptRequest,
@@ -52,6 +53,7 @@ export interface ACPClientOptions extends JsonRpcFramingOptions {
 // Event types for type-safe event handling
 export interface ACPClientEvents {
   update: (sessionId: string, update: SessionUpdate) => void;
+  request: (id: string | number, method: string, params: unknown) => void;
   close: () => void;
   error: (error: Error) => void;
 }
@@ -88,6 +90,11 @@ export class ACPClient extends EventEmitter {
     // Wire up notification handler for session updates
     this.framing.on('notification', (notification: JsonRpcNotification) => {
       this.handleNotification(notification);
+    });
+
+    // Forward request events for tool calls
+    this.framing.on('request', (request: JsonRpcRequest) => {
+      this.emit('request', request.id, request.method, request.params);
     });
 
     // Forward framing events
@@ -284,6 +291,27 @@ export class ACPClient extends EventEmitter {
    */
   isClosed(): boolean {
     return this.framing.isClosed();
+  }
+
+  /**
+   * Send a response to an agent request (tool call)
+   *
+   * @param id - The request ID to respond to
+   * @param result - The result to send back
+   */
+  respond(id: string | number, result: unknown): void {
+    this.framing.sendResponse(id, result);
+  }
+
+  /**
+   * Send an error response to an agent request
+   *
+   * @param id - The request ID to respond to
+   * @param code - Error code
+   * @param message - Error message
+   */
+  respondError(id: string | number, code: number, message: string): void {
+    this.framing.sendError(id, { code, message });
   }
 
   /**

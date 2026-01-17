@@ -8,12 +8,16 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { ulid } from 'ulid';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { spawn } from 'node:child_process';
 import { initContext } from '../../parser/index.js';
 import { error, info, success } from '../output.js';
 import { gatherSessionContext, type SessionContext } from './session.js';
 import { resolveAdapter, registerAdapter, type AgentAdapter } from '../../agents/index.js';
 import { spawnAndInitialize, type SpawnedAgent } from '../../agents/spawner.js';
 import type { SessionUpdate } from '../../acp/index.js';
+import type { ACPClient } from '../../acp/client.js';
 import {
   createSession,
   updateSessionStatus,
@@ -116,6 +120,84 @@ function handleUpdate(update: SessionUpdate): void {
     if (contentUpdate.content?.type === 'text' && contentUpdate.content.text) {
       process.stdout.write(contentUpdate.content.text);
     }
+  }
+}
+
+// ─── Tool Request Handler ────────────────────────────────────────────────────
+
+/**
+ * Handle tool requests from ACP agent.
+ * Implements file operations and terminal commands.
+ */
+async function handleRequest(
+  client: ACPClient,
+  id: string | number,
+  method: string,
+  params: unknown
+): Promise<void> {
+  const p = params as Record<string, unknown>;
+
+  try {
+    switch (method) {
+      case 'file/read': {
+        const filePath = p.path as string;
+        const content = await fs.readFile(filePath, 'utf-8');
+        client.respond(id, { content });
+        break;
+      }
+
+      case 'file/write': {
+        const filePath = p.path as string;
+        const content = p.content as string;
+        await fs.mkdir(path.dirname(filePath), { recursive: true });
+        await fs.writeFile(filePath, content, 'utf-8');
+        client.respond(id, {});
+        break;
+      }
+
+      case 'terminal/run': {
+        const command = p.command as string;
+        const cwd = (p.cwd as string) || process.cwd();
+        const timeout = (p.timeout as number) || 60000;
+
+        const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
+          const child = spawn(command, [], {
+            cwd,
+            shell: true,
+            timeout,
+          });
+
+          let stdout = '';
+          let stderr = '';
+
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
+
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 1 });
+          });
+
+          child.on('error', (err) => {
+            resolve({ stdout, stderr: err.message, exitCode: 1 });
+          });
+        });
+
+        client.respond(id, result);
+        break;
+      }
+
+      default:
+        // Unknown method - return error
+        client.respondError(id, -32601, `Method not found: ${method}`);
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    client.respondError(id, -32000, message);
   }
 }
 
@@ -280,6 +362,13 @@ export function registerRalphCommand(program: Command): void {
                       data: { iteration, update },
                     }).catch(() => {
                       // Ignore logging errors during streaming
+                    });
+                  });
+
+                  // Set up tool request handler
+                  agent.client.on('request', (reqId: string | number, method: string, params: unknown) => {
+                    handleRequest(agent!.client, reqId, method, params).catch((err) => {
+                      agent!.client.respondError(reqId, -32000, err.message);
                     });
                   });
 
