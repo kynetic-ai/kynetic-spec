@@ -3548,21 +3548,39 @@
   created_at: '2026-01-17T02:34:36.430Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta question'
+- _ulid: 01KF4WVX1B8DQ0MHBXJ05FVDB9
+  slugs:
+    - task-kspec-meta-question
+  title: 'Implement: kspec meta question'
   type: task
   spec_ref: '@meta-question-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.459Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta context'
+  type: task
+  spec_ref: '@meta-context-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-question
+    - task-kspec-meta-context
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVX1B8DQ0MHBXJ05FVDB9
+  _ulid: 01KF4WVX2CSCDQCXSA72B1R17Y
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.459Z'
+  created_at: '2026-01-17T02:34:36.492Z'
   notes: []
   todos: []
