@@ -4082,7 +4082,7 @@
   type: task
   spec_ref: '@session-events'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4160,6 +4160,10 @@
         All 307 tests pass (41 new session tests + 266 existing).
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T16:08:47.209Z'
+  closed_reason: >-
+    Implemented JSONL-based session event storage with createSession, appendEvent, readEvents, and
+    updateSessionStatus functions. All 7 acceptance criteria covered with 41 tests.
 - _ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
   slugs:
     - task-ralph-acp-refactor
