@@ -4514,7 +4514,7 @@
   title: Fix ralph phased tool_call event deduplication
   type: task
   spec_ref: '@ralph-output-formatting'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4596,3 +4596,7 @@
         - tests/ralph.test.ts: +2 tests for phased events
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T21:35:45.193Z'
+  closed_reason: >-
+    Fixed phased tool_call event deduplication. Tool calls now show single header with summary
+    appearing when input arrives. All 30 ralph tests pass.
