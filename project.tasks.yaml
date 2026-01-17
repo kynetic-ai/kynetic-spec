@@ -3957,20 +3957,21 @@
         - Prompt includes working procedure instructions
       supersedes: null
   todos: []
-- title: Add tests for ralph command
-  type: task
-  spec_ref: '@cli-ralph'
-  priority: 2
+- _ulid: 01KF5YBYQ1Z6SEKA5TY2W517NJ
   slugs:
     - task-ralph-tests
-  tags:
-    - testing
-  _ulid: 01KF5YBYQ1Z6SEKA5TY2W517NJ
-  status: pending
+  title: Add tests for ralph command
+  type: task
+  spec_ref: '@cli-ralph'
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - testing
   vcs_refs: []
   created_at: '2026-01-17T12:20:05.473Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T12:20:11.997Z'
