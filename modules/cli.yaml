@@ -1784,6 +1784,9 @@ features:
         given: kspec ralph is running
         when: each iteration starts and completes
         then: progress messages are shown (iteration N/M, status, Claudes final message)
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
