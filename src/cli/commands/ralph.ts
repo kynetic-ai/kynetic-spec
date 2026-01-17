@@ -97,19 +97,26 @@ export function registerRalphCommand(program: Command): void {
     .command('ralph')
     .description('Run Claude Code in a loop to process ready tasks')
     .option('--max-loops <n>', 'Maximum iterations', '5')
+    .option('--max-retries <n>', 'Max retries per iteration on error', '3')
     .option('--dry-run', 'Show prompt without executing')
     .option('--yolo', 'Use --dangerously-skip-permissions (default)', true)
     .option('--no-yolo', 'Require normal permission prompts')
     .action(async (options) => {
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
+        const maxRetries = parseInt(options.maxRetries, 10);
 
         if (isNaN(maxLoops) || maxLoops < 1) {
           error('--max-loops must be a positive integer');
           process.exit(1);
         }
 
-        info(`Starting ralph loop (max ${maxLoops} iterations, yolo=${options.yolo})`);
+        if (isNaN(maxRetries) || maxRetries < 0) {
+          error('--max-retries must be a non-negative integer');
+          process.exit(1);
+        }
+
+        info(`Starting ralph loop (max ${maxLoops} iterations, ${maxRetries} retries, yolo=${options.yolo})`);
 
         for (let iteration = 1; iteration <= maxLoops; iteration++) {
           console.log(chalk.cyan(`\n${'─'.repeat(60)}`));
@@ -145,33 +152,61 @@ export function registerRalphCommand(program: Command): void {
             claudeArgs.push('--dangerously-skip-permissions');
           }
 
-          info(`Invoking Claude Code...`);
+          // Retry loop for this iteration
+          let lastError: Error | null = null;
+          let succeeded = false;
 
-          // Execute Claude, piping prompt through stdin to avoid shell escaping issues
-          await new Promise<void>((resolve, reject) => {
-            const child = spawn('claude', claudeArgs, {
-              cwd: process.cwd(),
-              stdio: ['pipe', 'inherit', 'inherit'],
-            });
+          for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+            if (attempt > 1) {
+              console.log(chalk.yellow(`\nRetry attempt ${attempt - 1}/${maxRetries}...`));
+            }
 
-            // Write prompt to stdin and close it
-            child.stdin.write(prompt);
-            child.stdin.end();
+            info(`Invoking Claude Code...`);
 
-            child.on('close', (code) => {
-              if (code !== 0) {
-                error(`Claude exited with status ${code}`);
+            try {
+              // Execute Claude, piping prompt through stdin to avoid shell escaping issues
+              const exitCode = await new Promise<number>((resolve, reject) => {
+                const child = spawn('claude', claudeArgs, {
+                  cwd: process.cwd(),
+                  stdio: ['pipe', 'inherit', 'inherit'],
+                });
+
+                // Write prompt to stdin and close it
+                child.stdin.write(prompt);
+                child.stdin.end();
+
+                child.on('close', (code) => {
+                  resolve(code ?? 1);
+                });
+
+                child.on('error', (err) => {
+                  reject(err);
+                });
+              });
+
+              if (exitCode === 0) {
+                succeeded = true;
+                break;
+              } else {
+                lastError = new Error(`Claude exited with status ${exitCode}`);
+                error(`Claude exited with status ${exitCode}`);
               }
-              resolve();
-            });
+            } catch (err) {
+              lastError = err as Error;
+              error('Failed to run Claude:', (err as Error).message);
+            }
+          }
 
-            child.on('error', (err) => {
-              error('Failed to start Claude:', err.message);
-              reject(err);
-            });
-          });
-
-          success(`Completed iteration ${iteration}`);
+          if (succeeded) {
+            success(`Completed iteration ${iteration}`);
+          } else {
+            error(`Iteration ${iteration} failed after ${maxRetries + 1} attempts`);
+            if (lastError) {
+              error('Last error:', lastError.message);
+            }
+            // Continue to next iteration rather than failing entirely
+            info('Continuing to next iteration...');
+          }
         }
 
         console.log(chalk.green(`\n${'─'.repeat(60)}`));
