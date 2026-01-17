@@ -1831,6 +1831,10 @@ features:
         given: a pending request
         when: no response within timeout (default 30s, 5min for prompt)
         then: request rejects with timeout error
+      - id: ac-6
+        given: incoming agent activity (requests/notifications)
+        when: activity is detected
+        then: timeout timers reset (keepalive mechanism)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
