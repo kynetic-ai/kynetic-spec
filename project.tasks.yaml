@@ -3814,21 +3814,62 @@
   created_at: '2026-01-17T02:34:36.804Z'
   notes: []
   todos: []
-- title: 'Implement: Grep-like Content Search'
-  type: task
-  spec_ref: '@fuzzy-item-search'
-  priority: 2
+- _ulid: 01KF5214E19BJV3Z7RW7G889AV
   slugs:
     - task-grep-content-search
-  tags:
-    - search
-    - grep
-  _ulid: 01KF5214E19BJV3Z7RW7G889AV
+  title: 'Implement: Grep-like Content Search'
+  type: task
+  spec_ref: '@fuzzy-item-search'
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - search
+    - grep
   vcs_refs: []
   created_at: '2026-01-17T04:04:50.753Z'
-  notes: []
+  notes:
+    - _ulid: 01KF521HKWYF795C3RR9EAKVMF
+      created_at: '2026-01-17T04:05:04.252Z'
+      author: '@claude'
+      content: >-
+        Research findings from subagent:
+
+
+        No external library needed. Full-text search libs (Lunr, MiniSearch, FlexSearch) don't
+        support grep-style regex - they're for fuzzy/tokenized search.
+
+
+        Recommended approach: Custom ~50-line recursive implementation using native RegExp.
+
+
+        Key implementation points:
+
+        1. Recursive traversal of all object fields
+
+        2. Native RegExp for pattern matching (case-insensitive by default)
+
+        3. Track field paths: 'notes[2].content', 'ac[1].then'
+
+        4. Context extraction like grep -C
+
+        5. Return rich match objects: { item, field, match, context }
+
+
+        CLI interface:
+
+        - kspec search 'pattern' - standalone search command
+
+        - kspec item list --grep 'pattern' - integrated with filters
+
+        - kspec tasks list --grep 'pattern' - integrated with filters
+
+        - -C N flag for context lines
+
+
+        Supersedes @task-fuzzy-item-and-task-search which was autocomplete-style matching on titles
+        only.
+      supersedes: null
   todos: []
