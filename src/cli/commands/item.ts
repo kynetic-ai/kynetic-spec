@@ -22,11 +22,12 @@ import type { ItemFilter } from '../../parser/items.js';
 import type { ItemType, Maturity, ImplementationStatus, SpecItemInput, AcceptanceCriterion } from '../../schema/index.js';
 import { SpecItemPatchSchema } from '../../schema/index.js';
 import { output, error, success, warn, isJsonMode } from '../output.js';
+import { grepItem, formatMatchedFields } from '../../utils/grep.js';
 
 /**
  * Format a spec item for display
  */
-function formatItem(item: LoadedSpecItem, verbose = false): string {
+function formatItem(item: LoadedSpecItem, verbose = false, grepPattern?: string): string {
   const shortId = item._ulid.slice(0, 8);
   const slugStr = item.slugs.length > 0 ? chalk.cyan(`@${item.slugs[0]}`) : '';
   const typeStr = chalk.gray(`[${item.type}]`);
@@ -56,20 +57,28 @@ function formatItem(item: LoadedSpecItem, verbose = false): string {
     }
   }
 
+  // Show matched fields if grep pattern provided
+  if (grepPattern) {
+    const match = grepItem(item as Record<string, unknown>, grepPattern);
+    if (match && match.matchedFields.length > 0) {
+      line += '\n  ' + chalk.gray(`matched: ${formatMatchedFields(match.matchedFields)}`);
+    }
+  }
+
   return line;
 }
 
 /**
  * Format item list for display
  */
-function formatItemList(items: LoadedSpecItem[], verbose = false): void {
+function formatItemList(items: LoadedSpecItem[], verbose = false, grepPattern?: string): void {
   if (items.length === 0) {
     console.log(chalk.gray('No items found'));
     return;
   }
 
   for (const item of items) {
-    console.log(formatItem(item, verbose));
+    console.log(formatItem(item, verbose, grepPattern));
   }
 
   console.log(chalk.gray(`\n${items.length} item(s)`));
@@ -93,6 +102,7 @@ export function registerItemCommands(program: Command): void {
     .option('--tag <tag>', 'Filter by tag (can specify multiple)', (val, prev: string[]) => [...prev, val], [])
     .option('--has <field>', 'Filter items that have field present', (val, prev: string[]) => [...prev, val], [])
     .option('-q, --search <text>', 'Search in title')
+    .option('-g, --grep <pattern>', 'Search content with regex pattern')
     .option('-v, --verbose', 'Show more details')
     .option('--limit <n>', 'Limit results', '50')
     .action(async (options) => {
@@ -129,6 +139,10 @@ export function registerItemCommands(program: Command): void {
           filter.titleContains = options.search;
         }
 
+        if (options.grep) {
+          filter.grepSearch = options.grep;
+        }
+
         const limit = parseInt(options.limit, 10) || 50;
         const result = itemIndex.queryPaginated(filter, 0, limit);
 
@@ -142,8 +156,9 @@ export function registerItemCommands(program: Command): void {
             items: specItems,
             total: result.total,
             showing: specItems.length,
+            grepPattern: options.grep,
           },
-          () => formatItemList(specItems, options.verbose)
+          () => formatItemList(specItems, options.verbose, options.grep)
         );
       } catch (err) {
         error('Failed to list items', err);
