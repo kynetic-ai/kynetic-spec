@@ -1218,6 +1218,10 @@ features:
             given: a requirement under a feature
             when: derive creates tasks for both
             then: requirement task has depends_on containing feature task ref
+          - id: ac-6
+            given: module task already exists, feature has no task
+            when: kspec derive @feature runs
+            then: feature task depends_on references existing module task
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
