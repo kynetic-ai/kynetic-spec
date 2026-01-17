@@ -1756,6 +1756,12 @@ features:
         given: a loop iteration starts
         when: Claude picks and works on a task
         then: Claude uses task start, task note, and task complete commands per working procedure
+      - id: ac-4
+        given: a loop iteration ends with work still in progress
+        when: Claude cannot complete the task in one iteration
+        then: >-
+          Claude commits WIP, adds note documenting progress, and task remains in_progress for next
+          iteration
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
