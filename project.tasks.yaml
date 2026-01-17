@@ -4090,6 +4090,7 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T15:19:06.703Z'
+  started_at: '2026-01-17T16:02:08.638Z'
   notes:
     - _ulid: 01KF68P5PB0NA78ZGKDYC3027W
       created_at: '2026-01-17T15:20:26.059Z'
@@ -4127,8 +4128,38 @@
         - Create directory on first event, not upfront
         - Events committed at task/session boundaries
       supersedes: null
+    - _ulid: 01KF6BEFYRWGKKJXDCQMAWDS4H
+      created_at: '2026-01-17T16:08:40.152Z'
+      author: '@claude'
+      content: |-
+        ## Implementation Complete
+
+        Created JSONL-based event storage for agent sessions:
+
+        ### Files Created
+        - `src/sessions/types.ts` - Zod schemas for SessionMetadata and SessionEvent
+        - `src/sessions/store.ts` - Storage functions (createSession, appendEvent, readEvents, etc.)
+        - `src/sessions/index.ts` - Re-exports
+        - `tests/sessions.test.ts` - 41 tests covering all acceptance criteria
+
+        ### Acceptance Criteria Coverage
+        - AC-1: createSession() creates .kspec/sessions/{id}/ with session.yaml
+        - AC-2: appendEvent() appends JSON lines with auto-assigned ts and seq
+        - AC-3: Uses fs.appendFileSync for crash safety (atomic append)
+        - AC-4: readEvents() returns events sorted by sequence number
+        - AC-5: Metadata includes task_id (optional), agent_type, status, started_at, ended_at
+        - AC-6: updateSessionStatus() updates metadata with status and ended_at
+
+        ### Storage Structure
+        ```
+        .kspec/sessions/{session-ulid}/
+          session.yaml      # Metadata
+          events.jsonl      # Append-only event log
+        ```
+
+        All 307 tests pass (41 new session tests + 266 existing).
+      supersedes: null
   todos: []
-  started_at: '2026-01-17T16:02:08.638Z'
 - _ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
   slugs:
     - task-ralph-acp-refactor
