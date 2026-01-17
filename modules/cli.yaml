@@ -1202,6 +1202,10 @@ features:
             given: a spec item with no children
             when: kspec derive @item runs
             then: 'creates one task with spec_ref=@item; outputs ''Created task: <ref>'''
+          - id: ac-2
+            given: a module with 2 child features
+            when: kspec derive @module runs
+            then: creates 3 tasks (module + 2 features); each task has correct spec_ref
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
