@@ -1752,6 +1752,10 @@ features:
         given: no ready tasks exist
         when: kspec ralph is run
         then: command exits with message indicating no ready tasks
+      - id: ac-3
+        given: a loop iteration starts
+        when: Claude picks and works on a task
+        then: Claude uses task start, task note, and task complete commands per working procedure
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
