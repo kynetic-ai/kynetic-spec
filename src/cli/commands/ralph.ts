@@ -143,11 +143,24 @@ async function handleRequest(
       case 'session/request_permission': {
         // In yolo mode, auto-approve all permissions
         // In normal mode, would need to implement permission UI
+        const options = (p.options as Array<{ optionId: string; kind: string; name: string }>) || [];
+
         if (yolo) {
-          client.respond(id, { granted: true });
+          // Find an "allow" option (prefer allow_always, then allow_once)
+          const allowOption = options.find(o => o.kind === 'allow_always')
+            || options.find(o => o.kind === 'allow_once');
+
+          if (allowOption) {
+            client.respond(id, {
+              outcome: { outcome: 'selected', optionId: allowOption.optionId },
+            });
+          } else {
+            // No allow option available - cancel
+            client.respond(id, { outcome: { outcome: 'cancelled' } });
+          }
         } else {
           // TODO: Implement permission prompting
-          client.respond(id, { granted: false, reason: 'Permission UI not implemented. Use --yolo to auto-approve.' });
+          client.respond(id, { outcome: { outcome: 'cancelled' } });
         }
         break;
       }
