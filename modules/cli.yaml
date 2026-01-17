@@ -1210,6 +1210,10 @@ features:
             given: a module with child features
             when: kspec derive @module --flat runs
             then: creates 1 task for module only; children are not processed
+          - id: ac-4
+            given: a feature under a module
+            when: derive creates tasks for both
+            then: feature task has depends_on containing module task ref
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
