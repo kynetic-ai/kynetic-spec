@@ -1843,6 +1843,10 @@ features:
         given: client is closed
         when: any method is called
         then: throws 'client closed' error
+      - id: ac-9
+        given: malformed JSON from agent
+        when: message is parsed
+        then: sends JSON-RPC parse error response
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
