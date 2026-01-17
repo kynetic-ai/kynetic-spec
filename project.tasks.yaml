@@ -3814,3 +3814,21 @@
   created_at: '2026-01-17T02:34:36.804Z'
   notes: []
   todos: []
+- title: 'Implement: Grep-like Content Search'
+  type: task
+  spec_ref: '@fuzzy-item-search'
+  priority: 2
+  slugs:
+    - task-grep-content-search
+  tags:
+    - search
+    - grep
+  _ulid: 01KF5214E19BJV3Z7RW7G889AV
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T04:04:50.753Z'
+  notes: []
+  todos: []
