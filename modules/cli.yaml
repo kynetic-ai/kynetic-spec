@@ -1857,6 +1857,12 @@ features:
               shows tool name, input summary (command for Bash, path for Read/Write, pattern for
               Grep/Glob), status indicator (pending/running/completed/failed), and truncated output
               (first 20 lines or 1000 chars with expansion hint)
+          - id: ac-3
+            given: ralph is streaming output
+            when: each significant event is displayed
+            then: >-
+              shows relative timestamp from session start (e.g., +5s, +2m) prefixed to the event
+              line
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
