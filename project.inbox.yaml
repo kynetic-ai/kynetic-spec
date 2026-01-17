@@ -355,17 +355,6 @@ inbox:
       - dx
       - testing
     added_by: '@claude'
-  - _ulid: 01KF6M4YH9A8T6PADQX7HK89QJ
-    text: >-
-      Ralph timestamps: Add timestamps to ralph output messages to give sense of timing/pacing.
-      Could be relative ('+5s') or absolute. Helps understand how long operations take and identify
-      slow points.
-    created_at: '2026-01-17T18:40:44.585Z'
-    tags:
-      - ralph
-      - dx
-      - ui
-    added_by: '@claude'
   - _ulid: 01KF6M53Q9E4ZCV1W90CWKCHW7
     text: >-
       Ralph 'No onPostToolUseHook found' messages: These messages appear throughout ralph output
