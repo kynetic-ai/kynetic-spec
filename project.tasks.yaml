@@ -4687,6 +4687,59 @@
     - ralph
   vcs_refs: []
   created_at: '2026-01-17T23:03:01.972Z'
-  notes: []
-  todos: []
   started_at: '2026-01-17T23:03:07.904Z'
+  notes:
+    - _ulid: 01KF735SGB3C641F8KFH5SJ0KS
+      created_at: '2026-01-17T23:03:20.843Z'
+      author: '@claude'
+      content: >-
+        ## Feature
+
+
+        Added `--focus <instructions>` flag to the ralph command. This allows specifying persistent
+        instructions that are included prominently in every iteration's prompt.
+
+
+        ## Implementation
+
+
+        1. **Updated `buildPrompt` function** (lines 30-46):
+           - Added optional `focus` parameter
+           - When provided, inserts a "Session Focus" section after the iteration header
+           - Uses blockquote formatting with bold text for emphasis
+           - Explicitly states it "applies to ALL iterations" and "takes priority over default task selection"
+
+        2. **Added CLI option** (line 230):
+           - `--focus <instructions>` option added to command definition
+
+        3. **Wired focus through**:
+           - Passed to `buildPrompt()` call (line 334)
+           - Logged to console at startup (lines 282-284)
+           - Included in session.start event data (line 307)
+
+        ## Prompt Output Example
+
+
+        ```markdown
+
+        ## Session Focus (applies to ALL iterations)
+
+
+        > **Prioritize bug fixes over new features**
+
+
+        Keep this focus in mind throughout your work. It takes priority over default task selection.
+
+        ```
+
+
+        ## Testing
+
+
+        - Build passes
+
+        - All 30 ralph tests pass
+
+        - Verified with `--dry-run --focus "..."` - focus appears correctly in prompt
+      supersedes: null
+  todos: []
