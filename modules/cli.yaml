@@ -1866,6 +1866,10 @@ features:
         given: a new session is started
         when: createSession(id, metadata) is called
         then: creates .kspec/sessions/{id}/ directory with session.yaml metadata file
+      - id: ac-2
+        given: an active session
+        when: appendEvent(id, event) is called
+        then: appends JSON line to events.jsonl with auto-assigned ts and seq
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
