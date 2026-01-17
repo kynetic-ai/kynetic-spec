@@ -38,22 +38,14 @@ gh api repos/{owner}/{repo}/rulesets --jq '.[] | select(.enforcement == "active"
 
 ### Step 3: Determine Branch Strategy
 
-**Branch name auto-generation (do NOT use AskUserQuestion for this):**
+**Branch name auto-generation - just do it, don't ask:**
 
-Generate a branch name automatically based on context:
+Generate a branch name automatically and proceed without confirmation:
 1. If there's a completed/in-progress kspec task: use `fix/<task-slug>` or `feat/<task-slug>`
 2. If recent commits have conventional format: derive from commit message (e.g., `fix: foo bar` → `fix/foo-bar`)
 3. If unpushed commits exist: summarize their intent
 
-Present the auto-generated name and ask for simple confirmation:
-```
-Suggested branch name: fix/ralph-tool-formatting
-PR title: "fix: correct ralph tool input/output extraction"
-
-Proceed? [y/n/edit]
-```
-
-Only ask the user to provide a name if you truly cannot determine one.
+**Do NOT ask for confirmation.** The user ran `/pr` because they want a PR created. Just generate the best name and proceed. Only ask if you truly have no context to generate a name (rare).
 
 **If on `main` with uncommitted changes:**
 1. Auto-generate branch name (see above)
@@ -180,18 +172,15 @@ Check if branch exists on remote with different history. Offer:
 
 ```
 User: /pr
-Agent: [Detects uncommitted changes on main]
-Agent: I'll create a PR for your changes. Branch protection is active on main.
+Agent: [Detects 2 unpushed commits on main, auto-generates branch name from commits]
+Agent: [Creates branch fix/ready-task-secondary-sort, resets main, pushes]
+Agent: [Creates PR]
 
-Suggested branch name: feat/ready-task-secondary-sort (based on recent commits)
-PR title: "feat: implement secondary sort for ready tasks"
-
-Proceed with these? [y/n/edit]
-
-User: y
-Agent: [Creates branch, commits, pushes, creates PR]
-Agent: PR created: https://github.com/owner/repo/pull/5
+PR created: https://github.com/owner/repo/pull/5
+Branch: fix/ready-task-secondary-sort
 ```
+
+The user asked for a PR - just create it. No confirmations needed.
 
 ## Worktree Support (Future)
 
