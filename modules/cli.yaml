@@ -1748,6 +1748,10 @@ features:
         given: ready tasks exist
         when: kspec ralph is run with --max-loops N
         then: Claude Code runs up to N iterations, processing tasks
+      - id: ac-2
+        given: no ready tasks exist
+        when: kspec ralph is run
+        then: command exits with message indicating no ready tasks
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
