@@ -1743,6 +1743,11 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-17T05:27:36.354Z'
+    acceptance_criteria:
+      - id: ac-1
+        given: ready tasks exist
+        when: kspec ralph is run with --max-loops N
+        then: Claude Code runs up to N iterations, processing tasks
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
