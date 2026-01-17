@@ -3130,21 +3130,39 @@
   created_at: '2026-01-17T02:34:35.758Z'
   notes: []
   todos: []
-- title: 'Implement: Convention Schema'
+- _ulid: 01KF4WVWCA199XYTH30HWQ399A
+  slugs:
+    - task-convention-schema
+  title: 'Implement: Convention Schema'
   type: task
   spec_ref: '@convention-schema'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-convention-definitions'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.786Z'
+  notes: []
+  todos: []
+- title: 'Implement: Convention Domains'
+  type: task
+  spec_ref: '@convention-domains'
+  derivation: auto
   priority: 3
   slugs:
-    - task-convention-schema
+    - task-convention-domains
   tags: []
   depends_on:
     - '@task-convention-definitions'
-  _ulid: 01KF4WVWCA199XYTH30HWQ399A
+  _ulid: 01KF4WVWD4TT9PTW69HVDWAX36
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.786Z'
+  created_at: '2026-01-17T02:34:35.812Z'
   notes: []
   todos: []
