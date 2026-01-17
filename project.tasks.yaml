@@ -3674,23 +3674,41 @@
   created_at: '2026-01-17T02:34:36.645Z'
   notes: []
   todos: []
-- title: 'Implement: Meta Reference Integration'
+- _ulid: 01KF4WVX83RX2MM5E1HK8HZQ9S
+  slugs:
+    - task-meta-reference-integration
+  title: 'Implement: Meta Reference Integration'
   type: task
   spec_ref: '@meta-ref'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-meta-reference-integration
   tags:
     - mvp
     - meta
     - tasks
-  depends_on: []
-  _ulid: 01KF4WVX83RX2MM5E1HK8HZQ9S
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.675Z'
+  notes: []
+  todos: []
+- title: 'Implement: Task meta_ref Field'
+  type: task
+  spec_ref: '@task-meta-ref'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-task-meta-ref-field
+  tags: []
+  depends_on:
+    - '@task-meta-reference-integration'
+  _ulid: 01KF4WVX91JM667XZ4Z7JWSN6P
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.675Z'
+  created_at: '2026-01-17T02:34:36.705Z'
   notes: []
   todos: []
