@@ -239,7 +239,7 @@ export class ItemIndex {
     // Apply grep search (regex across all text content)
     if (filter.grepSearch) {
       results = results.filter(item => {
-        const match = grepItem(item as Record<string, unknown>, filter.grepSearch!);
+        const match = grepItem(item as unknown as Record<string, unknown>, filter.grepSearch!);
         return match !== null;
       });
     }
