@@ -1766,6 +1766,12 @@ features:
         given: a loop iteration completes (task done or WIP)
         when: there are uncommitted changes
         then: Claude commits the changes with appropriate message
+      - id: ac-6
+        given: a loop iteration completes
+        when: Claude finishes its work for that iteration
+        then: >-
+          Claude reflects on what was done and adds any observations/learnings to inbox
+          automatically
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
