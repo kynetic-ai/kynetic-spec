@@ -355,15 +355,3 @@ inbox:
       - dx
       - testing
     added_by: '@claude'
-  - _ulid: 01KF6M53Q9E4ZCV1W90CWKCHW7
-    text: >-
-      Ralph 'No onPostToolUseHook found' messages: These messages appear throughout ralph output
-      (e.g. 'No onPostToolUseHook found for tool use ID: toolu_01Sz5r...'). Need to investigate
-      source - likely from ACP agent or SDK logging. Either handle/suppress or make meaningful.
-      Currently just noise in output.
-    created_at: '2026-01-17T18:40:49.898Z'
-    tags:
-      - ralph
-      - bug
-      - acp
-    added_by: '@claude'
