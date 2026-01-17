@@ -4331,6 +4331,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented ralph output formatting with translator/renderer architecture. All AC met, tests
+    pass.
   depends_on:
     - '@task-ralph-command-automated-task-loop'
   context: []
@@ -4339,6 +4342,7 @@
   vcs_refs: []
   created_at: '2026-01-17T19:03:22.891Z'
   started_at: '2026-01-17T19:17:41.220Z'
+  completed_at: '2026-01-17T19:36:05.717Z'
   notes:
     - _ulid: 01KF6NGGDRPX2AYYYP4GFPWDYS
       created_at: '2026-01-17T19:04:31.929Z'
@@ -4451,7 +4455,27 @@
         All 311 tests pass.
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T19:36:05.717Z'
-  closed_reason: >-
-    Implemented ralph output formatting with translator/renderer architecture. All AC met, tests
-    pass.
+- title: Fix ralph tool input/output display
+  type: task
+  priority: 2
+  spec_ref: null
+  tags:
+    - ralph
+    - bug
+  description: >-
+    Ralph tool details not shown: Currently tool calls just show '--- Tool: Bash ---' without the
+    command/parameters or output. Compare to Claude Code which shows 'Bash(npm run build 2>&1 | head
+    -50)' with truncated output below. Need to: (1) Show tool input summary on the tool_start line
+    (command for Bash, file path for Read/Write, etc.), (2) Show truncated output on tool_result,
+    (3) Check events.jsonl for actual data structure available. Reference screenshots show desired
+    format.
+  _ulid: 01KF6WFS5B82KRWVMS7FRQNF5H
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T21:06:28.139Z'
+  notes: []
+  todos: []
