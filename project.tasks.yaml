@@ -3931,6 +3931,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented ralph command with loop execution, dry-run mode, yolo permissions, and session
+    context integration
   depends_on: []
   context: []
   priority: 3
@@ -3938,6 +3941,7 @@
   vcs_refs: []
   created_at: '2026-01-17T05:29:13.782Z'
   started_at: '2026-01-17T05:29:25.797Z'
+  completed_at: '2026-01-17T05:31:54.067Z'
   notes:
     - _ulid: 01KF570B63GCJVP016BRMEEY5Q
       created_at: '2026-01-17T05:31:47.779Z'
@@ -3953,7 +3957,20 @@
         - Prompt includes working procedure instructions
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T05:31:54.067Z'
-  closed_reason: >-
-    Implemented ralph command with loop execution, dry-run mode, yolo permissions, and session
-    context integration
+- title: Add tests for ralph command
+  type: task
+  spec_ref: '@cli-ralph'
+  priority: 2
+  slugs:
+    - task-ralph-tests
+  tags:
+    - testing
+  _ulid: 01KF5YBYQ1Z6SEKA5TY2W517NJ
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T12:20:05.473Z'
+  notes: []
+  todos: []
