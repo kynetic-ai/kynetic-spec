@@ -3638,21 +3638,39 @@
   created_at: '2026-01-17T02:34:36.588Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta set'
+- _ulid: 01KF4WVX658M3KXFWYJSPKDWB9
+  slugs:
+    - task-kspec-meta-set
+  title: 'Implement: kspec meta set'
   type: task
   spec_ref: '@meta-set-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.613Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta delete'
+  type: task
+  spec_ref: '@meta-delete-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-set
+    - task-kspec-meta-delete
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVX658M3KXFWYJSPKDWB9
+  _ulid: 01KF4WVX755EQVCW8MWV7JBVEK
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.613Z'
+  created_at: '2026-01-17T02:34:36.645Z'
   notes: []
   todos: []
