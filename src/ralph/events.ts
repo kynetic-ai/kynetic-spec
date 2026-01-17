@@ -59,6 +59,7 @@ export interface ToolUpdateData {
   toolCallId: string;
   tool: string;
   status: 'pending' | 'running';
+  summary?: string; // Present when input becomes available in phased events
 }
 
 export interface ToolResultData {
@@ -210,17 +211,53 @@ function extractToolOutput(update: Record<string, unknown>): string | undefined 
   }
 
   // Try _meta.claudeCode.toolResponse (Claude Code pattern)
+  // toolResponse is an object with stdout/stderr, not a string
   const meta = update._meta as Record<string, unknown> | undefined;
   if (meta) {
     const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
     if (claudeCode?.toolResponse !== undefined) {
-      return truncateOutput(String(claudeCode.toolResponse));
+      const toolResponse = claudeCode.toolResponse as Record<string, unknown>;
+      // Extract stdout, falling back to stringifying the whole response
+      if (typeof toolResponse.stdout === 'string') {
+        const combined =
+          toolResponse.stdout + (toolResponse.stderr ? `\n${toolResponse.stderr}` : '');
+        return truncateOutput(combined.trim());
+      }
+      return truncateOutput(String(toolResponse));
     }
   }
 
   // Try output field
   if (update.output !== undefined) {
     return truncateOutput(String(update.output));
+  }
+
+  return undefined;
+}
+
+/**
+ * Extract original (non-truncated) output for truncation detection.
+ */
+function extractOriginalOutput(update: Record<string, unknown>): string | undefined {
+  if (update.rawOutput !== undefined) {
+    return String(update.rawOutput);
+  }
+
+  const meta = update._meta as Record<string, unknown> | undefined;
+  if (meta) {
+    const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
+    if (claudeCode?.toolResponse !== undefined) {
+      const toolResponse = claudeCode.toolResponse as Record<string, unknown>;
+      if (typeof toolResponse.stdout === 'string') {
+        return (
+          toolResponse.stdout + (toolResponse.stderr ? `\n${toolResponse.stderr}` : '')
+        ).trim();
+      }
+    }
+  }
+
+  if (update.output !== undefined) {
+    return String(update.output);
   }
 
   return undefined;
@@ -393,8 +430,36 @@ export function createTranslator(): RalphTranslator {
         const u = update as Record<string, unknown>;
         const toolCallId = (u.tool_call_id || u.toolCallId || u.id) as string;
         const tool = extractToolName(u);
-        const input = u.input || u.params || {};
+        const input = u.rawInput || u.input || u.params || {};
+        const summary = getToolSummary(tool, input);
 
+        // Check if this is an update to an existing tool call (phased events)
+        const existing = state.pendingTools.get(toolCallId);
+        if (existing) {
+          // Update existing entry with new input if present
+          const hadSummary = getToolSummary(existing.tool, existing.input);
+          existing.input = input;
+          existing.tool = tool;
+
+          // Only emit update if we now have a summary we didn't have before
+          if (summary && !hadSummary) {
+            return {
+              type: 'tool_update',
+              timestamp,
+              data: {
+                kind: 'tool_update',
+                toolCallId,
+                tool,
+                status: 'pending' as const,
+                summary,
+              },
+            };
+          }
+          // No meaningful change, suppress event
+          return null;
+        }
+
+        // First time seeing this tool_call_id - create entry and emit tool_start
         state.pendingTools.set(toolCallId, { tool, input, startTime: timestamp });
 
         return {
@@ -404,7 +469,7 @@ export function createTranslator(): RalphTranslator {
             kind: 'tool_start',
             toolCallId,
             tool,
-            summary: getToolSummary(tool, input),
+            summary,
             input,
           },
         };
@@ -434,7 +499,7 @@ export function createTranslator(): RalphTranslator {
         // Terminal status - treat as result
         if (status === 'completed' || status === 'failed' || status === 'cancelled') {
           const rawOutput = extractToolOutput(u);
-          const originalOutput = (u.rawOutput || u.output) as string | undefined;
+          const originalOutput = extractOriginalOutput(u);
           state.pendingTools.delete(toolCallId);
 
           return {

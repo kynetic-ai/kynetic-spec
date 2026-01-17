@@ -198,6 +198,13 @@ function renderToolStart(
 }
 
 function renderToolUpdate(ts: string, data: ToolUpdateData): void {
+  // If summary is present, this is the phased input arrival - show the summary
+  if (data.summary) {
+    console.log(`${ts} ${chalk.gray(data.summary)}`);
+    return;
+  }
+
+  // Otherwise show status update
   const statusIcon = data.status === 'running' ? chalk.blue('⟳') : chalk.gray('○');
   console.log(`${ts} ${statusIcon} ${chalk.gray(data.status)}`);
 }
