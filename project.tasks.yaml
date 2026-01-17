@@ -4671,21 +4671,22 @@
         - PR #17 merged
       supersedes: null
   todos: []
-- title: Add --focus flag to ralph command
-  type: task
-  spec_ref: '@cli-ralph'
-  priority: 1
+- _ulid: 01KF73572M4W1VNKDS203BK22D
   slugs:
     - ralph-focus-flag
-  tags:
-    - feature
-    - ralph
-  _ulid: 01KF73572M4W1VNKDS203BK22D
-  status: pending
+  title: Add --focus flag to ralph command
+  type: task
+  spec_ref: '@cli-ralph'
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - feature
+    - ralph
   vcs_refs: []
   created_at: '2026-01-17T23:03:01.972Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T23:03:07.904Z'
