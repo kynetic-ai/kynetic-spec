@@ -1827,6 +1827,10 @@ features:
         given: streaming updates from agent
         when: update events arrive
         then: client emits 'update' events with sessionId and update data
+      - id: ac-5
+        given: a pending request
+        when: no response within timeout (default 30s, 5min for prompt)
+        then: request rejects with timeout error
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
