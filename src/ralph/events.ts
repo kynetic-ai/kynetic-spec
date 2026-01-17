@@ -296,7 +296,7 @@ export function createTranslator(): RalphTranslator {
       // ─── Content Chunks ─────────────────────────────────────────────────────
       case 'agent_message_chunk': {
         const content = (update as { content?: { type: string; text?: string } }).content;
-        if (content?.type === 'text' && content.text) {
+        if (content?.type === 'text' && typeof content.text === 'string') {
           // Check for noise
           if (shouldSuppress(content.text)) {
             return null;
@@ -342,7 +342,7 @@ export function createTranslator(): RalphTranslator {
 
       case 'agent_thought_chunk': {
         const content = (update as { content?: { type: string; text?: string } }).content;
-        if (content?.type === 'text' && content.text) {
+        if (content?.type === 'text' && typeof content.text === 'string') {
           if (shouldSuppress(content.text)) {
             return null;
           }
