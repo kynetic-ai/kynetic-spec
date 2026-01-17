@@ -3204,21 +3204,39 @@
   created_at: '2026-01-17T02:34:35.879Z'
   notes: []
   todos: []
-- title: 'Implement: Observation Schema'
+- _ulid: 01KF4WVWG3WWK8108GY1PNSH89
+  slugs:
+    - task-observation-schema
+  title: 'Implement: Observation Schema'
   type: task
   spec_ref: '@observation-schema'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-observations'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.907Z'
+  notes: []
+  todos: []
+- title: 'Implement: Observation Types'
+  type: task
+  spec_ref: '@observation-types'
+  derivation: auto
   priority: 3
   slugs:
-    - task-observation-schema
+    - task-observation-types
   tags: []
   depends_on:
     - '@task-observations'
-  _ulid: 01KF4WVWG3WWK8108GY1PNSH89
+  _ulid: 01KF4WVWH380ZP76XV6V0FH2AY
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.907Z'
+  created_at: '2026-01-17T02:34:35.939Z'
   notes: []
   todos: []
