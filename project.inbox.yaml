@@ -396,3 +396,17 @@ inbox:
       - workflow
       - safety
     added_by: '@claude'
+  - _ulid: 01KF6V44RXWQR3P1X9C9KP3ZH2
+    text: >-
+      Ralph tool details not shown: Currently tool calls just show '--- Tool: Bash ---' without the
+      command/parameters or output. Compare to Claude Code which shows 'Bash(npm run build 2>&1 |
+      head -50)' with truncated output below. Need to: (1) Show tool input summary on the tool_start
+      line (command for Bash, file path for Read/Write, etc.), (2) Show truncated output on
+      tool_result, (3) Check events.jsonl for actual data structure available. Reference screenshots
+      show desired format.
+    created_at: '2026-01-17T20:42:38.237Z'
+    tags:
+      - ralph
+      - dx
+      - bug
+    added_by: '@claude'
