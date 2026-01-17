@@ -7,7 +7,7 @@
  */
 
 import { Command } from 'commander';
-import { execSync, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import chalk from 'chalk';
 import { initContext } from '../../parser/index.js';
 import { output, error, info, success, isJsonMode } from '../output.js';
@@ -139,28 +139,37 @@ export function registerRalphCommand(program: Command): void {
             break;
           }
 
-          // Build claude command
-          const claudeArgs = ['-p', prompt];
+          // Build claude command args
+          const claudeArgs = ['-p'];
           if (options.yolo) {
             claudeArgs.push('--dangerously-skip-permissions');
           }
 
           info(`Invoking Claude Code...`);
 
-          // Execute Claude using spawnSync to handle large prompts better
-          const result = spawnSync('claude', claudeArgs, {
-            cwd: process.cwd(),
-            stdio: 'inherit',
-            shell: true,
-            encoding: 'utf-8',
-          });
+          // Execute Claude, piping prompt through stdin to avoid shell escaping issues
+          await new Promise<void>((resolve, reject) => {
+            const child = spawn('claude', claudeArgs, {
+              cwd: process.cwd(),
+              stdio: ['pipe', 'inherit', 'inherit'],
+            });
 
-          if (result.status !== 0) {
-            error(`Claude exited with status ${result.status}`);
-            if (result.error) {
-              error('Error:', result.error.message);
-            }
-          }
+            // Write prompt to stdin and close it
+            child.stdin.write(prompt);
+            child.stdin.end();
+
+            child.on('close', (code) => {
+              if (code !== 0) {
+                error(`Claude exited with status ${code}`);
+              }
+              resolve();
+            });
+
+            child.on('error', (err) => {
+              error('Failed to start Claude:', err.message);
+              reject(err);
+            });
+          });
 
           success(`Completed iteration ${iteration}`);
         }
