@@ -3999,6 +3999,7 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Fixed race condition by adding endHandled guard
   depends_on: []
   context: []
   priority: 1
@@ -4007,8 +4008,24 @@
     - tests
   vcs_refs: []
   created_at: '2026-01-17T13:31:10.774Z'
+  started_at: '2026-01-17T13:32:03.742Z'
+  completed_at: '2026-01-17T13:32:03.742Z'
   notes: []
   todos: []
-  completed_at: '2026-01-17T13:32:03.742Z'
-  closed_reason: Fixed race condition by adding endHandled guard
-  started_at: '2026-01-17T13:32:03.742Z'
+- title: 'Implement: ACP Protocol Client'
+  type: task
+  spec_ref: '@acp-client'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-acp-protocol-client
+  tags: []
+  depends_on: []
+  _ulid: 01KF68KNCJRJB88E254EYCPZAK
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T15:19:03.826Z'
+  notes: []
+  todos: []
