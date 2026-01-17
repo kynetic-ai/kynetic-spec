@@ -3512,21 +3512,39 @@
   created_at: '2026-01-17T02:34:36.370Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta focus'
+- _ulid: 01KF4WVWZBDZXSX30NSJKRC8WB
+  slugs:
+    - task-kspec-meta-focus
+  title: 'Implement: kspec meta focus'
   type: task
   spec_ref: '@meta-focus-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.395Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta thread'
+  type: task
+  spec_ref: '@meta-thread-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-focus
+    - task-kspec-meta-thread
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVWZBDZXSX30NSJKRC8WB
+  _ulid: 01KF4WVX0EEF2R90HC63GY3B6Z
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.395Z'
+  created_at: '2026-01-17T02:34:36.430Z'
   notes: []
   todos: []
