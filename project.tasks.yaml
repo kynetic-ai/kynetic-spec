@@ -2369,7 +2369,7 @@
   type: task
   spec_ref: '@item-patch'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2407,6 +2407,8 @@
         Updated spec with 6 new AC (ac-7 through ac-12) for bulk mode and edge cases.
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T02:22:07.087Z'
+  closed_reason: Implemented item patch command with single and bulk modes, all 12 AC covered with tests
 - _ulid: 01KF3E5H5S0ZF46Y6N8YWW9V2P
   slugs:
     - task-kspec-task-patch
