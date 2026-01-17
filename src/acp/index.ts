@@ -45,6 +45,8 @@ export type {
   NewSessionResponse,
   PromptRequest,
   PromptResponse,
+  RequestPermissionRequest,
+  RequestPermissionResponse,
   SessionNotification,
   SessionUpdate,
   StopReason,
