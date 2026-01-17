@@ -25,6 +25,7 @@ import type {
   NewSessionResponse,
   PromptRequest,
   PromptResponse,
+  RequestPermissionResponse,
   SessionNotification,
   SessionUpdate,
 } from './types.js';
@@ -296,11 +297,23 @@ export class ACPClient extends EventEmitter {
   /**
    * Send a response to an agent request (tool call)
    *
+   * Prefer typed response methods (respondPermission, etc.) when available.
+   *
    * @param id - The request ID to respond to
    * @param result - The result to send back
    */
   respond(id: string | number, result: unknown): void {
     this.framing.sendResponse(id, result);
+  }
+
+  /**
+   * Send a typed response to a permission request
+   *
+   * @param id - The request ID to respond to
+   * @param response - The permission response
+   */
+  respondPermission(id: string | number, response: RequestPermissionResponse): void {
+    this.framing.sendResponse(id, response);
   }
 
   /**

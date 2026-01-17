@@ -151,16 +151,16 @@ async function handleRequest(
             || options.find(o => o.kind === 'allow_once');
 
           if (allowOption) {
-            client.respond(id, {
+            client.respondPermission(id, {
               outcome: { outcome: 'selected', optionId: allowOption.optionId },
             });
           } else {
             // No allow option available - cancel
-            client.respond(id, { outcome: { outcome: 'cancelled' } });
+            client.respondPermission(id, { outcome: { outcome: 'cancelled' } });
           }
         } else {
           // TODO: Implement permission prompting
-          client.respond(id, { outcome: { outcome: 'cancelled' } });
+          client.respondPermission(id, { outcome: { outcome: 'cancelled' } });
         }
         break;
       }
