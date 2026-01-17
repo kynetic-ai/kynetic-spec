@@ -1873,7 +1873,7 @@ features:
             then: current streaming message is marked complete and any pending formatting is applied
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
