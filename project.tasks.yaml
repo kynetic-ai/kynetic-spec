@@ -4509,20 +4509,21 @@
         All tests pass (328 tests).
       supersedes: null
   todos: []
-- title: Fix ralph phased tool_call event deduplication
+- _ulid: 01KF6Y4HNKQXQ3MSBEMQQ9BY7M
+  slugs: []
+  title: Fix ralph phased tool_call event deduplication
   type: task
   spec_ref: '@ralph-output-formatting'
-  priority: 2
-  slugs: []
-  tags:
-    - ralph
-    - bug
-  _ulid: 01KF6Y4HNKQXQ3MSBEMQQ9BY7M
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - ralph
+    - bug
   vcs_refs: []
   created_at: '2026-01-17T21:35:17.170Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T21:35:24.178Z'
