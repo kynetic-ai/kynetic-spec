@@ -209,8 +209,20 @@ Check before deriving:
 2. **Task size**: Should the spec be broken down further?
 
 ```bash
+# Preview what will be created (recommended first)
+kspec derive @spec-item --dry-run
+
+# Recursive (default) - creates tasks for spec AND all children
 kspec derive @spec-item
+
+# Flat - only this spec, not children
+kspec derive @spec-item --flat
 ```
+
+**Key behaviors:**
+- Recursive is default - child tasks automatically `depends_on` parent tasks
+- Use `--dry-run` to preview the task tree before creating
+- Existing tasks are skipped (use `--force` to create duplicates)
 
 The task inherits context from the spec via `spec_ref`.
 

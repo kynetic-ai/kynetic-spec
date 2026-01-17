@@ -83,6 +83,30 @@ When implementing behavior changes:
 2. If no spec, create one: `kspec item add --under @parent --title "New capability" --type requirement`
 3. Derive task from spec: `kspec derive @spec-item`
 
+### Deriving Tasks from Specs
+
+Derive creates implementation tasks from spec items:
+
+```bash
+# Recursive (default) - creates tasks for spec and all children with auto-dependencies
+kspec derive @feature-slug
+
+# Flat - only create task for the specified item
+kspec derive @feature-slug --flat
+
+# Preview what would be created
+kspec derive @feature-slug --dry-run
+
+# Derive all specs without tasks
+kspec derive --all
+```
+
+**Key behaviors:**
+- Recursive is default - child tasks automatically depend on parent tasks
+- Use `--dry-run` to preview before creating
+- Existing tasks are skipped (use `--force` to override)
+- JSON output available via global `--json` flag
+
 ## Command Reference
 
 | Command | Purpose |
@@ -95,7 +119,9 @@ When implementing behavior changes:
 | `tasks ready` | List actionable tasks |
 | `inbox add/list/promote/delete` | Idea capture |
 | `item add/get/set` | Spec item CRUD |
-| `derive` | Create task from spec |
+| `derive @spec` | Create task(s) from spec (recursive by default) |
+| `derive @spec --flat` | Create single task (no children) |
+| `derive @spec --dry-run` | Preview without creating |
 | `validate` | Check spec integrity |
 
 ## Key Principles

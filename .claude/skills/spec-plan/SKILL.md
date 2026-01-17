@@ -78,10 +78,18 @@ npm run dev -- item ac add @spec-slug \
 ### 5. Derive Implementation Task
 
 ```bash
+# Recursive (default) - derives tasks for spec and all children
 npm run dev -- derive @spec-slug
+
+# Preview first with dry-run
+npm run dev -- derive @spec-slug --dry-run
+
+# Flat - only this spec, not children
+npm run dev -- derive @spec-slug --flat
 ```
 
-This creates a task linked to the spec. The task inherits context.
+This creates task(s) linked to the spec. Child tasks automatically depend on parent tasks.
+For hierarchical specs (feature with requirements), recursive derive creates the full task tree.
 
 ### 6. Add Implementation Notes
 
@@ -149,10 +157,15 @@ npm run dev -- item add --under @auto-docs --title "Dynamic Help" --type require
 npm run dev -- item ac add @cmd-introspection --given "..." --when "..." --then "..."
 npm run dev -- item ac add @dynamic-help --given "..." --when "..." --then "..."
 
-# Derive tasks
-npm run dev -- derive @cmd-introspection
-npm run dev -- derive @dynamic-help
+# Preview what derive will create
+npm run dev -- derive @auto-docs --dry-run
+
+# Derive all tasks recursively (creates 3 tasks with proper dependencies)
+npm run dev -- derive @auto-docs
 ```
+
+Recursive derive creates: `task-auto-docs`, then `task-cmd-introspection` and `task-dynamic-help`
+both depending on `@task-auto-docs`.
 
 ## Common Mistakes
 
