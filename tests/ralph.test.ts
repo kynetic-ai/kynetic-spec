@@ -381,4 +381,175 @@ describe('ralph event translator', () => {
       expect(event).toBeNull();
     });
   });
+
+  describe('tool_call events', () => {
+    it('extracts tool name and summary from rawInput (ACP format)', () => {
+      const translator = createTranslator();
+      const event = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_123',
+        rawInput: { command: 'npm run build' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('tool_start');
+      expect(event!.data).toMatchObject({
+        kind: 'tool_start',
+        toolCallId: 'toolu_123',
+        tool: 'Bash',
+        summary: 'npm run build',
+      });
+    });
+
+    it('extracts file path summary for Read tool', () => {
+      const translator = createTranslator();
+      const event = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_456',
+        rawInput: { file_path: '/home/user/project/src/index.ts' },
+        _meta: { claudeCode: { toolName: 'Read' } },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      expect(event!.data).toMatchObject({
+        kind: 'tool_start',
+        tool: 'Read',
+        summary: 'index.ts',
+      });
+    });
+
+    it('extracts pattern summary for Grep tool', () => {
+      const translator = createTranslator();
+      const event = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_789',
+        rawInput: { pattern: 'TODO|FIXME' },
+        _meta: { claudeCode: { toolName: 'Grep' } },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      expect(event!.data).toMatchObject({
+        kind: 'tool_start',
+        tool: 'Grep',
+        summary: '/TODO|FIXME/',
+      });
+    });
+
+    it('truncates long Bash commands', () => {
+      const translator = createTranslator();
+      const longCommand = 'npm run build -- --very-long-flag --another-flag --more-options';
+      const event = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_abc',
+        rawInput: { command: longCommand },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      const data = event!.data as { summary: string };
+      expect(data.summary.length).toBeLessThanOrEqual(50);
+      expect(data.summary).toContain('...');
+    });
+  });
+
+  describe('tool_call_update events', () => {
+    it('extracts output from Claude Code toolResponse format', () => {
+      const translator = createTranslator();
+
+      // First send tool_call to register the tool
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_123',
+        rawInput: { command: 'echo hello' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Then send tool_call_update with result
+      const event = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_123',
+        status: 'completed',
+        _meta: {
+          claudeCode: {
+            toolName: 'Bash',
+            toolResponse: {
+              stdout: 'hello\n',
+              stderr: '',
+              interrupted: false,
+              isImage: false,
+            },
+          },
+        },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('tool_result');
+      expect(event!.data).toMatchObject({
+        kind: 'tool_result',
+        toolCallId: 'toolu_123',
+        tool: 'Bash',
+        status: 'completed',
+        output: 'hello',
+      });
+    });
+
+    it('combines stdout and stderr in output', () => {
+      const translator = createTranslator();
+
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_456',
+        rawInput: { command: 'failing-cmd' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      const event = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_456',
+        status: 'completed',
+        _meta: {
+          claudeCode: {
+            toolName: 'Bash',
+            toolResponse: {
+              stdout: 'partial output',
+              stderr: 'error: something went wrong',
+              interrupted: false,
+              isImage: false,
+            },
+          },
+        },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      const data = event!.data as { output: string };
+      expect(data.output).toContain('partial output');
+      expect(data.output).toContain('error: something went wrong');
+    });
+
+    it('handles non-terminal status updates', () => {
+      const translator = createTranslator();
+
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_789',
+        rawInput: { command: 'long-running-cmd' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      const event = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_789',
+        status: 'running',
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('tool_update');
+      expect(event!.data).toMatchObject({
+        kind: 'tool_update',
+        status: 'running',
+      });
+    });
+  });
 });

@@ -210,17 +210,53 @@ function extractToolOutput(update: Record<string, unknown>): string | undefined 
   }
 
   // Try _meta.claudeCode.toolResponse (Claude Code pattern)
+  // toolResponse is an object with stdout/stderr, not a string
   const meta = update._meta as Record<string, unknown> | undefined;
   if (meta) {
     const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
     if (claudeCode?.toolResponse !== undefined) {
-      return truncateOutput(String(claudeCode.toolResponse));
+      const toolResponse = claudeCode.toolResponse as Record<string, unknown>;
+      // Extract stdout, falling back to stringifying the whole response
+      if (typeof toolResponse.stdout === 'string') {
+        const combined =
+          toolResponse.stdout + (toolResponse.stderr ? `\n${toolResponse.stderr}` : '');
+        return truncateOutput(combined.trim());
+      }
+      return truncateOutput(String(toolResponse));
     }
   }
 
   // Try output field
   if (update.output !== undefined) {
     return truncateOutput(String(update.output));
+  }
+
+  return undefined;
+}
+
+/**
+ * Extract original (non-truncated) output for truncation detection.
+ */
+function extractOriginalOutput(update: Record<string, unknown>): string | undefined {
+  if (update.rawOutput !== undefined) {
+    return String(update.rawOutput);
+  }
+
+  const meta = update._meta as Record<string, unknown> | undefined;
+  if (meta) {
+    const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
+    if (claudeCode?.toolResponse !== undefined) {
+      const toolResponse = claudeCode.toolResponse as Record<string, unknown>;
+      if (typeof toolResponse.stdout === 'string') {
+        return (
+          toolResponse.stdout + (toolResponse.stderr ? `\n${toolResponse.stderr}` : '')
+        ).trim();
+      }
+    }
+  }
+
+  if (update.output !== undefined) {
+    return String(update.output);
   }
 
   return undefined;
@@ -393,7 +429,7 @@ export function createTranslator(): RalphTranslator {
         const u = update as Record<string, unknown>;
         const toolCallId = (u.tool_call_id || u.toolCallId || u.id) as string;
         const tool = extractToolName(u);
-        const input = u.input || u.params || {};
+        const input = u.rawInput || u.input || u.params || {};
 
         state.pendingTools.set(toolCallId, { tool, input, startTime: timestamp });
 
@@ -434,7 +470,7 @@ export function createTranslator(): RalphTranslator {
         // Terminal status - treat as result
         if (status === 'completed' || status === 'failed' || status === 'cancelled') {
           const rawOutput = extractToolOutput(u);
-          const originalOutput = (u.rawOutput || u.output) as string | undefined;
+          const originalOutput = extractOriginalOutput(u);
           state.pendingTools.delete(toolCallId);
 
           return {
