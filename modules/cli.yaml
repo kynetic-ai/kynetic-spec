@@ -1805,7 +1805,7 @@ features:
         then: logs session.end event with status and triggers commit
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client

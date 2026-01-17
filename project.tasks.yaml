@@ -4180,6 +4180,7 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T15:19:24.917Z'
+  started_at: '2026-01-17T16:55:31.346Z'
   notes:
     - _ulid: 01KF68PK2H0S59TP079GFPMVDE
       created_at: '2026-01-17T15:20:39.762Z'
@@ -4224,5 +4225,63 @@
         - Graceful shutdown: ACP cancel → SIGTERM → SIGKILL
         - Start without implementing fs/terminal handlers (deferred)
       supersedes: null
+    - _ulid: 01KF6EN5VKVN1QC2CYDFH256X9
+      created_at: '2026-01-17T17:04:44.915Z'
+      author: '@claude'
+      content: >-
+        Completed refactor of ralph command to use ACP protocol.
+
+
+        ## Changes Made
+
+
+        ### New Files
+
+        - `src/agents/adapters.ts` - Adapter registry with claude-code-acp and mock-acp adapters
+
+        - `src/agents/spawner.ts` - Agent spawning with ACP client initialization
+
+        - `src/agents/index.ts` - Module exports
+
+        - `tests/mocks/acp-mock.js` - ACP-compatible mock for testing
+
+
+        ### Modified Files
+
+        - `src/cli/commands/ralph.ts` - Complete rewrite using ACP client instead of CLI spawn
+
+
+        ### Key Implementation Details
+
+        1. **Adapter Registry**: Defines how to spawn different ACP agents. Built-in adapters for
+        claude-code-acp and testing.
+
+        2. **Agent Spawner**: Spawns child process and wraps stdio with ACPClient. Handles
+        initialization and cleanup.
+
+        3. **ACP Integration**: Uses ACPClient for initialize → newSession → prompt flow with
+        streaming updates.
+
+        4. **Session Events**: Logs session.start, prompt.sent, session.update, and session.end
+        events to JSONL.
+
+        5. **Streaming Output**: Displays agent text output in real-time using session/update
+        notifications.
+
+
+        ### CLI Changes
+
+        - Replaced `--claude-cmd` with `--adapter` (default: claude-code-acp)
+
+        - Added `--adapter-cmd` for custom adapter commands (testing)
+
+        - Kept existing options: --max-loops, --max-retries, --max-failures, --dry-run, --yolo
+
+
+        ### Tests
+
+        - All 11 ralph tests pass using new acp-mock.js
+
+        - Full test suite (311 tests) passes
+      supersedes: null
   todos: []
-  started_at: '2026-01-17T16:55:31.346Z'
