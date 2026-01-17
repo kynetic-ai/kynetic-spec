@@ -197,3 +197,53 @@ inbox:
       - pr
       - dx
     added_by: '@claude'
+  - _ulid: 01KF554T97ST9B3DMT4WMXACYQ
+    text: >-
+      Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a
+      script that runs Claude Code repeatedly with fresh context, using a templated prompt that
+      instructs it to:
+
+
+      1. Run 'kspec session start' to see ready tasks
+
+      2. Pick a well-defined task (high priority, clear spec, no blockers)
+
+      3. Work on it until completion or stuck
+
+      4. Commit and complete the task
+
+      5. Exit cleanly (the outer loop restarts with fresh context)
+
+
+      Key features from research:
+
+      - Simple core: while :; do cat PROMPT.md | claude ; done
+
+      - Context persists via filesystem/git, not session memory
+
+      - Dual-condition exit: require both completion indicator AND explicit exit signal
+
+      - Circuit breaker: stop after N loops with no progress or repeated errors
+
+      - Rate limiting for API calls
+
+
+      Kspec-specific additions:
+
+      - Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)
+
+      - Progress tracking via task notes before each exit
+
+      - Session checkpoint before exit to ensure clean state
+
+      - Maybe: task budget (only attempt tasks under estimated N turns)
+
+
+      The beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't
+      compound context - they just waste one run.
+    created_at: '2026-01-17T04:59:17.160Z'
+    tags:
+      - automation
+      - workflow
+      - agents
+    added_by: '@claude'
