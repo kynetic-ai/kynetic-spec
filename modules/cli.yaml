@@ -1847,6 +1847,20 @@ features:
         given: malformed JSON from agent
         when: message is parsed
         then: sends JSON-RPC parse error response
+  - _ulid: 01KF68ESKJB4XHRM3MNFD93VV2
+    slugs:
+      - session-events
+    title: Session Event Storage
+    type: feature
+    tags: []
+    description: >-
+      JSONL-based event storage for agent sessions. Provides append-only event logs for
+      auditability, session metadata tracking, and integration with kspec commit boundaries.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-17T15:16:24.306Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
