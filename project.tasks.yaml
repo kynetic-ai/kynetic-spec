@@ -3019,23 +3019,41 @@
   created_at: '2026-01-17T02:34:35.593Z'
   notes: []
   todos: []
-- title: 'Implement: Workflow Definitions'
+- _ulid: 01KF4WVW75MKNHKSYCCA87C9YE
+  slugs:
+    - task-workflow-definitions
+  title: 'Implement: Workflow Definitions'
   type: task
   spec_ref: '@workflow-definitions'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-workflow-definitions
   tags:
     - mvp
     - meta
     - workflows
-  depends_on: []
-  _ulid: 01KF4WVW75MKNHKSYCCA87C9YE
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.621Z'
+  notes: []
+  todos: []
+- title: 'Implement: Workflow Schema'
+  type: task
+  spec_ref: '@workflow-schema'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-workflow-schema
+  tags: []
+  depends_on:
+    - '@task-workflow-definitions'
+  _ulid: 01KF4WVW820TFJ811C566EC6AR
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.621Z'
+  created_at: '2026-01-17T02:34:35.650Z'
   notes: []
   todos: []
