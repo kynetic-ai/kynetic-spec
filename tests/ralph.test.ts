@@ -1,5 +1,5 @@
 /**
- * Tests for ralph command.
+ * Tests for ralph command and event translator.
  *
  * Uses a mock ACP agent to test loop behavior, retry logic,
  * and failure handling without invoking the real Claude Code.
@@ -9,6 +9,8 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as os from 'node:os';
 import { spawnSync } from 'node:child_process';
+import { createTranslator } from '../src/ralph/events.js';
+import type { SessionUpdate } from '../src/acp/types.js';
 
 const FIXTURES_DIR = path.join(__dirname, 'fixtures');
 const CLI_PATH = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
@@ -227,5 +229,156 @@ describe('ralph command', () => {
       expect(events).toContain('"type":"prompt.sent"');
       expect(events).toContain('"type":"session.end"');
     }
+  });
+});
+
+// ─── Event Translator Unit Tests ────────────────────────────────────────────
+
+describe('ralph event translator', () => {
+  // Helper to create SessionUpdate objects
+  function makeChunk(
+    type: 'agent_message_chunk' | 'agent_thought_chunk',
+    text: string
+  ): SessionUpdate {
+    return {
+      sessionUpdate: type,
+      content: { type: 'text', text },
+    } as SessionUpdate;
+  }
+
+  describe('agent_message_chunk', () => {
+    it('translates streaming content', () => {
+      const translator = createTranslator();
+      const event = translator.translate(makeChunk('agent_message_chunk', 'Hello'));
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('agent_message');
+      expect(event!.data).toMatchObject({
+        kind: 'agent_message',
+        content: 'Hello',
+        isStreaming: true,
+      });
+    });
+
+    it('finalizes on empty string signal', () => {
+      const translator = createTranslator();
+
+      // First, stream some content
+      translator.translate(makeChunk('agent_message_chunk', 'Hello'));
+      translator.translate(makeChunk('agent_message_chunk', ' world'));
+
+      // Then send empty string to finalize
+      const finalEvent = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(finalEvent).not.toBeNull();
+      expect(finalEvent!.type).toBe('agent_message');
+      expect(finalEvent!.data).toMatchObject({
+        kind: 'agent_message',
+        content: 'Hello world',
+        isStreaming: false,
+      });
+    });
+
+    it('returns null for empty string when no active message', () => {
+      const translator = createTranslator();
+
+      // Send empty string without prior content
+      const event = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(event).toBeNull();
+    });
+  });
+
+  describe('agent_thought_chunk', () => {
+    it('translates streaming thought content', () => {
+      const translator = createTranslator();
+      const event = translator.translate(makeChunk('agent_thought_chunk', 'Thinking...'));
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('agent_thought');
+      expect(event!.data).toMatchObject({
+        kind: 'agent_thought',
+        content: 'Thinking...',
+        isStreaming: true,
+      });
+    });
+
+    it('finalizes on empty string signal', () => {
+      const translator = createTranslator();
+
+      // Stream some thought content
+      translator.translate(makeChunk('agent_thought_chunk', 'Let me think'));
+      translator.translate(makeChunk('agent_thought_chunk', ' about this'));
+
+      // Finalize with empty string
+      const finalEvent = translator.translate(makeChunk('agent_thought_chunk', ''));
+
+      expect(finalEvent).not.toBeNull();
+      expect(finalEvent!.type).toBe('agent_thought');
+      expect(finalEvent!.data).toMatchObject({
+        kind: 'agent_thought',
+        content: 'Let me think about this',
+        isStreaming: false,
+      });
+    });
+  });
+
+  describe('finalize()', () => {
+    it('returns final event for pending message', () => {
+      const translator = createTranslator();
+
+      // Stream content without empty string finalization
+      translator.translate(makeChunk('agent_message_chunk', 'Incomplete'));
+
+      // Call finalize explicitly
+      const finalEvent = translator.finalize();
+
+      expect(finalEvent).not.toBeNull();
+      expect(finalEvent!.type).toBe('agent_message');
+      expect(finalEvent!.data).toMatchObject({
+        kind: 'agent_message',
+        content: 'Incomplete',
+        isStreaming: false,
+      });
+    });
+
+    it('returns null when no pending message', () => {
+      const translator = createTranslator();
+
+      const event = translator.finalize();
+
+      expect(event).toBeNull();
+    });
+
+    it('clears state after finalize', () => {
+      const translator = createTranslator();
+
+      translator.translate(makeChunk('agent_message_chunk', 'Test'));
+      translator.finalize();
+
+      // Second finalize should return null
+      const secondFinalize = translator.finalize();
+      expect(secondFinalize).toBeNull();
+    });
+  });
+
+  describe('noise suppression', () => {
+    it('suppresses onPostToolUseHook messages', () => {
+      const translator = createTranslator();
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_123')
+      );
+
+      expect(event).toBeNull();
+    });
+
+    it('suppresses onPreToolUseHook messages', () => {
+      const translator = createTranslator();
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'No onPreToolUseHook found for tool use')
+      );
+
+      expect(event).toBeNull();
+    });
   });
 });

@@ -23,6 +23,7 @@ import {
   updateSessionStatus,
   appendEvent,
 } from '../../sessions/index.js';
+import { createTranslator, createCliRenderer } from '../../ralph/index.js';
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
@@ -101,27 +102,10 @@ This is the last iteration of the loop. After completing your work:
 ` : ''}`;
 }
 
-// ─── Streaming Output Handler ────────────────────────────────────────────────
+// ─── Streaming Output ────────────────────────────────────────────────────────
 
-/**
- * Handle streaming updates from ACP agent.
- * Extracts text content and displays it to the terminal.
- */
-function handleUpdate(update: SessionUpdate): void {
-  // SessionUpdate is a discriminated union - check sessionUpdate property
-  // ContentChunk variants (user_message_chunk, agent_message_chunk, agent_thought_chunk)
-  // have a single 'content' block
-  if (
-    update.sessionUpdate === 'user_message_chunk' ||
-    update.sessionUpdate === 'agent_message_chunk' ||
-    update.sessionUpdate === 'agent_thought_chunk'
-  ) {
-    const contentUpdate = update as { content: { type: string; text?: string } };
-    if (contentUpdate.content?.type === 'text' && contentUpdate.content.text) {
-      process.stdout.write(contentUpdate.content.text);
-    }
-  }
-}
+// Translator and renderer are created per-session in the action handler.
+// This allows the architecture to be reused by future TUI renderers.
 
 // ─── Tool Request Handler ────────────────────────────────────────────────────
 
@@ -313,11 +297,13 @@ export function registerRalphCommand(program: Command): void {
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
 
+        // Create translator and renderer for this session
+        const translator = createTranslator();
+        const renderer = createCliRenderer();
+
         try {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
-            console.log(chalk.cyan(`\n${'─'.repeat(60)}`));
-            console.log(chalk.cyan.bold(`Iteration ${iteration}/${maxLoops}`));
-            console.log(chalk.cyan(`${'─'.repeat(60)}\n`));
+            renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
             // Gather fresh context each iteration
             const sessionCtx = await gatherSessionContext(ctx, { limit: '10' });
@@ -378,10 +364,14 @@ export function registerRalphCommand(program: Command): void {
                     },
                   });
 
-                  // Set up streaming update handler
+                  // Set up streaming update handler with translator + renderer
                   agent.client.on('update', (_sid: string, update: SessionUpdate) => {
-                    handleUpdate(update);
-                    // Log update event (async, non-blocking)
+                    // Translate ACP event to RalphEvent and render
+                    const event = translator.translate(update);
+                    if (event) {
+                      renderer.render(event);
+                    }
+                    // Log raw update event (async, non-blocking)
                     appendEvent(specDir, {
                       session_id: sessionId,
                       type: 'session.update',
