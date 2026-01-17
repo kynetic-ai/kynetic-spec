@@ -20,12 +20,16 @@ const output = process.env.MOCK_CLAUDE_OUTPUT || '';
 
 // Read stdin (the prompt) - we don't use it but need to consume it
 let stdin = '';
+let endHandled = false;
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', (chunk) => {
   stdin += chunk;
 });
 
 process.stdin.on('end', async () => {
+  // Prevent double execution if 'end' fires multiple times
+  if (endHandled) return;
+  endHandled = true;
   // Optional delay
   if (delayMs > 0) {
     await new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -63,9 +67,9 @@ process.stdin.on('end', async () => {
   process.exit(finalExitCode);
 });
 
-// Handle case where stdin is already closed or empty
+// Handle case where stdin is already closed or empty (e.g., TTY mode)
 setTimeout(() => {
-  if (stdin === '') {
+  if (!endHandled && stdin === '') {
     process.stdin.emit('end');
   }
 }, 100);
