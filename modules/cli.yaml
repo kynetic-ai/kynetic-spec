@@ -1732,6 +1732,17 @@ features:
         given: A new subcommand is added to Commander definition
         when: '''kspec help <parent>'' is run without updating help.ts'
         then: The new subcommand appears in help output automatically
+  - _ulid: 01KF56RNN2KPVCDCY0KPK1TTBQ
+    slugs:
+      - cli-ralph
+    title: Ralph command - automated task loop
+    type: feature
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-17T05:27:36.354Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
