@@ -1886,6 +1886,10 @@ features:
         given: session ends
         when: updateSessionStatus(id, status) is called
         then: updates metadata with status and ended_at timestamp
+      - id: ac-7
+        given: events are accumulated
+        when: a commit boundary is reached (task complete, session end)
+        then: events are included in next kspec commit
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
