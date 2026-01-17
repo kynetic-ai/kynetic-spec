@@ -1738,7 +1738,12 @@ features:
     title: Ralph command - automated task loop
     type: feature
     tags: []
-    depends_on: []
+    description: >-
+      Automated task loop using ACP protocol. Runs claude-code-acp agent in a loop to process kspec
+      tasks autonomously with full event logging and streaming output.
+    depends_on:
+      - '@acp-client'
+      - '@session-events'
     implements: []
     relates_to: []
     tests: []
@@ -1747,54 +1752,60 @@ features:
       - id: ac-1
         given: ready tasks exist
         when: kspec ralph is run with --max-loops N
-        then: Claude Code runs up to N iterations, processing tasks
+        then: spawns ACP agent and runs up to N iterations
       - id: ac-2
         given: no ready tasks exist
         when: kspec ralph is run
         then: command exits with message indicating no ready tasks
       - id: ac-3
         given: a loop iteration starts
-        when: Claude picks and works on a task
-        then: Claude uses task start, task note, and task complete commands per working procedure
+        when: agent picks and works on a task
+        then: agent uses task start, task note, and task complete commands per working procedure
       - id: ac-4
         given: a loop iteration ends with work still in progress
-        when: Claude cannot complete the task in one iteration
+        when: agent cannot complete the task in one iteration
         then: >-
-          Claude commits WIP, adds note documenting progress, and task remains in_progress for next
+          agent commits WIP, adds note documenting progress, and task remains in_progress for next
           iteration
       - id: ac-5
         given: a loop iteration completes (task done or WIP)
         when: there are uncommitted changes
-        then: Claude commits the changes with appropriate message
+        then: agent commits the changes with appropriate message
       - id: ac-6
-        given: a loop iteration completes
-        when: Claude finishes its work for that iteration
-        then: >-
-          Claude reflects on what was done and adds any observations/learnings to inbox
-          automatically
-      - id: ac-7
         given: '--dry-run flag is provided'
         when: kspec ralph --dry-run is run
-        then: shows the prompt that would be sent without executing Claude
-      - id: ac-8
-        given: '--yolo or --no-yolo flags'
-        when: kspec ralph is run
-        then: Claude runs with appropriate permission settings (yolo by default)
-      - id: ac-9
-        given: kspec ralph is running
-        when: each iteration starts and completes
-        then: progress messages are shown (iteration N/M, status, Claudes final message)
-      - id: ac-10
-        given: Claude Code returns an error during iteration
+        then: shows the prompt that would be sent without executing agent
+      - id: ac-7
+        given: agent returns error during iteration
         when: the error occurs
         then: retry the iteration up to max-retries times before failing the loop
-      - id: ac-11
+      - id: ac-8
         given: multiple consecutive iterations fail after all retries
         when: the failure count reaches max-failures threshold
         then: the loop exits early with an error message
+      - id: ac-9
+        given: '--adapter flag is provided'
+        when: kspec ralph --adapter <id> is run
+        then: uses specified adapter (default claude-code-acp)
+      - id: ac-10
+        given: session starts
+        when: agent spawns
+        then: creates new session with ULID and logs session.start event
+      - id: ac-11
+        given: agent streams updates
+        when: updates arrive
+        then: displays streaming output to CLI and logs to session events
+      - id: ac-12
+        given: prompt is sent
+        when: iteration starts
+        then: logs prompt.sent event with full prompt content
+      - id: ac-13
+        given: session ends
+        when: loop completes or errors
+        then: logs session.end event with status and triggers commit
     status:
       maturity: draft
-      implementation: implemented
+      implementation: not_started
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
@@ -1890,6 +1901,21 @@ features:
         given: events are accumulated
         when: a commit boundary is reached (task complete, session end)
         then: events are included in next kspec commit
+  - _ulid: 01KF68JFQF2N4VAKDWNE9P9Z70
+    slugs:
+      - acp-handlers
+    title: ACP File/Terminal Handlers
+    type: feature
+    tags:
+      - deferred
+    description: >-
+      Implement fs read/write and terminal handlers for ACP agents with security checks. Deferred:
+      Test if claude-code-acp works without them first.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-17T15:18:25.264Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
