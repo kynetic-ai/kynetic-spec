@@ -2379,9 +2379,34 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T12:58:27.682Z'
-  notes: []
-  todos: []
   started_at: '2026-01-17T02:14:18.666Z'
+  notes:
+    - _ulid: 01KF4W4TY9V2JFE4VJM1N1KF0C
+      created_at: '2026-01-17T02:22:00.649Z'
+      author: '@claude'
+      content: >-
+        Implemented kspec item patch with bulk support:
+
+
+        - Added SpecItemPatchSchema (partial, passthrough) to schema/spec.ts
+
+        - Added PatchOperation, PatchResult, BulkPatchResult types and patchSpecItems() to
+        parser/yaml.ts
+
+        - Added patch command to cli/commands/item.ts with:
+          - Single item mode: --data flag or stdin JSON
+          - Bulk mode: --bulk flag with JSONL or JSON array from stdin
+          - --dry-run for preview
+          - --allow-unknown for non-schema fields
+          - --fail-fast for bulk (default: continue-on-error)
+        - Added 12 integration tests covering all acceptance criteria
+
+        - All 196 tests pass
+
+
+        Updated spec with 6 new AC (ac-7 through ac-12) for bulk mode and edge cases.
+      supersedes: null
+  todos: []
 - _ulid: 01KF3E5H5S0ZF46Y6N8YWW9V2P
   slugs:
     - task-kspec-task-patch
