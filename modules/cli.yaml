@@ -1762,6 +1762,10 @@ features:
         then: >-
           Claude commits WIP, adds note documenting progress, and task remains in_progress for next
           iteration
+      - id: ac-5
+        given: a loop iteration completes (task done or WIP)
+        when: there are uncommitted changes
+        then: Claude commits the changes with appropriate message
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
