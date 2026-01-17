@@ -3872,4 +3872,27 @@
         Supersedes @task-fuzzy-item-and-task-search which was autocomplete-style matching on titles
         only.
       supersedes: null
+    - _ulid: 01KF527H6TXQCGAEKC8QGGWAPE
+      created_at: '2026-01-17T04:08:20.442Z'
+      author: '@claude'
+      content: >-
+        Clarification from user: Output should be ITEMS/TASKS, not grep-style line snippets.
+
+
+        The search pattern finds items, but the result is the item itself with an indicator of where
+        matches were found.
+
+
+        Example output:
+
+        01KF1234 [pending] P2 Implement auth flow
+          matched: notes[1].content, description
+
+        NOT:
+
+        @task-auth:notes[1].content:12: TODO: add retry logic
+
+
+        This is simpler and more useful - you want to find the item, not grep through text.
+      supersedes: null
   todos: []
