@@ -127,18 +127,31 @@ function handleUpdate(update: SessionUpdate): void {
 
 /**
  * Handle tool requests from ACP agent.
- * Implements file operations and terminal commands.
+ * Implements file operations, terminal commands, and permission handling.
  */
 async function handleRequest(
   client: ACPClient,
   id: string | number,
   method: string,
-  params: unknown
+  params: unknown,
+  yolo: boolean
 ): Promise<void> {
   const p = params as Record<string, unknown>;
 
   try {
     switch (method) {
+      case 'session/request_permission': {
+        // In yolo mode, auto-approve all permissions
+        // In normal mode, would need to implement permission UI
+        if (yolo) {
+          client.respond(id, { granted: true });
+        } else {
+          // TODO: Implement permission prompting
+          client.respond(id, { granted: false, reason: 'Permission UI not implemented. Use --yolo to auto-approve.' });
+        }
+        break;
+      }
+
       case 'file/read': {
         const filePath = p.path as string;
         const content = await fs.readFile(filePath, 'utf-8');
@@ -367,7 +380,7 @@ export function registerRalphCommand(program: Command): void {
 
                   // Set up tool request handler
                   agent.client.on('request', (reqId: string | number, method: string, params: unknown) => {
-                    handleRequest(agent!.client, reqId, method, params).catch((err) => {
+                    handleRequest(agent!.client, reqId, method, params, options.yolo).catch((err) => {
                       agent!.client.respondError(reqId, -32000, err.message);
                     });
                   });
