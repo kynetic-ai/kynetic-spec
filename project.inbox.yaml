@@ -282,12 +282,3 @@ inbox:
       - pattern
       - spec-system
     added_by: '@claude'
-  - _ulid: 01KF6AVN5FTQKA8D7RPYYA6DQ5
-    text: >-
-      Fix existing type errors in codebase - LoadedSpecItem cast issues in item.ts, search.ts,
-      items.ts causing typecheck to fail
-    created_at: '2026-01-17T15:58:22.896Z'
-    tags:
-      - dx
-      - cleanup
-    added_by: '@claude'
