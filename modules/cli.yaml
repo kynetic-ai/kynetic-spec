@@ -1916,6 +1916,21 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-17T15:18:25.264Z'
+  - _ulid: 01KF68JJ2XEPEEN5XTKQSJ36MT
+    slugs:
+      - ralph-orchestrator
+    title: Orchestrator Agent Mode
+    type: feature
+    tags:
+      - deferred
+    description: >-
+      Higher-level agent that coordinates task agents, provides guidance beyond raw tasks. Deferred:
+      Requires design of orchestrator prompt, session coordination, agent spawning.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-17T15:18:27.678Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
