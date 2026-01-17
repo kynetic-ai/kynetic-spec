@@ -1858,6 +1858,9 @@ features:
         given: malformed JSON from agent
         when: message is parsed
         then: sends JSON-RPC parse error response
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KF68ESKJB4XHRM3MNFD93VV2
     slugs:
       - session-events
