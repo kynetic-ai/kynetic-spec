@@ -1611,6 +1611,36 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-15T17:11:58.428Z'
+        status:
+          maturity: draft
+          implementation: in_progress
+        acceptance_criteria:
+          - id: ac-1
+            given: A user searches with kspec item list --fuzzy "validashun"
+            when: The fuzzy matcher runs against all spec items
+            then: >-
+              Results include items where title, slugs, or description approximately match the
+              query, scored by relevance
+          - id: ac-2
+            given: Fuzzy search is configured with a threshold (default 0.5)
+            when: Items are scored against the query
+            then: Only items with score >= threshold are returned, preventing poor-quality matches
+          - id: ac-3
+            given: Multiple items match a fuzzy query
+            when: Results are returned
+            then: Items are sorted by match score (best match first), then by original order for ties
+          - id: ac-4
+            given: A user specifies kspec item list --type feature --fuzzy "val"
+            when: Query is executed
+            then: Type filter is applied first (narrow scope), then fuzzy search within filtered results
+          - id: ac-5
+            given: Fuzzy search is implemented for items
+            when: Extended to tasks via kspec tasks list --fuzzy "sesion"
+            then: Searches task title, slugs, and description with same scoring behavior
+          - id: ac-6
+            given: A user searches with kspec item list --fuzzy "01KF1A8"
+            when: Fuzzy matcher runs
+            then: Items with ULID starting with this prefix score highly and appear in results
       - _ulid: 01KF1A991VFFQ99EBQGQ9XB55D
         slugs:
           - fuzzy-command-suggest
