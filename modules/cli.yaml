@@ -1222,6 +1222,10 @@ features:
             given: module task already exists, feature has no task
             when: kspec derive @feature runs
             then: feature task depends_on references existing module task
+          - id: ac-7
+            given: a spec item already has a linked task
+            when: kspec derive @item runs (no --force)
+            then: 'no task created; outputs ''Skipped @item (task exists: @task-ref)'''
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
