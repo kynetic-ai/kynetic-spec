@@ -1238,6 +1238,12 @@ features:
             given: a module with children
             when: kspec derive @module --dry-run runs
             then: outputs 'Would create:' followed by task list; no tasks actually created; exit 0
+          - id: ac-11
+            given: derive creates tasks
+            when: '--json flag is passed'
+            then: >-
+              outputs JSON array with objects {ulid, slug, spec_ref, depends_on, action:
+              'created'|'skipped'}
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
