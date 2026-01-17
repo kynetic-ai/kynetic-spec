@@ -4516,6 +4516,9 @@
   spec_ref: '@ralph-output-formatting'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Fixed phased tool_call event deduplication. Tool calls now show single header with summary
+    appearing when input arrives. All 30 ralph tests pass.
   depends_on: []
   context: []
   priority: 2
@@ -4525,6 +4528,7 @@
   vcs_refs: []
   created_at: '2026-01-17T21:35:17.170Z'
   started_at: '2026-01-17T21:35:24.178Z'
+  completed_at: '2026-01-17T21:35:45.193Z'
   notes:
     - _ulid: 01KF6Y56374AG9Y2HM96N8K7SX
       created_at: '2026-01-17T21:35:38.087Z'
@@ -4596,7 +4600,21 @@
         - tests/ralph.test.ts: +2 tests for phased events
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T21:35:45.193Z'
-  closed_reason: >-
-    Fixed phased tool_call event deduplication. Tool calls now show single header with summary
-    appearing when input arrives. All 30 ralph tests pass.
+- title: Fix ralph session context overflow
+  type: task
+  spec_ref: '@cli-ralph'
+  priority: 1
+  slugs:
+    - ralph-session-fix
+  tags:
+    - bug
+    - ralph
+  _ulid: 01KF71PW1HJBZMDMSCWF1YYNRB
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T22:37:43.345Z'
+  notes: []
+  todos: []
