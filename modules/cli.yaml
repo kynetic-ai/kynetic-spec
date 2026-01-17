@@ -1906,7 +1906,7 @@ features:
         then: events are included in next kspec commit
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KF68JFQF2N4VAKDWNE9P9Z70
     slugs:
       - acp-handlers

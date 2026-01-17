@@ -4084,6 +4084,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented JSONL-based session event storage with createSession, appendEvent, readEvents, and
+    updateSessionStatus functions. All 7 acceptance criteria covered with 41 tests.
   depends_on: []
   context: []
   priority: 1
@@ -4091,6 +4094,7 @@
   vcs_refs: []
   created_at: '2026-01-17T15:19:06.703Z'
   started_at: '2026-01-17T16:02:08.638Z'
+  completed_at: '2026-01-17T16:08:47.209Z'
   notes:
     - _ulid: 01KF68P5PB0NA78ZGKDYC3027W
       created_at: '2026-01-17T15:20:26.059Z'
@@ -4160,17 +4164,13 @@
         All 307 tests pass (41 new session tests + 266 existing).
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T16:08:47.209Z'
-  closed_reason: >-
-    Implemented JSONL-based session event storage with createSession, appendEvent, readEvents, and
-    updateSessionStatus functions. All 7 acceptance criteria covered with 41 tests.
 - _ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
   slugs:
     - task-ralph-acp-refactor
   title: Refactor ralph command to use ACP
   type: task
   spec_ref: '@cli-ralph'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-acp-protocol-client'
@@ -4225,3 +4225,4 @@
         - Start without implementing fs/terminal handlers (deferred)
       supersedes: null
   todos: []
+  started_at: '2026-01-17T16:55:31.346Z'
