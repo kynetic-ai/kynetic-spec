@@ -1197,6 +1197,11 @@ features:
         implements:
           - '@derive-commands'
           - '@derive-command'
+        acceptance_criteria:
+          - id: ac-1
+            given: a spec item with no children
+            when: kspec derive @item runs
+            then: 'creates one task with spec_ref=@item; outputs ''Created task: <ref>'''
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
