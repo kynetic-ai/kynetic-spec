@@ -219,6 +219,12 @@ async function getEventCount(specDir: string, sessionId: string): Promise<number
  *
  * Creates the session directory if it doesn't exist (lazy creation).
  *
+ * Note: This function is not safe for concurrent access to the same session.
+ * The sequence number assignment has a race condition between reading the
+ * event count and appending the event. This is acceptable for CLI use
+ * (single-process, sequential event logging). If concurrent access is needed
+ * in the future, consider file locking or an in-memory counter per session.
+ *
  * @param specDir - The .kspec directory path
  * @param input - Event input (ts and seq are auto-assigned if not provided)
  * @returns The appended event with auto-assigned fields
