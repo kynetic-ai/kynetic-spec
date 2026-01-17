@@ -98,6 +98,7 @@ export function registerRalphCommand(program: Command): void {
     .description('Run Claude Code in a loop to process ready tasks')
     .option('--max-loops <n>', 'Maximum iterations', '5')
     .option('--max-retries <n>', 'Max retries per iteration on error', '3')
+    .option('--max-failures <n>', 'Max consecutive failed iterations before exit', '3')
     .option('--dry-run', 'Show prompt without executing')
     .option('--yolo', 'Use --dangerously-skip-permissions (default)', true)
     .option('--no-yolo', 'Require normal permission prompts')
@@ -105,6 +106,7 @@ export function registerRalphCommand(program: Command): void {
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
         const maxRetries = parseInt(options.maxRetries, 10);
+        const maxFailures = parseInt(options.maxFailures, 10);
 
         if (isNaN(maxLoops) || maxLoops < 1) {
           error('--max-loops must be a positive integer');
@@ -116,7 +118,14 @@ export function registerRalphCommand(program: Command): void {
           process.exit(1);
         }
 
-        info(`Starting ralph loop (max ${maxLoops} iterations, ${maxRetries} retries, yolo=${options.yolo})`);
+        if (isNaN(maxFailures) || maxFailures < 1) {
+          error('--max-failures must be a positive integer');
+          process.exit(1);
+        }
+
+        info(`Starting ralph loop (max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures, yolo=${options.yolo})`);
+
+        let consecutiveFailures = 0;
 
         for (let iteration = 1; iteration <= maxLoops; iteration++) {
           console.log(chalk.cyan(`\n${'─'.repeat(60)}`));
@@ -199,12 +208,19 @@ export function registerRalphCommand(program: Command): void {
 
           if (succeeded) {
             success(`Completed iteration ${iteration}`);
+            consecutiveFailures = 0; // Reset on success
           } else {
-            error(`Iteration ${iteration} failed after ${maxRetries + 1} attempts`);
+            consecutiveFailures++;
+            error(`Iteration ${iteration} failed after ${maxRetries + 1} attempts (${consecutiveFailures}/${maxFailures} consecutive failures)`);
             if (lastError) {
               error('Last error:', lastError.message);
             }
-            // Continue to next iteration rather than failing entirely
+
+            if (consecutiveFailures >= maxFailures) {
+              error(`Reached ${maxFailures} consecutive failures. Exiting loop.`);
+              break;
+            }
+
             info('Continuing to next iteration...');
           }
         }
