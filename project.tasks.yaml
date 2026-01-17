@@ -4477,6 +4477,30 @@
     - bug
   vcs_refs: []
   created_at: '2026-01-17T21:06:28.139Z'
-  notes: []
-  todos: []
   started_at: '2026-01-17T21:06:38.793Z'
+  notes:
+    - _ulid: 01KF6WGQS5C791M51GD9SM7TSE
+      created_at: '2026-01-17T21:06:59.493Z'
+      author: '@claude'
+      content: >-
+        Fixed data structure mismatch in ralph event translator.
+
+
+        Root cause: Translator looked for 'input'/'params' but ACP sends 'rawInput'. Also
+        toolResponse is an object with stdout/stderr, not a string.
+
+
+        Changes made:
+
+        1. src/ralph/events.ts line 396: Added rawInput to fallback chain for tool input extraction
+
+        2. extractToolOutput(): Now extracts stdout from toolResponse object instead of stringifying
+
+        3. Added extractOriginalOutput() helper for accurate truncation detection
+
+        4. tests/ralph.test.ts: Added 7 new unit tests for tool_call and tool_call_update events
+
+
+        All tests pass (328 tests).
+      supersedes: null
+  todos: []
