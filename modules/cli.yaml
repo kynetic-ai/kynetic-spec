@@ -955,6 +955,32 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KF4NDCHV22PNBV13QS9J5SHB
+        slugs:
+          - task-list-verbose
+        title: Enhanced Verbose Output for Task Lists
+        type: requirement
+        tags: []
+        description: >-
+          Task list commands (ready, list, blocked, in-progress) support enhanced verbose output
+          showing richer context beyond the default one-line summary.
+
+
+          Default output: ULID, slug, status, priority, title, first line of description
+
+          Verbose (-v): Adds spec_ref, depends_on, tags (current behavior)
+
+          Full (--full or -vv): Adds notes count, recent note preview, todos pending, timestamps,
+          complexity
+
+
+          This helps agents and humans quickly assess task context without running task get on each
+          item.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-17T00:24:20.795Z'
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
