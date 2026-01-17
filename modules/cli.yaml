@@ -1807,9 +1807,15 @@ features:
         given: a loop iteration starts
         when: building prompt for the agent
         then: creates a fresh ACP session so each iteration has a clean context window
+      - id: ac-15
+        given: '--focus flag is provided with instructions'
+        when: building prompt for each iteration
+        then: >-
+          includes the focus instructions prominently in the prompt, emphasizing they apply to all
+          iterations
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     requirements:
       - _ulid: 01KF6NBAZPZTWADHJJK95B2K6C
         slugs:
