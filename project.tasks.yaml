@@ -4172,6 +4172,9 @@
   spec_ref: '@cli-ralph'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Refactored ralph command to use ACP protocol with adapter registry, agent spawner, session event
+    logging, and streaming output. All 311 tests pass.
   depends_on:
     - '@task-acp-protocol-client'
     - '@task-session-event-storage'
@@ -4181,6 +4184,7 @@
   vcs_refs: []
   created_at: '2026-01-17T15:19:24.917Z'
   started_at: '2026-01-17T16:55:31.346Z'
+  completed_at: '2026-01-17T17:04:52.249Z'
   notes:
     - _ulid: 01KF68PK2H0S59TP079GFPMVDE
       created_at: '2026-01-17T15:20:39.762Z'
@@ -4284,8 +4288,37 @@
 
         - Full test suite (311 tests) passes
       supersedes: null
+    - _ulid: 01KF6H2S11T8SS7CHSCAHFBCB5
+      created_at: '2026-01-17T17:47:07.681Z'
+      author: '@claude'
+      content: |-
+        Additional fixes during testing:
+
+        ## Package Name Fix
+        - Changed adapter from @anthropic-ai/claude-code-acp to @zed-industries/claude-code-acp
+
+        ## Tool Request Handling
+        - Added request event forwarding in ACPClient (emits 'request' events)
+        - Added respond/respondError methods to ACPClient
+        - Implemented handlers in ralph.ts for:
+          - file/read - reads file content
+          - file/write - writes file content
+          - terminal/run - executes shell commands
+          - session/request_permission - handles permission requests
+
+        ## Permission Handler
+        - Initial attempt used wrong format: { granted: true }
+        - Fixed to use ACP spec format: { outcome: { outcome: 'selected', optionId } }
+        - In yolo mode, auto-selects 'allow_always' or 'allow_once' option
+
+        ## Type Safety Improvements
+        - Exported RequestPermissionRequest/Response types from ACP module
+        - Added typed respondPermission() method to ACPClient
+        - Enforces correct response format at compile time
+
+        ## Testing
+        - All 11 ralph tests pass
+        - Live tested with kspec-acp-test repo clone
+        - Agent successfully spawns, receives prompts, streams output
+      supersedes: null
   todos: []
-  completed_at: '2026-01-17T17:04:52.249Z'
-  closed_reason: >-
-    Refactored ralph command to use ACP protocol with adapter registry, agent spawner, session event
-    logging, and streaming output. All 311 tests pass.
