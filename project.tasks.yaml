@@ -3276,21 +3276,39 @@
   created_at: '2026-01-17T02:34:35.998Z'
   notes: []
   todos: []
-- title: 'Implement: Observation-Task Resolution Loop'
+- _ulid: 01KF4WVWKP7HG72ANY8QVZD369
+  slugs:
+    - task-observation-task-resolution-loop
+  title: 'Implement: Observation-Task Resolution Loop'
   type: task
   spec_ref: '@observation-task-loop'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-observation-task-resolution-loop
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - '@task-observations'
-  _ulid: 01KF4WVWKP7HG72ANY8QVZD369
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.022Z'
+  notes: []
+  todos: []
+- title: 'Implement: Context Schema'
+  type: task
+  spec_ref: '@context-schema'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-context-schema
+  tags: []
+  depends_on:
+    - '@task-session-context-research'
+  _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.022Z'
+  created_at: '2026-01-17T02:34:36.051Z'
   notes: []
   todos: []
