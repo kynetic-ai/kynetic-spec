@@ -4606,7 +4606,7 @@
   title: Fix ralph session context overflow
   type: task
   spec_ref: '@cli-ralph'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4669,3 +4669,5 @@
         - PR #17 merged
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T22:38:10.427Z'
+  closed_reason: 'Fixed context overflow by creating fresh ACP session per iteration. PR #17 merged.'
