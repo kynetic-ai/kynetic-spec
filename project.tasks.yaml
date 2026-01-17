@@ -3822,6 +3822,9 @@
   spec_ref: '@fuzzy-item-search'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented grep-like content search with kspec search command, --grep options on item/tasks
+    list, and comprehensive tests for all 6 ACs. All 222 tests pass.
   depends_on: []
   context: []
   priority: 2
@@ -3831,6 +3834,7 @@
   vcs_refs: []
   created_at: '2026-01-17T04:04:50.753Z'
   started_at: '2026-01-17T04:35:22.123Z'
+  completed_at: '2026-01-17T04:47:38.991Z'
   notes:
     - _ulid: 01KF521HKWYF795C3RR9EAKVMF
       created_at: '2026-01-17T04:05:04.252Z'
@@ -3918,7 +3922,20 @@
         - Graceful handling of invalid regex (treated as literal)
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T04:47:38.991Z'
-  closed_reason: >-
-    Implemented grep-like content search with kspec search command, --grep options on item/tasks
-    list, and comprehensive tests for all 6 ACs. All 222 tests pass.
+- title: 'Implement: Ralph command - automated task loop'
+  type: task
+  spec_ref: '@cli-ralph'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-ralph-command-automated-task-loop
+  tags: []
+  depends_on: []
+  _ulid: 01KF56VMSP804S0QKT8NA2AXTT
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T05:29:13.782Z'
+  notes: []
+  todos: []
