@@ -1252,6 +1252,10 @@ features:
             given: '@nonexistent does not resolve'
             when: kspec derive @nonexistent runs
             then: 'exits code 1; error ''Reference not found: @nonexistent'''
+          - id: ac-14
+            given: all spec items already have tasks
+            when: kspec derive --all runs
+            then: outputs 'Nothing to derive (all items have tasks)'; exit 0
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
