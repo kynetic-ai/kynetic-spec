@@ -1823,6 +1823,10 @@ features:
         given: an active session
         when: client.prompt({ sessionId, prompt }) is called
         then: sends prompt and returns PromptResponse with stopReason
+      - id: ac-4
+        given: streaming updates from agent
+        when: update events arrive
+        then: client emits 'update' events with sessionId and update data
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
