@@ -1234,6 +1234,10 @@ features:
             given: a spec item already has a linked task
             when: kspec derive @item --force runs
             then: new task created; outputs warning 'Created duplicate task for @item'
+          - id: ac-10
+            given: a module with children
+            when: kspec derive @module --dry-run runs
+            then: outputs 'Would create:' followed by task list; no tasks actually created; exit 0
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
