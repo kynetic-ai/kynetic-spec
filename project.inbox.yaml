@@ -418,3 +418,10 @@ inbox:
     created_at: '2026-01-17T22:26:42.736Z'
     tags: []
     added_by: '@claude'
+  - _ulid: 01KF76613RPTM6BH401FEBRBBZ
+    text: >-
+      Bootstrap kynetic.meta.yaml has invalid 28-char ULIDs instead of 26-char. Need to regenerate
+      all meta item ULIDs. Validation now catches this!
+    created_at: '2026-01-17T23:55:54.360Z'
+    tags: []
+    added_by: '@claude'
