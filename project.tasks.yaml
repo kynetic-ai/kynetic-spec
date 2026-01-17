@@ -1090,6 +1090,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented fuzzy search for items and tasks using fuzzysort. Added -q/--search option with
+    fuzzy matching by default, --exact for substring matching, --threshold for score control. All 6
+    ACs tested and verified.
   depends_on: []
   context: []
   priority: 2
@@ -1099,6 +1103,7 @@
   vcs_refs: []
   created_at: '2026-01-15T17:12:15.157Z'
   started_at: '2026-01-17T03:34:57.679Z'
+  completed_at: '2026-01-17T03:46:35.437Z'
   notes:
     - _ulid: 01KF50ZF9K6WKHAHXW7MWNZ07D
       created_at: '2026-01-17T03:46:27.763Z'
@@ -1132,12 +1137,17 @@
 
         AC annotation comments added to implementation files.
       supersedes: null
+    - _ulid: 01KF51SSDRFZ89SXRQ9T53RYGN
+      created_at: '2026-01-17T04:00:50.104Z'
+      author: '@claude'
+      content: >-
+        Implementation deemed insufficient for actual use case. This implementation provides
+        autocomplete-style fuzzy matching on titles/slugs, but does not replace grep for content
+        search. The real need is grep-like syntax searching across all content (descriptions, notes,
+        AC text). Branched to fuzzy-search-v1 for reference. Superseded by updated spec and new
+        implementation task.
+      supersedes: null
   todos: []
-  completed_at: '2026-01-17T03:46:35.437Z'
-  closed_reason: >-
-    Implemented fuzzy search for items and tasks using fuzzysort. Added -q/--search option with
-    fuzzy matching by default, --exact for substring matching, --threshold for score control. All 6
-    ACs tested and verified.
 - _ulid: 01KF1A9GMNZM8GF8TD95YSDQ7V
   slugs:
     - task-cli-command-suggestions-on-error
