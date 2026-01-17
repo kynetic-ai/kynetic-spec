@@ -2927,7 +2927,7 @@
   type: task
   spec_ref: '@meta-manifest'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2982,6 +2982,10 @@
         Implementation complete, need to create bootstrap file and write tests.
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T23:58:00.852Z'
+  closed_reason: >-
+    Implemented meta manifest feature with schema validation, parser, CLI commands, and validation
+    integration. All 3 acceptance criteria met.
 - _ulid: 01KF4WVW0YWMRS6R0M19J5B84P
   slugs:
     - task-meta-manifest-format
