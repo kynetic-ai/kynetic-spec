@@ -3404,21 +3404,39 @@
   created_at: '2026-01-17T02:34:36.194Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta workflows'
+- _ulid: 01KF4WVWT1YPEPENJN1W7N06YR
+  slugs:
+    - task-kspec-meta-workflows
+  title: 'Implement: kspec meta workflows'
   type: task
   spec_ref: '@meta-workflows-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.225Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta conventions'
+  type: task
+  spec_ref: '@meta-conventions-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-workflows
+    - task-kspec-meta-conventions
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVWT1YPEPENJN1W7N06YR
+  _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.225Z'
+  created_at: '2026-01-17T02:34:36.253Z'
   notes: []
   todos: []
