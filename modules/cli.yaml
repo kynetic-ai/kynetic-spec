@@ -403,6 +403,10 @@ features:
             given: JSONL with multiple patches on stdin
             when: cat patches.jsonl | kspec item patch --bulk runs
             then: all items updated, summary shown
+          - id: ac-8
+            given: JSON array with multiple patches on stdin
+            when: echo '[{"ref":"@a","data":{...}}]' | kspec item patch --bulk runs
+            then: all items updated, summary shown
         status:
           maturity: draft
           implementation: in_progress
