@@ -3820,7 +3820,7 @@
   title: 'Implement: Grep-like Content Search'
   type: task
   spec_ref: '@fuzzy-item-search'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -3896,3 +3896,4 @@
         This is simpler and more useful - you want to find the item, not grep through text.
       supersedes: null
   todos: []
+  started_at: '2026-01-17T04:35:22.123Z'
