@@ -4170,7 +4170,7 @@
   title: Refactor ralph command to use ACP
   type: task
   spec_ref: '@cli-ralph'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-acp-protocol-client'
@@ -4285,3 +4285,7 @@
         - Full test suite (311 tests) passes
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T17:04:52.249Z'
+  closed_reason: >-
+    Refactored ralph command to use ACP protocol with adapter registry, agent spawner, session event
+    logging, and streaming output. All 311 tests pass.
