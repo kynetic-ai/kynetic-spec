@@ -4677,7 +4677,7 @@
   title: Add --focus flag to ralph command
   type: task
   spec_ref: '@cli-ralph'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4743,3 +4743,5 @@
         - Verified with `--dry-run --focus "..."` - focus appears correctly in prompt
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T23:03:28.116Z'
+  closed_reason: Added --focus flag with prominent placement in prompt. Spec AC-15 covers this.
