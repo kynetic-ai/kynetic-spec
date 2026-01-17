@@ -4029,20 +4029,36 @@
   created_at: '2026-01-17T15:19:03.826Z'
   notes: []
   todos: []
-- title: 'Implement: Session Event Storage'
+- _ulid: 01KF68KR6GVXRCPZJAV07AGYHD
+  slugs:
+    - task-session-event-storage
+  title: 'Implement: Session Event Storage'
   type: task
   spec_ref: '@session-events'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-session-event-storage
-  tags: []
-  depends_on: []
-  _ulid: 01KF68KR6GVXRCPZJAV07AGYHD
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-17T15:19:06.703Z'
+  notes: []
+  todos: []
+- title: Refactor ralph command to use ACP
+  type: task
+  spec_ref: '@cli-ralph'
+  priority: 1
+  slugs:
+    - task-ralph-acp-refactor
+  tags: []
+  _ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T15:19:24.917Z'
   notes: []
   todos: []
