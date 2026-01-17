@@ -1867,6 +1867,10 @@ features:
             given: ACP agent emits debug or internal log messages (e.g., 'No onPostToolUseHook found')
             when: these messages arrive in the event stream
             then: messages are suppressed from CLI output (logged to session events only)
+          - id: ac-5
+            given: message stream ends (empty chunk or status event)
+            when: finalization signal is received
+            then: current streaming message is marked complete and any pending formatting is applied
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
