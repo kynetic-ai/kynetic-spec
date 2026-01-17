@@ -1843,6 +1843,13 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-17T19:01:42.519Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: ACP agent streams agent_message events
+            when: messages are displayed in CLI
+            then: >-
+              messages show with visual separation (section header or newline), chalk.blue for
+              content, and streaming indicator while incomplete
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
