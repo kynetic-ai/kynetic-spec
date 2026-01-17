@@ -1616,13 +1616,13 @@ features:
           implementation: in_progress
         acceptance_criteria:
           - id: ac-1
-            given: A user searches with kspec item list --fuzzy "validashun"
+            given: A user searches with kspec item list --fuzzy "valdation"
             when: The fuzzy matcher runs against all spec items
             then: >-
               Results include items where title, slugs, or description approximately match the
               query, scored by relevance
           - id: ac-2
-            given: Fuzzy search is configured with a threshold (default 0.5)
+            given: Fuzzy search is configured with a threshold (default 0.3)
             when: Items are scored against the query
             then: Only items with score >= threshold are returned, preventing poor-quality matches
           - id: ac-3
