@@ -305,3 +305,18 @@ inbox:
       - dx
       - agents
     added_by: '@claude'
+  - _ulid: 01KF6H34MJMWQ8R54AZZ8FKCCH
+    text: >-
+      ACP type safety audit: Review and strengthen typing across ACP client implementation. Current
+      state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add typed
+      response methods for file/read, file/write, terminal/run (2) Type the request params using SDK
+      types (3) Evaluate if we're correctly implementing the full ACP protocol - check SDK docs for
+      any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be
+      deprecated in favor of typed methods only. The { granted: true } bug showed the value of
+      compile-time enforcement.
+    created_at: '2026-01-17T17:47:19.570Z'
+    tags:
+      - acp
+      - types
+      - tech-debt
+    added_by: '@claude'
