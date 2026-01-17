@@ -1776,6 +1776,10 @@ features:
         given: '--dry-run flag is provided'
         when: kspec ralph --dry-run is run
         then: shows the prompt that would be sent without executing Claude
+      - id: ac-8
+        given: '--yolo or --no-yolo flags'
+        when: kspec ralph is run
+        then: Claude runs with appropriate permission settings (yolo by default)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
