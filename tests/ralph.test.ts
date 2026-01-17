@@ -451,6 +451,58 @@ describe('ralph event translator', () => {
       expect(data.summary.length).toBeLessThanOrEqual(50);
       expect(data.summary).toContain('...');
     });
+
+    it('deduplicates phased tool_call events (same tool_call_id)', () => {
+      const translator = createTranslator();
+
+      // Phase 1: Registration with no input
+      const event1 = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_phased',
+        rawInput: {},
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      expect(event1).not.toBeNull();
+      expect(event1!.type).toBe('tool_start');
+      expect((event1!.data as { summary: string }).summary).toBe('');
+
+      // Phase 2: Same tool_call_id with input now available
+      const event2 = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_phased',
+        rawInput: { command: 'npm run build' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Should emit tool_update with summary, not another tool_start
+      expect(event2).not.toBeNull();
+      expect(event2!.type).toBe('tool_update');
+      expect((event2!.data as { summary: string }).summary).toBe('npm run build');
+    });
+
+    it('suppresses duplicate tool_call events with no new summary', () => {
+      const translator = createTranslator();
+
+      // First event with input
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_dup',
+        rawInput: { command: 'npm test' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Same event again (duplicate)
+      const event2 = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_dup',
+        rawInput: { command: 'npm test' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Should suppress since summary didn't change
+      expect(event2).toBeNull();
+    });
   });
 
   describe('tool_call_update events', () => {

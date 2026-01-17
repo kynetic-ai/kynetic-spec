@@ -59,6 +59,7 @@ export interface ToolUpdateData {
   toolCallId: string;
   tool: string;
   status: 'pending' | 'running';
+  summary?: string; // Present when input becomes available in phased events
 }
 
 export interface ToolResultData {
@@ -430,7 +431,35 @@ export function createTranslator(): RalphTranslator {
         const toolCallId = (u.tool_call_id || u.toolCallId || u.id) as string;
         const tool = extractToolName(u);
         const input = u.rawInput || u.input || u.params || {};
+        const summary = getToolSummary(tool, input);
 
+        // Check if this is an update to an existing tool call (phased events)
+        const existing = state.pendingTools.get(toolCallId);
+        if (existing) {
+          // Update existing entry with new input if present
+          const hadSummary = getToolSummary(existing.tool, existing.input);
+          existing.input = input;
+          existing.tool = tool;
+
+          // Only emit update if we now have a summary we didn't have before
+          if (summary && !hadSummary) {
+            return {
+              type: 'tool_update',
+              timestamp,
+              data: {
+                kind: 'tool_update',
+                toolCallId,
+                tool,
+                status: 'pending' as const,
+                summary,
+              },
+            };
+          }
+          // No meaningful change, suppress event
+          return null;
+        }
+
+        // First time seeing this tool_call_id - create entry and emit tool_start
         state.pendingTools.set(toolCallId, { tool, input, startTime: timestamp });
 
         return {
@@ -440,7 +469,7 @@ export function createTranslator(): RalphTranslator {
             kind: 'tool_start',
             toolCallId,
             tool,
-            summary: getToolSummary(tool, input),
+            summary,
             input,
           },
         };
