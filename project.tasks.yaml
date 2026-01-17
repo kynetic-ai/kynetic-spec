@@ -3620,21 +3620,39 @@
   created_at: '2026-01-17T02:34:36.553Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta add'
+- _ulid: 01KF4WVX5C9SJA70WYKWHPH9EP
+  slugs:
+    - task-kspec-meta-add
+  title: 'Implement: kspec meta add'
   type: task
   spec_ref: '@meta-add-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.588Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta set'
+  type: task
+  spec_ref: '@meta-set-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-add
+    - task-kspec-meta-set
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVX5C9SJA70WYKWHPH9EP
+  _ulid: 01KF4WVX658M3KXFWYJSPKDWB9
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.588Z'
+  created_at: '2026-01-17T02:34:36.613Z'
   notes: []
   todos: []
