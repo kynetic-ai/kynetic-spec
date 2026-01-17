@@ -1795,6 +1795,21 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
+    slugs:
+      - acp-client
+    title: ACP Protocol Client
+    type: feature
+    tags: []
+    description: >-
+      JSON-RPC 2.0 based client for Agent Client Protocol communication. Handles bidirectional stdio
+      communication with ACP-compliant agents, request/response correlation, session lifecycle, and
+      event streaming.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-17T15:15:27.389Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
