@@ -1244,6 +1244,10 @@ features:
             then: >-
               outputs JSON array with objects {ulid, slug, spec_ref, depends_on, action:
               'created'|'skipped'}
+          - id: ac-12
+            given: 3 spec items exist, 1 already has a task
+            when: kspec derive --all runs
+            then: creates tasks for 2 items without tasks; skips the one with existing task
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
