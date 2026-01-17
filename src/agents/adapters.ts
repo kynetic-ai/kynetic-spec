@@ -27,11 +27,11 @@ export interface AgentAdapter {
 const ADAPTERS: Record<string, AgentAdapter> = {
   /**
    * Claude Code ACP adapter - the primary production adapter.
-   * Uses @anthropic-ai/claude-code-acp package.
+   * Uses @zed-industries/claude-code-acp package.
    */
   'claude-code-acp': {
     command: 'npx',
-    args: ['@anthropic-ai/claude-code-acp'],
+    args: ['@zed-industries/claude-code-acp'],
     shell: process.platform === 'win32',
     description: 'Claude Code via ACP protocol',
   },
