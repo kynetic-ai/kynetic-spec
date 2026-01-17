@@ -1874,6 +1874,10 @@ features:
         given: events are appended
         when: written to disk
         then: uses atomic append (appendFileSync) for crash safety
+      - id: ac-4
+        given: a session exists
+        when: readEvents(id) is called
+        then: returns all events in sequence order
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
