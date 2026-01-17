@@ -3458,21 +3458,39 @@
   created_at: '2026-01-17T02:34:36.284Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta observations'
+- _ulid: 01KF4WVWWN0D4KSF34QNPVPS81
+  slugs:
+    - task-kspec-meta-observations
+  title: 'Implement: kspec meta observations'
   type: task
   spec_ref: '@meta-observations-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.309Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta promote'
+  type: task
+  spec_ref: '@meta-promote-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-observations
+    - task-kspec-meta-promote
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVWWN0D4KSF34QNPVPS81
+  _ulid: 01KF4WVWXHTZRQ6B6A69HZV7NB
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.309Z'
+  created_at: '2026-01-17T02:34:36.337Z'
   notes: []
   todos: []
