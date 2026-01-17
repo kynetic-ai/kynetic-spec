@@ -1804,7 +1804,7 @@
   title: Implement recursive derive with auto-dependencies
   type: task
   spec_ref: '@cmd-derive'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1847,6 +1847,10 @@
         10. All 184 tests pass
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T00:48:16.767Z'
+  closed_reason: >-
+    Implemented recursive derive with auto-dependencies. Added --flat option, auto depends_on from
+    hierarchy, --json output, 14 ACs to spec, 9 integration tests. All 184 tests pass.
 - _ulid: 01KF1ZGNP64E3SQJABQPF09T7X
   slugs:
     - migrate-to-shadow
