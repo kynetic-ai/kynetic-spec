@@ -1806,6 +1806,43 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    requirements:
+      - _ulid: 01KF6NBAZPZTWADHJJK95B2K6C
+        slugs:
+          - ralph-output-formatting
+        title: Ralph Output Formatting
+        type: requirement
+        tags: []
+        description: >-
+          Structured formatting for ralph streaming output. Translates ACP events into readable CLI
+          output with visual separation between agent messages, tool calls, and results. Follows
+          patterns from kynetic chat/session UI with chalk-based colors, section headers,
+          timestamps, and noise suppression.
+
+
+          Key learnings from kynetic beads history:
+
+          - Finalization is critical for streaming state
+
+          - Library limitations guide input format requirements
+
+          - Tests must verify end-to-end rendered output
+
+          - Treat LLM output as untrusted content
+
+
+          Implementation references:
+
+          - ui-event-translator.ts pattern for ACP event translation
+
+          - event-display.ts for display summaries
+
+          - aggregated-message.ts for message structure
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-17T19:01:42.519Z'
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
