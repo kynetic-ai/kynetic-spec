@@ -3820,7 +3820,7 @@
   title: 'Implement: Grep-like Content Search'
   type: task
   spec_ref: '@fuzzy-item-search'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -3918,3 +3918,7 @@
         - Graceful handling of invalid regex (treated as literal)
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T04:47:38.991Z'
+  closed_reason: >-
+    Implemented grep-like content search with kspec search command, --grep options on item/tasks
+    list, and comprehensive tests for all 6 ACs. All 222 tests pass.
