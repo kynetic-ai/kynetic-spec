@@ -3258,21 +3258,39 @@
   created_at: '2026-01-17T02:34:35.966Z'
   notes: []
   todos: []
-- title: 'Implement: Observation Resolution'
+- _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
+  slugs:
+    - task-observation-resolution
+  title: 'Implement: Observation Resolution'
   type: task
   spec_ref: '@observation-resolution'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-observations'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.998Z'
+  notes: []
+  todos: []
+- title: 'Implement: Observation-Task Resolution Loop'
+  type: task
+  spec_ref: '@observation-task-loop'
+  derivation: auto
   priority: 3
   slugs:
-    - task-observation-resolution
+    - task-observation-task-resolution-loop
   tags: []
   depends_on:
     - '@task-observations'
-  _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
+  _ulid: 01KF4WVWKP7HG72ANY8QVZD369
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.998Z'
+  created_at: '2026-01-17T02:34:36.022Z'
   notes: []
   todos: []
