@@ -2945,23 +2945,41 @@
   created_at: '2026-01-17T02:34:35.476Z'
   notes: []
   todos: []
-- title: 'Implement: Agent Definitions'
+- _ulid: 01KF4WVW3HRCGZFPXJ70QF7BC5
+  slugs:
+    - task-agent-definitions
+  title: 'Implement: Agent Definitions'
   type: task
   spec_ref: '@agent-definitions'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-agent-definitions
   tags:
     - mvp
     - meta
     - agents
-  depends_on: []
-  _ulid: 01KF4WVW3HRCGZFPXJ70QF7BC5
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.505Z'
+  notes: []
+  todos: []
+- title: 'Implement: Agent Schema'
+  type: task
+  spec_ref: '@agent-schema'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-agent-schema
+  tags: []
+  depends_on:
+    - '@task-agent-definitions'
+  _ulid: 01KF4WVW4C16W09RWGY3C95T54
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.505Z'
+  created_at: '2026-01-17T02:34:35.532Z'
   notes: []
   todos: []
