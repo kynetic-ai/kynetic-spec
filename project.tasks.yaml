@@ -2371,6 +2371,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Implemented item patch command with single and bulk modes, all 12 AC covered with tests
   depends_on: []
   context: []
   priority: 2
@@ -2380,6 +2381,7 @@
   vcs_refs: []
   created_at: '2026-01-16T12:58:27.682Z'
   started_at: '2026-01-17T02:14:18.666Z'
+  completed_at: '2026-01-17T02:22:07.087Z'
   notes:
     - _ulid: 01KF4W4TY9V2JFE4VJM1N1KF0C
       created_at: '2026-01-17T02:22:00.649Z'
@@ -2407,8 +2409,6 @@
         Updated spec with 6 new AC (ac-7 through ac-12) for bulk mode and edge cases.
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T02:22:07.087Z'
-  closed_reason: Implemented item patch command with single and bulk modes, all 12 AC covered with tests
 - _ulid: 01KF3E5H5S0ZF46Y6N8YWW9V2P
   slugs:
     - task-kspec-task-patch
@@ -2870,5 +2870,24 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T00:24:46.809Z'
+  notes: []
+  todos: []
+- title: 'Implement: Meta Manifest'
+  type: task
+  spec_ref: '@meta-manifest'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-meta-manifest
+  tags:
+    - mvp
+    - meta
+  depends_on: []
+  _ulid: 01KF4WVVZYNDR1NRKG84JHDW1Q
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.390Z'
   notes: []
   todos: []
