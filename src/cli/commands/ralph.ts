@@ -102,6 +102,7 @@ export function registerRalphCommand(program: Command): void {
     .option('--dry-run', 'Show prompt without executing')
     .option('--yolo', 'Use --dangerously-skip-permissions (default)', true)
     .option('--no-yolo', 'Require normal permission prompts')
+    .option('--claude-cmd <cmd>', 'Claude command to use (for testing)', 'claude')
     .action(async (options) => {
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
@@ -156,7 +157,10 @@ export function registerRalphCommand(program: Command): void {
           }
 
           // Build claude command args
-          const claudeArgs = ['-p'];
+          // Split claudeCmd in case it includes args (e.g., "node /path/to/mock")
+          const cmdParts = options.claudeCmd.split(/\s+/);
+          const claudeCmd = cmdParts[0];
+          const claudeArgs = [...cmdParts.slice(1), '-p'];
           if (options.yolo) {
             claudeArgs.push('--dangerously-skip-permissions');
           }
@@ -175,7 +179,7 @@ export function registerRalphCommand(program: Command): void {
             try {
               // Execute Claude, piping prompt through stdin to avoid shell escaping issues
               const exitCode = await new Promise<number>((resolve, reject) => {
-                const child = spawn('claude', claudeArgs, {
+                const child = spawn(claudeCmd, claudeArgs, {
                   cwd: process.cwd(),
                   stdio: ['pipe', 'inherit', 'inherit'],
                 });
