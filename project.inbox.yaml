@@ -410,3 +410,14 @@ inbox:
       - dx
       - bug
     added_by: '@claude'
+  - _ulid: 01KF6V4EMT4PJ3PV9NN7HVZNVH
+    text: >-
+      Ralph iteration complete message joins with agent text: The 'OK Completed iteration 1' message
+      appears on the same line as the last agent message content because streaming doesn't end with
+      newline. Need to ensure newline before iteration status messages. Related to finalization -
+      when agent message stream ends, should ensure trailing newline.
+    created_at: '2026-01-17T20:42:48.347Z'
+    tags:
+      - ralph
+      - bug
+    added_by: '@claude'
