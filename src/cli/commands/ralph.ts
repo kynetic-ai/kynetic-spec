@@ -1,17 +1,28 @@
 /**
- * Ralph command - automated task loop
+ * Ralph command - automated task loop via ACP.
  *
- * Runs Claude Code in a loop to process tasks autonomously.
- * Each iteration picks a task, works on it, documents progress,
- * commits, and reflects.
+ * Runs an ACP-compliant agent in a loop to process tasks autonomously.
+ * Uses session event storage for full audit trail and streaming output.
  */
 
 import { Command } from 'commander';
-import { spawn } from 'node:child_process';
 import chalk from 'chalk';
+import { ulid } from 'ulid';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { spawn } from 'node:child_process';
 import { initContext } from '../../parser/index.js';
-import { output, error, info, success, isJsonMode } from '../output.js';
+import { error, info, success } from '../output.js';
 import { gatherSessionContext, type SessionContext } from './session.js';
+import { resolveAdapter, registerAdapter, type AgentAdapter } from '../../agents/index.js';
+import { spawnAndInitialize, type SpawnedAgent } from '../../agents/spawner.js';
+import type { SessionUpdate } from '../../acp/index.js';
+import type { ACPClient } from '../../acp/client.js';
+import {
+  createSession,
+  updateSessionStatus,
+  appendEvent,
+} from '../../sessions/index.js';
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
@@ -90,19 +101,146 @@ This is the last iteration of the loop. After completing your work:
 ` : ''}`;
 }
 
+// ─── Streaming Output Handler ────────────────────────────────────────────────
+
+/**
+ * Handle streaming updates from ACP agent.
+ * Extracts text content and displays it to the terminal.
+ */
+function handleUpdate(update: SessionUpdate): void {
+  // SessionUpdate is a discriminated union - check sessionUpdate property
+  // ContentChunk variants (user_message_chunk, agent_message_chunk, agent_thought_chunk)
+  // have a single 'content' block
+  if (
+    update.sessionUpdate === 'user_message_chunk' ||
+    update.sessionUpdate === 'agent_message_chunk' ||
+    update.sessionUpdate === 'agent_thought_chunk'
+  ) {
+    const contentUpdate = update as { content: { type: string; text?: string } };
+    if (contentUpdate.content?.type === 'text' && contentUpdate.content.text) {
+      process.stdout.write(contentUpdate.content.text);
+    }
+  }
+}
+
+// ─── Tool Request Handler ────────────────────────────────────────────────────
+
+/**
+ * Handle tool requests from ACP agent.
+ * Implements file operations, terminal commands, and permission handling.
+ */
+async function handleRequest(
+  client: ACPClient,
+  id: string | number,
+  method: string,
+  params: unknown,
+  yolo: boolean
+): Promise<void> {
+  const p = params as Record<string, unknown>;
+
+  try {
+    switch (method) {
+      case 'session/request_permission': {
+        // In yolo mode, auto-approve all permissions
+        // In normal mode, would need to implement permission UI
+        const options = (p.options as Array<{ optionId: string; kind: string; name: string }>) || [];
+
+        if (yolo) {
+          // Find an "allow" option (prefer allow_always, then allow_once)
+          const allowOption = options.find(o => o.kind === 'allow_always')
+            || options.find(o => o.kind === 'allow_once');
+
+          if (allowOption) {
+            client.respondPermission(id, {
+              outcome: { outcome: 'selected', optionId: allowOption.optionId },
+            });
+          } else {
+            // No allow option available - cancel
+            client.respondPermission(id, { outcome: { outcome: 'cancelled' } });
+          }
+        } else {
+          // TODO: Implement permission prompting
+          client.respondPermission(id, { outcome: { outcome: 'cancelled' } });
+        }
+        break;
+      }
+
+      case 'file/read': {
+        const filePath = p.path as string;
+        const content = await fs.readFile(filePath, 'utf-8');
+        client.respond(id, { content });
+        break;
+      }
+
+      case 'file/write': {
+        const filePath = p.path as string;
+        const content = p.content as string;
+        await fs.mkdir(path.dirname(filePath), { recursive: true });
+        await fs.writeFile(filePath, content, 'utf-8');
+        client.respond(id, {});
+        break;
+      }
+
+      case 'terminal/run': {
+        const command = p.command as string;
+        const cwd = (p.cwd as string) || process.cwd();
+        const timeout = (p.timeout as number) || 60000;
+
+        const result = await new Promise<{ stdout: string; stderr: string; exitCode: number }>((resolve) => {
+          const child = spawn(command, [], {
+            cwd,
+            shell: true,
+            timeout,
+          });
+
+          let stdout = '';
+          let stderr = '';
+
+          child.stdout?.on('data', (data) => {
+            stdout += data.toString();
+          });
+
+          child.stderr?.on('data', (data) => {
+            stderr += data.toString();
+          });
+
+          child.on('close', (code) => {
+            resolve({ stdout, stderr, exitCode: code ?? 1 });
+          });
+
+          child.on('error', (err) => {
+            resolve({ stdout, stderr: err.message, exitCode: 1 });
+          });
+        });
+
+        client.respond(id, result);
+        break;
+      }
+
+      default:
+        // Unknown method - return error
+        client.respondError(id, -32601, `Method not found: ${method}`);
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    client.respondError(id, -32000, message);
+  }
+}
+
 // ─── Command Registration ────────────────────────────────────────────────────
 
 export function registerRalphCommand(program: Command): void {
   program
     .command('ralph')
-    .description('Run Claude Code in a loop to process ready tasks')
+    .description('Run ACP agent in a loop to process ready tasks')
     .option('--max-loops <n>', 'Maximum iterations', '5')
     .option('--max-retries <n>', 'Max retries per iteration on error', '3')
     .option('--max-failures <n>', 'Max consecutive failed iterations before exit', '3')
     .option('--dry-run', 'Show prompt without executing')
-    .option('--yolo', 'Use --dangerously-skip-permissions (default)', true)
+    .option('--yolo', 'Use dangerously-skip-permissions (default)', true)
     .option('--no-yolo', 'Require normal permission prompts')
-    .option('--claude-cmd <cmd>', 'Claude command to use (for testing)', 'claude')
+    .option('--adapter <id>', 'Agent adapter to use', 'claude-code-acp')
+    .option('--adapter-cmd <cmd>', 'Custom adapter command (for testing)')
     .action(async (options) => {
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
@@ -124,109 +262,225 @@ export function registerRalphCommand(program: Command): void {
           process.exit(1);
         }
 
-        info(`Starting ralph loop (max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures, yolo=${options.yolo})`);
+        // Handle custom adapter command for testing
+        if (options.adapterCmd) {
+          const parts = options.adapterCmd.split(/\s+/);
+          const customAdapter: AgentAdapter = {
+            command: parts[0],
+            args: parts.slice(1),
+            description: 'Custom adapter via --adapter-cmd',
+          };
+          registerAdapter('custom', customAdapter);
+          options.adapter = 'custom';
+        }
+
+        // Resolve adapter
+        const adapter = resolveAdapter(options.adapter);
+
+        // Add yolo flag to adapter args if needed
+        if (options.yolo && options.adapter === 'claude-code-acp') {
+          adapter.args = [...adapter.args, '--dangerously-skip-permissions'];
+        }
+
+        info(`Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures)`);
+
+        // Initialize kspec context
+        const ctx = await initContext();
+        const specDir = ctx.specDir;
+
+        // Create session for event tracking
+        const sessionId = ulid();
+        await createSession(specDir, {
+          id: sessionId,
+          agent_type: options.adapter,
+          task_id: undefined, // Will be determined per iteration
+        });
+
+        // Log session start
+        await appendEvent(specDir, {
+          session_id: sessionId,
+          type: 'session.start',
+          data: {
+            adapter: options.adapter,
+            maxLoops,
+            maxRetries,
+            maxFailures,
+            yolo: options.yolo,
+          },
+        });
 
         let consecutiveFailures = 0;
+        let agent: SpawnedAgent | null = null;
+        let acpSessionId: string | null = null;
 
-        for (let iteration = 1; iteration <= maxLoops; iteration++) {
-          console.log(chalk.cyan(`\n${'─'.repeat(60)}`));
-          console.log(chalk.cyan.bold(`Iteration ${iteration}/${maxLoops}`));
-          console.log(chalk.cyan(`${'─'.repeat(60)}\n`));
+        try {
+          for (let iteration = 1; iteration <= maxLoops; iteration++) {
+            console.log(chalk.cyan(`\n${'─'.repeat(60)}`));
+            console.log(chalk.cyan.bold(`Iteration ${iteration}/${maxLoops}`));
+            console.log(chalk.cyan(`${'─'.repeat(60)}\n`));
 
-          // Gather fresh context each iteration
-          const ctx = await initContext();
-          const sessionCtx = await gatherSessionContext(ctx, { limit: '10' });
+            // Gather fresh context each iteration
+            const sessionCtx = await gatherSessionContext(ctx, { limit: '10' });
 
-          // Check for ready tasks or active tasks
-          const hasActiveTasks = sessionCtx.active_tasks.length > 0;
-          const hasReadyTasks = sessionCtx.ready_tasks.length > 0;
+            // Check for ready tasks or active tasks
+            const hasActiveTasks = sessionCtx.active_tasks.length > 0;
+            const hasReadyTasks = sessionCtx.ready_tasks.length > 0;
 
-          if (!hasActiveTasks && !hasReadyTasks) {
-            info('No active or ready tasks. Exiting loop.');
-            break;
-          }
-
-          // Build prompt
-          const prompt = buildPrompt(sessionCtx, iteration, maxLoops);
-
-          if (options.dryRun) {
-            console.log(chalk.yellow('=== DRY RUN - Prompt that would be sent ===\n'));
-            console.log(prompt);
-            console.log(chalk.yellow('\n=== END DRY RUN ==='));
-            break;
-          }
-
-          // Build claude command args
-          // Split claudeCmd in case it includes args (e.g., "node /path/to/mock")
-          const cmdParts = options.claudeCmd.split(/\s+/);
-          const claudeCmd = cmdParts[0];
-          const claudeArgs = [...cmdParts.slice(1), '-p'];
-          if (options.yolo) {
-            claudeArgs.push('--dangerously-skip-permissions');
-          }
-
-          // Retry loop for this iteration
-          let lastError: Error | null = null;
-          let succeeded = false;
-
-          for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
-            if (attempt > 1) {
-              console.log(chalk.yellow(`\nRetry attempt ${attempt - 1}/${maxRetries}...`));
-            }
-
-            info(`Invoking Claude Code...`);
-
-            try {
-              // Execute Claude, piping prompt through stdin to avoid shell escaping issues
-              const exitCode = await new Promise<number>((resolve, reject) => {
-                const child = spawn(claudeCmd, claudeArgs, {
-                  cwd: process.cwd(),
-                  stdio: ['pipe', 'inherit', 'inherit'],
-                });
-
-                // Write prompt to stdin and close it
-                child.stdin.write(prompt);
-                child.stdin.end();
-
-                child.on('close', (code) => {
-                  resolve(code ?? 1);
-                });
-
-                child.on('error', (err) => {
-                  reject(err);
-                });
-              });
-
-              if (exitCode === 0) {
-                succeeded = true;
-                break;
-              } else {
-                lastError = new Error(`Claude exited with status ${exitCode}`);
-                error(`Claude exited with status ${exitCode}`);
-              }
-            } catch (err) {
-              lastError = err as Error;
-              error('Failed to run Claude:', (err as Error).message);
-            }
-          }
-
-          if (succeeded) {
-            success(`Completed iteration ${iteration}`);
-            consecutiveFailures = 0; // Reset on success
-          } else {
-            consecutiveFailures++;
-            error(`Iteration ${iteration} failed after ${maxRetries + 1} attempts (${consecutiveFailures}/${maxFailures} consecutive failures)`);
-            if (lastError) {
-              error('Last error:', lastError.message);
-            }
-
-            if (consecutiveFailures >= maxFailures) {
-              error(`Reached ${maxFailures} consecutive failures. Exiting loop.`);
+            if (!hasActiveTasks && !hasReadyTasks) {
+              info('No active or ready tasks. Exiting loop.');
               break;
             }
 
-            info('Continuing to next iteration...');
+            // Build prompt
+            const prompt = buildPrompt(sessionCtx, iteration, maxLoops);
+
+            if (options.dryRun) {
+              console.log(chalk.yellow('=== DRY RUN - Prompt that would be sent ===\n'));
+              console.log(prompt);
+              console.log(chalk.yellow('\n=== END DRY RUN ==='));
+              break;
+            }
+
+            // Log prompt
+            await appendEvent(specDir, {
+              session_id: sessionId,
+              type: 'prompt.sent',
+              data: {
+                iteration,
+                prompt,
+                tasks: {
+                  active: sessionCtx.active_tasks.map(t => t.ref),
+                  ready: sessionCtx.ready_tasks.map(t => t.ref),
+                },
+              },
+            });
+
+            // Retry loop for this iteration
+            let lastError: Error | null = null;
+            let succeeded = false;
+
+            for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+              if (attempt > 1) {
+                console.log(chalk.yellow(`\nRetry attempt ${attempt - 1}/${maxRetries}...`));
+              }
+
+              try {
+                // Spawn agent if not already running
+                if (!agent) {
+                  info('Spawning ACP agent...');
+                  agent = await spawnAndInitialize(adapter, {
+                    cwd: process.cwd(),
+                    clientOptions: {
+                      clientInfo: {
+                        name: 'kspec-ralph',
+                        version: '0.1.0',
+                      },
+                    },
+                  });
+
+                  // Set up streaming update handler
+                  agent.client.on('update', (_sid: string, update: SessionUpdate) => {
+                    handleUpdate(update);
+                    // Log update event (async, non-blocking)
+                    appendEvent(specDir, {
+                      session_id: sessionId,
+                      type: 'session.update',
+                      data: { iteration, update },
+                    }).catch(() => {
+                      // Ignore logging errors during streaming
+                    });
+                  });
+
+                  // Set up tool request handler
+                  agent.client.on('request', (reqId: string | number, method: string, params: unknown) => {
+                    handleRequest(agent!.client, reqId, method, params, options.yolo).catch((err) => {
+                      agent!.client.respondError(reqId, -32000, err.message);
+                    });
+                  });
+
+                  // Create ACP session
+                  info('Creating ACP session...');
+                  acpSessionId = await agent.client.newSession({
+                    cwd: process.cwd(),
+                    mcpServers: [], // No MCP servers for now
+                  });
+                }
+
+                info('Sending prompt to agent...');
+
+                // Send prompt and wait for completion
+                const response = await agent.client.prompt({
+                  sessionId: acpSessionId!,
+                  prompt: [{ type: 'text', text: prompt }],
+                });
+
+                // Log completion
+                await appendEvent(specDir, {
+                  session_id: sessionId,
+                  type: 'session.update',
+                  data: {
+                    iteration,
+                    stopReason: response.stopReason,
+                    completed: true,
+                  },
+                });
+
+                // Check stop reason
+                if (response.stopReason === 'cancelled') {
+                  throw new Error('Agent prompt was cancelled');
+                }
+
+                succeeded = true;
+                break;
+              } catch (err) {
+                lastError = err as Error;
+                error('Iteration failed:', lastError.message);
+
+                // Clean up agent on error - will respawn next attempt
+                if (agent) {
+                  agent.kill();
+                  agent = null;
+                  acpSessionId = null;
+                }
+              }
+            }
+
+            if (succeeded) {
+              success(`Completed iteration ${iteration}`);
+              consecutiveFailures = 0;
+              console.log(); // Newline after streaming output
+            } else {
+              consecutiveFailures++;
+              error(`Iteration ${iteration} failed after ${maxRetries + 1} attempts (${consecutiveFailures}/${maxFailures} consecutive failures)`);
+              if (lastError) {
+                error('Last error:', lastError.message);
+              }
+
+              if (consecutiveFailures >= maxFailures) {
+                error(`Reached ${maxFailures} consecutive failures. Exiting loop.`);
+                break;
+              }
+
+              info('Continuing to next iteration...');
+            }
           }
+        } finally {
+          // Clean up agent
+          if (agent) {
+            agent.kill();
+          }
+
+          // Log session end
+          const status = consecutiveFailures >= maxFailures ? 'abandoned' : 'completed';
+          await appendEvent(specDir, {
+            session_id: sessionId,
+            type: 'session.end',
+            data: {
+              status,
+              consecutiveFailures,
+            },
+          });
+          await updateSessionStatus(specDir, sessionId, status);
         }
 
         console.log(chalk.green(`\n${'─'.repeat(60)}`));
