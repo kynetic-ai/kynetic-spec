@@ -3001,21 +3001,41 @@
   created_at: '2026-01-17T02:34:35.561Z'
   notes: []
   todos: []
-- title: 'Implement: Agent Session Protocol'
+- _ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
+  slugs:
+    - task-agent-session-protocol
+  title: 'Implement: Agent Session Protocol'
   type: task
   spec_ref: '@agent-session-protocol'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-agent-session-protocol
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - '@task-agent-definitions'
-  _ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.593Z'
+  notes: []
+  todos: []
+- title: 'Implement: Workflow Definitions'
+  type: task
+  spec_ref: '@workflow-definitions'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-workflow-definitions
+  tags:
+    - mvp
+    - meta
+    - workflows
+  depends_on: []
+  _ulid: 01KF4WVW75MKNHKSYCCA87C9YE
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.593Z'
+  created_at: '2026-01-17T02:34:35.621Z'
   notes: []
   todos: []
