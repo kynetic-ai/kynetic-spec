@@ -4322,3 +4322,21 @@
         - Agent successfully spawns, receives prompts, streams output
       supersedes: null
   todos: []
+- title: 'Implement: Ralph Output Formatting'
+  type: task
+  spec_ref: '@ralph-output-formatting'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-ralph-output-formatting
+  tags: []
+  depends_on:
+    - '@task-ralph-command-automated-task-loop'
+  _ulid: 01KF6NED0B57G95TCVA3533TVA
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-17T19:03:22.891Z'
+  notes: []
+  todos: []
