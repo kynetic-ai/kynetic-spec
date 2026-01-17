@@ -1635,30 +1635,32 @@ features:
             given: A user runs kspec search "TODO"
             when: The search runs across all loaded items and tasks
             then: >-
-              Returns matches from any text field (title, description, notes, AC text) with field
-              path showing where match was found
+              Returns items/tasks where any text field matches, showing the item itself (not just
+              the matched line)
           - id: ac-2
             given: A user searches with a regex pattern like "shadow.*branch"
             when: The pattern is applied to content
             then: Matches using JavaScript regex semantics, case-insensitive by default
           - id: ac-3
-            given: A match is found in a nested field
+            given: An item matches in multiple fields
             when: Results are displayed
             then: >-
-              Shows field path like notes[2].content or ac[1].then so user knows WHERE the match
-              occurred
+              Shows which field(s) matched (e.g., matched: notes[1].content, description) for
+              context
           - id: ac-4
-            given: User specifies context lines with -C flag
-            when: Matches are displayed
-            then: Shows surrounding lines like grep -C for multiline content
+            given: A match is found in nested content like notes or AC
+            when: Results are displayed
+            then: >-
+              The full item is returned with match location indicator, not just the matched text
+              snippet
           - id: ac-5
-            given: User combines grep with filters like --type task
+            given: User combines search with filters like --type task or --status pending
             when: Search runs
-            then: Filters are applied first, then grep searches within the filtered set
+            then: Filters are applied first, then content search within the filtered set
           - id: ac-6
-            given: Multiple matches exist across items
-            when: Results are returned
-            then: 'Output is grep-like format: @ref:field:line: matched text'
+            given: Search finds no matches
+            when: Results are displayed
+            then: Shows empty result with helpful message, not an error
       - _ulid: 01KF1A991VFFQ99EBQGQ9XB55D
         slugs:
           - fuzzy-command-suggest
