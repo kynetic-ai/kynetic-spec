@@ -1230,6 +1230,10 @@ features:
             given: module has task, feature-a has task, feature-b has no task
             when: kspec derive @module runs
             then: only feature-b task created; module and feature-a skipped with message
+          - id: ac-9
+            given: a spec item already has a linked task
+            when: kspec derive @item --force runs
+            then: new task created; outputs warning 'Created duplicate task for @item'
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
