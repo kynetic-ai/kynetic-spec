@@ -4012,20 +4012,37 @@
   completed_at: '2026-01-17T13:32:03.742Z'
   notes: []
   todos: []
-- title: 'Implement: ACP Protocol Client'
+- _ulid: 01KF68KNCJRJB88E254EYCPZAK
+  slugs:
+    - task-acp-protocol-client
+  title: 'Implement: ACP Protocol Client'
   type: task
   spec_ref: '@acp-client'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T15:19:03.826Z'
+  notes: []
+  todos: []
+- title: 'Implement: Session Event Storage'
+  type: task
+  spec_ref: '@session-events'
+  derivation: auto
   priority: 3
   slugs:
-    - task-acp-protocol-client
+    - task-session-event-storage
   tags: []
   depends_on: []
-  _ulid: 01KF68KNCJRJB88E254EYCPZAK
+  _ulid: 01KF68KR6GVXRCPZJAV07AGYHD
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T15:19:03.826Z'
+  created_at: '2026-01-17T15:19:06.703Z'
   notes: []
   todos: []
