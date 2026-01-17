@@ -4322,21 +4322,51 @@
         - Agent successfully spawns, receives prompts, streams output
       supersedes: null
   todos: []
-- title: 'Implement: Ralph Output Formatting'
+- _ulid: 01KF6NED0B57G95TCVA3533TVA
+  slugs:
+    - task-ralph-output-formatting
+  title: 'Implement: Ralph Output Formatting'
   type: task
   spec_ref: '@ralph-output-formatting'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-ralph-output-formatting
-  tags: []
-  depends_on:
-    - '@task-ralph-command-automated-task-loop'
-  _ulid: 01KF6NED0B57G95TCVA3533TVA
   status: pending
   blocked_by: []
+  depends_on:
+    - '@task-ralph-command-automated-task-loop'
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-17T19:03:22.891Z'
-  notes: []
+  notes:
+    - _ulid: 01KF6NGGDRPX2AYYYP4GFPWDYS
+      created_at: '2026-01-17T19:04:31.929Z'
+      author: '@claude'
+      content: |-
+        Implementation approach from kynetic research:
+
+        1. Event Translation Layer (like ui-event-translator.ts):
+           - Map ACP update types: agent_message_chunk → agent_message, tool_call → tool_use, tool_call_update → tool_result
+           - Tool name extraction: check _meta.claudeCode.toolName, then _meta.toolName, then name field
+           - Strip MCP prefixes (mcp__acp__Write → Write)
+
+        2. Display Summaries per tool type:
+           - Bash: show command (truncate at 50 chars)
+           - Read/Write/Edit: show filename from file_path
+           - Grep/Glob: show pattern
+           - WebSearch: show query
+           - Task: show description
+
+        3. Message Aggregation Pattern:
+           - Track turn/block indices for message grouping
+           - pendingTools Map<tool_call_id, message_id> for lifecycle tracking
+           - Finalization: empty string chunk signals message boundary
+           - Tool status lifecycle: pending → running → completed/failed/cancelled
+
+        4. Output Format:
+           - Section headers: --- Tool Call --- or similar
+           - Timestamps: relative from session start (+5s, +2m)
+           - Chalk colors: blue for agent content, gray for metadata, green for success, red for errors
+           - Truncation: 20 lines or 1000 chars with '... (truncated)' indicator
+      supersedes: null
   todos: []
