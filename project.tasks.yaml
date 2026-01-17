@@ -3992,20 +3992,23 @@
         - All tests passing
       supersedes: null
   todos: []
-- title: Fix stdin race condition in claude-mock
+- _ulid: 01KF62E41P0SDRDSPDFDVC4M3G
+  slugs: []
+  title: Fix stdin race condition in claude-mock
   type: task
   spec_ref: null
-  priority: 1
-  slugs: []
-  tags:
-    - fix
-    - tests
-  _ulid: 01KF62E41P0SDRDSPDFDVC4M3G
-  status: pending
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - fix
+    - tests
   vcs_refs: []
   created_at: '2026-01-17T13:31:10.774Z'
   notes: []
   todos: []
+  completed_at: '2026-01-17T13:32:03.742Z'
+  closed_reason: Fixed race condition by adding endHandled guard
+  started_at: '2026-01-17T13:32:03.742Z'
