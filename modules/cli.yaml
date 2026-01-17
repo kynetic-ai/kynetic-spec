@@ -1575,7 +1575,7 @@ features:
       - _ulid: 01KF1A8Z6VHV4TKGS9GNZHSDZA
         slugs:
           - fuzzy-item-search
-        title: Fuzzy Item and Task Search
+        title: Grep-like Content Search
         type: requirement
         tags:
           - dx
@@ -1630,7 +1630,7 @@ features:
         created: '2026-01-15T17:11:58.428Z'
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         acceptance_criteria:
           - id: ac-1
             given: A user runs kspec search "TODO"
