@@ -1803,6 +1803,10 @@ features:
         given: session ends
         when: loop completes or errors
         then: logs session.end event with status and triggers commit
+      - id: ac-14
+        given: a loop iteration starts
+        when: building prompt for the agent
+        then: creates a fresh ACP session so each iteration has a clean context window
     status:
       maturity: draft
       implementation: implemented
