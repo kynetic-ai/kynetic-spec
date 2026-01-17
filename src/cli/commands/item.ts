@@ -59,7 +59,7 @@ function formatItem(item: LoadedSpecItem, verbose = false, grepPattern?: string)
 
   // Show matched fields if grep pattern provided
   if (grepPattern) {
-    const match = grepItem(item as Record<string, unknown>, grepPattern);
+    const match = grepItem(item as unknown as Record<string, unknown>, grepPattern);
     if (match && match.matchedFields.length > 0) {
       line += '\n  ' + chalk.gray(`matched: ${formatMatchedFields(match.matchedFields)}`);
     }

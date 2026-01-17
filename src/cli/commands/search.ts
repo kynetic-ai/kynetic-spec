@@ -89,7 +89,7 @@ export function registerSearchCommand(program: Command): void {
             // Apply type filter
             if (options.type && item.type !== options.type) continue;
 
-            const match = grepItem(item as Record<string, unknown>, pattern);
+            const match = grepItem(item as unknown as Record<string, unknown>, pattern);
             if (match) {
               results.push({
                 type: 'item',
