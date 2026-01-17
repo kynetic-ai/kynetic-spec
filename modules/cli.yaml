@@ -415,6 +415,10 @@ features:
             given: bulk mode with --fail-fast and first ref invalid
             when: command runs
             then: stops immediately, no items updated, exit 1
+          - id: ac-11
+            given: ref points to a task (not spec item)
+            when: kspec item patch @some-task --data '{...}' runs
+            then: 'error: Not a spec item'
         status:
           maturity: draft
           implementation: in_progress
