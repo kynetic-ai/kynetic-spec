@@ -3148,21 +3148,39 @@
   created_at: '2026-01-17T02:34:35.786Z'
   notes: []
   todos: []
-- title: 'Implement: Convention Domains'
+- _ulid: 01KF4WVWD4TT9PTW69HVDWAX36
+  slugs:
+    - task-convention-domains
+  title: 'Implement: Convention Domains'
   type: task
   spec_ref: '@convention-domains'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-convention-definitions'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.812Z'
+  notes: []
+  todos: []
+- title: 'Implement: Convention Validation Strategy'
+  type: task
+  spec_ref: '@convention-validation'
+  derivation: auto
   priority: 3
   slugs:
-    - task-convention-domains
+    - task-convention-validation-strategy
   tags: []
   depends_on:
     - '@task-convention-definitions'
-  _ulid: 01KF4WVWD4TT9PTW69HVDWAX36
+  _ulid: 01KF4WVWE4GXJAT63VMQM91REF
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.812Z'
+  created_at: '2026-01-17T02:34:35.844Z'
   notes: []
   todos: []
