@@ -1804,7 +1804,7 @@
   title: Implement recursive derive with auto-dependencies
   type: task
   spec_ref: '@cmd-derive'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -1816,6 +1816,7 @@
   created_at: '2026-01-15T22:25:38.929Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T00:37:34.086Z'
 - _ulid: 01KF1ZGNP64E3SQJABQPF09T7X
   slugs:
     - migrate-to-shadow
@@ -2792,19 +2793,19 @@
   created_at: '2026-01-16T22:48:02.747Z'
   notes: []
   todos: []
-- title: 'Implement: Enhanced Verbose Output for Task Lists'
+- _ulid: 01KF4NE5YS67MP6S1R7Y343Z06
+  slugs:
+    - task-enhanced-verbose-output-for-task-lists
+  title: 'Implement: Enhanced Verbose Output for Task Lists'
   type: task
   spec_ref: '@task-list-verbose'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-enhanced-verbose-output-for-task-lists
-  tags: []
-  _ulid: 01KF4NE5YS67MP6S1R7Y343Z06
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-17T00:24:46.809Z'
   notes: []
