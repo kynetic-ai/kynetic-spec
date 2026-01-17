@@ -360,11 +360,18 @@ features:
 
           Options:
           - --data <json>: JSON object with fields to update
+          - --bulk: Read multiple patches from stdin (JSONL or JSON array)
+          - --fail-fast: Stop on first error in bulk mode (default: continue)
           - --dry-run: Show what would change without writing
           - --allow-unknown: Allow unknown fields (for extending format)
 
-          Accepts stdin if no --data provided:
-            echo '{"status": {"implementation": "implemented"}}' | kspec item patch @my-item
+          Single item mode:
+            kspec item patch @my-item --data '{"title": "New"}'
+            echo '{"title": "New"}' | kspec item patch @my-item
+
+          Bulk mode (JSONL or JSON array on stdin):
+            cat patches.jsonl | kspec item patch --bulk
+            echo '[{"ref":"@a","data":{...}}]' | kspec item patch --bulk
 
           Validates input against SpecItemInputSchema (strict by default).
         acceptance_criteria:
@@ -392,6 +399,9 @@ features:
             given: JSON with unknown field and --allow-unknown flag
             when: kspec item patch @my-item --data '{"foobar":"value"}' --allow-unknown runs
             then: field is written to item
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01JHNKA8W6CTSK000000000000
     slugs:
       - task-commands
