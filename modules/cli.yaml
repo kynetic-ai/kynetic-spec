@@ -1788,6 +1788,10 @@ features:
         given: Claude Code returns an error during iteration
         when: the error occurs
         then: retry the iteration up to max-retries times before failing the loop
+      - id: ac-11
+        given: multiple consecutive iterations fail after all retries
+        when: the failure count reaches max-failures threshold
+        then: the loop exits early with an error message
     status:
       maturity: draft
       implementation: implemented
