@@ -175,17 +175,6 @@ inbox:
       - design
       - dx
     added_by: '@claude'
-  - _ulid: 01KF4H984NH3Z41GCFPXXM7D3F
-    text: >-
-      Skill for branch + PR workflow: handles creating feature branch, committing, pushing, and
-      opening PR. Could detect branch protection via gh api rulesets and proactively use PR flow.
-      Would replace manual git checkout -b / push / gh pr create dance.
-    created_at: '2026-01-16T23:12:10.901Z'
-    tags:
-      - skill
-      - dx
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF554T97ST9B3DMT4WMXACYQ
     text: >-
       Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a
