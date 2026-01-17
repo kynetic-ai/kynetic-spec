@@ -4019,7 +4019,7 @@
   type: task
   spec_ref: '@acp-client'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -4070,6 +4070,7 @@
         close()
       supersedes: null
   todos: []
+  started_at: '2026-01-17T15:24:48.142Z'
 - _ulid: 01KF68KR6GVXRCPZJAV07AGYHD
   slugs:
     - task-session-event-storage
