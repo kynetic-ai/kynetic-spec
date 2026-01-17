@@ -30,13 +30,23 @@ import { createTranslator, createCliRenderer } from '../../ralph/index.js';
 function buildPrompt(
   sessionCtx: SessionContext,
   iteration: number,
-  maxLoops: number
+  maxLoops: number,
+  focus?: string
 ): string {
   const isFinal = iteration === maxLoops;
+
+  const focusSection = focus ? `
+## Session Focus (applies to ALL iterations)
+
+> **${focus}**
+
+Keep this focus in mind throughout your work. It takes priority over default task selection.
+` : '';
 
   return `# Kspec Automation Session
 
 You are running as part of a kspec automation loop. This is iteration ${iteration} of ${maxLoops}.
+${focusSection}
 
 ## Current State
 \`\`\`json
@@ -225,6 +235,7 @@ export function registerRalphCommand(program: Command): void {
     .option('--no-yolo', 'Require normal permission prompts')
     .option('--adapter <id>', 'Agent adapter to use', 'claude-code-acp')
     .option('--adapter-cmd <cmd>', 'Custom adapter command (for testing)')
+    .option('--focus <instructions>', 'Focus instructions included in every iteration prompt')
     .action(async (options) => {
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
@@ -267,6 +278,9 @@ export function registerRalphCommand(program: Command): void {
         }
 
         info(`Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures)`);
+        if (options.focus) {
+          info(`Focus: ${options.focus}`);
+        }
 
         // Initialize kspec context
         const ctx = await initContext();
@@ -290,6 +304,7 @@ export function registerRalphCommand(program: Command): void {
             maxRetries,
             maxFailures,
             yolo: options.yolo,
+            focus: options.focus,
           },
         });
 
@@ -318,7 +333,7 @@ export function registerRalphCommand(program: Command): void {
             }
 
             // Build prompt
-            const prompt = buildPrompt(sessionCtx, iteration, maxLoops);
+            const prompt = buildPrompt(sessionCtx, iteration, maxLoops, options.focus);
 
             if (options.dryRun) {
               console.log(chalk.yellow('=== DRY RUN - Prompt that would be sent ===\n'));
