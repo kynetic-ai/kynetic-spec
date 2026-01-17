@@ -407,6 +407,10 @@ features:
             given: JSON array with multiple patches on stdin
             when: echo '[{"ref":"@a","data":{...}}]' | kspec item patch --bulk runs
             then: all items updated, summary shown
+          - id: ac-9
+            given: bulk mode with one invalid ref among valid
+            when: command runs without --fail-fast
+            then: valid items updated, errors reported, exit 1
         status:
           maturity: draft
           implementation: in_progress
