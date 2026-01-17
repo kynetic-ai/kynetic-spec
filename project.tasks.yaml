@@ -4455,13 +4455,10 @@
         All 311 tests pass.
       supersedes: null
   todos: []
-- title: Fix ralph tool input/output display
+- _ulid: 01KF6WFS5B82KRWVMS7FRQNF5H
+  slugs: []
+  title: Fix ralph tool input/output display
   type: task
-  priority: 2
-  spec_ref: null
-  tags:
-    - ralph
-    - bug
   description: >-
     Ralph tool details not shown: Currently tool calls just show '--- Tool: Bash ---' without the
     command/parameters or output. Compare to Claude Code which shows 'Bash(npm run build 2>&1 | head
@@ -4469,13 +4466,17 @@
     (command for Bash, file path for Read/Write, etc.), (2) Show truncated output on tool_result,
     (3) Check events.jsonl for actual data structure available. Reference screenshots show desired
     format.
-  _ulid: 01KF6WFS5B82KRWVMS7FRQNF5H
-  slugs: []
-  status: pending
+  spec_ref: null
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - ralph
+    - bug
   vcs_refs: []
   created_at: '2026-01-17T21:06:28.139Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T21:06:38.793Z'
