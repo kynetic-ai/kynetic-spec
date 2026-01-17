@@ -1206,6 +1206,10 @@ features:
             given: a module with 2 child features
             when: kspec derive @module runs
             then: creates 3 tasks (module + 2 features); each task has correct spec_ref
+          - id: ac-3
+            given: a module with child features
+            when: kspec derive @module --flat runs
+            then: creates 1 task for module only; children are not processed
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
