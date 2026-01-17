@@ -12,8 +12,104 @@ import {
   type KspecContext,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
-import { output, success, error, warn, info } from '../output.js';
+import { output, success, error, warn, info, isJsonMode } from '../output.js';
 import type { TaskInput } from '../../schema/index.js';
+
+/**
+ * Fields that contain nested spec items (mirrors yaml.ts)
+ */
+const NESTED_ITEM_FIELDS = ['modules', 'features', 'requirements', 'constraints', 'decisions'];
+
+/**
+ * Get the parent path from a child's _path.
+ * e.g., "features[0].requirements[1]" -> "features[0]"
+ * Returns empty string for top-level items.
+ */
+function getParentPath(childPath: string | undefined): string {
+  if (!childPath) return '';
+  const lastDotIndex = childPath.lastIndexOf('.');
+  if (lastDotIndex === -1) return '';
+  return childPath.slice(0, lastDotIndex);
+}
+
+/**
+ * Check if an item is a direct child of another item based on _path.
+ * Direct children have a path that extends the parent's path by exactly one field[index].
+ */
+function isDirectChildOf(child: LoadedSpecItem, parent: LoadedSpecItem): boolean {
+  const childPath = child._path || '';
+  const parentPath = parent._path || '';
+
+  // If paths are equal, not a child
+  if (childPath === parentPath) return false;
+
+  // Child path must start with parent path
+  if (parentPath && !childPath.startsWith(parentPath + '.')) return false;
+
+  // For root parent (empty path), child must be a top-level path like "features[0]"
+  if (!parentPath) {
+    // Direct child of root has no '.' in its path
+    return !childPath.includes('.');
+  }
+
+  // Get the remaining path after parent
+  const remaining = childPath.slice(parentPath.length + 1);
+
+  // Direct child has no additional '.' (e.g., "requirements[0]" not "requirements[0].something")
+  return !remaining.includes('.');
+}
+
+/**
+ * Find the parent spec item of a given item.
+ * Returns undefined for root-level items.
+ */
+function findParentItem(
+  item: LoadedSpecItem,
+  allItems: LoadedSpecItem[]
+): LoadedSpecItem | undefined {
+  const parentPath = getParentPath(item._path);
+
+  // Root-level item or no path
+  if (!parentPath && !item._path) return undefined;
+  if (!parentPath) return undefined;
+
+  // Find item with matching path in the same source file
+  return allItems.find(
+    i => i._path === parentPath && i._sourceFile === item._sourceFile
+  );
+}
+
+/**
+ * Get direct children of a spec item.
+ * Only returns immediate children, not grandchildren.
+ */
+function getDirectChildren(
+  parent: LoadedSpecItem,
+  allItems: LoadedSpecItem[]
+): LoadedSpecItem[] {
+  return allItems.filter(
+    item => item._sourceFile === parent._sourceFile && isDirectChildOf(item, parent)
+  );
+}
+
+/**
+ * Collect an item and all its descendants in topological order (parent first).
+ * This ensures parent tasks are created before child tasks.
+ */
+function collectItemsRecursively(
+  root: LoadedSpecItem,
+  allItems: LoadedSpecItem[]
+): LoadedSpecItem[] {
+  const result: LoadedSpecItem[] = [root];
+  const children = getDirectChildren(root, allItems);
+
+  for (const child of children) {
+    const descendants = collectItemsRecursively(child, allItems);
+    result.push(...descendants);
+  }
+
+  return result;
+}
 
 /**
  * Resolve a spec item reference.
@@ -108,11 +204,15 @@ interface DeriveResult {
   action: 'created' | 'skipped' | 'would_create';
   task?: LoadedTask;
   reason?: string;
+  /** Task ref that was used for depends_on (if any) */
+  dependsOn?: string[];
 }
 
 /**
  * Derive a task from a spec item.
  * Returns result describing what happened.
+ *
+ * @param dependsOn - Task references to add as dependencies (for hierarchy-based deps)
  */
 async function deriveTaskFromSpec(
   ctx: KspecContext,
@@ -121,17 +221,20 @@ async function deriveTaskFromSpec(
   items: LoadedSpecItem[],
   index: ReferenceIndex,
   alignmentIndex: AlignmentIndex,
-  options: { force: boolean; dryRun: boolean }
+  options: { force: boolean; dryRun: boolean; dependsOn?: string[] }
 ): Promise<DeriveResult> {
   // Check if a task already exists for this spec
   const linkedTasks = alignmentIndex.getTasksForSpec(specItem._ulid);
 
   if (linkedTasks.length > 0 && !options.force) {
+    const taskRef = linkedTasks[0].slugs[0]
+      ? `@${linkedTasks[0].slugs[0]}`
+      : `@${index.shortUlid(linkedTasks[0]._ulid)}`;
     return {
       specItem,
       action: 'skipped',
       task: linkedTasks[0],
-      reason: `Task already exists: ${index.shortUlid(linkedTasks[0]._ulid)}`,
+      reason: `task exists: ${taskRef}`,
     };
   }
 
@@ -146,7 +249,7 @@ async function deriveTaskFromSpec(
     slugSuffix++;
   }
 
-  // Build task input
+  // Build task input with depends_on
   const taskInput: TaskInput = {
     title: `Implement: ${specItem.title}`,
     type: 'task',
@@ -155,6 +258,7 @@ async function deriveTaskFromSpec(
     priority: normalizePriority(specItem.priority),
     slugs: [slug],
     tags: [...(specItem.tags || [])],
+    depends_on: options.dependsOn || [],
   };
 
   // Dry run - don't actually create
@@ -164,6 +268,7 @@ async function deriveTaskFromSpec(
       specItem,
       action: 'would_create',
       task: previewTask,
+      dependsOn: options.dependsOn,
     };
   }
 
@@ -180,7 +285,43 @@ async function deriveTaskFromSpec(
     specItem,
     action: 'created',
     task: newTask as LoadedTask,
+    dependsOn: options.dependsOn,
   };
+}
+
+/**
+ * Get a task reference string for use in depends_on.
+ * Prefers slug over ULID for readability.
+ */
+function getTaskRef(task: LoadedTask, index: ReferenceIndex): string {
+  return task.slugs[0] ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
+}
+
+/**
+ * Find or get the task for a parent spec item.
+ * Looks in:
+ * 1. Tasks created in this derive session (specToTaskMap)
+ * 2. Existing tasks linked to the parent spec (alignmentIndex)
+ */
+function getParentTaskRef(
+  parentSpec: LoadedSpecItem,
+  specToTaskMap: Map<string, LoadedTask>,
+  alignmentIndex: AlignmentIndex,
+  index: ReferenceIndex
+): string | undefined {
+  // Check if we created a task for this parent in this session
+  const sessionTask = specToTaskMap.get(parentSpec._ulid);
+  if (sessionTask) {
+    return getTaskRef(sessionTask, index);
+  }
+
+  // Check if an existing task is linked to this parent spec
+  const linkedTasks = alignmentIndex.getTasksForSpec(parentSpec._ulid);
+  if (linkedTasks.length > 0) {
+    return getTaskRef(linkedTasks[0], index);
+  }
+
+  return undefined;
 }
 
 /**
@@ -191,6 +332,7 @@ export function registerDeriveCommand(program: Command): void {
     .command('derive [ref]')
     .description('Create task(s) from spec item(s)')
     .option('--all', 'Derive tasks for all spec items without linked tasks')
+    .option('--flat', 'Only derive for the specified item, not children (default: recursive)')
     .option('--force', 'Create task even if one already exists for the spec')
     .option('--dry-run', 'Show what would be created without making changes')
     .action(async (ref: string | undefined, options) => {
@@ -200,6 +342,7 @@ export function registerDeriveCommand(program: Command): void {
           error('Either provide a spec reference or use --all');
           console.error('Usage:');
           console.error('  kspec derive @spec-ref');
+          console.error('  kspec derive @spec-ref --flat');
           console.error('  kspec derive --all');
           process.exit(2);
         }
@@ -229,19 +372,52 @@ export function registerDeriveCommand(program: Command): void {
           });
 
           if (specsToDerive.length === 0) {
-            info('All spec items already have linked tasks');
+            if (isJsonMode()) {
+              console.log(JSON.stringify([]));
+            } else {
+              info('Nothing to derive (all items have tasks)');
+            }
             return;
           }
         } else {
-          // Single spec item
+          // Single spec item - recursive by default, flat if --flat
           const specItem = resolveSpecRef(ref!, items, tasks, index);
-          specsToDerive = [specItem];
+
+          if (options.flat) {
+            specsToDerive = [specItem];
+          } else {
+            // Recursive: collect item and all descendants
+            specsToDerive = collectItemsRecursively(specItem, items);
+          }
         }
 
-        // Process each spec item
+        // Track spec ULID -> created task for dependency resolution
+        const specToTaskMap = new Map<string, LoadedTask>();
+
+        // Process each spec item in order (parents before children due to topological sort)
         const results: DeriveResult[] = [];
 
         for (const specItem of specsToDerive) {
+          // Determine depends_on based on parent spec's task
+          let dependsOn: string[] | undefined;
+
+          if (!options.flat && !options.all) {
+            // Find the parent spec item
+            const parentSpec = findParentItem(specItem, items);
+
+            if (parentSpec) {
+              const parentTaskRef = getParentTaskRef(
+                parentSpec,
+                specToTaskMap,
+                alignmentIndex,
+                index
+              );
+              if (parentTaskRef) {
+                dependsOn = [parentTaskRef];
+              }
+            }
+          }
+
           const result = await deriveTaskFromSpec(
             ctx,
             specItem,
@@ -249,66 +425,94 @@ export function registerDeriveCommand(program: Command): void {
             items,
             index,
             alignmentIndex,
-            { force: options.force || false, dryRun: options.dryRun || false }
+            {
+              force: options.force || false,
+              dryRun: options.dryRun || false,
+              dependsOn,
+            }
           );
+
+          // Track created/would_create tasks for dependency resolution
+          if (result.task && (result.action === 'created' || result.action === 'would_create')) {
+            specToTaskMap.set(specItem._ulid, result.task);
+          }
+          // Also track skipped tasks (existing) for dependency resolution
+          if (result.action === 'skipped' && result.task) {
+            specToTaskMap.set(specItem._ulid, result.task);
+          }
+
           results.push(result);
         }
 
         // Output results
-        output(results, () => {
-          const created = results.filter(r => r.action === 'created');
-          const skipped = results.filter(r => r.action === 'skipped');
-          const wouldCreate = results.filter(r => r.action === 'would_create');
+        if (isJsonMode()) {
+          // JSON output format - simplified per AC
+          const jsonOutput = results.map(r => ({
+            ulid: r.task?._ulid || null,
+            slug: r.task?.slugs[0] || null,
+            spec_ref: `@${r.specItem.slugs[0] || r.specItem._ulid}`,
+            depends_on: r.task?.depends_on || [],
+            action: r.action,
+          }));
+          console.log(JSON.stringify(jsonOutput, null, 2));
+          return; // Don't call output() which would output full results in global JSON mode
+        } else {
+          // Human-readable output
+          output(results, () => {
+            const created = results.filter(r => r.action === 'created');
+            const skipped = results.filter(r => r.action === 'skipped');
+            const wouldCreate = results.filter(r => r.action === 'would_create');
 
-          if (options.dryRun) {
-            console.log('Dry run - no changes made\n');
-          }
-
-          if (wouldCreate.length > 0) {
-            console.log('Would create:');
-            for (const r of wouldCreate) {
-              const taskSlug = r.task?.slugs[0] || '';
-              console.log(`  + ${r.specItem.title}`);
-              console.log(`    -> Task: ${r.task?.title} (${taskSlug})`);
+            if (options.dryRun) {
+              console.log('Would create:');
+              for (const r of wouldCreate) {
+                const taskSlug = r.task?.slugs[0] || '';
+                const deps = r.dependsOn?.length ? ` (depends: ${r.dependsOn.join(', ')})` : '';
+                console.log(`  + ${r.specItem.title}`);
+                console.log(`    -> ${taskSlug}${deps}`);
+              }
+              if (skipped.length > 0) {
+                console.log('\nSkipped:');
+                for (const r of skipped) {
+                  const specRef = r.specItem.slugs[0] ? `@${r.specItem.slugs[0]}` : `@${index.shortUlid(r.specItem._ulid)}`;
+                  console.log(`  - ${specRef} (${r.reason})`);
+                }
+              }
+              console.log(`\nWould create ${wouldCreate.length} task(s)`);
+              if (skipped.length > 0) {
+                console.log(`Skipped ${skipped.length} (already have tasks)`);
+              }
+              return;
             }
-            console.log('');
-          }
 
-          if (created.length > 0) {
-            console.log('Created:');
-            for (const r of created) {
-              const shortUlid = index.shortUlid(r.task!._ulid);
-              const taskSlug = r.task?.slugs[0] || '';
-              console.log(`  + ${shortUlid} ${r.task?.title}`);
-              if (taskSlug) {
-                console.log(`    slug: ${taskSlug}`);
+            if (created.length > 0) {
+              for (const r of created) {
+                const taskSlug = r.task?.slugs[0] || '';
+                const deps = r.dependsOn?.length ? ` (depends: ${r.dependsOn.join(', ')})` : '';
+                console.log(`OK Created task: ${taskSlug}${deps}`);
               }
             }
-            console.log('');
-          }
 
-          if (skipped.length > 0 && !options.all) {
-            // Only show skipped for single derive (--all silently skips)
-            console.log('Skipped:');
-            for (const r of skipped) {
-              console.log(`  - ${r.specItem.title}`);
-              console.log(`    ${r.reason}`);
+            if (skipped.length > 0 && !options.all) {
+              // Show skipped for explicit derive (not --all)
+              for (const r of skipped) {
+                const specRef = r.specItem.slugs[0] ? `@${r.specItem.slugs[0]}` : `@${index.shortUlid(r.specItem._ulid)}`;
+                console.log(`Skipped ${specRef} (${r.reason})`);
+              }
             }
-            console.log('');
-          }
 
-          // Summary
-          if (options.dryRun) {
-            console.log(`Would create ${wouldCreate.length} task(s)`);
-          } else {
-            if (created.length > 0) {
-              console.log(`Created ${created.length} task(s)`);
+            // Summary
+            if (created.length > 0 || skipped.length > 0) {
+              console.log('');
+              if (created.length > 0) {
+                console.log(`Created ${created.length} task(s)`);
+              }
+              if (skipped.length > 0) {
+                console.log(`Skipped ${skipped.length} (already have tasks)`);
+              }
             }
-            if (skipped.length > 0 && options.all) {
-              console.log(`Skipped ${skipped.length} spec(s) (already have tasks)`);
-            }
-          }
-        });
+          });
+        }
       } catch (err) {
         error('Failed to derive tasks', err);
         process.exit(1);
