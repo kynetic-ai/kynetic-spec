@@ -4329,7 +4329,7 @@
   type: task
   spec_ref: '@ralph-output-formatting'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-ralph-command-automated-task-loop'
@@ -4400,3 +4400,4 @@
         6. TREAT LLM OUTPUT AS UNTRUSTED: Even though it's our agent, sanitize like user content.
       supersedes: null
   todos: []
+  started_at: '2026-01-17T19:17:41.220Z'
