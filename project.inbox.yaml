@@ -355,3 +355,18 @@ inbox:
       - dx
       - testing
     added_by: '@claude'
+  - _ulid: 01KF6P374JY2DV5V15RRAJ9AKV
+    text: >-
+      Reinforce task creation with implementation notes: When deriving tasks from specs, add
+      implementation notes capturing actionable guidance - not just what to build, but how. Include:
+      (1) implementation approach with specific patterns/references from prior art, (2)
+      pitfalls/learnings from related work to avoid repeating mistakes, (3) file locations and
+      function names to reference. Sets agents up for success rather than discovery. This session
+      demonstrated value - research on kynetic chat UI + beads history produced concrete notes that
+      will save future implementation time.
+    created_at: '2026-01-17T19:14:45.010Z'
+    tags:
+      - workflow
+      - dx
+      - agents
+    added_by: '@claude'
