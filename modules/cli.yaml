@@ -411,6 +411,10 @@ features:
             given: bulk mode with one invalid ref among valid
             when: command runs without --fail-fast
             then: valid items updated, errors reported, exit 1
+          - id: ac-10
+            given: bulk mode with --fail-fast and first ref invalid
+            when: command runs
+            then: stops immediately, no items updated, exit 1
         status:
           maturity: draft
           implementation: in_progress
