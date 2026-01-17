@@ -3566,21 +3566,39 @@
   created_at: '2026-01-17T02:34:36.459Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta context'
+- _ulid: 01KF4WVX2CSCDQCXSA72B1R17Y
+  slugs:
+    - task-kspec-meta-context
+  title: 'Implement: kspec meta context'
   type: task
   spec_ref: '@meta-context-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.492Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta get'
+  type: task
+  spec_ref: '@meta-get-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-context
+    - task-kspec-meta-get
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVX2CSCDQCXSA72B1R17Y
+  _ulid: 01KF4WVX3CYVNKKA8JCRZYMSM7
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.492Z'
+  created_at: '2026-01-17T02:34:36.524Z'
   notes: []
   todos: []
