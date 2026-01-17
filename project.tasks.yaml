@@ -3922,20 +3922,21 @@
         - Graceful handling of invalid regex (treated as literal)
       supersedes: null
   todos: []
-- title: 'Implement: Ralph command - automated task loop'
+- _ulid: 01KF56VMSP804S0QKT8NA2AXTT
+  slugs:
+    - task-ralph-command-automated-task-loop
+  title: 'Implement: Ralph command - automated task loop'
   type: task
   spec_ref: '@cli-ralph'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-ralph-command-automated-task-loop
-  tags: []
-  depends_on: []
-  _ulid: 01KF56VMSP804S0QKT8NA2AXTT
-  status: pending
+  status: in_progress
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-17T05:29:13.782Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T05:29:25.797Z'
