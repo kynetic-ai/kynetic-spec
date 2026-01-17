@@ -3111,22 +3111,40 @@
   created_at: '2026-01-17T02:34:35.733Z'
   notes: []
   todos: []
-- title: 'Implement: Convention Definitions'
+- _ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
+  slugs:
+    - task-convention-definitions
+  title: 'Implement: Convention Definitions'
   type: task
   spec_ref: '@convention-definitions'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-convention-definitions
   tags:
     - meta
     - conventions
-  depends_on: []
-  _ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.758Z'
+  notes: []
+  todos: []
+- title: 'Implement: Convention Schema'
+  type: task
+  spec_ref: '@convention-schema'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-convention-schema
+  tags: []
+  depends_on:
+    - '@task-convention-definitions'
+  _ulid: 01KF4WVWCA199XYTH30HWQ399A
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.758Z'
+  created_at: '2026-01-17T02:34:35.786Z'
   notes: []
   todos: []
