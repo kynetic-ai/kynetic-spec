@@ -992,6 +992,10 @@ features:
             given: A user runs tasks ready with -v (single verbose)
             when: Tasks are displayed
             then: 'Current behavior preserved: shows spec_ref, depends_on, tags inline'
+          - id: ac-3
+            given: A task has no notes or todos
+            when: Displayed in full mode
+            then: Notes and todos sections are omitted or show 0, not errors
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
