@@ -1780,6 +1780,10 @@ features:
         given: '--yolo or --no-yolo flags'
         when: kspec ralph is run
         then: Claude runs with appropriate permission settings (yolo by default)
+      - id: ac-9
+        given: kspec ralph is running
+        when: each iteration starts and completes
+        then: progress messages are shown (iteration N/M, status, Claudes final message)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
