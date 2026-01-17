@@ -1588,8 +1588,8 @@ features:
           kspec tasks list --grep <pattern>
 
 
-          Enables grep-like content search across all spec items and tasks. Searches ALL text
-          content including titles, descriptions, notes, and acceptance criteria text.
+          Enables content search across all spec items and tasks. Searches ALL text content
+          including titles, descriptions, notes, and acceptance criteria text.
 
 
           Behavior:
@@ -1600,29 +1600,28 @@ features:
 
           - Searches recursively through all text fields
 
-          - Returns matches with field path showing WHERE match was found
+          - Returns the ITEMS/TASKS themselves (not line snippets)
 
-          - Supports context lines (like grep -C)
+          - Shows which field(s) matched for context
 
           - Works with existing filters (--type, --tag, etc.)
 
 
           Examples:
 
-          - kspec search "TODO" → finds any item/task mentioning TODO
+          - kspec search "TODO" → returns all items/tasks mentioning TODO
 
           - kspec search "shadow.*branch" → regex pattern across all content
 
-          - kspec tasks list --grep "authentication" → grep within tasks only
-
-          - kspec search "GIVEN.*WHEN" -C 2 → show context around matches
+          - kspec tasks list --grep "authentication" → tasks mentioning authentication
 
 
-          Output format (grep-like):
+          Output shows items with match location:
 
-          @task-auth:notes[1].content:12: TODO: add retry logic
+          01KF1234 [pending] P2 Implement auth flow
+            matched: notes[1].content, description
 
-          @spec-api:description:3: handles authentication flow
+          The search finds items; the pattern is just the filter criteria.
         depends_on: []
         implements: []
         relates_to: []
