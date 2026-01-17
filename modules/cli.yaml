@@ -1633,31 +1633,33 @@ features:
           implementation: implemented
         acceptance_criteria:
           - id: ac-1
-            given: A user searches with kspec item list --fuzzy "valdation"
-            when: The fuzzy matcher runs against all spec items
+            given: A user runs kspec search "TODO"
+            when: The search runs across all loaded items and tasks
             then: >-
-              Results include items where title, slugs, or description approximately match the
-              query, scored by relevance
+              Returns matches from any text field (title, description, notes, AC text) with field
+              path showing where match was found
           - id: ac-2
-            given: Fuzzy search is configured with a threshold (default 0.3)
-            when: Items are scored against the query
-            then: Only items with score >= threshold are returned, preventing poor-quality matches
+            given: A user searches with a regex pattern like "shadow.*branch"
+            when: The pattern is applied to content
+            then: Matches using JavaScript regex semantics, case-insensitive by default
           - id: ac-3
-            given: Multiple items match a fuzzy query
-            when: Results are returned
-            then: Items are sorted by match score (best match first), then by original order for ties
+            given: A match is found in a nested field
+            when: Results are displayed
+            then: >-
+              Shows field path like notes[2].content or ac[1].then so user knows WHERE the match
+              occurred
           - id: ac-4
-            given: A user specifies kspec item list --type feature --fuzzy "val"
-            when: Query is executed
-            then: Type filter is applied first (narrow scope), then fuzzy search within filtered results
+            given: User specifies context lines with -C flag
+            when: Matches are displayed
+            then: Shows surrounding lines like grep -C for multiline content
           - id: ac-5
-            given: Fuzzy search is implemented for items
-            when: Extended to tasks via kspec tasks list --fuzzy "sesion"
-            then: Searches task title, slugs, and description with same scoring behavior
+            given: User combines grep with filters like --type task
+            when: Search runs
+            then: Filters are applied first, then grep searches within the filtered set
           - id: ac-6
-            given: A user searches with kspec item list --fuzzy "01KF1A8"
-            when: Fuzzy matcher runs
-            then: Items with ULID starting with this prefix score highly and appear in results
+            given: Multiple matches exist across items
+            when: Results are returned
+            then: 'Output is grep-like format: @ref:field:line: matched text'
       - _ulid: 01KF1A991VFFQ99EBQGQ9XB55D
         slugs:
           - fuzzy-command-suggest
