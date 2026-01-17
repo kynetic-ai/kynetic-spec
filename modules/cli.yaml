@@ -1248,6 +1248,10 @@ features:
             given: 3 spec items exist, 1 already has a task
             when: kspec derive --all runs
             then: creates tasks for 2 items without tasks; skips the one with existing task
+          - id: ac-13
+            given: '@nonexistent does not resolve'
+            when: kspec derive @nonexistent runs
+            then: 'exits code 1; error ''Reference not found: @nonexistent'''
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
