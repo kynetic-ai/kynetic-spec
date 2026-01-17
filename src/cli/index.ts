@@ -16,6 +16,7 @@ import {
   registerShadowCommands,
   registerLogCommand,
   registerSearchCommand,
+  registerRalphCommand,
 } from './commands/index.js';
 
 const program = new Command();
@@ -47,6 +48,7 @@ registerInboxCommands(program);
 registerShadowCommands(program);
 registerLogCommand(program);
 registerSearchCommand(program);
+registerRalphCommand(program);
 
 // Parse and execute
 program.parse();
