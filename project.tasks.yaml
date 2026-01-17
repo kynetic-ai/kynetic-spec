@@ -4600,21 +4600,22 @@
         - tests/ralph.test.ts: +2 tests for phased events
       supersedes: null
   todos: []
-- title: Fix ralph session context overflow
-  type: task
-  spec_ref: '@cli-ralph'
-  priority: 1
+- _ulid: 01KF71PW1HJBZMDMSCWF1YYNRB
   slugs:
     - ralph-session-fix
-  tags:
-    - bug
-    - ralph
-  _ulid: 01KF71PW1HJBZMDMSCWF1YYNRB
-  status: pending
+  title: Fix ralph session context overflow
+  type: task
+  spec_ref: '@cli-ralph'
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - bug
+    - ralph
   vcs_refs: []
   created_at: '2026-01-17T22:37:43.345Z'
   notes: []
   todos: []
+  started_at: '2026-01-17T22:37:50.272Z'
