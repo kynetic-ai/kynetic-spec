@@ -3075,21 +3075,39 @@
   created_at: '2026-01-17T02:34:35.674Z'
   notes: []
   todos: []
-- title: 'Implement: Workflow Execution Model'
+- _ulid: 01KF4WVW9SAW2KEHNK4YW98CSN
+  slugs:
+    - task-workflow-execution-model
+  title: 'Implement: Workflow Execution Model'
   type: task
   spec_ref: '@workflow-execution-model'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-workflow-definitions'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.705Z'
+  notes: []
+  todos: []
+- title: 'Implement: Workflow Triggers'
+  type: task
+  spec_ref: '@workflow-triggers'
+  derivation: auto
   priority: 3
   slugs:
-    - task-workflow-execution-model
+    - task-workflow-triggers
   tags: []
   depends_on:
     - '@task-workflow-definitions'
-  _ulid: 01KF4WVW9SAW2KEHNK4YW98CSN
+  _ulid: 01KF4WVWANMAE8DR6130KJ5Z4X
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.705Z'
+  created_at: '2026-01-17T02:34:35.733Z'
   notes: []
   todos: []
