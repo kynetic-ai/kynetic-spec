@@ -1772,6 +1772,10 @@ features:
         then: >-
           Claude reflects on what was done and adds any observations/learnings to inbox
           automatically
+      - id: ac-7
+        given: '--dry-run flag is provided'
+        when: kspec ralph --dry-run is run
+        then: shows the prompt that would be sent without executing Claude
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
