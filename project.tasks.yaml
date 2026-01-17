@@ -3830,6 +3830,7 @@
     - grep
   vcs_refs: []
   created_at: '2026-01-17T04:04:50.753Z'
+  started_at: '2026-01-17T04:35:22.123Z'
   notes:
     - _ulid: 01KF521HKWYF795C3RR9EAKVMF
       created_at: '2026-01-17T04:05:04.252Z'
@@ -3895,5 +3896,25 @@
 
         This is simpler and more useful - you want to find the item, not grep through text.
       supersedes: null
+    - _ulid: 01KF54F8KMMG5HBCDMR9EARR86
+      created_at: '2026-01-17T04:47:30.932Z'
+      author: '@claude'
+      content: |-
+        Implementation complete:
+
+        - Created src/utils/grep.ts with grepItem() recursive search function
+        - Added grepSearch field to ItemFilter interface in parser/items.ts
+        - Integrated grep filter into ItemIndex.query()
+        - Added -g/--grep option to 'kspec item list' with matched fields display
+        - Added -g/--grep option to 'kspec tasks list' with matched fields display
+        - Created standalone 'kspec search <pattern>' command searching both items and tasks
+        - Comprehensive tests in tests/grep.test.ts covering all 6 ACs
+
+        Features:
+        - Regex patterns supported (case-insensitive by default)
+        - Searches all text fields: title, description, notes, AC given/when/then, tags
+        - Shows which fields matched (e.g., 'matched: description, notes[0], ac[1].given')
+        - Combines with other filters (--type, --status, --tag)
+        - Graceful handling of invalid regex (treated as literal)
+      supersedes: null
   todos: []
-  started_at: '2026-01-17T04:35:22.123Z'
