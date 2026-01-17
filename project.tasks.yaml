@@ -3184,23 +3184,41 @@
   created_at: '2026-01-17T02:34:35.844Z'
   notes: []
   todos: []
-- title: 'Implement: Observations'
+- _ulid: 01KF4WVWF7BXCMP188Z3P1EPQP
+  slugs:
+    - task-observations
+  title: 'Implement: Observations'
   type: task
   spec_ref: '@observations'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-observations
   tags:
     - mvp
     - meta
     - feedback
-  depends_on: []
-  _ulid: 01KF4WVWF7BXCMP188Z3P1EPQP
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:35.879Z'
+  notes: []
+  todos: []
+- title: 'Implement: Observation Schema'
+  type: task
+  spec_ref: '@observation-schema'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-observation-schema
+  tags: []
+  depends_on:
+    - '@task-observations'
+  _ulid: 01KF4WVWG3WWK8108GY1PNSH89
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:35.879Z'
+  created_at: '2026-01-17T02:34:35.907Z'
   notes: []
   todos: []
