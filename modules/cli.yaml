@@ -1835,6 +1835,10 @@ features:
         given: incoming agent activity (requests/notifications)
         when: activity is detected
         then: timeout timers reset (keepalive mechanism)
+      - id: ac-7
+        given: an active session
+        when: client.cancel(sessionId) is called
+        then: sends cancel request (optional method with graceful fallback)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
