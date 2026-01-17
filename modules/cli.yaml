@@ -1819,6 +1819,10 @@ features:
         given: an initialized client
         when: client.newSession({ cwd, _meta }) is called
         then: creates a new session and returns sessionId
+      - id: ac-3
+        given: an active session
+        when: client.prompt({ sessionId, prompt }) is called
+        then: sends prompt and returns PromptResponse with stopReason
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
