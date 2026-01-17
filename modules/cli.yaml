@@ -1861,6 +1861,11 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-17T15:16:24.306Z'
+    acceptance_criteria:
+      - id: ac-1
+        given: a new session is started
+        when: createSession(id, metadata) is called
+        then: creates .kspec/sessions/{id}/ directory with session.yaml metadata file
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
