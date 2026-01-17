@@ -4338,6 +4338,7 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T19:03:22.891Z'
+  started_at: '2026-01-17T19:17:41.220Z'
   notes:
     - _ulid: 01KF6NGGDRPX2AYYYP4GFPWDYS
       created_at: '2026-01-17T19:04:31.929Z'
@@ -4399,5 +4400,31 @@
 
         6. TREAT LLM OUTPUT AS UNTRUSTED: Even though it's our agent, sanitize like user content.
       supersedes: null
+    - _ulid: 01KF6PXCRGRJSMWW2G3YDTR2F7
+      created_at: '2026-01-17T19:29:02.736Z'
+      author: '@claude'
+      content: >-
+        Architecture decision: Separated translator (data) from renderer (display).
+
+
+        - src/ralph/events.ts: Pure data types (RalphEvent) and translator that converts
+        SessionUpdate to RalphEvent
+
+        - src/ralph/cli-renderer.ts: CLI-specific rendering with chalk colors and stdout
+
+        - This enables future TUI to consume same event stream with different renderer
+
+
+        Key translator features:
+
+        - Extracts tool name from _meta.claudeCode.toolName (Claude Code pattern)
+
+        - Strips MCP prefixes (mcp__acp__Write → Write)
+
+        - Generates per-tool summaries (Bash: command, Read/Write: filename, etc.)
+
+        - Suppresses noise patterns (onPostToolUseHook messages)
+
+        - Tracks pending tools for lifecycle and accumulates streaming content
+      supersedes: null
   todos: []
-  started_at: '2026-01-17T19:17:41.220Z'
