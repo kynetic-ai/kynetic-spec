@@ -1810,6 +1810,11 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-17T15:15:27.389Z'
+    acceptance_criteria:
+      - id: ac-1
+        given: an ACP agent process
+        when: client.initialize() is called
+        then: returns agent capabilities including supported features
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
