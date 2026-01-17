@@ -32,7 +32,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
     priority: high
     tags:
       - mvp
@@ -49,21 +49,20 @@ features:
         given: a project with kynetic.yaml
         when: kynetic.meta.yaml is created with valid structure
         then: >
-          kspec meta show outputs summary with counts for agents, workflows,
-          conventions, and observations (exit code 0)
+          kspec meta show outputs summary with counts for agents, workflows, conventions, and
+          observations (exit code 0)
       - id: ac-meta-manifest-2
         given: a meta manifest exists
         when: kspec validate runs
         then: >
-          output includes "Meta: X agents, Y workflows, Z conventions" line;
-          validation errors for meta items use "meta:" prefix to distinguish
-          from spec errors
+          output includes "Meta: X agents, Y workflows, Z conventions" line; validation errors for
+          meta items use "meta:" prefix to distinguish from spec errors
       - id: ac-meta-manifest-3
         given: kynetic.meta.yaml has invalid schema
         when: kspec validate runs
         then: >
-          exits with code 1; error message identifies the invalid field path
-          and expected type (e.g., "meta:agents[0].capabilities: expected array")
+          exits with code 1; error message identifies the invalid field path and expected type
+          (e.g., "meta:agents[0].capabilities: expected array")
     requirements:
       - _ulid: 01KF1XMNF10000000000000000
         slugs:
@@ -175,21 +174,20 @@ features:
         given: agents are defined in meta manifest
         when: kspec meta agents runs
         then: >
-          outputs table with columns: ID, Name, Capabilities (comma-separated);
-          one row per agent; exit code 0
+          outputs table with columns: ID, Name, Capabilities (comma-separated); one row per agent;
+          exit code 0
       - id: ac-agent-2
         given: kspec meta agents --json runs
         when: agents are defined
         then: >
-          outputs JSON array with objects containing: id, name, description,
-          capabilities (array), tools (array), session_protocol (object),
-          conventions (array)
+          outputs JSON array with objects containing: id, name, description, capabilities (array),
+          tools (array), session_protocol (object), conventions (array)
       - id: ac-agent-3
         given: an agent reference @agent-id is used
         when: kspec validate runs
         then: >
-          validates reference resolves to an agent definition;
-          error if reference points to non-agent meta item
+          validates reference resolves to an agent definition; error if reference points to
+          non-agent meta item
     requirements:
       - _ulid: 01KF1XAGT10000000000000000
         slugs:
@@ -299,27 +297,26 @@ features:
       - id: ac-workflow-1
         given: workflows are defined in meta manifest
         when: kspec meta workflows runs
-        then: >
-          outputs table with columns: ID, Trigger, Steps (count);
-          one row per workflow; exit code 0
+        then: |
+          outputs table with columns: ID, Trigger, Steps (count); one row per workflow; exit code 0
       - id: ac-workflow-2
         given: kspec meta workflows --verbose runs
         when: workflows are defined
         then: >
-          outputs each workflow with full step list; steps show type prefix
-          ([check], [action], [decision]) and content; on_fail shown for checks
+          outputs each workflow with full step list; steps show type prefix ([check], [action],
+          [decision]) and content; on_fail shown for checks
       - id: ac-workflow-3
         given: a workflow reference @workflow-id is used in meta_ref
         when: kspec validate runs
         then: >
-          validates reference resolves to a workflow definition;
-          error message shows "meta_ref must point to workflow, agent, or convention"
+          validates reference resolves to a workflow definition; error message shows "meta_ref must
+          point to workflow, agent, or convention"
       - id: ac-workflow-4
         given: kspec meta workflows --json runs
         when: workflows are defined
         then: >
-          outputs JSON array with objects containing: id, trigger, description,
-          steps (array of {type, content, on_fail?})
+          outputs JSON array with objects containing: id, trigger, description, steps (array of
+          {type, content, on_fail?})
     requirements:
       - _ulid: 01KF1XWKF10000000000000000
         slugs:
@@ -473,30 +470,30 @@ features:
         given: conventions are defined in meta manifest
         when: kspec meta conventions runs
         then: >
-          outputs table with columns: Domain, Rules (count), Validation (yes/no);
-          one row per convention; exit code 0
+          outputs table with columns: Domain, Rules (count), Validation (yes/no); one row per
+          convention; exit code 0
       - id: ac-conv-2
         given: kspec meta conventions --domain commits runs
         when: a commits convention exists
-        then: >
+        then: |
           outputs only the commits convention with full rules list and examples
       - id: ac-conv-3
         given: a convention has validation.type=regex
         when: kspec validate --conventions runs
         then: >
-          applies regex pattern to relevant content; reports violations with
-          line/location and expected format
+          applies regex pattern to relevant content; reports violations with line/location and
+          expected format
       - id: ac-conv-4
         given: a convention has validation.type=prose
         when: kspec validate --conventions runs
-        then: >
+        then: |
           skips validation; outputs info: "Skipping prose convention: <domain>"
       - id: ac-conv-5
         given: kspec meta conventions --json runs
         when: conventions are defined
         then: >
-          outputs JSON array with objects containing: domain, rules (array),
-          examples (array), validation (object or null)
+          outputs JSON array with objects containing: domain, rules (array), examples (array),
+          validation (object or null)
     requirements:
       - _ulid: 01KF1XCNV10000000000000000
         slugs:
@@ -629,57 +626,57 @@ features:
         given: an agent encounters workflow friction
         when: kspec meta observe friction "description" runs
         then: >
-          outputs "OK Created observation: <ULID-prefix>"; observation stored
-          with fields: _ulid, type, content, created_at (ISO8601), author,
-          resolved (false), workflow_ref (if --workflow provided)
+          outputs "OK Created observation: <ULID-prefix>"; observation stored with fields: _ulid,
+          type, content, created_at (ISO8601), author, resolved (false), workflow_ref (if --workflow
+          provided)
       - id: ac-obs-2
         given: observations exist
         when: kspec meta observations runs
         then: >
-          outputs table with columns: ID, Type, Workflow, Created, Content (truncated);
-          shows only unresolved by default; --all includes resolved
+          outputs table with columns: ID, Type, Workflow, Created, Content (truncated); shows only
+          unresolved by default; --all includes resolved
       - id: ac-obs-3
         given: an observation exists
         when: kspec meta promote @obs --title "Task title" runs
         then: >
-          creates task with: title from --title, description from observation content,
-          meta_ref from observation's workflow_ref; outputs "OK Created task: <ULID-prefix>";
-          observation updated with promoted_to field pointing to new task
+          creates task with: title from --title, description from observation content, meta_ref from
+          observation's workflow_ref; outputs "OK Created task: <ULID-prefix>"; observation updated
+          with promoted_to field pointing to new task
       - id: ac-obs-4
         given: an observation exists
         when: kspec meta resolve @obs "resolution text" runs
         then: >
-          observation updated with: resolved=true, resolution=text,
-          resolved_at (ISO8601), resolved_by (author); outputs "OK Resolved: <ULID-prefix>"
+          observation updated with: resolved=true, resolution=text, resolved_at (ISO8601),
+          resolved_by (author); outputs "OK Resolved: <ULID-prefix>"
       - id: ac-obs-5
         given: kspec meta observations --json runs
         when: observations exist
-        then: >
+        then: |
           outputs JSON array with full observation objects including all fields
       - id: ac-obs-6
         given: an observation has already been promoted (has promoted_to field)
         when: kspec meta promote @obs runs
         then: >
-          exits with code 1; error message: "Observation already promoted to
-          task <task-ref>; resolve or delete the task first"
+          exits with code 1; error message: "Observation already promoted to task <task-ref>;
+          resolve or delete the task first"
       - id: ac-obs-7
         given: an observation is already resolved (resolved=true)
         when: kspec meta resolve @obs runs
         then: >
-          exits with code 1; error message: "Observation already resolved on
-          <date>: '<resolution-text-truncated>'"
+          exits with code 1; error message: "Observation already resolved on <date>:
+          '<resolution-text-truncated>'"
       - id: ac-obs-8
         given: an observation is already resolved
         when: kspec meta promote @obs runs
         then: >
-          exits with code 1; error message: "Cannot promote resolved observation;
-          use --force to override"
+          exits with code 1; error message: "Cannot promote resolved observation; use --force to
+          override"
       - id: ac-obs-9
         given: an observation has promoted_to pointing to a completed task
         when: kspec meta resolve @obs runs with no explicit resolution
         then: >
-          auto-populates resolution from task completion reason if available;
-          prompts for resolution text if task has no completion reason
+          auto-populates resolution from task completion reason if available; prompts for resolution
+          text if task has no completion reason
     requirements:
       - _ulid: 01KF1XFBK10000000000000000
         slugs:
@@ -1338,29 +1335,29 @@ features:
       the self-improvement loop.
     acceptance_criteria:
       - id: ac-meta-ref-1
-        given: "kspec task add --meta-ref @workflow-id runs"
+        given: kspec task add --meta-ref @workflow-id runs
         when: the @workflow-id is a valid workflow reference
         then: >
-          task created with meta_ref field set to @workflow-id;
-          outputs "OK Created task: <ULID-prefix>"
+          task created with meta_ref field set to @workflow-id; outputs "OK Created task:
+          <ULID-prefix>"
       - id: ac-meta-ref-2
         given: tasks exist with meta_ref fields
-        when: "kspec tasks list --meta-ref @workflow runs"
+        when: kspec tasks list --meta-ref @workflow runs
         then: >
-          outputs only tasks where meta_ref matches @workflow;
-          same output format as regular task list
+          outputs only tasks where meta_ref matches @workflow; same output format as regular task
+          list
       - id: ac-meta-ref-3
-        given: "kspec task add --meta-ref @invalid-ref runs"
+        given: kspec task add --meta-ref @invalid-ref runs
         when: the reference does not resolve to a meta item
         then: >
-          exits with code 1; error message: "meta_ref '@invalid-ref' does not
-          resolve to a valid meta item (agent, workflow, or convention)"
+          exits with code 1; error message: "meta_ref '@invalid-ref' does not resolve to a valid
+          meta item (agent, workflow, or convention)"
       - id: ac-meta-ref-4
-        given: "kspec task add --meta-ref @spec-item runs"
+        given: kspec task add --meta-ref @spec-item runs
         when: the reference is a product spec item (not meta)
         then: >
-          exits with code 1; error message: "meta_ref '@spec-item' points to
-          a spec item; use --spec-ref for product spec references"
+          exits with code 1; error message: "meta_ref '@spec-item' points to a spec item; use
+          --spec-ref for product spec references"
     requirements:
       - _ulid: 01KF1XREF10000000000000000
         slugs:

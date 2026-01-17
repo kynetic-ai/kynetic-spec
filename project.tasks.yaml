@@ -2937,9 +2937,40 @@
     - meta
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.390Z'
-  notes: []
-  todos: []
   started_at: '2026-01-17T23:50:03.334Z'
+  notes:
+    - _ulid: 01KF75VNMW9GTW7B9K2CYM9K2K
+      created_at: '2026-01-17T23:50:14.940Z'
+      author: '@claude'
+      content: >-
+        Explored ../kspec-acp-test and ../kspec-ralph-test for prior implementations. Both
+        directories completed this task with comprehensive implementations including:
+
+        - Zod schemas for AgentSchema, WorkflowSchema, ConventionSchema, ObservationSchema,
+        MetaManifestSchema
+
+        - Parser module with loadMetaContext(), findMetaManifest(), getMetaStats(),
+        findMetaItemByRef()
+
+        - CLI commands: meta show, meta agents, meta workflows, meta conventions
+
+        - Validation integration with meta: prefix for errors
+
+        - All 3 ACs covered with integration tests
+
+
+        Key differences:
+
+        - acp-test: 992 lines meta.ts with 16 commands (10 implemented, 6 deferred)
+
+        - ralph-test: 287 lines meta.ts with 4 core commands, separate meta.ts parser (432 lines)
+
+        - Both pass all tests, ralph-test approach seems more modular
+
+
+        Will follow ralph-test's modular approach with separate parser/meta.ts module.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW0YWMRS6R0M19J5B84P
   slugs:
     - task-meta-manifest-format
