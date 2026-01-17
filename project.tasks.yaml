@@ -3386,21 +3386,39 @@
   created_at: '2026-01-17T02:34:36.171Z'
   notes: []
   todos: []
-- title: 'Implement: kspec meta agents'
+- _ulid: 01KF4WVWS2237WK5KE3DKFK9TY
+  slugs:
+    - task-kspec-meta-agents
+  title: 'Implement: kspec meta agents'
   type: task
   spec_ref: '@meta-agents-cmd'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-meta-cli-commands'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.194Z'
+  notes: []
+  todos: []
+- title: 'Implement: kspec meta workflows'
+  type: task
+  spec_ref: '@meta-workflows-cmd'
+  derivation: auto
   priority: 3
   slugs:
-    - task-kspec-meta-agents
+    - task-kspec-meta-workflows
   tags: []
   depends_on:
     - '@task-meta-cli-commands'
-  _ulid: 01KF4WVWS2237WK5KE3DKFK9TY
+  _ulid: 01KF4WVWT1YPEPENJN1W7N06YR
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.194Z'
+  created_at: '2026-01-17T02:34:36.225Z'
   notes: []
   todos: []
