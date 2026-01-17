@@ -3294,21 +3294,39 @@
   created_at: '2026-01-17T02:34:36.022Z'
   notes: []
   todos: []
-- title: 'Implement: Context Schema'
+- _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
+  slugs:
+    - task-context-schema
+  title: 'Implement: Context Schema'
   type: task
   spec_ref: '@context-schema'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-session-context-research'
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-17T02:34:36.051Z'
+  notes: []
+  todos: []
+- title: 'Implement: Context Storage'
+  type: task
+  spec_ref: '@context-storage'
+  derivation: auto
   priority: 3
   slugs:
-    - task-context-schema
+    - task-context-storage
   tags: []
   depends_on:
     - '@task-session-context-research'
-  _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
+  _ulid: 01KF4WVWNCZXK2B7DJR9MASK2J
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-17T02:34:36.051Z'
+  created_at: '2026-01-17T02:34:36.076Z'
   notes: []
   todos: []
