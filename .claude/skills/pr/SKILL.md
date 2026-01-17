@@ -30,26 +30,39 @@ git remote get-url origin
 
 ### Step 2: Check Branch Protection (Optional)
 
-If on `main`, check if PRs are required:
+If on `main`, optionally check if PRs are required. Note: The rulesets API can fail silently or require special permissions, so don't rely on it - just try to push and handle rejection gracefully.
 
 ```bash
-# Parse owner/repo from remote URL
-# Then check rulesets
-gh api repos/{owner}/{repo}/rulesets --jq '.[] | select(.enforcement == "active") | .rules[] | select(.type == "pull_request")'
+gh api repos/{owner}/{repo}/rulesets --jq '.[] | select(.enforcement == "active") | .rules[] | select(.type == "pull_request")' 2>/dev/null
 ```
-
-If `pull_request` rule exists, PRs are required. Inform user proactively.
 
 ### Step 3: Determine Branch Strategy
 
+**Branch name auto-generation (do NOT use AskUserQuestion for this):**
+
+Generate a branch name automatically based on context:
+1. If there's a completed/in-progress kspec task: use `fix/<task-slug>` or `feat/<task-slug>`
+2. If recent commits have conventional format: derive from commit message (e.g., `fix: foo bar` → `fix/foo-bar`)
+3. If unpushed commits exist: summarize their intent
+
+Present the auto-generated name and ask for simple confirmation:
+```
+Suggested branch name: fix/ralph-tool-formatting
+PR title: "fix: correct ralph tool input/output extraction"
+
+Proceed? [y/n/edit]
+```
+
+Only ask the user to provide a name if you truly cannot determine one.
+
 **If on `main` with uncommitted changes:**
-1. Ask user for branch name (suggest based on task if in-progress task exists)
+1. Auto-generate branch name (see above)
 2. Create branch: `git checkout -b <branch-name>`
 3. Stage and commit changes
 4. Push with `-u origin <branch-name>`
 
 **If on `main` with committed but unpushed changes:**
-1. Ask user for branch name
+1. Auto-generate branch name from commit messages
 2. Create branch from current HEAD: `git checkout -b <branch-name>`
 3. Reset main to origin/main:
    ```bash
@@ -60,7 +73,7 @@ If `pull_request` rule exists, PRs are required. Inform user proactively.
 4. Push branch
 
 **If already on feature branch:**
-1. Commit any uncommitted changes (ask for message)
+1. Commit any uncommitted changes
 2. Push to origin
 
 ### Step 4: Create PR
@@ -137,9 +150,12 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 ## Branch Naming
 
-Suggest names based on context:
-- Task slug: `feat/<task-slug>` or just `<task-slug>`
-- Conventional: `feat/description`, `fix/description`
+Auto-generate names based on context (in priority order):
+1. **From kspec task**: `fix/<task-slug>` or `feat/<task-slug>` based on task type
+2. **From commit message**: Parse conventional commit prefix and description
+3. **From diff summary**: Derive from changed files/functionality
+
+Do NOT present multiple-choice options. Generate the best name and ask for simple y/n confirmation.
 
 ## Error Handling
 
