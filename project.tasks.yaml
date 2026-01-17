@@ -4139,5 +4139,48 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T15:19:24.917Z'
-  notes: []
+  notes:
+    - _ulid: 01KF68PK2H0S59TP079GFPMVDE
+      created_at: '2026-01-17T15:20:39.762Z'
+      author: '@claude'
+      content: |-
+        ## Implementation Approach
+
+        Rewrite ralph.ts to use ACP client instead of CLI spawn. Key changes:
+
+        1. **Spawn via ACP**: Use spawnAgent() with adapter registry
+        2. **Session tracking**: Create session, log events throughout
+        3. **Streaming output**: Display agent updates in real-time
+        4. **Event logging**: Log prompt.sent, session.update, session.end
+
+        ## New Files
+        - `src/agents/adapters.ts` - Adapter registry (claude-code-acp, mock)
+        - `src/agents/spawner.ts` - Process spawning + ACP init
+
+        ## Modified Files
+        - `src/cli/commands/ralph.ts` - Complete rewrite
+
+        ## Adapter Registry
+        const ADAPTERS = {
+          'claude-code-acp': {
+            command: 'npx',
+            args: ['@zed-industries/claude-code-acp'],
+            systemPrompt: { mechanism: 'meta-extension' },
+          },
+          'mock-acp': { ... }  // For testing
+        };
+
+        ## New CLI Options
+        - --adapter <id> (default: claude-code-acp)
+        - --commit-on <boundary> (task|session|none, default: task)
+        - Remove: --claude-cmd (replaced by --adapter)
+
+        ## Data Flow
+        ralph → spawnAgent() → ACPClient → session events → JSONL storage
+
+        ## Gotchas
+        - Use shell: true for npx on Windows
+        - Graceful shutdown: ACP cancel → SIGTERM → SIGKILL
+        - Start without implementing fs/terminal handlers (deferred)
+      supersedes: null
   todos: []
