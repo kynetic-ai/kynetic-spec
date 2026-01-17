@@ -387,14 +387,14 @@ export function registerRalphCommand(program: Command): void {
                       agent!.client.respondError(reqId, -32000, err.message);
                     });
                   });
-
-                  // Create ACP session
-                  info('Creating ACP session...');
-                  acpSessionId = await agent.client.newSession({
-                    cwd: process.cwd(),
-                    mcpServers: [], // No MCP servers for now
-                  });
                 }
+
+                // Create fresh ACP session per iteration to keep context clean
+                info('Creating ACP session...');
+                acpSessionId = await agent.client.newSession({
+                  cwd: process.cwd(),
+                  mcpServers: [], // No MCP servers for now
+                });
 
                 info('Sending prompt to agent...');
 
