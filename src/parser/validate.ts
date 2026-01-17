@@ -11,6 +11,12 @@ import {
   TasksFileSchema,
   ManifestSchema,
   SpecItemSchema,
+  MetaManifestSchema,
+  AgentSchema,
+  WorkflowSchema,
+  ConventionSchema,
+  ObservationSchema,
+  UlidSchema,
 } from '../schema/index.js';
 import type { KspecContext, LoadedTask, LoadedSpecItem } from './yaml.js';
 import {
@@ -20,6 +26,7 @@ import {
   expandIncludePattern,
 } from './yaml.js';
 import { ReferenceIndex, validateRefs, type RefValidationError } from './refs.js';
+import { findMetaManifest, loadMetaContext, type MetaContext } from './meta.js';
 
 // ============================================================
 // TYPES
@@ -57,6 +64,12 @@ export interface ValidationResult {
     filesChecked: number;
     itemsChecked: number;
     tasksChecked: number;
+  };
+  metaStats?: {
+    agents: number;
+    workflows: number;
+    conventions: number;
+    observations: number;
   };
 }
 
@@ -175,6 +188,163 @@ async function validateSpecFile(filePath: string): Promise<SchemaValidationError
 
     // Recursively validate spec items
     validateSpecItemRecursive(raw, filePath, '', errors);
+  } catch (err) {
+    errors.push({
+      file: filePath,
+      message: `Failed to parse YAML: ${err instanceof Error ? err.message : String(err)}`,
+    });
+  }
+
+  return errors;
+}
+
+/**
+ * Validate meta manifest file with strict ULID validation
+ * AC-meta-manifest-3: Invalid schema exits with code 1 and shows field path + expected type
+ */
+async function validateMetaManifestFile(filePath: string): Promise<SchemaValidationError[]> {
+  const errors: SchemaValidationError[] = [];
+
+  try {
+    const raw = await readYamlFile<unknown>(filePath);
+
+    // Validate overall manifest structure
+    const manifestResult = MetaManifestSchema.safeParse(raw);
+    if (!manifestResult.success) {
+      for (const issue of manifestResult.error.issues) {
+        errors.push({
+          file: filePath,
+          path: issue.path.join('.'),
+          message: issue.message,
+          details: issue,
+        });
+      }
+      return errors;
+    }
+
+    // Validate each agent with strict ULID validation
+    if (raw && typeof raw === 'object' && 'agents' in raw && Array.isArray((raw as Record<string, unknown>).agents)) {
+      const agents = (raw as Record<string, unknown>).agents as unknown[];
+      for (let i = 0; i < agents.length; i++) {
+        const agent = agents[i];
+        const agentResult = AgentSchema.safeParse(agent);
+        if (!agentResult.success) {
+          for (const issue of agentResult.error.issues) {
+            errors.push({
+              file: filePath,
+              path: `agents[${i}].${issue.path.join('.')}`,
+              message: issue.message,
+              details: issue,
+            });
+          }
+        }
+
+        // Strict ULID validation
+        if (agent && typeof agent === 'object' && '_ulid' in agent) {
+          const ulidResult = UlidSchema.safeParse((agent as Record<string, unknown>)._ulid);
+          if (!ulidResult.success) {
+            errors.push({
+              file: filePath,
+              path: `agents[${i}]._ulid`,
+              message: 'Invalid ULID format (expected 26 characters)',
+            });
+          }
+        }
+      }
+    }
+
+    // Validate each workflow with strict ULID validation
+    if (raw && typeof raw === 'object' && 'workflows' in raw && Array.isArray((raw as Record<string, unknown>).workflows)) {
+      const workflows = (raw as Record<string, unknown>).workflows as unknown[];
+      for (let i = 0; i < workflows.length; i++) {
+        const workflow = workflows[i];
+        const workflowResult = WorkflowSchema.safeParse(workflow);
+        if (!workflowResult.success) {
+          for (const issue of workflowResult.error.issues) {
+            errors.push({
+              file: filePath,
+              path: `workflows[${i}].${issue.path.join('.')}`,
+              message: issue.message,
+              details: issue,
+            });
+          }
+        }
+
+        // Strict ULID validation
+        if (workflow && typeof workflow === 'object' && '_ulid' in workflow) {
+          const ulidResult = UlidSchema.safeParse((workflow as Record<string, unknown>)._ulid);
+          if (!ulidResult.success) {
+            errors.push({
+              file: filePath,
+              path: `workflows[${i}]._ulid`,
+              message: 'Invalid ULID format (expected 26 characters)',
+            });
+          }
+        }
+      }
+    }
+
+    // Validate each convention with strict ULID validation
+    if (raw && typeof raw === 'object' && 'conventions' in raw && Array.isArray((raw as Record<string, unknown>).conventions)) {
+      const conventions = (raw as Record<string, unknown>).conventions as unknown[];
+      for (let i = 0; i < conventions.length; i++) {
+        const convention = conventions[i];
+        const conventionResult = ConventionSchema.safeParse(convention);
+        if (!conventionResult.success) {
+          for (const issue of conventionResult.error.issues) {
+            errors.push({
+              file: filePath,
+              path: `conventions[${i}].${issue.path.join('.')}`,
+              message: issue.message,
+              details: issue,
+            });
+          }
+        }
+
+        // Strict ULID validation
+        if (convention && typeof convention === 'object' && '_ulid' in convention) {
+          const ulidResult = UlidSchema.safeParse((convention as Record<string, unknown>)._ulid);
+          if (!ulidResult.success) {
+            errors.push({
+              file: filePath,
+              path: `conventions[${i}]._ulid`,
+              message: 'Invalid ULID format (expected 26 characters)',
+            });
+          }
+        }
+      }
+    }
+
+    // Validate each observation with strict ULID validation
+    if (raw && typeof raw === 'object' && 'observations' in raw && Array.isArray((raw as Record<string, unknown>).observations)) {
+      const observations = (raw as Record<string, unknown>).observations as unknown[];
+      for (let i = 0; i < observations.length; i++) {
+        const observation = observations[i];
+        const observationResult = ObservationSchema.safeParse(observation);
+        if (!observationResult.success) {
+          for (const issue of observationResult.error.issues) {
+            errors.push({
+              file: filePath,
+              path: `observations[${i}].${issue.path.join('.')}`,
+              message: issue.message,
+              details: issue,
+            });
+          }
+        }
+
+        // Strict ULID validation
+        if (observation && typeof observation === 'object' && '_ulid' in observation) {
+          const ulidResult = UlidSchema.safeParse((observation as Record<string, unknown>)._ulid);
+          if (!ulidResult.success) {
+            errors.push({
+              file: filePath,
+              path: `observations[${i}]._ulid`,
+              message: 'Invalid ULID format (expected 26 characters)',
+            });
+          }
+        }
+      }
+    }
   } catch (err) {
     errors.push({
       file: filePath,
@@ -415,6 +585,30 @@ export async function validate(
     // Orphan detection
     if (runOrphans) {
       result.orphans = findOrphans(allTasks, allItems, index);
+    }
+  }
+
+  // Meta manifest validation (AC-meta-manifest-2, AC-meta-manifest-3)
+  const metaManifestPath = await findMetaManifest(ctx.specDir);
+  if (metaManifestPath) {
+    // Load meta context for stats
+    const metaCtx = await loadMetaContext(ctx);
+    result.metaStats = {
+      agents: metaCtx.agents.length,
+      workflows: metaCtx.workflows.length,
+      conventions: metaCtx.conventions.length,
+      observations: metaCtx.observations.length,
+    };
+
+    // Validate meta manifest schema with strict ULID validation
+    if (runSchema) {
+      const metaErrors = await validateMetaManifestFile(metaManifestPath);
+      // Prefix all meta errors with "meta:"
+      for (const err of metaErrors) {
+        err.path = err.path ? `meta:${err.path}` : 'meta:';
+      }
+      result.schemaErrors.push(...metaErrors);
+      result.stats.filesChecked++;
     }
   }
 

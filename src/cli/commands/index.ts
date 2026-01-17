@@ -14,3 +14,4 @@ export { registerShadowCommands } from './shadow.js';
 export { registerLogCommand } from './log.js';
 export { registerSearchCommand } from './search.js';
 export { registerRalphCommand } from './ralph.js';
+export { registerMetaCommands } from './meta.js';

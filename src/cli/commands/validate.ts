@@ -141,6 +141,11 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
   console.log(`Items checked: ${result.stats.itemsChecked}`);
   console.log(`Tasks checked: ${result.stats.tasksChecked}`);
 
+  // AC-meta-manifest-2: Display meta summary line
+  if (result.metaStats) {
+    console.log(`Meta: ${result.metaStats.agents} agents, ${result.metaStats.workflows} workflows, ${result.metaStats.conventions} conventions`);
+  }
+
   // Schema errors
   if (result.schemaErrors.length > 0) {
     console.log(chalk.red(`\nSchema errors: ${result.schemaErrors.length}`));
