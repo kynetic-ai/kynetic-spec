@@ -1870,6 +1870,10 @@ features:
         given: an active session
         when: appendEvent(id, event) is called
         then: appends JSON line to events.jsonl with auto-assigned ts and seq
+      - id: ac-3
+        given: events are appended
+        when: written to disk
+        then: uses atomic append (appendFileSync) for crash safety
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
