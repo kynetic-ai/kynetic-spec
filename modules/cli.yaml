@@ -419,6 +419,10 @@ features:
             given: ref points to a task (not spec item)
             when: kspec item patch @some-task --data '{...}' runs
             then: 'error: Not a spec item'
+          - id: ac-12
+            given: ref does not exist
+            when: kspec item patch @nonexistent --data '{...}' runs
+            then: 'error: Item not found: @nonexistent'
         status:
           maturity: draft
           implementation: in_progress
