@@ -1501,3 +1501,122 @@ export function findInboxItemByRef(
     return false;
   });
 }
+
+// ─── Patch Operations ────────────────────────────────────────────────────────
+
+/**
+ * A single patch operation for bulk patching
+ */
+export interface PatchOperation {
+  ref: string;
+  data: Record<string, unknown>;
+}
+
+/**
+ * Result of a single patch operation
+ */
+export interface PatchResult {
+  ref: string;
+  status: 'updated' | 'skipped' | 'error';
+  ulid?: string;
+  error?: string;
+}
+
+/**
+ * Result of a bulk patch operation
+ */
+export interface BulkPatchResult {
+  results: PatchResult[];
+  summary: {
+    total: number;
+    updated: number;
+    failed: number;
+    skipped: number;
+  };
+}
+
+/**
+ * Options for patch operations
+ */
+export interface PatchOptions {
+  allowUnknown?: boolean;
+  dryRun?: boolean;
+  failFast?: boolean;
+}
+
+/**
+ * Bulk patch spec items.
+ * Resolves refs, validates data, applies patches.
+ * Continues on error by default (use failFast to stop on first error).
+ */
+export async function patchSpecItems(
+  ctx: KspecContext,
+  refIndex: ReferenceIndex,
+  items: LoadedSpecItem[],
+  patches: PatchOperation[],
+  options: PatchOptions = {}
+): Promise<BulkPatchResult> {
+  const results: PatchResult[] = [];
+  let stopProcessing = false;
+
+  for (const patch of patches) {
+    if (stopProcessing) {
+      results.push({ ref: patch.ref, status: 'skipped' });
+      continue;
+    }
+
+    // Resolve ref
+    const resolved = refIndex.resolve(patch.ref);
+    if (!resolved.ok) {
+      const errorMsg = resolved.error === 'not_found'
+        ? `Item not found: ${patch.ref}`
+        : resolved.error === 'ambiguous'
+          ? `Ambiguous ref: ${patch.ref}`
+          : `Duplicate slug: ${patch.ref}`;
+      results.push({ ref: patch.ref, status: 'error', error: errorMsg });
+      if (options.failFast) {
+        stopProcessing = true;
+      }
+      continue;
+    }
+
+    // Find the item
+    const item = items.find(i => i._ulid === resolved.ulid);
+    if (!item) {
+      // Ref resolved but it's not a spec item (might be a task)
+      results.push({ ref: patch.ref, status: 'error', error: 'Not a spec item' });
+      if (options.failFast) {
+        stopProcessing = true;
+      }
+      continue;
+    }
+
+    // Dry run - just record what would happen
+    if (options.dryRun) {
+      results.push({ ref: patch.ref, status: 'updated', ulid: item._ulid });
+      continue;
+    }
+
+    // Apply the patch
+    try {
+      await updateSpecItem(ctx, item, patch.data);
+      results.push({ ref: patch.ref, status: 'updated', ulid: item._ulid });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      results.push({ ref: patch.ref, status: 'error', error: errorMsg });
+      if (options.failFast) {
+        stopProcessing = true;
+      }
+    }
+  }
+
+  return {
+    results,
+    summary: {
+      total: patches.length,
+      updated: results.filter(r => r.status === 'updated').length,
+      failed: results.filter(r => r.status === 'error').length,
+      skipped: results.filter(r => r.status === 'skipped').length,
+    },
+  };
+}

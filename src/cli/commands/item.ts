@@ -12,11 +12,15 @@ import {
   ReferenceIndex,
   AlignmentIndex,
   checkSlugUniqueness,
+  patchSpecItems,
   type LoadedSpecItem,
+  type PatchOperation,
+  type BulkPatchResult,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { ItemFilter } from '../../parser/items.js';
 import type { ItemType, Maturity, ImplementationStatus, SpecItemInput, AcceptanceCriterion } from '../../schema/index.js';
+import { SpecItemPatchSchema } from '../../schema/index.js';
 import { output, error, success, warn, isJsonMode } from '../output.js';
 
 /**
@@ -494,6 +498,139 @@ export function registerItemCommands(program: Command): void {
       }
     });
 
+  // kspec item patch - update item fields via JSON
+  item
+    .command('patch [ref]')
+    .description('Update spec item fields via JSON patch')
+    .option('--data <json>', 'JSON data to patch')
+    .option('--bulk', 'Read patches from stdin (JSONL or JSON array)')
+    .option('--allow-unknown', 'Allow fields not in schema')
+    .option('--dry-run', 'Preview changes without applying')
+    .option('--fail-fast', 'Stop on first error (bulk mode)')
+    .action(async (ref: string | undefined, options) => {
+      try {
+        const ctx = await initContext();
+
+        if (options.bulk) {
+          // Bulk mode: read from stdin
+          const stdin = await readStdinFully();
+          if (!stdin) {
+            error('No input provided. Use --data for single item or pipe JSONL/JSON for bulk.');
+            process.exit(1);
+          }
+
+          let patches: PatchOperation[];
+          try {
+            patches = parseBulkInput(stdin);
+          } catch (err) {
+            error('Failed to parse bulk input', err instanceof Error ? err.message : err);
+            process.exit(1);
+          }
+
+          if (patches.length === 0) {
+            error('No patches provided');
+            process.exit(1);
+          }
+
+          const { refIndex, items } = await buildIndexes(ctx);
+          const result = await patchSpecItems(ctx, refIndex, items, patches, {
+            allowUnknown: options.allowUnknown,
+            failFast: options.failFast,
+            dryRun: options.dryRun,
+          });
+
+          // Shadow commit if any updates
+          if (!options.dryRun && result.summary.updated > 0) {
+            await commitIfShadow(ctx.shadow, 'item-patch', `${result.summary.updated} items`);
+          }
+
+          output(result, () => formatBulkPatchResult(result, options.dryRun));
+
+          if (result.summary.failed > 0) {
+            process.exit(1);
+          }
+        } else {
+          // Single item mode
+          if (!ref) {
+            error('Reference required for single item patch. Use: kspec item patch <ref> --data <json>');
+            process.exit(1);
+          }
+
+          let data: Record<string, unknown>;
+
+          // Get data from --data option or stdin
+          if (options.data) {
+            try {
+              data = JSON.parse(options.data);
+            } catch (err) {
+              error('Invalid JSON in --data', err instanceof Error ? err.message : 'Parse error');
+              process.exit(1);
+            }
+          } else {
+            const stdin = await readStdinIfAvailable();
+            if (stdin) {
+              try {
+                data = JSON.parse(stdin.trim());
+              } catch (err) {
+                error('Invalid JSON from stdin', err instanceof Error ? err.message : 'Parse error');
+                process.exit(1);
+              }
+            } else {
+              error('No patch data. Use --data or pipe JSON to stdin.');
+              process.exit(1);
+            }
+          }
+
+          // Validate against schema (unless --allow-unknown)
+          if (!options.allowUnknown) {
+            // Use strict schema (no passthrough)
+            const strictSchema = SpecItemPatchSchema.strict();
+            const parseResult = strictSchema.safeParse(data);
+            if (!parseResult.success) {
+              const issues = parseResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+              error(`Invalid patch data: ${issues}`);
+              process.exit(1);
+            }
+          }
+
+          const { refIndex, items } = await buildIndexes(ctx);
+
+          // Resolve ref
+          const resolved = refIndex.resolve(ref);
+          if (!resolved.ok) {
+            error(`Item not found: ${ref}`);
+            process.exit(1);
+          }
+
+          // Find the item
+          const foundItem = items.find(i => i._ulid === resolved.ulid);
+          if (!foundItem) {
+            error(`Not a spec item: ${ref}`);
+            process.exit(1);
+          }
+
+          if (options.dryRun) {
+            output({ ref, data, wouldApplyTo: foundItem.title, ulid: foundItem._ulid }, () => {
+              console.log(chalk.yellow('Would patch:'), foundItem.title);
+              console.log(chalk.gray('ULID:'), foundItem._ulid.slice(0, 8));
+              console.log(chalk.gray('Changes:'));
+              console.log(JSON.stringify(data, null, 2));
+            });
+            return;
+          }
+
+          const updated = await updateSpecItem(ctx, foundItem, data);
+          const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+          await commitIfShadow(ctx.shadow, 'item-patch', itemSlug);
+
+          success(`Patched item: ${itemSlug}`, { item: updated });
+        }
+      } catch (err) {
+        error('Failed to patch item(s)', err);
+        process.exit(1);
+      }
+    });
+
   // kspec item status - show implementation status with linked tasks
   item
     .command('status <ref>')
@@ -781,4 +918,141 @@ export function registerItemCommands(program: Command): void {
         process.exit(1);
       }
     });
+}
+
+// ─── Patch Helpers ───────────────────────────────────────────────────────────
+
+/**
+ * Read stdin fully with timeout (for bulk input).
+ * Returns null if stdin is a TTY or empty.
+ */
+async function readStdinFully(): Promise<string | null> {
+  if (process.stdin.isTTY) {
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    let data = '';
+    const timeout = setTimeout(() => {
+      process.stdin.removeAllListeners();
+      resolve(data || null);
+    }, 5000); // 5 second timeout for bulk input
+
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (chunk) => {
+      data += chunk;
+    });
+    process.stdin.on('end', () => {
+      clearTimeout(timeout);
+      resolve(data || null);
+    });
+    process.stdin.on('error', () => {
+      clearTimeout(timeout);
+      resolve(null);
+    });
+    process.stdin.resume();
+  });
+}
+
+/**
+ * Read stdin if available (non-blocking for single item mode).
+ * Returns null quickly if no data available.
+ */
+async function readStdinIfAvailable(): Promise<string | null> {
+  if (process.stdin.isTTY) {
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    let data = '';
+    const timeout = setTimeout(() => {
+      process.stdin.removeAllListeners();
+      resolve(data || null);
+    }, 100); // 100ms timeout for quick check
+
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (chunk) => {
+      data += chunk;
+    });
+    process.stdin.on('end', () => {
+      clearTimeout(timeout);
+      resolve(data || null);
+    });
+    process.stdin.on('error', () => {
+      clearTimeout(timeout);
+      resolve(null);
+    });
+    process.stdin.resume();
+  });
+}
+
+/**
+ * Parse bulk input (JSONL or JSON array)
+ */
+function parseBulkInput(input: string): PatchOperation[] {
+  const trimmed = input.trim();
+
+  // Try JSON array first
+  if (trimmed.startsWith('[')) {
+    const parsed = JSON.parse(trimmed);
+    if (!Array.isArray(parsed)) {
+      throw new Error('Expected JSON array');
+    }
+    return parsed.map((item, i) => validatePatchOperation(item, i));
+  }
+
+  // Parse as JSONL (one JSON object per line)
+  const lines = trimmed.split('\n').filter(line => line.trim());
+  return lines.map((line, i) => {
+    try {
+      return validatePatchOperation(JSON.parse(line), i);
+    } catch (err) {
+      throw new Error(`Line ${i + 1}: ${err instanceof Error ? err.message : 'Invalid JSON'}`);
+    }
+  });
+}
+
+/**
+ * Validate a patch operation object
+ */
+function validatePatchOperation(obj: unknown, index: number): PatchOperation {
+  if (!obj || typeof obj !== 'object') {
+    throw new Error(`Item ${index + 1}: Patch must be an object`);
+  }
+  const op = obj as Record<string, unknown>;
+  if (typeof op.ref !== 'string' || !op.ref) {
+    throw new Error(`Item ${index + 1}: Patch must have "ref" string`);
+  }
+  if (!op.data || typeof op.data !== 'object') {
+    throw new Error(`Item ${index + 1}: Patch must have "data" object`);
+  }
+  return { ref: op.ref, data: op.data as Record<string, unknown> };
+}
+
+/**
+ * Format bulk patch result for human output
+ */
+function formatBulkPatchResult(result: BulkPatchResult, isDryRun = false): void {
+  const prefix = isDryRun ? 'Would patch' : 'Patched';
+
+  for (const r of result.results) {
+    if (r.status === 'updated') {
+      console.log(chalk.green('OK'), `${prefix}: ${r.ref} (${r.ulid?.slice(0, 8)})`);
+    } else if (r.status === 'error') {
+      console.log(chalk.red('ERR'), `${r.ref}: ${r.error}`);
+    } else {
+      console.log(chalk.gray('SKIP'), r.ref);
+    }
+  }
+
+  console.log('');
+  console.log(chalk.bold('Summary:'));
+  console.log(`  Total: ${result.summary.total}`);
+  console.log(chalk.green(`  Updated: ${result.summary.updated}`));
+  if (result.summary.failed > 0) {
+    console.log(chalk.red(`  Failed: ${result.summary.failed}`));
+  }
+  if (result.summary.skipped > 0) {
+    console.log(chalk.gray(`  Skipped: ${result.summary.skipped}`));
+  }
 }
