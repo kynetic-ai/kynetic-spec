@@ -367,3 +367,15 @@ inbox:
       - dx
       - ui
     added_by: '@claude'
+  - _ulid: 01KF6M4VHRC80YN6S1TQTRRCVX
+    text: >-
+      Ralph tool usage display: Show tool calls and their output clearly in ralph streaming output.
+      Should display: tool name, parameters/command, result/output (possibly truncated). The
+      ../kynetic project has patterns for this. Currently tool calls are invisible except for the
+      strange hook messages.
+    created_at: '2026-01-17T18:40:41.529Z'
+    tags:
+      - ralph
+      - dx
+      - ui
+    added_by: '@claude'
