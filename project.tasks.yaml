@@ -1088,7 +1088,7 @@
   type: task
   spec_ref: '@fuzzy-item-search'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1133,6 +1133,11 @@
         AC annotation comments added to implementation files.
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T03:46:35.437Z'
+  closed_reason: >-
+    Implemented fuzzy search for items and tasks using fuzzysort. Added -q/--search option with
+    fuzzy matching by default, --exact for substring matching, --threshold for score control. All 6
+    ACs tested and verified.
 - _ulid: 01KF1A9GMNZM8GF8TD95YSDQ7V
   slugs:
     - task-cli-command-suggestions-on-error
