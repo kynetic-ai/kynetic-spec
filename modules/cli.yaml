@@ -1863,6 +1863,10 @@ features:
             then: >-
               shows relative timestamp from session start (e.g., +5s, +2m) prefixed to the event
               line
+          - id: ac-4
+            given: ACP agent emits debug or internal log messages (e.g., 'No onPostToolUseHook found')
+            when: these messages arrive in the event stream
+            then: messages are suppressed from CLI output (logged to session events only)
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
