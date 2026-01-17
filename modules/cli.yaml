@@ -996,6 +996,10 @@ features:
             given: A task has no notes or todos
             when: Displayed in full mode
             then: Notes and todos sections are omitted or show 0, not errors
+          - id: ac-4
+            given: A user runs tasks list --full --json
+            when: Output is generated
+            then: JSON includes all verbose fields (notes array, todos array, timestamps)
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
