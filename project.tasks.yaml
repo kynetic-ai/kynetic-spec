@@ -4046,18 +4046,20 @@
   created_at: '2026-01-17T15:19:06.703Z'
   notes: []
   todos: []
-- title: Refactor ralph command to use ACP
-  type: task
-  spec_ref: '@cli-ralph'
-  priority: 1
+- _ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
   slugs:
     - task-ralph-acp-refactor
-  tags: []
-  _ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
+  title: Refactor ralph command to use ACP
+  type: task
+  spec_ref: '@cli-ralph'
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - '@task-acp-protocol-client'
+    - '@task-session-event-storage'
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: '2026-01-17T15:19:24.917Z'
   notes: []
