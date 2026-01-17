@@ -3972,6 +3972,21 @@
     - testing
   vcs_refs: []
   created_at: '2026-01-17T12:20:05.473Z'
-  notes: []
-  todos: []
   started_at: '2026-01-17T12:20:11.997Z'
+  notes:
+    - _ulid: 01KF5YHSV8FJX5D6PKPBGWR08F
+      created_at: '2026-01-17T12:23:17.097Z'
+      author: '@claude'
+      content: >-
+        Added tests for ralph command:
+
+        - Created mock claude script (tests/mocks/claude-mock.js)
+
+        - Added --claude-cmd option for testability
+
+        - 7 test cases covering: basic loop, no ready tasks, dry-run, retry logic, exhausted
+        retries, consecutive failure guard, success reset
+
+        - All tests passing
+      supersedes: null
+  todos: []
