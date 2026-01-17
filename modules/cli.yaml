@@ -1214,6 +1214,10 @@ features:
             given: a feature under a module
             when: derive creates tasks for both
             then: feature task has depends_on containing module task ref
+          - id: ac-5
+            given: a requirement under a feature
+            when: derive creates tasks for both
+            then: requirement task has depends_on containing feature task ref
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
