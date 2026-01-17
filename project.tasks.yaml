@@ -4467,7 +4467,7 @@
     (3) Check events.jsonl for actual data structure available. Reference screenshots show desired
     format.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4504,3 +4504,8 @@
         All tests pass (328 tests).
       supersedes: null
   todos: []
+  completed_at: '2026-01-17T21:07:08.993Z'
+  closed_reason: >-
+    Fixed ralph tool input/output display. Root cause was data structure mismatch - translator
+    expected 'input' but ACP sends 'rawInput', and toolResponse is an object with stdout/stderr not
+    a string. Added 7 unit tests.
