@@ -5296,7 +5296,7 @@
   type: task
   spec_ref: '@agent-session-protocol'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-agent-definitions'
@@ -5317,6 +5317,8 @@
         Implementation complete from prior work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:04:17.328Z'
+  closed_reason: Session protocol schema implemented with start, checkpoint, and end fields
 - _ulid: 01KF4WVW75MKNHKSYCCA87C9YE
   slugs:
     - task-workflow-definitions
