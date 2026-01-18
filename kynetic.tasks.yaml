@@ -485,7 +485,7 @@ tasks:
       - Report as warnings (not errors) in validation output
     spec_ref: '@ref-validation'
     derivation: manual
-    status: in_progress
+    status: pending
     blocked_by: []
     depends_on:
       - '@task-ref-validation'
@@ -498,9 +498,9 @@ tasks:
       - enhancement
     vcs_refs: []
     created_at: '2026-01-15T03:58:00.000Z'
+    started_at: null
     notes: []
     todos: []
-    started_at: '2026-01-18T07:15:16.301Z'
   - _ulid: 01JHNKAB12TASK320000000000
     slugs:
       - task-validation-output
