@@ -465,7 +465,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec task note <ref> "message"      # Add note
           kspec task note <ref> --supersedes <id> "correction"
