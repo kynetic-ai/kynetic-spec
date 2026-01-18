@@ -2,7 +2,7 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { setJsonMode } from './output.js';
+import { setJsonMode, setVerboseMode } from './output.js';
 import { findClosestCommand, getAllCommands, COMMAND_ALIASES } from './suggest.js';
 import {
   registerTasksCommands,
@@ -30,11 +30,15 @@ program
   .description('Kynetic Spec - Structured specification format CLI')
   .version('0.1.0')
   .option('--json', 'Output in JSON format')
+  .option('-v, --verbose', 'Enable debug output for shadow operations')
   .hook('preAction', (thisCommand) => {
-    // Check for --json flag at top level or on subcommand
+    // Check for --json and --verbose flags at top level or on subcommand
     const opts = thisCommand.opts();
     if (opts.json) {
       setJsonMode(true);
+    }
+    if (opts.verbose) {
+      setVerboseMode(true);
     }
   });
 

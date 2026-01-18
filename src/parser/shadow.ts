@@ -70,7 +70,7 @@ export const SHADOW_WORKTREE_DIR = '.kspec';
  * Check if debug mode is enabled.
  * Debug mode can be enabled via:
  * - KSPEC_DEBUG=1 environment variable
- * - --verbose flag passed to commands
+ * - Verbose flag (passed from CLI --verbose option)
  *
  * When enabled, shadow branch operations output detailed information.
  */
