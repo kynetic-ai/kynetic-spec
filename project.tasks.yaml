@@ -5694,6 +5694,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: All 6 standard convention domains now defined in meta manifest
   depends_on:
     - '@task-convention-definitions'
   context: []
@@ -5702,6 +5703,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.812Z'
   started_at: '2026-01-18T10:49:08.667Z'
+  completed_at: '2026-01-18T10:51:28.303Z'
   notes:
     - _ulid: 01KF8BP5KN23Q0VGB60AXQRMH3
       created_at: '2026-01-18T10:51:20.565Z'
@@ -5713,8 +5715,6 @@
         the established pattern.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:51:28.303Z'
-  closed_reason: All 6 standard convention domains now defined in meta manifest
 - _ulid: 01KF4WVWE4GXJAT63VMQM91REF
   slugs:
     - task-convention-validation-strategy
@@ -5722,7 +5722,7 @@
   type: task
   spec_ref: '@convention-validation'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-convention-definitions'
@@ -5733,6 +5733,7 @@
   created_at: '2026-01-17T02:34:35.844Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:54:13.976Z'
 - _ulid: 01KF4WVWF7BXCMP188Z3P1EPQP
   slugs:
     - task-observations
