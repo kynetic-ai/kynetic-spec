@@ -22,6 +22,7 @@ import {
   type MetaContext,
   type Agent,
   type Workflow,
+  type Convention,
   type Observation,
 } from '../../parser/index.js';
 import { type ObservationType } from '../../schema/index.js';
@@ -144,6 +145,70 @@ function formatWorkflowsVerbose(workflows: Workflow[]): void {
 
     console.log('');
   }
+}
+
+/**
+ * Format conventions table output
+ * AC-conv-1: outputs table with columns: Domain, Rules (count), Validation (yes/no)
+ */
+function formatConventions(conventions: Convention[]): void {
+  if (conventions.length === 0) {
+    console.log(chalk.yellow('No conventions defined'));
+    return;
+  }
+
+  const table = new Table({
+    head: [chalk.bold('Domain'), chalk.bold('Rules'), chalk.bold('Validation')],
+    style: {
+      head: [],
+      border: [],
+    },
+  });
+
+  for (const convention of conventions) {
+    table.push([
+      convention.domain,
+      convention.rules.length.toString(),
+      convention.validation ? 'yes' : 'no',
+    ]);
+  }
+
+  console.log(table.toString());
+}
+
+/**
+ * Format convention detail output
+ * AC-conv-2: outputs full rules list and examples
+ */
+function formatConventionDetail(convention: Convention): void {
+  console.log(chalk.bold(`${convention.domain} Convention`));
+  console.log(chalk.gray('─'.repeat(60)));
+
+  console.log(chalk.bold('\nRules:'));
+  for (const rule of convention.rules) {
+    console.log(`  • ${rule}`);
+  }
+
+  if (convention.examples && convention.examples.length > 0) {
+    console.log(chalk.bold('\nExamples:'));
+    for (const example of convention.examples) {
+      console.log(chalk.green(`  ✓ ${example.good}`));
+      console.log(chalk.red(`  ✗ ${example.bad}`));
+    }
+  }
+
+  if (convention.validation) {
+    console.log(chalk.bold('\nValidation:'));
+    console.log(`  Type: ${convention.validation.type}`);
+    if (convention.validation.pattern) {
+      console.log(`  Pattern: ${convention.validation.pattern}`);
+    }
+    if (convention.validation.message) {
+      console.log(`  Message: ${convention.validation.message}`);
+    }
+  }
+
+  console.log('');
 }
 
 /**
@@ -295,6 +360,232 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error('Failed to list workflows', err);
+        process.exit(1);
+      }
+    });
+
+  // AC-conv-1, AC-conv-2, AC-conv-5: kspec meta conventions
+  meta
+    .command('conventions')
+    .description('List conventions defined in meta-spec')
+    .option('--domain <domain>', 'Filter by specific domain')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error('No kspec project found');
+          process.exit(1);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const conventions = metaCtx.manifest?.conventions || [];
+
+        // AC-conv-2: Filter by domain if specified
+        const filtered = options.domain
+          ? conventions.filter((c) => c.domain === options.domain)
+          : conventions;
+
+        // AC-conv-5: JSON output includes full convention details
+        output(
+          filtered.map((convention) => ({
+            domain: convention.domain,
+            rules: convention.rules,
+            examples: convention.examples,
+            validation: convention.validation,
+          })),
+          // AC-conv-1 (table) or AC-conv-2 (detail for single domain)
+          () => {
+            if (options.domain && filtered.length === 1) {
+              formatConventionDetail(filtered[0]);
+            } else {
+              formatConventions(filtered);
+            }
+          }
+        );
+      } catch (err) {
+        error('Failed to list conventions', err);
+        process.exit(1);
+      }
+    });
+
+  // meta-get-cmd: kspec meta get <ref>
+  meta
+    .command('get <ref>')
+    .description('Get a meta item by reference (agent, workflow, convention, or observation)')
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error('No kspec project found');
+          process.exit(1);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+
+        // Normalize reference
+        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+
+        // Search in all meta item types
+        const agents = metaCtx.manifest?.agents || [];
+        const workflows = metaCtx.manifest?.workflows || [];
+        const conventions = metaCtx.manifest?.conventions || [];
+        const observations = metaCtx.manifest?.observations || [];
+
+        // Try to find by ID or ULID prefix
+        let found: any = null;
+        let itemType: string = '';
+
+        // Check agents (by id or ULID)
+        const agent = agents.find((a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef));
+        if (agent) {
+          found = agent;
+          itemType = 'agent';
+        }
+
+        // Check workflows (by id or ULID)
+        if (!found) {
+          const workflow = workflows.find((w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef));
+          if (workflow) {
+            found = workflow;
+            itemType = 'workflow';
+          }
+        }
+
+        // Check conventions (by domain or ULID)
+        if (!found) {
+          const convention = conventions.find((c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef));
+          if (convention) {
+            found = convention;
+            itemType = 'convention';
+          }
+        }
+
+        // Check observations (by ULID)
+        if (!found) {
+          const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
+          if (observation) {
+            found = observation;
+            itemType = 'observation';
+          }
+        }
+
+        if (!found) {
+          error(`Meta item not found: ${ref}`);
+          process.exit(1);
+        }
+
+        // Output the item
+        output(found, () => {
+          console.log(chalk.bold(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)}: ${ref}`));
+          console.log(chalk.gray('─'.repeat(60)));
+          console.log(JSON.stringify(found, null, 2));
+        });
+      } catch (err) {
+        error('Failed to get meta item', err);
+        process.exit(1);
+      }
+    });
+
+  // meta-list-cmd: kspec meta list
+  meta
+    .command('list')
+    .description('List all meta items')
+    .option('--type <type>', 'Filter by type (agent, workflow, convention, observation)')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error('No kspec project found');
+          process.exit(1);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+
+        // Collect all meta items with type information
+        interface MetaListItem {
+          id: string;
+          type: string;
+          context: string;
+          ulid: string;
+        }
+
+        const items: MetaListItem[] = [];
+
+        // Add agents
+        if (!options.type || options.type === 'agent') {
+          for (const agent of metaCtx.manifest?.agents || []) {
+            items.push({
+              id: agent.id,
+              type: 'agent',
+              context: agent.name,
+              ulid: agent._ulid,
+            });
+          }
+        }
+
+        // Add workflows
+        if (!options.type || options.type === 'workflow') {
+          for (const workflow of metaCtx.manifest?.workflows || []) {
+            items.push({
+              id: workflow.id,
+              type: 'workflow',
+              context: workflow.trigger,
+              ulid: workflow._ulid,
+            });
+          }
+        }
+
+        // Add conventions
+        if (!options.type || options.type === 'convention') {
+          for (const convention of metaCtx.manifest?.conventions || []) {
+            items.push({
+              id: convention.domain,
+              type: 'convention',
+              context: `${convention.rules.length} rules`,
+              ulid: convention._ulid,
+            });
+          }
+        }
+
+        // Add observations
+        if (!options.type || options.type === 'observation') {
+          for (const observation of metaCtx.manifest?.observations || []) {
+            const ulidPrefix = observation._ulid.substring(0, 8);
+            items.push({
+              id: ulidPrefix,
+              type: 'observation',
+              context: `${observation.type} ${observation.resolved ? '(resolved)' : ''}`,
+              ulid: observation._ulid,
+            });
+          }
+        }
+
+        // Output
+        output(items, () => {
+          if (items.length === 0) {
+            console.log(chalk.yellow('No meta items found'));
+            return;
+          }
+
+          const table = new Table({
+            head: [chalk.bold('ID'), chalk.bold('Type'), chalk.bold('Context')],
+            style: {
+              head: [],
+              border: [],
+            },
+          });
+
+          for (const item of items) {
+            table.push([item.id, item.type, item.context]);
+          }
+
+          console.log(table.toString());
+        });
+      } catch (err) {
+        error('Failed to list meta items', err);
         process.exit(1);
       }
     });
