@@ -1066,9 +1066,18 @@ tasks:
       - cli
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.954Z'
-    notes: []
-    todos: []
     started_at: '2026-01-18T06:22:30.751Z'
+    notes:
+      - _ulid: 01KF7WB96R0TR3EAFSB2M4EP6M
+        created_at: '2026-01-18T06:23:15.161Z'
+        author: '@claude'
+        content: >-
+          Analyzed existing code structure. Link commands will manage 3 relationship types:
+          depends_on, implements, relates_to. These are arrays of @references stored on spec items.
+          Will follow similar pattern to item commands with create/list/delete operations that
+          update source YAML files via parser functions.
+        supersedes: null
+    todos: []
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
     slugs:
       - task-yaml-formatting
