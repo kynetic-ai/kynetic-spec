@@ -515,6 +515,34 @@ tasks:
           4. Update CLI output to show warnings distinctly from errors
           5. Add tests for deprecated reference warnings
         supersedes: null
+      - _ulid: 01KF7ZRQ0QMBFSTPF5WH11Y3Z8
+        created_at: '2026-01-18T07:23:01.015Z'
+        author: '@claude'
+        content: >-
+          Implementation complete and tested:
+
+
+          1. Added RefValidationWarning type for deprecation warnings in src/parser/refs.ts
+
+          2. Created isDeprecated() helper that checks both maturity: 'deprecated' and deprecated_in
+          fields
+
+          3. Modified validateRefs() to return RefValidationResult with errors and warnings arrays
+
+          4. Updated ValidationResult in src/parser/validate.ts to include refWarnings field
+
+          5. Updated CLI output in src/cli/commands/validate.ts to display warnings in yellow with ⚠
+          symbol
+
+          6. Added 3 comprehensive tests for deprecated reference warnings:
+             - Test for maturity: deprecated
+             - Test for deprecated_in field
+             - Test ensuring no warnings for active references
+          7. Updated all existing validateRefs tests to handle new return structure
+
+
+          All tests pass (432 tests). Feature works correctly when running 'kspec validate --refs'.
+        supersedes: null
     todos: []
   - _ulid: 01JHNKAB12TASK320000000000
     slugs:
