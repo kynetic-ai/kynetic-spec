@@ -3073,6 +3073,22 @@
         identify what fields would contain agent references. Checking the spec to understand the use
         case better.
       supersedes: null
+    - _ulid: 01KF78BK9ZFGCSADF91VRDKMF9
+      created_at: '2026-01-18T00:33:53.984Z'
+      author: '@claude'
+      content: >-
+        AC-agent-3 requires extending the reference validation system to:
+
+        1. Include meta items (agents, workflows, conventions, observations) in ReferenceIndex
+
+        2. Add type-aware validation for references (e.g., author fields should resolve to agents)
+
+        3. Add fields like 'author', 'added_by', 'resolved_by', 'workflow_ref' to REF_FIELDS
+
+
+        This is a more involved change that touches the core reference system. Committed AC-1 and
+        AC-2 implementations. AC-3 will continue in next iteration.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVW4C16W09RWGY3C95T54
   slugs:
