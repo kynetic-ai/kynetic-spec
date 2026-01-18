@@ -5505,7 +5505,7 @@
   type: task
   spec_ref: '@workflow-triggers'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5526,6 +5526,8 @@
         'task complete', etc. Implementation complete from prior work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:05:57.629Z'
+  closed_reason: Workflow trigger field implemented as required freeform string
 - _ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
   slugs:
     - task-convention-definitions
