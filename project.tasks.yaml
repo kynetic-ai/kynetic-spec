@@ -8299,26 +8299,48 @@
   created_at: '2026-01-18T20:00:41.073Z'
   notes: []
   todos: []
-- title: Fix spec status persistence on task start
+- _ulid: 01KF9B44CSARAD770GJJQS8YMM
+  slugs: []
+  title: Fix spec status persistence on task start
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - workflow
-    - spec
-    - gap
   description: >-
     Spec status persistence gap: When task start syncs spec implementation status to in_progress,
     this change should be committed or included with the task start commit. Currently the status
     update happens but may not be persisted until later work creates a commit. The gap was noticed
     when spec went in_progress but wasn't captured in the commit stream.
-  _ulid: 01KF9B44CSARAD770GJJQS8YMM
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - workflow
+    - spec
+    - gap
+  vcs_refs: []
+  created_at: '2026-01-18T20:00:43.928Z'
+  notes: []
+  todos: []
+- title: Fix ralph iteration message newline issue
+  type: task
+  priority: 2
+  spec_ref: null
+  tags:
+    - ralph
+    - bug
+  description: >-
+    Ralph iteration complete message joins with agent text: The 'OK Completed iteration 1' message
+    appears on the same line as the last agent message content because streaming doesn't end with
+    newline. Need to ensure newline before iteration status messages. Related to finalization - when
+    agent message stream ends, should ensure trailing newline.
+  _ulid: 01KF9B4PX60XW55ZXWHE36C8G1
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T20:00:43.928Z'
+  created_at: '2026-01-18T20:01:02.885Z'
   notes: []
   todos: []
