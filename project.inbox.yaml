@@ -435,14 +435,6 @@ inbox:
       - reflection
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF7A1YGXBN420NR2J2QZDD7A
-    text: >-
-      Reflection: ULID validation strictness caught real bugs - test fixtures had 24-char ULIDs that
-      were passing because MetaUlidSchema was too lenient. Fixing schema to use UlidSchema forced
-      proper fixture ULIDs. Important pattern: schema strictness prevents silent data corruption.
-    created_at: '2026-01-18T01:03:34.941Z'
-    tags: []
-    added_by: '@claude'
   - _ulid: 01KF7MGV986G6QFAT2853AKP75
     text: >-
       Iteration 4 findings: (1) Inbox and task notes live in shadow branch (.kspec/) not main -
