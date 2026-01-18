@@ -4247,7 +4247,47 @@
   vcs_refs: []
   created_at: '2026-01-16T13:49:22.451Z'
   started_at: '2026-01-18T08:35:38.968Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8449TVHQKJBYFCXRP7KZGX
+      created_at: '2026-01-18T08:39:15.035Z'
+      author: '@claude'
+      content: >-
+        Implemented all three acceptance criteria for task completion guardrails:
+
+
+        AC-1: Added interactive prompt asking 'Update @spec-ref status to implemented? [y/N]' when
+        completing tasks with spec_ref
+
+        AC-2: If spec has acceptance criteria and user chooses yes, shows warning '⚠ Linked spec has
+        N acceptance criteria - verify they are covered'
+
+        AC-3: No prompt shown for tasks without spec_ref (inherent behavior - prompt only triggers
+        if spec_ref exists)
+
+
+        Implementation approach:
+
+        - Added prompt after task completion and sync in task.ts complete command
+
+        - Prompt only appears in interactive mode (!isJsonMode())
+
+        - Uses readline to get user input
+
+        - Resolves spec_ref to get spec item and check for acceptance_criteria
+
+        - Updates spec implementation status to 'implemented' if user confirms
+
+        - Preserves existing status.maturity field when updating
+
+
+        Manual testing confirmed:
+
+        - Task with spec_ref and ACs: Shows both prompt and AC reminder ✓
+
+        - Task without spec_ref: No prompt shown ✓
+
+        - TypeScript compilation passes ✓
+      supersedes: null
   todos: []
 - _ulid: 01KF3H3WZBY4B3T9SC8Z2C8B6K
   slugs: []
