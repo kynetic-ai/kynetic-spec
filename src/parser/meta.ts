@@ -17,6 +17,7 @@ import {
   WorkflowSchema,
   ConventionSchema,
   ObservationSchema,
+  SessionContextSchema,
   type MetaManifest,
   type Agent,
   type Workflow,
@@ -24,6 +25,7 @@ import {
   type Observation,
   type MetaItem,
   type ObservationType,
+  type SessionContext,
   getMetaItemType,
 } from '../schema/index.js';
 import { readYamlFile, writeYamlFile, expandIncludePattern, getAuthor } from './yaml.js';
@@ -549,16 +551,6 @@ export async function deleteMetaItem(
 // ============================================================
 
 /**
- * Session context for ephemeral session state
- */
-export interface SessionContext {
-  focus: string | null;
-  threads: string[];
-  open_questions: string[];
-  updated_at: string;
-}
-
-/**
  * Get the session context file path
  */
 export function getSessionContextPath(ctx: KspecContext): string {
@@ -582,12 +574,18 @@ export async function loadSessionContext(ctx: KspecContext): Promise<SessionCont
       };
     }
 
-    const obj = raw as Record<string, unknown>;
+    // Validate and parse using schema
+    const result = SessionContextSchema.safeParse(raw);
+    if (result.success) {
+      return result.data;
+    }
+
+    // If validation fails, return empty context
     return {
-      focus: typeof obj.focus === 'string' ? obj.focus : null,
-      threads: Array.isArray(obj.threads) ? obj.threads.filter((t): t is string => typeof t === 'string') : [],
-      open_questions: Array.isArray(obj.open_questions) ? obj.open_questions.filter((q): q is string => typeof q === 'string') : [],
-      updated_at: typeof obj.updated_at === 'string' ? obj.updated_at : new Date().toISOString(),
+      focus: null,
+      threads: [],
+      open_questions: [],
+      updated_at: new Date().toISOString(),
     };
   } catch {
     return {
