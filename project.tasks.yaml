@@ -4687,9 +4687,20 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T22:43:25.905Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T09:10:58.893Z'
+  notes:
+    - _ulid: 01KF8647B0ZR267JP8K20AMAGW
+      created_at: '2026-01-18T09:14:09.632Z'
+      author: '@claude'
+      content: |-
+        Changed default limit from 5 to 10 in three locations in src/cli/commands/session.ts:
+        - Line 328: gatherSessionContext function default
+        - Line 996: session start command option default  
+        - Line 1018: context command (alias) option default
+
+        All 454 tests still passing. Verified output shows 10 ready tasks in session start output.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4FX1XV16YPFK2RVZVHZDJM
   slugs:
     - task-ci-test-runner
