@@ -1585,3 +1585,71 @@ inbox:
       - errors
       - agent-first
     added_by: '@claude'
+  - _ulid: 01KF91EKZPS2FAXSF1P2YWQ6WN
+    text: >-
+      Add --dry-run to all mutating commands
+
+
+      ## Context
+
+      Terraform's 'plan' command is the canonical example of safe mutation preview. Agent-first
+      design emphasizes dry-run support for safety and debugging.
+
+
+      ## Commands that should support --dry-run
+
+      - item add/set/delete
+
+      - task add/start/complete/cancel
+
+      - derive
+
+      - inbox promote
+
+      - meta add/set/delete
+
+
+      ## Behavior
+
+      ```bash
+
+      kspec derive @spec-item --dry-run
+
+      # Output: Would create task 'implement-spec-item' with:
+
+      #   title: Implement: Spec Item
+
+      #   spec_ref: @spec-item
+
+      #   priority: 3
+
+
+      kspec task complete @task --dry-run
+
+      # Output: Would mark task as completed
+
+      #   status: completed
+
+      #   completed_at: 2026-01-18T...
+
+      ```
+
+
+      ## Benefits
+
+      - Agents can validate actions before executing
+
+      - Debugging complex workflows
+
+      - CI/CD validation without side effects
+
+      - Matches Terraform/kubectl patterns
+
+
+      Related to: @01KF91DX (agent-first CLI redesign)
+    created_at: '2026-01-18T17:11:41.815Z'
+    tags:
+      - cli
+      - safety
+      - agent-first
+    added_by: '@claude'
