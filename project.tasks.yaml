@@ -6047,6 +6047,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Observation resolution already fully implemented and tested - verified against AC-obs-4
   depends_on:
     - '@task-observations'
   context: []
@@ -6055,6 +6056,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.998Z'
   started_at: '2026-01-18T11:04:33.323Z'
+  completed_at: '2026-01-18T11:08:57.895Z'
   notes:
     - _ulid: 01KF8CP9N5ZXMEK0WW7ZDV68EM
       created_at: '2026-01-18T11:08:53.286Z'
@@ -6090,8 +6092,6 @@
         All 64 tests in meta.test.ts pass.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T11:08:57.895Z'
-  closed_reason: Observation resolution already fully implemented and tested - verified against AC-obs-4
 - _ulid: 01KF4WVWKP7HG72ANY8QVZD369
   slugs:
     - task-observation-task-resolution-loop
@@ -6099,7 +6099,7 @@
   type: task
   spec_ref: '@observation-task-loop'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -6110,6 +6110,7 @@
   created_at: '2026-01-17T02:34:36.022Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T11:09:39.187Z'
 - _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
   slugs:
     - task-context-schema
