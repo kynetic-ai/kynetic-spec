@@ -485,7 +485,7 @@ tasks:
       - Report as warnings (not errors) in validation output
     spec_ref: '@ref-validation'
     derivation: manual
-    status: pending
+    status: completed
     blocked_by: []
     depends_on:
       - '@task-ref-validation'
@@ -498,7 +498,7 @@ tasks:
       - enhancement
     vcs_refs: []
     created_at: '2026-01-15T03:58:00.000Z'
-    started_at: null
+    started_at: '2026-01-18T07:23:07.151Z'
     notes:
       - _ulid: 01KF7ZBSG8XMZ63HS2553N0DV1
         created_at: '2026-01-18T07:15:57.576Z'
@@ -544,6 +544,8 @@ tasks:
           All tests pass (432 tests). Feature works correctly when running 'kspec validate --refs'.
         supersedes: null
     todos: []
+    completed_at: '2026-01-18T07:23:07.151Z'
+    closed_reason: Implemented deprecation warnings in reference validation with full test coverage
   - _ulid: 01JHNKAB12TASK320000000000
     slugs:
       - task-validation-output
