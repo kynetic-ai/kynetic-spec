@@ -32,7 +32,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: verified
     priority: high
     tags:
       - mvp
@@ -71,7 +71,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Meta manifest structure:
 
@@ -115,7 +115,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Meta manifest supports includes for organization:
 
@@ -137,7 +137,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           `kspec validate` includes meta-spec validation:
 

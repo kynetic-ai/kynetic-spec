@@ -35,7 +35,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Commands follow consistent structure:
 
@@ -57,7 +57,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           All commands support --json flag for structured output:
 
@@ -77,7 +77,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Exit codes are semantic, not just 0/1:
 
@@ -98,7 +98,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Features for agent/script usage:
 

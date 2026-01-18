@@ -35,7 +35,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           type: task
 
@@ -50,7 +50,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           type: epic
 
@@ -65,7 +65,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           type: bug
 
@@ -80,7 +80,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           type: spike
 
@@ -95,7 +95,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           type: infra
 

@@ -46,7 +46,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Every item MUST have:
           - _ulid: Canonical unique identifier (auto-generated)
@@ -62,7 +62,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: verified
         description: |
           Items MAY include:
           - slugs: Human-friendly aliases (array)
@@ -104,7 +104,7 @@ features:
             then: 'CLI shows hint: ''Derive implementation task? kspec derive @slug'''
         status:
           maturity: draft
-          implementation: implemented
+          implementation: verified
   - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs:
       - ulid-system
