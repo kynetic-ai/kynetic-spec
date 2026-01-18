@@ -4993,6 +4993,11 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Meta includes fully implemented and tested. Parser already supported includes, fixed CLI
+    commands to properly use metaCtx collections (agents/workflows/conventions/observations) instead
+    of metaCtx.manifest. Added 5 comprehensive integration tests. All tests passing (61/62, 1
+    skipped).
   depends_on:
     - '@task-meta-manifest'
   context: []
@@ -5001,6 +5006,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.445Z'
   started_at: '2026-01-18T09:46:34.393Z'
+  completed_at: '2026-01-18T09:56:33.469Z'
   notes:
     - _ulid: 01KF880W3QJWJCXTB1KWMB0JS5
       created_at: '2026-01-18T09:47:16.984Z'
@@ -5047,12 +5053,6 @@
         across includes. All 61 tests passing.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T09:56:33.469Z'
-  closed_reason: >-
-    Meta includes fully implemented and tested. Parser already supported includes, fixed CLI
-    commands to properly use metaCtx collections (agents/workflows/conventions/observations) instead
-    of metaCtx.manifest. Added 5 comprehensive integration tests. All tests passing (61/62, 1
-    skipped).
 - _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
   slugs:
     - task-meta-validation-integration
@@ -5060,7 +5060,7 @@
   type: task
   spec_ref: '@meta-validation'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-manifest'
@@ -5071,6 +5071,7 @@
   created_at: '2026-01-17T02:34:35.476Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:01:31.944Z'
 - _ulid: 01KF4WVW3HRCGZFPXJ70QF7BC5
   slugs:
     - task-agent-definitions
