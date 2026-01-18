@@ -317,6 +317,107 @@ export function registerTaskCommands(program: Command): void {
       }
     });
 
+  // kspec task patch <ref>
+  task
+    .command('patch <ref>')
+    .description('Update task with JSON data')
+    .option('--data <json>', 'JSON object with fields to update')
+    .option('--dry-run', 'Show what would change without writing')
+    .option('--allow-unknown', 'Allow unknown fields (for extending format)')
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+
+        // Load meta items for validation
+        const { loadMetaContext } = await import('../../parser/meta.js');
+        const metaContext = await loadMetaContext(ctx);
+        const allMetaItems = [
+          ...metaContext.agents,
+          ...metaContext.workflows,
+          ...metaContext.conventions,
+          ...metaContext.observations,
+        ];
+
+        const index = new ReferenceIndex(tasks, items, allMetaItems);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // Get JSON data from --data flag or stdin
+        let jsonData: string;
+        if (options.data) {
+          jsonData = options.data;
+        } else {
+          // Read from stdin
+          const chunks: Buffer[] = [];
+          for await (const chunk of process.stdin) {
+            chunks.push(chunk);
+          }
+          jsonData = Buffer.concat(chunks).toString('utf-8');
+        }
+
+        // Parse JSON
+        let patchData: Record<string, unknown>;
+        try {
+          patchData = JSON.parse(jsonData);
+        } catch (parseErr) {
+          error('Invalid JSON syntax', parseErr);
+          process.exit(1);
+        }
+
+        // Validate against TaskInputSchema (partial)
+        const { TaskInputSchema } = await import('../../schema/index.js');
+
+        // Create a partial schema for validation
+        const partialSchema = options.allowUnknown
+          ? TaskInputSchema.partial().passthrough()
+          : TaskInputSchema.partial().strict();
+
+        let validatedPatch: Partial<TaskInput>;
+        try {
+          validatedPatch = partialSchema.parse(patchData);
+        } catch (validationErr) {
+          error('Invalid patch data', validationErr);
+          process.exit(1);
+        }
+
+        // Check for unknown fields if strict mode
+        if (!options.allowUnknown) {
+          const knownFields = Object.keys(TaskInputSchema.shape);
+          const providedFields = Object.keys(patchData);
+          const unknownFields = providedFields.filter(f => !knownFields.includes(f));
+
+          if (unknownFields.length > 0) {
+            error(`Unknown field(s): ${unknownFields.join(', ')}`);
+            process.exit(1);
+          }
+        }
+
+        // Build updated task
+        const updatedTask: Task = { ...foundTask, ...validatedPatch };
+
+        // Track changes for output
+        const changes = Object.keys(validatedPatch);
+
+        if (options.dryRun) {
+          info('Dry run - no changes will be written');
+          info(`Would update: ${changes.join(', ')}`);
+          output({ changes, updated: updatedTask }, () => {
+            console.log(`\nChanges: ${changes.join(', ')}\n`);
+            return formatTaskDetails(updatedTask, index);
+          });
+          return;
+        }
+
+        await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-patch', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), changes.join(', '));
+        success(`Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
+      } catch (err) {
+        error('Failed to patch task', err);
+        process.exit(1);
+      }
+    });
+
   // kspec task start <ref>
   task
     .command('start <ref>')

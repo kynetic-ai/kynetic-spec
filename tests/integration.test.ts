@@ -332,6 +332,71 @@ describe('Integration: task set', () => {
   });
 });
 
+describe('Integration: task patch', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @task-patch ac-1
+  it('should update task priority with valid JSON', () => {
+    kspec('task patch @test-task-pending --data \'{"priority":1}\'', tempDir);
+
+    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    expect(task.priority).toBe(1);
+  });
+
+  // AC: @task-patch ac-2
+  it('should error on invalid JSON syntax', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} task patch @test-task-pending --data 'bad'`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  // AC: @task-patch ac-3
+  it('should error on unknown field by default', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} task patch @test-task-pending --data '{"unknown":true}'`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  // AC: @task-patch ac-4
+  it('should allow unknown field with --allow-unknown', () => {
+    // This should not throw
+    kspec('task patch @test-task-pending --data \'{"unknown":true}\' --allow-unknown', tempDir);
+  });
+
+  it('should update multiple fields with JSON', () => {
+    kspec('task patch @test-task-pending --data \'{"priority":1,"tags":["patched","test"]}\'', tempDir);
+
+    const task = kspecJson<{ priority: number; tags: string[] }>('task get @test-task-pending', tempDir);
+    expect(task.priority).toBe(1);
+    expect(task.tags).toContain('patched');
+    expect(task.tags).toContain('test');
+  });
+
+  it('should show changes with --dry-run', () => {
+    const output = kspec('task patch @test-task-pending --data \'{"priority":1}\' --dry-run', tempDir);
+    expect(output).toContain('Dry run');
+    expect(output).toContain('priority');
+
+    // Verify no actual change
+    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    expect(task.priority).toBe(3); // Original value
+  });
+});
+
 describe('Integration: items', () => {
   let tempDir: string;
 
