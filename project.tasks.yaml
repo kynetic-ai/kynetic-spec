@@ -5712,9 +5712,42 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.907Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:06:44.248Z'
+  notes:
+    - _ulid: 01KF894RT0WT4EFRY4BC9JY3QK
+      created_at: '2026-01-18T10:06:53.248Z'
+      author: '@claude'
+      content: >-
+        Verified Observation schema fully implemented in src/schema/meta.ts:111-123. All fields from
+        spec are present:
+
+        - _ulid (MetaUlidSchema)
+
+        - type (enum: friction, success, question, idea)
+
+        - workflow_ref (RefSchema, optional)
+
+        - content (required string)
+
+        - created_at (DateTimeSchema)
+
+        - author (optional string)
+
+        - resolved (boolean, default false)
+
+        - resolution (nullable string, optional)
+
+        - resolved_at (DateTimeSchema, optional)
+
+        - resolved_by (optional string)
+
+        - promoted_to (RefSchema, optional)
+
+
+        Implementation includes extra fields (resolved_at, resolved_by, promoted_to) for observation
+        lifecycle management. Schema complete from prior work.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWH380ZP76XV6V0FH2AY
   slugs:
     - task-observation-types
