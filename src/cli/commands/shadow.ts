@@ -12,6 +12,7 @@ import {
   type ShadowStatus,
 } from '../../parser/shadow.js';
 import { output, success, error, info, warn } from '../output.js';
+import { shadowCommands } from '../../strings/index.js';
 
 /**
  * Format shadow status for display
@@ -75,7 +76,7 @@ export function registerShadowCommands(program: Command): void {
         const gitRoot = getGitRoot(process.cwd());
 
         if (!gitRoot) {
-          error('Not a git repository');
+          error(shadowCommands.notGitRepo);
           process.exit(1);
         }
 
@@ -90,7 +91,7 @@ export function registerShadowCommands(program: Command): void {
           process.exit(1);
         }
       } catch (err) {
-        error('Failed to get shadow status', err);
+        error(shadowCommands.statusFailed, err);
         process.exit(1);
       }
     });
@@ -103,42 +104,42 @@ export function registerShadowCommands(program: Command): void {
         const gitRoot = getGitRoot(process.cwd());
 
         if (!gitRoot) {
-          error('Not a git repository');
+          error(shadowCommands.notGitRepo);
           process.exit(1);
         }
 
         const status = await getShadowStatus(gitRoot);
 
         if (status.healthy) {
-          info('Shadow branch is already healthy, nothing to repair');
+          info(shadowCommands.repair.alreadyHealthy);
           return;
         }
 
         if (!status.branchExists) {
-          error('Shadow branch does not exist');
-          console.log(chalk.gray('Run `kspec init` to create a new shadow branch'));
+          error(shadowCommands.repair.branchNotExist);
+          console.log(shadowCommands.repair.initHint);
           process.exit(1);
         }
 
-        info('Repairing shadow branch worktree...');
+        info(shadowCommands.repair.repairing);
 
         const result = await repairShadow(gitRoot);
 
         if (result.success) {
           if (result.alreadyExists) {
-            info('Shadow branch is already healthy');
+            info(shadowCommands.repair.stillHealthy);
           } else {
-            success('Shadow branch repaired', {
+            success(shadowCommands.repair.repaired, {
               worktreeCreated: result.worktreeCreated,
             });
-            console.log(chalk.green(`  ✓ Recreated worktree: ${SHADOW_WORKTREE_DIR}/`));
+            console.log(shadowCommands.repair.worktreeCreated(SHADOW_WORKTREE_DIR));
           }
         } else {
-          error(`Repair failed: ${result.error}`);
+          error(shadowCommands.repair.failed(result.error || 'Unknown error'));
           process.exit(1);
         }
       } catch (err) {
-        error('Failed to repair shadow branch', err);
+        error(shadowCommands.repair.commandFailed, err);
         process.exit(1);
       }
     });
@@ -152,7 +153,7 @@ export function registerShadowCommands(program: Command): void {
         const gitRoot = getGitRoot(process.cwd());
 
         if (!gitRoot) {
-          error('Not a git repository');
+          error(shadowCommands.notGitRepo);
           process.exit(1);
         }
 
@@ -160,11 +161,11 @@ export function registerShadowCommands(program: Command): void {
 
         if (!status.healthy) {
           if (!status.branchExists) {
-            warn('Shadow branch does not exist');
-            console.log(chalk.gray('Run `kspec init` to set up shadow branch'));
+            warn(shadowCommands.log.branchNotExist);
+            console.log(shadowCommands.log.initHint);
           } else {
-            warn('Shadow branch has issues');
-            console.log(chalk.gray('Run `kspec shadow repair` to fix'));
+            warn(shadowCommands.log.hasIssues);
+            console.log(shadowCommands.log.repairHint);
           }
           process.exit(1);
         }
@@ -177,7 +178,7 @@ export function registerShadowCommands(program: Command): void {
         ).trim();
 
         if (!log) {
-          info('No commits in shadow branch');
+          info(shadowCommands.log.noCommits);
           return;
         }
 
@@ -185,7 +186,7 @@ export function registerShadowCommands(program: Command): void {
         console.log(chalk.gray('─'.repeat(40)));
         console.log(log);
       } catch (err) {
-        error('Failed to get shadow log', err);
+        error(shadowCommands.log.failed, err);
         process.exit(1);
       }
     });
@@ -201,15 +202,15 @@ export function registerShadowCommands(program: Command): void {
         const gitRoot = getGitRoot(process.cwd());
 
         if (!gitRoot) {
-          error('Not a git repository');
+          error(shadowCommands.notGitRepo);
           process.exit(1);
         }
 
         const status = await getShadowStatus(gitRoot);
 
         if (!status.healthy) {
-          error('Shadow branch not healthy');
-          console.log(chalk.gray('Run `kspec shadow repair` first'));
+          error(shadowCommands.resolve.notHealthy);
+          console.log(shadowCommands.resolve.repairHint);
           process.exit(1);
         }
 
@@ -229,59 +230,55 @@ export function registerShadowCommands(program: Command): void {
 
         if (options.theirs) {
           // Accept remote changes
-          info('Accepting remote changes...');
+          info(shadowCommands.resolve.acceptingRemote);
           if (inRebase) {
             execSync('git rebase --abort', { cwd: worktreeDir, stdio: 'inherit' });
           }
           execSync(`git fetch origin ${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'inherit' });
           execSync(`git reset --hard origin/${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'inherit' });
-          success('Resolved: accepted all remote changes');
+          success(shadowCommands.resolve.acceptedRemote);
         } else if (options.ours) {
           // Keep local changes
-          info('Keeping local changes...');
+          info(shadowCommands.resolve.keepingLocal);
           if (inRebase) {
             execSync('git rebase --abort', { cwd: worktreeDir, stdio: 'inherit' });
           }
           // Force push to override remote
           try {
             execSync('git push --force-with-lease', { cwd: worktreeDir, stdio: 'inherit' });
-            success('Resolved: kept local changes and pushed to remote');
+            success(shadowCommands.resolve.keptLocal);
           } catch {
-            warn('Could not push local changes to remote');
-            console.log(chalk.gray('Local changes are preserved, but remote may differ'));
+            warn(shadowCommands.resolve.pushFailed);
+            console.log(shadowCommands.resolve.localPreserved);
           }
         } else {
           // Interactive guidance
-          console.log(chalk.bold('Shadow Branch Conflict Resolution'));
-          console.log(chalk.gray('─'.repeat(40)));
+          console.log(shadowCommands.resolve.interactive.header);
+          console.log(shadowCommands.resolve.interactive.separator);
 
           if (inRebase) {
-            console.log(chalk.yellow('A rebase is currently in progress.'));
+            console.log(shadowCommands.resolve.interactive.rebaseInProgress);
             console.log();
           }
 
-          console.log('Options:');
+          console.log(shadowCommands.resolve.interactive.options);
           console.log();
-          console.log(chalk.cyan('  kspec shadow resolve --theirs'));
-          console.log(chalk.gray('    Accept all remote changes, discard local uncommitted work'));
+          console.log(shadowCommands.resolve.interactive.theirs.command);
+          console.log(shadowCommands.resolve.interactive.theirs.description);
           console.log();
-          console.log(chalk.cyan('  kspec shadow resolve --ours'));
-          console.log(chalk.gray('    Keep local changes and force-push to remote'));
+          console.log(shadowCommands.resolve.interactive.ours.command);
+          console.log(shadowCommands.resolve.interactive.ours.description);
           console.log();
-          console.log(chalk.cyan('  Manual resolution:'));
-          console.log(chalk.gray(`    cd ${SHADOW_WORKTREE_DIR}`));
+          console.log(shadowCommands.resolve.interactive.manual.header);
+          console.log(shadowCommands.resolve.interactive.manual.cdCommand(SHADOW_WORKTREE_DIR));
           if (inRebase) {
-            console.log(chalk.gray('    # Edit conflicting files'));
-            console.log(chalk.gray('    git add <resolved-files>'));
-            console.log(chalk.gray('    git rebase --continue'));
+            shadowCommands.resolve.interactive.manual.rebaseSteps.forEach((step) => console.log(step));
           } else {
-            console.log(chalk.gray('    git pull --rebase'));
-            console.log(chalk.gray('    # Resolve any conflicts, then:'));
-            console.log(chalk.gray('    git push'));
+            shadowCommands.resolve.interactive.manual.pullSteps.forEach((step) => console.log(step));
           }
         }
       } catch (err) {
-        error('Failed to resolve conflicts', err);
+        error(shadowCommands.resolve.failed, err);
         process.exit(1);
       }
     });
@@ -295,47 +292,47 @@ export function registerShadowCommands(program: Command): void {
         const gitRoot = getGitRoot(process.cwd());
 
         if (!gitRoot) {
-          error('Not a git repository');
+          error(shadowCommands.notGitRepo);
           process.exit(1);
         }
 
         const status = await getShadowStatus(gitRoot);
 
         if (!status.healthy) {
-          error('Shadow branch not healthy');
-          console.log(chalk.gray('Run `kspec shadow repair` first'));
+          error(shadowCommands.sync.notHealthy);
+          console.log(shadowCommands.sync.repairHint);
           process.exit(1);
         }
 
         const worktreeDir = `${gitRoot}/${SHADOW_WORKTREE_DIR}`;
 
         if (!(await hasRemoteTracking(worktreeDir))) {
-          info('No remote tracking configured for shadow branch');
-          console.log(chalk.gray('Shadow changes are local only'));
+          info(shadowCommands.sync.noRemote);
+          console.log(shadowCommands.sync.localOnly);
           return;
         }
 
-        info('Syncing shadow branch...');
+        info(shadowCommands.sync.syncing);
 
         const result = await shadowSync(worktreeDir);
 
         if (result.hadConflict) {
-          warn('Sync conflict detected');
-          console.log(chalk.gray('Run `kspec shadow resolve` to fix'));
+          warn(shadowCommands.sync.conflictDetected);
+          console.log(shadowCommands.sync.resolveHint);
           process.exit(1);
         }
 
         if (result.pulled && result.pushed) {
-          success('Shadow branch synced (pulled and pushed)');
+          success(shadowCommands.sync.syncedBoth);
         } else if (result.pulled) {
-          success('Shadow branch synced (pulled, nothing to push)');
+          success(shadowCommands.sync.syncedPull);
         } else if (result.pushed) {
-          success('Shadow branch synced (pushed, nothing to pull)');
+          success(shadowCommands.sync.syncedPush);
         } else {
-          info('Shadow branch already in sync');
+          info(shadowCommands.sync.alreadyInSync);
         }
       } catch (err) {
-        error('Failed to sync shadow branch', err);
+        error(shadowCommands.sync.failed, err);
         process.exit(1);
       }
     });

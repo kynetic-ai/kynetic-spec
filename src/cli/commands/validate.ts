@@ -16,6 +16,7 @@ import {
   type FixResult,
 } from '../../parser/index.js';
 import { output, success, error, info } from '../output.js';
+import { validation as validationStrings } from '../../strings/index.js';
 
 /**
  * Format alignment warnings for display
@@ -215,8 +216,8 @@ export function registerValidateCommand(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec manifest found');
-          console.log('Run `kspec init` to create a new project');
+          error(validationStrings.noManifest);
+          console.log(validationStrings.initHint);
           process.exit(1);
         }
 
@@ -245,12 +246,12 @@ export function registerValidateCommand(program: Command): void {
 
           // Re-run validation after fixes to show updated status
           if (fixResult.fixesApplied.length > 0) {
-            console.log(chalk.gray('\nRe-validating after fixes...'));
+            console.log(validationStrings.revalidating);
             const revalidateResult = await validate(ctx, validateOptions);
             if (revalidateResult.valid) {
-              console.log(chalk.green.bold('✓ Validation now passes'));
+              console.log(validationStrings.nowPasses);
             } else {
-              console.log(chalk.yellow('Some issues remain after auto-fix'));
+              console.log(validationStrings.issuesRemain);
             }
             // Update result for exit code
             result.valid = revalidateResult.valid;
@@ -272,14 +273,16 @@ export function registerValidateCommand(program: Command): void {
 
           // Show alignment stats
           const stats = alignmentIndex.getStats();
-          console.log(chalk.gray(`\nAlignment stats: ${stats.specsWithTasks}/${stats.totalSpecs} specs have tasks, ${stats.alignedSpecs} aligned`));
+          console.log(
+            validationStrings.alignmentStats(stats.specsWithTasks, stats.totalSpecs, stats.alignedSpecs)
+          );
         }
 
         if (!result.valid) {
           process.exit(1);
         }
       } catch (err) {
-        error('Validation failed', err);
+        error(validationStrings.failed, err);
         process.exit(1);
       }
     });
@@ -299,7 +302,7 @@ export function registerValidateCommand(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec manifest found');
+          error(validationStrings.noManifest);
           process.exit(1);
         }
 
@@ -326,12 +329,12 @@ export function registerValidateCommand(program: Command): void {
 
           // Re-run validation after fixes
           if (fixResult.fixesApplied.length > 0) {
-            console.log(chalk.gray('\nRe-validating after fixes...'));
+            console.log(validationStrings.revalidating);
             const revalidateResult = await validate(ctx, validateOptions);
             if (revalidateResult.valid) {
-              console.log(chalk.green.bold('✓ Validation now passes'));
+              console.log(validationStrings.nowPasses);
             } else {
-              console.log(chalk.yellow('Some issues remain after auto-fix'));
+              console.log(validationStrings.issuesRemain);
             }
             result.valid = revalidateResult.valid;
           }
@@ -341,7 +344,7 @@ export function registerValidateCommand(program: Command): void {
           process.exit(1);
         }
       } catch (err) {
-        error('Lint failed', err);
+        error(validationStrings.lintFailed, err);
         process.exit(1);
       }
     });
