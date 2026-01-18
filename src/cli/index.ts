@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import chalk from 'chalk';
 import { setJsonMode } from './output.js';
+import { findClosestCommand, getAllCommands, COMMAND_ALIASES } from './suggest.js';
 import {
   registerTasksCommands,
   registerTaskCommands,
@@ -53,6 +55,34 @@ registerSearchCommand(program);
 registerRalphCommand(program);
 registerMetaCommands(program);
 registerLinkCommands(program);
+
+// Handle unknown commands with suggestions
+program.on('command:*', (operands) => {
+  const unknownCommand = operands[0];
+
+  // Check for direct alias match
+  if (COMMAND_ALIASES[unknownCommand]) {
+    console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
+    console.error(chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`));
+    process.exit(1);
+  }
+
+  // Get all available commands
+  const allCommands = getAllCommands(program);
+
+  // Find closest match
+  const suggestion = findClosestCommand(unknownCommand, allCommands);
+
+  if (suggestion) {
+    console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
+    console.error(chalk.yellow(`Did you mean: kspec ${suggestion}?`));
+  } else {
+    console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
+    console.error(chalk.gray(`Run 'kspec help' to see available commands`));
+  }
+
+  process.exit(1);
+});
 
 // Export program for introspection (used by help command)
 export { program };
