@@ -181,4 +181,11 @@ observations:
     resolved: false
     resolution: null
     promoted_to: '@01KF89NY'
+  - _ulid: 01KF8H0P1T9NMQX1J5YTCNYYEQ
+    type: friction
+    content: test observation
+    created_at: '2026-01-18T12:24:27.962Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []

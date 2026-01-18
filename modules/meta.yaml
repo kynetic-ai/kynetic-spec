@@ -1031,7 +1031,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
         description: |
           kspec meta observe <type> "content" [options]
 
