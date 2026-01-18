@@ -4076,6 +4076,23 @@
         per RALPH_LOOP_INSTRUCTIONS (check PRs first). Leaving in_progress for next iteration to
         pick up.
       supersedes: null
+    - _ulid: 01KF82Q57JXX82ETZJ0XJNDR6D
+      created_at: '2026-01-18T08:14:35.763Z'
+      author: '@claude'
+      content: |-
+        Starting implementation of module add command. Understanding:
+
+        1. Module files are YAML files in modules/ directory
+        2. Each module is a spec item with type: module
+        3. Manifest includes array lists module files (e.g., modules/auth.yaml)
+        4. Need to:
+           - Create module YAML file with module spec item structure
+           - Add include entry to manifest
+           - Auto-commit to shadow if enabled
+           - Validate slug uniqueness
+
+        Pattern matches item add command but creates file + updates manifest includes.
+      supersedes: null
   todos: []
 - _ulid: 01KF3GTPVSNWS42NKTECY2GZK0
   slugs:
