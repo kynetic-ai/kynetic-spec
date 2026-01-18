@@ -1362,3 +1362,16 @@ inbox:
       - workflow
       - reflection
     added_by: '@claude'
+  - _ulid: 01KF8JNYE0YVWMG0NW8ZYEMYS6
+    text: >-
+      Task @01KF4WVWX (meta promote) was already fully implemented in prior session. Only needed
+      minor alignment fixes (priority description, JSON output). This suggests: (1) checking
+      implementation status before starting task could save work, (2) spec-code alignment checks at
+      task completion are valuable, (3) maybe add 'kspec task verify' command that compares
+      implementation status in spec vs actual code existence.
+    created_at: '2026-01-18T12:53:33.248Z'
+    tags:
+      - reflection
+      - process
+      - dx
+    added_by: '@claude'
