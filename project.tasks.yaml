@@ -5873,7 +5873,7 @@
   type: task
   spec_ref: '@observation-promotion'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -5924,6 +5924,8 @@
         confirms all behaviors work correctly.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:17:31.030Z'
+  closed_reason: Observation promotion fully implemented with schema updates and validations
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
     - task-observation-resolution
