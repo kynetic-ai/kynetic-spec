@@ -3058,9 +3058,22 @@
     - agents
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.505Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T00:31:31.631Z'
+  notes:
+    - _ulid: 01KF78A7F63E16S677FE6A1TZW
+      created_at: '2026-01-18T00:33:09.095Z'
+      author: '@claude'
+      content: >-
+        Implemented AC-agent-1 and AC-agent-2 successfully. The `kspec meta agents` command works
+        for both table and JSON output.
+
+
+        For AC-agent-3, I need to determine where agent references would be used in the spec/task
+        system. The AC says to validate that agent references resolve to agents, but I need to
+        identify what fields would contain agent references. Checking the spec to understand the use
+        case better.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW4C16W09RWGY3C95T54
   slugs:
     - task-agent-schema
