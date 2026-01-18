@@ -2474,9 +2474,38 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T12:58:28.921Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T03:57:11.250Z'
+  notes:
+    - _ulid: 01KF7M43V8AG2QNC697Y6EECZX
+      created_at: '2026-01-18T03:59:31.688Z'
+      author: '@claude'
+      content: |-
+        Session 3: Found incomplete WIP implementation from previous session.
+
+        STATUS: Partially implemented, 1 test failing
+
+        WHAT'S DONE:
+        - Command structure implemented (patch <ref>)
+        - JSON parsing from --data flag or stdin
+        - Schema validation (strict/passthrough modes)
+        - Unknown field detection
+        - 5 integration tests added (4 passing, 1 failing)
+        - Covers all 4 acceptance criteria in tests
+
+        WHAT'S BROKEN:
+        - --dry-run flag not working: still saves changes despite flag
+        - Test "should show changes with --dry-run" fails
+        - Root cause: early return after dry-run output missing or saveTask called anyway
+
+        NEXT STEPS:
+        1. Fix dry-run logic (likely missing early return before saveTask)
+        2. Verify all 6 tests pass
+        3. Test with stdin input (not covered by tests yet)
+        4. Complete task
+
+        DO NOT MERGE - tests failing
+      supersedes: null
+  todos: []
 - _ulid: 01KF3EDGZSCKXCKAEK5C0G6BJC
   slugs:
     - task-kspec-module-add

@@ -787,6 +787,9 @@ features:
             given: '--allow-unknown flag and unknown field'
             when: kspec task patch @my-task --data '{"unknown":true}' --allow-unknown runs
             then: field is written
+        status:
+          maturity: draft
+          implementation: in_progress
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
