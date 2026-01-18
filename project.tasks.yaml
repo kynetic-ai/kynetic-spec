@@ -6812,7 +6812,7 @@
   type: task
   spec_ref: '@meta-focus-cmd'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6848,6 +6848,10 @@
         - JSON output mode ✓
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T13:04:49.004Z'
+  closed_reason: >-
+    Fully implemented kspec meta focus command per spec - supports showing, setting, and clearing
+    session focus with JSON output
 - _ulid: 01KF4WVX0EEF2R90HC63GY3B6Z
   slugs:
     - task-kspec-meta-thread
