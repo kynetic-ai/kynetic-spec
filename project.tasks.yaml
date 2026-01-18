@@ -6223,6 +6223,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Command implemented and functional, displays agent list with required columns
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6231,6 +6232,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.194Z'
   started_at: '2026-01-18T10:10:55.359Z'
+  completed_at: '2026-01-18T10:11:07.160Z'
   notes:
     - _ulid: 01KF89CBSW0CM4W760MD897Z0X
       created_at: '2026-01-18T10:11:02.076Z'
@@ -6242,8 +6244,6 @@
         function. Core functionality complete.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:11:07.160Z'
-  closed_reason: Command implemented and functional, displays agent list with required columns
 - _ulid: 01KF4WVWT1YPEPENJN1W7N06YR
   slugs:
     - task-kspec-meta-workflows
@@ -6251,7 +6251,7 @@
   type: task
   spec_ref: '@meta-workflows-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6262,6 +6262,7 @@
   created_at: '2026-01-17T02:34:36.225Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:11:21.576Z'
 - _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
   slugs:
     - task-kspec-meta-conventions
