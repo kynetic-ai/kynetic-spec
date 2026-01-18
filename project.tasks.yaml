@@ -4351,6 +4351,18 @@
         Researching codebase structure - items are nested in YAML under parent fields (features,
         requirements, etc.). Need to find/create utility to collect child items for cascade updates.
       supersedes: null
+    - _ulid: 01KF84ZY5VR46EK4D7VD9EY9SA
+      created_at: '2026-01-18T08:54:20.603Z'
+      author: '@claude'
+      content: |-
+        Implemented cascade status updates:
+        - Added findChildItems() utility in parser/items.ts to find direct children based on _path
+        - Added handleStatusCascade() in cli/commands/item.ts to prompt and update children
+        - Integrated into 'item set' command for --status option
+        - Uses readline for interactive y/n prompt
+        - Skips prompt in JSON mode
+        Ready for testing
+      supersedes: null
   todos: []
 - _ulid: 01KF3M1P812JQQ7C6K4SS8YAZQ
   slugs:
