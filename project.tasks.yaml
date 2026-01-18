@@ -4932,6 +4932,51 @@
 
         Checking what still needs to be done based on ACs...
       supersedes: null
+    - _ulid: 01KF87XZEW1XS29H4S7YM5ZC33
+      created_at: '2026-01-18T09:45:42.108Z'
+      author: '@claude'
+      content: >-
+        Completion summary:
+
+
+        **All acceptance criteria verified:**
+
+        - AC-meta-manifest-1: ✅ 'kspec meta show' outputs summary with counts (tested: 3 agents, 4
+        workflows, 4 conventions, 0 observations)
+
+        - AC-meta-manifest-2: ✅ 'kspec validate' includes meta summary line (confirmed: 'Meta: 3
+        agents, 4 workflows, 4 conventions')
+
+        - AC-meta-manifest-3: ✅ Schema validation errors prefixed with 'meta:' (code verified in
+        src/parser/validate.ts:729)
+
+
+        **Implementation status:**
+
+        All infrastructure was already implemented in prior iterations:
+
+        - Schema: Complete MetaManifestSchema with all sub-schemas
+
+        - Parser: Full loadMetaContext with includes support
+
+        - CLI: Complete meta command set (show, agents, workflows, conventions, observations, get,
+        list, add, set, delete, observe, promote, resolve)
+
+        - Validation: Integrated into validate command with proper error prefixing
+
+        - Reference Index: Full support for meta items via indexMetaItem
+
+        - Tests: Comprehensive test suite (57 meta tests, all passing)
+
+
+        **Test results:**
+
+        - 458 tests passed, 1 skipped
+
+        - All meta manifest functionality working correctly
+
+        - No changes needed - task was already complete
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVW1N2XVGXKQHY1PRJVS0
   slugs:
