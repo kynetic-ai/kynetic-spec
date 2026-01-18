@@ -7024,7 +7024,7 @@
   type: task
   spec_ref: '@test-guardrails-feature'
   meta_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -7032,6 +7032,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-18T08:38:00.062Z'
+  started_at: '2026-01-18T08:38:06.264Z'
   notes: []
   todos: []
-  started_at: '2026-01-18T08:38:06.264Z'
+  completed_at: '2026-01-18T08:38:13.252Z'
+  closed_reason: Testing guardrails feature
