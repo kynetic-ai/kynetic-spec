@@ -923,3 +923,16 @@ inbox:
       - dx
       - bug
     added_by: '@claude'
+  - _ulid: 01KF82M93K792PK8ZEG2MYHAVJ
+    text: >-
+      Review workflow refinement: When review subagent finds flag conflicts or similar behavioral
+      issues, the fix should include both code AND spec updates. In iteration 13, renamed --verbose
+      to --debug-shadow but initially forgot to update the spec file. Spec/code alignment is
+      critical - code changes that affect documented behavior should always trigger spec updates in
+      the same commit flow.
+    created_at: '2026-01-18T08:13:01.428Z'
+    tags:
+      - workflow
+      - reflection
+      - spec-alignment
+    added_by: '@claude'
