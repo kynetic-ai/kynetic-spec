@@ -32,6 +32,7 @@ export const fieldLabels = {
   type: 'Type:',
   status: 'Status:',
   priority: 'Priority:',
+  maturity: 'Maturity:',
   specRef: 'Spec ref:',
   metaRef: 'Meta ref:',
   depends: 'Depends:',
@@ -51,6 +52,8 @@ export const fieldLabels = {
  */
 export const sectionHeaders = {
   specContext: chalk.gray('─── Spec Context ───'),
+  description: chalk.gray('─── Description ───'),
+  acceptanceCriteria: chalk.gray('─── Acceptance Criteria ───'),
   notes: chalk.gray('─── Notes ───'),
   todos: chalk.gray('─── Todos ───'),
 } as const;

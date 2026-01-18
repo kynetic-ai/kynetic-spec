@@ -177,6 +177,23 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
     console.log(chalk.green('References: OK'));
   }
 
+  // Reference warnings (deprecated targets)
+  if (result.refWarnings.length > 0) {
+    console.log(chalk.yellow(`\nReference warnings: ${result.refWarnings.length}`));
+    const shown = verbose ? result.refWarnings : result.refWarnings.slice(0, 5);
+    for (const warn of shown) {
+      const location = warn.sourceFile
+        ? `${warn.sourceFile} (${warn.field})`
+        : `${warn.sourceUlid?.slice(0, 8)} (${warn.field})`;
+      console.log(chalk.yellow(`  ⚠ ${warn.ref}`));
+      console.log(chalk.gray(`    ${warn.message}`));
+      console.log(chalk.gray(`    in: ${location}`));
+    }
+    if (!verbose && result.refWarnings.length > 5) {
+      console.log(chalk.gray(`  ... and ${result.refWarnings.length - 5} more (use -v to see all)`));
+    }
+  }
+
   // Orphans (warnings, not errors)
   if (result.orphans.length > 0) {
     console.log(chalk.yellow(`\nOrphans (not referenced): ${result.orphans.length}`));

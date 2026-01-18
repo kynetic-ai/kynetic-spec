@@ -24,6 +24,7 @@ import {
 import type { InboxItemInput, TaskInput } from '../../schema/index.js';
 import * as readline from 'node:readline';
 import { errors } from '../../strings/index.js';
+import { fieldLabels } from '../../strings/labels.js';
 
 /**
  * Format relative time for display
@@ -272,13 +273,13 @@ export function registerInboxCommands(program: Command): void {
         const item = resolveInboxRef(ref, items);
 
         output(item, () => {
-          console.log(`ULID:     ${item._ulid}`);
-          console.log(`Created:  ${item.created_at} (${formatRelativeTime(item.created_at)})`);
+          console.log(`${fieldLabels.ulid}     ${item._ulid}`);
+          console.log(`${fieldLabels.created}  ${item.created_at} (${formatRelativeTime(item.created_at)})`);
           if (item.added_by) {
             console.log(`Added by: ${item.added_by}`);
           }
           if (item.tags.length > 0) {
-            console.log(`Tags:     ${item.tags.join(', ')}`);
+            console.log(`${fieldLabels.tags}     ${item.tags.join(', ')}`);
           }
           console.log('');
           console.log(item.text);

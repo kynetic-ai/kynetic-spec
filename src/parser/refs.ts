@@ -79,6 +79,24 @@ export interface RefValidationError {
   message: string;
 }
 
+/**
+ * Validation warning for a single reference
+ */
+export interface RefValidationWarning {
+  /** The reference string */
+  ref: string;
+  /** Where this reference was found */
+  sourceFile?: string;
+  /** The item containing this reference */
+  sourceUlid?: string;
+  /** The field containing this reference */
+  field: string;
+  /** Warning type */
+  warning: 'deprecated_target';
+  /** Additional context */
+  message: string;
+}
+
 // ============================================================
 // REFERENCE INDEX
 // ============================================================
@@ -324,6 +342,33 @@ const REF_FIELDS = [
 ];
 
 /**
+ * Check if an item is deprecated
+ */
+function isDeprecated(item: AnyLoadedItem | LoadedMetaItem): boolean {
+  const obj = item as unknown as Record<string, unknown>;
+
+  // Check for deprecated_in field (truthy value means deprecated)
+  if ('deprecated_in' in obj && obj.deprecated_in) {
+    return true;
+  }
+
+  // Check for maturity: deprecated status
+  if ('status' in obj && obj.status && typeof obj.status === 'object') {
+    const status = obj.status as Record<string, unknown>;
+    if ('maturity' in status && status.maturity === 'deprecated') {
+      return true;
+    }
+  }
+
+  // Also check top-level maturity field (some items may have it there)
+  if ('maturity' in obj && obj.maturity === 'deprecated') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Extract all references from an item
  * AC: @agent-definitions ac-agent-3 - also checks nested notes for author refs
  */
@@ -374,15 +419,24 @@ function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }>
 }
 
 /**
+ * Validation result with errors and warnings
+ */
+export interface RefValidationResult {
+  errors: RefValidationError[];
+  warnings: RefValidationWarning[];
+}
+
+/**
  * Validate all references in the spec.
- * Returns list of validation errors.
+ * Returns list of validation errors and warnings.
  */
 export function validateRefs(
   index: ReferenceIndex,
   tasks: LoadedTask[],
   items: LoadedSpecItem[]
-): RefValidationError[] {
+): RefValidationResult {
   const errors: RefValidationError[] = [];
+  const warnings: RefValidationWarning[] = [];
 
   const allItems: AnyLoadedItem[] = [...tasks, ...items];
 
@@ -416,11 +470,24 @@ export function validateRefs(
           error: result.error,
           message,
         });
+      } else {
+        // Check if resolved target is deprecated
+        if (isDeprecated(result.item)) {
+          const targetTitle = (result.item as { title?: string }).title || result.ulid;
+          warnings.push({
+            ref,
+            sourceFile,
+            sourceUlid: item._ulid,
+            field,
+            warning: 'deprecated_target',
+            message: `Reference "${ref}" points to deprecated item: ${targetTitle}`,
+          });
+        }
       }
     }
   }
 
-  return errors;
+  return { errors, warnings };
 }
 
 /**

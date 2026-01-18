@@ -1007,12 +1007,12 @@ describe('validateRefs', () => {
     ];
 
     const index = new ReferenceIndex(tasks, []);
-    const errors = validateRefs(index, tasks, []);
+    const result = validateRefs(index, tasks, []);
 
-    expect(errors).toHaveLength(1);
-    expect(errors[0].ref).toBe('@nonexistent-dep');
-    expect(errors[0].field).toBe('depends_on');
-    expect(errors[0].error).toBe('not_found');
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].ref).toBe('@nonexistent-dep');
+    expect(result.errors[0].field).toBe('depends_on');
+    expect(result.errors[0].error).toBe('not_found');
   });
 
   it('should report source info in errors', () => {
@@ -1037,13 +1037,13 @@ describe('validateRefs', () => {
     ];
 
     const index = new ReferenceIndex(tasks, []);
-    const errors = validateRefs(index, tasks, []);
+    const result = validateRefs(index, tasks, []);
 
-    expect(errors[0].sourceFile).toBe('spec/tasks.yaml');
-    expect(errors[0].sourceUlid).toBe('01TASK1000000000000000000');
+    expect(result.errors[0].sourceFile).toBe('spec/tasks.yaml');
+    expect(result.errors[0].sourceUlid).toBe('01TASK1000000000000000000');
   });
 
-  it('should return empty array for valid refs', () => {
+  it('should return empty arrays for valid refs', () => {
     const tasks: LoadedTask[] = [
       {
         _ulid: '01TASK1000000000000000000',
@@ -1080,9 +1080,10 @@ describe('validateRefs', () => {
     ];
 
     const index = new ReferenceIndex(tasks, []);
-    const errors = validateRefs(index, tasks, []);
+    const result = validateRefs(index, tasks, []);
 
-    expect(errors).toHaveLength(0);
+    expect(result.errors).toHaveLength(0);
+    expect(result.warnings).toHaveLength(0);
   });
 
   it('should validate spec_ref field', () => {
@@ -1107,10 +1108,147 @@ describe('validateRefs', () => {
     ];
 
     const index = new ReferenceIndex(tasks, []);
-    const errors = validateRefs(index, tasks, []);
+    const result = validateRefs(index, tasks, []);
 
-    expect(errors).toHaveLength(1);
-    expect(errors[0].field).toBe('spec_ref');
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].field).toBe('spec_ref');
+  });
+
+  it('should warn when referencing deprecated spec item (maturity)', () => {
+    const items: LoadedSpecItem[] = [
+      {
+        _ulid: '01SPEC1000000000000000000',
+        slugs: ['deprecated-spec'],
+        title: 'Deprecated Spec',
+        tags: [],
+        depends_on: [],
+        implements: [],
+        relates_to: [],
+        tests: [],
+        status: {
+          maturity: 'deprecated',
+          implementation: 'not_started',
+        },
+      },
+    ];
+
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: '01TASK1000000000000000000',
+        slugs: ['my-task'],
+        title: 'My Task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 1,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T10:00:00Z',
+        notes: [],
+        todos: [],
+        spec_ref: '@deprecated-spec',
+      },
+    ];
+
+    const index = new ReferenceIndex(tasks, items);
+    const result = validateRefs(index, tasks, items);
+
+    expect(result.errors).toHaveLength(0);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0].warning).toBe('deprecated_target');
+    expect(result.warnings[0].ref).toBe('@deprecated-spec');
+    expect(result.warnings[0].field).toBe('spec_ref');
+  });
+
+  it('should warn when referencing deprecated spec item (deprecated_in)', () => {
+    const items: LoadedSpecItem[] = [
+      {
+        _ulid: '01SPEC1000000000000000000',
+        slugs: ['old-spec'],
+        title: 'Old Spec',
+        tags: [],
+        depends_on: [],
+        implements: [],
+        relates_to: [],
+        tests: [],
+        deprecated_in: '2.0.0',
+      },
+    ];
+
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: '01TASK1000000000000000000',
+        slugs: ['my-task'],
+        title: 'My Task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 1,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T10:00:00Z',
+        notes: [],
+        todos: [],
+        spec_ref: '@old-spec',
+      },
+    ];
+
+    const index = new ReferenceIndex(tasks, items);
+    const result = validateRefs(index, tasks, items);
+
+    expect(result.errors).toHaveLength(0);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings[0].warning).toBe('deprecated_target');
+    expect(result.warnings[0].message).toContain('deprecated');
+  });
+
+  it('should not warn for non-deprecated references', () => {
+    const items: LoadedSpecItem[] = [
+      {
+        _ulid: '01SPEC1000000000000000000',
+        slugs: ['active-spec'],
+        title: 'Active Spec',
+        tags: [],
+        depends_on: [],
+        implements: [],
+        relates_to: [],
+        tests: [],
+        status: {
+          maturity: 'stable',
+          implementation: 'not_started',
+        },
+      },
+    ];
+
+    const tasks: LoadedTask[] = [
+      {
+        _ulid: '01TASK1000000000000000000',
+        slugs: ['my-task'],
+        title: 'My Task',
+        type: 'task',
+        status: 'pending',
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        priority: 1,
+        tags: [],
+        vcs_refs: [],
+        created_at: '2025-01-14T10:00:00Z',
+        notes: [],
+        todos: [],
+        spec_ref: '@active-spec',
+      },
+    ];
+
+    const index = new ReferenceIndex(tasks, items);
+    const result = validateRefs(index, tasks, items);
+
+    expect(result.errors).toHaveLength(0);
+    expect(result.warnings).toHaveLength(0);
   });
 });
 

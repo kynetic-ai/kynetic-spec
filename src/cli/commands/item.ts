@@ -24,6 +24,7 @@ import { SpecItemPatchSchema } from '../../schema/index.js';
 import { output, error, success, warn, isJsonMode } from '../output.js';
 import { grepItem, formatMatchedFields } from '../../utils/grep.js';
 import { errors } from '../../strings/errors.js';
+import { fieldLabels, sectionHeaders } from '../../strings/labels.js';
 
 /**
  * Format a spec item for display
@@ -188,29 +189,29 @@ export function registerItemCommands(program: Command): void {
         output(item, () => {
           console.log(chalk.bold(item.title));
           console.log(chalk.gray('─'.repeat(40)));
-          console.log(`ULID:      ${item._ulid}`);
+          console.log(`${fieldLabels.ulid}      ${item._ulid}`);
           if (item.slugs.length > 0) {
-            console.log(`Slugs:     ${item.slugs.join(', ')}`);
+            console.log(`${fieldLabels.slugs}     ${item.slugs.join(', ')}`);
           }
-          console.log(`Type:      ${item.type}`);
+          console.log(`${fieldLabels.type}      ${item.type}`);
 
           if (item.status && typeof item.status === 'object') {
             const s = item.status as { maturity?: string; implementation?: string };
-            if (s.maturity) console.log(`Maturity:  ${s.maturity}`);
-            if (s.implementation) console.log(`Implementation: ${s.implementation}`);
+            if (s.maturity) console.log(`${fieldLabels.maturity}  ${s.maturity}`);
+            if (s.implementation) console.log(`${fieldLabels.implementation}${s.implementation}`);
           }
 
           if ('tags' in item && Array.isArray(item.tags) && item.tags.length > 0) {
-            console.log(`Tags:      ${item.tags.join(', ')}`);
+            console.log(`${fieldLabels.tags}      ${item.tags.join(', ')}`);
           }
 
           if (item.description) {
-            console.log(chalk.gray('\n─── Description ───'));
+            console.log('\n' + sectionHeaders.description);
             console.log(item.description);
           }
 
           if ('acceptance_criteria' in item && Array.isArray(item.acceptance_criteria) && item.acceptance_criteria.length > 0) {
-            console.log(chalk.gray('\n─── Acceptance Criteria ───'));
+            console.log('\n' + sectionHeaders.acceptanceCriteria);
             for (const ac of item.acceptance_criteria) {
               if (ac && typeof ac === 'object' && 'id' in ac) {
                 const acObj = ac as AcceptanceCriterion;
