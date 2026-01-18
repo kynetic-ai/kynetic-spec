@@ -785,7 +785,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           The observation→task→resolution loop defines how observations connect
           to tasks and when they get resolved.

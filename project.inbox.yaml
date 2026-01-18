@@ -1258,3 +1258,13 @@ inbox:
       - workflow
       - alignment
     added_by: '@claude'
+  - _ulid: 01KF8DARQ5TY5807CD2T7XPP8M
+    text: >-
+      ReferenceIndex type guard pattern - when using index.resolve(), must check taskResult.ok
+      before accessing taskResult.item. Easy to miss since TypeScript doesn't enforce this at
+      compile time. Consider helper functions or better type guards.
+    created_at: '2026-01-18T11:20:04.069Z'
+    tags:
+      - dx
+      - pattern
+    added_by: '@claude'
