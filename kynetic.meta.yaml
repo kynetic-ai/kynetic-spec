@@ -1,15 +1,4 @@
-# Kynetic Spec - Meta Manifest (Bootstrap)
-# Process definitions extracted from AGENTS.md
-#
-# This is the initial bootstrap of meta-spec for dogfooding.
-# As meta-spec implementation progresses, this will be validated
-# and extended via CLI commands.
-
-kynetic_meta: "1.0"
-
-# =============================================================================
-# AGENTS - Who works on this project
-# =============================================================================
+kynetic_meta: '1.0'
 agents:
   - _ulid: 01KF782ZSF5ZQTN2PKZPH6ASKA
     id: claude
@@ -30,17 +19,27 @@ agents:
       - npm
       - vitest
     session_protocol:
-      start: "kspec session start"
-      checkpoint: "kspec session checkpoint"
+      start: kspec session start
+      checkpoint: kspec session checkpoint
     conventions:
       - Always use kspec CLI, never edit YAML directly
       - Add notes when completing significant work
       - Check spec coverage before implementing behavior changes
       - Commit changes before ending session
-
-# =============================================================================
-# WORKFLOWS - How work is done
-# =============================================================================
+  - _ulid: 01KF7HMDT7TKRTSD78X6WAGBFV
+    id: json-test
+    name: JSON Test
+    description: ''
+    capabilities: []
+    tools: []
+    conventions: []
+  - _ulid: 01KF7HN2D6GAAK99TN68N6NXVB
+    id: json-test2
+    name: JSON Test 2
+    description: ''
+    capabilities: []
+    tools: []
+    conventions: []
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
@@ -56,16 +55,15 @@ workflows:
       - type: decision
         content: What is the spec status?
         options:
-          - "Spec exists and matches -> Derive task, proceed"
-          - "Spec exists but outdated -> Update spec first"
-          - "No spec exists -> Create spec first (behavior) or task directly (infra)"
+          - Spec exists and matches -> Derive task, proceed
+          - Spec exists but outdated -> Update spec first
+          - No spec exists -> Create spec first (behavior) or task directly (infra)
       - type: action
         content: Update or create spec item if needed
       - type: action
         content: Derive task from spec via kspec derive @spec-item
       - type: action
         content: Implement the change
-
   - _ulid: 01KF782ZSH103A99NV1VY65CFB
     id: session-start
     trigger: session-start
@@ -81,7 +79,6 @@ workflows:
         content: Review ready tasks and inbox items
       - type: action
         content: Start work on chosen task via kspec task start
-
   - _ulid: 01KF782ZSJH58GHDTHC873XJMA
     id: task-lifecycle
     trigger: task-complete
@@ -97,7 +94,6 @@ workflows:
         on_fail: Commit changes with descriptive message
       - type: action
         content: Review if task unblocked other work
-
   - _ulid: 01KF782ZSJYAF3XCN89YD44XYM
     id: inbox-triage
     trigger: session-start
@@ -109,17 +105,13 @@ workflows:
       - type: decision
         content: For each item, ask these questions
         options:
-          - "Still relevant? No -> delete"
-          - "Scope clear? Yes -> promote to task"
-          - "Needs spec work? -> Create/update spec first"
-          - "Still unclear? -> Leave, add tag, revisit later"
+          - Still relevant? No -> delete
+          - Scope clear? Yes -> promote to task
+          - Needs spec work? -> Create/update spec first
+          - Still unclear? -> Leave, add tag, revisit later
       - type: check
         content: Has item survived 3+ triage sessions?
         on_fail: Either promote with clear scope or delete
-
-# =============================================================================
-# CONVENTIONS - Project standards
-# =============================================================================
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
@@ -129,11 +121,10 @@ conventions:
       - Keep subject line under 72 characters
       - Include Co-Authored-By for AI contributions
     examples:
-      - good: "feat: add user login flow"
-        bad: "Added login"
-      - good: "fix(auth): handle expired tokens"
-        bad: "fixed bug"
-
+      - good: 'feat: add user login flow'
+        bad: Added login
+      - good: 'fix(auth): handle expired tokens'
+        bad: fixed bug
   - _ulid: 01KF782ZSJ20FHWEXH93VB74Q5
     domain: notes
     rules:
@@ -142,9 +133,10 @@ conventions:
       - Note any deviations from plan or unexpected findings
       - Keep notes concise but informative for future context
     examples:
-      - good: "Implemented retry logic with exponential backoff. Chose 3 retries max based on API rate limits."
-        bad: "Done"
-
+      - good: >-
+          Implemented retry logic with exponential backoff. Chose 3 retries max based on API rate
+          limits.
+        bad: Done
   - _ulid: 01KF782ZSJZB6HWGFS01TM2R0R
     domain: naming
     rules:
@@ -152,7 +144,7 @@ conventions:
       - Prefix task slugs with 'task-' for clarity
       - Use descriptive names that indicate purpose
       - Keep slugs short but unambiguous
-
+    examples: []
   - _ulid: 01KF782ZSJ6HS09DBK7SVX5RR0
     domain: tags
     rules:
@@ -160,14 +152,6 @@ conventions:
       - Standard tags include mvp, post-mvp, bug, feature, infra, design
       - Add domain tags like cli, schema, parser, tasks
       - Limit to 3-5 tags per item for focus
-
-# =============================================================================
-# OBSERVATIONS - Feedback for self-improvement (initially empty)
-# =============================================================================
-# Observations will be added via:
-#   kspec meta observe friction "description"
-#   kspec meta observe success "description"
-#
-# This section bootstraps empty - friction and ideas captured during
-# usage will populate it, enabling the self-improvement loop.
+    examples: []
 observations: []
+includes: []

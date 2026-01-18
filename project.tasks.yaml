@@ -3704,6 +3704,15 @@
         implement mutation commands (add, set, delete) instead, which are more straightforward and
         can work with existing meta item types.
       supersedes: null
+    - _ulid: 01KF7HV5C0MQPEZTJFM6CNW3XY
+      created_at: '2026-01-18T03:19:41.185Z'
+      author: '@claude'
+      content: >-
+        Implemented meta mutation commands (add, set, delete). All commands work with agents,
+        workflows, and conventions. Full test coverage with 18 new integration tests. PR #24
+        created. Remaining work: session context commands (focus, thread, question, context) which
+        are blocked by missing spec - need to complete research task @01KF1H92 first.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
