@@ -4,3 +4,4 @@ export * from './common.js';
 export * from './spec.js';
 export * from './task.js';
 export * from './inbox.js';
+export * from './meta.js';
