@@ -1001,6 +1001,47 @@
 
         - How to handle references to archived tasks (keep in index? special handling?)
       supersedes: null
+    - _ulid: 01KF80C0RMC4FPVRQ888WKZQY7
+      created_at: '2026-01-18T07:33:33.588Z'
+      author: '@claude'
+      content: >-
+        Explored reference directories (kspec-acp-test, kspec-ralph-test):
+
+
+        **Finding**: Both directories have the exact same task-archive spike (pending) and
+        spec-level design for task storage, but NO implementation yet. This confirms we're working
+        on a planned enhancement.
+
+
+        **Key Design Insights from References**:
+
+        1. **Auto-adaptive pattern** documented in KYNETIC_SPEC_DESIGN.md:
+           - Small projects: tasks alongside specs (auth.yaml + auth.tasks.yaml)
+           - Large projects: separate tasks/ directory with archive/ subdirectory
+           - Example: tasks/archive/2025-01.yaml for monthly archiving
+
+        2. **Lifecycle parallel**: Spec items have deprecation→archived flow. Tasks could follow
+        similar pattern: completed→archived.
+
+
+        3. **Storage flexibility**: The design deliberately supports multiple *.tasks.yaml files -
+        system already loads all of them via loadAllTasks().
+
+
+        **Recommendation for MVP**:
+
+        Given file size (210KB, 69 closed tasks) and existing multi-file support, recommend MANUAL
+        archiving command first:
+
+        - `kspec task archive @ref [...refs]` - moves tasks to project.tasks.archive.yaml
+
+        - Archived tasks remain loaded/resolvable (no breaking changes to references)
+
+        - Later: auto-archive triggers based on age/count thresholds
+
+
+        **Next**: Draft spec for task archiving command to align with design doc pattern.
+      supersedes: null
   todos: []
 - _ulid: 01KF00CWN1R0XTG1R0A42BSXSE
   slugs:
