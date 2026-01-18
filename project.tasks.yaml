@@ -5654,7 +5654,7 @@
   type: task
   spec_ref: '@convention-schema'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-convention-definitions'
@@ -5683,6 +5683,8 @@
         All 467 tests passing, including 3 new convention schema tests.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:42:55.945Z'
+  closed_reason: Convention schema fully implemented with test coverage
 - _ulid: 01KF4WVWD4TT9PTW69HVDWAX36
   slugs:
     - task-convention-domains
