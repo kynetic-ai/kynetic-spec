@@ -395,7 +395,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           "A depends_on B" means A requires B to be completed/available.
           Used for: ordering work, tracking prerequisites.
