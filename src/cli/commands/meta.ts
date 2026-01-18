@@ -22,6 +22,7 @@ import {
   deleteMetaItem,
   createTask,
   saveTask,
+  loadAllTasks,
   type MetaContext,
   type Agent,
   type Workflow,
@@ -1085,8 +1086,59 @@ export function registerMetaCommands(program: Command): void {
           process.exit(1);
         }
 
-        // Confirmation
+        // Check for dangling references (unless --confirm is used to override)
         if (!options.confirm) {
+          // Check tasks with meta_ref
+          const tasks = await loadAllTasks(ctx);
+          const referencingTasks = tasks.filter((t) => {
+            if (!t.meta_ref) return false;
+            const metaRefNormalized = t.meta_ref.startsWith('@')
+              ? t.meta_ref.substring(1)
+              : t.meta_ref;
+            return (
+              metaRefNormalized === normalizedRef ||
+              metaRefNormalized === itemUlid ||
+              itemUlid.startsWith(metaRefNormalized)
+            );
+          });
+
+          if (referencingTasks.length > 0) {
+            const taskRefs = referencingTasks
+              .map((t) => `@${t.slug || t._ulid.substring(0, 8)}`)
+              .join(', ');
+            error(
+              `Cannot delete ${itemLabel}: Referenced by ${referencingTasks.length} task(s): ${taskRefs}. Use --confirm to override.`
+            );
+            process.exit(1);
+          }
+
+          // Check observations with workflow_ref (only for workflows)
+          if (itemType === 'workflow') {
+            const observations = metaCtx.manifest?.observations || [];
+            const referencingObservations = observations.filter((o) => {
+              if (!o.workflow_ref) return false;
+              const workflowRefNormalized = o.workflow_ref.startsWith('@')
+                ? o.workflow_ref.substring(1)
+                : o.workflow_ref;
+              return (
+                workflowRefNormalized === normalizedRef ||
+                workflowRefNormalized === itemUlid ||
+                itemUlid.startsWith(workflowRefNormalized)
+              );
+            });
+
+            if (referencingObservations.length > 0) {
+              const obsRefs = referencingObservations
+                .map((o) => `@${o._ulid.substring(0, 8)}`)
+                .join(', ');
+              error(
+                `Cannot delete ${itemLabel}: Referenced by ${referencingObservations.length} observation(s): ${obsRefs}. Use --confirm to override.`
+              );
+              process.exit(1);
+            }
+          }
+
+          // Show confirmation prompt even if no references found
           error(`Warning: This will delete ${itemLabel}. Use --confirm to skip this prompt`);
           process.exit(1);
         }

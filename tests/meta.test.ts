@@ -1026,5 +1026,91 @@ describe('Integration: meta mutation commands', () => {
         expect(e.message).toContain('Meta item not found');
       }
     });
+
+    it('should prevent deletion of agent referenced by task', () => {
+      // Create an agent
+      kspec('meta add agent --id ref-agent --name "Referenced Agent"', tempDir);
+
+      // Create a task that references this agent
+      kspec('task add --title "Test task" --meta-ref @ref-agent', tempDir);
+
+      // Try to delete the agent without --confirm
+      try {
+        kspec('meta delete @ref-agent', tempDir);
+        expect.fail('Should have prevented deletion');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('task(s)');
+        expect(e.message).toContain('Use --confirm to override');
+      }
+
+      // Verify agent still exists
+      const agent = kspecJson<any>('meta get @ref-agent', tempDir);
+      expect(agent.id).toBe('ref-agent');
+
+      // Can delete with --confirm flag
+      kspec('meta delete @ref-agent --confirm', tempDir);
+
+      // Verify it's deleted
+      try {
+        kspec('meta get @ref-agent', tempDir);
+        expect.fail('Agent should be deleted');
+      } catch (e: any) {
+        expect(e.message).toContain('Meta item not found');
+      }
+    });
+
+    it('should prevent deletion of workflow referenced by observation', () => {
+      // Create a workflow
+      kspec(
+        'meta add workflow --id ref-workflow --trigger "test trigger" --description "Test workflow"',
+        tempDir
+      );
+
+      // Create an observation that references this workflow
+      kspec('meta observe friction "Test friction" --workflow @ref-workflow', tempDir);
+
+      // Try to delete the workflow without --confirm
+      try {
+        kspec('meta delete @ref-workflow', tempDir);
+        expect.fail('Should have prevented deletion');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('observation(s)');
+        expect(e.message).toContain('Use --confirm to override');
+      }
+
+      // Verify workflow still exists
+      const workflow = kspecJson<any>('meta get @ref-workflow', tempDir);
+      expect(workflow.id).toBe('ref-workflow');
+
+      // Can delete with --confirm flag
+      kspec('meta delete @ref-workflow --confirm', tempDir);
+
+      // Verify it's deleted
+      try {
+        kspec('meta get @ref-workflow', tempDir);
+        expect.fail('Workflow should be deleted');
+      } catch (e: any) {
+        expect(e.message).toContain('Meta item not found');
+      }
+    });
+
+    it('should allow deletion of unreferenced items without --confirm errors about refs', () => {
+      // Create an agent that won't be referenced
+      kspec('meta add agent --id unreferenced-agent --name "Unreferenced Agent"', tempDir);
+
+      // Try to delete without --confirm - should only complain about confirmation, not refs
+      try {
+        kspec('meta delete @unreferenced-agent', tempDir);
+        expect.fail('Should have required confirmation');
+      } catch (e: any) {
+        expect(e.message).toContain('Use --confirm to skip this prompt');
+        expect(e.message).not.toContain('Referenced by');
+      }
+
+      // Delete with --confirm
+      kspec('meta delete @unreferenced-agent --confirm', tempDir);
+    });
   });
 });
