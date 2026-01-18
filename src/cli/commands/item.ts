@@ -13,6 +13,7 @@ import {
   AlignmentIndex,
   checkSlugUniqueness,
   patchSpecItems,
+  findChildItems,
   type LoadedSpecItem,
   type PatchOperation,
   type BulkPatchResult,
@@ -84,6 +85,70 @@ function formatItemList(items: LoadedSpecItem[], verbose = false, grepPattern?: 
   }
 
   console.log(chalk.gray(`\n${items.length} item(s)`));
+}
+
+/**
+ * Handle cascading status updates to child items
+ * Returns array of updated child items
+ */
+async function handleStatusCascade(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  parent: LoadedSpecItem,
+  newStatus: string,
+  allItems: LoadedSpecItem[],
+  refIndex: ReferenceIndex
+): Promise<LoadedSpecItem[]> {
+  // Find direct children
+  const children = findChildItems(parent, allItems);
+
+  if (children.length === 0) {
+    return [];
+  }
+
+  // Skip prompt in JSON mode
+  if (isJsonMode()) {
+    return [];
+  }
+
+  // Prompt user for cascade
+  const readline = await import('readline');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  const answer = await new Promise<string>((resolve) => {
+    rl.question(`Update ${children.length} child item(s) to ${newStatus}? [y/n] `, resolve);
+  });
+  rl.close();
+
+  if (answer.toLowerCase() !== 'y') {
+    return [];
+  }
+
+  // Update children
+  const updatedChildren: LoadedSpecItem[] = [];
+  for (const child of children) {
+    const currentStatus = child.status && typeof child.status === 'object'
+      ? child.status
+      : { maturity: 'draft' as const, implementation: 'not_started' as const };
+
+    const updates = {
+      status: {
+        maturity: currentStatus.maturity || ('draft' as const),
+        implementation: newStatus as ImplementationStatus,
+      },
+    };
+
+    const updated = await updateSpecItem(ctx, child, updates);
+    updatedChildren.push(updated);
+
+    // Log each child update (non-JSON mode only)
+    const childRef = child.slugs[0] || refIndex.shortUlid(child._ulid);
+    console.log(chalk.gray(`  ✓ Updated @${childRef}`));
+  }
+
+  return updatedChildren;
 }
 
 /**
@@ -453,6 +518,14 @@ export function registerItemCommands(program: Command): void {
 
         const updated = await updateSpecItem(ctx, foundItem, updates);
         const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+
+        // Handle cascade for implementation status updates
+        const updatedItems: LoadedSpecItem[] = [updated];
+        if (options.status) {
+          const cascadeResult = await handleStatusCascade(ctx, updated, options.status, items, refIndex);
+          updatedItems.push(...cascadeResult);
+        }
+
         await commitIfShadow(ctx.shadow, 'item-set', itemSlug);
         success(`Updated item: ${refIndex.shortUlid(updated._ulid)}`, { item: updated });
 

@@ -375,3 +375,37 @@ function getNestedField(obj: Record<string, unknown>, path: string): unknown {
 
   return current;
 }
+
+/**
+ * Find direct child items of a parent item based on _path
+ * Children have paths like "parent_path.field[N]"
+ */
+export function findChildItems(parent: LoadedSpecItem, allItems: LoadedSpecItem[]): LoadedSpecItem[] {
+  // Handle both cases: parent at root and nested parent
+  const parentPath = parent._path || '';
+
+  // Look for items whose path starts with parent's path
+  return allItems.filter(item => {
+    if (!item._path) return false;
+    if (item._ulid === parent._ulid) return false; // Skip self
+
+    // Child path should be: parentPath.field[N]
+    // Examples:
+    // - Parent: "features[0]", Child: "features[0].requirements[0]"
+    // - Parent: "", Child: "features[0]"
+    if (parentPath === '') {
+      // Root level parent - children are top-level items like "features[0]"
+      return !item._path.includes('.');
+    }
+
+    // Nested parent - children start with parent path + dot
+    if (!item._path.startsWith(parentPath + '.')) {
+      return false;
+    }
+
+    // Must be direct child (no additional nesting)
+    // Remove parent prefix and check for no more dots
+    const remainder = item._path.slice(parentPath.length + 1);
+    return !remainder.includes('.');
+  });
+}
