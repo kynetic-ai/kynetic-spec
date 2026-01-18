@@ -7037,20 +7037,21 @@
   completed_at: '2026-01-18T08:38:13.252Z'
   notes: []
   todos: []
-- title: Test task without spec
+- _ulid: 01KF842N80R22PEJZNNB04ZP7Z
+  slugs:
+    - test-no-spec-task
+  title: Test task without spec
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs:
-    - test-no-spec-task
-  tags: []
-  _ulid: 01KF842N80R22PEJZNNB04ZP7Z
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-18T08:38:21.184Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T08:38:29.248Z'
