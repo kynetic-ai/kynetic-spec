@@ -5701,9 +5701,18 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.812Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:49:08.667Z'
+  notes:
+    - _ulid: 01KF8BP5KN23Q0VGB60AXQRMH3
+      created_at: '2026-01-18T10:51:20.565Z'
+      author: '@claude'
+      content: >-
+        Added missing convention domains (branching and documentation) to meta manifest using 'kspec
+        meta add convention' command. All 6 standard domains from spec are now defined: commits,
+        notes, naming, tags, branching, documentation. Each convention includes 4 rules following
+        the established pattern.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWE4GXJAT63VMQM91REF
   slugs:
     - task-convention-validation-strategy

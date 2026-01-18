@@ -153,6 +153,24 @@ conventions:
       - Add domain tags like cli, schema, parser, tasks
       - Limit to 3-5 tags per item for focus
     examples: []
+  - _ulid: 01KF8BNJPQS0TKAGRD9PPGW6CS
+    domain: branching
+    rules:
+      - Use descriptive branch names that indicate the type and scope of work
+      - >-
+        Use prefixes: feat/ for features, fix/ for bug fixes, refactor/ for refactoring, docs/ for
+        documentation
+      - Keep branch names short but meaningful (e.g., feat/user-auth, fix/login-crash)
+      - Use kebab-case for branch names
+    examples: []
+  - _ulid: 01KF8BNQXGBBFYRDJKYQHAEDCC
+    domain: documentation
+    rules:
+      - Write clear, concise documentation that explains why, not just what
+      - Include examples for non-trivial concepts
+      - Keep documentation close to code (inline comments for complex logic, README for overview)
+      - Update documentation when behavior changes
+    examples: []
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
     type: idea
