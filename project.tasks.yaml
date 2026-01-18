@@ -1504,6 +1504,35 @@
         (49/201 errors). Clear continuation path exists for next session. All work committed, tests
         passing, PR #31 ready for review.
       supersedes: null
+    - _ulid: 01KF7RPV3AW2M0Q6TG0BVAF5Q5
+      created_at: '2026-01-18T05:19:39.626Z'
+      author: '@claude'
+      content: >-
+        Iteration 10: Successfully refactored item.ts (largest file with 45 error calls). All errors
+        migrated to centralized strings:
+
+        - Reference errors (itemNotFound, parentIsTask, taskUseTaskCommands, etc.)
+
+        - Slug errors (alreadyExists, notFound, cannotRemoveLast)
+
+        - Validation errors (invalidJson*, noPatchData, invalidPatchData*)
+
+        - Operation errors (cannotDeleteNoSource, tasksNoAcceptanceCriteria)
+
+        - Conflict errors (acAlreadyExists, acIdAlreadyExists)
+
+        - All operation failures (createItem, updateItem, deleteItem, patchItems, getItemStatus,
+        etc.)
+
+        - AC command errors (listAc, addAc, updateAc, removeAc)
+
+
+        Fixed one test assertion to match new error message format. All 392 tests pass, TypeScript
+        compiles cleanly.
+
+
+        Running total: 94 of ~201 errors complete (47%).
+      supersedes: null
   todos: []
 - _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   slugs:
