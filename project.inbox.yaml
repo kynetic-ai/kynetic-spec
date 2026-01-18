@@ -425,16 +425,6 @@ inbox:
     created_at: '2026-01-17T23:55:54.360Z'
     tags: []
     added_by: '@claude'
-  - _ulid: 01KF78BTC2XMB2JJCDQKS0CWV0
-    text: >-
-      PR review workflow: When reviewing own PRs created by previous iterations, fix trivial issues
-      directly (like invalid ULIDs) rather than leaving comments. Merge when checks pass unless
-      changes are substantial. This keeps momentum going.
-    created_at: '2026-01-18T00:34:01.218Z'
-    tags:
-      - reflection
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF7Z9T62JMGC217RRY2P3CHX
     text: >-
       CLI label centralization pattern worked well - item.ts and inbox.ts had drifted from the
