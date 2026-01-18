@@ -325,7 +325,7 @@ export async function gatherSessionContext(
   ctx: KspecContext,
   options: SessionOptions
 ): Promise<SessionContext> {
-  const limit = parseInt(options.limit || '5', 10);
+  const limit = parseInt(options.limit || '10', 10);
   const sinceDate = options.since ? parseTimeSpec(options.since) : null;
   const showGit = options.git !== false; // default true
 
@@ -993,7 +993,7 @@ export function registerSessionCommands(program: Command): void {
     .option('--full', 'Comprehensive context dump')
     .option('--since <time>', 'Filter by recency (ISO8601 or relative: 1h, 2d, 1w)')
     .option('--no-git', 'Skip git commit information')
-    .option('-n, --limit <n>', 'Limit items per section', '5')
+    .option('-n, --limit <n>', 'Limit items per section', '10')
     .action(sessionStartAction);
 
   session
@@ -1015,6 +1015,6 @@ export function registerSessionCommands(program: Command): void {
     .option('--full', 'Comprehensive context dump')
     .option('--since <time>', 'Filter by recency (ISO8601 or relative: 1h, 2d, 1w)')
     .option('--no-git', 'Skip git commit information')
-    .option('-n, --limit <n>', 'Limit items per section', '5')
+    .option('-n, --limit <n>', 'Limit items per section', '10')
     .action(sessionStartAction);
 }
