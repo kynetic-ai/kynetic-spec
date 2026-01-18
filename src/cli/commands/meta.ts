@@ -33,6 +33,43 @@ import { type ObservationType } from '../../schema/index.js';
 import { output, error, success, isJsonMode } from '../output.js';
 
 /**
+ * Resolve a meta reference to its ULID
+ * Handles semantic IDs (agent.id, workflow.id, convention.domain) and ULID prefixes
+ */
+function resolveMetaRefToUlid(
+  ref: string,
+  metaCtx: MetaContext
+): { ulid: string; type: 'agent' | 'workflow' | 'convention' | 'observation' } | null {
+  const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+
+  // Check agents
+  const agent = (metaCtx.manifest?.agents || []).find(
+    (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+  );
+  if (agent) return { ulid: agent._ulid, type: 'agent' };
+
+  // Check workflows
+  const workflow = (metaCtx.manifest?.workflows || []).find(
+    (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+  );
+  if (workflow) return { ulid: workflow._ulid, type: 'workflow' };
+
+  // Check conventions
+  const convention = (metaCtx.manifest?.conventions || []).find(
+    (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+  );
+  if (convention) return { ulid: convention._ulid, type: 'convention' };
+
+  // Check observations
+  const observation = (metaCtx.manifest?.observations || []).find((o) =>
+    o._ulid.startsWith(normalizedRef)
+  );
+  if (observation) return { ulid: observation._ulid, type: 'observation' };
+
+  return null;
+}
+
+/**
  * Format meta show output
  */
 function formatMetaShow(meta: MetaContext): void {
@@ -1092,14 +1129,10 @@ export function registerMetaCommands(program: Command): void {
           const tasks = await loadAllTasks(ctx);
           const referencingTasks = tasks.filter((t) => {
             if (!t.meta_ref) return false;
-            const metaRefNormalized = t.meta_ref.startsWith('@')
-              ? t.meta_ref.substring(1)
-              : t.meta_ref;
-            return (
-              metaRefNormalized === normalizedRef ||
-              metaRefNormalized === itemUlid ||
-              itemUlid.startsWith(metaRefNormalized)
-            );
+            // Resolve the task's meta_ref to a ULID
+            const taskMetaRef = resolveMetaRefToUlid(t.meta_ref, metaCtx);
+            // Compare ULIDs to handle both semantic IDs and ULID prefixes
+            return taskMetaRef && taskMetaRef.ulid === itemUlid;
           });
 
           if (referencingTasks.length > 0) {
@@ -1117,14 +1150,10 @@ export function registerMetaCommands(program: Command): void {
             const observations = metaCtx.manifest?.observations || [];
             const referencingObservations = observations.filter((o) => {
               if (!o.workflow_ref) return false;
-              const workflowRefNormalized = o.workflow_ref.startsWith('@')
-                ? o.workflow_ref.substring(1)
-                : o.workflow_ref;
-              return (
-                workflowRefNormalized === normalizedRef ||
-                workflowRefNormalized === itemUlid ||
-                itemUlid.startsWith(workflowRefNormalized)
-              );
+              // Resolve the observation's workflow_ref to a ULID
+              const obsWorkflowRef = resolveMetaRefToUlid(o.workflow_ref, metaCtx);
+              // Compare ULIDs to handle both semantic IDs and ULID prefixes
+              return obsWorkflowRef && obsWorkflowRef.ulid === itemUlid;
             });
 
             if (referencingObservations.length > 0) {

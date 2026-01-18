@@ -1112,5 +1112,60 @@ describe('Integration: meta mutation commands', () => {
       // Delete with --confirm
       kspec('meta delete @unreferenced-agent --confirm', tempDir);
     });
+
+    it('should detect references when deleting by ULID prefix', () => {
+      // Create an agent
+      const agentOutput = kspec('meta add agent --id ulid-test-agent --name "ULID Test Agent"', tempDir);
+
+      // Extract the ULID prefix from the success message: "Created agent: ulid-test-agent (@01KF7...)"
+      const ulidMatch = agentOutput.match(/\((@[\w]+)\)/);
+      expect(ulidMatch).toBeTruthy();
+      const ulidPrefix = ulidMatch![1];
+
+      // Create a task that references by semantic ID
+      kspec('task add --title "Test task" --meta-ref @ulid-test-agent', tempDir);
+
+      // Try to delete using ULID prefix - should still detect the reference
+      try {
+        kspec(`meta delete ${ulidPrefix}`, tempDir);
+        expect.fail('Should have detected reference');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('task(s)');
+      }
+
+      // Verify agent still exists
+      const agent = kspecJson<any>(`meta get ${ulidPrefix}`, tempDir);
+      expect(agent.id).toBe('ulid-test-agent');
+    });
+
+    it('should detect references with mixed reference formats', () => {
+      // Create a workflow
+      const workflowOutput = kspec(
+        'meta add workflow --id ulid-workflow --trigger "test trigger"',
+        tempDir
+      );
+
+      // Extract ULID prefix from: "Created workflow: ulid-workflow (@01KF7...)"
+      const ulidMatch = workflowOutput.match(/\((@[\w]+)\)/);
+      expect(ulidMatch).toBeTruthy();
+      const ulidPrefix = ulidMatch![1];
+
+      // Create observation using ULID prefix
+      kspec(`meta observe friction "Test friction" --workflow ${ulidPrefix}`, tempDir);
+
+      // Try to delete using semantic ID - should still detect reference
+      try {
+        kspec('meta delete @ulid-workflow', tempDir);
+        expect.fail('Should have detected reference');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('observation(s)');
+      }
+
+      // Verify workflow still exists
+      const workflow = kspecJson<any>('meta get @ulid-workflow', tempDir);
+      expect(workflow.id).toBe('ulid-workflow');
+    });
   });
 });
