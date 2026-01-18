@@ -759,7 +759,7 @@ export function registerMetaCommands(program: Command): void {
     .command('promote <ref>')
     .description('Promote observation to a task')
     .requiredOption('--title <title>', 'Task title')
-    .option('--priority <priority>', 'Task priority (1-3)', '2')
+    .option('--priority <priority>', 'Task priority (1-5)', '2')
     .option('--force', 'Force promotion even if observation is resolved')
     .action(async (ref: string, options) => {
       try {
@@ -813,7 +813,11 @@ export function registerMetaCommands(program: Command): void {
         await saveObservation(ctx, observation);
 
         // AC-obs-3: outputs "OK Created task: <ULID-prefix>"
-        success(`Created task: ${taskRef.substring(0, 9)}`);
+        // In JSON mode, return the created task object
+        output(
+          task,
+          () => success(`Created task: ${taskRef.substring(0, 9)}`)
+        );
       } catch (err) {
         error(errors.failures.promoteObservation, err);
         process.exit(1);
