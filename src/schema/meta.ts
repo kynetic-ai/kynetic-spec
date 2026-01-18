@@ -123,6 +123,16 @@ export const ObservationSchema = z.object({
 });
 
 /**
+ * Session context schema - ephemeral session state
+ */
+export const SessionContextSchema = z.object({
+  focus: z.string().nullable(),
+  threads: z.array(z.string()).default([]),
+  open_questions: z.array(z.string()).default([]),
+  updated_at: DateTimeSchema,
+});
+
+/**
  * Meta manifest schema - the root structure for kynetic.meta.yaml
  */
 export const MetaManifestSchema = z.object({
@@ -146,6 +156,7 @@ export type ConventionValidation = z.infer<typeof ConventionValidationSchema>;
 export type Convention = z.infer<typeof ConventionSchema>;
 export type ObservationType = z.infer<typeof ObservationTypeSchema>;
 export type Observation = z.infer<typeof ObservationSchema>;
+export type SessionContext = z.infer<typeof SessionContextSchema>;
 export type MetaManifest = z.infer<typeof MetaManifestSchema>;
 
 /**
