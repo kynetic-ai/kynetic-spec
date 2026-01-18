@@ -1439,3 +1439,89 @@ inbox:
       - cli
       - architecture
     added_by: '@claude'
+  - _ulid: 01KF91DXEZ50F7E25DCSQ6QCQC
+    text: >-
+      Agent-first CLI redesign: Remove interactive prompts, add TTY detection
+
+
+      ## Problem
+
+      Current CLI has interactive prompts (cascade status updates, derive hints) that create
+      friction for agent usage. Agents are primary users of kspec CLI, but design assumes human
+      interaction.
+
+
+      ## Research Findings
+
+
+      ### Industry Standards
+
+      - TTY detection is foundational: if stdout not TTY, assume non-interactive
+
+      - Common flags: --yes/-y, --force/-f, --no-input, --json
+
+      - CI environment detection (CI=true) auto-disables prompts
+
+      - Risk-based prompts: only for truly destructive operations
+
+
+      ### Agent Experience (AX) Principles
+
+      - Determinism is non-negotiable: same command = same result
+
+      - Structured output (JSON) should be default when not TTY
+
+      - Errors as structured data with recovery hints
+
+      - Idempotency enables safe retry
+
+      - Tool annotations (readOnly, destructive, idempotent)
+
+
+      ## Recommended Changes
+
+
+      1. **Remove derive hint entirely** - Just prints suggestion, adds noise
+
+      2. **Replace cascade prompt with --cascade flag** - Opt-in, deterministic
+
+      3. **Keep delete --force requirement** - Truly destructive, safety net
+
+      4. **Add TTY detection** - Auto-switch to JSON output, no prompts when not TTY
+
+      5. **Respect CI environment variable** - CI=true means non-interactive
+
+      6. **Consider --dry-run for all mutations** - Preview mode for safety
+
+
+      ## Implementation Pattern
+
+      ```javascript
+
+      function isInteractive() {
+        if (process.env.CI) return false;
+        if (args['--no-input']) return false;
+        return process.stdin.isTTY && process.stdout.isTTY;
+      }
+
+      ```
+
+
+      ## Sources
+
+      - clig.dev (CLI Guidelines)
+
+      - Heroku CLI Style Guide
+
+      - MCP Tool Schema patterns
+
+      - AX (Agent Experience) principles from agentexperience.ax
+
+      - Terraform/Ansible idempotency patterns
+    created_at: '2026-01-18T17:11:18.752Z'
+    tags:
+      - cli
+      - dx
+      - agent-first
+      - architecture
+    added_by: '@claude'
