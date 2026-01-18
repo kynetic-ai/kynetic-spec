@@ -188,4 +188,11 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KF8H0TNMR2T3Y9WVPQ3DXYTR
+    type: idea
+    content: test with json
+    created_at: '2026-01-18T12:24:32.693Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
