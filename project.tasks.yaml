@@ -4236,7 +4236,7 @@
   type: task
   spec_ref: '@task-completion-guardrails'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4289,6 +4289,10 @@
         - TypeScript compilation passes ✓
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T08:39:25.049Z'
+  closed_reason: >-
+    Implemented all 3 acceptance criteria with interactive prompts for spec status updates. Manual
+    testing confirms correct behavior for tasks with/without spec_ref and AC reminders.
 - _ulid: 01KF3H3WZBY4B3T9SC8Z2C8B6K
   slugs: []
   title: Add derive hint after item add/set commands
