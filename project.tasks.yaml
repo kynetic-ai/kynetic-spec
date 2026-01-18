@@ -7010,6 +7010,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - discovered during task audit
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -7017,6 +7018,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.588Z'
+  started_at: '2026-01-18T15:45:35.737Z'
+  completed_at: '2026-01-18T15:45:35.737Z'
   notes:
     - _ulid: 01KF8WGX4KYENZAZPH2T2NTYPV
       created_at: '2026-01-18T15:45:33.843Z'
@@ -7027,9 +7030,6 @@
         type-specific options.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T15:45:35.737Z'
-  closed_reason: Already implemented - discovered during task audit
-  started_at: '2026-01-18T15:45:35.737Z'
 - _ulid: 01KF4WVX658M3KXFWYJSPKDWB9
   slugs:
     - task-kspec-meta-set
@@ -7046,7 +7046,14 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.613Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WH0GWZ1RM6QXED8WZCZYR
+      created_at: '2026-01-18T15:45:37.308Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit e36d486c (2026-01-17) in
+        src/cli/commands/meta.ts:1017-1130. Updates existing meta items with type-specific options.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVX755EQVCW8MWV7JBVEK
   slugs:
