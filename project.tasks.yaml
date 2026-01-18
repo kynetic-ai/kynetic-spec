@@ -8610,26 +8610,48 @@
         but isn't enforced.
       supersedes: null
   todos: []
-- title: 'Spike: Research artifacts feature design'
+- _ulid: 01KF9G227F2FZ04EKX7A1PSHCG
+  slugs: []
+  title: 'Spike: Research artifacts feature design'
   type: task
-  priority: 4
-  spec_ref: null
-  tags:
-    - spike
-    - design
   description: >-
     Artifacts feature - storage for large files and non-text artifacts tied to specs/tasks. Use
     cases: reference images, research docs, generated diagrams, data files, PDFs. Unknowns:
     integration model (spec-ref? task-ref? standalone?), reference syntax (@artifact?), organization
     (by task? by type? flat?), cleanup/lifecycle (archive with task? manual?), storage location
     (artifacts/ dir? .kspec/artifacts?), git handling (LFS? gitignore? committed?).
-  _ulid: 01KF9G227F2FZ04EKX7A1PSHCG
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 4
+  tags:
+    - spike
+    - design
+  vcs_refs: []
+  created_at: '2026-01-18T21:26:59.054Z'
+  notes: []
+  todos: []
+- title: Add append-only notes to spec items
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - feature
+    - spec
+  description: >-
+    Spec notes feature - append-only notes on spec items for capturing implementation gotchas,
+    learnings, and context. Similar to task notes but for specs. Use case: documenting things like
+    'git worktree prune needed for orphaned worktrees' that are valuable for
+    maintenance/reimplementation but don't belong in formal AC.
+  _ulid: 01KF9G2XR8ADWP4W6CXVB6JHJ4
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T21:26:59.054Z'
+  created_at: '2026-01-18T21:27:27.239Z'
   notes: []
   todos: []

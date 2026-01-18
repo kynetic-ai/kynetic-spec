@@ -29,18 +29,6 @@ inbox:
       - workflow
       - meta
     added_by: '@claude'
-  - _ulid: 01KF28DKM459J41MP8HDMCMEVC
-    text: >-
-      Spec notes feature - append-only notes on spec items for capturing implementation gotchas,
-      learnings, and context. Similar to task notes but for specs. Use case: documenting things like
-      'git worktree prune needed for orphaned worktrees' that are valuable for
-      maintenance/reimplementation but don't belong in formal AC.
-    created_at: '2026-01-16T01:58:47.685Z'
-    tags:
-      - feature
-      - spec
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF3PJWJS42Y0QZFKWMX3A4D9
     text: >-
       CLI output parity - JSON and human-readable outputs can drift when adding features.
