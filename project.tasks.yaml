@@ -7191,7 +7191,7 @@
   type: task
   spec_ref: '@task-add-meta-ref'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-reference-integration'
@@ -7209,6 +7209,9 @@
         src/cli/commands/task.ts:109,142-158. Includes validation that ref resolves to meta item.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:58.202Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:58.202Z'
 - _ulid: 01KF4WVXAX2M343EX8M9G2P932
   slugs:
     - task-meta-reference-queries
