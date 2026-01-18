@@ -501,3 +501,14 @@ inbox:
       - dx
       - meta
     added_by: '@claude'
+  - _ulid: 01KF7HVDJH6W8V5PT4S2CYCRYF
+    text: >-
+      Command-specific --json flags conflict with global --json flag in Commander. Solution: use
+      global flag only, check isJsonMode() instead of options.json. This pattern should be
+      documented or enforced via convention.
+    created_at: '2026-01-18T03:19:49.585Z'
+    tags:
+      - cli
+      - testing
+      - dx
+    added_by: '@claude'
