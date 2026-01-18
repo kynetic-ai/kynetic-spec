@@ -740,3 +740,13 @@ inbox:
       - cli
       - dx
     added_by: '@claude'
+  - _ulid: 01KF7VZHR0GAPAKTZED3W686RK
+    text: >-
+      Spike tasks with no code output don't need commits - the value is in task notes documenting
+      research and decisions. Consider whether session checkpoint should handle this differently
+      (show 'research task, no changes' vs 'forgot to commit').
+    created_at: '2026-01-18T06:16:50.688Z'
+    tags:
+      - reflection
+      - workflow
+    added_by: '@claude'

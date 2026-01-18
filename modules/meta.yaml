@@ -7,7 +7,7 @@ title: Meta-Spec System
 type: module
 status:
   maturity: draft
-  implementation: in_progress
+  implementation: implemented
 description: |
   Meta-spec is the layer that defines HOW work happens, separate from
   WHAT is being built (spec) and tracking WORK (tasks).
