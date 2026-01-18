@@ -6,7 +6,7 @@ title: Schema and Structure
 type: module
 status:
   maturity: draft
-  implementation: not_started
+  implementation: implemented
 description: |
   Defines the schema layer: what item types exist, how validation
   works, the file structure options, and the status lifecycle
