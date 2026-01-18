@@ -804,3 +804,13 @@ inbox:
       - reflection
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF7YEXNQK3N9EG5X9VS5N83M
+    text: >-
+      Command suggestion feature implemented cleanly using Levenshtein distance. The threshold of 3
+      seems to work well for catching typos without false positives. Commander.js already handles
+      subcommand suggestions, so only needed top-level command handling.
+    created_at: '2026-01-18T07:00:11.576Z'
+    tags:
+      - reflection
+      - cli
+    added_by: '@claude'
