@@ -1137,7 +1137,7 @@ export function registerMetaCommands(program: Command): void {
 
           if (referencingTasks.length > 0) {
             const taskRefs = referencingTasks
-              .map((t) => `@${t.slug || t._ulid.substring(0, 8)}`)
+              .map((t) => `@${t.slugs?.[0] || t._ulid.substring(0, 8)}`)
               .join(', ');
             error(
               `Cannot delete ${itemLabel}: Referenced by ${referencingTasks.length} task(s): ${taskRefs}. Use --confirm to override.`
