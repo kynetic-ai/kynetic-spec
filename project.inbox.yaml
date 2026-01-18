@@ -19,20 +19,6 @@ inbox:
     created_at: '2026-01-15T16:13:16.998Z'
     tags: []
     added_by: '@claude'
-  - _ulid: 01KF1JPF8P6VDNPY4S9YAJ797P
-    text: >-
-      Artifacts feature - storage for large files and non-text artifacts tied to specs/tasks. Use
-      cases: reference images, research docs, generated diagrams, data files, PDFs. Unknowns:
-      integration model (spec-ref? task-ref? standalone?), reference syntax (@artifact?),
-      organization (by task? by type? flat?), cleanup/lifecycle (archive with task? manual?),
-      storage location (artifacts/ dir? .kspec/artifacts?), git handling (LFS? gitignore?
-      committed?).
-    created_at: '2026-01-15T19:39:09.462Z'
-    tags:
-      - feature
-      - design
-      - artifacts
-    added_by: '@claude'
   - _ulid: 01KF1V53RYTWER59VR53W1CSTW
     text: >-
       Spec review process: 3 parallel agents (internal fit, prior art comparison, external research)
