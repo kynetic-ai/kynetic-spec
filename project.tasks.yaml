@@ -6101,6 +6101,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Fully implemented observation-task resolution loop with auto-populate, session reminders, and
+    query filters
   depends_on:
     - '@task-observations'
   context: []
@@ -6109,6 +6112,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.022Z'
   started_at: '2026-01-18T11:09:39.187Z'
+  completed_at: '2026-01-18T11:19:26.340Z'
   notes:
     - _ulid: 01KF8D9CXVH48NPC49GCGZHRG7
       created_at: '2026-01-18T11:19:19.227Z'
@@ -6132,10 +6136,6 @@
         All tests passing.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T11:19:26.340Z'
-  closed_reason: >-
-    Fully implemented observation-task resolution loop with auto-populate, session reminders, and
-    query filters
 - _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
   slugs:
     - task-context-schema
@@ -6143,7 +6143,7 @@
   type: task
   spec_ref: '@context-schema'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-session-context-research'
@@ -6154,6 +6154,7 @@
   created_at: '2026-01-17T02:34:36.051Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T11:47:11.046Z'
 - _ulid: 01KF4WVWNCZXK2B7DJR9MASK2J
   slugs:
     - task-context-storage
