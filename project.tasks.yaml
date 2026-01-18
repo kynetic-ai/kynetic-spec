@@ -6731,9 +6731,17 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.309Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T12:37:10.547Z'
+  notes:
+    - _ulid: 01KF8HY636KZZR7K49ZXAYZYME
+      created_at: '2026-01-18T12:40:34.662Z'
+      author: '@claude'
+      content: >-
+        Added --type and --workflow filters to kspec meta observations command. Both filters work
+        correctly in combination with existing --all, --promoted, and --pending-resolution flags.
+        All tests pass (499 passed). Verified functionality with manual tests.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWXHTZRQ6B6A69HZV7NB
   slugs:
     - task-kspec-meta-promote
