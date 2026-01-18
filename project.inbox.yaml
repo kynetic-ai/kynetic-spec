@@ -573,3 +573,16 @@ inbox:
       - ralph
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF7MGV986G6QFAT2853AKP75
+    text: >-
+      Iteration 4 findings: (1) Inbox and task notes live in shadow branch (.kspec/) not main -
+      explains why 'git status' on main showed clean after adding inbox items. (2) Task @01KF3E5H
+      blocked by file auto-revert issue - implementation code deleted by linter twice. (3) Session
+      started on stale branch from previous iteration. (4) Session context showed completed task as
+      ready. All documented in other inbox items.
+    created_at: '2026-01-18T04:06:28.904Z'
+    tags:
+      - reflection
+      - ralph
+      - meta
+    added_by: '@claude'
