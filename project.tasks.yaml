@@ -5589,6 +5589,33 @@
 
         Schema is complete. CLI display commands work. Validation integration needs implementation.
       supersedes: null
+    - _ulid: 01KF896J61BJNWHS7S3VQ7BXJD
+      created_at: '2026-01-18T10:07:52.001Z'
+      author: '@claude'
+      content: |-
+        Current state: Partially implemented. Schema complete, CLI display commands working.
+
+        Acceptance criteria status:
+        - AC-1: ✓ DONE - 'meta conventions' outputs table with domain/rules/validation
+        - AC-2: ✓ DONE - '--domain' filter shows full convention details
+        - AC-5: ✓ DONE - '--json' outputs structured JSON
+        - AC-3: ✗ TODO - 'validate --conventions' with regex validation
+        - AC-4: ✗ TODO - prose convention skip handling in validation
+
+        Remaining work:
+        1. Add --conventions flag to validate command
+        2. Implement convention validation in src/parser/validate.ts
+        3. For regex type: apply pattern to relevant content, report violations
+        4. For prose type: skip with info message
+        5. Add tests for convention validation
+
+        Files to modify:
+        - src/cli/commands/validate.ts (add --conventions flag)
+        - src/parser/validate.ts (add validateConventions function)
+        - tests/meta.test.ts (add convention validation tests)
+
+        This is 60% complete (3/5 ACs). Deferred validation integration to focused session.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWCA199XYTH30HWQ399A
   slugs:
