@@ -8702,25 +8702,47 @@
   created_at: '2026-01-18T21:40:18.300Z'
   notes: []
   todos: []
-- title: Add subagent review workflow on task complete
+- _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
+  slugs: []
+  title: Add subagent review workflow on task complete
   type: task
-  priority: 2
-  spec_ref: null
-  tags:
-    - agents
-    - alignment
   description: >-
     Subagent review on task complete - when agent marks task complete, include instructions to spawn
     review subagent. Subagent runs kspec task review to get task details, linked spec, acceptance
     criteria, git diff since started_at. Reports gaps between spec and implementation back to main
     agent. Configurable via setup (opt-in/out). Ties into alignment system.
-  _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - agents
+    - alignment
+  vcs_refs: []
+  created_at: '2026-01-18T23:28:50.833Z'
+  notes: []
+  todos: []
+- title: Create INSTALL.md with agent-focused setup instructions
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - docs
+    - agents
+  description: >-
+    Create INSTALL.md with agent-focused setup instructions: Step-by-step guide for agents to
+    install kspec in a new or existing repo from scratch. Should cover: npm install, kspec init,
+    worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
+    concise, copy-pasteable commands, clear success criteria.
+  _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T23:28:50.833Z'
+  created_at: '2026-01-18T23:29:26.784Z'
   notes: []
   todos: []

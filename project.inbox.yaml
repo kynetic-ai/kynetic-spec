@@ -158,18 +158,6 @@ inbox:
       - setup
       - dx
     added_by: '@claude'
-  - _ulid: 01KF6FM8KNMB7ZKG8A1AK42N9S
-    text: >-
-      Create INSTALL.md with agent-focused setup instructions: Step-by-step guide for agents to
-      install kspec in a new or existing repo from scratch. Should cover: npm install, kspec init,
-      worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
-      concise, copy-pasteable commands, clear success criteria.
-    created_at: '2026-01-17T17:21:43.542Z'
-    tags:
-      - docs
-      - dx
-      - agents
-    added_by: '@claude'
   - _ulid: 01KF6H34MJMWQ8R54AZZ8FKCCH
     text: >-
       ACP type safety audit: Review and strengthen typing across ACP client implementation. Current
