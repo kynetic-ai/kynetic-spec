@@ -8520,24 +8520,44 @@
         Pattern: show what would happen without executing (like terraform plan)
       supersedes: null
   todos: []
-- title: Add --tree flag to item list command
+- _ulid: 01KF9FWXPG3YYDF5PZEY62K4HH
+  slugs: []
+  title: Add --tree flag to item list command
+  type: task
+  description: >-
+    Item list --tree or --hierarchy flag - shows parent/child structure for finding where to place
+    new items. Friction: during triage had to grep/search to find @cli module since flat list
+    doesn't show nesting.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
+  vcs_refs: []
+  created_at: '2026-01-18T21:24:10.576Z'
+  notes: []
+  todos: []
+- title: Add --priority flag to derive command
   type: task
   priority: 3
   spec_ref: null
   tags:
     - cli
-    - dx
+    - derive
   description: >-
-    Item list --tree or --hierarchy flag - shows parent/child structure for finding where to place
-    new items. Friction: during triage had to grep/search to find @cli module since flat list
-    doesn't show nesting.
-  _ulid: 01KF9FWXPG3YYDF5PZEY62K4HH
+    Add --priority flag to derive command to override default P3 when deriving tasks from specs
+    without explicit priority
+  _ulid: 01KF9FX0CEF7P5TT2H33MMM4VR
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T21:24:10.576Z'
+  created_at: '2026-01-18T21:24:13.326Z'
   notes: []
   todos: []
