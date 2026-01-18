@@ -4910,9 +4910,29 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.422Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T09:40:51.498Z'
+  notes:
+    - _ulid: 01KF87PVWYD44817N4EBTX58P0
+      created_at: '2026-01-18T09:41:49.086Z'
+      author: '@claude'
+      content: >-
+        Investigation findings: All infrastructure for meta manifest format is already implemented:
+
+        - Schema (src/schema/meta.ts): Complete with MetaManifestSchema, AgentSchema,
+        WorkflowSchema, ConventionSchema, ObservationSchema
+
+        - Parser (src/parser/meta.ts): Full implementation with loadMetaContext, findMetaManifest,
+        CRUD operations
+
+        - CLI commands (src/cli/commands/meta.ts): Complete set including show, agents, workflows,
+        conventions, observations, get, list, add, set, delete
+
+        - Validation integration: AC-meta-manifest-2 satisfied (validate command shows meta summary)
+
+
+        Checking what still needs to be done based on ACs...
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW1N2XVGXKQHY1PRJVS0
   slugs:
     - task-meta-includes
