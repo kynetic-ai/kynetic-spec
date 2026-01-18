@@ -231,7 +231,7 @@ features:
 
           Enable via:
           - KSPEC_DEBUG=1 environment variable
-          - --verbose flag on any command
+          - --debug-shadow flag on any command
 
           When enabled:
           - Auto-commit failures are reported to stderr
@@ -243,7 +243,7 @@ features:
             when: any state-changing command runs
             then: error message is printed to stderr
           - id: ac-2
-            given: '--verbose flag is passed and auto-commit fails'
+            given: '--debug-shadow flag is passed and auto-commit fails'
             when: any state-changing command runs
             then: error message is printed to stderr
           - id: ac-3
