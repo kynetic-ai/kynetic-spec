@@ -595,17 +595,6 @@ inbox:
       - kspec-meta
       - reflection
     added_by: '@claude'
-  - _ulid: 01KF8C89AC6CHKJNP2GDSZC9ZP
-    text: >-
-      Convention validation foundation complete but needs content gathering - current implementation
-      validates convention schema but to be fully functional, needs integration with actual content
-      sources (git log for commits, task notes for note validation, etc.). Could be a future
-      enhancement.
-    created_at: '2026-01-18T11:01:14.188Z'
-    tags:
-      - feature
-      - validation
-    added_by: '@claude'
   - _ulid: 01KF8FZC470CHRJH5HPRPQZMAY
     text: >-
       Session checkpoint hook caught uncommitted .gitignore change. Important to follow
