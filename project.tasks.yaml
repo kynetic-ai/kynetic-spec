@@ -5731,9 +5731,29 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.844Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:54:13.976Z'
+  notes:
+    - _ulid: 01KF8BWJMQ8FHFYBXYGV5G8YXS
+      created_at: '2026-01-18T10:54:50.520Z'
+      author: '@claude'
+      content: >-
+        Starting implementation. This is a child requirement under @convention-definitions. Parent
+        ACs AC-3 and AC-4 specify validation behavior:
+
+        - AC-3: validation.type=regex applies pattern, reports violations
+
+        - AC-4: validation.type=prose skips validation with info message
+
+
+        Need to implement:
+
+        1. Validation schema types (regex, enum, range, prose)
+
+        2. Domain-specific validation logic
+
+        3. Integration with 'kspec validate --conventions'
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWF7BXCMP188Z3P1EPQP
   slugs:
     - task-observations
