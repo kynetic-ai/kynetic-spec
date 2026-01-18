@@ -3693,6 +3693,25 @@
         functionality working: auto-generated command lists from Commander, --all flag, --json flag
         (needs debugging), concept topics. Next: write tests.
       supersedes: null
+    - _ulid: 01KF7VP21GDCQGEMRXYSJVRJVR
+      created_at: '2026-01-18T06:11:39.697Z'
+      author: '@claude'
+      content: |-
+        Implementation complete. All 5 acceptance criteria met:
+        AC-1: extractCommandTree() returns complete metadata (17 tests cover introspection)
+        AC-2: 'kspec help task' dynamically lists ALL subcommands from Commander
+        AC-3: 'kspec help --all' shows full reference with all commands and options
+        AC-4: 'kspec help --json' returns structured JSON output
+        AC-5: New subcommands appear automatically without updating help.ts
+
+        Architecture:
+        - src/cli/introspection.ts: Commander introspection (extractCommandTree, findCommand, etc.)
+        - src/cli/help/content.ts: Curated conceptual content separate from auto-generated syntax
+        - src/cli/commands/help.ts: Refactored to merge auto-generated + curated content
+        - tests/help.test.ts: 17 tests covering all introspection functions
+
+        All 409 tests pass. Ready for review.
+      supersedes: null
   todos: []
 - _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
   slugs:
