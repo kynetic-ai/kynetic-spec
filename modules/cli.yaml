@@ -1737,7 +1737,7 @@ features:
         then: The new subcommand appears in help output automatically
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KF56RNN2KPVCDCY0KPK1TTBQ
     slugs:
       - cli-ralph

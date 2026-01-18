@@ -728,3 +728,15 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF7VQPM9F70XC0MGBJJVF4GB
+    text: >-
+      Commander introspection pattern worked well - Commander's structure is stable and
+      well-defined, making it a reliable source of truth for help output. Consider applying this
+      pattern to other CLI frameworks (Oclif, yargs) in future. The separation of auto-generated
+      syntax vs curated concepts is clean and maintainable.
+    created_at: '2026-01-18T06:12:33.545Z'
+    tags:
+      - reflection
+      - cli
+      - dx
+    added_by: '@claude'
