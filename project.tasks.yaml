@@ -2101,7 +2101,7 @@
   type: task
   spec_ref: '@fuzzy-command-suggest'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2114,6 +2114,7 @@
   created_at: '2026-01-15T17:12:16.277Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T06:57:05.929Z'
 - _ulid: 01KF1BBM6X8491F1GS6K79RZYK
   slugs: []
   title: Design spec-drift detection hook for user input
@@ -2512,6 +2513,12 @@
   spec_ref: '@session-context'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Research spike complete. Key findings: (1) Session context would add focus/threads/questions to
+    session start output via .kspec-session file (gitignored). (2) Complementary to existing session
+    commands - captures INTENT vs computed STATE. (3) Recommendation: Defer implementation until we
+    see concrete friction with current task notes/inbox approach. All design questions answered in
+    task notes.
   depends_on: []
   context: []
   priority: 2
@@ -2522,6 +2529,7 @@
   vcs_refs: []
   created_at: '2026-01-15T19:14:22.320Z'
   started_at: '2026-01-18T06:18:25.174Z'
+  completed_at: '2026-01-18T06:20:30.764Z'
   notes:
     - _ulid: 01KF1H9D4YG7SZNTHPBKW0EDT6
       created_at: '2026-01-15T19:14:32.735Z'
@@ -2781,13 +2789,6 @@
         until we identify specific session handoff pain points that notes/inbox don't solve.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T06:20:30.764Z'
-  closed_reason: >-
-    Research spike complete. Key findings: (1) Session context would add focus/threads/questions to
-    session start output via .kspec-session file (gitignored). (2) Complementary to existing session
-    commands - captures INTENT vs computed STATE. (3) Recommendation: Defer implementation until we
-    see concrete friction with current task notes/inbox approach. All design questions answered in
-    task notes.
 - _ulid: 01KF1KB4D199B61AKJ17RM7YFN
   slugs: []
   title: Design shadow branch for meta tracking
