@@ -501,18 +501,6 @@ inbox:
       - workflow
       - review
     added_by: '@claude'
-  - _ulid: 01KF7MG07CHJPSV82VGHW6Q76W
-    text: >-
-      Ralph loop iteration picked already-completed work (CI task). After realizing this, picked
-      task @01KF3E5H (task patch implementation). Made progress but hit tooling blocker - file
-      reverts. Consider: (1) starting iterations with fresh pull, (2) validating task is actually
-      pending before starting, (3) session context generation timing.
-    created_at: '2026-01-18T04:06:01.197Z'
-    tags:
-      - reflection
-      - ralph
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF7MGV986G6QFAT2853AKP75
     text: >-
       Iteration 4 findings: (1) Inbox and task notes live in shadow branch (.kspec/) not main -
