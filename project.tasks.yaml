@@ -4093,6 +4093,14 @@
 
         Pattern matches item add command but creates file + updates manifest includes.
       supersedes: null
+    - _ulid: 01KF82VP5DPVEYFP271SKBQHNB
+      created_at: '2026-01-18T08:17:04.174Z'
+      author: '@claude'
+      content: >-
+        Found and committed partial WIP from previous iteration (commit 12e9666). Includes:
+        module.ts scaffolding, test file structure, CLI registration. Still needs: complete
+        implementation, full test coverage, shadow branch integration testing.
+      supersedes: null
   todos: []
 - _ulid: 01KF3GTPVSNWS42NKTECY2GZK0
   slugs:
