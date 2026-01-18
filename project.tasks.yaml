@@ -7219,7 +7219,7 @@
   type: task
   spec_ref: '@meta-ref-queries'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-reference-integration'
@@ -7237,6 +7237,9 @@
         src/cli/commands/tasks.ts:34,68-77. Added --meta-ref filter option to tasks list.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:46:02.166Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:46:02.166Z'
 - _ulid: 01KF4WVXC41KXZHGADERNWB1KR
   slugs:
     - task-meta-reference-validation
