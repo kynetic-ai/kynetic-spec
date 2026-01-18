@@ -3440,9 +3440,27 @@
     - feedback
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.879Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T01:22:31.130Z'
+  notes:
+    - _ulid: 01KF7B51Y4MFWNC67BXXX8VR3Q
+      created_at: '2026-01-18T01:22:45.317Z'
+      author: '@claude'
+      content: >-
+        Iteration 1 status: Not worked on this iteration.
+
+
+        This iteration focused on completing @task-workflow-definitions instead, which was the
+        highest priority ready task.
+
+
+        Observations task remains ready to start. All acceptance criteria are well-defined (9 ACs
+        covering observation creation, listing, promotion to tasks, resolution, and edge cases).
+
+
+        Next session should continue with this task as it's the next priority 1 meta feature after
+        workflows.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWG3WWK8108GY1PNSH89
   slugs:
     - task-observation-schema

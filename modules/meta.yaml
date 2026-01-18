@@ -607,7 +607,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
     priority: high
     tags:
       - mvp
