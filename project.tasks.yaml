@@ -5062,6 +5062,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: All three spec requirements already implemented and verified working
   depends_on:
     - '@task-meta-manifest'
   context: []
@@ -5070,6 +5071,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.476Z'
   started_at: '2026-01-18T10:01:31.944Z'
+  completed_at: '2026-01-18T10:02:36.081Z'
   notes:
     - _ulid: 01KF88VEB5QFD02W682NTK4FTQ
       created_at: '2026-01-18T10:01:47.621Z'
@@ -5105,8 +5107,6 @@
         and correctly reports meta_ref validation errors.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:02:36.081Z'
-  closed_reason: All three spec requirements already implemented and verified working
 - _ulid: 01KF4WVW3HRCGZFPXJ70QF7BC5
   slugs:
     - task-agent-definitions
@@ -5218,7 +5218,7 @@
   type: task
   spec_ref: '@agent-schema'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-agent-definitions'
@@ -5229,6 +5229,7 @@
   created_at: '2026-01-17T02:34:35.532Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:03:05.276Z'
 - _ulid: 01KF4WVW594JJENY62YYW5A5D2
   slugs:
     - task-agent-capabilities
