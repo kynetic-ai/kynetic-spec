@@ -22,6 +22,7 @@ import {
   registerRalphCommand,
   registerMetaCommands,
   registerLinkCommands,
+  registerModuleCommands,
 } from './commands/index.js';
 
 const program = new Command();
@@ -63,6 +64,7 @@ registerSearchCommand(program);
 registerRalphCommand(program);
 registerMetaCommands(program);
 registerLinkCommands(program);
+registerModuleCommands(program);
 
 // Handle unknown commands with suggestions
 program.on('command:*', (operands) => {
