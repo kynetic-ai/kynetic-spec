@@ -4326,6 +4326,9 @@
   spec_ref: '@status-cascade'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented cascade status updates with interactive prompts for parent-child items. All tests
+    passing.
   depends_on: []
   context: []
   priority: 3
@@ -4335,6 +4338,7 @@
   vcs_refs: []
   created_at: '2026-01-16T13:50:14.068Z'
   started_at: '2026-01-18T08:59:49.773Z'
+  completed_at: '2026-01-18T08:59:49.773Z'
   notes:
     - _ulid: 01KF84WWKD2RQHFJDSBPZG7BXG
       created_at: '2026-01-18T08:52:40.685Z'
@@ -4364,10 +4368,6 @@
         Ready for testing
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T08:59:49.773Z'
-  closed_reason: >-
-    Implemented cascade status updates with interactive prompts for parent-child items. All tests
-    passing.
 - _ulid: 01KF3M1P812JQQ7C6K4SS8YAZQ
   slugs:
     - task-auto-generated-cli-documentation
@@ -4677,7 +4677,7 @@
   title: Increase session start ready task limit from 5 to 10
   type: task
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -4689,6 +4689,7 @@
   created_at: '2026-01-16T22:43:25.905Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T09:10:58.893Z'
 - _ulid: 01KF4FX1XV16YPFK2RVZVHZDJM
   slugs:
     - task-ci-test-runner
