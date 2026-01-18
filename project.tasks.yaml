@@ -8677,13 +8677,10 @@
   created_at: '2026-01-18T21:39:35.001Z'
   notes: []
   todos: []
-- title: Add implementation notes when deriving tasks from specs
+- _ulid: 01KF9GTEQX0ZCNPT52CA06ME2R
+  slugs: []
+  title: Add implementation notes when deriving tasks from specs
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - derive
-    - dx
   description: >-
     Reinforce task creation with implementation notes: When deriving tasks from specs, add
     implementation notes capturing actionable guidance - not just what to build, but how. Include:
@@ -8692,13 +8689,38 @@
     function names to reference. Sets agents up for success rather than discovery. This session
     demonstrated value - research on kynetic chat UI + beads history produced concrete notes that
     will save future implementation time.
-  _ulid: 01KF9GTEQX0ZCNPT52CA06ME2R
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - derive
+    - dx
+  vcs_refs: []
+  created_at: '2026-01-18T21:40:18.300Z'
+  notes: []
+  todos: []
+- title: Add subagent review workflow on task complete
+  type: task
+  priority: 2
+  spec_ref: null
+  tags:
+    - agents
+    - alignment
+  description: >-
+    Subagent review on task complete - when agent marks task complete, include instructions to spawn
+    review subagent. Subagent runs kspec task review to get task details, linked spec, acceptance
+    criteria, git diff since started_at. Reports gaps between spec and implementation back to main
+    agent. Configurable via setup (opt-in/out). Ties into alignment system.
+  _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T21:40:18.300Z'
+  created_at: '2026-01-18T23:28:50.833Z'
   notes: []
   todos: []

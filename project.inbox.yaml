@@ -1,16 +1,4 @@
 inbox:
-  - _ulid: 01KF150ZY1Z272H5CF55NQ4JBP
-    text: >-
-      Subagent review on task complete - when agent marks task complete, include instructions to
-      spawn review subagent. Subagent runs kspec task review to get task details, linked spec,
-      acceptance criteria, git diff since started_at. Reports gaps between spec and implementation
-      back to main agent. Configurable via setup (opt-in/out). Ties into alignment system.
-    created_at: '2026-01-15T15:40:14.146Z'
-    tags:
-      - review
-      - agents
-      - process
-    added_by: '@claude'
   - _ulid: 01KF16XGA6SNNRHFPX15N0HE6F
     text: >-
       Hook for SessionStart or post-compaction to inject relevant context and subtle instructions.
