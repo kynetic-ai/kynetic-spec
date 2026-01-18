@@ -1735,6 +1735,9 @@ features:
         given: A new subcommand is added to Commander definition
         when: '''kspec help <parent>'' is run without updating help.ts'
         then: The new subcommand appears in help output automatically
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KF56RNN2KPVCDCY0KPK1TTBQ
     slugs:
       - cli-ralph
