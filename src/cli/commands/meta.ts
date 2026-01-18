@@ -669,7 +669,11 @@ export function registerMetaCommands(program: Command): void {
         await saveObservation(ctx, observation);
 
         // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
-        success(`Created observation: ${observation._ulid.substring(0, 8)}`);
+        // In JSON mode, return the created observation object
+        output(
+          observation,
+          () => success(`Created observation: ${observation._ulid.substring(0, 8)}`)
+        );
       } catch (err) {
         error(errors.failures.createObservation, err);
         process.exit(1);
