@@ -6861,6 +6861,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Fully implemented kspec meta thread command with all required actions (add, remove, list, clear)
+    and comprehensive test coverage - all 14 tests passing
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6869,6 +6872,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.430Z'
   started_at: '2026-01-18T13:19:29.383Z'
+  completed_at: '2026-01-18T13:24:05.561Z'
   notes:
     - _ulid: 01KF8MDPD8GCE8HMVX21EMVSRG
       created_at: '2026-01-18T13:24:00.041Z'
@@ -6903,10 +6907,6 @@
         All tests passing.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T13:24:05.561Z'
-  closed_reason: >-
-    Fully implemented kspec meta thread command with all required actions (add, remove, list, clear)
-    and comprehensive test coverage - all 14 tests passing
 - _ulid: 01KF4WVX1B8DQ0MHBXJ05FVDB9
   slugs:
     - task-kspec-meta-question
@@ -6959,7 +6959,15 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.524Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WGNM2TGJS7Q0YSE0GR7GS
+      created_at: '2026-01-18T15:45:26.147Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit 750ca54a (2026-01-17) in
+        src/cli/commands/meta.ts:460-537. Command accepts ref to any meta item, supports ULID
+        prefixes and semantic IDs, outputs JSON or formatted display.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVX49KH8XZMK62KMS1YAX
   slugs:
