@@ -5722,7 +5722,7 @@
   type: task
   spec_ref: '@convention-validation'
   derivation: auto
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - '@task-convention-definitions'
@@ -5731,7 +5731,7 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.844Z'
-  started_at: '2026-01-18T10:54:13.976Z'
+  started_at: null
   notes:
     - _ulid: 01KF8BWJMQ8FHFYBXYGV5G8YXS
       created_at: '2026-01-18T10:54:50.520Z'
