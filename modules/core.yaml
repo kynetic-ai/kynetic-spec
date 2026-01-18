@@ -161,7 +161,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Once assigned, a ULID is NEVER changed and NEVER reused.
           If an item is deprecated, its ULID remains; a superseding
