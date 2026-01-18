@@ -5,8 +5,6 @@
  * Each category corresponds to a common error pattern across command files.
  */
 
-import chalk from 'chalk';
-
 /**
  * Reference resolution errors (not found, ambiguous, wrong type)
  */
@@ -35,9 +33,8 @@ export const referenceErrors = {
   notSpecItem: (ref: string) => `Reference "${ref}" is a task, not a spec item. Derive only works on spec items.`,
 
   // Meta reference errors
-  metaRefNotFound: (ref: string) => `meta_ref '${ref}' does not resolve to a valid meta item (agent, workflow, or convention)`,
+  metaRefNotFound: (ref: string) => `meta_ref '${ref}' not found`,
   metaRefPointsToSpec: (ref: string) => `meta_ref '${ref}' points to a spec item; use --spec-ref for product spec references`,
-  metaRefNotFound2: (ref: string) => `meta_ref '${ref}' not found`,
 
   // Spec reference errors
   specRefNotFound: (ref: string) => `Spec reference not found: ${ref}`,
