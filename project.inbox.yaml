@@ -1091,3 +1091,14 @@ inbox:
       - agents
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF88M3A7GT4MPHE7M8WX474X
+    text: >-
+      Parser vs CLI layer disconnect - meta includes were fully implemented in parser but CLI used
+      wrong accessor (metaCtx.manifest.* vs metaCtx.*). This kind of bug suggests value in
+      integration tests that exercise full stack, not just parser logic. Consider: smoke tests for
+      all CLI commands with complex scenarios.
+    created_at: '2026-01-18T09:57:46.951Z'
+    tags:
+      - testing
+      - dx
+    added_by: '@claude'
