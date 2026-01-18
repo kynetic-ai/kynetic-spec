@@ -5266,7 +5266,7 @@
   type: task
   spec_ref: '@agent-capabilities'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-agent-definitions'
@@ -5287,6 +5287,8 @@
         document) and custom project-specific capabilities. Implementation complete from prior work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:03:53.868Z'
+  closed_reason: Capabilities field implemented as array of strings, supports freeform values
 - _ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
   slugs:
     - task-agent-session-protocol
