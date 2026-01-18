@@ -1386,3 +1386,13 @@ inbox:
       - process
       - dx
     added_by: '@claude'
+  - _ulid: 01KF8K600Q12W4XFDK3DAWSFG0
+    text: >-
+      PR skill integration: When tasks only update .kspec tracking (no code changes), the /pr skill
+      correctly detects no changes and exits cleanly. Task completion updates shadow branch
+      automatically via kspec commands.
+    created_at: '2026-01-18T13:02:19.159Z'
+    tags:
+      - workflow
+      - pr
+    added_by: '@claude'
