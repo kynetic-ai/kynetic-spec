@@ -3790,6 +3790,58 @@
 
         3. Add acceptance criteria to @meta-commands spec for what we've built
       supersedes: null
+    - _ulid: 01KF7KPG3TCZN5QANYR58BTT3S
+      created_at: '2026-01-18T03:52:05.499Z'
+      author: '@claude'
+      content: >-
+        Session 3 checkpoint: Fixed critical bugs in meta delete command and merged PR #24.
+
+
+        CRITICAL FIXES IMPLEMENTED:
+
+        1. Dangling reference validation - prevents deletion of meta items referenced by
+        tasks/observations
+
+        2. Reference resolution bug fix - properly handles mixed reference formats (ULID vs semantic
+        ID)
+
+        3. Spec alignment - updated spec to use --confirm instead of --force
+
+
+        TECHNICAL DETAILS:
+
+        - Added resolveMetaRefToUlid() helper to normalize all reference formats
+
+        - Both deletion target and task/observation references resolve to ULIDs for comparison
+
+        - Handles: agent.id, workflow.id, convention.domain, ULID prefixes
+
+        - 5 new integration tests covering all reference validation scenarios
+
+
+        PR STATUS:
+
+        - PR #24: Meta mutation commands (add, set, delete) merged to main
+
+        - All tests passing (56 passed, 1 skipped)
+
+        - Three review cycles completed (addressed all critical issues)
+
+
+        COMMANDS COMPLETED (14 total):
+
+        All meta CLI commands now implemented except session context commands which are blocked by
+        @01KF1H92
+
+
+        NEXT STEPS:
+
+        - Task is essentially complete - all core meta CRUD operations working
+
+        - Session context commands blocked by missing spec (research task @01KF1H92)
+
+        - Could mark complete or continue with other ready tasks
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
@@ -5170,18 +5222,18 @@
         - Verified with `--dry-run --focus "..."` - focus appears correctly in prompt
       supersedes: null
   todos: []
-- title: Test task for edge case
+- _ulid: 01KF7JVTJV62XQBGAYMCJ62Z9N
+  slugs: []
+  title: Test task for edge case
   type: task
   spec_ref: null
   meta_ref: '@edge-case-agent'
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KF7JVTJV62XQBGAYMCJ62Z9N
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-18T03:37:31.483Z'
   notes: []
