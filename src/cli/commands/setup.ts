@@ -3,6 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as os from 'node:os';
 import { success, error, warn } from '../output.js';
+import { errors } from '../../strings/index.js';
 
 /**
  * Supported agent types for auto-configuration
@@ -575,11 +576,11 @@ export function registerSetupCommand(program: Command): void {
 
           console.log('\nRestart your agent session for changes to take effect.');
         } else {
-          error(`Failed to install config for ${detected.type}`);
+          error(errors.failures.installConfig(detected.type));
           printManualInstructions(detected.type);
         }
       } catch (err) {
-        error('Setup failed', err);
+        error(errors.failures.setupFailed, err);
         process.exit(1);
       }
     });

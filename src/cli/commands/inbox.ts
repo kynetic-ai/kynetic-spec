@@ -23,6 +23,7 @@ import {
 } from '../output.js';
 import type { InboxItemInput, TaskInput } from '../../schema/index.js';
 import * as readline from 'node:readline';
+import { errors } from '../../strings/index.js';
 
 /**
  * Format relative time for display
@@ -55,7 +56,7 @@ function shortUlid(ulid: string): string {
 function resolveInboxRef(ref: string, items: LoadedInboxItem[]): LoadedInboxItem {
   const item = findInboxItemByRef(items, ref);
   if (!item) {
-    error(`Inbox item not found: ${ref}`);
+    error(errors.reference.inboxNotFound(ref));
     process.exit(3);
   }
   return item;
@@ -106,7 +107,7 @@ export function registerInboxCommands(program: Command): void {
 
         success(`Captured: ${shortUlid(item._ulid)}`, { item });
       } catch (err) {
-        error('Failed to add inbox item', err);
+        error(errors.failures.addInboxItem, err);
         process.exit(1);
       }
     });
@@ -159,7 +160,7 @@ export function registerInboxCommands(program: Command): void {
           }
         });
       } catch (err) {
-        error('Failed to list inbox items', err);
+        error(errors.failures.listInboxItems, err);
         process.exit(1);
       }
     });
@@ -188,7 +189,7 @@ export function registerInboxCommands(program: Command): void {
           console.log('');
           title = await prompt('Task title: ');
           if (!title) {
-            error('Task title is required');
+            error(errors.validation.titleRequired);
             process.exit(2);
           }
         }
@@ -220,7 +221,7 @@ export function registerInboxCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'inbox-promote', task.slugs[0] || index.shortUlid(task._ulid));
         success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, { task });
       } catch (err) {
-        error('Failed to promote inbox item', err);
+        error(errors.failures.promoteInboxItem, err);
         process.exit(1);
       }
     });
@@ -251,11 +252,11 @@ export function registerInboxCommands(program: Command): void {
           await commitIfShadow(ctx.shadow, 'inbox-delete', shortUlid(item._ulid));
           success(`Deleted inbox item: ${shortUlid(item._ulid)}`);
         } else {
-          error('Failed to delete inbox item');
+          error(errors.failures.deleteInboxItem);
           process.exit(1);
         }
       } catch (err) {
-        error('Failed to delete inbox item', err);
+        error(errors.failures.deleteInboxItem, err);
         process.exit(1);
       }
     });
@@ -283,7 +284,7 @@ export function registerInboxCommands(program: Command): void {
           console.log(item.text);
         });
       } catch (err) {
-        error('Failed to get inbox item', err);
+        error(errors.failures.getInboxItem, err);
         process.exit(1);
       }
     });
