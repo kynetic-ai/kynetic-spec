@@ -646,6 +646,111 @@ describe('Integration: meta observations', () => {
   });
 });
 
+describe('Integration: observation-task resolution loop', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should auto-populate resolution from completed task', () => {
+    // Create observation
+    const createOutput = kspec('meta observe friction "CLI is slow"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    // Promote to task
+    const promoteOutput = kspec(`meta promote @${obsRef} --title "Optimize CLI performance"`, tempDir);
+    const taskMatch = promoteOutput.match(/Created task: @([A-Z0-9]{8})/);
+    const taskRef = taskMatch![1];
+
+    // Start and complete the task
+    kspec(`task start @${taskRef}`, tempDir);
+    kspec(`task complete @${taskRef} --reason "Reduced startup time by 50%"`, tempDir);
+
+    // Resolve observation without explicit text (should auto-populate)
+    const resolveOutput = kspec(`meta resolve @${obsRef}`, tempDir);
+    expect(resolveOutput).toMatch(/Resolved: [A-Z0-9]{8}/);
+
+    // Verify resolution includes task info
+    const observations = kspecJson<any[]>('meta observations --all', tempDir);
+    const obs = observations.find(o => o._ulid.startsWith(obsRef));
+
+    expect(obs.resolved).toBe(true);
+    expect(obs.resolution).toContain(`@${taskRef}`);
+    expect(obs.resolution).toContain('Reduced startup time by 50%');
+  });
+
+  it('should filter observations with --promoted', () => {
+    // Create two observations, promote one
+    kspec('meta observe friction "Issue 1"', tempDir);
+    const obs2Output = kspec('meta observe friction "Issue 2"', tempDir);
+    const match = obs2Output.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    kspec(`meta promote @${obsRef} --title "Fix Issue 2"`, tempDir);
+
+    // List promoted observations
+    const promoted = kspecJson<any[]>('meta observations --promoted', tempDir);
+
+    // Only the promoted one should appear
+    expect(promoted.length).toBe(1);
+    expect(promoted[0]._ulid.startsWith(obsRef)).toBe(true);
+    expect(promoted[0].promoted_to).toBeDefined();
+  });
+
+  it('should filter observations with --pending-resolution', () => {
+    // Create observation, promote, complete task
+    const createOutput = kspec('meta observe friction "Needs fix"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    const promoteOutput = kspec(`meta promote @${obsRef} --title "Fix the issue"`, tempDir);
+    const taskMatch = promoteOutput.match(/Created task: @([A-Z0-9]{8})/);
+    const taskRef = taskMatch![1];
+
+    kspec(`task start @${taskRef}`, tempDir);
+    kspec(`task complete @${taskRef} --reason "Fixed"`, tempDir);
+
+    // List pending resolution
+    const pending = kspecJson<any[]>('meta observations --pending-resolution', tempDir);
+
+    // Should include our observation
+    const found = pending.find(o => o._ulid.startsWith(obsRef));
+    expect(found).toBeDefined();
+    expect(found.resolved).toBe(false);
+    expect(found.promoted_to).toBeDefined();
+
+    // After resolving, should not appear
+    kspec(`meta resolve @${obsRef}`, tempDir);
+    const pendingAfter = kspecJson<any[]>('meta observations --pending-resolution', tempDir);
+    const foundAfter = pendingAfter.find(o => o._ulid.startsWith(obsRef));
+    expect(foundAfter).toBeUndefined();
+  });
+
+  it('should error when resolving with incomplete task', () => {
+    // Create observation, promote, but don't complete task
+    const createOutput = kspec('meta observe friction "Not done yet"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    kspec(`meta promote @${obsRef} --title "WIP task"`, tempDir);
+
+    // Try to resolve without text (task not completed)
+    try {
+      const output = kspec(`meta resolve @${obsRef}`, tempDir);
+      expect(output).toContain('not completed yet');
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain('not completed yet');
+    }
+  });
+});
+
 describe('Integration: meta_ref in tasks', () => {
   let tempDir: string;
 
