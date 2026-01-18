@@ -30,6 +30,7 @@ import {
   type Workflow,
   type Convention,
   type Observation,
+  type LoadedTask,
 } from '../../parser/index.js';
 import { type ObservationType } from '../../schema/index.js';
 import { output, error, success, isJsonMode } from '../output.js';
@@ -708,7 +709,10 @@ export function registerMetaCommands(program: Command): void {
           observations = observations.filter((obs) => {
             if (!obs.promoted_to || obs.resolved) return false;
             const taskResult = index.resolve(obs.promoted_to);
-            return taskResult.ok && taskResult.item.type === 'task' && taskResult.item.status === 'completed';
+            if (!taskResult.ok) return false;
+            const item = taskResult.item;
+            // Type guard: check if item is a task with status
+            return 'status' in item && item.status === 'completed';
           });
         }
 
@@ -847,14 +851,21 @@ export function registerMetaCommands(program: Command): void {
           const index = new ReferenceIndex(tasks, items);
           const taskResult = index.resolve(observation.promoted_to);
 
-          if (taskResult.ok && taskResult.item.type === 'task') {
-            const task = taskResult.item;
-            if (task.status === 'completed' && task.closed_reason) {
-              finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
-            } else if (task.status === 'completed') {
-              finalResolution = `Resolved via task ${observation.promoted_to}`;
+          if (taskResult.ok) {
+            const item = taskResult.item;
+            // Type guard: ensure this is a task with status and closed_reason
+            if ('status' in item && 'closed_reason' in item) {
+              const task = item as LoadedTask;
+              if (task.status === 'completed' && task.closed_reason) {
+                finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
+              } else if (task.status === 'completed') {
+                finalResolution = `Resolved via task ${observation.promoted_to}`;
+              } else {
+                error(`Task ${observation.promoted_to} is not completed yet`);
+                process.exit(1);
+              }
             } else {
-              error(`Task ${observation.promoted_to} is not completed yet`);
+              error(`Reference ${observation.promoted_to} is not a task`);
               process.exit(1);
             }
           } else {
