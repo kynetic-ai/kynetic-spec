@@ -5545,9 +5545,23 @@
     - conventions
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.758Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:06:02.956Z'
+  notes:
+    - _ulid: 01KF8948X8WWNBS71ZZFDRJCD4
+      created_at: '2026-01-18T10:06:36.968Z'
+      author: '@claude'
+      content: |-
+        Reviewed implementation status:
+        - ConventionSchema fully implemented (src/schema/meta.ts:95-101)
+        - AC-1: ✓ 'meta conventions' outputs table with domain, rules count, validation
+        - AC-2: ✓ '--domain' filter shows full details for specific convention  
+        - AC-5: ✓ '--json' outputs JSON with domain, rules, examples, validation
+        - AC-3: ✗ 'validate --conventions' with regex validation - NOT implemented
+        - AC-4: ✗ prose convention skip handling - NOT implemented
+
+        Schema is complete. CLI display commands work. Validation integration needs implementation.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWCA199XYTH30HWQ399A
   slugs:
     - task-convention-schema
