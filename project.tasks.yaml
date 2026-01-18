@@ -2705,6 +2705,81 @@
 
         Documentation: Add to AGENTS.md under session management.
       supersedes: null
+    - _ulid: 01KF7W5ZDBE2EA7W6JT9N8BAS4
+      created_at: '2026-01-18T06:20:21.291Z'
+      author: '@claude'
+      content: >-
+        ## Implementation Recommendations:
+
+
+        ### Phase 1: Core Infrastructure
+
+        1. Define SessionContextSchema in src/schema/meta.ts
+
+        2. Add load/save functions in src/parser/meta.ts
+
+        3. File location: .kspec-session (not .kspec/session)
+
+        4. Add to .gitignore via init/setup commands
+
+
+        ### Phase 2: Context Manipulation Commands
+
+        Implement 4 commands under kspec meta:
+
+        - meta focus [ref|--clear] - get/set/clear focus
+
+        - meta thread <add|remove|list|clear> [text] - manage threads  
+
+        - meta question <add|remove|list|clear> [text] - manage questions
+
+        - meta context [--json|--clear] - show full context
+
+
+        ### Phase 3: Session Start Integration
+
+        Modify gatherSessionContext() in session.ts:
+
+        - Load .kspec-session if it exists
+
+        - Add session_context field to SessionContext interface
+
+        - Update formatSessionContext() to render context section
+
+        - Only show section if context file exists
+
+
+        ### Acceptance Criteria:
+
+        The 3 child requirements (@context-schema, @context-storage, @context-integration) already
+        define ACs.
+
+
+        ### Next Steps:
+
+        1. This spike is complete - findings documented
+
+        2. Recommend updating @context-integration spec with specific recommendations from Q1-Q5
+
+        3. Then derive tasks for implementation
+
+        4. Priority: Medium (useful but not blocking core workflows)
+
+
+        ### Alternative: Don't Implement Yet
+
+        Consider: Is session context solving a real problem we have?
+
+        - Ralph loop works fine without it
+
+        - Task notes capture most context already
+
+        - Adding complexity without clear use case
+
+
+        Recommendation: Wait for concrete friction before implementing. Mark spec as 'deferred'
+        until we identify specific session handoff pain points that notes/inbox don't solve.
+      supersedes: null
   todos: []
 - _ulid: 01KF1KB4D199B61AKJ17RM7YFN
   slugs: []
