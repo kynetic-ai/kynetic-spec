@@ -5507,6 +5507,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Workflow trigger field implemented as required freeform string
   depends_on:
     - '@task-workflow-definitions'
   context: []
@@ -5515,6 +5516,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.733Z'
   started_at: '2026-01-18T10:05:39.950Z'
+  completed_at: '2026-01-18T10:05:57.629Z'
   notes:
     - _ulid: 01KF892VY99GG6FZD8N3JC80WG
       created_at: '2026-01-18T10:05:50.922Z'
@@ -5526,8 +5528,6 @@
         'task complete', etc. Implementation complete from prior work.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:05:57.629Z'
-  closed_reason: Workflow trigger field implemented as required freeform string
 - _ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
   slugs:
     - task-convention-definitions
@@ -5535,7 +5535,7 @@
   type: task
   spec_ref: '@convention-definitions'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -5547,6 +5547,7 @@
   created_at: '2026-01-17T02:34:35.758Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:06:02.956Z'
 - _ulid: 01KF4WVWCA199XYTH30HWQ399A
   slugs:
     - task-convention-schema
