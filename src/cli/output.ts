@@ -25,6 +25,19 @@ export function isJsonMode(): boolean {
 }
 
 /**
+ * Global verbose mode (set by --verbose flag)
+ */
+let globalVerboseMode = false;
+
+export function setVerboseMode(enabled: boolean): void {
+  globalVerboseMode = enabled;
+}
+
+export function getVerboseMode(): boolean {
+  return globalVerboseMode;
+}
+
+/**
  * Output data - JSON if --json flag, otherwise formatted
  */
 export function output(data: unknown, formatter?: () => void): void {

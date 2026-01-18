@@ -16,6 +16,14 @@ import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
+// Import getVerboseMode for checking CLI --debug-shadow flag
+// We use a getter function to avoid issues with circular dependencies
+let getVerboseModeFunc: (() => boolean) | null = null;
+
+export function setVerboseModeGetter(getter: () => boolean): void {
+  getVerboseModeFunc = getter;
+}
+
 /**
  * Shadow branch configuration
  */
@@ -65,6 +73,28 @@ export const SHADOW_BRANCH_NAME = 'kspec-meta';
  * Default shadow worktree directory
  */
 export const SHADOW_WORKTREE_DIR = '.kspec';
+
+/**
+ * Check if debug mode is enabled.
+ * Debug mode can be enabled via:
+ * - KSPEC_DEBUG=1 environment variable
+ * - Verbose flag (passed from CLI --debug-shadow option)
+ *
+ * When enabled, shadow branch operations output detailed information.
+ */
+export function isDebugMode(verboseFlag?: boolean): boolean {
+  if (process.env.KSPEC_DEBUG === '1') {
+    return true;
+  }
+  if (verboseFlag === true) {
+    return true;
+  }
+  // Check CLI --debug-shadow flag via getter
+  if (getVerboseModeFunc?.()) {
+    return true;
+  }
+  return false;
+}
 
 /**
  * Check if we're in a git repository
@@ -261,13 +291,21 @@ export function createShadowError(status: ShadowStatus): ShadowError {
  *
  * @param worktreeDir Path to .kspec/ directory
  * @param message Commit message
+ * @param verbose Enable debug output (defaults to KSPEC_DEBUG env var)
  * @returns true if commit succeeded, false if nothing to commit
  */
 export async function shadowAutoCommit(
   worktreeDir: string,
-  message: string
+  message: string,
+  verbose?: boolean
 ): Promise<boolean> {
+  const debug = isDebugMode(verbose);
+
   try {
+    if (debug) {
+      console.error(`[DEBUG] Shadow auto-commit: git add -A (cwd: ${worktreeDir})`);
+    }
+
     // Stage all changes
     execSync('git add -A', {
       cwd: worktreeDir,
@@ -276,14 +314,25 @@ export async function shadowAutoCommit(
 
     // Check if there are staged changes
     try {
+      if (debug) {
+        console.error(`[DEBUG] Shadow auto-commit: git diff --cached --quiet`);
+      }
+
       execSync('git diff --cached --quiet', {
         cwd: worktreeDir,
         stdio: ['pipe', 'pipe', 'pipe'],
       });
       // No error = no changes
+      if (debug) {
+        console.error(`[DEBUG] Shadow auto-commit: No changes to commit`);
+      }
       return false;
     } catch {
       // Error = there are changes, proceed with commit
+    }
+
+    if (debug) {
+      console.error(`[DEBUG] Shadow auto-commit: git commit -m "${message}"`);
     }
 
     // Commit with message
@@ -292,10 +341,16 @@ export async function shadowAutoCommit(
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
+    if (debug) {
+      console.error(`[DEBUG] Shadow auto-commit: Success`);
+    }
+
     return true;
   } catch (error) {
-    // Log error but don't throw - auto-commit failure shouldn't break the operation
-    console.error('Shadow auto-commit failed:', error);
+    // AC: Only log error if debug mode enabled
+    if (debug) {
+      console.error('Shadow auto-commit failed:', error);
+    }
     return false;
   }
 }
@@ -393,24 +448,26 @@ export function resolveShadowPath(
  * @param operation Operation type (e.g., 'task-start', 'task-complete')
  * @param ref Reference slug or ULID (optional)
  * @param detail Additional detail for commit message (optional)
+ * @param verbose Enable debug output (defaults to KSPEC_DEBUG env var)
  * @returns true if committed, false if shadow not enabled or nothing to commit
  */
 export async function commitIfShadow(
   shadowConfig: ShadowConfig | null,
   operation: string,
   ref?: string,
-  detail?: string
+  detail?: string,
+  verbose?: boolean
 ): Promise<boolean> {
   if (!shadowConfig?.enabled) {
     return false;
   }
 
   const message = generateCommitMessage(operation, ref, detail);
-  const committed = await shadowAutoCommit(shadowConfig.worktreeDir, message);
+  const committed = await shadowAutoCommit(shadowConfig.worktreeDir, message, verbose);
 
   // AC-1: Fire-and-forget push after each commit
   if (committed) {
-    shadowPushAsync(shadowConfig.worktreeDir);
+    shadowPushAsync(shadowConfig.worktreeDir, verbose);
   }
 
   return committed;
@@ -608,24 +665,41 @@ export interface ShadowSyncResult {
  * AC-1: Called after each auto-commit when tracking is configured.
  * AC-8: Automatically sets up tracking if main branch has remote.
  * Silently ignores errors - the local commit succeeded regardless.
+ *
+ * @param worktreeDir Path to .kspec/ worktree
+ * @param verbose Enable debug output
  */
-export async function shadowPushAsync(worktreeDir: string): Promise<void> {
+export async function shadowPushAsync(worktreeDir: string, verbose?: boolean): Promise<void> {
+  const debug = isDebugMode(verbose);
+
   // AC-8: Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
   await ensureRemoteTracking(worktreeDir, projectRoot);
 
   // Check if tracking is configured before attempting push
   if (!(await hasRemoteTracking(worktreeDir))) {
+    if (debug) {
+      console.error('[DEBUG] Shadow push: No remote tracking configured, skipping');
+    }
     return; // AC-4: silently skip if no tracking
   }
 
   try {
+    if (debug) {
+      console.error(`[DEBUG] Shadow push: git push (cwd: ${worktreeDir})`);
+    }
+
     // Don't await - fire and forget
-    execAsync('git push', { cwd: worktreeDir }).catch(() => {
+    execAsync('git push', { cwd: worktreeDir }).catch((err) => {
+      if (debug) {
+        console.error('[DEBUG] Shadow push failed:', err);
+      }
       // Silently ignore push failures - local state is correct
     });
-  } catch {
-    // Ignore
+  } catch (err) {
+    if (debug) {
+      console.error('[DEBUG] Shadow push error:', err);
+    }
   }
 }
 

@@ -2,7 +2,8 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { setJsonMode } from './output.js';
+import { setJsonMode, setVerboseMode, getVerboseMode } from './output.js';
+import { setVerboseModeGetter } from '../parser/shadow.js';
 import { findClosestCommand, getAllCommands, COMMAND_ALIASES } from './suggest.js';
 import {
   registerTasksCommands,
@@ -25,16 +26,23 @@ import {
 
 const program = new Command();
 
+// Initialize verbose mode getter for shadow operations
+setVerboseModeGetter(getVerboseMode);
+
 program
   .name('kspec')
   .description('Kynetic Spec - Structured specification format CLI')
   .version('0.1.0')
   .option('--json', 'Output in JSON format')
+  .option('--debug-shadow', 'Enable debug output for shadow operations')
   .hook('preAction', (thisCommand) => {
-    // Check for --json flag at top level or on subcommand
+    // Check for --json and --debug-shadow flags at top level or on subcommand
     const opts = thisCommand.opts();
     if (opts.json) {
       setJsonMode(true);
+    }
+    if (opts.debugShadow) {
+      setVerboseMode(true);
     }
   });
 

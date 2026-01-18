@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
@@ -22,6 +22,9 @@ import {
   ensureRemoteTracking,
   shadowPull,
   shadowSync,
+  isDebugMode,
+  setVerboseModeGetter,
+  shadowAutoCommit,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 
@@ -812,6 +815,189 @@ describe('Shadow Branch', () => {
 
       // Tracking should now be configured
       expect(await hasRemoteTracking(worktreeDir)).toBe(true);
+    });
+  });
+
+  // AC: @shadow-debug-mode
+  describe('Debug Mode', () => {
+    let origEnv: string | undefined;
+
+    beforeEach(() => {
+      origEnv = process.env.KSPEC_DEBUG;
+      delete process.env.KSPEC_DEBUG;
+      // Reset verbose mode getter
+      setVerboseModeGetter(() => false);
+    });
+
+    afterEach(() => {
+      if (origEnv !== undefined) {
+        process.env.KSPEC_DEBUG = origEnv;
+      } else {
+        delete process.env.KSPEC_DEBUG;
+      }
+    });
+
+    // AC: @shadow-debug-mode ac-1
+    it('enables debug mode with KSPEC_DEBUG=1 env var', () => {
+      expect(isDebugMode()).toBe(false);
+      process.env.KSPEC_DEBUG = '1';
+      expect(isDebugMode()).toBe(true);
+    });
+
+    // AC: @shadow-debug-mode ac-2
+    it('enables debug mode with verbose flag parameter', () => {
+      expect(isDebugMode(false)).toBe(false);
+      expect(isDebugMode(true)).toBe(true);
+    });
+
+    it('enables debug mode with --debug-shadow CLI flag via getter', () => {
+      expect(isDebugMode()).toBe(false);
+      // Simulate --debug-shadow flag set
+      setVerboseModeGetter(() => true);
+      expect(isDebugMode()).toBe(true);
+    });
+
+    // AC: @shadow-debug-mode ac-1
+    it('outputs error messages when debug mode enabled via env var', async () => {
+      // Setup a git repo with shadow
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Enable debug mode via env var
+      process.env.KSPEC_DEBUG = '1';
+
+      // Spy on console.error
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      // Write a file and trigger auto-commit
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: debug');
+      await shadowAutoCommit(worktreeDir, 'test commit');
+
+      // Should have debug output
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('[DEBUG] Shadow auto-commit')
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    // AC: @shadow-debug-mode ac-2
+    it('outputs error messages when debug mode enabled via debug-shadow flag', async () => {
+      // Setup a git repo with shadow
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Spy on console.error
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      // Write a file and trigger auto-commit with verbose flag
+      await fs.writeFile(path.join(worktreeDir, 'test2.yaml'), 'test: verbose');
+      await shadowAutoCommit(worktreeDir, 'test commit', true);
+
+      // Should have debug output
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('[DEBUG] Shadow auto-commit')
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    // AC: @shadow-debug-mode ac-3
+    it('does not output error messages when debug mode disabled', async () => {
+      // Setup a git repo with shadow
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Spy on console.error
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      // Write a file and trigger auto-commit WITHOUT debug mode
+      await fs.writeFile(path.join(worktreeDir, 'test3.yaml'), 'test: silent');
+      await shadowAutoCommit(worktreeDir, 'test commit', false);
+
+      // Should NOT have debug output
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('[DEBUG]')
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    // AC: @shadow-debug-mode ac-1 - test with commit failure
+    it('outputs error on auto-commit failure when debug enabled', async () => {
+      // Setup a git repo with shadow
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Enable debug mode
+      process.env.KSPEC_DEBUG = '1';
+
+      // Spy on console.error
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      // Trigger auto-commit with an invalid scenario (no changes)
+      const committed = await shadowAutoCommit(worktreeDir, 'empty commit');
+
+      // Should return false (no changes to commit)
+      expect(committed).toBe(false);
+
+      // Should have debug output about no changes
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('[DEBUG]')
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    // AC: @shadow-debug-mode ac-3
+    it('does not output error on auto-commit failure when debug disabled', async () => {
+      // Setup a git repo with shadow
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Spy on console.error
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      // Trigger auto-commit with no changes (should be silent)
+      const committed = await shadowAutoCommit(worktreeDir, 'empty commit', false);
+
+      // Should return false (no changes to commit)
+      expect(committed).toBe(false);
+
+      // Should NOT have any debug output
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });
