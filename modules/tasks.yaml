@@ -406,7 +406,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Derivation is idempotent:
           - If task with spec_ref to item exists, skip creation
