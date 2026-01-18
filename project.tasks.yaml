@@ -5912,6 +5912,17 @@
         Task origin field not in schema. Will add origin field to TaskInputSchema and fix meta
         promote command.
       supersedes: null
+    - _ulid: 01KF89R2FBB13MNFP0EWN3XSNJ
+      created_at: '2026-01-18T10:17:25.739Z'
+      author: '@claude'
+      content: >-
+        Implementation complete. Added 'origin' field to task schema (TaskSchema and
+        TaskInputSchema) to track task source. Updated 'kspec meta promote' command to set task
+        description from observation content and set origin='observation_promotion'. All acceptance
+        criteria verified: AC-3 (promotion creates task with correct fields), AC-6 (validation for
+        already promoted), AC-8 (validation for resolved with --force override). Manual testing
+        confirms all behaviors work correctly.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
