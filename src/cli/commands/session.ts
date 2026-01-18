@@ -12,11 +12,13 @@ import {
   loadAllItems,
   loadInboxItems,
   loadMetaContext,
+  loadSessionContext,
   getReadyTasks,
   ReferenceIndex,
   type LoadedTask,
   type LoadedInboxItem,
   type KspecContext,
+  type SessionContext as StoredSessionContext,
 } from '../../parser/index.js';
 import { output, error, info, isJsonMode } from '../output.js';
 import { sessionHeaders, hints, sessionPrompt, errors } from '../../strings/index.js';
@@ -62,6 +64,9 @@ export interface SessionContext {
 
   /** Current git branch */
   branch: string | null;
+
+  /** Session context (focus, threads, questions) */
+  context: StoredSessionContext | null;
 
   /** Tasks currently in progress */
   active_tasks: ActiveTaskSummary[];
@@ -434,9 +439,13 @@ export async function gatherSessionContext(
       added_by: item.added_by || null,
     }));
 
+  // Load session context (focus, threads, questions)
+  const sessionContext = await loadSessionContext(ctx);
+
   return {
     generated_at: new Date().toISOString(),
     branch,
+    context: sessionContext,
     active_tasks: activeTasks,
     recent_notes: recentNotes,
     active_todos: activeTodos,
