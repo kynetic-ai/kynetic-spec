@@ -248,10 +248,6 @@ features:
         tests: []
         created: '2026-01-16T13:49:03.212Z'
         acceptance_criteria:
-          - id: ac-1
-            given: A task with spec_ref is completed via 'kspec task complete'
-            when: The task is marked completed
-            then: 'CLI prompts: ''Update @spec-ref status to implemented? [y/n]'''
           - id: ac-2
             given: A task with spec_ref is completed and the linked spec has acceptance_criteria
             when: The user chooses to update spec status
