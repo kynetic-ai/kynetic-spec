@@ -62,7 +62,6 @@ export function registerModuleCommands(program: Command): void {
           },
           description: options.description || '',
           tags: options.tag || [],
-          priority: null,
           depends_on: [],
           implements: [],
           relates_to: [],
