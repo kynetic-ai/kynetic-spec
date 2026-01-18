@@ -16,6 +16,14 @@ import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
+// Import getVerboseMode for checking CLI --verbose flag
+// We use a getter function to avoid issues with circular dependencies
+let getVerboseModeFunc: (() => boolean) | null = null;
+
+export function setVerboseModeGetter(getter: () => boolean): void {
+  getVerboseModeFunc = getter;
+}
+
 /**
  * Shadow branch configuration
  */
@@ -75,7 +83,17 @@ export const SHADOW_WORKTREE_DIR = '.kspec';
  * When enabled, shadow branch operations output detailed information.
  */
 export function isDebugMode(verboseFlag?: boolean): boolean {
-  return process.env.KSPEC_DEBUG === '1' || verboseFlag === true;
+  if (process.env.KSPEC_DEBUG === '1') {
+    return true;
+  }
+  if (verboseFlag === true) {
+    return true;
+  }
+  // Check CLI --verbose flag via getter
+  if (getVerboseModeFunc?.()) {
+    return true;
+  }
+  return false;
 }
 
 /**

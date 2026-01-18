@@ -2,7 +2,8 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { setJsonMode, setVerboseMode } from './output.js';
+import { setJsonMode, setVerboseMode, getVerboseMode } from './output.js';
+import { setVerboseModeGetter } from '../parser/shadow.js';
 import { findClosestCommand, getAllCommands, COMMAND_ALIASES } from './suggest.js';
 import {
   registerTasksCommands,
