@@ -6,7 +6,7 @@ title: Task System
 type: module
 status:
   maturity: draft
-  implementation: not_started
+  implementation: implemented
 description: |
   Tasks are first-class items that track work. They can be derived
   from spec items or created standalone. The task system enables
