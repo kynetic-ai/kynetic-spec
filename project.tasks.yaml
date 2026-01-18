@@ -5842,7 +5842,7 @@
   type: task
   spec_ref: '@observation-types'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -5864,6 +5864,8 @@
         required field. Type is exported for use throughout codebase.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:09:31.799Z'
+  closed_reason: Observation types fully implemented with all four types as specified
 - _ulid: 01KF4WVWHYDHP3F39A36288NMZ
   slugs:
     - task-observation-promotion
