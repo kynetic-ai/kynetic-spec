@@ -433,7 +433,7 @@ export function registerRalphCommand(program: Command): void {
 
                 // Check stop reason
                 if (response.stopReason === 'cancelled') {
-                  throw new Error('Agent prompt was cancelled');
+                  throw new Error(errors.usage.agentPromptCancelled);
                 }
 
                 succeeded = true;
