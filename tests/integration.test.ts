@@ -1264,3 +1264,107 @@ describe('Integration: kspec log', () => {
     expect(output).toContain('--oneline');
   });
 });
+
+describe('Integration: link commands', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should create a relationship between items', () => {
+    const output = kspec('link create @test-core @test-feature --type depends_on', tempDir);
+    expect(output).toContain('OK');
+    expect(output).toContain('Created relationship');
+    expect(output).toContain('depends_on');
+  });
+
+  it('should list relationships from an item', () => {
+    // Create a relationship first
+    kspec('link create @test-feature @test-requirement --type implements', tempDir);
+
+    // List it
+    const output = kspec('link list --from @test-feature', tempDir);
+    expect(output).toContain('Relationships from @test-feature');
+    expect(output).toContain('implements');
+    expect(output).toContain('@test-requirement');
+  });
+
+  it('should list relationships to an item (reverse lookup)', () => {
+    // Create a relationship
+    kspec('link create @test-feature @test-requirement --type implements', tempDir);
+
+    // List reverse
+    const output = kspec('link list --to @test-requirement', tempDir);
+    expect(output).toContain('Relationships to @test-requirement');
+    expect(output).toContain('implements');
+    expect(output).toContain('@test-feature');
+  });
+
+  it('should filter relationships by type', () => {
+    // Create different types of relationships
+    kspec('link create @test-feature @test-requirement --type implements', tempDir);
+    kspec('link create @test-feature @test-core --type depends_on', tempDir);
+
+    // Filter by type
+    const output = kspec('link list --from @test-feature --type implements', tempDir);
+    expect(output).toContain('implements');
+    expect(output).not.toContain('depends_on');
+  });
+
+  it('should delete a relationship', () => {
+    // Create relationship
+    kspec('link create @test-feature @test-requirement --type relates_to', tempDir);
+
+    // Delete it
+    const output = kspec('link delete @test-feature @test-requirement --type relates_to', tempDir);
+    expect(output).toContain('OK');
+    expect(output).toContain('Removed relationship');
+
+    // Verify it's gone
+    const listOutput = kspec('link list --from @test-feature', tempDir);
+    expect(listOutput).toContain('No relationships found');
+  });
+
+  it('should not create duplicate relationships', () => {
+    // Create relationship
+    kspec('link create @test-feature @test-requirement --type depends_on', tempDir);
+
+    // Try to create again
+    const output = kspec('link create @test-feature @test-requirement --type depends_on', tempDir);
+    expect(output).toContain('already exists');
+  });
+
+  it('should error on invalid relationship type', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} link create @test-feature @test-requirement --type invalid_type`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  it('should error when referencing non-existent item', () => {
+    expect(() => {
+      execSync(
+        `npx tsx ${CLI_PATH} link create @test-feature @nonexistent --type depends_on`,
+        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
+      );
+    }).toThrow();
+  });
+
+  it('should return JSON with --json flag', () => {
+    const result = kspecJson<{ success: boolean; from: string; to: string; type: string }>(
+      'link create @test-feature @test-requirement --type depends_on',
+      tempDir
+    );
+    expect(result.success).toBe(true);
+    expect(result.from).toBe('@test-feature');
+    expect(result.to).toBe('@test-requirement');
+    expect(result.type).toBe('depends_on');
+  });
+});

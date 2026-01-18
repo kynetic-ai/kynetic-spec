@@ -283,6 +283,14 @@ export const todoErrors = {
 } as const;
 
 /**
+ * Relationship/link errors
+ */
+export const relationshipErrors = {
+  invalidType: (type: string, validTypes: string) =>
+    `Invalid relationship type: ${type}. Must be one of: ${validTypes}`,
+} as const;
+
+/**
  * Re-export all error categories as a single object for convenience
  */
 export const errors = {
@@ -297,4 +305,5 @@ export const errors = {
   usage: usageErrors,
   failures: operationFailures,
   todo: todoErrors,
+  relationship: relationshipErrors,
 } as const;
