@@ -6,7 +6,7 @@ title: CLI Interface
 type: module
 status:
   maturity: draft
-  implementation: not_started
+  implementation: implemented
 description: |
   The kspec CLI is the primary interface to Kynetic Spec.
   Follows git's plumbing/porcelain model: low-level primitives
