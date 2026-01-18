@@ -3047,7 +3047,7 @@
   type: task
   spec_ref: '@agent-definitions'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -3140,6 +3140,10 @@
         PR #21 updated with full implementation. All 336 tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T01:03:24.900Z'
+  closed_reason: >-
+    All 3 ACs implemented: table output, JSON output, and agent reference validation. PR #21 ready
+    for merge.
 - _ulid: 01KF4WVW4C16W09RWGY3C95T54
   slugs:
     - task-agent-schema
