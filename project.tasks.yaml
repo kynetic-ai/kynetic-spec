@@ -5405,7 +5405,7 @@
   type: task
   spec_ref: '@workflow-schema'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5428,6 +5428,8 @@
         work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:04:36.478Z'
+  closed_reason: Workflow schema implemented with all required fields and step types
 - _ulid: 01KF4WVW8TR5MT0GXK7DX26E7R
   slugs:
     - task-workflow-step-types
