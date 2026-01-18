@@ -645,3 +645,117 @@ describe('Integration: meta observations', () => {
     }
   });
 });
+
+describe('Integration: meta_ref in tasks', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @meta-ref ac-meta-ref-1
+  it('should create task with valid meta_ref to workflow', () => {
+    // AC-meta-ref-1: task add --meta-ref @workflow-id creates task with meta_ref field
+    const output = kspec('task add --title "Improve workflow" --meta-ref "@task-start"', tempDir);
+
+    // Should output "OK Created task: <ULID-prefix>"
+    expect(output).toMatch(/Created task: [A-Z0-9]{8}/);
+
+    // Verify task was created with meta_ref
+    const match = output.match(/Created task: ([A-Z0-9]{8})/);
+    const taskRef = match![1];
+
+    const task = kspecJson<any>(`task get @${taskRef}`, tempDir);
+    expect(task.meta_ref).toBe('@task-start');
+  });
+
+  // AC: @meta-ref ac-meta-ref-1
+  it('should create task with valid meta_ref to agent', () => {
+    const output = kspec('task add --title "Update agent capabilities" --meta-ref "@test-agent"', tempDir);
+    expect(output).toMatch(/Created task: [A-Z0-9]{8}/);
+
+    const match = output.match(/Created task: ([A-Z0-9]{8})/);
+    const taskRef = match![1];
+
+    const task = kspecJson<any>(`task get @${taskRef}`, tempDir);
+    expect(task.meta_ref).toBe('@test-agent');
+  });
+
+  // AC: @meta-ref ac-meta-ref-2
+  it('should filter tasks by meta_ref', () => {
+    // Create tasks with different meta_refs
+    kspec('task add --title "Task 1" --meta-ref "@task-start"', tempDir);
+    kspec('task add --title "Task 2" --meta-ref "@test-agent"', tempDir);
+    kspec('task add --title "Task 3" --meta-ref "@task-start"', tempDir);
+    kspec('task add --title "Task 4"', tempDir); // No meta_ref
+
+    // AC-meta-ref-2: tasks list --meta-ref @workflow filters by meta_ref
+    const tasks = kspecJson<any[]>('tasks list --meta-ref "@task-start"', tempDir);
+
+    // Should only include tasks with meta_ref = @task-start
+    const taskTitles = tasks.map(t => t.title);
+    expect(taskTitles).toContain('Task 1');
+    expect(taskTitles).toContain('Task 3');
+    expect(taskTitles).not.toContain('Task 2');
+    expect(taskTitles).not.toContain('Task 4');
+  });
+
+  // AC: @meta-ref ac-meta-ref-3
+  it('should error when meta_ref does not resolve', () => {
+    try {
+      const output = kspec('task add --title "Test task" --meta-ref "@invalid-ref-123456"', tempDir);
+      // AC-meta-ref-3: Should error with specific message
+      expect(output).toContain("meta_ref '@invalid-ref-123456' does not resolve to a valid meta item");
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain("meta_ref '@invalid-ref-123456' does not resolve to a valid meta item");
+    }
+  });
+
+  // AC: @meta-ref ac-meta-ref-4
+  it('should error when meta_ref points to spec item', () => {
+    try {
+      // test-feature is a spec item, not a meta item
+      const output = kspec('task add --title "Test task" --meta-ref "@test-feature"', tempDir);
+      // AC-meta-ref-4: Should error with specific message
+      expect(output).toContain("meta_ref '@test-feature' points to a spec item; use --spec-ref for product spec references");
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain("meta_ref '@test-feature' points to a spec item; use --spec-ref for product spec references");
+    }
+  });
+
+  it('should update task meta_ref with task set', () => {
+    // Create task without meta_ref
+    const createOutput = kspec('task add --title "Test task"', tempDir);
+    const match = createOutput.match(/Created task: ([A-Z0-9]{8})/);
+    const taskRef = match![1];
+
+    // Update with meta_ref
+    kspec(`task set @${taskRef} --meta-ref "@task-start"`, tempDir);
+
+    // Verify update
+    const task = kspecJson<any>(`task get @${taskRef}`, tempDir);
+    expect(task.meta_ref).toBe('@task-start');
+  });
+
+  it('should validate meta_ref in task set', () => {
+    // Create task
+    const createOutput = kspec('task add --title "Test task"', tempDir);
+    const match = createOutput.match(/Created task: ([A-Z0-9]{8})/);
+    const taskRef = match![1];
+
+    // Try to set invalid meta_ref
+    try {
+      const output = kspec(`task set @${taskRef} --meta-ref "@invalid-workflow"`, tempDir);
+      expect(output).toContain("meta_ref '@invalid-workflow' does not resolve to a valid meta item");
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain("meta_ref '@invalid-workflow' does not resolve to a valid meta item");
+    }
+  });
+});

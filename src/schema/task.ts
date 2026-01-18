@@ -51,6 +51,9 @@ export const TaskSchema = z.object({
   spec_ref: RefSchema.nullable().optional(),
   derivation: z.enum(['auto', 'manual']).optional(),
 
+  // Meta relationship (links to workflow, agent, or convention for process improvement tracking)
+  meta_ref: RefSchema.nullable().optional(),
+
   // State
   status: TaskStatusSchema.default('pending'),
   blocked_by: z.array(z.string()).default([]),
@@ -98,6 +101,9 @@ export const TaskInputSchema = z.object({
   // Spec relationship
   spec_ref: RefSchema.nullable().optional(),
   derivation: z.enum(['auto', 'manual']).optional(),
+
+  // Meta relationship
+  meta_ref: RefSchema.nullable().optional(),
 
   // State
   status: TaskStatusSchema.optional(),

@@ -105,6 +105,7 @@ export function registerTaskCommands(program: Command): void {
     .requiredOption('--title <title>', 'Task title')
     .option('--type <type>', 'Task type (task, epic, bug, spike, infra)', 'task')
     .option('--spec-ref <ref>', 'Reference to spec item')
+    .option('--meta-ref <ref>', 'Reference to meta item (workflow, agent, or convention)')
     .option('--priority <n>', 'Priority (1-5)', '3')
     .option('--slug <slug>', 'Human-friendly slug')
     .option('--tag <tag...>', 'Tags')
@@ -114,9 +115,21 @@ export function registerTaskCommands(program: Command): void {
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
 
+        // Load meta items for validation
+        const { loadMetaContext } = await import('../../parser/meta.js');
+        const metaContext = await loadMetaContext(ctx);
+        const allMetaItems = [
+          ...metaContext.agents,
+          ...metaContext.workflows,
+          ...metaContext.conventions,
+          ...metaContext.observations,
+        ];
+
+        // Build index for reference validation
+        const refIndex = new ReferenceIndex(tasks, items, allMetaItems);
+
         // Check slug uniqueness if provided
         if (options.slug) {
-          const refIndex = new ReferenceIndex(tasks, items);
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
             error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
@@ -124,10 +137,30 @@ export function registerTaskCommands(program: Command): void {
           }
         }
 
+        // Validate meta_ref if provided (AC-meta-ref-3, AC-meta-ref-4)
+        if (options.metaRef) {
+          const metaRefResult = refIndex.resolve(options.metaRef);
+
+          if (!metaRefResult.ok) {
+            error(`meta_ref '${options.metaRef}' does not resolve to a valid meta item (agent, workflow, or convention)`);
+            process.exit(3);
+          }
+
+          // Check if the resolved item is a meta item (not a spec item or task)
+          const isTask = tasks.some(t => t._ulid === metaRefResult.ulid);
+          const isSpecItem = items.some(i => i._ulid === metaRefResult.ulid);
+
+          if (isTask || isSpecItem) {
+            error(`meta_ref '${options.metaRef}' points to a spec item; use --spec-ref for product spec references`);
+            process.exit(3);
+          }
+        }
+
         const input: TaskInput = {
           title: options.title,
           type: options.type,
           spec_ref: options.specRef || null,
+          meta_ref: options.metaRef || null,
           priority: parseInt(options.priority, 10),
           slugs: options.slug ? [options.slug] : [],
           tags: options.tag || [],
@@ -138,7 +171,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-add', newTask.slugs[0] || newTask._ulid.slice(0, 8), newTask.title);
 
         // Build index including the new task for accurate short ULID
-        const index = new ReferenceIndex([...tasks, newTask], items);
+        const index = new ReferenceIndex([...tasks, newTask], items, allMetaItems);
         success(`Created task: ${index.shortUlid(newTask._ulid)}`, { task: newTask });
       } catch (err) {
         error('Failed to create task', err);
@@ -152,6 +185,7 @@ export function registerTaskCommands(program: Command): void {
     .description('Update task fields')
     .option('--title <title>', 'Update task title')
     .option('--spec-ref <ref>', 'Link to spec item')
+    .option('--meta-ref <ref>', 'Link to meta item (workflow, agent, or convention)')
     .option('--priority <n>', 'Set priority (1-5)')
     .option('--slug <slug>', 'Add a slug alias')
     .option('--tag <tag...>', 'Add tags')
@@ -161,7 +195,18 @@ export function registerTaskCommands(program: Command): void {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+
+        // Load meta items for validation
+        const { loadMetaContext } = await import('../../parser/meta.js');
+        const metaContext = await loadMetaContext(ctx);
+        const allMetaItems = [
+          ...metaContext.agents,
+          ...metaContext.workflows,
+          ...metaContext.conventions,
+          ...metaContext.observations,
+        ];
+
+        const index = new ReferenceIndex(tasks, items, allMetaItems);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
         // Check slug uniqueness if adding a new slug
@@ -197,6 +242,27 @@ export function registerTaskCommands(program: Command): void {
           }
           updatedTask.spec_ref = options.specRef;
           changes.push('spec_ref');
+        }
+
+        if (options.metaRef) {
+          // Validate the meta ref exists and is a meta item
+          const metaRefResult = index.resolve(options.metaRef);
+          if (!metaRefResult.ok) {
+            error(`meta_ref '${options.metaRef}' does not resolve to a valid meta item (agent, workflow, or convention)`);
+            process.exit(3);
+          }
+
+          // Check if the resolved item is a meta item (not a spec item or task)
+          const isTask = tasks.some(t => t._ulid === metaRefResult.ulid);
+          const isSpecItem = items.some(i => i._ulid === metaRefResult.ulid);
+
+          if (isTask || isSpecItem) {
+            error(`meta_ref '${options.metaRef}' points to a spec item; use --spec-ref for product spec references`);
+            process.exit(3);
+          }
+
+          updatedTask.meta_ref = options.metaRef;
+          changes.push('meta_ref');
         }
 
         if (options.priority) {
