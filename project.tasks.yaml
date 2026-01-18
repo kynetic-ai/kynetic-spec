@@ -6761,7 +6761,15 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.337Z'
   started_at: '2026-01-18T12:47:22.631Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8JKJMAVPJCSPJCT17TPFQ2
+      created_at: '2026-01-18T12:52:15.626Z'
+      author: '@claude'
+      content: >-
+        Command was already fully implemented. Made two improvements to align with spec: (1) Fixed
+        priority range description from 1-3 to 1-5, (2) Added JSON output support using output()
+        helper to return created task object when --json flag is used. All existing tests pass.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWYJMY6C5ZHWCEHDDF08
   slugs:
@@ -8084,18 +8092,18 @@
   created_at: '2026-01-18T12:49:31.265Z'
   notes: []
   todos: []
-- title: Task from workflow observation
+- _ulid: 01KF8JEVMP7BW94FVB8A1RA6E8
+  slugs: []
+  title: Task from workflow observation
+  type: task
   description: Another test observation
-  priority: 3
   meta_ref: '@spec-first'
   origin: observation_promotion
-  _ulid: 01KF8JEVMP7BW94FVB8A1RA6E8
-  slugs: []
-  type: task
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
   tags: []
   vcs_refs: []
   created_at: '2026-01-18T12:49:41.014Z'
