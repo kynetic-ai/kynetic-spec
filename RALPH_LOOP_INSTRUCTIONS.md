@@ -39,7 +39,17 @@ Prior implementations exist in these directories - explore BEFORE implementing:
 - `../kspec-acp-test`
 - `../kspec-ralph-test`
 
-Search for the same task/spec, review their approach, notes, and inbox.
+**Use subagents for exploration** - these directories can be large:
+```
+Task tool → subagent_type: "Explore" → prompt: "In ../kspec-acp-test, find work related to [task/spec]. Check .kspec/ for tasks, notes, and inbox items. Summarize their approach and any lessons learned."
+```
+
+When picking up a task:
+1. Launch an Explore subagent to search reference directories for related prior work
+2. If the subagent finds relevant implementations, review their approach and notes
+3. Spin up additional subagents as needed for deeper dives into specific files or patterns
+
+This prevents context bloat from loading entire directories while still benefiting from prior work.
 
 ## Problematic Tasks
 
