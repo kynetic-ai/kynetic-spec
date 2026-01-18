@@ -255,6 +255,7 @@ export const operationFailures = {
   // Session operations
   gatherSessionContext: 'Failed to gather session context',
   runCheckpoint: 'Failed to run checkpoint',
+  updateSessionContext: 'Failed to update session context',
 
   // Search operations
   search: 'Failed to search',
