@@ -759,3 +759,413 @@ describe('Integration: meta_ref in tasks', () => {
     }
   });
 });
+
+describe('Integration: meta mutation commands', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  describe('meta add', () => {
+    it('should create a new agent with required fields', () => {
+      const output = kspec(
+        'meta add agent --id new-agent --name "New Agent" --description "A new agent"',
+        tempDir
+      );
+
+      expect(output).toContain('Created agent: new-agent');
+      expect(output).toMatch(/@\w{8}/); // ULID prefix
+
+      // Verify it was created
+      const agent = kspecJson<any>('meta get @new-agent', tempDir);
+      expect(agent.id).toBe('new-agent');
+      expect(agent.name).toBe('New Agent');
+      expect(agent.description).toBe('A new agent');
+    });
+
+    it('should create agent with capabilities and tools', () => {
+      kspec(
+        'meta add agent --id capable-agent --name "Capable Agent" --capability code --capability test --tool bash --tool git',
+        tempDir
+      );
+
+      const agent = kspecJson<any>('meta get @capable-agent', tempDir);
+      expect(agent.capabilities).toEqual(['code', 'test']);
+      expect(agent.tools).toEqual(['bash', 'git']);
+    });
+
+    it('should create a new workflow with required fields', () => {
+      const output = kspec(
+        'meta add workflow --id new-workflow --trigger "on-commit" --description "A new workflow"',
+        tempDir
+      );
+
+      expect(output).toContain('Created workflow: new-workflow');
+
+      const workflow = kspecJson<any>('meta get @new-workflow', tempDir);
+      expect(workflow.id).toBe('new-workflow');
+      expect(workflow.trigger).toBe('on-commit');
+      expect(workflow.description).toBe('A new workflow');
+      expect(workflow.steps).toEqual([]);
+    });
+
+    it('should create a new convention with rules', () => {
+      const output = kspec(
+        'meta add convention --domain testing --rule "Write tests first" --rule "Use descriptive names"',
+        tempDir
+      );
+
+      expect(output).toContain('Created convention: testing');
+
+      const convention = kspecJson<any>('meta get @testing', tempDir);
+      expect(convention.domain).toBe('testing');
+      expect(convention.rules).toEqual(['Write tests first', 'Use descriptive names']);
+    });
+
+    it('should fail when required fields are missing', () => {
+      try {
+        kspec('meta add agent --name "Agent without ID"', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Agent requires --id');
+      }
+
+      try {
+        kspec('meta add workflow --id workflow-no-trigger', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Workflow requires --trigger');
+      }
+
+      try {
+        kspec('meta add convention --rule "Rule without domain"', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Convention requires --domain');
+      }
+    });
+
+    it('should support JSON output', () => {
+      const agent = kspecJson<any>(
+        'meta add agent --id json-agent --name "JSON Agent"',
+        tempDir
+      );
+
+      expect(agent.id).toBe('json-agent');
+      expect(agent.name).toBe('JSON Agent');
+      expect(agent._ulid).toMatch(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
+    });
+  });
+
+  describe('meta set', () => {
+    it('should update agent name and description', () => {
+      // Create an agent
+      kspec('meta add agent --id update-agent --name "Original Name"', tempDir);
+
+      // Update it
+      const output = kspec(
+        'meta set @update-agent --name "Updated Name" --description "New description"',
+        tempDir
+      );
+
+      expect(output).toContain('Updated agent: update-agent');
+
+      const agent = kspecJson<any>('meta get @update-agent', tempDir);
+      expect(agent.name).toBe('Updated Name');
+      expect(agent.description).toBe('New description');
+    });
+
+    it('should add capabilities and tools to agent', () => {
+      kspec('meta add agent --id add-agent --name "Add Agent"', tempDir);
+
+      kspec('meta set @add-agent --add-capability code', tempDir);
+      kspec('meta set @add-agent --add-capability test', tempDir);
+      kspec('meta set @add-agent --add-tool bash', tempDir);
+
+      const agent = kspecJson<any>('meta get @add-agent', tempDir);
+      expect(agent.capabilities).toContain('code');
+      expect(agent.capabilities).toContain('test');
+      expect(agent.tools).toContain('bash');
+    });
+
+    it('should not duplicate capabilities or tools', () => {
+      kspec(
+        'meta add agent --id dup-agent --name "Dup Agent" --capability code --tool bash',
+        tempDir
+      );
+
+      kspec('meta set @dup-agent --add-capability code --add-tool bash', tempDir);
+
+      const agent = kspecJson<any>('meta get @dup-agent', tempDir);
+      expect(agent.capabilities).toEqual(['code']); // Should not duplicate
+      expect(agent.tools).toEqual(['bash']);
+    });
+
+    it('should update workflow trigger and description', () => {
+      kspec('meta add workflow --id update-wf --trigger "old-trigger"', tempDir);
+
+      kspec(
+        'meta set @update-wf --trigger "new-trigger" --description "Updated workflow"',
+        tempDir
+      );
+
+      const workflow = kspecJson<any>('meta get @update-wf', tempDir);
+      expect(workflow.trigger).toBe('new-trigger');
+      expect(workflow.description).toBe('Updated workflow');
+    });
+
+    it('should add rules to convention', () => {
+      kspec('meta add convention --domain update-conv --rule "Rule 1"', tempDir);
+
+      kspec('meta set @update-conv --add-rule "Rule 2"', tempDir);
+
+      const convention = kspecJson<any>('meta get @update-conv', tempDir);
+      expect(convention.rules).toContain('Rule 1');
+      expect(convention.rules).toContain('Rule 2');
+    });
+
+    it('should work with ULID prefix references', () => {
+      const output = kspec('meta add agent --id ulid-ref --name "ULID Ref Agent"', tempDir);
+      const match = output.match(/@(\w{8})/);
+      expect(match).toBeTruthy();
+      const ulidPrefix = match![1];
+
+      kspec(`meta set @${ulidPrefix} --name "Updated via ULID"`, tempDir);
+
+      const agent = kspecJson<any>('meta get @ulid-ref', tempDir);
+      expect(agent.name).toBe('Updated via ULID');
+    });
+
+    it('should support JSON output', () => {
+      kspec('meta add agent --id json-update --name "JSON Update"', tempDir);
+
+      const agent = kspecJson<any>('meta set @json-update --name "JSON Updated"', tempDir);
+      expect(agent.name).toBe('JSON Updated');
+    });
+
+    it('should fail for non-existent item', () => {
+      try {
+        kspec('meta set @nonexistent --name "Should fail"', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Meta item not found');
+      }
+    });
+  });
+
+  describe('meta delete', () => {
+    it('should delete an agent', () => {
+      kspec('meta add agent --id delete-agent --name "Delete Agent"', tempDir);
+
+      const output = kspec('meta delete @delete-agent --confirm', tempDir);
+      expect(output).toContain('Deleted agent delete-agent');
+
+      // Verify it's gone
+      try {
+        kspec('meta get @delete-agent', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('not found');
+      }
+    });
+
+    it('should delete a workflow', () => {
+      kspec('meta add workflow --id delete-wf --trigger "delete-trigger"', tempDir);
+
+      const output = kspec('meta delete @delete-wf --confirm', tempDir);
+      expect(output).toContain('Deleted workflow delete-wf');
+    });
+
+    it('should delete a convention', () => {
+      kspec('meta add convention --domain delete-conv', tempDir);
+
+      const output = kspec('meta delete @delete-conv --confirm', tempDir);
+      expect(output).toContain('Deleted convention delete-conv');
+    });
+
+    it('should work with ULID prefix references', () => {
+      const output = kspec('meta add agent --id ulid-delete --name "ULID Delete"', tempDir);
+      const match = output.match(/@(\w{8})/);
+      const ulidPrefix = match![1];
+
+      kspec(`meta delete @${ulidPrefix} --confirm`, tempDir);
+
+      try {
+        kspec('meta get @ulid-delete', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('not found');
+      }
+    });
+
+    it('should require --confirm flag', () => {
+      kspec('meta add agent --id confirm-agent --name "Confirm Agent"', tempDir);
+
+      try {
+        kspec('meta delete @confirm-agent', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Use --confirm to skip this prompt');
+      }
+
+      // Verify it wasn't deleted
+      const agent = kspecJson<any>('meta get @confirm-agent', tempDir);
+      expect(agent.id).toBe('confirm-agent');
+    });
+
+    it('should fail for non-existent item', () => {
+      try {
+        kspec('meta delete @nonexistent --confirm', tempDir);
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Meta item not found');
+      }
+    });
+
+    it('should prevent deletion of agent referenced by task', () => {
+      // Create an agent
+      kspec('meta add agent --id ref-agent --name "Referenced Agent"', tempDir);
+
+      // Create a task that references this agent
+      kspec('task add --title "Test task" --meta-ref @ref-agent', tempDir);
+
+      // Try to delete the agent without --confirm
+      try {
+        kspec('meta delete @ref-agent', tempDir);
+        expect.fail('Should have prevented deletion');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('task(s)');
+        expect(e.message).toContain('Use --confirm to override');
+      }
+
+      // Verify agent still exists
+      const agent = kspecJson<any>('meta get @ref-agent', tempDir);
+      expect(agent.id).toBe('ref-agent');
+
+      // Can delete with --confirm flag
+      kspec('meta delete @ref-agent --confirm', tempDir);
+
+      // Verify it's deleted
+      try {
+        kspec('meta get @ref-agent', tempDir);
+        expect.fail('Agent should be deleted');
+      } catch (e: any) {
+        expect(e.message).toContain('Meta item not found');
+      }
+    });
+
+    it('should prevent deletion of workflow referenced by observation', () => {
+      // Create a workflow
+      kspec(
+        'meta add workflow --id ref-workflow --trigger "test trigger" --description "Test workflow"',
+        tempDir
+      );
+
+      // Create an observation that references this workflow
+      kspec('meta observe friction "Test friction" --workflow @ref-workflow', tempDir);
+
+      // Try to delete the workflow without --confirm
+      try {
+        kspec('meta delete @ref-workflow', tempDir);
+        expect.fail('Should have prevented deletion');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('observation(s)');
+        expect(e.message).toContain('Use --confirm to override');
+      }
+
+      // Verify workflow still exists
+      const workflow = kspecJson<any>('meta get @ref-workflow', tempDir);
+      expect(workflow.id).toBe('ref-workflow');
+
+      // Can delete with --confirm flag
+      kspec('meta delete @ref-workflow --confirm', tempDir);
+
+      // Verify it's deleted
+      try {
+        kspec('meta get @ref-workflow', tempDir);
+        expect.fail('Workflow should be deleted');
+      } catch (e: any) {
+        expect(e.message).toContain('Meta item not found');
+      }
+    });
+
+    it('should allow deletion of unreferenced items without --confirm errors about refs', () => {
+      // Create an agent that won't be referenced
+      kspec('meta add agent --id unreferenced-agent --name "Unreferenced Agent"', tempDir);
+
+      // Try to delete without --confirm - should only complain about confirmation, not refs
+      try {
+        kspec('meta delete @unreferenced-agent', tempDir);
+        expect.fail('Should have required confirmation');
+      } catch (e: any) {
+        expect(e.message).toContain('Use --confirm to skip this prompt');
+        expect(e.message).not.toContain('Referenced by');
+      }
+
+      // Delete with --confirm
+      kspec('meta delete @unreferenced-agent --confirm', tempDir);
+    });
+
+    it('should detect references when deleting by ULID prefix', () => {
+      // Create an agent
+      const agentOutput = kspec('meta add agent --id ulid-test-agent --name "ULID Test Agent"', tempDir);
+
+      // Extract the ULID prefix from the success message: "Created agent: ulid-test-agent (@01KF7...)"
+      const ulidMatch = agentOutput.match(/\((@[\w]+)\)/);
+      expect(ulidMatch).toBeTruthy();
+      const ulidPrefix = ulidMatch![1];
+
+      // Create a task that references by semantic ID
+      kspec('task add --title "Test task" --meta-ref @ulid-test-agent', tempDir);
+
+      // Try to delete using ULID prefix - should still detect the reference
+      try {
+        kspec(`meta delete ${ulidPrefix}`, tempDir);
+        expect.fail('Should have detected reference');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('task(s)');
+      }
+
+      // Verify agent still exists
+      const agent = kspecJson<any>(`meta get ${ulidPrefix}`, tempDir);
+      expect(agent.id).toBe('ulid-test-agent');
+    });
+
+    it('should detect references with mixed reference formats', () => {
+      // Create a workflow
+      const workflowOutput = kspec(
+        'meta add workflow --id ulid-workflow --trigger "test trigger"',
+        tempDir
+      );
+
+      // Extract ULID prefix from: "Created workflow: ulid-workflow (@01KF7...)"
+      const ulidMatch = workflowOutput.match(/\((@[\w]+)\)/);
+      expect(ulidMatch).toBeTruthy();
+      const ulidPrefix = ulidMatch![1];
+
+      // Create observation using ULID prefix
+      kspec(`meta observe friction "Test friction" --workflow ${ulidPrefix}`, tempDir);
+
+      // Try to delete using semantic ID - should still detect reference
+      try {
+        kspec('meta delete @ulid-workflow', tempDir);
+        expect.fail('Should have detected reference');
+      } catch (e: any) {
+        expect(e.message).toContain('Referenced by');
+        expect(e.message).toContain('observation(s)');
+      }
+
+      // Verify workflow still exists
+      const workflow = kspecJson<any>('meta get @ulid-workflow', tempDir);
+      expect(workflow.id).toBe('ulid-workflow');
+    });
+  });
+});

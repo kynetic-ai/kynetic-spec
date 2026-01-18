@@ -11,14 +11,18 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import { ulid } from 'ulid';
 import {
   initContext,
   loadMetaContext,
   getMetaStats,
   createObservation,
   saveObservation,
+  saveMetaItem,
+  deleteMetaItem,
   createTask,
   saveTask,
+  loadAllTasks,
   type MetaContext,
   type Agent,
   type Workflow,
@@ -26,7 +30,44 @@ import {
   type Observation,
 } from '../../parser/index.js';
 import { type ObservationType } from '../../schema/index.js';
-import { output, error, success } from '../output.js';
+import { output, error, success, isJsonMode } from '../output.js';
+
+/**
+ * Resolve a meta reference to its ULID
+ * Handles semantic IDs (agent.id, workflow.id, convention.domain) and ULID prefixes
+ */
+function resolveMetaRefToUlid(
+  ref: string,
+  metaCtx: MetaContext
+): { ulid: string; type: 'agent' | 'workflow' | 'convention' | 'observation' } | null {
+  const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+
+  // Check agents
+  const agent = (metaCtx.manifest?.agents || []).find(
+    (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+  );
+  if (agent) return { ulid: agent._ulid, type: 'agent' };
+
+  // Check workflows
+  const workflow = (metaCtx.manifest?.workflows || []).find(
+    (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+  );
+  if (workflow) return { ulid: workflow._ulid, type: 'workflow' };
+
+  // Check conventions
+  const convention = (metaCtx.manifest?.conventions || []).find(
+    (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+  );
+  if (convention) return { ulid: convention._ulid, type: 'convention' };
+
+  // Check observations
+  const observation = (metaCtx.manifest?.observations || []).find((o) =>
+    o._ulid.startsWith(normalizedRef)
+  );
+  if (observation) return { ulid: observation._ulid, type: 'observation' };
+
+  return null;
+}
 
 /**
  * Format meta show output
@@ -795,6 +836,353 @@ export function registerMetaCommands(program: Command): void {
         success(`Resolved: ${observation._ulid.substring(0, 8)}`);
       } catch (err) {
         error('Failed to resolve observation', err);
+        process.exit(1);
+      }
+    });
+
+  // Meta add command - create new meta items
+  meta
+    .command('add <type>')
+    .description('Create a new meta item (agent, workflow, or convention)')
+    .option('--id <id>', 'Semantic ID (required for agents and workflows)')
+    .option('--domain <domain>', 'Domain (required for conventions)')
+    .option('--name <name>', 'Name (for agents)')
+    .option('--trigger <trigger>', 'Trigger (for workflows)')
+    .option('--description <desc>', 'Description')
+    .option('--capability <cap...>', 'Capabilities (for agents)')
+    .option('--tool <tool...>', 'Tools (for agents)')
+    .option('--convention <conv...>', 'Convention references (for agents)')
+    .option('--rule <rule...>', 'Rules (for conventions)')
+    .action(async (type: string, options) => {
+      try {
+        const ctx = await initContext();
+
+        // Validate type
+        const validTypes = ['agent', 'workflow', 'convention'];
+        if (!validTypes.includes(type)) {
+          error(`Invalid type: ${type}. Must be one of: ${validTypes.join(', ')}`);
+          process.exit(1);
+        }
+
+        // Generate ULID
+        const itemUlid = ulid();
+
+        // Create the item based on type
+        let item: Agent | Workflow | Convention;
+
+        if (type === 'agent') {
+          // Validate required fields
+          if (!options.id) {
+            error('Agent requires --id');
+            process.exit(1);
+          }
+          if (!options.name) {
+            error('Agent requires --name');
+            process.exit(1);
+          }
+
+          item = {
+            _ulid: itemUlid,
+            id: options.id,
+            name: options.name,
+            description: options.description || '',
+            capabilities: options.capability || [],
+            tools: options.tool || [],
+            conventions: options.convention || [],
+          };
+        } else if (type === 'workflow') {
+          // Validate required fields
+          if (!options.id) {
+            error('Workflow requires --id');
+            process.exit(1);
+          }
+          if (!options.trigger) {
+            error('Workflow requires --trigger');
+            process.exit(1);
+          }
+
+          item = {
+            _ulid: itemUlid,
+            id: options.id,
+            trigger: options.trigger,
+            description: options.description || '',
+            steps: [],
+          };
+        } else {
+          // convention
+          if (!options.domain) {
+            error('Convention requires --domain');
+            process.exit(1);
+          }
+
+          item = {
+            _ulid: itemUlid,
+            domain: options.domain,
+            rules: options.rule || [],
+            examples: [],
+          };
+        }
+
+        // Save the item
+        await saveMetaItem(ctx, item, type as 'agent' | 'workflow' | 'convention');
+
+        if (isJsonMode()) {
+          // In JSON mode, output the item data directly
+          console.log(JSON.stringify(item, null, 2));
+        } else {
+          const idOrDomain = 'id' in item ? item.id : 'domain' in item ? item.domain : itemUlid;
+          success(`Created ${type}: ${idOrDomain} (@${itemUlid.substring(0, 8)})`);
+        }
+      } catch (err) {
+        error(`Failed to create ${type}`, err);
+        process.exit(1);
+      }
+    });
+
+  // Meta set command - update existing meta items
+  meta
+    .command('set <ref>')
+    .description('Update an existing meta item')
+    .option('--name <name>', 'Update name (for agents)')
+    .option('--description <desc>', 'Update description')
+    .option('--trigger <trigger>', 'Update trigger (for workflows)')
+    .option('--add-capability <cap>', 'Add capability (for agents)')
+    .option('--add-tool <tool>', 'Add tool (for agents)')
+    .option('--add-convention <conv>', 'Add convention reference (for agents)')
+    .option('--add-rule <rule>', 'Add rule (for conventions)')
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const metaCtx = await loadMetaContext(ctx);
+
+        // Find the item using unified lookup
+        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+        let found: Agent | Workflow | Convention | null = null;
+        let itemType: 'agent' | 'workflow' | 'convention' | null = null;
+
+        // Search in agents
+        const agents = metaCtx.manifest?.agents || [];
+        const agent = agents.find(
+          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+        );
+        if (agent) {
+          found = agent;
+          itemType = 'agent';
+        }
+
+        // Search in workflows
+        if (!found) {
+          const workflows = metaCtx.manifest?.workflows || [];
+          const workflow = workflows.find(
+            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+          );
+          if (workflow) {
+            found = workflow;
+            itemType = 'workflow';
+          }
+        }
+
+        // Search in conventions
+        if (!found) {
+          const conventions = metaCtx.manifest?.conventions || [];
+          const convention = conventions.find(
+            (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+          );
+          if (convention) {
+            found = convention;
+            itemType = 'convention';
+          }
+        }
+
+        if (!found || !itemType) {
+          error(`Meta item not found: ${ref}`);
+          process.exit(1);
+        }
+
+        // Update fields based on type
+        if (itemType === 'agent') {
+          const item = found as Agent;
+          if (options.name) item.name = options.name;
+          if (options.description !== undefined) item.description = options.description;
+          if (options.addCapability) {
+            if (!item.capabilities.includes(options.addCapability)) {
+              item.capabilities.push(options.addCapability);
+            }
+          }
+          if (options.addTool) {
+            if (!item.tools.includes(options.addTool)) {
+              item.tools.push(options.addTool);
+            }
+          }
+          if (options.addConvention) {
+            if (!item.conventions.includes(options.addConvention)) {
+              item.conventions.push(options.addConvention);
+            }
+          }
+        } else if (itemType === 'workflow') {
+          const item = found as Workflow;
+          if (options.trigger) item.trigger = options.trigger;
+          if (options.description !== undefined) item.description = options.description;
+        } else {
+          const item = found as Convention;
+          // Convention doesn't have a description field
+          if (options.addRule) {
+            if (!item.rules.includes(options.addRule)) {
+              item.rules.push(options.addRule);
+            }
+          }
+        }
+
+        // Save the updated item
+        await saveMetaItem(ctx, found, itemType);
+
+        if (isJsonMode()) {
+          // In JSON mode, output the item data directly
+          console.log(JSON.stringify(found, null, 2));
+        } else {
+          const idOrDomain =
+            itemType === 'agent'
+              ? (found as Agent).id
+              : itemType === 'workflow'
+                ? (found as Workflow).id
+                : (found as Convention).domain;
+          success(`Updated ${itemType}: ${idOrDomain}`);
+        }
+      } catch (err) {
+        error('Failed to update meta item', err);
+        process.exit(1);
+      }
+    });
+
+  // Meta delete command - delete meta items
+  meta
+    .command('delete <ref>')
+    .description('Delete a meta item')
+    .option('--confirm', 'Skip confirmation prompt')
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const metaCtx = await loadMetaContext(ctx);
+
+        // Find the item to determine type
+        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+        let itemType: 'agent' | 'workflow' | 'convention' | 'observation' | null = null;
+        let itemUlid: string | null = null;
+        let itemLabel: string | null = null;
+
+        // Search in agents
+        const agents = metaCtx.manifest?.agents || [];
+        const agent = agents.find(
+          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+        );
+        if (agent) {
+          itemType = 'agent';
+          itemUlid = agent._ulid;
+          itemLabel = `agent ${agent.id}`;
+        }
+
+        // Search in workflows
+        if (!itemType) {
+          const workflows = metaCtx.manifest?.workflows || [];
+          const workflow = workflows.find(
+            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+          );
+          if (workflow) {
+            itemType = 'workflow';
+            itemUlid = workflow._ulid;
+            itemLabel = `workflow ${workflow.id}`;
+          }
+        }
+
+        // Search in conventions
+        if (!itemType) {
+          const conventions = metaCtx.manifest?.conventions || [];
+          const convention = conventions.find(
+            (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+          );
+          if (convention) {
+            itemType = 'convention';
+            itemUlid = convention._ulid;
+            itemLabel = `convention ${convention.domain}`;
+          }
+        }
+
+        // Search in observations
+        if (!itemType) {
+          const observations = metaCtx.manifest?.observations || [];
+          const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
+          if (observation) {
+            itemType = 'observation';
+            itemUlid = observation._ulid;
+            itemLabel = `observation ${observation._ulid.substring(0, 8)}`;
+          }
+        }
+
+        if (!itemType || !itemUlid || !itemLabel) {
+          error(`Meta item not found: ${ref}`);
+          process.exit(1);
+        }
+
+        // Check for dangling references (unless --confirm is used to override)
+        if (!options.confirm) {
+          // Check tasks with meta_ref
+          const tasks = await loadAllTasks(ctx);
+          const referencingTasks = tasks.filter((t) => {
+            if (!t.meta_ref) return false;
+            // Resolve the task's meta_ref to a ULID
+            const taskMetaRef = resolveMetaRefToUlid(t.meta_ref, metaCtx);
+            // Compare ULIDs to handle both semantic IDs and ULID prefixes
+            return taskMetaRef && taskMetaRef.ulid === itemUlid;
+          });
+
+          if (referencingTasks.length > 0) {
+            const taskRefs = referencingTasks
+              .map((t) => `@${t.slug || t._ulid.substring(0, 8)}`)
+              .join(', ');
+            error(
+              `Cannot delete ${itemLabel}: Referenced by ${referencingTasks.length} task(s): ${taskRefs}. Use --confirm to override.`
+            );
+            process.exit(1);
+          }
+
+          // Check observations with workflow_ref (only for workflows)
+          if (itemType === 'workflow') {
+            const observations = metaCtx.manifest?.observations || [];
+            const referencingObservations = observations.filter((o) => {
+              if (!o.workflow_ref) return false;
+              // Resolve the observation's workflow_ref to a ULID
+              const obsWorkflowRef = resolveMetaRefToUlid(o.workflow_ref, metaCtx);
+              // Compare ULIDs to handle both semantic IDs and ULID prefixes
+              return obsWorkflowRef && obsWorkflowRef.ulid === itemUlid;
+            });
+
+            if (referencingObservations.length > 0) {
+              const obsRefs = referencingObservations
+                .map((o) => `@${o._ulid.substring(0, 8)}`)
+                .join(', ');
+              error(
+                `Cannot delete ${itemLabel}: Referenced by ${referencingObservations.length} observation(s): ${obsRefs}. Use --confirm to override.`
+              );
+              process.exit(1);
+            }
+          }
+
+          // Show confirmation prompt even if no references found
+          error(`Warning: This will delete ${itemLabel}. Use --confirm to skip this prompt`);
+          process.exit(1);
+        }
+
+        // Delete the item
+        const deleted = await deleteMetaItem(ctx, itemUlid, itemType);
+
+        if (!deleted) {
+          error(`Failed to delete ${itemLabel}`);
+          process.exit(1);
+        }
+
+        success(`Deleted ${itemLabel}`);
+      } catch (err) {
+        error('Failed to delete meta item', err);
         process.exit(1);
       }
     });
