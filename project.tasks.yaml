@@ -3979,7 +3979,7 @@
   type: task
   spec_ref: '@meta-ref'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4038,6 +4038,10 @@
         All 362 tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T01:46:56.089Z'
+  closed_reason: >-
+    All 4 acceptance criteria implemented and tested. Added meta_ref field to tasks with full
+    validation and filtering support.
 - _ulid: 01KF4WVX91JM667XZ4Z7JWSN6P
   slugs:
     - task-task-meta-ref-field
