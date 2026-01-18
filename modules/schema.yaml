@@ -380,7 +380,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Schema is defined using Zod (TypeScript validation library):
           - Source of truth for item structure
