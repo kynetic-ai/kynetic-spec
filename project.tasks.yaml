@@ -2433,6 +2433,7 @@
     - meta
   vcs_refs: []
   created_at: '2026-01-15T18:55:32.866Z'
+  started_at: '2026-01-18T06:14:42.639Z'
   notes:
     - _ulid: 01KF1G71DC44T3VMB3THC4VY3H
       created_at: '2026-01-15T18:55:46.604Z'
@@ -2454,8 +2455,51 @@
 
         Research finding: Most systems have single capture mechanism. Two risks dilution.
       supersedes: null
+    - _ulid: 01KF7VYSPET6VWPSGJBH0V4CH0
+      created_at: '2026-01-18T06:16:26.062Z'
+      author: '@claude'
+      content: |-
+        Completed spike on inbox/observations unification.
+
+        RECOMMENDATION: Keep systems separate (do not unify)
+
+        RATIONALE:
+        1. Fundamentally different purposes:
+           - Inbox: General ideation, low friction, no structure required
+           - Observations: Workflow feedback with explicit types and workflow_ref
+           
+        2. Query patterns differ:
+           - Inbox: Time-based triage (oldest first), general filtering
+           - Observations: Workflow-specific filtering, type-based queries
+           
+        3. Mental model clarity:
+           - Inbox: 'I have an idea but no clear scope yet'
+           - Observations: 'This workflow has friction/success/question'
+           
+        4. Prior work findings (from ../kspec-acp-test):
+           - 142+ observations in meta manifest (workflow-specific)
+           - 55+ inbox items (general ideas across all domains)
+           - No confusion observed in practice
+           - Research finding: 'Most systems have single capture mechanism. Two risks dilution.'
+           
+        5. However: Two systems CAN coexist if semantically distinct
+           - Like tasks vs specs (different purposes, both valuable)
+           - Cross-references maintain linkage (observations → tasks with meta_ref)
+
+        FINDINGS FROM REFERENCE DIRECTORIES:
+        - Both ../kspec-acp-test and ../kspec-ralph-test implement separate systems
+        - No unification attempted in practice
+        - Observations work well for meta self-improvement loop
+        - Inbox works well for general capture
+        - Test data shows natural separation (workflow feedback vs general ideas)
+
+        NEXT STEPS IF ACCEPTED:
+        1. Update AGENTS.md to clarify when to use inbox vs observations
+        2. Ensure session context surfaces both appropriately
+        3. Close this spike with recommendation documented
+        4. Consider inbox item: 'Document observations usage guidance in AGENTS.md'
+      supersedes: null
   todos: []
-  started_at: '2026-01-18T06:14:42.639Z'
 - _ulid: 01KF1H92ZHGBKBJDHMZ8HBW660
   slugs:
     - task-session-context-research
