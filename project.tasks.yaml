@@ -5414,9 +5414,20 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.650Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:04:23.364Z'
+  notes:
+    - _ulid: 01KF890EMV8ACRV8KRMEXSB2YT
+      created_at: '2026-01-18T10:04:31.771Z'
+      author: '@claude'
+      content: >-
+        Verified Workflow schema already implemented in src/schema/meta.ts:60-66. WorkflowSchema
+        includes all required fields from spec: _ulid (MetaUlidSchema), id (required string),
+        trigger (required string), description (optional), and steps (array of WorkflowStepSchema).
+        WorkflowStepSchema (lines 49-55) includes type (check/action/decision enum), content,
+        on_fail, options (for decisions), and execution hints. Implementation complete from prior
+        work.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW8TR5MT0GXK7DX26E7R
   slugs:
     - task-workflow-step-types
