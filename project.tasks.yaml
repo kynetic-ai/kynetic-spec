@@ -6722,7 +6722,7 @@
   type: task
   spec_ref: '@meta-observations-cmd'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6742,6 +6742,8 @@
         All tests pass (499 passed). Verified functionality with manual tests.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T12:40:40.907Z'
+  closed_reason: Added --type and --workflow filters to match spec requirements
 - _ulid: 01KF4WVWXHTZRQ6B6A69HZV7NB
   slugs:
     - task-kspec-meta-promote
