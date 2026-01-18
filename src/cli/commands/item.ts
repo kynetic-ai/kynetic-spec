@@ -23,6 +23,7 @@ import type { ItemType, Maturity, ImplementationStatus, SpecItemInput, Acceptanc
 import { SpecItemPatchSchema } from '../../schema/index.js';
 import { output, error, success, warn, isJsonMode } from '../output.js';
 import { grepItem, formatMatchedFields } from '../../utils/grep.js';
+import { errors } from '../../strings/errors.js';
 
 /**
  * Format a spec item for display
@@ -161,7 +162,7 @@ export function registerItemCommands(program: Command): void {
           () => formatItemList(specItems, options.verbose, options.grep)
         );
       } catch (err) {
-        error('Failed to list items', err);
+        error(errors.failures.listItems, err);
         process.exit(1);
       }
     });
@@ -178,7 +179,7 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
 
         if (!result.ok) {
-          error(`Item not found: ${ref}`);
+          error(errors.reference.itemNotFound(ref));
           process.exit(1);
         }
 
@@ -222,7 +223,7 @@ export function registerItemCommands(program: Command): void {
           }
         });
       } catch (err) {
-        error('Failed to get item', err);
+        error(errors.failures.getItem, err);
         process.exit(1);
       }
     });
@@ -250,7 +251,7 @@ export function registerItemCommands(program: Command): void {
           }
         );
       } catch (err) {
-        error('Failed to get types', err);
+        error(errors.failures.getTypes, err);
         process.exit(1);
       }
     });
@@ -277,7 +278,7 @@ export function registerItemCommands(program: Command): void {
           }
         );
       } catch (err) {
-        error('Failed to get tags', err);
+        error(errors.failures.getTags, err);
         process.exit(1);
       }
     });
@@ -302,7 +303,7 @@ export function registerItemCommands(program: Command): void {
         // Find the parent item
         const parentResult = refIndex.resolve(options.under);
         if (!parentResult.ok) {
-          error(`Parent item not found: ${options.under}`);
+          error(errors.reference.itemNotFound(options.under));
           process.exit(1);
         }
 
@@ -310,7 +311,7 @@ export function registerItemCommands(program: Command): void {
 
         // Check it's not a task
         if ('status' in parent && typeof parent.status === 'string') {
-          error(`"${options.under}" is a task. Items can only be added under spec items.`);
+          error(errors.reference.parentIsTask(options.under));
           process.exit(1);
         }
 
@@ -318,7 +319,7 @@ export function registerItemCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(1);
           }
         }
@@ -354,7 +355,7 @@ export function registerItemCommands(program: Command): void {
           console.log(chalk.gray(`\nDerive implementation task? kspec derive @${refSlug}`));
         }
       } catch (err) {
-        error('Failed to create item', err);
+        error(errors.failures.createItem, err);
         process.exit(1);
       }
     });
@@ -379,7 +380,7 @@ export function registerItemCommands(program: Command): void {
 
         const result = refIndex.resolve(ref);
         if (!result.ok) {
-          error(`Item not found: ${ref}`);
+          error(errors.reference.itemNotFound(ref));
           process.exit(1);
         }
 
@@ -387,7 +388,7 @@ export function registerItemCommands(program: Command): void {
 
         // Check if it's a task (tasks should use task commands)
         if ('status' in foundItem && typeof foundItem.status === 'string') {
-          error(`"${ref}" is a task. Use 'kspec task' commands instead.`);
+          error(errors.reference.taskUseTaskCommands(ref));
           process.exit(1);
         }
 
@@ -395,7 +396,7 @@ export function registerItemCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug], foundItem._ulid);
           if (!slugCheck.ok) {
-            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(1);
           }
         }
@@ -404,11 +405,11 @@ export function registerItemCommands(program: Command): void {
         if (options.removeSlug) {
           const currentSlugs = foundItem.slugs || [];
           if (!currentSlugs.includes(options.removeSlug)) {
-            error(`Slug '${options.removeSlug}' not found on item`);
+            error(errors.slug.notFound(options.removeSlug));
             process.exit(1);
           }
           if (currentSlugs.length === 1) {
-            error(`Cannot remove last slug '${options.removeSlug}' - items must have at least one slug`);
+            error(errors.slug.cannotRemoveLast(options.removeSlug));
             process.exit(1);
           }
         }
@@ -460,7 +461,7 @@ export function registerItemCommands(program: Command): void {
           console.log(chalk.gray(`\nDerive implementation task? kspec derive @${refSlug}`));
         }
       } catch (err) {
-        error('Failed to update item', err);
+        error(errors.failures.updateItem, err);
         process.exit(1);
       }
     });
@@ -477,7 +478,7 @@ export function registerItemCommands(program: Command): void {
 
         const result = refIndex.resolve(ref);
         if (!result.ok) {
-          error(`Item not found: ${ref}`);
+          error(errors.reference.itemNotFound(ref));
           process.exit(1);
         }
 
@@ -485,12 +486,12 @@ export function registerItemCommands(program: Command): void {
 
         // Check if it's a task
         if ('status' in foundItem && typeof foundItem.status === 'string') {
-          error(`"${ref}" is a task. Use 'kspec task cancel' instead.`);
+          error(errors.reference.itemUseTaskCancel(ref));
           process.exit(1);
         }
 
         if (!foundItem._sourceFile) {
-          error('Cannot delete item: no source file tracked');
+          error(errors.operation.cannotDeleteNoSource);
           process.exit(1);
         }
 
@@ -503,12 +504,12 @@ export function registerItemCommands(program: Command): void {
           await commitIfShadow(ctx.shadow, 'item-delete', itemSlug);
           success(`Deleted item: ${foundItem.title}`, { deleted: true, ulid: foundItem._ulid });
         } else {
-          error('Failed to delete item');
+          error(errors.failures.deleteItem);
           console.log(chalk.gray('Edit the source file directly: ' + foundItem._sourceFile));
           process.exit(1);
         }
       } catch (err) {
-        error('Failed to delete item', err);
+        error(errors.failures.deleteItem, err);
         process.exit(1);
       }
     });
@@ -530,7 +531,7 @@ export function registerItemCommands(program: Command): void {
           // Bulk mode: read from stdin
           const stdin = await readStdinFully();
           if (!stdin) {
-            error('No input provided. Use --data for single item or pipe JSONL/JSON for bulk.');
+            error(errors.validation.noInputProvided);
             process.exit(1);
           }
 
@@ -538,12 +539,12 @@ export function registerItemCommands(program: Command): void {
           try {
             patches = parseBulkInput(stdin);
           } catch (err) {
-            error('Failed to parse bulk input', err instanceof Error ? err.message : err);
+            error(errors.validation.failedToParseBulk(err instanceof Error ? err.message : String(err)));
             process.exit(1);
           }
 
           if (patches.length === 0) {
-            error('No patches provided');
+            error(errors.validation.noPatchesProvided);
             process.exit(1);
           }
 
@@ -567,7 +568,7 @@ export function registerItemCommands(program: Command): void {
         } else {
           // Single item mode
           if (!ref) {
-            error('Reference required for single item patch. Use: kspec item patch <ref> --data <json>');
+            error(errors.usage.patchNeedRef);
             process.exit(1);
           }
 
@@ -578,7 +579,7 @@ export function registerItemCommands(program: Command): void {
             try {
               data = JSON.parse(options.data);
             } catch (err) {
-              error('Invalid JSON in --data', err instanceof Error ? err.message : 'Parse error');
+              error(errors.validation.invalidJsonInData(err instanceof Error ? err.message : ''));
               process.exit(1);
             }
           } else {
@@ -587,11 +588,11 @@ export function registerItemCommands(program: Command): void {
               try {
                 data = JSON.parse(stdin.trim());
               } catch (err) {
-                error('Invalid JSON from stdin', err instanceof Error ? err.message : 'Parse error');
+                error(errors.validation.invalidJsonFromStdin(err instanceof Error ? err.message : ''));
                 process.exit(1);
               }
             } else {
-              error('No patch data. Use --data or pipe JSON to stdin.');
+              error(errors.validation.noPatchData);
               process.exit(1);
             }
           }
@@ -603,7 +604,7 @@ export function registerItemCommands(program: Command): void {
             const parseResult = strictSchema.safeParse(data);
             if (!parseResult.success) {
               const issues = parseResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
-              error(`Invalid patch data: ${issues}`);
+              error(errors.validation.invalidPatchDataWithIssues(issues));
               process.exit(1);
             }
           }
@@ -613,14 +614,14 @@ export function registerItemCommands(program: Command): void {
           // Resolve ref
           const resolved = refIndex.resolve(ref);
           if (!resolved.ok) {
-            error(`Item not found: ${ref}`);
+            error(errors.reference.itemNotFound(ref));
             process.exit(1);
           }
 
           // Find the item
           const foundItem = items.find(i => i._ulid === resolved.ulid);
           if (!foundItem) {
-            error(`Not a spec item: ${ref}`);
+            error(errors.reference.notItem(ref));
             process.exit(1);
           }
 
@@ -641,7 +642,7 @@ export function registerItemCommands(program: Command): void {
           success(`Patched item: ${itemSlug}`, { item: updated });
         }
       } catch (err) {
-        error('Failed to patch item(s)', err);
+        error(errors.failures.patchItems, err);
         process.exit(1);
       }
     });
@@ -659,7 +660,7 @@ export function registerItemCommands(program: Command): void {
 
         const result = refIndex.resolve(ref);
         if (!result.ok) {
-          error(`Item not found: ${ref}`);
+          error(errors.reference.itemNotFound(ref));
           process.exit(1);
         }
 
@@ -667,7 +668,7 @@ export function registerItemCommands(program: Command): void {
 
         // Check if it's a task
         if ('status' in foundItem && typeof foundItem.status === 'string') {
-          error(`"${ref}" is a task, not a spec item. Use 'kspec task get' instead.`);
+          error(errors.reference.notItem(ref));
           process.exit(1);
         }
 
@@ -678,7 +679,7 @@ export function registerItemCommands(program: Command): void {
         const summary = alignmentIndex.getImplementationSummary(foundItem._ulid);
 
         if (!summary) {
-          error('Could not get implementation summary');
+          error(errors.project.couldNotGetImplSummary);
           process.exit(1);
         }
 
@@ -719,7 +720,7 @@ export function registerItemCommands(program: Command): void {
           }
         });
       } catch (err) {
-        error('Failed to get item status', err);
+        error(errors.failures.getItemStatus, err);
         process.exit(1);
       }
     });
@@ -749,7 +750,7 @@ export function registerItemCommands(program: Command): void {
 
     const result = refIndex.resolve(ref);
     if (!result.ok) {
-      error(`Item not found: ${ref}`);
+      error(errors.reference.itemNotFound(ref));
       process.exit(3);
     }
 
@@ -757,7 +758,7 @@ export function registerItemCommands(program: Command): void {
 
     // Check if it's a task
     if ('status' in foundItem && typeof foundItem.status === 'string') {
-      error(`Tasks don't have acceptance criteria; "${ref}" is a task`);
+      error(errors.operation.tasksNoAcceptanceCriteria(ref));
       process.exit(3);
     }
 
@@ -792,7 +793,7 @@ export function registerItemCommands(program: Command): void {
           console.log(chalk.gray(`${ac.length} acceptance criteria`));
         });
       } catch (err) {
-        error('Failed to list acceptance criteria', err);
+        error(errors.failures.listAc, err);
         process.exit(1);
       }
     });
@@ -815,7 +816,8 @@ export function registerItemCommands(program: Command): void {
 
         // Check for duplicate ID
         if (existingAc.some(ac => ac.id === acId)) {
-          error(`Acceptance criterion "${acId}" already exists on @${item.slugs[0] || refIndex.shortUlid(item._ulid)}`);
+          const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
+          error(errors.conflict.acAlreadyExists(acId, itemRef));
           process.exit(3);
         }
 
@@ -835,7 +837,7 @@ export function registerItemCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'item-ac-add', itemSlug);
         success(`Added acceptance criterion: ${acId} to @${itemSlug}`, { ac: newAc });
       } catch (err) {
-        error('Failed to add acceptance criterion', err);
+        error(errors.failures.addAc, err);
         process.exit(1);
       }
     });
@@ -856,7 +858,8 @@ export function registerItemCommands(program: Command): void {
         // Find the AC
         const acIndex = existingAc.findIndex(ac => ac.id === acId);
         if (acIndex === -1) {
-          error(`Acceptance criterion "${acId}" not found on @${item.slugs[0] || refIndex.shortUlid(item._ulid)}`);
+          const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
+          error(errors.reference.acNotFound(acId, itemRef));
           process.exit(3);
         }
 
@@ -868,7 +871,7 @@ export function registerItemCommands(program: Command): void {
 
         // Check for duplicate ID if renaming
         if (options.id && options.id !== acId && existingAc.some(ac => ac.id === options.id)) {
-          error(`Acceptance criterion "${options.id}" already exists`);
+          error(errors.conflict.acIdAlreadyExists(options.id));
           process.exit(3);
         }
 
@@ -896,7 +899,7 @@ export function registerItemCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'item-ac-set', itemSlug);
         success(`Updated acceptance criterion: ${acId} on @${itemSlug} (${updatedFields.join(', ')})`, { ac: updatedAc[acIndex] });
       } catch (err) {
-        error('Failed to update acceptance criterion', err);
+        error(errors.failures.updateAc, err);
         process.exit(1);
       }
     });
@@ -914,7 +917,8 @@ export function registerItemCommands(program: Command): void {
         // Find the AC
         const acIndex = existingAc.findIndex(ac => ac.id === acId);
         if (acIndex === -1) {
-          error(`Acceptance criterion "${acId}" not found on @${item.slugs[0] || refIndex.shortUlid(item._ulid)}`);
+          const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
+          error(errors.reference.acNotFound(acId, itemRef));
           process.exit(3);
         }
 
@@ -929,7 +933,7 @@ export function registerItemCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'item-ac-remove', itemSlug);
         success(`Removed acceptance criterion: ${acId} from @${itemSlug}`, { removed: acId });
       } catch (err) {
-        error('Failed to remove acceptance criterion', err);
+        error(errors.failures.removeAc, err);
         process.exit(1);
       }
     });

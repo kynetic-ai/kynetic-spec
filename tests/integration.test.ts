@@ -669,7 +669,7 @@ describe('Integration: item patch', () => {
         `npx tsx ${CLI_PATH} item patch @test-task-pending --data '{"title":"X"}'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
-    }).toThrow(/Not a spec item/);
+    }).toThrow(/is a task, not a spec item/);
   });
 
   // AC: @item-patch ac-12
