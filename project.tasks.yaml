@@ -6782,6 +6782,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Command already fully implemented and tested - verified implementation matches spec requirements
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6790,6 +6791,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.370Z'
   started_at: '2026-01-18T12:59:22.835Z'
+  completed_at: '2026-01-18T13:01:36.816Z'
   notes:
     - _ulid: 01KF8K4H6Z3R6QSXBBAT56CC7T
       created_at: '2026-01-18T13:01:31.231Z'
@@ -6803,8 +6805,6 @@
         - Comprehensive test coverage in meta.test.ts
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T13:01:36.816Z'
-  closed_reason: Command already fully implemented and tested - verified implementation matches spec requirements
 - _ulid: 01KF4WVWZBDZXSX30NSJKRC8WB
   slugs:
     - task-kspec-meta-focus
@@ -6812,7 +6812,7 @@
   type: task
   spec_ref: '@meta-focus-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6823,6 +6823,7 @@
   created_at: '2026-01-17T02:34:36.395Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T13:02:52.496Z'
 - _ulid: 01KF4WVX0EEF2R90HC63GY3B6Z
   slugs:
     - task-kspec-meta-thread
