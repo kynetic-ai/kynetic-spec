@@ -54,6 +54,9 @@ export const TaskSchema = z.object({
   // Meta relationship (links to workflow, agent, or convention for process improvement tracking)
   meta_ref: RefSchema.nullable().optional(),
 
+  // Origin tracking (where this task came from)
+  origin: z.enum(['manual', 'derived', 'observation_promotion']).optional(),
+
   // State
   status: TaskStatusSchema.default('pending'),
   blocked_by: z.array(z.string()).default([]),
@@ -104,6 +107,9 @@ export const TaskInputSchema = z.object({
 
   // Meta relationship
   meta_ref: RefSchema.nullable().optional(),
+
+  // Origin tracking
+  origin: z.enum(['manual', 'derived', 'observation_promotion']).optional(),
 
   // State
   status: TaskStatusSchema.optional(),
