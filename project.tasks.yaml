@@ -8254,3 +8254,26 @@
   completed_at: '2026-01-18T12:59:08.899Z'
   notes: []
   todos: []
+- title: Document alignment system spec coverage
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - spec-gap
+    - alignment
+    - debt
+  description: >-
+    Alignment system spec coverage gap - AlignmentIndex, auto-sync, validation commands (kspec item
+    status, alignment check) were implemented pragmatically without spec. Need to create spec items
+    documenting: alignment concept, AlignmentIndex structure, auto-sync behavior, alignment
+    validation, guidance output format.
+  _ulid: 01KF9B3YXAHHKV1CZJSVS2WJMG
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-18T20:00:38.313Z'
+  notes: []
+  todos: []
