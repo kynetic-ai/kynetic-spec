@@ -25,6 +25,8 @@ import {
   loadAllTasks,
   loadAllItems,
   ReferenceIndex,
+  loadSessionContext,
+  saveSessionContext,
   type MetaContext,
   type Agent,
   type Workflow,
@@ -1252,6 +1254,63 @@ export function registerMetaCommands(program: Command): void {
         success(`Deleted ${itemLabel}`);
       } catch (err) {
         error(errors.failures.deleteMetaItem, err);
+        process.exit(1);
+      }
+    });
+
+  // meta-focus-cmd: kspec meta focus [ref]
+  meta
+    .command('focus [ref]')
+    .description('Get or set session focus')
+    .option('--clear', 'Clear current focus')
+    .action(async (ref: string | undefined, options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(1);
+        }
+
+        const sessionCtx = await loadSessionContext(ctx);
+
+        // Clear focus
+        if (options.clear) {
+          sessionCtx.focus = null;
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { focus: null },
+            () => success('Cleared session focus')
+          );
+          return;
+        }
+
+        // Show current focus
+        if (!ref) {
+          output(
+            { focus: sessionCtx.focus },
+            () => {
+              if (sessionCtx.focus) {
+                console.log(`Current focus: ${sessionCtx.focus}`);
+              } else {
+                console.log(chalk.yellow('No focus set'));
+              }
+            }
+          );
+          return;
+        }
+
+        // Set focus to ref
+        sessionCtx.focus = ref.startsWith('@') ? ref : `@${ref}`;
+        await saveSessionContext(ctx, sessionCtx);
+
+        output(
+          { focus: sessionCtx.focus },
+          () => success(`Set focus to: ${sessionCtx.focus}`)
+        );
+      } catch (err) {
+        error(errors.failures.updateSessionContext, err);
         process.exit(1);
       }
     });
