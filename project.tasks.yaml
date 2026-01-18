@@ -3207,6 +3207,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    All 4 acceptance criteria implemented with tests. kspec meta workflows command works in table,
+    verbose, and JSON modes. Workflow reference validation integrated into validation system.
   depends_on: []
   context: []
   priority: 1
@@ -3217,6 +3220,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.621Z'
   started_at: '2026-01-18T01:05:53.086Z'
+  completed_at: '2026-01-18T01:21:10.729Z'
   notes:
     - _ulid: 01KF7B1Z9HWQAFX5E12TYAGZKT
       created_at: '2026-01-18T01:21:04.306Z'
@@ -3273,10 +3277,6 @@
         positive test proves AC-3 works)
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T01:21:10.729Z'
-  closed_reason: >-
-    All 4 acceptance criteria implemented with tests. kspec meta workflows command works in table,
-    verbose, and JSON modes. Workflow reference validation integrated into validation system.
 - _ulid: 01KF4WVW820TFJ811C566EC6AR
   slugs:
     - task-workflow-schema
@@ -3429,7 +3429,7 @@
   type: task
   spec_ref: '@observations'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -3442,6 +3442,7 @@
   created_at: '2026-01-17T02:34:35.879Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T01:22:31.130Z'
 - _ulid: 01KF4WVWG3WWK8108GY1PNSH89
   slugs:
     - task-observation-schema
