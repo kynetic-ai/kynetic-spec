@@ -443,18 +443,6 @@ inbox:
     created_at: '2026-01-18T01:03:34.941Z'
     tags: []
     added_by: '@claude'
-  - _ulid: 01KF7BWBVAHZZA6QGCBCZFG4AC
-    text: >-
-      Reference implementation value: Checked ../kspec-acp-test before implementing observations.
-      Found identical spec and working implementation which provided clear blueprint. Saved
-      significant design time and avoided edge cases. Having parallel agent repos with prior work is
-      highly valuable for consistency.
-    created_at: '2026-01-18T01:35:29.130Z'
-    tags:
-      - reflection
-      - workflow
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF7MGV986G6QFAT2853AKP75
     text: >-
       Iteration 4 findings: (1) Inbox and task notes live in shadow branch (.kspec/) not main -
