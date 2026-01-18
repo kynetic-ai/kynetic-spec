@@ -850,9 +850,9 @@ describe('Shadow Branch', () => {
       expect(isDebugMode(true)).toBe(true);
     });
 
-    it('enables debug mode with --verbose CLI flag via getter', () => {
+    it('enables debug mode with --debug-shadow CLI flag via getter', () => {
       expect(isDebugMode()).toBe(false);
-      // Simulate --verbose flag set
+      // Simulate --debug-shadow flag set
       setVerboseModeGetter(() => true);
       expect(isDebugMode()).toBe(true);
     });
@@ -888,7 +888,7 @@ describe('Shadow Branch', () => {
     });
 
     // AC: @shadow-debug-mode ac-2
-    it('outputs error messages when debug mode enabled via verbose flag', async () => {
+    it('outputs error messages when debug mode enabled via debug-shadow flag', async () => {
       // Setup a git repo with shadow
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });

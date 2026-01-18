@@ -34,14 +34,14 @@ program
   .description('Kynetic Spec - Structured specification format CLI')
   .version('0.1.0')
   .option('--json', 'Output in JSON format')
-  .option('-v, --verbose', 'Enable debug output for shadow operations')
+  .option('--debug-shadow', 'Enable debug output for shadow operations')
   .hook('preAction', (thisCommand) => {
-    // Check for --json and --verbose flags at top level or on subcommand
+    // Check for --json and --debug-shadow flags at top level or on subcommand
     const opts = thisCommand.opts();
     if (opts.json) {
       setJsonMode(true);
     }
-    if (opts.verbose) {
+    if (opts.debugShadow) {
       setVerboseMode(true);
     }
   });
