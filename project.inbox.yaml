@@ -213,18 +213,6 @@ inbox:
       - workflow
       - agents
     added_by: '@claude'
-  - _ulid: 01KF5YSJPEN2N36PMEZ4X3WPZD
-    text: >-
-      Ralph streaming mode + library refactor: Consider supporting streaming output mode for ralph.
-      If going that far, switch from CLI to library/SDK. Evaluate using ACP (Agent Client Protocol
-      by Zed editor team) - reference implementation exists in ../kynetic project. Could borrow
-      patterns for tracking iterations and all agent interactions to create audit trail.
-    created_at: '2026-01-17T12:27:31.918Z'
-    tags:
-      - ralph
-      - design
-      - streaming
-    added_by: '@claude'
   - _ulid: 01KF6541Q2CXEXRYFFHAGD53H4
     text: >-
       Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent
