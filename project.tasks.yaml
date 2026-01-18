@@ -7017,23 +7017,3 @@
   created_at: '2026-01-18T03:37:31.483Z'
   notes: []
   todos: []
-- _ulid: 01KF842N80R22PEJZNNB04ZP7Z
-  slugs:
-    - test-no-spec-task
-  title: Test task without spec
-  type: task
-  spec_ref: null
-  meta_ref: null
-  status: completed
-  blocked_by: []
-  closed_reason: Testing no spec case
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: '2026-01-18T08:38:21.184Z'
-  started_at: '2026-01-18T08:38:29.248Z'
-  completed_at: '2026-01-18T08:38:34.339Z'
-  notes: []
-  todos: []
