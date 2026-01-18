@@ -5692,7 +5692,7 @@
   type: task
   spec_ref: '@convention-domains'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-convention-definitions'
@@ -5713,6 +5713,8 @@
         the established pattern.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:51:28.303Z'
+  closed_reason: All 6 standard convention domains now defined in meta manifest
 - _ulid: 01KF4WVWE4GXJAT63VMQM91REF
   slugs:
     - task-convention-validation-strategy
