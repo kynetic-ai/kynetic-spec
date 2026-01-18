@@ -2600,6 +2600,111 @@
 
         The research task notes list 5 key questions I'll analyze next.
       supersedes: null
+    - _ulid: 01KF7W5EX95DKBBK630P2NZMBS
+      created_at: '2026-01-18T06:20:04.394Z'
+      author: '@claude'
+      content: |-
+        ## Analysis of Design Questions:
+
+        ### Q1: How should .kspec-session relate to kspec session start output?
+
+        **Recommendation: New dedicated section in session start output**
+
+        Rationale:
+        - session start already has clear sections (Active Work, Ready Tasks, Inbox, etc.)
+        - Adding '=== Session Context ===' section fits existing pattern
+        - Only show section if .kspec-session exists (don't clutter output otherwise)
+        - Context is distinct from computed state (tasks, commits) - it's user-captured intent
+
+        Output structure:
+        ```
+        === Session Context ===
+        Focus: @task-slug (Task Title)
+
+        Active Threads:
+          - Thread text here
+          - Another thread
+
+        Open Questions:
+          - Question text?
+        ```
+
+        ### Q2: What triggers context updates?
+
+        **Recommendation: Explicit commands only (for MVP)**
+
+        Rationale:
+        - Auto-inference is complex and error-prone (what's a 'thread' vs a note?)
+        - Explicit commands give users full control
+        - Keep it simple: kspec meta focus, meta thread, meta question
+        - Future: Could add auto-suggestions ("Detected new topic - add thread?") but not MVP
+
+        Commands:
+        - kspec meta focus @ref - sets focus
+        - kspec meta thread add "text" - adds thread
+        - kspec meta question add "text?" - adds question
+
+        ### Q3: Persistence - gitignored or committed?
+
+        **Recommendation: Gitignored by default, with docs explaining both uses**
+
+        Rationale:
+        - Session context is inherently ephemeral (current focus, active thoughts)
+        - Different agents/humans may have different focus on same codebase
+        - Committing creates merge conflicts and stale state
+        - But: Some teams may want shared context - don't prevent it
+        - Solution: .gitignore by default, but if user wants to commit it, that's fine
+
+        Implementation:
+        - kspec init/setup adds .kspec-session to .gitignore
+        - Don't force - user can remove from .gitignore if desired
+        - Document both patterns in AGENTS.md
+
+        ### Q4: Overlap with existing session commands?
+
+        **Recommendation: Complementary, not redundant**
+
+        Current overlap analysis:
+        - session start shows COMPUTED state (what tasks are active, what's ready)
+        - session context shows CAPTURED INTENT (what I'm focusing on, why)
+
+        Example scenario:
+        - Active tasks: @task-a, @task-b (both in_progress)
+        - Focus: @task-a (I'm working on A right now, B is background)
+        - Thread: "Exploring whether to use Redis or in-memory cache"
+        - Question: "Should we add retry logic at the client or server level?"
+
+        session start tells you WHAT is happening (2 tasks active)
+        session context tells you WHY and HOW you're thinking about it
+
+        No redundancy - they serve different purposes.
+
+        ### Q5: Cross-session continuity?
+
+        **Recommendation: Manual preservation, with docs**
+
+        Rationale:
+        - Context is meant to be session-scoped (hence the name .kspec-session)
+        - Compaction/new sessions = fresh start by default
+        - BUT: User can preserve it if desired:
+          - Add meaningful threads/questions to task notes before ending session
+          - Promote important questions to inbox items
+          - Document focus in task notes
+
+        Pattern:
+        ```
+        # End of session
+        kspec task note @task-slug "Current focus: [from session context]
+        Active exploration: [from threads]
+        Open questions: [from questions]"
+
+        kspec inbox add "Question: [important question from context]"
+        ```
+
+        Then .kspec-session can be cleared/reset for next session.
+
+        Documentation: Add to AGENTS.md under session management.
+      supersedes: null
   todos: []
 - _ulid: 01KF1KB4D199B61AKJ17RM7YFN
   slugs: []
