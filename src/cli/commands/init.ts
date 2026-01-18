@@ -9,6 +9,7 @@ import {
   isGitRepo,
   SHADOW_WORKTREE_DIR,
 } from '../../parser/shadow.js';
+import { errors } from '../../strings/index.js';
 
 /**
  * Default manifest template
@@ -155,7 +156,7 @@ export function registerInitCommand(program: Command): void {
 
           if (!gitRoot) {
             if (await isGitRepo(targetDir)) {
-              error('Could not determine git root directory');
+              error(errors.git.couldNotDetermineRoot);
               process.exit(1);
             }
             // Not a git repo - fall back to non-shadow mode with warning
@@ -173,7 +174,7 @@ export function registerInitCommand(program: Command): void {
           });
 
           if (!result.success) {
-            error(`Shadow initialization failed: ${result.error}`);
+            error(errors.project.shadowInitFailed(result.error || 'Unknown error'));
             process.exit(1);
           }
 
@@ -218,7 +219,7 @@ export function registerInitCommand(program: Command): void {
           await initNonShadow(targetDir, projectName, options);
         }
       } catch (err) {
-        error('Failed to initialize project', err);
+        error(errors.failures.initProject, err);
         process.exit(1);
       }
     });
@@ -238,7 +239,7 @@ async function initNonShadow(
   try {
     await fs.access(specDir);
     if (!options.force) {
-      error(`spec/ directory already exists in ${targetDir}`);
+      error(errors.conflict.specDirExists(targetDir));
       console.log('Use --force to overwrite existing files');
       process.exit(1);
     }

@@ -18,7 +18,7 @@ import {
   type KspecContext,
 } from '../../parser/index.js';
 import { output, error, info, isJsonMode } from '../output.js';
-import { sessionHeaders, hints, sessionPrompt } from '../../strings/index.js';
+import { sessionHeaders, hints, sessionPrompt, errors } from '../../strings/index.js';
 import {
   parseTimeSpec,
   formatRelativeTime,
@@ -877,7 +877,7 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
 
     output(sessionCtx, () => formatSessionContext(sessionCtx, options));
   } catch (err) {
-    error('Failed to gather session context', err);
+    error(errors.failures.gatherSessionContext, err);
     process.exit(1);
   }
 }
@@ -972,7 +972,7 @@ async function sessionCheckpointAction(options: CheckpointOptions): Promise<void
       }
     }
   } catch (err) {
-    error('Failed to run checkpoint', err);
+    error(errors.failures.runCheckpoint, err);
     process.exit(1);
   }
 }

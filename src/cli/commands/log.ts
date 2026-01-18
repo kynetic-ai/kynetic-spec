@@ -13,6 +13,7 @@ import {
 } from '../../parser/index.js';
 import { output, error, info } from '../output.js';
 import { isGitRepo } from '../../utils/git.js';
+import { errors } from '../../strings/index.js';
 
 export interface LogCommit {
   hash: string;
@@ -90,7 +91,7 @@ export function registerLogCommand(program: Command): void {
           const ctx = await initContext();
 
           if (!isGitRepo(ctx.rootDir)) {
-            error('Not a git repository');
+            error(errors.git.notGitRepo);
             process.exit(1);
           }
 
@@ -106,7 +107,7 @@ export function registerLogCommand(program: Command): void {
             // Resolve the reference to get canonical form
             const result = index.resolve(ref);
             if (!result.ok) {
-              error(`Reference not found: ${ref}`);
+              error(errors.reference.refNotFound(ref));
               process.exit(3);
             }
 
@@ -141,7 +142,7 @@ export function registerLogCommand(program: Command): void {
           }
 
           if (patterns.length === 0) {
-            error('Provide a reference or use --spec/--task');
+            error(errors.usage.logNeedRef);
             process.exit(2);
           }
 
@@ -195,7 +196,7 @@ export function registerLogCommand(program: Command): void {
             console.log(chalk.gray(`${limited.length} commit(s) found`));
           });
         } catch (err) {
-          error('Failed to search commits', err);
+          error(errors.failures.searchCommits, err);
           process.exit(1);
         }
       }
