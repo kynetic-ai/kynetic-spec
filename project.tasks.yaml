@@ -3623,7 +3623,7 @@
   type: task
   spec_ref: '@auto-cli-docs'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -3677,6 +3677,7 @@
         add new command and verify it appears without help.ts update
       supersedes: null
   todos: []
+  started_at: '2026-01-18T06:05:06.490Z'
 - _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
   slugs:
     - task-commit-message-guidance
