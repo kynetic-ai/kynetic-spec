@@ -506,7 +506,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Todo entries have:
           - id: Local numeric ID (within task)
