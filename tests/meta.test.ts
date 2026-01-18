@@ -1697,3 +1697,87 @@ conventions:
     }
   });
 });
+
+describe('Integration: meta focus', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @meta-focus-cmd ac-focus-1
+  it('should show no focus when none is set', () => {
+    const output = kspec('meta focus', tempDir);
+    expect(output).toContain('No focus set');
+  });
+
+  // AC: @meta-focus-cmd ac-focus-2
+  it('should set focus to a reference', () => {
+    const output = kspec('meta focus test-feature', tempDir);
+    expect(output).toMatch(/Set focus to: @test-feature/);
+  });
+
+  // AC: @meta-focus-cmd ac-focus-1
+  it('should show current focus', () => {
+    kspec('meta focus test-feature', tempDir);
+    const output = kspec('meta focus', tempDir);
+    expect(output).toContain('Current focus: @test-feature');
+  });
+
+  // AC: @meta-focus-cmd ac-focus-2
+  it('should auto-prepend @ to references', () => {
+    kspec('meta focus test-item', tempDir);
+    const focusData = kspecJson<{ focus: string }>('meta focus', tempDir);
+    expect(focusData.focus).toBe('@test-item');
+  });
+
+  // AC: @meta-focus-cmd ac-focus-3
+  it('should clear focus', () => {
+    kspec('meta focus test-feature', tempDir);
+    const output = kspec('meta focus --clear', tempDir);
+    expect(output).toContain('Cleared session focus');
+
+    const focusData = kspecJson<{ focus: null }>('meta focus', tempDir);
+    expect(focusData.focus).toBeNull();
+  });
+
+  // AC: @meta-focus-cmd ac-focus-1, ac-focus-2, ac-focus-3
+  it('should support JSON output mode', () => {
+    // No focus set
+    const noFocus = kspecJson<{ focus: null }>('meta focus', tempDir);
+    expect(noFocus.focus).toBeNull();
+
+    // Set focus
+    const setFocus = kspecJson<{ focus: string }>('meta focus test-feature', tempDir);
+    expect(setFocus.focus).toBe('@test-feature');
+
+    // Show focus
+    const showFocus = kspecJson<{ focus: string }>('meta focus', tempDir);
+    expect(showFocus.focus).toBe('@test-feature');
+
+    // Clear focus
+    const clearFocus = kspecJson<{ focus: null }>('meta focus --clear', tempDir);
+    expect(clearFocus.focus).toBeNull();
+  });
+
+  it('should persist focus across command invocations', () => {
+    kspec('meta focus test-feature', tempDir);
+
+    // Run a different command
+    kspec('tasks ready', tempDir);
+
+    // Focus should still be set
+    const focusData = kspecJson<{ focus: string }>('meta focus', tempDir);
+    expect(focusData.focus).toBe('@test-feature');
+  });
+
+  it('should display focus in session start output', () => {
+    kspec('meta focus test-feature', tempDir);
+    const sessionOutput = kspec('session start', tempDir);
+    expect(sessionOutput).toContain('Focus: @test-feature');
+  });
+});
