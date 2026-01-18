@@ -3623,7 +3623,7 @@
   type: task
   spec_ref: '@auto-cli-docs'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -3713,6 +3713,10 @@
         All 409 tests pass. Ready for review.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T06:11:45.780Z'
+  closed_reason: >-
+    Auto-generated CLI documentation implemented with Commander introspection, curated content
+    separation, and comprehensive test coverage
 - _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
   slugs:
     - task-commit-message-guidance
