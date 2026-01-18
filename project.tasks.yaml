@@ -2112,9 +2112,45 @@
     - errors
   vcs_refs: []
   created_at: '2026-01-15T17:12:16.277Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T06:57:05.929Z'
+  notes:
+    - _ulid: 01KF7YCVM1TC8ZCHSQF4SY1RWR
+      created_at: '2026-01-18T06:59:03.937Z'
+      author: '@claude'
+      content: >-
+        Implemented CLI command suggestions on error using Levenshtein distance for fuzzy matching.
+
+
+        Implementation details:
+
+        - Created src/cli/suggest.ts with findClosestCommand() using Levenshtein distance algorithm
+
+        - Added 'command:*' event handler in src/cli/index.ts to intercept unknown commands
+
+        - Threshold of 3 for distance matching (configurable)
+
+        - Falls back to generic help message if no close match found
+
+        - Added comprehensive test suite (11 tests) in tests/suggest.test.ts
+
+
+        Examples:
+
+        - 'kspec taks list' → suggests 'kspec tasks'
+
+        - 'kspec inbx add' → suggests 'kspec inbox'
+
+        - 'kspec tassk' → suggests 'kspec task'
+
+
+        Commander.js already handles subcommand typos with built-in suggestions, so only top-level
+        commands need custom handling.
+
+
+        Alias support stubbed out but left minimal - both 'task' and 'tasks' are valid commands, so
+        no singular/plural aliases needed.
+      supersedes: null
+  todos: []
 - _ulid: 01KF1BBM6X8491F1GS6K79RZYK
   slugs: []
   title: Design spec-drift detection hook for user input

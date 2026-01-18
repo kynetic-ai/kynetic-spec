@@ -1695,6 +1695,9 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-15T17:12:08.507Z'
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF3M0JFKF5578HVXEE99F0ZT
     slugs:
       - auto-cli-docs
