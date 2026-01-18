@@ -3683,6 +3683,18 @@
         meta-list-cmd for unified listing. All commands support --json output and work with all meta
         item types (agents, workflows, conventions, observations). Tests pass (31/32, 1 skipped).
       supersedes: null
+    - _ulid: 01KF7GSM8S6W9HBZF39HXY6RVD
+      created_at: '2026-01-18T03:01:22.330Z'
+      author: '@claude'
+      content: >-
+        Session checkpoint: Implemented 3 of 11 remaining meta CLI commands. COMPLETED: meta
+        conventions (AC-conv-1,2,5), meta get (unified item retrieval), meta list (unified listing
+        with type filters). All support --json output and work across all meta item types. PR #23
+        created and ready for review. REMAINING: Session context commands (focus, thread, question,
+        context) and mutation commands (add, set, delete). Note: 'show' command was already
+        implemented. Next session should pick up with session context commands or mutation commands
+        depending on priority.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
