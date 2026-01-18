@@ -125,6 +125,48 @@ describe('Integration: tasks', () => {
     expect(result.title).toBe('Test pending task');
     expect(result.status).toBe('pending');
   });
+
+  // AC: @task-list-verbose ac-1
+  it('should show full details with --full flag', () => {
+    const output = kspec('tasks ready --full', tempDir);
+
+    // Should show timestamps (AC-1)
+    expect(output).toContain('Created:');
+
+    // Tags and dependencies should be shown if present
+    expect(output).toContain('test-task-pending');
+  });
+
+  // AC: @task-list-verbose ac-2
+  it('should preserve current -v behavior', () => {
+    const output = kspec('tasks ready -v', tempDir);
+
+    // Should show tags inline with -v
+    expect(output).toContain('#test');
+
+    // Should NOT show full mode details
+    expect(output).not.toContain('Created:');
+  });
+
+  // AC: @task-list-verbose ac-3
+  it('should handle tasks with no notes or todos in full mode', () => {
+    const output = kspec('tasks ready --full', tempDir);
+
+    // Should not error when tasks have no notes/todos
+    expect(output).toContain('test-task-pending');
+  });
+
+  // AC: @task-list-verbose ac-4
+  it('should include all fields in JSON output with --full', () => {
+    const result = kspecJson<any[]>('tasks ready --full', tempDir);
+
+    // Should include notes and todos arrays
+    expect(result[0]).toHaveProperty('notes');
+    expect(result[0]).toHaveProperty('todos');
+    expect(result[0]).toHaveProperty('created_at');
+    expect(Array.isArray(result[0].notes)).toBe(true);
+    expect(Array.isArray(result[0].todos)).toBe(true);
+  });
 });
 
 describe('Integration: task lifecycle', () => {

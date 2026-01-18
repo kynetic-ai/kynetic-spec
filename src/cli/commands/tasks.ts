@@ -34,6 +34,7 @@ export function registerTasksCommands(program: Command): void {
     .option('--meta-ref <ref>', 'Filter by meta reference')
     .option('-g, --grep <pattern>', 'Search content with regex pattern')
     .option('-v, --verbose', 'Show more details')
+    .option('--full', 'Show full details (notes, todos, timestamps)')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -81,7 +82,7 @@ export function registerTasksCommands(program: Command): void {
           });
         }
 
-        output(taskList, () => formatTaskList(taskList, options.verbose, index, options.grep));
+        output(taskList, () => formatTaskList(taskList, options.verbose, index, options.grep, options.full));
       } catch (err) {
         error(errors.failures.listTasks, err);
         process.exit(1);
@@ -93,6 +94,7 @@ export function registerTasksCommands(program: Command): void {
     .command('ready')
     .description('List tasks that are ready to work on')
     .option('-v, --verbose', 'Show more details')
+    .option('--full', 'Show full details (notes, todos, timestamps)')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -105,7 +107,7 @@ export function registerTasksCommands(program: Command): void {
           if (readyTasks.length === 0) {
             info('No tasks ready - all pending tasks are blocked or have unmet dependencies');
           } else {
-            formatTaskList(readyTasks, options.verbose, index);
+            formatTaskList(readyTasks, options.verbose, index, undefined, options.full);
           }
         });
       } catch (err) {
@@ -145,6 +147,7 @@ export function registerTasksCommands(program: Command): void {
     .command('blocked')
     .description('Show blocked tasks')
     .option('-v, --verbose', 'Show more details')
+    .option('--full', 'Show full details (notes, todos, timestamps)')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -153,7 +156,7 @@ export function registerTasksCommands(program: Command): void {
         const index = new ReferenceIndex(allTasks, items);
         const blockedTasks = allTasks.filter(t => t.status === 'blocked');
 
-        output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose, index));
+        output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose, index, undefined, options.full));
       } catch (err) {
         error(errors.failures.getBlockedTasks, err);
         process.exit(1);
@@ -166,6 +169,7 @@ export function registerTasksCommands(program: Command): void {
     .alias('active')
     .description('Show tasks in progress')
     .option('-v, --verbose', 'Show more details')
+    .option('--full', 'Show full details (notes, todos, timestamps)')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -174,7 +178,7 @@ export function registerTasksCommands(program: Command): void {
         const index = new ReferenceIndex(allTasks, items);
         const activeTasks = allTasks.filter(t => t.status === 'in_progress');
 
-        output(activeTasks, () => formatTaskList(activeTasks, options.verbose, index));
+        output(activeTasks, () => formatTaskList(activeTasks, options.verbose, index, undefined, options.full));
       } catch (err) {
         error(errors.failures.getActiveTasks, err);
         process.exit(1);
