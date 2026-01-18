@@ -539,6 +539,49 @@ export function registerTaskCommands(program: Command): void {
             info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
           }
         }
+
+        // AC: @task-completion-guardrails ac-1
+        // Prompt to update spec implementation status to 'implemented'
+        if (foundTask.spec_ref && !isJsonMode()) {
+          const specResult = index.resolve(foundTask.spec_ref);
+          if (specResult.ok && specResult.item) {
+            // Ensure it's a spec item, not a task
+            const specItem = items.find(i => i._ulid === specResult.ulid);
+            if (specItem) {
+              const readline = await import('readline');
+              const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+              });
+
+              const answer = await new Promise<string>((resolve) => {
+                rl.question(`\nUpdate ${foundTask.spec_ref} status to implemented? [y/N] `, resolve);
+              });
+              rl.close();
+
+              if (answer.toLowerCase() === 'y') {
+                // AC: @task-completion-guardrails ac-2
+                // Show reminder about acceptance criteria if spec has them
+                if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+                  const count = specItem.acceptance_criteria.length;
+                  console.log(`\n⚠ Linked spec has ${count} acceptance criteri${count === 1 ? 'on' : 'a'} - verify they are covered\n`);
+                }
+
+                // Update spec implementation status to 'implemented'
+                const { updateSpecItem } = await import('../../parser/yaml.js');
+                const currentStatus = specItem.status || { maturity: 'draft', implementation: 'not_started' };
+                await updateSpecItem(ctx, specItem, {
+                  status: {
+                    maturity: currentStatus.maturity,
+                    implementation: 'implemented',
+                  },
+                });
+                await commitIfShadow(ctx.shadow, 'item-status-update', foundTask.spec_ref);
+                info(`Updated ${foundTask.spec_ref} implementation status to 'implemented'`);
+              }
+            }
+          }
+        }
       } catch (err) {
         error(errors.failures.completeTask, err);
         process.exit(1);
