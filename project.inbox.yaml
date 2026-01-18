@@ -1426,3 +1426,16 @@ inbox:
     created_at: '2026-01-18T13:31:03.855Z'
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KF8TQ5X9Q0Y6DEGWQ9YPECHN
+    text: >-
+      Transaction/batch mechanics for kspec operations - ability to set a mark point where changes
+      don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on
+      errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on
+      abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec
+      bulk' command that takes a script/list of operations and executes them atomically.
+    created_at: '2026-01-18T15:14:02.282Z'
+    tags:
+      - idea
+      - cli
+      - architecture
+    added_by: '@claude'
