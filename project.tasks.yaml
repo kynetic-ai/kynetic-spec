@@ -8254,20 +8254,3 @@
   completed_at: '2026-01-18T12:59:08.899Z'
   notes: []
   todos: []
-- _ulid: 01KF8JEVMP7BW94FVB8A1RA6E8
-  slugs: []
-  title: Task from workflow observation
-  type: task
-  description: Another test observation
-  meta_ref: '@spec-first'
-  origin: observation_promotion
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: '2026-01-18T12:49:41.014Z'
-  notes: []
-  todos: []
