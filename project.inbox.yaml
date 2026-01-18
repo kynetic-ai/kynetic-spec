@@ -455,18 +455,6 @@ inbox:
       - meta
       - dx
     added_by: '@claude'
-  - _ulid: 01KF7BW4C9DC22SXWQPGQSEDNY
-    text: >-
-      Subprocess spawning complexity: When promoting observations to tasks, initially tried spawning
-      npm/tsx subprocess which caused temp directory path issues in tests. Switched to direct API
-      calls (createTask/saveTask) which simplified implementation and avoided process overhead.
-      Pattern: prefer direct API over subprocess when both agents run in same codebase.
-    created_at: '2026-01-18T01:35:21.481Z'
-    tags:
-      - reflection
-      - dx
-      - api-design
-    added_by: '@claude'
   - _ulid: 01KF7BWBVAHZZA6QGCBCZFG4AC
     text: >-
       Reference implementation value: Checked ../kspec-acp-test before implementing observations.

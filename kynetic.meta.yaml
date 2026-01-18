@@ -250,4 +250,179 @@ observations:
     resolved: false
     resolution: null
     promoted_to: '@01KF8JEV'
+  - _ulid: 01KF93NC0FXND1244CN31ZH22Z
+    type: friction
+    content: >-
+      ReferenceIndex Result<T> pattern gotcha: resolve() returns Result objects with .ok field, not
+      items directly. Must check result.ok before accessing result.item - TypeScript doesn't enforce
+      this at compile time. Pattern: if (result.ok) { use result.item } else { handle error }.
+      Encountered multiple times across iterations.
+    created_at: '2026-01-18T17:50:20.175Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93NCXZNXTPWAPCFPNH0STG
+    type: friction
+    content: >-
+      Linter/tooling auto-revert blocker: During ralph loop iterations, file changes were repeatedly
+      auto-reverted by linter/auto-save system. Code written and verified would disappear after
+      edits. Affected shadow.ts, index.ts, test files. Possible causes: aggressive format-on-save,
+      linter deleting code it doesn't understand, file watcher conflicts. Blocks implementation work
+      when it occurs.
+    created_at: '2026-01-18T17:50:21.120Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93NDYAX7CWP4QP7072AHMH
+    type: friction
+    content: >-
+      Ralph loop session state freshness: Multiple issues with stale state in automation loops. (1)
+      Iteration started on non-main branch from previous session. (2) Session context showed
+      already-completed task as ready because context generated before commits reflected. (3) Picked
+      completed work repeatedly. Solutions: generate context AFTER pulling latest, validate task is
+      actually pending before starting, checkpoint script should update .kspec before next
+      iteration.
+    created_at: '2026-01-18T17:50:22.155Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93P6NTQJP3C2ZSND2J2MZT
+    type: friction
+    content: >-
+      Subprocess spawning complexity: When promoting observations to tasks, initially tried spawning
+      npm/tsx subprocess which caused temp directory path issues in tests. Switched to direct API
+      calls (createTask/saveTask) which simplified implementation and avoided process overhead.
+      Pattern: prefer direct API over subprocess when both run in same codebase.
+    created_at: '2026-01-18T17:50:47.483Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93P7W2A063T315RXPC6ZF7
+    type: friction
+    content: >-
+      Commander --json flag conflict: Command-specific --json flags conflict with global --json flag
+      in Commander. Solution: use global flag only, check isJsonMode() instead of options.json. This
+      pattern should be documented or enforced via convention.
+    created_at: '2026-01-18T17:50:48.706Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93P8XZK7K9V8ERYYH6FE0Z
+    type: friction
+    content: >-
+      Bash tool cd persistence: Commands run in same directory as previous command unless explicit
+      cd. Running 'cd .kspec && git status' left session in .kspec worktree. Need explicit 'cd
+      /path/to/main' to return. Can be confusing when working with shadow branch.
+    created_at: '2026-01-18T17:50:49.792Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93PA837GGVE8DH3PVZE8WC
+    type: friction
+    content: >-
+      CLI output pattern: When implementing CLI commands with both human-readable and JSON formats,
+      use success(message, data) instead of calling both success() and output() separately. The
+      success() function already handles JSON mode internally, avoiding duplicate/mixed output.
+    created_at: '2026-01-18T17:50:51.140Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93PBBYDPRH0WQSKN4Y18SV
+    type: friction
+    content: >-
+      Task status accuracy gap: Found task marked as priority 3 ready but implementation was already
+      complete. All code, tests, and functionality existed. System correctly updated spec alignment
+      when task completed, but task remained in ready list longer than it should have. Need earlier
+      alignment checks or better detection of 'code exists but task not marked done' scenarios.
+    created_at: '2026-01-18T17:50:52.286Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93PCN5NVFEHR801G77EK3X
+    type: friction
+    content: >-
+      Shadow branch auto-commit PR challenges: PR included WIP commits from shadow that were
+      auto-committed. Consider: (1) squash strategy for shadow commits when creating PR, (2)
+      explicit checkpoint command before PR creation, or (3) shadow commit message convention (wip:
+      prefix) to make cleanup easier.
+    created_at: '2026-01-18T17:50:53.606Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93PDXFBPM2B1WYE6HFYJCX
+    type: friction
+    content: >-
+      PR review automation friction: Had to manually launch review subagent, wait for output,
+      interpret results, then fix issues. Could streamline with dedicated /review skill that: (1)
+      checks for open PRs, (2) launches review subagent automatically, (3) interprets results +
+      decision tree, (4) applies fixes if trivial, (5) merges if appropriate.
+    created_at: '2026-01-18T17:50:54.895Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93Q1Y31HP8245N4DF67MCA
+    type: friction
+    content: >-
+      Auto-sync vs interactive prompts anti-pattern: When adding interactive prompts to modify
+      state, always check if automatic sync/calculation logic already exists. AlignmentIndex
+      calculates spec status from all linked tasks - interactive prompt would allow single-task
+      override, creating drift. Pattern: if system has 'calculated truth', don't add manual override
+      without considering multi-entity consistency.
+    created_at: '2026-01-18T17:51:15.396Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93Q2W8DC2RNGG1NA4ABQE0
+    type: friction
+    content: >-
+      Test fixtures spec_ref conflicts: Test fixtures should avoid spec_ref assignments that
+      conflict with derive tests. When adding spec_ref to test tasks, check if they're used in
+      derive --dry-run tests which expect tasks not to exist yet.
+    created_at: '2026-01-18T17:51:16.360Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93Q4JZ571ZGRTHZ3QXCYJQ
+    type: friction
+    content: >-
+      Parser vs CLI layer disconnect: Meta includes were fully implemented in parser but CLI used
+      wrong accessor (metaCtx.manifest.* vs metaCtx.*). This kind of bug suggests value in
+      integration tests that exercise full stack, not just parser logic. Consider smoke tests for
+      all CLI commands with complex scenarios.
+    created_at: '2026-01-18T17:51:18.112Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93Q6BCQXGTJ7X4FAK13KVT
+    type: friction
+    content: >-
+      Spec gap discovery during implementation: AC mentioned 'origin: observation_promotion' but
+      origin field didn't exist in schema. Good example of spec-code drift. Consider:
+      pre-implementation spec validation against schema, or schema-first approach where AC
+      references must match existing schema fields.
+    created_at: '2026-01-18T17:51:19.917Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93Q83M6RJ0YXH1H2H4F3TK
+    type: friction
+    content: >-
+      kspec-meta shadow branch divergence: Shadow branch has diverged significantly from remote (99
+      local vs 2 remote commits). Merge conflicts in sessions/ and modules/. May need manual
+      reconciliation or a fresh sync strategy. Task changes are committed locally and functional.
+    created_at: '2026-01-18T17:51:21.717Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF93Q9S85XSBT1JVV1S1F9F3
+    type: friction
+    content: >-
+      Type guards for union types: When narrowing AnyLoadedItem | LoadedMetaItem to LoadedTask,
+      check for required properties that exist on Task but not on meta items. Use 'status' in item
+      && 'depends_on' in item - NOT optional properties like closed_reason which won't exist on
+      incomplete tasks.
+    created_at: '2026-01-18T17:51:23.432Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
