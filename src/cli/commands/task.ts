@@ -539,6 +539,21 @@ export function registerTaskCommands(program: Command): void {
             info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
           }
         }
+
+        // AC: @task-completion-guardrails ac-2
+        // Show reminder about acceptance criteria if spec has them
+        // AC: @task-completion-guardrails ac-3
+        // Only show for tasks with spec_ref (skipped for non-spec tasks)
+        if (foundTask.spec_ref && !isJsonMode()) {
+          const specResult = index.resolve(foundTask.spec_ref);
+          if (specResult.ok && specResult.item) {
+            const specItem = items.find(i => i._ulid === specResult.ulid);
+            if (specItem?.acceptance_criteria?.length > 0) {
+              const count = specItem.acceptance_criteria.length;
+              console.log(`\n⚠ Linked spec ${foundTask.spec_ref} has ${count} acceptance criteri${count === 1 ? 'on' : 'a'} - verify they are covered\n`);
+            }
+          }
+        }
       } catch (err) {
         error(errors.failures.completeTask, err);
         process.exit(1);
