@@ -846,7 +846,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
     priority: medium
     tags:
       - meta

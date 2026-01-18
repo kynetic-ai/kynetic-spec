@@ -2521,6 +2521,7 @@
     - session
   vcs_refs: []
   created_at: '2026-01-15T19:14:22.320Z'
+  started_at: '2026-01-18T06:18:25.174Z'
   notes:
     - _ulid: 01KF1H9D4YG7SZNTHPBKW0EDT6
       created_at: '2026-01-15T19:14:32.735Z'
@@ -2551,8 +2552,55 @@
            - How does context survive compaction/new sessions?
            - Should threads/questions persist or reset?
       supersedes: null
+    - _ulid: 01KF7W4KSXJR8D0RX7M18W76DP
+      created_at: '2026-01-18T06:19:36.638Z'
+      author: '@claude'
+      content: >-
+        Research findings:
+
+
+        ## What exists today:
+
+        - session start command gathers rich context: active tasks, ready tasks, completed tasks,
+        inbox, git commits, working tree
+
+        - Output is both JSON (for automation) and human-readable formatted tables
+
+        - session checkpoint for end-of-session validation
+
+        - session prompt-check for spec-first reminders
+
+
+        ## What's planned (in spec but not implemented):
+
+        Three child requirements under @session-context:
+
+
+        1. **Context Schema** (@context-schema):
+           - .kspec-session file (gitignored)
+           - Fields: focus (task ref), threads (strings), open_questions (strings), updated_at
+           - Ephemeral, session-specific state
+
+        2. **Context Storage** (@context-storage):
+           - Separate file from meta manifest
+           - Auto-created when context commands used
+           - Can be deleted without losing project config
+
+        3. **Context Integration** (@context-integration):
+           - Appears in session start output as new section
+           - Shows current focus, active threads, open questions
+
+        4. **Context Manipulation Commands** (in @meta-commands):
+           - kspec meta focus [ref] - get/set/clear focus
+           - kspec meta thread <add|remove|list|clear> - manage threads
+           - kspec meta question <add|remove|list|clear> - manage questions  
+           - kspec meta context [--json|--clear] - show all context
+
+        ## Key Design Questions:
+
+        The research task notes list 5 key questions I'll analyze next.
+      supersedes: null
   todos: []
-  started_at: '2026-01-18T06:18:25.174Z'
 - _ulid: 01KF1KB4D199B61AKJ17RM7YFN
   slugs: []
   title: Design shadow branch for meta tracking
