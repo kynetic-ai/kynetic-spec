@@ -30,6 +30,7 @@ export function registerTasksCommands(program: Command): void {
     .option('-s, --status <status>', 'Filter by status')
     .option('-t, --type <type>', 'Filter by type')
     .option('--tag <tag>', 'Filter by tag')
+    .option('--meta-ref <ref>', 'Filter by meta reference')
     .option('-g, --grep <pattern>', 'Search content with regex pattern')
     .option('-v, --verbose', 'Show more details')
     .action(async (options) => {
@@ -37,7 +38,18 @@ export function registerTasksCommands(program: Command): void {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+
+        // Load meta items if filtering by meta-ref
+        const { loadMetaContext } = await import('../../parser/meta.js');
+        const metaContext = await loadMetaContext(ctx);
+        const allMetaItems = [
+          ...metaContext.agents,
+          ...metaContext.workflows,
+          ...metaContext.conventions,
+          ...metaContext.observations,
+        ];
+
+        const index = new ReferenceIndex(tasks, items, allMetaItems);
 
         let taskList = tasks;
 
@@ -50,6 +62,16 @@ export function registerTasksCommands(program: Command): void {
         }
         if (options.tag) {
           taskList = taskList.filter(t => t.tags.includes(options.tag));
+        }
+        if (options.metaRef) {
+          // AC-meta-ref-2: Filter tasks by meta_ref
+          const metaRefResult = index.resolve(options.metaRef);
+          if (!metaRefResult.ok) {
+            error(`meta_ref '${options.metaRef}' not found`);
+            process.exit(3);
+          }
+          const targetRef = options.metaRef.startsWith('@') ? options.metaRef : `@${options.metaRef}`;
+          taskList = taskList.filter(t => t.meta_ref === targetRef || t.meta_ref === options.metaRef);
         }
         if (options.grep) {
           taskList = taskList.filter(t => {

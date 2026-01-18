@@ -430,6 +430,7 @@ export async function deleteObservation(
 
 // Re-export the getMetaItemType function
 export { getMetaItemType };
+export type { Agent, Workflow, Convention, Observation, MetaItem };
 
 // ============================================================
 // GENERIC META ITEM CRUD

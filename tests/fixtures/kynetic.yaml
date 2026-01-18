@@ -10,3 +10,4 @@ includes:
   - modules/core.yaml
 
 tasks_file: project.tasks.yaml
+meta_file: kynetic.meta.yaml

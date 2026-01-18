@@ -6,6 +6,7 @@
  */
 
 import type { LoadedSpecItem, LoadedTask, AnyLoadedItem } from './yaml.js';
+import type { LoadedMetaItem } from './meta.js';
 
 // ============================================================
 // TYPES
@@ -13,11 +14,12 @@ import type { LoadedSpecItem, LoadedTask, AnyLoadedItem } from './yaml.js';
 
 /**
  * Successful resolution result
+ * AC: @agent-definitions ac-agent-3
  */
 export interface ResolveSuccess {
   ok: true;
   ulid: string;
-  item: AnyLoadedItem;
+  item: AnyLoadedItem | LoadedMetaItem;
   /** How the reference was matched */
   matchType: 'slug' | 'ulid-full' | 'ulid-prefix';
 }
@@ -84,21 +86,27 @@ export interface RefValidationError {
 /**
  * Index for efficient reference resolution.
  * Build once when loading the spec, then resolve many times.
+ * AC: @agent-definitions ac-agent-3
  */
 export class ReferenceIndex {
   /** slug → ULID mapping */
   private slugIndex = new Map<string, string[]>();
 
   /** ULID → item mapping */
-  private ulidIndex = new Map<string, AnyLoadedItem>();
+  private ulidIndex = new Map<string, AnyLoadedItem | LoadedMetaItem>();
 
   /** All ULIDs for prefix matching */
   private allUlids: string[] = [];
 
   /**
-   * Build index from loaded items
+   * Build index from loaded items and meta items
+   * AC: @agent-definitions ac-agent-3
    */
-  constructor(tasks: LoadedTask[], items: LoadedSpecItem[]) {
+  constructor(
+    tasks: LoadedTask[],
+    items: LoadedSpecItem[],
+    metaItems: LoadedMetaItem[] = []
+  ) {
     // Index tasks
     for (const task of tasks) {
       this.indexItem(task);
@@ -107,6 +115,12 @@ export class ReferenceIndex {
     // Index spec items
     for (const item of items) {
       this.indexItem(item);
+    }
+
+    // Index meta items (agents, workflows, conventions, observations)
+    // AC: @agent-definitions ac-agent-3
+    for (const metaItem of metaItems) {
+      this.indexMetaItem(metaItem);
     }
 
     // Sort ULIDs for consistent ordering
@@ -127,6 +141,30 @@ export class ReferenceIndex {
         existing.push(ulid);
       } else {
         this.slugIndex.set(slug, [ulid]);
+      }
+    }
+  }
+
+  /**
+   * Index a meta item (agent, workflow, convention, observation)
+   * Meta items use 'id' field as their slug
+   * AC: @agent-definitions ac-agent-3
+   */
+  private indexMetaItem(item: LoadedMetaItem): void {
+    const ulid = item._ulid;
+
+    // Index by ULID
+    this.ulidIndex.set(ulid, item);
+    this.allUlids.push(ulid);
+
+    // Index by id (acts like a slug for meta items)
+    const metaItem = item as { id?: string };
+    if (metaItem.id) {
+      const existing = this.slugIndex.get(metaItem.id);
+      if (existing) {
+        existing.push(ulid);
+      } else {
+        this.slugIndex.set(metaItem.id, [ulid]);
       }
     }
   }
@@ -197,7 +235,7 @@ export class ReferenceIndex {
   /**
    * Get an item by exact ULID (no resolution, direct lookup)
    */
-  getByUlid(ulid: string): AnyLoadedItem | undefined {
+  getByUlid(ulid: string): AnyLoadedItem | LoadedMetaItem | undefined {
     return this.ulidIndex.get(ulid);
   }
 
@@ -266,6 +304,8 @@ export class ReferenceIndex {
 
 /**
  * Fields that contain references
+ * AC: @agent-definitions ac-agent-3 - added_by for agent references
+ * AC: @workflow-definitions ac-workflow-3 - meta_ref for workflow references
  */
 const REF_FIELDS = [
   'depends_on',
@@ -276,10 +316,16 @@ const REF_FIELDS = [
   'supersedes',
   'spec_ref',
   'context',
+  'added_by', // Agent reference
+  'author', // Agent reference
+  'resolved_by', // Agent reference
+  'workflow_ref', // Workflow reference
+  'meta_ref', // Meta reference (workflow, agent, convention)
 ];
 
 /**
  * Extract all references from an item
+ * AC: @agent-definitions ac-agent-3 - also checks nested notes for author refs
  */
 function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }> {
   const refs: Array<{ field: string; ref: string }> = [];
@@ -294,6 +340,31 @@ function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }>
       for (const v of value) {
         if (typeof v === 'string' && v.startsWith('@')) {
           refs.push({ field, ref: v });
+        }
+      }
+    }
+  }
+
+  // Check nested notes for author references
+  // AC: @agent-definitions ac-agent-3
+  if ('notes' in obj && Array.isArray(obj.notes)) {
+    for (const note of obj.notes) {
+      if (note && typeof note === 'object' && 'author' in note) {
+        const author = (note as { author?: string }).author;
+        if (typeof author === 'string' && author.startsWith('@')) {
+          refs.push({ field: 'notes[].author', ref: author });
+        }
+      }
+    }
+  }
+
+  // Check nested todos for added_by references
+  if ('todos' in obj && Array.isArray(obj.todos)) {
+    for (const todo of obj.todos) {
+      if (todo && typeof todo === 'object' && 'added_by' in todo) {
+        const addedBy = (todo as { added_by?: string }).added_by;
+        if (typeof addedBy === 'string' && addedBy.startsWith('@')) {
+          refs.push({ field: 'todos[].added_by', ref: addedBy });
         }
       }
     }

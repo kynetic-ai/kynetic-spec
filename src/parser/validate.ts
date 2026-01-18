@@ -577,9 +577,19 @@ export async function validate(
     }
   }
 
+  // Load meta items for reference validation
+  // AC: @agent-definitions ac-agent-3
+  const metaCtx = await loadMetaContext(ctx);
+  const allMetaItems = [
+    ...metaCtx.agents,
+    ...metaCtx.workflows,
+    ...metaCtx.conventions,
+    ...metaCtx.observations,
+  ];
+
   // Reference validation
-  if (runRefs && (allTasks.length > 0 || allItems.length > 0)) {
-    const index = new ReferenceIndex(allTasks, allItems);
+  if (runRefs && (allTasks.length > 0 || allItems.length > 0 || allMetaItems.length > 0)) {
+    const index = new ReferenceIndex(allTasks, allItems, allMetaItems);
     result.refErrors = validateRefs(index, allTasks, allItems);
 
     // Orphan detection
@@ -591,8 +601,7 @@ export async function validate(
   // Meta manifest validation (AC-meta-manifest-2, AC-meta-manifest-3)
   const metaManifestPath = await findMetaManifest(ctx.specDir);
   if (metaManifestPath) {
-    // Load meta context for stats
-    const metaCtx = await loadMetaContext(ctx);
+    // Use metaCtx already loaded above
     result.metaStats = {
       agents: metaCtx.agents.length,
       workflows: metaCtx.workflows.length,
