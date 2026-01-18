@@ -7017,26 +7017,6 @@
   created_at: '2026-01-18T03:37:31.483Z'
   notes: []
   todos: []
-- _ulid: 01KF8420KY6AWXNEFRKZM8P182
-  slugs:
-    - test-guardrails-task
-  title: Test task for guardrails
-  type: task
-  spec_ref: '@test-guardrails-feature'
-  meta_ref: null
-  status: completed
-  blocked_by: []
-  closed_reason: Testing guardrails feature
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: '2026-01-18T08:38:00.062Z'
-  started_at: '2026-01-18T08:38:06.264Z'
-  completed_at: '2026-01-18T08:38:13.252Z'
-  notes: []
-  todos: []
 - _ulid: 01KF842N80R22PEJZNNB04ZP7Z
   slugs:
     - test-no-spec-task
@@ -7046,6 +7026,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Testing no spec case
   depends_on: []
   context: []
   priority: 3
@@ -7053,7 +7034,6 @@
   vcs_refs: []
   created_at: '2026-01-18T08:38:21.184Z'
   started_at: '2026-01-18T08:38:29.248Z'
+  completed_at: '2026-01-18T08:38:34.339Z'
   notes: []
   todos: []
-  completed_at: '2026-01-18T08:38:34.339Z'
-  closed_reason: Testing no spec case
