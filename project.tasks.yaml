@@ -5875,6 +5875,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Observation promotion fully implemented with schema updates and validations
   depends_on:
     - '@task-observations'
   context: []
@@ -5883,6 +5884,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.966Z'
   started_at: '2026-01-18T10:09:47.987Z'
+  completed_at: '2026-01-18T10:17:31.030Z'
   notes:
     - _ulid: 01KF89ABK5P6C1WK1ZYAJ72WA8
       created_at: '2026-01-18T10:09:56.325Z'
@@ -5924,8 +5926,6 @@
         confirms all behaviors work correctly.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:17:31.030Z'
-  closed_reason: Observation promotion fully implemented with schema updates and validations
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
     - task-observation-resolution
@@ -7651,7 +7651,7 @@
   description: Need better error messages
   meta_ref: '@session-start'
   origin: observation_promotion
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -7661,3 +7661,4 @@
   created_at: '2026-01-18T10:16:15.756Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:24:14.790Z'
