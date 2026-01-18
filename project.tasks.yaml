@@ -7008,7 +7008,7 @@
   type: task
   spec_ref: '@meta-add-cmd'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -7027,6 +7027,9 @@
         type-specific options.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:35.737Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:35.737Z'
 - _ulid: 01KF4WVX658M3KXFWYJSPKDWB9
   slugs:
     - task-kspec-meta-set
