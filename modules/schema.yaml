@@ -166,7 +166,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           status.implementation tracks build progress:
 
