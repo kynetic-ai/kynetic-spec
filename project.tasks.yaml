@@ -39,6 +39,35 @@
         Next: Audit actual command outputs for consistency issues - check alignment of labels, color
         usage, and formatting patterns across different commands.
       supersedes: null
+    - _ulid: 01KF7Z7YXVNP8PJ2Y6GWR8R8R4
+      created_at: '2026-01-18T07:13:52.059Z'
+      author: '@claude'
+      content: >-
+        Completed label consistency pass:
+
+
+        Fixed inconsistency where item.ts and inbox.ts had hardcoded labels (ULID:, Slugs:, Type:,
+        etc) instead of using centralized fieldLabels from src/strings/labels.ts.
+
+
+        Changes:
+
+        - Added 'maturity' field to centralized fieldLabels
+
+        - Added 'description' and 'acceptanceCriteria' to centralized sectionHeaders
+
+        - Updated item.ts to import and use fieldLabels and sectionHeaders
+
+        - Updated inbox.ts to import and use fieldLabels
+
+        - All 429 tests pass
+
+        - Output formatting is now consistent across commands
+
+
+        This ensures single source of truth for all user-facing labels, making future updates easier
+        and consistent.
+      supersedes: null
   todos: []
 - _ulid: 01KEZG58FJDPVYND9ZWX264WF2
   slugs:
