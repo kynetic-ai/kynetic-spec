@@ -8068,11 +8068,28 @@
         use centralized error messages. All tests passing (463 passed).
       supersedes: null
   todos: []
-- title: Test promotion task
+- _ulid: 01KF8JEJ42381QHEC0ZTPQG78Z
+  slugs: []
+  title: Test promotion task
+  type: task
   description: Test observation for promote command
-  priority: 2
   origin: observation_promotion
-  _ulid: 01KF8JEJ42381QHEC0ZTPQG78Z
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-18T12:49:31.265Z'
+  notes: []
+  todos: []
+- title: Task from workflow observation
+  description: Another test observation
+  priority: 3
+  meta_ref: '@spec-first'
+  origin: observation_promotion
+  _ulid: 01KF8JEVMP7BW94FVB8A1RA6E8
   slugs: []
   type: task
   status: pending
@@ -8081,6 +8098,6 @@
   context: []
   tags: []
   vcs_refs: []
-  created_at: '2026-01-18T12:49:31.265Z'
+  created_at: '2026-01-18T12:49:41.014Z'
   notes: []
   todos: []
