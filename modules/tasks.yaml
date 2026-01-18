@@ -222,7 +222,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           "ready" is a computed view, not stored state:
           ready = pending + all depends_on completed + no blockers
