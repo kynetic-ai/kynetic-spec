@@ -2893,6 +2893,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    CI workflow file (.github/workflows/test.yml) implemented and committed. Runs typecheck, tests,
+    and build on PRs and main branch.
   depends_on: []
   context: []
   priority: 2
@@ -2901,6 +2904,8 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T22:48:02.747Z'
+  started_at: '2026-01-18T03:54:27.864Z'
+  completed_at: '2026-01-18T03:54:27.864Z'
   notes:
     - _ulid: 01KF7KRVSR1HJQJCW1TW2VQRPE
       created_at: '2026-01-18T03:53:23.000Z'
@@ -2917,12 +2922,38 @@
         uncommitted. Includes: typecheck, tests, build. Runs on PRs and main branch pushes. Task is
         actually complete.
       supersedes: null
+    - _ulid: 01KF7KX5ERYKQAJFPQE7AJDV5X
+      created_at: '2026-01-18T03:55:43.961Z'
+      author: '@claude'
+      content: >-
+        Created .github/workflows/test.yml that runs on PRs and pushes to main. Workflow includes:
+
+        - Checkout with full git history
+
+        - Node 18 setup with npm cache
+
+        - Install dependencies (npm ci)
+
+        - Typecheck (tsc --noEmit)
+
+        - Run tests (vitest)
+
+        - Build verification
+
+
+        Also fixed TypeScript error in meta.ts:1140 - changed t.slug to t.slugs?.[0] to use correct
+        array property.
+
+
+        Verified all steps pass locally:
+
+        - typecheck: passed
+
+        - tests: 386 passed, 1 skipped (115.61s)
+
+        - build: passed
+      supersedes: null
   todos: []
-  completed_at: '2026-01-18T03:54:27.864Z'
-  closed_reason: >-
-    CI workflow file (.github/workflows/test.yml) implemented and committed. Runs typecheck, tests,
-    and build on PRs and main branch.
-  started_at: '2026-01-18T03:54:27.864Z'
 - _ulid: 01KF4NE5YS67MP6S1R7Y343Z06
   slugs:
     - task-enhanced-verbose-output-for-task-lists
