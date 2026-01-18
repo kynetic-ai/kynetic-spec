@@ -4,7 +4,7 @@
   title: CLI output refinement and polish
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -69,6 +69,10 @@
         and consistent.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T07:14:36.242Z'
+  closed_reason: >-
+    Completed label consistency pass - centralized all field labels and section headers across
+    item.ts and inbox.ts. All tests pass.
 - _ulid: 01KEZG58FJDPVYND9ZWX264WF2
   slugs:
     - task-alignment-system
