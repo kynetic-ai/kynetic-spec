@@ -6251,7 +6251,7 @@
   type: task
   spec_ref: '@meta-workflows-cmd'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6271,6 +6271,8 @@
         options likely implemented. Core functionality complete.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:11:24.835Z'
+  closed_reason: Command implemented and functional, displays workflows with required columns
 - _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
   slugs:
     - task-kspec-meta-conventions
