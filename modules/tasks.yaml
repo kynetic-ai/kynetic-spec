@@ -387,7 +387,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec derive <ref>     # Derive task for single item
           kspec derive --all    # Derive for all items without tasks
