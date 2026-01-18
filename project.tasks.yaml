@@ -4334,9 +4334,17 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T13:50:14.068Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T08:52:06.852Z'
+  notes:
+    - _ulid: 01KF84WWKD2RQHFJDSBPZG7BXG
+      created_at: '2026-01-18T08:52:40.685Z'
+      author: '@claude'
+      content: >-
+        Task was inadvertently marked in_progress during iteration 17. No actual work was done on
+        this task. The iteration focused on reviewing and fixing PR #40 (Task Completion
+        Guardrails). Resetting to pending.
+      supersedes: null
+  todos: []
 - _ulid: 01KF3M1P812JQQ7C6K4SS8YAZQ
   slugs:
     - task-auto-generated-cli-documentation
