@@ -2425,6 +2425,9 @@
   spec_ref: '@meta-spec'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Spike complete. Recommendation: Keep inbox and observations separate - they serve distinct
+    purposes with different query patterns and mental models. See task notes for full rationale.
   depends_on: []
   context: []
   priority: 2
@@ -2434,6 +2437,7 @@
   vcs_refs: []
   created_at: '2026-01-15T18:55:32.866Z'
   started_at: '2026-01-18T06:14:42.639Z'
+  completed_at: '2026-01-18T06:16:36.518Z'
   notes:
     - _ulid: 01KF1G71DC44T3VMB3THC4VY3H
       created_at: '2026-01-15T18:55:46.604Z'
@@ -2500,17 +2504,13 @@
         4. Consider inbox item: 'Document observations usage guidance in AGENTS.md'
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T06:16:36.518Z'
-  closed_reason: >-
-    Spike complete. Recommendation: Keep inbox and observations separate - they serve distinct
-    purposes with different query patterns and mental models. See task notes for full rationale.
 - _ulid: 01KF1H92ZHGBKBJDHMZ8HBW660
   slugs:
     - task-session-context-research
   title: Research session context integration with session start
   type: spike
   spec_ref: '@session-context'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2552,6 +2552,7 @@
            - Should threads/questions persist or reset?
       supersedes: null
   todos: []
+  started_at: '2026-01-18T06:18:25.174Z'
 - _ulid: 01KF1KB4D199B61AKJ17RM7YFN
   slugs: []
   title: Design shadow branch for meta tracking
