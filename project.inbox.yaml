@@ -448,16 +448,6 @@ inbox:
       - ralph
       - meta
     added_by: '@claude'
-  - _ulid: 01KF7YEXNQK3N9EG5X9VS5N83M
-    text: >-
-      Command suggestion feature implemented cleanly using Levenshtein distance. The threshold of 3
-      seems to work well for catching typos without false positives. Commander.js already handles
-      subcommand suggestions, so only needed top-level command handling.
-    created_at: '2026-01-18T07:00:11.576Z'
-    tags:
-      - reflection
-      - cli
-    added_by: '@claude'
   - _ulid: 01KF7Z9T62JMGC217RRY2P3CHX
     text: >-
       CLI label centralization pattern worked well - item.ts and inbox.ts had drifted from the
