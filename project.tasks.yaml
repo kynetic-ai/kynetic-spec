@@ -5027,6 +5027,14 @@
         Need to verify there are acceptance criteria defined for this spec item and test the
         functionality.
       supersedes: null
+    - _ulid: 01KF884PZNK73SDM600M0MR46N
+      created_at: '2026-01-18T09:49:22.805Z'
+      author: '@claude'
+      content: >-
+        Investigation complete: Meta includes are already fully implemented. Schema has includes
+        field (src/schema/meta.ts:134), parser processes includes (src/parser/meta.ts:225-239). Need
+        to write integration test to verify the feature works correctly.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
   slugs:
