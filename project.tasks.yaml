@@ -6099,7 +6099,7 @@
   type: task
   spec_ref: '@observation-task-loop'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -6132,6 +6132,10 @@
         All tests passing.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T11:19:26.340Z'
+  closed_reason: >-
+    Fully implemented observation-task resolution loop with auto-populate, session reminders, and
+    query filters
 - _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
   slugs:
     - task-context-schema
