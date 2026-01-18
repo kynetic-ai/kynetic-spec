@@ -6789,9 +6789,20 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.370Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T12:59:22.835Z'
+  notes:
+    - _ulid: 01KF8K4H6Z3R6QSXBBAT56CC7T
+      created_at: '2026-01-18T13:01:31.231Z'
+      author: '@claude'
+      content: |-
+        Command already fully implemented with all required features:
+        - Basic resolution: Sets resolved=true, adds resolution text, resolved_at timestamp
+        - AC-obs-4: Outputs 'OK Resolved: <ULID-prefix>'
+        - AC-obs-7: Prevents re-resolving already resolved observations
+        - AC-obs-9: Auto-populates resolution from promoted task completion reason
+        - Comprehensive test coverage in meta.test.ts
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWZBDZXSX30NSJKRC8WB
   slugs:
     - task-kspec-meta-focus
