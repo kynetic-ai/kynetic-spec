@@ -892,7 +892,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
         description: |
           Context is stored in .kspec-session:
 
