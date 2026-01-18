@@ -3835,6 +3835,24 @@
         PR review and task-archive spike. Task remains in_progress for next iteration. No
         implementation changes made.
       supersedes: null
+    - _ulid: 01KF80P5ZV5SMSYVJQR4JH1W2E
+      created_at: '2026-01-18T07:39:06.619Z'
+      author: '@claude'
+      content: |-
+        WIP implementation found in src/parser/shadow.ts from previous iteration:
+        - Added isDebugMode() function checking KSPEC_DEBUG=1 or verboseFlag
+        - Modified shadowAutoCommit() to accept verbose parameter
+        - Added debug output for git operations (git add, diff, commit)
+        - Implements AC-1, AC-2, AC-3 (silent failure when debug disabled)
+
+        Still TODO:
+        - Wire up --verbose flag through CLI commands
+        - Add tests for debug mode behavior
+        - Update other shadow operations to support debug mode
+        - Document usage in help text
+
+        Committing WIP state for next iteration to continue.
+      supersedes: null
   todos: []
 - _ulid: 01KF3D9S7PTA6WADMEVNTW6V7D
   slugs:
