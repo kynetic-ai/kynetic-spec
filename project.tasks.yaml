@@ -6275,6 +6275,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Session context now displays in session start output showing focus, active threads, and open
+    questions from .kspec-session file
   depends_on:
     - '@task-session-context-research'
   context: []
@@ -6283,6 +6286,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.108Z'
   started_at: '2026-01-18T12:06:28.656Z'
+  completed_at: '2026-01-18T12:08:57.167Z'
   notes:
     - _ulid: 01KF8G0NFZACW8SPZKAYRE1EEW
       created_at: '2026-01-18T12:06:58.815Z'
@@ -6333,10 +6337,6 @@
         Draft PR #52 contains all WIP commits.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T12:08:57.167Z'
-  closed_reason: >-
-    Session context now displays in session start output showing focus, active threads, and open
-    questions from .kspec-session file
 - _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
   slugs:
     - task-meta-cli-commands
@@ -6631,7 +6631,7 @@
   type: task
   spec_ref: '@meta-conventions-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6642,6 +6642,7 @@
   created_at: '2026-01-17T02:34:36.253Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T12:22:11.432Z'
 - _ulid: 01KF4WVWVWZY4CDA1M83NTX20B
   slugs:
     - task-kspec-meta-observe
