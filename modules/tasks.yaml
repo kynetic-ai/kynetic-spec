@@ -341,7 +341,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           vcs_refs links tasks to git branches/commits/tags:
 
