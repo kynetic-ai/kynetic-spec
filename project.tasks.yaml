@@ -7026,6 +7026,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Testing guardrails feature
   depends_on: []
   context: []
   priority: 3
@@ -7033,7 +7034,23 @@
   vcs_refs: []
   created_at: '2026-01-18T08:38:00.062Z'
   started_at: '2026-01-18T08:38:06.264Z'
+  completed_at: '2026-01-18T08:38:13.252Z'
   notes: []
   todos: []
-  completed_at: '2026-01-18T08:38:13.252Z'
-  closed_reason: Testing guardrails feature
+- title: Test task without spec
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 3
+  slugs:
+    - test-no-spec-task
+  tags: []
+  _ulid: 01KF842N80R22PEJZNNB04ZP7Z
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-18T08:38:21.184Z'
+  notes: []
+  todos: []
