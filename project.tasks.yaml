@@ -5035,6 +5035,17 @@
         field (src/schema/meta.ts:134), parser processes includes (src/parser/meta.ts:225-239). Need
         to write integration test to verify the feature works correctly.
       supersedes: null
+    - _ulid: 01KF88HMFDVDHE221A9ZKRBX1Y
+      created_at: '2026-01-18T09:56:26.221Z'
+      author: '@claude'
+      content: >-
+        Implementation complete. Meta includes were already implemented in parser
+        (src/parser/meta.ts:225-239) but CLI commands were using metaCtx.manifest instead of metaCtx
+        (which contains items from both manifest and includes). Fixed all CLI commands to use
+        metaCtx.agents/workflows/conventions/observations directly. Added comprehensive integration
+        tests covering: loading from includes, glob patterns, missing files, reference validation
+        across includes. All 61 tests passing.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
   slugs:
