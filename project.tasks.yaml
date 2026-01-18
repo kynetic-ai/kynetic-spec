@@ -7651,7 +7651,7 @@
   description: Need better error messages
   meta_ref: '@session-start'
   origin: observation_promotion
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -7678,3 +7678,5 @@
         use centralized error messages. All tests passing (463 passed).
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:29:47.365Z'
+  closed_reason: All hardcoded error messages migrated to centralized strings module
