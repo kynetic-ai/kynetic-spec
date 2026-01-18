@@ -6751,7 +6751,7 @@
   type: task
   spec_ref: '@meta-promote-cmd'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6771,6 +6771,8 @@
         helper to return created task object when --json flag is used. All existing tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T12:52:21.740Z'
+  closed_reason: Command already implemented - fixed priority description and added JSON output support per spec
 - _ulid: 01KF4WVWYJMY6C5ZHWCEHDDF08
   slugs:
     - task-kspec-meta-resolve
