@@ -3205,7 +3205,7 @@
   type: task
   spec_ref: '@workflow-definitions'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -3273,6 +3273,10 @@
         positive test proves AC-3 works)
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T01:21:10.729Z'
+  closed_reason: >-
+    All 4 acceptance criteria implemented with tests. kspec meta workflows command works in table,
+    verbose, and JSON modes. Workflow reference validation integrated into validation system.
 - _ulid: 01KF4WVW820TFJ811C566EC6AR
   slugs:
     - task-workflow-schema
