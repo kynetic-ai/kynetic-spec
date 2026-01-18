@@ -446,7 +446,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Note entries have:
           - _ulid: Entry identifier
