@@ -8254,26 +8254,48 @@
   completed_at: '2026-01-18T12:59:08.899Z'
   notes: []
   todos: []
-- title: Document alignment system spec coverage
+- _ulid: 01KF9B3YXAHHKV1CZJSVS2WJMG
+  slugs: []
+  title: Document alignment system spec coverage
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - spec-gap
-    - alignment
-    - debt
   description: >-
     Alignment system spec coverage gap - AlignmentIndex, auto-sync, validation commands (kspec item
     status, alignment check) were implemented pragmatically without spec. Need to create spec items
     documenting: alignment concept, AlignmentIndex structure, auto-sync behavior, alignment
     validation, guidance output format.
-  _ulid: 01KF9B3YXAHHKV1CZJSVS2WJMG
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - spec-gap
+    - alignment
+    - debt
+  vcs_refs: []
+  created_at: '2026-01-18T20:00:38.313Z'
+  notes: []
+  todos: []
+- title: Add missing ACs to status-cascade spec
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - spec-gap
+    - status-cascade
+  description: >-
+    Status cascade spec gap: @status-cascade only has 1 AC but implementation handles 4+ behaviors
+    (prompt shown, user accepts, user rejects, JSON mode, no children case). Need to add missing ACs
+    to match implementation. Also clarify whether maturity status should cascade along with
+    implementation status.
+  _ulid: 01KF9B41KHRT5VDM12JGAGT90B
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T20:00:38.313Z'
+  created_at: '2026-01-18T20:00:41.073Z'
   notes: []
   todos: []
