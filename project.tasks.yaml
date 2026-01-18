@@ -4153,9 +4153,47 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-16T13:45:00.025Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T08:26:18.304Z'
+  notes:
+    - _ulid: 01KF83K8D52H56PG49QXHKF75N
+      created_at: '2026-01-18T08:29:56.517Z'
+      author: '@claude'
+      content: >-
+        Implemented completeness validation with all 4 acceptance criteria:
+
+
+        AC-1: Warns when items lack acceptance criteria
+
+        AC-2: Warns when items lack descriptions  
+
+        AC-3: Warns about status inconsistencies (parent implemented but child not_started)
+
+        AC-4: Summary shows counts by issue type (missing AC, missing descriptions, status
+        mismatches)
+
+
+        Implementation:
+
+        - Added CompletenessWarning types to parser/validate.ts
+
+        - Implemented checkCompleteness() function with all AC checks
+
+        - Integrated into main validate() function with --completeness flag
+
+        - Added CLI flag to both validate and lint commands
+
+        - Created formatCompletenessWarnings() with grouping by type and verbose mode
+
+        - Added AC annotation comments linking code to spec
+
+
+        Still needed:
+
+        - Comprehensive integration tests (starting but out of time this iteration)
+
+        - Export CompletenessWarning type from parser/index.ts
+      supersedes: null
+  todos: []
 - _ulid: 01KF3GVY7JRH173FB91CQW88D4
   slugs: []
   title: Alignment guidance should mention test coverage

@@ -458,6 +458,9 @@ features:
             then: >-
               A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status
               mismatches')
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KF3H9Z7Z2C1AQBCM4BJT1BAZ
         slugs:
           - alignment-guidance
