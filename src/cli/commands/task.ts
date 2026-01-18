@@ -26,6 +26,7 @@ import {
 } from '../output.js';
 import { formatCommitGuidance, printCommitGuidance } from '../../utils/commit.js';
 import type { Task, TaskInput } from '../../schema/index.js';
+import { alignmentCheck } from '../../strings/index.js';
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -724,11 +725,10 @@ export function registerTaskCommands(program: Command): void {
         // Proactive alignment guidance for tasks with spec_ref
         if (foundTask.spec_ref) {
           console.log('');
-          console.log('\x1b[33m--- Alignment Check ---\x1b[0m');
-          console.log('Did your implementation add anything beyond the original spec?');
-          console.log('If so, consider updating the spec:');
-          console.log(`  kspec item set ${foundTask.spec_ref} --description "Updated description"`);
-          console.log('Or add acceptance criteria for new features.');
+          console.log(alignmentCheck.header);
+          console.log(alignmentCheck.beyondSpec);
+          console.log(alignmentCheck.updateSpec(foundTask.spec_ref));
+          console.log(alignmentCheck.addAC);
 
           // Check if linked spec has acceptance criteria and remind about test coverage
           const specResult = index.resolve(foundTask.spec_ref);
@@ -736,7 +736,7 @@ export function registerTaskCommands(program: Command): void {
             const specItem = specResult.item as { acceptance_criteria?: unknown[] };
             if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
               console.log('');
-              console.log(`Linked spec has ${specItem.acceptance_criteria.length} acceptance criteria - consider test coverage.`);
+              console.log(alignmentCheck.testCoverage(specItem.acceptance_criteria.length));
             }
           }
         }
