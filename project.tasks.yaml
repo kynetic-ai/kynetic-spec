@@ -4677,7 +4677,7 @@
   title: Increase session start ready task limit from 5 to 10
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4701,6 +4701,8 @@
         All 454 tests still passing. Verified output shows 10 ready tasks in session start output.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T09:14:14.130Z'
+  closed_reason: Increased default ready task limit from 5 to 10 in session start and context commands
 - _ulid: 01KF4FX1XV16YPFK2RVZVHZDJM
   slugs:
     - task-ci-test-runner
