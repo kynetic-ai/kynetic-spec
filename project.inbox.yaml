@@ -814,3 +814,14 @@ inbox:
       - reflection
       - cli
     added_by: '@claude'
+  - _ulid: 01KF7Z9T62JMGC217RRY2P3CHX
+    text: >-
+      CLI label centralization pattern worked well - item.ts and inbox.ts had drifted from the
+      established src/strings/labels.ts pattern. Quick grep audit found the inconsistencies. Fix was
+      straightforward: import centralized labels and replace hardcoded strings. This pattern
+      prevents drift: new commands should import from strings/ from the start.
+    created_at: '2026-01-18T07:14:52.738Z'
+    tags:
+      - reflection
+      - dx
+    added_by: '@claude'
