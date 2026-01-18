@@ -501,19 +501,6 @@ inbox:
       - workflow
       - review
     added_by: '@claude'
-  - _ulid: 01KF7MFKQEYKKE0FJZHQ03093E
-    text: >-
-      File changes auto-reverted by linter/auto-save during iteration 4. Implemented task patch
-      command in src/cli/commands/task.ts twice - both times code disappeared after being written
-      and verified. Tests in integration.test.ts also removed. System reminders confirmed linter
-      modifications. This blocks implementation work. Possible causes: aggressive format-on-save,
-      linter deleting code it doesn't understand, file watcher conflicts. Need investigation.
-    created_at: '2026-01-18T04:05:48.398Z'
-    tags:
-      - blocker
-      - dx
-      - tooling
-    added_by: '@claude'
   - _ulid: 01KF7MG07CHJPSV82VGHW6Q76W
     text: >-
       Ralph loop iteration picked already-completed work (CI task). After realizing this, picked
