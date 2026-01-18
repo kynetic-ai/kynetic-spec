@@ -44,25 +44,25 @@ function resolveMetaRefToUlid(
   const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
 
   // Check agents
-  const agent = (metaCtx.manifest?.agents || []).find(
+  const agent = (metaCtx.agents || []).find(
     (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
   );
   if (agent) return { ulid: agent._ulid, type: 'agent' };
 
   // Check workflows
-  const workflow = (metaCtx.manifest?.workflows || []).find(
+  const workflow = (metaCtx.workflows || []).find(
     (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
   );
   if (workflow) return { ulid: workflow._ulid, type: 'workflow' };
 
   // Check conventions
-  const convention = (metaCtx.manifest?.conventions || []).find(
+  const convention = (metaCtx.conventions || []).find(
     (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
   );
   if (convention) return { ulid: convention._ulid, type: 'convention' };
 
   // Check observations
-  const observation = (metaCtx.manifest?.observations || []).find((o) =>
+  const observation = (metaCtx.observations || []).find((o) =>
     o._ulid.startsWith(normalizedRef)
   );
   if (observation) return { ulid: observation._ulid, type: 'observation' };
@@ -344,7 +344,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const agents = metaCtx.manifest?.agents || [];
+        const agents = metaCtx.agents || [];
 
         // AC-agent-2: JSON output includes full agent details
         output(
@@ -381,7 +381,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const workflows = metaCtx.manifest?.workflows || [];
+        const workflows = metaCtx.workflows || [];
 
         // AC-workflow-4: JSON output includes full workflow details
         output(
@@ -421,7 +421,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const conventions = metaCtx.manifest?.conventions || [];
+        const conventions = metaCtx.conventions || [];
 
         // AC-conv-2: Filter by domain if specified
         const filtered = options.domain
@@ -470,10 +470,10 @@ export function registerMetaCommands(program: Command): void {
         const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
 
         // Search in all meta item types
-        const agents = metaCtx.manifest?.agents || [];
-        const workflows = metaCtx.manifest?.workflows || [];
-        const conventions = metaCtx.manifest?.conventions || [];
-        const observations = metaCtx.manifest?.observations || [];
+        const agents = metaCtx.agents || [];
+        const workflows = metaCtx.workflows || [];
+        const conventions = metaCtx.conventions || [];
+        const observations = metaCtx.observations || [];
 
         // Try to find by ID or ULID prefix
         let found: any = null;
@@ -558,7 +558,7 @@ export function registerMetaCommands(program: Command): void {
 
         // Add agents
         if (!options.type || options.type === 'agent') {
-          for (const agent of metaCtx.manifest?.agents || []) {
+          for (const agent of metaCtx.agents || []) {
             items.push({
               id: agent.id,
               type: 'agent',
@@ -570,7 +570,7 @@ export function registerMetaCommands(program: Command): void {
 
         // Add workflows
         if (!options.type || options.type === 'workflow') {
-          for (const workflow of metaCtx.manifest?.workflows || []) {
+          for (const workflow of metaCtx.workflows || []) {
             items.push({
               id: workflow.id,
               type: 'workflow',
@@ -582,7 +582,7 @@ export function registerMetaCommands(program: Command): void {
 
         // Add conventions
         if (!options.type || options.type === 'convention') {
-          for (const convention of metaCtx.manifest?.conventions || []) {
+          for (const convention of metaCtx.conventions || []) {
             items.push({
               id: convention.domain,
               type: 'convention',
@@ -594,7 +594,7 @@ export function registerMetaCommands(program: Command): void {
 
         // Add observations
         if (!options.type || options.type === 'observation') {
-          for (const observation of metaCtx.manifest?.observations || []) {
+          for (const observation of metaCtx.observations || []) {
             const ulidPrefix = observation._ulid.substring(0, 8);
             items.push({
               id: ulidPrefix,
@@ -730,7 +730,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const observations = metaCtx.manifest?.observations || [];
+        const observations = metaCtx.observations || [];
 
         // Find observation
         const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
@@ -790,7 +790,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const observations = metaCtx.manifest?.observations || [];
+        const observations = metaCtx.observations || [];
 
         // Find observation
         const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
@@ -1110,7 +1110,7 @@ export function registerMetaCommands(program: Command): void {
 
         // Search in observations
         if (!itemType) {
-          const observations = metaCtx.manifest?.observations || [];
+          const observations = metaCtx.observations || [];
           const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
           if (observation) {
             itemType = 'observation';
@@ -1146,7 +1146,7 @@ export function registerMetaCommands(program: Command): void {
 
           // Check observations with workflow_ref (only for workflows)
           if (itemType === 'workflow') {
-            const observations = metaCtx.manifest?.observations || [];
+            const observations = metaCtx.observations || [];
             const referencingObservations = observations.filter((o) => {
               if (!o.workflow_ref) return false;
               // Resolve the observation's workflow_ref to a ULID

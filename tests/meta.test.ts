@@ -1169,3 +1169,249 @@ describe('Integration: meta mutation commands', () => {
     });
   });
 });
+
+describe('Integration: meta includes', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should load meta items from included files', async () => {
+    // Create a meta/ directory for included files
+    const metaDir = path.join(tempDir, 'meta');
+    await fs.mkdir(metaDir, { recursive: true });
+
+    // Create separate files for agents and workflows
+    const agentsFile = path.join(metaDir, 'agents.yaml');
+    await fs.writeFile(
+      agentsFile,
+      `agents:
+  - _ulid: 01KF8850000000000000000001
+    id: include-agent-1
+    name: Include Agent 1
+    description: Agent from included file
+    capabilities:
+      - code
+    tools:
+      - git
+    conventions: []
+
+  - _ulid: 01KF8850000000000000000002
+    id: include-agent-2
+    name: Include Agent 2
+    description: Another agent from included file
+    capabilities:
+      - review
+    tools:
+      - kspec
+    conventions: []
+`
+    );
+
+    const workflowsFile = path.join(metaDir, 'workflows.yaml');
+    await fs.writeFile(
+      workflowsFile,
+      `workflows:
+  - _ulid: 01KF8850000000000000000003
+    id: include-workflow-1
+    trigger: "Test trigger from include"
+    description: Workflow from included file
+    steps:
+      - type: check
+        content: Check something
+        on_fail: Do something else
+      - type: action
+        content: Take an action
+`
+    );
+
+    // Update the meta manifest to include these files
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+
+    // Add includes section if not present
+    if (!metaContent.includes('includes:')) {
+      metaContent += '\nincludes:\n  - meta/agents.yaml\n  - meta/workflows.yaml\n';
+    } else {
+      metaContent = metaContent.replace(
+        'includes:',
+        'includes:\n  - meta/agents.yaml\n  - meta/workflows.yaml'
+      );
+    }
+
+    await fs.writeFile(metaPath, metaContent);
+
+    // Verify agents from included files are loaded
+    const agents = kspecJson<any[]>('meta agents', tempDir);
+    const includeAgent1 = agents.find(a => a.id === 'include-agent-1');
+    const includeAgent2 = agents.find(a => a.id === 'include-agent-2');
+
+    expect(includeAgent1).toBeDefined();
+    expect(includeAgent1?.name).toBe('Include Agent 1');
+    expect(includeAgent1?.description).toBe('Agent from included file');
+    expect(includeAgent1?.capabilities).toEqual(['code']);
+    expect(includeAgent1?.tools).toEqual(['git']);
+
+    expect(includeAgent2).toBeDefined();
+    expect(includeAgent2?.name).toBe('Include Agent 2');
+    expect(includeAgent2?.capabilities).toEqual(['review']);
+
+    // Verify workflows from included files are loaded
+    const workflows = kspecJson<any[]>('meta workflows', tempDir);
+    const includeWorkflow = workflows.find(w => w.id === 'include-workflow-1');
+
+    expect(includeWorkflow).toBeDefined();
+    expect(includeWorkflow?.trigger).toBe('Test trigger from include');
+    expect(includeWorkflow?.description).toBe('Workflow from included file');
+    expect(includeWorkflow?.steps).toHaveLength(2);
+    expect(includeWorkflow?.steps[0].type).toBe('check');
+    expect(includeWorkflow?.steps[1].type).toBe('action');
+  });
+
+  it('should load meta items from both manifest and includes', async () => {
+    // The test fixtures already have agents and workflows in kynetic.meta.yaml
+    // We'll add an include file to verify both are loaded
+
+    const metaDir = path.join(tempDir, 'meta');
+    await fs.mkdir(metaDir, { recursive: true });
+
+    const conventionsFile = path.join(metaDir, 'conventions.yaml');
+    await fs.writeFile(
+      conventionsFile,
+      `conventions:
+  - _ulid: 01KF8850000000000000000010
+    domain: testing-include
+    rules:
+      - Write tests for included items
+      - Verify include loading
+    examples: []
+`
+    );
+
+    // Add includes to meta manifest
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    metaContent += '\nincludes:\n  - meta/conventions.yaml\n';
+    await fs.writeFile(metaPath, metaContent);
+
+    // Verify both original agents and included convention are present
+    const agents = kspecJson<any[]>('meta agents', tempDir);
+    expect(agents.some(a => a.id === 'test-agent')).toBe(true); // From manifest
+    expect(agents.some(a => a.id === 'review-agent')).toBe(true); // From manifest
+
+    const conventions = kspecJson<any[]>('meta conventions', tempDir);
+    const includeConvention = conventions.find(c => c.domain === 'testing-include');
+    expect(includeConvention).toBeDefined();
+    expect(includeConvention?.rules).toContain('Write tests for included items');
+  });
+
+  it('should handle glob patterns in includes', async () => {
+    // Create multiple files matching a pattern
+    const metaDir = path.join(tempDir, 'meta');
+    await fs.mkdir(metaDir, { recursive: true });
+
+    await fs.writeFile(
+      path.join(metaDir, 'agent-1.yaml'),
+      `agents:
+  - _ulid: 01KF8850000000000000000020
+    id: glob-agent-1
+    name: Glob Agent 1
+    capabilities: []
+    tools: []
+    conventions: []
+`
+    );
+
+    await fs.writeFile(
+      path.join(metaDir, 'agent-2.yaml'),
+      `agents:
+  - _ulid: 01KF8850000000000000000021
+    id: glob-agent-2
+    name: Glob Agent 2
+    capabilities: []
+    tools: []
+    conventions: []
+`
+    );
+
+    // Update meta manifest to include all agent-*.yaml files
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    metaContent += '\nincludes:\n  - meta/agent-*.yaml\n';
+    await fs.writeFile(metaPath, metaContent);
+
+    // Verify both agents are loaded
+    const agents = kspecJson<any[]>('meta agents', tempDir);
+    expect(agents.some(a => a.id === 'glob-agent-1')).toBe(true);
+    expect(agents.some(a => a.id === 'glob-agent-2')).toBe(true);
+  });
+
+  it('should gracefully handle missing include files', async () => {
+    // Add an include that doesn't exist
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    metaContent += '\nincludes:\n  - meta/nonexistent.yaml\n';
+    await fs.writeFile(metaPath, metaContent);
+
+    // Should still load successfully without the missing file
+    const agents = kspecJson<any[]>('meta agents', tempDir);
+    expect(agents.some(a => a.id === 'test-agent')).toBe(true);
+  });
+
+  it('should validate references across included files', async () => {
+    // Create an included workflow file
+    const metaDir = path.join(tempDir, 'meta');
+    await fs.mkdir(metaDir, { recursive: true });
+
+    const workflowsFile = path.join(metaDir, 'test-workflows.yaml');
+    await fs.writeFile(
+      workflowsFile,
+      `workflows:
+  - _ulid: 01KF8850000000000000000030
+    id: include-ref-workflow
+    trigger: "Test trigger"
+    description: Workflow from include for reference test
+    steps:
+      - type: action
+        content: Do something
+`
+    );
+
+    // Add includes to meta manifest
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    metaContent += '\nincludes:\n  - meta/test-workflows.yaml\n';
+    await fs.writeFile(metaPath, metaContent);
+
+    // Create a task that references the workflow from the included file
+    const tasksPath = path.join(tempDir, 'project.tasks.yaml');
+    let tasksContent = await fs.readFile(tasksPath, 'utf-8');
+
+    const newTask = `
+  - _ulid: 01KF8850000000000000000031
+    title: Test task referencing included workflow
+    status: pending
+    priority: 1
+    created_at: "2024-01-01T00:00:00Z"
+    meta_ref: "@include-ref-workflow"
+    slugs:
+      - test-task-include-ref
+    depends_on: []
+    notes: []
+    todos: []
+    blocked_by: []
+    tags: []
+`;
+    tasksContent = tasksContent.replace('tasks:', `tasks:${newTask}`);
+    await fs.writeFile(tasksPath, tasksContent);
+
+    // Validate should pass because include-ref-workflow exists in included file
+    const output = kspec('validate --refs', tempDir);
+    expect(output).toContain('References: OK');
+  });
+});
