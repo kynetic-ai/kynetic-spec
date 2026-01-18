@@ -359,7 +359,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           All references MUST be validated:
           1. Parse @ prefix to extract identifier

@@ -825,3 +825,14 @@ inbox:
       - reflection
       - dx
     added_by: '@claude'
+  - _ulid: 01KF7ZT7YYC4K41QAGQ44S92D9
+    text: >-
+      Validation architecture scales well - Adding warnings alongside errors required minimal
+      changes: new type, updated return structure, simple CLI formatting. The separation of concerns
+      (refs.ts for logic, validate.ts for orchestration, validate CLI for display) made enhancement
+      straightforward. Pattern worth replicating: warnings as first-class citizens alongside errors.
+    created_at: '2026-01-18T07:23:51.135Z'
+    tags:
+      - reflection
+      - architecture
+    added_by: '@claude'
