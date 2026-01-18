@@ -12,12 +12,14 @@ import {
   loadAllItems,
   loadInboxItems,
   loadMetaContext,
+  loadSessionContext,
   getReadyTasks,
   ReferenceIndex,
   type LoadedTask,
   type LoadedInboxItem,
   type KspecContext,
 } from '../../parser/index.js';
+import type { SessionContext as StoredSessionContext } from '../../schema/index.js';
 import { output, error, info, isJsonMode } from '../output.js';
 import { sessionHeaders, hints, sessionPrompt, errors } from '../../strings/index.js';
 import {
@@ -62,6 +64,9 @@ export interface SessionContext {
 
   /** Current git branch */
   branch: string | null;
+
+  /** Session context (focus, threads, questions) */
+  context: StoredSessionContext | null;
 
   /** Tasks currently in progress */
   active_tasks: ActiveTaskSummary[];
@@ -434,9 +439,13 @@ export async function gatherSessionContext(
       added_by: item.added_by || null,
     }));
 
+  // Load session context (focus, threads, questions)
+  const sessionContext = await loadSessionContext(ctx);
+
   return {
     generated_at: new Date().toISOString(),
     branch,
+    context: sessionContext,
     active_tasks: activeTasks,
     recent_notes: recentNotes,
     active_todos: activeTodos,
@@ -661,6 +670,29 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
         `${ctx.stats.blocked} blocked, ${ctx.stats.completed}/${ctx.stats.total_tasks} completed${inboxNote}`
     )
   );
+
+  // Session context section (focus, threads, questions)
+  if (ctx.context && (ctx.context.focus || ctx.context.threads.length > 0 || ctx.context.open_questions.length > 0)) {
+    console.log('\n--- Session Context ---');
+
+    if (ctx.context.focus) {
+      console.log(`  ${chalk.cyan('Focus:')} ${ctx.context.focus}`);
+    }
+
+    if (ctx.context.threads.length > 0) {
+      console.log(`  ${chalk.cyan('Active Threads:')}`);
+      for (const thread of ctx.context.threads) {
+        console.log(`    - ${thread}`);
+      }
+    }
+
+    if (ctx.context.open_questions.length > 0) {
+      console.log(`  ${chalk.cyan('Open Questions:')}`);
+      for (const question of ctx.context.open_questions) {
+        console.log(`    - ${question}`);
+      }
+    }
+  }
 
   // Active tasks section
   if (ctx.active_tasks.length > 0) {
