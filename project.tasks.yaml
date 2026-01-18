@@ -3713,6 +3713,78 @@
         created. Remaining work: session context commands (focus, thread, question, context) which
         are blocked by missing spec - need to complete research task @01KF1H92 first.
       supersedes: null
+    - _ulid: 01KF7HWB2MK6PX9H312ZQAE1WM
+      created_at: '2026-01-18T03:20:19.797Z'
+      author: '@claude'
+      content: >-
+        Session 2 checkpoint: Implemented meta mutation commands (add, set, delete) with full test
+        coverage. 
+
+
+        COMPLETED COMMANDS (11 total):
+
+        - meta show (manifest summary)
+
+        - meta agents (table/JSON output)
+
+        - meta workflows (table/JSON output) 
+
+        - meta conventions (table/detail/JSON output)
+
+        - meta get (unified item retrieval)
+
+        - meta list (unified listing with filters)
+
+        - meta observe (create observations)
+
+        - meta observations (list observations)
+
+        - meta promote (observation → task)
+
+        - meta resolve (mark observation resolved)
+
+        - meta add (create agents/workflows/conventions)
+
+        - meta set (update existing items)
+
+        - meta delete (delete with --confirm)
+
+
+        REMAINING COMMANDS (~4):
+
+        - Session context commands: focus, thread, question, context
+
+        - These are BLOCKED: require session-context spec which doesn't exist yet
+
+        - Research task @01KF1H92 should be done first to define session context integration
+
+
+        TECHNICAL NOTES:
+
+        - All commands support global --json flag (use isJsonMode(), not command-specific flags)
+
+        - Mutation commands use saveMetaItem/deleteMetaItem from parser
+
+        - Full validation of required fields per type
+
+        - ULID prefix resolution works across all commands
+
+
+        PR STATUS:
+
+        - PR #23: conventions/get/list merged to main
+
+        - PR #24: add/set/delete created, ready for review
+
+
+        NEXT SESSION OPTIONS:
+
+        1. Complete @01KF1H92 research task, then implement session context commands
+
+        2. Mark this task complete (core meta CRUD is done) and work on other priorities
+
+        3. Add acceptance criteria to @meta-commands spec for what we've built
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
