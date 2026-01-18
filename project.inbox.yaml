@@ -1064,3 +1064,17 @@ inbox:
       - testing
       - dx
     added_by: '@claude'
+  - _ulid: 01KF87YFD357S262F77QH3ZVES
+    text: >-
+      Task 01KF4WVW0 (Meta Manifest Format) was already fully implemented from prior iterations. All
+      3 ACs were satisfied with existing code: schema (meta.ts), parser (meta.ts), CLI commands
+      (meta show/agents/workflows/conventions/etc), validation integration with 'meta:' prefix,
+      reference index support, and 57 passing tests. This demonstrates good self-tracking -
+      implementation was complete but task remained 'pending' until verified. Lesson: When picking
+      up tasks, always check for existing implementation before starting from scratch.
+    created_at: '2026-01-18T09:45:58.435Z'
+    tags:
+      - reflection
+      - workflow
+      - dx
+    added_by: '@claude'
