@@ -1,400 +1,213 @@
+// AC: @auto-cli-docs ac-2, ac-3, ac-4, ac-5
 import { Command } from 'commander';
 import chalk from 'chalk';
+import { program } from '../index.js';
+import {
+  extractCommandTree,
+  findCommand,
+  flattenCommandTree,
+  formatCommandUsage,
+  type CommandMeta,
+} from '../introspection.js';
+import { helpContent, type HelpContent } from '../help/content.js';
+import { output } from '../output.js';
 
 /**
- * Extended help content for commands and concepts.
- * Each topic has a title, description, and examples.
- */
-interface HelpTopic {
-  title: string;
-  description: string;
-  examples?: string[];
-  seeAlso?: string[];
-}
-
-const helpTopics: Record<string, HelpTopic> = {
-  // Command topics
-  task: {
-    title: 'Task Operations',
-    description: `
-Individual task operations for managing task lifecycle.
-
-Commands:
-  task get <ref>       Show task details including spec context
-  task add             Create a new task (auto-generates ULID)
-  task start <ref>     Move task from pending to in_progress
-  task complete <ref>  Move task from in_progress to completed
-  task block <ref>     Manually block a task with a reason
-  task unblock <ref>   Clear manual blockers (not dependencies)
-  task cancel <ref>    Cancel a task with a reason
-  task note <ref>      Add a work log note to a task
-  task notes <ref>     Show all notes for a task
-  task todos <ref>     Show all todos (checklist items) for a task
-  task todo add        Add a todo to a task
-  task todo done       Mark a todo as done
-  task todo undone     Mark a todo as not done
-
-Task References:
-  Tasks can be referenced by slug (@task-slug) or ULID prefix (@01KEZ).
-  The @ prefix is optional in commands.
-
-Notes vs Todos:
-  - Notes: Append-only work log entries for tracking progress and findings
-  - Todos: Lightweight checklist items that emerge during work
-
-Blocking vs Dependencies:
-  - blocked_by: Manual blockers (strings like "waiting on design review")
-  - depends_on: Task references that auto-resolve when completed
-
-  Use 'task block' for manual blockers. Dependencies are set in YAML.
-`,
-    examples: [
-      'kspec task get @task-cli-help',
-      'kspec task add --title "Fix login bug" --priority 1 --tag bug',
-      'kspec task start @my-task',
-      'kspec task note @my-task "Investigated root cause, found issue in auth module"',
-      'kspec task complete @my-task --reason "Fixed by updating token validation"',
-      'kspec task todo add @my-task "Review error handling"',
-      'kspec task todo done @my-task 1',
-      'kspec task todos @my-task',
-    ],
-    seeAlso: ['tasks', 'refs', 'statuses'],
-  },
-
-  tasks: {
-    title: 'Task Queries',
-    description: `
-Query and list tasks with various filters.
-
-Commands:
-  tasks ready      Show tasks that can be worked on (unblocked, pending)
-  tasks active     Show tasks currently in progress
-  tasks blocked    Show blocked tasks
-  tasks completed  Show completed tasks
-  tasks all        Show all tasks
-
-Filters (apply to any query):
-  --priority <n>   Filter by priority (1-5, 1 is highest)
-  --tag <tag>      Filter by tag (can use multiple times)
-  --limit <n>      Limit number of results
-
-Output shows: ULID (short), slug, status, priority, and title.
-`,
-    examples: [
-      'kspec tasks ready',
-      'kspec tasks ready --priority 1',
-      'kspec tasks active',
-      'kspec tasks all --tag mvp',
-      'kspec tasks completed --limit 5',
-    ],
-    seeAlso: ['task', 'statuses'],
-  },
-
-  validate: {
-    title: 'Spec Validation',
-    description: `
-Validate spec files for schema conformance and reference integrity.
-
-Options:
-  --schema    Check schema conformance only
-  --refs      Check reference resolution only
-  --orphans   Find unreferenced spec items only
-  --strict    Treat orphans as errors (exit 1)
-  -v          Verbose output (show all orphans)
-  --json      Output structured JSON
-
-Default runs all checks. Exit code 1 if errors found.
-
-What it checks:
-  - Schema: All items conform to Zod schemas
-  - References: All @refs resolve to existing items
-  - Orphans: Items not referenced by any task (warning)
-
-Alias: 'kspec lint' does the same thing.
-`,
-    examples: [
-      'kspec validate',
-      'kspec validate --refs',
-      'kspec validate --strict',
-      'kspec validate --json',
-    ],
-    seeAlso: ['refs'],
-  },
-
-  session: {
-    title: 'Session Management',
-    description: `
-Get context for a work session - what's active, ready, and recent.
-
-Commands:
-  session start    Show session context (active work, ready tasks, git status)
-
-Options:
-  --full           Show more detail
-  --since <time>   Filter by time (e.g., "1d", "2h", "30m")
-  --json           Output structured JSON
-
-The session start command is designed for agents to quickly understand:
-  - What work is currently in progress
-  - What was recently completed
-  - What tasks are ready to pick up
-  - Recent git activity
-  - Uncommitted changes
-
-Alias: 'kspec context' does the same thing.
-`,
-    examples: [
-      'kspec session start',
-      'kspec session start --full',
-      'kspec session start --since 1d',
-      'kspec context',
-    ],
-    seeAlso: ['tasks'],
-  },
-
-  init: {
-    title: 'Project Initialization',
-    description: `
-Initialize a new kspec project with scaffolding.
-
-Creates:
-  - kynetic.yaml (manifest)
-  - kynetic.tasks.yaml (task file)
-  - spec/ directory with module files
-
-Options:
-  --name <name>    Project name
-  --yes            Skip prompts, use defaults
-
-Run in an existing directory or specify a path.
-`,
-    examples: [
-      'kspec init',
-      'kspec init --name my-project',
-      'kspec init ./new-project --yes',
-    ],
-  },
-
-  setup: {
-    title: 'Agent Environment Setup',
-    description: `
-Configure agent environment for kspec integration.
-
-Auto-detects:
-  - Claude Code (CLAUDE.md)
-  - Cursor (.cursor/rules)
-  - Other agent environments
-
-Creates or updates agent configuration files with kspec instructions,
-including quick-start commands and workflow guidance.
-
-Options:
-  --agent <type>   Specify agent type (claude-code, cursor, etc.)
-  --dry-run        Show what would be created without writing
-
-Run this after 'kspec init' to set up agent integration.
-`,
-    examples: [
-      'kspec setup',
-      'kspec setup --agent claude-code',
-      'kspec setup --dry-run',
-    ],
-    seeAlso: ['init', 'workflow'],
-  },
-
-  item: {
-    title: 'Spec Item Commands',
-    description: `
-CRUD operations on spec items (features, requirements, constraints).
-
-Commands:
-  item list          List all spec items (with filters)
-  item get <ref>     Show item details
-  item add           Create a new item under a parent
-  item set <ref>     Update an item's fields
-  item delete <ref>  Delete an item
-  item types         Show item types and counts
-  item tags          Show tags and counts
-
-Spec items define WHAT to build. Tasks track the WORK of building.
-Items are nested: modules contain features, features contain requirements.
-
-Add Options:
-  --under <ref>      Parent item to add under (required)
-  --title <title>    Item title (required)
-  --type <type>      feature, requirement, constraint, decision
-  --slug <slug>      Human-friendly slug
-  --tag <tag>        Tags (repeatable)
-  --as <field>       Child field override (e.g., requirements)
-
-Set Options:
-  --title, --type, --slug, --priority, --tag, --description
-  --status <impl>    not_started, in_progress, implemented, verified
-  --maturity <m>     draft, proposed, stable, deprecated
-`,
-    examples: [
-      'kspec item list --type feature',
-      'kspec item get @ref-validation',
-      'kspec item add --under @core --title "New Feature" --type feature',
-      'kspec item add --under @spec-item --title "New Req" --type requirement',
-      'kspec item set @my-feature --status implemented',
-      'kspec item delete @old-feature',
-    ],
-    seeAlso: ['refs', 'task'],
-  },
-
-  // Concept topics
-  refs: {
-    title: 'References (@refs)',
-    description: `
-References link items together using @ prefix.
-
-Formats:
-  @slug           Human-friendly name (e.g., @task-cli-help)
-  @ULID           Full 26-char ULID (e.g., @01KEZJNSGPTVRCMT9NHNPJ93D8)
-  @prefix         ULID prefix, must be unique (e.g., @01KEZ)
-
-Where refs are used:
-  - spec_ref: Links task to spec item it implements
-  - depends_on: Task dependencies (auto-resolve when target completes)
-  - implements: Spec item implements another
-  - context: Related items for reference
-
-Resolution order:
-  1. Exact slug match
-  2. Full ULID match
-  3. ULID prefix match (must be unambiguous)
-
-Validate refs with: kspec validate --refs
-`,
-    examples: [
-      'kspec task get @task-cli-help',
-      'kspec task get @01KEZJNS',
-      'kspec item get @ref-validation',
-    ],
-    seeAlso: ['validate', 'task'],
-  },
-
-  statuses: {
-    title: 'Task Statuses',
-    description: `
-Task lifecycle states and transitions.
-
-States:
-  pending      → Ready to start (or waiting on dependencies)
-  in_progress  → Currently being worked on
-  completed    → Done
-  blocked      → Manually blocked (has blocked_by entries)
-  cancelled    → Cancelled, won't be done
-
-Transitions:
-  pending → in_progress     kspec task start
-  in_progress → completed   kspec task complete
-  in_progress → blocked     kspec task block
-  blocked → pending         kspec task unblock
-  any → cancelled           kspec task cancel
-
-Auto-blocking:
-  Tasks with unfinished depends_on entries are effectively blocked
-  but show as 'pending'. They become 'ready' when deps complete.
-
-The 'tasks ready' command shows pending tasks with no blockers
-and no incomplete dependencies.
-`,
-    seeAlso: ['task', 'tasks'],
-  },
-
-  workflow: {
-    title: 'Typical Workflow',
-    description: `
-Common workflow for working on tasks.
-
-Starting a session:
-  1. kspec session start     # See what's active and ready
-  2. Pick a task from ready list
-
-Working on a task:
-  1. kspec task start @task  # Mark as in_progress
-  2. kspec task note @task "Starting work on X..."
-  3. Do the work (use todos for tracking sub-items)
-  4. kspec task note @task "Completed X, approach was Y..."
-  5. kspec task complete @task --reason "Summary"
-
-Using todos during work:
-  kspec task todo add @task "Review error handling"
-  kspec task todo add @task "Add tests"
-  kspec task todo done @task 1
-  kspec task todos @task
-
-Creating new tasks:
-  kspec task add --title "Task name" --spec-ref @item --priority 2
-
-Blocking/unblocking:
-  kspec task block @task --reason "Waiting on X"
-  kspec task unblock @task
-
-Validating changes:
-  kspec validate
-`,
-    seeAlso: ['session', 'task', 'tasks'],
-  },
-};
-
-/**
- * Format and display a help topic
+ * Show help for a specific topic (command or concept)
  */
 function showTopic(topic: string): void {
-  const help = helpTopics[topic];
-  if (!help) {
-    console.log(chalk.red(`Unknown topic: ${topic}`));
-    console.log(`\nAvailable topics: ${Object.keys(helpTopics).join(', ')}`);
-    console.log(`\nRun 'kspec help' to see all topics.`);
-    process.exit(1);
+  // Extract command tree from program
+  const tree = extractCommandTree(program);
+
+  // Try to find as a command first
+  const command = findCommand(tree, topic.split(' '));
+
+  if (command) {
+    showCommandHelp(command);
+    return;
   }
 
-  console.log(chalk.bold.cyan(help.title));
-  console.log(chalk.gray('─'.repeat(40)));
-  console.log(help.description.trim());
+  // Try to find as a concept
+  const content = helpContent[topic];
+  if (content) {
+    showConceptHelp(topic, content);
+    return;
+  }
 
-  if (help.examples && help.examples.length > 0) {
+  // Not found
+  console.log(chalk.red(`Unknown topic: ${topic}`));
+  console.log(`\nAvailable topics: ${getAllTopics(tree).join(', ')}`);
+  console.log(`\nRun 'kspec help' to see all topics.`);
+  process.exit(1);
+}
+
+/**
+ * Show help for a specific command
+ */
+function showCommandHelp(command: CommandMeta): void {
+  const content = helpContent[command.name];
+
+  // Title: use content title, or command name
+  const title = content?.title || `${command.name} - ${command.description}`;
+  console.log(chalk.bold.cyan(title));
+  console.log(chalk.gray('─'.repeat(40)));
+
+  // Usage
+  console.log(chalk.bold('\nUsage:'));
+  console.log(`  ${formatCommandUsage(command)}`);
+
+  // Subcommands (auto-generated from Commander)
+  if (command.subcommands.length > 0) {
+    console.log(chalk.bold('\nCommands:'));
+    for (const sub of command.subcommands) {
+      const nameCol = sub.name.padEnd(20);
+      console.log(`  ${chalk.green(nameCol)} ${sub.description}`);
+    }
+  }
+
+  // Options (auto-generated from Commander)
+  if (command.options.length > 0) {
+    console.log(chalk.bold('\nOptions:'));
+    for (const opt of command.options) {
+      // Format flags column
+      const flagsCol = opt.flags.padEnd(30);
+      console.log(`  ${chalk.green(flagsCol)} ${opt.description}`);
+    }
+  }
+
+  // Conceptual content (curated)
+  if (content) {
+    if (content.concept.trim()) {
+      console.log(chalk.bold('\nDetails:'));
+      console.log(content.concept.trim());
+    }
+
+    if (content.examples && content.examples.length > 0) {
+      console.log(chalk.bold('\nExamples:'));
+      for (const example of content.examples) {
+        console.log(chalk.green(`  ${example}`));
+      }
+    }
+
+    if (content.seeAlso && content.seeAlso.length > 0) {
+      console.log(
+        chalk.gray(`\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(', ')}`)
+      );
+    }
+  }
+}
+
+/**
+ * Show help for a concept topic
+ */
+function showConceptHelp(topic: string, content: HelpContent): void {
+  const title = content.title || topic;
+  console.log(chalk.bold.cyan(title));
+  console.log(chalk.gray('─'.repeat(40)));
+
+  console.log(content.concept.trim());
+
+  if (content.examples && content.examples.length > 0) {
     console.log(chalk.bold('\nExamples:'));
-    for (const example of help.examples) {
+    for (const example of content.examples) {
       console.log(chalk.green(`  ${example}`));
     }
   }
 
-  if (help.seeAlso && help.seeAlso.length > 0) {
-    console.log(chalk.gray(`\nSee also: ${help.seeAlso.map(t => `kspec help ${t}`).join(', ')}`));
+  if (content.seeAlso && content.seeAlso.length > 0) {
+    console.log(
+      chalk.gray(`\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(', ')}`)
+    );
   }
+}
+
+/**
+ * Get all available topics (commands + concepts)
+ */
+function getAllTopics(tree: CommandMeta): string[] {
+  const commands = flattenCommandTree(tree)
+    .filter((cmd) => cmd.name !== 'kspec') // Skip root
+    .map((cmd) => cmd.name);
+
+  const concepts = Object.keys(helpContent).filter((key) => !commands.includes(key));
+
+  return [...new Set([...commands, ...concepts])];
 }
 
 /**
  * Show list of all topics
  */
 function showTopicList(): void {
+  const tree = extractCommandTree(program);
+
   console.log(chalk.bold.cyan('kspec help'));
   console.log(chalk.gray('─'.repeat(40)));
   console.log('\nExtended help for kspec commands and concepts.\n');
 
+  // Show top-level commands (auto-generated)
   console.log(chalk.bold('Commands:'));
-  const commandTopics = ['task', 'tasks', 'validate', 'session', 'init', 'setup', 'item'];
-  for (const topic of commandTopics) {
-    const help = helpTopics[topic];
-    if (help) {
-      console.log(`  ${chalk.green(topic.padEnd(12))} ${help.title}`);
-    }
+  for (const cmd of tree.subcommands) {
+    const nameCol = cmd.name.padEnd(12);
+    console.log(`  ${chalk.green(nameCol)} ${cmd.description}`);
   }
 
+  // Show concept topics (curated)
   console.log(chalk.bold('\nConcepts:'));
-  const conceptTopics = ['refs', 'statuses', 'workflow'];
+  const conceptTopics = Object.keys(helpContent).filter((key) => {
+    // Concepts are topics that don't match command names
+    return !tree.subcommands.some((cmd) => cmd.name === key);
+  });
+
   for (const topic of conceptTopics) {
-    const help = helpTopics[topic];
-    if (help) {
-      console.log(`  ${chalk.green(topic.padEnd(12))} ${help.title}`);
-    }
+    const content = helpContent[topic];
+    const title = content.title || topic;
+    const nameCol = topic.padEnd(12);
+    console.log(`  ${chalk.green(nameCol)} ${title}`);
   }
 
   console.log(chalk.gray('\nUsage: kspec help <topic>'));
+  console.log(chalk.gray('       kspec help --all        (full reference)'));
+  console.log(chalk.gray('       kspec help --json       (structured output)'));
+}
+
+/**
+ * Show full reference (all commands with options)
+ */
+function showFullReference(): void {
+  const tree = extractCommandTree(program);
+  const allCommands = flattenCommandTree(tree).filter((cmd) => cmd.name !== 'kspec');
+
+  console.log(chalk.bold.cyan('kspec - Full Command Reference'));
+  console.log(chalk.gray('─'.repeat(60)));
+
+  for (const cmd of allCommands) {
+    console.log(chalk.bold(`\n${formatCommandUsage(cmd)}`));
+    if (cmd.description) {
+      console.log(`  ${cmd.description}`);
+    }
+
+    if (cmd.options.length > 0) {
+      console.log(chalk.gray('  Options:'));
+      for (const opt of cmd.options) {
+        console.log(chalk.gray(`    ${opt.flags.padEnd(30)} ${opt.description}`));
+      }
+    }
+  }
+}
+
+/**
+ * Output help as JSON
+ */
+function showJson(): void {
+  const tree = extractCommandTree(program);
+
+  // Include both command tree and curated content
+  const data = {
+    commands: tree,
+    content: helpContent,
+  };
+
+  output(data);
 }
 
 /**
@@ -404,7 +217,21 @@ export function registerHelpCommand(program: Command): void {
   program
     .command('help [topic]')
     .description('Extended help for commands and concepts')
-    .action((topic?: string) => {
+    .option('--all', 'Show full command reference')
+    .option('--json', 'Output as JSON')
+    .action((topic?: string, options?: { all?: boolean; json?: boolean }) => {
+      // Handle flags
+      if (options?.json) {
+        showJson();
+        return;
+      }
+
+      if (options?.all) {
+        showFullReference();
+        return;
+      }
+
+      // Show topic or list
       if (topic) {
         showTopic(topic);
       } else {
