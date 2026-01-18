@@ -4779,7 +4779,7 @@
   type: task
   spec_ref: '@task-list-verbose'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4824,6 +4824,10 @@
         - AC-5: Spec context displayed inline
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T09:32:13.844Z'
+  closed_reason: >-
+    Implemented enhanced verbose output for task lists with --full flag, all 5 ACs satisfied, tests
+    passing
 - _ulid: 01KF4WVVZYNDR1NRKG84JHDW1Q
   slugs:
     - task-meta-manifest
