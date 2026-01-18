@@ -443,3 +443,15 @@ inbox:
     created_at: '2026-01-18T01:03:34.941Z'
     tags: []
     added_by: '@claude'
+  - _ulid: 01KF7B2KJR80ZSXGXC91FFHPNR
+    text: >-
+      Workflow implementation pattern worked well - reused agent command structure (formatTable,
+      formatVerbose, JSON output via output()). The meta schema and parser were already complete,
+      only needed CLI command and tests. Reference validation integration was clean - just added
+      meta_ref to REF_FIELDS. Pattern: schema → parser → CLI → tests.
+    created_at: '2026-01-18T01:21:25.081Z'
+    tags:
+      - pattern
+      - meta
+      - dx
+    added_by: '@claude'
