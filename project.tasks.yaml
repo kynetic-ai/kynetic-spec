@@ -8790,21 +8790,56 @@
   created_at: '2026-01-18T23:29:59.601Z'
   notes: []
   todos: []
-- title: Update documentation for meta-spec and observations tooling
+- _ulid: 01KF9QKK97AC0DA26KWXPEBYSY
+  slugs: []
+  title: Update documentation for meta-spec and observations tooling
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - docs
-    - meta
-  _ulid: 01KF9QKK97AC0DA26KWXPEBYSY
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - docs
+    - meta
   vcs_refs: []
   created_at: '2026-01-18T23:38:53.607Z'
-  notes: []
+  notes:
+    - _ulid: 01KF9QKZQYABNRXWXRT9PKV9ZA
+      created_at: '2026-01-18T23:39:06.366Z'
+      author: '@claude'
+      content: |-
+        AGENTS.md updates needed:
+
+        1. NEW SECTION: Observations System
+           - What observations are (capture patterns, learnings, friction, questions during work)
+           - Types: friction, success, question, idea
+           - When to use observations vs inbox:
+             * Observations: things you notice during work, patterns, what worked/didn't
+             * Inbox: ideas for features, potential tasks, things to do later
+           - Commands: meta observe, meta observations list, meta resolve, meta promote
+           - Workflow references for observations
+
+        2. NEW SECTION: Meta Commands Reference  
+           - meta show (summary)
+           - meta observe/observations/promote/resolve (observation lifecycle)
+           - meta focus/thread (session context)
+           - meta agents/workflows/conventions (meta item browsing)
+           - meta add/set/delete/get/list (CRUD)
+
+        3. UPDATE: Quick Start section
+           - Add observation example: kspec meta observe friction 'Issue encountered...'
+           - Add focus/thread commands
+
+        4. UPDATE: Triage workflow (also update .claude/skills/triage/SKILL.md)
+           - First step: identify observations vs ideas
+           - Route observations to meta observe, not inbox
+           - Keep inbox for actionable ideas that might become tasks
+
+        5. REVIEW: All command examples
+           - Ensure examples reflect current CLI
+           - Add meta commands where relevant
+      supersedes: null
   todos: []
