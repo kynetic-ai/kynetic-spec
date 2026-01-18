@@ -6190,7 +6190,7 @@
   type: task
   spec_ref: '@meta-show'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6212,6 +6212,8 @@
         context summary not shown (session context feature not yet implemented).
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:10:42.370Z'
+  closed_reason: Command fully implemented and tested, displays all required summary information
 - _ulid: 01KF4WVWS2237WK5KE3DKFK9TY
   slugs:
     - task-kspec-meta-agents
