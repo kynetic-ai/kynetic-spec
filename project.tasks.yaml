@@ -6780,7 +6780,7 @@
   type: task
   spec_ref: '@meta-resolve-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6791,6 +6791,7 @@
   created_at: '2026-01-17T02:34:36.370Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T12:59:22.835Z'
 - _ulid: 01KF4WVWZBDZXSX30NSJKRC8WB
   slugs:
     - task-kspec-meta-focus
@@ -8086,17 +8087,17 @@
   origin: observation_promotion
   status: completed
   blocked_by: []
+  closed_reason: Test artifact from meta promote implementation - no actual work needed
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
   created_at: '2026-01-18T12:49:31.265Z'
+  started_at: '2026-01-18T12:59:08.899Z'
+  completed_at: '2026-01-18T12:59:08.899Z'
   notes: []
   todos: []
-  completed_at: '2026-01-18T12:59:08.899Z'
-  closed_reason: Test artifact from meta promote implementation - no actual work needed
-  started_at: '2026-01-18T12:59:08.899Z'
 - _ulid: 01KF8JEVMP7BW94FVB8A1RA6E8
   slugs: []
   title: Task from workflow observation
