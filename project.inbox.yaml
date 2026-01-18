@@ -1128,3 +1128,17 @@ inbox:
       - meta
       - efficiency
     added_by: '@claude'
+  - _ulid: 01KF895HQP4KAQ7STD9HG4Q78E
+    text: >-
+      Implementation vs verification tasks - some tasks require implementation
+      (workflow-execution-model needs 'meta run' command, convention-definitions needs validate
+      integration for AC-3/4) while others just need verification. When picking tasks in automation
+      loop, prioritize verification tasks for quick wins, leave implementation tasks for focused
+      sessions with more context. Left in-progress: @task-workflow-execution-model (needs meta run
+      command), @task-convention-definitions (3/5 ACs done, needs validation integration).
+    created_at: '2026-01-18T10:07:18.774Z'
+    tags:
+      - reflection
+      - workflow
+      - task-management
+    added_by: '@claude'
