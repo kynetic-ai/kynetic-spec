@@ -45,9 +45,10 @@ if [ "$IN_KSPEC" = false ]; then
   exit 0
 fi
 
-# Dangerous patterns in .kspec (branch creation/modification)
+# Dangerous patterns in .kspec (branch creation/modification/history rewriting)
 # Note: "git checkout kspec-meta" is safe and allowed
 DANGEROUS_PATTERNS=(
+  # Branch creation
   "git checkout -b"
   "git checkout -B"
   "git branch -c"
@@ -57,6 +58,19 @@ DANGEROUS_PATTERNS=(
   "git switch -c"
   "git switch -C"
   "git switch --create"
+  # History rewriting - these can cause conflicts with active sessions
+  "git reset"
+  "git rebase"
+  "git cherry-pick"
+  "git commit --amend"
+  # Force push
+  "git push --force"
+  "git push -f"
+  # Discarding changes
+  "git stash"
+  "git clean"
+  "git checkout -- "
+  "git restore"
 )
 
 for pattern in "${DANGEROUS_PATTERNS[@]}"; do
@@ -64,7 +78,7 @@ for pattern in "${DANGEROUS_PATTERNS[@]}"; do
     cat <<EOF
 {
   "decision": "block",
-  "reason": "[kspec-worktree-guard] BLOCKED: You are in .kspec worktree which must stay on kspec-meta branch. Do not create branches here. Change to main repo first: cd /home/chapel/Projects/kynetic-spec"
+  "reason": "[kspec-worktree-guard] BLOCKED: Dangerous git operation in .kspec worktree. This worktree contains active session data and must stay on kspec-meta. Operations like reset, rebase, stash, and clean can corrupt session files. Change to main repo first: cd /home/chapel/Projects/kynetic-spec"
 }
 EOF
     exit 0
