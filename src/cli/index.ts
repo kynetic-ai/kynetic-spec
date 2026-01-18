@@ -26,6 +26,9 @@ import {
 
 const program = new Command();
 
+// Initialize verbose mode getter for shadow operations
+setVerboseModeGetter(getVerboseMode);
+
 program
   .name('kspec')
   .description('Kynetic Spec - Structured specification format CLI')
