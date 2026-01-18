@@ -5407,6 +5407,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Workflow schema implemented with all required fields and step types
   depends_on:
     - '@task-workflow-definitions'
   context: []
@@ -5415,6 +5416,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.650Z'
   started_at: '2026-01-18T10:04:23.364Z'
+  completed_at: '2026-01-18T10:04:36.478Z'
   notes:
     - _ulid: 01KF890EMV8ACRV8KRMEXSB2YT
       created_at: '2026-01-18T10:04:31.771Z'
@@ -5428,8 +5430,6 @@
         work.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:04:36.478Z'
-  closed_reason: Workflow schema implemented with all required fields and step types
 - _ulid: 01KF4WVW8TR5MT0GXK7DX26E7R
   slugs:
     - task-workflow-step-types
@@ -5437,7 +5437,7 @@
   type: task
   spec_ref: '@workflow-steps'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5448,6 +5448,7 @@
   created_at: '2026-01-17T02:34:35.674Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:04:42.120Z'
 - _ulid: 01KF4WVW9SAW2KEHNK4YW98CSN
   slugs:
     - task-workflow-execution-model
