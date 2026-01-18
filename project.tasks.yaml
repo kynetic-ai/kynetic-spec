@@ -5000,9 +5000,34 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.445Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T09:46:34.393Z'
+  notes:
+    - _ulid: 01KF880W3QJWJCXTB1KWMB0JS5
+      created_at: '2026-01-18T09:47:16.984Z'
+      author: '@claude'
+      content: >-
+        Task auto-started when @task-meta-manifest-format completed (dependency satisfied). 
+
+
+        Investigation findings: Includes functionality is already fully implemented in
+        src/parser/meta.ts:225-239:
+
+        - loadMetaContext() processes includes array from manifest
+
+        - Uses expandIncludePattern() to resolve glob patterns (same as spec includes)
+
+        - Loads items from each included file via loadMetaFile()
+
+        - Merges items into main MetaContext
+
+
+        The schema already defines includes field (MetaManifestSchema line 134).
+
+
+        Need to verify there are acceptance criteria defined for this spec item and test the
+        functionality.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
   slugs:
     - task-meta-validation-integration
