@@ -678,17 +678,6 @@ inbox:
       - reflection
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF7W125DYY0V3QY6GJRJNW0H
-    text: >-
-      Bash tool persistence: commands run in same directory as previous command unless explicit cd.
-      Running 'cd .kspec && git status' left session in .kspec worktree. Need explicit 'cd
-      /path/to/main' to return. Could be confusing when working with shadow branch.
-    created_at: '2026-01-18T06:17:40.269Z'
-    tags:
-      - reflection
-      - dx
-      - worktree
-    added_by: '@claude'
   - _ulid: 01KF7W92EBR93N16SS7THKM5V2
     text: >-
       PR workflow for shadow-only changes: Research spikes that only update task state (shadow
