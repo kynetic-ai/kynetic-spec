@@ -542,20 +542,6 @@ inbox:
       - dx
       - workflow
     added_by: '@claude'
-  - _ulid: 01KF7QFHB3GCFM0A4SG5FETMXJ
-    text: >-
-      PR creation for partial work: Iteration 8 demonstrated value of creating PRs for partial
-      completion of large phases. Benefits: (1) Makes progress visible and reviewable, (2) Reduces
-      review burden vs one giant PR, (3) Allows merging stable portions while continuing work, (4)
-      Creates checkpoints if approach needs adjustment. PR #30 shows 'phase 4 partial' pattern -
-      clear what's done vs what remains. Could be applied to other large refactors. Consider: should
-      we always break large phases into 'setup + partial + completion' PRs?
-    created_at: '2026-01-18T04:58:11.683Z'
-    tags:
-      - reflection
-      - workflow
-      - pr-strategy
-    added_by: '@claude'
   - _ulid: 01KF7R758YMQHGRZXG82DHANXC
     text: >-
       PR review workflow in ralph loop works well. Iteration 9: review subagent found 2 minor issues
