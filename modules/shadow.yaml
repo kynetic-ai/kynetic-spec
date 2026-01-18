@@ -250,6 +250,9 @@ features:
             given: debug mode is not enabled
             when: auto-commit fails
             then: no error output is shown (silent failure)
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
