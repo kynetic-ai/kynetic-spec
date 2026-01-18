@@ -126,7 +126,7 @@ export const ObservationSchema = z.object({
  * Session context schema - ephemeral session state
  */
 export const SessionContextSchema = z.object({
-  focus: RefSchema.nullable(),
+  focus: z.string().nullable(),
   threads: z.array(z.string()).default([]),
   open_questions: z.array(z.string()).default([]),
   updated_at: DateTimeSchema,
