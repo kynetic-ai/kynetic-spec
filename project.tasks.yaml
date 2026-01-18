@@ -7668,4 +7668,13 @@
         Found existing comprehensive strings organization in src/strings/. Checking if this task
         means to improve/enhance existing structure or if there's something specific missing.
       supersedes: null
+    - _ulid: 01KF8AEJB9XKW8A8MX9N5XTNC4
+      created_at: '2026-01-18T10:29:42.889Z'
+      author: '@claude'
+      content: >-
+        Migrated all remaining hardcoded error messages to centralized strings module. Added 5 new
+        validation error messages (expectedJsonArray, patchMustBeObject, patchMustHaveRef,
+        patchMustHaveData, jsonLineError) to src/strings/errors.ts. Updated item.ts and ralph.ts to
+        use centralized error messages. All tests passing (463 passed).
+      supersedes: null
   todos: []
