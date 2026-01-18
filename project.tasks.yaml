@@ -5220,6 +5220,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Agent schema fully implemented and verified in src/schema/meta.ts
   depends_on:
     - '@task-agent-definitions'
   context: []
@@ -5228,6 +5229,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.532Z'
   started_at: '2026-01-18T10:03:05.276Z'
+  completed_at: '2026-01-18T10:03:30.621Z'
   notes:
     - _ulid: 01KF88YE241XPX8GXRTEQ8N228
       created_at: '2026-01-18T10:03:25.636Z'
@@ -5257,8 +5259,6 @@
         complete from prior work.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:03:30.621Z'
-  closed_reason: Agent schema fully implemented and verified in src/schema/meta.ts
 - _ulid: 01KF4WVW594JJENY62YYW5A5D2
   slugs:
     - task-agent-capabilities
@@ -5266,7 +5266,7 @@
   type: task
   spec_ref: '@agent-capabilities'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-agent-definitions'
@@ -5277,6 +5277,7 @@
   created_at: '2026-01-17T02:34:35.561Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:03:39.942Z'
 - _ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
   slugs:
     - task-agent-session-protocol
