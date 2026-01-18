@@ -8520,3 +8520,24 @@
         Pattern: show what would happen without executing (like terraform plan)
       supersedes: null
   todos: []
+- title: Add --tree flag to item list command
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+  description: >-
+    Item list --tree or --hierarchy flag - shows parent/child structure for finding where to place
+    new items. Friction: during triage had to grep/search to find @cli module since flat list
+    doesn't show nesting.
+  _ulid: 01KF9FWXPG3YYDF5PZEY62K4HH
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-18T21:24:10.576Z'
+  notes: []
+  todos: []

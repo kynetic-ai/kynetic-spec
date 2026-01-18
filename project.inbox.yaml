@@ -65,17 +65,6 @@ inbox:
       - testing
       - spec
     added_by: '@claude'
-  - _ulid: 01KF3MVM96A3T653E70QKB0F2Z
-    text: >-
-      Item list --tree or --hierarchy flag - shows parent/child structure for finding where to place
-      new items. Friction: during triage had to grep/search to find @cli module since flat list
-      doesn't show nesting.
-    created_at: '2026-01-16T14:55:24.454Z'
-    tags:
-      - reflection
-      - cli
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF3PJWJS42Y0QZFKWMX3A4D9
     text: >-
       CLI output parity - JSON and human-readable outputs can drift when adding features.
