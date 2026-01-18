@@ -8724,25 +8724,45 @@
   created_at: '2026-01-18T23:28:50.833Z'
   notes: []
   todos: []
-- title: Create INSTALL.md with agent-focused setup instructions
+- _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
+  slugs: []
+  title: Create INSTALL.md with agent-focused setup instructions
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - docs
-    - agents
   description: >-
     Create INSTALL.md with agent-focused setup instructions: Step-by-step guide for agents to
     install kspec in a new or existing repo from scratch. Should cover: npm install, kspec init,
     worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
     concise, copy-pasteable commands, clear success criteria.
-  _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - docs
+    - agents
+  vcs_refs: []
+  created_at: '2026-01-18T23:29:26.784Z'
+  notes: []
+  todos: []
+- title: Document kspec worktree architecture in AGENTS.md
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - docs
+  description: >-
+    Document kspec worktree architecture in AGENTS.md: .kspec/ is a git worktree on kspec-meta
+    branch, CLI commands that modify specs auto-commit to that branch, agents don't need to manually
+    commit spec changes or check .kspec git status
+  _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T23:29:26.784Z'
+  created_at: '2026-01-18T23:29:29.622Z'
   notes: []
   todos: []
