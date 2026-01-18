@@ -670,17 +670,6 @@ inbox:
       - workflow
       - process
     added_by: '@claude'
-  - _ulid: 01KF8H8DY35NSAF24G36J8YF45
-    text: >-
-      JSON output pattern: The output() helper provides clean separation between JSON and
-      human-readable modes. Used successfully in meta observe to return observation object in JSON
-      mode while keeping success message for human mode. Pattern: output(dataObject, () =>
-      humanFormatter())
-    created_at: '2026-01-18T12:28:41.795Z'
-    tags:
-      - reflection
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF8MTM9F3FCVWKE230A245HD
     text: >-
       Need to have a way for the ralph loop to explicitly end a session and save the session files
