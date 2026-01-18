@@ -773,3 +773,13 @@ inbox:
       - shadow
       - reflection
     added_by: '@claude'
+  - _ulid: 01KF7X8BZSPE1FQ9MJZ99MCXXD
+    text: >-
+      ReferenceIndex resolve() returns result objects with .ok field, not the items directly. This
+      pattern needs to be followed when using refIndex.resolve() - check result.ok first, then
+      access result.item. Missed this initially which caused errors.
+    created_at: '2026-01-18T06:39:08.281Z'
+    tags:
+      - dx
+      - gotcha
+    added_by: '@claude'
