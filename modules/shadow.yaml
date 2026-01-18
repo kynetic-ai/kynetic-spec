@@ -355,7 +355,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     priority: medium
     tags:
       - cli

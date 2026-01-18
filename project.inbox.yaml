@@ -872,3 +872,15 @@ inbox:
       - shadow
       - process
     added_by: '@claude'
+  - _ulid: 01KF80JD5PQTH12X89TG4J6RZF
+    text: >-
+      Task status accuracy: Found task @01KF1VKEC marked as priority 3 ready but implementation was
+      already complete. All code, tests, and functionality existed. System correctly updated spec
+      alignment when task completed, but task remained in ready list longer than it should have.
+      Consider: earlier alignment checks, or better detection of 'code exists but task not marked
+      done' scenarios.
+    created_at: '2026-01-18T07:37:02.902Z'
+    tags:
+      - workflow
+      - task-tracking
+    added_by: '@claude'
