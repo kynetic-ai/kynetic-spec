@@ -1055,7 +1055,7 @@ tasks:
       - kspec link delete
     spec_ref: '@link-commands'
     derivation: auto
-    status: pending
+    status: in_progress
     blocked_by: []
     depends_on: []
     context: []
@@ -1068,6 +1068,7 @@ tasks:
     created_at: '2026-01-14T22:14:20.954Z'
     notes: []
     todos: []
+    started_at: '2026-01-18T06:22:30.751Z'
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
     slugs:
       - task-yaml-formatting
