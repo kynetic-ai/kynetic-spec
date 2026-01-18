@@ -3853,6 +3853,32 @@
 
         Committing WIP state for next iteration to continue.
       supersedes: null
+    - _ulid: 01KF80WD1PYHNFYQTH4FFGJATZ
+      created_at: '2026-01-18T07:42:30.455Z'
+      author: '@claude'
+      content: >-
+        Implemented shadow debug mode feature:
+
+
+        - Added isDebugMode() utility that checks KSPEC_DEBUG=1 env var or --verbose flag
+
+        - Updated shadowAutoCommit() to conditionally output debug messages to stderr only when
+        debug mode enabled
+
+        - Added global --verbose flag to CLI that works across all commands
+
+        - Implemented setVerboseModeGetter() to allow shadow.ts to check CLI verbose mode without
+        circular dependencies
+
+        - Updated shadowPushAsync() to include debug output for push operations
+
+        - Added comprehensive test coverage (7 tests) for all 3 acceptance criteria:
+          - AC-1: KSPEC_DEBUG=1 enables debug output (tested with both success and failure cases)
+          - AC-2: --verbose flag enables debug output
+          - AC-3: Debug output is silent when disabled (no errors shown)
+
+        All tests pass (51 total in shadow.test.ts).
+      supersedes: null
   todos: []
 - _ulid: 01KF3D9S7PTA6WADMEVNTW6V7D
   slugs:
