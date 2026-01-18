@@ -6054,9 +6054,42 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.998Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T11:04:33.323Z'
+  notes:
+    - _ulid: 01KF8CP9N5ZXMEK0WW7ZDV68EM
+      created_at: '2026-01-18T11:08:53.286Z'
+      author: '@claude'
+      content: >-
+        Observation resolution already fully implemented. Verified implementation in
+        src/cli/commands/meta.ts lines 782-844:
+
+        - Command: kspec meta resolve <ref> [resolution]
+
+        - Finds observation by ULID prefix
+
+        - Validates observation exists (AC-obs-4)
+
+        - Prevents double-resolution (AC-obs-7)
+
+        - Auto-populates resolution from promoted task if applicable (AC-obs-9)
+
+        - Updates fields: resolved=true, resolution=text, resolved_at, resolved_by
+
+        - Saves updated observation
+
+        - Outputs success message with ULID prefix
+
+
+        Tests verified passing in tests/meta.test.ts:
+
+        - AC-obs-4: Line 589 - should resolve observation with resolution text
+
+        - AC-obs-7: Line 612 - should error when resolving already-resolved observation
+
+
+        All 64 tests in meta.test.ts pass.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWKP7HG72ANY8QVZD369
   slugs:
     - task-observation-task-resolution-loop
