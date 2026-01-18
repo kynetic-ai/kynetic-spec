@@ -425,7 +425,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           "A relates_to B" is a general association without specific semantics.
           Used for: cross-references, "see also" links.
