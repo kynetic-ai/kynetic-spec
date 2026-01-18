@@ -1,0 +1,33 @@
+kynetic_meta: "1.0"
+
+agents:
+  - _ulid: 01TEST001000000000000000000
+    id: test-agent
+    name: Test Agent
+    description: A test agent for integration testing
+    capabilities:
+      - code
+      - test
+    tools:
+      - kspec
+      - git
+    session_protocol:
+      start: "kspec session start"
+      checkpoint: "kspec session checkpoint"
+    conventions:
+      - Test convention 1
+      - Test convention 2
+
+  - _ulid: 01TEST002000000000000000000
+    id: review-agent
+    name: Review Agent
+    description: Agent specialized for code review
+    capabilities:
+      - review
+      - analyze
+    tools:
+      - kspec
+    session_protocol:
+      start: "kspec session start"
+    conventions:
+      - Always check tests
