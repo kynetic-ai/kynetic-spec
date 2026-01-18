@@ -466,17 +466,6 @@ inbox:
       - reflection
       - meta
     added_by: '@claude'
-  - _ulid: 01KF7GS42S4VF3SBP1PG6NNGB0
-    text: >-
-      Successfully implemented three meta CLI commands (conventions, get, list) in one iteration.
-      The pattern of implementing formatters first, then command registration works well. Testing is
-      fast and reliable - all 31 tests pass. The unified 'get' and 'list' commands provide good
-      discoverability across meta item types.
-    created_at: '2026-01-18T03:01:05.753Z'
-    tags:
-      - dx
-      - meta
-    added_by: '@claude'
   - _ulid: 01KF7MGV986G6QFAT2853AKP75
     text: >-
       Iteration 4 findings: (1) Inbox and task notes live in shadow branch (.kspec/) not main -
