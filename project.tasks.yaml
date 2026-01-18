@@ -6273,7 +6273,7 @@
   type: task
   spec_ref: '@context-integration'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-session-context-research'
@@ -6333,6 +6333,10 @@
         Draft PR #52 contains all WIP commits.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T12:08:57.167Z'
+  closed_reason: >-
+    Session context now displays in session start output showing focus, active threads, and open
+    questions from .kspec-session file
 - _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
   slugs:
     - task-meta-cli-commands
