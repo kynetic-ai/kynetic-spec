@@ -4145,7 +4145,7 @@
   type: task
   spec_ref: '@spec-completeness'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -4194,6 +4194,11 @@
         - Export CompletenessWarning type from parser/index.ts
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T08:30:24.337Z'
+  closed_reason: >-
+    Implemented all 4 acceptance criteria with working CLI integration. Manual testing confirms
+    correct behavior for missing AC, missing descriptions, and grouping by type. Integration tests
+    should be added in follow-up work.
 - _ulid: 01KF3GVY7JRH173FB91CQW88D4
   slugs: []
   title: Alignment guidance should mention test coverage
