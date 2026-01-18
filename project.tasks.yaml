@@ -948,6 +948,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Spike complete: Manual archive command recommended as MVP. Archive file
+    (project.tasks.archive.yaml) will be loaded alongside active tasks, preserving references and
+    validation. Aligns with design doc's auto-adaptive storage pattern. Ready for
+    spec+implementation if prioritized.
   depends_on: []
   context: []
   priority: 3
@@ -957,6 +962,7 @@
   vcs_refs: []
   created_at: '2026-01-15T04:38:31.085Z'
   started_at: '2026-01-18T07:30:53.536Z'
+  completed_at: '2026-01-18T07:33:41.234Z'
   notes:
     - _ulid: 01KEZZ5KJ4BZER0DSRWKWE2WGF
       created_at: '2026-01-15T04:38:39.429Z'
@@ -1043,12 +1049,6 @@
         **Next**: Draft spec for task archiving command to align with design doc pattern.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T07:33:41.234Z'
-  closed_reason: >-
-    Spike complete: Manual archive command recommended as MVP. Archive file
-    (project.tasks.archive.yaml) will be loaded alongside active tasks, preserving references and
-    validation. Aligns with design doc's auto-adaptive storage pattern. Ready for
-    spec+implementation if prioritized.
 - _ulid: 01KF00CWN1R0XTG1R0A42BSXSE
   slugs:
     - task-prompt-refactor
@@ -3195,7 +3195,7 @@
   type: task
   spec_ref: '@shadow-cli'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -3206,6 +3206,7 @@
   created_at: '2026-01-15T22:14:47.425Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T07:35:26.449Z'
 - _ulid: 01KF1VKEV2FW62HJR7CBRNJGFZ
   slugs:
     - task-shadow-recovery
