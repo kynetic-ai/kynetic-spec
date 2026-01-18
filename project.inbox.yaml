@@ -984,3 +984,13 @@ inbox:
       - reflection
       - dx
     added_by: '@claude'
+  - _ulid: 01KF846WKJEX616G8AJSVZ0C08
+    text: >-
+      Guardrails implementation preserves spec status.maturity when updating implementation status -
+      important pattern to avoid losing maturity context when auto-updating fields. Default to
+      'draft' if status doesn't exist yet.
+    created_at: '2026-01-18T08:40:39.794Z'
+    tags:
+      - implementation
+      - pattern
+    added_by: '@claude'
