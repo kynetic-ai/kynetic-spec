@@ -32,7 +32,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     priority: high
     tags:
       - mvp
