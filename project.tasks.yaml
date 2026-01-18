@@ -3695,6 +3695,15 @@
         implemented. Next session should pick up with session context commands or mutation commands
         depending on priority.
       supersedes: null
+    - _ulid: 01KF7H4F4QJQQRN3WTWRW2ZJTX
+      created_at: '2026-01-18T03:07:17.527Z'
+      author: '@claude'
+      content: >-
+        Continuing meta CLI work. Session context commands (focus, thread, question, context)
+        blocked by missing spec - there's a dedicated research task @01KF1H92 for this. Will
+        implement mutation commands (add, set, delete) instead, which are more straightforward and
+        can work with existing meta item types.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
