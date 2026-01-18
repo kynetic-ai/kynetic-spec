@@ -113,6 +113,7 @@ export const conflictErrors = {
   observationAlreadyResolved: (date: string, reason: string) =>
     `Observation already resolved on ${date}: '${reason}'`,
   specDirExists: (dir: string) => `spec/ directory already exists in ${dir}`,
+  moduleFileExists: (path: string) => `Module file already exists: ${path}`,
 } as const;
 
 /**

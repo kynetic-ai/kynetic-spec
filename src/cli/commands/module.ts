@@ -8,7 +8,6 @@ import {
   buildIndexes,
   checkSlugUniqueness,
   writeYamlFile,
-  readYamlFile,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { SpecItem, Manifest } from '../../schema/index.js';
@@ -37,7 +36,7 @@ export function registerModuleCommands(program: Command): void {
         const { refIndex } = await buildIndexes(ctx);
 
         if (!ctx.manifest || !ctx.manifestPath) {
-          error(errors.project.noManifestFound);
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -79,7 +78,7 @@ export function registerModuleCommands(program: Command): void {
         // Check if module file already exists
         try {
           await fs.access(moduleFilePath);
-          error(`Module file already exists: ${moduleFilePath}`);
+          error(errors.conflict.moduleFileExists(moduleFilePath));
           process.exit(1);
         } catch {
           // File doesn't exist, which is what we want
