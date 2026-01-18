@@ -1068,7 +1068,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec link create <from> <to> [options]
 
