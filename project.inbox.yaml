@@ -1300,3 +1300,13 @@ inbox:
       - reflection
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF8FZC470CHRJH5HPRPQZMAY
+    text: >-
+      Session checkpoint hook caught uncommitted .gitignore change. Important to follow
+      never-commit-to-main rule - all changes should go through PRs. The hook successfully prevented
+      incomplete session state.
+    created_at: '2026-01-18T12:06:16.455Z'
+    tags:
+      - workflow
+      - process
+    added_by: '@claude'
