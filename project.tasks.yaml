@@ -6979,7 +6979,7 @@
   type: task
   spec_ref: '@meta-list-cmd'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6998,6 +6998,9 @@
         output.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:31.658Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:31.658Z'
 - _ulid: 01KF4WVX5C9SJA70WYKWHPH9EP
   slugs:
     - task-kspec-meta-add
