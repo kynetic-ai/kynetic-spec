@@ -417,7 +417,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Validation output includes:
           - List of errors (must fix)
