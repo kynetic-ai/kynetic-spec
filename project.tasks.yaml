@@ -5476,9 +5476,19 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.705Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:04:59.018Z'
+  notes:
+    - _ulid: 01KF891T6HWH6V1FWCASZTMQ03
+      created_at: '2026-01-18T10:05:16.369Z'
+      author: '@claude'
+      content: >-
+        Reviewing execution model requirements. Spec describes 3 models: 1) Documentation (already
+        done via 'meta workflows' command), 2) Checklist mode (needs 'meta run @workflow' command to
+        present interactive steps), 3) Hook integration (needs hook integration).
+        StepExecutionSchema already exists (lines 41-44) with mode and timeout fields. Need to
+        implement checklist runner command.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWANMAE8DR6130KJ5Z4X
   slugs:
     - task-workflow-triggers
