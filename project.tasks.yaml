@@ -5446,9 +5446,18 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.674Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:04:42.120Z'
+  notes:
+    - _ulid: 01KF890YYEAA9PXSR7XJ2XA0ZX
+      created_at: '2026-01-18T10:04:48.462Z'
+      author: '@claude'
+      content: >-
+        Verified workflow step types already implemented. WorkflowStepTypeSchema (line 36) defines
+        enum with check, action, and decision types. WorkflowStepSchema (lines 49-55) implements
+        conditional fields: on_fail for check steps, options array for decision steps, and content
+        for all types. Implementation matches spec exactly.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW9SAW2KEHNK4YW98CSN
   slugs:
     - task-workflow-execution-model
