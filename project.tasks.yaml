@@ -5703,7 +5703,7 @@
   type: task
   spec_ref: '@observation-schema'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -5748,6 +5748,8 @@
         lifecycle management. Schema complete from prior work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:06:57.782Z'
+  closed_reason: Observation schema fully implemented with all required and optional fields
 - _ulid: 01KF4WVWH380ZP76XV6V0FH2AY
   slugs:
     - task-observation-types
