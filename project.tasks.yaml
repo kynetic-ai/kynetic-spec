@@ -5437,7 +5437,7 @@
   type: task
   spec_ref: '@workflow-steps'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5458,6 +5458,8 @@
         for all types. Implementation matches spec exactly.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:04:53.227Z'
+  closed_reason: Step types check, action, and decision implemented with appropriate fields
 - _ulid: 01KF4WVW9SAW2KEHNK4YW98CSN
   slugs:
     - task-workflow-execution-model
