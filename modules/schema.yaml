@@ -548,7 +548,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Use annotated git tags for spec baselines:
 
