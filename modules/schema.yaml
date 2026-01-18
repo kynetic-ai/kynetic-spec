@@ -528,7 +528,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           The `project.version` field tracks the spec's own version:
 
