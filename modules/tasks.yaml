@@ -525,7 +525,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           kspec todo add <ref> "text"     # Add todo
           kspec todo done <ref> <id>      # Mark complete
