@@ -4781,6 +4781,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented enhanced verbose output for task lists with --full flag, all 5 ACs satisfied, tests
+    passing
   depends_on: []
   context: []
   priority: 3
@@ -4788,6 +4791,7 @@
   vcs_refs: []
   created_at: '2026-01-17T00:24:46.809Z'
   started_at: '2026-01-18T09:20:39.162Z'
+  completed_at: '2026-01-18T09:32:13.844Z'
   notes:
     - _ulid: 01KF8754F6V4R9EDDRF1VEVVB0
       created_at: '2026-01-18T09:32:08.038Z'
@@ -4824,10 +4828,6 @@
         - AC-5: Spec context displayed inline
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T09:32:13.844Z'
-  closed_reason: >-
-    Implemented enhanced verbose output for task lists with --full flag, all 5 ACs satisfied, tests
-    passing
 - _ulid: 01KF4WVVZYNDR1NRKG84JHDW1Q
   slugs:
     - task-meta-manifest
@@ -4901,7 +4901,7 @@
   type: task
   spec_ref: '@meta-manifest-format'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-manifest'
@@ -4912,6 +4912,7 @@
   created_at: '2026-01-17T02:34:35.422Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T09:40:51.498Z'
 - _ulid: 01KF4WVW1N2XVGXKQHY1PRJVS0
   slugs:
     - task-meta-includes
