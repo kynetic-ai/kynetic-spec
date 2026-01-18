@@ -203,7 +203,7 @@ features:
             then: 'CLI prompts: ''Update N child items to implemented? [y/n]'''
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs:
       - file-structure

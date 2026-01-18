@@ -1021,3 +1021,13 @@ inbox:
       - reflection
       - anti-pattern
     added_by: '@claude'
+  - _ulid: 01KF85BA13ZF64K8QJK77EPMKZ
+    text: >-
+      findChildItems implementation based on _path nesting worked well - the path structure makes
+      parent-child relationships explicit and easy to query. Similar pattern could be useful for
+      other hierarchical queries (siblings, ancestors, tree depth)
+    created_at: '2026-01-18T09:00:33.187Z'
+    tags:
+      - reflection
+      - dx
+    added_by: '@claude'
