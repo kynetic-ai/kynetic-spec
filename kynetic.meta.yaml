@@ -571,4 +571,117 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KF96T3VVQ8CTXQYQ4XNMTQ1W
+    type: question
+    content: >-
+      Shadow branch PR workflow clarification: When work only updates shadow branch (.kspec/)
+      metadata - task state, inbox items, notes - should PRs still be created? Ralph instructions
+      say 'create PR after commit' but this seems intended for code changes on feature branches.
+      Shadow changes track the work; code changes are the work output. Current behavior: skip PR
+      when working tree is clean. Need clarification on whether meta manifest changes should follow
+      different review process than code changes.
+    created_at: '2026-01-18T18:45:21.404Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96T6E67ZB7FVJ8JEDBKTYS
+    type: success
+    content: >-
+      Iteration workflow patterns: (1) Verification-only iterations produce no commits - efficient,
+      avoids code churn, skipping PR is correct when working tree clean. (2) Implementation vs
+      verification task distinction - verification tasks are quick wins for automation loops,
+      implementation tasks need focused sessions. (3) Iteration findings show shadow branch is
+      source of truth for task state (git status on main shows clean after adding inbox items),
+      session context can be stale. Pattern: prioritize verification in loops, save implementation
+      for context-rich sessions.
+    created_at: '2026-01-18T18:45:24.039Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96TKTHJ8DNBGCTR8ACQ7DN
+    type: success
+    content: >-
+      PR review momentum: When reviewing own PRs from previous iterations, fix trivial issues
+      directly (like invalid ULIDs) rather than leaving comments. Merge when checks pass unless
+      changes are substantial. This keeps momentum going in automation loops.
+    created_at: '2026-01-18T18:45:37.746Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96TN2JQ4PPH7MW0G42MXBT
+    type: success
+    content: >-
+      CLI label centralization: item.ts and inbox.ts had drifted from established
+      src/strings/labels.ts pattern. Quick grep audit found inconsistencies. Fix was
+      straightforward: import centralized labels and replace hardcoded strings. Pattern prevents
+      drift: new commands should import from strings/ from the start.
+    created_at: '2026-01-18T18:45:39.027Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96TPK7BTRZ1XZ9BK5YD6G8
+    type: success
+    content: >-
+      Reference directory exploration: For spikes, launching dedicated Explore subagent for
+      reference dirs (kspec-acp-test, kspec-ralph-test) prevents context bloat while getting
+      comprehensive findings. Subagent found identical spec content across both test dirs. Pattern
+      worked well - consider for other research tasks.
+    created_at: '2026-01-18T18:45:40.584Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96TQV69YX5RQKAJQDQ1S25
+    type: success
+    content: >-
+      Shadow CLI verification: Picked task from ready list, found all three commands (status, log,
+      repair) already implemented with 43 passing tests. Verified functionality, completed task,
+      updated spec alignment. No code changes needed. Key learning: spec items marked 'implemented'
+      were accurate.
+    created_at: '2026-01-18T18:45:41.863Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96V5J1QJR44K8M7MMGFS0M
+    type: success
+    content: >-
+      Meta schema verification batch: Completed 8 meta-related tasks in single iteration by
+      verifying existing schema implementations in src/schema/meta.ts. Pattern: start task, read
+      schema file, verify fields match spec, document in notes, complete. Efficient for verification
+      tasks when implementation already exists.
+    created_at: '2026-01-18T18:45:55.906Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96V6MZKAJC86KJD949CW8P
+    type: success
+    content: >-
+      Display-first implementation strategy: Many derived tasks for meta-spec features were already
+      implemented. Schema layer and CLI display commands (meta show, meta agents, etc.) are
+      complete. Gap is in interactive/mutation commands and validation integration. Pattern:
+      display-first is pragmatic - read operations complete, write operations deferred. Allows early
+      testing of schema design.
+    created_at: '2026-01-18T18:45:57.023Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96V82FAJANHX3P5GWEH8HQ
+    type: success
+    content: >-
+      Convention schema test gap: Schema was already implemented but lacked test coverage. When
+      picking up implementation tasks, check if code exists first - may just need tests or
+      documentation rather than new code. Tests added brought coverage up to spec.
+    created_at: '2026-01-18T18:45:58.480Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF96V9DF3FX5XH224TM996TE
+    type: success
+    content: >-
+      Session checkpoint hook value: Hook caught uncommitted .gitignore change. Important to follow
+      never-commit-to-main rule - all changes should go through PRs. Hook successfully prevented
+      incomplete session state.
+    created_at: '2026-01-18T18:45:59.857Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
