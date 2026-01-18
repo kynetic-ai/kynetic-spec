@@ -7067,6 +7067,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - discovered during task audit
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -7074,6 +7075,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.645Z'
+  started_at: '2026-01-18T15:45:42.531Z'
+  completed_at: '2026-01-18T15:45:42.531Z'
   notes:
     - _ulid: 01KF8WH3X1DYKMZ7ZMF42BP8YH
       created_at: '2026-01-18T15:45:40.769Z'
@@ -7083,9 +7086,6 @@
         src/cli/commands/meta.ts:1132-1259. Deletes meta items with reference validation.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T15:45:42.531Z'
-  closed_reason: Already implemented - discovered during task audit
-  started_at: '2026-01-18T15:45:42.531Z'
 - _ulid: 01KF4WVX83RX2MM5E1HK8HZQ9S
   slugs:
     - task-meta-reference-integration
@@ -7172,7 +7172,14 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.705Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WHG06Z9XSKPSYBFP8SPWG
+      created_at: '2026-01-18T15:45:53.159Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit b5a73f4 (2026-01-17) in
+        src/schema/task.ts:54-55. Added meta_ref as nullable optional RefSchema field.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVX9ZGYR8NE301BTM46X9
   slugs:
