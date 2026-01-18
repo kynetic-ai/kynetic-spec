@@ -262,6 +262,9 @@ features:
             given: A task without spec_ref is completed
             when: The task is marked completed
             then: No status update prompt is shown (only applies to spec-linked tasks)
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
