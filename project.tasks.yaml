@@ -5505,7 +5505,7 @@
   type: task
   spec_ref: '@workflow-triggers'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5516,6 +5516,7 @@
   created_at: '2026-01-17T02:34:35.733Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:05:39.950Z'
 - _ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
   slugs:
     - task-convention-definitions
