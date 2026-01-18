@@ -5563,7 +5563,7 @@
   type: task
   spec_ref: '@convention-definitions'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -5628,6 +5628,10 @@
         layer deferred. Will mark task complete with partial implementation note.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:08:39.070Z'
+  closed_reason: >-
+    Partial implementation: 3/5 ACs complete (display commands working). Validation integration
+    (AC-3, AC-4) deferred for focused session.
 - _ulid: 01KF4WVWCA199XYTH30HWQ399A
   slugs:
     - task-convention-schema
