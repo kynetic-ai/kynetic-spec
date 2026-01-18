@@ -4903,6 +4903,11 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    All 3 acceptance criteria verified and passing. Meta manifest format fully implemented with
+    schema, parser, CLI commands, validation integration, reference index support, and comprehensive
+    tests (458 passing). No code changes needed - implementation was already complete from prior
+    iterations.
   depends_on:
     - '@task-meta-manifest'
   context: []
@@ -4911,6 +4916,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.422Z'
   started_at: '2026-01-18T09:40:51.498Z'
+  completed_at: '2026-01-18T09:45:48.565Z'
   notes:
     - _ulid: 01KF87PVWYD44817N4EBTX58P0
       created_at: '2026-01-18T09:41:49.086Z'
@@ -4978,12 +4984,6 @@
         - No changes needed - task was already complete
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T09:45:48.565Z'
-  closed_reason: >-
-    All 3 acceptance criteria verified and passing. Meta manifest format fully implemented with
-    schema, parser, CLI commands, validation integration, reference index support, and comprehensive
-    tests (458 passing). No code changes needed - implementation was already complete from prior
-    iterations.
 - _ulid: 01KF4WVW1N2XVGXKQHY1PRJVS0
   slugs:
     - task-meta-includes
@@ -4991,7 +4991,7 @@
   type: task
   spec_ref: '@meta-includes'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-manifest'
@@ -5002,6 +5002,7 @@
   created_at: '2026-01-17T02:34:35.445Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T09:46:34.393Z'
 - _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
   slugs:
     - task-meta-validation-integration
