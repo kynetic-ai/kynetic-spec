@@ -5218,7 +5218,7 @@
   type: task
   spec_ref: '@agent-schema'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-agent-definitions'
@@ -5257,6 +5257,8 @@
         complete from prior work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:03:30.621Z'
+  closed_reason: Agent schema fully implemented and verified in src/schema/meta.ts
 - _ulid: 01KF4WVW594JJENY62YYW5A5D2
   slugs:
     - task-agent-capabilities
