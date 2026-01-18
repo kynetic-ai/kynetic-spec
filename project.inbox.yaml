@@ -990,18 +990,6 @@ inbox:
       - reflection
       - meta
     added_by: '@claude'
-  - _ulid: 01KF89X8RS9YHT0R1782PBY052
-    text: >-
-      Spec gap discovery during implementation - AC-3 mentioned 'origin: observation_promotion' but
-      origin field didn't exist in schema. Good example of spec-code drift. Consider:
-      pre-implementation spec validation against schema, or schema-first approach where AC
-      references must match existing schema fields.
-    created_at: '2026-01-18T10:20:16.026Z'
-    tags:
-      - reflection
-      - spec-gap
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF8AG3D388BVAFRTJF4QNQXN
     text: >-
       Task @01KF89NY (improve error messages) was underspecified but ref implementations in
