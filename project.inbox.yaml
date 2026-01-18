@@ -1246,3 +1246,15 @@ inbox:
       - feature
       - validation
     added_by: '@claude'
+  - _ulid: 01KF8CPXERKGJGCPK4N3MN12BP
+    text: >-
+      Task already implemented - discovered task @task-observation-resolution was already fully
+      implemented with tests. The 'implementation: in_progress' status was stale. Need workflow for
+      detecting/handling tasks where code exists but status is outdated. Possible solutions: analyze
+      git history for relevant commits, grep codebase for AC annotations, run tests and check
+      coverage.
+    created_at: '2026-01-18T11:09:13.560Z'
+    tags:
+      - workflow
+      - alignment
+    added_by: '@claude'
