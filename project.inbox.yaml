@@ -1224,3 +1224,14 @@ inbox:
       - kspec-meta
       - dx
     added_by: '@claude'
+  - _ulid: 01KF8BVQD6383DCJYJEBWVE41Z
+    text: >-
+      Convention domains task completed but raises question: what's the workflow for changes to
+      kspec-meta shadow branch? No PR created since changes are metadata config, not code. Should
+      meta manifest changes follow a different review/merge process than code changes?
+    created_at: '2026-01-18T10:54:22.630Z'
+    tags:
+      - workflow
+      - kspec-meta
+      - reflection
+    added_by: '@claude'
