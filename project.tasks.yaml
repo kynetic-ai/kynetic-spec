@@ -1759,6 +1759,37 @@
         Iteration 12: Starting work on meta.ts (43 error calls). This is the largest remaining file
         in Phase 4.
       supersedes: null
+    - _ulid: 01KF7TZG5062EXTWTVJQQ22A8W
+      created_at: '2026-01-18T05:59:20.480Z'
+      author: '@claude'
+      content: >-
+        Iteration 12: Successfully refactored meta.ts (43 error calls). All errors migrated to
+        centralized strings:
+
+        - Reference errors (metaNotFound, observationNotFound)
+
+        - Validation errors (invalidObservationType, agentRequiresId, agentRequiresName,
+        workflowRequiresId, workflowRequiresTrigger, conventionRequiresDomain, invalidType,
+        resolutionRequired)
+
+        - Conflict errors (observationAlreadyPromoted, observationAlreadyResolved)
+
+        - Operation errors (cannotPromoteResolved, cannotDeleteReferencedByTasks,
+        cannotDeleteReferencedByObservations, confirmRequired, deleteItemFailed)
+
+        - All operation failures (showMeta, listAgents, listWorkflows, listConventions, getMetaItem,
+        listMetaItems, createObservation, listObservations, promoteObservation, resolveObservation,
+        createMeta, updateMetaItem, deleteMetaItem)
+
+
+        Added 3 new error strings to operationErrors for meta-specific deletion errors.
+
+
+        All 392 tests pass, TypeScript compiles cleanly.
+
+
+        Running total: 179 of ~201 errors complete (89%).
+      supersedes: null
   todos: []
 - _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   slugs:
