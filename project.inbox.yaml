@@ -468,18 +468,6 @@ inbox:
       - cli
       - dx
     added_by: '@claude'
-  - _ulid: 01KF7W92EBR93N16SS7THKM5V2
-    text: >-
-      PR workflow for shadow-only changes: Research spikes that only update task state (shadow
-      branch) don't need main-branch PRs. Shadow branch is the source of truth for task/spec state.
-      The 'create PR after commit' instruction applies to code changes on main, not to shadow-branch
-      task updates. Consider clarifying in RALPH_LOOP_INSTRUCTIONS.
-    created_at: '2026-01-18T06:22:02.699Z'
-    tags:
-      - workflow
-      - shadow
-      - reflection
-    added_by: '@claude'
   - _ulid: 01KF7YEXNQK3N9EG5X9VS5N83M
     text: >-
       Command suggestion feature implemented cleanly using Levenshtein distance. The threshold of 3
