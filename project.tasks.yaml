@@ -6108,9 +6108,30 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.022Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T11:09:39.187Z'
+  notes:
+    - _ulid: 01KF8D9CXVH48NPC49GCGZHRG7
+      created_at: '2026-01-18T11:19:19.227Z'
+      author: '@claude'
+      content: >-
+        Implemented observation-task resolution loop:
+
+        1. Auto-populate resolution from completed task - fetches task completion reason when
+        resolving observation without explicit text
+
+        2. Session context reminder - shows reminder when observation-promoted tasks are completed
+
+        3. Filters for observations command:
+           - --promoted: show only observations promoted to tasks
+           - --pending-resolution: show observations with completed tasks awaiting resolution
+        4. Added comprehensive tests for all features
+
+        5. Fixed ReferenceIndex.resolve usage to check .ok property before accessing .item
+
+
+        All tests passing.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
   slugs:
     - task-context-schema
