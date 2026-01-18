@@ -8766,13 +8766,10 @@
   created_at: '2026-01-18T23:29:29.622Z'
   notes: []
   todos: []
-- title: Add git hook for kspec-meta branch protection
+- _ulid: 01KF9Q39SJWQX48YFKJ0V7ZFN6
+  slugs: []
+  title: Add git hook for kspec-meta branch protection
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - safety
-    - git
   description: >-
     Git hook for kspec-meta branch protection: Add a pre-commit or pre-push git hook in the main
     repo that prevents dangerous operations on kspec-meta branch. Would complement the Claude
@@ -8780,13 +8777,34 @@
     modify .kspec worktree incorrectly, (2) pre-push hook preventing force pushes to kspec-meta, (3)
     post-checkout hook warning if .kspec worktree gets on wrong branch. This protects against
     non-Claude git operations too.
-  _ulid: 01KF9Q39SJWQX48YFKJ0V7ZFN6
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - safety
+    - git
+  vcs_refs: []
+  created_at: '2026-01-18T23:29:59.601Z'
+  notes: []
+  todos: []
+- title: Update documentation for meta-spec and observations tooling
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
   slugs: []
+  tags:
+    - docs
+    - meta
+  _ulid: 01KF9QKK97AC0DA26KWXPEBYSY
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T23:29:59.601Z'
+  created_at: '2026-01-18T23:38:53.607Z'
   notes: []
   todos: []
