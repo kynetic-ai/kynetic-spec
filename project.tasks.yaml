@@ -6724,6 +6724,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Added --type and --workflow filters to match spec requirements
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6732,6 +6733,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.309Z'
   started_at: '2026-01-18T12:37:10.547Z'
+  completed_at: '2026-01-18T12:40:40.907Z'
   notes:
     - _ulid: 01KF8HY636KZZR7K49ZXAYZYME
       created_at: '2026-01-18T12:40:34.662Z'
@@ -6742,8 +6744,6 @@
         All tests pass (499 passed). Verified functionality with manual tests.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T12:40:40.907Z'
-  closed_reason: Added --type and --workflow filters to match spec requirements
 - _ulid: 01KF4WVWXHTZRQ6B6A69HZV7NB
   slugs:
     - task-kspec-meta-promote
@@ -6751,7 +6751,7 @@
   type: task
   spec_ref: '@meta-promote-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6762,6 +6762,7 @@
   created_at: '2026-01-17T02:34:36.337Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T12:47:22.631Z'
 - _ulid: 01KF4WVWYJMY6C5ZHWCEHDDF08
   slugs:
     - task-kspec-meta-resolve
