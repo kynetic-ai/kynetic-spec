@@ -252,7 +252,7 @@ features:
             then: no error output is shown (silent failure)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init

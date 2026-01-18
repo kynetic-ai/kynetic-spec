@@ -909,3 +909,17 @@ inbox:
       - reflection
       - session
     added_by: '@claude'
+  - _ulid: 01KF8101W4JS7J9Z4QV8P7V2P3
+    text: >-
+      Linter/file modification conflict - during iteration 12, implemented shadow debug mode but
+      linter repeatedly reverted changes to shadow.ts, index.ts, and shadow.test.ts. Task was
+      already marked complete from previous iteration (iteration 11?). This suggests either: (1)
+      file locking issue during concurrent reads/writes, (2) linter auto-save interfering with
+      edits, or (3) previous iteration already completed this work. Need to investigate file
+      modification tracking.
+    created_at: '2026-01-18T07:44:30.084Z'
+    tags:
+      - workflow
+      - dx
+      - bug
+    added_by: '@claude'
