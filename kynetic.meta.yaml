@@ -40,6 +40,13 @@ agents:
     capabilities: []
     tools: []
     conventions: []
+  - _ulid: 01KF7JVQ2K41MW92E8ZF88TABQ
+    id: edge-case-agent
+    name: Edge Case Agent
+    description: ''
+    capabilities: []
+    tools: []
+    conventions: []
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first

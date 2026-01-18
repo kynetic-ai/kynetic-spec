@@ -938,7 +938,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     priority: high
     tags:
       - mvp
@@ -1304,15 +1304,15 @@ features:
           kspec meta delete <ref> [options]
 
           Delete a meta item:
-          - --force: Skip confirmation prompt
+          - --confirm: Skip confirmation prompt
           - Validates no dangling references before deletion
 
           Example:
           kspec meta delete @workflow-old
-          kspec meta delete @obs-123 --force
+          kspec meta delete @obs-123 --confirm
 
           Error if item is referenced by tasks (meta_ref) or observations
-          (workflow_ref). Use --force to override.
+          (workflow_ref). Use --confirm to override.
         implements:
           - '@meta-commands'
   - _ulid: 01KF1XREF00000000000000000
