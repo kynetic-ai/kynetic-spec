@@ -399,7 +399,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           `kspec validate` supports multiple modes:
           - --schema: Check schema conformance only
