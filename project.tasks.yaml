@@ -5904,6 +5904,14 @@
         in_progress as placeholder - future iteration should either implement it or mark as
         blocked/cancelled if deprioritized. No code written this session.
       supersedes: null
+    - _ulid: 01KF89GSD5S763CSTBYM88BSC7
+      created_at: '2026-01-18T10:13:27.077Z'
+      author: '@claude'
+      content: >-
+        Found implementation gap: 1) Task description not being set from observation content, 2)
+        Task origin field not in schema. Will add origin field to TaskInputSchema and fix meta
+        promote command.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
