@@ -4147,6 +4147,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented all 4 acceptance criteria with working CLI integration. Manual testing confirms
+    correct behavior for missing AC, missing descriptions, and grouping by type. Integration tests
+    should be added in follow-up work.
   depends_on: []
   context: []
   priority: 3
@@ -4154,6 +4158,7 @@
   vcs_refs: []
   created_at: '2026-01-16T13:45:00.025Z'
   started_at: '2026-01-18T08:26:18.304Z'
+  completed_at: '2026-01-18T08:30:24.337Z'
   notes:
     - _ulid: 01KF83K8D52H56PG49QXHKF75N
       created_at: '2026-01-18T08:29:56.517Z'
@@ -4194,11 +4199,6 @@
         - Export CompletenessWarning type from parser/index.ts
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T08:30:24.337Z'
-  closed_reason: >-
-    Implemented all 4 acceptance criteria with working CLI integration. Manual testing confirms
-    correct behavior for missing AC, missing descriptions, and grouping by type. Integration tests
-    should be added in follow-up work.
 - _ulid: 01KF3GVY7JRH173FB91CQW88D4
   slugs: []
   title: Alignment guidance should mention test coverage
@@ -4236,7 +4236,7 @@
   type: task
   spec_ref: '@task-completion-guardrails'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -4248,6 +4248,7 @@
   created_at: '2026-01-16T13:49:22.451Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T08:35:38.968Z'
 - _ulid: 01KF3H3WZBY4B3T9SC8Z2C8B6K
   slugs: []
   title: Add derive hint after item add/set commands
