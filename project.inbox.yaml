@@ -948,3 +948,15 @@ inbox:
       - shadow
       - workflow
     added_by: '@claude'
+  - _ulid: 01KF834S6JA8AFZ818MFA5P6HZ
+    text: >-
+      Module add implementation worked well following existing patterns from item add. Key pattern:
+      (1) validate inputs first (slug uniqueness), (2) create data structure, (3) write file, (4)
+      update manifest/indexes, (5) shadow commit. This pattern could be extracted into reusable
+      helper for similar 'add file + update manifest' operations.
+    created_at: '2026-01-18T08:22:02.194Z'
+    tags:
+      - reflection
+      - dx
+      - patterns
+    added_by: '@claude'
