@@ -7065,7 +7065,7 @@
   type: task
   spec_ref: '@meta-delete-cmd'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -7083,6 +7083,9 @@
         src/cli/commands/meta.ts:1132-1259. Deletes meta items with reference validation.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:42.531Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:42.531Z'
 - _ulid: 01KF4WVX83RX2MM5E1HK8HZQ9S
   slugs:
     - task-meta-reference-integration
