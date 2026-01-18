@@ -1412,7 +1412,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Query tasks by meta_ref:
 
