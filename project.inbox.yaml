@@ -501,19 +501,6 @@ inbox:
       - workflow
       - review
     added_by: '@claude'
-  - _ulid: 01KF7KZB4Z5P7A9C6JCQGK4E7J
-    text: >-
-      Ralph loop picked already-completed task @01KF4FX1 because it was still marked as ready in
-      session context. Task was actually completed in iteration 3, PR #25 merged. Session context at
-      iteration start may be stale if it's generated before previous iteration's commits/merges are
-      reflected in kspec state. Consider: generate session context AFTER pulling latest or have
-      checkpoint script update .kspec before next iteration.
-    created_at: '2026-01-18T03:56:55.328Z'
-    tags:
-      - reflection
-      - ralph
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF7MFKQEYKKE0FJZHQ03093E
     text: >-
       File changes auto-reverted by linter/auto-save during iteration 4. Implemented task patch
