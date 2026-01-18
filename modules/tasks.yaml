@@ -557,7 +557,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           For smaller projects, tasks next to specs:
 
