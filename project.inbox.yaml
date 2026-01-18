@@ -806,18 +806,6 @@ inbox:
       - reflection
       - spec-alignment
     added_by: '@claude'
-  - _ulid: 01KF834HRJE100NSCN85KME35P
-    text: >-
-      Shadow branch auto-committing can create challenges with PR workflow - PR #38 included WIP
-      commits from shadow that were auto-committed in iteration 13. Consider: (1) squash strategy
-      for shadow commits when creating PR, (2) explicit checkpoint command before PR creation, or
-      (3) shadow commit message convention (wip: prefix) to make cleanup easier.
-    created_at: '2026-01-18T08:21:54.578Z'
-    tags:
-      - reflection
-      - shadow
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF834S6JA8AFZ818MFA5P6HZ
     text: >-
       Module add implementation worked well following existing patterns from item add. Key pattern:
