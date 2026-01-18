@@ -5298,6 +5298,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Session protocol schema implemented with start, checkpoint, and end fields
   depends_on:
     - '@task-agent-definitions'
   context: []
@@ -5306,6 +5307,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.593Z'
   started_at: '2026-01-18T10:03:59.683Z'
+  completed_at: '2026-01-18T10:04:17.328Z'
   notes:
     - _ulid: 01KF88ZV5035DCN5H0RNS6RW2C
       created_at: '2026-01-18T10:04:11.809Z'
@@ -5317,8 +5319,6 @@
         Implementation complete from prior work.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:04:17.328Z'
-  closed_reason: Session protocol schema implemented with start, checkpoint, and end fields
 - _ulid: 01KF4WVW75MKNHKSYCCA87C9YE
   slugs:
     - task-workflow-definitions
@@ -5405,7 +5405,7 @@
   type: task
   spec_ref: '@workflow-schema'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5416,6 +5416,7 @@
   created_at: '2026-01-17T02:34:35.650Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:04:23.364Z'
 - _ulid: 01KF4WVW8TR5MT0GXK7DX26E7R
   slugs:
     - task-workflow-step-types
