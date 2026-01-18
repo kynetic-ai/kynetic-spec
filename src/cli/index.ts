@@ -18,6 +18,7 @@ import {
   registerSearchCommand,
   registerRalphCommand,
   registerMetaCommands,
+  registerLinkCommands,
 } from './commands/index.js';
 
 const program = new Command();
@@ -51,6 +52,7 @@ registerLogCommand(program);
 registerSearchCommand(program);
 registerRalphCommand(program);
 registerMetaCommands(program);
+registerLinkCommands(program);
 
 // Export program for introspection (used by help command)
 export { program };
