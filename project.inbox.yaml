@@ -502,17 +502,6 @@ inbox:
       - ralph
       - meta
     added_by: '@claude'
-  - _ulid: 01KF7PT1MAX11SRXH1AHE03GKQ
-    text: >-
-      String centralization pattern working well - clear separation between message definitions
-      (strings/) and usage (cli/commands/). Interactive guidance structures (like shadow resolve)
-      benefit significantly from centralization - easier to see the full user flow when all messages
-      are together. TypeScript 'as const' on message objects provides good type safety.
-    created_at: '2026-01-18T04:46:27.466Z'
-    tags:
-      - reflection
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF7QDJJ0JTVFFDCZQPV1MG7Y
     text: >-
       Large refactoring iterations: Phase 4 error centralization showed pattern for managing
