@@ -6221,7 +6221,7 @@
   type: task
   spec_ref: '@meta-agents-cmd'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6242,6 +6242,8 @@
         function. Core functionality complete.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:11:07.160Z'
+  closed_reason: Command implemented and functional, displays agent list with required columns
 - _ulid: 01KF4WVWT1YPEPENJN1W7N06YR
   slugs:
     - task-kspec-meta-workflows
