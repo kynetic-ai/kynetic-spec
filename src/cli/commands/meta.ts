@@ -753,11 +753,13 @@ export function registerMetaCommands(program: Command): void {
           process.exit(1);
         }
 
-        // Create task directly using the API
+        // AC-obs-3: Create task with title, description from observation, meta_ref, and origin
         const task = createTask({
           title: options.title,
+          description: observation.content,
           priority: Number.parseInt(options.priority, 10),
           meta_ref: observation.workflow_ref,
+          origin: 'observation_promotion',
         });
 
         // Save task
