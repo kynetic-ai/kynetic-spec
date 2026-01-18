@@ -1,0 +1,15 @@
+_ulid: 01KF82V3ST824A6WGNQ479HQBG
+slugs:
+  - auth
+title: Another
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: ''
+tags: []
+priority: null
+depends_on: []
+implements: []
+relates_to: []
+tests: []
