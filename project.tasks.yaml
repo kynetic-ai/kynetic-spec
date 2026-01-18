@@ -6952,6 +6952,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - discovered during task audit
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6959,6 +6960,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.524Z'
+  started_at: '2026-01-18T15:45:28.076Z'
+  completed_at: '2026-01-18T15:45:28.076Z'
   notes:
     - _ulid: 01KF8WGNM2TGJS7Q0YSE0GR7GS
       created_at: '2026-01-18T15:45:26.147Z'
@@ -6969,9 +6972,6 @@
         prefixes and semantic IDs, outputs JSON or formatted display.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T15:45:28.076Z'
-  closed_reason: Already implemented - discovered during task audit
-  started_at: '2026-01-18T15:45:28.076Z'
 - _ulid: 01KF4WVX49KH8XZMK62KMS1YAX
   slugs:
     - task-kspec-meta-list
@@ -6988,7 +6988,15 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.553Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WGS9NSPH2SYWTM24XPHCB
+      created_at: '2026-01-18T15:45:29.909Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit 750ca54a (2026-01-17) in
+        src/cli/commands/meta.ts:539-639. Lists all meta items with --type filter, table/JSON
+        output.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVX5C9SJA70WYKWHPH9EP
   slugs:
