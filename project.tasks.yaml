@@ -6814,6 +6814,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Fully implemented kspec meta focus command per spec - supports showing, setting, and clearing
+    session focus with JSON output
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6822,6 +6825,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.395Z'
   started_at: '2026-01-18T13:02:52.496Z'
+  completed_at: '2026-01-18T13:04:49.004Z'
   notes:
     - _ulid: 01KF8KAD9Y0XW1SB13TWMDMVYV
       created_at: '2026-01-18T13:04:43.839Z'
@@ -6848,10 +6852,6 @@
         - JSON output mode ✓
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T13:04:49.004Z'
-  closed_reason: >-
-    Fully implemented kspec meta focus command per spec - supports showing, setting, and clearing
-    session focus with JSON output
 - _ulid: 01KF4WVX0EEF2R90HC63GY3B6Z
   slugs:
     - task-kspec-meta-thread
@@ -6859,7 +6859,7 @@
   type: task
   spec_ref: '@meta-thread-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6870,6 +6870,7 @@
   created_at: '2026-01-17T02:34:36.430Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T13:19:29.383Z'
 - _ulid: 01KF4WVX1B8DQ0MHBXJ05FVDB9
   slugs:
     - task-kspec-meta-question
