@@ -3429,7 +3429,7 @@
   type: task
   spec_ref: '@observations'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -3498,6 +3498,10 @@
         - All 336 tests pass
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T01:34:32.899Z'
+  closed_reason: >-
+    Implemented all 9 acceptance criteria for observations feature. Added observe, observations,
+    promote, and resolve commands with full test coverage.
 - _ulid: 01KF4WVWG3WWK8108GY1PNSH89
   slugs:
     - task-observation-schema
