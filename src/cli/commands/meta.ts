@@ -684,6 +684,8 @@ export function registerMetaCommands(program: Command): void {
   meta
     .command('observations')
     .description('List observations (shows unresolved by default)')
+    .option('--type <type>', 'Filter by observation type (friction/success/question/idea)')
+    .option('--workflow <ref>', 'Filter by workflow reference')
     .option('--all', 'Include resolved observations')
     .option('--promoted', 'Show only observations promoted to tasks')
     .option('--pending-resolution', 'Show observations with completed tasks awaiting resolution')
@@ -700,6 +702,14 @@ export function registerMetaCommands(program: Command): void {
         let observations = metaCtx.observations || [];
 
         // Apply filters
+        if (options.type) {
+          observations = observations.filter((obs) => obs.type === options.type);
+        }
+
+        if (options.workflow) {
+          observations = observations.filter((obs) => obs.workflow_ref === options.workflow);
+        }
+
         if (options.promoted) {
           observations = observations.filter((obs) => obs.promoted_to !== undefined);
         }
