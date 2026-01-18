@@ -6192,6 +6192,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Command fully implemented and tested, displays all required summary information
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6200,6 +6201,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.171Z'
   started_at: '2026-01-18T10:10:30.683Z'
+  completed_at: '2026-01-18T10:10:42.370Z'
   notes:
     - _ulid: 01KF89BKVNPBTYJJABB8MJDH27
       created_at: '2026-01-18T10:10:37.557Z'
@@ -6212,8 +6214,6 @@
         context summary not shown (session context feature not yet implemented).
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:10:42.370Z'
-  closed_reason: Command fully implemented and tested, displays all required summary information
 - _ulid: 01KF4WVWS2237WK5KE3DKFK9TY
   slugs:
     - task-kspec-meta-agents
@@ -6221,7 +6221,7 @@
   type: task
   spec_ref: '@meta-agents-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6232,6 +6232,7 @@
   created_at: '2026-01-17T02:34:36.194Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:10:55.359Z'
 - _ulid: 01KF4WVWT1YPEPENJN1W7N06YR
   slugs:
     - task-kspec-meta-workflows
