@@ -1323,7 +1323,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     priority: high
     tags:
       - mvp

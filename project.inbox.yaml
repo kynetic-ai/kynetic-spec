@@ -479,3 +479,14 @@ inbox:
       - workflow
       - dx
     added_by: '@claude'
+  - _ulid: 01KF7CHTCR6VC829Q0KDQEWPV6
+    text: >-
+      Meta reference integration implementation was straightforward thanks to existing
+      ReferenceIndex infrastructure that already supported meta items. The validation pattern
+      (resolve ref, check if task/spec item, error if not meta) works well and is reusable. Tests
+      pass reliably with good coverage of edge cases.
+    created_at: '2026-01-18T01:47:12.153Z'
+    tags:
+      - reflection
+      - meta
+    added_by: '@claude'
