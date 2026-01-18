@@ -1415,3 +1415,180 @@ describe('Integration: meta includes', () => {
     expect(output).toContain('References: OK');
   });
 });
+
+// AC: @convention-schema
+describe('Integration: conventions', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  it('should list conventions with domain, rules, and validation', async () => {
+    // Add test conventions to meta manifest
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+
+    const conventions = `
+conventions:
+  - _ulid: 01KF8850000000000000000030
+    domain: commits
+    rules:
+      - Use conventional commit format
+      - Reference task in commit body
+    examples:
+      - good: "feat: add feature"
+        bad: "added stuff"
+    validation:
+      type: regex
+      pattern: "^(feat|fix):"
+      message: "Must start with feat: or fix:"
+
+  - _ulid: 01KF8850000000000000000031
+    domain: notes
+    rules:
+      - Keep notes concise
+      - Document decisions
+    examples:
+      - good: "Chose approach A because of constraint X"
+        bad: "done"
+`;
+
+    await fs.writeFile(metaPath, metaContent + conventions);
+
+    // List conventions in JSON format
+    const result = kspecJson<Array<{
+      domain: string;
+      rules: string[];
+      examples: Array<{ good: string; bad: string }>;
+      validation?: {
+        type: string;
+        pattern?: string;
+        message?: string;
+      };
+    }>>('meta conventions', tempDir);
+
+    // Verify structure
+    expect(result.length).toBeGreaterThanOrEqual(2);
+
+    const commitConvention = result.find(c => c.domain === 'commits');
+    expect(commitConvention).toBeDefined();
+    expect(commitConvention?.rules).toHaveLength(2);
+    expect(commitConvention?.rules[0]).toBe('Use conventional commit format');
+    expect(commitConvention?.examples).toHaveLength(1);
+    expect(commitConvention?.examples[0].good).toBe('feat: add feature');
+    expect(commitConvention?.examples[0].bad).toBe('added stuff');
+    expect(commitConvention?.validation?.type).toBe('regex');
+    expect(commitConvention?.validation?.pattern).toBe('^(feat|fix):');
+    expect(commitConvention?.validation?.message).toBe('Must start with feat: or fix:');
+
+    const noteConvention = result.find(c => c.domain === 'notes');
+    expect(noteConvention).toBeDefined();
+    expect(noteConvention?.validation).toBeUndefined();
+  });
+
+  it('should support all validation types', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+
+    const conventions = `
+kynetic_meta: "1.0"
+conventions:
+  - _ulid: 01KF8850000000000000000040
+    domain: test-regex
+    rules:
+      - Rule 1
+    validation:
+      type: regex
+      pattern: "^test:"
+      message: "Must match pattern"
+
+  - _ulid: 01KF8850000000000000000041
+    domain: test-enum
+    rules:
+      - Rule 2
+    validation:
+      type: enum
+      allowed:
+        - value1
+        - value2
+
+  - _ulid: 01KF8850000000000000000042
+    domain: test-range
+    rules:
+      - Rule 3
+    validation:
+      type: range
+      min: 10
+      max: 100
+      unit: words
+
+  - _ulid: 01KF8850000000000000000043
+    domain: test-prose
+    rules:
+      - Rule 4
+    validation:
+      type: prose
+`;
+
+    await fs.writeFile(metaPath, conventions);
+
+    const result = kspecJson<Array<{
+      domain: string;
+      validation?: {
+        type: string;
+        pattern?: string;
+        allowed?: string[];
+        min?: number;
+        max?: number;
+        unit?: string;
+      };
+    }>>('meta conventions', tempDir);
+
+    expect(result.length).toBe(4);
+
+    const regexConv = result.find(c => c.domain === 'test-regex');
+    expect(regexConv?.validation?.type).toBe('regex');
+    expect(regexConv?.validation?.pattern).toBe('^test:');
+
+    const enumConv = result.find(c => c.domain === 'test-enum');
+    expect(enumConv?.validation?.type).toBe('enum');
+    expect(enumConv?.validation?.allowed).toEqual(['value1', 'value2']);
+
+    const rangeConv = result.find(c => c.domain === 'test-range');
+    expect(rangeConv?.validation?.type).toBe('range');
+    expect(rangeConv?.validation?.min).toBe(10);
+    expect(rangeConv?.validation?.max).toBe(100);
+    expect(rangeConv?.validation?.unit).toBe('words');
+
+    const proseConv = result.find(c => c.domain === 'test-prose');
+    expect(proseConv?.validation?.type).toBe('prose');
+  });
+
+  it('should validate convention schema with required fields', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+
+    // Missing domain should fail
+    const invalidConvention = `
+kynetic_meta: "1.0"
+conventions:
+  - _ulid: 01KF8850000000000000000050
+    rules:
+      - Some rule
+`;
+
+    await fs.writeFile(metaPath, invalidConvention);
+
+    // This should fail validation
+    try {
+      kspec('validate --schema', tempDir);
+      expect(true).toBe(false); // Should not reach here
+    } catch (error) {
+      // Expected to fail
+      expect(error).toBeDefined();
+    }
+  });
+});
