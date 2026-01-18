@@ -17,6 +17,7 @@ import {
   getMetaStats,
   type MetaContext,
   type Agent,
+  type Workflow,
 } from '../../parser/index.js';
 import { output, error } from '../output.js';
 
@@ -67,6 +68,76 @@ function formatAgents(agents: Agent[]): void {
   }
 
   console.log(table.toString());
+}
+
+/**
+ * Format workflows table output
+ * AC-workflow-1: outputs table with columns: ID, Trigger, Steps (count)
+ */
+function formatWorkflows(workflows: Workflow[]): void {
+  if (workflows.length === 0) {
+    console.log(chalk.yellow('No workflows defined'));
+    return;
+  }
+
+  const table = new Table({
+    head: [chalk.bold('ID'), chalk.bold('Trigger'), chalk.bold('Steps')],
+    style: {
+      head: [],
+      border: [],
+    },
+  });
+
+  for (const workflow of workflows) {
+    table.push([
+      workflow.id,
+      workflow.trigger,
+      workflow.steps.length.toString(),
+    ]);
+  }
+
+  console.log(table.toString());
+}
+
+/**
+ * Format workflows verbose output
+ * AC-workflow-2: outputs each workflow with full step list
+ */
+function formatWorkflowsVerbose(workflows: Workflow[]): void {
+  if (workflows.length === 0) {
+    console.log(chalk.yellow('No workflows defined'));
+    return;
+  }
+
+  for (const workflow of workflows) {
+    console.log(chalk.bold(`${workflow.id} - ${workflow.trigger}`));
+    if (workflow.description) {
+      console.log(chalk.gray(workflow.description));
+    }
+    console.log(chalk.gray('─'.repeat(60)));
+
+    for (const step of workflow.steps) {
+      const prefix = {
+        check: chalk.yellow('[check]'),
+        action: chalk.blue('[action]'),
+        decision: chalk.magenta('[decision]'),
+      }[step.type];
+
+      console.log(`${prefix} ${step.content}`);
+
+      if (step.on_fail) {
+        console.log(chalk.gray(`  → on fail: ${step.on_fail}`));
+      }
+
+      if (step.options && step.options.length > 0) {
+        for (const option of step.options) {
+          console.log(chalk.gray(`  • ${option}`));
+        }
+      }
+    }
+
+    console.log('');
+  }
 }
 
 /**
@@ -138,6 +209,46 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error('Failed to list agents', err);
+        process.exit(1);
+      }
+    });
+
+  // AC-workflow-1, AC-workflow-2, AC-workflow-4: kspec meta workflows
+  meta
+    .command('workflows')
+    .description('List workflows defined in meta-spec')
+    .option('--verbose', 'Show full workflow details with all steps')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error('No kspec project found');
+          process.exit(1);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const workflows = metaCtx.manifest?.workflows || [];
+
+        // AC-workflow-4: JSON output includes full workflow details
+        output(
+          workflows.map((workflow) => ({
+            id: workflow.id,
+            trigger: workflow.trigger,
+            description: workflow.description,
+            steps: workflow.steps,
+          })),
+          // AC-workflow-1 (table) or AC-workflow-2 (verbose)
+          () => {
+            if (options.verbose) {
+              formatWorkflowsVerbose(workflows);
+            } else {
+              formatWorkflows(workflows);
+            }
+          }
+        );
+      } catch (err) {
+        error('Failed to list workflows', err);
         process.exit(1);
       }
     });

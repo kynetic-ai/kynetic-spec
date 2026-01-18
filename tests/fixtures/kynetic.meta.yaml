@@ -39,3 +39,36 @@ agents:
       start: "kspec session start"
     conventions:
       - Always check tests
+
+workflows:
+  - _ulid: 01KF7A1S00WF1XVCPD9YQXH8ZN
+    id: task-start
+    trigger: "Before starting a task"
+    description: Pre-task checklist workflow
+    steps:
+      - type: check
+        content: Read the spec item linked to the task
+        on_fail: Cannot proceed without spec context
+      - type: check
+        content: Verify all dependencies are completed
+        on_fail: Block task and note missing dependencies
+      - type: action
+        content: Add initial note documenting approach
+      - type: decision
+        content: Does this need plan mode?
+        options:
+          - "Yes - enter plan mode"
+          - "No - proceed with implementation"
+
+  - _ulid: 01KF7A1S05YNHQQ4N2MQBY9CHT
+    id: commit
+    trigger: "After completing a task"
+    description: Commit workflow with trailers
+    steps:
+      - type: check
+        content: All tests passing
+        on_fail: Fix failing tests before committing
+      - type: action
+        content: Stage relevant files
+      - type: action
+        content: Write commit message with Task/Spec trailers

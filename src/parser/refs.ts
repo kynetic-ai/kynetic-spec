@@ -305,6 +305,7 @@ export class ReferenceIndex {
 /**
  * Fields that contain references
  * AC: @agent-definitions ac-agent-3 - added_by for agent references
+ * AC: @workflow-definitions ac-workflow-3 - meta_ref for workflow references
  */
 const REF_FIELDS = [
   'depends_on',
@@ -319,6 +320,7 @@ const REF_FIELDS = [
   'author', // Agent reference
   'resolved_by', // Agent reference
   'workflow_ref', // Workflow reference
+  'meta_ref', // Meta reference (workflow, agent, convention)
 ];
 
 /**
