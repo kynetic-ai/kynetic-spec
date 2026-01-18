@@ -250,7 +250,7 @@ features:
         acceptance_criteria:
           - id: ac-2
             given: A task with spec_ref is completed and the linked spec has acceptance_criteria
-            when: The user chooses to update spec status
+            when: The task is marked completed
             then: >-
               CLI shows a reminder: 'Linked spec has N acceptance criteria - verify they are
               covered'
