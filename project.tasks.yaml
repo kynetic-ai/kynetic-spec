@@ -6633,6 +6633,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Command already fully implemented with all required features - verified table, JSON, and domain
+    filter work correctly
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6641,6 +6644,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.253Z'
   started_at: '2026-01-18T12:22:11.432Z'
+  completed_at: '2026-01-18T12:23:03.908Z'
   notes:
     - _ulid: 01KF8GXXZTEMEGKCD5CF42WCAG
       created_at: '2026-01-18T12:22:57.786Z'
@@ -6661,10 +6665,6 @@
         Verified all functionality works correctly.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T12:23:03.908Z'
-  closed_reason: >-
-    Command already fully implemented with all required features - verified table, JSON, and domain
-    filter work correctly
 - _ulid: 01KF4WVWVWZY4CDA1M83NTX20B
   slugs:
     - task-kspec-meta-observe
@@ -6672,7 +6672,7 @@
   type: task
   spec_ref: '@meta-observe-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6683,6 +6683,7 @@
   created_at: '2026-01-17T02:34:36.284Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T12:23:49.019Z'
 - _ulid: 01KF4WVWWN0D4KSF34QNPVPS81
   slugs:
     - task-kspec-meta-observations
