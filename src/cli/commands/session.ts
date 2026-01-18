@@ -18,6 +18,7 @@ import {
   type KspecContext,
 } from '../../parser/index.js';
 import { output, error, info, isJsonMode } from '../output.js';
+import { sessionHeaders, hints, sessionPrompt } from '../../strings/index.js';
 import {
   parseTimeSpec,
   formatRelativeTime,
@@ -639,7 +640,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   const isBrief = !options.full;
 
   // Header
-  console.log(chalk.bold.blue('\n=== Session Context ==='));
+  console.log(`\n${sessionHeaders.title}`);
   const age = formatRelativeTime(new Date(ctx.generated_at));
   if (ctx.branch) {
     console.log(chalk.gray(`Branch: ${ctx.branch} | Generated: ${age}`));
@@ -660,7 +661,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Active tasks section
   if (ctx.active_tasks.length > 0) {
-    console.log(chalk.bold.cyan('\n--- Active Work ---'));
+    console.log(`\n${sessionHeaders.activeWork}`);
     for (const task of ctx.active_tasks) {
       const started = task.started_at
         ? chalk.gray(` (started ${formatRelativeTime(new Date(task.started_at))})`)
@@ -674,12 +675,12 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
       );
     }
   } else {
-    console.log(chalk.gray('\n--- No Active Work ---'));
+    console.log(`\n${sessionHeaders.noActiveWork}`);
   }
 
   // Recently completed section
   if (ctx.recently_completed.length > 0) {
-    console.log(chalk.bold.green('\n--- Recently Completed ---'));
+    console.log(`\n${sessionHeaders.recentlyCompleted}`);
     for (const task of ctx.recently_completed) {
       const completedAge = formatRelativeTime(new Date(task.completed_at));
       let reason = '';
@@ -698,7 +699,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Recent notes section
   if (ctx.recent_notes.length > 0) {
-    console.log(chalk.bold.cyan('\n--- Recent Notes ---'));
+    console.log(`\n${sessionHeaders.recentNotes}`);
     for (const note of ctx.recent_notes) {
       const age = formatRelativeTime(new Date(note.created_at));
       const author = note.author ? chalk.gray(` by ${note.author}`) : '';
@@ -724,7 +725,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Incomplete todos section
   if (ctx.active_todos.length > 0) {
-    console.log(chalk.bold.yellow('\n--- Incomplete Todos ---'));
+    console.log(`\n${sessionHeaders.incompleteTodos}`);
     for (const todo of ctx.active_todos) {
       console.log(`  ${chalk.yellow('[ ]')} ${todo.task_ref}#${todo.id}: ${todo.text}`);
     }
@@ -732,7 +733,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Ready tasks section
   if (ctx.ready_tasks.length > 0) {
-    console.log(chalk.bold.cyan('\n--- Ready to Pick Up ---'));
+    console.log(`\n${sessionHeaders.readyTasks}`);
     for (const task of ctx.ready_tasks) {
       const priority =
         task.priority <= 2
@@ -746,7 +747,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Blocked tasks section
   if (ctx.blocked_tasks.length > 0) {
-    console.log(chalk.bold.red('\n--- Blocked ---'));
+    console.log(`\n${sessionHeaders.blocked}`);
     for (const task of ctx.blocked_tasks) {
       console.log(`  ${chalk.red('[blocked]')} ${task.ref} ${task.title}`);
       if (task.blocked_by.length > 0) {
@@ -760,7 +761,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Git commits section
   if (ctx.recent_commits.length > 0) {
-    console.log(chalk.bold.cyan('\n--- Recent Commits ---'));
+    console.log(`\n${sessionHeaders.recentCommits}`);
     for (const commit of ctx.recent_commits) {
       const age = formatRelativeTime(new Date(commit.date));
       console.log(
@@ -771,7 +772,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   // Inbox section (oldest first to encourage triage)
   if (ctx.inbox_items.length > 0) {
-    console.log(chalk.bold.magenta('\n--- Inbox (oldest first) ---'));
+    console.log(`\n${sessionHeaders.inbox}`);
     for (const item of ctx.inbox_items) {
       const age = formatRelativeTime(new Date(item.created_at));
       const author = item.added_by ? ` by ${item.added_by}` : '';
@@ -784,12 +785,12 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
       console.log(`  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`);
       console.log(`    ${text}`);
     }
-    console.log(chalk.gray('  Use: kspec inbox promote <ref> to convert to task'));
+    console.log(`  ${hints.inboxPromote}`);
   }
 
   // Working tree section
   if (ctx.working_tree && !ctx.working_tree.clean) {
-    console.log(chalk.bold.yellow('\n--- Working Tree ---'));
+    console.log(`\n${sessionHeaders.workingTree}`);
 
     if (ctx.working_tree.staged.length > 0) {
       console.log(chalk.green('  Staged:'));
@@ -816,33 +817,33 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
       }
     }
   } else if (ctx.working_tree?.clean) {
-    console.log(chalk.gray('\n--- Working Tree: Clean ---'));
+    console.log(`\n${sessionHeaders.workingTreeClean}`);
   }
 
   // Quick Commands section - contextual hints based on state
-  const hints: string[] = [];
+  const quickCommands: string[] = [];
 
   if (ctx.active_tasks.length > 0) {
     const ref = ctx.active_tasks[0].ref;
-    hints.push(`kspec task note @${ref} "Progress..."  ${chalk.gray('# document work')}`);
-    hints.push(`kspec task complete @${ref} --reason "..."  ${chalk.gray('# finish task')}`);
+    quickCommands.push(`kspec task note @${ref} "Progress..."  ${chalk.gray('# document work')}`);
+    quickCommands.push(`kspec task complete @${ref} --reason "..."  ${chalk.gray('# finish task')}`);
   } else if (ctx.ready_tasks.length > 0) {
     const ref = ctx.ready_tasks[0].ref;
-    hints.push(`kspec task start @${ref}  ${chalk.gray('# begin work')}`);
+    quickCommands.push(`kspec task start @${ref}  ${chalk.gray('# begin work')}`);
   }
 
   if (ctx.inbox_items.length > 0) {
     const ref = ctx.inbox_items[0].ref;
-    hints.push(`kspec inbox promote @${ref} --title "..."  ${chalk.gray('# convert to task')}`);
+    quickCommands.push(`kspec inbox promote @${ref} --title "..."  ${chalk.gray('# convert to task')}`);
   }
 
   if (ctx.working_tree && !ctx.working_tree.clean) {
-    hints.push(`git add . && git commit -m "..."  ${chalk.gray('# commit changes')}`);
+    quickCommands.push(`git add . && git commit -m "..."  ${chalk.gray('# commit changes')}`);
   }
 
-  if (hints.length > 0) {
-    console.log(chalk.bold.gray('\n--- Quick Commands ---'));
-    for (const hint of hints) {
+  if (quickCommands.length > 0) {
+    console.log(`\n${sessionHeaders.quickCommands}`);
+    for (const hint of quickCommands) {
       console.log(`  ${hint}`);
     }
   }
@@ -935,9 +936,7 @@ function parseHookInput(stdin: string | null): StopHookInput | null {
  */
 async function sessionPromptCheckAction(): Promise<void> {
   // Lean, instructive reminder with kspec prefix
-  console.log(
-    '[kspec] Before implementing behavior changes, check spec coverage. Update spec first if needed.'
-  );
+  console.log(sessionPrompt.specCheck);
 }
 
 async function sessionCheckpointAction(options: CheckpointOptions): Promise<void> {
