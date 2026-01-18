@@ -485,7 +485,7 @@ tasks:
       - Report as warnings (not errors) in validation output
     spec_ref: '@ref-validation'
     derivation: manual
-    status: pending
+    status: in_progress
     blocked_by: []
     depends_on:
       - '@task-ref-validation'
@@ -500,6 +500,7 @@ tasks:
     created_at: '2026-01-15T03:58:00.000Z'
     notes: []
     todos: []
+    started_at: '2026-01-18T07:15:16.301Z'
   - _ulid: 01JHNKAB12TASK320000000000
     slugs:
       - task-validation-output
@@ -1057,6 +1058,10 @@ tasks:
     derivation: auto
     status: completed
     blocked_by: []
+    closed_reason: >-
+      Implemented all three link commands (create, list, delete) with full test coverage. Commands
+      manage relationship arrays (depends_on, implements, relates_to) on spec items with proper
+      validation and shadow branch integration.
     depends_on: []
     context: []
     priority: 3
@@ -1067,6 +1072,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-14T22:14:20.954Z'
     started_at: '2026-01-18T06:22:30.751Z'
+    completed_at: '2026-01-18T06:38:29.281Z'
     notes:
       - _ulid: 01KF7WB96R0TR3EAFSB2M4EP6M
         created_at: '2026-01-18T06:23:15.161Z'
@@ -1086,11 +1092,6 @@ tasks:
           Shadow branch auto-commits enabled. Now adding tests.
         supersedes: null
     todos: []
-    completed_at: '2026-01-18T06:38:29.281Z'
-    closed_reason: >-
-      Implemented all three link commands (create, list, delete) with full test coverage. Commands
-      manage relationship arrays (depends_on, implements, relates_to) on spec items with proper
-      validation and shadow branch integration.
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
     slugs:
       - task-yaml-formatting
