@@ -1394,6 +1394,48 @@
         Phase 4 should continue in next iteration with the remaining files, then move to Phase 5
         (output field labels).
       supersedes: null
+    - _ulid: 01KF7QGMRVA6B2T8WZB2GJ0B5N
+      created_at: '2026-01-18T04:58:47.963Z'
+      author: '@claude'
+      content: >-
+        Iteration 8 end checkpoint:
+
+
+        Task remains in_progress - this is a large multi-phase refactor spanning multiple
+        iterations.
+
+
+        CURRENT STATE:
+
+        - 3 of 5 phases fully complete and merged (PRs #27, #28, #29)
+
+        - Phase 4 partially complete: 21 of ~201 error calls refactored
+
+        - PR #30 open and ready for review
+
+        - All tests passing, TypeScript compiles cleanly
+
+        - Clear pattern established for remaining work
+
+
+        NEXT SESSION:
+
+        Continue Phase 4 by refactoring remaining 7 command files:
+
+        1. Start with smaller files (tasks.ts, derive.ts, ralph.ts, output.ts)
+
+        2. Then tackle large files (item.ts 45 errors, task.ts 42 errors, meta.ts 43 errors)
+
+        3. Follow established pattern from iteration 8
+
+        4. Test after each batch of files
+
+        5. Create PR when Phase 4 complete, then move to Phase 5
+
+
+        This is intentional WIP - task will span several more iterations. Progress is
+        well-documented and tracked.
+      supersedes: null
   todos: []
 - _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   slugs:
