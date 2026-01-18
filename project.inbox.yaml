@@ -1054,3 +1054,13 @@ inbox:
       - workflow
       - pr
     added_by: '@claude'
+  - _ulid: 01KF875PYZ6V10P49DZ6EFKJ46
+    text: >-
+      Test fixtures should avoid spec_ref assignments that conflict with derive tests. When adding
+      spec_ref to test tasks, check if they're used in derive --dry-run tests which expect tasks not
+      to exist yet.
+    created_at: '2026-01-18T09:32:26.976Z'
+    tags:
+      - testing
+      - dx
+    added_by: '@claude'
