@@ -11,6 +11,7 @@ import {
   loadAllTasks,
   loadAllItems,
   loadInboxItems,
+  loadMetaContext,
   getReadyTasks,
   ReferenceIndex,
   type LoadedTask,
@@ -143,6 +144,7 @@ export interface CompletedTaskSummary {
   title: string;
   completed_at: string;
   closed_reason: string | null;
+  origin?: 'manual' | 'derived' | 'observation_promotion';
 }
 
 export interface CommitSummary {
@@ -247,6 +249,7 @@ function toCompletedTaskSummary(
     title: task.title,
     completed_at: task.completed_at || '',
     closed_reason: task.closed_reason || null,
+    origin: task.origin,
   };
 }
 
@@ -681,6 +684,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   // Recently completed section
   if (ctx.recently_completed.length > 0) {
     console.log(`\n${sessionHeaders.recentlyCompleted}`);
+    const observationPromotedTasks: string[] = [];
     for (const task of ctx.recently_completed) {
       const completedAge = formatRelativeTime(new Date(task.completed_at));
       let reason = '';
@@ -694,6 +698,17 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
       console.log(
         `  ${chalk.green('[completed]')} ${task.ref} ${task.title} ${chalk.gray(`(${completedAge})`)}${reason}`
       );
+
+      // Track tasks that came from observations
+      if (task.origin === 'observation_promotion') {
+        observationPromotedTasks.push(task.ref);
+      }
+    }
+
+    // Show reminder about resolving observations
+    if (observationPromotedTasks.length > 0) {
+      console.log(chalk.yellow(`\n  ℹ Consider resolving linked observations: ${observationPromotedTasks.join(', ')}`));
+      console.log(chalk.gray(`    Run: kspec meta observations --pending-resolution`));
     }
   }
 

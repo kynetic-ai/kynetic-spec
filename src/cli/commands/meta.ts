@@ -23,15 +23,19 @@ import {
   createTask,
   saveTask,
   loadAllTasks,
+  loadAllItems,
+  ReferenceIndex,
   type MetaContext,
   type Agent,
   type Workflow,
   type Convention,
   type Observation,
+  type LoadedTask,
 } from '../../parser/index.js';
 import { type ObservationType } from '../../schema/index.js';
 import { output, error, success, isJsonMode } from '../output.js';
 import { errors } from '../../strings/errors.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 
 /**
  * Resolve a meta reference to its ULID
@@ -677,6 +681,8 @@ export function registerMetaCommands(program: Command): void {
     .command('observations')
     .description('List observations (shows unresolved by default)')
     .option('--all', 'Include resolved observations')
+    .option('--promoted', 'Show only observations promoted to tasks')
+    .option('--pending-resolution', 'Show observations with completed tasks awaiting resolution')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -687,7 +693,28 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const observations = metaCtx.observations || [];
+        let observations = metaCtx.observations || [];
+
+        // Apply filters
+        if (options.promoted) {
+          observations = observations.filter((obs) => obs.promoted_to !== undefined);
+        }
+
+        if (options.pendingResolution) {
+          // Load tasks to check if promoted tasks are completed
+          const tasks = await loadAllTasks(ctx);
+          const items = await loadAllItems(ctx);
+          const index = new ReferenceIndex(tasks, items);
+
+          observations = observations.filter((obs) => {
+            if (!obs.promoted_to || obs.resolved) return false;
+            const taskResult = index.resolve(obs.promoted_to);
+            if (!taskResult.ok) return false;
+            const item = taskResult.item;
+            // Type guard: check if item is a task (has status and depends_on properties)
+            return 'status' in item && 'depends_on' in item && item.status === 'completed';
+          });
+        }
 
         // AC-obs-5: JSON output includes full observation objects
         output(
@@ -764,6 +791,7 @@ export function registerMetaCommands(program: Command): void {
 
         // Save task
         await saveTask(ctx, task);
+        await commitIfShadow(ctx.shadow, 'task-add', task.slugs[0] || task._ulid.slice(0, 8), task.title);
         const taskRef = `@${task._ulid.substring(0, 8)}`;
 
         // Update observation with promoted_to field
@@ -817,9 +845,33 @@ export function registerMetaCommands(program: Command): void {
         // AC-obs-9: Auto-populate resolution from task completion if promoted
         let finalResolution = resolution;
         if (!finalResolution && observation.promoted_to) {
-          // TODO: Fetch task completion reason from promoted task
-          // For now, just use a placeholder
-          finalResolution = `Promoted to task ${observation.promoted_to}`;
+          // Fetch task to get completion reason
+          const tasks = await loadAllTasks(ctx);
+          const items = await loadAllItems(ctx);
+          const index = new ReferenceIndex(tasks, items);
+          const taskResult = index.resolve(observation.promoted_to);
+
+          if (taskResult.ok) {
+            const item = taskResult.item;
+            // Type guard: ensure this is a task (has status and depends_on properties)
+            if ('status' in item && 'depends_on' in item) {
+              const task = item as LoadedTask;
+              if (task.status === 'completed' && task.closed_reason) {
+                finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
+              } else if (task.status === 'completed') {
+                finalResolution = `Resolved via task ${observation.promoted_to}`;
+              } else {
+                error(`Task ${observation.promoted_to} is not completed yet`);
+                process.exit(1);
+              }
+            } else {
+              error(`Reference ${observation.promoted_to} is not a task`);
+              process.exit(1);
+            }
+          } else {
+            error(`Task ${observation.promoted_to} not found`);
+            process.exit(1);
+          }
         }
 
         if (!finalResolution) {
