@@ -393,7 +393,7 @@ describe('Integration: task patch', () => {
 
     // Verify no actual change
     const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
-    expect(task.priority).toBe(3); // Original value
+    expect(task.priority).toBe(2); // Original value from fixture
   });
 });
 
