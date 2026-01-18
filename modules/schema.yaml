@@ -460,7 +460,7 @@ features:
               mismatches')
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KF3H9Z7Z2C1AQBCM4BJT1BAZ
         slugs:
           - alignment-guidance
