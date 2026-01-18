@@ -382,7 +382,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           Workflows are ADVISORY, not AUTOMATED. This is a deliberate design choice.
 
