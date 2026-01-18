@@ -3089,6 +3089,28 @@
         This is a more involved change that touches the core reference system. Committed AC-1 and
         AC-2 implementations. AC-3 will continue in next iteration.
       supersedes: null
+    - _ulid: 01KF78E8Y6XW3SX8N4QBPTJ59V
+      created_at: '2026-01-18T00:35:21.670Z'
+      author: '@claude'
+      content: >-
+        End of iteration 1: AC-1 and AC-2 are complete and working. Created PR #21 with the
+        implementation.
+
+
+        AC-3 (reference validation) is identified but not yet implemented. It requires:
+
+        1. Extending ReferenceIndex.build() to include meta items (agents, workflows, conventions,
+        observations)
+
+        2. Adding 'author', 'added_by', 'resolved_by', 'workflow_ref' to REF_FIELDS constant in
+        refs.ts
+
+        3. Implementing type-aware validation to ensure agent references resolve to agents (not
+        workflows/conventions/etc)
+
+
+        The approach is clear - next iteration can pick this up and complete AC-3.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVW4C16W09RWGY3C95T54
   slugs:
