@@ -6045,7 +6045,7 @@
   type: task
   spec_ref: '@observation-resolution'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -6090,6 +6090,8 @@
         All 64 tests in meta.test.ts pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T11:08:57.895Z'
+  closed_reason: Observation resolution already fully implemented and tested - verified against AC-obs-4
 - _ulid: 01KF4WVWKP7HG72ANY8QVZD369
   slugs:
     - task-observation-task-resolution-loop
