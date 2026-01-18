@@ -436,16 +436,6 @@ inbox:
       - spec-gap
       - status-cascade
     added_by: '@claude'
-  - _ulid: 01KF8B841NY3SCEWVZQZMRY2TJ
-    text: >-
-      Convention schema was already implemented but lacked test coverage. When picking up
-      implementation tasks, check if the code exists first - may just need tests or documentation
-      rather than new code.
-    created_at: '2026-01-18T10:43:40.213Z'
-    tags:
-      - reflection
-      - testing
-    added_by: '@claude'
   - _ulid: 01KF8FZC470CHRJH5HPRPQZMAY
     text: >-
       Session checkpoint hook caught uncommitted .gitignore change. Important to follow
