@@ -5882,9 +5882,20 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.966Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:09:47.987Z'
+  notes:
+    - _ulid: 01KF89ABK5P6C1WK1ZYAJ72WA8
+      created_at: '2026-01-18T10:09:56.325Z'
+      author: '@claude'
+      content: >-
+        Not implemented. Requires: 1) 'meta promote' subcommand in src/cli/commands/meta.ts, 2) Task
+        creation with meta_ref from observation.workflow_ref, 3) Setting observation.promoted_to
+        field, 4) origin='observation_promotion' field on created task, 5) Validation that
+        observation not already promoted (AC-6), 6) Validation that observation not already resolved
+        (AC-8). Linked to AC-3 from parent observations feature. This is a multi-step feature
+        requiring CLI, parser, and validation changes. Deferring for focused implementation session.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
     - task-observation-resolution

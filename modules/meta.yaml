@@ -734,7 +734,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
         description: |
           Observations can be promoted to tasks:
 
