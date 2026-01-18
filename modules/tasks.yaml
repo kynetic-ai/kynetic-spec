@@ -303,7 +303,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Task-specific fields for work tracking:
 
