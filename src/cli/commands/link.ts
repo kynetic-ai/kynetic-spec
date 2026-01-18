@@ -5,17 +5,31 @@ import {
   buildIndexes,
   updateSpecItem,
   type LoadedSpecItem,
+  type AnyLoadedItem,
+  type LoadedMetaItem,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import { output, error, success, warn } from '../output.js';
 import { errors } from '../../strings/errors.js';
-import { labels } from '../../strings/labels.js';
 
 /**
  * Valid relationship types
  */
 const RELATIONSHIP_TYPES = ['depends_on', 'implements', 'relates_to'] as const;
 type RelationshipType = typeof RELATIONSHIP_TYPES[number];
+
+/**
+ * Get display name from any item type (spec items have 'title', meta items have 'name')
+ */
+function getDisplayName(item: AnyLoadedItem | LoadedMetaItem): string {
+  if ('title' in item) {
+    return item.title;
+  }
+  if ('name' in item) {
+    return item.name;
+  }
+  return '(unknown)';
+}
 
 /**
  * Validate relationship type
@@ -96,7 +110,7 @@ export function registerLinkCommands(program: Command): void {
         const updates = { [relType]: newRels };
 
         await updateSpecItem(ctx, fromSpecItem, updates);
-        await commitIfShadow(ctx, `Add ${relType} link: ${fromRef} -> ${toRef}`);
+        await commitIfShadow(ctx.shadow, `Add ${relType} link: ${fromRef} -> ${toRef}`);
 
         success(`Created relationship: ${fromRef} --[${relType}]--> ${toRef}`, { from: fromRef, to: toRef, type: relType });
       } catch (err) {
@@ -162,7 +176,7 @@ export function registerLinkCommands(program: Command): void {
           console.log(chalk.bold(`Relationships from ${options.from}:\n`));
           for (const rel of relationships) {
             const targetResult = refIndex.resolve(rel.target);
-            const targetTitle = targetResult.ok ? targetResult.item.title : chalk.gray('(not found)');
+            const targetTitle = targetResult.ok ? getDisplayName(targetResult.item) : chalk.gray('(not found)');
             console.log(`  ${chalk.cyan(rel.type)}: ${chalk.yellow(rel.target)} - ${targetTitle}`);
           }
           console.log(chalk.gray(`\n${relationships.length} relationship(s)`));
@@ -204,7 +218,7 @@ export function registerLinkCommands(program: Command): void {
           console.log(chalk.bold(`Relationships to ${targetRef}:\n`));
           for (const rel of relationships) {
             const fromResult = refIndex.resolve(rel.from);
-            const fromTitle = fromResult.ok ? fromResult.item.title : chalk.gray('(not found)');
+            const fromTitle = fromResult.ok ? getDisplayName(fromResult.item) : chalk.gray('(not found)');
             console.log(`  ${chalk.yellow(rel.from)} - ${fromTitle} ${chalk.cyan(`--[${rel.type}]-->`)}`);
           }
           console.log(chalk.gray(`\n${relationships.length} relationship(s)`));
@@ -233,10 +247,10 @@ export function registerLinkCommands(program: Command): void {
               const toResult = refIndex.resolve(target);
               allRelationships.push({
                 from: fromRef,
-                fromTitle: item.title,
+                fromTitle: getDisplayName(item),
                 type: relType,
                 to: target,
-                toTitle: toResult.ok ? toResult.item.title : '(not found)',
+                toTitle: toResult.ok ? getDisplayName(toResult.item) : '(not found)',
               });
             }
           }
@@ -328,7 +342,7 @@ export function registerLinkCommands(program: Command): void {
         }
 
         await updateSpecItem(ctx, fromSpecItem, updates);
-        await commitIfShadow(ctx, `Remove ${removed.join(', ')} link: ${fromRef} -> ${toRef}`);
+        await commitIfShadow(ctx.shadow, `Remove ${removed.join(', ')} link: ${fromRef} -> ${toRef}`);
 
         const typesStr = removed.join(', ');
         success(`Removed relationship(s): ${fromRef} --[${typesStr}]--> ${toRef}`, { from: fromRef, to: toRef, types: removed });
