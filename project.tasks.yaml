@@ -5439,6 +5439,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Step types check, action, and decision implemented with appropriate fields
   depends_on:
     - '@task-workflow-definitions'
   context: []
@@ -5447,6 +5448,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.674Z'
   started_at: '2026-01-18T10:04:42.120Z'
+  completed_at: '2026-01-18T10:04:53.227Z'
   notes:
     - _ulid: 01KF890YYEAA9PXSR7XJ2XA0ZX
       created_at: '2026-01-18T10:04:48.462Z'
@@ -5458,8 +5460,6 @@
         for all types. Implementation matches spec exactly.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:04:53.227Z'
-  closed_reason: Step types check, action, and decision implemented with appropriate fields
 - _ulid: 01KF4WVW9SAW2KEHNK4YW98CSN
   slugs:
     - task-workflow-execution-model
@@ -5467,7 +5467,7 @@
   type: task
   spec_ref: '@workflow-execution-model'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-workflow-definitions'
@@ -5478,6 +5478,7 @@
   created_at: '2026-01-17T02:34:35.705Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:04:59.018Z'
 - _ulid: 01KF4WVWANMAE8DR6130KJ5Z4X
   slugs:
     - task-workflow-triggers
