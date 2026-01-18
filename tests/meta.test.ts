@@ -414,3 +414,234 @@ describe('Integration: meta workflows', () => {
     expect(output).toContain('meta_ref');
   });
 });
+
+describe('Integration: meta observations', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @observations ac-obs-1
+  it('should create an observation with correct fields', () => {
+    const output = kspec('meta observe friction "CLI output is too verbose"', tempDir);
+
+    // AC-obs-1: Should output "OK Created observation: <ULID-prefix>"
+    expect(output).toMatch(/Created observation: [A-Z0-9]{8}/);
+
+    // Verify observation was saved
+    const observations = kspecJson<any[]>('meta observations', tempDir);
+    const newObs = observations.find(o => o.content === 'CLI output is too verbose');
+
+    expect(newObs).toBeDefined();
+    expect(newObs.type).toBe('friction');
+    expect(newObs.created_at).toBeDefined();
+    expect(newObs.author).toBeDefined();
+    expect(newObs.resolved).toBe(false);
+  });
+
+  // AC: @observations ac-obs-1
+  it('should create observation with workflow reference', () => {
+    const output = kspec('meta observe success "Tests caught a bug" --workflow "@task-start"', tempDir);
+    expect(output).toMatch(/Created observation: [A-Z0-9]{8}/);
+
+    const observations = kspecJson<any[]>('meta observations', tempDir);
+    const newObs = observations.find(o => o.content === 'Tests caught a bug');
+
+    expect(newObs).toBeDefined();
+    expect(newObs.workflow_ref).toBe('@task-start');
+  });
+
+  // AC: @observations ac-obs-2
+  it('should list unresolved observations by default', () => {
+    // Create some observations
+    kspec('meta observe friction "Problem 1"', tempDir);
+    kspec('meta observe success "Good thing"', tempDir);
+
+    const output = kspec('meta observations', tempDir);
+
+    // Should contain table headers
+    expect(output).toContain('ID');
+    expect(output).toContain('Type');
+    expect(output).toContain('Workflow');
+    expect(output).toContain('Created');
+    expect(output).toContain('Content');
+
+    // Should contain observation data
+    expect(output).toContain('friction');
+    expect(output).toContain('Problem 1');
+    expect(output).toContain('success');
+    expect(output).toContain('Good thing');
+  });
+
+  // AC: @observations ac-obs-2
+  it('should show only unresolved observations by default', async () => {
+    // Create and resolve an observation
+    const createOutput = kspec('meta observe friction "This will be resolved"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    expect(match).not.toBeNull();
+    const obsRef = match![1];
+
+    kspec(`meta resolve @${obsRef} "Fixed it"`, tempDir);
+
+    // List without --all should not show resolved
+    const output = kspec('meta observations', tempDir);
+    expect(output).not.toContain('This will be resolved');
+
+    // List with --all should show resolved
+    const outputAll = kspec('meta observations --all', tempDir);
+    expect(outputAll).toContain('This will be resolved');
+  });
+
+  // AC: @observations ac-obs-5
+  it('should output JSON with full observation objects', () => {
+    kspec('meta observe friction "Test observation"', tempDir);
+
+    const observations = kspecJson<any[]>('meta observations', tempDir);
+
+    // Should be an array
+    expect(Array.isArray(observations)).toBe(true);
+
+    const testObs = observations.find(o => o.content === 'Test observation');
+    expect(testObs).toBeDefined();
+
+    // Should have all fields
+    expect(testObs._ulid).toBeDefined();
+    expect(testObs.type).toBe('friction');
+    expect(testObs.content).toBe('Test observation');
+    expect(testObs.created_at).toBeDefined();
+    expect(testObs.author).toBeDefined();
+    expect(testObs.resolved).toBe(false);
+    expect(testObs).toHaveProperty('resolution');
+    expect(testObs).toHaveProperty('resolved_at');
+    expect(testObs).toHaveProperty('resolved_by');
+    expect(testObs).toHaveProperty('promoted_to');
+  });
+
+  // AC: @observations ac-obs-3
+  it('should promote observation to task', () => {
+    // Create observation
+    const createOutput = kspec('meta observe friction "Need better error messages" --workflow "@task-start"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    // Promote to task
+    const promoteOutput = kspec(`meta promote @${obsRef} --title "Improve error messages"`, tempDir);
+
+    // AC-obs-3: Should output "OK Created task: <ULID-prefix>"
+    expect(promoteOutput).toMatch(/Created task: @[A-Z0-9]{8}/);
+
+    // Verify observation was updated with promoted_to
+    const observations = kspecJson<any[]>('meta observations', tempDir);
+    const obs = observations.find(o => o._ulid.startsWith(obsRef));
+    expect(obs.promoted_to).toBeDefined();
+    expect(obs.promoted_to).toMatch(/@[A-Z0-9]{8}/);
+  });
+
+  // AC: @observations ac-obs-6
+  it('should error when promoting already-promoted observation', () => {
+    // Create and promote observation
+    const createOutput = kspec('meta observe friction "Test promotion"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    kspec(`meta promote @${obsRef} --title "First promotion"`, tempDir);
+
+    // Try to promote again - should fail
+    try {
+      const output = kspec(`meta promote @${obsRef} --title "Second promotion"`, tempDir);
+      // AC-obs-6: Should error with specific message
+      expect(output).toContain('Observation already promoted to task');
+      expect(output).toContain('resolve or delete the task first');
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain('Observation already promoted to task');
+    }
+  });
+
+  // AC: @observations ac-obs-8
+  it('should error when promoting resolved observation without --force', () => {
+    // Create and resolve observation
+    const createOutput = kspec('meta observe friction "Already resolved"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    kspec(`meta resolve @${obsRef} "No longer relevant"`, tempDir);
+
+    // Try to promote resolved observation without --force - should fail
+    try {
+      const output = kspec(`meta promote @${obsRef} --title "Try to promote"`, tempDir);
+      // AC-obs-8: Should error with specific message
+      expect(output).toContain('Cannot promote resolved observation');
+      expect(output).toContain('use --force to override');
+    } catch (e: any) {
+      // Error is expected, check message in stdout
+      const stdout = e.message || '';
+      expect(stdout).toContain('Cannot promote resolved observation');
+    }
+  });
+
+  // AC: @observations ac-obs-4
+  it('should resolve observation with resolution text', () => {
+    // Create observation
+    const createOutput = kspec('meta observe friction "Something broken"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    // Resolve it
+    const resolveOutput = kspec(`meta resolve @${obsRef} "Fixed by implementing new feature"`, tempDir);
+
+    // AC-obs-4: Should output "OK Resolved: <ULID-prefix>"
+    expect(resolveOutput).toMatch(/Resolved: [A-Z0-9]{8}/);
+
+    // Verify observation was updated
+    const observations = kspecJson<any[]>('meta observations', tempDir);
+    const obs = observations.find(o => o._ulid.startsWith(obsRef));
+
+    expect(obs.resolved).toBe(true);
+    expect(obs.resolution).toBe('Fixed by implementing new feature');
+    expect(obs.resolved_at).toBeDefined();
+    expect(obs.resolved_by).toBeDefined();
+  });
+
+  // AC: @observations ac-obs-7
+  it('should error when resolving already-resolved observation', () => {
+    // Create and resolve observation
+    const createOutput = kspec('meta observe friction "Test double resolve"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    const obsRef = match![1];
+
+    kspec(`meta resolve @${obsRef} "First resolution"`, tempDir);
+
+    // Try to resolve again - should fail
+    try {
+      const output = kspec(`meta resolve @${obsRef} "Second resolution"`, tempDir);
+      // AC-obs-7: Should error with specific message
+      expect(output).toContain('Observation already resolved on');
+      expect(output).toContain('First resolution');
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain('Observation already resolved on');
+    }
+  });
+
+  it('should handle invalid observation type', () => {
+    const output = kspec('meta observe invalid "Test content"', tempDir);
+    // kspec() returns stdout even on error
+    expect(output).toContain('Valid types: friction, success, question, idea');
+  });
+
+  it('should handle observation not found', () => {
+    try {
+      const output = kspec('meta promote @NOTFOUND --title "Test"', tempDir);
+      expect(output).toContain('Observation not found: @NOTFOUND');
+    } catch (e: any) {
+      const stdout = e.message || '';
+      expect(stdout).toContain('Observation not found: @NOTFOUND');
+    }
+  });
+});
