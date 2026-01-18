@@ -3990,9 +3990,54 @@
     - tasks
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.675Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T01:36:31.629Z'
+  notes:
+    - _ulid: 01KF7CH3WBWDQCC7B9JP64DVD7
+      created_at: '2026-01-18T01:46:49.099Z'
+      author: '@claude'
+      content: >-
+        Implemented all 4 acceptance criteria for meta_ref feature:
+
+
+        AC-meta-ref-1: Added meta_ref field to task schema and --meta-ref option to task add
+        command. Tasks can now be created with meta_ref linking to workflows, agents, or
+        conventions.
+
+
+        AC-meta-ref-2: Added --meta-ref filter to tasks list command. Filter works correctly to show
+        only tasks with matching meta_ref.
+
+
+        AC-meta-ref-3: Added validation in task add and task set to ensure meta_ref resolves to a
+        valid meta item. Returns appropriate error if reference not found.
+
+
+        AC-meta-ref-4: Added validation to ensure meta_ref points to a meta item (not a spec item or
+        task). Returns specific error message directing user to use --spec-ref for product spec
+        references.
+
+
+        Implementation details:
+
+        - Extended TaskSchema with nullable meta_ref field
+
+        - Added --meta-ref option to task add command with validation
+
+        - Added --meta-ref option to task set command with validation
+
+        - Added --meta-ref filter option to tasks list command
+
+        - Loads meta context (agents, workflows, conventions, observations) and builds
+        ReferenceIndex with all meta items
+
+        - Validates that meta_ref resolves and is not a task or spec item
+
+        - Added comprehensive tests covering all 4 ACs plus edge cases
+
+
+        All 362 tests pass.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVX91JM667XZ4Z7JWSN6P
   slugs:
     - task-task-meta-ref-field
