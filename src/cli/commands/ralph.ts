@@ -24,6 +24,7 @@ import {
   appendEvent,
 } from '../../sessions/index.js';
 import { createTranslator, createCliRenderer } from '../../ralph/index.js';
+import { errors } from '../../strings/index.js';
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
@@ -243,17 +244,17 @@ export function registerRalphCommand(program: Command): void {
         const maxFailures = parseInt(options.maxFailures, 10);
 
         if (isNaN(maxLoops) || maxLoops < 1) {
-          error('--max-loops must be a positive integer');
+          error(errors.usage.maxLoopsPositive);
           process.exit(1);
         }
 
         if (isNaN(maxRetries) || maxRetries < 0) {
-          error('--max-retries must be a non-negative integer');
+          error(errors.usage.maxRetriesNonNegative);
           process.exit(1);
         }
 
         if (isNaN(maxFailures) || maxFailures < 1) {
-          error('--max-failures must be a positive integer');
+          error(errors.usage.maxFailuresPositive);
           process.exit(1);
         }
 
@@ -439,7 +440,7 @@ export function registerRalphCommand(program: Command): void {
                 break;
               } catch (err) {
                 lastError = err as Error;
-                error('Iteration failed:', lastError.message);
+                error(errors.failures.iterationFailed(lastError.message));
 
                 // Clean up agent on error - will respawn next attempt
                 if (agent) {
@@ -456,13 +457,13 @@ export function registerRalphCommand(program: Command): void {
               console.log(); // Newline after streaming output
             } else {
               consecutiveFailures++;
-              error(`Iteration ${iteration} failed after ${maxRetries + 1} attempts (${consecutiveFailures}/${maxFailures} consecutive failures)`);
+              error(errors.failures.iterationFailedAfterRetries(iteration, maxRetries, consecutiveFailures, maxFailures));
               if (lastError) {
-                error('Last error:', lastError.message);
+                error(errors.failures.lastError(lastError.message));
               }
 
               if (consecutiveFailures >= maxFailures) {
-                error(`Reached ${maxFailures} consecutive failures. Exiting loop.`);
+                error(errors.failures.reachedMaxFailures(maxFailures));
                 break;
               }
 
@@ -493,7 +494,7 @@ export function registerRalphCommand(program: Command): void {
         console.log(chalk.green(`${'─'.repeat(60)}\n`));
 
       } catch (err) {
-        error('Ralph loop failed', err);
+        error(errors.failures.ralphLoop, err);
         process.exit(1);
       }
     });

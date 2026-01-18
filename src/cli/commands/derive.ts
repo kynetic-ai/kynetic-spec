@@ -14,6 +14,7 @@ import {
 import { commitIfShadow } from '../../parser/shadow.js';
 import { output, success, error, warn, info, isJsonMode } from '../output.js';
 import type { TaskInput } from '../../schema/index.js';
+import { errors } from '../../strings/index.js';
 
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
@@ -126,10 +127,10 @@ function resolveSpecRef(
   if (!result.ok) {
     switch (result.error) {
       case 'not_found':
-        error(`Spec item not found: ${ref}`);
+        error(errors.reference.specNotFound(ref));
         break;
       case 'ambiguous':
-        error(`Reference "${ref}" is ambiguous. Matches:`);
+        error(errors.reference.ambiguous(ref));
         for (const candidate of result.candidates) {
           const item = items.find(i => i._ulid === candidate);
           const slug = item?.slugs[0] || '';
@@ -137,7 +138,7 @@ function resolveSpecRef(
         }
         break;
       case 'duplicate_slug':
-        error(`Slug "${ref}" maps to multiple items. Use ULID instead:`);
+        error(errors.reference.slugMapsToMultiple(ref));
         for (const candidate of result.candidates) {
           console.error(`  - ${index.shortUlid(candidate)}`);
         }
@@ -152,9 +153,9 @@ function resolveSpecRef(
     // Check if it's a task
     const task = tasks.find(t => t._ulid === result.ulid);
     if (task) {
-      error(`Reference "${ref}" is a task, not a spec item. Derive only works on spec items.`);
+      error(errors.reference.notSpecItem(ref));
     } else {
-      error(`Spec item not found: ${ref}`);
+      error(errors.reference.specNotFound(ref));
     }
     process.exit(3);
   }
@@ -339,7 +340,7 @@ export function registerDeriveCommand(program: Command): void {
       try {
         // Validate arguments
         if (!ref && !options.all) {
-          error('Either provide a spec reference or use --all');
+          error(errors.usage.deriveNoRef);
           console.error('Usage:');
           console.error('  kspec derive @spec-ref');
           console.error('  kspec derive @spec-ref --flat');
@@ -348,7 +349,7 @@ export function registerDeriveCommand(program: Command): void {
         }
 
         if (ref && options.all) {
-          error('Cannot use both a specific reference and --all');
+          error(errors.usage.deriveRefAndAll);
           process.exit(2);
         }
 
@@ -514,7 +515,7 @@ export function registerDeriveCommand(program: Command): void {
           });
         }
       } catch (err) {
-        error('Failed to derive tasks', err);
+        error(errors.failures.deriveTasks, err);
         process.exit(1);
       }
     });

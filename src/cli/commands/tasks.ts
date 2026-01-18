@@ -14,6 +14,7 @@ import {
 } from '../output.js';
 import type { TaskStatus } from '../../schema/index.js';
 import { grepItem } from '../../utils/grep.js';
+import { errors } from '../../strings/index.js';
 
 /**
  * Register the 'tasks' command group
@@ -67,7 +68,7 @@ export function registerTasksCommands(program: Command): void {
           // AC-meta-ref-2: Filter tasks by meta_ref
           const metaRefResult = index.resolve(options.metaRef);
           if (!metaRefResult.ok) {
-            error(`meta_ref '${options.metaRef}' not found`);
+            error(errors.reference.metaRefNotFound(options.metaRef));
             process.exit(3);
           }
           const targetRef = options.metaRef.startsWith('@') ? options.metaRef : `@${options.metaRef}`;
@@ -82,7 +83,7 @@ export function registerTasksCommands(program: Command): void {
 
         output(taskList, () => formatTaskList(taskList, options.verbose, index, options.grep));
       } catch (err) {
-        error('Failed to list tasks', err);
+        error(errors.failures.listTasks, err);
         process.exit(1);
       }
     });
@@ -108,7 +109,7 @@ export function registerTasksCommands(program: Command): void {
           }
         });
       } catch (err) {
-        error('Failed to get ready tasks', err);
+        error(errors.failures.getReadyTasks, err);
         process.exit(1);
       }
     });
@@ -134,7 +135,7 @@ export function registerTasksCommands(program: Command): void {
           });
         }
       } catch (err) {
-        error('Failed to get next task', err);
+        error(errors.failures.getNextTask, err);
         process.exit(1);
       }
     });
@@ -154,7 +155,7 @@ export function registerTasksCommands(program: Command): void {
 
         output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose, index));
       } catch (err) {
-        error('Failed to get blocked tasks', err);
+        error(errors.failures.getBlockedTasks, err);
         process.exit(1);
       }
     });
@@ -175,7 +176,7 @@ export function registerTasksCommands(program: Command): void {
 
         output(activeTasks, () => formatTaskList(activeTasks, options.verbose, index));
       } catch (err) {
-        error('Failed to get active tasks', err);
+        error(errors.failures.getActiveTasks, err);
         process.exit(1);
       }
     });

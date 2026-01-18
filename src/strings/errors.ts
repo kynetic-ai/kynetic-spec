@@ -171,6 +171,10 @@ export const usageErrors = {
   maxRetriesNonNegative: '--max-retries must be a non-negative integer',
   maxFailuresPositive: '--max-failures must be a positive integer',
   agentPromptCancelled: 'Agent prompt was cancelled',
+
+  // Derive command
+  deriveNoRef: 'Either provide a spec reference or use --all',
+  deriveRefAndAll: 'Cannot use both a specific reference and --all',
 } as const;
 
 /**
