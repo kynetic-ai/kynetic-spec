@@ -451,7 +451,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           "A tests B" means A validates or verifies B.
           Used for: linking test items to features/requirements.
