@@ -1078,3 +1078,16 @@ inbox:
       - workflow
       - dx
     added_by: '@claude'
+  - _ulid: 01KF87YRENB05R965TE7ZJS9RC
+    text: >-
+      Exploration subagents are highly valuable for understanding prior implementations. The Explore
+      agent provided comprehensive details from kspec-acp-test and kspec-ralph-test showing exact
+      file paths, schema patterns, CLI command structure, test isolation challenges, and lessons
+      learned. This context prevented re-implementing from scratch and enabled quick verification of
+      existing work. Consider making exploration a standard first step for all implementation tasks.
+    created_at: '2026-01-18T09:46:07.701Z'
+    tags:
+      - reflection
+      - agents
+      - workflow
+    added_by: '@claude'
