@@ -1043,6 +1043,9 @@ features:
             then: >-
               Shows the linked spec's description and acceptance criteria inline, similar to task
               get output
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands

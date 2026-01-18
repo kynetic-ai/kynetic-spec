@@ -4787,9 +4787,43 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T00:24:46.809Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T09:20:39.162Z'
+  notes:
+    - _ulid: 01KF8754F6V4R9EDDRF1VEVVB0
+      created_at: '2026-01-18T09:32:08.038Z'
+      author: '@claude'
+      content: >-
+        Implementation complete. Added --full flag to tasks list, ready, blocked, and in-progress
+        commands. Full mode shows:
+
+        - Timestamps (created, started, completed)
+
+        - Notes count and preview of most recent note
+
+        - Pending todos count
+
+        - Spec context with description and AC preview
+
+        - Tags and dependencies
+
+
+        Preserved backward compatibility with -v flag showing inline spec_ref, deps, and tags. JSON
+        output automatically includes all fields.
+
+
+        All 5 acceptance criteria satisfied:
+
+        - AC-1: Full mode shows notes, todos, timestamps
+
+        - AC-2: -v behavior preserved
+
+        - AC-3: Handles tasks with no notes/todos
+
+        - AC-4: JSON includes all fields
+
+        - AC-5: Spec context displayed inline
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVVZYNDR1NRKG84JHDW1Q
   slugs:
     - task-meta-manifest
