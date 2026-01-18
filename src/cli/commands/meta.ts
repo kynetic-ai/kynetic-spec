@@ -31,6 +31,7 @@ import {
 } from '../../parser/index.js';
 import { type ObservationType } from '../../schema/index.js';
 import { output, error, success, isJsonMode } from '../output.js';
+import { errors } from '../../strings/errors.js';
 
 /**
  * Resolve a meta reference to its ULID
@@ -309,7 +310,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -324,7 +325,7 @@ export function registerMetaCommands(program: Command): void {
           () => formatMetaShow(metaCtx)
         );
       } catch (err) {
-        error('Failed to show meta', err);
+        error(errors.failures.showMeta, err);
         process.exit(1);
       }
     });
@@ -338,7 +339,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -360,7 +361,7 @@ export function registerMetaCommands(program: Command): void {
           () => formatAgents(agents)
         );
       } catch (err) {
-        error('Failed to list agents', err);
+        error(errors.failures.listAgents, err);
         process.exit(1);
       }
     });
@@ -375,7 +376,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -400,7 +401,7 @@ export function registerMetaCommands(program: Command): void {
           }
         );
       } catch (err) {
-        error('Failed to list workflows', err);
+        error(errors.failures.listWorkflows, err);
         process.exit(1);
       }
     });
@@ -415,7 +416,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -445,7 +446,7 @@ export function registerMetaCommands(program: Command): void {
           }
         );
       } catch (err) {
-        error('Failed to list conventions', err);
+        error(errors.failures.listConventions, err);
         process.exit(1);
       }
     });
@@ -459,7 +460,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -513,7 +514,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         if (!found) {
-          error(`Meta item not found: ${ref}`);
+          error(errors.reference.metaNotFound(ref));
           process.exit(1);
         }
 
@@ -524,7 +525,7 @@ export function registerMetaCommands(program: Command): void {
           console.log(JSON.stringify(found, null, 2));
         });
       } catch (err) {
-        error('Failed to get meta item', err);
+        error(errors.failures.getMetaItem, err);
         process.exit(1);
       }
     });
@@ -539,7 +540,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -626,7 +627,7 @@ export function registerMetaCommands(program: Command): void {
           console.log(table.toString());
         });
       } catch (err) {
-        error('Failed to list meta items', err);
+        error(errors.failures.listMetaItems, err);
         process.exit(1);
       }
     });
@@ -642,14 +643,14 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
         // Validate observation type
         const validTypes: ObservationType[] = ['friction', 'success', 'question', 'idea'];
         if (!validTypes.includes(type as ObservationType)) {
-          error(`Invalid observation type: ${type}`);
+          error(errors.validation.invalidObservationType(type));
           console.log(`Valid types: ${validTypes.join(', ')}`);
           process.exit(1);
         }
@@ -666,7 +667,7 @@ export function registerMetaCommands(program: Command): void {
         // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
         success(`Created observation: ${observation._ulid.substring(0, 8)}`);
       } catch (err) {
-        error('Failed to create observation', err);
+        error(errors.failures.createObservation, err);
         process.exit(1);
       }
     });
@@ -681,7 +682,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -707,7 +708,7 @@ export function registerMetaCommands(program: Command): void {
           () => formatObservations(observations, options.all)
         );
       } catch (err) {
-        error('Failed to list observations', err);
+        error(errors.failures.listObservations, err);
         process.exit(1);
       }
     });
@@ -724,7 +725,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -736,19 +737,19 @@ export function registerMetaCommands(program: Command): void {
         const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
 
         if (!observation) {
-          error(`Observation not found: ${ref}`);
+          error(errors.reference.observationNotFound(ref));
           process.exit(1);
         }
 
         // AC-obs-6: Check if already promoted
         if (observation.promoted_to) {
-          error(`Observation already promoted to task ${observation.promoted_to}; resolve or delete the task first`);
+          error(errors.conflict.observationAlreadyPromoted(observation.promoted_to));
           process.exit(1);
         }
 
         // AC-obs-8: Check if resolved
         if (observation.resolved && !options.force) {
-          error(`Cannot promote resolved observation; use --force to override`);
+          error(errors.operation.cannotPromoteResolved);
           process.exit(1);
         }
 
@@ -770,7 +771,7 @@ export function registerMetaCommands(program: Command): void {
         // AC-obs-3: outputs "OK Created task: <ULID-prefix>"
         success(`Created task: ${taskRef.substring(0, 9)}`);
       } catch (err) {
-        error('Failed to promote observation', err);
+        error(errors.failures.promoteObservation, err);
         process.exit(1);
       }
     });
@@ -784,7 +785,7 @@ export function registerMetaCommands(program: Command): void {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
-          error('No kspec project found');
+          error(errors.project.noKspecProject);
           process.exit(1);
         }
 
@@ -796,7 +797,7 @@ export function registerMetaCommands(program: Command): void {
         const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
 
         if (!observation) {
-          error(`Observation not found: ${ref}`);
+          error(errors.reference.observationNotFound(ref));
           process.exit(1);
         }
 
@@ -807,7 +808,7 @@ export function registerMetaCommands(program: Command): void {
           const truncated = resolutionText.length > 50
             ? resolutionText.substring(0, 50) + '...'
             : resolutionText;
-          error(`Observation already resolved on ${resolvedDate}: '${truncated}'`);
+          error(errors.conflict.observationAlreadyResolved(resolvedDate, truncated));
           process.exit(1);
         }
 
@@ -820,7 +821,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         if (!finalResolution) {
-          error('Resolution text is required');
+          error(errors.validation.resolutionRequired);
           process.exit(1);
         }
 
@@ -835,7 +836,7 @@ export function registerMetaCommands(program: Command): void {
         // AC-obs-4: outputs "OK Resolved: <ULID-prefix>"
         success(`Resolved: ${observation._ulid.substring(0, 8)}`);
       } catch (err) {
-        error('Failed to resolve observation', err);
+        error(errors.failures.resolveObservation, err);
         process.exit(1);
       }
     });
@@ -860,7 +861,7 @@ export function registerMetaCommands(program: Command): void {
         // Validate type
         const validTypes = ['agent', 'workflow', 'convention'];
         if (!validTypes.includes(type)) {
-          error(`Invalid type: ${type}. Must be one of: ${validTypes.join(', ')}`);
+          error(errors.validation.invalidType(type, validTypes));
           process.exit(1);
         }
 
@@ -873,11 +874,11 @@ export function registerMetaCommands(program: Command): void {
         if (type === 'agent') {
           // Validate required fields
           if (!options.id) {
-            error('Agent requires --id');
+            error(errors.validation.agentRequiresId);
             process.exit(1);
           }
           if (!options.name) {
-            error('Agent requires --name');
+            error(errors.validation.agentRequiresName);
             process.exit(1);
           }
 
@@ -893,11 +894,11 @@ export function registerMetaCommands(program: Command): void {
         } else if (type === 'workflow') {
           // Validate required fields
           if (!options.id) {
-            error('Workflow requires --id');
+            error(errors.validation.workflowRequiresId);
             process.exit(1);
           }
           if (!options.trigger) {
-            error('Workflow requires --trigger');
+            error(errors.validation.workflowRequiresTrigger);
             process.exit(1);
           }
 
@@ -911,7 +912,7 @@ export function registerMetaCommands(program: Command): void {
         } else {
           // convention
           if (!options.domain) {
-            error('Convention requires --domain');
+            error(errors.validation.conventionRequiresDomain);
             process.exit(1);
           }
 
@@ -934,7 +935,7 @@ export function registerMetaCommands(program: Command): void {
           success(`Created ${type}: ${idOrDomain} (@${itemUlid.substring(0, 8)})`);
         }
       } catch (err) {
-        error(`Failed to create ${type}`, err);
+        error(errors.failures.createMeta(type), err);
         process.exit(1);
       }
     });
@@ -995,7 +996,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         if (!found || !itemType) {
-          error(`Meta item not found: ${ref}`);
+          error(errors.reference.metaNotFound(ref));
           process.exit(1);
         }
 
@@ -1049,7 +1050,7 @@ export function registerMetaCommands(program: Command): void {
           success(`Updated ${itemType}: ${idOrDomain}`);
         }
       } catch (err) {
-        error('Failed to update meta item', err);
+        error(errors.failures.updateMetaItem, err);
         process.exit(1);
       }
     });
@@ -1119,7 +1120,7 @@ export function registerMetaCommands(program: Command): void {
         }
 
         if (!itemType || !itemUlid || !itemLabel) {
-          error(`Meta item not found: ${ref}`);
+          error(errors.reference.metaNotFound(ref));
           process.exit(1);
         }
 
@@ -1139,9 +1140,7 @@ export function registerMetaCommands(program: Command): void {
             const taskRefs = referencingTasks
               .map((t) => `@${t.slugs?.[0] || t._ulid.substring(0, 8)}`)
               .join(', ');
-            error(
-              `Cannot delete ${itemLabel}: Referenced by ${referencingTasks.length} task(s): ${taskRefs}. Use --confirm to override.`
-            );
+            error(errors.operation.cannotDeleteReferencedByTasks(itemLabel, referencingTasks.length, taskRefs));
             process.exit(1);
           }
 
@@ -1160,15 +1159,13 @@ export function registerMetaCommands(program: Command): void {
               const obsRefs = referencingObservations
                 .map((o) => `@${o._ulid.substring(0, 8)}`)
                 .join(', ');
-              error(
-                `Cannot delete ${itemLabel}: Referenced by ${referencingObservations.length} observation(s): ${obsRefs}. Use --confirm to override.`
-              );
+              error(errors.operation.cannotDeleteReferencedByObservations(itemLabel, referencingObservations.length, obsRefs));
               process.exit(1);
             }
           }
 
           // Show confirmation prompt even if no references found
-          error(`Warning: This will delete ${itemLabel}. Use --confirm to skip this prompt`);
+          error(errors.operation.confirmRequired(itemLabel));
           process.exit(1);
         }
 
@@ -1176,13 +1173,13 @@ export function registerMetaCommands(program: Command): void {
         const deleted = await deleteMetaItem(ctx, itemUlid, itemType);
 
         if (!deleted) {
-          error(`Failed to delete ${itemLabel}`);
+          error(errors.operation.deleteItemFailed(itemLabel));
           process.exit(1);
         }
 
         success(`Deleted ${itemLabel}`);
       } catch (err) {
-        error('Failed to delete meta item', err);
+        error(errors.failures.deleteMetaItem, err);
         process.exit(1);
       }
     });

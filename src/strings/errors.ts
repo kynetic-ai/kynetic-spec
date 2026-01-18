@@ -125,6 +125,11 @@ export const operationErrors = {
     `Tasks don't have acceptance criteria; "${ref}" is a task`,
   confirmRequired: (itemLabel: string) =>
     `Warning: This will delete ${itemLabel}. Use --confirm to skip this prompt`,
+  cannotDeleteReferencedByTasks: (itemLabel: string, count: number, taskRefs: string) =>
+    `Cannot delete ${itemLabel}: Referenced by ${count} task(s): ${taskRefs}. Use --confirm to override.`,
+  cannotDeleteReferencedByObservations: (itemLabel: string, count: number, obsRefs: string) =>
+    `Cannot delete ${itemLabel}: Referenced by ${count} observation(s): ${obsRefs}. Use --confirm to override.`,
+  deleteItemFailed: (itemLabel: string) => `Failed to delete ${itemLabel}`,
 } as const;
 
 /**
