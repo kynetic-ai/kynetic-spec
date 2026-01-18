@@ -18,8 +18,8 @@ import {
   type LoadedTask,
   type LoadedInboxItem,
   type KspecContext,
-  type SessionContext as StoredSessionContext,
 } from '../../parser/index.js';
+import type { SessionContext as StoredSessionContext } from '../../schema/index.js';
 import { output, error, info, isJsonMode } from '../output.js';
 import { sessionHeaders, hints, sessionPrompt, errors } from '../../strings/index.js';
 import {
