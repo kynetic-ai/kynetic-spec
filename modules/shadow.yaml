@@ -304,7 +304,7 @@ features:
         type: constraint
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           CI environments need shadow worktree before running kspec commands.
 
