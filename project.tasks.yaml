@@ -7163,7 +7163,7 @@
   type: task
   spec_ref: '@task-meta-ref'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-reference-integration'
@@ -7181,6 +7181,9 @@
         src/schema/task.ts:54-55. Added meta_ref as nullable optional RefSchema field.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:54.999Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:54.999Z'
 - _ulid: 01KF4WVX9ZGYR8NE301BTM46X9
   slugs:
     - task-task-add-meta-ref
