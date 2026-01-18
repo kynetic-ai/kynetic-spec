@@ -647,24 +647,41 @@ export interface ShadowSyncResult {
  * AC-1: Called after each auto-commit when tracking is configured.
  * AC-8: Automatically sets up tracking if main branch has remote.
  * Silently ignores errors - the local commit succeeded regardless.
+ *
+ * @param worktreeDir Path to .kspec/ worktree
+ * @param verbose Enable debug output
  */
-export async function shadowPushAsync(worktreeDir: string): Promise<void> {
+export async function shadowPushAsync(worktreeDir: string, verbose?: boolean): Promise<void> {
+  const debug = isDebugMode(verbose);
+
   // AC-8: Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
   await ensureRemoteTracking(worktreeDir, projectRoot);
 
   // Check if tracking is configured before attempting push
   if (!(await hasRemoteTracking(worktreeDir))) {
+    if (debug) {
+      console.error('[DEBUG] Shadow push: No remote tracking configured, skipping');
+    }
     return; // AC-4: silently skip if no tracking
   }
 
   try {
+    if (debug) {
+      console.error(`[DEBUG] Shadow push: git push (cwd: ${worktreeDir})`);
+    }
+
     // Don't await - fire and forget
-    execAsync('git push', { cwd: worktreeDir }).catch(() => {
+    execAsync('git push', { cwd: worktreeDir }).catch((err) => {
+      if (debug) {
+        console.error('[DEBUG] Shadow push failed:', err);
+      }
       // Silently ignore push failures - local state is correct
     });
-  } catch {
-    // Ignore
+  } catch (err) {
+    if (debug) {
+      console.error('[DEBUG] Shadow push error:', err);
+    }
   }
 }
 
