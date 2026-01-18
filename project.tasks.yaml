@@ -3664,9 +3664,17 @@
     - cli
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.133Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T02:56:15.943Z'
+  notes:
+    - _ulid: 01KF7GGHTQA9243DWAEDCXAV6G
+      created_at: '2026-01-18T02:56:24.920Z'
+      author: '@claude'
+      content: >-
+        Starting work on remaining meta CLI commands. PR #21 already implemented: agents, workflows,
+        observe, observations, promote, resolve. Still need: show, conventions, focus, thread,
+        question, context, get, list, add, set, delete. Will start with 'meta show' command.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
     - task-kspec-meta-show
