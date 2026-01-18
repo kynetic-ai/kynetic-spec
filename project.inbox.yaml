@@ -459,17 +459,6 @@ inbox:
       - reflection
       - dx
     added_by: '@claude'
-  - _ulid: 01KF80CV0CCH7CSV3E2E1KSHA6
-    text: >-
-      Spike workflow refinement: When completing a spike, capture recommendation in closed_reason
-      (brief) + final note (detailed). Spike task notes form mini research doc. Pattern: findings →
-      analysis → recommendation. Example: task-archive spike documented current system, reviewed
-      references, recommended MVP approach all in notes.
-    created_at: '2026-01-18T07:34:00.461Z'
-    tags:
-      - reflection
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF80D405NBVEQSHA48FD58YX
     text: >-
       Reference directory exploration pattern: For spikes, launching dedicated Explore subagent for
