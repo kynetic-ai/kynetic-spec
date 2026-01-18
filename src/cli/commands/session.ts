@@ -671,6 +671,29 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     )
   );
 
+  // Session context section (focus, threads, questions)
+  if (ctx.context && (ctx.context.focus || ctx.context.threads.length > 0 || ctx.context.open_questions.length > 0)) {
+    console.log('\n--- Session Context ---');
+
+    if (ctx.context.focus) {
+      console.log(`  ${chalk.cyan('Focus:')} ${ctx.context.focus}`);
+    }
+
+    if (ctx.context.threads.length > 0) {
+      console.log(`  ${chalk.cyan('Active Threads:')}`);
+      for (const thread of ctx.context.threads) {
+        console.log(`    - ${thread}`);
+      }
+    }
+
+    if (ctx.context.open_questions.length > 0) {
+      console.log(`  ${chalk.cyan('Open Questions:')}`);
+      for (const question of ctx.context.open_questions) {
+        console.log(`    - ${question}`);
+      }
+    }
+  }
+
   // Active tasks section
   if (ctx.active_tasks.length > 0) {
     console.log(`\n${sessionHeaders.activeWork}`);
