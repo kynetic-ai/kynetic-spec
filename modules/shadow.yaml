@@ -501,7 +501,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Shadow validation as part of kspec validate.
 
