@@ -1170,3 +1170,13 @@ inbox:
       - workflow
       - pr
     added_by: '@claude'
+  - _ulid: 01KF89SR4P4EQ8NET551HC5D8H
+    text: >-
+      Task origin field pattern - added origin enum to track task creation source (manual, derived,
+      observation_promotion). Could be extended for other sources like 'agent_suggestion',
+      'test_failure', 'lint_error'. Useful for metrics and understanding task flow.
+    created_at: '2026-01-18T10:18:20.694Z'
+    tags:
+      - reflection
+      - meta
+    added_by: '@claude'
