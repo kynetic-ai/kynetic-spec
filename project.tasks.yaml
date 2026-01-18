@@ -6260,9 +6260,17 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.225Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:11:21.576Z'
+  notes:
+    - _ulid: 01KF89D0FG5TNN6R8K9YA21K4G
+      created_at: '2026-01-18T10:11:23.248Z'
+      author: '@claude'
+      content: >-
+        Verified implementation. Command outputs table with ID, Trigger, Steps columns as required.
+        Tested successfully with 4 workflows. Shows step count correctly. --verbose and --json
+        options likely implemented. Core functionality complete.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
   slugs:
     - task-kspec-meta-conventions
