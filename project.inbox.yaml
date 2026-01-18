@@ -713,3 +713,18 @@ inbox:
       - reflection
       - refactoring
     added_by: '@claude'
+  - _ulid: 01KF7V8M21SAVW141WHZMP2BQV
+    text: >-
+      Iteration 12 reflection: Successfully completed large multi-iteration task
+      (@task-prompt-refactor) spanning 12 iterations. Pattern: Breaking down big refactors into
+      phases with incremental PRs works well. Phase 4 (error centralization) was the largest - took
+      5 batches across multiple iterations. Having clear checkpoints and running total of progress
+      (e.g., '179 of 201 errors = 89%') made continuation easy. Final scope was smaller than initial
+      estimate (179 actual vs 201 estimated), showing value of exploratory analysis before
+      committing to full scope.
+    created_at: '2026-01-18T06:04:19.393Z'
+    tags:
+      - reflection
+      - dx
+      - workflow
+    added_by: '@claude'
