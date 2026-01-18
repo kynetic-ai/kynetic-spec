@@ -709,10 +709,10 @@ describe('Integration: meta_ref in tasks', () => {
     try {
       const output = kspec('task add --title "Test task" --meta-ref "@invalid-ref-123456"', tempDir);
       // AC-meta-ref-3: Should error with specific message
-      expect(output).toContain("meta_ref '@invalid-ref-123456' does not resolve to a valid meta item");
+      expect(output).toContain("meta_ref '@invalid-ref-123456' not found");
     } catch (e: any) {
       const stdout = e.message || '';
-      expect(stdout).toContain("meta_ref '@invalid-ref-123456' does not resolve to a valid meta item");
+      expect(stdout).toContain("meta_ref '@invalid-ref-123456' not found");
     }
   });
 
@@ -752,10 +752,10 @@ describe('Integration: meta_ref in tasks', () => {
     // Try to set invalid meta_ref
     try {
       const output = kspec(`task set @${taskRef} --meta-ref "@invalid-workflow"`, tempDir);
-      expect(output).toContain("meta_ref '@invalid-workflow' does not resolve to a valid meta item");
+      expect(output).toContain("meta_ref '@invalid-workflow' not found");
     } catch (e: any) {
       const stdout = e.message || '';
-      expect(stdout).toContain("meta_ref '@invalid-workflow' does not resolve to a valid meta item");
+      expect(stdout).toContain("meta_ref '@invalid-workflow' not found");
     }
   });
 });

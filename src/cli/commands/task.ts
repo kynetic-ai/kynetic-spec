@@ -26,7 +26,7 @@ import {
 } from '../output.js';
 import { formatCommitGuidance, printCommitGuidance } from '../../utils/commit.js';
 import type { Task, TaskInput } from '../../schema/index.js';
-import { alignmentCheck } from '../../strings/index.js';
+import { alignmentCheck, errors } from '../../strings/index.js';
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -42,10 +42,10 @@ function resolveTaskRef(
   if (!result.ok) {
     switch (result.error) {
       case 'not_found':
-        error(`Task not found: ${ref}`);
+        error(errors.reference.taskNotFound(ref));
         break;
       case 'ambiguous':
-        error(`Reference "${ref}" is ambiguous. Matches:`);
+        error(errors.reference.ambiguous(ref));
         for (const candidate of result.candidates) {
           const task = tasks.find(t => t._ulid === candidate);
           const slug = task?.slugs[0] || '';
@@ -53,7 +53,7 @@ function resolveTaskRef(
         }
         break;
       case 'duplicate_slug':
-        error(`Slug "${ref}" maps to multiple items. Use ULID instead:`);
+        error(errors.reference.slugMapsToMultiple(ref));
         for (const candidate of result.candidates) {
           console.error(`  - ${index.shortUlid(candidate)}`);
         }
@@ -65,7 +65,7 @@ function resolveTaskRef(
   // Check if it's actually a task
   const task = tasks.find(t => t._ulid === result.ulid);
   if (!task) {
-    error(`Reference "${ref}" is not a task (it's a spec item)`);
+    error(errors.reference.notTask(ref));
     process.exit(3);
   }
 
@@ -94,7 +94,7 @@ export function registerTaskCommands(program: Command): void {
 
         output(foundTask, () => formatTaskDetails(foundTask, index));
       } catch (err) {
-        error('Failed to get task', err);
+        error(errors.failures.getTask, err);
         process.exit(1);
       }
     });
@@ -133,7 +133,7 @@ export function registerTaskCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(1);
           }
         }
@@ -143,7 +143,7 @@ export function registerTaskCommands(program: Command): void {
           const metaRefResult = refIndex.resolve(options.metaRef);
 
           if (!metaRefResult.ok) {
-            error(`meta_ref '${options.metaRef}' does not resolve to a valid meta item (agent, workflow, or convention)`);
+            error(errors.reference.metaRefNotFound(options.metaRef));
             process.exit(3);
           }
 
@@ -152,7 +152,7 @@ export function registerTaskCommands(program: Command): void {
           const isSpecItem = items.some(i => i._ulid === metaRefResult.ulid);
 
           if (isTask || isSpecItem) {
-            error(`meta_ref '${options.metaRef}' points to a spec item; use --spec-ref for product spec references`);
+            error(errors.reference.metaRefPointsToSpec(options.metaRef));
             process.exit(3);
           }
         }
@@ -175,7 +175,7 @@ export function registerTaskCommands(program: Command): void {
         const index = new ReferenceIndex([...tasks, newTask], items, allMetaItems);
         success(`Created task: ${index.shortUlid(newTask._ulid)}`, { task: newTask });
       } catch (err) {
-        error('Failed to create task', err);
+        error(errors.failures.createTask, err);
         process.exit(1);
       }
     });
@@ -214,7 +214,7 @@ export function registerTaskCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
           if (!slugCheck.ok) {
-            error(`Slug '${slugCheck.slug}' already exists (used by ${slugCheck.existingUlid})`);
+            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
             process.exit(1);
           }
         }
@@ -232,13 +232,13 @@ export function registerTaskCommands(program: Command): void {
           // Validate the spec ref exists and is a spec item
           const specResult = index.resolve(options.specRef);
           if (!specResult.ok) {
-            error(`Spec reference not found: ${options.specRef}`);
+            error(errors.reference.specRefNotFound(options.specRef));
             process.exit(3);
           }
           // Check it's not a task
           const isTask = tasks.some(t => t._ulid === specResult.ulid);
           if (isTask) {
-            error(`Reference "${options.specRef}" is a task, not a spec item`);
+            error(errors.reference.specRefIsTask(options.specRef));
             process.exit(3);
           }
           updatedTask.spec_ref = options.specRef;
@@ -249,7 +249,7 @@ export function registerTaskCommands(program: Command): void {
           // Validate the meta ref exists and is a meta item
           const metaRefResult = index.resolve(options.metaRef);
           if (!metaRefResult.ok) {
-            error(`meta_ref '${options.metaRef}' does not resolve to a valid meta item (agent, workflow, or convention)`);
+            error(errors.reference.metaRefNotFound(options.metaRef));
             process.exit(3);
           }
 
@@ -258,7 +258,7 @@ export function registerTaskCommands(program: Command): void {
           const isSpecItem = items.some(i => i._ulid === metaRefResult.ulid);
 
           if (isTask || isSpecItem) {
-            error(`meta_ref '${options.metaRef}' points to a spec item; use --spec-ref for product spec references`);
+            error(errors.reference.metaRefPointsToSpec(options.metaRef));
             process.exit(3);
           }
 
@@ -269,7 +269,7 @@ export function registerTaskCommands(program: Command): void {
         if (options.priority) {
           const priority = parseInt(options.priority, 10);
           if (isNaN(priority) || priority < 1 || priority > 5) {
-            error('Priority must be between 1 and 5');
+            error(errors.validation.priorityOutOfRange);
             process.exit(3);
           }
           updatedTask.priority = priority;
@@ -296,7 +296,7 @@ export function registerTaskCommands(program: Command): void {
           for (const depRef of options.dependsOn) {
             const depResult = index.resolve(depRef);
             if (!depResult.ok) {
-              error(`Dependency reference not found: ${depRef}`);
+              error(errors.reference.depNotFound(depRef));
               process.exit(3);
             }
           }
@@ -313,7 +313,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-set', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), changes.join(', '));
         success(`Updated task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
       } catch (err) {
-        error('Failed to update task', err);
+        error(errors.failures.updateTask, err);
         process.exit(1);
       }
     });
@@ -362,7 +362,7 @@ export function registerTaskCommands(program: Command): void {
         try {
           patchData = JSON.parse(jsonData);
         } catch (parseErr) {
-          error('Invalid JSON syntax', parseErr);
+          error(errors.validation.invalidJson, parseErr);
           process.exit(1);
         }
 
@@ -378,7 +378,7 @@ export function registerTaskCommands(program: Command): void {
         try {
           validatedPatch = partialSchema.parse(patchData);
         } catch (validationErr) {
-          error('Invalid patch data', validationErr);
+          error(errors.validation.invalidPatchData(String(validationErr)), validationErr);
           process.exit(1);
         }
 
@@ -389,7 +389,7 @@ export function registerTaskCommands(program: Command): void {
           const unknownFields = providedFields.filter(f => !knownFields.includes(f));
 
           if (unknownFields.length > 0) {
-            error(`Unknown field(s): ${unknownFields.join(', ')}`);
+            error(errors.validation.unknownFields(unknownFields));
             process.exit(1);
           }
         }
@@ -414,7 +414,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-patch', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), changes.join(', '));
         success(`Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
       } catch (err) {
-        error('Failed to patch task', err);
+        error(errors.failures.patchTask, err);
         process.exit(1);
       }
     });
@@ -439,7 +439,7 @@ export function registerTaskCommands(program: Command): void {
         }
 
         if (foundTask.status !== 'pending') {
-          error(`Cannot start task with status: ${foundTask.status}`);
+          error(errors.status.cannotStart(foundTask.status));
           process.exit(4); // Exit code 4 = invalid state
         }
 
@@ -471,7 +471,7 @@ export function registerTaskCommands(program: Command): void {
           }
         }
       } catch (err) {
-        error('Failed to start task', err);
+        error(errors.failures.startTask, err);
         process.exit(1);
       }
     });
@@ -497,7 +497,7 @@ export function registerTaskCommands(program: Command): void {
         }
 
         if (foundTask.status !== 'in_progress' && foundTask.status !== 'pending') {
-          error(`Cannot complete task with status: ${foundTask.status}`);
+          error(errors.status.cannotComplete(foundTask.status));
           process.exit(4);
         }
 
@@ -540,7 +540,7 @@ export function registerTaskCommands(program: Command): void {
           }
         }
       } catch (err) {
-        error('Failed to complete task', err);
+        error(errors.failures.completeTask, err);
         process.exit(1);
       }
     });
@@ -559,7 +559,7 @@ export function registerTaskCommands(program: Command): void {
         const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status === 'completed' || foundTask.status === 'cancelled') {
-          error(`Cannot block task with status: ${foundTask.status}`);
+          error(errors.status.cannotBlock(foundTask.status));
           process.exit(4);
         }
 
@@ -573,7 +573,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-block', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
-        error('Failed to block task', err);
+        error(errors.failures.blockTask, err);
         process.exit(1);
       }
     });
@@ -605,7 +605,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-unblock', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
-        error('Failed to unblock task', err);
+        error(errors.failures.unblockTask, err);
         process.exit(1);
       }
     });
@@ -638,7 +638,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-cancel', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Cancelled task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
-        error('Failed to cancel task', err);
+        error(errors.failures.cancelTask, err);
         process.exit(1);
       }
     });
@@ -692,7 +692,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-delete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), foundTask.title);
         success(`Deleted task: ${taskDisplay}`);
       } catch (err) {
-        error('Failed to delete task', err);
+        error(errors.failures.deleteTask, err);
         process.exit(1);
       }
     });
@@ -741,7 +741,7 @@ export function registerTaskCommands(program: Command): void {
           }
         }
       } catch (err) {
-        error('Failed to add note', err);
+        error(errors.failures.addNote, err);
         process.exit(1);
       }
     });
@@ -771,7 +771,7 @@ export function registerTaskCommands(program: Command): void {
           }
         });
       } catch (err) {
-        error('Failed to get notes', err);
+        error(errors.failures.getNotes, err);
         process.exit(1);
       }
     });
@@ -800,7 +800,7 @@ export function registerTaskCommands(program: Command): void {
           }
         });
       } catch (err) {
-        error('Failed to get todos', err);
+        error(errors.failures.getTodos, err);
         process.exit(1);
       }
     });
@@ -839,7 +839,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`, { todo });
       } catch (err) {
-        error('Failed to add todo', err);
+        error(errors.failures.addTodo, err);
         process.exit(1);
       }
     });
@@ -858,13 +858,13 @@ export function registerTaskCommands(program: Command): void {
 
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
-          error(`Invalid todo ID: ${idStr}`);
+          error(errors.todo.invalidId(idStr));
           process.exit(3);
         }
 
         const todoIndex = foundTask.todos.findIndex(t => t.id === id);
         if (todoIndex === -1) {
-          error(`Todo #${id} not found`);
+          error(errors.todo.notFound(id));
           process.exit(3);
         }
 
@@ -889,7 +889,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Marked todo #${id} as done`, { todo: updatedTodos[todoIndex] });
       } catch (err) {
-        error('Failed to mark todo as done', err);
+        error(errors.failures.markTodoDone, err);
         process.exit(1);
       }
     });
@@ -908,13 +908,13 @@ export function registerTaskCommands(program: Command): void {
 
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
-          error(`Invalid todo ID: ${idStr}`);
+          error(errors.todo.invalidId(idStr));
           process.exit(3);
         }
 
         const todoIndex = foundTask.todos.findIndex(t => t.id === id);
         if (todoIndex === -1) {
-          error(`Todo #${id} not found`);
+          error(errors.todo.notFound(id));
           process.exit(3);
         }
 
@@ -939,7 +939,7 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-note', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Marked todo #${id} as not done`, { todo: updatedTodos[todoIndex] });
       } catch (err) {
-        error('Failed to mark todo as not done', err);
+        error(errors.failures.markTodoNotDone, err);
         process.exit(1);
       }
     });
