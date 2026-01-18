@@ -1330,3 +1330,15 @@ inbox:
       - workflow
       - pr
     added_by: '@claude'
+  - _ulid: 01KF8GYJV8B6GZ0S4NG7VPY9C6
+    text: >-
+      Task discovery pattern: Some ready tasks may already be implemented (found kspec meta
+      conventions fully working despite being marked pending). Consider adding a 'verify
+      implementation status' step when starting tasks, especially for CLI commands that can be
+      quickly tested.
+    created_at: '2026-01-18T12:23:19.144Z'
+    tags:
+      - reflection
+      - workflow
+      - dx
+    added_by: '@claude'
