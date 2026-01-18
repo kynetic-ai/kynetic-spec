@@ -548,7 +548,7 @@ export function registerTaskCommands(program: Command): void {
           const specResult = index.resolve(foundTask.spec_ref);
           if (specResult.ok && specResult.item) {
             const specItem = items.find(i => i._ulid === specResult.ulid);
-            if (specItem?.acceptance_criteria?.length > 0) {
+            if (specItem && specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
               const count = specItem.acceptance_criteria.length;
               console.log(`\n⚠ Linked spec ${foundTask.spec_ref} has ${count} acceptance criteri${count === 1 ? 'on' : 'a'} - verify they are covered\n`);
             }

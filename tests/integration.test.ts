@@ -1368,3 +1368,102 @@ describe('Integration: link commands', () => {
     expect(result.type).toBe('depends_on');
   });
 });
+
+describe('Integration: status cascade', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @status-cascade ac-1
+  it('should prompt to cascade status to children', () => {
+    // test-feature has a child requirement
+    // Pipe "n" to reject the cascade
+    const output = execSync(
+      `echo "n" | npx tsx ${CLI_PATH} item set @test-feature --status implemented`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    expect(output).toContain('Update');
+    expect(output).toContain('child item(s) to implemented? [y/n]');
+    expect(output).toContain('Updated item');
+  });
+
+  it('should update children when cascade accepted', () => {
+    // Get initial status of child
+    const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+
+    // Cascade update by piping "y"
+    execSync(
+      `echo "y" | npx tsx ${CLI_PATH} item set @test-feature --status verified`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    // Check child status was updated
+    const afterChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    expect(afterChild.status?.implementation).toBe('verified');
+    expect(beforeImpl).not.toBe('verified'); // Ensure it changed
+  });
+
+  it('should not update children when cascade rejected', () => {
+    // Get initial status of child
+    const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+
+    // Reject cascade by piping "n"
+    execSync(
+      `echo "n" | npx tsx ${CLI_PATH} item set @test-feature --status implemented`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    // Check child status was NOT updated
+    const afterChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    expect(afterChild.status?.implementation).toBe(beforeImpl);
+  });
+
+  it('should skip prompt in JSON mode', () => {
+    const output = execSync(
+      `npx tsx ${CLI_PATH} item set @test-feature --status in_progress --json`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    // Should not prompt in JSON mode
+    expect(output).not.toContain('child item(s) to');
+    expect(output).not.toContain('[y/n]');
+
+    // Should return valid JSON
+    const parsed = JSON.parse(output);
+    expect(parsed.item).toBeDefined();
+  });
+
+  it('should handle items with no children', () => {
+    // test-requirement has no children
+    const output = execSync(
+      `echo "n" | npx tsx ${CLI_PATH} item set @test-requirement --status implemented`,
+      { cwd: tempDir, encoding: 'utf-8' }
+    );
+
+    // Should not show cascade prompt when no children
+    expect(output).not.toContain('child item(s) to');
+    expect(output).not.toContain('[y/n]');
+    expect(output).toContain('Updated item');
+  });
+});
