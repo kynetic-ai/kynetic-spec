@@ -11,7 +11,7 @@ kynetic_meta: "1.0"
 # AGENTS - Who works on this project
 # =============================================================================
 agents:
-  - _ulid: 01KF1HAGT0CLAUDE000000000000
+  - _ulid: 01KF782ZSF5ZQTN2PKZPH6ASKA
     id: claude
     name: Claude Code Agent
     description: |
@@ -42,7 +42,7 @@ agents:
 # WORKFLOWS - How work is done
 # =============================================================================
 workflows:
-  - _ulid: 01KF1HWKF0SPECFIRST00000000
+  - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
     trigger: behavior-change
     description: |
@@ -66,7 +66,7 @@ workflows:
       - type: action
         content: Implement the change
 
-  - _ulid: 01KF1HWKF1SESSIONSTART000000
+  - _ulid: 01KF782ZSH103A99NV1VY65CFB
     id: session-start
     trigger: session-start
     description: |
@@ -82,7 +82,7 @@ workflows:
       - type: action
         content: Start work on chosen task via kspec task start
 
-  - _ulid: 01KF1HWKF2TASKLIFECYCLE0000
+  - _ulid: 01KF782ZSJH58GHDTHC873XJMA
     id: task-lifecycle
     trigger: task-complete
     description: |
@@ -98,7 +98,7 @@ workflows:
       - type: action
         content: Review if task unblocked other work
 
-  - _ulid: 01KF1HWKF3TRIAGE000000000000
+  - _ulid: 01KF782ZSJYAF3XCN89YD44XYM
     id: inbox-triage
     trigger: session-start
     description: |
@@ -121,7 +121,7 @@ workflows:
 # CONVENTIONS - Project standards
 # =============================================================================
 conventions:
-  - _ulid: 01KF1HCNV0COMMITS000000000
+  - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
     rules:
       - Use conventional commit format (feat, fix, docs, refactor, test, chore)
@@ -134,7 +134,7 @@ conventions:
       - good: "fix(auth): handle expired tokens"
         bad: "fixed bug"
 
-  - _ulid: 01KF1HCNV1NOTES0000000000000
+  - _ulid: 01KF782ZSJ20FHWEXH93VB74Q5
     domain: notes
     rules:
       - Add notes when completing significant work
@@ -145,7 +145,7 @@ conventions:
       - good: "Implemented retry logic with exponential backoff. Chose 3 retries max based on API rate limits."
         bad: "Done"
 
-  - _ulid: 01KF1HCNV2NAMING00000000000
+  - _ulid: 01KF782ZSJZB6HWGFS01TM2R0R
     domain: naming
     rules:
       - Use kebab-case for slugs (task-user-login, not taskUserLogin)
@@ -153,7 +153,7 @@ conventions:
       - Use descriptive names that indicate purpose
       - Keep slugs short but unambiguous
 
-  - _ulid: 01KF1HCNV3TAGS000000000000000
+  - _ulid: 01KF782ZSJ6HS09DBK7SVX5RR0
     domain: tags
     rules:
       - Use lowercase tags
