@@ -7039,6 +7039,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - discovered during task audit
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -7046,6 +7047,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.613Z'
+  started_at: '2026-01-18T15:45:38.879Z'
+  completed_at: '2026-01-18T15:45:38.879Z'
   notes:
     - _ulid: 01KF8WH0GWZ1RM6QXED8WZCZYR
       created_at: '2026-01-18T15:45:37.308Z'
@@ -7055,9 +7058,6 @@
         src/cli/commands/meta.ts:1017-1130. Updates existing meta items with type-specific options.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T15:45:38.879Z'
-  closed_reason: Already implemented - discovered during task audit
-  started_at: '2026-01-18T15:45:38.879Z'
 - _ulid: 01KF4WVX755EQVCW8MWV7JBVEK
   slugs:
     - task-kspec-meta-delete
@@ -7074,7 +7074,14 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.645Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WH3X1DYKMZ7ZMF42BP8YH
+      created_at: '2026-01-18T15:45:40.769Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit e36d486c (2026-01-17) in
+        src/cli/commands/meta.ts:1132-1259. Deletes meta items with reference validation.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVX83RX2MM5E1HK8HZQ9S
   slugs:
