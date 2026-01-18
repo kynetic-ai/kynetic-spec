@@ -3195,7 +3195,7 @@
   type: task
   spec_ref: '@shadow-cli'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -3251,6 +3251,10 @@
         tested.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T07:36:49.729Z'
+  closed_reason: >-
+    All three shadow CLI commands (status, log, repair) are fully implemented with comprehensive
+    test coverage. Implementation verified working correctly.
 - _ulid: 01KF1VKEV2FW62HJR7CBRNJGFZ
   slugs:
     - task-shadow-recovery
