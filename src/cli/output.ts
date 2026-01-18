@@ -209,7 +209,9 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
           const status = 'status' in item && typeof item.status === 'string'
             ? statusColor(item.status as TaskStatus)(`[${item.status}]`)
             : chalk.gray('[spec]');
-          console.log(`  ${ref} ${chalk.gray('→')} ${item.title} ${status}`);
+          // Handle both spec items (with title) and meta items (with name or id)
+          const itemName = 'title' in item ? item.title : ('name' in item ? item.name : ('id' in item ? item.id : ref));
+          console.log(`  ${ref} ${chalk.gray('→')} ${itemName} ${status}`);
         } else {
           console.log(`  ${ref} ${chalk.red('(unresolved)')}`);
         }
@@ -241,8 +243,10 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
     if (result.ok) {
       const spec = result.item;
       console.log(chalk.gray('\n─── Spec Context ───'));
-      console.log(chalk.cyan(spec.title));
-      if (spec.type) {
+      // Handle both spec items (with title) and meta items (with name)
+      const specName = 'title' in spec ? spec.title : ('name' in spec ? spec.name : ('id' in spec ? spec.id : task.spec_ref));
+      console.log(chalk.cyan(specName));
+      if ('type' in spec && spec.type) {
         console.log(chalk.gray(`Type: ${spec.type}`));
       }
       // Show implementation status

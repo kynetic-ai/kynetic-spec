@@ -1,7 +1,15 @@
 kynetic_meta: "1.0"
 
 agents:
-  - _ulid: 01TEST001000000000000000000
+  - _ulid: 01KF79QXTTX8KBRYK14NWV1KYK
+    id: test
+    name: Test Author
+    description: Generic test author for fixture notes
+    capabilities: []
+    tools: []
+    conventions: []
+
+  - _ulid: 01KF79C0GSJZ7MYFX3R9B1ANNP
     id: test-agent
     name: Test Agent
     description: A test agent for integration testing
@@ -18,7 +26,7 @@ agents:
       - Test convention 1
       - Test convention 2
 
-  - _ulid: 01TEST002000000000000000000
+  - _ulid: 01KF79C0H03R3755DK9ZBX8R0R
     id: review-agent
     name: Review Agent
     description: Agent specialized for code review

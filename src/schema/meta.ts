@@ -1,13 +1,11 @@
 import { z } from 'zod';
-import { RefSchema, DateTimeSchema } from './common.js';
+import { RefSchema, DateTimeSchema, UlidSchema } from './common.js';
 
 /**
- * Lenient ULID schema for meta items.
- * We use a lenient check here because meta items may have been created
- * with manually-crafted semantic IDs (like 01KF1HAGT0CLAUDE000000000000).
- * The strict UlidSchema is used for validation commands; this is for loading.
+ * ULID schema for meta items - uses the same strict validation as core items.
+ * All ULIDs must be exactly 26 characters in Crockford base32 format.
  */
-const MetaUlidSchema = z.string().min(1, 'ULID is required');
+const MetaUlidSchema = UlidSchema;
 
 /**
  * Agent session protocol - commands to run at session lifecycle events
