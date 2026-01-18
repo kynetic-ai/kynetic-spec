@@ -1256,6 +1256,78 @@
         about formatShadowStatus containing hardcoded strings, but approved for merge. Starting
         Phase 4: centralize error messages across all command files.
       supersedes: null
+    - _ulid: 01KF7QCK3TG9DKS5EASZ5T2JG5
+      created_at: '2026-01-18T04:56:35.195Z'
+      author: '@claude'
+      content: >-
+        Phase 4 progress (iteration 8):
+
+
+        COMPLETED FILES (6 of 15):
+
+        - search.ts (1 error → centralized)
+
+        - session.ts (2 errors → centralized)
+
+        - setup.ts (2 errors → centralized)
+
+        - inbox.ts (8 errors → centralized)
+
+        - init.ts (4 errors → centralized)
+
+        - log.ts (4 errors → centralized)
+
+
+        TOTAL: ~21 error calls refactored
+
+
+        REMAINING FILES (9 of 15):
+
+        - tasks.ts (6 errors)
+
+        - derive.ts (14 errors)
+
+        - ralph.ts (8 errors)
+
+        - validate.ts (4 errors) - already uses validationStrings
+
+        - shadow.ts (14 errors) - already uses shadowCommands  
+
+        - item.ts (45 errors) - largest file
+
+        - task.ts (42 errors) - second largest
+
+        - meta.ts (43 errors) - third largest
+
+        - output.ts (4 errors)
+
+
+        REMAINING: ~180 error calls
+
+
+        NOTE: validate.ts and shadow.ts already use centralized strings (from Phase 3), so real
+        remaining count is ~162 error calls across 7 files.
+
+
+        Created comprehensive src/strings/errors.ts with 7 categories:
+
+        - referenceErrors (not found, ambiguous, wrong type)
+
+        - slugErrors (validation, conflicts)
+
+        - validationErrors (JSON, data format, constraints)
+
+        - statusErrors (wrong status for operation)
+
+        - conflictErrors (duplicates, already exists)
+
+        - operationErrors (not allowed operations)
+
+        - gitErrors, projectErrors, usageErrors, operationFailures, todoErrors
+
+
+        All tests pass (392 passed, 1 skipped). TypeScript compiles cleanly.
+      supersedes: null
   todos: []
 - _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   slugs:
