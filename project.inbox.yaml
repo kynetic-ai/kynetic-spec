@@ -489,18 +489,6 @@ inbox:
       - dx
       - meta
     added_by: '@claude'
-  - _ulid: 01KF7KPT6F0W1XXXG8QEAV51ZP
-    text: >-
-      Review subagent workflow proved critical - caught reference matching bug before merge.
-      Pattern: (1) Initial review identifies issues, (2) Fix issues, (3) Final review confirms
-      fixes. The iterative review loop prevents broken code from reaching main. Should formalize as
-      workflow convention.
-    created_at: '2026-01-18T03:52:15.823Z'
-    tags:
-      - reflection
-      - workflow
-      - review
-    added_by: '@claude'
   - _ulid: 01KF7MGV986G6QFAT2853AKP75
     text: >-
       Iteration 4 findings: (1) Inbox and task notes live in shadow branch (.kspec/) not main -

@@ -181,75 +181,6 @@ observations:
     resolved: false
     resolution: null
     promoted_to: '@01KF89NY'
-  - _ulid: 01KF8H0P1T9NMQX1J5YTCNYYEQ
-    type: friction
-    content: test observation
-    created_at: '2026-01-18T12:24:27.962Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8H0TNMR2T3Y9WVPQ3DXYTR
-    type: idea
-    content: test with json
-    created_at: '2026-01-18T12:24:32.693Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8H1SGD38S5Z4NPN2DWXF22
-    type: success
-    content: feature works great
-    created_at: '2026-01-18T12:25:04.269Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8H1YB9N6AHX52VRWZDVNGZ
-    type: question
-    workflow_ref: '@spec-first-workflow'
-    content: how should we handle edge cases?
-    created_at: '2026-01-18T12:25:09.225Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8J6TZN293P7YYNFQT5MC6Z
-    type: friction
-    workflow_ref: '@spec-first'
-    content: test friction observation
-    created_at: '2026-01-18T12:45:18.198Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8J6VF7C94B9RZ5W5974ERA
-    type: success
-    content: test success observation
-    created_at: '2026-01-18T12:45:18.695Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8J6VZ2J9KH119AF0C5XYS0
-    type: question
-    workflow_ref: '@task-start'
-    content: test question
-    created_at: '2026-01-18T12:45:19.202Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-  - _ulid: 01KF8JEE87205WH8YBGSWS84G6
-    type: friction
-    content: Test observation for promote command
-    created_at: '2026-01-18T12:49:27.303Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-    promoted_to: '@01KF8JEJ'
-  - _ulid: 01KF8JEQ7P3JWHTH6V5PNGZ4CG
-    type: success
-    workflow_ref: '@spec-first'
-    content: Another test observation
-    created_at: '2026-01-18T12:49:36.502Z'
-    author: '@claude'
-    resolved: false
-    resolution: null
-    promoted_to: '@01KF8JEV'
   - _ulid: 01KF93NC0FXND1244CN31ZH22Z
     type: friction
     content: >-
@@ -422,6 +353,221 @@ observations:
       && 'depends_on' in item - NOT optional properties like closed_reason which won't exist on
       incomplete tasks.
     created_at: '2026-01-18T17:51:23.432Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94EZQT8WP107P6QV9ZC4JD
+    type: success
+    content: >-
+      PR review workflow pattern: Review subagents proved critical for catching issues before merge.
+      Established pattern: (1) check for open PRs, (2) launch review subagent, (3) fix trivial
+      issues directly, (4) re-review confirms fixes, (5) merge when checks pass. Works smoothly when
+      changes are minor - automated review + fix + merge flow is efficient. Multi-step workflow
+      (review→fix→merge→continue) provides good session continuity. Review caught real issues:
+      reference matching bugs, TypeScript errors, duplicate PRs, missing tests. Self-review via
+      subagent is valid for automation loops despite GitHub not allowing self-approval.
+    created_at: '2026-01-18T18:04:19.579Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94F0W0BPTB5RP6FDWH63SM
+    type: success
+    content: >-
+      Incremental refactoring pattern: Large multi-iteration refactors work well when pattern is
+      established early. Key lessons: (1) Create module first with comprehensive coverage, (2) Start
+      with smallest files to establish pattern, (3) Commit incremental progress with clear 'what
+      done/remains' tracking, (4) Use TodoWrite for sub-phases. String/error centralization phases
+      showed this: early PRs for small wins, direct commits for established patterns. Tests catch
+      issues early, smaller files build confidence. Having checkpoints and running totals (e.g.,
+      '179 of 201 = 89%') made continuation easy. This phased approach balances review overhead with
+      execution speed.
+    created_at: '2026-01-18T18:04:20.737Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94F20W3MKFPBA1XN0ABQ7P
+    type: success
+    content: >-
+      Implementation pattern (schema→parser→CLI→tests): New features follow clean path. Reuse agent
+      command structure (formatTable, formatVerbose, JSON output via output()). Reference validation
+      integration is clean - add to REF_FIELDS. Meta reference implementation was straightforward
+      thanks to existing ReferenceIndex infrastructure. Pattern of implementing formatters first,
+      then command registration works well. Testing is fast and reliable. Module add followed same
+      pattern: validate inputs, create data, write file, update manifest, shadow commit. Could
+      extract into reusable helper.
+    created_at: '2026-01-18T18:04:21.916Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94FHX7C98EFRCSGAXAKBBR
+    type: success
+    content: >-
+      Reference implementation value: Checking prior work (../kspec-acp-test, ../kspec-ralph-test)
+      before implementing saves significant design time. Found identical spec and working
+      implementation providing clear blueprint. Prior work avoids edge cases and provides
+      consistency. Explore subagents are valuable for understanding prior implementations - provided
+      comprehensive details: file paths, schema patterns, CLI structure, test isolation challenges.
+      Having parallel agent repos with prior work is highly valuable. Pattern: exploration as
+      standard first step for implementation tasks.
+    created_at: '2026-01-18T18:04:38.184Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94FK4G7W86NXDVTAZ77SK8
+    type: success
+    content: >-
+      Task verification workflow: Some ready tasks are already implemented from prior sessions.
+      Pattern: when starting task, verify current state by reading code, running tests, checking
+      existing functionality before implementing. Saves time and avoids duplicate work. Meta
+      commands (resolve, observe, promote, conventions) were already implemented but tasks remained
+      pending. Need better sync between implementation status and task status - perhaps command to
+      scan for already-implemented specs and auto-complete tasks. Consider 'verify implementation
+      status' step especially for CLI commands.
+    created_at: '2026-01-18T18:04:39.441Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94FMF9Y5VCS7EQXP4G2FRJ
+    type: success
+    content: >-
+      Session/workflow patterns: Spike tasks with no code output don't need commits - value is in
+      task notes documenting research. Shadow-only changes (task state updates) don't need
+      main-branch PRs since shadow branch is source of truth. PR skill correctly detects no changes
+      and exits cleanly for metadata-only tasks. PR workflow smooth with auto-generated branch names
+      and /pr skill. Shadow CLI verification iteration showed pattern: pick task, verify
+      implementation exists, complete task, no code changes needed.
+    created_at: '2026-01-18T18:04:40.810Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94G1HYX2DCY796SKB9XB7P
+    type: success
+    content: >-
+      Task guardrails and completion checks: Feature dogfooded successfully - tested on itself
+      during completion. Interactive prompt provides immediate feedback about AC coverage ensuring
+      implementations match specs. Implementation preserves spec status.maturity when updating
+      implementation status (important pattern to avoid losing maturity context). Default to 'draft'
+      if status doesn't exist yet.
+    created_at: '2026-01-18T18:04:54.208Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94G2RY8JAX71K9BC8HJSF7
+    type: success
+    content: >-
+      Context and session integration: Meta focus command implementation straightforward thanks to
+      well-structured SessionContext schema and existing loadSessionContext/saveSessionContext
+      functions. Pattern of supporting show/set/clear modes in single command is clean and
+      user-friendly. Auto-prepending @ to references maintains UX consistency. Context integration
+      showed context BEFORE active work for immediate agent orientation - context is 'what thinking
+      about' while active tasks are 'what doing'.
+    created_at: '2026-01-18T18:04:55.454Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94G3YV75DYWZENYG19N9NX
+    type: success
+    content: >-
+      Review subagent catches real issues: Found validation strictness issue with RefSchema (too
+      strict for manual files), TypeScript compilation errors, import path issues. Demonstrates
+      value of code review even for simple changes. Pattern: when review finds flag conflicts or
+      behavioral issues, fix includes both code AND spec updates. Renamed --verbose to
+      --debug-shadow based on review finding conflict.
+    created_at: '2026-01-18T18:04:56.668Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94GR1RQ0JXWNHD6RQGZ4SE
+    type: success
+    content: >-
+      Schema strictness value: ULID validation strictness caught real bugs - test fixtures had
+      24-char ULIDs passing because MetaUlidSchema was too lenient. Fixing schema to use UlidSchema
+      forced proper fixture ULIDs. Important pattern: schema strictness prevents silent data
+      corruption.
+    created_at: '2026-01-18T18:05:17.241Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94GSM8KQP9QSQK47KT3J7X
+    type: success
+    content: >-
+      JSON output helper pattern: output() provides clean separation between JSON and human-readable
+      modes. Used successfully: return observation object in JSON mode, success message for human
+      mode. Pattern: output(dataObject, () => humanFormatter()). Avoids duplicate/mixed output that
+      happens with separate success() + output() calls.
+    created_at: '2026-01-18T18:05:18.857Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94GV0DY58HXPVZJRQWBBAP
+    type: success
+    content: >-
+      findChildItems path-based hierarchy: Implementation based on _path nesting worked well - path
+      structure makes parent-child relationships explicit and easy to query. Similar pattern could
+      be useful for other hierarchical queries: siblings, ancestors, tree depth.
+    created_at: '2026-01-18T18:05:20.270Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94GWFGAHGPNM9HNCCESTSC
+    type: success
+    content: >-
+      Commander introspection for help: Commander's structure is stable and well-defined, making it
+      reliable source of truth for help output. Consider applying to other CLI frameworks (Oclif,
+      yargs). Separation of auto-generated syntax vs curated concepts is clean and maintainable.
+    created_at: '2026-01-18T18:05:21.777Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94GXWR0CDRDG5GJ898XR24
+    type: success
+    content: >-
+      Command suggestion with Levenshtein: Feature implemented cleanly using Levenshtein distance.
+      Threshold of 3 works well for catching typos without false positives. Commander.js already
+      handles subcommand suggestions, so only needed top-level command handling.
+    created_at: '2026-01-18T18:05:23.225Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94HCFSAD6WJ4PJG1T0SSY1
+    type: success
+    content: >-
+      Validation architecture scales: Adding warnings alongside errors required minimal changes -
+      new type, updated return structure, simple CLI formatting. Separation of concerns (refs.ts for
+      logic, validate.ts for orchestration, validate CLI for display) made enhancement
+      straightforward. Pattern worth replicating: warnings as first-class citizens alongside errors.
+    created_at: '2026-01-18T18:05:38.169Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94HDYHTGCMZCC6MMFYJGNJ
+    type: success
+    content: >-
+      Spike workflow refinement: When completing spike, capture recommendation in closed_reason
+      (brief) + final note (detailed). Spike task notes form mini research doc. Pattern: findings →
+      analysis → recommendation. Example: task-archive spike documented current system, reviewed
+      references, recommended MVP approach all in notes.
+    created_at: '2026-01-18T18:05:39.666Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94HFCXHSBAYMYXVTKRV3T8
+    type: success
+    content: >-
+      Convention validation foundation: Implementation validates convention schema. To be fully
+      functional needs integration with actual content sources (git log for commits, task notes for
+      note validation, etc.). Foundation is complete, content gathering is future enhancement.
+    created_at: '2026-01-18T18:05:41.150Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF94HGRMD0BF4524V3KQ8V2Q
+    type: success
+    content: >-
+      Task origin field tracking: Added origin enum to track task creation source (manual, derived,
+      observation_promotion). Could be extended for other sources like 'agent_suggestion',
+      'test_failure', 'lint_error'. Useful for metrics and understanding task flow.
+    created_at: '2026-01-18T18:05:42.548Z'
     author: '@claude'
     resolved: false
     resolution: null
