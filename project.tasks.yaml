@@ -5654,7 +5654,7 @@
   type: task
   spec_ref: '@convention-schema'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-convention-definitions'
@@ -5665,6 +5665,7 @@
   created_at: '2026-01-17T02:34:35.786Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:38:15.445Z'
 - _ulid: 01KF4WVWD4TT9PTW69HVDWAX36
   slugs:
     - task-convention-domains
@@ -7653,6 +7654,7 @@
   origin: observation_promotion
   status: completed
   blocked_by: []
+  closed_reason: All hardcoded error messages migrated to centralized strings module
   depends_on: []
   context: []
   priority: 2
@@ -7660,6 +7662,7 @@
   vcs_refs: []
   created_at: '2026-01-18T10:16:15.756Z'
   started_at: '2026-01-18T10:24:14.790Z'
+  completed_at: '2026-01-18T10:29:47.365Z'
   notes:
     - _ulid: 01KF8A7P1FC3PY913GHEHPYXW6
       created_at: '2026-01-18T10:25:57.295Z'
@@ -7678,5 +7681,3 @@
         use centralized error messages. All tests passing (463 passed).
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:29:47.365Z'
-  closed_reason: All hardcoded error messages migrated to centralized strings module
