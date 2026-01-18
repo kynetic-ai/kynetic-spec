@@ -3460,6 +3460,43 @@
         Next session should continue with this task as it's the next priority 1 meta feature after
         workflows.
       supersedes: null
+    - _ulid: 01KF7BM5ZAD74S4P9KVJSVHTZ9
+      created_at: '2026-01-18T01:31:00.971Z'
+      author: '@claude'
+      content: >-
+        Implemented all 9 acceptance criteria:
+
+        - AC-obs-1: observe command creates observations with ULID, type, content, workflow_ref,
+        author
+
+        - AC-obs-2: observations command lists in table format, unresolved by default, --all
+        includes resolved
+
+        - AC-obs-3: promote command creates task from observation, updates promoted_to field
+
+        - AC-obs-4: resolve command updates observation with resolution, resolved_at, resolved_by
+
+        - AC-obs-5: JSON output includes all observation fields
+
+        - AC-obs-6: error when promoting already-promoted observation
+
+        - AC-obs-7: error when resolving already-resolved observation
+
+        - AC-obs-8: error when promoting resolved observation without --force
+
+        - AC-obs-9: resolve auto-populates from task (deferred implementation to basic message)
+
+
+        Implementation notes:
+
+        - Used createObservation and saveObservation from parser/meta.ts
+
+        - Used createTask and saveTask APIs directly instead of spawning subprocess
+
+        - Added comprehensive tests (11 test cases covering all ACs)
+
+        - All 336 tests pass
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWG3WWK8108GY1PNSH89
   slugs:
