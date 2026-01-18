@@ -8322,7 +8322,29 @@
   created_at: '2026-01-18T20:00:43.928Z'
   notes: []
   todos: []
-- title: Fix ralph iteration message newline issue
+- _ulid: 01KF9B4PX60XW55ZXWHE36C8G1
+  slugs: []
+  title: Fix ralph iteration message newline issue
+  type: task
+  description: >-
+    Ralph iteration complete message joins with agent text: The 'OK Completed iteration 1' message
+    appears on the same line as the last agent message content because streaming doesn't end with
+    newline. Need to ensure newline before iteration status messages. Related to finalization - when
+    agent message stream ends, should ensure trailing newline.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - ralph
+    - bug
+  vcs_refs: []
+  created_at: '2026-01-18T20:01:02.885Z'
+  notes: []
+  todos: []
+- title: Fix PreToolUse:Bash hook error handling
   type: task
   priority: 2
   spec_ref: null
@@ -8330,17 +8352,17 @@
     - ralph
     - bug
   description: >-
-    Ralph iteration complete message joins with agent text: The 'OK Completed iteration 1' message
-    appears on the same line as the last agent message content because streaming doesn't end with
-    newline. Need to ensure newline before iteration status messages. Related to finalization - when
-    agent message stream ends, should ensure trailing newline.
-  _ulid: 01KF9B4PX60XW55ZXWHE36C8G1
+    PreToolUse:Bash hook error on tool approval: When tools are approved, there's an error shown '⎿
+    PreToolUse:Bash hook error'. Need to investigate kspec-worktree-guard.sh - may be failing
+    silently on certain inputs or returning invalid JSON in some cases. Should handle edge cases
+    gracefully and return valid JSON even on unexpected input.
+  _ulid: 01KF9B4SJ1J3EA8XA9Z1JH7302
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T20:01:02.885Z'
+  created_at: '2026-01-18T20:01:05.601Z'
   notes: []
   todos: []

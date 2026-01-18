@@ -350,18 +350,6 @@ inbox:
       - workflow
       - safety
     added_by: '@claude'
-  - _ulid: 01KF6V88KCJ1SD31TJ035MG4YJ
-    text: >-
-      PreToolUse:Bash hook error on tool approval: When tools are approved, there's an error shown
-      '⎿ PreToolUse:Bash hook error'. Need to investigate kspec-worktree-guard.sh - may be failing
-      silently on certain inputs or returning invalid JSON in some cases. Should handle edge cases
-      gracefully and return valid JSON even on unexpected input.
-    created_at: '2026-01-17T20:44:53.228Z'
-    tags:
-      - ralph
-      - bug
-      - hooks
-    added_by: '@claude'
   - _ulid: 01KF6VFK9BP2Y6CDFATSHHWNKN
     text: >-
       AC test coverage guidance: Acceptance criteria without corresponding tests are risky - the
