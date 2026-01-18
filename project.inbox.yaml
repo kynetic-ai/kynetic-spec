@@ -371,13 +371,6 @@ inbox:
     created_at: '2026-01-17T22:26:42.736Z'
     tags: []
     added_by: '@claude'
-  - _ulid: 01KF8MTM9F3FCVWKE230A245HD
-    text: >-
-      Need to have a way for the ralph loop to explicitly end a session and save the session files
-      at the end of the loop iteration
-    created_at: '2026-01-18T13:31:03.855Z'
-    tags: []
-    added_by: Jacob Chapel
   - _ulid: 01KF8TQ5X9Q0Y6DEGWQ9YPECHN
     text: >-
       Transaction/batch mechanics for kspec operations - ability to set a mark point where changes
