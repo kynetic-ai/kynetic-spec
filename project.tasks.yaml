@@ -5844,6 +5844,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Observation types fully implemented with all four types as specified
   depends_on:
     - '@task-observations'
   context: []
@@ -5852,6 +5853,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.939Z'
   started_at: '2026-01-18T10:09:15.512Z'
+  completed_at: '2026-01-18T10:09:31.799Z'
   notes:
     - _ulid: 01KF899F5K8DYWKFPAGYRR1TSM
       created_at: '2026-01-18T10:09:27.219Z'
@@ -5864,8 +5866,6 @@
         required field. Type is exported for use throughout codebase.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:09:31.799Z'
-  closed_reason: Observation types fully implemented with all four types as specified
 - _ulid: 01KF4WVWHYDHP3F39A36288NMZ
   slugs:
     - task-observation-promotion
@@ -5873,7 +5873,7 @@
   type: task
   spec_ref: '@observation-promotion'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-observations'
@@ -5884,6 +5884,7 @@
   created_at: '2026-01-17T02:34:35.966Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:09:47.987Z'
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
     - task-observation-resolution
