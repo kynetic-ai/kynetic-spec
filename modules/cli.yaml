@@ -1455,7 +1455,7 @@ features:
             then: changes are auto-committed to shadow branch
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
