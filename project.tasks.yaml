@@ -3817,6 +3817,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implementation complete on PR #37 with full test coverage. Core debug infrastructure, CLI
+    integration, and comprehensive tests all working. Ready for review.
   depends_on: []
   context: []
   priority: 3
@@ -3826,6 +3829,7 @@
   vcs_refs: []
   created_at: '2026-01-16T12:35:40.744Z'
   started_at: '2026-01-18T07:37:47.871Z'
+  completed_at: '2026-01-18T07:43:38.937Z'
   notes:
     - _ulid: 01KF80MFDYPAT4RA0XVWMDBDTQ
       created_at: '2026-01-18T07:38:10.751Z'
@@ -3880,10 +3884,6 @@
         All tests pass (51 total in shadow.test.ts).
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T07:43:38.937Z'
-  closed_reason: >-
-    Implementation complete on PR #37 with full test coverage. Core debug infrastructure, CLI
-    integration, and comprehensive tests all working. Ready for review.
 - _ulid: 01KF3D9S7PTA6WADMEVNTW6V7D
   slugs:
     - task-item-set-remove-slug
@@ -4055,7 +4055,7 @@
   type: task
   spec_ref: '@cmd-module-add'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -4067,6 +4067,7 @@
   created_at: '2026-01-16T13:02:50.873Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T08:13:30.774Z'
 - _ulid: 01KF3GTPVSNWS42NKTECY2GZK0
   slugs:
     - task-spec-completeness-validation
