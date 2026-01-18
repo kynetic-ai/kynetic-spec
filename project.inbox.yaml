@@ -783,3 +783,14 @@ inbox:
       - dx
       - gotcha
     added_by: '@claude'
+  - _ulid: 01KF7X99WBKC041DAE946ZJR66
+    text: >-
+      When implementing CLI commands that output both human-readable and JSON formats, use
+      success(message, data) instead of calling both success() and output() separately. The
+      success() function already handles JSON mode internally, avoiding duplicate/mixed output.
+    created_at: '2026-01-18T06:39:38.891Z'
+    tags:
+      - dx
+      - cli
+      - gotcha
+    added_by: '@claude'
