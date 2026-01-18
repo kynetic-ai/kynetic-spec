@@ -2423,7 +2423,7 @@
   title: Explore inbox/observations unification
   type: spike
   spec_ref: '@meta-spec'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -2455,6 +2455,7 @@
         Research finding: Most systems have single capture mechanism. Two risks dilution.
       supersedes: null
   todos: []
+  started_at: '2026-01-18T06:14:42.639Z'
 - _ulid: 01KF1H92ZHGBKBJDHMZ8HBW660
   slugs:
     - task-session-context-research
@@ -3625,6 +3626,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Auto-generated CLI documentation implemented with Commander introspection, curated content
+    separation, and comprehensive test coverage
   depends_on: []
   context: []
   priority: 2
@@ -3634,6 +3638,7 @@
   vcs_refs: []
   created_at: '2026-01-16T14:41:14.496Z'
   started_at: '2026-01-18T06:05:06.490Z'
+  completed_at: '2026-01-18T06:11:45.780Z'
   notes:
     - _ulid: 01KF3M6D2A60WZXFXHTGCDQQJ2
       created_at: '2026-01-16T14:43:48.938Z'
@@ -3713,10 +3718,6 @@
         All 409 tests pass. Ready for review.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T06:11:45.780Z'
-  closed_reason: >-
-    Auto-generated CLI documentation implemented with Commander introspection, curated content
-    separation, and comprehensive test coverage
 - _ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
   slugs:
     - task-commit-message-guidance
