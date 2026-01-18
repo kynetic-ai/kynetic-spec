@@ -1268,3 +1268,14 @@ inbox:
       - dx
       - pattern
     added_by: '@claude'
+  - _ulid: 01KF8ETY1J1P14ZAN9AZF8BMMM
+    text: >-
+      Type guards for union types: When narrowing AnyLoadedItem | LoadedMetaItem to LoadedTask,
+      check for required properties that exist on Task but not on meta items. Use 'status' in item
+      && 'depends_on' in item - NOT optional properties like closed_reason which won't exist on
+      incomplete tasks.
+    created_at: '2026-01-18T11:46:22.386Z'
+    tags:
+      - typescript
+      - dx
+    added_by: '@claude'
