@@ -8,3 +8,4 @@ export * from './alignment.js';
 export * from './fix.js';
 export * from './shadow.js';
 export * from './meta.js';
+export * from './convention-validation.js';

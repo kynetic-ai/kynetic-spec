@@ -11,13 +11,57 @@ import {
   fixFiles,
   findTaskFiles,
   expandIncludePattern,
+  loadMetaContext,
+  validateConventions,
   type ValidationResult,
   type AlignmentWarning,
   type CompletenessWarning,
   type FixResult,
+  type ConventionValidationResult,
 } from '../../parser/index.js';
 import { output, success, error, info } from '../output.js';
 import { validation as validationStrings } from '../../strings/index.js';
+
+/**
+ * Format convention validation results for display
+ * AC: @convention-definitions ac-3, ac-4
+ */
+function formatConventionValidationResult(result: ConventionValidationResult): void {
+  if (result.valid && result.skipped.length === 0) {
+    console.log(chalk.green('Conventions: OK'));
+    return;
+  }
+
+  // AC: @convention-definitions ac-4
+  // Skipped prose conventions
+  if (result.skipped.length > 0) {
+    for (const domain of result.skipped) {
+      console.log(chalk.gray(`ℹ Skipping prose convention: ${domain}`));
+    }
+  }
+
+  // AC: @convention-definitions ac-3
+  // Validation errors
+  if (result.errors.length > 0) {
+    console.log(chalk.red(`\nConvention violations: ${result.errors.length}`));
+    for (const err of result.errors) {
+      console.log(chalk.red(`  ✗ ${err.domain}`));
+      console.log(chalk.gray(`    ${err.message}`));
+      if (err.expected) {
+        console.log(chalk.gray(`    Expected: ${err.expected}`));
+      }
+      if (err.location) {
+        console.log(chalk.gray(`    Location: ${err.location}`));
+      }
+    }
+  } else {
+    console.log(chalk.green('\nConventions: OK'));
+  }
+
+  // Stats
+  console.log(chalk.gray(`\nConventions checked: ${result.stats.conventionsChecked}`));
+  console.log(chalk.gray(`Conventions skipped: ${result.stats.conventionsSkipped}`));
+}
 
 /**
  * Format completeness warnings for display
@@ -279,6 +323,7 @@ export function registerValidateCommand(program: Command): void {
     .option('--orphans', 'Find orphaned items only')
     .option('--alignment', 'Check spec-task alignment')
     .option('--completeness', 'Check spec completeness (missing AC, descriptions, status inconsistencies)')
+    .option('--conventions', 'Validate conventions')
     .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
     .option('-v, --verbose', 'Show detailed output')
     .option('--strict', 'Treat orphans as errors')
@@ -293,7 +338,7 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Determine which checks to run
-        const runAll = !options.schema && !options.refs && !options.orphans && !options.alignment && !options.completeness;
+        const runAll = !options.schema && !options.refs && !options.orphans && !options.alignment && !options.completeness && !options.conventions;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
@@ -354,6 +399,29 @@ export function registerValidateCommand(program: Command): void {
         // AC: @spec-completeness ac-4
         if (result.completenessWarnings.length > 0) {
           formatCompletenessWarnings(result.completenessWarnings, options.verbose);
+        }
+
+        // Run convention validation if requested
+        // AC: @convention-definitions ac-3, ac-4
+        if (options.conventions) {
+          try {
+            const metaCtx = await loadMetaContext(ctx);
+            if (metaCtx && metaCtx.conventions.length > 0) {
+              // For now, we just validate that conventions are well-formed
+              // Full validation against actual content (commits, notes, etc.)
+              // would require additional content gathering logic
+              const conventionResult = validateConventions(metaCtx.conventions, {});
+              formatConventionValidationResult(conventionResult);
+
+              if (!conventionResult.valid) {
+                result.valid = false;
+              }
+            } else {
+              console.log(chalk.gray('No conventions defined in meta manifest'));
+            }
+          } catch (err) {
+            console.log(chalk.yellow('Warning: Could not load meta manifest for convention validation'));
+          }
         }
 
         if (!result.valid) {
