@@ -8842,4 +8842,45 @@
            - Ensure examples reflect current CLI
            - Add meta commands where relevant
       supersedes: null
+    - _ulid: 01KF9QMASEW0DKX8PRWYJT40VM
+      created_at: '2026-01-18T23:39:17.679Z'
+      author: '@claude'
+      content: >-
+        Key distinctions learned from triage session:
+
+
+        OBSERVATIONS (meta observe) - capture during work:
+
+        - friction: things that didn't work, gotchas, blockers
+
+        - success: patterns that worked well, useful approaches  
+
+        - question: clarifications needed, process decisions
+
+        - idea: thoughts that emerge but aren't actionable yet
+
+
+        INBOX (inbox add) - capture for later:
+
+        - Feature ideas that might become specs/tasks
+
+        - Enhancement suggestions
+
+        - Things you want to do but haven't scoped
+
+
+        TRIAGE ROUTING:
+
+        - If tagged [reflection, ...] → observation
+
+        - If describes 'what worked' or 'what didn't work' → observation
+
+        - If describes a feature or improvement → inbox
+
+        - If has clear action → promote to task
+
+
+        This session converted 71 items from inbox to observations because they were actually
+        learnings/patterns, not actionable ideas.
+      supersedes: null
   todos: []
