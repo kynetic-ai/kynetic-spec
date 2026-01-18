@@ -52,5 +52,10 @@ registerSearchCommand(program);
 registerRalphCommand(program);
 registerMetaCommands(program);
 
-// Parse and execute
-program.parse();
+// Export program for introspection (used by help command)
+export { program };
+
+// Parse and execute (only when run directly)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  program.parse();
+}
