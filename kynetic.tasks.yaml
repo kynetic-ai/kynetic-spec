@@ -499,7 +499,22 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-15T03:58:00.000Z'
     started_at: null
-    notes: []
+    notes:
+      - _ulid: 01KF7ZBSG8XMZ63HS2553N0DV1
+        created_at: '2026-01-18T07:15:57.576Z'
+        author: '@claude'
+        content: |-
+          Found current implementation. Spec items can be deprecated via:
+          1. maturity: 'deprecated' status
+          2. deprecated_in: <version> field
+
+          Plan:
+          1. Add new warning type to RefValidationError (currently only has errors)
+          2. Modify validateRefs() to check resolved items for deprecation
+          3. Return warnings separately from errors in ValidationResult
+          4. Update CLI output to show warnings distinctly from errors
+          5. Add tests for deprecated reference warnings
+        supersedes: null
     todos: []
   - _ulid: 01JHNKAB12TASK320000000000
     slugs:
