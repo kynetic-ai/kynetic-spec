@@ -6753,6 +6753,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Command already implemented - fixed priority description and added JSON output support per spec
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6761,6 +6762,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.337Z'
   started_at: '2026-01-18T12:47:22.631Z'
+  completed_at: '2026-01-18T12:52:21.740Z'
   notes:
     - _ulid: 01KF8JKJMAVPJCSPJCT17TPFQ2
       created_at: '2026-01-18T12:52:15.626Z'
@@ -6771,8 +6773,6 @@
         helper to return created task object when --json flag is used. All existing tests pass.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T12:52:21.740Z'
-  closed_reason: Command already implemented - fixed priority description and added JSON output support per spec
 - _ulid: 01KF4WVWYJMY6C5ZHWCEHDDF08
   slugs:
     - task-kspec-meta-resolve
@@ -8084,7 +8084,7 @@
   type: task
   description: Test observation for promote command
   origin: observation_promotion
-  status: pending
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8094,6 +8094,9 @@
   created_at: '2026-01-18T12:49:31.265Z'
   notes: []
   todos: []
+  completed_at: '2026-01-18T12:59:08.899Z'
+  closed_reason: Test artifact from meta promote implementation - no actual work needed
+  started_at: '2026-01-18T12:59:08.899Z'
 - _ulid: 01KF8JEVMP7BW94FVB8A1RA6E8
   slugs: []
   title: Task from workflow observation
