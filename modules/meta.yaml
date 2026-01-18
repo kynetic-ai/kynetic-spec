@@ -234,7 +234,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
         description: |
           Capabilities are freeform strings describing what an agent can do:
 

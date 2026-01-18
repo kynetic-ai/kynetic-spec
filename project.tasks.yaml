@@ -5275,9 +5275,18 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.561Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:03:39.942Z'
+  notes:
+    - _ulid: 01KF88Z4V88X3MX55F7JJ9KGAJ
+      created_at: '2026-01-18T10:03:48.968Z'
+      author: '@claude'
+      content: >-
+        Verified Agent capabilities field already implemented in src/schema/meta.ts:27 as
+        'capabilities: z.array(z.string()).default([])'. This allows freeform string values as
+        specified, supporting both standard capabilities (code, test, review, refactor, design,
+        document) and custom project-specific capabilities. Implementation complete from prior work.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
   slugs:
     - task-agent-session-protocol
