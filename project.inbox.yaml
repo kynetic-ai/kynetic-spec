@@ -752,15 +752,6 @@ inbox:
       - reflection
       - dx
     added_by: '@claude'
-  - _ulid: 01KF8HZRR3MHSK44Q5F7QBXWP9
-    text: >-
-      PR workflow smooth - auto-generated branch name from task slug, reset main to origin, created
-      PR with test plan. The /pr skill workflow is well-designed for this pattern.
-    created_at: '2026-01-18T12:41:26.532Z'
-    tags:
-      - workflow
-      - reflection
-    added_by: '@claude'
   - _ulid: 01KF8KC4YRS18BC1PCRQT349EW
     text: >-
       Observation: Meta focus command implementation was straightforward thanks to well-structured
