@@ -1089,7 +1089,7 @@ function parseBulkInput(input: string): PatchOperation[] {
   if (trimmed.startsWith('[')) {
     const parsed = JSON.parse(trimmed);
     if (!Array.isArray(parsed)) {
-      throw new Error('Expected JSON array');
+      throw new Error(errors.validation.expectedJsonArray);
     }
     return parsed.map((item, i) => validatePatchOperation(item, i));
   }
@@ -1100,7 +1100,7 @@ function parseBulkInput(input: string): PatchOperation[] {
     try {
       return validatePatchOperation(JSON.parse(line), i);
     } catch (err) {
-      throw new Error(`Line ${i + 1}: ${err instanceof Error ? err.message : 'Invalid JSON'}`);
+      throw new Error(errors.validation.jsonLineError(i + 1, err instanceof Error ? err.message : 'Invalid JSON'));
     }
   });
 }
@@ -1110,14 +1110,14 @@ function parseBulkInput(input: string): PatchOperation[] {
  */
 function validatePatchOperation(obj: unknown, index: number): PatchOperation {
   if (!obj || typeof obj !== 'object') {
-    throw new Error(`Item ${index + 1}: Patch must be an object`);
+    throw new Error(errors.validation.patchMustBeObject(index));
   }
   const op = obj as Record<string, unknown>;
   if (typeof op.ref !== 'string' || !op.ref) {
-    throw new Error(`Item ${index + 1}: Patch must have "ref" string`);
+    throw new Error(errors.validation.patchMustHaveRef(index));
   }
   if (!op.data || typeof op.data !== 'object') {
-    throw new Error(`Item ${index + 1}: Patch must have "data" object`);
+    throw new Error(errors.validation.patchMustHaveData(index));
   }
   return { ref: op.ref, data: op.data as Record<string, unknown> };
 }

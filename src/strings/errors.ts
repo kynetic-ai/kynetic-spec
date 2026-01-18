@@ -70,6 +70,11 @@ export const validationErrors = {
   noPatchData: 'No patch data. Use --data or pipe JSON to stdin.',
   noInputProvided: 'No input provided. Use --data for single item or pipe JSONL/JSON for bulk.',
   failedToParseBulk: (err: string) => `Failed to parse bulk input${err ? `: ${err}` : ''}`,
+  expectedJsonArray: 'Expected JSON array',
+  patchMustBeObject: (index: number) => `Item ${index + 1}: Patch must be an object`,
+  patchMustHaveRef: (index: number) => `Item ${index + 1}: Patch must have "ref" string`,
+  patchMustHaveData: (index: number) => `Item ${index + 1}: Patch must have "data" object`,
+  jsonLineError: (line: number, message: string) => `Line ${line}: ${message}`,
 
   // Field validation
   unknownFields: (fields: string[]) => `Unknown field(s): ${fields.join(', ')}`,
