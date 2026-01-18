@@ -5305,9 +5305,18 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.593Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:03:59.683Z'
+  notes:
+    - _ulid: 01KF88ZV5035DCN5H0RNS6RW2C
+      created_at: '2026-01-18T10:04:11.809Z'
+      author: '@claude'
+      content: >-
+        Verified Session Protocol schema already implemented in src/schema/meta.ts:13-17 as
+        SessionProtocolSchema with three fields (start, checkpoint, end) all as nullable optional
+        strings. This matches the spec exactly. Schema is used in AgentSchema at line 29.
+        Implementation complete from prior work.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVW75MKNHKSYCCA87C9YE
   slugs:
     - task-workflow-definitions
