@@ -1366,7 +1366,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Tasks gain meta_ref field parallel to spec_ref:
 
