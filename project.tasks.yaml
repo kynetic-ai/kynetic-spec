@@ -8561,23 +8561,43 @@
   created_at: '2026-01-18T21:24:13.326Z'
   notes: []
   todos: []
-- title: Enhance task start output with spec context and AC guidance
+- _ulid: 01KF9FX31YBYHE1D0FZ1Y75X3X
+  slugs: []
+  title: Enhance task start output with spec context and AC guidance
+  type: task
+  description: >-
+    task start should output spec context, notes, and AC testing guidance - remind about automated
+    tests not just manual verification
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
+  vcs_refs: []
+  created_at: '2026-01-18T21:24:16.062Z'
+  notes: []
+  todos: []
+- title: Test coverage tracking and AC guidance
   type: task
   priority: 3
   spec_ref: null
   tags:
-    - cli
-    - dx
+    - testing
+    - spec
   description: >-
-    task start should output spec context, notes, and AC testing guidance - remind about automated
-    tests not just manual verification
-  _ulid: 01KF9FX31YBYHE1D0FZ1Y75X3X
+    Test coverage tracking per spec item - link tests to spec items, show coverage in item get, warn
+    when AC lacks tests
+  _ulid: 01KF9FYS8AF9M4Q5CFQMPPEWN7
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T21:24:16.062Z'
+  created_at: '2026-01-18T21:25:11.562Z'
   notes: []
   todos: []
