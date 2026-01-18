@@ -133,14 +133,15 @@ export function formatTaskRef(task: Task, index?: ReferenceIndex): string {
 /**
  * Format task for display
  */
-export function formatTask(task: Task, verbose = false, index?: ReferenceIndex): string {
+export function formatTask(task: Task, verbose = false, index?: ReferenceIndex, full = false): string {
   const ref = formatTaskRef(task, index);
   const status = statusColor(task.status)(`[${task.status}]`);
   const priority = task.priority <= 2 ? chalk.red(`P${task.priority}`) : chalk.gray(`P${task.priority}`);
 
   let line = `${ref} ${status} ${priority} ${task.title}`;
 
-  if (verbose) {
+  if (verbose && !full) {
+    // AC-2: Single verbose (-v) shows current behavior
     if (task.spec_ref) {
       line += chalk.gray(` (spec: ${task.spec_ref})`);
     }
@@ -166,16 +167,85 @@ function getFirstLine(text: string | undefined, maxLength: number = 70): string 
 }
 
 /**
+ * Format full mode context for a task (AC-1, AC-3, AC-5)
+ */
+function formatFullModeContext(task: Task, index?: ReferenceIndex): void {
+  const indent = '    ';
+
+  // Show timestamps (AC-1)
+  console.log(chalk.gray(`${indent}Created: ${task.created_at}`));
+  if (task.started_at) {
+    console.log(chalk.gray(`${indent}Started: ${task.started_at}`));
+  }
+  if (task.completed_at) {
+    console.log(chalk.gray(`${indent}Completed: ${task.completed_at}`));
+  }
+
+  // Show notes count and most recent note (AC-1, AC-3)
+  if (task.notes && task.notes.length > 0) {
+    const mostRecent = task.notes[task.notes.length - 1];
+    const preview = getFirstLine(mostRecent.content, 50);
+    console.log(chalk.gray(`${indent}Notes: ${task.notes.length} (latest: "${preview}")`));
+  }
+
+  // Show pending todos count (AC-1, AC-3)
+  if (task.todos && task.todos.length > 0) {
+    const pendingCount = task.todos.filter(t => !t.done).length;
+    if (pendingCount > 0) {
+      console.log(chalk.gray(`${indent}Pending todos: ${pendingCount}`));
+    }
+  }
+
+  // Show spec context (AC-5)
+  if (task.spec_ref && index) {
+    const result = index.resolve(task.spec_ref);
+    if (result.ok) {
+      const spec = result.item;
+      const specName = 'title' in spec ? spec.title : ('name' in spec ? spec.name : ('id' in spec ? spec.id : task.spec_ref));
+      console.log(chalk.gray(`${indent}Spec: ${task.spec_ref}`));
+      console.log(chalk.cyan(`${indent}  ${specName}`));
+
+      // Show spec description if available
+      if ('description' in spec && spec.description) {
+        const descPreview = getFirstLine(spec.description as string, 70);
+        console.log(chalk.gray(`${indent}  ${descPreview}`));
+      }
+
+      // Show acceptance criteria if available
+      if ('acceptance_criteria' in spec && Array.isArray(spec.acceptance_criteria)) {
+        const ac = spec.acceptance_criteria;
+        if (ac.length > 0) {
+          console.log(chalk.gray(`${indent}  Acceptance Criteria: ${ac.length}`));
+          // Show first AC as preview
+          const firstAC = ac[0];
+          if (typeof firstAC === 'object' && firstAC !== null && 'id' in firstAC) {
+            console.log(chalk.gray(`${indent}    [${firstAC.id}] ${firstAC.then}`));
+          }
+        }
+      }
+    }
+  }
+
+  // Show tags and dependencies if present
+  if (task.tags && task.tags.length > 0) {
+    console.log(chalk.gray(`${indent}Tags: ${task.tags.join(', ')}`));
+  }
+  if (task.depends_on && task.depends_on.length > 0) {
+    console.log(chalk.gray(`${indent}Depends on: ${task.depends_on.join(', ')}`));
+  }
+}
+
+/**
  * Format a list of tasks
  */
-export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex, grepPattern?: string): void {
+export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex, grepPattern?: string, full = false): void {
   if (tasks.length === 0) {
     console.log(summaries.noTasks);
     return;
   }
 
   for (const task of tasks) {
-    console.log(formatTask(task, verbose, index));
+    console.log(formatTask(task, verbose, index, full));
 
     // Show matched fields if grep pattern provided
     if (grepPattern) {
@@ -183,6 +253,9 @@ export function formatTaskList(tasks: Task[], verbose = false, index?: Reference
       if (match && match.matchedFields.length > 0) {
         console.log(chalk.gray(`    matched: ${formatMatchedFields(match.matchedFields)}`));
       }
+    } else if (full) {
+      // AC-1: Full mode shows richer context
+      formatFullModeContext(task, index);
     } else {
       // Show context line: first line of description (if present)
       const context = getFirstLine(task.description);
