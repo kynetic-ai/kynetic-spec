@@ -464,7 +464,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           "A supersedes B" means A replaces B, which is now deprecated.
           The old item's ULID remains stable; the relationship links them.
