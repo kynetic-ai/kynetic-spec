@@ -8633,25 +8633,47 @@
   created_at: '2026-01-18T21:26:59.054Z'
   notes: []
   todos: []
-- title: Add append-only notes to spec items
+- _ulid: 01KF9G2XR8ADWP4W6CXVB6JHJ4
+  slugs: []
+  title: Add append-only notes to spec items
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - feature
-    - spec
   description: >-
     Spec notes feature - append-only notes on spec items for capturing implementation gotchas,
     learnings, and context. Similar to task notes but for specs. Use case: documenting things like
     'git worktree prune needed for orphaned worktrees' that are valuable for
     maintenance/reimplementation but don't belong in formal AC.
-  _ulid: 01KF9G2XR8ADWP4W6CXVB6JHJ4
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - feature
+    - spec
+  vcs_refs: []
+  created_at: '2026-01-18T21:27:27.239Z'
+  notes: []
+  todos: []
+- title: Add deferred status option for stub specs
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - spec
+    - schema
+  description: >-
+    Stub spec pattern: Formalize the practice of creating spec items with status:deferred (or
+    similar) for known future work. This captures well-scoped deferrals more formally than inbox,
+    with rationale for why deferred. Consider: (1) adding 'deferred' as official status option, (2)
+    guidance on when to use stub spec vs inbox, (3) how deferred specs relate to backlog/roadmap.
+  _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T21:27:27.239Z'
+  created_at: '2026-01-18T21:39:35.001Z'
   notes: []
   todos: []

@@ -159,18 +159,6 @@ inbox:
       - tui
       - optional
     added_by: '@claude'
-  - _ulid: 01KF68ATB9QQCJ5A31M4RZJ7BP
-    text: >-
-      Stub spec pattern: Formalize the practice of creating spec items with status:deferred (or
-      similar) for known future work. This captures well-scoped deferrals more formally than inbox,
-      with rationale for why deferred. Consider: (1) adding 'deferred' as official status option,
-      (2) guidance on when to use stub spec vs inbox, (3) how deferred specs relate to
-      backlog/roadmap.
-    created_at: '2026-01-17T15:14:13.994Z'
-    tags:
-      - pattern
-      - spec-system
-    added_by: '@claude'
   - _ulid: 01KF6FBK4FEE1MK8M9MRFHCNSN
     text: >-
       Setup command improvements for existing kspec repos: When cloning a repo that already uses
