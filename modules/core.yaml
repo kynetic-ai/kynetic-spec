@@ -224,7 +224,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Slugs MUST be lowercase, alphanumeric, with hyphens allowed.
           Pattern: ^[a-z][a-z0-9-]*$
