@@ -227,9 +227,16 @@ observations:
     resolution: null
   - _ulid: 01KF8J6VZ2J9KH119AF0C5XYS0
     type: question
-    content: test question
     workflow_ref: '@task-start'
+    content: test question
     created_at: '2026-01-18T12:45:19.202Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KF8JEE87205WH8YBGSWS84G6
+    type: friction
+    content: Test observation for promote command
+    created_at: '2026-01-18T12:49:27.303Z'
     author: '@claude'
     resolved: false
     resolution: null

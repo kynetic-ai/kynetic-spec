@@ -6760,9 +6760,9 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.337Z'
+  started_at: '2026-01-18T12:47:22.631Z'
   notes: []
   todos: []
-  started_at: '2026-01-18T12:47:22.631Z'
 - _ulid: 01KF4WVWYJMY6C5ZHWCEHDDF08
   slugs:
     - task-kspec-meta-resolve
@@ -8067,4 +8067,20 @@
         patchMustHaveData, jsonLineError) to src/strings/errors.ts. Updated item.ts and ralph.ts to
         use centralized error messages. All tests passing (463 passed).
       supersedes: null
+  todos: []
+- title: Test promotion task
+  description: Test observation for promote command
+  priority: 2
+  origin: observation_promotion
+  _ulid: 01KF8JEJ42381QHEC0ZTPQG78Z
+  slugs: []
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  tags: []
+  vcs_refs: []
+  created_at: '2026-01-18T12:49:31.265Z'
+  notes: []
   todos: []
