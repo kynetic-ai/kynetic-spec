@@ -501,17 +501,6 @@ inbox:
       - workflow
       - review
     added_by: '@claude'
-  - _ulid: 01KF7KYD5FK41SMM27RGPFNQ1Z
-    text: >-
-      Iteration started on non-main branch (chore/ci-task-cleanup) from previous session. Should
-      ensure ralph loop always starts on main branch or cleans up orphaned branches. This caused
-      initial confusion when trying to commit work that was already done.
-    created_at: '2026-01-18T03:56:24.623Z'
-    tags:
-      - reflection
-      - ralph
-      - workflow
-    added_by: '@claude'
   - _ulid: 01KF7KZB4Z5P7A9C6JCQGK4E7J
     text: >-
       Ralph loop picked already-completed task @01KF4FX1 because it was still marked as ready in
