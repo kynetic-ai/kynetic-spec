@@ -25,7 +25,7 @@ import {
   loadSpecFile,
   expandIncludePattern,
 } from './yaml.js';
-import { ReferenceIndex, validateRefs, type RefValidationError } from './refs.js';
+import { ReferenceIndex, validateRefs, type RefValidationError, type RefValidationWarning } from './refs.js';
 import { findMetaManifest, loadMetaContext, type MetaContext } from './meta.js';
 
 // ============================================================
@@ -59,6 +59,7 @@ export interface ValidationResult {
   valid: boolean;
   schemaErrors: SchemaValidationError[];
   refErrors: RefValidationError[];
+  refWarnings: RefValidationWarning[];
   orphans: OrphanItem[];
   stats: {
     filesChecked: number;
@@ -497,6 +498,7 @@ export async function validate(
     valid: true,
     schemaErrors: [],
     refErrors: [],
+    refWarnings: [],
     orphans: [],
     stats: {
       filesChecked: 0,
@@ -590,7 +592,9 @@ export async function validate(
   // Reference validation
   if (runRefs && (allTasks.length > 0 || allItems.length > 0 || allMetaItems.length > 0)) {
     const index = new ReferenceIndex(allTasks, allItems, allMetaItems);
-    result.refErrors = validateRefs(index, allTasks, allItems);
+    const refResult = validateRefs(index, allTasks, allItems);
+    result.refErrors = refResult.errors;
+    result.refWarnings = refResult.warnings;
 
     // Orphan detection
     if (runOrphans) {
