@@ -5060,7 +5060,7 @@
   type: task
   spec_ref: '@meta-validation'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-manifest'
@@ -5105,6 +5105,8 @@
         and correctly reports meta_ref validation errors.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T10:02:36.081Z'
+  closed_reason: All three spec requirements already implemented and verified working
 - _ulid: 01KF4WVW3HRCGZFPXJ70QF7BC5
   slugs:
     - task-agent-definitions
