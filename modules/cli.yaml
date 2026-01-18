@@ -2027,25 +2027,6 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-17T15:18:27.678Z'
-  - _ulid: 01KF841HJFA2XESHRA4MAR06AB
-    slugs:
-      - test-guardrails-feature
-    title: Test Guardrails Feature
-    type: feature
-    tags: []
-    depends_on: []
-    implements: []
-    relates_to: []
-    tests: []
-    created: '2026-01-18T08:37:44.655Z'
-    acceptance_criteria:
-      - id: ac-1
-        given: the feature is implemented
-        when: testing occurs
-        then: it should work
-    status:
-      maturity: draft
-      implementation: implemented
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
