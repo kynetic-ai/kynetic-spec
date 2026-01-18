@@ -2464,7 +2464,7 @@
   type: task
   spec_ref: '@task-patch'
   derivation: auto
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -2474,7 +2474,6 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T12:58:28.921Z'
-  started_at: '2026-01-18T03:57:11.250Z'
   notes:
     - _ulid: 01KF7M43V8AG2QNC697Y6EECZX
       created_at: '2026-01-18T03:59:31.688Z'
@@ -2504,6 +2503,38 @@
         4. Complete task
 
         DO NOT MERGE - tests failing
+      supersedes: null
+    - _ulid: 01KF7MFC3A9PK7C7J18D24JZGV
+      created_at: '2026-01-18T04:05:40.586Z'
+      author: '@claude'
+      content: >-
+        Attempted to implement task patch command following spec @task-patch. Implementation pattern
+        based on existing task set and item patch commands. 
+
+
+        Implementation included:
+
+        - JSON parsing from --data flag or stdin  
+
+        - Validation against TaskInputSchema.partial()
+
+        - --dry-run flag for preview
+
+        - --allow-unknown flag for extensibility
+
+        - Error handling for invalid JSON and unknown fields
+
+
+        Created 6 tests covering all 4 acceptance criteria plus additional edge cases.
+
+
+        BLOCKER: File changes were repeatedly reverted by linter or auto-save mechanism. Both
+        implementation in src/cli/commands/task.ts and tests in tests/integration.test.ts were
+        removed after being written. This happened twice - implementation was written, verified with
+        grep, then disappeared. System reminders confirm linter modifications.
+
+
+        Need to investigate why files are being auto-reverted before this task can be completed.
       supersedes: null
   todos: []
 - _ulid: 01KF3EDGZSCKXCKAEK5C0G6BJC
