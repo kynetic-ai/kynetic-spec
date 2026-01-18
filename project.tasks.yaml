@@ -946,7 +946,7 @@
   title: Archive completed tasks to separate file
   type: spike
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1043,6 +1043,12 @@
         **Next**: Draft spec for task archiving command to align with design doc pattern.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T07:33:41.234Z'
+  closed_reason: >-
+    Spike complete: Manual archive command recommended as MVP. Archive file
+    (project.tasks.archive.yaml) will be loaded alongside active tasks, preserving references and
+    validation. Aligns with design doc's auto-adaptive storage pattern. Ready for
+    spec+implementation if prioritized.
 - _ulid: 01KF00CWN1R0XTG1R0A42BSXSE
   slugs:
     - task-prompt-refactor
