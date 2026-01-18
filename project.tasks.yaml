@@ -2423,7 +2423,7 @@
   title: Explore inbox/observations unification
   type: spike
   spec_ref: '@meta-spec'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -2500,6 +2500,10 @@
         4. Consider inbox item: 'Document observations usage guidance in AGENTS.md'
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T06:16:36.518Z'
+  closed_reason: >-
+    Spike complete. Recommendation: Keep inbox and observations separate - they serve distinct
+    purposes with different query patterns and mental models. See task notes for full rationale.
 - _ulid: 01KF1H92ZHGBKBJDHMZ8HBW660
   slugs:
     - task-session-context-research
