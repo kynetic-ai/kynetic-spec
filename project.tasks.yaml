@@ -2929,6 +2929,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented meta manifest feature with schema validation, parser, CLI commands, and validation
+    integration. All 3 acceptance criteria met.
   depends_on: []
   context: []
   priority: 1
@@ -2938,6 +2941,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.390Z'
   started_at: '2026-01-17T23:50:03.334Z'
+  completed_at: '2026-01-17T23:58:00.852Z'
   notes:
     - _ulid: 01KF75VNMW9GTW7B9K2CYM9K2K
       created_at: '2026-01-17T23:50:14.940Z'
@@ -2982,10 +2986,6 @@
         Implementation complete, need to create bootstrap file and write tests.
       supersedes: null
   todos: []
-  completed_at: '2026-01-17T23:58:00.852Z'
-  closed_reason: >-
-    Implemented meta manifest feature with schema validation, parser, CLI commands, and validation
-    integration. All 3 acceptance criteria met.
 - _ulid: 01KF4WVW0YWMRS6R0M19J5B84P
   slugs:
     - task-meta-manifest-format
@@ -3047,7 +3047,7 @@
   type: task
   spec_ref: '@agent-definitions'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -3060,6 +3060,7 @@
   created_at: '2026-01-17T02:34:35.505Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T00:31:31.631Z'
 - _ulid: 01KF4WVW4C16W09RWGY3C95T54
   slugs:
     - task-agent-schema
