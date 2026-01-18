@@ -6312,6 +6312,26 @@
         questions from .kspec-session file. Added StoredSessionContext to SessionContext interface
         and updated formatSessionContext to display the data. All tests pass.
       supersedes: null
+    - _ulid: 01KF8G2FGNKA3ZSWFJS83TCQJZ
+      created_at: '2026-01-18T12:07:58.229Z'
+      author: '@claude'
+      content: |-
+        Additional WIP commit: Added display formatting in formatSessionContext function.
+
+        The display section shows:
+        - Focus (if set)
+        - Active threads (if any)
+        - Open questions (if any)
+
+        Only displays section if context exists and has content.
+
+        Still needs:
+        - Loading context in gatherSessionContext (ctx.context = await loadSessionContext(...))
+        - Tests for the display formatting
+        - Integration test for end-to-end flow
+
+        Draft PR #52 contains all WIP commits.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
   slugs:
