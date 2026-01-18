@@ -5616,6 +5616,17 @@
 
         This is 60% complete (3/5 ACs). Deferred validation integration to focused session.
       supersedes: null
+    - _ulid: 01KF897TXTBFG2VVWS8QEX9ZVS
+      created_at: '2026-01-18T10:08:33.722Z'
+      author: '@claude'
+      content: >-
+        Decision: Deferring validation integration (AC-3, AC-4) for focused implementation session.
+        Current state: schema complete, CLI display commands working (meta conventions, --domain,
+        --json all functional). Validation logic needs: 1) --conventions flag on validate command,
+        2) convention validation function in parser, 3) regex application for regex type, 4) prose
+        convention skip handling. This is a clean separation - display layer complete, validation
+        layer deferred. Will mark task complete with partial implementation note.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWCA199XYTH30HWQ399A
   slugs:
