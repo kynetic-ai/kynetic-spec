@@ -3111,6 +3111,34 @@
 
         The approach is clear - next iteration can pick this up and complete AC-3.
       supersedes: null
+    - _ulid: 01KF7A17XX47RMRXT0QKKZP9NK
+      created_at: '2026-01-18T01:03:11.806Z'
+      author: '@claude'
+      content: >-
+        Completed all 3 ACs:
+
+
+        AC-1: kspec meta agents table output - implemented with cli-table3
+
+        AC-2: kspec meta agents --json output - full agent details
+
+        AC-3: Reference validation for agent references - extended ReferenceIndex to include meta
+        items, extractRefs to check notes[].author and todos[].added_by
+
+
+        Key implementation details:
+
+        - Fixed MetaUlidSchema to use strict 26-char ULID validation (was too lenient)
+
+        - Meta items indexed by 'id' field as slug equivalent
+
+        - Added test fixtures with proper ULIDs using ulid library
+
+        - 6 comprehensive tests covering all scenarios
+
+
+        PR #21 updated with full implementation. All 336 tests pass.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVW4C16W09RWGY3C95T54
   slugs:
