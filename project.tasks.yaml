@@ -8277,25 +8277,48 @@
   created_at: '2026-01-18T20:00:38.313Z'
   notes: []
   todos: []
-- title: Add missing ACs to status-cascade spec
+- _ulid: 01KF9B41KHRT5VDM12JGAGT90B
+  slugs: []
+  title: Add missing ACs to status-cascade spec
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - spec-gap
-    - status-cascade
   description: >-
     Status cascade spec gap: @status-cascade only has 1 AC but implementation handles 4+ behaviors
     (prompt shown, user accepts, user rejects, JSON mode, no children case). Need to add missing ACs
     to match implementation. Also clarify whether maturity status should cascade along with
     implementation status.
-  _ulid: 01KF9B41KHRT5VDM12JGAGT90B
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - spec-gap
+    - status-cascade
+  vcs_refs: []
+  created_at: '2026-01-18T20:00:41.073Z'
+  notes: []
+  todos: []
+- title: Fix spec status persistence on task start
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - workflow
+    - spec
+    - gap
+  description: >-
+    Spec status persistence gap: When task start syncs spec implementation status to in_progress,
+    this change should be committed or included with the task start commit. Currently the status
+    update happens but may not be persisted until later work creates a commit. The gap was noticed
+    when spec went in_progress but wasn't captured in the commit stream.
+  _ulid: 01KF9B44CSARAD770GJJQS8YMM
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-18T20:00:41.073Z'
+  created_at: '2026-01-18T20:00:43.928Z'
   notes: []
   todos: []
