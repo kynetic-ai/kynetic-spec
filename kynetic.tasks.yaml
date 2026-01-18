@@ -1077,6 +1077,14 @@ tasks:
           Will follow similar pattern to item commands with create/list/delete operations that
           update source YAML files via parser functions.
         supersedes: null
+      - _ulid: 01KF7WJBVKRF4F705KGYVFWVFY
+        created_at: '2026-01-18T06:27:07.252Z'
+        author: '@claude'
+        content: >-
+          Implementation complete. All three commands (create, list, delete) work correctly.
+          Commands manage depends_on, implements, and relates_to relationship arrays on spec items.
+          Shadow branch auto-commits enabled. Now adding tests.
+        supersedes: null
     todos: []
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
     slugs:
