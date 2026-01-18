@@ -511,20 +511,6 @@ inbox:
       - meta
       - implementation
     added_by: '@claude'
-  - _ulid: 01KF89DZP5CZR4NAPXWWK1TQJF
-    text: >-
-      Observation: Verification-only iterations (checking if derived tasks are already complete)
-      produce no commits. This is efficient - avoids churning code when implementation exists.
-      However, PR-per-iteration guidance assumes code changes. Consider: should verification
-      iterations still create a documentation PR? Or is skipping PR acceptable when working tree is
-      clean? Current behavior: skip PR when nothing to commit. This seems right - PRs should
-      represent actual changes.
-    created_at: '2026-01-18T10:11:55.205Z'
-    tags:
-      - reflection
-      - workflow
-      - pr
-    added_by: '@claude'
   - _ulid: 01KF8B841NY3SCEWVZQZMRY2TJ
     text: >-
       Convention schema was already implemented but lacked test coverage. When picking up
