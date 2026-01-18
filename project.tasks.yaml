@@ -6190,7 +6190,7 @@
   type: task
   spec_ref: '@meta-show'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6201,6 +6201,7 @@
   created_at: '2026-01-17T02:34:36.171Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T10:10:30.683Z'
 - _ulid: 01KF4WVWS2237WK5KE3DKFK9TY
   slugs:
     - task-kspec-meta-agents
