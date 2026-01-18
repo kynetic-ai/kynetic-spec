@@ -8,8 +8,29 @@ Additions to the built-in ralph prompt. For general kspec workflow, see AGENTS.m
 ```bash
 gh pr list --state open
 ```
-- Review open PRs, leave feedback, fix issues
-- Merge if clean (don't merge your own unless changes are trivial)
+
+### PR Review Workflow
+
+For each open PR, launch a **dedicated review subagent**:
+```
+Task tool → subagent_type: "general-purpose" → prompt: "Run /review against PR #N"
+```
+
+Then follow this decision tree:
+
+**Did you author this PR?** (i.e., did you create it in a previous session iteration?)
+
+- **No (someone else's PR or from a prior session)**:
+  - Review passes → Merge it
+  - Review finds issues → Post feedback, then implement fixes yourself
+
+- **Yes (you created this PR in the current session)**:
+  - Review passes → Merge it (your changes haven't been reviewed yet, but the subagent just did)
+  - Review finds issues → Implement fixes, then:
+    - **Trivial fixes** (typos, formatting, small tweaks) → Merge
+    - **Non-trivial fixes** (logic changes, new code) → Run another review subagent cycle
+
+**Key point**: The review subagent provides the independent review. "Don't merge your own" means don't skip the review step - it doesn't mean abandon the PR. Every PR should be reviewed and merged (or have clear blocking issues documented).
 
 ## Reference Directories
 
