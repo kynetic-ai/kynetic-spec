@@ -6950,7 +6950,7 @@
   type: task
   spec_ref: '@meta-get-cmd'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6969,6 +6969,9 @@
         prefixes and semantic IDs, outputs JSON or formatted display.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:28.076Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:28.076Z'
 - _ulid: 01KF4WVX49KH8XZMK62KMS1YAX
   slugs:
     - task-kspec-meta-list
