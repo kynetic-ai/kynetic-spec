@@ -13,10 +13,63 @@ import {
   expandIncludePattern,
   type ValidationResult,
   type AlignmentWarning,
+  type CompletenessWarning,
   type FixResult,
 } from '../../parser/index.js';
 import { output, success, error, info } from '../output.js';
 import { validation as validationStrings } from '../../strings/index.js';
+
+/**
+ * Format completeness warnings for display
+ * AC: @spec-completeness ac-4
+ */
+function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: boolean): void {
+  if (warnings.length === 0) {
+    console.log(chalk.green('Completeness: OK'));
+    return;
+  }
+
+  console.log(chalk.yellow(`\nCompleteness warnings: ${warnings.length}`));
+
+  // Group by type
+  const missingAC = warnings.filter(w => w.type === 'missing_acceptance_criteria');
+  const missingDesc = warnings.filter(w => w.type === 'missing_description');
+  const statusMismatch = warnings.filter(w => w.type === 'status_inconsistency');
+
+  // AC: @spec-completeness ac-4
+  // Show summary with counts by issue type
+  if (missingAC.length > 0) {
+    console.log(chalk.yellow(`  Missing acceptance criteria: ${missingAC.length}`));
+    const shown = verbose ? missingAC : missingAC.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.gray(`    ○ ${w.itemRef} - ${w.itemTitle}`));
+    }
+    if (!verbose && missingAC.length > 3) {
+      console.log(chalk.gray(`    ... and ${missingAC.length - 3} more`));
+    }
+  }
+
+  if (missingDesc.length > 0) {
+    console.log(chalk.yellow(`  Missing descriptions: ${missingDesc.length}`));
+    const shown = verbose ? missingDesc : missingDesc.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.gray(`    ○ ${w.itemRef} - ${w.itemTitle}`));
+    }
+    if (!verbose && missingDesc.length > 3) {
+      console.log(chalk.gray(`    ... and ${missingDesc.length - 3} more`));
+    }
+  }
+
+  if (statusMismatch.length > 0) {
+    console.log(chalk.yellow(`  Status inconsistencies: ${statusMismatch.length}`));
+    for (const w of statusMismatch) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+  }
+}
 
 /**
  * Format alignment warnings for display
@@ -225,6 +278,7 @@ export function registerValidateCommand(program: Command): void {
     .option('--refs', 'Check reference resolution only')
     .option('--orphans', 'Find orphaned items only')
     .option('--alignment', 'Check spec-task alignment')
+    .option('--completeness', 'Check spec completeness (missing AC, descriptions, status inconsistencies)')
     .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
     .option('-v, --verbose', 'Show detailed output')
     .option('--strict', 'Treat orphans as errors')
@@ -239,11 +293,12 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Determine which checks to run
-        const runAll = !options.schema && !options.refs && !options.orphans && !options.alignment;
+        const runAll = !options.schema && !options.refs && !options.orphans && !options.alignment && !options.completeness;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
           orphans: runAll || options.orphans,
+          completeness: runAll || options.completeness,
         };
 
         const result = await validate(ctx, validateOptions);
@@ -295,6 +350,12 @@ export function registerValidateCommand(program: Command): void {
           );
         }
 
+        // Show completeness warnings if any
+        // AC: @spec-completeness ac-4
+        if (result.completenessWarnings.length > 0) {
+          formatCompletenessWarnings(result.completenessWarnings, options.verbose);
+        }
+
         if (!result.valid) {
           process.exit(1);
         }
@@ -311,6 +372,7 @@ export function registerValidateCommand(program: Command): void {
     .option('--schema', 'Check schema conformance only')
     .option('--refs', 'Check reference resolution only')
     .option('--orphans', 'Find orphaned items only')
+    .option('--completeness', 'Check spec completeness (missing AC, descriptions, status inconsistencies)')
     .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
     .option('-v, --verbose', 'Show detailed output')
     .option('--strict', 'Treat orphans as errors')
@@ -323,11 +385,12 @@ export function registerValidateCommand(program: Command): void {
           process.exit(1);
         }
 
-        const runAll = !options.schema && !options.refs && !options.orphans;
+        const runAll = !options.schema && !options.refs && !options.orphans && !options.completeness;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
           orphans: runAll || options.orphans,
+          completeness: runAll || options.completeness,
         };
 
         const result = await validate(ctx, validateOptions);
