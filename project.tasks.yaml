@@ -4991,7 +4991,7 @@
   type: task
   spec_ref: '@meta-includes'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-manifest'
@@ -5047,6 +5047,12 @@
         across includes. All 61 tests passing.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T09:56:33.469Z'
+  closed_reason: >-
+    Meta includes fully implemented and tested. Parser already supported includes, fixed CLI
+    commands to properly use metaCtx collections (agents/workflows/conventions/observations) instead
+    of metaCtx.manifest. Added 5 comprehensive integration tests. All tests passing (61/62, 1
+    skipped).
 - _ulid: 01KF4WVW2M8FAEWW68DHC64PXA
   slugs:
     - task-meta-validation-integration
