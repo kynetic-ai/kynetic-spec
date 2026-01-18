@@ -6,7 +6,7 @@ title: Core Primitives
 type: module
 status:
   maturity: draft
-  implementation: not_started
+  implementation: implemented
 description: |
   The foundational concepts that everything else builds on:
   spec items as the fundamental unit, the ULID+slug ID system,
