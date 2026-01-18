@@ -927,7 +927,7 @@
   title: Refactor prompts and guidance text into centralized location
   type: task
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -970,6 +970,7 @@
         - Consistent tone across commands
       supersedes: null
   todos: []
+  started_at: '2026-01-18T04:14:41.514Z'
 - _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   slugs:
     - task-kspec-task-delete
@@ -2466,6 +2467,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implementation complete and merged in PR #26. All 6 tests pass, command works correctly with
+    JSON data, stdin, validation, dry-run mode.
   depends_on: []
   context: []
   priority: 2
@@ -2474,6 +2478,8 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-16T12:58:28.921Z'
+  started_at: '2026-01-18T04:14:25.858Z'
+  completed_at: '2026-01-18T04:14:25.858Z'
   notes:
     - _ulid: 01KF7M43V8AG2QNC697Y6EECZX
       created_at: '2026-01-18T03:59:31.688Z'
@@ -2537,11 +2543,6 @@
         Need to investigate why files are being auto-reverted before this task can be completed.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T04:14:25.858Z'
-  closed_reason: >-
-    Implementation complete and merged in PR #26. All 6 tests pass, command works correctly with
-    JSON data, stdin, validation, dry-run mode.
-  started_at: '2026-01-18T04:14:25.858Z'
 - _ulid: 01KF3EDGZSCKXCKAEK5C0G6BJC
   slugs:
     - task-kspec-module-add
