@@ -7037,7 +7037,7 @@
   type: task
   spec_ref: '@meta-set-cmd'
   derivation: auto
-  status: pending
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -7055,6 +7055,9 @@
         src/cli/commands/meta.ts:1017-1130. Updates existing meta items with type-specific options.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T15:45:38.879Z'
+  closed_reason: Already implemented - discovered during task audit
+  started_at: '2026-01-18T15:45:38.879Z'
 - _ulid: 01KF4WVX755EQVCW8MWV7JBVEK
   slugs:
     - task-kspec-meta-delete
