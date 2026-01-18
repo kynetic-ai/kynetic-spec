@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import type { Task, TaskStatus } from '../schema/index.js';
 import type { ReferenceIndex } from '../parser/index.js';
 import { grepItem, formatMatchedFields } from '../utils/grep.js';
+import { fieldLabels, sectionHeaders, summaries } from '../strings/labels.js';
 
 /**
  * Output options
@@ -156,7 +157,7 @@ function getFirstLine(text: string | undefined, maxLength: number = 70): string 
  */
 export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex, grepPattern?: string): void {
   if (tasks.length === 0) {
-    console.log(chalk.gray('No tasks found'));
+    console.log(summaries.noTasks);
     return;
   }
 
@@ -178,7 +179,7 @@ export function formatTaskList(tasks: Task[], verbose = false, index?: Reference
     }
   }
 
-  console.log(chalk.gray(`\n${tasks.length} task(s)`));
+  console.log(summaries.taskCount(tasks.length));
 }
 
 /**
@@ -187,21 +188,21 @@ export function formatTaskList(tasks: Task[], verbose = false, index?: Reference
 export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
   console.log(chalk.bold(task.title));
   console.log(chalk.gray('─'.repeat(40)));
-  console.log(`ULID:      ${task._ulid}`);
+  console.log(`${fieldLabels.ulid}      ${task._ulid}`);
   if (task.slugs.length > 0) {
-    console.log(`Slugs:     ${task.slugs.join(', ')}`);
+    console.log(`${fieldLabels.slugs}     ${task.slugs.join(', ')}`);
   }
-  console.log(`Type:      ${task.type}`);
-  console.log(`Status:    ${statusColor(task.status)(task.status)}`);
-  console.log(`Priority:  ${task.priority}`);
+  console.log(`${fieldLabels.type}      ${task.type}`);
+  console.log(`${fieldLabels.status}    ${statusColor(task.status)(task.status)}`);
+  console.log(`${fieldLabels.priority}  ${task.priority}`);
 
   if (task.spec_ref) {
-    console.log(`Spec ref:  ${task.spec_ref}`);
+    console.log(`${fieldLabels.specRef}  ${task.spec_ref}`);
   }
 
   if (task.depends_on.length > 0) {
     if (index) {
-      console.log(`Depends:`);
+      console.log(fieldLabels.depends);
       for (const ref of task.depends_on) {
         const result = index.resolve(ref);
         if (result.ok) {
@@ -217,24 +218,24 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
         }
       }
     } else {
-      console.log(`Depends:   ${task.depends_on.join(', ')}`);
+      console.log(`${fieldLabels.depends}   ${task.depends_on.join(', ')}`);
     }
   }
 
   if (task.blocked_by.length > 0) {
-    console.log(chalk.red(`Blocked:   ${task.blocked_by.join(', ')}`));
+    console.log(chalk.red(`${fieldLabels.blocked}   ${task.blocked_by.join(', ')}`));
   }
 
   if (task.tags.length > 0) {
-    console.log(`Tags:      ${task.tags.join(', ')}`);
+    console.log(`${fieldLabels.tags}      ${task.tags.join(', ')}`);
   }
 
-  console.log(`Created:   ${task.created_at}`);
+  console.log(`${fieldLabels.created}   ${task.created_at}`);
   if (task.started_at) {
-    console.log(`Started:   ${task.started_at}`);
+    console.log(`${fieldLabels.started}   ${task.started_at}`);
   }
   if (task.completed_at) {
-    console.log(`Completed: ${task.completed_at}`);
+    console.log(`${fieldLabels.completed} ${task.completed_at}`);
   }
 
   // Show resolved spec information
@@ -242,12 +243,12 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
     const result = index.resolve(task.spec_ref);
     if (result.ok) {
       const spec = result.item;
-      console.log(chalk.gray('\n─── Spec Context ───'));
+      console.log(`\n${sectionHeaders.specContext}`);
       // Handle both spec items (with title) and meta items (with name)
       const specName = 'title' in spec ? spec.title : ('name' in spec ? spec.name : ('id' in spec ? spec.id : task.spec_ref));
       console.log(chalk.cyan(specName));
       if ('type' in spec && spec.type) {
-        console.log(chalk.gray(`Type: ${spec.type}`));
+        console.log(chalk.gray(`${fieldLabels.type} ${spec.type}`));
       }
       // Show implementation status
       if ('status' in spec && spec.status && typeof spec.status === 'object') {
@@ -257,11 +258,11 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
             : status.implementation === 'implemented' ? chalk.cyan
             : status.implementation === 'in_progress' ? chalk.yellow
             : chalk.gray;
-          console.log(chalk.gray('Implementation: ') + implColor(status.implementation));
+          console.log(chalk.gray(fieldLabels.implementation) + implColor(status.implementation));
         }
       }
       if ('description' in spec && spec.description) {
-        console.log(chalk.gray('Description:'));
+        console.log(chalk.gray(fieldLabels.description));
         // Indent description lines
         const desc = String(spec.description).trim();
         for (const line of desc.split('\n')) {
@@ -269,7 +270,7 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
         }
       }
       if ('acceptance_criteria' in spec && Array.isArray(spec.acceptance_criteria) && spec.acceptance_criteria.length > 0) {
-        console.log(chalk.gray('Acceptance Criteria:'));
+        console.log(chalk.gray(fieldLabels.acceptanceCriteria));
         for (const ac of spec.acceptance_criteria) {
           if (ac && typeof ac === 'object' && 'id' in ac) {
             const acObj = ac as { id: string; given?: string; when?: string; then?: string };
@@ -290,7 +291,7 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
         };
         const hasTrace = trace.implementation?.length || trace.tests?.length || trace.commits?.length || trace.issues?.length;
         if (hasTrace) {
-          console.log(chalk.gray('Traceability:'));
+          console.log(chalk.gray(fieldLabels.traceability));
           if (trace.implementation?.length) {
             for (const impl of trace.implementation) {
               let loc = `  Code: ${impl.path}`;
@@ -316,7 +317,7 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
   }
 
   if (task.notes.length > 0) {
-    console.log(chalk.gray('\n─── Notes ───'));
+    console.log(`\n${sectionHeaders.notes}`);
     for (const note of task.notes) {
       const author = note.author || 'unknown';
       console.log(chalk.gray(`[${note.created_at}] ${author}:`));
@@ -325,7 +326,7 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
   }
 
   if (task.todos.length > 0) {
-    console.log(chalk.gray('\n─── Todos ───'));
+    console.log(`\n${sectionHeaders.todos}`);
     for (const todo of task.todos) {
       const check = todo.done ? chalk.green('✓') : chalk.gray('○');
       const text = todo.done ? chalk.strikethrough.gray(todo.text) : todo.text;
