@@ -956,6 +956,7 @@
     - tasks
   vcs_refs: []
   created_at: '2026-01-15T04:38:31.085Z'
+  started_at: '2026-01-18T07:30:53.536Z'
   notes:
     - _ulid: 01KEZZ5KJ4BZER0DSRWKWE2WGF
       created_at: '2026-01-15T04:38:39.429Z'
@@ -966,8 +967,41 @@
         needed: naming convention, manual vs automatic archiving, whether to support unarchiving,
         how references to archived tasks should work.
       supersedes: null
+    - _ulid: 01KF8097M3Q30XCYX12RJGS4WC
+      created_at: '2026-01-18T07:32:02.307Z'
+      author: '@claude'
+      content: >-
+        Reviewed current task loading system. Key findings:
+
+
+        1. **Multiple task files already supported**: loadAllTasks() searches for *.tasks.yaml files
+        in specDir (shadow mode) or rootDir/spec/tasks (traditional mode). System already handles
+        multiple task files natively.
+
+
+        2. **File size**: project.tasks.yaml is 210KB with 66 completed + 3 cancelled = 69 closed
+        tasks out of 151 total. File is getting large but not unwieldy yet.
+
+
+        3. **Task references**: Tasks can have depends_on relationships. If we archive, we need to
+        ensure archived tasks remain resolvable for validation and queries.
+
+
+        4. **Loading pattern**: Tasks from all *.tasks.yaml files are loaded together, so
+        archive.tasks.yaml would work seamlessly.
+
+
+        Design questions to answer:
+
+        - Manual vs automatic archiving (CLI command vs auto-move on complete)?
+
+        - Naming: project.tasks.archive.yaml or tasks.archive.yaml?
+
+        - Should archived tasks be loaded by default or only when needed?
+
+        - How to handle references to archived tasks (keep in index? special handling?)
+      supersedes: null
   todos: []
-  started_at: '2026-01-18T07:30:53.536Z'
 - _ulid: 01KF00CWN1R0XTG1R0A42BSXSE
   slugs:
     - task-prompt-refactor
