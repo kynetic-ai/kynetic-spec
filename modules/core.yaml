@@ -144,7 +144,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           ULIDs are 26-character strings in Crockford base32 encoding.
           Format: TTTTTTTTTTNNNNNNNNNNNNNNNN
