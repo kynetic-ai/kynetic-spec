@@ -1214,3 +1214,13 @@ inbox:
       - reflection
       - testing
     added_by: '@claude'
+  - _ulid: 01KF8BTJ0D5CC81G2ZHCD5SQNW
+    text: >-
+      kspec-meta shadow branch has diverged significantly from remote (99 local vs 2 remote
+      commits). Merge conflicts in sessions/ and modules/. May need manual reconciliation or a fresh
+      sync strategy. Task changes are committed locally and functional.
+    created_at: '2026-01-18T10:53:44.333Z'
+    tags:
+      - kspec-meta
+      - dx
+    added_by: '@claude'
