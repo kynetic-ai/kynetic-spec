@@ -3674,6 +3674,15 @@
         observe, observations, promote, resolve. Still need: show, conventions, focus, thread,
         question, context, get, list, add, set, delete. Will start with 'meta show' command.
       supersedes: null
+    - _ulid: 01KF7GQGV1XZ2CW2Y1KPKJDX92
+      created_at: '2026-01-18T03:00:13.281Z'
+      author: '@claude'
+      content: >-
+        Implemented three key meta CLI commands: 'conventions', 'get', and 'list'. AC coverage:
+        AC-conv-1, AC-conv-2, AC-conv-5 for conventions; meta-get-cmd for unified item retrieval;
+        meta-list-cmd for unified listing. All commands support --json output and work with all meta
+        item types (agents, workflows, conventions, observations). Tests pass (31/32, 1 skipped).
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
   slugs:
