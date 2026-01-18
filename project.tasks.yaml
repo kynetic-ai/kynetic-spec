@@ -6981,6 +6981,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - discovered during task audit
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6988,6 +6989,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.553Z'
+  started_at: '2026-01-18T15:45:31.658Z'
+  completed_at: '2026-01-18T15:45:31.658Z'
   notes:
     - _ulid: 01KF8WGS9NSPH2SYWTM24XPHCB
       created_at: '2026-01-18T15:45:29.909Z'
@@ -6998,9 +7001,6 @@
         output.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T15:45:31.658Z'
-  closed_reason: Already implemented - discovered during task audit
-  started_at: '2026-01-18T15:45:31.658Z'
 - _ulid: 01KF4WVX5C9SJA70WYKWHPH9EP
   slugs:
     - task-kspec-meta-add
@@ -7017,7 +7017,15 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.588Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WGX4KYENZAZPH2T2NTYPV
+      created_at: '2026-01-18T15:45:33.843Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit e36d486c (2026-01-17) in
+        src/cli/commands/meta.ts:918-1015. Creates agents, workflows, or conventions with
+        type-specific options.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVX658M3KXFWYJSPKDWB9
   slugs:
