@@ -1310,3 +1310,12 @@ inbox:
       - workflow
       - process
     added_by: '@claude'
+  - _ulid: 01KF8G7AF9WSWZ7D18Z0SBE685
+    text: >-
+      Context integration implementation was straightforward - schema and storage were already in
+      place. The key insight from the spec example was showing context BEFORE active work, giving
+      agents immediate orientation. This placement makes sense: context is 'what I'm thinking about'
+      while active tasks are 'what I'm doing'.
+    created_at: '2026-01-18T12:10:36.905Z'
+    tags: []
+    added_by: '@claude'

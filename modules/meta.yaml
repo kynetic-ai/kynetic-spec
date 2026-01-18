@@ -912,7 +912,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           Context appears in session start output:
 
