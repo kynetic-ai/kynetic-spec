@@ -711,8 +711,8 @@ export function registerMetaCommands(program: Command): void {
             const taskResult = index.resolve(obs.promoted_to);
             if (!taskResult.ok) return false;
             const item = taskResult.item;
-            // Type guard: check if item is a task with status
-            return 'status' in item && item.status === 'completed';
+            // Type guard: check if item is a task (has status and depends_on properties)
+            return 'status' in item && 'depends_on' in item && item.status === 'completed';
           });
         }
 
@@ -853,8 +853,8 @@ export function registerMetaCommands(program: Command): void {
 
           if (taskResult.ok) {
             const item = taskResult.item;
-            // Type guard: ensure this is a task with status and closed_reason
-            if ('status' in item && 'closed_reason' in item) {
+            // Type guard: ensure this is a task (has status and depends_on properties)
+            if ('status' in item && 'depends_on' in item) {
               const task = item as LoadedTask;
               if (task.status === 'completed' && task.closed_reason) {
                 finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
