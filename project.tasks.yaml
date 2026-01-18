@@ -5895,6 +5895,15 @@
         (AC-8). Linked to AC-3 from parent observations feature. This is a multi-step feature
         requiring CLI, parser, and validation changes. Deferring for focused implementation session.
       supersedes: null
+    - _ulid: 01KF89EJHX15AJKKD8MCSP44SV
+      created_at: '2026-01-18T10:12:14.525Z'
+      author: '@claude'
+      content: >-
+        Session end state: Not implemented, deferred for focused implementation session. This task
+        was started for assessment but requires significant CLI and parser work. Task remains
+        in_progress as placeholder - future iteration should either implement it or mark as
+        blocked/cancelled if deprioritized. No code written this session.
+      supersedes: null
   todos: []
 - _ulid: 01KF4WVWJYYXHX7MWJSJV3E56N
   slugs:
@@ -6253,6 +6262,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Command implemented and functional, displays workflows with required columns
   depends_on:
     - '@task-meta-cli-commands'
   context: []
@@ -6261,6 +6271,7 @@
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.225Z'
   started_at: '2026-01-18T10:11:21.576Z'
+  completed_at: '2026-01-18T10:11:24.835Z'
   notes:
     - _ulid: 01KF89D0FG5TNN6R8K9YA21K4G
       created_at: '2026-01-18T10:11:23.248Z'
@@ -6271,8 +6282,6 @@
         options likely implemented. Core functionality complete.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T10:11:24.835Z'
-  closed_reason: Command implemented and functional, displays workflows with required columns
 - _ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
   slugs:
     - task-kspec-meta-conventions
