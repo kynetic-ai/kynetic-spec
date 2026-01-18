@@ -425,19 +425,6 @@ inbox:
     created_at: '2026-01-17T23:55:54.360Z'
     tags: []
     added_by: '@claude'
-  - _ulid: 01KF80K3CX8MMHBMN3NJCMCQDG
-    text: >-
-      Shadow CLI verification iteration: Picked task @01KF1VKEC (Shadow CLI Commands) from ready
-      list. Found all three commands (status, log, repair) already implemented in
-      src/cli/commands/shadow.ts with 43 passing tests. Verified functionality working correctly.
-      Completed task and updated spec alignment. No code changes to main branch needed. Key
-      learning: spec items marked as 'implemented' were accurate - implementation existed and was
-      tested.
-    created_at: '2026-01-18T07:37:25.662Z'
-    tags:
-      - iteration-summary
-      - ralph-loop
-    added_by: '@claude'
   - _ulid: 01KF85Y564GJZ7ZMEE11Q6B815
     text: >-
       Status cascade spec gap: @status-cascade only has 1 AC but implementation handles 4+ behaviors
