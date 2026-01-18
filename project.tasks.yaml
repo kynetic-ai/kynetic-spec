@@ -7221,6 +7221,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - discovered during task audit
   depends_on:
     - '@task-meta-reference-integration'
   context: []
@@ -7228,6 +7229,8 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.765Z'
+  started_at: '2026-01-18T15:46:02.166Z'
+  completed_at: '2026-01-18T15:46:02.166Z'
   notes:
     - _ulid: 01KF8WHPT64K9WHC48PR1HHW71
       created_at: '2026-01-18T15:46:00.135Z'
@@ -7237,9 +7240,6 @@
         src/cli/commands/tasks.ts:34,68-77. Added --meta-ref filter option to tasks list.
       supersedes: null
   todos: []
-  completed_at: '2026-01-18T15:46:02.166Z'
-  closed_reason: Already implemented - discovered during task audit
-  started_at: '2026-01-18T15:46:02.166Z'
 - _ulid: 01KF4WVXC41KXZHGADERNWB1KR
   slugs:
     - task-meta-reference-validation
@@ -7256,7 +7256,14 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.804Z'
-  notes: []
+  notes:
+    - _ulid: 01KF8WHTDJGXNTJ5FYZ758DZDX
+      created_at: '2026-01-18T15:46:03.826Z'
+      author: '@claude'
+      content: >-
+        Retroactively marking complete. Implemented in commit b5a73f4 (2026-01-17) in
+        src/parser/refs.ts:341. Added meta_ref to REF_FIELDS for automatic validation.
+      supersedes: null
   todos: []
 - _ulid: 01KF5214E19BJV3Z7RW7G889AV
   slugs:
