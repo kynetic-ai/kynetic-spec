@@ -3825,9 +3825,17 @@
     - cli
   vcs_refs: []
   created_at: '2026-01-16T12:35:40.744Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T07:37:47.871Z'
+  notes:
+    - _ulid: 01KF80MFDYPAT4RA0XVWMDBDTQ
+      created_at: '2026-01-18T07:38:10.751Z'
+      author: '@claude'
+      content: >-
+        Not worked on in iteration 10. Task was started in previous iteration but focus shifted to
+        PR review and task-archive spike. Task remains in_progress for next iteration. No
+        implementation changes made.
+      supersedes: null
+  todos: []
 - _ulid: 01KF3D9S7PTA6WADMEVNTW6V7D
   slugs:
     - task-item-set-remove-slug
