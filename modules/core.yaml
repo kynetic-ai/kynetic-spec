@@ -340,7 +340,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           References use the @ prefix to distinguish from plain strings:
 
