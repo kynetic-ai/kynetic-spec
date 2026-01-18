@@ -927,7 +927,7 @@
   title: Refactor prompts and guidance text into centralized location
   type: task
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -1860,6 +1860,8 @@
         Ready to mark complete and create final PR.
       supersedes: null
   todos: []
+  completed_at: '2026-01-18T06:03:33.651Z'
+  closed_reason: All 5 phases complete. Centralized all prompts, guidance, errors, and labels across the CLI.
 - _ulid: 01KF0VJN9828757ZJBR0CD3AHJ
   slugs:
     - task-kspec-task-delete
