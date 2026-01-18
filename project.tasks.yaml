@@ -5514,9 +5514,18 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:35.733Z'
-  notes: []
-  todos: []
   started_at: '2026-01-18T10:05:39.950Z'
+  notes:
+    - _ulid: 01KF892VY99GG6FZD8N3JC80WG
+      created_at: '2026-01-18T10:05:50.922Z'
+      author: '@claude'
+      content: >-
+        Verified workflow triggers already implemented in WorkflowSchema (src/schema/meta.ts:63) as
+        'trigger: z.string().min(1)'. This is a required freeform string field, exactly as
+        specified. Supports documentation-style triggers like 'behavior change', 'session start',
+        'task complete', etc. Implementation complete from prior work.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
   slugs:
     - task-convention-definitions
