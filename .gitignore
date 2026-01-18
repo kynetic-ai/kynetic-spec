@@ -25,3 +25,6 @@ coverage/
 .env
 .env.local
 .kspec/
+
+# Session context
+.kspec-session
