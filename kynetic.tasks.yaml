@@ -1055,7 +1055,7 @@ tasks:
       - kspec link delete
     spec_ref: '@link-commands'
     derivation: auto
-    status: in_progress
+    status: completed
     blocked_by: []
     depends_on: []
     context: []
@@ -1086,6 +1086,11 @@ tasks:
           Shadow branch auto-commits enabled. Now adding tests.
         supersedes: null
     todos: []
+    completed_at: '2026-01-18T06:38:29.281Z'
+    closed_reason: >-
+      Implemented all three link commands (create, list, delete) with full test coverage. Commands
+      manage relationship arrays (depends_on, implements, relates_to) on spec items with proper
+      validation and shadow branch integration.
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
     slugs:
       - task-yaml-formatting
