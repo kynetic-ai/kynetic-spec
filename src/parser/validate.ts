@@ -53,6 +53,25 @@ export interface OrphanItem {
 }
 
 /**
+ * Completeness warning types
+ */
+export type CompletenessWarningType =
+  | 'missing_acceptance_criteria'
+  | 'missing_description'
+  | 'status_inconsistency';
+
+/**
+ * Completeness warning
+ */
+export interface CompletenessWarning {
+  type: CompletenessWarningType;
+  itemRef: string;
+  itemTitle: string;
+  message: string;
+  details?: string;
+}
+
+/**
  * Complete validation result
  */
 export interface ValidationResult {
@@ -61,6 +80,7 @@ export interface ValidationResult {
   refErrors: RefValidationError[];
   refWarnings: RefValidationWarning[];
   orphans: OrphanItem[];
+  completenessWarnings: CompletenessWarning[];
   stats: {
     filesChecked: number;
     itemsChecked: number;
@@ -84,6 +104,8 @@ export interface ValidateOptions {
   refs?: boolean;
   /** Find orphaned items */
   orphans?: boolean;
+  /** Check spec completeness (missing AC, descriptions, status inconsistencies) */
+  completeness?: boolean;
 }
 
 // ============================================================
@@ -479,6 +501,84 @@ function findOrphans(
 }
 
 // ============================================================
+// COMPLETENESS VALIDATION
+// ============================================================
+
+/**
+ * Check spec items for completeness
+ * AC: @spec-completeness ac-1, ac-2, ac-3
+ */
+function checkCompleteness(
+  items: LoadedSpecItem[],
+  index: ReferenceIndex
+): CompletenessWarning[] {
+  const warnings: CompletenessWarning[] = [];
+
+  for (const item of items) {
+    const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${item._ulid.slice(0, 8)}`;
+
+    // AC: @spec-completeness ac-1
+    // Check for missing acceptance criteria
+    if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
+      warnings.push({
+        type: 'missing_acceptance_criteria',
+        itemRef,
+        itemTitle: item.title,
+        message: `Item ${itemRef} has no acceptance criteria`,
+      });
+    }
+
+    // AC: @spec-completeness ac-2
+    // Check for missing description
+    if (!item.description || item.description.trim() === '') {
+      warnings.push({
+        type: 'missing_description',
+        itemRef,
+        itemTitle: item.title,
+        message: `Item ${itemRef} has no description`,
+      });
+    }
+
+    // AC: @spec-completeness ac-3
+    // Check for status inconsistency between parent and children
+    if (item.status?.implementation === 'implemented') {
+      // Check if this item has children with not_started status
+      const childFields = [
+        'modules',
+        'features',
+        'requirements',
+        'constraints',
+        'epics',
+        'themes',
+        'capabilities',
+      ];
+
+      for (const field of childFields) {
+        const children = (item as any)[field];
+        if (Array.isArray(children)) {
+          for (const child of children) {
+            if (child.status?.implementation === 'not_started') {
+              const childRef = child.slugs?.[0]
+                ? `@${child.slugs[0]}`
+                : `@${child._ulid?.slice(0, 8) || 'unknown'}`;
+              warnings.push({
+                type: 'status_inconsistency',
+                itemRef,
+                itemTitle: item.title,
+                message: `Parent ${itemRef} is implemented but child ${childRef} is not_started`,
+                details: `Child: ${child.title}`,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return warnings;
+}
+
+// ============================================================
 // MAIN VALIDATION
 // ============================================================
 
@@ -493,6 +593,7 @@ export async function validate(
   const runSchema = options.schema !== false;
   const runRefs = options.refs !== false;
   const runOrphans = options.orphans !== false;
+  const runCompleteness = options.completeness !== false;
 
   const result: ValidationResult = {
     valid: true,
@@ -500,6 +601,7 @@ export async function validate(
     refErrors: [],
     refWarnings: [],
     orphans: [],
+    completenessWarnings: [],
     stats: {
       filesChecked: 0,
       itemsChecked: 0,
@@ -599,6 +701,12 @@ export async function validate(
     // Orphan detection
     if (runOrphans) {
       result.orphans = findOrphans(allTasks, allItems, index);
+    }
+
+    // Completeness validation
+    // AC: @spec-completeness ac-1, ac-2, ac-3
+    if (runCompleteness) {
+      result.completenessWarnings = checkCompleteness(allItems, index);
     }
   }
 
