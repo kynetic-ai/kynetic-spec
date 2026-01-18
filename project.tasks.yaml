@@ -6273,7 +6273,7 @@
   type: task
   spec_ref: '@context-integration'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-session-context-research'
@@ -6284,6 +6284,7 @@
   created_at: '2026-01-17T02:34:36.108Z'
   notes: []
   todos: []
+  started_at: '2026-01-18T12:06:28.656Z'
 - _ulid: 01KF4WVWQ53S8BVHCGW0E3QRWZ
   slugs:
     - task-meta-cli-commands
