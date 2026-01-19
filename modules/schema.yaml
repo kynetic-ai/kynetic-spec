@@ -146,7 +146,7 @@ features:
         title: Maturity States
         type: requirement
         status:
-          maturity: draft
+          maturity: deferred
           implementation: verified
         description: |-
           status.maturity tracks spec content stability:
