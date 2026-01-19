@@ -10657,3 +10657,20 @@
         **Call site:** At start of setup command handler, before other setup logic.
       supersedes: null
   todos: []
+- title: 'Implement: Semantic Exit Codes'
+  type: task
+  spec_ref: '@cli-exit-codes'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-semantic-exit-codes
+  tags: []
+  depends_on: []
+  _ulid: 01KFADD78BS8EARJHSXXBRM9W8
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T05:59:53.354Z'
+  notes: []
+  todos: []
