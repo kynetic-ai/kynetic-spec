@@ -10629,7 +10629,7 @@
     meta observe --from-inbox @ref - convert inbox item to observation, preserving content. Useful
     during triage when items were captured in wrong bucket.
   spec_ref: '@meta-observe-cmd'
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10714,6 +10714,11 @@
         - Tested manually and working correctly
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T08:18:36.302Z'
+  closed_reason: >-
+    Implemented --from-inbox flag for kspec meta observe command. Supports converting inbox items to
+    observations with default type 'idea' and optional --type override. Includes comprehensive test
+    coverage (5 tests). All tests passing.
 - _ulid: 01KFACZP9AJA7WK9S3QGXG4WCN
   slugs:
     - task-log-enhancements
