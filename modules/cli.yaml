@@ -995,6 +995,10 @@ features:
             then: >-
               Shows all commits with Task: or Spec: trailers in reverse chronological order,
               respecting --limit (default 10)
+          - id: passthrough-args
+            given: User wants additional git log formatting (like -p, --stat, --graph)
+            when: User runs kspec log @ref -- -p --stat
+            then: Arguments after -- are passed through to underlying git log command
         status:
           maturity: draft
           implementation: implemented
