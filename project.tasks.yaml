@@ -9369,6 +9369,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented append-only notes for spec items. Schema, CLI commands, and integration tests
+    complete. All 564 tests pass. Documentation in AGENTS.md can be added as follow-up.
   depends_on: []
   context: []
   priority: 3
@@ -9378,6 +9381,7 @@
   vcs_refs: []
   created_at: '2026-01-18T21:27:27.239Z'
   started_at: '2026-01-19T04:53:46.327Z'
+  completed_at: '2026-01-19T05:00:34.086Z'
   notes:
     - _ulid: 01KFA9MP97W7R5V3G73G9ECG3N
       created_at: '2026-01-19T04:54:03.815Z'
@@ -9453,11 +9457,28 @@
         feature. This is a documentation-only task at this point. Consider completing this task and
         creating a separate documentation task, or leave in_progress for doc work.
       supersedes: null
+    - _ulid: 01KFAAB5WAEHTQ9Q2JY9SN4MSZ
+      created_at: '2026-01-19T05:06:20.682Z'
+      author: '@claude'
+      content: |-
+        Implemented append-only notes for spec items:
+
+        1. Added notes array field to SpecItemSchema with NoteSchema (reused from tasks)
+        2. Created two new CLI commands:
+           - kspec item note <ref> <message> [--author] [--supersedes]
+           - kspec item notes <ref> [--json]
+        3. Added 5 comprehensive integration tests covering:
+           - Adding notes to spec items
+           - Notes with author attribution
+           - Listing multiple notes
+           - Empty notes display
+           - JSON output mode
+        4. Updated createSpecItem and module creation to include empty notes array
+        5. All 569 tests pass
+
+        Commands work identically to task notes, using same Note schema for consistency.
+      supersedes: null
   todos: []
-  completed_at: '2026-01-19T05:00:34.086Z'
-  closed_reason: >-
-    Implemented append-only notes for spec items. Schema, CLI commands, and integration tests
-    complete. All 564 tests pass. Documentation in AGENTS.md can be added as follow-up.
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
   title: Add deferred status option for stub specs
