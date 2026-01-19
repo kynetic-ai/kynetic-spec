@@ -30,6 +30,9 @@ import {
   getSessionDir,
   getSessionMetadataPath,
   getSessionEventsPath,
+  saveSessionContext,
+  readSessionContext,
+  getSessionContextPath,
 } from '../src/sessions/store.js';
 
 // ─── Schema Tests ────────────────────────────────────────────────────────────
@@ -645,6 +648,95 @@ describe('Event storage', () => {
       const lastEvent = await getLastEvent(testDir, sessionId);
 
       expect(lastEvent).toBeNull();
+    });
+  });
+
+  describe('saveSessionContext', () => {
+    it('should save context snapshot for a given iteration', async () => {
+      const context = {
+        generated_at: '2026-01-19T00:00:00.000Z',
+        branch: 'main',
+        active_tasks: [],
+        ready_tasks: [{ ref: '@task-1', title: 'Test task' }],
+        stats: { total_tasks: 1 },
+      };
+
+      await saveSessionContext(testDir, sessionId, 1, context);
+
+      const contextPath = getSessionContextPath(testDir, sessionId, 1);
+      const saved = await fs.readFile(contextPath, 'utf-8');
+      const parsed = JSON.parse(saved);
+
+      expect(parsed).toEqual(context);
+    });
+
+    it('should create session directory if it does not exist', async () => {
+      const newSessionId = '01KF999999999999999999999';
+      const context = { test: 'data' };
+
+      await saveSessionContext(testDir, newSessionId, 1, context);
+
+      const contextPath = getSessionContextPath(testDir, newSessionId, 1);
+      const exists = await fs.access(contextPath).then(() => true).catch(() => false);
+
+      expect(exists).toBe(true);
+    });
+
+    it('should save multiple iteration snapshots', async () => {
+      const context1 = { iteration: 1, data: 'first' };
+      const context2 = { iteration: 2, data: 'second' };
+
+      await saveSessionContext(testDir, sessionId, 1, context1);
+      await saveSessionContext(testDir, sessionId, 2, context2);
+
+      const saved1 = await readSessionContext(testDir, sessionId, 1);
+      const saved2 = await readSessionContext(testDir, sessionId, 2);
+
+      expect(saved1).toEqual(context1);
+      expect(saved2).toEqual(context2);
+    });
+  });
+
+  describe('readSessionContext', () => {
+    it('should read saved context snapshot', async () => {
+      const context = {
+        generated_at: '2026-01-19T00:00:00.000Z',
+        active_tasks: [],
+        ready_tasks: [],
+      };
+
+      await saveSessionContext(testDir, sessionId, 1, context);
+
+      const read = await readSessionContext(testDir, sessionId, 1);
+
+      expect(read).toEqual(context);
+    });
+
+    it('should return null if context does not exist', async () => {
+      const read = await readSessionContext(testDir, sessionId, 999);
+
+      expect(read).toBeNull();
+    });
+
+    it('should return null if context file is invalid JSON', async () => {
+      const contextPath = getSessionContextPath(testDir, sessionId, 1);
+      const sessionDir = getSessionDir(testDir, sessionId);
+
+      await fs.mkdir(sessionDir, { recursive: true });
+      await fs.writeFile(contextPath, 'invalid json', 'utf-8');
+
+      const read = await readSessionContext(testDir, sessionId, 1);
+
+      expect(read).toBeNull();
+    });
+  });
+
+  describe('getSessionContextPath', () => {
+    it('should return correct path for context snapshot', () => {
+      const contextPath = getSessionContextPath(testDir, sessionId, 3);
+
+      expect(contextPath).toContain(sessionId);
+      expect(contextPath).toContain('context-iter-3.json');
     });
   });
 });

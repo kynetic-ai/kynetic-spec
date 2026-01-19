@@ -62,6 +62,13 @@ export function getSessionEventsPath(specDir: string, sessionId: string): string
   return path.join(getSessionDir(specDir, sessionId), EVENTS_FILE);
 }
 
+/**
+ * Get the path to a session's context snapshot file for a given iteration.
+ */
+export function getSessionContextPath(specDir: string, sessionId: string, iteration: number): string {
+  return path.join(getSessionDir(specDir, sessionId), `context-iter-${iteration}.json`);
+}
+
 // ─── Session CRUD ────────────────────────────────────────────────────────────
 
 /**
@@ -339,4 +346,57 @@ export async function getLastEvent(
     return null;
   }
   return events[events.length - 1];
+}
+
+// ─── Context Snapshots ───────────────────────────────────────────────────────
+
+/**
+ * Save session context snapshot for a given iteration.
+ *
+ * This creates an audit trail of what context the agent saw at each iteration,
+ * useful for debugging and reviewing agent behavior.
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @param iteration - Iteration number
+ * @param context - The session context data
+ */
+export async function saveSessionContext(
+  specDir: string,
+  sessionId: string,
+  iteration: number,
+  context: unknown
+): Promise<void> {
+  const sessionDir = getSessionDir(specDir, sessionId);
+  const contextPath = getSessionContextPath(specDir, sessionId, iteration);
+
+  // Ensure session directory exists
+  await fsPromises.mkdir(sessionDir, { recursive: true });
+
+  // Write context snapshot as pretty JSON
+  const content = JSON.stringify(context, null, 2);
+  await fsPromises.writeFile(contextPath, content, 'utf-8');
+}
+
+/**
+ * Read session context snapshot for a given iteration.
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @param iteration - Iteration number
+ * @returns The context snapshot or null if not found
+ */
+export async function readSessionContext(
+  specDir: string,
+  sessionId: string,
+  iteration: number
+): Promise<unknown | null> {
+  const contextPath = getSessionContextPath(specDir, sessionId, iteration);
+
+  try {
+    const content = await fsPromises.readFile(contextPath, 'utf-8');
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
 }

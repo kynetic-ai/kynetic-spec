@@ -230,6 +230,43 @@ describe('ralph command', () => {
       expect(events).toContain('"type":"session.end"');
     }
   });
+
+  // AC-13: Context snapshot saving
+  it('saves session context snapshot after each iteration', async () => {
+    const result = runRalph('--max-loops 2', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    // Check that context snapshots were saved
+    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessions = await fs.readdir(sessionsDir).catch(() => []);
+
+    expect(sessions.length).toBeGreaterThan(0);
+
+    if (sessions.length > 0) {
+      const sessionDir = path.join(sessionsDir, sessions[0]);
+
+      // Should have context snapshots for iteration 1 and 2
+      const context1Path = path.join(sessionDir, 'context-iter-1.json');
+      const context2Path = path.join(sessionDir, 'context-iter-2.json');
+
+      const context1Exists = await fs.access(context1Path).then(() => true).catch(() => false);
+      const context2Exists = await fs.access(context2Path).then(() => true).catch(() => false);
+
+      expect(context1Exists).toBe(true);
+      expect(context2Exists).toBe(true);
+
+      // Verify context structure
+      const context1Content = await fs.readFile(context1Path, 'utf-8');
+      const context1 = JSON.parse(context1Content);
+
+      expect(context1).toHaveProperty('generated_at');
+      expect(context1).toHaveProperty('branch');
+      expect(context1).toHaveProperty('active_tasks');
+      expect(context1).toHaveProperty('ready_tasks');
+      expect(context1).toHaveProperty('stats');
+    }
+  });
 });
 
 // ─── Event Translator Unit Tests ────────────────────────────────────────────
