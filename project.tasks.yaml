@@ -8373,6 +8373,53 @@
 
         Next: Identify gaps and create comprehensive spec coverage
       supersedes: null
+    - _ulid: 01KFA4HBEM45TTDYZ2WNVW7T17
+      created_at: '2026-01-19T03:24:51.540Z'
+      author: '@claude'
+      content: >-
+        ALIGNMENT SYSTEM SPEC COVERAGE ANALYSIS:
+
+
+        MAJOR GAP IDENTIFIED:
+
+        The alignment system (src/parser/alignment.ts) is a core subsystem with multiple features,
+        but has only ONE narrow spec item (@alignment-guidance) covering AC count reminders.
+
+
+        FEATURES LACKING SPEC COVERAGE:
+
+
+        1. **Auto Status Sync** (syncSpecImplementationStatus)
+           - Automatically updates spec.status.implementation when tasks start/complete
+           - Status calculation rules: all completed → implemented, some in_progress → in_progress, etc.
+           - NO SPEC COVERAGE
+
+        2. **AlignmentIndex Core Capabilities**
+           - Bidirectional spec<->task mapping
+           - getTasksForSpec(), getSpecForTask()
+           - calculateExpectedStatus() logic
+           - NO SPEC COVERAGE
+
+        3. **Alignment Warnings System**
+           - findAlignmentWarnings() detects 3 types: orphaned_spec, status_mismatch, stale_implementation
+           - Used by validate command
+           - NO SPEC COVERAGE
+
+        4. **Implementation Summaries**
+           - getImplementationSummary() provides spec status + linked tasks
+           - getAllImplementationSummaries() for batch queries
+           - Used by item get command
+           - NO SPEC COVERAGE
+
+        5. **Stats Tracking**
+           - getStats() provides totalSpecs, specsWithTasks, alignedSpecs, orphanedSpecs
+           - NO SPEC COVERAGE
+
+        RECOMMENDATION:
+
+        Create a parent spec item 'Spec-Task Alignment System' with child items for each major
+        feature area. The existing @alignment-guidance should be reparented under this umbrella.
+      supersedes: null
   todos: []
 - _ulid: 01KF9B41KHRT5VDM12JGAGT90B
   slugs: []
