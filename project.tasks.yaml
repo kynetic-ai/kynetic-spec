@@ -8558,6 +8558,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Fixed spec status persistence gap by adding commitIfShadow calls after spec sync in both task
+    start and task complete commands. All tests pass (561/561).
   depends_on: []
   context: []
   priority: 3
@@ -8568,6 +8571,7 @@
   vcs_refs: []
   created_at: '2026-01-18T20:00:43.928Z'
   started_at: '2026-01-19T03:32:11.289Z'
+  completed_at: '2026-01-19T03:37:03.162Z'
   notes:
     - _ulid: 01KFA50FVECHVDPD6VFGSEBPEH
       created_at: '2026-01-19T03:33:07.566Z'
@@ -8608,10 +8612,6 @@
         stream immediately after task status changes, closing the persistence gap.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T03:37:03.162Z'
-  closed_reason: >-
-    Fixed spec status persistence gap by adding commitIfShadow calls after spec sync in both task
-    start and task complete commands. All tests pass (561/561).
 - _ulid: 01KF9B4PX60XW55ZXWHE36C8G1
   slugs: []
   title: Fix ralph iteration message newline issue
@@ -9108,7 +9108,7 @@
     new items. Friction: during triage had to grep/search to find @cli module since flat list
     doesn't show nesting.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -9120,6 +9120,7 @@
   created_at: '2026-01-18T21:24:10.576Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T03:46:12.448Z'
 - _ulid: 01KF9FX0CEF7P5TT2H33MMM4VR
   slugs: []
   title: Add --priority flag to derive command
