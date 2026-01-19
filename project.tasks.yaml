@@ -11566,7 +11566,7 @@
   type: task
   spec_ref: '@cmd-clone-for-testing'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -11676,3 +11676,4 @@
         - Verify worktree is functional
       supersedes: null
   todos: []
+  started_at: '2026-01-19T10:03:54.360Z'

@@ -1156,4 +1156,49 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFATS86AMESWQJA9E1T2JCVM
+    type: success
+    content: >-
+      Staleness detection implementation completed successfully. The feature detects status
+      inconsistencies between specs and tasks, with 3 key checks: task dependencies completed but
+      task pending, spec implemented without tasks, and task completed but spec not started. All
+      tests pass.
+    created_at: '2026-01-19T09:53:39.018Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KFATSF5A7KEEY4CHSKTCFG4G
+    type: friction
+    content: >-
+      Found task in progress but work already committed. This may happen when: (1) previous
+      iteration completed but didn't mark task complete, (2) concurrent work from another process,
+      or (3) git operations completed before kspec state sync. Consider adding 'kspec shadow sync'
+      at session start to ensure state is current.
+    created_at: '2026-01-19T09:53:46.155Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KFATSKF22KHRZYCQ0TJP1P1E
+    type: success
+    content: >-
+      Complete iteration workflow: (1) Check open PRs and review/merge, (2) Pick highest priority
+      ready task, (3) Implement with clear ACs, (4) Manual test verification, (5) Commit with
+      task/spec trailers, (6) Create PR. This pattern ensures no work is left in limbo - PRs are
+      either merged or created by end of iteration. The /pr skill makes PR creation seamless.
+    created_at: '2026-01-19T09:53:50.562Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KFATTDS4G9VHDXXF4DDHS1C2
+    type: success
+    content: >-
+      Iteration 34 outcome: Merged 1 PR (semantic exit codes with 4 commits), implemented and
+      shipped stale status detection (3 commits, PR #88 created). Multi-round review pattern
+      prevented incomplete merges. Every iteration should end with either merged PRs or new PRs
+      created - no work left uncommitted or unpushed. This keeps the project moving forward
+      consistently.
+    created_at: '2026-01-19T09:54:17.508Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
