@@ -1743,6 +1743,10 @@ features:
             given: Cloned repo has kspec-meta branch
             when: Clone completes
             then: Automatically creates .kspec worktree pointing to kspec-meta branch
+          - id: checkout-branch
+            given: User specifies --branch flag
+            when: User runs kspec clone-for-testing --branch feature-x dest
+            then: Checks out specified branch in the cloned repo after setup
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
