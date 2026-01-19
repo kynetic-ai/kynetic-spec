@@ -10581,6 +10581,45 @@
 
         Running full test suite now to confirm all tests pass...
       supersedes: null
+    - _ulid: 01KFAM6FHBN17EFF71ET75PQHG
+      created_at: '2026-01-19T07:58:32.492Z'
+      author: '@claude'
+      content: |-
+        Session 28: Major progress - bug fixed, tests complete
+
+        COMPLETED THIS SESSION:
+        ✅ Fixed critical batch error handling bug
+        ✅ Added 9 comprehensive integration tests (all pass)
+        ✅ All 587 tests pass
+        ✅ Committed and pushed to PR #82
+
+        IMPLEMENTATION STATUS:
+        ✅ Core batch.ts utility - COMPLETE
+        ✅ task complete --refs - COMPLETE + TESTED
+        ✅ task cancel --refs - COMPLETE + TESTED  
+        ✅ task delete --refs - COMPLETE + TESTED
+        ⚠️ task start --refs - NOT IMPLEMENTED
+        ⚠️ task set --refs - NOT IMPLEMENTED
+        ❌ item set/delete --refs - NOT IMPLEMENTED
+        ❌ inbox delete --refs - NOT IMPLEMENTED
+
+        TEST COVERAGE:
+        All 8 ACs have test coverage:
+        - AC-1: Basic multi-ref syntax ✅
+        - AC-2: Backward compatibility ✅
+        - AC-3: Mutual exclusion ✅
+        - AC-4: Partial failure handling ✅ (THE BUG WE FIXED)
+        - AC-5: Human output format ✅
+        - AC-6: JSON output format ✅
+        - AC-7: Empty refs error ✅
+        - AC-8: Ref resolution ✅
+
+        NEXT SESSION:
+        - Consider implementing task start/set --refs
+        - Consider implementing item and inbox batch operations
+        - OR: Merge current PR as-is (3 commands is useful already)
+        - Update PR description to reflect current state
+      supersedes: null
   todos: []
 - _ulid: 01KFACWSV9475NTYSG9FDJBW7V
   slugs: []
