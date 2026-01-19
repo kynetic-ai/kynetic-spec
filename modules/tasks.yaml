@@ -733,3 +733,7 @@ requirements:
         given: ralph is running
         when: "no tasks with automation: eligible exist in ready state"
         then: ralph exits with a message indicating no eligible tasks available
+      - id: ac-11
+        given: a user wants to set automation status
+        when: running kspec task set @ref --automation eligible
+        then: the task's automation field is set to the specified value
