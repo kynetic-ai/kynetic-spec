@@ -10545,3 +10545,22 @@
         - Package exists but wrong version - not our concern, just check existence
       supersedes: null
   todos: []
+- title: 'Implement: kspec setup'
+  type: task
+  spec_ref: '@cmd-setup'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-kspec-setup
+  tags:
+    - mvp
+    - cli
+  depends_on: []
+  _ulid: 01KFADBEHQMMS3PG701HFKX501
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T05:58:55.286Z'
+  notes: []
+  todos: []
