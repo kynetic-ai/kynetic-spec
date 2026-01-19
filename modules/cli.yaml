@@ -1306,6 +1306,12 @@ features:
             then: >-
               Warns: 'Task @parent-task is pending but all linked specs are implemented. Consider
               completing or reviewing.'
+          - id: spec-implemented-no-task
+            given: Spec item is marked implemented but no completed tasks reference it
+            when: kspec validate --staleness runs
+            then: >-
+              Warns: 'Spec @spec-item is implemented but has no completed tasks. Verify
+              implementation or link existing task.'
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
