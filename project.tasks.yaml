@@ -10208,6 +10208,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
@@ -10217,6 +10218,7 @@
   vcs_refs: []
   created_at: '2026-01-19T05:44:31.097Z'
   started_at: '2026-01-19T07:23:12.186Z'
+  completed_at: '2026-01-19T07:40:15.867Z'
   notes:
     - _ulid: 01KFACHE0N13A1RX8C4YNWEERF
       created_at: '2026-01-19T05:44:42.773Z'
@@ -10503,9 +10505,29 @@
         CHECKPOINT: Task properly documented with comprehensive WIP notes. All work committed to PR
         #82. Ready for next session.
       supersedes: null
+    - _ulid: 01KFAK6DGYB17YT74QW4NMGERX
+      created_at: '2026-01-19T07:41:01.854Z'
+      author: '@claude'
+      content: |-
+        Session 28: PR #82 review complete - identified critical bug
+
+        Review findings:
+        ❌ CRITICAL BUG: resolveTaskRef calls process.exit(3) instead of throwing/returning errors
+           - This breaks partial failure handling (AC-4)
+           - Batch operations exit on first error instead of continuing
+           - Fix: Refactor resolvers to return error results instead of exiting
+
+        ✅ Architecture and design are sound
+        ✅ Clean code structure with good typing
+        ✅ Backward compatibility preserved
+        ❌ Zero integration tests for batch functionality
+
+        Next steps:
+        1. Fix resolver error handling (create batch-compatible resolver)
+        2. Add comprehensive integration tests
+        3. Complete remaining implementations (task set, item/inbox commands)
+      supersedes: null
   todos: []
-  completed_at: '2026-01-19T07:40:15.867Z'
-  closed_reason: null
 - _ulid: 01KFACWSV9475NTYSG9FDJBW7V
   slugs: []
   title: Add meta observe --from-inbox command
