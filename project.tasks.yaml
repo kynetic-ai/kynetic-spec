@@ -10527,6 +10527,32 @@
         2. Add comprehensive integration tests
         3. Complete remaining implementations (task set, item/inbox commands)
       supersedes: null
+    - _ulid: 01KFAKGNS5XFSYJREMJ0W0E5HM
+      created_at: '2026-01-19T07:46:37.990Z'
+      author: '@claude'
+      content: |-
+        Session 28: Fixed critical batch error handling bug
+
+        PROBLEM:
+        - resolveTaskRef called process.exit(3) on error
+        - Batch operations exited on first error instead of continuing
+        - Violated AC-4 (partial failure handling) and AC-8 (ref resolution)
+
+        SOLUTION:
+        1. Created resolveTaskRefForBatch() that returns {task, error} instead of exiting
+        2. Updated batch.ts interface to expect { item, error? } from resolveRef
+        3. Updated batch execution loop to handle error results properly
+        4. All three task commands (complete, cancel, delete) now use new resolver
+
+        VERIFICATION:
+        ✅ All 578 tests still pass
+        ✅ Build succeeds with no TypeScript errors
+        ✅ Manual testing confirms batch ops process all refs
+        ✅ Proper error messages for each failed ref
+        ✅ Correct exit codes (1 for all-fail, 2 for partial)
+
+        Next: Add integration tests for all 8 ACs
+      supersedes: null
   todos: []
 - _ulid: 01KFACWSV9475NTYSG9FDJBW7V
   slugs: []
