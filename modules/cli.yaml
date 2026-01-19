@@ -2299,6 +2299,9 @@ features:
             given: Adapter validation fails
             when: Error is shown
             then: No ACP agent process is spawned, no session is created, no events are logged
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
