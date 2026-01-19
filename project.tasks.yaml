@@ -1320,11 +1320,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1584,6 +1586,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1699,6 +1702,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12973,16 +12977,22 @@
         accepted by schema (traits can be implemented by any item type)
       supersedes: null
   todos: []
-- title: "Implement: Traits Field on Specs"
+- _ulid: 01KFC1GKRBPDX8CFQ52YX1KZPE
+  slugs:
+    - task-traits-field-on-specs
+  title: "Implement: Traits Field on Specs"
   type: task
   spec_ref: "@traits-field"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-traits-field-on-specs
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-spec-traits-system"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T21:10:30.411Z
   notes:
     - _ulid: 01KFC1GKRBJ5HEEXSY3DAY8G8D
       created_at: 2026-01-19T21:10:30.411Z
@@ -13012,10 +13022,45 @@
         - ac-5: Given spec with same trait listed twice, when validating, then warning emitted
         (duplicate)
       supersedes: null
-  _ulid: 01KFC1GKRBPDX8CFQ52YX1KZPE
+  todos: []
+- title: "Implement: TraitIndex"
+  type: task
+  spec_ref: "@trait-index"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-traitindex
+  tags: []
+  depends_on:
+    - "@task-spec-traits-system"
+  notes:
+    - _ulid: 01KFC1GKW3PS9T8665F0B0AWXC
+      created_at: 2026-01-19T21:10:30.531Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Index class that tracks trait-type items and spec-trait relationships. Follows the pattern
+        of ReferenceIndex and AlignmentIndex - built once from loaded items, queried efficiently.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given items loaded, when TraitIndex built, then indexes all trait-type items by ULID
+        and slug
+
+        - ac-2: Given spec with traits, when querying getInheritedAC(), then returns all AC from all
+        implemented traits
+
+        - ac-3: Given trait ref, when querying getSpecsForTrait(), then returns all specs that
+        implement that trait
+      supersedes: null
+  _ulid: 01KFC1GKW37Q8K572P0FPQGS6R
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T21:10:30.411Z
+  created_at: 2026-01-19T21:10:30.531Z
   todos: []
