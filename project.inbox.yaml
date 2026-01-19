@@ -139,18 +139,6 @@ inbox:
       - acp
       - mock
     added_by: '@claude'
-  - _ulid: 01KF6KSD76HC0TVHSZ1KT6DD9B
-    text: >-
-      Test repo setup command: Add 'kspec clone-for-testing' or similar that creates isolated repo
-      copy with: no remote origin, kspec-meta branch available, .kspec worktree set up, specified
-      branch checked out. Eliminates manual setup errors like forgotten worktree that caused stale
-      data confusion.
-    created_at: '2026-01-17T18:34:26.407Z'
-    tags:
-      - cli
-      - dx
-      - testing
-    added_by: '@claude'
   - _ulid: 01KF8TQ5X9Q0Y6DEGWQ9YPECHN
     text: >-
       Transaction/batch mechanics for kspec operations - ability to set a mark point where changes
