@@ -201,6 +201,12 @@ features:
               implemented'
             when: The command completes
             then: 'CLI prompts: ''Update N child items to implemented? [y/n]'''
+          - id: ac-2
+            given: >-
+              A parent item has children, user runs 'kspec item set @parent --implementation
+              implemented', and user responds 'y' to the cascade prompt
+            when: The cascade is accepted
+            then: All child items are updated to 'implemented' and each child update is logged
         status:
           maturity: draft
           implementation: implemented
