@@ -9802,7 +9802,7 @@
     branch, CLI commands that modify specs auto-commit to that branch, agents don't need to manually
     commit spec changes or check .kspec git status
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9843,6 +9843,10 @@
         benefits.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T06:17:36.177Z'
+  closed_reason: >-
+    Added comprehensive shadow branch worktree architecture documentation to AGENTS.md. Covers
+    concepts, setup, verification, sync, troubleshooting, and onboarding.
 - _ulid: 01KF9Q39SJWQX48YFKJ0V7ZFN6
   slugs: []
   title: Add git hook for kspec-meta branch protection
