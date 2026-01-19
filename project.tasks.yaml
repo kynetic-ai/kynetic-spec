@@ -1246,11 +1246,19 @@
 
 
 
+
+
+
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
+
+
+
 
 
 
@@ -1359,6 +1367,10 @@
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
           - Estimated scope: 50+ error messages across 15+ command files
+
+
+
+
 
 
 
@@ -1477,6 +1489,10 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
+
+
+
 
 
 
@@ -9188,6 +9204,7 @@
   spec_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: No work done in this iteration - returning to ready queue
   depends_on: []
   context: []
   priority: 4
@@ -9204,8 +9221,99 @@
       content: Task was auto-started but no work was done in this iteration. Completed YAML formatting
         improvements (01KEZ9DSD3) instead. Returning to pending status.
       supersedes: null
+    - _ulid: 01KFAY3PXMSA9XA6641AJTY0XN
+      created_at: 2026-01-19T10:51:47.508Z
+      author: "@claude"
+      content: |-
+        Starting research spike on artifacts feature.
+
+        Context from inbox (01KF1JPF8P6VDNPY4S9YAJ797P):
+        - Use cases: reference images, research docs, generated diagrams, data files, PDFs
+        - Key unknowns to explore:
+          1. Integration model (spec-ref? task-ref? standalone?)
+          2. Reference syntax (@artifact?)
+          3. Organization (by task? by type? flat?)
+          4. Cleanup/lifecycle (archive with task? manual?)
+          5. Storage location (artifacts/ dir? .kspec/artifacts?)
+          6. Git handling (LFS? gitignore? committed?)
+
+        Research approach:
+        1. Review how similar tools handle artifacts
+        2. Consider kspec's architecture and principles
+        3. Draft design proposals for each unknown
+        4. Document trade-offs and recommendations
+      supersedes: null
+    - _ulid: 01KFAY61MFBA6WKRX8QPM3H1QV
+      created_at: 2026-01-19T10:53:04.015Z
+      author: "@claude"
+      content: |-
+        Research completed. Key findings:
+
+        ## Recommended Design
+
+        1. **Integration Model**: Direct attachment to items (artifacts: [] in YAML)
+           - More intuitive than separate registry
+           - Natural lifecycle management
+           - Consistent with item-centric kspec model
+
+        2. **Reference Syntax**: Hybrid approach
+           - @artifact:slug for human-friendly refs
+           - Direct paths (artifacts/01ULID-file.ext) also work
+           - Resolver translates between them
+
+        3. **Organization**: Flat artifacts/ directory with ULID prefixes
+           - artifacts/01ARTIFACT1234-diagram.png
+           - Simple, follows kspec ULID-first approach
+           - No deep nesting complexity
+
+        4. **Cleanup**: Manual initially, with prune command
+           - kspec artifact prune finds orphans
+           - Future: retention policies
+           - Disk is cheap, err on side of keeping
+
+        5. **Storage Location**: Top-level artifacts/ directory
+           - Separate from code (src/) and spec (.kspec/)
+           - Easy to .gitignore entire directory
+           - Shadow branch stays focused on YAML
+
+        6. **Git Handling**: .gitignore by default
+           - User commits manually if needed
+           - Future: LFS support via config
+           - Keeps setup simple
+
+        ## Implementation Phases
+
+        Phase 1 (MVP):
+        - artifact add/list/get commands
+        - Schema additions (artifacts: [] field)
+        - Basic file management
+
+        Phase 2 (Discovery):
+        - artifact status/prune
+        - Integration with session start stats
+
+        Phase 3 (Advanced):
+        - Slugs and @artifact: refs
+        - Metadata (tags, descriptions, mime types)
+        - Configurable git handling
+
+        ## Research Document
+        Detailed analysis saved to scratchpad/artifacts-research.md covering:
+        - Similar tools comparison (Jira, Git LFS, Notion, RFCs)
+        - Trade-off analysis for each decision
+        - Usage examples and schema design
+        - Open questions for future consideration
+
+        Ready to create spec item and tasks.
+      supersedes: null
+    - _ulid: 01KFAY6SNQKQQSGQE2EHDM5J97
+      created_at: 2026-01-19T10:53:28.631Z
+      author: "@claude"
+      content: Task was cancelled in previous iteration but research has now been completed in current
+        iteration. All 6 design unknowns explored with recommendations. Research document provides
+        foundation for creating spec item and implementation tasks.
+      supersedes: null
   todos: []
-  closed_reason: No work done in this iteration - returning to ready queue
 - _ulid: 01KF9G2XR8ADWP4W6CXVB6JHJ4
   slugs: []
   title: Add append-only notes to spec items
@@ -11524,4 +11632,20 @@
         Tests are in tests/clone-for-testing.test.ts with 9 test cases covering all ACs plus edge
         cases.
       supersedes: null
+  todos: []
+- title: "Fix 6 incorrect exit codes from PR #87 review"
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  _ulid: 01KFBB1B2BMQF0XAFMF3H1ABCJ
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-19T14:37:41.323Z
+  notes: []
   todos: []

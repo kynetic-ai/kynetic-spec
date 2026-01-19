@@ -1181,4 +1181,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFAY7NM46JVAJ0JAKEDHAH0C
+    type: success
+    content: "Research spikes captured in task notes provide durable artifacts. Task 01KF9G22
+      demonstrates pattern: comprehensive research findings documented directly in notes, preserving
+      context even when temporary files (scratchpad) don't persist. Notes become the source of truth
+      for future spec/task creation."
+    created_at: 2026-01-19T10:53:57.252Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFAY7ZXQ0P119X3S9N42KZVW
+    type: friction
+    content: "Task 01KF9G22 was cancelled in previous iteration but appeared in ready_tasks list. When
+      attempted to complete after adding research notes, got error 'Cannot complete task with
+      status: cancelled'. The ready_tasks filter should exclude cancelled tasks, or there should be
+      a way to reopen/uncancell tasks that get picked up again."
+    created_at: 2026-01-19T10:54:07.799Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
