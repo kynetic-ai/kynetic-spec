@@ -10155,6 +10155,7 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-19T05:22:52.009Z'
+  started_at: '2026-01-19T07:05:16.789Z'
   notes:
     - _ulid: 01KFAB9Z67FVR4FV6Q0XV50889
       created_at: '2026-01-19T05:23:09.639Z'
@@ -10163,8 +10164,39 @@
         Add --description flag to 'inbox promote' command. Allows setting task description during
         promote instead of needing separate 'task note' call after. Streamlines triage workflow.
       supersedes: null
+    - _ulid: 01KFAHHHKWBR688Z5JW45ZEV2P
+      created_at: '2026-01-19T07:12:09.340Z'
+      author: '@claude'
+      content: >-
+        Implemented --description flag for inbox promote command.
+
+
+        Changes made:
+
+        1. Added --description option to inbox promote command (src/cli/commands/inbox.ts:173)
+
+        2. Updated task creation logic to use custom description when provided, with proper handling
+        for empty strings (line 205)
+
+        3. Added comprehensive integration tests (tests/integration.test.ts):
+           - Test for default behavior (inbox text as description)
+           - Test for custom description override
+           - Test for empty description handling
+
+        The implementation properly handles edge cases:
+
+        - If --description is not provided, falls back to inbox item text (existing behavior
+        preserved)
+
+        - If --description is provided (even as empty string), uses the provided value
+
+        - Uses !== undefined check to distinguish between 'not provided' and 'provided as empty
+        string'
+
+
+        All 578 tests pass.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T07:05:16.789Z'
 - _ulid: 01KFACH2KTRWKBDYQARTVBV3QD
   slugs:
     - task-multi-ref-batch-operations
