@@ -8318,6 +8318,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Created comprehensive spec coverage for alignment system - added parent feature
+    @alignment-system with 5 child requirements covering auto-sync, bidirectional mapping, warnings,
+    summaries, and stats. All specs marked implemented with acceptance criteria.
   depends_on: []
   context: []
   priority: 3
@@ -8328,6 +8332,7 @@
   vcs_refs: []
   created_at: '2026-01-18T20:00:38.313Z'
   started_at: '2026-01-19T03:23:27.556Z'
+  completed_at: '2026-01-19T03:27:38.752Z'
   notes:
     - _ulid: 01KFA4GVVTKWTQDS0RG9DTZEM4
       created_at: '2026-01-19T03:24:35.579Z'
@@ -8463,11 +8468,6 @@
         major capabilities.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T03:27:38.752Z'
-  closed_reason: >-
-    Created comprehensive spec coverage for alignment system - added parent feature
-    @alignment-system with 5 child requirements covering auto-sync, bidirectional mapping, warnings,
-    summaries, and stats. All specs marked implemented with acceptance criteria.
 - _ulid: 01KF9B41KHRT5VDM12JGAGT90B
   slugs: []
   title: Add missing ACs to status-cascade spec
@@ -8478,7 +8478,7 @@
     to match implementation. Also clarify whether maturity status should cascade along with
     implementation status.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -8490,6 +8490,7 @@
   created_at: '2026-01-18T20:00:41.073Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T03:29:33.607Z'
 - _ulid: 01KF9B44CSARAD770GJJQS8YMM
   slugs: []
   title: Fix spec status persistence on task start
