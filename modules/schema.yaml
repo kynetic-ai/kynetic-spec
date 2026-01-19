@@ -695,3 +695,5 @@ features:
             given: AlignmentIndex is built
             when: getStats is called
             then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
+        status:
+          implementation: implemented
