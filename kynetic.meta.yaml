@@ -702,4 +702,14 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFA0DVCMDFM7QFDJQ2ZCY21G
+    type: success
+    content: >-
+      Task descriptions with clear problem statements enable fast resolution - the ralph newline
+      issue had a detailed description that made the fix obvious: just move console.log() before
+      success() call. Spent <5 min from task start to fix complete.
+    created_at: '2026-01-19T02:13:02.485Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
