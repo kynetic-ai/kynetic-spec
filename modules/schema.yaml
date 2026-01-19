@@ -766,3 +766,17 @@ features:
             given: non-trait item type (feature, requirement)
             when: has traits field
             then: accepted by schema (traits can be implemented by any item type)
+      - _ulid: 01KFC1A9NA56A1RFAMZ5S0JPNA
+        slugs:
+          - traits-field
+        title: Traits Field on Specs
+        type: requirement
+        tags: []
+        description: Spec items have an optional traits field containing refs to trait-type items. This
+          field is validated for valid refs that point to trait-type items.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-19T21:07:03.467Z
