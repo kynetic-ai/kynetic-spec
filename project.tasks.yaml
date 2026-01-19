@@ -9931,7 +9931,14 @@
     - reflection
   vcs_refs: []
   created_at: '2026-01-19T05:22:49.797Z'
-  notes: []
+  notes:
+    - _ulid: 01KFAB9XS19DKA0X1PSVC8AXJV
+      created_at: '2026-01-19T05:23:08.194Z'
+      author: '@claude'
+      content: >-
+        Document the realpathSync fix in CONTRIBUTING.md or similar. Explain why it's needed (ESM +
+        npm link symlinks) and what symptoms look like without it.
+      supersedes: null
   todos: []
 - _ulid: 01KFAB9DZ9V095N4XJ0DE164BF
   slugs: []
