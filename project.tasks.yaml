@@ -8420,6 +8420,48 @@
         Create a parent spec item 'Spec-Task Alignment System' with child items for each major
         feature area. The existing @alignment-guidance should be reparented under this umbrella.
       supersedes: null
+    - _ulid: 01KFA4P9NNCTYH2Q73DH5D7FXJ
+      created_at: '2026-01-19T03:27:33.557Z'
+      author: '@claude'
+      content: >-
+        SPEC COVERAGE CREATED:
+
+
+        Created comprehensive spec hierarchy for alignment system:
+
+
+        1. @alignment-system (01KFA4JC) - Parent feature
+           Description: Bidirectional tracking and synchronization between spec items and implementing tasks
+
+        2. @alignment-auto-sync (01KFA4JN) - Automatic status sync
+           - AC 1: All tasks completed → spec status 'implemented'
+           - AC 2: Task in_progress → spec status 'in_progress'
+           - AC 3: Mixed completion → spec status 'in_progress'
+
+        3. @alignment-index (01KFA4KB) - Bidirectional mapping
+           - AC 1: getTasksForSpec returns linked tasks
+           - AC 2: getSpecForTask returns implemented spec
+
+        4. @alignment-warnings (01KFA4KT) - Validation and warnings
+           - AC 1: Detects orphaned specs (no tasks)
+           - AC 2: Detects status mismatches (current vs expected)
+
+        5. @alignment-summaries (01KFA4M9) - Progress summaries
+           - AC 1: Returns SpecImplementationSummary with status + linked tasks
+
+        6. @alignment-stats (01KFA4MK) - Aggregate statistics
+           - AC 1: Returns totalSpecs, specsWithTasks, alignedSpecs, orphanedSpecs
+
+        All specs marked as 'implemented' since code exists in src/parser/alignment.ts.
+
+
+        Existing @alignment-guidance spec remains in place - it covers AC count reminders which is
+        complementary to the core alignment system.
+
+
+        COVERAGE GAP RESOLVED: Alignment system now has comprehensive spec coverage documenting all
+        major capabilities.
+      supersedes: null
   todos: []
 - _ulid: 01KF9B41KHRT5VDM12JGAGT90B
   slugs: []
