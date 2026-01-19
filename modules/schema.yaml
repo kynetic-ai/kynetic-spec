@@ -785,3 +785,7 @@ features:
             given: spec item
             when: traits field contains refs
             then: refs must resolve to trait-type items
+          - id: ac-2
+            given: spec item
+            when: traits ref is invalid (doesn't exist)
+            then: validation reports error
