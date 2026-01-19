@@ -1300,11 +1300,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1524,6 +1526,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1639,6 +1642,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12542,11 +12546,10 @@
   created_at: 2026-01-19T17:37:54.924Z
   notes: []
   todos: []
-- title: Spec out pending_review task state
+- _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
+  slugs: []
+  title: Spec out pending_review task state
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Task lifecycle: Add pending_review state between in_progress and completed. Currently
     agents mark tasks complete when code is done, but completion should only happen after review and
     merge. Design questions: (1) New 'pending_review' status vs flag on existing status, (2) Trigger
@@ -12554,13 +12557,35 @@
     merged? manual approval?, (4) Automation loop interaction - should loops only work on
     pending/in_progress, not pending_review?, (5) Back-transition if review fails - return to
     in_progress with note. Goal: Align task completion with actual merged/shipped state."
-  _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T17:40:32.358Z
+  notes: []
+  todos: []
+- title: Spec out task automation eligibility system
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Task automation eligibility: Design system to distinguish tasks suitable for
+    automation loops vs those requiring manual/interactive sessions. Options to explore: (1) New
+    status like 'ready-auto' vs 'ready-manual', (2) Flag on task like 'automation: true/false', (3)
+    Tag-based approach. Also need process for determining eligibility - ideally automatic based on:
+    task type, complexity, spec coverage, dependencies. Retrospective finding: verification tasks
+    work well for automation, implementation tasks often need context-rich sessions."
+  _ulid: 01KFBNP8HRSA74YFRPWG7A8FYN
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T17:40:32.358Z
+  created_at: 2026-01-19T17:43:52.632Z
   notes: []
   todos: []

@@ -197,16 +197,6 @@ inbox:
       - testing
       - reflection
     added_by: "@claude"
-  - _ulid: 01KFBGK8MBQQ6AZCCPGQMQ9FXD
-    text: "Task automation eligibility: Design system to distinguish tasks suitable for automation loops
-      vs those requiring manual/interactive sessions. Options to explore: (1) New status like
-      'ready-auto' vs 'ready-manual', (2) Flag on task like 'automation: true/false', (3) Tag-based
-      approach. Also need process for determining eligibility - ideally automatic based on: task
-      type, complexity, spec coverage, dependencies. Retrospective finding: verification tasks work
-      well for automation, implementation tasks often need context-rich sessions."
-    created_at: 2026-01-19T16:14:51.532Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFBJB72B55D3KVA8PAX3TX2P
     text: Set up biome for linting (replace eslint script) - reference ../kynetic project for config
     created_at: 2026-01-19T16:45:24.940Z
