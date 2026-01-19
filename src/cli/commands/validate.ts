@@ -22,6 +22,166 @@ import {
 import { output, success, error, info } from '../output.js';
 import { validation as validationStrings } from '../../strings/index.js';
 import { EXIT_CODES } from '../exit-codes.js';
+import type { LoadedTask, LoadedSpecItem } from '../../parser/index.js';
+
+/**
+ * Staleness warning types
+ * AC: @stale-status-detection
+ */
+interface StalenessWarning {
+  type: 'parent-pending-children-done' | 'spec-implemented-no-task' | 'task-done-spec-not-started';
+  message: string;
+  refs: string[];
+}
+
+/**
+ * Check for stale status mismatches between specs and tasks
+ * AC: @stale-status-detection ac-1, ac-2, ac-3
+ */
+function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: ReferenceIndex): StalenessWarning[] {
+  const warnings: StalenessWarning[] = [];
+
+  // AC: @stale-status-detection ac-1 (parent-pending-children-done)
+  // Check if task with dependencies is pending but all dependencies are completed
+  for (const task of tasks) {
+    // Only check pending/in_progress tasks with dependencies
+    if (task.status !== 'pending' && task.status !== 'in_progress') continue;
+    if (!task.depends_on || task.depends_on.length === 0) continue;
+
+    // Resolve all dependency tasks
+    const depTasks = task.depends_on
+      .map(depRef => {
+        const result = refIndex.resolve(depRef);
+        if (!result.ok) return null;
+        return tasks.find(t => t._ulid === result.ulid);
+      })
+      .filter((t): t is LoadedTask => t !== null);
+
+    if (depTasks.length === 0) continue;
+
+    // Check if all dependencies are completed and their linked specs are implemented
+    const allDepsDone = depTasks.every(depTask => {
+      if (depTask.status !== 'completed') return false;
+
+      // If the dep task has a spec_ref, check if that spec is implemented
+      if (depTask.spec_ref) {
+        const result = refIndex.resolve(depTask.spec_ref);
+        if (!result.ok) return true; // Missing spec ref doesn't block
+        const spec = items.find(item => item._ulid === result.ulid);
+        return spec?.status?.implementation === 'implemented';
+      }
+      return true;
+    });
+
+    if (allDepsDone) {
+      const taskRef = task.slugs[0] || refIndex.shortUlid(task._ulid);
+      warnings.push({
+        type: 'parent-pending-children-done',
+        message: `Task @${taskRef} is ${task.status} but all dependencies are completed. Consider completing or reviewing.`,
+        refs: [task._ulid],
+      });
+    }
+  }
+
+  // AC: @stale-status-detection ac-2 (spec-implemented-no-task)
+  // Check if spec is implemented but has no completed tasks
+  for (const item of items) {
+    if (item.status?.implementation !== 'implemented') continue;
+
+    // Find completed tasks that reference this spec
+    const completedTasks = tasks.filter(task => {
+      if (task.status !== 'completed' || !task.spec_ref) return false;
+      const result = refIndex.resolve(task.spec_ref);
+      return result.ok && result.ulid === item._ulid;
+    });
+
+    if (completedTasks.length === 0) {
+      const specRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
+      warnings.push({
+        type: 'spec-implemented-no-task',
+        message: `Spec @${specRef} is implemented but has no completed tasks. Verify implementation or link existing task.`,
+        refs: [item._ulid],
+      });
+    }
+  }
+
+  // AC: @stale-status-detection ac-3 (task-done-spec-not-started)
+  // Check if task is completed but spec is still not_started
+  for (const task of tasks) {
+    if (task.status !== 'completed') continue;
+    if (!task.spec_ref) continue;
+
+    // Resolve spec reference
+    const result = refIndex.resolve(task.spec_ref);
+    if (!result.ok) continue;
+
+    const spec = items.find(item => item._ulid === result.ulid);
+    if (!spec) continue;
+
+    if (spec.status?.implementation === 'not_started') {
+      const taskRef = task.slugs[0] || refIndex.shortUlid(task._ulid);
+      const specRef = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
+      warnings.push({
+        type: 'task-done-spec-not-started',
+        message: `Task @${taskRef} completed but spec @${specRef} is not_started. Update spec status.`,
+        refs: [task._ulid, spec._ulid],
+      });
+    }
+  }
+
+  return warnings;
+}
+
+/**
+ * Format staleness warnings for display
+ * AC: @stale-status-detection ac-4
+ */
+function formatStalenessWarnings(warnings: StalenessWarning[], verbose: boolean): void {
+  if (warnings.length === 0) {
+    console.log(chalk.green('Staleness: OK'));
+    return;
+  }
+
+  console.log(chalk.yellow(`\nStaleness warnings: ${warnings.length}`));
+
+  // Group by type
+  const parentPending = warnings.filter(w => w.type === 'parent-pending-children-done');
+  const specNoTask = warnings.filter(w => w.type === 'spec-implemented-no-task');
+  const taskDoneSpecNot = warnings.filter(w => w.type === 'task-done-spec-not-started');
+
+  if (parentPending.length > 0) {
+    console.log(chalk.yellow(`  Parent pending, children done: ${parentPending.length}`));
+    const shown = verbose ? parentPending : parentPending.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+    }
+    if (!verbose && parentPending.length > 3) {
+      console.log(chalk.gray(`    ... and ${parentPending.length - 3} more`));
+    }
+  }
+
+  if (specNoTask.length > 0) {
+    console.log(chalk.yellow(`  Spec implemented, no task: ${specNoTask.length}`));
+    const shown = verbose ? specNoTask : specNoTask.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+    }
+    if (!verbose && specNoTask.length > 3) {
+      console.log(chalk.gray(`    ... and ${specNoTask.length - 3} more`));
+    }
+  }
+
+  if (taskDoneSpecNot.length > 0) {
+    console.log(chalk.yellow(`  Task done, spec not started: ${taskDoneSpecNot.length}`));
+    const shown = verbose ? taskDoneSpecNot : taskDoneSpecNot.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+    }
+    if (!verbose && taskDoneSpecNot.length > 3) {
+      console.log(chalk.gray(`    ... and ${taskDoneSpecNot.length - 3} more`));
+    }
+  }
+}
 
 /**
  * Format convention validation results for display
@@ -340,9 +500,10 @@ export function registerValidateCommand(program: Command): void {
     .option('--alignment', 'Check spec-task alignment')
     .option('--completeness', 'Check spec completeness (missing AC, descriptions, status inconsistencies)')
     .option('--conventions', 'Validate conventions')
+    .option('--staleness', 'Check for stale status mismatches between specs and tasks')
     .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
     .option('-v, --verbose', 'Show detailed output')
-    .option('--strict', 'Treat orphans as errors')
+    .option('--strict', 'Treat orphans and staleness warnings as errors')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -437,6 +598,23 @@ export function registerValidateCommand(program: Command): void {
             }
           } catch (err) {
             console.log(chalk.yellow('Warning: Could not load meta manifest for convention validation'));
+          }
+        }
+
+        // Run staleness checks if requested
+        // AC: @stale-status-detection ac-4, ac-5
+        if (options.staleness) {
+          const tasks = await loadAllTasks(ctx);
+          const items = await loadAllItems(ctx);
+          const refIndex = new ReferenceIndex(tasks, items);
+
+          const stalenessWarnings = checkStaleness(items, tasks, refIndex);
+          formatStalenessWarnings(stalenessWarnings, options.verbose);
+
+          // AC: @stale-status-detection ac-5 (staleness-exit-code)
+          // With --strict, staleness warnings cause validation failure
+          if (options.strict && stalenessWarnings.length > 0) {
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
         }
 
