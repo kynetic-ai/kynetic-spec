@@ -10888,23 +10888,120 @@
         - Test without --staleness flag produces no staleness output
       supersedes: null
   todos: []
-- title: 'Implement: Test repo setup command'
+- _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
+  slugs:
+    - task-test-repo-setup-command
+  title: 'Implement: Test repo setup command'
   type: task
   spec_ref: '@cmd-clone-for-testing'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-test-repo-setup-command
   tags:
     - cli
     - testing
     - dx
-  depends_on: []
-  _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: '2026-01-19T06:02:09.230Z'
-  notes: []
+  notes:
+    - _ulid: 01KFADHSTWFRENCPYMB6AB5CY6
+      created_at: '2026-01-19T06:02:23.452Z'
+      author: '@claude'
+      content: |-
+        **Implementation for 5 ACs**
+
+        **File to create:** src/cli/commands/clone-for-testing.ts
+
+        **Step 1: Register command**
+
+        In src/cli/index.ts, add new command:
+        ```typescript
+        import { cloneForTestingCommand } from './commands/clone-for-testing';
+        program.addCommand(cloneForTestingCommand);
+        ```
+
+        **Step 2: Implement command**
+
+        ```typescript
+        import { Command } from 'commander';
+        import { spawnSync } from 'child_process';
+        import * as path from 'path';
+        import * as os from 'os';
+        import * as fs from 'fs';
+        import { ulid } from 'ulid';
+
+        export const cloneForTestingCommand = new Command('clone-for-testing')
+          .description('Create isolated repo copy for testing')
+          .argument('[source]', 'Source repo path', process.cwd())
+          .argument('[dest]', 'Destination path (default: temp dir)')
+          .option('--branch <name>', 'Branch to checkout after cloning')
+          .option('--json', 'Output result as JSON')
+          .action(async (source, dest, options) => {
+            // Generate temp dest if not provided
+            if (!dest) {
+              dest = path.join(os.tmpdir(), `kspec-test-${ulid().slice(0, 8)}`);
+            }
+            
+            // Clone repo (no hardlinks for true isolation)
+            const cloneResult = spawnSync('git', [
+              'clone', '--no-hardlinks', source, dest
+            ], { encoding: 'utf-8', stdio: 'pipe' });
+            
+            if (cloneResult.status !== 0) {
+              console.error(`Failed to clone: ${cloneResult.stderr}`);
+              process.exit(1);
+            }
+            
+            // Remove remote origin
+            spawnSync('git', ['remote', 'remove', 'origin'], {
+              cwd: dest,
+              encoding: 'utf-8'
+            });
+            
+            // Check for kspec-meta branch
+            const branchCheck = spawnSync('git', [
+              'branch', '--list', 'kspec-meta'
+            ], { cwd: dest, encoding: 'utf-8' });
+            
+            if (branchCheck.stdout.trim()) {
+              // Create .kspec worktree
+              spawnSync('git', [
+                'worktree', 'add', '.kspec', 'kspec-meta'
+              ], { cwd: dest, encoding: 'utf-8' });
+            }
+            
+            // Checkout specified branch
+            let branch = 'main';  // or detect default
+            if (options.branch) {
+              spawnSync('git', ['checkout', options.branch], {
+                cwd: dest,
+                encoding: 'utf-8'
+              });
+              branch = options.branch;
+            }
+            
+            // Output result
+            if (options.json) {
+              console.log(JSON.stringify({ path: dest, branch }));
+            } else {
+              console.log(`Created test repo at: ${dest}`);
+              if (options.branch) {
+                console.log(`Checked out branch: ${branch}`);
+              }
+            }
+          });
+        ```
+
+        **Testing:**
+        - Test with source repo that has kspec-meta
+        - Test with source repo without kspec-meta
+        - Test --branch flag
+        - Test temp dir generation
+        - Test --json output format
+        - Verify remote origin is removed
+        - Verify worktree is functional
+      supersedes: null
   todos: []
