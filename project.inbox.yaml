@@ -152,18 +152,6 @@ inbox:
       - types
       - tech-debt
     added_by: '@claude'
-  - _ulid: 01KF6KS7H5D8R6H1YHX8BH2FHS
-    text: >-
-      Adapter validation on startup: Before spawning ACP agent, verify the adapter package exists
-      (npx dry-run or version check). Would catch wrong package names like @anthropic-ai vs
-      @zed-industries immediately with clear error instead of cryptic 'JsonRpcFraming closed' after
-      connection fails.
-    created_at: '2026-01-17T18:34:20.582Z'
-    tags:
-      - ralph
-      - dx
-      - validation
-    added_by: '@claude'
   - _ulid: 01KF6KSAC2Z2PT2Q96WDJEH4ZA
     text: >-
       ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission requests like
