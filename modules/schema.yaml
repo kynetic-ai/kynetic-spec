@@ -599,6 +599,8 @@ features:
             given: Multiple tasks reference the same spec, some completed and some in_progress
             when: syncSpecImplementationStatus is called
             then: Spec implementation status is 'in_progress' (partial completion)
+        status:
+          implementation: implemented
       - _ulid: 01KFA4KB1QBJ1KFT5KEXQCATGQ
         slugs:
           - alignment-index
