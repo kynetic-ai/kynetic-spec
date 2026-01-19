@@ -10750,3 +10750,22 @@
         - Test help --exit-codes output format
       supersedes: null
   todos: []
+- title: 'Implement: Stale status detection'
+  type: task
+  spec_ref: '@stale-status-detection'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-stale-status-detection
+  tags:
+    - validation
+    - dx
+  depends_on: []
+  _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T06:01:01.581Z'
+  notes: []
+  todos: []
