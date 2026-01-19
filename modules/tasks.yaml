@@ -708,7 +708,7 @@ requirements:
       - id: ac-4
         given: an agent is working on an eligible task
         when: the agent determines the task is not suitable for automation
-        then: the agent can mark it as needs_review with a note explaining why
+        then: the agent marks it as needs_review and adds a note explaining why (note is required)
       - id: ac-5
         given: a human is triaging tasks
         when: assessing automation readiness
