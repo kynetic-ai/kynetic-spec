@@ -1941,6 +1941,24 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KFAD8YSJH4C245400MPXVC5J
+        slugs:
+          - ralph-adapter-validation
+        title: Adapter validation on startup
+        type: requirement
+        tags:
+          - ralph
+          - dx
+          - validation
+        description: >-
+          Validate that the specified ACP adapter package exists before attempting to spawn the
+          agent. Provides clear error message instead of cryptic connection failures.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: '2026-01-19T05:57:33.619Z'
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
