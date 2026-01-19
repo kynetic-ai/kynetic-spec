@@ -11229,7 +11229,7 @@
   type: task
   spec_ref: '@cli-exit-codes'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -11340,6 +11340,11 @@
         All 10 tests passing. Help command works: 'kspec help exit-codes' shows full documentation.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T09:14:00.001Z'
+  closed_reason: >-
+    Implemented all 3 acceptance criteria: created EXIT_CODES constants module, added comprehensive
+    help documentation with examples, refactored all commands to use constants. All 10 tests
+    passing.
 - _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
   slugs:
     - task-stale-status-detection
