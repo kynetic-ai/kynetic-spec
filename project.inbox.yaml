@@ -320,3 +320,13 @@ inbox:
       - cli
       - phase-2
     added_by: '@claude'
+  - _ulid: 01KFA1QEC3GS0H6M3MKCFQ01DS
+    text: >-
+      Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
+      --exit-codes, kspec help commands --json for programmatic CLI discovery
+    created_at: '2026-01-19T02:35:45.411Z'
+    tags:
+      - agent-first
+      - cli
+      - phase-2
+    added_by: '@claude'
