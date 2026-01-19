@@ -2056,6 +2056,10 @@ features:
         then: >-
           The operation applies to all three refs, each ref is processed independently, and results
           are collected for final output
+      - id: backward-compatibility
+        given: Existing single-ref positional usage
+        when: User runs kspec task complete @task-a
+        then: Behavior is identical to current implementation with no deprecation warnings
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
