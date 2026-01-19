@@ -9690,7 +9690,7 @@
   type: task
   spec_ref: '@status-cascade'
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -9698,6 +9698,6 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-19T04:23:27.463Z'
-  started_at: '2026-01-19T04:23:31.945Z'
+  started_at: null
   notes: []
   todos: []
