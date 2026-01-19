@@ -1047,6 +1047,13 @@ features:
           kspec meta observe friction "Spec-first is slow for typos"
         implements:
           - '@meta-commands'
+        acceptance_criteria:
+          - id: from-inbox-conversion
+            given: An inbox item exists that should have been an observation
+            when: User runs kspec meta observe --from-inbox @inbox-ref [--type <type>]
+            then: >-
+              Inbox item content is used to create observation, inbox item is deleted, observation
+              ref is returned. Type defaults to 'idea' if not specified.
       - _ulid: 01KF1XCMD60000000000000000
         slugs:
           - meta-observations-cmd
