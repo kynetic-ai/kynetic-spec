@@ -9569,7 +9569,24 @@
   vcs_refs: []
   created_at: '2026-01-18T21:40:18.300Z'
   started_at: '2026-01-19T05:53:52.293Z'
-  notes: []
+  notes:
+    - _ulid: 01KFAD3NEAGYDC0Y788AJ42XRJ
+      created_at: '2026-01-19T05:54:40.203Z'
+      author: '@claude'
+      content: >-
+        Understanding: When deriving tasks from specs, automatically add an initial note with
+        implementation context. This should include:
+
+        - Spec description (if present)
+
+        - List of acceptance criteria (for reference)
+
+        - Possibly spec notes (if any)
+
+
+        This eliminates the manual 'kspec task note' step mentioned in CLAUDE.md and spec-plan
+        workflow.
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
   slugs: []
