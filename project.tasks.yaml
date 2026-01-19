@@ -9636,23 +9636,6 @@
         observations vs inbox.
       supersedes: null
   todos: []
-- _ulid: 01KFA6S47J8CJ2AHBVP4J6N38Q
-  slugs:
-    - task-ulid-format
-  title: 'Implement: ULID Format'
-  type: task
-  spec_ref: '@ulid-format'
-  derivation: auto
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 1
-  tags: []
-  vcs_refs: []
-  created_at: '2026-01-19T04:04:03.442Z'
-  notes: []
-  todos: []
 - _ulid: 01KFA6S906J9NGPX8EK97K0NVT
   slugs:
     - task-slug-format
@@ -9670,19 +9653,19 @@
   created_at: '2026-01-19T04:04:08.326Z'
   notes: []
   todos: []
-- title: 'Implement: Reference Syntax'
+- _ulid: 01KFA6SJ8CQMQNHMPJYQ62RYRA
+  slugs:
+    - task-reference-syntax
+  title: 'Implement: Reference Syntax'
   type: task
   spec_ref: '@ref-syntax'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-reference-syntax
-  tags: []
-  depends_on: []
-  _ulid: 01KFA6SJ8CQMQNHMPJYQ62RYRA
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-19T04:04:17.804Z'
   notes: []
