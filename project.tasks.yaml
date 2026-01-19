@@ -10273,22 +10273,63 @@
         - Delete inbox item after observation created successfully
       supersedes: null
   todos: []
-- title: Implement kspec log enhancements
+- _ulid: 01KFACZP9AJA7WK9S3QGXG4WCN
+  slugs:
+    - task-log-enhancements
+  title: Implement kspec log enhancements
   type: task
   spec_ref: '@cmd-log'
   meta_ref: null
-  priority: 3
-  slugs:
-    - task-log-enhancements
-  tags:
-    - cli
-    - enhancement
-  _ulid: 01KFACZP9AJA7WK9S3QGXG4WCN
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - enhancement
   vcs_refs: []
   created_at: '2026-01-19T05:52:29.994Z'
-  notes: []
+  notes:
+    - _ulid: 01KFACZZ4HDNNGNTACRVW9ET5B
+      created_at: '2026-01-19T05:52:39.057Z'
+      author: '@claude'
+      content: >-
+        Implementation for new ACs: list-all-tracked, passthrough-args, passthrough-invalid
+
+
+        **File to modify:** src/cli/commands/log.ts
+
+
+        **Feature 1: List all tracked commits (AC: list-all-tracked)**
+
+
+        When kspec log is run without any ref, --spec, or --task argument:
+
+        - Show all commits that have Task: or Spec: trailers
+
+        - Respects --limit (default 10), --oneline, --since flags
+
+
+        Git command to run:
+
+        ```
+
+        git log --grep='Task: @' --grep='Spec: @' --limit=<n> [other flags]
+
+        ```
+
+
+        Note: git log with multiple --grep patterns ORs them by default (any match). This is what we
+        want.
+
+
+        **Implementation:**
+
+        1. Check if ref is undefined/null AND --spec/--task are not provided
+
+        2. If so, run git log with grep pattern matching either trailer
+
+        3. Format output same as existing ref-based search
+      supersedes: null
   todos: []
