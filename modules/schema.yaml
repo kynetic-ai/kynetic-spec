@@ -969,3 +969,7 @@ features:
             given: spec implements trait that gets deleted
             when: validating
             then: broken ref error reported
+          - id: ac-4
+            given: trait list empty
+            when: running 'kspec trait list'
+            then: shows 'No traits defined' message
