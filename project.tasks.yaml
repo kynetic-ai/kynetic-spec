@@ -8478,7 +8478,7 @@
     to match implementation. Also clarify whether maturity status should cascade along with
     implementation status.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8528,6 +8528,11 @@
         All 5 behaviors now have corresponding ACs matching the test coverage.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T03:31:16.414Z'
+  closed_reason: >-
+    Added 4 missing acceptance criteria (ac-2 through ac-5) to @status-cascade spec covering all
+    implementation behaviors: user accepts/rejects cascade, JSON mode, and no children case.
+    Verified maturity status correctly does not cascade.
 - _ulid: 01KF9B44CSARAD770GJJQS8YMM
   slugs: []
   title: Fix spec status persistence on task start
