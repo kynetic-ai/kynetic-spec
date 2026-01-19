@@ -1316,6 +1316,12 @@ features:
             given: Task is completed but linked spec is still not_started
             when: kspec validate --staleness runs
             then: 'Warns: ''Task @task completed but spec @spec-item is not_started. Update spec status.'''
+          - id: staleness-flag
+            given: User wants to check for stale statuses
+            when: kspec validate --staleness runs
+            then: >-
+              Performs staleness checks in addition to standard validation. Can be combined with
+              other validate flags.
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
