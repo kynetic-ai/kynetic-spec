@@ -8357,7 +8357,7 @@
     newline. Need to ensure newline before iteration status messages. Related to finalization - when
     agent message stream ends, should ensure trailing newline.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8379,6 +8379,10 @@
         appeared on the same line as the last streaming content. All 30 ralph tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T02:12:50.275Z'
+  closed_reason: >-
+    Fixed ralph iteration message newline issue - moved newline output before success message to
+    ensure proper separation from streaming content
 - _ulid: 01KF9B4SJ1J3EA8XA9Z1JH7302
   slugs: []
   title: Fix PreToolUse:Bash hook error handling
