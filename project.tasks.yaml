@@ -9684,3 +9684,20 @@
         observations vs inbox.
       supersedes: null
   todos: []
+- title: JSON Test
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 3
+  slugs:
+    - json-test-temp
+  tags: []
+  _ulid: 01KFA84P21Y766PK2REFF3CH83
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T04:27:50.721Z'
+  notes: []
+  todos: []
