@@ -1464,6 +1464,44 @@ features:
             given: .kspec worktree already exists and is valid
             when: User runs kspec setup
             then: Skips worktree creation, proceeds with other setup steps
+        notes:
+          - _ulid: 01KFADB7BNJMB4YSV75Z79SS7G
+            created_at: '2026-01-19T05:58:47.925Z'
+            author: '@claude'
+            content: >-
+              Enhancement: Auto-detect and setup existing kspec repos
+
+
+              **Problem:** When cloning a repo that already uses kspec (has kspec-meta branch),
+              users must manually run 'git worktree add .kspec kspec-meta'. This is easy to forget,
+              causing confusing 'no kspec found' errors.
+
+
+              **Solution:** Detect this situation and offer to fix it automatically.
+
+
+              **Detection logic:**
+
+              1. Check if .kspec directory exists and is a valid worktree
+
+              2. If not, check if kspec-meta branch exists (git branch --list kspec-meta)
+
+              3. If branch exists but worktree doesn't, prompt user or auto-create with flag
+
+
+              **New option:** --auto-worktree
+
+              - Automatically creates worktree without prompting
+
+              - Useful for CI/CD and scripted setups
+
+
+              **Integration points:**
+
+              - kspec setup: Primary place for this check
+
+              - Other commands: Could also check and prompt (optional, may be too intrusive)
+            supersedes: null
       - _ulid: 01KF3ECD4PQ01ENY5PVSPTKK9X
         slugs:
           - cmd-module-add
