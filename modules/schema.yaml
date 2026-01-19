@@ -595,3 +595,7 @@ features:
             given: A task with spec_ref is marked in_progress
             when: syncSpecImplementationStatus is called
             then: Spec implementation status updates to 'in_progress'
+          - id: ac-3
+            given: Multiple tasks reference the same spec, some completed and some in_progress
+            when: syncSpecImplementationStatus is called
+            then: Spec implementation status is 'in_progress' (partial completion)
