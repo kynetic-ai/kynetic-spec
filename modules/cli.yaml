@@ -989,6 +989,12 @@ features:
             given: reference doesn't exist
             when: kspec log @invalid runs
             then: shows error 'Reference not found' with exit code 3
+          - id: list-all-tracked
+            given: No ref argument provided
+            when: User runs kspec log without any ref or filter
+            then: >-
+              Shows all commits with Task: or Spec: trailers in reverse chronological order,
+              respecting --limit (default 10)
         status:
           maturity: draft
           implementation: implemented
