@@ -455,6 +455,35 @@ export function registerTaskCommands(program: Command): void {
         await commitIfShadow(ctx.shadow, 'task-start', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
 
+        // Show spec context and AC guidance (suppressed in JSON mode)
+        if (!isJsonMode() && foundTask.spec_ref) {
+          const specResult = index.resolve(foundTask.spec_ref);
+          if (specResult.ok) {
+            const specItem = items.find(i => i._ulid === specResult.ulid);
+            if (specItem) {
+              console.log('');
+              console.log('--- Spec Context ---');
+              console.log(`Implementing: ${specItem.title}`);
+              if (specItem.description) {
+                console.log(`\n${specItem.description}`);
+              }
+
+              if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+                console.log(`\nAcceptance Criteria (${specItem.acceptance_criteria.length}):`);
+                for (const ac of specItem.acceptance_criteria) {
+                  console.log(`  [${ac.id}]`);
+                  console.log(`    Given: ${ac.given}`);
+                  console.log(`    When: ${ac.when}`);
+                  console.log(`    Then: ${ac.then}`);
+                }
+                console.log('');
+                console.log('Remember: Add test coverage for each AC and mark tests with // AC: @spec-ref ac-N');
+              }
+              console.log('');
+            }
+          }
+        }
+
         // Sync spec implementation status (unless --no-sync)
         if (options.sync !== false && foundTask.spec_ref) {
           const updatedTasks = tasks.map(t =>
