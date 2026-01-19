@@ -1714,6 +1714,24 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KFADGA7EPEJKTVG91CCVV3YA
+        slugs:
+          - cmd-clone-for-testing
+        title: Test repo setup command
+        type: requirement
+        tags:
+          - cli
+          - testing
+          - dx
+        description: >-
+          kspec clone-for-testing - Creates isolated repo copy for testing with proper kspec setup.
+          Eliminates manual setup errors that can cause confusing test failures.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: '2026-01-19T06:01:34.703Z'
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
