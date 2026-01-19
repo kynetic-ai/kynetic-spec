@@ -171,6 +171,7 @@ export function registerInboxCommands(program: Command): void {
     .command('promote <ref>')
     .description('Convert inbox item to task')
     .option('--title <title>', 'Task title (prompts if not provided)')
+    .option('--description <text>', 'Task description (defaults to inbox item text)')
     .option('--priority <n>', 'Priority (1-5)', '3')
     .option('--type <type>', 'Task type (task, bug, spike, etc.)', 'task')
     .option('--spec-ref <ref>', 'Link to spec item')
@@ -202,7 +203,7 @@ export function registerInboxCommands(program: Command): void {
           priority: parseInt(options.priority, 10),
           spec_ref: options.specRef || null,
           tags: options.tag || item.tags, // Inherit tags from inbox item if not specified
-          description: item.text, // Original idea becomes description
+          description: options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
         };
 
         const task = createTask(taskInput);
