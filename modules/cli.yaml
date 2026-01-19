@@ -98,6 +98,10 @@ features:
             then: >-
               Uses named constants from a centralized EXIT_CODES object (e.g., EXIT_CODES.NOT_FOUND
               instead of magic number 3)
+          - id: exit-codes-documented
+            given: User wants to script kspec commands
+            when: User runs kspec help --exit-codes or checks documentation
+            then: All exit codes are listed with their meanings and which commands may return them
       - _ulid: 01KEZCJPHWBEEP2BYRP6YVNK9F
         slugs:
           - cli-agent-features
