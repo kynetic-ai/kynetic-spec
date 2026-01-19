@@ -1171,9 +1171,17 @@ tasks:
       - dx
     vcs_refs: []
     created_at: '2026-01-14T22:20:00Z'
-    notes: []
-    todos: []
     started_at: '2026-01-19T10:09:21.519Z'
+    notes:
+      - _ulid: 01KFAVPQ7WJ7BGWRQRFS8EHEW8
+        created_at: '2026-01-19T10:09:44.700Z'
+        author: '@claude'
+        content: >-
+          Task was marked in_progress but not worked on in iteration 36. Returning to pending
+          status. No progress made - still needs implementation of YAML formatting/comment
+          preservation.
+        supersedes: null
+    todos: []
   - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3N
     slugs:
       - task-meta-spec
