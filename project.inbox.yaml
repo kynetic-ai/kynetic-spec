@@ -126,17 +126,6 @@ inbox:
       - tui
       - optional
     added_by: '@claude'
-  - _ulid: 01KF6FBK4FEE1MK8M9MRFHCNSN
-    text: >-
-      Setup command improvements for existing kspec repos: When cloning a repo that already uses
-      kspec (has kspec-meta branch), the setup/init flow should detect this and automatically create
-      the .kspec worktree. Currently requires manual 'git worktree add .kspec kspec-meta'. Could
-      also detect missing worktree on any command and prompt to fix, or auto-fix with a flag.
-    created_at: '2026-01-17T17:16:59.407Z'
-    tags:
-      - setup
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF6H34MJMWQ8R54AZZ8FKCCH
     text: >-
       ACP type safety audit: Review and strengthen typing across ACP client implementation. Current
