@@ -8403,9 +8403,40 @@
     - bug
   vcs_refs: []
   created_at: '2026-01-18T20:01:05.601Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T02:17:49.663Z'
+  notes:
+    - _ulid: 01KFA0RJ81QAD43B56XC4B29G2
+      created_at: '2026-01-19T02:18:53.569Z'
+      author: '@claude'
+      content: >-
+        Fixed PreToolUse:Bash hook error handling in kspec-worktree-guard.sh.
+
+
+        Root cause: The jq command was outputting parse errors to stderr when receiving malformed
+        JSON input, causing Claude Code to display 'PreToolUse:Bash hook error' messages.
+
+
+        Solution: Added 2>/dev/null to both jq commands (lines 11 and 31) to suppress stderr output.
+        This ensures:
+
+        - Hook always outputs valid JSON to stdout
+
+        - No error messages leak to stderr
+
+        - Hook continues to function correctly (blocks dangerous ops, allows safe ops)
+
+
+        Tested scenarios:
+
+        - Invalid JSON input: Now silent, outputs {"decision": "allow"}
+
+        - Valid safe command: Outputs {"decision": "allow"}  
+
+        - Valid dangerous command in .kspec: Outputs block decision with reason
+
+        - All existing functionality preserved
+      supersedes: null
+  todos: []
 - _ulid: 01KF9B4WB2M5HNW7V7YKZXFPZ6
   slugs: []
   title: Regenerate invalid 28-char ULIDs in bootstrap meta
