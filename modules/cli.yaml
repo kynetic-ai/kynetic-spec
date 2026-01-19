@@ -1282,6 +1282,23 @@ features:
           Good for CI: kspec lint --strict
         implements:
           - '@validate-commands'
+      - _ulid: 01KFADE3F4XFXX4E0WTFYZ839W
+        slugs:
+          - stale-status-detection
+        title: Stale status detection
+        type: requirement
+        tags:
+          - validation
+          - dx
+        description: >-
+          Detect and warn about status inconsistencies between specs, tasks, and implementation.
+          Helps maintain alignment between what's documented and what's actually done.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: '2026-01-19T06:00:22.244Z'
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
