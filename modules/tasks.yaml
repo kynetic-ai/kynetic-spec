@@ -753,3 +753,7 @@ requirements:
         given: a task is marked manual_only
         when: it needs to become eligible
         then: "a human must review and explicitly set automation: eligible"
+      - id: ac-16
+        given: an agent marks a task as needs_review during a ralph iteration
+        when: the marking is complete
+        then: the agent moves on to the next eligible task (does not exit the loop)
