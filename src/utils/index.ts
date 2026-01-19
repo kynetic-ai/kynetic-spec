@@ -6,6 +6,7 @@ export {
   getCurrentBranch,
   getRecentCommits,
   getWorkingTreeStatus,
+  getDiffSince,
 } from './git.js';
 export type { GitCommit, GitWorkingTree, GitFileStatus } from './git.js';
 export { formatCommitGuidance, printCommitGuidance } from './commit.js';

@@ -167,6 +167,61 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
   }
 }
 
+/**
+ * Get git diff since a specific timestamp
+ *
+ * Returns unified diff output showing all changes made after the given timestamp.
+ * Includes both committed changes and working tree changes.
+ *
+ * @param since - Date to get changes since
+ * @param cwd - Working directory
+ * @returns Diff output as string, or null if no changes or error
+ */
+export function getDiffSince(since: Date, cwd?: string): string | null {
+  try {
+    // Get the commit hash at the given time
+    const sinceCommit = execSync(
+      `git log --format="%H" --before="${since.toISOString()}" -n 1`,
+      {
+        cwd,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      }
+    ).trim();
+
+    if (!sinceCommit) {
+      // No commit before this time, diff from the beginning
+      const diff = execSync('git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD', {
+        cwd,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      }).trim();
+
+      return diff || null;
+    }
+
+    // Get diff from that commit to HEAD (includes committed changes)
+    const committedDiff = execSync(`git diff ${sinceCommit}..HEAD`, {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+
+    // Get diff for working tree changes (uncommitted)
+    const workingTreeDiff = execSync('git diff HEAD', {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+
+    // Combine both diffs
+    const combined = [committedDiff, workingTreeDiff].filter(Boolean).join('\n\n');
+    return combined || null;
+  } catch {
+    return null;
+  }
+}
+
 function parseStatusCode(
   code: string
 ): 'modified' | 'added' | 'deleted' | 'renamed' | 'untracked' {
