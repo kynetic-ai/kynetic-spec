@@ -43,7 +43,7 @@ features:
           High-level organizational unit. Groups related features.
           Examples: "Authentication", "API", "Data Export"
         implements:
-          - '@item-types'
+          - "@item-types"
       - _ulid: 01JHNKA1W5TYPE200000000000
         slugs:
           - type-feature
@@ -58,7 +58,7 @@ features:
           User-facing capability. Something the system does.
           Examples: "User Login", "Data Export", "Search"
         implements:
-          - '@item-types'
+          - "@item-types"
       - _ulid: 01JHNKA1W6TYPE300000000000
         slugs:
           - type-requirement
@@ -73,7 +73,7 @@ features:
           Specific, testable requirement. Details how a feature works.
           Examples: "Passwords must be hashed with bcrypt"
         implements:
-          - '@item-types'
+          - "@item-types"
       - _ulid: 01JHNKA1W7TYPE400000000000
         slugs:
           - type-constraint
@@ -88,7 +88,7 @@ features:
           Limitation or boundary the system must operate within.
           Examples: "Must support 10k concurrent users", "Must use PostgreSQL"
         implements:
-          - '@item-types'
+          - "@item-types"
       - _ulid: 01JHNKA1W8TYPE500000000000
         slugs:
           - type-decision
@@ -104,7 +104,7 @@ features:
           Captures why a choice was made, alternatives considered.
           Examples: "Use PostgreSQL for persistence", "Choose YAML over JSON"
         implements:
-          - '@item-types'
+          - "@item-types"
       - _ulid: 01JHNKA1W9TYPE600000000000
         slugs:
           - type-task
@@ -119,9 +119,9 @@ features:
           Actionable work item. May be derived from spec items
           or created standalone. See @tasks module for details.
         implements:
-          - '@item-types'
+          - "@item-types"
         relates_to:
-          - '@tasks'
+          - "@tasks"
   - _ulid: 01JHNKA2W0STAT000000000000
     slugs:
       - status-lifecycle
@@ -161,10 +161,10 @@ features:
                       draft -> deferred (for stub specs)
                       deferred -> draft (when resuming work)
         implements:
-          - '@status-lifecycle'
+          - "@status-lifecycle"
         acceptance_criteria:
           - id: ac-1
-            given: 'a spec item with maturity: deferred'
+            given: "a spec item with maturity: deferred"
             when: viewing or filtering items
             then: the deferred status is recognized and displayed correctly
           - id: ac-2
@@ -189,7 +189,7 @@ features:
 
           This is informational; tasks track actual work.
         implements:
-          - '@status-lifecycle'
+          - "@status-lifecycle"
       - _ulid: 01KF3H95B873EP62X4A2GBD5FC
         slugs:
           - status-cascade
@@ -198,42 +198,36 @@ features:
         tags:
           - dx
           - cli
-        description: >-
-          When updating a parent item's implementation status, CLI offers to cascade the update to
-          nested children. Prevents status drift between parent features and child requirements.
+        description: When updating a parent item's implementation status, CLI offers to cascade the update
+          to nested children. Prevents status drift between parent features and child requirements.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T13:52:53.609Z'
+        created: 2026-01-16T13:52:53.609Z
         acceptance_criteria:
           - id: ac-1
-            given: >-
-              A parent item has children and user runs 'kspec item set @parent --implementation
+            given: A parent item has children and user runs 'kspec item set @parent --implementation
               implemented'
             when: The command completes
-            then: 'CLI prompts: ''Update N child items to implemented? [y/n]'''
+            then: "CLI prompts: 'Update N child items to implemented? [y/n]'"
           - id: ac-2
-            given: >-
-              A parent item has children, user runs 'kspec item set @parent --implementation
-              implemented', and user responds 'y' to the cascade prompt
+            given: A parent item has children, user runs 'kspec item set @parent --implementation implemented',
+              and user responds 'y' to the cascade prompt
             when: The cascade is accepted
             then: All child items are updated to 'implemented' and each child update is logged
           - id: ac-3
-            given: >-
-              A parent item has children, user runs 'kspec item set @parent --implementation
-              implemented', and user responds 'n' to the cascade prompt
+            given: A parent item has children, user runs 'kspec item set @parent --implementation implemented',
+              and user responds 'n' to the cascade prompt
             when: The cascade is rejected
             then: Child items are NOT updated and retain their original status
           - id: ac-4
-            given: >-
-              A parent item has children and user runs 'kspec item set @parent --implementation
-              implemented --json'
+            given: A parent item has children and user runs 'kspec item set @parent --implementation implemented
+              --json'
             when: JSON mode is active
             then: No cascade prompt is shown and children are NOT automatically updated
           - id: ac-5
-            given: >-
-              A parent item has NO children and user runs 'kspec item set @parent --implementation
+            given: A parent item has NO children and user runs 'kspec item set @parent --implementation
               implemented'
             when: The update completes
             then: No cascade prompt is shown (since there are no children to cascade to)
@@ -272,7 +266,7 @@ features:
 
           All items inline in the manifest.
         implements:
-          - '@file-structure'
+          - "@file-structure"
       - _ulid: 01KEZCJPJ3X51ZZADWKWFNV4R9
         slugs:
           - directory-structure
@@ -295,7 +289,7 @@ features:
 
           Uses `includes` field in manifest to reference files.
         implements:
-          - '@file-structure'
+          - "@file-structure"
       - _ulid: 01KEZCJPJ3WDMJX9K17J63CYXS
         slugs:
           - auto-adaptive-structure
@@ -312,7 +306,7 @@ features:
 
           Not MVP - this is a convenience feature.
         implements:
-          - '@file-structure'
+          - "@file-structure"
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
@@ -347,7 +341,7 @@ features:
 
           YAML 1.2 is stricter and safer.
         implements:
-          - '@yaml-conventions'
+          - "@yaml-conventions"
       - _ulid: 01KEZCJPJ3MFX4H51TN64GEB6T
         slugs:
           - yaml-quoting
@@ -364,7 +358,7 @@ features:
 
           The linter should catch unquoted ambiguous values.
         implements:
-          - '@yaml-conventions'
+          - "@yaml-conventions"
       - _ulid: 01KEZCJPJ3M7T6ZNEMTVYBWP96
         slugs:
           - yaml-multiline
@@ -382,7 +376,7 @@ features:
 
           This is cleaner than quoted strings with \n.
         implements:
-          - '@yaml-conventions'
+          - "@yaml-conventions"
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs:
       - validation
@@ -425,9 +419,9 @@ features:
 
           Zod chosen for ecosystem size, type inference, JSON Schema export.
         implements:
-          - '@validation'
+          - "@validation"
         depends_on:
-          - '@spec-item'
+          - "@spec-item"
       - _ulid: 01KEZCJPJ373KGN2PK8P3XQ929
         slugs:
           - validation-modes
@@ -445,7 +439,7 @@ features:
 
           CI should run `kspec validate` or `kspec lint --strict`.
         implements:
-          - '@validation'
+          - "@validation"
       - _ulid: 01KEZCJPJ42RZQPFC962QV2TP3
         slugs:
           - validation-output
@@ -463,30 +457,29 @@ features:
           JSON output (--json) for programmatic consumption:
           { "valid": false, "errors": [...], "warnings": [...] }
         implements:
-          - '@validation'
+          - "@validation"
       - _ulid: 01KF3GST2YDS6MA1A04WK7A9FJ
         slugs:
           - spec-completeness
         title: Spec Completeness Validation
         type: requirement
         tags: []
-        description: >-
-          Validation checks for spec quality beyond schema conformance. Warns about incomplete specs
-          to help maintain spec-as-source-of-truth principle.
+        description: Validation checks for spec quality beyond schema conformance. Warns about incomplete
+          specs to help maintain spec-as-source-of-truth principle.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T13:44:30.558Z'
+        created: 2026-01-16T13:44:30.558Z
         acceptance_criteria:
           - id: ac-1
             given: A spec item exists without acceptance_criteria
             when: kspec validate --completeness runs
-            then: 'A warning is shown: ''Item @slug has no acceptance criteria'''
+            then: "A warning is shown: 'Item @slug has no acceptance criteria'"
           - id: ac-2
             given: A spec item exists without a description
             when: kspec validate --completeness runs
-            then: 'A warning is shown: ''Item @slug has no description'''
+            then: "A warning is shown: 'Item @slug has no description'"
           - id: ac-3
             given: A parent item has implementation:implemented but children have not_started
             when: kspec validate --completeness runs
@@ -494,9 +487,7 @@ features:
           - id: ac-4
             given: Multiple completeness issues exist
             when: kspec validate --completeness runs
-            then: >-
-              A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status
-              mismatches')
+            then: A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status mismatches')
         status:
           maturity: draft
           implementation: implemented
@@ -508,19 +499,18 @@ features:
         tags:
           - dx
           - workflow
-        description: >-
-          Alignment guidance shown during task workflows includes reminder about test coverage for
-          specs with acceptance criteria.
+        description: Alignment guidance shown during task workflows includes reminder about test coverage
+          for specs with acceptance criteria.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T13:53:20.127Z'
+        created: 2026-01-16T13:53:20.127Z
         acceptance_criteria:
           - id: ac-1
             given: A task has spec_ref linking to a spec with acceptance_criteria
             when: Alignment guidance is shown (e.g., during task complete)
-            then: 'Guidance includes: ''Linked spec has N acceptance criteria - consider test coverage'''
+            then: "Guidance includes: 'Linked spec has N acceptance criteria - consider test coverage'"
         status:
           maturity: draft
           implementation: implemented
@@ -556,7 +546,7 @@ features:
           Tools use this to know which schema to apply.
           Breaking format changes bump major version.
         implements:
-          - '@versioning'
+          - "@versioning"
       - _ulid: 01JHNKA3W7VERS200000000000
         slugs:
           - spec-version
@@ -576,7 +566,7 @@ features:
           - MINOR: New requirements, non-breaking clarifications
           - PATCH: Typos, editorial
         implements:
-          - '@versioning'
+          - "@versioning"
       - _ulid: 01JHNKA3W8VERS300000000000
         slugs:
           - git-baselines
@@ -592,21 +582,21 @@ features:
 
           Enables: kspec diff --since spec-v1.0.0
         implements:
-          - '@versioning'
+          - "@versioning"
   - _ulid: 01KFA4JCFV3NSEG6TMZFX1PCVH
     slugs:
       - alignment-system
     title: Spec-Task Alignment System
     type: feature
     tags: []
-    description: >-
-      Bidirectional tracking and synchronization between spec items and implementing tasks. Provides
-      automatic status updates, alignment validation, and implementation progress visibility.
+    description: Bidirectional tracking and synchronization between spec items and implementing tasks.
+      Provides automatic status updates, alignment validation, and implementation progress
+      visibility.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-19T03:25:25.371Z'
+    created: 2026-01-19T03:25:25.371Z
     requirements:
       - _ulid: 01KFA4JN8597CWFW7CTNE4T6A9
         slugs:
@@ -614,14 +604,13 @@ features:
         title: Automatic Spec Status Synchronization
         type: requirement
         tags: []
-        description: >-
-          When tasks referencing a spec item change state (start, complete, cancel), the spec's
+        description: When tasks referencing a spec item change state (start, complete, cancel), the spec's
           implementation status automatically updates to reflect progress.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-19T03:25:34.341Z'
+        created: 2026-01-19T03:25:34.341Z
         acceptance_criteria:
           - id: ac-1
             given: A task with spec_ref is marked completed
@@ -643,14 +632,13 @@ features:
         title: Bidirectional Spec-Task Mapping
         type: requirement
         tags: []
-        description: >-
-          AlignmentIndex provides efficient bidirectional queries: find all tasks implementing a
-          spec, or find the spec a task implements.
+        description: "AlignmentIndex provides efficient bidirectional queries: find all tasks implementing a
+          spec, or find the spec a task implements."
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-19T03:25:56.664Z'
+        created: 2026-01-19T03:25:56.664Z
         acceptance_criteria:
           - id: ac-1
             given: AlignmentIndex is built with tasks and spec items
@@ -668,23 +656,20 @@ features:
         title: Alignment Validation and Warnings
         type: requirement
         tags: []
-        description: >-
-          Detect and report alignment issues: orphaned specs (no tasks), status mismatches (spec
-          status doesn't match task progress), and stale implementation status.
+        description: "Detect and report alignment issues: orphaned specs (no tasks), status mismatches (spec
+          status doesn't match task progress), and stale implementation status."
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-19T03:26:12.591Z'
+        created: 2026-01-19T03:26:12.591Z
         acceptance_criteria:
           - id: ac-1
             given: A spec item has no tasks with spec_ref pointing to it
             when: findAlignmentWarnings is called
             then: Returns warning with type='orphaned_spec' and spec details
           - id: ac-2
-            given: >-
-              A spec's current implementation status differs from expected status based on linked
-              tasks
+            given: A spec's current implementation status differs from expected status based on linked tasks
             when: findAlignmentWarnings is called
             then: Returns warning with type='status_mismatch' explaining the discrepancy
         status:
@@ -695,21 +680,19 @@ features:
         title: Implementation Progress Summaries
         type: requirement
         tags: []
-        description: >-
-          Provide structured summaries of spec implementation status including linked tasks, current
-          vs expected status, and alignment state.
+        description: Provide structured summaries of spec implementation status including linked tasks,
+          current vs expected status, and alignment state.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-19T03:26:27.907Z'
+        created: 2026-01-19T03:26:27.907Z
         acceptance_criteria:
           - id: ac-1
             given: A spec item exists with linked tasks
             when: getImplementationSummary(specUlid) is called
-            then: >-
-              Returns SpecImplementationSummary with currentStatus, expectedStatus, linkedTasks
-              array, and isAligned boolean
+            then: Returns SpecImplementationSummary with currentStatus, expectedStatus, linkedTasks array, and
+              isAligned boolean
         status:
           implementation: implemented
       - _ulid: 01KFA4MKV8QHT9ZAJQGZ8F7MQF
@@ -718,14 +701,13 @@ features:
         title: Alignment Statistics
         type: requirement
         tags: []
-        description: >-
-          Track aggregate statistics about spec-task alignment: total specs, specs with tasks,
-          aligned specs, orphaned specs.
+        description: "Track aggregate statistics about spec-task alignment: total specs, specs with tasks,
+          aligned specs, orphaned specs."
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-19T03:26:38.440Z'
+        created: 2026-01-19T03:26:38.440Z
         acceptance_criteria:
           - id: ac-1
             given: AlignmentIndex is built
@@ -736,3 +718,19 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFC190RJFWPWSYTC128B8Y3N
+    slugs:
+      - spec-traits
+    title: Spec Traits System
+    type: feature
+    tags: []
+    description: "Allow spec items to share acceptance criteria via reusable trait definitions. Traits
+      are spec items with type: trait that define AC bundles. Other specs can declare traits they
+      implement, and validation checks that all trait AC have test coverage. Display shows inherited
+      trait AC inline when viewing specs or tasks."
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    notes: []
+    created: 2026-01-19T21:06:21.586Z
