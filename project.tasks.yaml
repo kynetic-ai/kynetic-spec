@@ -10726,7 +10726,7 @@
   type: task
   spec_ref: '@cmd-log'
   meta_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10930,6 +10930,10 @@
         - 595/597 tests passing overall (1 pre-existing failure unrelated to this work, 1 skipped)
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T08:39:53.736Z'
+  closed_reason: >-
+    Implemented kspec log enhancements: list all tracked commits (no ref), passthrough args support,
+    and invalid arg error handling. All 4 new tests passing.
 - _ulid: 01KFAD9G055C7TWC56WM0VZGA4
   slugs:
     - task-adapter-validation-on-startup
