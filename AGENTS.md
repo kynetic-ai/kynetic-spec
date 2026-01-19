@@ -521,17 +521,27 @@ Spec: @spec-ref
 
 1. **All CI checks pass** - Do not merge with failing checks
 2. **All review comments addressed** - PRs have automated Claude review that posts comments identifying issues. These MUST be fixed before merge.
-3. **User questions answered** - If the user asks questions via `@claude` in PR comments, answer them and complete any requested actions (e.g., "add an inbox item for X")
+3. **User requests completed** - If the user asks for something via `@claude` in PR comments and the PR agent couldn't complete it (limited permissions), YOU must complete it before merging
+
+### How PR Review Works
+
+PRs have an automated `@claude` agent that:
+- Runs automatically on PR creation to review code
+- Responds to `@claude` mentions from users
+- Has **limited capabilities** (may not be able to run kspec, npm, etc.)
+
+When the PR agent can't complete a user request (e.g., "add an inbox item"), it will say so. **You must complete those actions before merging.**
 
 ### PR Review Workflow
 
 1. **Create PR** with implementation
-2. **Wait for CI** - Automated Claude review runs and posts findings
+2. **Wait for CI** - Automated review runs and posts findings
 3. **Read review comments** - Check for identified issues
 4. **Fix ALL issues** - Don't merge with known problems
 5. **Re-run CI** if you pushed fixes
-6. **Check for user comments** - User may ask follow-up questions
-7. **Merge** only when CI green AND all comments addressed
+6. **Check for user comments** - User may have asked @claude to do something
+7. **Complete pending actions** - If PR agent couldn't do something, do it yourself
+8. **Merge** only when CI green AND all comments/requests addressed
 
 ### What Review Comments Look Like
 
