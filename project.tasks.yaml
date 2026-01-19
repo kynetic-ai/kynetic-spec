@@ -11082,7 +11082,7 @@
   type: task
   spec_ref: '@cmd-setup'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -11218,6 +11218,10 @@
         operations tests (unrelated to this change).
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T08:58:08.180Z'
+  closed_reason: >-
+    Implemented all 3 acceptance criteria for kspec setup worktree detection. Added ensureWorktree()
+    function, --auto-worktree flag, and comprehensive test coverage. All tests passing.
 - _ulid: 01KFADD78BS8EARJHSXXBRM9W8
   slugs:
     - task-semantic-exit-codes
