@@ -213,6 +213,12 @@ features:
               implemented', and user responds 'n' to the cascade prompt
             when: The cascade is rejected
             then: Child items are NOT updated and retain their original status
+          - id: ac-4
+            given: >-
+              A parent item has children and user runs 'kspec item set @parent --implementation
+              implemented --json'
+            when: JSON mode is active
+            then: No cascade prompt is shown and children are NOT automatically updated
         status:
           maturity: draft
           implementation: implemented
