@@ -557,3 +557,17 @@ features:
           Enables: kspec diff --since spec-v1.0.0
         implements:
           - '@versioning'
+  - _ulid: 01KFA4JCFV3NSEG6TMZFX1PCVH
+    slugs:
+      - alignment-system
+    title: Spec-Task Alignment System
+    type: feature
+    tags: []
+    description: >-
+      Bidirectional tracking and synchronization between spec items and implementing tasks. Provides
+      automatic status updates, alignment validation, and implementation progress visibility.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    created: '2026-01-19T03:25:25.371Z'
