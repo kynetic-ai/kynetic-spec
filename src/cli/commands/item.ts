@@ -14,6 +14,7 @@ import {
   checkSlugUniqueness,
   patchSpecItems,
   findChildItems,
+  createNote,
   type LoadedSpecItem,
   type PatchOperation,
   type BulkPatchResult,
@@ -481,6 +482,7 @@ export function registerItemCommands(program: Command): void {
           implements: [],
           relates_to: [],
           tests: [],
+          notes: [],
         };
 
         const newItem = createSpecItem(input);
@@ -875,6 +877,87 @@ export function registerItemCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getItemStatus, err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item note <ref> <message>
+  item
+    .command('note <ref> <message>')
+    .description('Add a note to a spec item')
+    .option('--author <author>', 'Note author')
+    .option('--supersedes <ulid>', 'ULID of note this supersedes')
+    .action(async (ref: string, message: string, options) => {
+      try {
+        const ctx = await initContext();
+        const items = await loadAllItems(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const refIndex = new ReferenceIndex(tasks, items);
+
+        const result = refIndex.resolve(ref);
+        if (!result.ok) {
+          error(errors.reference.itemNotFound(ref));
+          process.exit(1);
+        }
+
+        const foundItem = items.find(i => i._ulid === result.ulid);
+        if (!foundItem) {
+          error(errors.reference.itemNotFound(ref));
+          process.exit(1);
+        }
+
+        const note = createNote(message, options.author, options.supersedes);
+
+        const updatedNotes = [...(foundItem.notes || []), note];
+        await updateSpecItem(ctx, foundItem, { notes: updatedNotes });
+
+        const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
+        await commitIfShadow(ctx.shadow, 'item-note', itemSlug);
+        success(`Added note to spec item: ${refIndex.shortUlid(foundItem._ulid)}`, { note });
+      } catch (err) {
+        error(errors.failures.addNote, err);
+        process.exit(1);
+      }
+    });
+
+  // kspec item notes <ref>
+  item
+    .command('notes <ref>')
+    .description('Show notes for a spec item')
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const items = await loadAllItems(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const refIndex = new ReferenceIndex(tasks, items);
+
+        const result = refIndex.resolve(ref);
+        if (!result.ok) {
+          error(errors.reference.itemNotFound(ref));
+          process.exit(1);
+        }
+
+        const foundItem = items.find(i => i._ulid === result.ulid);
+        if (!foundItem) {
+          error(errors.reference.itemNotFound(ref));
+          process.exit(1);
+        }
+
+        const notes = foundItem.notes || [];
+        output(notes, () => {
+          if (notes.length === 0) {
+            console.log('No notes');
+          } else {
+            for (const note of notes) {
+              const author = note.author || 'unknown';
+              console.log(`[${note.created_at}] ${author}:`);
+              console.log(note.content);
+              console.log('');
+            }
+          }
+        });
+      } catch (err) {
+        error(errors.failures.getNotes, err);
         process.exit(1);
       }
     });
