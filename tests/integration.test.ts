@@ -1213,6 +1213,55 @@ describe('Integration: alignment guidance', () => {
     expect(output).toContain('Alignment Check');
     expect(output).toContain('Linked spec has 2 acceptance criteria - consider test coverage');
   });
+
+  it('should show spec context when starting task with spec_ref', () => {
+    // Create a spec item with description and acceptance criteria
+    kspec('item add --under @test-core --title "Start Context Test" --slug start-context-spec --type requirement', tempDir);
+    kspec('item set @start-context-spec --description "Test description for context display"', tempDir);
+    kspec('item ac add @start-context-spec --given "initial state" --when "action occurs" --then "expected result"', tempDir);
+
+    // Create a task linked to the spec
+    kspec('task add --title "Test Start Context" --spec-ref @start-context-spec --slug start-context-task', tempDir);
+
+    // Start the task and check for spec context
+    const output = kspec('task start @start-context-task', tempDir);
+    expect(output).toContain('Spec Context');
+    expect(output).toContain('Implementing: Start Context Test');
+    expect(output).toContain('Test description for context display');
+    expect(output).toContain('Acceptance Criteria (1)');
+    expect(output).toContain('[ac-1]');
+    expect(output).toContain('Given: initial state');
+    expect(output).toContain('When: action occurs');
+    expect(output).toContain('Then: expected result');
+    expect(output).toContain('Add test coverage for each AC');
+  });
+
+  it('should not show spec context when starting task without spec_ref', () => {
+    // Create a task without spec_ref
+    kspec('task add --title "No Spec Task" --slug no-spec-task', tempDir);
+
+    const output = kspec('task start @no-spec-task', tempDir);
+    expect(output).not.toContain('Spec Context');
+    expect(output).toContain('Started task');
+  });
+
+  it('should suppress spec context in JSON mode', () => {
+    // Create a spec item with ACs
+    kspec('item add --under @test-core --title "JSON Mode Spec" --slug json-mode-spec --type requirement', tempDir);
+    kspec('item ac add @json-mode-spec --given "state" --when "action" --then "result"', tempDir);
+
+    // Create a task linked to the spec
+    kspec('task add --title "JSON Mode Task" --spec-ref @json-mode-spec --slug json-mode-task', tempDir);
+
+    // Start in JSON mode
+    const output = kspec('task start @json-mode-task --json', tempDir);
+    expect(output).not.toContain('Spec Context');
+
+    // Should be valid JSON
+    const parsed = JSON.parse(output);
+    expect(parsed.success).toBe(true);
+    expect(parsed.task).toBeDefined();
+  });
 });
 
 describe('Integration: commit guidance', () => {
