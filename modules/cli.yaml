@@ -2091,6 +2091,13 @@ features:
         then: >-
           Command exits with code 3, error message says --refs requires at least one reference, no
           operations are performed
+      - id: ref-resolution-uses-existing
+        given: Refs can be slugs, full ULIDs, or ULID prefixes
+        when: User runs kspec task complete --refs @task-slug @01KFAB95 @01KFA
+        then: >-
+          Each ref resolves using existing ReferenceIndex.resolve() logic, ambiguous ULID prefixes
+          are reported as errors for that specific ref, other refs in the batch still process
+          normally
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
