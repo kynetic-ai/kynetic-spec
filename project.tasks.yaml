@@ -1356,11 +1356,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1692,6 +1694,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1807,6 +1810,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13853,24 +13857,67 @@
         **Impact**: 10 tests failing, 608 passing. Pre-existing issue on main branch.
       supersedes: null
   todos: []
-- title: "Improve test performance: centralize utilities and use pre-built CLI"
+- _ulid: 01KFC7FZXSDQX967HGMCWKJBHQ
+  slugs: []
+  title: "Improve test performance: centralize utilities and use pre-built CLI"
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - testing
-    - dx
-    - performance
   description: "Integration test performance - tests take 50-75s which discourages frequent runs.
     Investigate: parallel test execution, fixture caching, test isolation overhead, selective test
     runs (--grep). Goal: fast feedback loop during development."
-  _ulid: 01KFC7FZXSDQX967HGMCWKJBHQ
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - testing
+    - dx
+    - performance
   vcs_refs: []
   created_at: 2026-01-19T22:55:01.561Z
-  notes: []
+  notes:
+    - _ulid: 01KFC7GE2B8ZPBFZR060NKAH6J
+      created_at: 2026-01-19T22:55:16.044Z
+      author: "@claude"
+      content: |-
+        ## Scope
+
+        ### 1. Centralize test utilities
+        Currently each test file defines its own helper:
+        - integration.test.ts: `kspec(args, cwd)` using `npx tsx CLI_PATH`
+        - meta.test.ts: `kspec(args, cwd)` (duplicate)
+        - staleness.test.ts: `runKspec(args, cwd)`
+        - module.test.ts: `run(args)`
+
+        Create shared `tests/helpers/cli.ts` with standardized utilities:
+        - `runCli(args, cwd)` - execute CLI and return stdout
+        - `runCliExpectError(args, cwd)` - execute CLI expecting failure, return error
+        - Consistent error handling and output formatting
+
+        ### 2. Use pre-built CLI instead of tsx transpilation
+        Change from:
+        ```typescript
+        execSync(`npx tsx ${CLI_PATH} ${args}`)  // ~1200ms per call
+        ```
+        To:
+        ```typescript
+        execSync(`node dist/cli/index.js ${args}`)  // ~200ms per call
+        ```
+
+        This requires:
+        - CI workflow runs `npm run build` before `npm test`
+        - Tests use built output instead of source
+
+        ### 3. Expected impact
+        - ~250 subprocess calls × 1000ms saved = ~250 seconds
+        - Local: 200s → ~60-80s
+        - CI: 13min → ~5-6min
+
+        ## Investigation findings (from exploration agent)
+        - 85% of test time is subprocess overhead (npx + tsx transpilation)
+        - integration.test.ts: 318s for 139 tests (2.3s/test)
+        - meta.test.ts: 292s for 110 tests (2.6s/test)
+        - Unit tests without subprocess: 3-8ms/test
+      supersedes: null
   todos: []
