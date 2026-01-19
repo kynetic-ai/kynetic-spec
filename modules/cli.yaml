@@ -1966,6 +1966,12 @@ features:
             then: >-
               Adapter package is verified to exist (via npm/npx check), and command proceeds to
               spawn agent
+          - id: invalid-adapter-error
+            given: User runs kspec ralph --adapter @nonexistent/package
+            when: Startup validation runs
+            then: >-
+              Command exits immediately with exit code 3 and error message: 'Adapter package not
+              found: @nonexistent/package. Install with: npm install -g @nonexistent/package'
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
