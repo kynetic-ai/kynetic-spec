@@ -1144,4 +1144,16 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFATQ46A835BQ657YX7AC853
+    type: success
+    content: >-
+      Implementing features with clear acceptance criteria is much faster than without. The
+      @stale-status-detection spec had 5 well-defined ACs that mapped directly to implementation
+      steps. AC format (Given/When/Then) made it easy to verify each scenario. Spent more time
+      fixing type issues than implementing logic. Key learning: read schema thoroughly first to
+      understand data structures before writing validation logic.
+    created_at: '2026-01-19T09:52:29.386Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
