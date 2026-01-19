@@ -1299,6 +1299,13 @@ features:
         tests: []
         notes: []
         created: '2026-01-19T06:00:22.244Z'
+        acceptance_criteria:
+          - id: parent-pending-children-done
+            given: Umbrella/parent task is pending but all child spec items are marked implemented
+            when: kspec validate --staleness runs
+            then: >-
+              Warns: 'Task @parent-task is pending but all linked specs are implemented. Consider
+              completing or reviewing.'
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
