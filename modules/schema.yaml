@@ -591,3 +591,7 @@ features:
             given: A task with spec_ref is marked completed
             when: syncSpecImplementationStatus is called
             then: Spec implementation status updates to 'implemented' if all linked tasks are completed
+          - id: ac-2
+            given: A task with spec_ref is marked in_progress
+            when: syncSpecImplementationStatus is called
+            then: Spec implementation status updates to 'in_progress'
