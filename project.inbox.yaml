@@ -207,3 +207,14 @@ inbox:
     created_at: 2026-01-19T16:14:51.532Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFBHAGBD3K01JM8FXTD0B14Q
+    text: "Task lifecycle: Add pending_review state between in_progress and completed. Currently agents
+      mark tasks complete when code is done, but completion should only happen after review and
+      merge. Design questions: (1) New 'pending_review' status vs flag on existing status, (2)
+      Trigger for pending_review - PR created? code pushed? explicit command?, (3) Trigger for
+      completion - PR merged? manual approval?, (4) Automation loop interaction - should loops only
+      work on pending/in_progress, not pending_review?, (5) Back-transition if review fails - return
+      to in_progress with note. Goal: Align task completion with actual merged/shipped state."
+    created_at: 2026-01-19T16:27:33.102Z
+    tags: []
+    added_by: "@claude"
