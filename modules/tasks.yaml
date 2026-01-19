@@ -783,3 +783,7 @@ requirements:
         when: considering valid transitions
         then: any status can transition to any other status, but transitions TO eligible require human
           action (agents cannot mark tasks eligible)
+      - id: ac-23
+        given: "a task has automation: eligible"
+        when: its spec_ref is removed or the referenced spec is deleted
+        then: the automation status is preserved but kspec validate emits a warning
