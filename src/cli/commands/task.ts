@@ -469,6 +469,8 @@ export function registerTaskCommands(program: Command): void {
           );
           if (syncResult) {
             info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
+            // Commit the spec status change
+            await commitIfShadow(ctx.shadow, 'spec-sync', syncResult.specUlid.slice(0, 8), `${syncResult.previousStatus} -> ${syncResult.newStatus}`);
           }
         }
       } catch (err) {
@@ -538,6 +540,8 @@ export function registerTaskCommands(program: Command): void {
           );
           if (syncResult) {
             info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
+            // Commit the spec status change
+            await commitIfShadow(ctx.shadow, 'spec-sync', syncResult.specUlid.slice(0, 8), `${syncResult.previousStatus} -> ${syncResult.newStatus}`);
           }
         }
 
