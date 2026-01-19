@@ -1748,6 +1748,100 @@ describe('Integration: inbox promote', () => {
   });
 });
 
+// AC: @meta-observe-cmd from-inbox-conversion
+describe('Integration: meta observe --from-inbox', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should convert inbox item to observation with default type', () => {
+    // Add inbox item
+    kspec('inbox add "This should have been an observation"', tempDir);
+
+    // Get inbox item ref
+    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>('inbox list', tempDir);
+    expect(inboxItems.length).toBe(1);
+    const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
+
+    // Convert to observation using --from-inbox
+    const result = kspecJson<{ _ulid: string; type: string; content: string }>('meta observe --from-inbox ' + itemRef, tempDir);
+
+    expect(result._ulid).toBeDefined();
+    expect(result.type).toBe('idea'); // Default type
+    expect(result.content).toBe('This should have been an observation');
+
+    // Verify inbox item was deleted
+    const remainingItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    expect(remainingItems.length).toBe(0);
+  });
+
+  it('should convert inbox item with explicit type override', () => {
+    // Add inbox item
+    kspec('inbox add "Found a performance bottleneck"', tempDir);
+
+    // Get inbox item ref
+    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>('inbox list', tempDir);
+    const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
+
+    // Convert to friction observation with --type override
+    const result = kspecJson<{ _ulid: string; type: string; content: string }>('meta observe --from-inbox ' + itemRef + ' --type friction', tempDir);
+
+    expect(result.type).toBe('friction');
+    expect(result.content).toBe('Found a performance bottleneck');
+
+    // Verify inbox item was deleted
+    const remainingItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    expect(remainingItems.length).toBe(0);
+  });
+
+  it('should preserve workflow reference when converting from inbox', () => {
+    // Add inbox item
+    kspec('inbox add "Workflow specific observation"', tempDir);
+
+    // Get inbox item ref
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
+
+    // Convert with workflow reference
+    const result = kspecJson<{ _ulid: string; type: string; workflow_ref: string | null }>('meta observe --from-inbox ' + itemRef + ' --type success --workflow @some-workflow', tempDir);
+
+    expect(result.type).toBe('success');
+    expect(result.workflow_ref).toBe('@some-workflow');
+  });
+
+  it('should fail with invalid inbox reference', () => {
+    try {
+      kspec('meta observe --from-inbox @nonexistent', tempDir);
+      expect.fail('Should have thrown error for invalid inbox reference');
+    } catch (error) {
+      expect(String(error)).toContain('not found');
+    }
+  });
+
+  it('should fail with invalid type when using --from-inbox', () => {
+    // Add inbox item
+    kspec('inbox add "Test item"', tempDir);
+
+    // Get inbox item ref
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${inboxItems[0]._ulid.substring(0, 8)}`;
+
+    // Try to convert with invalid type
+    try {
+      kspec('meta observe --from-inbox ' + itemRef + ' --type invalid', tempDir);
+      expect.fail('Should have thrown error for invalid type');
+    } catch (error) {
+      expect(String(error)).toContain('invalid');
+    }
+  });
+});
+
 describe('Integration: Batch operations', () => {
   let tempDir: string;
 

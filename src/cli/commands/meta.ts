@@ -27,6 +27,9 @@ import {
   ReferenceIndex,
   loadSessionContext,
   saveSessionContext,
+  loadInboxItems,
+  findInboxItemByRef,
+  deleteInboxItem,
   type MetaContext,
   type Agent,
   type Workflow,
@@ -639,17 +642,78 @@ export function registerMetaCommands(program: Command): void {
     });
 
   // AC-obs-1: kspec meta observe <type> <content>
+  // AC: @meta-observe-cmd from-inbox-conversion
   meta
-    .command('observe <type> <content>')
+    .command('observe [type] [content]')
     .description('Create an observation (friction, success, question, idea)')
     .option('--workflow <ref>', 'Reference to workflow this observation relates to')
     .option('--author <author>', 'Author of the observation')
-    .action(async (type: string, content: string, options) => {
+    .option('--from-inbox <ref>', 'Convert inbox item to observation')
+    .option('--type <type>', 'Override type when using --from-inbox (defaults to idea)')
+    .action(async (type: string | undefined, content: string | undefined, options) => {
       try {
         const ctx = await initContext();
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
+          process.exit(1);
+        }
+
+        // AC: @meta-observe-cmd from-inbox-conversion
+        // Handle --from-inbox flag
+        if (options.fromInbox) {
+          // Load inbox items
+          const inboxItems = await loadInboxItems(ctx);
+          const item = findInboxItemByRef(inboxItems, options.fromInbox);
+
+          if (!item) {
+            error(errors.reference.inboxNotFound(options.fromInbox));
+            process.exit(3);
+          }
+
+          // Use inbox item content
+          const observationContent = item.text;
+
+          // Type defaults to 'idea' but can be overridden with --type flag
+          const observationType = (options.type || 'idea') as ObservationType;
+
+          // Validate observation type
+          const validTypes: ObservationType[] = ['friction', 'success', 'question', 'idea'];
+          if (!validTypes.includes(observationType)) {
+            error(errors.validation.invalidObservationType(observationType));
+            console.log(`Valid types: ${validTypes.join(', ')}`);
+            process.exit(1);
+          }
+
+          // Create observation
+          const observation = createObservation(observationType, observationContent, {
+            workflow_ref: options.workflow,
+            author: options.author,
+          });
+
+          // Save observation
+          await saveObservation(ctx, observation);
+
+          // Delete inbox item
+          const deleted = await deleteInboxItem(ctx, item._ulid);
+          if (!deleted) {
+            error('Failed to delete inbox item after creating observation');
+            process.exit(1);
+          }
+
+          await commitIfShadow(ctx.shadow, 'meta-observe-from-inbox', observation._ulid.substring(0, 8), `Convert inbox item to ${observationType} observation`);
+
+          // Return observation ref
+          output(
+            observation,
+            () => success(`Created observation: ${observation._ulid.substring(0, 8)}`)
+          );
+          return;
+        }
+
+        // Standard observe flow (without --from-inbox)
+        if (!type || !content) {
+          error('Type and content are required when not using --from-inbox');
           process.exit(1);
         }
 
