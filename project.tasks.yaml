@@ -10075,6 +10075,7 @@
     - reflection
   vcs_refs: []
   created_at: '2026-01-19T05:22:47.104Z'
+  started_at: '2026-01-19T06:49:43.620Z'
   notes:
     - _ulid: 01KFAB9W4X6CFZFDRRRKPPZXSQ
       created_at: '2026-01-19T05:23:06.526Z'
@@ -10083,8 +10084,15 @@
         Add to CI workflow: after build step, run 'kspec --version' or 'kspec --help' to verify the
         built CLI is functional. Catches build issues that pass tsc but fail at runtime.
       supersedes: null
+    - _ulid: 01KFAG99G02VWHHV5VVV0R81B6
+      created_at: '2026-01-19T06:50:10.304Z'
+      author: '@claude'
+      content: >-
+        Added CLI verification step to CI workflow (.github/workflows/test.yml:39-43). After build,
+        runs 'npm link' then verifies with 'kspec --version' and 'kspec --help'. This catches
+        runtime issues that might pass TypeScript compilation but fail at execution.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T06:49:43.620Z'
 - _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
   slugs: []
   title: Document ESM symlink fix for contributors
