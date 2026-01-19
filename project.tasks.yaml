@@ -10629,7 +10629,7 @@
     meta observe --from-inbox @ref - convert inbox item to observation, preserving content. Useful
     during triage when items were captured in wrong bucket.
   spec_ref: '@meta-observe-cmd'
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -10699,6 +10699,7 @@
         - Delete inbox item after observation created successfully
       supersedes: null
   todos: []
+  started_at: '2026-01-19T08:08:01.637Z'
 - _ulid: 01KFACZP9AJA7WK9S3QGXG4WCN
   slugs:
     - task-log-enhancements

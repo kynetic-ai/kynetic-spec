@@ -1043,4 +1043,29 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAM6VF2MY7QKC526SZX8PY8
+    type: success
+    content: |-
+      Test-first debugging pattern worked excellently for batch operations
+
+      The PR review subagent identified a critical bug: resolveTaskRef() called process.exit() 
+      instead of returning errors, breaking partial failure handling.
+
+      The fix process was clean:
+      1. Review identified the bug with clear evidence
+      2. Created batch-compatible resolver that returns {task, error}
+      3. Updated batch.ts to expect new format
+      4. All existing tests passed (no regression)
+      5. Added 9 new tests covering all 8 ACs
+      6. Tests caught edge cases (ambiguous ULID prefixes)
+
+      Key insight: When refactoring error handling, create new functions instead of modifying
+      existing ones. The original resolveTaskRef() serves single-ref commands that should exit
+      on error. The new resolveTaskRefForBatch() serves batch commands that should continue.
+
+      This separation of concerns made the fix safe and testable.
+    created_at: '2026-01-19T07:58:44.706Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
