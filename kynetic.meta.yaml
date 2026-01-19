@@ -1406,4 +1406,44 @@ observations:
     resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
     resolved_at: 2026-01-19T16:12:50.887Z
     resolved_by: "@claude"
+  - _ulid: 01KFC3BCB8B8F2GXW0GGNCNRT4
+    type: question
+    content: "Bulk import design question: What makes it 'work well'? The cancelled @task-bulk-import
+      had a design for simplified YAML input. Challenges identified: format flexibility vs
+      strictness, error handling mid-import, preview accuracy, integration with existing workflows.
+      What's the core use case - rapid spec capture during design? Plan-to-spec translation?
+      Importing from external sources?"
+    created_at: 2026-01-19T21:42:36.136Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFC3BM2YJSZ56MFSS8MA8WM6
+    type: friction
+    content: "Plan mode required multiple back-and-forth cycles. Missing upfront: output type (spec vs
+      code), standalone requirements check, display/UX needs. Review subagent ran AFTER trying to
+      exit plan mode instead of as a step before finalizing. Suggests plan mode needs structured
+      phases or checklist."
+    created_at: 2026-01-19T21:42:44.062Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFC3BVA0WNT6FV2B74DY270A
+    type: success
+    content: "Subagent review of spec caught 3 blocking issues (AC collision, undefined JSON structure,
+      display contradiction) that would have caused implementation problems. Pattern: review specs
+      with critical eye before finalizing, not just for completeness but for internal consistency
+      and edge cases."
+    created_at: 2026-01-19T21:42:51.457Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFC3C23Q4DX7APJEXFEKY1FN
+    type: success
+    content: "Task notes template for standalone implementation context worked well: Scope (what this
+      task covers), Prerequisites (dependencies), Files (to modify/create), Patterns (code
+      examples), Tests (where to add). Prevents 'see parent for context' band-aids."
+    created_at: 2026-01-19T21:42:58.423Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

@@ -235,3 +235,16 @@ inbox:
       - meta
       - skills
     added_by: "@claude"
+  - _ulid: 01KFC3SV1V0NBY01W9X12K0G08
+    text: 'Batch command execution via JSON - Generic kspec batch command that accepts JSON array of CLI
+      commands with args. Example: [{"cmd": "item ac add", "ref": "@spec-1", "given": "...", ...}].
+      Separates concerns: skills/scripts generate the JSON (smart translation), CLI executes it
+      (dumb executor). Supports --dry-run for preview, --file or stdin input. Replaces need for
+      command-specific bulk variants. Pairs with skills that translate intent (plan sections,
+      templates) into batch JSON.'
+    created_at: 2026-01-19T21:50:29.948Z
+    tags:
+      - cli
+      - dx
+      - bulk
+    added_by: "@claude"
