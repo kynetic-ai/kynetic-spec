@@ -2030,6 +2030,25 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-17T15:18:27.678Z'
+  - _ulid: 01KFACEZX6E7G3XJAHE3H8ZT8B
+    slugs:
+      - multi-ref-batch
+    title: Multi-ref batch operations
+    type: feature
+    tags:
+      - cli
+      - dx
+    description: >-
+      Support --refs @a @b @c flag pattern for batch operations on multiple items/tasks. Uses hybrid
+      syntax: single-ref positional remains for backward compat, --refs flag enables batch
+      operations. Applies to: task complete, task cancel, task set, task delete, item set, item
+      delete, inbox delete.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    notes: []
+    created: '2026-01-19T05:43:22.791Z'
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:

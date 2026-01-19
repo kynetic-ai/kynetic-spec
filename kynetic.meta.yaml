@@ -919,4 +919,24 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFABRSMHWD0Q33800AX7TYSS
+    type: success
+    content: >-
+      PR review workflow worked well: subagent found TypeScript compilation errors (missing
+      imports), implemented fix directly on feature branch, verified with tests, then merged. Clean
+      separation between review agent and implementation agent.
+    created_at: '2026-01-19T05:31:15.473Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KFABRY971XP4KD8D3198R2KT
+    type: success
+    content: >-
+      Spec-first workflow for schema changes: Updated @maturity-states spec with new 'deferred'
+      status and added ACs before implementing in schema. This ensures spec remains source of truth
+      and provides clear acceptance criteria for implementation.
+    created_at: '2026-01-19T05:31:20.231Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
