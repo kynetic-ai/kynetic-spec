@@ -758,3 +758,7 @@ features:
             given: trait item exists
             when: missing acceptance_criteria
             then: validation emits completeness warning
+          - id: ac-3
+            given: trait item exists
+            when: missing description
+            then: validation emits completeness warning
