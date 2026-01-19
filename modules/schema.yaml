@@ -861,3 +861,7 @@ features:
             given: trait AC displayed in text mode
             when: showing
             then: labels each AC with source trait ref (e.g., 'from @trait-json-output')
+          - id: ac-5
+            given: spec with multiple traits
+            when: displaying
+            then: each trait's AC shown in separate labeled section
