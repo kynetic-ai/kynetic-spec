@@ -9859,7 +9859,7 @@
     post-checkout hook warning if .kspec worktree gets on wrong branch. This protects against
     non-Claude git operations too.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9889,6 +9889,12 @@
       content: All changes re-applied after git reset. Hook working correctly.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T06:29:11.298Z'
+  closed_reason: >-
+    Implemented git pre-commit hook to protect kspec-meta branch. Hook blocks direct commits unless
+    KSPEC_SHADOW_COMMIT=1 env var is set. shadowAutoCommit now sets this var. Hook installed to
+    .git/hooks (worktrees use main repo hooks via commondir). Tested: blocks unauthorized commits,
+    allows kspec CLI commits, allows commits on other branches.
 - _ulid: 01KF9QKK97AC0DA26KWXPEBYSY
   slugs: []
   title: Update documentation for meta-spec and observations tooling
