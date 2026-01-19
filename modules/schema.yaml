@@ -865,3 +865,17 @@ features:
             given: spec with multiple traits
             when: displaying
             then: each trait's AC shown in separate labeled section
+      - _ulid: 01KFC1D57K060RM5XZNE9SV3QE
+        slugs:
+          - trait-validation
+        title: Trait AC Coverage Validation
+        type: requirement
+        tags: []
+        description: Validation checks that specs implementing traits have test coverage for all trait AC.
+          Uses the existing completeness check infrastructure with test annotation scanning.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-19T21:08:37.236Z
