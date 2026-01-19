@@ -233,9 +233,13 @@ This shows active work, recently completed tasks, ready tasks, inbox items, and 
 
 ### Task Workflow
 
-1. **Start**: Mark task in_progress before working
-2. **Note**: Add notes as you work (not just at end)
-3. **Complete**: Mark done with summary
+1. **Verify**: Before starting, check if work is already done:
+   - Check git history for related commits: `git log --oneline --grep="feature-name"`
+   - Read implementation code if it exists
+   - If already implemented, mark task complete with "Already implemented" reason
+2. **Start**: Mark task in_progress before working
+3. **Note**: Add notes as you work (not just at end)
+4. **Complete**: Mark done with summary
 
 ### Creating Work
 
@@ -510,6 +514,100 @@ Spec: @spec-ref
 - Enable `kspec log @ref` to find commits by task or spec
 - Create natural audit trail linking code to specs
 - Standard git format (works with `git log --grep`)
+
+## PR Merge Requirements
+
+**Before merging ANY PR, verify:**
+
+1. **All CI checks pass** - Do not merge with failing checks
+2. **All review comments addressed** - PRs have automated Claude review that posts comments identifying issues. These MUST be fixed before merge.
+3. **User requests completed** - If the user asks for something via `@claude` in PR comments and the PR agent couldn't complete it (limited permissions), YOU must complete it before merging
+
+### How PR Review Works
+
+PRs have an automated `@claude` agent that:
+- Runs automatically on PR creation to review code
+- Responds to `@claude` mentions from users
+- Has **limited capabilities** (may not be able to run kspec, npm, etc.)
+
+When the PR agent can't complete a user request (e.g., "add an inbox item"), it will say so. **You must complete those actions before merging.**
+
+### PR Review Workflow
+
+1. **Create PR** with implementation
+2. **Wait for CI** - Automated review runs and posts findings
+3. **Read review comments** - Check for identified issues
+4. **Fix ALL issues** - Don't merge with known problems
+5. **Re-run CI** if you pushed fixes
+6. **Check for user comments** - User may have asked @claude to do something
+7. **Complete pending actions** - If PR agent couldn't do something, do it yourself
+8. **Merge** only when CI green AND all comments/requests addressed
+
+### What Review Comments Look Like
+
+The automated review posts structured comments like:
+```
+## Code Review
+Found N issues...
+
+### Issue 1: file.ts line X
+**Current:** [problematic code]
+**Should be:** [correct code]
+**Reason:** [explanation]
+```
+
+**Each identified issue must be fixed before merge.**
+
+### If You Can't Fix an Issue
+
+If an issue can't be fixed in the current PR:
+1. Add a comment explaining why
+2. Create a task or inbox item to track it
+3. Get explicit user approval to merge with known issues
+
+### Local Review Subagents
+
+When spawning a subagent to review your work before creating a PR, instruct it to be **strict** about:
+
+1. **AC Coverage** - Every acceptance criterion MUST have at least one test that validates it
+   - Missing AC coverage is a **blocking issue**, not a suggestion
+   - Use `// AC: @spec-item ac-N` annotations to link tests to criteria
+
+2. **Test Quality** - All tests must properly validate their intended purpose
+   - AC-specific tests validate acceptance criteria
+   - Non-AC tests are fine if they test something important (edge cases, integrations, etc.)
+   - Reject "fluff tests" - tests that don't meaningfully verify anything
+   - A test that always passes or only tests implementation details is not valid
+   - Tests should fail if the feature breaks
+
+3. **Test Strategy** - Prioritize E2E over unit tests
+   - **Prefer end-to-end tests** that validate actual user functionality
+   - Test the CLI as a user would invoke it, not just internal functions
+   - Unit tests are okay for complex logic, but E2E proves the feature works
+
+4. **Test Isolation** - NEVER test kspec within the kspec repo
+   - All tests MUST run in temp directories (system temp, `/tmp`, etc.)
+   - Manual testing and validation MUST also use temp directories
+   - This prevents nested worktree issues and data corruption
+   - Test fixtures should create isolated test repos, not use the real `.kspec/`
+
+5. **What to Check**
+   - Read the linked spec and its acceptance criteria
+   - Verify each AC has corresponding test(s)
+   - Verify tests would catch regressions
+   - Verify tests run in temp directories, not kspec repo
+   - Flag any ACs without proper coverage as MUST-FIX
+
+Example prompt for review subagent:
+```
+Review this implementation against the spec @spec-ref. Be strict:
+- Every AC must have test coverage with // AC: annotation
+- Missing tests are blocking issues, not suggestions
+- Prioritize E2E tests over unit tests
+- Verify tests run in temp dirs, not kspec repo
+- Reject fluff tests that don't validate real behavior
+- List any issues as MUST-FIX
+```
 
 ## Code Annotations
 
