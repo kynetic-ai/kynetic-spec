@@ -77,7 +77,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           Exit codes are semantic, not just 0/1:
 
