@@ -11231,6 +11231,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented all 3 acceptance criteria: created EXIT_CODES constants module, added comprehensive
+    help documentation with examples, refactored all commands to use constants. All 10 tests
+    passing.
   depends_on: []
   context: []
   priority: 3
@@ -11238,6 +11242,7 @@
   vcs_refs: []
   created_at: '2026-01-19T05:59:53.354Z'
   started_at: '2026-01-19T09:10:14.946Z'
+  completed_at: '2026-01-19T09:14:00.001Z'
   notes:
     - _ulid: 01KFADDKAG82HC2SRSVKK3AZMY
       created_at: '2026-01-19T06:00:05.713Z'
@@ -11340,11 +11345,6 @@
         All 10 tests passing. Help command works: 'kspec help exit-codes' shows full documentation.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T09:14:00.001Z'
-  closed_reason: >-
-    Implemented all 3 acceptance criteria: created EXIT_CODES constants module, added comprehensive
-    help documentation with examples, refactored all commands to use constants. All 10 tests
-    passing.
 - _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
   slugs:
     - task-stale-status-detection
@@ -11352,7 +11352,7 @@
   type: task
   spec_ref: '@stale-status-detection'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -11483,6 +11483,7 @@
         - Test without --staleness flag produces no staleness output
       supersedes: null
   todos: []
+  started_at: '2026-01-19T09:47:16.303Z'
 - _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
   slugs:
     - task-test-repo-setup-command

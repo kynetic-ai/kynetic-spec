@@ -1119,4 +1119,29 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFARJ6TDYJFKS5EP5XAJB89W
+    type: success
+    content: >-
+      Bulk refactoring pattern: Created automated script to replace magic numbers with constants
+      across 18+ files. This approach was much faster than manual edits and ensured consistency. The
+      script handled the mechanical replacements, then manual fixes addressed edge cases (import
+      paths). This pattern is reusable for similar bulk refactoring tasks (e.g., error message
+      standardization, import path updates).
+    created_at: '2026-01-19T09:14:51.085Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KFATCXG9439H99JN0KK8SV71
+    type: success
+    content: >-
+      Multi-round PR review with dedicated subagents worked extremely well. Pattern: (1) Launch
+      review subagent after PR created (2) Review finds issues (3) Fix issues (4) Launch new review
+      subagent (5) Repeat until clean (6) Merge. This approach caught all CONFLICT exit code
+      inconsistencies through 3 fix iterations before merge. The independent review prevented
+      merging incomplete work. Key: each review cycle provides fresh perspective and catches missed
+      cases.
+    created_at: '2026-01-19T09:46:54.857Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
