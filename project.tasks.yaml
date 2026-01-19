@@ -10065,7 +10065,7 @@
   type: task
   description: Add CI test that kspec command works after build
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10093,6 +10093,10 @@
         runtime issues that might pass TypeScript compilation but fail at execution.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T06:50:14.706Z'
+  closed_reason: >-
+    Added CLI verification step to CI workflow. After build, runs npm link and tests kspec --version
+    and --help commands to verify CLI is functional.
 - _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
   slugs: []
   title: Document ESM symlink fix for contributors
