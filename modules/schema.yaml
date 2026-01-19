@@ -641,3 +641,9 @@ features:
             given: A spec item has no tasks with spec_ref pointing to it
             when: findAlignmentWarnings is called
             then: Returns warning with type='orphaned_spec' and spec details
+          - id: ac-2
+            given: >-
+              A spec's current implementation status differs from expected status based on linked
+              tasks
+            when: findAlignmentWarnings is called
+            then: Returns warning with type='status_mismatch' explaining the discrepancy
