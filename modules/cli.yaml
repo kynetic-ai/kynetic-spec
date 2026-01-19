@@ -108,6 +108,50 @@ features:
             then: >-
               All commands use consistent exit codes for the same error types (e.g., all 'not found'
               errors exit 3, all validation errors exit 4)
+        notes:
+          - _ulid: 01KFADD1NW999DBZJHBDBSPFZM
+            created_at: '2026-01-19T05:59:47.645Z'
+            author: '@claude'
+            content: >-
+              Enhancement: Formalize exit code implementation
+
+
+              **Current state:** Exit codes are defined in spec but implementation uses magic
+              numbers inconsistently.
+
+
+              **Goals:**
+
+              1. Centralized constants - single source of truth
+
+              2. Documentation - help users script with kspec
+
+              3. Consistency audit - ensure all commands follow the spec
+
+
+              **Exit code definitions (from spec):**
+
+              - 0: SUCCESS - Operation completed successfully
+
+              - 1: ERROR - General/unexpected error
+
+              - 2: USAGE - Bad arguments, invalid command usage
+
+              - 3: NOT_FOUND - Referenced item doesn't exist
+
+              - 4: VALIDATION - Spec validation failed
+
+              - 5: CONFLICT - Item already exists, duplicate slug, etc.
+
+
+              **New additions to consider:**
+
+              - 6: PARTIAL - Some operations succeeded, some failed (for batch operations)
+
+
+              **Documentation format:** Add to 'kspec help' or new 'kspec help --exit-codes'
+              subcommand showing all codes with descriptions.
+            supersedes: null
       - _ulid: 01KEZCJPHWBEEP2BYRP6YVNK9F
         slugs:
           - cli-agent-features
