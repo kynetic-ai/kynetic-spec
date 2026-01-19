@@ -674,6 +674,8 @@ features:
             then: >-
               Returns SpecImplementationSummary with currentStatus, expectedStatus, linkedTasks
               array, and isAligned boolean
+        status:
+          implementation: implemented
       - _ulid: 01KFA4MKV8QHT9ZAJQGZ8F7MQF
         slugs:
           - alignment-stats
