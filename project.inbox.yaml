@@ -300,3 +300,13 @@ inbox:
       - cli
       - phase-1
     added_by: '@claude'
+  - _ulid: 01KFA1Q9JA5H1FSM05NBA0BFCD
+    text: >-
+      Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in
+      consistent structure with success/data/metadata/error fields
+    created_at: '2026-01-19T02:35:40.491Z'
+    tags:
+      - agent-first
+      - cli
+      - phase-1
+    added_by: '@claude'
