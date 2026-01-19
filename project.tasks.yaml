@@ -8477,7 +8477,7 @@
     Need to have a way for the ralph loop to explicitly end a session and save the session files at
     the end of the loop iteration
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8547,6 +8547,10 @@
         iteration, making it easy to debug and review ralph loop behavior.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T02:26:58.177Z'
+  closed_reason: >-
+    Added session context snapshot saving to ralph loop - context-iter-{N}.json files now saved
+    after each successful iteration for audit trail
 - _ulid: 01KF9C1EVJGF7W9AN8M7Q3CTCP
   slugs: []
   title: Design agent-first CLI spec improvements
