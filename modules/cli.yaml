@@ -2066,6 +2066,12 @@ features:
         then: >-
           Command exits with code 3, error message says cannot use both positional ref and --refs
           flag, no operations are performed
+      - id: partial-failure-handling
+        given: '--refs with mix of valid and invalid refs'
+        when: User runs kspec task complete --refs @valid-task @nonexistent @another-valid
+        then: >-
+          Valid refs are processed successfully, invalid refs are skipped with error recorded, exit
+          code is 2 (partial failure), output shows which succeeded and which failed with reasons
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
