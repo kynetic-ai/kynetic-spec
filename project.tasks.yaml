@@ -9046,6 +9046,33 @@
         session to pick up. This task involves adding a review subagent workflow when completing
         tasks - similar to the PR review workflow implemented in RALPH_LOOP_INSTRUCTIONS.md.
       supersedes: null
+    - _ulid: 01KFA1WXEG9W4PN2N6TVJSVJ50
+      created_at: '2026-01-19T02:38:44.688Z'
+      author: '@claude'
+      content: >-
+        Understanding the task: This is about adding an automated review workflow that triggers
+        after task completion. Similar to PR review pattern but for task completion. Key components
+        needed:
+
+
+        1. CLI command: 'kspec task review <ref>' - gathers task details, linked spec, ACs, git diff
+        since started_at
+
+        2. Integration point: Hook or option in 'kspec task complete' to optionally trigger review
+
+        3. Configuration: Opt-in/out mechanism (maybe in .kspec/kynetic.yaml or config)
+
+        4. Output format: Report gaps between spec and implementation
+
+
+        This ties into the alignment system and the PR review automation patterns documented in meta
+        observations.
+
+
+        Need to decide: Should this be a CLI command that humans/agents call manually, or should it
+        be integrated into task complete workflow? Task description suggests both - command for
+        explicit review + integration for automatic review.
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
   slugs: []
