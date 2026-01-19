@@ -25,6 +25,7 @@ import type { InboxItemInput, TaskInput } from '../../schema/index.js';
 import * as readline from 'node:readline';
 import { errors } from '../../strings/index.js';
 import { fieldLabels } from '../../strings/labels.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Format relative time for display
@@ -58,7 +59,7 @@ function resolveInboxRef(ref: string, items: LoadedInboxItem[]): LoadedInboxItem
   const item = findInboxItemByRef(items, ref);
   if (!item) {
     error(errors.reference.inboxNotFound(ref));
-    process.exit(3);
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
   return item;
 }
@@ -109,7 +110,7 @@ export function registerInboxCommands(program: Command): void {
         success(`Captured: ${shortUlid(item._ulid)}`, { item });
       } catch (err) {
         error(errors.failures.addInboxItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -162,7 +163,7 @@ export function registerInboxCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.listInboxItems, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -192,7 +193,7 @@ export function registerInboxCommands(program: Command): void {
           title = await prompt('Task title: ');
           if (!title) {
             error(errors.validation.titleRequired);
-            process.exit(2);
+            process.exit(EXIT_CODES.USAGE_ERROR);
           }
         }
 
@@ -224,7 +225,7 @@ export function registerInboxCommands(program: Command): void {
         success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, { task });
       } catch (err) {
         error(errors.failures.promoteInboxItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -255,11 +256,11 @@ export function registerInboxCommands(program: Command): void {
           success(`Deleted inbox item: ${shortUlid(item._ulid)}`);
         } else {
           error(errors.failures.deleteInboxItem);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(errors.failures.deleteInboxItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -287,7 +288,7 @@ export function registerInboxCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getInboxItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

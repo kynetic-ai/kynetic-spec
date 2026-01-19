@@ -10,6 +10,7 @@ import {
   SHADOW_WORKTREE_DIR,
 } from '../../parser/shadow.js';
 import { errors } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Default manifest template
@@ -157,7 +158,7 @@ export function registerInitCommand(program: Command): void {
           if (!gitRoot) {
             if (await isGitRepo(targetDir)) {
               error(errors.git.couldNotDetermineRoot);
-              process.exit(1);
+              process.exit(EXIT_CODES.ERROR);
             }
             // Not a git repo - fall back to non-shadow mode with warning
             warn('Not a git repository. Using non-shadow mode (spec/ in main branch).');
@@ -175,7 +176,7 @@ export function registerInitCommand(program: Command): void {
 
           if (!result.success) {
             error(errors.project.shadowInitFailed(result.error || 'Unknown error'));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           if (result.alreadyExists) {
@@ -220,7 +221,7 @@ export function registerInitCommand(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.initProject, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }
@@ -241,7 +242,7 @@ async function initNonShadow(
     if (!options.force) {
       error(errors.conflict.specDirExists(targetDir));
       console.log('Use --force to overwrite existing files');
-      process.exit(1);
+      process.exit(EXIT_CODES.ERROR);
     }
     warn('Overwriting existing spec files');
   } catch {

@@ -6,6 +6,7 @@
 import chalk from 'chalk';
 import type { ReferenceIndex } from '../parser/index.js';
 import { error, isJsonMode } from './output.js';
+import { EXIT_CODES } from './exit-codes.js';
 
 /**
  * Result of a single ref operation within a batch
@@ -73,7 +74,7 @@ export async function executeBatchOperation<TItem, TContext>(
   // AC: @multi-ref-batch ac-3 - Mutual exclusion check
   if (positionalRef && refsFlag && refsFlag.length > 0) {
     error('Cannot use both positional ref and --refs flag');
-    process.exit(3);
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 
   // Determine which refs to process
@@ -85,7 +86,7 @@ export async function executeBatchOperation<TItem, TContext>(
   } else {
     // AC: @multi-ref-batch ac-7 - Empty refs error
     error('--refs requires at least one reference');
-    process.exit(3);
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 
   // Process each ref
@@ -210,10 +211,10 @@ export function formatBatchOutput(result: BatchResult, operationName: string): v
   if (!result.success) {
     if (result.summary.succeeded > 0) {
       // Partial failure
-      process.exit(2);
+      process.exit(EXIT_CODES.USAGE_ERROR);
     } else {
       // Complete failure
-      process.exit(1);
+      process.exit(EXIT_CODES.ERROR);
     }
   }
 }

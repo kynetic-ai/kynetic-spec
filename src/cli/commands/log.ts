@@ -14,6 +14,7 @@ import {
 import { output, error, info } from '../output.js';
 import { isGitRepo } from '../../utils/git.js';
 import { errors } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 export interface LogCommit {
   hash: string;
@@ -152,7 +153,7 @@ export function registerLogCommand(program: Command): void {
 
           if (!isGitRepo(ctx.rootDir)) {
             error(errors.git.notGitRepo);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           // Parse passthrough args (everything after --)
@@ -173,7 +174,7 @@ export function registerLogCommand(program: Command): void {
             const result = index.resolve(ref);
             if (!result.ok) {
               error(errors.reference.refNotFound(ref));
-              process.exit(3);
+              process.exit(EXIT_CODES.NOT_FOUND);
             }
 
             // Determine if it's a task or spec
@@ -283,7 +284,7 @@ export function registerLogCommand(program: Command): void {
           });
         } catch (err) {
           error(errors.failures.searchCommits, err);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       }
     );

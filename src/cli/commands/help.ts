@@ -11,6 +11,7 @@ import {
 } from '../introspection.js';
 import { helpContent, type HelpContent } from '../help/content.js';
 import { output } from '../output.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Show help for a specific topic (command or concept)
@@ -38,7 +39,7 @@ function showTopic(topic: string): void {
   console.log(chalk.red(`Unknown topic: ${topic}`));
   console.log(`\nAvailable topics: ${getAllTopics(tree).join(', ')}`);
   console.log(`\nRun 'kspec help' to see all topics.`);
-  process.exit(1);
+  process.exit(EXIT_CODES.ERROR);
 }
 
 /**

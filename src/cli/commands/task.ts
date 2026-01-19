@@ -31,6 +31,7 @@ import { formatCommitGuidance, printCommitGuidance } from '../../utils/commit.js
 import type { Task, TaskInput } from '../../schema/index.js';
 import { alignmentCheck, errors } from '../../strings/index.js';
 import { executeBatchOperation, formatBatchOutput } from '../batch.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -63,14 +64,16 @@ function resolveTaskRef(
         }
         break;
     }
-    process.exit(3);
+    // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 
   // Check if it's actually a task
   const task = tasks.find(t => t._ulid === result.ulid);
   if (!task) {
     error(errors.reference.notTask(ref));
-    process.exit(3);
+    // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 
   return task;
@@ -136,7 +139,7 @@ export function registerTaskCommands(program: Command): void {
         output(foundTask, () => formatTaskDetails(foundTask, index));
       } catch (err) {
         error(errors.failures.getTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -175,7 +178,7 @@ export function registerTaskCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
         }
 
@@ -185,7 +188,7 @@ export function registerTaskCommands(program: Command): void {
 
           if (!metaRefResult.ok) {
             error(errors.reference.metaRefNotFound(options.metaRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
           // Check if the resolved item is a meta item (not a spec item or task)
@@ -194,7 +197,7 @@ export function registerTaskCommands(program: Command): void {
 
           if (isTask || isSpecItem) {
             error(errors.reference.metaRefPointsToSpec(options.metaRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
         }
 
@@ -217,7 +220,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Created task: ${index.shortUlid(newTask._ulid)}`, { task: newTask });
       } catch (err) {
         error(errors.failures.createTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -257,7 +260,7 @@ export function registerTaskCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
         }
 
@@ -275,13 +278,13 @@ export function registerTaskCommands(program: Command): void {
           const specResult = index.resolve(options.specRef);
           if (!specResult.ok) {
             error(errors.reference.specRefNotFound(options.specRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
           // Check it's not a task
           const isTask = tasks.some(t => t._ulid === specResult.ulid);
           if (isTask) {
             error(errors.reference.specRefIsTask(options.specRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
           updatedTask.spec_ref = options.specRef;
           changes.push('spec_ref');
@@ -292,7 +295,7 @@ export function registerTaskCommands(program: Command): void {
           const metaRefResult = index.resolve(options.metaRef);
           if (!metaRefResult.ok) {
             error(errors.reference.metaRefNotFound(options.metaRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
           // Check if the resolved item is a meta item (not a spec item or task)
@@ -301,7 +304,7 @@ export function registerTaskCommands(program: Command): void {
 
           if (isTask || isSpecItem) {
             error(errors.reference.metaRefPointsToSpec(options.metaRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
           updatedTask.meta_ref = options.metaRef;
@@ -312,7 +315,7 @@ export function registerTaskCommands(program: Command): void {
           const priority = parseInt(options.priority, 10);
           if (isNaN(priority) || priority < 1 || priority > 5) {
             error(errors.validation.priorityOutOfRange);
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
           updatedTask.priority = priority;
           changes.push('priority');
@@ -339,7 +342,7 @@ export function registerTaskCommands(program: Command): void {
             const depResult = index.resolve(depRef);
             if (!depResult.ok) {
               error(errors.reference.depNotFound(depRef));
-              process.exit(3);
+              process.exit(EXIT_CODES.NOT_FOUND);
             }
           }
           updatedTask.depends_on = options.dependsOn;
@@ -356,7 +359,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Updated task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
       } catch (err) {
         error(errors.failures.updateTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -405,7 +408,7 @@ export function registerTaskCommands(program: Command): void {
           patchData = JSON.parse(jsonData);
         } catch (parseErr) {
           error(errors.validation.invalidJson, parseErr);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Validate against TaskInputSchema (partial)
@@ -421,7 +424,7 @@ export function registerTaskCommands(program: Command): void {
           validatedPatch = partialSchema.parse(patchData);
         } catch (validationErr) {
           error(errors.validation.invalidPatchData(String(validationErr)), validationErr);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Check for unknown fields if strict mode
@@ -432,7 +435,7 @@ export function registerTaskCommands(program: Command): void {
 
           if (unknownFields.length > 0) {
             error(errors.validation.unknownFields(unknownFields));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
         }
 
@@ -457,7 +460,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Patched task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
       } catch (err) {
         error(errors.failures.patchTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -482,7 +485,7 @@ export function registerTaskCommands(program: Command): void {
 
         if (foundTask.status !== 'pending') {
           error(errors.status.cannotStart(foundTask.status));
-          process.exit(4); // Exit code 4 = invalid state
+          process.exit(EXIT_CODES.VALIDATION_FAILED); // Exit code 4 = invalid state
         }
 
         // Update status
@@ -545,7 +548,7 @@ export function registerTaskCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.startTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -664,7 +667,7 @@ export function registerTaskCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.completeTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -683,7 +686,7 @@ export function registerTaskCommands(program: Command): void {
 
         if (foundTask.status === 'completed' || foundTask.status === 'cancelled') {
           error(errors.status.cannotBlock(foundTask.status));
-          process.exit(4);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         const updatedTask: Task = {
@@ -697,7 +700,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error(errors.failures.blockTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -729,7 +732,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
       } catch (err) {
         error(errors.failures.unblockTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -793,7 +796,7 @@ export function registerTaskCommands(program: Command): void {
         formatBatchOutput(result, 'Cancel');
       } catch (err) {
         error(errors.failures.cancelTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -815,7 +818,7 @@ export function registerTaskCommands(program: Command): void {
         // For batch mode (--refs), require --force
         if (options.refs && options.refs.length > 0 && !options.force && !options.dryRun) {
           error('Batch delete requires --force flag');
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const result = await executeBatchOperation({
@@ -880,7 +883,7 @@ export function registerTaskCommands(program: Command): void {
         formatBatchOutput(result, 'Delete');
       } catch (err) {
         error(errors.failures.deleteTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -929,7 +932,7 @@ export function registerTaskCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.addNote, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -959,7 +962,7 @@ export function registerTaskCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getNotes, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1148,7 +1151,7 @@ export function registerTaskCommands(program: Command): void {
         });
       } catch (err) {
         error('Failed to generate review context', err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1177,7 +1180,7 @@ export function registerTaskCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getTodos, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1216,7 +1219,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Added todo #${todo.id} to task: ${index.shortUlid(updatedTask._ulid)}`, { todo });
       } catch (err) {
         error(errors.failures.addTodo, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1235,13 +1238,13 @@ export function registerTaskCommands(program: Command): void {
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
           error(errors.todo.invalidId(idStr));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const todoIndex = foundTask.todos.findIndex(t => t.id === id);
         if (todoIndex === -1) {
           error(errors.todo.notFound(id));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         if (foundTask.todos[todoIndex].done) {
@@ -1266,7 +1269,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Marked todo #${id} as done`, { todo: updatedTodos[todoIndex] });
       } catch (err) {
         error(errors.failures.markTodoDone, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1285,13 +1288,13 @@ export function registerTaskCommands(program: Command): void {
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
           error(errors.todo.invalidId(idStr));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const todoIndex = foundTask.todos.findIndex(t => t.id === id);
         if (todoIndex === -1) {
           error(errors.todo.notFound(id));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         if (!foundTask.todos[todoIndex].done) {
@@ -1316,7 +1319,7 @@ export function registerTaskCommands(program: Command): void {
         success(`Marked todo #${id} as not done`, { todo: updatedTodos[todoIndex] });
       } catch (err) {
         error(errors.failures.markTodoNotDone, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }
