@@ -636,3 +636,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-19T03:26:12.591Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: A spec item has no tasks with spec_ref pointing to it
+            when: findAlignmentWarnings is called
+            then: Returns warning with type='orphaned_spec' and spec details
