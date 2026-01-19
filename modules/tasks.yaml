@@ -737,3 +737,7 @@ requirements:
         given: a user wants to set automation status
         when: running kspec task set @ref --automation eligible
         then: the task's automation field is set to the specified value
+      - id: ac-12
+        given: a user wants to clear automation status
+        when: running kspec task set @ref --automation none (or --no-automation)
+        then: the task's automation field is removed (returns to unassessed)
