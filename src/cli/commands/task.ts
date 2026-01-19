@@ -178,7 +178,7 @@ export function registerTaskCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(EXIT_CODES.ERROR);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
@@ -260,7 +260,7 @@ export function registerTaskCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(EXIT_CODES.ERROR);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
