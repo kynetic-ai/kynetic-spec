@@ -1355,11 +1355,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1689,6 +1691,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1804,6 +1807,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13802,6 +13806,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Fixed staleness tests to use CLI_PATH pattern. PR #92 created."
   depends_on: []
   context: []
   priority: 1
@@ -13809,6 +13814,7 @@
   vcs_refs: []
   created_at: 2026-01-19T22:06:10.982Z
   started_at: 2026-01-19T22:06:39.262Z
+  completed_at: 2026-01-19T22:11:59.343Z
   notes:
     - _ulid: 01KFC4PSRY7ZQ51K01WY9KZQ8V
       created_at: 2026-01-19T22:06:18.910Z
@@ -13847,5 +13853,24 @@
         **Impact**: 10 tests failing, 608 passing. Pre-existing issue on main branch.
       supersedes: null
   todos: []
-  completed_at: 2026-01-19T22:11:59.343Z
-  closed_reason: "Fixed staleness tests to use CLI_PATH pattern. PR #92 created."
+- title: "Improve test performance: centralize utilities and use pre-built CLI"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - testing
+    - dx
+    - performance
+  description: "Integration test performance - tests take 50-75s which discourages frequent runs.
+    Investigate: parallel test execution, fixture caching, test isolation overhead, selective test
+    runs (--grep). Goal: fast feedback loop during development."
+  _ulid: 01KFC7FZXSDQX967HGMCWKJBHQ
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-19T22:55:01.561Z
+  notes: []
+  todos: []

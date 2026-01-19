@@ -27,16 +27,6 @@ inbox:
       - dx
       - design
     added_by: "@claude"
-  - _ulid: 01KF3TB7C5GCC7VADGZ9YDKXK6
-    text: "Integration test performance - tests take 50-75s which discourages frequent runs.
-      Investigate: parallel test execution, fixture caching, test isolation overhead, selective test
-      runs (--grep). Goal: fast feedback loop during development."
-    created_at: 2026-01-16T16:31:18.406Z
-    tags:
-      - testing
-      - dx
-      - performance
-    added_by: "@claude"
   - _ulid: 01KF4DS5K10SKW9A533DQR7TH0
     text: "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider:
       recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering
