@@ -1296,11 +1296,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1512,6 +1514,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1627,6 +1630,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12478,20 +12482,21 @@
         test names."
       supersedes: null
   todos: []
-- title: Fix task-yaml-formatting status (should be completed)
+- _ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
+  slugs:
+    - fix-yaml-formatting-status
+  title: Fix task-yaml-formatting status (should be completed)
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs:
-    - fix-yaml-formatting-status
-  tags:
-    - tech-debt
-  _ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-reset-command"
   context: []
+  priority: 3
+  tags:
+    - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:32:34.938Z
   notes: []
