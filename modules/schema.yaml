@@ -884,3 +884,7 @@ features:
             given: spec implementing trait
             when: trait AC has no test annotation
             then: completeness warning emitted
+          - id: ac-2
+            given: spec implementing trait
+            when: "trait AC has test annotation '// AC: @trait-ref ac-N'"
+            then: no warning for that AC
