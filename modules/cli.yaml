@@ -1739,6 +1739,10 @@ features:
             then: >-
               Creates full clone of source repo (default: current repo) to dest directory, removes
               remote origin, preserves all branches including kspec-meta
+          - id: sets-up-worktree
+            given: Cloned repo has kspec-meta branch
+            when: Clone completes
+            then: Automatically creates .kspec worktree pointing to kspec-meta branch
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
