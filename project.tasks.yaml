@@ -9779,6 +9779,13 @@
         Written for agents: concise, copy-pasteable commands, clear success criteria for each
         section.
       supersedes: null
+    - _ulid: 01KFADR8S1999ZRPDCEJXZ6P20
+      created_at: '2026-01-19T06:05:55.361Z'
+      author: '@claude'
+      content: >-
+        Task was started in a previous iteration but not worked on. Leaving in_progress for next
+        session to pick up. No progress made in iteration 19.
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
