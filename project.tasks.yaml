@@ -6966,9 +6966,31 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-17T02:34:36.492Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T03:05:08.299Z'
+  notes:
+    - _ulid: 01KFA3QQG93VVES94SV6DF5RMN
+      created_at: '2026-01-19T03:10:51.913Z'
+      author: '@claude'
+      content: |-
+        Implemented kspec meta context command with full functionality:
+
+        1. Shows full session context (focus, threads, questions, last updated)
+        2. Supports --json for structured output
+        3. Supports --clear to clear all context fields at once
+        4. Human-readable output with proper formatting and (none) for empty fields
+        5. Numbered lists for threads and questions
+
+        Added comprehensive test coverage (6 new tests):
+        - Display full session context with all fields
+        - Show empty context gracefully
+        - JSON output with all context fields
+        - Clear all context with --clear flag
+        - Clear with JSON output
+        - Display with numbered lists
+
+        All 561 tests pass.
+      supersedes: null
+  todos: []
 - _ulid: 01KF4WVX3CYVNKKA8JCRZYMSM7
   slugs:
     - task-kspec-meta-get
