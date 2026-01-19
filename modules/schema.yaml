@@ -618,3 +618,7 @@ features:
             given: AlignmentIndex is built with tasks and spec items
             when: getTasksForSpec(specUlid) is called
             then: Returns array of LoadedTask objects that reference the spec via spec_ref
+          - id: ac-2
+            given: A task has spec_ref field
+            when: getSpecForTask(taskUlid, refIndex) is called
+            then: Returns the LoadedSpecItem that task implements
