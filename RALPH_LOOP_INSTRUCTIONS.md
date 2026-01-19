@@ -4,16 +4,21 @@ Additions to the built-in ralph prompt. For general kspec workflow, see AGENTS.m
 
 ## Session Start
 
-**Check for open PRs first** before picking a task:
-```bash
-gh pr list --state open
-```
+1. **Get session context**:
+   ```bash
+   kspec session start
+   ```
+
+2. **Check for open PRs** before picking a task:
+   ```bash
+   gh pr list --state open
+   ```
 
 ### PR Review Workflow
 
 For each open PR, launch a **dedicated review subagent**:
 ```
-Task tool → subagent_type: "general-purpose" → prompt: "Run /review against PR #N"
+Task tool → subagent_type: "general-purpose" → prompt: "Review PR #N: check code quality, test coverage, and alignment with task/spec. Run: gh pr view N --json body,commits,files && gh pr diff N"
 ```
 
 Then follow this decision tree:
@@ -21,35 +26,18 @@ Then follow this decision tree:
 **Did you author this PR?** (i.e., did you create it in a previous session iteration?)
 
 - **No (someone else's PR or from a prior session)**:
-  - Review passes → Merge it
+  - Review passes → Merge it: `gh pr merge N --merge`
   - Review finds issues → Post feedback, then implement fixes yourself
 
 - **Yes (you created this PR in the current session)**:
-  - Review passes → Merge it (your changes haven't been reviewed yet, but the subagent just did)
+  - Review passes → Merge it: `gh pr merge N --merge`
   - Review finds issues → Implement fixes, then:
     - **Trivial fixes** (typos, formatting, small tweaks) → Merge
     - **Non-trivial fixes** (logic changes, new code) → Run another review subagent cycle
 
 **Key point**: The review subagent provides the independent review. "Don't merge your own" means don't skip the review step - it doesn't mean abandon the PR. Every PR should be reviewed and merged (or have clear blocking issues documented).
 
-## Reference Directories
-
-Prior implementations exist in these directories - explore BEFORE implementing:
-
-- `../kspec-acp-test`
-- `../kspec-ralph-test`
-
-**Use subagents for exploration** - these directories can be large:
-```
-Task tool → subagent_type: "Explore" → prompt: "In ../kspec-acp-test, find work related to [task/spec]. Check .kspec/ for tasks, notes, and inbox items. Summarize their approach and any lessons learned."
-```
-
-When picking up a task:
-1. Launch an Explore subagent to search reference directories for related prior work
-2. If the subagent finds relevant implementations, review their approach and notes
-3. Spin up additional subagents as needed for deeper dives into specific files or patterns
-
-This prevents context bloat from loading entire directories while still benefiting from prior work.
+**Merge strategy**: Use `--merge` (not `--squash`) to preserve kspec trailers in commit messages.
 
 ## Problematic Tasks
 
@@ -72,9 +60,35 @@ Never leave changes only on main. Every iteration should end with a PR.
 
 ## Reflect Guidance
 
-The built-in prompt asks you to reflect. Since there's no human in the loop:
+Since there's no human in the loop, be selective:
 
-- Capture **systemic friction** only (not one-off issues)
-- Skip vague ideas - only concrete, actionable items
-- Check existing inbox/tasks first to avoid duplicates
-- Tag: `reflection`, `dx`, `workflow`, etc.
+- **Systemic only** - skip one-off issues
+- **Concrete only** - skip vague ideas
+- **Search first** - check specs/tasks/inbox before adding duplicates
+
+See `/reflect` skill for the full framework.
+
+## Session Context
+
+Track focus and observations during work using `/meta`:
+
+```bash
+kspec meta focus set "Working on @task-slug"
+kspec meta observe friction "Description of systemic issue"
+kspec meta observe success "Pattern worth replicating"
+```
+
+This context persists across session iterations and informs future work.
+
+## Available Skills
+
+| Skill | When to Use |
+|-------|-------------|
+| `/kspec` | Task and spec management workflows |
+| `/meta` | Session context (focus, observations) |
+| `/triage` | Process inbox items systematically |
+| `/spec-plan` | Translate approved plans to specs |
+| `/reflect` | Session reflection and learning capture |
+| `/pr` | Create PR from current work (decisive, no confirmations) |
+
+**Note**: There is no `/review` skill. For PR reviews, use subagents with gh commands as shown in the PR Review Workflow section above.
