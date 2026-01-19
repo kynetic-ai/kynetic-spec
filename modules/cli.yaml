@@ -1972,6 +1972,10 @@ features:
             then: >-
               Command exits immediately with exit code 3 and error message: 'Adapter package not
               found: @nonexistent/package. Install with: npm install -g @nonexistent/package'
+          - id: validation-before-spawn
+            given: Adapter validation fails
+            when: Error is shown
+            then: No ACP agent process is spawned, no session is created, no events are logged
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
