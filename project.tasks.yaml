@@ -1322,11 +1322,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1590,6 +1592,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1705,6 +1708,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13068,16 +13072,22 @@
         implement that trait
       supersedes: null
   todos: []
-- title: "Implement: Trait Display in Spec/Task Output"
+- _ulid: 01KFC1GKZRHZ5V66MYSTVZ544E
+  slugs:
+    - task-trait-display-in-spec-task-output
+  title: "Implement: Trait Display in Spec/Task Output"
   type: task
   spec_ref: "@trait-display"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-trait-display-in-spec-task-output
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-spec-traits-system"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T21:10:30.648Z
   notes:
     - _ulid: 01KFC1GKZR0S29X7QDS2GYH2MF
       created_at: 2026-01-19T21:10:30.648Z
@@ -13109,10 +13119,48 @@
         - ac-5: Given spec with multiple traits, when displaying, then each trait's AC shown in
         separate labeled section
       supersedes: null
-  _ulid: 01KFC1GKZRHZ5V66MYSTVZ544E
+  todos: []
+- title: "Implement: Trait AC Coverage Validation"
+  type: task
+  spec_ref: "@trait-validation"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-trait-ac-coverage-validation
+  tags: []
+  depends_on:
+    - "@task-spec-traits-system"
+  notes:
+    - _ulid: 01KFC1GM2ZKTMVQPWQXB5XFR48
+      created_at: 2026-01-19T21:10:30.751Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Validation checks that specs implementing traits have test coverage for all trait AC. Uses
+        the existing completeness check infrastructure with test annotation scanning.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given spec implementing trait, when trait AC has no test annotation, then
+        completeness warning emitted
+
+        - ac-2: Given spec implementing trait, when trait AC has test annotation '// AC: @trait-ref
+        ac-N', then no warning for that AC
+
+        - ac-3: Given kspec validate run, when spec has traits, then trait AC coverage included in
+        completeness check (no special flag needed)
+
+        - ac-4: Given trait deleted, when spec still references it, then validation reports broken
+        ref error
+      supersedes: null
+  _ulid: 01KFC1GM2ZXGVH1Q7BN33Y230V
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T21:10:30.648Z
+  created_at: 2026-01-19T21:10:30.751Z
   todos: []
