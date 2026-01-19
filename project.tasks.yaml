@@ -9431,6 +9431,28 @@
 
         Feature is functional and usable, remaining work is testing and documentation.
       supersedes: null
+    - _ulid: 01KFAA0D76JX17EVX3G141MG72
+      created_at: '2026-01-19T05:00:27.750Z'
+      author: '@claude'
+      content: >-
+        All code changes committed including integration tests.
+
+
+        Implementation complete:
+
+        ✓ Schema: notes field in SpecItemSchema
+
+        ✓ Parser: createNote, saveSpecItem, field initialization
+
+        ✓ CLI: item note and item notes commands
+
+        ✓ Tests: 5 integration tests (all 564 tests pass)
+
+
+        Only documentation remains - updating AGENTS.md or CLAUDE.md to mention spec item notes
+        feature. This is a documentation-only task at this point. Consider completing this task and
+        creating a separate documentation task, or leave in_progress for doc work.
+      supersedes: null
   todos: []
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
