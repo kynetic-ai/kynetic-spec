@@ -10165,4 +10165,33 @@
         - Same mutual exclusion and empty refs checks
         - Loop and delete each, collect results
       supersedes: null
+    - _ulid: 01KFACJSTX45AZXCS29C24JHN9
+      created_at: '2026-01-19T05:45:27.646Z'
+      author: '@claude'
+      content: |-
+        Testing approach:
+
+        Unit tests for resolveMultiple() in tests/refs.test.ts:
+        - All refs resolve successfully
+        - Some refs fail (not found, ambiguous)
+        - All refs fail
+        - Duplicate refs are deduped
+
+        Integration tests for each command:
+        - All succeed case
+        - All fail case  
+        - Partial failure case (exit code 2)
+        - Empty refs case (exit code 3)
+        - Mutual exclusion case (exit code 3)
+        - JSON output structure matches spec
+
+        Files to modify summary:
+        - src/parser/refs.ts - Add resolveMultiple()
+        - src/cli/output.ts - Add BatchOperationResult, formatBatchResult(), batchExitCode()
+        - src/cli/commands/task.ts - Add --refs to complete, cancel, set, delete
+        - src/cli/commands/item.ts - Add --refs to set, delete
+        - src/cli/commands/inbox.ts - Add --refs to delete
+        - tests/refs.test.ts - Unit tests for resolveMultiple()
+        - tests/integration/multi-refs.test.ts - Integration tests
+      supersedes: null
   todos: []
