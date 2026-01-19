@@ -793,3 +793,7 @@ features:
             given: spec item
             when: traits ref points to non-trait item
             then: validation reports error
+          - id: ac-4
+            given: spec without traits field
+            when: schema validates
+            then: defaults to empty array
