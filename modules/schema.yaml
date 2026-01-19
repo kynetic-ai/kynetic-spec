@@ -586,3 +586,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-19T03:25:34.341Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: A task with spec_ref is marked completed
+            when: syncSpecImplementationStatus is called
+            then: Spec implementation status updates to 'implemented' if all linked tasks are completed
