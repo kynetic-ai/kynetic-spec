@@ -2079,6 +2079,12 @@ features:
           First line shows summary count (e.g., Completed 2 of 3 tasks:), each item listed with
           status indicator (checkmark for success, X for failure), failed items include failure
           reason
+      - id: json-output-format
+        given: Batch operation with --json flag
+        when: Command completes
+        then: >-
+          Output is valid JSON with structure: {success: boolean, summary: {total, succeeded,
+          failed}, results: [{ref, ulid, status, error?, message?}]}
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
