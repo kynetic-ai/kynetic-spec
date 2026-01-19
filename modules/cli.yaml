@@ -1751,6 +1751,12 @@ features:
             given: No dest argument provided
             when: User runs kspec clone-for-testing
             then: Creates clone in system temp directory with generated name, prints path to stdout
+          - id: json-output
+            given: '--json flag provided'
+            when: Clone completes successfully
+            then: >-
+              Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch":
+              "main"}
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
