@@ -8587,6 +8587,26 @@
         Fix approach: After syncing spec status, commit the spec changes if sync occurred and we're
         in shadow mode.
       supersedes: null
+    - _ulid: 01KFA57GF6TBZASFFJY1EXRRVR
+      created_at: '2026-01-19T03:36:57.574Z'
+      author: '@claude'
+      content: >-
+        Implementation complete:
+
+        - Modified task.ts 'start' command (line 473) to commit spec status changes after sync
+
+        - Modified task.ts 'complete' command (line 544) to commit spec status changes after sync
+
+        - Both commands now call commitIfShadow after syncSpecImplementationStatus returns a result
+
+        - Commit message: 'spec-sync @<spec-ulid-prefix> <status-change>'
+
+        - All 561 tests pass
+
+
+        The fix ensures spec implementation status changes are persisted in the shadow branch commit
+        stream immediately after task status changes, closing the persistence gap.
+      supersedes: null
   todos: []
 - _ulid: 01KF9B4PX60XW55ZXWHE36C8G1
   slugs: []
