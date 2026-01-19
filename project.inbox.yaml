@@ -210,8 +210,3 @@ inbox:
       - testing
       - reflection
     added_by: '@claude'
-  - _ulid: 01KFANA8K7JC2A4AJHTQP3MGXB
-    text: Test observation from Ralph Loop
-    created_at: '2026-01-19T08:18:05.031Z'
-    tags: []
-    added_by: '@claude'

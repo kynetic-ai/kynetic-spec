@@ -1068,4 +1068,11 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFANADZJA4VAFBSH0F8FAWXP
+    type: friction
+    content: Test observation from Ralph Loop
+    created_at: '2026-01-19T08:18:10.546Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
