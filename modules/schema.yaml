@@ -956,3 +956,8 @@ features:
         tests: []
         notes: []
         created: 2026-01-19T21:09:54.424Z
+        acceptance_criteria:
+          - id: ac-1
+            given: trait with no AC
+            when: validating
+            then: completeness warning emitted (trait should have AC)
