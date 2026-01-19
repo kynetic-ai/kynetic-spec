@@ -239,3 +239,12 @@ inbox:
       - dx
       - tooling
     added_by: "@claude"
+  - _ulid: 01KFBJM1XW2DSC0V47Y86EZYHB
+    text: "Review RALPH_LOOP_INSTRUCTIONS.md - consolidate into skills or delete. Unique content: PR
+      review workflow for autonomous loops, 'every iteration ends with PR' rule, reflect guidance
+      for loops. Consider codifying loop-specific reflect behavior into /reflect skill."
+    created_at: 2026-01-19T16:50:14.589Z
+    tags:
+      - docs
+      - ralph
+    added_by: "@claude"
