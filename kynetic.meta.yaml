@@ -1020,4 +1020,15 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAHKB1REKZMA6EP9HM7J1FZ
+    type: success
+    content: >-
+      Integration test strategy: Using command JSON output directly from promote command instead of
+      querying tasks list afterward provides more accurate, focused tests and avoids format parsing
+      issues. The promote command returns the created task in its JSON output, which is exactly what
+      we need to verify.
+    created_at: '2026-01-19T07:13:08.152Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
