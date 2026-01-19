@@ -10953,6 +10953,7 @@
     - validation
   vcs_refs: []
   created_at: '2026-01-19T05:57:51.237Z'
+  started_at: '2026-01-19T08:42:54.674Z'
   notes:
     - _ulid: 01KFAD9WHAVECKESF9BFW4Y1B3
       created_at: '2026-01-19T05:58:04.074Z'
@@ -11022,8 +11023,53 @@
 
         - Package exists but wrong version - not our concern, just check existence
       supersedes: null
+    - _ulid: 01KFAPTXB7J98GSG8KW8N4HRR0
+      created_at: '2026-01-19T08:44:39.144Z'
+      author: '@claude'
+      content: >-
+        Implemented adapter validation on startup with all 3 acceptance criteria:
+
+
+        1. valid-adapter-proceeds: Validation runs before any spawn/session logic. Uses npx
+        --no-install to check package exists.
+
+        2. invalid-adapter-error: Exits with code 3 and clear error message including install
+        instructions.
+
+        3. validation-before-spawn: Validation happens early in action handler, before
+        initContext/createSession/spawnAgent.
+
+
+        Implementation:
+
+        - Added validateAdapter() function that uses spawnSync('npx', ['--no-install', adapter,
+        '--version'])
+
+        - Uses npx --no-install because it checks both global and local node_modules, handles scoped
+        packages
+
+        - Validation skipped for custom adapters (--adapter-cmd) since they bypass the package
+        system
+
+        - Exit code 3 chosen per spec to distinguish from other error types
+
+
+        Tests added (all passing):
+
+        - valid-adapter-proceeds: Verifies normal flow works with valid adapter
+
+        - invalid-adapter-error: Verifies exit code 3 and error message format
+
+        - validation-before-spawn: Verifies no session/agent created on validation failure
+
+
+        Files modified:
+
+        - src/cli/commands/ralph.ts: Added validateAdapter() + call site
+
+        - tests/ralph.test.ts: Added 3 AC tests
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T08:42:54.674Z'
 - _ulid: 01KFADBEHQMMS3PG701HFKX501
   slugs:
     - task-kspec-setup
