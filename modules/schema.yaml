@@ -829,3 +829,18 @@ features:
             given: trait ref
             when: querying getSpecsForTrait()
             then: returns all specs that implement that trait
+      - _ulid: 01KFC1C406T11X5C4M954R7FP9
+        slugs:
+          - trait-display
+        title: Trait Display in Spec/Task Output
+        type: requirement
+        tags: []
+        description: When viewing specs or tasks that implement traits, display shows inherited AC from
+          traits in labeled sections. Ensures anyone working on the task sees the full picture of
+          what needs to be tested.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-19T21:08:03.206Z
