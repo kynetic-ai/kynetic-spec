@@ -9906,7 +9906,14 @@
     - reflection
   vcs_refs: []
   created_at: '2026-01-19T05:22:47.104Z'
-  notes: []
+  notes:
+    - _ulid: 01KFAB9W4X6CFZFDRRRKPPZXSQ
+      created_at: '2026-01-19T05:23:06.526Z'
+      author: '@claude'
+      content: >-
+        Add to CI workflow: after build step, run 'kspec --version' or 'kspec --help' to verify the
+        built CLI is functional. Catches build issues that pass tsc but fail at runtime.
+      supersedes: null
   todos: []
 - _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
   slugs: []
