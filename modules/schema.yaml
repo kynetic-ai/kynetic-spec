@@ -879,3 +879,8 @@ features:
         tests: []
         notes: []
         created: 2026-01-19T21:08:37.236Z
+        acceptance_criteria:
+          - id: ac-1
+            given: spec implementing trait
+            when: trait AC has no test annotation
+            then: completeness warning emitted
