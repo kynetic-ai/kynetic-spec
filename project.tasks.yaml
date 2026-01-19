@@ -9169,9 +9169,9 @@
     - derive
   vcs_refs: []
   created_at: '2026-01-18T21:24:13.326Z'
+  started_at: '2026-01-19T03:59:27.091Z'
   notes: []
   todos: []
-  started_at: '2026-01-19T03:59:27.091Z'
 - _ulid: 01KF9FX31YBYHE1D0FZ1Y75X3X
   slugs: []
   title: Enhance task start output with spec context and AC guidance
@@ -9635,4 +9635,21 @@
         All documentation now reflects current implementation and provides clear guidance on
         observations vs inbox.
       supersedes: null
+  todos: []
+- title: 'Implement: ULID Format'
+  type: task
+  spec_ref: '@ulid-format'
+  derivation: auto
+  priority: 1
+  slugs:
+    - task-ulid-format
+  tags: []
+  depends_on: []
+  _ulid: 01KFA6S47J8CJ2AHBVP4J6N38Q
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T04:04:03.442Z'
+  notes: []
   todos: []
