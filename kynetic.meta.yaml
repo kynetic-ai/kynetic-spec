@@ -972,4 +972,15 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAF48W58CCFZBC0DBGCCK21
+    type: success
+    content: >-
+      Git worktrees use hooks from main .git/hooks (via commondir), not from
+      .git/worktrees/-kspec/hooks. This is a key architectural detail that wasn't obvious from git
+      documentation. Testing revealed the issue when hooks weren't being called. The commondir file
+      points to '../..' which makes git look for hooks in the main repo.
+    created_at: '2026-01-19T06:29:57.253Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
