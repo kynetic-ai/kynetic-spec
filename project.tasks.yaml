@@ -10039,4 +10039,29 @@
 
         6. Add tests for each command
       supersedes: null
+    - _ulid: 01KFACHP6AYKSFXGWGRHYZ841R
+      created_at: '2026-01-19T05:44:51.147Z'
+      author: '@claude'
+      content: |-
+        Step 1: Add batch resolution helper
+
+        File: src/parser/refs.ts
+
+        Add function:
+        resolveMultiple(refs: string[]): BatchResolveResult[]
+
+        Where BatchResolveResult = {
+          ref: string           // original input ref
+          ulid: string | null   // resolved ULID or null on error
+          item: Item | null     // resolved item or null on error  
+          error: string | null  // error code: not_found, ambiguous, duplicate_slug
+          message: string | null // human-readable error message
+        }
+
+        Implementation:
+        - Dedupe input refs before processing
+        - Call existing resolve() for each ref
+        - Map ResolveResult to BatchResolveResult
+        - Do NOT short-circuit on errors - process all refs
+      supersedes: null
   todos: []
