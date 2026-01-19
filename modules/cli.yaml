@@ -1449,6 +1449,13 @@ features:
         created: '2026-01-15T15:34:40.999Z'
         status:
           implementation: implemented
+        acceptance_criteria:
+          - id: detect-existing-repo
+            given: Repository has kspec-meta branch but no .kspec worktree
+            when: User runs kspec setup or any kspec command
+            then: >-
+              Detects missing worktree and prompts: 'kspec-meta branch exists but .kspec worktree is
+              missing. Create it? (y/N)', creates worktree if confirmed
       - _ulid: 01KF3ECD4PQ01ENY5PVSPTKK9X
         slugs:
           - cmd-module-add
