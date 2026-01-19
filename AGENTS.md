@@ -233,9 +233,13 @@ This shows active work, recently completed tasks, ready tasks, inbox items, and 
 
 ### Task Workflow
 
-1. **Start**: Mark task in_progress before working
-2. **Note**: Add notes as you work (not just at end)
-3. **Complete**: Mark done with summary
+1. **Verify**: Before starting, check if work is already done:
+   - Check git history for related commits: `git log --oneline --grep="feature-name"`
+   - Read implementation code if it exists
+   - If already implemented, mark task complete with "Already implemented" reason
+2. **Start**: Mark task in_progress before working
+3. **Note**: Add notes as you work (not just at end)
+4. **Complete**: Mark done with summary
 
 ### Creating Work
 
@@ -510,6 +514,23 @@ Spec: @spec-ref
 - Enable `kspec log @ref` to find commits by task or spec
 - Create natural audit trail linking code to specs
 - Standard git format (works with `git log --grep`)
+
+## PR Review Workflow
+
+Before merging PRs, use a dedicated review subagent:
+
+1. **Create PR** with implementation
+2. **Launch review agent** to analyze the PR
+3. **Fix issues** identified by the review
+4. **Re-review** if significant changes were made
+5. **Merge** only when review feedback is addressed
+
+**Why this matters:**
+- Catches real bugs: type errors, validation issues, incomplete refactors
+- Multi-round review prevents shipping known problems
+- Review agent has fresh context, spots things you missed
+
+**Do NOT merge PRs with unaddressed review comments.** If a reviewer (human or agent) identifies issues, fix them or explicitly document why they're being deferred.
 
 ## Code Annotations
 
