@@ -10888,3 +10888,23 @@
         - Test without --staleness flag produces no staleness output
       supersedes: null
   todos: []
+- title: 'Implement: Test repo setup command'
+  type: task
+  spec_ref: '@cmd-clone-for-testing'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-test-repo-setup-command
+  tags:
+    - cli
+    - testing
+    - dx
+  depends_on: []
+  _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T06:02:09.230Z'
+  notes: []
+  todos: []
