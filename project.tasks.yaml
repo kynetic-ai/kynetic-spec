@@ -6957,7 +6957,7 @@
   type: task
   spec_ref: '@meta-context-cmd'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6991,6 +6991,10 @@
         All 561 tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T03:10:58.644Z'
+  closed_reason: >-
+    Implemented kspec meta context command with full spec compliance - shows session context,
+    supports --json and --clear, comprehensive test coverage (6 tests), all 561 tests pass
 - _ulid: 01KF4WVX3CYVNKKA8JCRZYMSM7
   slugs:
     - task-kspec-meta-get
