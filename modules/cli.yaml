@@ -2525,6 +2525,9 @@ features:
     tests: []
     notes: []
     created: 2026-01-19T18:39:51.573Z
+    description: Enable workflows defined in meta to serve as first-class skills without requiring
+      static .md files. Workflows become the single source of truth for procedural knowledge, with
+      skill files either generated or dynamically served.
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
