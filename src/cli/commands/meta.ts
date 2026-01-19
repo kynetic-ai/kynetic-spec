@@ -1408,4 +1408,98 @@ export function registerMetaCommands(program: Command): void {
         process.exit(1);
       }
     });
+
+  // meta-question-cmd: kspec meta question <action> [text]
+  meta
+    .command('question <action> [text]')
+    .description('Manage open questions')
+    .action(async (action: string, text: string | undefined) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(1);
+        }
+
+        const sessionCtx = await loadSessionContext(ctx);
+
+        // List questions
+        if (action === 'list') {
+          output(
+            { questions: sessionCtx.open_questions },
+            () => {
+              if (sessionCtx.open_questions.length === 0) {
+                console.log(chalk.yellow('No open questions'));
+              } else {
+                console.log('Open questions:');
+                sessionCtx.open_questions.forEach((question, idx) => {
+                  console.log(`  ${idx + 1}. ${question}`);
+                });
+              }
+            }
+          );
+          return;
+        }
+
+        // Clear all questions
+        if (action === 'clear') {
+          sessionCtx.open_questions = [];
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { questions: [] },
+            () => success('Cleared all questions')
+          );
+          return;
+        }
+
+        // Add question
+        if (action === 'add') {
+          if (!text) {
+            error('Question text is required for add action');
+            process.exit(1);
+          }
+
+          sessionCtx.open_questions.push(text);
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { questions: sessionCtx.open_questions, added: text },
+            () => success(`Added question: ${text}`)
+          );
+          return;
+        }
+
+        // Remove question by index (1-based)
+        if (action === 'remove') {
+          if (!text) {
+            error('Index is required for remove action');
+            process.exit(1);
+          }
+
+          const index = parseInt(text, 10);
+          if (isNaN(index) || index < 1 || index > sessionCtx.open_questions.length) {
+            error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.open_questions.length}`);
+            process.exit(1);
+          }
+
+          const removed = sessionCtx.open_questions.splice(index - 1, 1)[0];
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { questions: sessionCtx.open_questions, removed },
+            () => success(`Removed question: ${removed}`)
+          );
+          return;
+        }
+
+        // Unknown action
+        error(`Unknown action: ${action}. Use add, remove, list, or clear`);
+        process.exit(1);
+      } catch (err) {
+        error(errors.failures.updateSessionContext, err);
+        process.exit(1);
+      }
+    });
 }
