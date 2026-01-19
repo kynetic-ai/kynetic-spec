@@ -2,8 +2,16 @@ import { Command } from 'commander';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as os from 'node:os';
+import * as readline from 'node:readline/promises';
 import { success, error, warn } from '../output.js';
 import { errors } from '../../strings/index.js';
+import {
+  getShadowStatus,
+  repairShadow,
+  getGitRoot,
+  SHADOW_WORKTREE_DIR,
+  SHADOW_BRANCH_NAME,
+} from '../../parser/shadow.js';
 
 /**
  * Supported agent types for auto-configuration
@@ -398,6 +406,84 @@ function getDefaultAuthor(agentType: AgentType): string {
 }
 
 /**
+ * Prompt user for input with Y/N answer
+ */
+async function promptYesNo(question: string): Promise<boolean> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  try {
+    const answer = await rl.question(`${question} `);
+    return answer.toLowerCase() === 'y';
+  } finally {
+    rl.close();
+  }
+}
+
+/**
+ * Ensure .kspec worktree exists if kspec-meta branch is present.
+ * AC: detect-existing-repo, auto-worktree-flag, worktree-already-exists
+ *
+ * @param autoWorktree If true, automatically create worktree without prompting
+ * @returns true if worktree is ready to use
+ */
+async function ensureWorktree(autoWorktree: boolean): Promise<boolean> {
+  const projectRoot = getGitRoot(process.cwd());
+  if (!projectRoot) {
+    // Not in a git repo, skip worktree check
+    return true;
+  }
+
+  const status = await getShadowStatus(projectRoot);
+
+  // AC: worktree-already-exists - if already valid, skip
+  if (status.healthy) {
+    return true;
+  }
+
+  // AC: detect-existing-repo - branch exists but worktree doesn't
+  if (status.branchExists && !status.worktreeExists) {
+    // AC: auto-worktree-flag - auto-create if flag set
+    if (autoWorktree) {
+      console.log(`Detected ${SHADOW_BRANCH_NAME} branch without .kspec worktree. Creating...`);
+      const result = await repairShadow(projectRoot);
+      if (result.success) {
+        success('Created .kspec worktree');
+        return true;
+      } else {
+        error(`Failed to create worktree: ${result.error}`);
+        return false;
+      }
+    }
+
+    // AC: detect-existing-repo - prompt user
+    const shouldCreate = await promptYesNo(
+      `${SHADOW_BRANCH_NAME} branch exists but .kspec worktree is missing. Create it? (y/N)`
+    );
+
+    if (shouldCreate) {
+      console.log('Creating .kspec worktree...');
+      const result = await repairShadow(projectRoot);
+      if (result.success) {
+        success('Created .kspec worktree');
+        return true;
+      } else {
+        error(`Failed to create worktree: ${result.error}`);
+        return false;
+      }
+    } else {
+      warn('Skipping worktree creation');
+      return false;
+    }
+  }
+
+  // No kspec-meta branch, or already healthy
+  return true;
+}
+
+/**
  * Print manual setup instructions
  */
 function printManualInstructions(agentType: AgentType): void {
@@ -479,8 +565,16 @@ export function registerSetupCommand(program: Command): void {
     .option('--author <author>', 'Custom author string (default: auto-detected based on agent)')
     .option('--no-hooks', 'Skip installing Claude Code stop hook')
     .option('--force', 'Overwrite existing configuration')
+    .option('--auto-worktree', 'Automatically create .kspec worktree if kspec-meta branch exists')
     .action(async (options) => {
       try {
+        // AC: detect-existing-repo, auto-worktree-flag, worktree-already-exists
+        const worktreeReady = await ensureWorktree(options.autoWorktree || false);
+        if (!worktreeReady) {
+          // User declined worktree creation or it failed
+          process.exit(1);
+        }
+
         const detected = detectAgent();
         const projectDir = process.cwd();
 
