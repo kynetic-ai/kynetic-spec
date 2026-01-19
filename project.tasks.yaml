@@ -8316,7 +8316,7 @@
     documenting: alignment concept, AlignmentIndex structure, auto-sync behavior, alignment
     validation, guidance output format.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8463,6 +8463,11 @@
         major capabilities.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T03:27:38.752Z'
+  closed_reason: >-
+    Created comprehensive spec coverage for alignment system - added parent feature
+    @alignment-system with 5 child requirements covering auto-sync, bidirectional mapping, warnings,
+    summaries, and stats. All specs marked implemented with acceptance criteria.
 - _ulid: 01KF9B41KHRT5VDM12JGAGT90B
   slugs: []
   title: Add missing ACs to status-cascade spec
