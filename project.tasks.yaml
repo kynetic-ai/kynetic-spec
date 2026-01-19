@@ -10103,7 +10103,7 @@
   type: task
   description: Document ESM symlink realpathSync fix for contributors
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10132,6 +10132,10 @@
         and shows the code pattern.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T07:03:07.170Z'
+  closed_reason: >-
+    Added ESM symlink troubleshooting section to README.md covering symptoms, root cause, and fix
+    pattern for contributors
 - _ulid: 01KFAB9DZ9V095N4XJ0DE164BF
   slugs: []
   title: Add --description flag to inbox promote
