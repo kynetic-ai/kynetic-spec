@@ -310,3 +310,13 @@ inbox:
       - cli
       - phase-1
     added_by: '@claude'
+  - _ulid: 01KFA1QBTZYQ8C1RJA4PEXRX2M
+    text: >-
+      Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set,
+      item add/set/delete, derive, inbox promote. Show preview of changes without executing
+    created_at: '2026-01-19T02:35:42.815Z'
+    tags:
+      - agent-first
+      - cli
+      - phase-2
+    added_by: '@claude'
