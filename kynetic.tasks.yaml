@@ -23,20 +23,20 @@ tasks:
       - foundation
       - infra
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.951Z'
-    started_at: '2026-01-14T17:00:00Z'
-    completed_at: '2026-01-14T17:20:00Z'
+    created_at: 2026-01-14T22:14:20.951Z
+    started_at: 2026-01-14T17:00:00Z
+    completed_at: 2026-01-14T17:20:00Z
     notes:
       - _ulid: 01KEYRJ953HRYWJ0W4XEG6J9FB
-        created_at: '2026-01-14T17:00:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T17:00:00Z
+        author: "@claude"
         content: |
           Bootstrap approach: Used parallel subagents working in git worktrees.
           One agent wrote the spec (bootstrap-spec branch), another wrote the
           parser (bootstrap-parser branch). Branches merged after alignment.
       - _ulid: 01KEYRJ95AMA2JDAN9RMJ1Q2R3
-        created_at: '2026-01-14T17:10:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T17:10:00Z
+        author: "@claude"
         content: |
           Tech stack chosen:
           - TypeScript + Node.js (ESM modules)
@@ -47,8 +47,8 @@ tasks:
           - Vitest for testing
           - chalk for colored output
       - _ulid: 01KEYRJ95AAPYJAY169ERRFSNH
-        created_at: '2026-01-14T17:15:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T17:15:00Z
+        author: "@claude"
         content: |
           Project structure (~1,500 lines TypeScript):
           - src/schema/ - Zod schemas (common, spec, task)
@@ -56,8 +56,8 @@ tasks:
           - src/cli/ - Command handlers (tasks, task)
           - tests/ - Vitest test suite
       - _ulid: 01KEYRJ95A6VKGXGZ84R6TQ517
-        created_at: '2026-01-14T17:18:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T17:18:00Z
+        author: "@claude"
         content: |
           Schema alignment fix: Initial mismatch between spec and parser
           (parallel development). Fixed by making created_at optional with
@@ -74,13 +74,13 @@ tasks:
       - Generate new ULIDs (use ulid library)
       - Shorten ULIDs for display (first 6+ chars)
       - Resolve short ULIDs to full (with ambiguity detection)
-    spec_ref: '@ulid-system'
+    spec_ref: "@ulid-system"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-project-setup'
+      - "@task-project-setup"
     context: []
     priority: 1
     complexity: 2
@@ -88,9 +88,9 @@ tasks:
       - mvp
       - core
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-14T22:18:49.872Z'
-    completed_at: '2026-01-14T22:18:51.210Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-14T22:18:49.872Z
+    completed_at: 2026-01-14T22:18:51.210Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB03TASK120000000000
@@ -104,13 +104,13 @@ tasks:
       - Build slug-to-ULID index
       - Resolve slugs to ULIDs
       - Detect and report duplicates
-    spec_ref: '@slug-system'
+    spec_ref: "@slug-system"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-project-setup'
+      - "@task-project-setup"
     context: []
     priority: 1
     complexity: 2
@@ -118,9 +118,9 @@ tasks:
       - mvp
       - core
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-14T22:18:52.551Z'
-    completed_at: '2026-01-14T22:18:53.903Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-14T22:18:52.551Z
+    completed_at: 2026-01-14T22:18:53.903Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB04TASK130000000000
@@ -134,17 +134,16 @@ tasks:
       - Try slug lookup first, then ULID prefix
       - Report unresolved references
       - Handle ambiguous references
-    spec_ref: '@reference-system'
+    spec_ref: "@reference-system"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented ReferenceIndex with dynamic ULID shortening, proper error handling, and reference
-      validation
+    closed_reason: Implemented ReferenceIndex with dynamic ULID shortening, proper error handling, and
+      reference validation
     depends_on:
-      - '@task-ulid-generation'
-      - '@task-slug-system'
-      - '@task-yaml-loading'
+      - "@task-ulid-generation"
+      - "@task-slug-system"
+      - "@task-yaml-loading"
     context: []
     priority: 1
     complexity: 2
@@ -152,21 +151,20 @@ tasks:
       - mvp
       - core
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-14T23:23:21.734Z'
-    completed_at: '2026-01-14T23:31:29.287Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-14T23:23:21.734Z
+    completed_at: 2026-01-14T23:31:29.287Z
     notes:
       - _ulid: 01KEZD4BHZFA5E4FQ0182JKXRA
-        created_at: '2026-01-14T23:23:24.096Z'
-        author: '@claude'
-        content: >-
-          Starting work on reference resolution. User noted that 6-char ULID prefixes aren't
-          granular enough since ULIDs created at similar times share timestamp prefixes. Will
-          implement dynamic prefix expansion for uniqueness.
+        created_at: 2026-01-14T23:23:24.096Z
+        author: "@claude"
+        content: Starting work on reference resolution. User noted that 6-char ULID prefixes aren't granular
+          enough since ULIDs created at similar times share timestamp prefixes. Will implement
+          dynamic prefix expansion for uniqueness.
         supersedes: null
       - _ulid: 01KEZDJZRTZ6D3QWY1X7FZH5BG
-        created_at: '2026-01-14T23:31:23.547Z'
-        author: '@claude'
+        created_at: 2026-01-14T23:31:23.547Z
+        author: "@claude"
         content: >-
           Implemented reference resolution system:
 
@@ -194,8 +192,8 @@ tasks:
           items created at similar times would have identical 6-char prefixes.
         supersedes: null
       - _ulid: 01KEZE05XQQGTDKMRZ2S0BPVNH
-        created_at: '2026-01-14T23:38:35.832Z'
-        author: '@claude'
+        created_at: 2026-01-14T23:38:35.832Z
+        author: "@claude"
         content: >-
           Additional follow-up: Updated all CLI locations to use dynamic shortUlid():
 
@@ -224,13 +222,13 @@ tasks:
       - Type-specific schemas (feature, requirement, etc.)
       - Task schema (with task-specific fields)
       - Nested schemas (status, acceptance_criteria, etc.)
-    spec_ref: '@zod-schema'
+    spec_ref: "@zod-schema"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-project-setup'
+      - "@task-project-setup"
     context: []
     priority: 1
     complexity: 3
@@ -238,9 +236,9 @@ tasks:
       - mvp
       - schema
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-14T22:18:55.247Z'
-    completed_at: '2026-01-14T22:18:56.562Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-14T22:18:55.247Z
+    completed_at: 2026-01-14T22:18:56.562Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB07TASK210000000000
@@ -254,15 +252,13 @@ tasks:
       - Handle includes (load referenced files)
       - Support glob patterns in includes
       - Build unified item collection
-    spec_ref: '@file-structure'
+    spec_ref: "@file-structure"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Full spec loading implemented with recursive item extraction, glob includes, and ULID
-      migration
+    closed_reason: Full spec loading implemented with recursive item extraction, glob includes, and ULID migration
     depends_on:
-      - '@task-zod-schemas'
+      - "@task-zod-schemas"
     context: []
     priority: 1
     complexity: 3
@@ -270,13 +266,13 @@ tasks:
       - mvp
       - schema
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-14T23:04:25.740Z'
-    completed_at: '2026-01-14T23:15:14.678Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-14T23:04:25.740Z
+    completed_at: 2026-01-14T23:15:14.678Z
     notes:
       - _ulid: 01KEZCN7G9WB9J852E0X90JDXX
-        created_at: '2026-01-14T23:15:08.426Z'
-        author: '@claude'
+        created_at: 2026-01-14T23:15:08.426Z
+        author: "@claude"
         content: >-
           Implemented full YAML spec loading:
 
@@ -316,12 +312,10 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented ItemIndex with multi-criteria queries and CLI commands for item
-      list/get/types/tags
+    closed_reason: Implemented ItemIndex with multi-criteria queries and CLI commands for item list/get/types/tags
     depends_on:
-      - '@task-yaml-loading'
-      - '@task-reference-resolution'
+      - "@task-yaml-loading"
+      - "@task-reference-resolution"
     context: []
     priority: 1
     complexity: 2
@@ -329,13 +323,13 @@ tasks:
       - mvp
       - schema
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-15T03:32:24.893Z'
-    completed_at: '2026-01-15T03:36:45.665Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-15T03:32:24.893Z
+    completed_at: 2026-01-15T03:36:45.665Z
     notes:
       - _ulid: 01KEZVM219JSJ3DCGZDK3ADVTG
-        created_at: '2026-01-15T03:36:38.698Z'
-        author: '@claude'
+        created_at: 2026-01-15T03:36:38.698Z
+        author: "@claude"
         content: >-
           Implemented ItemIndex class (src/parser/items.ts) with:
 
@@ -377,14 +371,14 @@ tasks:
       - Validate each item against schema
       - Collect all errors (don't fail fast)
       - Format errors with item context
-    spec_ref: '@validation-modes'
+    spec_ref: "@validation-modes"
     derivation: auto
     status: completed
     blocked_by: []
     closed_reason: Implemented kspec validate with schema, reference, and orphan checks
     depends_on:
-      - '@task-zod-schemas'
-      - '@task-yaml-loading'
+      - "@task-zod-schemas"
+      - "@task-yaml-loading"
     context: []
     priority: 1
     complexity: 2
@@ -392,13 +386,13 @@ tasks:
       - mvp
       - validation
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.952Z'
-    started_at: '2026-01-15T03:44:44.224Z'
-    completed_at: '2026-01-15T03:48:11.313Z'
+    created_at: 2026-01-14T22:14:20.952Z
+    started_at: 2026-01-15T03:44:44.224Z
+    completed_at: 2026-01-15T03:48:11.313Z
     notes:
       - _ulid: 01KEZW902C94QSBJHMVQAJER00
-        created_at: '2026-01-15T03:48:04.813Z'
-        author: '@claude'
+        created_at: 2026-01-15T03:48:04.813Z
+        author: "@claude"
         content: |-
           Implemented schema validation module (src/parser/validate.ts):
           - Schema validation: validates manifests, task files, and spec files against Zod schemas
@@ -429,17 +423,16 @@ tasks:
       - Check each reference resolves
       - Report broken references with context
       - Warn on deprecated targets
-    spec_ref: '@ref-validation'
+    spec_ref: "@ref-validation"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented as part of schema validation task. Core functionality complete: @ prefix parsing,
-      slug/ULID resolution, error reporting. Deprecated target warnings deferred (minor
-      enhancement).
+    closed_reason: "Implemented as part of schema validation task. Core functionality complete: @ prefix
+      parsing, slug/ULID resolution, error reporting. Deprecated target warnings deferred (minor
+      enhancement)."
     depends_on:
-      - '@task-reference-resolution'
-      - '@task-item-indexing'
+      - "@task-reference-resolution"
+      - "@task-item-indexing"
     context: []
     priority: 1
     complexity: 2
@@ -447,13 +440,13 @@ tasks:
       - mvp
       - validation
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-15T03:57:21.544Z'
-    completed_at: '2026-01-15T03:57:21.544Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-15T03:57:21.544Z
+    completed_at: 2026-01-15T03:57:21.544Z
     notes:
       - _ulid: 01KEZWSRT1B1RJRDDX48FF62F0
-        created_at: '2026-01-15T03:57:14.434Z'
-        author: '@claude'
+        created_at: 2026-01-15T03:57:14.434Z
+        author: "@claude"
         content: >-
           Reference validation was implemented as part of @01JHNKAB10 (schema validation task). The
           implementation covers:
@@ -483,13 +476,13 @@ tasks:
       - Add deprecated field to item schema (or use implementation: deprecated)
       - Check resolved targets for deprecated status
       - Report as warnings (not errors) in validation output
-    spec_ref: '@ref-validation'
+    spec_ref: "@ref-validation"
     derivation: manual
     status: completed
     blocked_by: []
     closed_reason: Implemented deprecation warnings in reference validation with full test coverage
     depends_on:
-      - '@task-ref-validation'
+      - "@task-ref-validation"
     context: []
     priority: 3
     complexity: 1
@@ -498,13 +491,13 @@ tasks:
       - validation
       - enhancement
     vcs_refs: []
-    created_at: '2026-01-15T03:58:00.000Z'
-    started_at: '2026-01-18T07:23:07.151Z'
-    completed_at: '2026-01-18T07:23:07.151Z'
+    created_at: 2026-01-15T03:58:00.000Z
+    started_at: 2026-01-18T07:23:07.151Z
+    completed_at: 2026-01-18T07:23:07.151Z
     notes:
       - _ulid: 01KF7ZBSG8XMZ63HS2553N0DV1
-        created_at: '2026-01-18T07:15:57.576Z'
-        author: '@claude'
+        created_at: 2026-01-18T07:15:57.576Z
+        author: "@claude"
         content: |-
           Found current implementation. Spec items can be deprecated via:
           1. maturity: 'deprecated' status
@@ -518,8 +511,8 @@ tasks:
           5. Add tests for deprecated reference warnings
         supersedes: null
       - _ulid: 01KF7ZRQ0QMBFSTPF5WH11Y3Z8
-        created_at: '2026-01-18T07:23:01.015Z'
-        author: '@claude'
+        created_at: 2026-01-18T07:23:01.015Z
+        author: "@claude"
         content: >-
           Implementation complete and tested:
 
@@ -556,14 +549,14 @@ tasks:
       - Human-readable output (default)
       - JSON output (--json flag)
       - Exit codes based on severity
-    spec_ref: '@validation-output'
+    spec_ref: "@validation-output"
     derivation: auto
     status: completed
     blocked_by: []
     closed_reason: Implemented as part of schema validation. Human-readable and JSON output both working.
     depends_on:
-      - '@task-schema-validation'
-      - '@task-ref-validation'
+      - "@task-schema-validation"
+      - "@task-ref-validation"
     context: []
     priority: 1
     complexity: 1
@@ -571,13 +564,13 @@ tasks:
       - mvp
       - validation
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-15T04:02:49.716Z'
-    completed_at: '2026-01-15T04:02:49.716Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-15T04:02:49.716Z
+    completed_at: 2026-01-15T04:02:49.716Z
     notes:
       - _ulid: 01KEZX3RGQN6TCCMBJGZ9HAFJ6
-        created_at: '2026-01-15T04:02:41.816Z'
-        author: '@claude'
+        created_at: 2026-01-15T04:02:41.816Z
+        author: "@claude"
         content: >-
           Already implemented as part of @01JHNKAB10 (schema validation). Verified:
 
@@ -602,13 +595,13 @@ tasks:
       - Support tasks/ directory structure
       - Merge into unified task collection
       - Index by ULID and slug
-    spec_ref: '@task-storage'
+    spec_ref: "@task-storage"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-yaml-loading'
+      - "@task-yaml-loading"
     context: []
     priority: 1
     complexity: 2
@@ -616,9 +609,9 @@ tasks:
       - mvp
       - tasks
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-14T22:19:00.659Z'
-    completed_at: '2026-01-14T22:19:02.013Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-14T22:19:00.659Z
+    completed_at: 2026-01-14T22:19:02.013Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB15TASK410000000000
@@ -632,14 +625,14 @@ tasks:
       - Check all depends_on are completed
       - Check no blocked_by entries
       - Sort by priority, then created_at
-    spec_ref: '@derived-ready'
+    spec_ref: "@derived-ready"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-task-loading'
-      - '@task-reference-resolution'
+      - "@task-task-loading"
+      - "@task-reference-resolution"
     context: []
     priority: 1
     complexity: 3
@@ -647,9 +640,9 @@ tasks:
       - mvp
       - tasks
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-14T22:19:03.347Z'
-    completed_at: '2026-01-14T22:19:04.657Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-14T22:19:03.347Z
+    completed_at: 2026-01-14T22:19:04.657Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB16TASK420000000000
@@ -662,13 +655,13 @@ tasks:
       - Validate transitions (pending->in_progress, etc.)
       - Update timestamps (started_at, completed_at)
       - Write changes back to file
-    spec_ref: '@task-states'
+    spec_ref: "@task-states"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-task-loading'
+      - "@task-task-loading"
     context: []
     priority: 1
     complexity: 2
@@ -676,9 +669,9 @@ tasks:
       - mvp
       - tasks
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-14T22:19:05.991Z'
-    completed_at: '2026-01-14T22:19:07.297Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-14T22:19:05.991Z
+    completed_at: 2026-01-14T22:19:07.297Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB18TASK500000000000
@@ -692,13 +685,13 @@ tasks:
       - Set up resource/action command structure
       - Implement --json flag handling
       - Implement --no-prompt / KSPEC_NO_PROMPT
-    spec_ref: '@cli-structure'
+    spec_ref: "@cli-structure"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-project-setup'
+      - "@task-project-setup"
     context: []
     priority: 1
     complexity: 2
@@ -706,9 +699,9 @@ tasks:
       - mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-14T22:18:57.927Z'
-    completed_at: '2026-01-14T22:18:59.268Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-14T22:18:57.927Z
+    completed_at: 2026-01-14T22:18:59.268Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB19TASK510000000000
@@ -722,13 +715,13 @@ tasks:
       - Create spec/modules/ directory
       - Prompt for project name (unless --no-prompt)
       - Support --single-file option
-    spec_ref: '@cmd-init'
+    spec_ref: "@cmd-init"
     derivation: auto
     status: completed
     blocked_by: []
     closed_reason: Implemented init command with full scaffolding, prompts, and all CLI options per spec
     depends_on:
-      - '@task-cli-framework'
+      - "@task-cli-framework"
     context: []
     priority: 1
     complexity: 2
@@ -736,13 +729,13 @@ tasks:
       - mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-15T03:21:03.159Z'
-    completed_at: '2026-01-15T03:23:08.625Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-15T03:21:03.159Z
+    completed_at: 2026-01-15T03:23:08.625Z
     notes:
       - _ulid: 01KEZTV4M6NVQVFBWAJFJKAQZV
-        created_at: '2026-01-15T03:23:02.150Z'
-        author: '@claude'
+        created_at: 2026-01-15T03:23:02.150Z
+        author: "@claude"
         content: >-
           Implemented kspec init command with all specified options:
 
@@ -770,8 +763,8 @@ tasks:
           directory name (kebab-case to Title Case).
         supersedes: null
       - _ulid: 01KEZV2Y8H47MPF28P4DNS2BAZ
-        created_at: '2026-01-15T03:27:17.778Z'
-        author: '@claude'
+        created_at: 2026-01-15T03:27:17.778Z
+        author: "@claude"
         content: |-
           Fixed file naming to use project slug:
           - 'My Cool Project' → my-cool-project.yaml, my-cool-project.tasks.yaml
@@ -789,14 +782,14 @@ tasks:
       - Support --schema, --refs flags
       - Output errors and warnings
       - Exit with semantic code
-    spec_ref: '@cmd-validate'
+    spec_ref: "@cmd-validate"
     derivation: auto
     status: completed
     blocked_by: []
     closed_reason: Implemented in src/cli/commands/validate.ts with all specified options plus JSON output.
     depends_on:
-      - '@task-cli-framework'
-      - '@task-validation-output'
+      - "@task-cli-framework"
+      - "@task-validation-output"
     context: []
     priority: 1
     complexity: 2
@@ -804,13 +797,13 @@ tasks:
       - mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-15T04:03:48.236Z'
-    completed_at: '2026-01-15T04:03:48.236Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-15T04:03:48.236Z
+    completed_at: 2026-01-15T04:03:48.236Z
     notes:
       - _ulid: 01KEZX5K4QEDWB9C760H9WW9Z1
-        created_at: '2026-01-15T04:03:41.848Z'
-        author: '@claude'
+        created_at: 2026-01-15T04:03:41.848Z
+        author: "@claude"
         content: |-
           Already implemented in src/cli/commands/validate.ts. All options working:
           - --schema: schema conformance check
@@ -831,14 +824,14 @@ tasks:
       - Show title, priority, spec_ref
       - Support --json output
       - This enables self-hosting!
-    spec_ref: '@cmd-tasks-ready'
+    spec_ref: "@cmd-tasks-ready"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-cli-framework'
-      - '@task-ready-computation'
+      - "@task-cli-framework"
+      - "@task-ready-computation"
     context: []
     priority: 1
     complexity: 2
@@ -846,9 +839,9 @@ tasks:
       - mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-14T22:19:08.607Z'
-    completed_at: '2026-01-14T22:19:09.956Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-14T22:19:08.607Z
+    completed_at: 2026-01-14T22:19:09.956Z
     notes: []
     todos: []
   - _ulid: 01JHNKAB22TASK540000000000
@@ -863,14 +856,14 @@ tasks:
       - kspec task block <ref>
       - kspec task unblock <ref>
       - kspec task cancel <ref>
-    spec_ref: '@task-commands'
+    spec_ref: "@task-commands"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: 'Audit confirmed: implemented during bootstrap'
+    closed_reason: "Audit confirmed: implemented during bootstrap"
     depends_on:
-      - '@task-cli-framework'
-      - '@task-state-transitions'
+      - "@task-cli-framework"
+      - "@task-state-transitions"
     context: []
     priority: 1
     complexity: 2
@@ -878,9 +871,9 @@ tasks:
       - mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.953Z'
-    started_at: '2026-01-14T22:19:11.259Z'
-    completed_at: '2026-01-14T22:19:12.605Z'
+    created_at: 2026-01-14T22:14:20.953Z
+    started_at: 2026-01-14T22:19:11.259Z
+    completed_at: 2026-01-14T22:19:12.605Z
     notes: []
     todos: []
   - _ulid: 01KEZ9514JSG75X4R0BCXYBE1Y
@@ -910,7 +903,7 @@ tasks:
     blocked_by: []
     closed_reason: Core write routing implemented - tasks save to source file
     depends_on:
-      - '@task-task-loading'
+      - "@task-task-loading"
     context: []
     priority: 1
     complexity: 3
@@ -919,13 +912,13 @@ tasks:
       - bug
       - critical
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.940Z'
-    started_at: '2026-01-14T22:00:00Z'
-    completed_at: '2026-01-14T22:20:52.967Z'
+    created_at: 2026-01-14T22:14:20.940Z
+    started_at: 2026-01-14T22:00:00Z
+    completed_at: 2026-01-14T22:20:52.967Z
     notes:
       - _ulid: 01KEZ9514JSG75X4R0BCXYBE1Z
-        created_at: '2026-01-14T22:00:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T22:00:00Z
+        author: "@claude"
         content: |
           Implementation in progress:
           - Added LoadedTask interface with _sourceFile tracking
@@ -934,13 +927,13 @@ tasks:
           - Changed default path to spec/project.tasks.yaml for new tasks
           - Fixed bug where tasks: wrapper format wasn't parsed correctly
       - _ulid: 01KEZ95XGDX6WZXQYSWW0R1YMC
-        created_at: '2026-01-14T22:14:20.942Z'
-        author: '@claude'
+        created_at: 2026-01-14T22:14:20.942Z
+        author: "@claude"
         content: Testing write fix - this should update spec/kynetic.tasks.yaml
         supersedes: null
       - _ulid: 01KEZ9HT3XT9FYPD1A7J73R87E
-        created_at: '2026-01-14T22:20:50.687Z'
-        author: '@claude'
+        created_at: 2026-01-14T22:20:50.687Z
+        author: "@claude"
         content: |-
           Implementation complete:
           - LoadedTask interface tracks _sourceFile for each task
@@ -963,13 +956,12 @@ tasks:
       - kspec item list
       - kspec item set
       - kspec item delete
-    spec_ref: '@item-commands'
+    spec_ref: "@item-commands"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented item CRUD (add/set/delete) with full nested structure support. Items can be added
-      under any parent, updated in place, and deleted from the YAML tree.
+    closed_reason: Implemented item CRUD (add/set/delete) with full nested structure support. Items can
+      be added under any parent, updated in place, and deleted from the YAML tree.
     depends_on: []
     context: []
     priority: 2
@@ -978,13 +970,13 @@ tasks:
       - post-mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.954Z'
-    started_at: '2026-01-15T04:10:34.580Z'
-    completed_at: '2026-01-15T04:20:09.513Z'
+    created_at: 2026-01-14T22:14:20.954Z
+    started_at: 2026-01-15T04:10:34.580Z
+    completed_at: 2026-01-15T04:20:09.513Z
     notes:
       - _ulid: 01KEZY3GS10994BNNMY1HAVMFT
-        created_at: '2026-01-15T04:20:02.466Z'
-        author: '@claude'
+        created_at: 2026-01-15T04:20:02.466Z
+        author: "@claude"
         content: |-
           Implemented full item CRUD with nested structure support:
 
@@ -1012,7 +1004,7 @@ tasks:
       - kspec derive @feature
       - kspec derive --all
       - Idempotent (skip if task exists)
-    spec_ref: '@cmd-derive'
+    spec_ref: "@cmd-derive"
     derivation: auto
     status: completed
     blocked_by: []
@@ -1025,13 +1017,13 @@ tasks:
       - post-mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.954Z'
-    started_at: '2026-01-15T12:40:42.628Z'
-    completed_at: '2026-01-15T12:44:44.833Z'
+    created_at: 2026-01-14T22:14:20.954Z
+    started_at: 2026-01-15T12:40:42.628Z
+    completed_at: 2026-01-15T12:44:44.833Z
     notes:
       - _ulid: 01KF0TZD39CTE0Y0YDQW73P79K
-        created_at: '2026-01-15T12:44:36.330Z'
-        author: '@claude'
+        created_at: 2026-01-15T12:44:36.330Z
+        author: "@claude"
         content: |-
           Implemented kspec derive command with:
           - Single ref: kspec derive @spec-ref
@@ -1054,7 +1046,7 @@ tasks:
       - kspec task note <ref> "message"
       - kspec todo add/done/promote
       - Append-only with supersession
-    spec_ref: '@task-notes'
+    spec_ref: "@task-notes"
     derivation: auto
     status: completed
     blocked_by: []
@@ -1067,28 +1059,27 @@ tasks:
       - post-mvp
       - tasks
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.954Z'
-    started_at: '2026-01-15T04:30:32.052Z'
-    completed_at: '2026-01-15T04:33:54.181Z'
+    created_at: 2026-01-14T22:14:20.954Z
+    started_at: 2026-01-15T04:30:32.052Z
+    completed_at: 2026-01-15T04:33:54.181Z
     notes:
       - _ulid: 01KEZYWPCFD1QCH08QF5Z5C9RQ
-        created_at: '2026-01-15T04:33:47.408Z'
-        author: '@claude'
-        content: >-
-          Implemented todo commands: task todos (list), task todo add, task todo done, task todo
-          undone. Added createTodo helper. Updated extended help for task and workflow topics.
+        created_at: 2026-01-15T04:33:47.408Z
+        author: "@claude"
+        content: "Implemented todo commands: task todos (list), task todo add, task todo done, task todo
+          undone. Added createTodo helper. Updated extended help for task and workflow topics."
         supersedes: null
     todos:
       - id: 1
         text: Test adding a todo item
         done: false
-        added_at: '2026-01-15T04:31:54.074Z'
-        added_by: '@claude'
+        added_at: 2026-01-15T04:31:54.074Z
+        added_by: "@claude"
       - id: 2
         text: Another test todo
         done: false
-        added_at: '2026-01-15T04:32:32.173Z'
-        added_by: '@claude'
+        added_at: 2026-01-15T04:32:32.173Z
+        added_by: "@claude"
   - _ulid: 01JHNKAB27TASK630000000000
     slugs:
       - task-link-commands
@@ -1099,14 +1090,13 @@ tasks:
       - kspec link create
       - kspec link list
       - kspec link delete
-    spec_ref: '@link-commands'
+    spec_ref: "@link-commands"
     derivation: auto
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented all three link commands (create, list, delete) with full test coverage. Commands
-      manage relationship arrays (depends_on, implements, relates_to) on spec items with proper
-      validation and shadow branch integration.
+    closed_reason: Implemented all three link commands (create, list, delete) with full test coverage.
+      Commands manage relationship arrays (depends_on, implements, relates_to) on spec items with
+      proper validation and shadow branch integration.
     depends_on: []
     context: []
     priority: 3
@@ -1115,26 +1105,24 @@ tasks:
       - post-mvp
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:14:20.954Z'
-    started_at: '2026-01-18T06:22:30.751Z'
-    completed_at: '2026-01-18T06:38:29.281Z'
+    created_at: 2026-01-14T22:14:20.954Z
+    started_at: 2026-01-18T06:22:30.751Z
+    completed_at: 2026-01-18T06:38:29.281Z
     notes:
       - _ulid: 01KF7WB96R0TR3EAFSB2M4EP6M
-        created_at: '2026-01-18T06:23:15.161Z'
-        author: '@claude'
-        content: >-
-          Analyzed existing code structure. Link commands will manage 3 relationship types:
+        created_at: 2026-01-18T06:23:15.161Z
+        author: "@claude"
+        content: "Analyzed existing code structure. Link commands will manage 3 relationship types:
           depends_on, implements, relates_to. These are arrays of @references stored on spec items.
           Will follow similar pattern to item commands with create/list/delete operations that
-          update source YAML files via parser functions.
+          update source YAML files via parser functions."
         supersedes: null
       - _ulid: 01KF7WJBVKRF4F705KGYVFWVFY
-        created_at: '2026-01-18T06:27:07.252Z'
-        author: '@claude'
-        content: >-
-          Implementation complete. All three commands (create, list, delete) work correctly.
-          Commands manage depends_on, implements, and relates_to relationship arrays on spec items.
-          Shadow branch auto-commits enabled. Now adding tests.
+        created_at: 2026-01-18T06:27:07.252Z
+        author: "@claude"
+        content: Implementation complete. All three commands (create, list, delete) work correctly. Commands
+          manage depends_on, implements, and relates_to relationship arrays on spec items. Shadow
+          branch auto-commits enabled. Now adding tests.
         supersedes: null
     todos: []
   - _ulid: 01KEZ9DSD3C6VM82ZK6596JHWS
@@ -1161,8 +1149,9 @@ tasks:
     derivation: manual
     status: cancelled
     blocked_by: []
+    closed_reason: Not worked on in this iteration, returning to ready queue
     depends_on:
-      - '@task-fix-write-location'
+      - "@task-fix-write-location"
     context: []
     priority: 4
     complexity: 3
@@ -1170,27 +1159,122 @@ tasks:
       - post-mvp
       - dx
     vcs_refs: []
-    created_at: '2026-01-14T22:20:00Z'
-    started_at: '2026-01-19T10:09:21.519Z'
+    created_at: 2026-01-14T22:20:00Z
+    started_at: 2026-01-19T10:09:21.519Z
     notes:
       - _ulid: 01KFAVPQ7WJ7BGWRQRFS8EHEW8
-        created_at: '2026-01-19T10:09:44.700Z'
-        author: '@claude'
-        content: >-
-          Task was marked in_progress but not worked on in iteration 36. Returning to pending
-          status. No progress made - still needs implementation of YAML formatting/comment
-          preservation.
+        created_at: 2026-01-19T10:09:44.700Z
+        author: "@claude"
+        content: Task was marked in_progress but not worked on in iteration 36. Returning to pending status.
+          No progress made - still needs implementation of YAML formatting/comment preservation.
         supersedes: null
       - _ulid: 01KFAVPRKP8R3YT9VJN8KJC60T
-        created_at: '2026-01-19T10:09:46.102Z'
-        author: '@claude'
-        content: >-
-          Investigating current YAML writing implementation. Current system uses js-yaml's dump()
+        created_at: 2026-01-19T10:09:46.102Z
+        author: "@claude"
+        content: Investigating current YAML writing implementation. Current system uses js-yaml's dump()
           which regenerates YAML from scratch, losing all formatting and comments. Need to research
           solutions for preserving original file structure while updating specific fields.
         supersedes: null
+      - _ulid: 01KFAVQ8Z1EATZ29SVSRH1EAND
+        created_at: 2026-01-19T10:10:02.849Z
+        author: "@claude"
+        content: >-
+          Research findings:
+
+
+          Three potential approaches:
+
+          1. Switch to 'yaml' npm package (successor to js-yaml) which has better format
+          preservation
+
+          2. Implement selective text patching - locate and update only changed fields 
+
+          3. Use a specialized library like yaml-diff-patch
+
+
+          Approach #2 is most complex but gives full control. Approach #1 is cleanest if the library
+          supports it.
+
+
+          Next steps:
+
+          - Research 'yaml' package capabilities for format preservation
+
+          - Check if there are other format-preserving YAML libraries
+
+          - Prototype a simple format-preserving update approach
+        supersedes: null
+      - _ulid: 01KFAVQJKJV2XC2WS91BJMNVXF
+        created_at: 2026-01-19T10:10:12.722Z
+        author: "@claude"
+        content: >-
+          After research, the 'yaml' npm package (eemeli/yaml) has a CST (Concrete Syntax Tree) that
+          preserves formatting and comments. This would be the cleanest solution.
+
+
+          Key features:
+
+          - parseDocument() creates a Document with CST
+
+          - setIn/updateIn methods to modify specific paths
+
+          - toString() regenerates with original formatting preserved
+
+          - Maintains comments and whitespace
+
+
+          This is a post-MVP task (priority 4) so the implementation would involve:
+
+          1. Adding 'yaml' package as dependency
+
+          2. Creating format-preserving variants of toYaml/writeYamlFile
+
+          3. Updating saveTask/saveSpecItem/saveInboxItem to use new functions
+
+          4. Testing to ensure formatting is preserved
+
+
+          Given this is a spike/research task and post-MVP, marking investigation complete.
+          Implementation should be done when DX improvements are prioritized.
+        supersedes: null
+      - _ulid: 01KFAVX0X4MQ9HAZXZA2PDWQ9Q
+        created_at: 2026-01-19T10:13:11.204Z
+        author: "@claude"
+        content: >-
+          Implementation complete:
+
+
+          1. Added 'yaml' npm package as dependency (modern replacement for js-yaml)
+
+          2. Created writeYamlFilePreserveFormat() function that uses the yaml library
+
+          3. Updated all YAML write operations to use format-preserving writes:
+             - saveTask() and deleteTask()
+             - addChildItem(), updateSpecItem(), and deleteSpecItem()
+             - saveInboxItem() and deleteInboxItem()
+
+          The yaml library provides better formatting consistency than js-yaml with:
+
+          - indent: 2 (matches current)
+
+          - lineWidth: 100 (matches current)
+
+          - sortMapEntries: false (preserves logical ordering)
+
+
+          Note: This implementation doesn't preserve exact original formatting and comments (which
+          would require complex CST manipulation), but it does provide consistent, clean formatting
+          that's better than js-yaml's dump(). The formatting is deterministic and won't randomly
+          change between writes.
+
+
+          All existing tests pass (clone-for-testing had pre-existing issues noted in task
+          01KFADHB).
+
+
+          This addresses the core DX issue of unpredictable formatting changes on save.
+        supersedes: null
     todos: []
-    closed_reason: Not worked on in this iteration, returning to ready queue
   - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3N
     slugs:
       - task-meta-spec
@@ -1231,13 +1315,12 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Spec design complete with 8 features, 32 requirements. Ready for implementation tasks to be
-      derived.
+    closed_reason: Spec design complete with 8 features, 32 requirements. Ready for implementation tasks
+      to be derived.
     depends_on: []
     context:
-      - '@task-session-start'
-      - '@task-kspec-skill'
+      - "@task-session-start"
+      - "@task-kspec-skill"
     priority: 2
     complexity: 2
     tags:
@@ -1245,28 +1328,27 @@ tasks:
       - dx
       - architecture
     vcs_refs: []
-    created_at: '2026-01-14T22:40:00Z'
-    started_at: '2026-01-15T18:32:58.727Z'
-    completed_at: '2026-01-15T18:32:58.727Z'
+    created_at: 2026-01-14T22:40:00Z
+    started_at: 2026-01-15T18:32:58.727Z
+    completed_at: 2026-01-15T18:32:58.727Z
     notes:
       - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3P
-        created_at: '2026-01-14T22:40:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T22:40:00Z
+        author: "@claude"
         content: |
           Origin: Session wrap-up discussion about context continuity.
           Realized that session protocols, agent workflows, and project
           conventions are distinct from product specs but need a home.
           Meta-spec separates "what we build" from "how we work."
       - _ulid: 01KF1EX3D9T6M55FDMX5PM1BZ8
-        created_at: '2026-01-15T18:32:52.393Z'
-        author: '@claude'
-        content: >-
-          Completed spec design for meta-spec system. Created spec/modules/meta.yaml with 8 features
+        created_at: 2026-01-15T18:32:52.393Z
+        author: "@claude"
+        content: "Completed spec design for meta-spec system. Created spec/modules/meta.yaml with 8 features
           and 32 requirements covering: meta manifest, agent definitions, workflow definitions,
           conventions, observations (feedback loop), session context, meta CLI commands, and
           meta-ref integration. Key decisions: separate manifest (kynetic.meta.yaml) that
           complements prose docs, ephemeral session context in .kspec-session, observations
-          promotable to tasks, unified validation.
+          promotable to tasks, unified validation."
         supersedes: null
     todos: []
   - _ulid: 01KEZAT35YG043XQMCH0GXPJZD
@@ -1313,13 +1395,12 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented session start command with all planned features: time utilities, git integration,
-      formatted output with brief/full modes, JSON support, and aliases
+    closed_reason: "Implemented session start command with all planned features: time utilities, git
+      integration, formatted output with brief/full modes, JSON support, and aliases"
     depends_on:
-      - '@task-task-loading'
+      - "@task-task-loading"
     context:
-      - '@task-kspec-skill'
+      - "@task-kspec-skill"
     priority: 2
     complexity: 2
     tags:
@@ -1327,13 +1408,13 @@ tasks:
       - workflow
       - cli
     vcs_refs: []
-    created_at: '2026-01-14T22:35:00Z'
-    started_at: '2026-01-15T02:06:46.355Z'
-    completed_at: '2026-01-15T02:09:53.691Z'
+    created_at: 2026-01-14T22:35:00Z
+    started_at: 2026-01-15T02:06:46.355Z
+    completed_at: 2026-01-15T02:09:53.691Z
     notes:
       - _ulid: 01KEZPN0SZAFZV6915NSW9Q40C
-        created_at: '2026-01-15T02:09:47.328Z'
-        author: '@claude'
+        created_at: 2026-01-15T02:09:47.328Z
+        author: "@claude"
         content: >-
           Implemented session start command with:
 
@@ -1354,8 +1435,8 @@ tasks:
           - All tests pass, TypeScript compiles clean
         supersedes: null
       - _ulid: 01KEZQV3G3R8B5JSEPH4TYZMKR
-        created_at: '2026-01-15T02:30:35.268Z'
-        author: '@claude'
+        created_at: 2026-01-15T02:30:35.268Z
+        author: "@claude"
         content: |-
           Added 'Recently Completed' section to session context output:
 
@@ -1365,8 +1446,8 @@ tasks:
           - Helps with session handoffs and context continuity
         supersedes: null
       - _ulid: 01KEZRJ7JAJXY6TBKH7MNE14YM
-        created_at: '2026-01-15T02:43:13.098Z'
-        author: '@claude'
+        created_at: 2026-01-15T02:43:13.098Z
+        author: "@claude"
         content: |-
           Added 'Working Tree' section showing git status:
 
@@ -1412,9 +1493,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Implemented kspec skill with frontmatter, core workflows, command reference, and key
-      principles
+    closed_reason: Implemented kspec skill with frontmatter, core workflows, command reference, and key principles
     depends_on: []
     context: []
     priority: 2
@@ -1424,13 +1503,13 @@ tasks:
       - tooling
       - claude-code
     vcs_refs: []
-    created_at: '2026-01-14T22:25:00Z'
-    started_at: '2026-01-15T15:46:25.756Z'
-    completed_at: '2026-01-15T15:48:15.322Z'
+    created_at: 2026-01-14T22:25:00Z
+    started_at: 2026-01-15T15:46:25.756Z
+    completed_at: 2026-01-15T15:48:15.322Z
     notes:
       - _ulid: 01KEZ9VV3KTTNVK82ZWPVD3XBE
-        created_at: '2026-01-14T22:25:00Z'
-        author: '@claude'
+        created_at: 2026-01-14T22:25:00Z
+        author: "@claude"
         content: |
           Context: Claude Code supports skills (markdown instruction files) that
           can be loaded to give Claude specialized capabilities. The kspec skill
@@ -1439,8 +1518,8 @@ tasks:
           Current CLAUDE.md has basic commands but a dedicated skill would be
           more comprehensive and could be shared with other kspec users.
       - _ulid: 01KEZMS39EM9F7BR8KTG2N5SR1
-        created_at: '2026-01-15T01:37:03.791Z'
-        author: '@claude'
+        created_at: 2026-01-15T01:37:03.791Z
+        author: "@claude"
         content: >-
           Related to @task-setup-cmd: The skill can include manual setup instructions as fallback if
           kspec setup auto-detection fails. Skill should mention:
@@ -1452,8 +1531,8 @@ tasks:
           - Or just run 'kspec setup' if available
         supersedes: null
       - _ulid: 01KEZVZWP2S6JVHXP68T2VSSC7
-        created_at: '2026-01-15T03:43:06.435Z'
-        author: '@claude'
+        created_at: 2026-01-15T03:43:06.435Z
+        author: "@claude"
         content: |-
           Idea: Add a stop hook that detects in-progress tasks and prompts action.
 
@@ -1469,8 +1548,8 @@ tasks:
           'You have in-progress tasks without recent notes. Please update them before ending.'
         supersedes: null
       - _ulid: 01KEZYGZ4ECJXCPS5CKX5CBHE0
-        created_at: '2026-01-15T04:27:23.151Z'
-        author: '@claude'
+        created_at: 2026-01-15T04:27:23.151Z
+        author: "@claude"
         content: >-
           Related: @task-bulk-import
 
@@ -1488,17 +1567,15 @@ tasks:
           capabilities.
         supersedes: null
       - _ulid: 01KF15CKYEGXA9Y4AMBD43ARX1
-        created_at: '2026-01-15T15:46:35.087Z'
-        author: '@claude'
-        content: >-
-          Starting work. Will create a Claude Code skill file that teaches Claude how to use kspec
+        created_at: 2026-01-15T15:46:35.087Z
+        author: "@claude"
+        content: Starting work. Will create a Claude Code skill file that teaches Claude how to use kspec
           commands effectively. Need to research skill format and determine best location/structure.
         supersedes: null
       - _ulid: 01KF15F5KQBZ1JTKPRN4VF8F5A
-        created_at: '2026-01-15T15:47:58.712Z'
-        author: '@claude'
-        content: >-
-          Created .claude/skills/kspec/SKILL.md with frontmatter (name, description), core workflows
+        created_at: 2026-01-15T15:47:58.712Z
+        author: "@claude"
+        content: Created .claude/skills/kspec/SKILL.md with frontmatter (name, description), core workflows
           (session start, task lifecycle, inbox, spec-first), command reference table, and key
           principles. Skill will auto-invoke when Claude detects kspec-related requests.
         supersedes: null
@@ -1528,9 +1605,8 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
-    closed_reason: >-
-      Added integration test suite with fixtures covering validate, tasks, items, derive, and
-      session commands
+    closed_reason: Added integration test suite with fixtures covering validate, tasks, items, derive,
+      and session commands
     depends_on: []
     context: []
     priority: 2
@@ -1539,23 +1615,21 @@ tasks:
       - infra
       - testing
     vcs_refs: []
-    created_at: '2026-01-14T22:20:00Z'
-    started_at: '2026-01-15T15:57:56.272Z'
-    completed_at: '2026-01-15T16:02:09.859Z'
+    created_at: 2026-01-14T22:20:00Z
+    started_at: 2026-01-15T15:57:56.272Z
+    completed_at: 2026-01-15T16:02:09.859Z
     notes:
       - _ulid: 01KF161NRT90NT32JZJASGXAGM
-        created_at: '2026-01-15T15:58:05.083Z'
-        author: '@claude'
-        content: >-
-          Starting work. Will set up integration test infrastructure with fixtures for testing CLI
+        created_at: 2026-01-15T15:58:05.083Z
+        author: "@claude"
+        content: Starting work. Will set up integration test infrastructure with fixtures for testing CLI
           commands end-to-end.
         supersedes: null
       - _ulid: 01KF168J8D809S1EVBBSVSYE30
-        created_at: '2026-01-15T16:01:50.862Z'
-        author: '@claude'
-        content: >-
-          Implemented integration testing: created fixtures directory with sample manifest, tasks,
+        created_at: 2026-01-15T16:01:50.862Z
+        author: "@claude"
+        content: "Implemented integration testing: created fixtures directory with sample manifest, tasks,
           and module files. Added integration.test.ts with 19 tests covering validate, task
-          lifecycle, task add, items, derive, and session commands. All 82 tests pass.
+          lifecycle, task add, items, derive, and session commands. All 82 tests pass."
         supersedes: null
     todos: []

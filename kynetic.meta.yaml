@@ -1,4 +1,4 @@
-kynetic_meta: '1.0'
+kynetic_meta: "1.0"
 agents:
   - _ulid: 01KF782ZSF5ZQTN2PKZPH6ASKA
     id: claude
@@ -29,14 +29,14 @@ agents:
   - _ulid: 01KF7HMDT7TKRTSD78X6WAGBFV
     id: json-test
     name: JSON Test
-    description: ''
+    description: ""
     capabilities: []
     tools: []
     conventions: []
   - _ulid: 01KF7HN2D6GAAK99TN68N6NXVB
     id: json-test2
     name: JSON Test 2
-    description: ''
+    description: ""
     capabilities: []
     tools: []
     conventions: []
@@ -121,9 +121,9 @@ conventions:
       - Keep subject line under 72 characters
       - Include Co-Authored-By for AI contributions
     examples:
-      - good: 'feat: add user login flow'
+      - good: "feat: add user login flow"
         bad: Added login
-      - good: 'fix(auth): handle expired tokens'
+      - good: "fix(auth): handle expired tokens"
         bad: fixed bug
   - _ulid: 01KF782ZSJ20FHWEXH93VB74Q5
     domain: notes
@@ -133,8 +133,7 @@ conventions:
       - Note any deviations from plan or unexpected findings
       - Keep notes concise but informative for future context
     examples:
-      - good: >-
-          Implemented retry logic with exponential backoff. Chose 3 retries max based on API rate
+      - good: Implemented retry logic with exponential backoff. Chose 3 retries max based on API rate
           limits.
         bad: Done
   - _ulid: 01KF782ZSJZB6HWGFS01TM2R0R
@@ -157,9 +156,8 @@ conventions:
     domain: branching
     rules:
       - Use descriptive branch names that indicate the type and scope of work
-      - >-
-        Use prefixes: feat/ for features, fix/ for bug fixes, refactor/ for refactoring, docs/ for
-        documentation
+      - "Use prefixes: feat/ for features, fix/ for bug fixes, refactor/ for refactoring, docs/ for
+        documentation"
       - Keep branch names short but meaningful (e.g., feat/user-auth, fix/login-crash)
       - Use kebab-case for branch names
     examples: []
@@ -174,873 +172,802 @@ conventions:
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
     type: idea
-    workflow_ref: '@session-start'
+    workflow_ref: "@session-start"
     content: Need better error messages
-    created_at: '2026-01-18T10:16:15.283Z'
-    author: '@claude'
+    created_at: 2026-01-18T10:16:15.283Z
+    author: "@claude"
     resolved: false
     resolution: null
-    promoted_to: '@01KF89NY'
+    promoted_to: "@01KF89NY"
   - _ulid: 01KF93NC0FXND1244CN31ZH22Z
     type: friction
-    content: >-
-      ReferenceIndex Result<T> pattern gotcha: resolve() returns Result objects with .ok field, not
-      items directly. Must check result.ok before accessing result.item - TypeScript doesn't enforce
-      this at compile time. Pattern: if (result.ok) { use result.item } else { handle error }.
-      Encountered multiple times across iterations.
-    created_at: '2026-01-18T17:50:20.175Z'
-    author: '@claude'
+    content: "ReferenceIndex Result<T> pattern gotcha: resolve() returns Result objects with .ok field,
+      not items directly. Must check result.ok before accessing result.item - TypeScript doesn't
+      enforce this at compile time. Pattern: if (result.ok) { use result.item } else { handle error
+      }. Encountered multiple times across iterations."
+    created_at: 2026-01-18T17:50:20.175Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93NCXZNXTPWAPCFPNH0STG
     type: friction
-    content: >-
-      Linter/tooling auto-revert blocker: During ralph loop iterations, file changes were repeatedly
-      auto-reverted by linter/auto-save system. Code written and verified would disappear after
-      edits. Affected shadow.ts, index.ts, test files. Possible causes: aggressive format-on-save,
-      linter deleting code it doesn't understand, file watcher conflicts. Blocks implementation work
-      when it occurs.
-    created_at: '2026-01-18T17:50:21.120Z'
-    author: '@claude'
+    content: "Linter/tooling auto-revert blocker: During ralph loop iterations, file changes were
+      repeatedly auto-reverted by linter/auto-save system. Code written and verified would disappear
+      after edits. Affected shadow.ts, index.ts, test files. Possible causes: aggressive
+      format-on-save, linter deleting code it doesn't understand, file watcher conflicts. Blocks
+      implementation work when it occurs."
+    created_at: 2026-01-18T17:50:21.120Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93NDYAX7CWP4QP7072AHMH
     type: friction
-    content: >-
-      Ralph loop session state freshness: Multiple issues with stale state in automation loops. (1)
-      Iteration started on non-main branch from previous session. (2) Session context showed
+    content: "Ralph loop session state freshness: Multiple issues with stale state in automation loops.
+      (1) Iteration started on non-main branch from previous session. (2) Session context showed
       already-completed task as ready because context generated before commits reflected. (3) Picked
       completed work repeatedly. Solutions: generate context AFTER pulling latest, validate task is
       actually pending before starting, checkpoint script should update .kspec before next
-      iteration.
-    created_at: '2026-01-18T17:50:22.155Z'
-    author: '@claude'
+      iteration."
+    created_at: 2026-01-18T17:50:22.155Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93P6NTQJP3C2ZSND2J2MZT
     type: friction
-    content: >-
-      Subprocess spawning complexity: When promoting observations to tasks, initially tried spawning
-      npm/tsx subprocess which caused temp directory path issues in tests. Switched to direct API
-      calls (createTask/saveTask) which simplified implementation and avoided process overhead.
-      Pattern: prefer direct API over subprocess when both run in same codebase.
-    created_at: '2026-01-18T17:50:47.483Z'
-    author: '@claude'
+    content: "Subprocess spawning complexity: When promoting observations to tasks, initially tried
+      spawning npm/tsx subprocess which caused temp directory path issues in tests. Switched to
+      direct API calls (createTask/saveTask) which simplified implementation and avoided process
+      overhead. Pattern: prefer direct API over subprocess when both run in same codebase."
+    created_at: 2026-01-18T17:50:47.483Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93P7W2A063T315RXPC6ZF7
     type: friction
-    content: >-
-      Commander --json flag conflict: Command-specific --json flags conflict with global --json flag
-      in Commander. Solution: use global flag only, check isJsonMode() instead of options.json. This
-      pattern should be documented or enforced via convention.
-    created_at: '2026-01-18T17:50:48.706Z'
-    author: '@claude'
+    content: "Commander --json flag conflict: Command-specific --json flags conflict with global --json
+      flag in Commander. Solution: use global flag only, check isJsonMode() instead of options.json.
+      This pattern should be documented or enforced via convention."
+    created_at: 2026-01-18T17:50:48.706Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93P8XZK7K9V8ERYYH6FE0Z
     type: friction
-    content: >-
-      Bash tool cd persistence: Commands run in same directory as previous command unless explicit
-      cd. Running 'cd .kspec && git status' left session in .kspec worktree. Need explicit 'cd
-      /path/to/main' to return. Can be confusing when working with shadow branch.
-    created_at: '2026-01-18T17:50:49.792Z'
-    author: '@claude'
+    content: "Bash tool cd persistence: Commands run in same directory as previous command unless
+      explicit cd. Running 'cd .kspec && git status' left session in .kspec worktree. Need explicit
+      'cd /path/to/main' to return. Can be confusing when working with shadow branch."
+    created_at: 2026-01-18T17:50:49.792Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93PA837GGVE8DH3PVZE8WC
     type: friction
-    content: >-
-      CLI output pattern: When implementing CLI commands with both human-readable and JSON formats,
-      use success(message, data) instead of calling both success() and output() separately. The
-      success() function already handles JSON mode internally, avoiding duplicate/mixed output.
-    created_at: '2026-01-18T17:50:51.140Z'
-    author: '@claude'
+    content: "CLI output pattern: When implementing CLI commands with both human-readable and JSON
+      formats, use success(message, data) instead of calling both success() and output() separately.
+      The success() function already handles JSON mode internally, avoiding duplicate/mixed output."
+    created_at: 2026-01-18T17:50:51.140Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93PBBYDPRH0WQSKN4Y18SV
     type: friction
-    content: >-
-      Task status accuracy gap: Found task marked as priority 3 ready but implementation was already
-      complete. All code, tests, and functionality existed. System correctly updated spec alignment
-      when task completed, but task remained in ready list longer than it should have. Need earlier
-      alignment checks or better detection of 'code exists but task not marked done' scenarios.
-    created_at: '2026-01-18T17:50:52.286Z'
-    author: '@claude'
+    content: "Task status accuracy gap: Found task marked as priority 3 ready but implementation was
+      already complete. All code, tests, and functionality existed. System correctly updated spec
+      alignment when task completed, but task remained in ready list longer than it should have.
+      Need earlier alignment checks or better detection of 'code exists but task not marked done'
+      scenarios."
+    created_at: 2026-01-18T17:50:52.286Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93PCN5NVFEHR801G77EK3X
     type: friction
-    content: >-
-      Shadow branch auto-commit PR challenges: PR included WIP commits from shadow that were
+    content: "Shadow branch auto-commit PR challenges: PR included WIP commits from shadow that were
       auto-committed. Consider: (1) squash strategy for shadow commits when creating PR, (2)
       explicit checkpoint command before PR creation, or (3) shadow commit message convention (wip:
-      prefix) to make cleanup easier.
-    created_at: '2026-01-18T17:50:53.606Z'
-    author: '@claude'
+      prefix) to make cleanup easier."
+    created_at: 2026-01-18T17:50:53.606Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93PDXFBPM2B1WYE6HFYJCX
     type: friction
-    content: >-
-      PR review automation friction: Had to manually launch review subagent, wait for output,
+    content: "PR review automation friction: Had to manually launch review subagent, wait for output,
       interpret results, then fix issues. Could streamline with dedicated /review skill that: (1)
       checks for open PRs, (2) launches review subagent automatically, (3) interprets results +
-      decision tree, (4) applies fixes if trivial, (5) merges if appropriate.
-    created_at: '2026-01-18T17:50:54.895Z'
-    author: '@claude'
+      decision tree, (4) applies fixes if trivial, (5) merges if appropriate."
+    created_at: 2026-01-18T17:50:54.895Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93Q1Y31HP8245N4DF67MCA
     type: friction
-    content: >-
-      Auto-sync vs interactive prompts anti-pattern: When adding interactive prompts to modify
+    content: "Auto-sync vs interactive prompts anti-pattern: When adding interactive prompts to modify
       state, always check if automatic sync/calculation logic already exists. AlignmentIndex
       calculates spec status from all linked tasks - interactive prompt would allow single-task
       override, creating drift. Pattern: if system has 'calculated truth', don't add manual override
-      without considering multi-entity consistency.
-    created_at: '2026-01-18T17:51:15.396Z'
-    author: '@claude'
+      without considering multi-entity consistency."
+    created_at: 2026-01-18T17:51:15.396Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93Q2W8DC2RNGG1NA4ABQE0
     type: friction
-    content: >-
-      Test fixtures spec_ref conflicts: Test fixtures should avoid spec_ref assignments that
+    content: "Test fixtures spec_ref conflicts: Test fixtures should avoid spec_ref assignments that
       conflict with derive tests. When adding spec_ref to test tasks, check if they're used in
-      derive --dry-run tests which expect tasks not to exist yet.
-    created_at: '2026-01-18T17:51:16.360Z'
-    author: '@claude'
+      derive --dry-run tests which expect tasks not to exist yet."
+    created_at: 2026-01-18T17:51:16.360Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93Q4JZ571ZGRTHZ3QXCYJQ
     type: friction
-    content: >-
-      Parser vs CLI layer disconnect: Meta includes were fully implemented in parser but CLI used
-      wrong accessor (metaCtx.manifest.* vs metaCtx.*). This kind of bug suggests value in
+    content: "Parser vs CLI layer disconnect: Meta includes were fully implemented in parser but CLI
+      used wrong accessor (metaCtx.manifest.* vs metaCtx.*). This kind of bug suggests value in
       integration tests that exercise full stack, not just parser logic. Consider smoke tests for
-      all CLI commands with complex scenarios.
-    created_at: '2026-01-18T17:51:18.112Z'
-    author: '@claude'
+      all CLI commands with complex scenarios."
+    created_at: 2026-01-18T17:51:18.112Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93Q6BCQXGTJ7X4FAK13KVT
     type: friction
-    content: >-
-      Spec gap discovery during implementation: AC mentioned 'origin: observation_promotion' but
+    content: "Spec gap discovery during implementation: AC mentioned 'origin: observation_promotion' but
       origin field didn't exist in schema. Good example of spec-code drift. Consider:
       pre-implementation spec validation against schema, or schema-first approach where AC
-      references must match existing schema fields.
-    created_at: '2026-01-18T17:51:19.917Z'
-    author: '@claude'
+      references must match existing schema fields."
+    created_at: 2026-01-18T17:51:19.917Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93Q83M6RJ0YXH1H2H4F3TK
     type: friction
-    content: >-
-      kspec-meta shadow branch divergence: Shadow branch has diverged significantly from remote (99
-      local vs 2 remote commits). Merge conflicts in sessions/ and modules/. May need manual
-      reconciliation or a fresh sync strategy. Task changes are committed locally and functional.
-    created_at: '2026-01-18T17:51:21.717Z'
-    author: '@claude'
+    content: "kspec-meta shadow branch divergence: Shadow branch has diverged significantly from remote
+      (99 local vs 2 remote commits). Merge conflicts in sessions/ and modules/. May need manual
+      reconciliation or a fresh sync strategy. Task changes are committed locally and functional."
+    created_at: 2026-01-18T17:51:21.717Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF93Q9S85XSBT1JVV1S1F9F3
     type: friction
-    content: >-
-      Type guards for union types: When narrowing AnyLoadedItem | LoadedMetaItem to LoadedTask,
+    content: "Type guards for union types: When narrowing AnyLoadedItem | LoadedMetaItem to LoadedTask,
       check for required properties that exist on Task but not on meta items. Use 'status' in item
       && 'depends_on' in item - NOT optional properties like closed_reason which won't exist on
-      incomplete tasks.
-    created_at: '2026-01-18T17:51:23.432Z'
-    author: '@claude'
+      incomplete tasks."
+    created_at: 2026-01-18T17:51:23.432Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94EZQT8WP107P6QV9ZC4JD
     type: success
-    content: >-
-      PR review workflow pattern: Review subagents proved critical for catching issues before merge.
-      Established pattern: (1) check for open PRs, (2) launch review subagent, (3) fix trivial
-      issues directly, (4) re-review confirms fixes, (5) merge when checks pass. Works smoothly when
-      changes are minor - automated review + fix + merge flow is efficient. Multi-step workflow
-      (review→fix→merge→continue) provides good session continuity. Review caught real issues:
-      reference matching bugs, TypeScript errors, duplicate PRs, missing tests. Self-review via
-      subagent is valid for automation loops despite GitHub not allowing self-approval.
-    created_at: '2026-01-18T18:04:19.579Z'
-    author: '@claude'
+    content: "PR review workflow pattern: Review subagents proved critical for catching issues before
+      merge. Established pattern: (1) check for open PRs, (2) launch review subagent, (3) fix
+      trivial issues directly, (4) re-review confirms fixes, (5) merge when checks pass. Works
+      smoothly when changes are minor - automated review + fix + merge flow is efficient. Multi-step
+      workflow (review→fix→merge→continue) provides good session continuity. Review caught real
+      issues: reference matching bugs, TypeScript errors, duplicate PRs, missing tests. Self-review
+      via subagent is valid for automation loops despite GitHub not allowing self-approval."
+    created_at: 2026-01-18T18:04:19.579Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94F0W0BPTB5RP6FDWH63SM
     type: success
-    content: >-
-      Incremental refactoring pattern: Large multi-iteration refactors work well when pattern is
+    content: "Incremental refactoring pattern: Large multi-iteration refactors work well when pattern is
       established early. Key lessons: (1) Create module first with comprehensive coverage, (2) Start
       with smallest files to establish pattern, (3) Commit incremental progress with clear 'what
       done/remains' tracking, (4) Use TodoWrite for sub-phases. String/error centralization phases
       showed this: early PRs for small wins, direct commits for established patterns. Tests catch
       issues early, smaller files build confidence. Having checkpoints and running totals (e.g.,
       '179 of 201 = 89%') made continuation easy. This phased approach balances review overhead with
-      execution speed.
-    created_at: '2026-01-18T18:04:20.737Z'
-    author: '@claude'
+      execution speed."
+    created_at: 2026-01-18T18:04:20.737Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94F20W3MKFPBA1XN0ABQ7P
     type: success
-    content: >-
-      Implementation pattern (schema→parser→CLI→tests): New features follow clean path. Reuse agent
-      command structure (formatTable, formatVerbose, JSON output via output()). Reference validation
-      integration is clean - add to REF_FIELDS. Meta reference implementation was straightforward
-      thanks to existing ReferenceIndex infrastructure. Pattern of implementing formatters first,
-      then command registration works well. Testing is fast and reliable. Module add followed same
-      pattern: validate inputs, create data, write file, update manifest, shadow commit. Could
-      extract into reusable helper.
-    created_at: '2026-01-18T18:04:21.916Z'
-    author: '@claude'
+    content: "Implementation pattern (schema→parser→CLI→tests): New features follow clean path. Reuse
+      agent command structure (formatTable, formatVerbose, JSON output via output()). Reference
+      validation integration is clean - add to REF_FIELDS. Meta reference implementation was
+      straightforward thanks to existing ReferenceIndex infrastructure. Pattern of implementing
+      formatters first, then command registration works well. Testing is fast and reliable. Module
+      add followed same pattern: validate inputs, create data, write file, update manifest, shadow
+      commit. Could extract into reusable helper."
+    created_at: 2026-01-18T18:04:21.916Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94FHX7C98EFRCSGAXAKBBR
     type: success
-    content: >-
-      Reference implementation value: Checking prior work (../kspec-acp-test, ../kspec-ralph-test)
-      before implementing saves significant design time. Found identical spec and working
-      implementation providing clear blueprint. Prior work avoids edge cases and provides
-      consistency. Explore subagents are valuable for understanding prior implementations - provided
-      comprehensive details: file paths, schema patterns, CLI structure, test isolation challenges.
-      Having parallel agent repos with prior work is highly valuable. Pattern: exploration as
-      standard first step for implementation tasks.
-    created_at: '2026-01-18T18:04:38.184Z'
-    author: '@claude'
+    content: "Reference implementation value: Checking prior work (../kspec-acp-test,
+      ../kspec-ralph-test) before implementing saves significant design time. Found identical spec
+      and working implementation providing clear blueprint. Prior work avoids edge cases and
+      provides consistency. Explore subagents are valuable for understanding prior implementations -
+      provided comprehensive details: file paths, schema patterns, CLI structure, test isolation
+      challenges. Having parallel agent repos with prior work is highly valuable. Pattern:
+      exploration as standard first step for implementation tasks."
+    created_at: 2026-01-18T18:04:38.184Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94FK4G7W86NXDVTAZ77SK8
     type: success
-    content: >-
-      Task verification workflow: Some ready tasks are already implemented from prior sessions.
+    content: "Task verification workflow: Some ready tasks are already implemented from prior sessions.
       Pattern: when starting task, verify current state by reading code, running tests, checking
       existing functionality before implementing. Saves time and avoids duplicate work. Meta
       commands (resolve, observe, promote, conventions) were already implemented but tasks remained
       pending. Need better sync between implementation status and task status - perhaps command to
       scan for already-implemented specs and auto-complete tasks. Consider 'verify implementation
-      status' step especially for CLI commands.
-    created_at: '2026-01-18T18:04:39.441Z'
-    author: '@claude'
+      status' step especially for CLI commands."
+    created_at: 2026-01-18T18:04:39.441Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94FMF9Y5VCS7EQXP4G2FRJ
     type: success
-    content: >-
-      Session/workflow patterns: Spike tasks with no code output don't need commits - value is in
-      task notes documenting research. Shadow-only changes (task state updates) don't need
+    content: "Session/workflow patterns: Spike tasks with no code output don't need commits - value is
+      in task notes documenting research. Shadow-only changes (task state updates) don't need
       main-branch PRs since shadow branch is source of truth. PR skill correctly detects no changes
       and exits cleanly for metadata-only tasks. PR workflow smooth with auto-generated branch names
       and /pr skill. Shadow CLI verification iteration showed pattern: pick task, verify
-      implementation exists, complete task, no code changes needed.
-    created_at: '2026-01-18T18:04:40.810Z'
-    author: '@claude'
+      implementation exists, complete task, no code changes needed."
+    created_at: 2026-01-18T18:04:40.810Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94G1HYX2DCY796SKB9XB7P
     type: success
-    content: >-
-      Task guardrails and completion checks: Feature dogfooded successfully - tested on itself
+    content: "Task guardrails and completion checks: Feature dogfooded successfully - tested on itself
       during completion. Interactive prompt provides immediate feedback about AC coverage ensuring
       implementations match specs. Implementation preserves spec status.maturity when updating
       implementation status (important pattern to avoid losing maturity context). Default to 'draft'
-      if status doesn't exist yet.
-    created_at: '2026-01-18T18:04:54.208Z'
-    author: '@claude'
+      if status doesn't exist yet."
+    created_at: 2026-01-18T18:04:54.208Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94G2RY8JAX71K9BC8HJSF7
     type: success
-    content: >-
-      Context and session integration: Meta focus command implementation straightforward thanks to
-      well-structured SessionContext schema and existing loadSessionContext/saveSessionContext
+    content: "Context and session integration: Meta focus command implementation straightforward thanks
+      to well-structured SessionContext schema and existing loadSessionContext/saveSessionContext
       functions. Pattern of supporting show/set/clear modes in single command is clean and
       user-friendly. Auto-prepending @ to references maintains UX consistency. Context integration
       showed context BEFORE active work for immediate agent orientation - context is 'what thinking
-      about' while active tasks are 'what doing'.
-    created_at: '2026-01-18T18:04:55.454Z'
-    author: '@claude'
+      about' while active tasks are 'what doing'."
+    created_at: 2026-01-18T18:04:55.454Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94G3YV75DYWZENYG19N9NX
     type: success
-    content: >-
-      Review subagent catches real issues: Found validation strictness issue with RefSchema (too
+    content: "Review subagent catches real issues: Found validation strictness issue with RefSchema (too
       strict for manual files), TypeScript compilation errors, import path issues. Demonstrates
       value of code review even for simple changes. Pattern: when review finds flag conflicts or
       behavioral issues, fix includes both code AND spec updates. Renamed --verbose to
-      --debug-shadow based on review finding conflict.
-    created_at: '2026-01-18T18:04:56.668Z'
-    author: '@claude'
+      --debug-shadow based on review finding conflict."
+    created_at: 2026-01-18T18:04:56.668Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94GR1RQ0JXWNHD6RQGZ4SE
     type: success
-    content: >-
-      Schema strictness value: ULID validation strictness caught real bugs - test fixtures had
+    content: "Schema strictness value: ULID validation strictness caught real bugs - test fixtures had
       24-char ULIDs passing because MetaUlidSchema was too lenient. Fixing schema to use UlidSchema
       forced proper fixture ULIDs. Important pattern: schema strictness prevents silent data
-      corruption.
-    created_at: '2026-01-18T18:05:17.241Z'
-    author: '@claude'
+      corruption."
+    created_at: 2026-01-18T18:05:17.241Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94GSM8KQP9QSQK47KT3J7X
     type: success
-    content: >-
-      JSON output helper pattern: output() provides clean separation between JSON and human-readable
-      modes. Used successfully: return observation object in JSON mode, success message for human
-      mode. Pattern: output(dataObject, () => humanFormatter()). Avoids duplicate/mixed output that
-      happens with separate success() + output() calls.
-    created_at: '2026-01-18T18:05:18.857Z'
-    author: '@claude'
+    content: "JSON output helper pattern: output() provides clean separation between JSON and
+      human-readable modes. Used successfully: return observation object in JSON mode, success
+      message for human mode. Pattern: output(dataObject, () => humanFormatter()). Avoids
+      duplicate/mixed output that happens with separate success() + output() calls."
+    created_at: 2026-01-18T18:05:18.857Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94GV0DY58HXPVZJRQWBBAP
     type: success
-    content: >-
-      findChildItems path-based hierarchy: Implementation based on _path nesting worked well - path
-      structure makes parent-child relationships explicit and easy to query. Similar pattern could
-      be useful for other hierarchical queries: siblings, ancestors, tree depth.
-    created_at: '2026-01-18T18:05:20.270Z'
-    author: '@claude'
+    content: "findChildItems path-based hierarchy: Implementation based on _path nesting worked well -
+      path structure makes parent-child relationships explicit and easy to query. Similar pattern
+      could be useful for other hierarchical queries: siblings, ancestors, tree depth."
+    created_at: 2026-01-18T18:05:20.270Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94GWFGAHGPNM9HNCCESTSC
     type: success
-    content: >-
-      Commander introspection for help: Commander's structure is stable and well-defined, making it
-      reliable source of truth for help output. Consider applying to other CLI frameworks (Oclif,
-      yargs). Separation of auto-generated syntax vs curated concepts is clean and maintainable.
-    created_at: '2026-01-18T18:05:21.777Z'
-    author: '@claude'
+    content: "Commander introspection for help: Commander's structure is stable and well-defined, making
+      it reliable source of truth for help output. Consider applying to other CLI frameworks (Oclif,
+      yargs). Separation of auto-generated syntax vs curated concepts is clean and maintainable."
+    created_at: 2026-01-18T18:05:21.777Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94GXWR0CDRDG5GJ898XR24
     type: success
-    content: >-
-      Command suggestion with Levenshtein: Feature implemented cleanly using Levenshtein distance.
-      Threshold of 3 works well for catching typos without false positives. Commander.js already
-      handles subcommand suggestions, so only needed top-level command handling.
-    created_at: '2026-01-18T18:05:23.225Z'
-    author: '@claude'
+    content: "Command suggestion with Levenshtein: Feature implemented cleanly using Levenshtein
+      distance. Threshold of 3 works well for catching typos without false positives. Commander.js
+      already handles subcommand suggestions, so only needed top-level command handling."
+    created_at: 2026-01-18T18:05:23.225Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94HCFSAD6WJ4PJG1T0SSY1
     type: success
-    content: >-
-      Validation architecture scales: Adding warnings alongside errors required minimal changes -
-      new type, updated return structure, simple CLI formatting. Separation of concerns (refs.ts for
-      logic, validate.ts for orchestration, validate CLI for display) made enhancement
-      straightforward. Pattern worth replicating: warnings as first-class citizens alongside errors.
-    created_at: '2026-01-18T18:05:38.169Z'
-    author: '@claude'
+    content: "Validation architecture scales: Adding warnings alongside errors required minimal changes
+      - new type, updated return structure, simple CLI formatting. Separation of concerns (refs.ts
+      for logic, validate.ts for orchestration, validate CLI for display) made enhancement
+      straightforward. Pattern worth replicating: warnings as first-class citizens alongside
+      errors."
+    created_at: 2026-01-18T18:05:38.169Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94HDYHTGCMZCC6MMFYJGNJ
     type: success
-    content: >-
-      Spike workflow refinement: When completing spike, capture recommendation in closed_reason
+    content: "Spike workflow refinement: When completing spike, capture recommendation in closed_reason
       (brief) + final note (detailed). Spike task notes form mini research doc. Pattern: findings →
       analysis → recommendation. Example: task-archive spike documented current system, reviewed
-      references, recommended MVP approach all in notes.
-    created_at: '2026-01-18T18:05:39.666Z'
-    author: '@claude'
+      references, recommended MVP approach all in notes."
+    created_at: 2026-01-18T18:05:39.666Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94HFCXHSBAYMYXVTKRV3T8
     type: success
-    content: >-
-      Convention validation foundation: Implementation validates convention schema. To be fully
+    content: "Convention validation foundation: Implementation validates convention schema. To be fully
       functional needs integration with actual content sources (git log for commits, task notes for
-      note validation, etc.). Foundation is complete, content gathering is future enhancement.
-    created_at: '2026-01-18T18:05:41.150Z'
-    author: '@claude'
+      note validation, etc.). Foundation is complete, content gathering is future enhancement."
+    created_at: 2026-01-18T18:05:41.150Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF94HGRMD0BF4524V3KQ8V2Q
     type: success
-    content: >-
-      Task origin field tracking: Added origin enum to track task creation source (manual, derived,
-      observation_promotion). Could be extended for other sources like 'agent_suggestion',
-      'test_failure', 'lint_error'. Useful for metrics and understanding task flow.
-    created_at: '2026-01-18T18:05:42.548Z'
-    author: '@claude'
+    content: "Task origin field tracking: Added origin enum to track task creation source (manual,
+      derived, observation_promotion). Could be extended for other sources like 'agent_suggestion',
+      'test_failure', 'lint_error'. Useful for metrics and understanding task flow."
+    created_at: 2026-01-18T18:05:42.548Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96T3VVQ8CTXQYQ4XNMTQ1W
     type: question
-    content: >-
-      Shadow branch PR workflow clarification: When work only updates shadow branch (.kspec/)
+    content: "Shadow branch PR workflow clarification: When work only updates shadow branch (.kspec/)
       metadata - task state, inbox items, notes - should PRs still be created? Ralph instructions
       say 'create PR after commit' but this seems intended for code changes on feature branches.
       Shadow changes track the work; code changes are the work output. Current behavior: skip PR
       when working tree is clean. Need clarification on whether meta manifest changes should follow
-      different review process than code changes.
-    created_at: '2026-01-18T18:45:21.404Z'
-    author: '@claude'
+      different review process than code changes."
+    created_at: 2026-01-18T18:45:21.404Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96T6E67ZB7FVJ8JEDBKTYS
     type: success
-    content: >-
-      Iteration workflow patterns: (1) Verification-only iterations produce no commits - efficient,
-      avoids code churn, skipping PR is correct when working tree clean. (2) Implementation vs
-      verification task distinction - verification tasks are quick wins for automation loops,
-      implementation tasks need focused sessions. (3) Iteration findings show shadow branch is
-      source of truth for task state (git status on main shows clean after adding inbox items),
-      session context can be stale. Pattern: prioritize verification in loops, save implementation
-      for context-rich sessions.
-    created_at: '2026-01-18T18:45:24.039Z'
-    author: '@claude'
+    content: "Iteration workflow patterns: (1) Verification-only iterations produce no commits -
+      efficient, avoids code churn, skipping PR is correct when working tree clean. (2)
+      Implementation vs verification task distinction - verification tasks are quick wins for
+      automation loops, implementation tasks need focused sessions. (3) Iteration findings show
+      shadow branch is source of truth for task state (git status on main shows clean after adding
+      inbox items), session context can be stale. Pattern: prioritize verification in loops, save
+      implementation for context-rich sessions."
+    created_at: 2026-01-18T18:45:24.039Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96TKTHJ8DNBGCTR8ACQ7DN
     type: success
-    content: >-
-      PR review momentum: When reviewing own PRs from previous iterations, fix trivial issues
+    content: "PR review momentum: When reviewing own PRs from previous iterations, fix trivial issues
       directly (like invalid ULIDs) rather than leaving comments. Merge when checks pass unless
-      changes are substantial. This keeps momentum going in automation loops.
-    created_at: '2026-01-18T18:45:37.746Z'
-    author: '@claude'
+      changes are substantial. This keeps momentum going in automation loops."
+    created_at: 2026-01-18T18:45:37.746Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96TN2JQ4PPH7MW0G42MXBT
     type: success
-    content: >-
-      CLI label centralization: item.ts and inbox.ts had drifted from established
+    content: "CLI label centralization: item.ts and inbox.ts had drifted from established
       src/strings/labels.ts pattern. Quick grep audit found inconsistencies. Fix was
       straightforward: import centralized labels and replace hardcoded strings. Pattern prevents
-      drift: new commands should import from strings/ from the start.
-    created_at: '2026-01-18T18:45:39.027Z'
-    author: '@claude'
+      drift: new commands should import from strings/ from the start."
+    created_at: 2026-01-18T18:45:39.027Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96TPK7BTRZ1XZ9BK5YD6G8
     type: success
-    content: >-
-      Reference directory exploration: For spikes, launching dedicated Explore subagent for
+    content: "Reference directory exploration: For spikes, launching dedicated Explore subagent for
       reference dirs (kspec-acp-test, kspec-ralph-test) prevents context bloat while getting
       comprehensive findings. Subagent found identical spec content across both test dirs. Pattern
-      worked well - consider for other research tasks.
-    created_at: '2026-01-18T18:45:40.584Z'
-    author: '@claude'
+      worked well - consider for other research tasks."
+    created_at: 2026-01-18T18:45:40.584Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96TQV69YX5RQKAJQDQ1S25
     type: success
-    content: >-
-      Shadow CLI verification: Picked task from ready list, found all three commands (status, log,
-      repair) already implemented with 43 passing tests. Verified functionality, completed task,
-      updated spec alignment. No code changes needed. Key learning: spec items marked 'implemented'
-      were accurate.
-    created_at: '2026-01-18T18:45:41.863Z'
-    author: '@claude'
+    content: "Shadow CLI verification: Picked task from ready list, found all three commands (status,
+      log, repair) already implemented with 43 passing tests. Verified functionality, completed
+      task, updated spec alignment. No code changes needed. Key learning: spec items marked
+      'implemented' were accurate."
+    created_at: 2026-01-18T18:45:41.863Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96V5J1QJR44K8M7MMGFS0M
     type: success
-    content: >-
-      Meta schema verification batch: Completed 8 meta-related tasks in single iteration by
+    content: "Meta schema verification batch: Completed 8 meta-related tasks in single iteration by
       verifying existing schema implementations in src/schema/meta.ts. Pattern: start task, read
       schema file, verify fields match spec, document in notes, complete. Efficient for verification
-      tasks when implementation already exists.
-    created_at: '2026-01-18T18:45:55.906Z'
-    author: '@claude'
+      tasks when implementation already exists."
+    created_at: 2026-01-18T18:45:55.906Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96V6MZKAJC86KJD949CW8P
     type: success
-    content: >-
-      Display-first implementation strategy: Many derived tasks for meta-spec features were already
-      implemented. Schema layer and CLI display commands (meta show, meta agents, etc.) are
+    content: "Display-first implementation strategy: Many derived tasks for meta-spec features were
+      already implemented. Schema layer and CLI display commands (meta show, meta agents, etc.) are
       complete. Gap is in interactive/mutation commands and validation integration. Pattern:
       display-first is pragmatic - read operations complete, write operations deferred. Allows early
-      testing of schema design.
-    created_at: '2026-01-18T18:45:57.023Z'
-    author: '@claude'
+      testing of schema design."
+    created_at: 2026-01-18T18:45:57.023Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96V82FAJANHX3P5GWEH8HQ
     type: success
-    content: >-
-      Convention schema test gap: Schema was already implemented but lacked test coverage. When
+    content: "Convention schema test gap: Schema was already implemented but lacked test coverage. When
       picking up implementation tasks, check if code exists first - may just need tests or
-      documentation rather than new code. Tests added brought coverage up to spec.
-    created_at: '2026-01-18T18:45:58.480Z'
-    author: '@claude'
+      documentation rather than new code. Tests added brought coverage up to spec."
+    created_at: 2026-01-18T18:45:58.480Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF96V9DF3FX5XH224TM996TE
     type: success
-    content: >-
-      Session checkpoint hook value: Hook caught uncommitted .gitignore change. Important to follow
-      never-commit-to-main rule - all changes should go through PRs. Hook successfully prevented
-      incomplete session state.
-    created_at: '2026-01-18T18:45:59.857Z'
-    author: '@claude'
+    content: "Session checkpoint hook value: Hook caught uncommitted .gitignore change. Important to
+      follow never-commit-to-main rule - all changes should go through PRs. Hook successfully
+      prevented incomplete session state."
+    created_at: 2026-01-18T18:45:59.857Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF9WR7HTSHYCHSFKYFG31JSJ
     type: success
     content: Parallel exploration agents gave comprehensive context quickly for documentation audit
-    created_at: '2026-01-19T01:08:48.314Z'
-    author: '@claude'
+    created_at: 2026-01-19T01:08:48.314Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KF9ZFAGH35RQG6J9BA20TM6E
     type: success
-    content: >-
-      Ralph loop iteration 1 completed successfully: merged PR #58 (meta thread), implemented and
-      shipped meta question command as PR #63. Pattern replication from existing code (meta thread)
-      worked perfectly - implementation and tests completed in single iteration with all tests
-      passing.
-    created_at: '2026-01-19T01:56:22.161Z'
-    author: '@claude'
+    content: "Ralph loop iteration 1 completed successfully: merged PR #58 (meta thread), implemented
+      and shipped meta question command as PR #63. Pattern replication from existing code (meta
+      thread) worked perfectly - implementation and tests completed in single iteration with all
+      tests passing."
+    created_at: 2026-01-19T01:56:22.161Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA0DVCMDFM7QFDJQ2ZCY21G
     type: success
-    content: >-
-      Task descriptions with clear problem statements enable fast resolution - the ralph newline
+    content: "Task descriptions with clear problem statements enable fast resolution - the ralph newline
       issue had a detailed description that made the fix obvious: just move console.log() before
-      success() call. Spent <5 min from task start to fix complete.
-    created_at: '2026-01-19T02:13:02.485Z'
-    author: '@claude'
+      success() call. Spent <5 min from task start to fix complete."
+    created_at: 2026-01-19T02:13:02.485Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA0S3X005NWJY3D8931BGP5
     type: success
-    content: >-
-      Hook debugging methodology: For hook errors, test with synthetic inputs (valid JSON, invalid
-      JSON, edge cases) to isolate root cause before fixing. The '2>&1' pattern in test commands
-      reveals stderr leakage that wouldn't be visible in normal hook execution.
-    created_at: '2026-01-19T02:19:11.648Z'
-    author: '@claude'
+    content: "Hook debugging methodology: For hook errors, test with synthetic inputs (valid JSON,
+      invalid JSON, edge cases) to isolate root cause before fixing. The '2>&1' pattern in test
+      commands reveals stderr leakage that wouldn't be visible in normal hook execution."
+    created_at: 2026-01-19T02:19:11.648Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA0WGSE81VFMN080ARJEQHG
     type: success
-    content: >-
-      Task verification pattern successful: Check git history for related commits before
+    content: "Task verification pattern successful: Check git history for related commits before
       implementing. Task @01KF9B4W was already completed in ff935fd - verification took <2 minutes,
-      saved duplicate work.
-    created_at: '2026-01-19T02:21:03.150Z'
-    author: '@claude'
+      saved duplicate work."
+    created_at: 2026-01-19T02:21:03.150Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA17QWT1KQJGG4J8E6ZT6AZ
     type: success
-    content: >-
-      Clear task scope led to clean implementation - 'ralph loop session save' was well-defined with
-      obvious file naming (context-iter-N.json) and storage location (.kspec/sessions/{id}/). No
-      ambiguity about what to build or where to put it. Good example of actionable task with minimal
-      design decisions needed.
-    created_at: '2026-01-19T02:27:10.874Z'
-    author: '@claude'
+    content: Clear task scope led to clean implementation - 'ralph loop session save' was well-defined
+      with obvious file naming (context-iter-N.json) and storage location (.kspec/sessions/{id}/).
+      No ambiguity about what to build or where to put it. Good example of actionable task with
+      minimal design decisions needed.
+    created_at: 2026-01-19T02:27:10.874Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA1T2TD09TXAD8KHNAB0JFJ
     type: success
-    content: >-
-      Comprehensive design work captured entirely in task notes - created detailed analysis of
+    content: Comprehensive design work captured entirely in task notes - created detailed analysis of
       agent-first CLI improvements with 5 key areas, phased implementation plan, and 5 follow-up
       inbox items. This design-in-notes pattern works well for planning tasks that inform future
       spec creation.
-    created_at: '2026-01-19T02:37:11.885Z'
-    author: '@claude'
+    created_at: 2026-01-19T02:37:11.885Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA1T7F256DV5H7W73GG1V3C
     type: friction
-    content: >-
-      Shadow branch worktree was missing at iteration start - required manual 'git worktree add
+    content: Shadow branch worktree was missing at iteration start - required manual 'git worktree add
       .kspec kspec-meta' then 'kspec shadow repair' to restore. This may be an environment issue
       (worktree cleanup?) or session isolation problem. Worth investigating why .kspec worktree
       disappeared between iterations.
-    created_at: '2026-01-19T02:37:16.642Z'
-    author: '@claude'
+    created_at: 2026-01-19T02:37:16.642Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA2BWD2KC305W3SBDYQR2DH
     type: success
-    content: >-
-      Minimal viable implementation pattern works well: Started with complex task (subagent review
-      workflow), scoped down to core value (review context command), shipped working feature in
-      single iteration. Command provides immediate value for manual use while leaving door open for
-      automation later. Design-first approach (notes documenting decisions) helped keep scope
-      manageable.
-    created_at: '2026-01-19T02:46:55.139Z'
-    author: '@claude'
+    content: "Minimal viable implementation pattern works well: Started with complex task (subagent
+      review workflow), scoped down to core value (review context command), shipped working feature
+      in single iteration. Command provides immediate value for manual use while leaving door open
+      for automation later. Design-first approach (notes documenting decisions) helped keep scope
+      manageable."
+    created_at: 2026-01-19T02:46:55.139Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA32BJBH3D2HY6ACYNJBNWA
     type: success
-    content: >-
-      PR review subagent workflow worked effectively - launched dedicated review agent, identified
-      missing test coverage and type safety issues, implemented fixes, verified all tests pass
-      (555/556), merged with proper trailers. Review-fix-merge cycle completed in single iteration.
-    created_at: '2026-01-19T02:59:11.564Z'
-    author: '@claude'
+    content: PR review subagent workflow worked effectively - launched dedicated review agent,
+      identified missing test coverage and type safety issues, implemented fixes, verified all tests
+      pass (555/556), merged with proper trailers. Review-fix-merge cycle completed in single
+      iteration.
+    created_at: 2026-01-19T02:59:11.564Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA380DVCVJT84GA2XNBRWY0
     type: success
-    content: >-
-      Documentation-focused task worked well with todo tracking - broke down 5 documentation updates
-      into clear steps, executed systematically, verified commands against CLI, completed all
-      updates in single iteration with comprehensive commit message
-    created_at: '2026-01-19T03:02:16.764Z'
-    author: '@claude'
+    content: Documentation-focused task worked well with todo tracking - broke down 5 documentation
+      updates into clear steps, executed systematically, verified commands against CLI, completed
+      all updates in single iteration with comprehensive commit message
+    created_at: 2026-01-19T03:02:16.764Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA3SBMD2507GB1TYZTN8G8R
     type: success
-    content: >-
-      Smooth workflow on implementing kspec meta context - spec was clear, implementation
+    content: Smooth workflow on implementing kspec meta context - spec was clear, implementation
       straightforward, comprehensive test coverage added, all tests pass. The meta command family
       now has a unified context view that complements the individual management commands (focus,
       thread, question).
-    created_at: '2026-01-19T03:11:45.294Z'
-    author: '@claude'
+    created_at: 2026-01-19T03:11:45.294Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA4RFT8D2T2SW95A8ZK1JZE
     type: success
-    content: >-
-      Shadow branch auto-commit workflow is seamless - created 5 spec items with ACs, all
+    content: Shadow branch auto-commit workflow is seamless - created 5 spec items with ACs, all
       automatically committed without manual intervention. Task completion tracked properly across
       worktrees.
-    created_at: '2026-01-19T03:28:45.385Z'
-    author: '@claude'
+    created_at: 2026-01-19T03:28:45.385Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA4Y20RN7W6ZMG7ZNE1VE3E
     type: success
-    content: >-
-      ACs discovery pattern: Reading implementation code + corresponding tests provides complete
+    content: "ACs discovery pattern: Reading implementation code + corresponding tests provides complete
       picture of behaviors that need acceptance criteria. For @status-cascade, found 5 distinct
       behaviors (prompt shown, cascade accepted, cascade rejected, JSON mode, no children) by
-      examining handleStatusCascade function and integration tests.
-    created_at: '2026-01-19T03:31:47.864Z'
-    author: '@claude'
+      examining handleStatusCascade function and integration tests."
+    created_at: 2026-01-19T03:31:47.864Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA599DH7QAR73HRWZMMWR5Z
     type: success
-    content: >-
-      Efficient workflow iteration: picked task, analyzed code (Read tool), identified root cause
-      (syncSpecImplementationStatus saves but doesn't commit), implemented minimal fix (2 identical
-      changes in start/complete), verified with tests (561/561 pass), committed and created PR.
-      Single-focus iteration completed in ~10 minutes of work.
-    created_at: '2026-01-19T03:37:55.889Z'
-    author: '@claude'
+    content: "Efficient workflow iteration: picked task, analyzed code (Read tool), identified root
+      cause (syncSpecImplementationStatus saves but doesn't commit), implemented minimal fix (2
+      identical changes in start/complete), verified with tests (561/561 pass), committed and
+      created PR. Single-focus iteration completed in ~10 minutes of work."
+    created_at: 2026-01-19T03:37:55.889Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA63VXRCMDNFNEVSNNHQ71M
     type: success
-    content: >-
-      Tree view implementation was straightforward - used existing findChildItems pattern and _path
-      property to build hierarchy. The box-drawing character approach (├──, └──, │) provides clear
-      visual structure without complex dependencies. Integration with existing filters worked
+    content: Tree view implementation was straightforward - used existing findChildItems pattern and
+      _path property to build hierarchy. The box-drawing character approach (├──, └──, │) provides
+      clear visual structure without complex dependencies. Integration with existing filters worked
       seamlessly because tree formatting happens at display layer, not query layer.
-    created_at: '2026-01-19T03:52:26.808Z'
-    author: '@claude'
+    created_at: 2026-01-19T03:52:26.808Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA6WBT1A8WRNQ4F7NM2KAFX
     type: success
-    content: >-
-      PR workflow smooth - auto-generated branch name from task slug
+    content: "PR workflow smooth - auto-generated branch name from task slug
       (feat/add-priority-flag-to-derive), created branch from main with unpushed commit, reset main,
       pushed branch, created PR. The pattern of: checkout -b new-branch && git checkout main && git
       reset --hard origin/main && git checkout new-branch works cleanly for moving commits from main
-      to a new branch.
-    created_at: '2026-01-19T04:05:49.505Z'
-    author: '@claude'
+      to a new branch."
+    created_at: 2026-01-19T04:05:49.505Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA8C874AX1X3SDB2BZWC6AE
     type: success
-    content: >-
-      Task start spec context feature - clean DX improvement that follows existing patterns.
+    content: "Task start spec context feature - clean DX improvement that follows existing patterns.
       Pattern: show context at point of action (when starting work), suppress in JSON mode, add test
       coverage with real fixtures. The alignment guidance string pattern in src/strings/guidance.ts
-      is effective for maintaining consistent agent messaging.
-    created_at: '2026-01-19T04:31:58.693Z'
-    author: '@claude'
+      is effective for maintaining consistent agent messaging."
+    created_at: 2026-01-19T04:31:58.693Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA9KJ13NES8R3R26QESDS02
     type: success
-    content: >-
-      Test coverage tracking implementation demonstrates good separation of concerns - validation
-      logic in parser/validate.ts, display logic in CLI commands. The AC annotation pattern (// AC:
-      @spec-ref ac-N) provides simple traceability without complex tooling. Duplicating
-      scanTestCoverage in task.ts is acceptable given the focused use case, though could be
-      extracted to utils if pattern grows.
-    created_at: '2026-01-19T04:53:26.691Z'
-    author: '@claude'
+    content: "Test coverage tracking implementation demonstrates good separation of concerns -
+      validation logic in parser/validate.ts, display logic in CLI commands. The AC annotation
+      pattern (// AC: @spec-ref ac-N) provides simple traceability without complex tooling.
+      Duplicating scanTestCoverage in task.ts is acceptable given the focused use case, though could
+      be extracted to utils if pattern grows."
+    created_at: 2026-01-19T04:53:26.691Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFA9N9FMZCAJAQNE97K479RF
     type: friction
-    content: >-
-      Task state management across sessions: found task @01KF9G2X left in_progress from previous
+    content: "Task state management across sessions: found task @01KF9G2X left in_progress from previous
       iteration. No built-in command to reset task to pending - only cancel (which marks it
       cancelled) or complete. Added note documenting state, but task remains in_progress. Consider
       adding 'kspec task reset' or 'kspec task stop' command to move tasks back to pending when
-      abandoned mid-work.
-    created_at: '2026-01-19T04:54:23.476Z'
-    author: '@claude'
+      abandoned mid-work."
+    created_at: 2026-01-19T04:54:23.476Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAA0XW7PHR9EWXEP3HR1HR7
     type: success
-    content: >-
-      Iteration 16 handled two tasks effectively: completed test coverage tracking (my primary work)
-      and discovered/completed abandoned WIP for spec item notes (3 WIP commits from previous
+    content: "Iteration 16 handled two tasks effectively: completed test coverage tracking (my primary
+      work) and discovered/completed abandoned WIP for spec item notes (3 WIP commits from previous
       session). The spec item notes feature was nearly complete - just needed commits. This
-      demonstrates good cross-session continuity when WIP is properly committed with clear messages.
-    created_at: '2026-01-19T05:00:44.808Z'
-    author: '@claude'
+      demonstrates good cross-session continuity when WIP is properly committed with clear
+      messages."
+    created_at: 2026-01-19T05:00:44.808Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAAC1AYM45CE8B8MDWGJ4GW
     type: success
-    content: >-
-      Reusing NoteSchema across both tasks and spec items worked perfectly - no code duplication,
+    content: Reusing NoteSchema across both tasks and spec items worked perfectly - no code duplication,
       consistent behavior, and symmetric CLI commands. The pattern of import { NoteSchema } from
       './task.js' into spec.ts demonstrates good schema reuse.
-    created_at: '2026-01-19T05:06:48.798Z'
-    author: '@claude'
+    created_at: 2026-01-19T05:06:48.798Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFABRSMHWD0Q33800AX7TYSS
     type: success
-    content: >-
-      PR review workflow worked well: subagent found TypeScript compilation errors (missing
+    content: "PR review workflow worked well: subagent found TypeScript compilation errors (missing
       imports), implemented fix directly on feature branch, verified with tests, then merged. Clean
-      separation between review agent and implementation agent.
-    created_at: '2026-01-19T05:31:15.473Z'
-    author: '@claude'
+      separation between review agent and implementation agent."
+    created_at: 2026-01-19T05:31:15.473Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFABRY971XP4KD8D3198R2KT
     type: success
-    content: >-
-      Spec-first workflow for schema changes: Updated @maturity-states spec with new 'deferred'
+    content: "Spec-first workflow for schema changes: Updated @maturity-states spec with new 'deferred'
       status and added ACs before implementing in schema. This ensures spec remains source of truth
-      and provides clear acceptance criteria for implementation.
-    created_at: '2026-01-19T05:31:20.231Z'
-    author: '@claude'
+      and provides clear acceptance criteria for implementation."
+    created_at: 2026-01-19T05:31:20.231Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFADNW4SYG78Y13M8KHXAR92
     type: success
-    content: >-
-      Auto-generating implementation notes from specs during derive significantly streamlines the
+    content: Auto-generating implementation notes from specs during derive significantly streamlines the
       spec-first workflow. Rather than requiring manual 'kspec task note' after derive, the context
       is automatically captured. This reduces cognitive load and ensures implementation context
       isn't lost. The pattern of using spec description + AC summary provides exactly the right
       level of detail for implementation reference.
-    created_at: '2026-01-19T06:04:36.889Z'
-    author: '@claude'
+    created_at: 2026-01-19T06:04:36.889Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFADRNQN3SG8FMZF3EMWHF6N
     type: success
-    content: >-
-      INSTALL.md creation went smoothly - clear task description made it easy to know what to write.
-      Agent-focused documentation should always have: concise commands, copy-pasteable snippets,
-      clear success criteria after each section, troubleshooting for common gotchas.
-    created_at: '2026-01-19T06:06:08.629Z'
-    author: '@claude'
+    content: "INSTALL.md creation went smoothly - clear task description made it easy to know what to
+      write. Agent-focused documentation should always have: concise commands, copy-pasteable
+      snippets, clear success criteria after each section, troubleshooting for common gotchas."
+    created_at: 2026-01-19T06:06:08.629Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAEFD4XYVVXH61FNA9HWHGT
     type: success
-    content: >-
-      PR review workflow with subagent worked smoothly. The review subagent provided detailed
+    content: "PR review workflow with subagent worked smoothly. The review subagent provided detailed
       analysis covering code quality, test coverage, task/spec alignment, and commit conventions.
       Decision tree in RALPH_LOOP_INSTRUCTIONS.md made merge decision clear. Merged PR #75, then
-      picked next task and completed docs work. Clean iteration from review → merge → new work → PR.
-    created_at: '2026-01-19T06:18:33.501Z'
-    author: '@claude'
+      picked next task and completed docs work. Clean iteration from review → merge → new work →
+      PR."
+    created_at: 2026-01-19T06:18:33.501Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAF48W58CCFZBC0DBGCCK21
     type: success
-    content: >-
-      Git worktrees use hooks from main .git/hooks (via commondir), not from
+    content: Git worktrees use hooks from main .git/hooks (via commondir), not from
       .git/worktrees/-kspec/hooks. This is a key architectural detail that wasn't obvious from git
       documentation. Testing revealed the issue when hooks weren't being called. The commondir file
       points to '../..' which makes git look for hooks in the main repo.
-    created_at: '2026-01-19T06:29:57.253Z'
-    author: '@claude'
+    created_at: 2026-01-19T06:29:57.253Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAFEAADJPTN5ZRHK0PDYGJY
     type: success
-    content: >-
-      Small DX improvements (like setup:dev script) have high impact for low effort. Pattern: when
-      you find yourself documenting a multi-step setup process, consider if it can be a single
-      script instead.
-    created_at: '2026-01-19T06:35:26.413Z'
-    author: '@claude'
+    content: "Small DX improvements (like setup:dev script) have high impact for low effort. Pattern:
+      when you find yourself documenting a multi-step setup process, consider if it can be a single
+      script instead."
+    created_at: 2026-01-19T06:35:26.413Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAGYE5VYH1YSNS7ZD4R20BX
     type: friction
-    content: >-
-      Shadow branch worktree repair workflow issues: (1) Nested .kspec/.kspec directories created by
-      repeated git worktree add commands, (2) Commands that navigate into .kspec (cd .kspec && ...)
-      fail when already in subdirectory, causing directory confusion, (3) Git worktree metadata
-      (/.git/worktrees) can become desynchronized from actual directory state, (4) kspec shadow
-      repair command failed with 'spawn /bin/sh ENOENT' error. Resolution required: manual git
-      worktree prune, removal of nested directories, and manual git operations in worktree with
-      KSPEC_SHADOW_COMMIT=1 to bypass hook. Consider: (a) More robust worktree repair that handles
-      nested directories, (b) Better error messages showing current directory context, (c)
-      Idempotent repair commands that check current state before operations.
-    created_at: '2026-01-19T07:01:43.227Z'
-    author: '@claude'
+    content: "Shadow branch worktree repair workflow issues: (1) Nested .kspec/.kspec directories
+      created by repeated git worktree add commands, (2) Commands that navigate into .kspec (cd
+      .kspec && ...) fail when already in subdirectory, causing directory confusion, (3) Git
+      worktree metadata (/.git/worktrees) can become desynchronized from actual directory state, (4)
+      kspec shadow repair command failed with 'spawn /bin/sh ENOENT' error. Resolution required:
+      manual git worktree prune, removal of nested directories, and manual git operations in
+      worktree with KSPEC_SHADOW_COMMIT=1 to bypass hook. Consider: (a) More robust worktree repair
+      that handles nested directories, (b) Better error messages showing current directory context,
+      (c) Idempotent repair commands that check current state before operations."
+    created_at: 2026-01-19T07:01:43.227Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAH2B2H0P3ZZRXMKY7F35BV
     type: success
-    content: >-
-      Completed full task cycle in iteration 25: merged open PR, resolved shadow branch sync issues,
-      picked and completed task @01KFAB9B, committed work, created PR #80. The worktree friction
-      observation captured detailed troubleshooting context for future improvements. Task completion
-      workflow worked smoothly once shadow branch was synchronized.
-    created_at: '2026-01-19T07:03:51.122Z'
-    author: '@claude'
+    content: "Completed full task cycle in iteration 25: merged open PR, resolved shadow branch sync
+      issues, picked and completed task @01KFAB9B, committed work, created PR #80. The worktree
+      friction observation captured detailed troubleshooting context for future improvements. Task
+      completion workflow worked smoothly once shadow branch was synchronized."
+    created_at: 2026-01-19T07:03:51.122Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAHKB1REKZMA6EP9HM7J1FZ
     type: success
-    content: >-
-      Integration test strategy: Using command JSON output directly from promote command instead of
-      querying tasks list afterward provides more accurate, focused tests and avoids format parsing
-      issues. The promote command returns the created task in its JSON output, which is exactly what
-      we need to verify.
-    created_at: '2026-01-19T07:13:08.152Z'
-    author: '@claude'
+    content: "Integration test strategy: Using command JSON output directly from promote command instead
+      of querying tasks list afterward provides more accurate, focused tests and avoids format
+      parsing issues. The promote command returns the created task in its JSON output, which is
+      exactly what we need to verify."
+    created_at: 2026-01-19T07:13:08.152Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAJSS392ZV47Z373HK29HAM
     type: success
-    content: >-
-      Batch operation pattern scales well - created reusable executeBatchOperation() utility that
-      handles all common concerns (mutual exclusion, partial failures, output formatting). Applied
-      to 3 commands (complete, cancel, delete) with minimal duplication. Pattern: extract
+    content: "Batch operation pattern scales well - created reusable executeBatchOperation() utility
+      that handles all common concerns (mutual exclusion, partial failures, output formatting).
+      Applied to 3 commands (complete, cancel, delete) with minimal duplication. Pattern: extract
       single-item logic into executeOperation callback, utility handles iteration/error collection.
-      Makes adding batch support to new commands straightforward.
-    created_at: '2026-01-19T07:34:07.722Z'
-    author: '@claude'
+      Makes adding batch support to new commands straightforward."
+    created_at: 2026-01-19T07:34:07.722Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAM6VF2MY7QKC526SZX8PY8
@@ -1064,152 +991,194 @@ observations:
       on error. The new resolveTaskRefForBatch() serves batch commands that should continue.
 
       This separation of concerns made the fix safe and testable.
-    created_at: '2026-01-19T07:58:44.706Z'
-    author: '@claude'
+    created_at: 2026-01-19T07:58:44.706Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFANADZJA4VAFBSH0F8FAWXP
     type: friction
     content: Test observation from Ralph Loop
-    created_at: '2026-01-19T08:18:10.546Z'
-    author: '@claude'
+    created_at: 2026-01-19T08:18:10.546Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAND9RY95MCTPE02QB9103E
     type: success
-    content: >-
-      Iteration 29 workflow was efficient and clean: picked highest priority task, implemented
+    content: "Iteration 29 workflow was efficient and clean: picked highest priority task, implemented
       feature with comprehensive tests (5 tests covering all AC), manual testing verified
       functionality, PR created. The --from-inbox flag for meta observe enables bucket correction
-      during triage - items captured in wrong bucket can be easily converted.
-    created_at: '2026-01-19T08:19:44.542Z'
-    author: '@claude'
+      during triage - items captured in wrong bucket can be easily converted."
+    created_at: 2026-01-19T08:19:44.542Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAPKVHCJGKTVM1690P8P8CF
     type: success
-    content: >-
-      Passthrough args implementation pattern - When adding passthrough args to CLI commands that
+    content: Passthrough args implementation pattern - When adding passthrough args to CLI commands that
       normally parse output, create separate raw output path. Trying to parse structured output with
       custom format flags breaks. Used searchCommitsRaw() for raw git output when
       passthroughArgs.length > 0, avoiding format conflicts.
-    created_at: '2026-01-19T08:40:47.917Z'
-    author: '@claude'
+    created_at: 2026-01-19T08:40:47.917Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAPWQVB7K0DV4ZK6TDRJMM2
     type: success
-    content: >-
-      PR review and merge workflow worked smoothly. Dedicated review subagent provided comprehensive
-      analysis covering code quality, test coverage, and spec alignment. Clear APPROVE
+    content: PR review and merge workflow worked smoothly. Dedicated review subagent provided
+      comprehensive analysis covering code quality, test coverage, and spec alignment. Clear APPROVE
       recommendation made merge decision straightforward. This validates the review-before-merge
       pattern in RALPH_LOOP_INSTRUCTIONS.
-    created_at: '2026-01-19T08:45:39.051Z'
-    author: '@claude'
+    created_at: 2026-01-19T08:45:39.051Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAQN66S95434T70FPXES77X
     type: success
-    content: >-
-      Implemented kspec setup worktree detection cleanly by leveraging existing shadow module
+    content: Implemented kspec setup worktree detection cleanly by leveraging existing shadow module
       utilities. The repairShadow() function already handled the complex worktree creation logic, so
       implementation was primarily about adding the detection and prompting layer. This demonstrates
       the value of the shadow module's well-factored utilities for worktree management.
-    created_at: '2026-01-19T08:59:00.185Z'
-    author: '@claude'
+    created_at: 2026-01-19T08:59:00.185Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFARJ6TDYJFKS5EP5XAJB89W
     type: success
-    content: >-
-      Bulk refactoring pattern: Created automated script to replace magic numbers with constants
+    content: "Bulk refactoring pattern: Created automated script to replace magic numbers with constants
       across 18+ files. This approach was much faster than manual edits and ensured consistency. The
       script handled the mechanical replacements, then manual fixes addressed edge cases (import
       paths). This pattern is reusable for similar bulk refactoring tasks (e.g., error message
-      standardization, import path updates).
-    created_at: '2026-01-19T09:14:51.085Z'
-    author: '@claude'
+      standardization, import path updates)."
+    created_at: 2026-01-19T09:14:51.085Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFATCXG9439H99JN0KK8SV71
     type: success
-    content: >-
-      Multi-round PR review with dedicated subagents worked extremely well. Pattern: (1) Launch
+    content: "Multi-round PR review with dedicated subagents worked extremely well. Pattern: (1) Launch
       review subagent after PR created (2) Review finds issues (3) Fix issues (4) Launch new review
       subagent (5) Repeat until clean (6) Merge. This approach caught all CONFLICT exit code
       inconsistencies through 3 fix iterations before merge. The independent review prevented
       merging incomplete work. Key: each review cycle provides fresh perspective and catches missed
-      cases.
-    created_at: '2026-01-19T09:46:54.857Z'
-    author: '@claude'
+      cases."
+    created_at: 2026-01-19T09:46:54.857Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFATQ46A835BQ657YX7AC853
     type: success
-    content: >-
-      Implementing features with clear acceptance criteria is much faster than without. The
+    content: "Implementing features with clear acceptance criteria is much faster than without. The
       @stale-status-detection spec had 5 well-defined ACs that mapped directly to implementation
       steps. AC format (Given/When/Then) made it easy to verify each scenario. Spent more time
       fixing type issues than implementing logic. Key learning: read schema thoroughly first to
-      understand data structures before writing validation logic.
-    created_at: '2026-01-19T09:52:29.386Z'
-    author: '@claude'
+      understand data structures before writing validation logic."
+    created_at: 2026-01-19T09:52:29.386Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFATS86AMESWQJA9E1T2JCVM
     type: success
-    content: >-
-      Staleness detection implementation completed successfully. The feature detects status
+    content: "Staleness detection implementation completed successfully. The feature detects status
       inconsistencies between specs and tasks, with 3 key checks: task dependencies completed but
       task pending, spec implemented without tasks, and task completed but spec not started. All
-      tests pass.
-    created_at: '2026-01-19T09:53:39.018Z'
-    author: '@claude'
+      tests pass."
+    created_at: 2026-01-19T09:53:39.018Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFATSF5A7KEEY4CHSKTCFG4G
     type: friction
-    content: >-
-      Found task in progress but work already committed. This may happen when: (1) previous
+    content: "Found task in progress but work already committed. This may happen when: (1) previous
       iteration completed but didn't mark task complete, (2) concurrent work from another process,
       or (3) git operations completed before kspec state sync. Consider adding 'kspec shadow sync'
-      at session start to ensure state is current.
-    created_at: '2026-01-19T09:53:46.155Z'
-    author: '@claude'
+      at session start to ensure state is current."
+    created_at: 2026-01-19T09:53:46.155Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFATSKF22KHRZYCQ0TJP1P1E
     type: success
-    content: >-
-      Complete iteration workflow: (1) Check open PRs and review/merge, (2) Pick highest priority
-      ready task, (3) Implement with clear ACs, (4) Manual test verification, (5) Commit with
-      task/spec trailers, (6) Create PR. This pattern ensures no work is left in limbo - PRs are
-      either merged or created by end of iteration. The /pr skill makes PR creation seamless.
-    created_at: '2026-01-19T09:53:50.562Z'
-    author: '@claude'
+    content: "Complete iteration workflow: (1) Check open PRs and review/merge, (2) Pick highest
+      priority ready task, (3) Implement with clear ACs, (4) Manual test verification, (5) Commit
+      with task/spec trailers, (6) Create PR. This pattern ensures no work is left in limbo - PRs
+      are either merged or created by end of iteration. The /pr skill makes PR creation seamless."
+    created_at: 2026-01-19T09:53:50.562Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFATTDS4G9VHDXXF4DDHS1C2
     type: success
-    content: >-
-      Iteration 34 outcome: Merged 1 PR (semantic exit codes with 4 commits), implemented and
+    content: "Iteration 34 outcome: Merged 1 PR (semantic exit codes with 4 commits), implemented and
       shipped stale status detection (3 commits, PR #88 created). Multi-round review pattern
       prevented incomplete merges. Every iteration should end with either merged PRs or new PRs
       created - no work left uncommitted or unpushed. This keeps the project moving forward
-      consistently.
-    created_at: '2026-01-19T09:54:17.508Z'
-    author: '@claude'
+      consistently."
+    created_at: 2026-01-19T09:54:17.508Z
+    author: "@claude"
     resolved: false
     resolution: null
   - _ulid: 01KFAVMTHF0KRC1YKH8QMF1W9W
     type: friction
-    content: >-
-      Global --json mode interactions complicate command-specific JSON output. Commands that want to
-      output simple JSON (like {path, branch}) end up wrapped in {success, ...} objects or interfere
-      with git stderr. Consider: (1) per-command JSON output control, (2) dedicated JSON output
-      stream, or (3) convention that commands bypass global mode for simple output.
-    created_at: '2026-01-19T10:08:42.543Z'
-    author: '@claude'
+    content: "Global --json mode interactions complicate command-specific JSON output. Commands that
+      want to output simple JSON (like {path, branch}) end up wrapped in {success, ...} objects or
+      interfere with git stderr. Consider: (1) per-command JSON output control, (2) dedicated JSON
+      output stream, or (3) convention that commands bypass global mode for simple output."
+    created_at: 2026-01-19T10:08:42.543Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFAVYRDBQYJEAK4Z8E5QMQXA
+    type: friction
+    content: Task was cancelled prematurely by automation (01KEZ9DSD3). The automation cancelled the
+      task after initial investigation notes, but actual implementation work was completed
+      successfully. The code changes were made and tested, but the task was marked as cancelled
+      before completion could be recorded. This suggests the automation may be too aggressive in
+      cancelling tasks that appear to be in research/investigation phase.
+    created_at: 2026-01-19T10:14:08.043Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFAVYYD7GKN0VXBP67B4CR8G
+    type: success
+    content: Successfully improved YAML formatting consistency by switching from js-yaml to modern
+      'yaml' library. The new implementation provides deterministic formatting that won't randomly
+      change between saves, addressing the core DX issue. While not preserving exact original
+      formatting/comments, this is a pragmatic solution that significantly improves the developer
+      experience without requiring complex CST manipulation.
+    created_at: 2026-01-19T10:14:14.183Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFAY1AB5CT6KEJ2J9NY37WQX
+    type: success
+    content: "Complete YAML library migration completed successfully. Initial implementation had
+      critical bug (timestamps round-tripping as Date objects), but review subagent caught it before
+      merge. Fixed by migrating both read and write operations to yaml library. PR reviewed, fixed,
+      and merged in same iteration. This demonstrates the value of: (1) Launching review subagents
+      for own PRs, (2) Acting on review feedback immediately, (3) Complete testing before declaring
+      done."
+    created_at: 2026-01-19T10:50:29.093Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFAY1FS7QHBMV350A899878F
+    type: friction
+    content: Task automation cancelled 01KEZ9DSD3 prematurely during investigation phase, but work was
+      actually completed. The automation should be more lenient with tasks in early
+      research/investigation phases, or have a way to detect when implementation is actually
+      progressing even if lots of notes are being added.
+    created_at: 2026-01-19T10:50:34.663Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFAY281BQT8BGFP3YRF6SYXF
+    type: success
+    content: "Full iteration workflow executed successfully: Task pickup → Implementation → PR creation
+      → Review subagent finds bug → Fix implementation → Re-review → Merge. The review-before-merge
+      workflow prevented a production bug. Total time: ~40 minutes for complete feature delivery
+      including bug fix."
+    created_at: 2026-01-19T10:50:59.500Z
+    author: "@claude"
     resolved: false
     resolution: null
 includes: []
