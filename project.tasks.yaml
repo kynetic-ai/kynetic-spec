@@ -1286,11 +1286,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1482,6 +1484,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1597,6 +1600,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12333,21 +12337,39 @@
   created_at: 2026-01-19T17:10:03.453Z
   notes: []
   todos: []
-- title: Add child item check before item deletion
+- _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
+  slugs:
+    - item-delete-child-check
+  title: Add child item check before item deletion
+  type: task
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+  vcs_refs: []
+  created_at: 2026-01-19T17:10:06.167Z
+  notes: []
+  todos: []
+- title: Implement permission prompting for ralph non-yolo mode
   type: task
   spec_ref: null
   meta_ref: null
   priority: 3
   slugs:
-    - item-delete-child-check
+    - ralph-permission-prompt
   tags:
-    - cli
-  _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
+    - ralph
+  _ulid: 01KFBKRGDJJW58T5YASXDMM394
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T17:10:06.167Z
+  created_at: 2026-01-19T17:10:09.073Z
   notes: []
   todos: []
