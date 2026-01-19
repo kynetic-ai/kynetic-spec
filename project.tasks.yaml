@@ -10101,4 +10101,43 @@
           - 1 if all failed
           - 2 if partial
       supersedes: null
+    - _ulid: 01KFACJ8XPD9G3PT0YX2PDN3CJ
+      created_at: '2026-01-19T05:45:10.327Z'
+      author: '@claude'
+      content: |-
+        Step 3: Implement for task commands
+
+        File: src/cli/commands/task.ts
+        Commands: complete, cancel, set, delete
+
+        Pattern for each command:
+
+        1. Add option to commander:
+           .option('--refs <refs...>', 'Apply to multiple refs')
+
+        2. Add mutual exclusion check at start of handler:
+           if (ref && options.refs) {
+             error('Cannot use both positional ref and --refs flag')
+             process.exit(3)
+           }
+           if (options.refs && options.refs.length === 0) {
+             error('--refs requires at least one reference')
+             process.exit(3)
+           }
+
+        3. Branch on batch vs single:
+           if (options.refs) {
+             // Batch path - use resolveMultiple, loop, collect results
+           } else {
+             // Single path - existing logic unchanged
+           }
+
+        4. For batch path:
+           - resolveMultiple(options.refs)
+           - Filter to tasks only, mark non-tasks as errors
+           - Execute operation for each valid ref
+           - Collect success/failure per ref
+           - Format and output BatchOperationResult
+           - Exit with batchExitCode()
+      supersedes: null
   todos: []
