@@ -9211,7 +9211,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9335,3 +9335,7 @@
         observations vs inbox.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T03:02:03.429Z'
+  closed_reason: >-
+    Comprehensive documentation update for meta-spec and observations system - added new sections,
+    updated examples, verified all commands against current CLI
