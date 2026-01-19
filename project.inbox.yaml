@@ -248,3 +248,11 @@ inbox:
       - docs
       - ralph
     added_by: "@claude"
+  - _ulid: 01KFBKA7PCR1VKHEPJBTY843Q9
+    text: Review KYNETIC_SPEC_DESIGN.md vs actual .kspec/ spec - identify any gaps/features in design
+      doc not yet in spec before clearing out. Bootstrap doc is now obsolete.
+    created_at: 2026-01-19T17:02:21.389Z
+    tags:
+      - docs
+      - spec
+    added_by: "@claude"
