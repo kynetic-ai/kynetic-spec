@@ -1292,11 +1292,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1500,6 +1502,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1615,6 +1618,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12413,21 +12417,27 @@
       content: TODO at src/cli/commands/ralph.ts:189 - currently auto-denies in non-yolo mode
       supersedes: null
   todos: []
-- title: Consolidate shortUlid helper in inbox.ts with ReferenceIndex
+- _ulid: 01KFBM8EMBQWHDTRN8CGCRFYK4
+  slugs:
+    - consolidate-short-ulid
+  title: Consolidate shortUlid helper in inbox.ts with ReferenceIndex
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs:
-    - consolidate-short-ulid
-  tags:
-    - tech-debt
-  _ulid: 01KFBM8EMBQWHDTRN8CGCRFYK4
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:18:51.531Z
-  notes: []
+  notes:
+    - _ulid: 01KFBM8MSP8EXGTW0KCGGHC6S7
+      created_at: 2026-01-19T17:18:57.846Z
+      author: "@claude"
+      content: Local shortUlid() at src/cli/commands/inbox.ts:51-53 duplicates ULID shortening logic.
+        Consider using ReferenceIndex methods instead.
+      supersedes: null
   todos: []
