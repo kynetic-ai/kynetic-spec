@@ -797,3 +797,6 @@ requirements:
         when: selecting the next task
         then: "ralph re-reads task list and filters by automation: eligible (reflecting any status changes
           from previous iterations)"
+    status:
+      maturity: draft
+      implementation: implemented
