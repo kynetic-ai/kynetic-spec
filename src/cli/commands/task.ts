@@ -77,6 +77,43 @@ function resolveTaskRef(
 }
 
 /**
+ * Batch-compatible resolver that returns null instead of calling process.exit().
+ * Used by executeBatchOperation to handle errors without terminating the process.
+ * AC: @multi-ref-batch ac-4, ac-8 - Partial failure handling and ref resolution
+ */
+function resolveTaskRefForBatch(
+  ref: string,
+  tasks: LoadedTask[],
+  index: ReferenceIndex
+): { task: LoadedTask | null; error?: string } {
+  const result = index.resolve(ref);
+
+  if (!result.ok) {
+    let errorMsg: string;
+    switch (result.error) {
+      case 'not_found':
+        errorMsg = `Reference "${ref}" not found`;
+        break;
+      case 'ambiguous':
+        errorMsg = `Reference "${ref}" is ambiguous (matches ${result.candidates.length} items)`;
+        break;
+      case 'duplicate_slug':
+        errorMsg = `Slug "${ref}" maps to multiple items`;
+        break;
+    }
+    return { task: null, error: errorMsg };
+  }
+
+  // Check if it's actually a task
+  const task = tasks.find(t => t._ulid === result.ulid);
+  if (!task) {
+    return { task: null, error: `Reference "${ref}" is not a task` };
+  }
+
+  return { task };
+}
+
+/**
  * Register the 'task' command group (singular - operations on individual tasks)
  */
 export function registerTaskCommands(program: Command): void {
@@ -536,11 +573,8 @@ export function registerTaskCommands(program: Command): void {
           items: tasks,
           index,
           resolveRef: (refStr, taskList, idx) => {
-            try {
-              return resolveTaskRef(refStr, taskList, idx);
-            } catch {
-              return null;
-            }
+            const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
+            return { item: resolved.task, error: resolved.error };
           },
           executeOperation: async (foundTask, { ctx, tasks, items, index, options }) => {
             try {
@@ -720,11 +754,8 @@ export function registerTaskCommands(program: Command): void {
           items: tasks,
           index,
           resolveRef: (refStr, taskList, idx) => {
-            try {
-              return resolveTaskRef(refStr, taskList, idx);
-            } catch {
-              return null;
-            }
+            const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
+            return { item: resolved.task, error: resolved.error };
           },
           executeOperation: async (foundTask, { ctx, index, options }) => {
             try {
@@ -794,11 +825,8 @@ export function registerTaskCommands(program: Command): void {
           items: tasks,
           index,
           resolveRef: (refStr, taskList, idx) => {
-            try {
-              return resolveTaskRef(refStr, taskList, idx);
-            } catch {
-              return null;
-            }
+            const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
+            return { item: resolved.task, error: resolved.error };
           },
           executeOperation: async (foundTask, { ctx, index, options }) => {
             try {

@@ -51,8 +51,8 @@ export interface BatchOperationOptions<TItem, TContext> {
   items: TItem[];
   /** Reference index for resolution */
   index: ReferenceIndex;
-  /** Function to resolve a ref to an item */
-  resolveRef: (ref: string, items: TItem[], index: ReferenceIndex) => TItem | null;
+  /** Function to resolve a ref to an item - returns { item, error? } */
+  resolveRef: (ref: string, items: TItem[], index: ReferenceIndex) => { item: TItem | null; error?: string };
   /** Function to execute the operation on a single item */
   executeOperation: (item: TItem, context: TContext) => Promise<{ success: boolean; message?: string; error?: string; data?: unknown }>;
   /** Function to extract ULID from an item */
@@ -91,26 +91,27 @@ export async function executeBatchOperation<TItem, TContext>(
   // Process each ref
   const results: BatchOperationResult[] = [];
 
+  // AC: @multi-ref-batch ac-4 - Continue processing after errors (partial failure handling)
   for (const ref of refs) {
     try {
       // AC: @multi-ref-batch ac-8 - Ref resolution uses existing logic
-      const item = resolveRef(ref, items, index);
+      const resolved = resolveRef(ref, items, index);
 
-      if (!item) {
-        // Resolution failed - resolveRef should have already printed error
+      if (!resolved.item) {
+        // Resolution failed - record error and continue to next ref
         results.push({
           ref,
           ulid: null,
           status: 'error',
-          error: `Reference not found: ${ref}`,
+          error: resolved.error || `Failed to resolve reference: ${ref}`,
         });
         continue;
       }
 
-      const ulid = getUlid(item);
+      const ulid = getUlid(resolved.item);
 
       // Execute the operation
-      const opResult = await executeOperation(item, context);
+      const opResult = await executeOperation(resolved.item, context);
 
       results.push({
         ref,
