@@ -2072,6 +2072,13 @@ features:
         then: >-
           Valid refs are processed successfully, invalid refs are skipped with error recorded, exit
           code is 2 (partial failure), output shows which succeeded and which failed with reasons
+      - id: human-output-format
+        given: Batch operation completes (success or partial)
+        when: Output is rendered without --json flag
+        then: >-
+          First line shows summary count (e.g., Completed 2 of 3 tasks:), each item listed with
+          status indicator (checkmark for success, X for failure), failed items include failure
+          reason
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
