@@ -774,3 +774,7 @@ requirements:
         given: kspec tasks ready is run
         when: the --unassessed flag is provided
         then: only tasks without an automation field are shown
+      - id: ac-21
+        given: kspec validate is run
+        when: "a task has automation: eligible but no spec_ref"
+        then: a warning is emitted suggesting eligible tasks should have linked specs for context
