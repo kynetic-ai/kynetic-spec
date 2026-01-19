@@ -1448,7 +1448,8 @@ features:
         tests: []
         created: '2026-01-15T15:34:40.999Z'
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
         acceptance_criteria:
           - id: detect-existing-repo
             given: Repository has kspec-meta branch but no .kspec worktree
