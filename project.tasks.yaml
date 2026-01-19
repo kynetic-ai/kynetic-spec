@@ -9568,9 +9568,9 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-18T21:40:18.300Z'
+  started_at: '2026-01-19T05:53:52.293Z'
   notes: []
   todos: []
-  started_at: '2026-01-19T05:53:52.293Z'
 - _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
   slugs: []
   title: Add subagent review workflow on task complete
@@ -10203,7 +10203,7 @@
   description: >-
     meta observe --from-inbox @ref - convert inbox item to observation, preserving content. Useful
     during triage when items were captured in wrong bucket.
-  spec_ref: null
+  spec_ref: '@meta-observe-cmd'
   status: pending
   blocked_by: []
   depends_on: []
