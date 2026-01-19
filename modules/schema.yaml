@@ -219,6 +219,12 @@ features:
               implemented --json'
             when: JSON mode is active
             then: No cascade prompt is shown and children are NOT automatically updated
+          - id: ac-5
+            given: >-
+              A parent item has NO children and user runs 'kspec item set @parent --implementation
+              implemented'
+            when: The update completes
+            then: No cascade prompt is shown (since there are no children to cascade to)
         status:
           maturity: draft
           implementation: implemented
