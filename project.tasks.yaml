@@ -1297,11 +1297,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1515,6 +1517,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1630,6 +1633,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12499,5 +12503,11 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:32:34.938Z
-  notes: []
+  notes:
+    - _ulid: 01KFBN1YRNVZP99NYFX3TGR7DP
+      created_at: 2026-01-19T17:32:47.253Z
+      author: "@claude"
+      content: Use 'kspec task reset' to change @task-yaml-formatting from cancelled to pending, then
+        complete it with proper reason.
+      supersedes: null
   todos: []
