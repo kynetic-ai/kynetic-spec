@@ -88,65 +88,39 @@ Always add notes when completing significant work. This creates an audit trail.
 
 ## Working on This Project
 
+**For detailed CLI commands and workflows, run `/kspec`.**
+
 ### Starting a Session
 
-Always begin by getting session context:
+Always begin by getting context:
 
 ```bash
-npm run dev -- session start
+kspec session start
 ```
 
-This shows:
-- **Active work**: Tasks currently in progress
-- **Recently completed**: What was just finished
-- **Ready tasks**: What can be picked up next
-- **Inbox items**: Ideas awaiting triage (oldest first)
-- **Recent commits**: Git activity
-- **Working tree**: Uncommitted changes
+This shows active work, recently completed tasks, ready tasks, inbox items, and git status.
 
-Options: `--full` for more detail, `--since 1d` to filter by time, `--json` for machine output.
+### Task Workflow
 
-### Start Working on a Task
+1. **Start**: Mark task in_progress before working
+2. **Note**: Add notes as you work (not just at end)
+3. **Complete**: Mark done with summary
 
-```bash
-npm run dev -- task start @task-slug
-npm run dev -- task note @task-slug "Starting work on X..."
-```
+### Creating Work
 
-### Complete a Task
+- **Clear scope?** → Create task directly
+- **Unclear scope?** → Add to inbox, triage later
+- **Behavior change?** → Check/update spec first, then derive task
 
-```bash
-npm run dev -- task note @task-slug "Completed X, approach was Y..."
-npm run dev -- task complete @task-slug --reason "Brief summary"
-```
+## Session Context
 
-### View Task Details
+Track focus, threads, and questions to maintain continuity across sessions.
 
-```bash
-npm run dev -- task get @task-slug
-npm run dev -- task notes @task-slug
-```
+- **Focus**: What you're working on right now
+- **Threads**: Parallel work streams to track
+- **Questions**: Open questions about the work
 
-### Create a New Task
-
-```bash
-npm run dev -- task add \
-  --title "Task title" \
-  --spec-ref "@spec-item" \
-  --priority 2 \
-  --slug my-task-slug \
-  --tag mvp --tag feature
-```
-
-ULIDs are generated automatically. Use `--spec-ref` to link to a spec item.
-
-### Validate the Spec
-
-```bash
-npm run dev -- validate           # Full validation
-npm run dev -- validate --refs    # Check references only
-npm run dev -- validate --schema  # Check schema only
-```
+**For managing session context, run `/meta`.**
 
 ## Spec-First Development
 
@@ -164,69 +138,7 @@ Any change that affects behavior:
 
 This flow bridges spec-reality gaps **in the moment** rather than after the fact.
 
-### Step 1: Check the Spec
-
-Before implementing, ask: **Does the spec cover this?**
-
-```bash
-kspec item get @relevant-item    # Check existing spec
-kspec item list --tag feature    # Browse related items
-```
-
-- **Spec exists and matches** → Derive task, proceed
-- **Spec exists but outdated** → Update spec first
-- **No spec exists** → Create spec first (if behavior change) or task directly (if infra)
-
-### Step 2: Reflect and Clarify
-
-When spec work is needed, use `AskUserQuestion` to align with the user:
-
-- Present your interpretation of the change
-- State where it fits in the spec hierarchy
-- Note any assumptions about scope/behavior
-- Offer options:
-  - **Dive deeper**: Answer questions to define precisely
-  - **Fill gaps**: Agent uses existing patterns to complete spec
-  - **Just task**: Skip spec for now (appropriate for infra, spikes, unclear scope)
-
-### Step 3: Update or Create Spec
-
-```bash
-# Update existing item
-kspec item set @existing-item --description "Updated behavior..."
-
-# Or create new item under appropriate parent
-kspec item add --under @parent --title "New capability" --type requirement
-```
-
-**Consider granularity**: Large changes should be multiple spec items, not one monolithic entry.
-
-### Step 4: Derive Task
-
-Check before deriving:
-
-1. **Existing coverage**: Does a task already implement this spec?
-2. **Task size**: Should the spec be broken down further?
-
-```bash
-# Preview what will be created (recommended first)
-kspec derive @spec-item --dry-run
-
-# Recursive (default) - creates tasks for spec AND all children
-kspec derive @spec-item
-
-# Flat - only this spec, not children
-kspec derive @spec-item --flat
-```
-
-**Key behaviors:**
-- Recursive is default - child tasks automatically `depends_on` parent tasks
-- Use `--dry-run` to preview the task tree before creating
-- Existing tasks are skipped (use `--force` to create duplicates)
-
-The task inherits context from the spec via `spec_ref`.
-
-### Handling Different Request Types
+### The Decision Flow
 
 | Situation | Flow |
 |-----------|------|
@@ -235,84 +147,29 @@ The task inherits context from the spec via `spec_ref`.
 | Infra/internal (no user impact) | Create task directly, no spec needed |
 | Bug revealing spec gap | Fix bug → Update spec to match reality |
 
+**For systematic triage, run `/triage`.**
+**After plan approval, run `/spec-plan` to translate plan to specs.**
+
 ### Inbox (for unclear scope or quick capture)
 
 The inbox is a low-friction capture space for ideas that aren't tasks yet. Use it liberally - the cost of capture is near zero, and good ideas often emerge from rough notes.
-
-#### When to Use Inbox
 
 **Use inbox when:**
 - You have a vague idea but no clear scope
 - Something comes up mid-task that you don't want to forget
 - The user mentions something that might be worth doing later
 - You notice a potential improvement but it's not the current focus
-- You're unsure if it's worth doing at all
 
 **Skip inbox and create a task directly when:**
 - The scope is clear and actionable
 - It's blocking current work
 - The user explicitly asked for it to be done
-- It's infrastructure/cleanup with obvious next steps
 
-#### Commands
-
-```bash
-# Quick capture - just dump the thought
-kspec inbox add "maybe we need better error messages"
-kspec inbox add "refactor auth flow" --tag auth --tag refactor
-
-# List items (oldest first to encourage triage)
-kspec inbox list
-
-# Get full details on an item
-kspec inbox get @01KF0...
-
-# Promote to task when ready
-kspec inbox promote @01KF0... --title "Improve error messages" --priority 2
-
-# Delete if no longer relevant
-kspec inbox delete @01KF0...
-```
-
-#### Triage Workflow
-
-Session context shows inbox items oldest-first deliberately - older items deserve attention. During triage, for each item ask:
-
-1. **Is this still relevant?** → If not, delete it
-2. **Is the scope clear now?** → If yes, promote to task
-3. **Does it need spec work first?** → Create/update spec, then derive task
-4. **Still unclear?** → Leave it, add a tag, revisit later
-
-Promote with full context when you can:
-```bash
-# Good: provides enough for the task to be actionable
-kspec inbox promote @01KF0... \
-  --title "Add retry logic to API client" \
-  --priority 2 \
-  --spec-ref @api-client \
-  --tag reliability
-
-# The original inbox text becomes the task description
-```
-
-#### Philosophy
-
-The inbox exists because **not every idea deserves immediate structure**. Creating a task has overhead - title, priority, maybe spec work. The inbox lets you capture without that friction.
-
-But inbox items shouldn't live forever. Regular triage (during session start, between tasks, end of session) keeps the inbox useful. An inbox with 50 stale items is just noise.
-
-**Rule of thumb**: If an inbox item survives 3+ triage sessions without action, either promote it with a clear scope or delete it - it's probably not important enough.
+**Rule of thumb**: If an inbox item survives 3+ triage sessions without action, either promote it with a clear scope or delete it.
 
 ### Default: Always Confirm
 
-Ask before creating or modifying spec items. Present what would change and get confirmation. Future project onboarding may configure more autonomous behavior.
-
-### Why This Matters
-
-- Spec stays accurate as source of truth
-- Tasks trace back to defined behavior
-- Future agents/sessions understand what was built and why
-- Drift is caught immediately, not discovered later
+Ask before creating or modifying spec items. Present what would change and get confirmation.
 
 ## Staying Aligned During Work
 
@@ -327,33 +184,11 @@ Work rarely follows a straight line. User questions lead to follow-ups, implemen
 - Modifying a file that wasn't part of the original task
 - Adding functionality the spec doesn't mention
 
-**Example - What went wrong:**
-```
-Task: Implement session checkpoint command
-  → Completed checkpoint, committed
-  → User: "Does setup command install this hook?"
-  → Modified setup.ts to add hook installation
-  → Committed without checking if setup had spec coverage
-  → Result: Undocumented feature, spec gap
-```
-
-**Example - Better approach:**
-```
-Task: Implement session checkpoint command
-  → Completed checkpoint, committed
-  → User: "Does setup command install this hook?"
-  → Before coding: "Let me check if setup has spec coverage"
-  → kspec item list | grep setup → No results
-  → "This is new scope. I'll note it on the checkpoint task
-     and capture a spec gap in inbox before proceeding"
-  → Add note, capture inbox item, then implement
-```
-
 ### Before Modifying Code Outside Your Task
 
 Quick mental checklist:
 1. **Is this file part of my current task?** If not, you're expanding scope
-2. **Does this command/feature have spec coverage?** `kspec item list | grep <name>`
+2. **Does this command/feature have spec coverage?**
 3. **Should I note this expansion?** Almost always yes
 
 This takes seconds and prevents drift from compounding.
@@ -366,16 +201,6 @@ It happens. When you notice after the fact:
 3. Commit the documentation update
 
 The goal isn't perfection - it's maintaining enough context that future sessions can understand what happened.
-
-### Why This Matters More Than It Seems
-
-Each undocumented change is small. But they accumulate:
-- Specs drift from reality
-- Tasks don't reflect actual work done
-- Future agents lack context for decisions
-- The self-hosting loop breaks down
-
-Taking 30 seconds to note scope expansion saves hours of archaeology later.
 
 ## Commit Message Convention
 
@@ -393,23 +218,6 @@ Spec: @spec-ref
 - Create natural audit trail linking code to specs
 - Standard git format (works with `git log --grep`)
 
-**Using the guidance:**
-- `task complete` outputs suggested commit message
-- `session checkpoint` includes WIP commit guidance when needed
-- Copy/adapt the suggestion for your commit
-
-**Searching commits:**
-```bash
-# Find commits related to a task
-kspec log @task-slug
-
-# Find commits related to a spec item
-kspec log @spec-ref
-
-# Compact format
-kspec log @ref --oneline
-```
-
 ## Code Annotations
 
 Link code to acceptance criteria using this pattern:
@@ -425,24 +233,13 @@ it('should validate input', () => {
 - Test files: Mark which AC a test covers
 - Implementation: Mark code implementing specific AC
 
-**Benefits:**
-- Human-readable traceability
-- Makes coverage gaps visible
-- Test descriptions stay concise
-- Pattern is grep-able (`grep -r "AC: @" tests/`)
-
 This pattern is already used in this project's tests.
 
-## Design Decisions
+## Session Reflection
 
-Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:
+After significant work, use `/reflect` to identify learnings, friction points, and improvements.
 
-- **Format**: YAML with Zod validation
-- **Schema source**: Zod (TypeScript-native)
-- **Architecture**: Library-first, CLI is a consumer
-- **Task-spec relationship**: Tasks reference specs, don't duplicate
-- **Notes**: Append-only with supersession
-- **Todos**: Lightweight, can promote to full tasks
+**For structured reflection workflow, run `/reflect`.**
 
 ## The Self-Hosting Loop
 
@@ -456,6 +253,28 @@ The goal is for kspec to be fully self-describing:
 6. New tasks unblock, repeat
 
 When working on this project, you ARE using kspec to build kspec. Track your work in the task system.
+
+## Available Skills
+
+| Skill | Purpose |
+|-------|---------|
+| `/kspec` | Task and spec management workflows |
+| `/meta` | Session context (focus, threads, questions, observations) |
+| `/triage` | Systematic inbox and observation processing |
+| `/spec-plan` | Translate approved plans to specs |
+| `/reflect` | Session reflection and learning capture |
+| `/pr` | Create pull requests from current work |
+
+## Design Decisions
+
+Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:
+
+- **Format**: YAML with Zod validation
+- **Schema source**: Zod (TypeScript-native)
+- **Architecture**: Library-first, CLI is a consumer
+- **Task-spec relationship**: Tasks reference specs, don't duplicate
+- **Notes**: Append-only with supersession
+- **Todos**: Lightweight, can promote to full tasks
 
 ## Related Files
 

@@ -14,9 +14,10 @@ Systematically process inbox items: analyze, categorize, and convert to specs/ta
 ```bash
 kspec session start --full
 kspec inbox list
+kspec meta observations --pending-resolution
 ```
 
-Understand: current tasks, spec coverage, inbox volume.
+Understand: current tasks, spec coverage, inbox volume, and any unresolved observations.
 
 ### 2. Categorize Items
 
@@ -72,6 +73,41 @@ When an item needs design work:
 4. Write plan, exit for approval
 5. Execute: create spec, add AC, derive task
 
+### 6. Processing Observations
+
+During triage, also process pending observations:
+
+```bash
+kspec meta observations --pending-resolution
+```
+
+For each observation type:
+
+| Type | How to Process |
+|------|----------------|
+| **friction** | Does it reveal a spec gap? → Create spec or inbox item. If already addressed → resolve |
+| **success** | Document in relevant spec or AGENTS.md if broadly useful → resolve |
+| **question** | Answer it if you can. If needs investigation → promote to task |
+| **idea** | Evaluate scope. Clear → inbox or task. Unclear → leave or delete |
+
+**Processing commands:**
+
+```bash
+# Promote observation to task (when actionable work is clear)
+kspec meta observations promote @ref --title "Add bulk AC command" --priority 2
+
+# Resolve observation (when addressed or no longer relevant)
+kspec meta observations resolve @ref
+
+# Convert inbox item to observation (if it's friction, not a task)
+kspec meta observe --from-inbox @ref
+```
+
+**When to use which:**
+- **Inbox** = future work that becomes tasks
+- **Observations** = systemic patterns that inform improvements
+- **Tasks** = clear, actionable implementation work
+
 ## Key Principles
 
 - **Ask one question at a time** - Use AskUserQuestion for decisions, don't batch
@@ -126,9 +162,10 @@ Keep a running summary:
 - Specs updated
 
 At session end, provide summary:
-- Started with X items
-- Processed Y items
-- Created Z tasks
+- Started with X inbox items, Y observations
+- Processed: Z items (deleted, promoted, spec'd)
+- Tasks created
+- Observations resolved
 - Remaining items
 
 ## Common Patterns
@@ -140,7 +177,9 @@ At session end, provide summary:
 | Small flag/option | Update spec description + AC → derive task |
 | New command | Plan mode → design spec → create spec + AC → derive task |
 | Bug report | Check spec coverage → update spec if needed → promote with spec-ref |
-| Process observation | Evaluate if doc update or task → often just docs |
+| Friction observation | Check if spec/task exists → create if needed → resolve observation |
+| Success observation | Document pattern if broadly useful → resolve |
+| Question observation | Answer or promote to task if needs investigation → resolve |
 | Vague idea | Ask for clarification or leave in inbox for later |
 
 ## Tips
