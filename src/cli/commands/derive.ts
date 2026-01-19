@@ -214,6 +214,7 @@ interface DeriveResult {
  * Returns result describing what happened.
  *
  * @param dependsOn - Task references to add as dependencies (for hierarchy-based deps)
+ * @param priority - Priority override (1-5), if not provided uses spec's priority
  */
 async function deriveTaskFromSpec(
   ctx: KspecContext,
@@ -222,7 +223,7 @@ async function deriveTaskFromSpec(
   items: LoadedSpecItem[],
   index: ReferenceIndex,
   alignmentIndex: AlignmentIndex,
-  options: { force: boolean; dryRun: boolean; dependsOn?: string[] }
+  options: { force: boolean; dryRun: boolean; dependsOn?: string[]; priority?: number }
 ): Promise<DeriveResult> {
   // Check if a task already exists for this spec
   const linkedTasks = alignmentIndex.getTasksForSpec(specItem._ulid);
@@ -256,7 +257,7 @@ async function deriveTaskFromSpec(
     type: 'task',
     spec_ref: `@${specItem.slugs[0] || specItem._ulid}`,
     derivation: 'auto',
-    priority: normalizePriority(specItem.priority),
+    priority: options.priority ?? normalizePriority(specItem.priority),
     slugs: [slug],
     tags: [...(specItem.tags || [])],
     depends_on: options.dependsOn || [],
@@ -336,6 +337,7 @@ export function registerDeriveCommand(program: Command): void {
     .option('--flat', 'Only derive for the specified item, not children (default: recursive)')
     .option('--force', 'Create task even if one already exists for the spec')
     .option('--dry-run', 'Show what would be created without making changes')
+    .option('--priority <n>', 'Set priority for created task(s) (1-5)', parseInt)
     .action(async (ref: string | undefined, options) => {
       try {
         // Validate arguments
@@ -351,6 +353,14 @@ export function registerDeriveCommand(program: Command): void {
         if (ref && options.all) {
           error(errors.usage.deriveRefAndAll);
           process.exit(2);
+        }
+
+        // Validate priority if provided
+        if (options.priority !== undefined) {
+          if (isNaN(options.priority) || options.priority < 1 || options.priority > 5) {
+            error('Priority must be a number between 1 and 5');
+            process.exit(2);
+          }
         }
 
         const ctx = await initContext();
@@ -430,6 +440,7 @@ export function registerDeriveCommand(program: Command): void {
               force: options.force || false,
               dryRun: options.dryRun || false,
               dependsOn,
+              priority: options.priority,
             }
           );
 
