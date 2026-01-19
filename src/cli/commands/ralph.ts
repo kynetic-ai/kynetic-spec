@@ -60,7 +60,7 @@ ${JSON.stringify(sessionCtx, null, 2)}
 
 2. **Start the task** (if not already in_progress):
    \`\`\`bash
-   npm run dev -- task start @task-ref
+   kspec task start @task-ref
    \`\`\`
 
 3. **Do the work**:
@@ -71,17 +71,17 @@ ${JSON.stringify(sessionCtx, null, 2)}
 
 4. **Document progress**:
    \`\`\`bash
-   npm run dev -- task note @task-ref "What you did, decisions made, etc."
+   kspec task note @task-ref "What you did, decisions made, etc."
    \`\`\`
 
 5. **Complete or checkpoint**:
    - If task is DONE:
      \`\`\`bash
-     npm run dev -- task complete @task-ref --reason "Summary of completion"
+     kspec task complete @task-ref --reason "Summary of completion"
      \`\`\`
    - If task is NOT done (WIP):
      \`\`\`bash
-     npm run dev -- task note @task-ref "WIP: What's done, what remains..."
+     kspec task note @task-ref "WIP: What's done, what remains..."
      \`\`\`
 
 6. **Commit your work**:
@@ -92,10 +92,17 @@ ${JSON.stringify(sessionCtx, null, 2)}
    \`\`\`
 
 7. **Reflect on this iteration**:
-   Think about what you learned, any friction points, or observations worth remembering.
-   Add them to inbox:
+   Think about what you learned, any friction points, or patterns worth remembering.
+
+   For **systemic patterns** (friction or success worth documenting):
    \`\`\`bash
-   npm run dev -- inbox add "Observation: ..."
+   kspec meta observe friction "Description of systemic issue..."
+   kspec meta observe success "Pattern worth replicating..."
+   \`\`\`
+
+   For **actionable improvements** (specific ideas that could become tasks):
+   \`\`\`bash
+   kspec inbox add "Improvement idea..." --tag reflection
    \`\`\`
 
 ## Important Notes
@@ -103,13 +110,13 @@ ${JSON.stringify(sessionCtx, null, 2)}
 - The loop continues automatically - don't worry about picking the next task
 - kspec tracks state across iterations via task status and notes
 - Always commit before the iteration ends
-- Always reflect and add at least one observation to inbox
+- Always reflect and capture at least one observation
 ${isFinal ? `
 ## FINAL ITERATION
 This is the last iteration of the loop. After completing your work:
 1. Commit any remaining changes
 2. Reflect on the overall session
-3. Add any final insights to inbox
+3. Capture any final insights as observations
 ` : ''}`;
 }
 
