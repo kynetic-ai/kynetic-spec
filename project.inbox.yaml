@@ -258,13 +258,6 @@ inbox:
       - docs
       - release
     added_by: '@claude'
-  - _ulid: 01KF9WQYNFMTGJ554FDFZNFRV4
-    text: Add CI test that kspec command works after build
-    created_at: '2026-01-19T01:08:39.216Z'
-    tags:
-      - ci
-      - reflection
-    added_by: '@claude'
   - _ulid: 01KF9WR07A33CMM719HTQWQY5Y
     text: Document ESM symlink realpathSync fix for contributors
     created_at: '2026-01-19T01:08:40.810Z'

@@ -9865,21 +9865,39 @@
         observations vs inbox.
       supersedes: null
   todos: []
-- title: Add setup:dev npm script
+- _ulid: 01KFAB95N1DC8Y053H3BZK4ZK9
+  slugs: []
+  title: Add setup:dev npm script
+  type: task
+  description: Add setup:dev npm script (install + build + link)
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - dx
+    - reflection
+  vcs_refs: []
+  created_at: '2026-01-19T05:22:43.488Z'
+  notes: []
+  todos: []
+- title: Add CI test for kspec command
   type: task
   priority: 3
   spec_ref: null
   tags:
-    - dx
+    - ci
     - reflection
-  description: Add setup:dev npm script (install + build + link)
-  _ulid: 01KFAB95N1DC8Y053H3BZK4ZK9
+  description: Add CI test that kspec command works after build
+  _ulid: 01KFAB9960F1YGQQQKFYF3H7ZY
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-19T05:22:43.488Z'
+  created_at: '2026-01-19T05:22:47.104Z'
   notes: []
   todos: []
