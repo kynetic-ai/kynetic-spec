@@ -778,3 +778,8 @@ requirements:
         given: kspec validate is run
         when: "a task has automation: eligible but no spec_ref"
         then: a warning is emitted suggesting eligible tasks should have linked specs for context
+      - id: ac-22
+        given: a task's automation status needs to change
+        when: considering valid transitions
+        then: any status can transition to any other status, but transitions TO eligible require human
+          action (agents cannot mark tasks eligible)
