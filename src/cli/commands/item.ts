@@ -468,7 +468,7 @@ export function registerItemCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(EXIT_CODES.ERROR);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
@@ -546,7 +546,7 @@ export function registerItemCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug], foundItem._ulid);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(EXIT_CODES.ERROR);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
@@ -1056,7 +1056,7 @@ export function registerItemCommands(program: Command): void {
         if (existingAc.some(ac => ac.id === acId)) {
           const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
           error(errors.conflict.acAlreadyExists(acId, itemRef));
-          process.exit(EXIT_CODES.NOT_FOUND);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // Create new AC
@@ -1110,7 +1110,7 @@ export function registerItemCommands(program: Command): void {
         // Check for duplicate ID if renaming
         if (options.id && options.id !== acId && existingAc.some(ac => ac.id === options.id)) {
           error(errors.conflict.acIdAlreadyExists(options.id));
-          process.exit(EXIT_CODES.NOT_FOUND);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // Build updated AC

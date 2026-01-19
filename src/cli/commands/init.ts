@@ -242,7 +242,7 @@ async function initNonShadow(
     if (!options.force) {
       error(errors.conflict.specDirExists(targetDir));
       console.log('Use --force to overwrite existing files');
-      process.exit(EXIT_CODES.ERROR);
+      process.exit(EXIT_CODES.CONFLICT);
     }
     warn('Overwriting existing spec files');
   } catch {

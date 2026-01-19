@@ -852,7 +852,7 @@ export function registerMetaCommands(program: Command): void {
         // AC-obs-6: Check if already promoted
         if (observation.promoted_to) {
           error(errors.conflict.observationAlreadyPromoted(observation.promoted_to));
-          process.exit(EXIT_CODES.ERROR);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // AC-obs-8: Check if resolved
