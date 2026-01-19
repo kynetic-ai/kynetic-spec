@@ -868,6 +868,62 @@ describe('Integration: derive', () => {
       });
     }).toThrow();
   });
+
+  it('should add implementation notes from spec description', () => {
+    // test-feature has a description in fixtures
+    kspec('derive @test-feature --flat', tempDir);
+
+    // Get the task details
+    const taskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Task should have a note with implementation context
+    expect(task.notes).toHaveLength(1);
+    expect(task.notes[0].content).toContain('Implementation notes (auto-generated from spec)');
+    expect(task.notes[0].content).toContain('A test feature for integration testing'); // From description
+    expect(task.notes[0].author).toBe('@kspec-derive');
+  });
+
+  it('should add implementation notes with acceptance criteria', () => {
+    // First add ACs to test-feature
+    kspec(
+      'item ac add @test-feature --given "spec has ACs" --when "task is derived" --then "ACs are included in notes"',
+      tempDir
+    );
+
+    // Now derive the task
+    kspec('derive @test-feature --flat', tempDir);
+
+    // Get the task details
+    const taskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Task note should include AC summary
+    expect(task.notes).toHaveLength(1);
+    expect(task.notes[0].content).toContain('Acceptance Criteria:');
+    expect(task.notes[0].content).toContain('ac-1:');
+    expect(task.notes[0].content).toContain('Given spec has ACs');
+    expect(task.notes[0].content).toContain('when task is derived');
+    expect(task.notes[0].content).toContain('then ACs are included in notes');
+  });
+
+  it('should not add empty notes when spec has no description or ACs', () => {
+    // Create a minimal spec item with no description
+    kspec(
+      'item add --under @test-core --title "Minimal Item" --slug minimal-item --type feature',
+      tempDir
+    );
+
+    // Derive task from it
+    kspec('derive @minimal-item', tempDir);
+
+    // Get the task details
+    const taskOutput = kspec('task get @task-minimal-item --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Task should have no notes (empty array)
+    expect(task.notes).toHaveLength(0);
+  });
 });
 
 describe('Integration: session', () => {
