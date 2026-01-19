@@ -88,6 +88,78 @@ function formatItemList(items: LoadedSpecItem[], verbose = false, grepPattern?: 
 }
 
 /**
+ * Format item list as a tree showing parent/child hierarchy
+ */
+function formatItemTree(items: LoadedSpecItem[], verbose = false, grepPattern?: string): void {
+  if (items.length === 0) {
+    console.log(chalk.gray('No items found'));
+    return;
+  }
+
+  // Build parent-child map
+  const childrenMap = new Map<string, LoadedSpecItem[]>();
+  const rootItems: LoadedSpecItem[] = [];
+
+  for (const item of items) {
+    const path = item._path || '';
+
+    // Determine parent path
+    let parentPath = '';
+    if (path) {
+      // Extract parent path from current path
+      // e.g., "features[0].requirements[1]" -> "features[0]"
+      const lastDotIndex = path.lastIndexOf('.');
+      if (lastDotIndex !== -1) {
+        parentPath = path.substring(0, lastDotIndex);
+      }
+    }
+
+    if (parentPath === '') {
+      // Root level item
+      rootItems.push(item);
+    } else {
+      // Find parent by path
+      const parent = items.find(i => i._path === parentPath);
+      if (parent) {
+        const parentUlid = parent._ulid;
+        if (!childrenMap.has(parentUlid)) {
+          childrenMap.set(parentUlid, []);
+        }
+        childrenMap.get(parentUlid)!.push(item);
+      } else {
+        // Parent not in filtered list, show at root
+        rootItems.push(item);
+      }
+    }
+  }
+
+  // Recursive function to print tree
+  function printTree(item: LoadedSpecItem, prefix = '', isLast = true): void {
+    // Print current item with tree prefix
+    const connector = isLast ? '└── ' : '├── ';
+    const itemLine = formatItem(item, verbose, grepPattern);
+    console.log(prefix + connector + itemLine);
+
+    // Print children
+    const children = childrenMap.get(item._ulid) || [];
+    const childPrefix = prefix + (isLast ? '    ' : '│   ');
+
+    children.forEach((child, index) => {
+      const isLastChild = index === children.length - 1;
+      printTree(child, childPrefix, isLastChild);
+    });
+  }
+
+  // Print all root items
+  rootItems.forEach((item, index) => {
+    const isLast = index === rootItems.length - 1;
+    printTree(item, '', isLast);
+  });
+
+  console.log(chalk.gray(`\n${items.length} item(s)`));
+}
+
+/**
  * Handle cascading status updates to child items
  * Returns array of updated child items
  */
@@ -171,6 +243,7 @@ export function registerItemCommands(program: Command): void {
     .option('-q, --search <text>', 'Search in title')
     .option('-g, --grep <pattern>', 'Search content with regex pattern')
     .option('-v, --verbose', 'Show more details')
+    .option('--tree', 'Show parent/child hierarchy')
     .option('--limit <n>', 'Limit results', '50')
     .action(async (options) => {
       try {
@@ -224,8 +297,15 @@ export function registerItemCommands(program: Command): void {
             total: result.total,
             showing: specItems.length,
             grepPattern: options.grep,
+            tree: options.tree,
           },
-          () => formatItemList(specItems, options.verbose, options.grep)
+          () => {
+            if (options.tree) {
+              formatItemTree(specItems, options.verbose, options.grep);
+            } else {
+              formatItemList(specItems, options.verbose, options.grep);
+            }
+          }
         );
       } catch (err) {
         error(errors.failures.listItems, err);
