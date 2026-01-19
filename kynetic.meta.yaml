@@ -1415,8 +1415,11 @@ observations:
       Importing from external sources?"
     created_at: 2026-01-19T21:42:36.136Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Resolved via batch JSON approach: Generic kspec batch command accepts JSON array of CLI
+      args. Skills handle translation from flexible input to batch JSON. See inbox 01KFC3SV."
+    resolved_at: 2026-01-19T21:50:38.514Z
+    resolved_by: "@claude"
   - _ulid: 01KFC3BM2YJSZ56MFSS8MA8WM6
     type: friction
     content: "Plan mode required multiple back-and-forth cycles. Missing upfront: output type (spec vs
