@@ -43,6 +43,137 @@ kynetic-spec/
 └── tests/                     # Vitest tests
 ```
 
+## Shadow Branch Worktree Architecture
+
+Kspec uses a **shadow branch worktree** architecture to separate spec/task state from code:
+
+### What is a Shadow Branch?
+
+- **Shadow branch** (`kspec-meta`): An orphan git branch that stores all kspec state files
+- **Worktree** (`.kspec/` directory): A git worktree pointing to the shadow branch
+- **Main branch**: Gitignores `.kspec/` and contains only code/docs
+- **Auto-commit**: All kspec operations automatically commit changes to shadow branch
+
+### Why This Architecture?
+
+1. **Separation**: Spec/task files don't clutter main branch history
+2. **Sync**: Each commit to shadow = atomic snapshot of project state
+3. **Collaboration**: Shadow branch can be pushed/pulled independently from code
+4. **Clean diffs**: Code PRs don't include spec changes and vice versa
+
+### How It Works
+
+```
+.kspec/.git → file (not directory) pointing to worktree
+  ↓
+gitdir: .git/worktrees/-kspec
+  ↓
+Shadow branch (kspec-meta): orphan branch with spec/task files
+```
+
+When you run `kspec task start @ref`:
+1. CLI modifies `.kspec/project.tasks.yaml`
+2. Changes are automatically staged and committed to `kspec-meta` branch
+3. Commit pushed to remote (if tracking configured)
+4. Main branch working tree remains clean
+
+### Setup Commands
+
+```bash
+# Initialize shadow branch (first time)
+kspec init
+
+# Check shadow status
+kspec shadow status
+
+# Repair broken worktree
+kspec shadow repair
+
+# Sync with remote shadow branch
+kspec shadow sync
+```
+
+### Worktree Verification
+
+```bash
+# List all worktrees
+git worktree list
+# Should show:
+# /path/to/kynetic-spec/.kspec  <commit> [kspec-meta]
+
+# Check shadow branch exists
+git branch --list kspec-meta
+# Should show: + kspec-meta (+ = checked out in worktree)
+
+# Verify .kspec/.git is a file (not directory)
+file .kspec/.git
+# Should show: .kspec/.git: ASCII text
+```
+
+### Remote Synchronization
+
+Shadow branches can be pushed/pulled like regular branches:
+
+```bash
+# Push shadow branch to remote
+git push origin kspec-meta
+
+# Pull shadow branch changes (or use kspec shadow sync)
+cd .kspec && git pull
+
+# Track remote shadow branch (automatic during init if remote exists)
+git branch --set-upstream-to=origin/kspec-meta kspec-meta
+```
+
+**Auto-sync behavior:**
+- Every kspec command auto-commits to shadow branch
+- Auto-pushes to remote if tracking configured (fire-and-forget)
+- `kspec session start` pulls before operations to sync state
+- Conflicts are rare but handled via `kspec shadow resolve`
+
+### Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| `.kspec/` doesn't exist | Run `kspec init` |
+| Worktree disconnected | Run `kspec shadow repair` |
+| Shadow branch exists but no worktree | Run `kspec shadow repair` |
+| Sync conflicts | Run `kspec shadow resolve` (manual resolution) |
+| `.kspec/` not gitignored | `kspec init` adds it automatically |
+
+### Integration with Main Branch
+
+- Main branch `.gitignore` includes `.kspec/`
+- Spec changes tracked in shadow, code changes in main
+- Both branches can be worked on independently
+- Commit trailers (Task: @ref, Spec: @ref) link commits across branches
+- `kspec log @ref` shows commits from both branches
+
+### For New Contributors
+
+When cloning the repo:
+
+```bash
+# Clone repo
+git clone <repo-url>
+cd kynetic-spec
+
+# Initialize shadow (fetches remote kspec-meta if exists)
+npm install
+npm run build
+npm link
+kspec init
+
+# Verify setup
+kspec shadow status  # Should show: healthy
+kspec session start  # Should show current context
+```
+
+If remote has `kspec-meta` branch, `kspec init` automatically:
+1. Fetches remote shadow branch
+2. Creates `.kspec/` worktree tracking remote
+3. Syncs state before first use
+
 ## Key Concepts
 
 ### IDs: ULIDs + Slugs
