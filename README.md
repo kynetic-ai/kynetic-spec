@@ -208,6 +208,42 @@ npm run build
 npm run dev -- tasks ready
 ```
 
+### Troubleshooting: ESM + npm link
+
+When using `npm link` to develop kspec globally, ESM module detection can break without proper symlink resolution. This manifests as the CLI executing twice or commands not working correctly.
+
+**Symptoms:**
+- Commands execute twice
+- CLI seems to hang or behave unexpectedly
+- "Cannot find module" errors when using `npm link`
+
+**Why it happens:**
+- `npm link` creates symlinks for global CLI binaries
+- Node.js ESM uses `import.meta.url` to detect if a module is the main entry point
+- Without symlink resolution, `import.meta.url` doesn't match the symlinked path
+- This causes the module to be imported but not executed, or executed multiple times
+
+**The fix:**
+kspec uses `fs.realpathSync()` to resolve symlinks before comparing paths:
+
+```javascript
+// src/cli/index.ts
+const scriptPath = realpathSync(process.argv[1]);
+if (import.meta.url === `file://${scriptPath}`) {
+  program.parse();
+}
+```
+
+This ensures the CLI works correctly whether run via:
+- `npm run dev` (direct TypeScript execution)
+- `npm link` (symlinked global binary)
+- `node dist/cli/index.js` (built code)
+
+**For contributors:** If you encounter similar issues in ESM CLIs, remember to resolve symlinks before path comparisons. The pattern is:
+1. Import `realpathSync` from `fs`
+2. Resolve `process.argv[1]` before comparing with `import.meta.url`
+3. This makes the CLI work correctly in all installation modes
+
 ## Design Decisions
 
 - **Library-first**: Core parsing logic is separate from CLI for reuse
