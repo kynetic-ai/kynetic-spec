@@ -10273,3 +10273,22 @@
         - Delete inbox item after observation created successfully
       supersedes: null
   todos: []
+- title: Implement kspec log enhancements
+  type: task
+  spec_ref: '@cmd-log'
+  meta_ref: null
+  priority: 3
+  slugs:
+    - task-log-enhancements
+  tags:
+    - cli
+    - enhancement
+  _ulid: 01KFACZP9AJA7WK9S3QGXG4WCN
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T05:52:29.994Z'
+  notes: []
+  todos: []
