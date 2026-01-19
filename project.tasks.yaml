@@ -9239,6 +9239,38 @@
 
         This will help agents/users understand what they're working on when they start a task.
       supersedes: null
+    - _ulid: 01KFA8BMYZEAYDB461906PZ896
+      created_at: '2026-01-19T04:31:38.976Z'
+      author: '@claude'
+      content: >-
+        Implementation complete:
+
+
+        Changes made:
+
+        1. Enhanced task start command to show spec context when task has spec_ref
+
+        2. Output includes spec title, description (if present), and all ACs with details
+
+        3. Added guidance reminder about test coverage and AC annotations
+
+        4. Properly suppressed in JSON mode (like other CLI guidance)
+
+        5. Added 3 comprehensive integration tests covering all scenarios
+
+
+        Test coverage:
+
+        - Test 1: Verifies spec context shown with title, description, and ACs
+
+        - Test 2: Verifies no context shown for tasks without spec_ref
+
+        - Test 3: Verifies JSON mode suppresses the guidance
+
+
+        All 564 tests pass. The feature works as designed - agents/users now get clear context about
+        what they're implementing when they start a task.
+      supersedes: null
   todos: []
 - _ulid: 01KF9FYS8AF9M4Q5CFQMPPEWN7
   slugs: []
