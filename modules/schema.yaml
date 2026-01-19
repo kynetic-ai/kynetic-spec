@@ -734,3 +734,18 @@ features:
     tests: []
     notes: []
     created: 2026-01-19T21:06:21.586Z
+    requirements:
+      - _ulid: 01KFC19DEC50EQ9PBG2QWJV125
+        slugs:
+          - trait-type
+        title: Trait Type
+        type: requirement
+        tags: []
+        description: "Spec items can have type: trait to define reusable acceptance criteria bundles. Traits
+          are validated for completeness (should have AC and description)."
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-19T21:06:34.572Z
