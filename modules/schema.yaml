@@ -915,3 +915,7 @@ features:
             given: user runs 'kspec trait add <title>'
             when: title provided
             then: "creates trait-type item with type: trait"
+          - id: ac-2
+            given: user runs 'kspec trait add <title>'
+            when: --description provided
+            then: trait has description field set
