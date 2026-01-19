@@ -993,4 +993,20 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAGYE5VYH1YSNS7ZD4R20BX
+    type: friction
+    content: >-
+      Shadow branch worktree repair workflow issues: (1) Nested .kspec/.kspec directories created by
+      repeated git worktree add commands, (2) Commands that navigate into .kspec (cd .kspec && ...)
+      fail when already in subdirectory, causing directory confusion, (3) Git worktree metadata
+      (/.git/worktrees) can become desynchronized from actual directory state, (4) kspec shadow
+      repair command failed with 'spawn /bin/sh ENOENT' error. Resolution required: manual git
+      worktree prune, removal of nested directories, and manual git operations in worktree with
+      KSPEC_SHADOW_COMMIT=1 to bypass hook. Consider: (a) More robust worktree repair that handles
+      nested directories, (b) Better error messages showing current directory context, (c)
+      Idempotent repair commands that check current state before operations.
+    created_at: '2026-01-19T07:01:43.227Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
