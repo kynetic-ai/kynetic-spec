@@ -336,9 +336,11 @@ export async function shadowAutoCommit(
     }
 
     // Commit with message
+    // Set KSPEC_SHADOW_COMMIT=1 to signal authorized commit to git hooks
     execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, {
       cwd: worktreeDir,
       stdio: ['pipe', 'pipe', 'pipe'],
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: '1' },
     });
 
     if (debug) {
@@ -947,6 +949,49 @@ items: []
 }
 
 /**
+ * Install pre-commit hook to protect kspec-meta branch.
+ * Hook prevents direct commits to shadow branch unless KSPEC_SHADOW_COMMIT=1.
+ *
+ * Note: Git worktrees use hooks from the main .git/hooks directory (via commondir),
+ * not from .git/worktrees/-kspec/hooks. So we install to main hooks directory.
+ *
+ * @param projectRoot Git repository root
+ * @returns true if hook was installed, false if already exists
+ */
+async function installShadowHook(projectRoot: string): Promise<boolean> {
+  const hooksDir = path.join(projectRoot, '.git', 'hooks');
+  const hookPath = path.join(hooksDir, 'pre-commit');
+  const sourceHookPath = path.join(projectRoot, 'hooks', 'pre-commit');
+
+  try {
+    // Check if source hook exists
+    try {
+      await fs.access(sourceHookPath);
+    } catch {
+      // Source hook doesn't exist - skip installation
+      return false;
+    }
+
+    // Check if hook already exists
+    try {
+      await fs.access(hookPath);
+      // Hook exists - don't overwrite (user may have custom hooks)
+      return false;
+    } catch {
+      // Hook doesn't exist - install it
+    }
+
+    // Copy hook from source
+    const hookContent = await fs.readFile(sourceHookPath, 'utf-8');
+    await fs.writeFile(hookPath, hookContent, { mode: 0o755 });
+    return true;
+  } catch (error) {
+    // Silently fail - hook installation is optional
+    return false;
+  }
+}
+
+/**
  * Convert project name to slug (kebab-case)
  */
 function toSlug(projectName: string): string {
@@ -1102,6 +1147,9 @@ export async function initializeShadow(
       result.pushedToRemote = await pushShadowBranch(worktreeDir);
     }
 
+    // Step 6: Install pre-commit hook to protect shadow branch
+    await installShadowHook(projectRoot);
+
     result.success = true;
     return result;
   } catch (error) {
@@ -1176,6 +1224,9 @@ export async function repairShadow(projectRoot: string): Promise<ShadowInitResul
       `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
       { cwd: projectRoot }
     );
+
+    // Install pre-commit hook
+    await installShadowHook(projectRoot);
 
     return {
       success: true,
