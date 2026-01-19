@@ -713,3 +713,7 @@ requirements:
         given: a human is triaging tasks
         when: assessing automation readiness
         then: they can set automation to any value (eligible, needs_review, manual_only) or clear it
+      - id: ac-6
+        given: a task is marked needs_review
+        when: it needs to become eligible again
+        then: "a human must review and explicitly set automation: eligible"
