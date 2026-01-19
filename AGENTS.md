@@ -515,22 +515,45 @@ Spec: @spec-ref
 - Create natural audit trail linking code to specs
 - Standard git format (works with `git log --grep`)
 
-## PR Review Workflow
+## PR Merge Requirements
 
-Before merging PRs, use a dedicated review subagent:
+**Before merging ANY PR, verify:**
+
+1. **All CI checks pass** - Do not merge with failing checks
+2. **All review comments addressed** - PRs have automated Claude review that posts comments identifying issues. These MUST be fixed before merge.
+3. **User questions answered** - If the user asks questions via `@claude` in PR comments, answer them and complete any requested actions (e.g., "add an inbox item for X")
+
+### PR Review Workflow
 
 1. **Create PR** with implementation
-2. **Launch review agent** to analyze the PR
-3. **Fix issues** identified by the review
-4. **Re-review** if significant changes were made
-5. **Merge** only when review feedback is addressed
+2. **Wait for CI** - Automated Claude review runs and posts findings
+3. **Read review comments** - Check for identified issues
+4. **Fix ALL issues** - Don't merge with known problems
+5. **Re-run CI** if you pushed fixes
+6. **Check for user comments** - User may ask follow-up questions
+7. **Merge** only when CI green AND all comments addressed
 
-**Why this matters:**
-- Catches real bugs: type errors, validation issues, incomplete refactors
-- Multi-round review prevents shipping known problems
-- Review agent has fresh context, spots things you missed
+### What Review Comments Look Like
 
-**Do NOT merge PRs with unaddressed review comments.** If a reviewer (human or agent) identifies issues, fix them or explicitly document why they're being deferred.
+The automated review posts structured comments like:
+```
+## Code Review
+Found N issues...
+
+### Issue 1: file.ts line X
+**Current:** [problematic code]
+**Should be:** [correct code]
+**Reason:** [explanation]
+```
+
+**Each identified issue must be fixed before merge.**
+
+### If You Can't Fix an Issue
+
+If an issue can't be fixed in the current PR:
+1. Add a comment explaining why
+2. Create a task or inbox item to track it
+3. Get explicit user approval to merge with known issues
 
 ## Code Annotations
 
