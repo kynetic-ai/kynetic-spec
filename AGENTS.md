@@ -395,6 +395,12 @@ it('should validate input', () => {
 - Test files: Mark which AC a test covers
 - Implementation: Mark code implementing specific AC
 
+**Test coverage requirements:**
+- Every acceptance criterion SHOULD have at least one test that validates it
+- Use AC annotations in tests to create traceability
+- When completing tasks, verify all linked spec ACs are covered by tests
+- Validation warns about specs with ACs but no test coverage
+
 This pattern is already used in this project's tests.
 
 ## Session Reflection

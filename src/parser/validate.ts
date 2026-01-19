@@ -58,7 +58,8 @@ export interface OrphanItem {
 export type CompletenessWarningType =
   | 'missing_acceptance_criteria'
   | 'missing_description'
-  | 'status_inconsistency';
+  | 'status_inconsistency'
+  | 'missing_test_coverage';
 
 /**
  * Completeness warning
@@ -505,14 +506,67 @@ function findOrphans(
 // ============================================================
 
 /**
+ * Scan test files for AC annotations to build coverage index
+ * Returns a Set of covered ACs in format "@spec-ref ac-N"
+ */
+async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
+  const coveredACs = new Set<string>();
+  const testsDir = path.join(rootDir, 'tests');
+
+  try {
+    // Check if tests directory exists
+    await fs.access(testsDir);
+
+    // Read all test files
+    const files = await fs.readdir(testsDir);
+    const testFiles = files.filter(f => f.endsWith('.test.ts') || f.endsWith('.test.js'));
+
+    for (const file of testFiles) {
+      const filePath = path.join(testsDir, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+
+      // Match AC annotations: // AC: @spec-ref ac-N
+      // Also handle multiple ACs on one line: // AC: @spec-ref ac-1, ac-2
+      const acPattern = /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
+      let match;
+
+      while ((match = acPattern.exec(content)) !== null) {
+        const specRef = match[1]; // @spec-ref
+        const acList = match[2]; // "ac-1, ac-2" or just "ac-1" or undefined
+
+        if (acList) {
+          // Split by comma and trim
+          const acs = acList.split(',').map(ac => ac.trim());
+          for (const ac of acs) {
+            coveredACs.add(`${specRef} ${ac}`);
+          }
+        } else {
+          // No specific AC mentioned, just the spec ref
+          // We'll consider this as generic coverage
+          coveredACs.add(specRef);
+        }
+      }
+    }
+  } catch (err) {
+    // Tests directory doesn't exist or can't be read - that's ok
+  }
+
+  return coveredACs;
+}
+
+/**
  * Check spec items for completeness
  * AC: @spec-completeness ac-1, ac-2, ac-3
  */
-function checkCompleteness(
+async function checkCompleteness(
   items: LoadedSpecItem[],
-  index: ReferenceIndex
-): CompletenessWarning[] {
+  index: ReferenceIndex,
+  rootDir: string
+): Promise<CompletenessWarning[]> {
   const warnings: CompletenessWarning[] = [];
+
+  // Scan test files for AC coverage
+  const coveredACs = await scanTestCoverage(rootDir);
 
   for (const item of items) {
     const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${item._ulid.slice(0, 8)}`;
@@ -571,6 +625,45 @@ function checkCompleteness(
             }
           }
         }
+      }
+    }
+
+    // Check for test coverage of acceptance criteria
+    if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
+      const uncoveredACs: string[] = [];
+
+      for (const ac of item.acceptance_criteria) {
+        // Build all possible references for this AC
+        const possibleRefs: string[] = [];
+
+        // Try with primary slug
+        if (item.slugs && item.slugs.length > 0) {
+          possibleRefs.push(`@${item.slugs[0]} ${ac.id}`);
+          // Also check for just the slug without specific AC
+          possibleRefs.push(`@${item.slugs[0]}`);
+        }
+
+        // Try with ULID (short form)
+        possibleRefs.push(`@${item._ulid.slice(0, 8)} ${ac.id}`);
+        possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
+
+        // Check if any of these references are covered
+        const isCovered = possibleRefs.some(ref => coveredACs.has(ref));
+
+        if (!isCovered) {
+          uncoveredACs.push(ac.id);
+        }
+      }
+
+      // Only warn if there are uncovered ACs
+      if (uncoveredACs.length > 0) {
+        warnings.push({
+          type: 'missing_test_coverage',
+          itemRef,
+          itemTitle: item.title,
+          message: `Item ${itemRef} has ${uncoveredACs.length} AC(s) without test coverage`,
+          details: `Uncovered: ${uncoveredACs.join(', ')}`,
+        });
       }
     }
   }
@@ -706,7 +799,7 @@ export async function validate(
     // Completeness validation
     // AC: @spec-completeness ac-1, ac-2, ac-3
     if (runCompleteness) {
-      result.completenessWarnings = checkCompleteness(allItems, index);
+      result.completenessWarnings = await checkCompleteness(allItems, index, ctx.rootDir);
     }
   }
 
