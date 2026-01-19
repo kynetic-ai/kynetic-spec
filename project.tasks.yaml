@@ -9741,7 +9741,7 @@
     worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
     concise, copy-pasteable commands, clear success criteria.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9787,6 +9787,12 @@
         session to pick up. No progress made in iteration 19.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T06:05:56.715Z'
+  closed_reason: >-
+    Created comprehensive INSTALL.md with agent-focused setup instructions covering new repo setup,
+    existing repo integration, worktree architecture, agent environment configuration, development
+    mode, verification steps, and common troubleshooting. Document is concise with copy-pasteable
+    commands and clear success criteria.
 - _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
   title: Document kspec worktree architecture in AGENTS.md
