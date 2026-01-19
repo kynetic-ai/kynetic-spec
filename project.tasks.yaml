@@ -10403,4 +10403,38 @@
 
         - Don't try to validate passthrough args - let git handle it
       supersedes: null
+    - _ulid: 01KFAD0KZ9TBNNATJDDSB33T92
+      created_at: '2026-01-19T05:53:00.394Z'
+      author: '@claude'
+      content: |-
+        **Testing approach:**
+
+        Unit/integration tests in tests/integration/log.test.ts (or new file):
+
+        1. **List all tracked commits:**
+           - Create test repo with commits having Task: and Spec: trailers
+           - Run kspec log without args
+           - Verify all tracked commits appear
+           - Verify --limit is respected
+
+        2. **Passthrough args - valid:**
+           - Run kspec log @ref -- -p
+           - Verify diff content appears in output
+           - Run kspec log @ref -- --stat
+           - Verify stat lines appear
+
+        3. **Passthrough args - invalid:**
+           - Run kspec log @ref -- --not-a-real-flag
+           - Verify exit code is non-zero
+           - Verify error message from git appears
+
+        4. **Combined:**
+           - Run kspec log -- -p (all tracked with diff)
+           - Verify both features work together
+
+        **Manual verification:**
+        1. In kspec repo: kspec log should show recent tracked commits
+        2. kspec log @task-log-enhancements -- -p should show diffs
+        3. kspec log -- --invalid should show git error
+      supersedes: null
   todos: []
