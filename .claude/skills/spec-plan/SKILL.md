@@ -27,12 +27,21 @@ Most plans translate to 1-3 spec items with 3-7 AC total.
 
 ### 2. Find the Right Parent
 
+Use search to find related items and the right parent:
+
 ```bash
-# List existing items to find appropriate parent
-npm run dev -- item list | grep -i "<domain>"
+# Search across all specs for related content
+kspec search "<keyword>"
+
+# List items filtered by domain tag
+kspec item list --tag cli
+kspec item list --tag validation
+
+# Check item types to see the hierarchy
+kspec item types
 
 # Check a potential parent
-npm run dev -- item get @parent-slug
+kspec item get @parent-slug
 ```
 
 Spec items need a parent (module or feature). Choose based on domain fit.
@@ -40,7 +49,7 @@ Spec items need a parent (module or feature). Choose based on domain fit.
 ### 3. Create Spec Item(s)
 
 ```bash
-npm run dev -- item add \
+kspec item add \
   --under @parent \
   --title "Feature Title" \
   --type feature \
@@ -51,7 +60,7 @@ npm run dev -- item add \
 
 For requirements under features:
 ```bash
-npm run dev -- item add \
+kspec item add \
   --under @feature-slug \
   --title "Specific Requirement" \
   --type requirement \
@@ -63,7 +72,7 @@ npm run dev -- item add \
 For each testable outcome from the plan:
 
 ```bash
-npm run dev -- item ac add @spec-slug \
+kspec item ac add @spec-slug \
   --given "The precondition or context" \
   --when "The action or trigger" \
   --then "The expected observable result"
@@ -78,14 +87,17 @@ npm run dev -- item ac add @spec-slug \
 ### 5. Derive Implementation Task
 
 ```bash
-# Recursive (default) - derives tasks for spec and all children
-npm run dev -- derive @spec-slug
+# Preview first with dry-run (recommended)
+kspec derive @spec-slug --dry-run
 
-# Preview first with dry-run
-npm run dev -- derive @spec-slug --dry-run
+# Recursive (default) - derives tasks for spec and all children
+kspec derive @spec-slug
 
 # Flat - only this spec, not children
-npm run dev -- derive @spec-slug --flat
+kspec derive @spec-slug --flat
+
+# Derive all specs that don't have tasks yet
+kspec derive --all
 ```
 
 This creates task(s) linked to the spec. Child tasks automatically depend on parent tasks.
@@ -96,7 +108,7 @@ For hierarchical specs (feature with requirements), recursive derive creates the
 Transfer key implementation details from the plan:
 
 ```bash
-npm run dev -- task note @task-slug "Implementation approach:
+kspec task note @task-slug "Implementation approach:
 
 **Files to modify:**
 - path/to/file.ts - description
@@ -112,7 +124,38 @@ npm run dev -- task note @task-slug "Implementation approach:
 ### 7. Begin Implementation
 
 ```bash
-npm run dev -- task start @task-slug
+kspec task start @task-slug
+```
+
+### 8. Verify Structure
+
+After creating specs, verify everything is connected:
+
+```bash
+# Validate all references are correct
+kspec validate --refs
+
+# Check spec shows linked tasks
+kspec item status @spec-slug
+
+# Verify task links back to spec
+kspec task get @task-slug
+```
+
+## Bulk Operations
+
+When creating multiple related specs (e.g., migrating existing features to spec):
+
+```bash
+# Bulk patch spec statuses via stdin (JSONL format)
+echo '{"ref": "@item-1", "data": {"implementation_status": "implemented"}}
+{"ref": "@item-2", "data": {"implementation_status": "implemented"}}' | kspec item patch --bulk
+
+# Or from a JSON array file
+kspec item patch --bulk < items.json
+
+# Preview bulk changes first
+echo '{"ref": "@item-1", "data": {"status": "implemented"}}' | kspec item patch --bulk --dry-run
 ```
 
 ## Checklist
@@ -123,6 +166,7 @@ Before starting implementation, verify:
 - [ ] All acceptance criteria from plan captured
 - [ ] Task derived and linked to spec
 - [ ] Implementation notes transferred from plan
+- [ ] References validated: `kspec validate --refs`
 - [ ] Task started and ready for work
 
 ## Examples
@@ -131,37 +175,37 @@ Before starting implementation, verify:
 
 ```bash
 # Create spec
-npm run dev -- item add --under @cli --title "JSON Output Mode" --type feature --slug json-output
+kspec item add --under @cli --title "JSON Output Mode" --type feature --slug json-output
 
 # Add AC
-npm run dev -- item ac add @json-output --given "User runs any command" --when "--json flag is passed" --then "Output is valid JSON"
-npm run dev -- item ac add @json-output --given "Command produces output" --when "--json flag is passed" --then "Output includes all data that text mode shows"
-npm run dev -- item ac add @json-output --given "Command fails" --when "--json flag is passed" --then "Error is JSON with 'error' field"
+kspec item ac add @json-output --given "User runs any command" --when "--json flag is passed" --then "Output is valid JSON"
+kspec item ac add @json-output --given "Command produces output" --when "--json flag is passed" --then "Output includes all data that text mode shows"
+kspec item ac add @json-output --given "Command fails" --when "--json flag is passed" --then "Error is JSON with 'error' field"
 
 # Derive and note
-npm run dev -- derive @json-output
-npm run dev -- task note @task-json-output "Check globalJsonMode pattern in output.ts..."
+kspec derive @json-output
+kspec task note @task-json-output "Check globalJsonMode pattern in output.ts..."
 ```
 
 ### Larger Feature (1 feature + 2 requirements)
 
 ```bash
 # Create feature
-npm run dev -- item add --under @cli --title "Auto Documentation" --type feature --slug auto-docs
+kspec item add --under @cli --title "Auto Documentation" --type feature --slug auto-docs
 
 # Create requirements
-npm run dev -- item add --under @auto-docs --title "Command Introspection" --type requirement --slug cmd-introspection
-npm run dev -- item add --under @auto-docs --title "Dynamic Help" --type requirement --slug dynamic-help
+kspec item add --under @auto-docs --title "Command Introspection" --type requirement --slug cmd-introspection
+kspec item add --under @auto-docs --title "Dynamic Help" --type requirement --slug dynamic-help
 
 # Add AC to each
-npm run dev -- item ac add @cmd-introspection --given "..." --when "..." --then "..."
-npm run dev -- item ac add @dynamic-help --given "..." --when "..." --then "..."
+kspec item ac add @cmd-introspection --given "..." --when "..." --then "..."
+kspec item ac add @dynamic-help --given "..." --when "..." --then "..."
 
 # Preview what derive will create
-npm run dev -- derive @auto-docs --dry-run
+kspec derive @auto-docs --dry-run
 
 # Derive all tasks recursively (creates 3 tasks with proper dependencies)
-npm run dev -- derive @auto-docs
+kspec derive @auto-docs
 ```
 
 Recursive derive creates: `task-auto-docs`, then `task-cmd-introspection` and `task-dynamic-help`
@@ -179,16 +223,17 @@ both depending on `@task-auto-docs`.
 
 This skill pairs with:
 - **Plan mode**: Use after plan approval
-- **kspec skill**: For ongoing task/spec management
-- **reflect skill**: Review if spec-first was followed
+- **`/kspec`**: For ongoing task/spec management
+- **`/meta`**: Track session focus and capture observations during implementation
+- **`/reflect`**: Review if spec-first was followed
 
 ## Quick Reference
 
 ```bash
 # The full flow in one block
-npm run dev -- item add --under @parent --title "Title" --type feature --slug slug
-npm run dev -- item ac add @slug --given "..." --when "..." --then "..."
-npm run dev -- derive @slug
-npm run dev -- task note @task-slug "Implementation: ..."
-npm run dev -- task start @task-slug
+kspec item add --under @parent --title "Title" --type feature --slug slug
+kspec item ac add @slug --given "..." --when "..." --then "..."
+kspec derive @slug
+kspec task note @task-slug "Implementation: ..."
+kspec task start @task-slug
 ```

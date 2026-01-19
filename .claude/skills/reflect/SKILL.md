@@ -90,12 +90,46 @@ Present findings to user:
 
 ### 6. Capture
 
-For improvements worth keeping:
+Choose the right destination based on what you're capturing:
+
+**Actionable improvements** (future work):
 ```bash
 kspec inbox add "Description of improvement idea" --tag reflection --tag <area>
 ```
 
-Tag appropriately: `dx`, `workflow`, `cli`, `validation`, `process`
+**Friction patterns** (systemic issues):
+```bash
+kspec meta observe friction "Bulk updates require too many commands"
+```
+
+**Success patterns** (worth replicating):
+```bash
+kspec meta observe success "Decision tree approach worked well for triage"
+```
+
+**Open questions** (need investigation):
+```bash
+kspec meta question --add "Should validation happen at parse or execute time?"
+```
+
+Tag inbox items appropriately: `dx`, `workflow`, `cli`, `validation`, `process`
+
+## Where to Capture What
+
+| What you found | Where to put it | Why |
+|----------------|-----------------|-----|
+| Actionable improvement idea | `inbox add` | Will become a task eventually |
+| Friction pattern (systemic) | `meta observe friction` | Informs process improvement |
+| Success pattern | `meta observe success` | Worth documenting/replicating |
+| Open question needing research | `meta question --add` | Track during session |
+| Vague idea, unclear if useful | `inbox add` | Low-friction capture |
+| Bug or specific fix needed | `task add` | Ready to implement |
+
+**Rule of thumb:**
+- **Inbox** = future work (becomes tasks eventually)
+- **Questions** = session context (answer during work)
+- **Observations** = systemic patterns (inform improvements)
+- **Tasks** = clear, actionable work (ready now)
 
 ## Reflection Prompts
 
@@ -170,6 +204,11 @@ Structure reflection as:
 ## Integration
 
 Reflection pairs well with:
-- `/triage` - Reflect after triage sessions
-- Task completion - Reflect on significant implementations
-- Debugging sessions - Capture what made it hard
+- **`/triage`** - Reflect after triage sessions
+- **`/meta`** - Manage observations, questions, and session context
+- **Task completion** - Reflect on significant implementations
+- **Debugging sessions** - Capture what made it hard
+
+After reflection, observations can be:
+- Promoted to tasks: `kspec meta observations promote @ref --title "..."`
+- Resolved when addressed: `kspec meta observations resolve @ref`
