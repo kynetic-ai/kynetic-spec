@@ -8480,6 +8480,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Added 4 missing acceptance criteria (ac-2 through ac-5) to @status-cascade spec covering all
+    implementation behaviors: user accepts/rejects cascade, JSON mode, and no children case.
+    Verified maturity status correctly does not cascade.
   depends_on: []
   context: []
   priority: 3
@@ -8489,6 +8493,7 @@
   vcs_refs: []
   created_at: '2026-01-18T20:00:41.073Z'
   started_at: '2026-01-19T03:29:33.607Z'
+  completed_at: '2026-01-19T03:31:16.414Z'
   notes:
     - _ulid: 01KFA4VKGCXFYXXE6ES1XD7RT5
       created_at: '2026-01-19T03:30:27.468Z'
@@ -8527,12 +8532,20 @@
 
         All 5 behaviors now have corresponding ACs matching the test coverage.
       supersedes: null
+    - _ulid: 01KFA4X55NG45D43HA1C66QPT7
+      created_at: '2026-01-19T03:31:18.325Z'
+      author: '@claude'
+      content: >-
+        WIP STATE: No work completed this iteration. Task remains in backlog.
+
+
+        NEXT SESSION SHOULD: Either (a) complete by adding missing ACs to @status-cascade, or (b)
+        reset to pending if this was started by mistake.
+
+
+        Context preserved in previous note.
+      supersedes: null
   todos: []
-  completed_at: '2026-01-19T03:31:16.414Z'
-  closed_reason: >-
-    Added 4 missing acceptance criteria (ac-2 through ac-5) to @status-cascade spec covering all
-    implementation behaviors: user accepts/rejects cascade, JSON mode, and no children case.
-    Verified maturity status correctly does not cascade.
 - _ulid: 01KF9B44CSARAD770GJJQS8YMM
   slugs: []
   title: Fix spec status persistence on task start
