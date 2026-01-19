@@ -10113,6 +10113,7 @@
     - reflection
   vcs_refs: []
   created_at: '2026-01-19T05:22:49.797Z'
+  started_at: '2026-01-19T07:01:47.067Z'
   notes:
     - _ulid: 01KFAB9XS19DKA0X1PSVC8AXJV
       created_at: '2026-01-19T05:23:08.194Z'
@@ -10121,8 +10122,16 @@
         Document the realpathSync fix in CONTRIBUTING.md or similar. Explain why it's needed (ESM +
         npm link symlinks) and what symptoms look like without it.
       supersedes: null
+    - _ulid: 01KFAH0TKR6RSM44BXSQKCXAAP
+      created_at: '2026-01-19T07:03:01.496Z'
+      author: '@claude'
+      content: >-
+        Added comprehensive ESM + npm link troubleshooting section to README.md. Documents symptoms,
+        root cause, the realpathSync fix, and provides guidance for contributors encountering
+        similar issues. Section explains why symlink resolution is needed for ESM module detection
+        and shows the code pattern.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T07:01:47.067Z'
 - _ulid: 01KFAB9DZ9V095N4XJ0DE164BF
   slugs: []
   title: Add --description flag to inbox promote
