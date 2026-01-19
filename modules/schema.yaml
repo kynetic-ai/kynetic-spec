@@ -682,3 +682,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-19T03:26:38.440Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: AlignmentIndex is built
+            when: getStats is called
+            then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
