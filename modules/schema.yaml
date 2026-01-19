@@ -821,3 +821,7 @@ features:
             given: items loaded
             when: TraitIndex built
             then: indexes all trait-type items by ULID and slug
+          - id: ac-2
+            given: spec with traits
+            when: querying getInheritedAC()
+            then: returns all AC from all implemented traits
