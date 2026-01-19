@@ -9211,9 +9211,35 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-18T21:24:16.062Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T04:22:20.172Z'
+  notes:
+    - _ulid: 01KFA7VE2BJ7T5WYDPRSF088SV
+      created_at: '2026-01-19T04:22:47.628Z'
+      author: '@claude'
+      content: >-
+        Planning implementation:
+
+
+        Current state: task start command updates status and syncs spec, but doesn't show any
+        context about what to work on.
+
+
+        Enhancement plan:
+
+        1. When starting a task with spec_ref, show spec context (title, description if present)
+
+        2. If spec has acceptance criteria, list them with their IDs
+
+        3. Add guidance similar to task note's alignment check - remind about AC coverage
+
+        4. Suppress in JSON mode (like other guidance)
+
+        5. Add after the success message but before spec sync info
+
+
+        This will help agents/users understand what they're working on when they start a task.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9FYS8AF9M4Q5CFQMPPEWN7
   slugs: []
   title: Test coverage tracking and AC guidance
