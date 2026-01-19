@@ -789,3 +789,7 @@ features:
             given: spec item
             when: traits ref is invalid (doesn't exist)
             then: validation reports error
+          - id: ac-3
+            given: spec item
+            when: traits ref points to non-trait item
+            then: validation reports error
