@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli/index.ts",
+    "setup:dev": "npm install && npm run build && npm link",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/",
