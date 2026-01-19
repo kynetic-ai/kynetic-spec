@@ -624,6 +624,8 @@ features:
             given: A task has spec_ref field
             when: getSpecForTask(taskUlid, refIndex) is called
             then: Returns the LoadedSpecItem that task implements
+        status:
+          implementation: implemented
       - _ulid: 01KFA4KTKFC1JW1F4002Q58VT9
         slugs:
           - alignment-warnings
