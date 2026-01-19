@@ -251,3 +251,10 @@ inbox:
       - cli
       - meta
     added_by: '@claude'
+  - _ulid: 01KF9W2HF2W635NJA8XPY81001
+    text: Figure out and document a versioning strategy for the package
+    created_at: '2026-01-19T00:56:57.571Z'
+    tags:
+      - docs
+      - release
+    added_by: '@claude'
