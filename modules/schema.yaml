@@ -853,3 +853,7 @@ features:
             given: spec with traits
             when: running item get --json
             then: includes inherited_traits array with resolved trait info and their AC
+          - id: ac-3
+            given: task linked to spec with traits
+            when: running task get
+            then: shows inherited AC sections (same format as spec display)
