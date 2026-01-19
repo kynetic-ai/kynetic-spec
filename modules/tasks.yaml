@@ -766,3 +766,7 @@ requirements:
         when: setting the status
         then: a note explaining why the task needs review is required (either via --reason or separate task
           note command)
+      - id: ac-19
+        given: kspec tasks ready is run
+        when: the --eligible flag is provided
+        then: "only tasks with automation: eligible are shown"
