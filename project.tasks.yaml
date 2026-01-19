@@ -8393,7 +8393,7 @@
     silently on certain inputs or returning invalid JSON in some cases. Should handle edge cases
     gracefully and return valid JSON even on unexpected input.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8437,6 +8437,8 @@
         - All existing functionality preserved
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T02:18:57.976Z'
+  closed_reason: Fixed by suppressing jq stderr output in kspec-worktree-guard.sh hook
 - _ulid: 01KF9B4WB2M5HNW7V7YKZXFPZ6
   slugs: []
   title: Regenerate invalid 28-char ULIDs in bootstrap meta
