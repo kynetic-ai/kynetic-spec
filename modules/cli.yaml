@@ -1827,6 +1827,9 @@ features:
             then: >-
               Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch":
               "main"}
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
