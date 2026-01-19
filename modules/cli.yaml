@@ -2049,6 +2049,13 @@ features:
     tests: []
     notes: []
     created: '2026-01-19T05:43:22.791Z'
+    acceptance_criteria:
+      - id: basic-multi-ref-syntax
+        given: A command that supports multi-ref (e.g., task complete)
+        when: User runs kspec task complete --refs @task-a @task-b @task-c
+        then: >-
+          The operation applies to all three refs, each ref is processed independently, and results
+          are collected for final output
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
