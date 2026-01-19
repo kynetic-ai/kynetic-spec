@@ -9751,9 +9751,35 @@
     - agents
   vcs_refs: []
   created_at: '2026-01-18T23:29:26.784Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T06:04:58.995Z'
+  notes:
+    - _ulid: 01KFADR4FT04ZMTHHSSV2YRNDM
+      created_at: '2026-01-19T06:05:50.970Z'
+      author: '@claude'
+      content: >-
+        Created comprehensive INSTALL.md with agent-focused setup instructions. Covers:
+
+        - New repo setup (clone, install, build, link)
+
+        - Existing repo integration (kspec init)
+
+        - Worktree architecture explanation and setup
+
+        - Agent environment setup (auto and manual)
+
+        - Development mode for testing changes
+
+        - Verification checklist
+
+        - Common issues and solutions
+
+        - Quick start commands
+
+
+        Written for agents: concise, copy-pasteable commands, clear success criteria for each
+        section.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
   title: Document kspec worktree architecture in AGENTS.md
