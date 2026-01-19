@@ -1315,6 +1315,67 @@ describe('Integration: commit guidance', () => {
   });
 });
 
+describe('Integration: item notes', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  it('should add a note to a spec item', () => {
+    const output = kspec('item note @core "Test note for spec item"', tempDir);
+    expect(output).toContain('Added note');
+
+    // Verify note was added
+    const notesOutput = kspec('item notes @core', tempDir);
+    expect(notesOutput).toContain('Test note for spec item');
+  });
+
+  it('should add a note with author', () => {
+    const output = kspec('item note @core "Note with author" --author "@claude"', tempDir);
+    expect(output).toContain('Added note');
+
+    // Verify note has author
+    const notesOutput = kspec('item notes @core', tempDir);
+    expect(notesOutput).toContain('@claude');
+    expect(notesOutput).toContain('Note with author');
+  });
+
+  it('should list all notes for a spec item', () => {
+    // Add multiple notes
+    kspec('item note @core "First note"', tempDir);
+    kspec('item note @core "Second note"', tempDir);
+
+    const output = kspec('item notes @core', tempDir);
+    expect(output).toContain('First note');
+    expect(output).toContain('Second note');
+  });
+
+  it('should show "No notes" when spec item has no notes', () => {
+    // Create a new item
+    kspec('item add --under @core --title "Test Item" --type feature --slug test-feature', tempDir);
+
+    const output = kspec('item notes @test-feature', tempDir);
+    expect(output).toContain('No notes');
+  });
+
+  it('should output notes as JSON', () => {
+    kspec('item note @core "JSON test note"', tempDir);
+
+    const output = kspec('item notes @core --json', tempDir);
+    const parsed = JSON.parse(output);
+    expect(Array.isArray(parsed)).toBe(true);
+    expect(parsed.length).toBeGreaterThan(0);
+    expect(parsed[0]).toHaveProperty('_ulid');
+    expect(parsed[0]).toHaveProperty('content');
+    expect(parsed[0]).toHaveProperty('created_at');
+  });
+});
+
 describe('Integration: kspec log', () => {
   let tempDir: string;
 

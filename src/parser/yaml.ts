@@ -1138,6 +1138,7 @@ export function createSpecItem(input: SpecItemInput): SpecItem {
     implements: input.implements || [],
     relates_to: input.relates_to || [],
     tests: input.tests || [],
+    notes: input.notes || [],
     created: input.created || new Date().toISOString(),
     created_by: input.created_by,
   };
