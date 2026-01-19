@@ -81,7 +81,7 @@ export function registerModuleCommands(program: Command): void {
         try {
           await fs.access(moduleFilePath);
           error(errors.conflict.moduleFileExists(moduleFilePath));
-          process.exit(EXIT_CODES.ERROR);
+          process.exit(EXIT_CODES.CONFLICT);
         } catch {
           // File doesn't exist, which is what we want
         }

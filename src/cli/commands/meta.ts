@@ -924,7 +924,7 @@ export function registerMetaCommands(program: Command): void {
             ? resolutionText.substring(0, 50) + '...'
             : resolutionText;
           error(errors.conflict.observationAlreadyResolved(resolvedDate, truncated));
-          process.exit(EXIT_CODES.ERROR);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // AC-obs-9: Auto-populate resolution from task completion if promoted
