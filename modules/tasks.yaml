@@ -687,3 +687,8 @@ requirements:
     tests: []
     notes: []
     created: 2026-01-19T19:23:47.591Z
+    description: Tasks have an automation eligibility status that indicates whether they can be
+      processed by unattended automation loops (like ralph). Eligibility is determined by human
+      judgment during triage - assessing whether the task is unambiguous, appropriately scoped, and
+      has sufficient context (spec + notes + description) to be standalone. This prevents automation
+      from attempting tasks that require human decisions, clarification, or oversight.
