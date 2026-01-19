@@ -10140,4 +10140,29 @@
            - Format and output BatchOperationResult
            - Exit with batchExitCode()
       supersedes: null
+    - _ulid: 01KFACJHD8VB12ZSMJ79GNKZ1T
+      created_at: '2026-01-19T05:45:19.016Z'
+      author: '@claude'
+      content: |-
+        Step 4: Implement for item commands
+
+        File: src/cli/commands/item.ts
+        Commands: set, delete
+
+        Same pattern as task commands. Key difference: resolve to spec items instead of tasks.
+
+        For item set with --refs, warn if certain options are used:
+        - --slug with multiple refs would create duplicates (warn or error?)
+        - Most other options (--status, --maturity, --tag) are safe for batch
+
+        Step 5: Implement for inbox delete
+
+        File: src/cli/commands/inbox.ts
+        Command: delete
+
+        Simplest case - good for validating the pattern works:
+        - Inbox items have their own resolution (inbox index)
+        - Same mutual exclusion and empty refs checks
+        - Loop and delete each, collect results
+      supersedes: null
   todos: []
