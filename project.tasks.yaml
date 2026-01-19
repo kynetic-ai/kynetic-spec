@@ -1337,11 +1337,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1635,6 +1637,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1750,6 +1753,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13356,6 +13360,51 @@
       author: "@claude"
       content: See parent task @task-spec-traits-system for full implementation context including file
         paths, code patterns, and implementation order.
+      supersedes: null
+    - _ulid: 01KFC25GCP37C6WPZ0GN10D1N7
+      created_at: 2026-01-19T21:21:55.094Z
+      author: "@claude"
+      content: |-
+        IMPLEMENTATION SCOPE: Display inherited trait AC in item/task output
+
+        **Prerequisites**: TraitIndex from @task-traitindex
+
+        **This task implements**:
+        - Text mode: Show inherited AC in labeled sections after spec's own AC
+        - JSON mode: Add inherited_traits array to output
+        - Same display for task get when task has spec_ref with traits
+
+        **Text format**:
+        ```
+        ─── Inherited from @trait-json-output ───
+          [ac-1] (from @trait-json-output)
+            Given: ...
+            When: ...
+            Then: ...
+        ```
+
+        **JSON format**:
+        ```json
+        {
+          "traits": ["@trait-ref"],
+          "acceptance_criteria": [...],
+          "inherited_traits": [
+            {
+              "ref": "@trait-json-output",
+              "title": "JSON Output Support",
+              "acceptance_criteria": [...]
+            }
+          ]
+        }
+        ```
+
+        **Files to modify**:
+        - src/cli/commands/item.ts - Update item get output
+        - src/cli/commands/task.ts - Update task get output (when spec has traits)
+
+        **Tests**:
+        - tests/cli/item.test.ts - Test trait display
+        - tests/cli/task.test.ts - Test trait display for tasks
       supersedes: null
   todos: []
 - _ulid: 01KFC1GM2ZXGVH1Q7BN33Y230V
