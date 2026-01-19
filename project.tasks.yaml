@@ -9804,6 +9804,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Added comprehensive shadow branch worktree architecture documentation to AGENTS.md. Covers
+    concepts, setup, verification, sync, troubleshooting, and onboarding.
   depends_on: []
   context: []
   priority: 3
@@ -9812,6 +9815,7 @@
   vcs_refs: []
   created_at: '2026-01-18T23:29:29.622Z'
   started_at: '2026-01-19T06:14:59.717Z'
+  completed_at: '2026-01-19T06:17:36.177Z'
   notes:
     - _ulid: 01KFAEDF6H5EYQ501AP9V4M23N
       created_at: '2026-01-19T06:17:30.065Z'
@@ -9843,10 +9847,6 @@
         benefits.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T06:17:36.177Z'
-  closed_reason: >-
-    Added comprehensive shadow branch worktree architecture documentation to AGENTS.md. Covers
-    concepts, setup, verification, sync, troubleshooting, and onboarding.
 - _ulid: 01KF9Q39SJWQX48YFKJ0V7ZFN6
   slugs: []
   title: Add git hook for kspec-meta branch protection
@@ -9859,7 +9859,7 @@
     post-checkout hook warning if .kspec worktree gets on wrong branch. This protects against
     non-Claude git operations too.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -9871,6 +9871,7 @@
   created_at: '2026-01-18T23:29:59.601Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T06:20:49.129Z'
 - _ulid: 01KF9QKK97AC0DA26KWXPEBYSY
   slugs: []
   title: Update documentation for meta-spec and observations tooling
