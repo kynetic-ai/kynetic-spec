@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import { ulid } from 'ulid';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { initContext } from '../../parser/index.js';
 import { error, info, success } from '../output.js';
 import { gatherSessionContext, type SessionContext } from './session.js';
@@ -125,6 +125,29 @@ This is the last iteration of the loop. After completing your work:
 
 // Translator and renderer are created per-session in the action handler.
 // This allows the architecture to be reused by future TUI renderers.
+
+// ─── Adapter Validation ──────────────────────────────────────────────────────
+
+// AC: @ralph-adapter-validation valid-adapter-proceeds, invalid-adapter-error, validation-before-spawn
+/**
+ * Validate that the specified ACP adapter package exists.
+ * Uses npx --no-install to check both global and local node_modules.
+ *
+ * @throws {Error} Never throws - exits process with code 3 if validation fails
+ */
+function validateAdapter(adapterPackage: string): void {
+  // Use npx --no-install with --version to check if package exists
+  // This checks both global and local node_modules, handles scoped packages
+  const result = spawnSync('npx', ['--no-install', adapterPackage, '--version'], {
+    encoding: 'utf-8',
+    stdio: 'pipe',
+  });
+
+  if (result.status !== 0) {
+    error(`Adapter package not found: ${adapterPackage}. Install with: npm install -g ${adapterPackage}`);
+    process.exit(3);
+  }
+}
 
 // ─── Tool Request Handler ────────────────────────────────────────────────────
 
@@ -276,6 +299,12 @@ export function registerRalphCommand(program: Command): void {
           };
           registerAdapter('custom', customAdapter);
           options.adapter = 'custom';
+        }
+
+        // Validate adapter exists before proceeding
+        // Skip validation for custom adapters (--adapter-cmd)
+        if (!options.adapterCmd) {
+          validateAdapter(options.adapter);
         }
 
         // Resolve adapter
