@@ -717,3 +717,7 @@ requirements:
         given: a task is marked needs_review
         when: it needs to become eligible again
         then: "a human must review and explicitly set automation: eligible"
+      - id: ac-7
+        given: ralph is selecting tasks
+        when: a task has no automation field (unassessed)
+        then: that task is not presented to the agent
