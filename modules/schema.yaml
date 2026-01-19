@@ -961,3 +961,7 @@ features:
             given: trait with no AC
             when: validating
             then: completeness warning emitted (trait should have AC)
+          - id: ac-2
+            given: "circular trait reference (trait A has traits: [@trait-B], trait B has traits: [@trait-A])"
+            when: loading or validating
+            then: error reported (cycles not allowed in traits field)
