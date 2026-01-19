@@ -1317,11 +1317,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1575,6 +1577,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1690,6 +1693,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12888,4 +12892,33 @@
 
         - Constraints: Agents can't mark eligible (human only), needs_review requires note
       supersedes: null
+  todos: []
+- title: "Implement: Spec Traits System"
+  type: task
+  spec_ref: "@spec-traits"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-spec-traits-system
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KFC1GKGF9JKCWXQK4TV1RF29
+      created_at: 2026-01-19T21:10:30.159Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Allow spec items to share acceptance criteria via reusable trait definitions. Traits are
+        spec items with type: trait that define AC bundles. Other specs can declare traits they
+        implement, and validation checks that all trait AC have test coverage. Display shows
+        inherited trait AC inline when viewing specs or tasks.
+      supersedes: null
+  _ulid: 01KFC1GKGFBGKAVP1PKWCR7G02
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-19T21:10:30.159Z
   todos: []
