@@ -28,9 +28,14 @@ export interface LogCommit {
  */
 function searchCommits(
   pattern: string,
-  options: { limit: number; since?: string; cwd?: string }
+  options: {
+    limit: number;
+    since?: string;
+    cwd?: string;
+    passthroughArgs?: string[];
+  }
 ): LogCommit[] {
-  const { limit, since, cwd } = options;
+  const { limit, since, cwd, passthroughArgs = [] } = options;
 
   // Escape special regex characters in pattern except @
   const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -40,11 +45,16 @@ function searchCommits(
     cmd += ` --since="${since}"`;
   }
 
+  // Add passthrough args if provided
+  if (passthroughArgs.length > 0) {
+    cmd += ` ${passthroughArgs.join(' ')}`;
+  }
+
   try {
     const result = execSync(cmd, {
       cwd,
       encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+      stdio: ['pipe', 'pipe', 'pipe'],
     }).trim();
 
     if (!result) return [];
@@ -59,8 +69,57 @@ function searchCommits(
         author,
       };
     });
-  } catch {
+  } catch (err: any) {
+    // If git command fails, show error and exit
+    if (err.stderr) {
+      error(err.stderr.toString());
+      process.exit(err.status || 1);
+    }
     return [];
+  }
+}
+
+/**
+ * Search git log with passthrough args (raw output)
+ */
+function searchCommitsRaw(
+  patterns: string[],
+  options: {
+    limit: number;
+    since?: string;
+    cwd?: string;
+    passthroughArgs: string[];
+  }
+): string {
+  const { limit, since, cwd, passthroughArgs } = options;
+
+  // Build grep args for all patterns
+  const grepArgs = patterns.map((p) => {
+    const escaped = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return `--grep="${escaped}"`;
+  });
+
+  let cmd = `git log ${grepArgs.join(' ')} -n ${limit}`;
+  if (since) {
+    cmd += ` --since="${since}"`;
+  }
+
+  // Add passthrough args
+  cmd += ` ${passthroughArgs.join(' ')}`;
+
+  try {
+    return execSync(cmd, {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+  } catch (err: any) {
+    // If git command fails, show error and exit
+    if (err.stderr) {
+      error(err.stderr.toString());
+      process.exit(err.status || 1);
+    }
+    return '';
   }
 }
 
@@ -76,6 +135,7 @@ export function registerLogCommand(program: Command): void {
     .option('-n, --limit <n>', 'Limit results', '10')
     .option('--oneline', 'Compact output format')
     .option('--since <time>', 'Only commits after date')
+    .allowUnknownOption()
     .action(
       async (
         ref: string | undefined,
@@ -94,6 +154,11 @@ export function registerLogCommand(program: Command): void {
             error(errors.git.notGitRepo);
             process.exit(1);
           }
+
+          // Parse passthrough args (everything after --)
+          const dashDashIndex = process.argv.indexOf('--');
+          const passthroughArgs =
+            dashDashIndex !== -1 ? process.argv.slice(dashDashIndex + 1) : [];
 
           // Determine what to search for
           const tasks = await loadAllTasks(ctx);
@@ -141,15 +206,36 @@ export function registerLogCommand(program: Command): void {
             );
           }
 
+          // AC: @cmd-log list-all-tracked
+          // If no patterns specified, list all commits with Task: or Spec: trailers
           if (patterns.length === 0) {
-            error(errors.usage.logNeedRef);
-            process.exit(2);
+            patterns.push('Task: @');
+            patterns.push('Spec: @');
+          }
+
+          const limit = parseInt(options.limit, 10);
+
+          // AC: @cmd-log passthrough-args, passthrough-invalid
+          // If passthrough args are present, use raw git output
+          if (passthroughArgs.length > 0) {
+            const rawOutput = searchCommitsRaw(patterns, {
+              limit,
+              since: options.since,
+              cwd: ctx.rootDir,
+              passthroughArgs,
+            });
+
+            if (!rawOutput.trim()) {
+              info('No commits found');
+            } else {
+              console.log(rawOutput);
+            }
+            return;
           }
 
           // Search for all patterns and dedupe
           const allCommits: LogCommit[] = [];
           const seenHashes = new Set<string>();
-          const limit = parseInt(options.limit, 10);
 
           for (const pattern of patterns) {
             const commits = searchCommits(pattern, {
