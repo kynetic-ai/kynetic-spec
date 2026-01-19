@@ -36,7 +36,7 @@ export const DateTimeSchema = z.union([
 ]);
 
 // Maturity status
-export const MaturitySchema = z.enum(['draft', 'proposed', 'stable', 'deprecated']);
+export const MaturitySchema = z.enum(['draft', 'proposed', 'stable', 'deferred', 'deprecated']);
 
 // Implementation status
 export const ImplementationStatusSchema = z.enum([

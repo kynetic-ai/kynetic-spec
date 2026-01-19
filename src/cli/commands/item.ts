@@ -238,7 +238,7 @@ export function registerItemCommands(program: Command): void {
     .description('List spec items with optional filters')
     .option('-t, --type <type>', 'Filter by item type (module, feature, requirement, constraint, decision)')
     .option('-s, --status <status>', 'Filter by implementation status (not_started, in_progress, implemented, verified)')
-    .option('-m, --maturity <maturity>', 'Filter by maturity (draft, proposed, stable, deprecated)')
+    .option('-m, --maturity <maturity>', 'Filter by maturity (draft, proposed, stable, deferred, deprecated)')
     .option('--tag <tag>', 'Filter by tag (can specify multiple)', (val, prev: string[]) => [...prev, val], [])
     .option('--has <field>', 'Filter items that have field present', (val, prev: string[]) => [...prev, val], [])
     .option('-q, --search <text>', 'Search in title')
@@ -520,7 +520,7 @@ export function registerItemCommands(program: Command): void {
     .option('--tag <tag...>', 'Set tags (replaces existing)')
     .option('--description <desc>', 'Set description')
     .option('--status <status>', 'Set implementation status (not_started, in_progress, implemented, verified)')
-    .option('--maturity <maturity>', 'Set maturity (draft, proposed, stable, deprecated)')
+    .option('--maturity <maturity>', 'Set maturity (draft, proposed, stable, deferred, deprecated)')
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();

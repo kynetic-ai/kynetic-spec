@@ -159,6 +159,20 @@ describe('Integration: module add', () => {
     expect(content).toContain('implementation: not_started');
   });
 
+  it('should accept deferred maturity status', async () => {
+    // AC: @maturity-states ac-1, ac-2
+    kspec('module add --title "Future Feature" --slug future-feat', tempDir);
+    kspec('item set @future-feat --maturity deferred', tempDir);
+
+    const modulePath = path.join(tempDir, 'modules', 'future-feat.yaml');
+    const content = await fs.readFile(modulePath, 'utf-8');
+    expect(content).toContain('maturity: deferred');
+
+    // Verify it parses correctly
+    const result = JSON.parse(kspec('item get @future-feat --json', tempDir));
+    expect(result.status.maturity).toBe('deferred');
+  });
+
   it('should create modules directory if it does not exist', async () => {
     // Remove modules directory if it exists
     const modulesDir = path.join(tempDir, 'modules');
