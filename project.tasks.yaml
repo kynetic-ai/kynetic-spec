@@ -10456,24 +10456,92 @@
         3. kspec log -- --invalid should show git error
       supersedes: null
   todos: []
-- title: 'Implement: Adapter validation on startup'
+- _ulid: 01KFAD9G055C7TWC56WM0VZGA4
+  slugs:
+    - task-adapter-validation-on-startup
+  title: 'Implement: Adapter validation on startup'
   type: task
   spec_ref: '@ralph-adapter-validation'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - '@task-ralph-command-automated-task-loop'
+  context: []
   priority: 3
-  slugs:
-    - task-adapter-validation-on-startup
   tags:
     - ralph
     - dx
     - validation
-  depends_on:
-    - '@task-ralph-command-automated-task-loop'
-  _ulid: 01KFAD9G055C7TWC56WM0VZGA4
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: '2026-01-19T05:57:51.237Z'
-  notes: []
+  notes:
+    - _ulid: 01KFAD9WHAVECKESF9BFW4Y1B3
+      created_at: '2026-01-19T05:58:04.074Z'
+      author: '@claude'
+      content: >-
+        **Implementation overview:**
+
+
+        Validate the ACP adapter package exists before spawning the agent. Currently, if the adapter
+        doesn't exist, the spawn fails with a cryptic 'JsonRpcFraming closed' error. This adds
+        upfront validation with a clear error message.
+
+
+        **File to modify:** src/cli/commands/ralph.ts
+
+
+        **Implementation approach:**
+
+
+        Add validation function early in the ralph command handler, before any session/spawn logic:
+
+
+        ```typescript
+
+        async function validateAdapter(adapterPackage: string): Promise<void> {
+          // Option 1: Use 'npm list -g' to check if globally installed
+          const result = spawnSync('npm', ['list', '-g', adapterPackage, '--depth=0'], {
+            encoding: 'utf-8',
+            stdio: 'pipe'
+          });
+          
+          // Option 2: Use 'npx --no-install' dry run
+          const result = spawnSync('npx', ['--no-install', adapterPackage, '--version'], {
+            encoding: 'utf-8',
+            stdio: 'pipe'
+          });
+          
+          if (result.status \!== 0) {
+            error(`Adapter package not found: ${adapterPackage}. Install with: npm install -g ${adapterPackage}`);
+            process.exit(3);
+          }
+        }
+
+        ```
+
+
+        **Recommendation:** Option 2 (npx --no-install) is more robust - checks both global and
+        local node_modules, and handles scoped packages correctly.
+
+
+        **Call site:**
+
+        In ralph command handler, before createSession/spawnAgent:
+
+        ```typescript
+
+        await validateAdapter(options.adapter || 'claude-code-acp');
+
+        ```
+
+
+        **Edge cases:**
+
+        - Scoped packages (@anthropic-ai/acp) - npx handles these
+
+        - Local vs global install - npx checks both
+
+        - Package exists but wrong version - not our concern, just check existence
+      supersedes: null
   todos: []
