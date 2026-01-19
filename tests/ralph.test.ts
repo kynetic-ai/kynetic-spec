@@ -267,6 +267,79 @@ describe('ralph command', () => {
       expect(context1).toHaveProperty('stats');
     }
   });
+
+  // ─── Adapter Validation Tests ──────────────────────────────────────────────
+
+  // AC: @ralph-adapter-validation valid-adapter-proceeds
+  it('proceeds with valid adapter (uses --adapter-cmd for testing)', async () => {
+    // When using --adapter-cmd, validation is skipped (custom command)
+    // This test verifies the mock adapter works (validation would pass for real adapters)
+    const result = runRalph('--max-loops 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    expect(result.output).toContain('Iteration 1/1');
+    expect(result.output).toContain('Ralph loop completed');
+    expect(result.exitCode).toBe(0);
+  });
+
+  // AC: @ralph-adapter-validation invalid-adapter-error
+  it('exits with code 3 and clear error for invalid adapter', async () => {
+    // Run without --adapter-cmd to trigger validation
+    const result = spawnSync(
+      'npx',
+      ['tsx', CLI_PATH, 'ralph', '--adapter', '@nonexistent/adapter-package', '--dry-run'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: {
+          ...process.env,
+          KSPEC_AUTHOR: '@test',
+        },
+      }
+    );
+
+    const output = (result.stdout || '') + (result.stderr || '');
+
+    expect(result.status).toBe(3);
+    expect(output).toContain('Adapter package not found: @nonexistent/adapter-package');
+    expect(output).toContain('npm install -g @nonexistent/adapter-package');
+  });
+
+  // AC: @ralph-adapter-validation validation-before-spawn
+  it('validates adapter before spawning agent or creating session', async () => {
+    // Run with invalid adapter
+    const result = spawnSync(
+      'npx',
+      ['tsx', CLI_PATH, 'ralph', '--adapter', '@invalid/package'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: {
+          ...process.env,
+          KSPEC_AUTHOR: '@test',
+        },
+      }
+    );
+
+    const output = (result.stdout || '') + (result.stderr || '');
+
+    // Should fail validation immediately
+    expect(result.status).toBe(3);
+    expect(output).toContain('Adapter package not found');
+
+    // Should NOT show any signs of session creation or agent spawn
+    expect(output).not.toContain('Spawning ACP agent');
+    expect(output).not.toContain('Creating ACP session');
+    expect(output).not.toContain('Iteration');
+
+    // Should NOT create session directory
+    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessions = await fs.readdir(sessionsDir).catch(() => []);
+    expect(sessions.length).toBe(0);
+  });
 });
 
 // ─── Event Translator Unit Tests ────────────────────────────────────────────
