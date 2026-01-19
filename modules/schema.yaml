@@ -599,3 +599,17 @@ features:
             given: Multiple tasks reference the same spec, some completed and some in_progress
             when: syncSpecImplementationStatus is called
             then: Spec implementation status is 'in_progress' (partial completion)
+      - _ulid: 01KFA4KB1QBJ1KFT5KEXQCATGQ
+        slugs:
+          - alignment-index
+        title: Bidirectional Spec-Task Mapping
+        type: requirement
+        tags: []
+        description: >-
+          AlignmentIndex provides efficient bidirectional queries: find all tasks implementing a
+          spec, or find the spec a task implements.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-19T03:25:56.664Z'
