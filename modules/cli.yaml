@@ -1006,6 +1006,34 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        notes:
+          - _ulid: 01KFACYYRM33Z9W1PW01ASMWTZ
+            created_at: '2026-01-19T05:52:05.909Z'
+            author: '@claude'
+            content: |-
+              Enhancement: List all tracked commits and git log passthrough
+
+              **New features (ACs list-all-tracked, passthrough-args, passthrough-invalid):**
+
+              1. **List all tracked commits without ref:**
+                 Running `kspec log` without any ref should show all commits that have Task: or Spec: trailers. This gives visibility into all tracked work across the repo.
+                 
+                 Implementation: Use git log --grep pattern that matches either trailer:
+                 git log --grep='Task: @' --grep='Spec: @' --all-match=false
+                 
+                 Respects existing --limit flag (default 10).
+
+              2. **Passthrough git log args:**
+                 Allow passing additional git log flags after -- separator:
+                 `kspec log @ref -- -p --stat --graph`
+                 
+                 This enables power users to get diffs (-p), stats (--stat), or other git log formatting without kspec needing to wrap every possible option.
+                 
+                 Implementation: Detect -- in argv, split args, pass remainder to git log.
+                 Commander.js supports -- passthrough via .passThroughOptions() or manual argv handling.
+
+              **Backward compatibility:** Existing usage unchanged. New features are additive.
+            supersedes: null
       - _ulid: 01KF4NDCHV22PNBV13QS9J5SHB
         slugs:
           - task-list-verbose
