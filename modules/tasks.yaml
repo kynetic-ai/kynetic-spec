@@ -761,3 +761,8 @@ requirements:
         given: kspec task get @ref is run
         when: displaying task details
         then: the automation status is shown (or 'unassessed' if not set)
+      - id: ac-18
+        given: an agent or human marks a task as needs_review
+        when: setting the status
+        then: a note explaining why the task needs review is required (either via --reason or separate task
+          note command)
