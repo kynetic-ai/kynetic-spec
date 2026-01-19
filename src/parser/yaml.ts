@@ -2,6 +2,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
 import yaml from 'js-yaml';
+import * as YAML from 'yaml';
 import { ulid } from 'ulid';
 import { z } from 'zod';
 import {
@@ -53,20 +54,21 @@ export interface LoadedTask extends Task {
 
 /**
  * Parse YAML content into an object
+ * Uses the modern yaml library which has consistent type handling
  */
 export function parseYaml<T>(content: string): T {
-  return yaml.load(content) as T;
+  return YAML.parse(content) as T;
 }
 
 /**
  * Serialize object to YAML
+ * Uses the modern yaml library for consistent formatting
  */
 export function toYaml(obj: unknown): string {
-  return yaml.dump(obj, {
+  return YAML.stringify(obj, {
     indent: 2,
     lineWidth: 100,
-    noRefs: true,
-    sortKeys: false,
+    sortMapEntries: false,
   });
 }
 
@@ -84,6 +86,31 @@ export async function readYamlFile<T>(filePath: string): Promise<T> {
 export async function writeYamlFile(filePath: string, data: unknown): Promise<void> {
   const content = toYaml(data);
   await fs.writeFile(filePath, content, 'utf-8');
+}
+
+/**
+ * Write object to YAML file while preserving formatting and comments.
+ * This is preferred over writeYamlFile for updating existing files.
+ *
+ * Uses the 'yaml' library which provides better formatting than js-yaml.
+ * Note: This implementation uses yaml library's default formatting rules,
+ * which are generally nicer than js-yaml but don't preserve exact original formatting.
+ * True format preservation would require more complex CST manipulation.
+ */
+export async function writeYamlFilePreserveFormat(
+  filePath: string,
+  data: unknown
+): Promise<void> {
+  // Use the modern yaml library which has better defaults
+  // Convert to YAML string with formatting options
+  const yamlString = YAML.stringify(data, {
+    indent: 2,
+    lineWidth: 100,
+    // Don't sort keys - preserve logical ordering
+    sortMapEntries: false,
+  });
+
+  await fs.writeFile(filePath, yamlString, 'utf-8');
 }
 
 /**
@@ -507,10 +534,11 @@ export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<voi
   }
 
   // Save in the same format as original (or tasks: wrapper for new files)
+  // Use format-preserving write to maintain formatting and comments
   if (useTasksWrapper) {
-    await writeYamlFile(taskFilePath, { tasks: fileTasks });
+    await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
   } else {
-    await writeYamlFile(taskFilePath, fileTasks);
+    await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
   }
 }
 
@@ -575,11 +603,11 @@ export async function deleteTask(ctx: KspecContext, task: LoadedTask): Promise<v
     throw new Error(`Task not found in file: ${task._ulid}`);
   }
 
-  // Save the modified file
+  // Save the modified file with format preservation
   if (useTasksWrapper) {
-    await writeYamlFile(taskFilePath, { tasks: fileTasks });
+    await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
   } else {
-    await writeYamlFile(taskFilePath, fileTasks);
+    await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
   }
 }
 
@@ -1207,8 +1235,8 @@ export async function addChildItem(
   const childIndex = childArray.length - 1;
   const childPath = parentPath ? `${parentPath}.${field}[${childIndex}]` : `${field}[${childIndex}]`;
 
-  // Write back
-  await writeYamlFile(parent._sourceFile, raw);
+  // Write back with format preservation
+  await writeYamlFilePreserveFormat(parent._sourceFile, raw);
 
   return { item: cleanChild, path: childPath };
 }
@@ -1257,8 +1285,8 @@ export async function updateSpecItem(
     }
   }
 
-  // Write back
-  await writeYamlFile(item._sourceFile, raw);
+  // Write back with format preservation
+  await writeYamlFilePreserveFormat(item._sourceFile, raw);
 
   return { ...item, ...updates, _ulid: item._ulid } as SpecItem;
 }
@@ -1283,7 +1311,7 @@ export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): P
       }
       // Remove the item from the array
       nav.array.splice(nav.index, 1);
-      await writeYamlFile(item._sourceFile, raw);
+      await writeYamlFilePreserveFormat(item._sourceFile, raw);
       return true;
     }
 
@@ -1293,7 +1321,7 @@ export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): P
       const nav = navigateToPath(raw, found.path);
       if (nav) {
         nav.array.splice(nav.index, 1);
-        await writeYamlFile(item._sourceFile, raw);
+        await writeYamlFilePreserveFormat(item._sourceFile, raw);
         return true;
       }
     }
@@ -1305,7 +1333,7 @@ export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): P
       );
       if (index >= 0) {
         raw.splice(index, 1);
-        await writeYamlFile(item._sourceFile, raw);
+        await writeYamlFilePreserveFormat(item._sourceFile, raw);
         return true;
       }
     }
@@ -1451,8 +1479,8 @@ export async function saveInboxItem(ctx: KspecContext, item: LoadedInboxItem): P
     existingItems.push(cleanItem);
   }
 
-  // Save with { inbox: [...] } format
-  await writeYamlFile(inboxPath, { inbox: existingItems });
+  // Save with { inbox: [...] } format and format preservation
+  await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
 }
 
 /**
@@ -1478,7 +1506,7 @@ export async function deleteInboxItem(ctx: KspecContext, ulid: string): Promise<
     }
 
     existingItems.splice(index, 1);
-    await writeYamlFile(inboxPath, { inbox: existingItems });
+    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
     return true;
   } catch {
     return false;

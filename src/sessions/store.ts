@@ -15,7 +15,7 @@
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
-import yaml from 'js-yaml';
+import * as YAML from 'yaml';
 import {
   SessionMetadataSchema,
   SessionEventSchema,
@@ -103,7 +103,7 @@ export async function createSession(
 
   // Validate and write metadata
   const validated = SessionMetadataSchema.parse(metadata);
-  const content = yaml.dump(validated, { indent: 2, lineWidth: 100, noRefs: true });
+  const content = YAML.stringify(validated, { indent: 2, lineWidth: 100, sortMapEntries: false });
   await fsPromises.writeFile(metadataPath, content, 'utf-8');
 
   return validated;
@@ -124,7 +124,7 @@ export async function getSession(
 
   try {
     const content = await fsPromises.readFile(metadataPath, 'utf-8');
-    const raw = yaml.load(content);
+    const raw = YAML.parse(content);
     return SessionMetadataSchema.parse(raw);
   } catch {
     return null;
@@ -159,7 +159,7 @@ export async function updateSessionStatus(
   };
 
   const metadataPath = getSessionMetadataPath(specDir, sessionId);
-  const content = yaml.dump(updated, { indent: 2, lineWidth: 100, noRefs: true });
+  const content = YAML.stringify(updated, { indent: 2, lineWidth: 100, sortMapEntries: false });
   await fsPromises.writeFile(metadataPath, content, 'utf-8');
 
   return updated;
