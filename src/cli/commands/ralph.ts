@@ -22,6 +22,7 @@ import {
   createSession,
   updateSessionStatus,
   appendEvent,
+  saveSessionContext,
 } from '../../sessions/index.js';
 import { createTranslator, createCliRenderer } from '../../ralph/index.js';
 import { errors } from '../../strings/index.js';
@@ -460,6 +461,10 @@ export function registerRalphCommand(program: Command): void {
 
             if (succeeded) {
               console.log(); // Newline after streaming output
+
+              // Save session context snapshot for audit trail
+              await saveSessionContext(specDir, sessionId, iteration, sessionCtx);
+
               success(`Completed iteration ${iteration}`);
               consecutiveFailures = 0;
             } else {
