@@ -791,3 +791,8 @@ requirements:
         given: kspec tasks ready is run
         when: the --needs-review flag is provided
         then: "only tasks with automation: needs_review are shown (for human triage)"
+      - id: ac-25
+        given: ralph starts a new loop iteration
+        when: selecting the next task
+        then: "ralph re-reads task list and filters by automation: eligible (reflecting any status changes
+          from previous iterations)"
