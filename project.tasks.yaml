@@ -6914,7 +6914,7 @@
   type: task
   spec_ref: '@meta-question-cmd'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - '@task-meta-cli-commands'
@@ -6925,6 +6925,7 @@
   created_at: '2026-01-17T02:34:36.459Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T01:50:14.140Z'
 - _ulid: 01KF4WVX2CSCDQCXSA72B1R17Y
   slugs:
     - task-kspec-meta-context
