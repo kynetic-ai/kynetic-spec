@@ -697,3 +697,6 @@ features:
             then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
         status:
           implementation: implemented
+    status:
+      maturity: draft
+      implementation: implemented
