@@ -849,3 +849,7 @@ features:
             given: spec with traits
             when: running item get (text mode)
             then: shows own AC followed by inherited AC per trait in labeled sections
+          - id: ac-2
+            given: spec with traits
+            when: running item get --json
+            then: includes inherited_traits array with resolved trait info and their AC
