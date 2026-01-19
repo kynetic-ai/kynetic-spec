@@ -8502,6 +8502,31 @@
         missing - likely need ACs for: (1) user says 'n' to cascade, (2) user says 'y' and cascade
         happens, (3) edge cases like no children present.
       supersedes: null
+    - _ulid: 01KFA4WT0XF69B9J8MH5QNF9EG
+      created_at: '2026-01-19T03:31:06.909Z'
+      author: '@claude'
+      content: >-
+        Added 4 missing ACs to @status-cascade spec (ac-2 through ac-5):
+
+
+        - AC-2: User accepts cascade (responds 'y') - children updated
+
+        - AC-3: User rejects cascade (responds 'n') - children NOT updated  
+
+        - AC-4: JSON mode - no prompt shown, children NOT updated
+
+        - AC-5: No children case - no prompt shown
+
+
+        Regarding maturity status cascade: Current implementation does NOT cascade maturity status.
+        When cascading, only the implementation status is updated while maturity is preserved from
+        each child's current status (lines 136-140 in src/cli/commands/item.ts). This seems correct
+        - maturity is independent from implementation progress. Each child should mature at its own
+        pace regardless of parent status.
+
+
+        All 5 behaviors now have corresponding ACs matching the test coverage.
+      supersedes: null
   todos: []
 - _ulid: 01KF9B44CSARAD770GJJQS8YMM
   slugs: []
