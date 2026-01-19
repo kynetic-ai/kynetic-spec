@@ -9516,6 +9516,30 @@
         Need to update @maturity-states spec to include 'deferred' status. This spec is currently
         implemented but doesn't document the deferred option.
       supersedes: null
+    - _ulid: 01KFABPZSXMWFXBJCMC6M5ZK9Z
+      created_at: '2026-01-19T05:30:16.253Z'
+      author: '@claude'
+      content: >-
+        Implementation complete:
+
+        - Added 'deferred' to MaturitySchema in src/schema/common.ts
+
+        - Updated @maturity-states spec with 'deferred' status documentation and lifecycle flows
+
+        - Added 2 acceptance criteria to @maturity-states spec (ac-1 and ac-2)
+
+        - Created MaturitySchema unit tests (2 tests in tests/schema.test.ts)
+
+        - Created integration test for deferred status (tests/module.test.ts)
+
+        - All 572 tests pass (1 skipped)
+
+        - TypeScript compilation successful
+
+
+        The 'deferred' status allows marking stub specs that are intentionally postponed but not
+        abandoned.
+      supersedes: null
   todos: []
 - _ulid: 01KF9GTEQX0ZCNPT52CA06ME2R
   slugs: []
