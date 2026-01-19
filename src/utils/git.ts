@@ -191,6 +191,8 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
 
     if (!sinceCommit) {
       // No commit before this time, diff from the beginning
+      // Using Git's magic empty tree hash - this is the hash of an empty tree object
+      // that exists conceptually in every Git repo (commonly used for initial diffs)
       const diff = execSync('git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD', {
         cwd,
         encoding: 'utf-8',

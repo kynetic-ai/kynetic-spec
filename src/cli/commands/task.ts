@@ -13,6 +13,7 @@ import {
   ReferenceIndex,
   checkSlugUniqueness,
   type LoadedTask,
+  type LoadedSpecItem,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import {
@@ -809,7 +810,7 @@ export function registerTaskCommands(program: Command): void {
         // Gather review context
         const reviewContext: {
           task: typeof foundTask;
-          spec: any;
+          spec: LoadedSpecItem | null;
           diff: string | null;
           started_at: string | null;
         } = {
