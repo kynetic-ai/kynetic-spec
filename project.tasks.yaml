@@ -1258,11 +1258,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1398,6 +1400,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1513,6 +1516,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -11802,19 +11806,48 @@
         These need investigation and fixes.
       supersedes: null
   todos: []
-- title: "Fix stale status AC-1: use spec hierarchy not task dependencies"
+- _ulid: 01KFBBXCCS51V79FK4ZMPC7GT0
+  slugs: []
+  title: "Fix stale status AC-1: use spec hierarchy not task dependencies"
   type: bug
   spec_ref: "@stale-status-detection"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KFBBXCCS51V79FK4ZMPC7GT0
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-19T14:53:00.185Z
-  notes: []
+  notes:
+    - _ulid: 01KFBBXMKNZ39XEK1ZKPRB62WK
+      created_at: 2026-01-19T14:53:08.597Z
+      author: "@claude"
+      content: >-
+        Spec AC-1 says: 'Umbrella/parent task is pending but all child spec items are marked
+        implemented'
+
+
+        Implementation (validate.ts:44-84) instead checks: 'Task with depends_on where all
+        dependency tasks are completed'
+
+
+        These are semantically different:
+
+        - Spec version: Task → spec A with children B,C. If B,C implemented but task pending → warn
+
+        - Impl version: Task A depends on tasks B,C. If B,C completed but A pending → warn
+
+
+        Need to either:
+
+        1. Fix implementation to check spec hierarchy (may need findChildItems)
+
+        2. Or update spec AC to match what was actually useful to implement
+
+
+        Original implementer noted: 'flat loaded structure doesn't preserve spec hierarchy' - may
+        need to investigate if this is still true with current parser.
+      supersedes: null
   todos: []
