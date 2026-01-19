@@ -923,3 +923,7 @@ features:
             given: user runs 'kspec trait list'
             when: traits exist
             then: lists traits with AC counts
+          - id: ac-4
+            given: user runs 'kspec trait get @ref'
+            when: trait exists
+            then: shows trait details and acceptance criteria
