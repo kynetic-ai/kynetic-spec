@@ -770,3 +770,7 @@ requirements:
         given: kspec tasks ready is run
         when: the --eligible flag is provided
         then: "only tasks with automation: eligible are shown"
+      - id: ac-20
+        given: kspec tasks ready is run
+        when: the --unassessed flag is provided
+        then: only tasks without an automation field are shown
