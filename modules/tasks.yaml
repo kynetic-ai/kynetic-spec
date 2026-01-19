@@ -745,3 +745,7 @@ requirements:
         given: a task is created via kspec task add
         when: the --automation flag is provided
         then: the task is created with the specified automation value
+      - id: ac-14
+        given: kspec tasks ready is run
+        when: displaying the ready tasks list
+        then: the automation status is shown for each task (or blank if unassessed)
