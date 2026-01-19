@@ -1332,11 +1332,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1620,6 +1622,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1735,6 +1738,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13368,5 +13372,11 @@
 
         - ac-4: Given trait list empty, when running 'kspec trait list', then shows 'No traits
         defined' message
+      supersedes: null
+    - _ulid: 01KFC227NNN61ASTHDMG10HDBR
+      created_at: 2026-01-19T21:20:07.861Z
+      author: "@claude"
+      content: See parent task @task-spec-traits-system for full implementation context including file
+        paths, code patterns, and implementation order.
       supersedes: null
   todos: []
