@@ -1294,11 +1294,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1506,6 +1508,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1621,6 +1624,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12445,21 +12449,28 @@
         Consider using ReferenceIndex methods instead.
       supersedes: null
   todos: []
-- title: Clarify duplicate test names in integration and meta tests
+- _ulid: 01KFBMAE30DXK93EJPVJ2PKJJH
+  slugs:
+    - clarify-test-names
+  title: Clarify duplicate test names in integration and meta tests
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 4
-  slugs:
-    - clarify-test-names
-  tags:
-    - testing
-  _ulid: 01KFBMAE30DXK93EJPVJ2PKJJH
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 4
+  tags:
+    - testing
   vcs_refs: []
   created_at: 2026-01-19T17:19:56.512Z
-  notes: []
+  notes:
+    - _ulid: 01KFBMAM6BJQVYY01GJG17SZ60
+      created_at: 2026-01-19T17:20:02.763Z
+      author: "@claude"
+      content: "'should error on invalid reference' appears twice in integration.test.ts (lines 862,
+        1450). 'should support JSON output' appears 11 times in meta.test.ts. Add command context to
+        test names."
+      supersedes: null
   todos: []
