@@ -4,6 +4,13 @@ import * as path from 'node:path';
 import * as os from 'node:os';
 import { execSync } from 'node:child_process';
 
+const CLI_PATH = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
+
+function runKspec(args: string, cwd: string): string {
+  const cmd = `npx tsx ${CLI_PATH} ${args}`;
+  return execSync(cmd, { cwd, encoding: 'utf-8' });
+}
+
 /**
  * Tests for staleness detection
  * AC: @stale-status-detection
@@ -86,10 +93,7 @@ tasks:
     );
 
     // Run validate --staleness
-    const result = execSync('kspec validate --staleness', {
-      cwd: tmpDir,
-      encoding: 'utf-8',
-    });
+    const result = runKspec('validate --staleness', tmpDir);
 
     expect(result).toContain('Staleness warnings');
     expect(result).toContain('task-parent');
@@ -141,10 +145,7 @@ tasks:
     );
 
     // Run validate --staleness
-    const result = execSync('kspec validate --staleness', {
-      cwd: tmpDir,
-      encoding: 'utf-8',
-    });
+    const result = runKspec('validate --staleness', tmpDir);
 
     expect(result).toContain('Staleness warnings');
     expect(result).toContain('orphan-spec');
@@ -197,10 +198,7 @@ tasks:
     );
 
     // Run validate --staleness
-    const result = execSync('kspec validate --staleness', {
-      cwd: tmpDir,
-      encoding: 'utf-8',
-    });
+    const result = runKspec('validate --staleness', tmpDir);
 
     expect(result).toContain('Staleness warnings');
     expect(result).toContain('completed-task');
@@ -254,19 +252,13 @@ tasks:
     );
 
     // Run validate WITHOUT --staleness flag
-    const resultWithoutFlag = execSync('kspec validate', {
-      cwd: tmpDir,
-      encoding: 'utf-8',
-    });
+    const resultWithoutFlag = runKspec('validate', tmpDir);
 
     // Should NOT contain staleness warnings
     expect(resultWithoutFlag).not.toContain('Staleness warnings');
 
     // Run validate WITH --staleness flag
-    const resultWithFlag = execSync('kspec validate --staleness', {
-      cwd: tmpDir,
-      encoding: 'utf-8',
-    });
+    const resultWithFlag = runKspec('validate --staleness', tmpDir);
 
     // Should contain staleness warnings
     expect(resultWithFlag).toContain('Staleness warnings');
@@ -319,10 +311,7 @@ tasks:
 
     // Run validate --staleness (without --strict) - should exit 0
     try {
-      execSync('kspec validate --staleness', {
-        cwd: tmpDir,
-        encoding: 'utf-8',
-      });
+      runKspec('validate --staleness', tmpDir);
       // Should succeed (exit code 0)
       expect(true).toBe(true);
     } catch (error: any) {
@@ -332,10 +321,7 @@ tasks:
 
     // Run validate --staleness --strict - should exit 4
     try {
-      execSync('kspec validate --staleness --strict', {
-        cwd: tmpDir,
-        encoding: 'utf-8',
-      });
+      runKspec('validate --staleness --strict', tmpDir);
       // Should have thrown
       expect.fail('Expected exit code 4 but command succeeded');
     } catch (error: any) {
@@ -390,10 +376,7 @@ tasks:
     );
 
     // Run validate --staleness
-    const result = execSync('kspec validate --staleness', {
-      cwd: tmpDir,
-      encoding: 'utf-8',
-    });
+    const result = runKspec('validate --staleness', tmpDir);
 
     expect(result).toContain('Staleness: OK');
   });
