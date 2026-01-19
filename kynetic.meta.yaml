@@ -743,4 +743,26 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFA1T2TD09TXAD8KHNAB0JFJ
+    type: success
+    content: >-
+      Comprehensive design work captured entirely in task notes - created detailed analysis of
+      agent-first CLI improvements with 5 key areas, phased implementation plan, and 5 follow-up
+      inbox items. This design-in-notes pattern works well for planning tasks that inform future
+      spec creation.
+    created_at: '2026-01-19T02:37:11.885Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
+  - _ulid: 01KFA1T7F256DV5H7W73GG1V3C
+    type: friction
+    content: >-
+      Shadow branch worktree was missing at iteration start - required manual 'git worktree add
+      .kspec kspec-meta' then 'kspec shadow repair' to restore. This may be an environment issue
+      (worktree cleanup?) or session isolation problem. Worth investigating why .kspec worktree
+      disappeared between iterations.
+    created_at: '2026-01-19T02:37:16.642Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
