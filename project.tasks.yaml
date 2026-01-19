@@ -1314,11 +1314,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1566,6 +1568,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1681,6 +1684,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12637,7 +12641,7 @@
     task type, complexity, spec coverage, dependencies. Retrospective finding: verification tasks
     work well for automation, implementation tasks often need context-rich sessions."
   spec_ref: "@task-automation-eligibility"
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -12691,6 +12695,13 @@
         duplication. Need to decide: fix current spec first, or spec the traits system first?
       supersedes: null
   todos: []
+  completed_at: 2026-01-19T19:53:55.713Z
+  closed_reason: "Created spec @task-automation-eligibility with 25 acceptance criteria covering:
+    schema (automation field enum), ralph filtering (only eligible), state transitions (agents
+    cannot mark eligible), CLI operations (task set, task add flags), display (tasks ready, task
+    get), filtering flags (--eligible, --unassessed, --needs-review), validation warnings, spec_ref
+    deletion behavior, and ralph re-check behavior. Follow-up inbox item 01KFBX3M created for
+    traits/mixins system to handle cross-cutting AC."
 - _ulid: 01KFBP4CB53GT50CP114AMV5M9
   slugs:
     - upgrade-vitest-v4
