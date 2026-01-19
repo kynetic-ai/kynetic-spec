@@ -816,3 +816,8 @@ features:
         tests: []
         notes: []
         created: 2026-01-19T21:07:34.970Z
+        acceptance_criteria:
+          - id: ac-1
+            given: items loaded
+            when: TraitIndex built
+            then: indexes all trait-type items by ULID and slug
