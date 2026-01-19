@@ -8447,17 +8447,28 @@
     Bootstrap kynetic.meta.yaml has invalid 28-char ULIDs instead of 26-char. Need to regenerate all
     meta item ULIDs. Validation now catches this!
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
+  closed_reason: Already completed in commit ff935fd - all ULIDs now valid 26-char format
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
   created_at: '2026-01-18T20:01:08.450Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T02:19:36.779Z'
+  completed_at: '2026-01-19T02:20:58.081Z'
+  notes:
+    - _ulid: 01KFA0W8QPS7QJS1WJFTSD3HCJ
+      created_at: '2026-01-19T02:20:54.902Z'
+      author: '@claude'
+      content: >-
+        Task was already completed in commit ff935fd (2026-01-17). The invalid 28-char ULIDs (e.g.,
+        '01KF1HAGT0CLAUDE000000000000') were replaced with proper 26-char ULIDs. Verified that all
+        current ULIDs in kynetic.meta.yaml and other bootstrap files are valid 26-character ULIDs.
+        Validation now passes for ULID format.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9B4YXTCGR53W0HX0HPADDS
   slugs: []
   title: Add ralph loop session save on iteration end
@@ -8466,7 +8477,7 @@
     Need to have a way for the ralph loop to explicitly end a session and save the session files at
     the end of the loop iteration
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -8477,6 +8488,7 @@
   created_at: '2026-01-18T20:01:11.098Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T02:21:22.787Z'
 - _ulid: 01KF9C1EVJGF7W9AN8M7Q3CTCP
   slugs: []
   title: Design agent-first CLI spec improvements
