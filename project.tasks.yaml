@@ -10545,22 +10545,115 @@
         - Package exists but wrong version - not our concern, just check existence
       supersedes: null
   todos: []
-- title: 'Implement: kspec setup'
+- _ulid: 01KFADBEHQMMS3PG701HFKX501
+  slugs:
+    - task-kspec-setup
+  title: 'Implement: kspec setup'
   type: task
   spec_ref: '@cmd-setup'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-kspec-setup
   tags:
     - mvp
     - cli
-  depends_on: []
-  _ulid: 01KFADBEHQMMS3PG701HFKX501
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: '2026-01-19T05:58:55.286Z'
-  notes: []
+  notes:
+    - _ulid: 01KFADBVQ9E3DQ0PDJTTCGT6CV
+      created_at: '2026-01-19T05:59:08.778Z'
+      author: '@claude'
+      content: >-
+        **Implementation for ACs: detect-existing-repo, auto-worktree-flag,
+        worktree-already-exists**
+
+
+        **File to modify:** src/cli/commands/setup.ts
+
+
+        **Implementation approach:**
+
+
+        Add worktree detection early in setup command:
+
+
+        ```typescript
+
+        async function ensureWorktree(options: { autoWorktree?: boolean }): Promise<boolean> {
+          // Check if .kspec exists and is valid worktree
+          const kspecPath = path.join(process.cwd(), '.kspec');
+          
+          if (fs.existsSync(kspecPath)) {
+            // Verify it's a valid worktree (has .git file pointing to main repo)
+            const gitFile = path.join(kspecPath, '.git');
+            if (fs.existsSync(gitFile)) {
+              return true; // Already set up
+            }
+            // .kspec exists but isn't a worktree - warn and continue
+            console.warn('Warning: .kspec exists but is not a git worktree');
+            return false;
+          }
+          
+          // Check if kspec-meta branch exists
+          const branchCheck = spawnSync('git', ['branch', '--list', 'kspec-meta'], {
+            encoding: 'utf-8'
+          });
+          
+          if (!branchCheck.stdout.trim()) {
+            return false; // No kspec-meta branch, fresh repo
+          }
+          
+          // Branch exists, worktree doesn't
+          if (options.autoWorktree) {
+            // Auto-create
+            createWorktree();
+            return true;
+          }
+          
+          // Prompt user
+          const answer = await prompt(
+            'kspec-meta branch exists but .kspec worktree is missing. Create it? (y/N)'
+          );
+          
+          if (answer.toLowerCase() === 'y') {
+            createWorktree();
+            return true;
+          }
+          
+          return false;
+        }
+
+
+        function createWorktree(): void {
+          const result = spawnSync('git', ['worktree', 'add', '.kspec', 'kspec-meta'], {
+            encoding: 'utf-8',
+            stdio: 'inherit'
+          });
+          
+          if (result.status !== 0) {
+            error('Failed to create .kspec worktree');
+            process.exit(1);
+          }
+          
+          console.log('Created .kspec worktree from kspec-meta branch');
+        }
+
+        ```
+
+
+        **Add CLI option:**
+
+        ```typescript
+
+        .option('--auto-worktree', 'Automatically create .kspec worktree if kspec-meta branch
+        exists')
+
+        ```
+
+
+        **Call site:** At start of setup command handler, before other setup logic.
+      supersedes: null
   todos: []
