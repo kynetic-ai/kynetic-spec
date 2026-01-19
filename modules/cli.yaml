@@ -2060,6 +2060,12 @@ features:
         given: Existing single-ref positional usage
         when: User runs kspec task complete @task-a
         then: Behavior is identical to current implementation with no deprecation warnings
+      - id: mutual-exclusion-error
+        given: Both positional ref AND --refs flag provided
+        when: User runs kspec task complete @task-a --refs @task-b @task-c
+        then: >-
+          Command exits with code 3, error message says cannot use both positional ref and --refs
+          flag, no operations are performed
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
