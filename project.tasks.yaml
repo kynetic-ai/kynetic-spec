@@ -1316,11 +1316,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1572,6 +1574,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1687,6 +1690,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12850,19 +12854,38 @@
         - Eliminates need for static files entirely
       supersedes: null
   todos: []
-- title: Implement task automation eligibility system
+- _ulid: 01KFBX5FDNJ4Q662C36S97KFE7
+  slugs: []
+  title: Implement task automation eligibility system
   type: task
   spec_ref: "@task-automation-eligibility"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KFBX5FDNJ4Q662C36S97KFE7
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-19T19:54:31.220Z
-  notes: []
+  notes:
+    - _ulid: 01KFBX5R6E5PD4HPVERVS2HVMP
+      created_at: 2026-01-19T19:54:40.207Z
+      author: "@claude"
+      content: >-
+        Implementation scope from @task-automation-eligibility (25 ACs):
+
+        - Schema: Add optional automation field (eligible, needs_review, manual_only) to tasks
+
+        - Ralph: Filter to only eligible tasks, re-check each iteration, handle no eligible tasks
+
+        - CLI: --automation flag for task set/add, --no-automation to clear,
+        --eligible/--unassessed/--needs-review filters for tasks ready
+
+        - Display: Show automation status in task get and tasks ready
+
+        - Validation: Warn on eligible without spec_ref, warn on spec_ref deletion
+
+        - Constraints: Agents can't mark eligible (human only), needs_review requires note
+      supersedes: null
   todos: []
