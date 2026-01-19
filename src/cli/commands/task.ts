@@ -13,6 +13,7 @@ import {
   ReferenceIndex,
   checkSlugUniqueness,
   type LoadedTask,
+  type LoadedSpecItem,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import {
@@ -787,6 +788,114 @@ export function registerTaskCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getNotes, err);
+        process.exit(1);
+      }
+    });
+
+  // kspec task review <ref>
+  task
+    .command('review <ref>')
+    .description('Get task context for review (task details, spec, ACs, git diff)')
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // Import getDiffSince from utils
+        const { getDiffSince } = await import('../../utils/index.js');
+
+        // Gather review context
+        const reviewContext: {
+          task: typeof foundTask;
+          spec: LoadedSpecItem | null;
+          diff: string | null;
+          started_at: string | null;
+        } = {
+          task: foundTask,
+          spec: null,
+          diff: null,
+          started_at: foundTask.started_at || null,
+        };
+
+        // Get spec item if task has spec_ref
+        if (foundTask.spec_ref) {
+          const specResult = index.resolve(foundTask.spec_ref);
+          if (specResult.ok) {
+            const specItem = items.find(i => i._ulid === specResult.ulid);
+            reviewContext.spec = specItem || null;
+          }
+        }
+
+        // Get git diff since task started
+        if (foundTask.started_at) {
+          const startedDate = new Date(foundTask.started_at);
+          reviewContext.diff = getDiffSince(startedDate, ctx.rootDir);
+        }
+
+        output(reviewContext, () => {
+          console.log('='.repeat(60));
+          console.log('Task Review Context');
+          console.log('='.repeat(60));
+          console.log();
+
+          // Task details
+          console.log('TASK DETAILS');
+          console.log('-'.repeat(60));
+          console.log(formatTaskDetails(foundTask, index));
+          console.log();
+
+          // Spec details
+          if (reviewContext.spec) {
+            console.log('LINKED SPEC');
+            console.log('-'.repeat(60));
+            console.log(`Title: ${reviewContext.spec.title}`);
+            console.log(`Type: ${reviewContext.spec.type}`);
+            if (reviewContext.spec.description) {
+              console.log(`\nDescription:\n${reviewContext.spec.description}`);
+            }
+            if (reviewContext.spec.acceptance_criteria && reviewContext.spec.acceptance_criteria.length > 0) {
+              console.log(`\nAcceptance Criteria (${reviewContext.spec.acceptance_criteria.length}):`);
+              for (const ac of reviewContext.spec.acceptance_criteria) {
+                console.log(`  [${ac.id}]`);
+                console.log(`    Given: ${ac.given}`);
+                console.log(`    When: ${ac.when}`);
+                console.log(`    Then: ${ac.then}`);
+              }
+            }
+            console.log();
+          }
+
+          // Git diff
+          if (reviewContext.diff) {
+            console.log('CHANGES SINCE TASK STARTED');
+            console.log('-'.repeat(60));
+            console.log(`Started at: ${foundTask.started_at}`);
+            console.log();
+            console.log(reviewContext.diff);
+            console.log();
+          } else if (foundTask.started_at) {
+            console.log('CHANGES SINCE TASK STARTED');
+            console.log('-'.repeat(60));
+            console.log(`Started at: ${foundTask.started_at}`);
+            console.log('No changes detected');
+            console.log();
+          }
+
+          console.log('='.repeat(60));
+          console.log('Review Checklist:');
+          console.log('- Does the implementation match the task description?');
+          if (reviewContext.spec) {
+            console.log('- Are all acceptance criteria covered?');
+            console.log('- Is test coverage adequate?');
+          }
+          console.log('- Are there any gaps or issues?');
+          console.log('='.repeat(60));
+        });
+      } catch (err) {
+        error('Failed to generate review context', err);
         process.exit(1);
       }
     });
