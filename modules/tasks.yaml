@@ -705,3 +705,7 @@ requirements:
         given: ralph is selecting tasks
         when: filtering ready tasks
         then: "only tasks with automation: eligible are presented to the agent"
+      - id: ac-4
+        given: an agent is working on an eligible task
+        when: the agent determines the task is not suitable for automation
+        then: the agent can mark it as needs_review with a note explaining why
