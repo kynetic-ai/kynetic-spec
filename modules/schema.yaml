@@ -825,3 +825,7 @@ features:
             given: spec with traits
             when: querying getInheritedAC()
             then: returns all AC from all implemented traits
+          - id: ac-3
+            given: trait ref
+            when: querying getSpecsForTrait()
+            then: returns all specs that implement that trait
