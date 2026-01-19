@@ -1359,11 +1359,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1701,6 +1703,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1816,6 +1819,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13873,7 +13877,7 @@
     Investigate: parallel test execution, fixture caching, test isolation overhead, selective test
     runs (--grep). Goal: fast feedback loop during development."
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -13943,3 +13947,6 @@
         - Updated CI workflow to build before test
       supersedes: null
   todos: []
+  completed_at: 2026-01-19T23:09:34.230Z
+  closed_reason: "Centralized test utilities in tests/helpers/cli.ts, switched to pre-built CLI,
+    achieved 6x speedup (200s → 33s). PR #93 created."
