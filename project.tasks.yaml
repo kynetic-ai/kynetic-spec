@@ -11362,6 +11362,7 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-19T06:01:01.581Z'
+  started_at: '2026-01-19T09:47:16.303Z'
   notes:
     - _ulid: 01KFADFRVSCQ8AA3HT5YHX5FVZ
       created_at: '2026-01-19T06:01:16.921Z'
@@ -11482,8 +11483,28 @@
         - Test --strict flag causes exit code 4
         - Test without --staleness flag produces no staleness output
       supersedes: null
+    - _ulid: 01KFATNB2K1KYFX92F079RCN0J
+      created_at: '2026-01-19T09:51:30.899Z'
+      author: '@claude'
+      content: >-
+        Implemented stale status detection with all 5 ACs:
+
+        - AC1: Check if task has dependencies and all are completed/implemented  
+
+        - AC2: Check if spec is marked implemented but has no completed tasks
+
+        - AC3: Check if task is completed but spec is still not_started
+
+        - AC4: Added --staleness flag to validate command
+
+        - AC5: Added --strict support to exit code 4 if staleness warnings found
+
+
+        Implementation strategy: Since schema doesn't have hierarchical parent/child relationships
+        for specs, AC1 checks task dependencies (depends_on) instead. This still catches the
+        intended scenario: a parent task that's pending when all its subtasks are done.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T09:47:16.303Z'
 - _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
   slugs:
     - task-test-repo-setup-command
