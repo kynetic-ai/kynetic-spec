@@ -888,3 +888,7 @@ features:
             given: spec implementing trait
             when: "trait AC has test annotation '// AC: @trait-ref ac-N'"
             then: no warning for that AC
+          - id: ac-3
+            given: kspec validate run
+            when: spec has traits
+            then: trait AC coverage included in completeness check (no special flag needed)
