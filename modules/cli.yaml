@@ -1730,7 +1730,74 @@ features:
         implements: []
         relates_to: []
         tests: []
-        notes: []
+        notes:
+          - _ulid: 01KFADH7GYZ42DXV5XJBCAYNXB
+            created_at: '2026-01-19T06:02:04.703Z'
+            author: '@claude'
+            content: >-
+              Design: Test repo setup command
+
+
+              **Problem:** Setting up isolated repos for testing requires multiple manual steps:
+
+              1. Clone or copy the repo
+
+              2. Remove remote origin (avoid accidental pushes)
+
+              3. Ensure kspec-meta branch is available
+
+              4. Create .kspec worktree
+
+              5. Checkout correct branch
+
+
+              Missing any step causes confusing errors (e.g., stale .kspec data if worktree wasn't
+              created).
+
+
+              **Solution:** Single command that handles all setup steps.
+
+
+              **Command signature:**
+
+              ```
+
+              kspec clone-for-testing [source] [dest] [options]
+
+
+              Arguments:
+                source    Source repo path (default: current directory)
+                dest      Destination path (default: temp directory)
+
+              Options:
+                --branch <name>   Branch to checkout after cloning
+                --json            Output result as JSON
+              ```
+
+
+              **Implementation approach:**
+
+              1. Use git clone --no-hardlinks for full independent copy
+
+              2. cd into dest, remove origin: git remote remove origin
+
+              3. Check if kspec-meta branch exists: git branch --list kspec-meta
+
+              4. If exists, create worktree: git worktree add .kspec kspec-meta
+
+              5. If --branch specified: git checkout <branch>
+
+              6. Print result path (or JSON)
+
+
+              **Use cases:**
+
+              - Integration tests that need clean repo state
+
+              - Manual testing of risky operations
+
+              - Reproducing issues in isolation
+            supersedes: null
         created: '2026-01-19T06:01:34.703Z'
         acceptance_criteria:
           - id: creates-isolated-copy
