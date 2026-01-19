@@ -10736,6 +10736,7 @@
     - enhancement
   vcs_refs: []
   created_at: '2026-01-19T05:52:29.994Z'
+  started_at: '2026-01-19T08:25:04.758Z'
   notes:
     - _ulid: 01KFACZZ4HDNNGNTACRVW9ET5B
       created_at: '2026-01-19T05:52:39.057Z'
@@ -10883,8 +10884,52 @@
         2. kspec log @task-log-enhancements -- -p should show diffs
         3. kspec log -- --invalid should show git error
       supersedes: null
+    - _ulid: 01KFAPHYRWFAF7FD0PZJSC8609
+      created_at: '2026-01-19T08:39:45.692Z'
+      author: '@claude'
+      content: >-
+        Implementation complete:
+
+
+        **Features implemented:**
+
+        1. List all tracked commits (AC: list-all-tracked) - When no ref provided, shows all commits
+        with Task: or Spec: trailers
+
+        2. Passthrough args (AC: passthrough-args) - Arguments after -- are passed to git log
+
+        3. Invalid passthrough error handling (AC: passthrough-invalid) - Git errors are shown to
+        user
+
+
+        **Files modified:**
+
+        - src/cli/commands/log.ts: Added searchCommitsRaw() function for raw git output when
+        passthrough args present, updated registerLogCommand() to handle no-ref case and passthrough
+        args
+
+        - tests/integration.test.ts: Added 4 new tests covering all 3 new ACs
+
+
+        **Implementation details:**
+
+        - When passthroughArgs.length > 0, uses searchCommitsRaw() which outputs raw git log output
+        without parsing
+
+        - When no ref/spec/task provided, searches for 'Task: @' and 'Spec: @' patterns
+
+        - Added .allowUnknownOption() to commander config to allow -- separator
+
+        - Parse argv directly for -- separator since commander doesn't handle this automatically
+
+
+        **Test results:**
+
+        - All 4 new tests passing
+
+        - 595/597 tests passing overall (1 pre-existing failure unrelated to this work, 1 skipped)
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T08:25:04.758Z'
 - _ulid: 01KFAD9G055C7TWC56WM0VZGA4
   slugs:
     - task-adapter-validation-on-startup
