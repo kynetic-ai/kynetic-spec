@@ -651,6 +651,8 @@ features:
               tasks
             when: findAlignmentWarnings is called
             then: Returns warning with type='status_mismatch' explaining the discrepancy
+        status:
+          implementation: implemented
       - _ulid: 01KFA4M9J3FDXJ50PTMQQK82PT
         slugs:
           - alignment-summaries
