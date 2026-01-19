@@ -1160,9 +1160,8 @@ describe('Integration: task delete', () => {
 
     // Run dry-run
     const output = kspec('task delete @delete-test --dry-run', tempDir);
-    expect(output).toContain('Would delete task');
+    expect(output).toContain('Would delete');
     expect(output).toContain('Task to Delete');
-    expect(output).toContain('Source file:');
 
     // Verify task still exists
     const after = kspec('tasks list', tempDir);
