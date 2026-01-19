@@ -41,19 +41,6 @@ inbox:
       - dx
       - performance
     added_by: '@claude'
-  - _ulid: 01KF3XAY7DRQ8J7E6YTNAPV2FS
-    text: >-
-      Stale status detection in validate - warn when: (1) umbrella/parent task is pending but child
-      spec items are all implemented, (2) spec item marked implemented but no completed tasks
-      reference it, (3) task marked completed but linked spec still not_started. Could be part of
-      --completeness flag or separate --staleness check. Detected manually this session: Shadow
-      Branch parent task was pending while all children implemented.
-    created_at: '2026-01-16T17:23:34.765Z'
-    tags:
-      - validation
-      - dx
-      - reflection
-    added_by: '@claude'
   - _ulid: 01KF4DS5K10SKW9A533DQR7TH0
     text: >-
       Investigate ready task ordering beyond priority - creation order may not be ideal. Consider:
