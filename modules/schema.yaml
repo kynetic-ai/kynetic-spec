@@ -762,3 +762,7 @@ features:
             given: trait item exists
             when: missing description
             then: validation emits completeness warning
+          - id: ac-4
+            given: non-trait item type (feature, requirement)
+            when: has traits field
+            then: accepted by schema (traits can be implemented by any item type)
