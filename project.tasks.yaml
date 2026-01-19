@@ -9367,7 +9367,7 @@
     'git worktree prune needed for orphaned worktrees' that are valuable for
     maintenance/reimplementation but don't belong in formal AC.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9454,6 +9454,10 @@
         creating a separate documentation task, or leave in_progress for doc work.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T05:00:34.086Z'
+  closed_reason: >-
+    Implemented append-only notes for spec items. Schema, CLI commands, and integration tests
+    complete. All 564 tests pass. Documentation in AGENTS.md can be added as follow-up.
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
   title: Add deferred status option for stub specs
