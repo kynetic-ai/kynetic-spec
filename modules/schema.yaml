@@ -927,3 +927,7 @@ features:
             given: user runs 'kspec trait get @ref'
             when: trait exists
             then: shows trait details and acceptance criteria
+          - id: ac-5
+            given: user runs 'kspec item trait add @spec @trait'
+            when: valid refs
+            then: adds trait to spec's traits array
