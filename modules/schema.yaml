@@ -801,3 +801,18 @@ features:
             given: spec with same trait listed twice
             when: validating
             then: warning emitted (duplicate)
+      - _ulid: 01KFC1B8DT80QA3V46340MT1BJ
+        slugs:
+          - trait-index
+        title: TraitIndex
+        type: requirement
+        tags: []
+        description: Index class that tracks trait-type items and spec-trait relationships. Follows the
+          pattern of ReferenceIndex and AlignmentIndex - built once from loaded items, queried
+          efficiently.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-19T21:07:34.970Z
