@@ -818,4 +818,15 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFA4Y20RN7W6ZMG7ZNE1VE3E
+    type: success
+    content: >-
+      ACs discovery pattern: Reading implementation code + corresponding tests provides complete
+      picture of behaviors that need acceptance criteria. For @status-cascade, found 5 distinct
+      behaviors (prompt shown, cascade accepted, cascade rejected, JSON mode, no children) by
+      examining handleStatusCascade function and integration tests.
+    created_at: '2026-01-19T03:31:47.864Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
