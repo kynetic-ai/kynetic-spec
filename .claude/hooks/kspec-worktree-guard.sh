@@ -8,7 +8,7 @@
 INPUT=$(cat)
 
 # Extract the command from the JSON input
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 
 # If no command, allow (not a Bash tool call)
 if [ -z "$COMMAND" ]; then
@@ -28,7 +28,7 @@ EOF
 fi
 
 # Get cwd from hook input (not pwd - hook runs in different context)
-CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
+CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
 IN_KSPEC=false
 
 if [[ "$CWD" == *"/.kspec"* || "$CWD" == *"/.kspec" ]]; then
