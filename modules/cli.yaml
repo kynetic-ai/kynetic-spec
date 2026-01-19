@@ -1322,6 +1322,12 @@ features:
             then: >-
               Performs staleness checks in addition to standard validation. Can be combined with
               other validate flags.
+          - id: staleness-exit-code
+            given: Staleness issues are found
+            when: kspec validate --staleness completes
+            then: >-
+              Exits with code 0 (warnings don't fail validation by default). With --strict, exits
+              code 4 if any staleness warnings.
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
