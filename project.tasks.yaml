@@ -9093,6 +9093,46 @@
         pattern applies here - give agents the right command to gather context, let them analyze it.
         Automation/integration can come later if the manual workflow proves valuable.
       supersedes: null
+    - _ulid: 01KFA2A363JREK3DVZ9R3TW7QR
+      created_at: '2026-01-19T02:45:56.547Z'
+      author: '@claude'
+      content: >-
+        Implementation complete - added minimal viable review workflow:
+
+
+        1. **getDiffSince() in src/utils/git.ts**
+           - New function that gets git diff since a specific timestamp
+           - Handles both committed changes and working tree changes
+           - Exported via src/utils/index.ts
+
+        2. **kspec task review command in src/cli/commands/task.ts**
+           - Gathers complete review context: task details, linked spec with ACs, git diff since started_at
+           - Supports both human-readable and JSON output modes
+           - Human output includes review checklist to guide agent/human review
+           - JSON output provides structured data for programmatic consumption
+
+        3. **Verified functionality**
+           - Tested on current task (@01KF9Q16) - successfully shows task details, notes, and diff
+           - All 543 existing tests pass - no regressions
+           - JSON mode works correctly
+
+        **What's NOT included (future enhancements):**
+
+        - Automatic integration into 'kspec task complete' workflow
+
+        - Configuration mechanism (opt-in/out)
+
+        - Test coverage for new functionality
+
+        - Documentation in AGENTS.md or RALPH_LOOP_INSTRUCTIONS.md
+
+
+        **Rationale for minimal scope:**
+
+        Following the pattern established with PR reviews - provide the command to gather context,
+        let agents/users decide when to use it. Integration and automation can come later if the
+        manual workflow proves valuable.
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
   slugs: []
