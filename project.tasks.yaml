@@ -11504,6 +11504,20 @@
         for specs, AC1 checks task dependencies (depends_on) instead. This still catches the
         intended scenario: a parent task that's pending when all its subtasks are done.
       supersedes: null
+    - _ulid: 01KFATPE84VBF1Q3T30M6AG657
+      created_at: '2026-01-19T09:52:06.917Z'
+      author: '@claude'
+      content: |-
+        Implementation complete and manually tested. Tests still needed:
+        1. Test AC1 - parent pending with all deps done
+        2. Test AC2 - spec implemented with no tasks
+        3. Test AC3 - task done but spec not_started
+        4. Test --staleness flag displays warnings correctly
+        5. Test --strict flag exits with code 4 when staleness warnings present
+        6. Test --staleness with no issues shows 'Staleness: OK'
+
+        Manual testing confirmed all scenarios work correctly. See commit 4be72d1.
+      supersedes: null
   todos: []
 - _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
   slugs:
