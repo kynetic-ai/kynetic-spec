@@ -9811,9 +9811,38 @@
     - docs
   vcs_refs: []
   created_at: '2026-01-18T23:29:29.622Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T06:14:59.717Z'
+  notes:
+    - _ulid: 01KFAEDF6H5EYQ501AP9V4M23N
+      created_at: '2026-01-19T06:17:30.065Z'
+      author: '@claude'
+      content: >-
+        Added comprehensive Shadow Branch Worktree Architecture section to AGENTS.md covering:
+
+        - What is a shadow branch (kspec-meta orphan branch + .kspec/ worktree)
+
+        - Why this architecture (separation, sync, collaboration, clean diffs)
+
+        - How it works (diagram showing .git file → gitdir → shadow branch)
+
+        - Setup commands (init, status, repair, sync)
+
+        - Worktree verification commands
+
+        - Remote synchronization behavior and auto-sync
+
+        - Troubleshooting table
+
+        - Integration with main branch
+
+        - New contributor onboarding
+
+
+        Section placed after Project Structure and before Key Concepts. Documentation is detailed
+        but concise, with copy-pasteable commands and clear explanations of the architecture's
+        benefits.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9Q39SJWQX48YFKJ0V7ZFN6
   slugs: []
   title: Add git hook for kspec-meta branch protection
