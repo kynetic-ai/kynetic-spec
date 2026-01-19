@@ -8644,6 +8644,7 @@
     - design
   vcs_refs: []
   created_at: '2026-01-18T20:16:44.913Z'
+  started_at: '2026-01-19T02:34:09.261Z'
   notes:
     - _ulid: 01KF9C1R4Q8HA7T1G8MKHEJYVB
       created_at: '2026-01-18T20:16:54.424Z'
@@ -8667,8 +8668,166 @@
 
         Pattern: show what would happen without executing (like terraform plan)
       supersedes: null
+    - _ulid: 01KFA1PJ658Q1CDJASX9MABMCR
+      created_at: '2026-01-19T02:35:16.549Z'
+      author: '@claude'
+      content: |-
+        ## Agent-First CLI Design Analysis
+
+        ### Current State
+
+        **Strengths:**
+        1. JSON mode already exists (--json flag)
+        2. Different exit codes for different error types (1 for generic, 3 for reference errors)
+        3. ReferenceIndex provides good error categorization (not_found, ambiguous, duplicate_slug)
+        4. Command suggestions on unknown commands
+
+        **Gaps for Agent Consumption:**
+
+        1. **Unstructured error responses in JSON mode:**
+           - Currently: `{success: false, error: "message", details: unknown}`
+           - No error codes, recovery hints, or structured context
+           - Details field is untyped and inconsistent
+
+        2. **No dry-run support:**
+           - Agents can't preview what would happen before executing
+           - Especially important for: item add/set/delete, task mutations, derive, inbox promote
+
+        3. **Inconsistent output schemas:**
+           - Different commands return different JSON structures
+           - No common envelope format
+           - Hard for agents to parse programmatically
+
+        4. **Limited introspection:**
+           - No way to query what commands/options are available programmatically
+           - No schema export for output formats
+
+        5. **Exit codes not documented:**
+           - Exit code semantics not formalized
+           - No clear mapping of error types to codes
+
+        ### Proposed Improvements
+
+        #### 1. Structured Error Schema
+
+        ```typescript
+        interface CliError {
+          code: string;           // e.g., 'REF_NOT_FOUND', 'AMBIGUOUS_REF'
+          message: string;        // Human-readable message
+          context?: {            // Structured error context
+            ref?: string;
+            candidates?: string[];
+            field?: string;
+            // ... other relevant fields
+          };
+          recovery?: string[];   // Suggested recovery actions
+          exitCode: number;      // The exit code that will be used
+        }
+        ```
+
+        JSON mode output:
+        ```json
+        {
+          "success": false,
+          "error": {
+            "code": "REF_NOT_FOUND",
+            "message": "Task not found: @foo",
+            "context": {"ref": "@foo"},
+            "recovery": [
+              "Run 'kspec tasks list' to see available tasks",
+              "Check the reference spelling",
+              "Use 'kspec search foo' to find similar items"
+            ],
+            "exitCode": 3
+          }
+        }
+        ```
+
+        #### 2. Dry-Run Support
+
+        Add `--dry-run` flag to mutating commands:
+        - `kspec task add --dry-run ...` - show what task would be created
+        - `kspec item set --dry-run @ref --status implemented` - show what would change
+        - `kspec derive --dry-run @ref` - show what tasks would be generated
+        - `kspec inbox promote --dry-run @ref` - show what task would be created
+
+        Output format:
+        ```json
+        {
+          "success": true,
+          "dry_run": true,
+          "action": "create_task",
+          "preview": {
+            "_ulid": "<would be generated>",
+            "title": "...",
+            "status": "pending",
+            // ... full object that would be created
+          },
+          "changes": {
+            "files_affected": [".kspec/project.tasks.yaml"],
+            "operations": ["append task to project.tasks.yaml"]
+          }
+        }
+        ```
+
+        #### 3. Unified Output Envelope
+
+        All JSON mode responses follow common structure:
+        ```json
+        {
+          "success": true | false,
+          "data": <command-specific data>,
+          "metadata": {
+            "command": "task get",
+            "timestamp": "2026-01-19T02:40:00Z",
+            "version": "0.1.0"
+          },
+          "error": <CliError> | null
+        }
+        ```
+
+        #### 4. Exit Code Formalization
+
+        Document and enforce:
+        - 0: Success
+        - 1: General error (I/O, parsing, unexpected)
+        - 2: Validation error (invalid input, schema violations)
+        - 3: Reference error (not found, ambiguous, wrong type)
+        - 4: Conflict error (slug collision, circular dependency)
+        - 5: Precondition failed (task already started, can't complete blocked task)
+
+        #### 5. Schema Introspection
+
+        New commands:
+        - `kspec help --json-schema <command>` - output JSON schema for command's output
+        - `kspec help --exit-codes` - document all exit codes
+        - `kspec help commands --json` - machine-readable command tree
+
+        ### Implementation Priority
+
+        **Phase 1 (High Value, Low Risk):**
+        1. Structured error codes and recovery hints
+        2. Exit code formalization and documentation
+        3. Unified output envelope for JSON mode
+
+        **Phase 2 (Higher Complexity):**
+        1. Dry-run support for common commands
+        2. Schema introspection commands
+
+        **Phase 3 (Nice to Have):**
+        1. Output schema export
+        2. Command introspection API
+
+        ### Related Specs
+
+        This design work should inform spec items:
+        - Error handling specification
+        - CLI output format specification  
+        - Dry-run behavior specification
+
+        These specs don't exist yet - should be created as part of implementation planning.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T02:34:09.261Z'
 - _ulid: 01KF9FWXPG3YYDF5PZEY62K4HH
   slugs: []
   title: Add --tree flag to item list command
