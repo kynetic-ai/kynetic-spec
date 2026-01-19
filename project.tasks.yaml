@@ -1312,11 +1312,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1560,6 +1562,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1675,6 +1678,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12648,6 +12652,39 @@
         flags), display (tasks ready, task get), filtering flags (--eligible, --unassessed), and
         validation warning for eligible tasks without spec_ref. Awaiting user review for any
         additions before marking complete."
+      supersedes: null
+    - _ulid: 01KFBWFRQ1B9YYD7XPZQJF7VQW
+      created_at: 2026-01-19T19:42:39.842Z
+      author: "@claude"
+      content: >-
+        Subagent review identified gaps in spec:
+
+
+        **Blocking issues:**
+
+        - AC-14/17 display contradiction (blank vs 'unassessed')
+
+        - AC-11/12 CLI inconsistency (--automation none vs --no-automation)
+
+        - AC-4/18 mandatory note unclear
+
+
+        **High severity:**
+
+        - Missing state transition rules
+
+        - spec_ref deletion behavior undefined
+
+        - Recovery path triggers unclear
+
+        - Ralph re-check mid-loop behavior
+
+        - Validation severity (warning vs error)
+
+
+        **Open design question:** Cross-cutting AC problem raised - bulk refs, --json, common flags
+        apply to many commands. Discussing traits/mixins system to handle shared AC without
+        duplication. Need to decide: fix current spec first, or spec the traits system first?
       supersedes: null
   todos: []
 - _ulid: 01KFBP4CB53GT50CP114AMV5M9
