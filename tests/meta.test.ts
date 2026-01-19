@@ -1936,3 +1936,158 @@ describe('Integration: meta thread', () => {
     }
   });
 });
+
+describe('Integration: meta question', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @meta-question-cmd - list action
+  it('should show no questions when none exist', () => {
+    const output = kspec('meta question list', tempDir);
+    expect(output).toContain('No open questions');
+  });
+
+  // AC: @meta-question-cmd - add action
+  it('should add a question', () => {
+    const output = kspec('meta question add "Why does X happen?"', tempDir);
+    expect(output).toContain('Added question: Why does X happen?');
+  });
+
+  // AC: @meta-question-cmd - list action
+  it('should list all questions', () => {
+    kspec('meta question add "Question 1"', tempDir);
+    kspec('meta question add "Question 2"', tempDir);
+    kspec('meta question add "Question 3"', tempDir);
+
+    const output = kspec('meta question list', tempDir);
+    expect(output).toContain('Open questions:');
+    expect(output).toContain('1. Question 1');
+    expect(output).toContain('2. Question 2');
+    expect(output).toContain('3. Question 3');
+  });
+
+  // AC: @meta-question-cmd - remove action
+  it('should remove a question by index', () => {
+    kspec('meta question add "Question 1"', tempDir);
+    kspec('meta question add "Question 2"', tempDir);
+    kspec('meta question add "Question 3"', tempDir);
+
+    const output = kspec('meta question remove 2', tempDir);
+    expect(output).toContain('Removed question: Question 2');
+
+    const listOutput = kspec('meta question list', tempDir);
+    expect(listOutput).toContain('Question 1');
+    expect(listOutput).not.toContain('Question 2');
+    expect(listOutput).toContain('Question 3');
+  });
+
+  // AC: @meta-question-cmd - clear action
+  it('should clear all questions', () => {
+    kspec('meta question add "Question 1"', tempDir);
+    kspec('meta question add "Question 2"', tempDir);
+
+    const output = kspec('meta question clear', tempDir);
+    expect(output).toContain('Cleared all questions');
+
+    const listOutput = kspec('meta question list', tempDir);
+    expect(listOutput).toContain('No open questions');
+  });
+
+  // AC: @meta-question-cmd - JSON output
+  it('should support JSON output for list', () => {
+    kspec('meta question add "Question 1"', tempDir);
+    kspec('meta question add "Question 2"', tempDir);
+
+    const data = kspecJson<{ questions: string[] }>('meta question list', tempDir);
+    expect(data.questions).toEqual(['Question 1', 'Question 2']);
+  });
+
+  // AC: @meta-question-cmd - JSON output
+  it('should support JSON output for add', () => {
+    const data = kspecJson<{ questions: string[]; added: string }>(
+      'meta question add "New question"',
+      tempDir
+    );
+    expect(data.added).toBe('New question');
+    expect(data.questions).toContain('New question');
+  });
+
+  // AC: @meta-question-cmd - JSON output
+  it('should support JSON output for remove', () => {
+    kspec('meta question add "Question 1"', tempDir);
+    kspec('meta question add "Question 2"', tempDir);
+
+    const data = kspecJson<{ questions: string[]; removed: string }>(
+      'meta question remove 1',
+      tempDir
+    );
+    expect(data.removed).toBe('Question 1');
+    expect(data.questions).toEqual(['Question 2']);
+  });
+
+  // AC: @meta-question-cmd - JSON output
+  it('should support JSON output for clear', () => {
+    kspec('meta question add "Question 1"', tempDir);
+
+    const data = kspecJson<{ questions: string[] }>('meta question clear', tempDir);
+    expect(data.questions).toEqual([]);
+  });
+
+  it('should persist questions across command invocations', () => {
+    kspec('meta question add "Question 1"', tempDir);
+
+    // Run a different command
+    kspec('tasks ready', tempDir);
+
+    // Questions should still be set
+    const data = kspecJson<{ questions: string[] }>('meta question list', tempDir);
+    expect(data.questions).toEqual(['Question 1']);
+  });
+
+  it('should error when adding without text', () => {
+    try {
+      kspec('meta question add', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Question text is required');
+    }
+  });
+
+  it('should error when removing without index', () => {
+    kspec('meta question add "Question 1"', tempDir);
+
+    try {
+      kspec('meta question remove', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Index is required');
+    }
+  });
+
+  it('should error when removing invalid index', () => {
+    kspec('meta question add "Question 1"', tempDir);
+
+    try {
+      kspec('meta question remove 5', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Invalid index');
+    }
+  });
+
+  it('should error on unknown action', () => {
+    try {
+      kspec('meta question unknown', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Unknown action');
+    }
+  });
+});
