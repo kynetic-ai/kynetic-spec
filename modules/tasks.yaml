@@ -42,7 +42,7 @@ features:
           Atomic unit of work. May be spec-derived or standalone.
           Default task type if not specified.
         implements:
-          - '@task-types'
+          - "@task-types"
       - _ulid: 01JHNKA4W2TTPE200000000000
         slugs:
           - task-type-epic
@@ -57,7 +57,7 @@ features:
           Groups related tasks. Often derived from features.
           Can have subtasks that depends_on it.
         implements:
-          - '@task-types'
+          - "@task-types"
       - _ulid: 01JHNKA4W3TTPE300000000000
         slugs:
           - task-type-bug
@@ -72,7 +72,7 @@ features:
           Defect fix. May or may not link to spec item.
           Used for issues found after implementation.
         implements:
-          - '@task-types'
+          - "@task-types"
       - _ulid: 01JHNKA4W4TTPE400000000000
         slugs:
           - task-type-spike
@@ -87,7 +87,7 @@ features:
           Research or investigation task. Time-boxed exploration.
           Output is knowledge, not code.
         implements:
-          - '@task-types'
+          - "@task-types"
       - _ulid: 01JHNKA4W5TTPE500000000000
         slugs:
           - task-type-infra
@@ -102,7 +102,7 @@ features:
           Infrastructure or tooling work. Not spec-derived.
           Examples: CI setup, dependency updates, tooling.
         implements:
-          - '@task-types'
+          - "@task-types"
   - _ulid: 01JHNKA4W6TSTA000000000000
     slugs:
       - task-states
@@ -148,7 +148,7 @@ features:
           Initial state. Work not yet started.
           Transitions: start -> in_progress, cancel -> cancelled
         implements:
-          - '@task-states'
+          - "@task-states"
       - _ulid: 01JHNKA4W8TSTA200000000000
         slugs:
           - state-in-progress
@@ -166,7 +166,7 @@ features:
           - block -> blocked
           - cancel -> cancelled
         implements:
-          - '@task-states'
+          - "@task-states"
       - _ulid: 01JHNKA4W9TSTA300000000000
         slugs:
           - state-blocked
@@ -184,7 +184,7 @@ features:
 
           Transitions: unblock -> in_progress (or pending)
         implements:
-          - '@task-states'
+          - "@task-states"
       - _ulid: 01JHNKA5W0TSTA400000000000
         slugs:
           - state-completed
@@ -199,7 +199,7 @@ features:
           Work finished successfully. Terminal state.
           Should include closed_reason describing outcome.
         implements:
-          - '@task-states'
+          - "@task-states"
       - _ulid: 01JHNKA5W1TSTA500000000000
         slugs:
           - state-cancelled
@@ -214,7 +214,7 @@ features:
           Work abandoned. Terminal state.
           Should include closed_reason explaining why.
         implements:
-          - '@task-states'
+          - "@task-states"
       - _ulid: 01JHNKA5W2TSTA600000000000
         slugs:
           - derived-ready
@@ -230,7 +230,7 @@ features:
           `kspec tasks ready` returns tasks in this state.
           This is the primary query for "what can I work on?"
         implements:
-          - '@task-states'
+          - "@task-states"
       - _ulid: 01KF3H24BBZ5JXXMEP8JJS9SEJ
         slugs:
           - task-completion-guardrails
@@ -239,21 +239,18 @@ features:
         tags:
           - workflow
           - dx
-        description: >-
-          When completing a task, CLI provides guardrails to ensure work is properly documented and
-          aligned with spec.
+        description: When completing a task, CLI provides guardrails to ensure work is properly documented
+          and aligned with spec.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T13:49:03.212Z'
+        created: 2026-01-16T13:49:03.212Z
         acceptance_criteria:
           - id: ac-2
             given: A task with spec_ref is completed and the linked spec has acceptance_criteria
             when: The task is marked completed
-            then: >-
-              CLI shows a reminder: 'Linked spec has N acceptance criteria - verify they are
-              covered'
+            then: "CLI shows a reminder: 'Linked spec has N acceptance criteria - verify they are covered'"
           - id: ac-3
             given: A task without spec_ref is completed
             when: The task is marked completed
@@ -295,7 +292,7 @@ features:
 
           Optional for free-form tasks (bug, infra).
         implements:
-          - '@task-schema'
+          - "@task-schema"
       - _ulid: 01JHNKA5W5TSCH200000000000
         slugs:
           - task-work-fields
@@ -315,7 +312,7 @@ features:
 
           These fields don't exist on regular spec items.
         implements:
-          - '@task-schema'
+          - "@task-schema"
       - _ulid: 01JHNKA5W6TSCH300000000000
         slugs:
           - task-timestamps
@@ -333,7 +330,7 @@ features:
 
           Format: ISO 8601 (2025-01-14T10:00:00Z)
         implements:
-          - '@task-schema'
+          - "@task-schema"
       - _ulid: 01JHNKA5W7TSCH400000000000
         slugs:
           - task-vcs-refs
@@ -353,7 +350,7 @@ features:
 
           Minimal schema, extensible as needed.
         implements:
-          - '@task-schema'
+          - "@task-schema"
   - _ulid: 01JHNKA5W8TDRV000000000000
     slugs:
       - task-derivation
@@ -398,7 +395,7 @@ features:
           - spec_ref: @<item>
           - derivation: auto
         implements:
-          - '@task-derivation'
+          - "@task-derivation"
       - _ulid: 01JHNKA6W0TDRV200000000000
         slugs:
           - derive-idempotency
@@ -413,7 +410,7 @@ features:
           - Use --force to create additional task anyway
           - Useful for re-running derive without duplicates
         implements:
-          - '@task-derivation'
+          - "@task-derivation"
   - _ulid: 01KEZCJPJ4A4QG2DY5F3BBVFVB
     slugs:
       - task-notes
@@ -457,7 +454,7 @@ features:
 
           Notes are never deleted, only superseded.
         implements:
-          - '@task-notes'
+          - "@task-notes"
       - _ulid: 01KEZCJPJ4Y0CGNFZREY3QS225
         slugs:
           - note-cli
@@ -473,7 +470,7 @@ features:
 
           JSON output available for all commands.
         implements:
-          - '@task-notes'
+          - "@task-notes"
   - _ulid: 01KEZCJPJ41NHFPF7WV6PF68SW
     slugs:
       - task-todos
@@ -517,7 +514,7 @@ features:
           - added_by: Who added it
           - promoted_to: @ref if promoted to task (optional)
         implements:
-          - '@task-todos'
+          - "@task-todos"
       - _ulid: 01KEZCJPJ4WPM1XREVKF00QM2K
         slugs:
           - todo-cli
@@ -534,7 +531,7 @@ features:
 
           Todos are for quick capture; promote when complex.
         implements:
-          - '@task-todos'
+          - "@task-todos"
   - _ulid: 01JHNKA6W7TSTR000000000000
     slugs:
       - task-storage
@@ -567,7 +564,7 @@ features:
 
           Simple, keeps related items together.
         implements:
-          - '@task-storage'
+          - "@task-storage"
       - _ulid: 01JHNKA6W9TSTR200000000000
         slugs:
           - task-storage-separate
@@ -590,7 +587,7 @@ features:
 
           Separates concerns, enables archiving.
         implements:
-          - '@task-storage'
+          - "@task-storage"
   - _ulid: 01JHNKA7W0TQRY000000000000
     slugs:
       - task-queries
@@ -638,7 +635,7 @@ features:
 
           This is THE command for "what can I work on next?"
         implements:
-          - '@task-queries'
+          - "@task-queries"
       - _ulid: 01JHNKA7W2TQRY200000000000
         slugs:
           - query-next
@@ -655,7 +652,7 @@ features:
 
           Useful for agents: "give me one thing to do"
         implements:
-          - '@task-queries'
+          - "@task-queries"
       - _ulid: 01JHNKA7W3TQRY300000000000
         slugs:
           - query-filters
@@ -676,4 +673,17 @@ features:
 
           All queries support --json output.
         implements:
-          - '@task-queries'
+          - "@task-queries"
+requirements:
+  - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
+    slugs:
+      - task-automation-eligibility
+    title: Task Automation Eligibility
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    notes: []
+    created: 2026-01-19T19:23:47.591Z
