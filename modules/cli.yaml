@@ -1312,6 +1312,10 @@ features:
             then: >-
               Warns: 'Spec @spec-item is implemented but has no completed tasks. Verify
               implementation or link existing task.'
+          - id: task-done-spec-not-started
+            given: Task is completed but linked spec is still not_started
+            when: kspec validate --staleness runs
+            then: 'Warns: ''Task @task completed but spec @spec-item is not_started. Update spec status.'''
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
