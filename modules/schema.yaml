@@ -857,3 +857,7 @@ features:
             given: task linked to spec with traits
             when: running task get
             then: shows inherited AC sections (same format as spec display)
+          - id: ac-4
+            given: trait AC displayed in text mode
+            when: showing
+            then: labels each AC with source trait ref (e.g., 'from @trait-json-output')
