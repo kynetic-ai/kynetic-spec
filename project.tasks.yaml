@@ -9026,7 +9026,7 @@
     criteria, git diff since started_at. Reports gaps between spec and implementation back to main
     agent. Configurable via setup (opt-in/out). Ties into alignment system.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9134,6 +9134,11 @@
         manual workflow proves valuable.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T02:46:06.647Z'
+  closed_reason: >-
+    Implemented minimal viable review workflow: Added 'kspec task review' command that gathers task
+    details, linked spec with ACs, and git diff since started_at. Both human-readable and JSON
+    output modes work. All 543 tests pass.
 - _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
   slugs: []
   title: Create INSTALL.md with agent-focused setup instructions
