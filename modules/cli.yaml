@@ -2528,6 +2528,11 @@ features:
     description: Enable workflows defined in meta to serve as first-class skills without requiring
       static .md files. Workflows become the single source of truth for procedural knowledge, with
       skill files either generated or dynamically served.
+    acceptance_criteria:
+      - id: ac-1
+        given: a workflow with skill_content field defined
+        when: running kspec workflow export @workflow-id
+        then: generates a valid SKILL.md file with proper frontmatter
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
