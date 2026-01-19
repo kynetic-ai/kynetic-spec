@@ -2533,6 +2533,10 @@ features:
         given: a workflow with skill_content field defined
         when: running kspec workflow export @workflow-id
         then: generates a valid SKILL.md file with proper frontmatter
+      - id: ac-2
+        given: a workflow definition
+        when: adding skill_content, phases, or prompt_templates fields
+        then: the workflow schema validates and stores the enhanced content
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
