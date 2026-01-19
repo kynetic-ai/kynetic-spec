@@ -886,4 +886,16 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFA9N9FMZCAJAQNE97K479RF
+    type: friction
+    content: >-
+      Task state management across sessions: found task @01KF9G2X left in_progress from previous
+      iteration. No built-in command to reset task to pending - only cancel (which marks it
+      cancelled) or complete. Added note documenting state, but task remains in_progress. Consider
+      adding 'kspec task reset' or 'kspec task stop' command to move tasks back to pending when
+      abandoned mid-work.
+    created_at: '2026-01-19T04:54:23.476Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []

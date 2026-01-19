@@ -9386,6 +9386,17 @@
         Not worked on in iteration 16. Task was left in_progress from previous session. Resetting to
         pending for next session to pick up.
       supersedes: null
+    - _ulid: 01KFA9PVFCNK8QSGNSPG1DCESK
+      created_at: '2026-01-19T04:55:14.669Z'
+      author: '@claude'
+      content: |-
+        WIP: Added notes field to SpecItemSchema (src/schema/spec.ts). Still needed:
+        - CLI command: kspec item note <ref> <content>
+        - Tests for spec item notes
+        - Documentation updates
+
+        Schema change is ready but awaiting CLI implementation.
+      supersedes: null
   todos: []
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
