@@ -1274,11 +1274,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1446,6 +1448,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1561,6 +1564,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12193,21 +12197,27 @@
         coverage for @workflow-definitions ac-workflow-3.
       supersedes: null
   todos: []
-- title: Deduplicate formatRelativeTime in inbox.ts
+- _ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
+  slugs:
+    - dedupe-format-relative-time
+  title: Deduplicate formatRelativeTime in inbox.ts
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs:
-    - dedupe-format-relative-time
-  tags:
-    - tech-debt
-  _ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T16:47:44.094Z
-  notes: []
+  notes:
+    - _ulid: 01KFBJFNB2GP21YXGCG0ENPK10
+      created_at: 2026-01-19T16:47:50.627Z
+      author: "@claude"
+      content: inbox.ts:33-46 has local formatRelativeTime() that duplicates utils/time.ts version. Utils
+        version has week-level formatting. Remove local, use utils.
+      supersedes: null
   todos: []
