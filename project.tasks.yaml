@@ -10035,7 +10035,7 @@
   type: task
   description: Add setup:dev npm script (install + build + link)
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10045,6 +10045,7 @@
     - reflection
   vcs_refs: []
   created_at: '2026-01-19T05:22:43.488Z'
+  started_at: '2026-01-19T06:34:51.232Z'
   notes:
     - _ulid: 01KFAB9TA7RX0Z1M8ZH81MV9TN
       created_at: '2026-01-19T05:23:04.647Z'
@@ -10054,7 +10055,10 @@
         contributor setup.
       supersedes: null
   todos: []
-  started_at: '2026-01-19T06:34:51.232Z'
+  completed_at: '2026-01-19T06:35:15.755Z'
+  closed_reason: >-
+    Added setup:dev npm script. Script runs: npm install && npm run build && npm link. Tested
+    successfully. Simplifies contributor onboarding to a single command.
 - _ulid: 01KFAB9960F1YGQQQKFYF3H7ZY
   slugs: []
   title: Add CI test for kspec command
