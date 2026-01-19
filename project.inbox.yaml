@@ -222,16 +222,3 @@ inbox:
       - docs
       - spec
     added_by: "@claude"
-  - _ulid: 01KFBX3M96KDG46BEVM09XCZ0Z
-    text: "Spec traits/mixins system for cross-cutting AC - Allow specs to declare traits (like
-      bulk-ref-support, json-output) that provide shared acceptance criteria. Prevents duplication
-      of AC across commands that share behavior (e.g., --automation flag applies to task set, task
-      add, etc.). Need full /spec-plan to design: trait definition, trait inheritance, validation of
-      trait compliance, interaction with existing AC. Example traits: bulk-ref-support, json-output,
-      common-filtering-flags."
-    created_at: 2026-01-19T19:53:30.663Z
-    tags:
-      - spec
-      - design
-      - traits
-    added_by: "@claude"
