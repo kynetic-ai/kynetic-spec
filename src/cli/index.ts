@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
+import { realpathSync } from 'fs';
 import { setJsonMode, setVerboseMode, getVerboseMode } from './output.js';
 import { setVerboseModeGetter } from '../parser/shadow.js';
 import { findClosestCommand, getAllCommands, COMMAND_ALIASES } from './suggest.js';
@@ -98,6 +99,8 @@ program.on('command:*', (operands) => {
 export { program };
 
 // Parse and execute (only when run directly)
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Use realpathSync to resolve symlinks (e.g., when run via npm link)
+const scriptPath = realpathSync(process.argv[1]);
+if (import.meta.url === `file://${scriptPath}`) {
   program.parse();
 }
