@@ -10750,22 +10750,141 @@
         - Test help --exit-codes output format
       supersedes: null
   todos: []
-- title: 'Implement: Stale status detection'
+- _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
+  slugs:
+    - task-stale-status-detection
+  title: 'Implement: Stale status detection'
   type: task
   spec_ref: '@stale-status-detection'
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-stale-status-detection
   tags:
     - validation
     - dx
-  depends_on: []
-  _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: '2026-01-19T06:01:01.581Z'
-  notes: []
+  notes:
+    - _ulid: 01KFADFRVSCQ8AA3HT5YHX5FVZ
+      created_at: '2026-01-19T06:01:16.921Z'
+      author: '@claude'
+      content: |-
+        **Implementation for 5 ACs**
+
+        **File to modify:** src/cli/commands/validate.ts
+
+        **Step 1: Add CLI options**
+
+        ```typescript
+        .option('--staleness', 'Check for stale status mismatches')
+        .option('--strict', 'Treat staleness warnings as errors')
+        ```
+
+        **Step 2: Implement staleness checks**
+
+        Add new function in validate.ts or separate src/lib/staleness.ts:
+
+        ```typescript
+        interface StalenessWarning {
+          type: 'parent-pending' | 'spec-no-task' | 'task-spec-mismatch';
+          message: string;
+          refs: string[];
+        }
+
+        function checkStaleness(
+          items: SpecItem[],
+          tasks: Task[]
+        ): StalenessWarning[] {
+          const warnings: StalenessWarning[] = [];
+          
+          // Check 1: Parent task pending but children done
+          for (const task of tasks) {
+            if (task.status \!== 'pending' && task.status \!== 'in_progress') continue;
+            if (\!task.spec_ref) continue;
+            
+            const spec = findSpec(task.spec_ref, items);
+            if (\!spec) continue;
+            
+            const children = findChildSpecs(spec, items);
+            if (children.length === 0) continue;
+            
+            const allImplemented = children.every(
+              c => c.implementation_status === 'implemented'
+            );
+            
+            if (allImplemented) {
+              warnings.push({
+                type: 'parent-pending',
+                message: `Task @${task.slug} is pending but all linked specs are implemented`,
+                refs: [task._ulid]
+              });
+            }
+          }
+          
+          // Check 2: Spec implemented but no completed task
+          for (const item of items) {
+            if (item.implementation_status \!== 'implemented') continue;
+            
+            const completedTasks = tasks.filter(
+              t => t.status === 'completed' && t.spec_ref === `@${item.slug}`
+            );
+            
+            if (completedTasks.length === 0) {
+              warnings.push({
+                type: 'spec-no-task',
+                message: `Spec @${item.slug} is implemented but has no completed tasks`,
+                refs: [item._ulid]
+              });
+            }
+          }
+          
+          // Check 3: Task completed but spec not started
+          for (const task of tasks) {
+            if (task.status \!== 'completed') continue;
+            if (\!task.spec_ref) continue;
+            
+            const spec = findSpec(task.spec_ref, items);
+            if (\!spec) continue;
+            
+            if (spec.implementation_status === 'not_started') {
+              warnings.push({
+                type: 'task-spec-mismatch',
+                message: `Task @${task.slug} completed but spec @${spec.slug} is not_started`,
+                refs: [task._ulid, spec._ulid]
+              });
+            }
+          }
+          
+          return warnings;
+        }
+        ```
+
+        **Step 3: Integrate with validate command**
+
+        ```typescript
+        if (options.staleness) {
+          const warnings = checkStaleness(items, tasks);
+          
+          if (warnings.length > 0) {
+            console.log(`\nStaleness warnings (${warnings.length}):`);
+            for (const w of warnings) {
+              console.log(`  ⚠ ${w.message}`);
+            }
+            
+            if (options.strict) {
+              process.exit(EXIT_CODES.VALIDATION);
+            }
+          }
+        }
+        ```
+
+        **Testing:**
+        - Create test fixtures with each staleness scenario
+        - Verify correct warnings are generated
+        - Test --strict flag causes exit code 4
+        - Test without --staleness flag produces no staleness output
+      supersedes: null
   todos: []
