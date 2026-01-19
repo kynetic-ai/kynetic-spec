@@ -9397,6 +9397,22 @@
 
         Schema change is ready but awaiting CLI implementation.
       supersedes: null
+    - _ulid: 01KFA9RN4D6V1SW8KDWTKMS9CR
+      created_at: '2026-01-19T04:56:13.709Z'
+      author: '@claude'
+      content: >-
+        Additional WIP found: CLI commands for spec item notes implemented in
+        src/cli/commands/item.ts:
+
+        - kspec item note <ref> <message> (with --author and --supersedes options)
+
+        - kspec item notes <ref> (to view notes)
+
+
+        Uses existing createNote and saveSpecItem functions from parser.
+
+        Running tests to verify implementation...
+      supersedes: null
   todos: []
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
