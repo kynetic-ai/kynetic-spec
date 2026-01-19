@@ -1456,6 +1456,10 @@ features:
             then: >-
               Detects missing worktree and prompts: 'kspec-meta branch exists but .kspec worktree is
               missing. Create it? (y/N)', creates worktree if confirmed
+          - id: auto-worktree-flag
+            given: Repository has kspec-meta branch but no .kspec worktree
+            when: User runs kspec setup --auto-worktree
+            then: Automatically creates .kspec worktree without prompting
       - _ulid: 01KF3ECD4PQ01ENY5PVSPTKK9X
         slugs:
           - cmd-module-add
