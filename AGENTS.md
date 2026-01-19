@@ -655,6 +655,7 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 
 | Skill | Purpose |
 |-------|---------|
+| `/audit` | Comprehensive codebase audit for release readiness |
 | `/kspec` | Task and spec management workflows |
 | `/meta` | Session context (focus, threads, questions, observations) |
 | `/triage` | Systematic inbox and observation processing |
