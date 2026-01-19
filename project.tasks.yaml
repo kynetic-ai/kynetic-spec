@@ -1244,11 +1244,13 @@
           - validation.ts strings already defined in src/strings/validation.ts
           - Need to update validate.ts and shadow.ts to use them
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
           
         - Phase 5: Extract output.ts field labels
@@ -1355,6 +1357,7 @@
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
           - Estimated scope: 50+ error messages across 15+ command files
+
 
           
         - Phase 5: Extract output.ts field labels
@@ -1471,6 +1474,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
           
         - Phase 5: Extract output.ts field labels
@@ -9188,9 +9192,15 @@
     - design
   vcs_refs: []
   created_at: 2026-01-18T21:26:59.054Z
-  notes: []
-  todos: []
   started_at: 2026-01-19T10:51:01.727Z
+  notes:
+    - _ulid: 01KFAY34DP154P29NBMEKVNY8W
+      created_at: 2026-01-19T10:51:28.566Z
+      author: "@claude"
+      content: Task was auto-started but no work was done in this iteration. Completed YAML formatting
+        improvements (01KEZ9DSD3) instead. Returning to pending status.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9G2XR8ADWP4W6CXVB6JHJ4
   slugs: []
   title: Add append-only notes to spec items
