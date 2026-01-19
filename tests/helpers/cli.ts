@@ -16,27 +16,112 @@ export const CLI_PATH = path.join(__dirname, '..', '..', 'dist', 'cli', 'index.j
 export const FIXTURES_DIR = path.join(__dirname, '..', 'fixtures');
 
 /**
- * Run a kspec CLI command and return stdout
+ * Options for running kspec CLI commands
+ */
+export interface KspecOptions {
+  /** Input to pipe to stdin */
+  stdin?: string;
+  /** Don't throw on non-zero exit code */
+  expectFail?: boolean;
+  /** Additional environment variables */
+  env?: Record<string, string>;
+}
+
+/**
+ * Result from running a kspec CLI command
+ */
+export interface KspecResult {
+  /** Exit code (0 = success) */
+  exitCode: number;
+  /** Standard output (trimmed) */
+  stdout: string;
+  /** Standard error (trimmed) */
+  stderr: string;
+}
+
+/**
+ * Run a kspec CLI command
  *
  * @param args - CLI arguments (e.g., "task list --json")
  * @param cwd - Working directory to run the command in
- * @returns stdout trimmed
- * @throws Error if command fails and doesn't produce stdout
+ * @param options - Optional settings for stdin, error handling, env vars
+ * @returns KspecResult with exitCode, stdout, stderr
+ * @throws Error if command fails and expectFail is not set
+ *
+ * @example
+ * // Simple command
+ * const result = kspec('task list', tempDir);
+ *
+ * @example
+ * // With stdin
+ * const result = kspec('item set @ref --status implemented', tempDir, { stdin: 'y' });
+ *
+ * @example
+ * // Expecting failure
+ * const result = kspec('task set @ref --priority 99', tempDir, { expectFail: true });
+ * expect(result.exitCode).toBe(1);
  */
-export function kspec(args: string, cwd: string): string {
-  const cmd = `node ${CLI_PATH} ${args}`;
+export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
+  const { stdin, expectFail = false, env = {} } = options;
+
+  // Build command - use shell for stdin piping
+  let cmd: string;
+  if (stdin !== undefined) {
+    // Escape single quotes in stdin and use printf for reliable piping
+    // Add newline at end for interactive prompts
+    const stdinWithNewline = stdin.endsWith('\n') ? stdin : stdin + '\n';
+    const escapedStdin = stdinWithNewline.replace(/'/g, "'\\''");
+    cmd = `printf '%s' '${escapedStdin}' | node ${CLI_PATH} ${args}`;
+  } else {
+    cmd = `node ${CLI_PATH} ${args}`;
+  }
+
   try {
-    return execSync(cmd, {
+    const stdout = execSync(cmd, {
       cwd,
       encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    }).trim();
+      env: { ...process.env, KSPEC_AUTHOR: '@test', ...env },
+      shell: stdin !== undefined ? '/bin/sh' : undefined,
+    });
+    return { exitCode: 0, stdout: stdout.trim(), stderr: '' };
   } catch (error: unknown) {
-    const execError = error as { stdout?: string; stderr?: string; message?: string };
-    // Return stdout even on error (some commands exit non-zero with valid output)
-    if (execError.stdout) return execError.stdout.trim();
-    throw new Error(`Command failed: ${cmd}\n${execError.stderr || execError.message}`);
+    const execError = error as {
+      status?: number;
+      stdout?: string;
+      stderr?: string;
+      message?: string;
+    };
+
+    const result: KspecResult = {
+      exitCode: execError.status ?? 1,
+      stdout: (execError.stdout || '').trim(),
+      stderr: (execError.stderr || '').trim(),
+    };
+
+    if (expectFail) {
+      return result;
+    }
+
+    // For backwards compatibility: return stdout if present even on error
+    // (some commands exit non-zero with valid output)
+    if (result.stdout) {
+      return result;
+    }
+
+    throw new Error(`Command failed: ${cmd}\n${result.stderr || execError.message}`);
   }
+}
+
+/**
+ * Run kspec and return just stdout (convenience wrapper)
+ *
+ * @param args - CLI arguments
+ * @param cwd - Working directory
+ * @param options - Optional settings
+ * @returns stdout trimmed
+ */
+export function kspecOutput(args: string, cwd: string, options: KspecOptions = {}): string {
+  return kspec(args, cwd, options).stdout;
 }
 
 /**
@@ -44,67 +129,23 @@ export function kspec(args: string, cwd: string): string {
  *
  * @param args - CLI arguments (--json flag is added automatically)
  * @param cwd - Working directory
+ * @param options - Optional settings
  * @returns Parsed JSON response
  */
-export function kspecJson<T>(args: string, cwd: string): T {
-  const output = kspec(`${args} --json`, cwd);
-  return JSON.parse(output);
+export function kspecJson<T>(args: string, cwd: string, options: KspecOptions = {}): T {
+  const result = kspec(`${args} --json`, cwd, options);
+  return JSON.parse(result.stdout);
 }
 
-/**
- * Run kspec expecting it to fail, return the error message
- *
- * @param args - CLI arguments
- * @param cwd - Working directory
- * @returns Error message (stderr or exception message)
- * @throws Error if command succeeds when failure was expected
- */
-export function kspecExpectFail(args: string, cwd: string): string {
-  const cmd = `node ${CLI_PATH} ${args}`;
-  try {
-    execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    });
-    throw new Error('Expected command to fail but it succeeded');
-  } catch (error: unknown) {
-    const execError = error as { stderr?: string; message?: string };
-    if (execError.message === 'Expected command to fail but it succeeded') {
-      throw execError;
-    }
-    return execError.stderr || execError.message || '';
-  }
-}
+// Legacy aliases for backwards compatibility
+export const kspecExpectFail = (args: string, cwd: string): string => {
+  const result = kspec(args, cwd, { expectFail: true });
+  return result.stderr || result.stdout;
+};
 
-/**
- * Run kspec and capture both exit code and output
- *
- * @param args - CLI arguments
- * @param cwd - Working directory
- * @returns Object with exitCode, stdout, and stderr
- */
-export function kspecWithStatus(
-  args: string,
-  cwd: string
-): { exitCode: number; stdout: string; stderr: string } {
-  const cmd = `node ${CLI_PATH} ${args}`;
-  try {
-    const stdout = execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    });
-    return { exitCode: 0, stdout: stdout.trim(), stderr: '' };
-  } catch (error: unknown) {
-    const execError = error as { status?: number; stdout?: string; stderr?: string };
-    return {
-      exitCode: execError.status ?? 1,
-      stdout: (execError.stdout || '').trim(),
-      stderr: (execError.stderr || '').trim(),
-    };
-  }
-}
+export const kspecWithStatus = (args: string, cwd: string): KspecResult => {
+  return kspec(args, cwd, { expectFail: true });
+};
 
 /**
  * Copy fixtures to a temp directory for isolated testing
@@ -145,4 +186,14 @@ export function initGitRepo(dir: string): void {
   execSync('git init', { cwd: dir, stdio: 'pipe' });
   execSync('git config user.email "test@example.com"', { cwd: dir, stdio: 'pipe' });
   execSync('git config user.name "Test User"', { cwd: dir, stdio: 'pipe' });
+}
+
+/**
+ * Run a git command in a directory
+ *
+ * @param cmd - Git command (without 'git' prefix)
+ * @param cwd - Working directory
+ */
+export function git(cmd: string, cwd: string): void {
+  execSync(`git ${cmd}`, { cwd, stdio: 'pipe' });
 }

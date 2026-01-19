@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from './helpers/cli';
+import { kspec as kspecRun, kspecOutput as kspec, kspecJson, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
 describe('Integration: meta agents', () => {
   let tempDir: string;

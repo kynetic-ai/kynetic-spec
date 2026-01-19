@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { kspec, kspecWithStatus, createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli';
+import { kspec as kspecRun, kspecOutput as kspec, kspecWithStatus, createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli';
 
 /**
  * Tests for staleness detection

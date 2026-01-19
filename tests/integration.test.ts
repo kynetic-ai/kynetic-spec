@@ -7,7 +7,17 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, FIXTURES_DIR, CLI_PATH } from './helpers/cli';
+import {
+  kspec as kspecRun,
+  kspecOutput as kspec,
+  kspecJson,
+  setupTempFixtures,
+  cleanupTempDir,
+  FIXTURES_DIR,
+  CLI_PATH,
+  git,
+  initGitRepo,
+} from './helpers/cli';
 
 describe('Integration: validate', () => {
   let tempDir: string;
@@ -248,23 +258,13 @@ describe('Integration: task set', () => {
   });
 
   it('should reject nonexistent spec ref', () => {
-    expect(() => {
-      execSync(`node ${CLI_PATH} task set @test-task-pending --spec-ref @nonexistent`, {
-        cwd: tempDir,
-        encoding: 'utf-8',
-        stdio: 'pipe',
-      });
-    }).toThrow();
+    const result = kspecRun('task set @test-task-pending --spec-ref @nonexistent', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   it('should reject task as spec ref', () => {
-    expect(() => {
-      execSync(`node ${CLI_PATH} task set @test-task-pending --spec-ref @test-task-blocked`, {
-        cwd: tempDir,
-        encoding: 'utf-8',
-        stdio: 'pipe',
-      });
-    }).toThrow();
+    const result = kspecRun('task set @test-task-pending --spec-ref @test-task-blocked', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   it('should update priority', () => {
@@ -275,13 +275,8 @@ describe('Integration: task set', () => {
   });
 
   it('should reject invalid priority', () => {
-    expect(() => {
-      execSync(`node ${CLI_PATH} task set @test-task-pending --priority 6`, {
-        cwd: tempDir,
-        encoding: 'utf-8',
-        stdio: 'pipe',
-      });
-    }).toThrow();
+    const result = kspecRun('task set @test-task-pending --priority 6', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   it('should add slug to task', () => {
@@ -346,22 +341,14 @@ describe('Integration: task patch', () => {
 
   // AC: @task-patch ac-2
   it('should error on invalid JSON syntax', () => {
-    expect(() => {
-      execSync(
-        `node ${CLI_PATH} task patch @test-task-pending --data 'bad'`,
-        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
-      );
-    }).toThrow();
+    const result = kspecRun("task patch @test-task-pending --data 'bad'", tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @task-patch ac-3
   it('should error on unknown field by default', () => {
-    expect(() => {
-      execSync(
-        `node ${CLI_PATH} task patch @test-task-pending --data '{"unknown":true}'`,
-        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
-      );
-    }).toThrow();
+    const result = kspecRun('task patch @test-task-pending --data \'{"unknown":true}\'', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @task-patch ac-4
@@ -483,12 +470,8 @@ describe('Integration: item set', () => {
     kspec('item add --under @test-core --title "Last Slug Test" --slug only-slug --type feature', tempDir);
 
     // Try to remove the only slug
-    expect(() => {
-      execSync(
-        `node ${CLI_PATH} item set @only-slug --remove-slug only-slug`,
-        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
-      );
-    }).toThrow();
+    const result = kspecRun('item set @only-slug --remove-slug only-slug', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 });
 
@@ -520,22 +503,15 @@ describe('Integration: item patch', () => {
   it('should show error for invalid JSON', () => {
     kspec('item add --under @test-core --title "JSON Test" --slug json-test --type feature', tempDir);
 
-    expect(() => {
-      execSync(
-        `node ${CLI_PATH} item patch @json-test --data 'not json'`,
-        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
-      );
-    }).toThrow();
+    const result = kspecRun("item patch @json-test --data 'not json'", tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @item-patch ac-3
   it('should accept JSON from stdin', () => {
     kspec('item add --under @test-core --title "Stdin Test" --slug stdin-test --type feature', tempDir);
 
-    execSync(
-      `echo '{"description":"From stdin"}' | node ${CLI_PATH} item patch @stdin-test`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    kspecRun('item patch @stdin-test', tempDir, { stdin: '{"description":"From stdin"}' });
 
     const output = kspec('item get @stdin-test', tempDir);
     expect(output).toContain('From stdin');
@@ -558,12 +534,8 @@ describe('Integration: item patch', () => {
   it('should reject unknown fields by default', () => {
     kspec('item add --under @test-core --title "Unknown Test" --slug unknown-test --type feature', tempDir);
 
-    expect(() => {
-      execSync(
-        `node ${CLI_PATH} item patch @unknown-test --data '{"foobar":"value"}'`,
-        { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
-      );
-    }).toThrow();
+    const result = kspecRun('item patch @unknown-test --data \'{"foobar":"value"}\'', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
   });
 
   // AC: @item-patch ac-6
@@ -579,13 +551,10 @@ describe('Integration: item patch', () => {
     kspec('item add --under @test-core --title "Bulk Test 1" --slug bulk-test-1 --type feature', tempDir);
     kspec('item add --under @test-core --title "Bulk Test 2" --slug bulk-test-2 --type feature', tempDir);
 
-    const jsonl = '{"ref":"@bulk-test-1","data":{"priority":"high"}}\\n{"ref":"@bulk-test-2","data":{"priority":"low"}}';
-    const result = execSync(
-      `printf '${jsonl}' | node ${CLI_PATH} item patch --bulk --json`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    const jsonl = '{"ref":"@bulk-test-1","data":{"priority":"high"}}\n{"ref":"@bulk-test-2","data":{"priority":"low"}}';
+    const result = kspecRun('item patch --bulk --json', tempDir, { stdin: jsonl });
 
-    const parsed = JSON.parse(result);
+    const parsed = JSON.parse(result.stdout);
     expect(parsed.summary.total).toBe(2);
     expect(parsed.summary.updated).toBe(2);
   });
@@ -599,12 +568,9 @@ describe('Integration: item patch', () => {
       { ref: '@array-test-1', data: { priority: 'high' } },
       { ref: '@array-test-2', data: { priority: 'low' } }
     ]);
-    const result = execSync(
-      `echo '${json}' | node ${CLI_PATH} item patch --bulk --json`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    const result = kspecRun('item patch --bulk --json', tempDir, { stdin: json });
 
-    const parsed = JSON.parse(result);
+    const parsed = JSON.parse(result.stdout);
     expect(parsed.summary.updated).toBe(2);
   });
 
@@ -1619,14 +1585,11 @@ describe('Integration: status cascade', () => {
   it('should prompt to cascade status to children', () => {
     // test-feature has a child requirement
     // Pipe "n" to reject the cascade
-    const output = execSync(
-      `echo "n" | node ${CLI_PATH} item set @test-feature --status implemented`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    const result = kspecRun('item set @test-feature --status implemented', tempDir, { stdin: 'n' });
 
-    expect(output).toContain('Update');
-    expect(output).toContain('child item(s) to implemented? [y/n]');
-    expect(output).toContain('Updated item');
+    expect(result.stdout).toContain('Update');
+    expect(result.stdout).toContain('child item(s) to implemented? [y/n]');
+    expect(result.stdout).toContain('Updated item');
   });
 
   it('should update children when cascade accepted', () => {
@@ -1638,10 +1601,7 @@ describe('Integration: status cascade', () => {
     const beforeImpl = beforeChild.status?.implementation || 'not_started';
 
     // Cascade update by piping "y"
-    execSync(
-      `echo "y" | node ${CLI_PATH} item set @test-feature --status verified`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    kspecRun('item set @test-feature --status verified', tempDir, { stdin: 'y' });
 
     // Check child status was updated
     const afterChild = kspecJson<{ status?: { implementation?: string } }>(
@@ -1661,10 +1621,7 @@ describe('Integration: status cascade', () => {
     const beforeImpl = beforeChild.status?.implementation || 'not_started';
 
     // Reject cascade by piping "n"
-    execSync(
-      `echo "n" | node ${CLI_PATH} item set @test-feature --status implemented`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    kspecRun('item set @test-feature --status implemented', tempDir, { stdin: 'n' });
 
     // Check child status was NOT updated
     const afterChild = kspecJson<{ status?: { implementation?: string } }>(
@@ -1675,31 +1632,25 @@ describe('Integration: status cascade', () => {
   });
 
   it('should skip prompt in JSON mode', () => {
-    const output = execSync(
-      `node ${CLI_PATH} item set @test-feature --status in_progress --json`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    const result = kspecRun('item set @test-feature --status in_progress --json', tempDir);
 
     // Should not prompt in JSON mode
-    expect(output).not.toContain('child item(s) to');
-    expect(output).not.toContain('[y/n]');
+    expect(result.stdout).not.toContain('child item(s) to');
+    expect(result.stdout).not.toContain('[y/n]');
 
     // Should return valid JSON
-    const parsed = JSON.parse(output);
+    const parsed = JSON.parse(result.stdout);
     expect(parsed.item).toBeDefined();
   });
 
   it('should handle items with no children', () => {
     // test-requirement has no children
-    const output = execSync(
-      `echo "n" | node ${CLI_PATH} item set @test-requirement --status implemented`,
-      { cwd: tempDir, encoding: 'utf-8' }
-    );
+    const result = kspecRun('item set @test-requirement --status implemented', tempDir, { stdin: 'n' });
 
     // Should not show cascade prompt when no children
-    expect(output).not.toContain('child item(s) to');
-    expect(output).not.toContain('[y/n]');
-    expect(output).toContain('Updated item');
+    expect(result.stdout).not.toContain('child item(s) to');
+    expect(result.stdout).not.toContain('[y/n]');
+    expect(result.stdout).toContain('Updated item');
   });
 });
 
