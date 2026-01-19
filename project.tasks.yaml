@@ -10943,6 +10943,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented adapter validation with all 3 acceptance criteria. Validation uses npx --no-install
+    to check package exists before spawning agent. Exits with code 3 and clear error message if
+    adapter not found. All 3 tests passing.
   depends_on:
     - '@task-ralph-command-automated-task-loop'
   context: []
@@ -10954,6 +10958,7 @@
   vcs_refs: []
   created_at: '2026-01-19T05:57:51.237Z'
   started_at: '2026-01-19T08:42:54.674Z'
+  completed_at: '2026-01-19T08:44:46.238Z'
   notes:
     - _ulid: 01KFAD9WHAVECKESF9BFW4Y1B3
       created_at: '2026-01-19T05:58:04.074Z'
@@ -11070,11 +11075,6 @@
         - tests/ralph.test.ts: Added 3 AC tests
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T08:44:46.238Z'
-  closed_reason: >-
-    Implemented adapter validation with all 3 acceptance criteria. Validation uses npx --no-install
-    to check package exists before spawning agent. Exits with code 3 and clear error message if
-    adapter not found. All 3 tests passing.
 - _ulid: 01KFADBEHQMMS3PG701HFKX501
   slugs:
     - task-kspec-setup
@@ -11082,7 +11082,7 @@
   type: task
   spec_ref: '@cmd-setup'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -11187,6 +11187,7 @@
         **Call site:** At start of setup command handler, before other setup logic.
       supersedes: null
   todos: []
+  started_at: '2026-01-19T08:52:36.127Z'
 - _ulid: 01KFADD78BS8EARJHSXXBRM9W8
   slugs:
     - task-semantic-exit-codes
