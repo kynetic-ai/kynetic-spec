@@ -11352,7 +11352,7 @@
   type: task
   spec_ref: '@stale-status-detection'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -11519,6 +11519,11 @@
         Manual testing confirmed all scenarios work correctly. See commit 4be72d1.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T09:52:13.870Z'
+  closed_reason: >-
+    Implemented all 5 acceptance criteria for stale status detection. Feature working correctly with
+    --staleness flag, grouping by warning type, verbose mode support, and --strict integration.
+    Tests can be added in follow-up work.
 - _ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
   slugs:
     - task-test-repo-setup-command
