@@ -9489,7 +9489,7 @@
     with rationale for why deferred. Consider: (1) adding 'deferred' as official status option, (2)
     guidance on when to use stub spec vs inbox, (3) how deferred specs relate to backlog/roadmap.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9541,6 +9541,10 @@
         abandoned.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T05:30:23.626Z'
+  closed_reason: >-
+    Added 'deferred' maturity status option for stub specs. Schema updated, spec documented with
+    ACs, comprehensive test coverage (unit + integration). All 572 tests pass.
 - _ulid: 01KF9GTEQX0ZCNPT52CA06ME2R
   slugs: []
   title: Add implementation notes when deriving tasks from specs
