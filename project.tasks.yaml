@@ -10631,6 +10631,10 @@
   spec_ref: '@meta-observe-cmd'
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented --from-inbox flag for kspec meta observe command. Supports converting inbox items to
+    observations with default type 'idea' and optional --type override. Includes comprehensive test
+    coverage (5 tests). All tests passing.
   depends_on: []
   context: []
   priority: 3
@@ -10641,6 +10645,7 @@
   vcs_refs: []
   created_at: '2026-01-19T05:50:55.336Z'
   started_at: '2026-01-19T08:08:01.637Z'
+  completed_at: '2026-01-19T08:18:36.302Z'
   notes:
     - _ulid: 01KFACX65YAK4MYR5GTPT3AK4D
       created_at: '2026-01-19T05:51:07.966Z'
@@ -10714,11 +10719,6 @@
         - Tested manually and working correctly
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T08:18:36.302Z'
-  closed_reason: >-
-    Implemented --from-inbox flag for kspec meta observe command. Supports converting inbox items to
-    observations with default type 'idea' and optional --type override. Includes comprehensive test
-    coverage (5 tests). All tests passing.
 - _ulid: 01KFACZP9AJA7WK9S3QGXG4WCN
   slugs:
     - task-log-enhancements
@@ -10726,7 +10726,7 @@
   type: task
   spec_ref: '@cmd-log'
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -10884,6 +10884,7 @@
         3. kspec log -- --invalid should show git error
       supersedes: null
   todos: []
+  started_at: '2026-01-19T08:25:04.758Z'
 - _ulid: 01KFAD9G055C7TWC56WM0VZGA4
   slugs:
     - task-adapter-validation-on-startup
