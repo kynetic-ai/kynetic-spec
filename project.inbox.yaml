@@ -75,17 +75,6 @@ inbox:
       - tasks
       - dx
     added_by: '@claude'
-  - _ulid: 01KF4FM90P16F3KCVN43SQBBB8
-    text: >-
-      Standardize multi-target --refs pattern across CLI commands. Allow --refs @a @b @c to apply
-      operations to multiple items. Could work for: task set, item set, task complete, etc. Design
-      how it interacts with existing single-ref positional args.
-    created_at: '2026-01-16T22:43:15.094Z'
-    tags:
-      - cli
-      - design
-      - dx
-    added_by: '@claude'
   - _ulid: 01KF554T97ST9B3DMT4WMXACYQ
     text: >-
       Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a
