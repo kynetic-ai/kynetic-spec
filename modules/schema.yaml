@@ -147,7 +147,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |-
           status.maturity tracks spec content stability:
 
