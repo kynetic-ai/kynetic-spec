@@ -207,6 +207,12 @@ features:
               implemented', and user responds 'y' to the cascade prompt
             when: The cascade is accepted
             then: All child items are updated to 'implemented' and each child update is logged
+          - id: ac-3
+            given: >-
+              A parent item has children, user runs 'kspec item set @parent --implementation
+              implemented', and user responds 'n' to the cascade prompt
+            when: The cascade is rejected
+            then: Child items are NOT updated and retain their original status
         status:
           maturity: draft
           implementation: implemented

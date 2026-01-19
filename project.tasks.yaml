@@ -8488,9 +8488,21 @@
     - status-cascade
   vcs_refs: []
   created_at: '2026-01-18T20:00:41.073Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T03:29:33.607Z'
+  notes:
+    - _ulid: 01KFA4VKGCXFYXXE6ES1XD7RT5
+      created_at: '2026-01-19T03:30:27.468Z'
+      author: '@claude'
+      content: >-
+        Task was accidentally started in previous iteration but no work was done. Leaving
+        in_progress for next iteration to either complete or properly reset. 
+
+
+        The @status-cascade spec currently has 1 AC. Need to determine what additional ACs are
+        missing - likely need ACs for: (1) user says 'n' to cascade, (2) user says 'y' and cascade
+        happens, (3) edge cases like no children present.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9B44CSARAD770GJJQS8YMM
   slugs: []
   title: Fix spec status persistence on task start
