@@ -200,3 +200,13 @@ inbox:
       - cli
       - phase-2
     added_by: '@claude'
+  - _ulid: 01KFAG8A1Q8VTJ3TKKQCQ4T7EW
+    text: >-
+      Add automated tests for git hook installation and authorization - test installShadowHook
+      function, hook blocking unauthorized commits, hook allowing commits with KSPEC_SHADOW_COMMIT=1
+      env var
+    created_at: '2026-01-19T06:49:38.104Z'
+    tags:
+      - testing
+      - reflection
+    added_by: '@claude'

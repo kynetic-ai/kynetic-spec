@@ -983,4 +983,14 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAFEAADJPTN5ZRHK0PDYGJY
+    type: success
+    content: >-
+      Small DX improvements (like setup:dev script) have high impact for low effort. Pattern: when
+      you find yourself documenting a multi-step setup process, consider if it can be a single
+      script instead.
+    created_at: '2026-01-19T06:35:26.413Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
