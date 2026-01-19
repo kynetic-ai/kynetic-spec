@@ -2085,6 +2085,12 @@ features:
         then: >-
           Output is valid JSON with structure: {success: boolean, summary: {total, succeeded,
           failed}, results: [{ref, ulid, status, error?, message?}]}
+      - id: empty-refs-error
+        given: '--refs flag with no values'
+        when: User runs kspec task complete --refs
+        then: >-
+          Command exits with code 3, error message says --refs requires at least one reference, no
+          operations are performed
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
