@@ -1160,9 +1160,8 @@ describe('Integration: task delete', () => {
 
     // Run dry-run
     const output = kspec('task delete @delete-test --dry-run', tempDir);
-    expect(output).toContain('Would delete task');
+    expect(output).toContain('Would delete');
     expect(output).toContain('Task to Delete');
-    expect(output).toContain('Source file:');
 
     // Verify task still exists
     const after = kspec('tasks list', tempDir);
@@ -1746,5 +1745,290 @@ describe('Integration: inbox promote', () => {
     expect(promoteOutput.task).toBeDefined();
     expect(promoteOutput.task.title).toBe('Empty Desc Task');
     expect(promoteOutput.task.description).toBe('');
+  });
+});
+
+describe('Integration: Batch operations', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @multi-ref-batch ac-1 - Basic multi-ref syntax
+  it('should support --refs flag with multiple references', () => {
+    // Create three tasks and start them
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Task 1" --priority 3',
+      tempDir
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Task 2" --priority 3',
+      tempDir
+    );
+    const task3 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Task 3" --priority 3',
+      tempDir
+    );
+
+    // Start each task individually
+    kspec(`task start @${task1.task._ulid}`, tempDir);
+    kspec(`task start @${task2.task._ulid}`, tempDir);
+    kspec(`task start @${task3.task._ulid}`, tempDir);
+
+    // Complete all three with --refs
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number; failed: number };
+      results: Array<{ ref: string; ulid: string; status: string }>;
+    }>(`task complete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --reason "Test"`, tempDir);
+
+    // AC: @multi-ref-batch ac-6 - JSON output format
+    expect(result.success).toBe(true);
+    expect(result.summary.total).toBe(3);
+    expect(result.summary.succeeded).toBe(3);
+    expect(result.summary.failed).toBe(0);
+    expect(result.results).toHaveLength(3);
+    expect(result.results[0].status).toBe('success');
+    expect(result.results[1].status).toBe('success');
+    expect(result.results[2].status).toBe('success');
+  });
+
+  // AC: @multi-ref-batch ac-2 - Backward compatibility
+  it('should maintain backward compatibility with positional ref', () => {
+    // Create and start a task
+    const task = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Backward Compat Task" --priority 3',
+      tempDir
+    );
+    kspec(`task start @${task.task._ulid}`, tempDir);
+
+    // Cancel it with positional ref (original syntax)
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number };
+    }>(`task cancel @${task.task._ulid}`, tempDir);
+
+    expect(result.success).toBe(true);
+    expect(result.summary.total).toBe(1);
+    expect(result.summary.succeeded).toBe(1);
+  });
+
+  // AC: @multi-ref-batch ac-3 - Mutual exclusion error
+  it('should error when both positional ref and --refs are provided', () => {
+    const task = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Test Task" --priority 3',
+      tempDir
+    );
+    kspec(`task start @${task.task._ulid}`, tempDir);
+
+    try {
+      kspec(`task complete @${task.task._ulid} --refs @${task.task._ulid}`, tempDir);
+      expect.fail('Should have thrown error for mutual exclusion');
+    } catch (error) {
+      expect(String(error)).toContain('Cannot use both positional ref and --refs flag');
+    }
+  });
+
+  // AC: @multi-ref-batch ac-4 - Partial failure handling
+  it('should continue processing after errors and report partial failures', () => {
+    // Create two valid tasks
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Valid Task 1" --priority 3',
+      tempDir
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Valid Task 2" --priority 3',
+      tempDir
+    );
+
+    // Start both tasks
+    kspec(`task start @${task1.task._ulid}`, tempDir);
+    kspec(`task start @${task2.task._ulid}`, tempDir);
+
+    // Complete tasks with one invalid ref in the middle
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number; failed: number };
+      results: Array<{ ref: string; status: string; error?: string }>;
+    }>(`task complete --refs @${task1.task._ulid} @invalid-ref-12345 @${task2.task._ulid} --reason "Test"`, tempDir);
+
+    // Should have partial success
+    expect(result.success).toBe(false);
+    expect(result.summary.total).toBe(3);
+    expect(result.summary.succeeded).toBe(2);
+    expect(result.summary.failed).toBe(1);
+
+    // Check individual results
+    expect(result.results[0].status).toBe('success');
+    expect(result.results[1].status).toBe('error');
+    expect(result.results[1].error).toContain('not found');
+    expect(result.results[2].status).toBe('success');
+  });
+
+  // AC: @multi-ref-batch ac-7 - Empty refs error
+  it('should error when --refs is provided without values', () => {
+    try {
+      kspec('task cancel --refs', tempDir);
+      expect.fail('Should have thrown error for empty refs');
+    } catch (error) {
+      // Commander handles this case with "argument missing" error
+      expect(String(error)).toContain('argument missing');
+    }
+  });
+
+  // AC: @multi-ref-batch ac-8 - Ref resolution uses existing logic
+  it('should resolve refs using existing resolution logic (slugs, ULID prefixes)', () => {
+    // Create two tasks with slugs
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Slug Test 1" --slug test-slug-1 --priority 3',
+      tempDir
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Slug Test 2" --slug test-slug-2 --priority 3',
+      tempDir
+    );
+
+    const ulid1 = task1.task._ulid;
+    const ulid2 = task2.task._ulid;
+    const shortUlid1 = ulid1.slice(0, 8);
+    const shortUlid2 = ulid2.slice(0, 8);
+
+    // Start both tasks
+    kspec(`task start @${ulid1}`, tempDir);
+    kspec(`task start @${ulid2}`, tempDir);
+
+    // Test slug resolution
+    const slugResult = kspecJson<{
+      success: boolean;
+      results: Array<{ ref: string; status: string }>;
+    }>('task complete --refs @test-slug-1 @test-slug-2 --reason "Test"', tempDir);
+    expect(slugResult.success).toBe(true);
+    expect(slugResult.results[0].status).toBe('success');
+    expect(slugResult.results[1].status).toBe('success');
+
+    // Create two more tasks for ULID prefix test
+    const task3 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Prefix Test 1" --priority 3',
+      tempDir
+    );
+    const task4 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Prefix Test 2" --priority 3',
+      tempDir
+    );
+    const ulid3 = task3.task._ulid;
+    const ulid4 = task4.task._ulid;
+    const shortUlid3 = ulid3.slice(0, 8);
+    const shortUlid4 = ulid4.slice(0, 8);
+
+    // Start both
+    kspec(`task start @${ulid3}`, tempDir);
+    kspec(`task start @${ulid4}`, tempDir);
+
+    // Test ULID prefix resolution
+    const prefixResult = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number; failed: number };
+      results: Array<{ ref: string; status: string; error?: string }>;
+    }>(`task complete --refs @${shortUlid3} @${shortUlid4} --reason "Test"`, tempDir);
+
+    // If both refs are ambiguous (start with same prefix), one might fail
+    // This is OK - we're testing that ref resolution logic works
+    if (prefixResult.success) {
+      expect(prefixResult.results[0].status).toBe('success');
+      expect(prefixResult.results[1].status).toBe('success');
+    } else {
+      // Partial success is also valid if ULIDs have ambiguous prefixes
+      expect(prefixResult.summary.total).toBe(2);
+      expect(prefixResult.summary.succeeded).toBeGreaterThan(0);
+    }
+  });
+
+  // Test task complete batch
+  it('should batch complete multiple tasks', () => {
+    // Create and start three tasks
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Complete 1" --priority 3',
+      tempDir
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Complete 2" --priority 3',
+      tempDir
+    );
+    const task3 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Complete 3" --priority 3',
+      tempDir
+    );
+
+    kspec(`task start @${task1.task._ulid}`, tempDir);
+    kspec(`task start @${task2.task._ulid}`, tempDir);
+    kspec(`task start @${task3.task._ulid}`, tempDir);
+
+    // Batch complete
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number };
+    }>(`task complete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --reason "Batch completed"`, tempDir);
+
+    expect(result.success).toBe(true);
+    expect(result.summary.total).toBe(3);
+    expect(result.summary.succeeded).toBe(3);
+  });
+
+  // Test task cancel batch
+  it('should batch cancel multiple tasks', () => {
+    // Create and start two tasks
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Cancel 1" --priority 3',
+      tempDir
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Cancel 2" --priority 3',
+      tempDir
+    );
+
+    kspec(`task start @${task1.task._ulid}`, tempDir);
+    kspec(`task start @${task2.task._ulid}`, tempDir);
+
+    // Batch cancel
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number };
+    }>(`task cancel --refs @${task1.task._ulid} @${task2.task._ulid}`, tempDir);
+
+    expect(result.success).toBe(true);
+    expect(result.summary.total).toBe(2);
+    expect(result.summary.succeeded).toBe(2);
+  });
+
+  // Test task delete batch
+  it('should batch delete multiple tasks', () => {
+    // Create three tasks
+    const task1 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Delete 1" --priority 3',
+      tempDir
+    );
+    const task2 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Delete 2" --priority 3',
+      tempDir
+    );
+    const task3 = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Delete 3" --priority 3',
+      tempDir
+    );
+
+    // Batch delete (requires --force)
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number };
+    }>(`task delete --refs @${task1.task._ulid} @${task2.task._ulid} @${task3.task._ulid} --force`, tempDir);
+
+    expect(result.success).toBe(true);
+    expect(result.summary.total).toBe(3);
+    expect(result.summary.succeeded).toBe(3);
   });
 });

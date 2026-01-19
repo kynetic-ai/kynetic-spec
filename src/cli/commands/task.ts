@@ -30,6 +30,7 @@ import {
 import { formatCommitGuidance, printCommitGuidance } from '../../utils/commit.js';
 import type { Task, TaskInput } from '../../schema/index.js';
 import { alignmentCheck, errors } from '../../strings/index.js';
+import { executeBatchOperation, formatBatchOutput } from '../batch.js';
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -73,6 +74,43 @@ function resolveTaskRef(
   }
 
   return task;
+}
+
+/**
+ * Batch-compatible resolver that returns null instead of calling process.exit().
+ * Used by executeBatchOperation to handle errors without terminating the process.
+ * AC: @multi-ref-batch ac-4, ac-8 - Partial failure handling and ref resolution
+ */
+function resolveTaskRefForBatch(
+  ref: string,
+  tasks: LoadedTask[],
+  index: ReferenceIndex
+): { task: LoadedTask | null; error?: string } {
+  const result = index.resolve(ref);
+
+  if (!result.ok) {
+    let errorMsg: string;
+    switch (result.error) {
+      case 'not_found':
+        errorMsg = `Reference "${ref}" not found`;
+        break;
+      case 'ambiguous':
+        errorMsg = `Reference "${ref}" is ambiguous (matches ${result.candidates.length} items)`;
+        break;
+      case 'duplicate_slug':
+        errorMsg = `Slug "${ref}" maps to multiple items`;
+        break;
+    }
+    return { task: null, error: errorMsg };
+  }
+
+  // Check if it's actually a task
+  const task = tasks.find(t => t._ulid === result.ulid);
+  if (!task) {
+    return { task: null, error: `Reference "${ref}" is not a task` };
+  }
+
+  return { task };
 }
 
 /**
@@ -184,6 +222,7 @@ export function registerTaskCommands(program: Command): void {
     });
 
   // kspec task set <ref>
+  // TODO: Add batch support with --refs flag (see @multi-ref-batch)
   task
     .command('set <ref>')
     .description('Update task fields')
@@ -510,84 +549,117 @@ export function registerTaskCommands(program: Command): void {
       }
     });
 
-  // kspec task complete <ref>
+  // kspec task complete <ref> | --refs <refs...>
+  // AC: @multi-ref-batch ac-1 - Basic multi-ref syntax
+  // AC: @multi-ref-batch ac-2 - Backward compatibility
   task
-    .command('complete <ref>')
+    .command('complete [ref]')
     .description('Complete a task (in_progress -> completed)')
+    .option('--refs <refs...>', 'Complete multiple tasks by ref')
     .option('--reason <reason>', 'Completion reason/notes')
     .option('--no-sync', 'Skip syncing spec implementation status')
-    .action(async (ref: string, options) => {
+    .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
 
-        if (foundTask.status === 'completed') {
-          warn('Task is already completed');
-          output(foundTask, () => formatTaskDetails(foundTask));
-          return;
-        }
+        // AC: @multi-ref-batch ac-1, ac-2, ac-3, ac-4
+        const result = await executeBatchOperation({
+          positionalRef: ref,
+          refsFlag: options.refs,
+          context: { ctx, tasks, items, index, options },
+          items: tasks,
+          index,
+          resolveRef: (refStr, taskList, idx) => {
+            const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
+            return { item: resolved.task, error: resolved.error };
+          },
+          executeOperation: async (foundTask, { ctx, tasks, items, index, options }) => {
+            try {
+              if (foundTask.status === 'completed') {
+                return {
+                  success: false,
+                  error: 'Task is already completed',
+                };
+              }
 
-        if (foundTask.status !== 'in_progress' && foundTask.status !== 'pending') {
-          error(errors.status.cannotComplete(foundTask.status));
-          process.exit(4);
-        }
+              if (foundTask.status !== 'in_progress' && foundTask.status !== 'pending') {
+                return {
+                  success: false,
+                  error: errors.status.cannotComplete(foundTask.status),
+                };
+              }
 
-        const now = new Date().toISOString();
+              const now = new Date().toISOString();
 
-        // Update status
-        const updatedTask: Task = {
-          ...foundTask,
-          status: 'completed',
-          completed_at: now,
-          closed_reason: options.reason || null,
-          started_at: foundTask.started_at || now, // Set started_at if not already
-        };
+              // Update status
+              const updatedTask: Task = {
+                ...foundTask,
+                status: 'completed',
+                completed_at: now,
+                closed_reason: options.reason || null,
+                started_at: foundTask.started_at || now,
+              };
 
-        await saveTask(ctx, updatedTask);
-        await commitIfShadow(ctx.shadow, 'task-complete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), options.reason);
-        success(`Completed task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
+              await saveTask(ctx, updatedTask);
+              await commitIfShadow(ctx.shadow, 'task-complete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), options.reason);
 
-        // Output commit guidance (suppressed in JSON mode)
-        if (!isJsonMode()) {
-          const guidance = formatCommitGuidance(updatedTask);
-          printCommitGuidance(guidance);
-        }
+              // Sync spec implementation status (unless --no-sync)
+              if (options.sync !== false && foundTask.spec_ref) {
+                const updatedTasks = tasks.map(t =>
+                  t._ulid === updatedTask._ulid ? { ...t, ...updatedTask } : t
+                );
+                const syncResult = await syncSpecImplementationStatus(
+                  ctx,
+                  updatedTask as LoadedTask,
+                  updatedTasks as LoadedTask[],
+                  items,
+                  index
+                );
+                if (syncResult && !isJsonMode()) {
+                  info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
+                  await commitIfShadow(ctx.shadow, 'spec-sync', syncResult.specUlid.slice(0, 8), `${syncResult.previousStatus} -> ${syncResult.newStatus}`);
+                }
+              }
 
-        // Sync spec implementation status (unless --no-sync)
-        if (options.sync !== false && foundTask.spec_ref) {
-          // Update task list to reflect the change we just made
-          const updatedTasks = tasks.map(t =>
-            t._ulid === updatedTask._ulid ? { ...t, ...updatedTask } : t
-          );
-          const syncResult = await syncSpecImplementationStatus(
-            ctx,
-            updatedTask as LoadedTask,
-            updatedTasks as LoadedTask[],
-            items,
-            index
-          );
-          if (syncResult) {
-            info(`Synced spec "${syncResult.specTitle}" implementation: ${syncResult.previousStatus} -> ${syncResult.newStatus}`);
-            // Commit the spec status change
-            await commitIfShadow(ctx.shadow, 'spec-sync', syncResult.specUlid.slice(0, 8), `${syncResult.previousStatus} -> ${syncResult.newStatus}`);
-          }
-        }
+              // Show AC reminder for single-ref mode only (not in batch)
+              if (!options.refs && foundTask.spec_ref && !isJsonMode()) {
+                const specResult = index.resolve(foundTask.spec_ref);
+                if (specResult.ok && specResult.item) {
+                  const specItem = items.find(i => i._ulid === specResult.ulid);
+                  if (specItem && specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+                    const count = specItem.acceptance_criteria.length;
+                    console.log(`\n⚠ Linked spec ${foundTask.spec_ref} has ${count} acceptance criteri${count === 1 ? 'on' : 'a'} - verify they are covered\n`);
+                  }
+                }
+              }
 
-        // AC: @task-completion-guardrails ac-2
-        // Show reminder about acceptance criteria if spec has them
-        // AC: @task-completion-guardrails ac-3
-        // Only show for tasks with spec_ref (skipped for non-spec tasks)
-        if (foundTask.spec_ref && !isJsonMode()) {
-          const specResult = index.resolve(foundTask.spec_ref);
-          if (specResult.ok && specResult.item) {
-            const specItem = items.find(i => i._ulid === specResult.ulid);
-            if (specItem && specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
-              const count = specItem.acceptance_criteria.length;
-              console.log(`\n⚠ Linked spec ${foundTask.spec_ref} has ${count} acceptance criteri${count === 1 ? 'on' : 'a'} - verify they are covered\n`);
+              return {
+                success: true,
+                message: `Completed task: ${index.shortUlid(updatedTask._ulid)}`,
+                data: updatedTask,
+              };
+            } catch (err) {
+              return {
+                success: false,
+                error: err instanceof Error ? err.message : String(err),
+              };
             }
+          },
+          getUlid: (task) => task._ulid,
+        });
+
+        // AC: @multi-ref-batch ac-5, ac-6
+        formatBatchOutput(result, 'Complete');
+
+        // Show commit guidance for single-ref mode only
+        if (!options.refs && result.success && result.results.length === 1 && !isJsonMode()) {
+          const taskData = result.results[0].data as Task | undefined;
+          if (taskData) {
+            const guidance = formatCommitGuidance(taskData);
+            printCommitGuidance(guidance);
           }
         }
       } catch (err) {
@@ -661,87 +733,151 @@ export function registerTaskCommands(program: Command): void {
       }
     });
 
-  // kspec task cancel <ref>
+  // kspec task cancel <ref> | --refs <refs...>
+  // AC: @multi-ref-batch ac-1, ac-2
   task
-    .command('cancel <ref>')
+    .command('cancel [ref]')
     .description('Cancel a task')
+    .option('--refs <refs...>', 'Cancel multiple tasks by ref')
     .option('--reason <reason>', 'Cancellation reason')
-    .action(async (ref: string, options) => {
+    .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
 
-        if (foundTask.status === 'completed' || foundTask.status === 'cancelled') {
-          warn(`Task is already ${foundTask.status}`);
-          return;
-        }
+        const result = await executeBatchOperation({
+          positionalRef: ref,
+          refsFlag: options.refs,
+          context: { ctx, tasks, items, index, options },
+          items: tasks,
+          index,
+          resolveRef: (refStr, taskList, idx) => {
+            const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
+            return { item: resolved.task, error: resolved.error };
+          },
+          executeOperation: async (foundTask, { ctx, index, options }) => {
+            try {
+              if (foundTask.status === 'completed' || foundTask.status === 'cancelled') {
+                return {
+                  success: false,
+                  error: `Task is already ${foundTask.status}`,
+                };
+              }
 
-        const updatedTask: Task = {
-          ...foundTask,
-          status: 'cancelled',
-          closed_reason: options.reason || null,
-        };
+              const updatedTask: Task = {
+                ...foundTask,
+                status: 'cancelled',
+                closed_reason: options.reason || null,
+              };
 
-        await saveTask(ctx, updatedTask);
-        await commitIfShadow(ctx.shadow, 'task-cancel', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
-        success(`Cancelled task: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
+              await saveTask(ctx, updatedTask);
+              await commitIfShadow(ctx.shadow, 'task-cancel', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
+
+              return {
+                success: true,
+                message: `Cancelled task: ${index.shortUlid(updatedTask._ulid)}`,
+                data: updatedTask,
+              };
+            } catch (err) {
+              return {
+                success: false,
+                error: err instanceof Error ? err.message : String(err),
+              };
+            }
+          },
+          getUlid: (task) => task._ulid,
+        });
+
+        formatBatchOutput(result, 'Cancel');
       } catch (err) {
         error(errors.failures.cancelTask, err);
         process.exit(1);
       }
     });
 
-  // kspec task delete <ref>
+  // kspec task delete <ref> | --refs <refs...>
+  // AC: @multi-ref-batch ac-1, ac-2
   task
-    .command('delete <ref>')
+    .command('delete [ref]')
     .description('Delete a task permanently')
-    .option('--force', 'Skip confirmation')
+    .option('--refs <refs...>', 'Delete multiple tasks by ref')
+    .option('--force', 'Skip confirmation (required for --refs)')
     .option('--dry-run', 'Show what would be deleted without deleting')
-    .action(async (ref: string, options) => {
+    .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
 
-        const taskDisplay = `${foundTask.title} (${index.shortUlid(foundTask._ulid)})`;
-
-        if (options.dryRun) {
-          info(`Would delete task: ${taskDisplay}`);
-          console.log(`  Source file: ${foundTask._sourceFile}`);
-          console.log(`  Status: ${foundTask.status}`);
-          if (foundTask.notes.length > 0) {
-            console.log(`  Notes: ${foundTask.notes.length}`);
-          }
-          return;
+        // For batch mode (--refs), require --force
+        if (options.refs && options.refs.length > 0 && !options.force && !options.dryRun) {
+          error('Batch delete requires --force flag');
+          process.exit(3);
         }
 
-        // Confirm unless --force
-        if (!options.force) {
-          const readline = await import('readline');
-          const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-          });
+        const result = await executeBatchOperation({
+          positionalRef: ref,
+          refsFlag: options.refs,
+          context: { ctx, tasks, items, index, options },
+          items: tasks,
+          index,
+          resolveRef: (refStr, taskList, idx) => {
+            const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
+            return { item: resolved.task, error: resolved.error };
+          },
+          executeOperation: async (foundTask, { ctx, index, options }) => {
+            try {
+              const taskDisplay = `${foundTask.title} (${index.shortUlid(foundTask._ulid)})`;
 
-          const answer = await new Promise<string>((resolve) => {
-            rl.question(`Delete task "${taskDisplay}"? [y/N] `, resolve);
-          });
-          rl.close();
+              if (options.dryRun) {
+                return {
+                  success: true,
+                  message: `Would delete: ${taskDisplay}`,
+                };
+              }
 
-          if (answer.toLowerCase() !== 'y') {
-            info('Deletion cancelled');
-            return;
-          }
-        }
+              // For single-ref mode (not --refs), prompt for confirmation unless --force
+              if (!options.refs && !options.force) {
+                const readline = await import('readline');
+                const rl = readline.createInterface({
+                  input: process.stdin,
+                  output: process.stdout,
+                });
 
-        await deleteTask(ctx, foundTask);
-        await commitIfShadow(ctx.shadow, 'task-delete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), foundTask.title);
-        success(`Deleted task: ${taskDisplay}`);
+                const answer = await new Promise<string>((resolve) => {
+                  rl.question(`Delete task "${taskDisplay}"? [y/N] `, resolve);
+                });
+                rl.close();
+
+                if (answer.toLowerCase() !== 'y') {
+                  return {
+                    success: false,
+                    error: 'Deletion cancelled by user',
+                  };
+                }
+              }
+
+              await deleteTask(ctx, foundTask);
+              await commitIfShadow(ctx.shadow, 'task-delete', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), foundTask.title);
+
+              return {
+                success: true,
+                message: `Deleted task: ${taskDisplay}`,
+              };
+            } catch (err) {
+              return {
+                success: false,
+                error: err instanceof Error ? err.message : String(err),
+              };
+            }
+          },
+          getUlid: (task) => task._ulid,
+        });
+
+        formatBatchOutput(result, 'Delete');
       } catch (err) {
         error(errors.failures.deleteTask, err);
         process.exit(1);
