@@ -1463,6 +1463,83 @@ describe('Integration: kspec log', () => {
     expect(output).toContain('No commits found');
   });
 
+  // AC: @cmd-log list-all-tracked
+  it('should list all commits with Task: or Spec: trailers when no ref provided', () => {
+    // Create commits with Task: and Spec: trailers
+    execSync('git add .', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git commit -m "feat: test feature\n\nTask: @test-task-pending"', {
+      cwd: tempDir,
+      stdio: 'ignore',
+    });
+    execSync('touch test2.txt', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git add test2.txt', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git commit -m "feat: another feature\n\nSpec: @test-feature"', {
+      cwd: tempDir,
+      stdio: 'ignore',
+    });
+
+    // Run kspec log without ref
+    const output = kspec('log', tempDir);
+
+    // Should show both commits
+    expect(output).toContain('test feature');
+    expect(output).toContain('another feature');
+    expect(output).toContain('2 commit(s) found');
+  });
+
+  // AC: @cmd-log list-all-tracked
+  it('should respect --limit flag when listing all tracked commits', () => {
+    // Create 3 commits with trailers
+    for (let i = 0; i < 3; i++) {
+      execSync(`touch test-${i}.txt`, { cwd: tempDir, stdio: 'ignore' });
+      execSync(`git add test-${i}.txt`, { cwd: tempDir, stdio: 'ignore' });
+      execSync(`git commit -m "feat: commit ${i}\n\nTask: @test-task-pending"`, {
+        cwd: tempDir,
+        stdio: 'ignore',
+      });
+    }
+
+    // Limit to 2 results
+    const output = kspec('log --limit 2', tempDir);
+
+    expect(output).toContain('2 commit(s) found');
+  });
+
+  // AC: @cmd-log passthrough-args
+  it('should pass through git log arguments after --', () => {
+    // Create a commit with Task: trailer
+    execSync('git add .', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git commit -m "feat: test feature\n\nTask: @test-task-pending"', {
+      cwd: tempDir,
+      stdio: 'ignore',
+    });
+
+    // Use passthrough arg to show stat
+    const output = kspec('log @test-task-pending -- --stat', tempDir);
+
+    // Should contain stat output (file changes)
+    expect(output).toContain('changed');
+  });
+
+  // AC: @cmd-log passthrough-invalid
+  it('should show git error for invalid passthrough arguments', () => {
+    // Create a commit with Task: trailer
+    execSync('git add .', { cwd: tempDir, stdio: 'ignore' });
+    execSync('git commit -m "feat: test feature\n\nTask: @test-task-pending"', {
+      cwd: tempDir,
+      stdio: 'ignore',
+    });
+
+    // Try to use invalid git flag
+    expect(() => {
+      execSync(`npx tsx ${CLI_PATH} log @test-task-pending -- --invalid-git-flag`, {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
+    }).toThrow();
+  });
+
   it('should show log command help', () => {
     const output = kspec('log --help', tempDir);
     expect(output).toContain('Search git history');
