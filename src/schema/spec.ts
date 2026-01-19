@@ -9,6 +9,7 @@ import {
   ImplementationStatusSchema,
   ItemTypeSchema,
 } from './common.js';
+import { NoteSchema } from './task.js';
 
 /**
  * Status block for spec items
@@ -83,6 +84,9 @@ export const SpecItemSchema = z.object({
   created_by: z.string().optional(),
   deprecated_in: z.string().nullable().optional(),
   superseded_by: RefSchema.nullable().optional(),
+
+  // Notes (work log / implementation context)
+  notes: z.array(NoteSchema).default([]),
 });
 
 /**

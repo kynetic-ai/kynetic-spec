@@ -79,6 +79,7 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
   const missingAC = warnings.filter(w => w.type === 'missing_acceptance_criteria');
   const missingDesc = warnings.filter(w => w.type === 'missing_description');
   const statusMismatch = warnings.filter(w => w.type === 'status_inconsistency');
+  const missingTestCoverage = warnings.filter(w => w.type === 'missing_test_coverage');
 
   // AC: @spec-completeness ac-4
   // Show summary with counts by issue type
@@ -111,6 +112,20 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
       if (w.details) {
         console.log(chalk.gray(`      ${w.details}`));
       }
+    }
+  }
+
+  if (missingTestCoverage.length > 0) {
+    console.log(chalk.yellow(`  Missing test coverage: ${missingTestCoverage.length}`));
+    const shown = verbose ? missingTestCoverage : missingTestCoverage.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+    if (!verbose && missingTestCoverage.length > 3) {
+      console.log(chalk.gray(`    ... and ${missingTestCoverage.length - 3} more`));
     }
   }
 }

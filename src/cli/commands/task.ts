@@ -1,5 +1,7 @@
 import { Command } from 'commander';
 import { ulid } from 'ulid';
+import chalk from 'chalk';
+import * as path from 'node:path';
 import {
   initContext,
   loadAllTasks,
@@ -840,12 +842,52 @@ export function registerTaskCommands(program: Command): void {
         // Import getDiffSince from utils
         const { getDiffSince } = await import('../../utils/index.js');
 
+        // Import scanTestCoverage (we'll need to export it from validate.ts)
+        // For now, duplicate the logic here
+        const scanTestCoverage = async (rootDir: string): Promise<Set<string>> => {
+          const coveredACs = new Set<string>();
+          const testsDir = path.join(rootDir, 'tests');
+          const fs = await import('node:fs/promises');
+
+          try {
+            await fs.access(testsDir);
+            const files = await fs.readdir(testsDir);
+            const testFiles = files.filter(f => f.endsWith('.test.ts') || f.endsWith('.test.js'));
+
+            for (const file of testFiles) {
+              const filePath = path.join(testsDir, file);
+              const content = await fs.readFile(filePath, 'utf-8');
+              const acPattern = /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
+              let match;
+
+              while ((match = acPattern.exec(content)) !== null) {
+                const specRef = match[1];
+                const acList = match[2];
+
+                if (acList) {
+                  const acs = acList.split(',').map(ac => ac.trim());
+                  for (const ac of acs) {
+                    coveredACs.add(`${specRef} ${ac}`);
+                  }
+                } else {
+                  coveredACs.add(specRef);
+                }
+              }
+            }
+          } catch (err) {
+            // Tests directory doesn't exist or can't be read
+          }
+
+          return coveredACs;
+        };
+
         // Gather review context
         const reviewContext: {
           task: typeof foundTask;
           spec: LoadedSpecItem | null;
           diff: string | null;
           started_at: string | null;
+          testCoverage?: { covered: string[]; uncovered: string[] };
         } = {
           task: foundTask,
           spec: null,
@@ -859,6 +901,33 @@ export function registerTaskCommands(program: Command): void {
           if (specResult.ok) {
             const specItem = items.find(i => i._ulid === specResult.ulid);
             reviewContext.spec = specItem || null;
+
+            // Check test coverage for ACs if spec has them
+            if (specItem && specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+              const coveredACs = await scanTestCoverage(ctx.rootDir);
+              const covered: string[] = [];
+              const uncovered: string[] = [];
+
+              for (const ac of specItem.acceptance_criteria) {
+                // Build possible references
+                const possibleRefs: string[] = [];
+                if (specItem.slugs && specItem.slugs.length > 0) {
+                  possibleRefs.push(`@${specItem.slugs[0]} ${ac.id}`);
+                  possibleRefs.push(`@${specItem.slugs[0]}`);
+                }
+                possibleRefs.push(`@${specItem._ulid.slice(0, 8)} ${ac.id}`);
+                possibleRefs.push(`@${specItem._ulid.slice(0, 8)}`);
+
+                const isCovered = possibleRefs.some(ref => coveredACs.has(ref));
+                if (isCovered) {
+                  covered.push(ac.id);
+                } else {
+                  uncovered.push(ac.id);
+                }
+              }
+
+              reviewContext.testCoverage = { covered, uncovered };
+            }
           }
         }
 
@@ -892,10 +961,24 @@ export function registerTaskCommands(program: Command): void {
             if (reviewContext.spec.acceptance_criteria && reviewContext.spec.acceptance_criteria.length > 0) {
               console.log(`\nAcceptance Criteria (${reviewContext.spec.acceptance_criteria.length}):`);
               for (const ac of reviewContext.spec.acceptance_criteria) {
-                console.log(`  [${ac.id}]`);
+                const isCovered = reviewContext.testCoverage?.covered.includes(ac.id);
+                const coverageMarker = isCovered ? chalk.green('✓') : chalk.yellow('○');
+                console.log(`  ${coverageMarker} [${ac.id}]`);
                 console.log(`    Given: ${ac.given}`);
                 console.log(`    When: ${ac.when}`);
                 console.log(`    Then: ${ac.then}`);
+              }
+
+              // Test coverage summary
+              if (reviewContext.testCoverage) {
+                const { covered, uncovered } = reviewContext.testCoverage;
+                console.log();
+                if (uncovered.length === 0) {
+                  console.log(chalk.green(`  ✓ All ${covered.length} AC(s) have test coverage`));
+                } else {
+                  console.log(chalk.yellow(`  Test coverage: ${covered.length}/${covered.length + uncovered.length} ACs covered`));
+                  console.log(chalk.yellow(`  Missing coverage for: ${uncovered.join(', ')}`));
+                }
               }
             }
             console.log();

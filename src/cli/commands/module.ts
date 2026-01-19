@@ -65,6 +65,7 @@ export function registerModuleCommands(program: Command): void {
           implements: [],
           relates_to: [],
           tests: [],
+          notes: [],
         };
 
         // Determine module file path
