@@ -9294,6 +9294,7 @@
     - spec
   vcs_refs: []
   created_at: '2026-01-18T21:25:11.562Z'
+  started_at: '2026-01-19T04:46:18.282Z'
   notes:
     - _ulid: 01KF9FZ39YVZK6RCXDC1KTNH9V
       created_at: '2026-01-18T21:25:21.855Z'
@@ -9304,8 +9305,30 @@
         completion check for test coverage of linked spec AC. The 'tests' relationship type exists
         but isn't enforced.
       supersedes: null
+    - _ulid: 01KFA9JYS8RQQK1NXEQKYE4QV8
+      created_at: '2026-01-19T04:53:06.984Z'
+      author: '@claude'
+      content: >-
+        Implemented test coverage tracking and AC guidance in three parts:
+
+
+        1. AGENTS.md: Added test coverage requirements section explaining that ACs should have tests
+        and validation warns about missing coverage
+
+
+        2. Validation: Added new 'missing_test_coverage' warning type that scans test files for AC
+        annotations (// AC: @spec-ref ac-N) and warns about specs with ACs that have no test
+        coverage
+
+
+        3. Task review: Enhanced 'kspec task review' command to:
+           - Scan test files for AC coverage
+           - Mark each AC with ✓ (covered) or ○ (uncovered) in output
+           - Show coverage summary with count and list of uncovered ACs
+
+        All 564 tests pass.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T04:46:18.282Z'
 - _ulid: 01KF9G227F2FZ04EKX7A1PSHCG
   slugs: []
   title: 'Spike: Research artifacts feature design'
