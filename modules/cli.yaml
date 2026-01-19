@@ -1460,6 +1460,10 @@ features:
             given: Repository has kspec-meta branch but no .kspec worktree
             when: User runs kspec setup --auto-worktree
             then: Automatically creates .kspec worktree without prompting
+          - id: worktree-already-exists
+            given: .kspec worktree already exists and is valid
+            when: User runs kspec setup
+            then: Skips worktree creation, proceeds with other setup steps
       - _ulid: 01KF3ECD4PQ01ENY5PVSPTKK9X
         slugs:
           - cmd-module-add
