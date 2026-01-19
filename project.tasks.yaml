@@ -9028,6 +9028,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented minimal viable review workflow: Added 'kspec task review' command that gathers task
+    details, linked spec with ACs, and git diff since started_at. Both human-readable and JSON
+    output modes work. All 543 tests pass.
   depends_on: []
   context: []
   priority: 2
@@ -9037,6 +9041,7 @@
   vcs_refs: []
   created_at: '2026-01-18T23:28:50.833Z'
   started_at: '2026-01-19T02:37:41.978Z'
+  completed_at: '2026-01-19T02:46:06.647Z'
   notes:
     - _ulid: 01KFA1VZND5HCWGQC0FESBFEZG
       created_at: '2026-01-19T02:38:14.189Z'
@@ -9134,11 +9139,6 @@
         manual workflow proves valuable.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T02:46:06.647Z'
-  closed_reason: >-
-    Implemented minimal viable review workflow: Added 'kspec task review' command that gathers task
-    details, linked spec with ACs, and git diff since started_at. Both human-readable and JSON
-    output modes work. All 543 tests pass.
 - _ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
   slugs: []
   title: Create INSTALL.md with agent-focused setup instructions
@@ -9211,7 +9211,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -9299,3 +9299,4 @@
         learnings/patterns, not actionable ideas.
       supersedes: null
   todos: []
+  started_at: '2026-01-19T02:59:29.900Z'
