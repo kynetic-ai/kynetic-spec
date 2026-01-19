@@ -1959,6 +1959,13 @@ features:
         tests: []
         notes: []
         created: '2026-01-19T05:57:33.619Z'
+        acceptance_criteria:
+          - id: valid-adapter-proceeds
+            given: User runs kspec ralph with valid adapter (default or --adapter)
+            when: Startup validation runs
+            then: >-
+              Adapter package is verified to exist (via npm/npx check), and command proceeds to
+              spawn agent
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
