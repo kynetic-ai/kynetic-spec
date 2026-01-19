@@ -9560,6 +9560,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented automatic implementation notes when deriving tasks from specs. Includes spec
+    description and AC summaries. Comprehensive test coverage (3 tests). All 575 tests pass.
   depends_on: []
   context: []
   priority: 3
@@ -9569,6 +9572,7 @@
   vcs_refs: []
   created_at: '2026-01-18T21:40:18.300Z'
   started_at: '2026-01-19T05:53:52.293Z'
+  completed_at: '2026-01-19T06:04:20.959Z'
   notes:
     - _ulid: 01KFAD3NEAGYDC0Y788AJ42XRJ
       created_at: '2026-01-19T05:54:40.203Z'
@@ -9604,10 +9608,6 @@
         All 575 tests pass.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T06:04:20.959Z'
-  closed_reason: >-
-    Implemented automatic implementation notes when deriving tasks from specs. Includes spec
-    description and AC summaries. Comprehensive test coverage (3 tests). All 575 tests pass.
 - _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
   slugs: []
   title: Add subagent review workflow on task complete
@@ -9741,7 +9741,7 @@
     worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
     concise, copy-pasteable commands, clear success criteria.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -9753,6 +9753,7 @@
   created_at: '2026-01-18T23:29:26.784Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T06:04:58.995Z'
 - _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
   title: Document kspec worktree architecture in AGENTS.md
