@@ -712,4 +712,14 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFA0S3X005NWJY3D8931BGP5
+    type: success
+    content: >-
+      Hook debugging methodology: For hook errors, test with synthetic inputs (valid JSON, invalid
+      JSON, edge cases) to isolate root cause before fixing. The '2>&1' pattern in test commands
+      reveals stderr leakage that wouldn't be visible in normal hook execution.
+    created_at: '2026-01-19T02:19:11.648Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []

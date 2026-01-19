@@ -8395,6 +8395,7 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Fixed by suppressing jq stderr output in kspec-worktree-guard.sh hook
   depends_on: []
   context: []
   priority: 2
@@ -8404,6 +8405,7 @@
   vcs_refs: []
   created_at: '2026-01-18T20:01:05.601Z'
   started_at: '2026-01-19T02:17:49.663Z'
+  completed_at: '2026-01-19T02:18:57.976Z'
   notes:
     - _ulid: 01KFA0RJ81QAD43B56XC4B29G2
       created_at: '2026-01-19T02:18:53.569Z'
@@ -8437,8 +8439,6 @@
         - All existing functionality preserved
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T02:18:57.976Z'
-  closed_reason: Fixed by suppressing jq stderr output in kspec-worktree-guard.sh hook
 - _ulid: 01KF9B4WB2M5HNW7V7YKZXFPZ6
   slugs: []
   title: Regenerate invalid 28-char ULIDs in bootstrap meta
@@ -8447,7 +8447,7 @@
     Bootstrap kynetic.meta.yaml has invalid 28-char ULIDs instead of 26-char. Need to regenerate all
     meta item ULIDs. Validation now catches this!
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -8457,6 +8457,7 @@
   created_at: '2026-01-18T20:01:08.450Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T02:19:36.779Z'
 - _ulid: 01KF9B4YXTCGR53W0HX0HPADDS
   slugs: []
   title: Add ralph loop session save on iteration end
