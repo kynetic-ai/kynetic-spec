@@ -892,3 +892,7 @@ features:
             given: kspec validate run
             when: spec has traits
             then: trait AC coverage included in completeness check (no special flag needed)
+          - id: ac-4
+            given: trait deleted
+            when: spec still references it
+            then: validation reports broken ref error
