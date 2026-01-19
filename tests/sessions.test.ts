@@ -257,7 +257,8 @@ describe('Session storage', () => {
 
       const metadataPath = getSessionMetadataPath(testDir, input.id);
       const content = await fs.readFile(metadataPath, 'utf-8');
-      expect(content).toContain("task_id: '@my-task'");
+      // Accept both single and double quotes (yaml library uses double quotes)
+      expect(content).toMatch(/task_id: ["']@my-task["']/);
     });
 
     it('should use provided started_at if given', async () => {

@@ -54,20 +54,21 @@ export interface LoadedTask extends Task {
 
 /**
  * Parse YAML content into an object
+ * Uses the modern yaml library which has consistent type handling
  */
 export function parseYaml<T>(content: string): T {
-  return yaml.load(content) as T;
+  return YAML.parse(content) as T;
 }
 
 /**
  * Serialize object to YAML
+ * Uses the modern yaml library for consistent formatting
  */
 export function toYaml(obj: unknown): string {
-  return yaml.dump(obj, {
+  return YAML.stringify(obj, {
     indent: 2,
     lineWidth: 100,
-    noRefs: true,
-    sortKeys: false,
+    sortMapEntries: false,
   });
 }
 
