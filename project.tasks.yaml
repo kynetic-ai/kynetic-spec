@@ -9108,7 +9108,7 @@
     new items. Friction: during triage had to grep/search to find @cli module since flat list
     doesn't show nesting.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9147,6 +9147,10 @@
         hierarchy is now immediately visible without needing to grep through files.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T03:51:31.795Z'
+  closed_reason: >-
+    Added --tree flag to item list command with full hierarchy visualization. All tests pass
+    (561/561).
 - _ulid: 01KF9FX0CEF7P5TT2H33MMM4VR
   slugs: []
   title: Add --priority flag to derive command
