@@ -2541,6 +2541,10 @@ features:
         given: workflows with skill_content defined
         when: running kspec workflow sync
         then: all workflow skill files are generated/updated in .claude/skills/
+      - id: ac-4
+        given: a workflow with phases containing parallel agents
+        when: exporting the workflow
+        then: the generated skill includes properly formatted parallel agent instructions
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
