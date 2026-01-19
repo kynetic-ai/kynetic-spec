@@ -418,6 +418,24 @@ kspec validate --fix
 4. **Spec is source of truth** - Code implements what spec defines
 5. **Inbox for unclear scope** - Promote to task when ready
 
+## Running kspec
+
+**For normal usage** (after `npm link`):
+```bash
+kspec session start
+kspec tasks ready
+```
+
+**For testing source changes** (no build needed):
+```bash
+npm run dev -- session start
+npm run dev -- tasks ready
+```
+
+Use `kspec` for day-to-day work. Use `npm run dev` when modifying the CLI itself and testing changes before building.
+
+After source changes, run `npm run build` to update the `kspec` command.
+
 ## Environment
 
 - `KSPEC_AUTHOR` - Attribution for notes (e.g., @claude)

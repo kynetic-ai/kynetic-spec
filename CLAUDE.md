@@ -6,6 +6,8 @@ Read the AGENTS.md file for full project context. Key points:
 
 ## Quick Start
 
+**Note:** Use `npm run dev --` when working on kspec itself (runs TypeScript directly, no build needed). Use `kspec` for normal usage after running `npm link`.
+
 ```bash
 # First: Get session context (active work, ready tasks, inbox, recent activity)
 npm run dev -- session start
