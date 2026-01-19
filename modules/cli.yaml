@@ -1380,6 +1380,9 @@ features:
             then: >-
               Exits with code 0 (warnings don't fail validation by default). With --strict, exits
               code 4 if any staleness warnings.
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
