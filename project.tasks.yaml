@@ -10206,7 +10206,7 @@
   type: task
   spec_ref: '@multi-ref-batch'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10504,6 +10504,8 @@
         #82. Ready for next session.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T07:40:15.867Z'
+  closed_reason: null
 - _ulid: 01KFACWSV9475NTYSG9FDJBW7V
   slugs: []
   title: Add meta observe --from-inbox command
