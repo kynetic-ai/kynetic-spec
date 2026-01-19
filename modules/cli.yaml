@@ -1005,7 +1005,7 @@ features:
             then: Git's error message is shown and command exits with non-zero code
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         notes:
           - _ulid: 01KFACYYRM33Z9W1PW01ASMWTZ
             created_at: '2026-01-19T05:52:05.909Z'
