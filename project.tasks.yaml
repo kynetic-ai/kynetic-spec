@@ -1335,11 +1335,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1629,6 +1631,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1744,6 +1747,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13168,6 +13172,28 @@
       author: "@claude"
       content: See parent task @task-spec-traits-system for full implementation context including file
         paths, code patterns, and implementation order.
+      supersedes: null
+    - _ulid: 01KFC24S8YJQZ9Z96FT4JRKDAD
+      created_at: 2026-01-19T21:21:31.422Z
+      author: "@claude"
+      content: |-
+        IMPLEMENTATION SCOPE: Validation for traits field refs
+
+        **Prerequisites**: Parent task adds 'traits' field to SpecItemSchema
+
+        **This task implements**:
+        - Validation that traits refs resolve to trait-type items only (src/parser/validate.ts)
+        - Error when traits ref doesn't exist
+        - Error when traits ref points to non-trait item
+        - Warning when same trait listed twice (duplicate)
+
+        **Files to modify**:
+        - src/parser/validate.ts - Add traits field validation in reference validation section
+
+        **Pattern**: Follow existing depends_on/implements ref validation patterns
+
+        **Tests**:
+        - tests/parser/validate.test.ts - Add tests for traits ref validation errors/warnings
       supersedes: null
   todos: []
 - _ulid: 01KFC1GKW37Q8K572P0FPQGS6R
