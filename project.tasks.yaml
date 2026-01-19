@@ -1342,11 +1342,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1650,6 +1652,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1765,6 +1768,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13711,21 +13715,34 @@
         - tests/cli/trait.test.ts - Empty list output test
       supersedes: null
   todos: []
-- title: Add --description flag to task add command
+- _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
+  slugs: []
+  title: Add --description flag to task add command
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - cli
-    - dx
-  _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - cli
+    - dx
   vcs_refs: []
   created_at: 2026-01-19T21:42:15.984Z
-  notes: []
+  notes:
+    - _ulid: 01KFC3B3WKRSWDR5T51C03HZWS
+      created_at: 2026-01-19T21:42:27.475Z
+      author: "@claude"
+      content: >-
+        Task schema already has description field (src/schema/task.ts line 48). CLI task add command
+        doesn't expose it. Add --description <desc> flag to allow setting description at creation
+        time instead of requiring separate task note call.
+
+
+        File: src/cli/commands/task.ts - task add command
+
+        Pattern: Follow existing --title, --priority flag patterns
+      supersedes: null
   todos: []
