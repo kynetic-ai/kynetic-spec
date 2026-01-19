@@ -692,3 +692,8 @@ requirements:
       judgment during triage - assessing whether the task is unambiguous, appropriately scoped, and
       has sufficient context (spec + notes + description) to be standalone. This prevents automation
       from attempting tasks that require human decisions, clarification, or oversight.
+    acceptance_criteria:
+      - id: ac-1
+        given: a task exists
+        when: checking its schema
+        then: "it has an optional automation field with enum values: eligible, needs_review, manual_only"
