@@ -757,3 +757,7 @@ requirements:
         given: an agent marks a task as needs_review during a ralph iteration
         when: the marking is complete
         then: the agent moves on to the next eligible task (does not exit the loop)
+      - id: ac-17
+        given: kspec task get @ref is run
+        when: displaying task details
+        then: the automation status is shown (or 'unassessed' if not set)
