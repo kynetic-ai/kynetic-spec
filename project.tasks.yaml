@@ -9221,6 +9221,7 @@
     - meta
   vcs_refs: []
   created_at: '2026-01-18T23:38:53.607Z'
+  started_at: '2026-01-19T02:59:29.900Z'
   notes:
     - _ulid: 01KF9QKZQYABNRXWXRT9PKV9ZA
       created_at: '2026-01-18T23:39:06.366Z'
@@ -9298,5 +9299,39 @@
         This session converted 71 items from inbox to observations because they were actually
         learnings/patterns, not actionable ideas.
       supersedes: null
+    - _ulid: 01KFA37E8KY65CR0H983G1SHT8
+      created_at: '2026-01-19T03:01:58.163Z'
+      author: '@claude'
+      content: >-
+        Completed comprehensive documentation update for meta-spec and observations:
+
+
+        1. Added new "Observations System" section explaining:
+           - Observation types (friction, success, question, idea)
+           - When to use observations vs inbox
+           - Observation workflow and commands
+           - Triage routing rules
+
+        2. Added new "Meta Commands Reference" section with:
+           - Session context commands (focus, thread, question)
+           - Observation lifecycle commands
+           - Meta items CRUD operations
+           - Context integration notes
+
+        3. Updated "Session Context" section with:
+           - Added observations to the context types
+           - Provided practical examples of all meta commands in action
+
+        4. Updated "Inbox vs Observations" section:
+           - Clear distinction between the two capture mechanisms
+           - When to use each
+           - Updated rules of thumb
+
+        5. Verified all command examples against current CLI:
+           - Fixed focus command syntax (uses positional arg, not 'set' subcommand)
+           - Confirmed all other commands match actual CLI
+
+        All documentation now reflects current implementation and provides clear guidance on
+        observations vs inbox.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T02:59:29.900Z'
