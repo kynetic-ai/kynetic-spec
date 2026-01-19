@@ -9684,20 +9684,3 @@
         observations vs inbox.
       supersedes: null
   todos: []
-- _ulid: 01KFA7WMZ77TZQF09RSQQF2YX9
-  slugs: []
-  title: Test task for spec context
-  type: task
-  spec_ref: '@status-cascade'
-  meta_ref: null
-  status: in_progress
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: '2026-01-19T04:23:27.463Z'
-  started_at: '2026-01-19T04:23:47.318Z'
-  notes: []
-  todos: []
