@@ -1299,11 +1299,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1521,6 +1523,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1636,6 +1639,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12515,26 +12519,48 @@
         complete it with proper reason.
       supersedes: null
   todos: []
-- title: Spec out session log analysis tooling
+- _ulid: 01KFBNBB7DZWZBA1ZA8E7QVX80
+  slugs: []
+  title: Spec out session log analysis tooling
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - dx
-    - sessions
   description: "Session log analysis tooling: Design features for searching, filtering, and analyzing
     events.jsonl session logs. Use cases: (1) Find events by time range, (2) Filter by event type
     (tool calls, errors, etc.), (3) Search event content, (4) Timeline reconstruction for debugging,
     (5) Aggregate stats (tool usage, error rates). Could be CLI commands like 'kspec session events'
     or separate analysis tooling. Would help with retrospectives and debugging automation issues."
-  _ulid: 01KFBNBB7DZWZBA1ZA8E7QVX80
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
+    - sessions
+  vcs_refs: []
+  created_at: 2026-01-19T17:37:54.924Z
+  notes: []
+  todos: []
+- title: Spec out pending_review task state
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Task lifecycle: Add pending_review state between in_progress and completed. Currently
+    agents mark tasks complete when code is done, but completion should only happen after review and
+    merge. Design questions: (1) New 'pending_review' status vs flag on existing status, (2) Trigger
+    for pending_review - PR created? code pushed? explicit command?, (3) Trigger for completion - PR
+    merged? manual approval?, (4) Automation loop interaction - should loops only work on
+    pending/in_progress, not pending_review?, (5) Back-transition if review fails - return to
+    in_progress with note. Goal: Align task completion with actual merged/shipped state."
+  _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T17:37:54.924Z
+  created_at: 2026-01-19T17:40:32.358Z
   notes: []
   todos: []
