@@ -10144,7 +10144,7 @@
     inbox promote --description flag - add description during promote instead of needing to add note
     separately after. Preserves workflow continuity.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -10197,6 +10197,8 @@
         All 578 tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T07:12:15.710Z'
+  closed_reason: Added --description flag to inbox promote command with comprehensive tests
 - _ulid: 01KFACH2KTRWKBDYQARTVBV3QD
   slugs:
     - task-multi-ref-batch-operations
