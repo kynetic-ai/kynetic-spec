@@ -9636,20 +9636,3 @@
         observations vs inbox.
       supersedes: null
   todos: []
-- _ulid: 01KFA6SJ8CQMQNHMPJYQ62RYRA
-  slugs:
-    - task-reference-syntax
-  title: 'Implement: Reference Syntax'
-  type: task
-  spec_ref: '@ref-syntax'
-  derivation: auto
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: '2026-01-19T04:04:17.804Z'
-  notes: []
-  todos: []
