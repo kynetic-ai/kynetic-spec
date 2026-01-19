@@ -748,7 +748,7 @@ requirements:
       - id: ac-14
         given: kspec tasks ready is run
         when: displaying the ready tasks list
-        then: the automation status is shown for each task (or blank if unassessed)
+        then: the automation status is shown for each task (showing 'unassessed' if not set)
       - id: ac-15
         given: a task is marked manual_only
         when: it needs to become eligible
