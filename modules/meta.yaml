@@ -1054,6 +1054,35 @@ features:
             then: >-
               Inbox item content is used to create observation, inbox item is deleted, observation
               ref is returned. Type defaults to 'idea' if not specified.
+        notes:
+          - _ulid: 01KFAD3FMNYEZP6ZZ98X34E13R
+            created_at: '2026-01-19T05:54:34.261Z'
+            author: '@claude'
+            content: >-
+              Enhancement: --from-inbox flag for bucket correction
+
+
+              **Use case:** During triage, items sometimes get captured in the wrong bucket. An idea
+              captured as inbox item should have been an observation. This flag allows converting
+              without losing the content.
+
+
+              **Behavior:**
+
+              - --from-inbox @ref takes an inbox item reference
+
+              - Creates observation with inbox item's content
+
+              - Type defaults to 'idea' but can be overridden with --type
+
+              - Deletes inbox item after successful observation creation
+
+              - Preserves original author from inbox item
+
+
+              **Mutually exclusive:** When --from-inbox is used, the positional <type> and content
+              args are ignored (content comes from inbox item).
+            supersedes: null
       - _ulid: 01KF1XCMD60000000000000000
         slugs:
           - meta-observations-cmd
