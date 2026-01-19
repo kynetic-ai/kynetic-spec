@@ -10657,20 +10657,96 @@
         **Call site:** At start of setup command handler, before other setup logic.
       supersedes: null
   todos: []
-- title: 'Implement: Semantic Exit Codes'
+- _ulid: 01KFADD78BS8EARJHSXXBRM9W8
+  slugs:
+    - task-semantic-exit-codes
+  title: 'Implement: Semantic Exit Codes'
   type: task
   spec_ref: '@cli-exit-codes'
   derivation: auto
-  priority: 3
-  slugs:
-    - task-semantic-exit-codes
-  tags: []
-  depends_on: []
-  _ulid: 01KFADD78BS8EARJHSXXBRM9W8
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: '2026-01-19T05:59:53.354Z'
-  notes: []
+  notes:
+    - _ulid: 01KFADDKAG82HC2SRSVKK3AZMY
+      created_at: '2026-01-19T06:00:05.713Z'
+      author: '@claude'
+      content: |-
+        **Implementation for ACs: exit-code-constants, exit-codes-documented, consistent-usage**
+
+        **Step 1: Create exit code constants**
+
+        File: src/cli/exit-codes.ts (new file)
+
+        ```typescript
+        export const EXIT_CODES = {
+          SUCCESS: 0,
+          ERROR: 1,
+          USAGE: 2,
+          NOT_FOUND: 3,
+          VALIDATION: 4,
+          CONFLICT: 5,
+          PARTIAL: 6,  // For batch operations with mixed results
+        } as const;
+
+        export type ExitCode = typeof EXIT_CODES[keyof typeof EXIT_CODES];
+
+        export const EXIT_CODE_DESCRIPTIONS: Record<ExitCode, string> = {
+          [EXIT_CODES.SUCCESS]: 'Operation completed successfully',
+          [EXIT_CODES.ERROR]: 'General or unexpected error',
+          [EXIT_CODES.USAGE]: 'Invalid arguments or command usage',
+          [EXIT_CODES.NOT_FOUND]: 'Referenced item does not exist',
+          [EXIT_CODES.VALIDATION]: 'Spec validation failed',
+          [EXIT_CODES.CONFLICT]: 'Conflict (item exists, duplicate slug, etc.)',
+          [EXIT_CODES.PARTIAL]: 'Partial success (some operations failed)',
+        };
+        ```
+
+        **Step 2: Update existing commands**
+
+        Audit and update all process.exit() calls:
+        - src/cli/commands/task.ts
+        - src/cli/commands/item.ts
+        - src/cli/commands/inbox.ts
+        - src/cli/commands/validate.ts
+        - etc.
+
+        Replace magic numbers:
+        ```typescript
+        // Before
+        process.exit(3);
+
+        // After
+        import { EXIT_CODES } from '../exit-codes';
+        process.exit(EXIT_CODES.NOT_FOUND);
+        ```
+
+        **Step 3: Add documentation command**
+
+        File: src/cli/commands/help.ts (or extend existing)
+
+        Add --exit-codes option to help command:
+        ```
+        kspec help --exit-codes
+
+        Exit Codes:
+          0  SUCCESS     Operation completed successfully
+          1  ERROR       General or unexpected error
+          2  USAGE       Invalid arguments or command usage
+          3  NOT_FOUND   Referenced item does not exist
+          4  VALIDATION  Spec validation failed
+          5  CONFLICT    Conflict (item exists, duplicate slug, etc.)
+          6  PARTIAL     Partial success (some operations failed)
+        ```
+
+        **Testing:**
+        - Unit test EXIT_CODES object has all expected values
+        - Integration tests verify specific commands return expected codes
+        - Test help --exit-codes output format
+      supersedes: null
   todos: []
