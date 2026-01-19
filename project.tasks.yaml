@@ -10941,7 +10941,7 @@
   type: task
   spec_ref: '@ralph-adapter-validation'
   derivation: auto
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - '@task-ralph-command-automated-task-loop'
@@ -11070,6 +11070,11 @@
         - tests/ralph.test.ts: Added 3 AC tests
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T08:44:46.238Z'
+  closed_reason: >-
+    Implemented adapter validation with all 3 acceptance criteria. Validation uses npx --no-install
+    to check package exists before spawning agent. Exits with code 3 and clear error message if
+    adapter not found. All 3 tests passing.
 - _ulid: 01KFADBEHQMMS3PG701HFKX501
   slugs:
     - task-kspec-setup
