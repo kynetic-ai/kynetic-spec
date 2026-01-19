@@ -6,6 +6,7 @@ import {
   UlidSchema,
   SlugSchema,
   RefSchema,
+  MaturitySchema,
 } from '../src/schema/index.js';
 
 describe('UlidSchema', () => {
@@ -123,5 +124,21 @@ describe('NoteSchema', () => {
     };
     const result = NoteSchema.safeParse(note);
     expect(result.success).toBe(true);
+  });
+});
+
+describe('MaturitySchema', () => {
+  it('should accept all valid maturity statuses', () => {
+    expect(MaturitySchema.safeParse('draft').success).toBe(true);
+    expect(MaturitySchema.safeParse('proposed').success).toBe(true);
+    expect(MaturitySchema.safeParse('stable').success).toBe(true);
+    expect(MaturitySchema.safeParse('deferred').success).toBe(true);
+    expect(MaturitySchema.safeParse('deprecated').success).toBe(true);
+  });
+
+  it('should reject invalid maturity statuses', () => {
+    expect(MaturitySchema.safeParse('invalid').success).toBe(false);
+    expect(MaturitySchema.safeParse('pending').success).toBe(false);
+    expect(MaturitySchema.safeParse('').success).toBe(false);
   });
 });
