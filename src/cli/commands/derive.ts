@@ -16,6 +16,7 @@ import { commitIfShadow } from '../../parser/shadow.js';
 import { output, success, error, warn, info, isJsonMode } from '../output.js';
 import type { TaskInput } from '../../schema/index.js';
 import { errors } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
@@ -145,7 +146,7 @@ function resolveSpecRef(
         }
         break;
     }
-    process.exit(3);
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 
   // Check if it's actually a spec item (not a task)
@@ -158,7 +159,7 @@ function resolveSpecRef(
     } else {
       error(errors.reference.specNotFound(ref));
     }
-    process.exit(3);
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 
   return item;
@@ -381,19 +382,19 @@ export function registerDeriveCommand(program: Command): void {
           console.error('  kspec derive @spec-ref');
           console.error('  kspec derive @spec-ref --flat');
           console.error('  kspec derive --all');
-          process.exit(2);
+          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         if (ref && options.all) {
           error(errors.usage.deriveRefAndAll);
-          process.exit(2);
+          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         // Validate priority if provided
         if (options.priority !== undefined) {
           if (isNaN(options.priority) || options.priority < 1 || options.priority > 5) {
             error('Priority must be a number between 1 and 5');
-            process.exit(2);
+            process.exit(EXIT_CODES.USAGE_ERROR);
           }
         }
 
@@ -561,7 +562,7 @@ export function registerDeriveCommand(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.deriveTasks, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

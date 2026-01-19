@@ -12,6 +12,7 @@ import {
   SHADOW_WORKTREE_DIR,
   SHADOW_BRANCH_NAME,
 } from '../../parser/shadow.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Supported agent types for auto-configuration
@@ -572,7 +573,7 @@ export function registerSetupCommand(program: Command): void {
         const worktreeReady = await ensureWorktree(options.autoWorktree || false);
         if (!worktreeReady) {
           // User declined worktree creation or it failed
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const detected = detectAgent();
@@ -675,7 +676,7 @@ export function registerSetupCommand(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.setupFailed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

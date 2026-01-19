@@ -15,6 +15,7 @@ import {
 import type { TaskStatus } from '../../schema/index.js';
 import { grepItem } from '../../utils/grep.js';
 import { errors } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Register the 'tasks' command group
@@ -70,7 +71,7 @@ export function registerTasksCommands(program: Command): void {
           const metaRefResult = index.resolve(options.metaRef);
           if (!metaRefResult.ok) {
             error(errors.reference.metaRefNotFound(options.metaRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
           const targetRef = options.metaRef.startsWith('@') ? options.metaRef : `@${options.metaRef}`;
           taskList = taskList.filter(t => t.meta_ref === targetRef || t.meta_ref === options.metaRef);
@@ -85,7 +86,7 @@ export function registerTasksCommands(program: Command): void {
         output(taskList, () => formatTaskList(taskList, options.verbose, index, options.grep, options.full));
       } catch (err) {
         error(errors.failures.listTasks, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -112,7 +113,7 @@ export function registerTasksCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getReadyTasks, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -138,7 +139,7 @@ export function registerTasksCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.getNextTask, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -159,7 +160,7 @@ export function registerTasksCommands(program: Command): void {
         output(blockedTasks, () => formatTaskList(blockedTasks, options.verbose, index, undefined, options.full));
       } catch (err) {
         error(errors.failures.getBlockedTasks, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -181,7 +182,7 @@ export function registerTasksCommands(program: Command): void {
         output(activeTasks, () => formatTaskList(activeTasks, options.verbose, index, undefined, options.full));
       } catch (err) {
         error(errors.failures.getActiveTasks, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

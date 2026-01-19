@@ -35,6 +35,7 @@ import {
 } from '../../utils/index.js';
 import { shadowPull, type ShadowSyncResult } from '../../parser/shadow.js';
 import type { Note, Todo } from '../../schema/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -925,7 +926,7 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
     output(sessionCtx, () => formatSessionContext(sessionCtx, options));
   } catch (err) {
     error(errors.failures.gatherSessionContext, err);
-    process.exit(1);
+    process.exit(EXIT_CODES.ERROR);
   }
 }
 
@@ -1015,12 +1016,12 @@ async function sessionCheckpointAction(options: CheckpointOptions): Promise<void
     } else {
       formatCheckpointResult(result);
       if (!result.ok) {
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     }
   } catch (err) {
     error(errors.failures.runCheckpoint, err);
-    process.exit(1);
+    process.exit(EXIT_CODES.ERROR);
   }
 }
 

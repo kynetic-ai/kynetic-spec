@@ -13,6 +13,7 @@ import {
 } from '../../parser/shadow.js';
 import { output, success, error, info, warn } from '../output.js';
 import { shadowCommands } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Format shadow status for display
@@ -77,7 +78,7 @@ export function registerShadowCommands(program: Command): void {
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const status = await getShadowStatus(gitRoot);
@@ -88,11 +89,11 @@ export function registerShadowCommands(program: Command): void {
         );
 
         if (!status.healthy && status.exists) {
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(shadowCommands.statusFailed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -105,7 +106,7 @@ export function registerShadowCommands(program: Command): void {
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const status = await getShadowStatus(gitRoot);
@@ -118,7 +119,7 @@ export function registerShadowCommands(program: Command): void {
         if (!status.branchExists) {
           error(shadowCommands.repair.branchNotExist);
           console.log(shadowCommands.repair.initHint);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         info(shadowCommands.repair.repairing);
@@ -136,11 +137,11 @@ export function registerShadowCommands(program: Command): void {
           }
         } else {
           error(shadowCommands.repair.failed(result.error || 'Unknown error'));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(shadowCommands.repair.commandFailed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -154,7 +155,7 @@ export function registerShadowCommands(program: Command): void {
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const status = await getShadowStatus(gitRoot);
@@ -167,7 +168,7 @@ export function registerShadowCommands(program: Command): void {
             warn(shadowCommands.log.hasIssues);
             console.log(shadowCommands.log.repairHint);
           }
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const count = parseInt(options.count, 10) || 10;
@@ -187,7 +188,7 @@ export function registerShadowCommands(program: Command): void {
         console.log(log);
       } catch (err) {
         error(shadowCommands.log.failed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -203,7 +204,7 @@ export function registerShadowCommands(program: Command): void {
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const status = await getShadowStatus(gitRoot);
@@ -211,7 +212,7 @@ export function registerShadowCommands(program: Command): void {
         if (!status.healthy) {
           error(shadowCommands.resolve.notHealthy);
           console.log(shadowCommands.resolve.repairHint);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const worktreeDir = `${gitRoot}/${SHADOW_WORKTREE_DIR}`;
@@ -279,7 +280,7 @@ export function registerShadowCommands(program: Command): void {
         }
       } catch (err) {
         error(shadowCommands.resolve.failed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -293,7 +294,7 @@ export function registerShadowCommands(program: Command): void {
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const status = await getShadowStatus(gitRoot);
@@ -301,7 +302,7 @@ export function registerShadowCommands(program: Command): void {
         if (!status.healthy) {
           error(shadowCommands.sync.notHealthy);
           console.log(shadowCommands.sync.repairHint);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const worktreeDir = `${gitRoot}/${SHADOW_WORKTREE_DIR}`;
@@ -319,7 +320,7 @@ export function registerShadowCommands(program: Command): void {
         if (result.hadConflict) {
           warn(shadowCommands.sync.conflictDetected);
           console.log(shadowCommands.sync.resolveHint);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         if (result.pulled && result.pushed) {
@@ -333,7 +334,7 @@ export function registerShadowCommands(program: Command): void {
         }
       } catch (err) {
         error(shadowCommands.sync.failed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

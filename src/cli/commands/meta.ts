@@ -41,6 +41,7 @@ import { type ObservationType } from '../../schema/index.js';
 import { output, error, success, isJsonMode } from '../output.js';
 import { errors } from '../../strings/errors.js';
 import { commitIfShadow } from '../../parser/shadow.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Resolve a meta reference to its ULID
@@ -320,7 +321,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -335,7 +336,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.showMeta, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -349,7 +350,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -371,7 +372,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.listAgents, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -386,7 +387,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -411,7 +412,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.listWorkflows, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -426,7 +427,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -456,7 +457,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.listConventions, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -470,7 +471,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -524,7 +525,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!found) {
           error(errors.reference.metaNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Output the item
@@ -535,7 +536,7 @@ export function registerMetaCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getMetaItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -550,7 +551,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -637,7 +638,7 @@ export function registerMetaCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.listMetaItems, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -656,7 +657,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // AC: @meta-observe-cmd from-inbox-conversion
@@ -668,7 +669,7 @@ export function registerMetaCommands(program: Command): void {
 
           if (!item) {
             error(errors.reference.inboxNotFound(options.fromInbox));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
           // Use inbox item content
@@ -682,7 +683,7 @@ export function registerMetaCommands(program: Command): void {
           if (!validTypes.includes(observationType)) {
             error(errors.validation.invalidObservationType(observationType));
             console.log(`Valid types: ${validTypes.join(', ')}`);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           // Create observation
@@ -698,7 +699,7 @@ export function registerMetaCommands(program: Command): void {
           const deleted = await deleteInboxItem(ctx, item._ulid);
           if (!deleted) {
             error('Failed to delete inbox item after creating observation');
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           await commitIfShadow(ctx.shadow, 'meta-observe-from-inbox', observation._ulid.substring(0, 8), `Convert inbox item to ${observationType} observation`);
@@ -714,7 +715,7 @@ export function registerMetaCommands(program: Command): void {
         // Standard observe flow (without --from-inbox)
         if (!type || !content) {
           error('Type and content are required when not using --from-inbox');
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Validate observation type
@@ -722,7 +723,7 @@ export function registerMetaCommands(program: Command): void {
         if (!validTypes.includes(type as ObservationType)) {
           error(errors.validation.invalidObservationType(type));
           console.log(`Valid types: ${validTypes.join(', ')}`);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Create observation
@@ -742,7 +743,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.createObservation, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -761,7 +762,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -816,7 +817,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.listObservations, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -833,7 +834,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -845,19 +846,19 @@ export function registerMetaCommands(program: Command): void {
 
         if (!observation) {
           error(errors.reference.observationNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // AC-obs-6: Check if already promoted
         if (observation.promoted_to) {
           error(errors.conflict.observationAlreadyPromoted(observation.promoted_to));
-          process.exit(1);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // AC-obs-8: Check if resolved
         if (observation.resolved && !options.force) {
           error(errors.operation.cannotPromoteResolved);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // AC-obs-3: Create task with title, description from observation, meta_ref, and origin
@@ -886,7 +887,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.promoteObservation, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -900,7 +901,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const metaCtx = await loadMetaContext(ctx);
@@ -912,7 +913,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!observation) {
           error(errors.reference.observationNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // AC-obs-7: Check if already resolved
@@ -923,7 +924,7 @@ export function registerMetaCommands(program: Command): void {
             ? resolutionText.substring(0, 50) + '...'
             : resolutionText;
           error(errors.conflict.observationAlreadyResolved(resolvedDate, truncated));
-          process.exit(1);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // AC-obs-9: Auto-populate resolution from task completion if promoted
@@ -946,21 +947,21 @@ export function registerMetaCommands(program: Command): void {
                 finalResolution = `Resolved via task ${observation.promoted_to}`;
               } else {
                 error(`Task ${observation.promoted_to} is not completed yet`);
-                process.exit(1);
+                process.exit(EXIT_CODES.ERROR);
               }
             } else {
               error(`Reference ${observation.promoted_to} is not a task`);
-              process.exit(1);
+              process.exit(EXIT_CODES.ERROR);
             }
           } else {
             error(`Task ${observation.promoted_to} not found`);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
         }
 
         if (!finalResolution) {
           error(errors.validation.resolutionRequired);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // AC-obs-4: Update observation
@@ -975,7 +976,7 @@ export function registerMetaCommands(program: Command): void {
         success(`Resolved: ${observation._ulid.substring(0, 8)}`);
       } catch (err) {
         error(errors.failures.resolveObservation, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1000,7 +1001,7 @@ export function registerMetaCommands(program: Command): void {
         const validTypes = ['agent', 'workflow', 'convention'];
         if (!validTypes.includes(type)) {
           error(errors.validation.invalidType(type, validTypes));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Generate ULID
@@ -1013,11 +1014,11 @@ export function registerMetaCommands(program: Command): void {
           // Validate required fields
           if (!options.id) {
             error(errors.validation.agentRequiresId);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
           if (!options.name) {
             error(errors.validation.agentRequiresName);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           item = {
@@ -1033,11 +1034,11 @@ export function registerMetaCommands(program: Command): void {
           // Validate required fields
           if (!options.id) {
             error(errors.validation.workflowRequiresId);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
           if (!options.trigger) {
             error(errors.validation.workflowRequiresTrigger);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           item = {
@@ -1051,7 +1052,7 @@ export function registerMetaCommands(program: Command): void {
           // convention
           if (!options.domain) {
             error(errors.validation.conventionRequiresDomain);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           item = {
@@ -1074,7 +1075,7 @@ export function registerMetaCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.createMeta(type), err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1135,7 +1136,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!found || !itemType) {
           error(errors.reference.metaNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Update fields based on type
@@ -1189,7 +1190,7 @@ export function registerMetaCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.updateMetaItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1259,7 +1260,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!itemType || !itemUlid || !itemLabel) {
           error(errors.reference.metaNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Check for dangling references (unless --confirm is used to override)
@@ -1279,7 +1280,7 @@ export function registerMetaCommands(program: Command): void {
               .map((t) => `@${t.slugs?.[0] || t._ulid.substring(0, 8)}`)
               .join(', ');
             error(errors.operation.cannotDeleteReferencedByTasks(itemLabel, referencingTasks.length, taskRefs));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           // Check observations with workflow_ref (only for workflows)
@@ -1298,13 +1299,13 @@ export function registerMetaCommands(program: Command): void {
                 .map((o) => `@${o._ulid.substring(0, 8)}`)
                 .join(', ');
               error(errors.operation.cannotDeleteReferencedByObservations(itemLabel, referencingObservations.length, obsRefs));
-              process.exit(1);
+              process.exit(EXIT_CODES.ERROR);
             }
           }
 
           // Show confirmation prompt even if no references found
           error(errors.operation.confirmRequired(itemLabel));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Delete the item
@@ -1312,13 +1313,13 @@ export function registerMetaCommands(program: Command): void {
 
         if (!deleted) {
           error(errors.operation.deleteItemFailed(itemLabel));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         success(`Deleted ${itemLabel}`);
       } catch (err) {
         error(errors.failures.deleteMetaItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1333,7 +1334,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const sessionCtx = await loadSessionContext(ctx);
@@ -1375,7 +1376,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.updateSessionContext, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1389,7 +1390,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const sessionCtx = await loadSessionContext(ctx);
@@ -1428,7 +1429,7 @@ export function registerMetaCommands(program: Command): void {
         if (action === 'add') {
           if (!text) {
             error('Thread text is required for add action');
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           sessionCtx.threads.push(text);
@@ -1445,13 +1446,13 @@ export function registerMetaCommands(program: Command): void {
         if (action === 'remove') {
           if (!text) {
             error('Index is required for remove action');
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const index = parseInt(text, 10);
           if (isNaN(index) || index < 1 || index > sessionCtx.threads.length) {
             error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.threads.length}`);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const removed = sessionCtx.threads.splice(index - 1, 1)[0];
@@ -1466,10 +1467,10 @@ export function registerMetaCommands(program: Command): void {
 
         // Unknown action
         error(`Unknown action: ${action}. Use add, remove, list, or clear`);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       } catch (err) {
         error(errors.failures.updateSessionContext, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1483,7 +1484,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const sessionCtx = await loadSessionContext(ctx);
@@ -1522,7 +1523,7 @@ export function registerMetaCommands(program: Command): void {
         if (action === 'add') {
           if (!text) {
             error('Question text is required for add action');
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           sessionCtx.open_questions.push(text);
@@ -1539,13 +1540,13 @@ export function registerMetaCommands(program: Command): void {
         if (action === 'remove') {
           if (!text) {
             error('Index is required for remove action');
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const index = parseInt(text, 10);
           if (isNaN(index) || index < 1 || index > sessionCtx.open_questions.length) {
             error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.open_questions.length}`);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const removed = sessionCtx.open_questions.splice(index - 1, 1)[0];
@@ -1560,10 +1561,10 @@ export function registerMetaCommands(program: Command): void {
 
         // Unknown action
         error(`Unknown action: ${action}. Use add, remove, list, or clear`);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       } catch (err) {
         error(errors.failures.updateSessionContext, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1578,7 +1579,7 @@ export function registerMetaCommands(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const sessionCtx = await loadSessionContext(ctx);
@@ -1651,7 +1652,7 @@ export function registerMetaCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.updateSessionContext, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

@@ -27,6 +27,7 @@ import { output, error, success, warn, isJsonMode } from '../output.js';
 import { grepItem, formatMatchedFields } from '../../utils/grep.js';
 import { errors } from '../../strings/errors.js';
 import { fieldLabels, sectionHeaders } from '../../strings/labels.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Format a spec item for display
@@ -310,7 +311,7 @@ export function registerItemCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.listItems, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -327,7 +328,7 @@ export function registerItemCommands(program: Command): void {
 
         if (!result.ok) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const item = result.item as LoadedSpecItem;
@@ -371,7 +372,7 @@ export function registerItemCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -399,7 +400,7 @@ export function registerItemCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.getTypes, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -426,7 +427,7 @@ export function registerItemCommands(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.getTags, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -451,7 +452,7 @@ export function registerItemCommands(program: Command): void {
         const parentResult = refIndex.resolve(options.under);
         if (!parentResult.ok) {
           error(errors.reference.itemNotFound(options.under));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const parent = parentResult.item as LoadedSpecItem;
@@ -459,7 +460,7 @@ export function registerItemCommands(program: Command): void {
         // Check it's not a task
         if ('status' in parent && typeof parent.status === 'string') {
           error(errors.reference.parentIsTask(options.under));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Check slug uniqueness if provided
@@ -467,7 +468,7 @@ export function registerItemCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(1);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
@@ -504,7 +505,7 @@ export function registerItemCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.createItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -529,7 +530,7 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
         if (!result.ok) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const foundItem = result.item as LoadedSpecItem;
@@ -537,7 +538,7 @@ export function registerItemCommands(program: Command): void {
         // Check if it's a task (tasks should use task commands)
         if ('status' in foundItem && typeof foundItem.status === 'string') {
           error(errors.reference.taskUseTaskCommands(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Check slug uniqueness if adding a new slug
@@ -545,7 +546,7 @@ export function registerItemCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug], foundItem._ulid);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(1);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
@@ -554,11 +555,11 @@ export function registerItemCommands(program: Command): void {
           const currentSlugs = foundItem.slugs || [];
           if (!currentSlugs.includes(options.removeSlug)) {
             error(errors.slug.notFound(options.removeSlug));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
           if (currentSlugs.length === 1) {
             error(errors.slug.cannotRemoveLast(options.removeSlug));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
         }
 
@@ -618,7 +619,7 @@ export function registerItemCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.updateItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -635,7 +636,7 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
         if (!result.ok) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const foundItem = result.item as LoadedSpecItem;
@@ -643,12 +644,12 @@ export function registerItemCommands(program: Command): void {
         // Check if it's a task
         if ('status' in foundItem && typeof foundItem.status === 'string') {
           error(errors.reference.itemUseTaskCancel(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         if (!foundItem._sourceFile) {
           error(errors.operation.cannotDeleteNoSource);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Warn about nested children being deleted too
@@ -662,11 +663,11 @@ export function registerItemCommands(program: Command): void {
         } else {
           error(errors.failures.deleteItem);
           console.log(chalk.gray('Edit the source file directly: ' + foundItem._sourceFile));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(errors.failures.deleteItem, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -688,7 +689,7 @@ export function registerItemCommands(program: Command): void {
           const stdin = await readStdinFully();
           if (!stdin) {
             error(errors.validation.noInputProvided);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           let patches: PatchOperation[];
@@ -696,12 +697,12 @@ export function registerItemCommands(program: Command): void {
             patches = parseBulkInput(stdin);
           } catch (err) {
             error(errors.validation.failedToParseBulk(err instanceof Error ? err.message : String(err)));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           if (patches.length === 0) {
             error(errors.validation.noPatchesProvided);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const { refIndex, items } = await buildIndexes(ctx);
@@ -719,13 +720,13 @@ export function registerItemCommands(program: Command): void {
           output(result, () => formatBulkPatchResult(result, options.dryRun));
 
           if (result.summary.failed > 0) {
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
         } else {
           // Single item mode
           if (!ref) {
             error(errors.usage.patchNeedRef);
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           let data: Record<string, unknown>;
@@ -736,7 +737,7 @@ export function registerItemCommands(program: Command): void {
               data = JSON.parse(options.data);
             } catch (err) {
               error(errors.validation.invalidJsonInData(err instanceof Error ? err.message : ''));
-              process.exit(1);
+              process.exit(EXIT_CODES.ERROR);
             }
           } else {
             const stdin = await readStdinIfAvailable();
@@ -745,11 +746,11 @@ export function registerItemCommands(program: Command): void {
                 data = JSON.parse(stdin.trim());
               } catch (err) {
                 error(errors.validation.invalidJsonFromStdin(err instanceof Error ? err.message : ''));
-                process.exit(1);
+                process.exit(EXIT_CODES.ERROR);
               }
             } else {
               error(errors.validation.noPatchData);
-              process.exit(1);
+              process.exit(EXIT_CODES.ERROR);
             }
           }
 
@@ -761,7 +762,7 @@ export function registerItemCommands(program: Command): void {
             if (!parseResult.success) {
               const issues = parseResult.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
               error(errors.validation.invalidPatchDataWithIssues(issues));
-              process.exit(1);
+              process.exit(EXIT_CODES.ERROR);
             }
           }
 
@@ -771,14 +772,14 @@ export function registerItemCommands(program: Command): void {
           const resolved = refIndex.resolve(ref);
           if (!resolved.ok) {
             error(errors.reference.itemNotFound(ref));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           // Find the item
           const foundItem = items.find(i => i._ulid === resolved.ulid);
           if (!foundItem) {
             error(errors.reference.notItem(ref));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           if (options.dryRun) {
@@ -799,7 +800,7 @@ export function registerItemCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.patchItems, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -817,7 +818,7 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
         if (!result.ok) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const foundItem = result.item as LoadedSpecItem;
@@ -825,7 +826,7 @@ export function registerItemCommands(program: Command): void {
         // Check if it's a task
         if ('status' in foundItem && typeof foundItem.status === 'string') {
           error(errors.reference.notItem(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Build alignment index
@@ -836,7 +837,7 @@ export function registerItemCommands(program: Command): void {
 
         if (!summary) {
           error(errors.project.couldNotGetImplSummary);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         output(summary, () => {
@@ -877,7 +878,7 @@ export function registerItemCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getItemStatus, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -897,13 +898,13 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
         if (!result.ok) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const foundItem = items.find(i => i._ulid === result.ulid);
         if (!foundItem) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const note = createNote(message, options.author, options.supersedes);
@@ -916,7 +917,7 @@ export function registerItemCommands(program: Command): void {
         success(`Added note to spec item: ${refIndex.shortUlid(foundItem._ulid)}`, { note });
       } catch (err) {
         error(errors.failures.addNote, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -934,13 +935,13 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
         if (!result.ok) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const foundItem = items.find(i => i._ulid === result.ulid);
         if (!foundItem) {
           error(errors.reference.itemNotFound(ref));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const notes = foundItem.notes || [];
@@ -958,7 +959,7 @@ export function registerItemCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.getNotes, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -988,7 +989,7 @@ export function registerItemCommands(program: Command): void {
     const result = refIndex.resolve(ref);
     if (!result.ok) {
       error(errors.reference.itemNotFound(ref));
-      process.exit(3);
+      process.exit(EXIT_CODES.NOT_FOUND);
     }
 
     const foundItem = result.item as LoadedSpecItem;
@@ -996,7 +997,7 @@ export function registerItemCommands(program: Command): void {
     // Check if it's a task
     if ('status' in foundItem && typeof foundItem.status === 'string') {
       error(errors.operation.tasksNoAcceptanceCriteria(ref));
-      process.exit(3);
+      process.exit(EXIT_CODES.NOT_FOUND);
     }
 
     return { ctx, item: foundItem, refIndex };
@@ -1031,7 +1032,7 @@ export function registerItemCommands(program: Command): void {
         });
       } catch (err) {
         error(errors.failures.listAc, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1055,7 +1056,7 @@ export function registerItemCommands(program: Command): void {
         if (existingAc.some(ac => ac.id === acId)) {
           const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
           error(errors.conflict.acAlreadyExists(acId, itemRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // Create new AC
@@ -1075,7 +1076,7 @@ export function registerItemCommands(program: Command): void {
         success(`Added acceptance criterion: ${acId} to @${itemSlug}`, { ac: newAc });
       } catch (err) {
         error(errors.failures.addAc, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1097,7 +1098,7 @@ export function registerItemCommands(program: Command): void {
         if (acIndex === -1) {
           const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
           error(errors.reference.acNotFound(acId, itemRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         // Check for no updates
@@ -1109,7 +1110,7 @@ export function registerItemCommands(program: Command): void {
         // Check for duplicate ID if renaming
         if (options.id && options.id !== acId && existingAc.some(ac => ac.id === options.id)) {
           error(errors.conflict.acIdAlreadyExists(options.id));
-          process.exit(3);
+          process.exit(EXIT_CODES.CONFLICT);
         }
 
         // Build updated AC
@@ -1137,7 +1138,7 @@ export function registerItemCommands(program: Command): void {
         success(`Updated acceptance criterion: ${acId} on @${itemSlug} (${updatedFields.join(', ')})`, { ac: updatedAc[acIndex] });
       } catch (err) {
         error(errors.failures.updateAc, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -1156,7 +1157,7 @@ export function registerItemCommands(program: Command): void {
         if (acIndex === -1) {
           const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
           error(errors.reference.acNotFound(acId, itemRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         // TODO: Add confirmation prompt when !options.force
@@ -1171,7 +1172,7 @@ export function registerItemCommands(program: Command): void {
         success(`Removed acceptance criterion: ${acId} from @${itemSlug}`, { removed: acId });
       } catch (err) {
         error(errors.failures.removeAc, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

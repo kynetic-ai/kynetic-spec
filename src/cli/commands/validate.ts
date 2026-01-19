@@ -21,6 +21,7 @@ import {
 } from '../../parser/index.js';
 import { output, success, error, info } from '../output.js';
 import { validation as validationStrings } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Format convention validation results for display
@@ -349,7 +350,7 @@ export function registerValidateCommand(program: Command): void {
         if (!ctx.manifestPath) {
           error(validationStrings.noManifest);
           console.log(validationStrings.initHint);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Determine which checks to run
@@ -440,11 +441,11 @@ export function registerValidateCommand(program: Command): void {
         }
 
         if (!result.valid) {
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(validationStrings.failed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -465,7 +466,7 @@ export function registerValidateCommand(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(validationStrings.noManifest);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const runAll = !options.schema && !options.refs && !options.orphans && !options.completeness;
@@ -504,11 +505,11 @@ export function registerValidateCommand(program: Command): void {
         }
 
         if (!result.valid) {
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(validationStrings.lintFailed, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

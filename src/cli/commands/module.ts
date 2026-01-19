@@ -13,6 +13,7 @@ import { commitIfShadow } from '../../parser/shadow.js';
 import type { SpecItem, Manifest } from '../../schema/index.js';
 import { output, error, success } from '../output.js';
 import { errors } from '../../strings/errors.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Register module commands
@@ -37,7 +38,7 @@ export function registerModuleCommands(program: Command): void {
 
         if (!ctx.manifest || !ctx.manifestPath) {
           error(errors.project.noKspecProject);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Check slug uniqueness
@@ -45,7 +46,7 @@ export function registerModuleCommands(program: Command): void {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
             error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(1);
+            process.exit(EXIT_CODES.CONFLICT);
           }
         }
 
@@ -80,7 +81,7 @@ export function registerModuleCommands(program: Command): void {
         try {
           await fs.access(moduleFilePath);
           error(errors.conflict.moduleFileExists(moduleFilePath));
-          process.exit(1);
+          process.exit(EXIT_CODES.CONFLICT);
         } catch {
           // File doesn't exist, which is what we want
         }
@@ -114,7 +115,7 @@ export function registerModuleCommands(program: Command): void {
         });
       } catch (err) {
         error('Failed to create module', err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

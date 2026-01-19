@@ -25,6 +25,7 @@ import {
   registerLinkCommands,
   registerModuleCommands,
 } from './commands/index.js';
+import { EXIT_CODES } from './exit-codes.js';
 
 const program = new Command();
 
@@ -75,7 +76,7 @@ program.on('command:*', (operands) => {
   if (COMMAND_ALIASES[unknownCommand]) {
     console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
     console.error(chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`));
-    process.exit(1);
+    process.exit(EXIT_CODES.ERROR);
   }
 
   // Get all available commands
@@ -92,7 +93,7 @@ program.on('command:*', (operands) => {
     console.error(chalk.gray(`Run 'kspec help' to see available commands`));
   }
 
-  process.exit(1);
+  process.exit(EXIT_CODES.ERROR);
 });
 
 // Export program for introspection (used by help command)

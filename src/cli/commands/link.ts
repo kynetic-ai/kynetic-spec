@@ -11,6 +11,7 @@ import {
 import { commitIfShadow } from '../../parser/shadow.js';
 import { output, error, success, warn } from '../output.js';
 import { errors } from '../../strings/errors.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Valid relationship types
@@ -61,7 +62,7 @@ export function registerLinkCommands(program: Command): void {
         // Validate relationship type
         if (!isValidRelationshipType(options.type)) {
           error(errors.relationship.invalidType(options.type, RELATIONSHIP_TYPES.join(', ')));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const relType = options.type as RelationshipType;
@@ -70,13 +71,13 @@ export function registerLinkCommands(program: Command): void {
         const fromResult = refIndex.resolve(fromRef);
         if (!fromResult.ok) {
           error(errors.reference.itemNotFound(fromRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const toResult = refIndex.resolve(toRef);
         if (!toResult.ok) {
           error(errors.reference.itemNotFound(toRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const fromItem = fromResult.item;
@@ -85,12 +86,12 @@ export function registerLinkCommands(program: Command): void {
         // Ensure both are spec items (not tasks)
         if ('status' in fromItem && typeof fromItem.status === 'string') {
           error(errors.reference.notSpecItem(fromRef));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         if ('status' in toItem && typeof toItem.status === 'string') {
           error(errors.reference.notSpecItem(toRef));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const fromSpecItem = fromItem as LoadedSpecItem;
@@ -115,7 +116,7 @@ export function registerLinkCommands(program: Command): void {
         success(`Created relationship: ${fromRef} --[${relType}]--> ${toRef}`, { from: fromRef, to: toRef, type: relType });
       } catch (err) {
         error((err as Error).message);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -134,7 +135,7 @@ export function registerLinkCommands(program: Command): void {
         // Validate type if provided
         if (options.type && !isValidRelationshipType(options.type)) {
           error(errors.relationship.invalidType(options.type, RELATIONSHIP_TYPES.join(', ')));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const typeFilter = options.type as RelationshipType | undefined;
@@ -144,7 +145,7 @@ export function registerLinkCommands(program: Command): void {
           const result = refIndex.resolve(options.from);
           if (!result.ok) {
             error(errors.reference.itemNotFound(options.from));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
           const item = result.item;
@@ -152,7 +153,7 @@ export function registerLinkCommands(program: Command): void {
           // Ensure it's a spec item
           if ('status' in item && typeof item.status === 'string') {
             error(errors.reference.notSpecItem(options.from));
-            process.exit(1);
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const specItem = item as LoadedSpecItem;
@@ -191,7 +192,7 @@ export function registerLinkCommands(program: Command): void {
           const targetResult = refIndex.resolve(targetRef);
           if (!targetResult.ok) {
             error(errors.reference.itemNotFound(targetRef));
-            process.exit(3);
+            process.exit(EXIT_CODES.NOT_FOUND);
           }
 
           const relationships: Array<{ type: RelationshipType; from: string }> = [];
@@ -273,7 +274,7 @@ export function registerLinkCommands(program: Command): void {
         output({ success: true, relationships: allRelationships });
       } catch (err) {
         error((err as Error).message);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 
@@ -292,7 +293,7 @@ export function registerLinkCommands(program: Command): void {
         // Validate type if provided
         if (options.type && !isValidRelationshipType(options.type)) {
           error(errors.relationship.invalidType(options.type, RELATIONSHIP_TYPES.join(', ')));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const typeFilter = options.type as RelationshipType | undefined;
@@ -301,13 +302,13 @@ export function registerLinkCommands(program: Command): void {
         const fromResult = refIndex.resolve(fromRef);
         if (!fromResult.ok) {
           error(errors.reference.itemNotFound(fromRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const toResult = refIndex.resolve(toRef);
         if (!toResult.ok) {
           error(errors.reference.itemNotFound(toRef));
-          process.exit(3);
+          process.exit(EXIT_CODES.NOT_FOUND);
         }
 
         const fromItem = fromResult.item;
@@ -315,7 +316,7 @@ export function registerLinkCommands(program: Command): void {
         // Ensure from is a spec item
         if ('status' in fromItem && typeof fromItem.status === 'string') {
           error(errors.reference.notSpecItem(fromRef));
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         const fromSpecItem = fromItem as LoadedSpecItem;
@@ -348,7 +349,7 @@ export function registerLinkCommands(program: Command): void {
         success(`Removed relationship(s): ${fromRef} --[${typesStr}]--> ${toRef}`, { from: fromRef, to: toRef, types: removed });
       } catch (err) {
         error((err as Error).message);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

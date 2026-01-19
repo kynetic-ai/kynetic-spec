@@ -26,6 +26,7 @@ import {
 } from '../../sessions/index.js';
 import { createTranslator, createCliRenderer } from '../../ralph/index.js';
 import { errors } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
@@ -145,7 +146,7 @@ function validateAdapter(adapterPackage: string): void {
 
   if (result.status !== 0) {
     error(`Adapter package not found: ${adapterPackage}. Install with: npm install -g ${adapterPackage}`);
-    process.exit(3);
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 }
 
@@ -276,17 +277,17 @@ export function registerRalphCommand(program: Command): void {
 
         if (isNaN(maxLoops) || maxLoops < 1) {
           error(errors.usage.maxLoopsPositive);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         if (isNaN(maxRetries) || maxRetries < 0) {
           error(errors.usage.maxRetriesNonNegative);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         if (isNaN(maxFailures) || maxFailures < 1) {
           error(errors.usage.maxFailuresPositive);
-          process.exit(1);
+          process.exit(EXIT_CODES.ERROR);
         }
 
         // Handle custom adapter command for testing
@@ -536,7 +537,7 @@ export function registerRalphCommand(program: Command): void {
 
       } catch (err) {
         error(errors.failures.ralphLoop, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }

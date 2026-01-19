@@ -279,4 +279,53 @@ Validating changes:
 `,
     seeAlso: ['session', 'task', 'tasks'],
   },
+
+  'exit-codes': {
+    title: 'Exit Codes',
+    concept: `
+Kspec uses semantic exit codes for scripting and automation.
+
+Exit Codes:
+  0 - SUCCESS            Command completed successfully
+  1 - ERROR              General error (unexpected error, file system error, etc.)
+  2 - USAGE_ERROR        Usage error (invalid arguments, flags, or command syntax)
+  3 - NOT_FOUND          Resource not found (task, spec item, inbox item, etc.)
+  4 - VALIDATION_FAILED  Validation failed (invalid state, schema violation, business rule violation)
+  5 - CONFLICT           Conflict (resource already exists, duplicate slug, etc.)
+
+Commands Using Each Code:
+  SUCCESS (0)             - All commands on success
+  ERROR (1)               - All commands on unexpected errors
+  USAGE_ERROR (2)         - All commands when given invalid arguments
+  NOT_FOUND (3)           - task, item, inbox, derive, link, meta, tasks
+  VALIDATION_FAILED (4)   - validate, task (state transitions), item (schema validation)
+  CONFLICT (5)            - item, task, module (when creating duplicates)
+
+Scripting Examples:
+  # Check if task exists
+  if kspec task get @my-task 2>/dev/null; then
+    echo "Task exists"
+  elif [ $? -eq 3 ]; then
+    echo "Task not found"
+  fi
+
+  # Validate before proceeding
+  if kspec validate; then
+    echo "All valid"
+  else
+    code=$?
+    [ $code -eq 4 ] && echo "Validation failed"
+    [ $code -eq 1 ] && echo "General error"
+  fi
+
+  # Handle not found gracefully
+  kspec task start @task || {
+    code=$?
+    [ $code -eq 3 ] && echo "Task not found"
+    [ $code -eq 4 ] && echo "Invalid state transition"
+    exit $code
+  }
+`,
+    seeAlso: ['task', 'validate', 'item'],
+  },
 };

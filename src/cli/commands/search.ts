@@ -8,6 +8,7 @@ import type { LoadedSpecItem, LoadedTask } from '../../parser/yaml.js';
 import { output, error, formatTaskList } from '../output.js';
 import { grepItem, formatMatchedFields } from '../../utils/grep.js';
 import { errors } from '../../strings/index.js';
+import { EXIT_CODES } from '../exit-codes.js';
 
 /**
  * Format a spec item for search results
@@ -152,7 +153,7 @@ export function registerSearchCommand(program: Command): void {
         );
       } catch (err) {
         error(errors.failures.search, err);
-        process.exit(1);
+        process.exit(EXIT_CODES.ERROR);
       }
     });
 }
