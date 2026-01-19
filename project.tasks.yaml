@@ -1323,11 +1323,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1593,6 +1595,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1708,6 +1711,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13120,16 +13124,22 @@
         separate labeled section
       supersedes: null
   todos: []
-- title: "Implement: Trait AC Coverage Validation"
+- _ulid: 01KFC1GM2ZXGVH1Q7BN33Y230V
+  slugs:
+    - task-trait-ac-coverage-validation
+  title: "Implement: Trait AC Coverage Validation"
   type: task
   spec_ref: "@trait-validation"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-trait-ac-coverage-validation
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-spec-traits-system"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T21:10:30.751Z
   notes:
     - _ulid: 01KFC1GM2ZKTMVQPWQXB5XFR48
       created_at: 2026-01-19T21:10:30.751Z
@@ -13157,10 +13167,60 @@
         - ac-4: Given trait deleted, when spec still references it, then validation reports broken
         ref error
       supersedes: null
-  _ulid: 01KFC1GM2ZXGVH1Q7BN33Y230V
+  todos: []
+- title: "Implement: Trait CLI Commands"
+  type: task
+  spec_ref: "@trait-cli"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-trait-cli-commands
+  tags: []
+  depends_on:
+    - "@task-spec-traits-system"
+  notes:
+    - _ulid: 01KFC1GM6DP3G90G7NM2000HQ6
+      created_at: 2026-01-19T21:10:30.861Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        CLI commands for managing traits: creating traits, listing traits, and adding/removing
+        traits from specs.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given user runs 'kspec trait add <title>', when title provided, then creates
+        trait-type item with type: trait
+
+        - ac-2: Given user runs 'kspec trait add <title>', when --description provided, then trait
+        has description field set
+
+        - ac-3: Given user runs 'kspec trait list', when traits exist, then lists traits with AC
+        counts
+
+        - ac-4: Given user runs 'kspec trait get @ref', when trait exists, then shows trait details
+        and acceptance criteria
+
+        - ac-5: Given user runs 'kspec item trait add @spec @trait', when valid refs, then adds
+        trait to spec's traits array
+
+        - ac-6: Given user runs 'kspec item trait add @spec @trait', when spec already has that
+        trait, then no duplicate added (idempotent operation)
+
+        - ac-7: Given user runs 'kspec item trait add @spec @trait', when trait doesn't exist, then
+        error with descriptive message
+
+        - ac-8: Given user runs 'kspec item trait remove @spec @trait', when trait in spec's list,
+        then removes trait from traits array
+      supersedes: null
+  _ulid: 01KFC1GM6DWKP5VVAXRCWKCXXT
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T21:10:30.751Z
+  created_at: 2026-01-19T21:10:30.861Z
   todos: []
