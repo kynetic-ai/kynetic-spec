@@ -749,3 +749,7 @@ requirements:
         given: kspec tasks ready is run
         when: displaying the ready tasks list
         then: the automation status is shown for each task (or blank if unassessed)
+      - id: ac-15
+        given: a task is marked manual_only
+        when: it needs to become eligible
+        then: "a human must review and explicitly set automation: eligible"
