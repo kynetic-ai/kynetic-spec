@@ -10456,3 +10456,24 @@
         3. kspec log -- --invalid should show git error
       supersedes: null
   todos: []
+- title: 'Implement: Adapter validation on startup'
+  type: task
+  spec_ref: '@ralph-adapter-validation'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-adapter-validation-on-startup
+  tags:
+    - ralph
+    - dx
+    - validation
+  depends_on:
+    - '@task-ralph-command-automated-task-loop'
+  _ulid: 01KFAD9G055C7TWC56WM0VZGA4
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T05:57:51.237Z'
+  notes: []
+  todos: []
