@@ -1252,11 +1252,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1371,6 +1373,7 @@
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
           - Estimated scope: 50+ error messages across 15+ command files
+
 
 
 
@@ -1495,6 +1498,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -11680,19 +11684,36 @@
         These cause incorrect exit codes for scripts/automation integrating with kspec.
       supersedes: null
   todos: []
-- title: Complete YAML library migration in 3 remaining files
+- _ulid: 01KFBB5R04Y5WRZ2ZD1PTV88F3
+  slugs: []
+  title: Complete YAML library migration in 3 remaining files
   type: infra
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KFBB5R04Y5WRZ2ZD1PTV88F3
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-19T14:40:05.636Z
-  notes: []
+  notes:
+    - _ulid: 01KFBB5Y5CZ683A0RAYCA7PBAX
+      created_at: 2026-01-19T14:40:11.948Z
+      author: "@claude"
+      content: >-
+        PR #89 migrated from js-yaml to modern 'yaml' library for better formatting, but 3 files
+        still use the old writeYamlFile() function:
+
+
+        1. src/parser/fix.ts - lines 164, 178, 190, 196
+
+        2. src/cli/commands/module.ts - lines 90, 106
+
+        3. src/parser/meta.ts - lines 320, 609
+
+
+        Should use writeYamlFilePreserveFormat() instead for consistent YAML output.
+      supersedes: null
   todos: []
