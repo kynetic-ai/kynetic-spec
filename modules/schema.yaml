@@ -754,3 +754,7 @@ features:
             given: trait item created
             when: type is 'trait'
             then: accepted by schema validation
+          - id: ac-2
+            given: trait item exists
+            when: missing acceptance_criteria
+            then: validation emits completeness warning
