@@ -9377,9 +9377,16 @@
     - spec
   vcs_refs: []
   created_at: '2026-01-18T21:27:27.239Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T04:53:46.327Z'
+  notes:
+    - _ulid: 01KFA9MP97W7R5V3G73G9ECG3N
+      created_at: '2026-01-19T04:54:03.815Z'
+      author: '@claude'
+      content: >-
+        Not worked on in iteration 16. Task was left in_progress from previous session. Resetting to
+        pending for next session to pick up.
+      supersedes: null
+  todos: []
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
   title: Add deferred status option for stub specs
