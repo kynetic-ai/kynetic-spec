@@ -9413,6 +9413,24 @@
 
         Running tests to verify implementation...
       supersedes: null
+    - _ulid: 01KFA9ZD3DQKPTR003SZPM5AT2
+      created_at: '2026-01-19T04:59:54.861Z'
+      author: '@claude'
+      content: |-
+        CLI commands verified and committed. All 564 tests pass.
+
+        Completed so far:
+        ✓ Schema: notes field in SpecItemSchema
+        ✓ CLI: item note and item notes commands
+        ✓ Tests: All existing tests pass
+
+        Still needed for full completion:
+        - Integration tests for item notes commands
+        - Documentation in AGENTS.md or CLAUDE.md
+        - Update help text / examples
+
+        Feature is functional and usable, remaining work is testing and documentation.
+      supersedes: null
   todos: []
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
