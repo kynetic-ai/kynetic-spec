@@ -9284,7 +9284,7 @@
     Test coverage tracking per spec item - link tests to spec items, show coverage in item get, warn
     when AC lacks tests
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -9329,6 +9329,11 @@
         All 564 tests pass.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T04:53:12.517Z'
+  closed_reason: >-
+    Implemented test coverage tracking and AC guidance: added documentation to AGENTS.md, validation
+    warnings for missing coverage, and enhanced task review command with coverage reporting. All 564
+    tests pass.
 - _ulid: 01KF9G227F2FZ04EKX7A1PSHCG
   slugs: []
   title: 'Spike: Research artifacts feature design'
