@@ -709,3 +709,7 @@ requirements:
         given: an agent is working on an eligible task
         when: the agent determines the task is not suitable for automation
         then: the agent can mark it as needs_review with a note explaining why
+      - id: ac-5
+        given: a human is triaging tasks
+        when: assessing automation readiness
+        then: they can set automation to any value (eligible, needs_review, manual_only) or clear it
