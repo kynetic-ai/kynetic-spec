@@ -1297,7 +1297,59 @@ features:
         implements: []
         relates_to: []
         tests: []
-        notes: []
+        notes:
+          - _ulid: 01KFADF5PMS0ECF20AAX4SRAZ2
+            created_at: '2026-01-19T06:00:57.301Z'
+            author: '@claude'
+            content: >-
+              Design: Stale status detection
+
+
+              **Problem:** Spec-task alignment can drift over time. A parent task may stay pending
+              while all children are done. A spec may be marked implemented without any task
+              tracking the work. These inconsistencies reduce trust in the system.
+
+
+              **Solution:** Add --staleness flag to validate command that checks for status
+              mismatches.
+
+
+              **Detection rules:**
+
+
+              1. **Parent pending, children done:**
+                 - Find tasks that are pending/in_progress
+                 - Check if they have spec_ref to a parent item
+                 - Check if all child specs under that parent are implemented
+                 - If so, warn about the parent task
+
+              2. **Spec implemented, no task:**
+                 - Find specs with implementation_status = implemented
+                 - Check if any completed tasks have spec_ref pointing to it
+                 - If none, warn about orphaned implementation
+
+              3. **Task done, spec not started:**
+                 - Find completed tasks with spec_ref
+                 - Check the linked spec's implementation_status
+                 - If not_started, warn about the mismatch
+
+              **Output format:**
+
+              ```
+
+              Staleness warnings (3):
+                ⚠ Task @parent-task is pending but all linked specs are implemented
+                ⚠ Spec @orphan-spec is implemented but has no completed tasks
+                ⚠ Task @done-task completed but spec @stale-spec is not_started
+              ```
+
+
+              **Flags:**
+
+              - --staleness: Enable staleness checks
+
+              - --strict: Treat warnings as errors (exit 4)
+            supersedes: null
         created: '2026-01-19T06:00:22.244Z'
         acceptance_criteria:
           - id: parent-pending-children-done
