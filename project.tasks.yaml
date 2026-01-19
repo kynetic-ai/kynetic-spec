@@ -9286,6 +9286,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented test coverage tracking and AC guidance: added documentation to AGENTS.md, validation
+    warnings for missing coverage, and enhanced task review command with coverage reporting. All 564
+    tests pass.
   depends_on: []
   context: []
   priority: 3
@@ -9295,6 +9299,7 @@
   vcs_refs: []
   created_at: '2026-01-18T21:25:11.562Z'
   started_at: '2026-01-19T04:46:18.282Z'
+  completed_at: '2026-01-19T04:53:12.517Z'
   notes:
     - _ulid: 01KF9FZ39YVZK6RCXDC1KTNH9V
       created_at: '2026-01-18T21:25:21.855Z'
@@ -9329,11 +9334,6 @@
         All 564 tests pass.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T04:53:12.517Z'
-  closed_reason: >-
-    Implemented test coverage tracking and AC guidance: added documentation to AGENTS.md, validation
-    warnings for missing coverage, and enhanced task review command with coverage reporting. All 564
-    tests pass.
 - _ulid: 01KF9G227F2FZ04EKX7A1PSHCG
   slugs: []
   title: 'Spike: Research artifacts feature design'
@@ -9367,7 +9367,7 @@
     'git worktree prune needed for orphaned worktrees' that are valuable for
     maintenance/reimplementation but don't belong in formal AC.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -9379,6 +9379,7 @@
   created_at: '2026-01-18T21:27:27.239Z'
   notes: []
   todos: []
+  started_at: '2026-01-19T04:53:46.327Z'
 - _ulid: 01KF9GS4ET0RNW448218MPJMKB
   slugs: []
   title: Add deferred status option for stub specs
