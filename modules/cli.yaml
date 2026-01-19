@@ -2047,7 +2047,63 @@ features:
     implements: []
     relates_to: []
     tests: []
-    notes: []
+    notes:
+      - _ulid: 01KFACGT1MYEZM3WQG3P60QCWZ
+        created_at: '2026-01-19T05:44:22.325Z'
+        author: '@claude'
+        content: >-
+          Design decisions and implementation context:
+
+
+          **Syntax choice:** Hybrid approach selected over variadic positional or flag-only.
+          Rationale: maintains backward compatibility with existing single-ref positional usage
+          while adding batch capability via --refs flag. Matches existing pattern used by
+          --depends-on.
+
+
+          **Error handling:** Continue-and-report strategy (not fail-fast). Process all refs,
+          succeed where possible, report failures at end. Consistent with existing item patch --bulk
+          behavior.
+
+
+          **Exit codes for batch operations:**
+
+          - 0: All operations succeeded
+
+          - 1: All operations failed  
+
+          - 2: Partial failure (some succeeded, some failed)
+
+          - 3: Invalid input (empty refs, mutual exclusion violation)
+
+
+          **Commands in scope (7 total):**
+
+          - task complete --refs
+
+          - task cancel --refs
+
+          - task set --refs
+
+          - task delete --refs
+
+          - item set --refs
+
+          - item delete --refs
+
+          - inbox delete --refs
+
+
+          **Edge cases to handle:**
+
+          1. Duplicate refs in --refs: Dedupe silently, process each unique ref once
+
+          2. Ref resolves to wrong type (e.g., spec ref passed to task command): Fail for that
+          specific ref with 'not a task' error
+
+          3. Options unsafe for batch (e.g., --slug): Document which options shouldn't be used with
+          multi-refs
+        supersedes: null
     created: '2026-01-19T05:43:22.791Z'
     acceptance_criteria:
       - id: basic-multi-ref-syntax
