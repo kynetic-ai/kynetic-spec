@@ -102,6 +102,12 @@ features:
             given: User wants to script kspec commands
             when: User runs kspec help --exit-codes or checks documentation
             then: All exit codes are listed with their meanings and which commands may return them
+          - id: consistent-usage
+            given: Multiple commands use exit codes
+            when: Commands exit with errors
+            then: >-
+              All commands use consistent exit codes for the same error types (e.g., all 'not found'
+              errors exit 3, all validation errors exit 4)
       - _ulid: 01KEZCJPHWBEEP2BYRP6YVNK9F
         slugs:
           - cli-agent-features
