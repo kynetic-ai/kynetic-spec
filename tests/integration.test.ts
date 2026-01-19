@@ -1675,3 +1675,76 @@ describe('Integration: status cascade', () => {
     expect(output).toContain('Updated item');
   });
 });
+
+describe('Integration: inbox promote', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should use inbox text as description by default', () => {
+    // Add an inbox item
+    kspec('inbox add "Test idea for a new feature"', tempDir);
+
+    // Get the inbox item
+    const inboxItems = kspecJson<Array<{ _ulid: string; text: string }>>('inbox list', tempDir);
+    const itemRef = `@${inboxItems[0]._ulid}`;
+
+    // Promote without --description flag
+    const promoteOutput = kspecJson<{ task: { _ulid: string; title: string; description?: string } }>(
+      `inbox promote ${itemRef} --title "New Feature Task"`,
+      tempDir
+    );
+
+    // Verify the task was created with inbox text as description
+    expect(promoteOutput.task).toBeDefined();
+    expect(promoteOutput.task.title).toBe('New Feature Task');
+    expect(promoteOutput.task.description).toBe('Test idea for a new feature');
+  });
+
+  it('should use custom description when --description flag provided', () => {
+    // Add an inbox item
+    kspec('inbox add "Original inbox text"', tempDir);
+
+    // Get the inbox item
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${inboxItems[0]._ulid}`;
+
+    // Promote with custom --description
+    const promoteOutput = kspecJson<{ task: { _ulid: string; title: string; description?: string } }>(
+      `inbox promote ${itemRef} --title "Task Title" --description "Custom description for the task"`,
+      tempDir
+    );
+
+    // Verify the task was created with custom description
+    expect(promoteOutput.task).toBeDefined();
+    expect(promoteOutput.task.title).toBe('Task Title');
+    expect(promoteOutput.task.description).toBe('Custom description for the task');
+    expect(promoteOutput.task.description).not.toBe('Original inbox text');
+  });
+
+  it('should handle empty description flag', () => {
+    // Add an inbox item
+    kspec('inbox add "Inbox item text"', tempDir);
+
+    // Get the inbox item
+    const inboxItems = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${inboxItems[0]._ulid}`;
+
+    // Promote with empty --description (should use empty string, not inbox text)
+    const promoteOutput = kspecJson<{ task: { _ulid: string; title: string; description?: string } }>(
+      `inbox promote ${itemRef} --title "Empty Desc Task" --description ""`,
+      tempDir
+    );
+
+    // Verify the task was created with empty description
+    expect(promoteOutput.task).toBeDefined();
+    expect(promoteOutput.task.title).toBe('Empty Desc Task');
+    expect(promoteOutput.task.description).toBe('');
+  });
+});
