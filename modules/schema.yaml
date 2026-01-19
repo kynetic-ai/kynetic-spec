@@ -647,3 +647,17 @@ features:
               tasks
             when: findAlignmentWarnings is called
             then: Returns warning with type='status_mismatch' explaining the discrepancy
+      - _ulid: 01KFA4M9J3FDXJ50PTMQQK82PT
+        slugs:
+          - alignment-summaries
+        title: Implementation Progress Summaries
+        type: requirement
+        tags: []
+        description: >-
+          Provide structured summaries of spec implementation status including linked tasks, current
+          vs expected status, and alignment state.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-19T03:26:27.907Z'
