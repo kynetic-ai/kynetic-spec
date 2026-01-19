@@ -8556,7 +8556,7 @@
     update happens but may not be persisted until later work creates a commit. The gap was noticed
     when spec went in_progress but wasn't captured in the commit stream.
   spec_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -8608,6 +8608,10 @@
         stream immediately after task status changes, closing the persistence gap.
       supersedes: null
   todos: []
+  completed_at: '2026-01-19T03:37:03.162Z'
+  closed_reason: >-
+    Fixed spec status persistence gap by adding commitIfShadow calls after spec sync in both task
+    start and task complete commands. All tests pass (561/561).
 - _ulid: 01KF9B4PX60XW55ZXWHE36C8G1
   slugs: []
   title: Fix ralph iteration message newline issue
