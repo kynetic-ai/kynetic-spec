@@ -787,3 +787,7 @@ requirements:
         given: "a task has automation: eligible"
         when: its spec_ref is removed or the referenced spec is deleted
         then: the automation status is preserved but kspec validate emits a warning
+      - id: ac-24
+        given: kspec tasks ready is run
+        when: the --needs-review flag is provided
+        then: "only tasks with automation: needs_review are shown (for human triage)"
