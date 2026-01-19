@@ -1,57 +1,52 @@
 inbox:
   - _ulid: 01KF16XGA6SNNRHFPX15N0HE6F
-    text: >-
-      Hook for SessionStart or post-compaction to inject relevant context and subtle instructions.
+    text: Hook for SessionStart or post-compaction to inject relevant context and subtle instructions.
       Could auto-run 'kspec session start' or similar to give agent fresh context after memory is
       compacted.
-    created_at: '2026-01-15T16:13:16.998Z'
+    created_at: 2026-01-15T16:13:16.998Z
     tags: []
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF1V53RYTWER59VR53W1CSTW
-    text: >-
-      Spec review process: 3 parallel agents (internal fit, prior art comparison, external research)
-      before finalizing major specs. Worked well for shadow branch spec design - should be
-      formalized in meta-spec workflows.
-    created_at: '2026-01-15T22:06:57.823Z'
+    text: "Spec review process: 3 parallel agents (internal fit, prior art comparison, external
+      research) before finalizing major specs. Worked well for shadow branch spec design - should be
+      formalized in meta-spec workflows."
+    created_at: 2026-01-15T22:06:57.823Z
     tags:
       - workflow
       - meta
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF3PJWJS42Y0QZFKWMX3A4D9
-    text: >-
-      CLI output parity - JSON and human-readable outputs can drift when adding features.
+    text: "CLI output parity - JSON and human-readable outputs can drift when adding features.
       Investigate patterns to keep them in sync by design: unified output formatter, schema-driven
       rendering, shared data structure that both modes consume. Current pattern: output(data,
       humanFormatter) - data goes to JSON, formatter handles human. But formatter can show
-      derived/computed info that isn't in data.
-    created_at: '2026-01-16T15:25:35.193Z'
+      derived/computed info that isn't in data."
+    created_at: 2026-01-16T15:25:35.193Z
     tags:
       - cli
       - dx
       - design
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF3TB7C5GCC7VADGZ9YDKXK6
-    text: >-
-      Integration test performance - tests take 50-75s which discourages frequent runs. Investigate:
-      parallel test execution, fixture caching, test isolation overhead, selective test runs
-      (--grep). Goal: fast feedback loop during development.
-    created_at: '2026-01-16T16:31:18.406Z'
+    text: "Integration test performance - tests take 50-75s which discourages frequent runs.
+      Investigate: parallel test execution, fixture caching, test isolation overhead, selective test
+      runs (--grep). Goal: fast feedback loop during development."
+    created_at: 2026-01-16T16:31:18.406Z
     tags:
       - testing
       - dx
       - performance
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF4DS5K10SKW9A533DQR7TH0
-    text: >-
-      Investigate ready task ordering beyond priority - creation order may not be ideal. Consider:
+    text: "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider:
       recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering
-      field, tags for urgency
-    created_at: '2026-01-16T22:10:58.273Z'
+      field, tags for urgency"
+    created_at: 2026-01-16T22:10:58.273Z
     tags:
       - design
       - tasks
       - dx
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF554T97ST9B3DMT4WMXACYQ
     text: >-
       Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a
@@ -96,117 +91,119 @@ inbox:
 
       The beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't
       compound context - they just waste one run.
-    created_at: '2026-01-17T04:59:17.160Z'
+    created_at: 2026-01-17T04:59:17.160Z
     tags:
       - automation
       - workflow
       - agents
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF6541Q2CXEXRYFFHAGD53H4
-    text: >-
-      Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent
+    text: "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent
       progress, event stream, session status. Would build on streaming/ACP foundation. Lower
-      priority than core auditability work.
-    created_at: '2026-01-17T14:18:06.435Z'
+      priority than core auditability work."
+    created_at: 2026-01-17T14:18:06.435Z
     tags:
       - ralph
       - tui
       - optional
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF6H34MJMWQ8R54AZZ8FKCCH
-    text: >-
-      ACP type safety audit: Review and strengthen typing across ACP client implementation. Current
+    text: "ACP type safety audit: Review and strengthen typing across ACP client implementation. Current
       state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add typed
       response methods for file/read, file/write, terminal/run (2) Type the request params using SDK
       types (3) Evaluate if we're correctly implementing the full ACP protocol - check SDK docs for
       any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be
       deprecated in favor of typed methods only. The { granted: true } bug showed the value of
-      compile-time enforcement.
-    created_at: '2026-01-17T17:47:19.570Z'
+      compile-time enforcement."
+    created_at: 2026-01-17T17:47:19.570Z
     tags:
       - acp
       - types
       - tech-debt
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF6KSAC2Z2PT2Q96WDJEH4ZA
-    text: >-
-      ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission requests like
-      the real agent does. Currently mock auto-succeeds tool calls without permission flow. Would
-      have caught the { granted: true } format bug in tests rather than live testing.
-    created_at: '2026-01-17T18:34:23.491Z'
+    text: "ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission requests
+      like the real agent does. Currently mock auto-succeeds tool calls without permission flow.
+      Would have caught the { granted: true } format bug in tests rather than live testing."
+    created_at: 2026-01-17T18:34:23.491Z
     tags:
       - testing
       - acp
       - mock
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF8TQ5X9Q0Y6DEGWQ9YPECHN
-    text: >-
-      Transaction/batch mechanics for kspec operations - ability to set a mark point where changes
+    text: "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes
       don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on
       errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on
       abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec
-      bulk' command that takes a script/list of operations and executes them atomically.
-    created_at: '2026-01-18T15:14:02.282Z'
+      bulk' command that takes a script/list of operations and executes them atomically."
+    created_at: 2026-01-18T15:14:02.282Z
     tags:
       - idea
       - cli
       - architecture
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KF9W2HF2W635NJA8XPY81001
     text: Figure out and document a versioning strategy for the package
-    created_at: '2026-01-19T00:56:57.571Z'
+    created_at: 2026-01-19T00:56:57.571Z
     tags:
       - docs
       - release
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KFA1Q5AQJN28QE0S7EGNXPT8
-    text: >-
-      Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type,
+    text: "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type,
       map existing error() calls to structured codes, add recovery suggestions for common error
-      scenarios
-    created_at: '2026-01-19T02:35:36.152Z'
+      scenarios"
+    created_at: 2026-01-19T02:35:36.152Z
     tags:
       - agent-first
       - cli
       - phase-1
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KFA1Q9JA5H1FSM05NBA0BFCD
-    text: >-
-      Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in
-      consistent structure with success/data/metadata/error fields
-    created_at: '2026-01-19T02:35:40.491Z'
+    text: "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in
+      consistent structure with success/data/metadata/error fields"
+    created_at: 2026-01-19T02:35:40.491Z
     tags:
       - agent-first
       - cli
       - phase-1
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KFA1QBTZYQ8C1RJA4PEXRX2M
-    text: >-
-      Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set,
-      item add/set/delete, derive, inbox promote. Show preview of changes without executing
-    created_at: '2026-01-19T02:35:42.815Z'
+    text: "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task
+      add/set, item add/set/delete, derive, inbox promote. Show preview of changes without
+      executing"
+    created_at: 2026-01-19T02:35:42.815Z
     tags:
       - agent-first
       - cli
       - phase-2
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KFA1QEC3GS0H6M3MKCFQ01DS
-    text: >-
-      Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
-      --exit-codes, kspec help commands --json for programmatic CLI discovery
-    created_at: '2026-01-19T02:35:45.411Z'
+    text: "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
+      --exit-codes, kspec help commands --json for programmatic CLI discovery"
+    created_at: 2026-01-19T02:35:45.411Z
     tags:
       - agent-first
       - cli
       - phase-2
-    added_by: '@claude'
+    added_by: "@claude"
   - _ulid: 01KFAG8A1Q8VTJ3TKKQCQ4T7EW
-    text: >-
-      Add automated tests for git hook installation and authorization - test installShadowHook
+    text: Add automated tests for git hook installation and authorization - test installShadowHook
       function, hook blocking unauthorized commits, hook allowing commits with KSPEC_SHADOW_COMMIT=1
       env var
-    created_at: '2026-01-19T06:49:38.104Z'
+    created_at: 2026-01-19T06:49:38.104Z
     tags:
       - testing
       - reflection
-    added_by: '@claude'
+    added_by: "@claude"
+  - _ulid: 01KFBGK8MBQQ6AZCCPGQMQ9FXD
+    text: "Task automation eligibility: Design system to distinguish tasks suitable for automation loops
+      vs those requiring manual/interactive sessions. Options to explore: (1) New status like
+      'ready-auto' vs 'ready-manual', (2) Flag on task like 'automation: true/false', (3) Tag-based
+      approach. Also need process for determining eligibility - ideally automatic based on: task
+      type, complexity, spec coverage, dependencies. Retrospective finding: verification tasks work
+      well for automation, implementation tasks often need context-rich sessions."
+    created_at: 2026-01-19T16:14:51.532Z
+    tags: []
+    added_by: "@claude"

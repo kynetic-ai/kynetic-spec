@@ -176,8 +176,10 @@ observations:
     content: Need better error messages
     created_at: 2026-01-18T10:16:15.283Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:06.781Z
+    resolved_by: "@claude"
     promoted_to: "@01KF89NY"
   - _ulid: 01KF93NC0FXND1244CN31ZH22Z
     type: friction
@@ -187,8 +189,10 @@ observations:
       }. Encountered multiple times across iterations."
     created_at: 2026-01-18T17:50:20.175Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:07.260Z
+    resolved_by: "@claude"
   - _ulid: 01KF93NCXZNXTPWAPCFPNH0STG
     type: friction
     content: "Linter/tooling auto-revert blocker: During ralph loop iterations, file changes were
@@ -198,8 +202,10 @@ observations:
       implementation work when it occurs."
     created_at: 2026-01-18T17:50:21.120Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:07.778Z
+    resolved_by: "@claude"
   - _ulid: 01KF93NDYAX7CWP4QP7072AHMH
     type: friction
     content: "Ralph loop session state freshness: Multiple issues with stale state in automation loops.
@@ -210,8 +216,10 @@ observations:
       iteration."
     created_at: 2026-01-18T17:50:22.155Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:08.181Z
+    resolved_by: "@claude"
   - _ulid: 01KF93P6NTQJP3C2ZSND2J2MZT
     type: friction
     content: "Subprocess spawning complexity: When promoting observations to tasks, initially tried
@@ -220,8 +228,10 @@ observations:
       overhead. Pattern: prefer direct API over subprocess when both run in same codebase."
     created_at: 2026-01-18T17:50:47.483Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:08.526Z
+    resolved_by: "@claude"
   - _ulid: 01KF93P7W2A063T315RXPC6ZF7
     type: friction
     content: "Commander --json flag conflict: Command-specific --json flags conflict with global --json
@@ -229,8 +239,10 @@ observations:
       This pattern should be documented or enforced via convention."
     created_at: 2026-01-18T17:50:48.706Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:08.975Z
+    resolved_by: "@claude"
   - _ulid: 01KF93P8XZK7K9V8ERYYH6FE0Z
     type: friction
     content: "Bash tool cd persistence: Commands run in same directory as previous command unless
@@ -238,8 +250,10 @@ observations:
       'cd /path/to/main' to return. Can be confusing when working with shadow branch."
     created_at: 2026-01-18T17:50:49.792Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:09.402Z
+    resolved_by: "@claude"
   - _ulid: 01KF93PA837GGVE8DH3PVZE8WC
     type: friction
     content: "CLI output pattern: When implementing CLI commands with both human-readable and JSON
@@ -247,8 +261,10 @@ observations:
       The success() function already handles JSON mode internally, avoiding duplicate/mixed output."
     created_at: 2026-01-18T17:50:51.140Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:09.731Z
+    resolved_by: "@claude"
   - _ulid: 01KF93PBBYDPRH0WQSKN4Y18SV
     type: friction
     content: "Task status accuracy gap: Found task marked as priority 3 ready but implementation was
@@ -258,8 +274,10 @@ observations:
       scenarios."
     created_at: 2026-01-18T17:50:52.286Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:10.062Z
+    resolved_by: "@claude"
   - _ulid: 01KF93PCN5NVFEHR801G77EK3X
     type: friction
     content: "Shadow branch auto-commit PR challenges: PR included WIP commits from shadow that were
@@ -268,8 +286,10 @@ observations:
       prefix) to make cleanup easier."
     created_at: 2026-01-18T17:50:53.606Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:10.411Z
+    resolved_by: "@claude"
   - _ulid: 01KF93PDXFBPM2B1WYE6HFYJCX
     type: friction
     content: "PR review automation friction: Had to manually launch review subagent, wait for output,
@@ -278,8 +298,10 @@ observations:
       decision tree, (4) applies fixes if trivial, (5) merges if appropriate."
     created_at: 2026-01-18T17:50:54.895Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:10.930Z
+    resolved_by: "@claude"
   - _ulid: 01KF93Q1Y31HP8245N4DF67MCA
     type: friction
     content: "Auto-sync vs interactive prompts anti-pattern: When adding interactive prompts to modify
@@ -289,8 +311,10 @@ observations:
       without considering multi-entity consistency."
     created_at: 2026-01-18T17:51:15.396Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:11.342Z
+    resolved_by: "@claude"
   - _ulid: 01KF93Q2W8DC2RNGG1NA4ABQE0
     type: friction
     content: "Test fixtures spec_ref conflicts: Test fixtures should avoid spec_ref assignments that
@@ -298,8 +322,10 @@ observations:
       derive --dry-run tests which expect tasks not to exist yet."
     created_at: 2026-01-18T17:51:16.360Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:11.921Z
+    resolved_by: "@claude"
   - _ulid: 01KF93Q4JZ571ZGRTHZ3QXCYJQ
     type: friction
     content: "Parser vs CLI layer disconnect: Meta includes were fully implemented in parser but CLI
@@ -308,8 +334,10 @@ observations:
       all CLI commands with complex scenarios."
     created_at: 2026-01-18T17:51:18.112Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:12.429Z
+    resolved_by: "@claude"
   - _ulid: 01KF93Q6BCQXGTJ7X4FAK13KVT
     type: friction
     content: "Spec gap discovery during implementation: AC mentioned 'origin: observation_promotion' but
@@ -318,8 +346,10 @@ observations:
       references must match existing schema fields."
     created_at: 2026-01-18T17:51:19.917Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:13.031Z
+    resolved_by: "@claude"
   - _ulid: 01KF93Q83M6RJ0YXH1H2H4F3TK
     type: friction
     content: "kspec-meta shadow branch divergence: Shadow branch has diverged significantly from remote
@@ -327,8 +357,10 @@ observations:
       reconciliation or a fresh sync strategy. Task changes are committed locally and functional."
     created_at: 2026-01-18T17:51:21.717Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:13.557Z
+    resolved_by: "@claude"
   - _ulid: 01KF93Q9S85XSBT1JVV1S1F9F3
     type: friction
     content: "Type guards for union types: When narrowing AnyLoadedItem | LoadedMetaItem to LoadedTask,
@@ -337,8 +369,10 @@ observations:
       incomplete tasks."
     created_at: 2026-01-18T17:51:23.432Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:14.020Z
+    resolved_by: "@claude"
   - _ulid: 01KF94EZQT8WP107P6QV9ZC4JD
     type: success
     content: "PR review workflow pattern: Review subagents proved critical for catching issues before
@@ -350,8 +384,10 @@ observations:
       via subagent is valid for automation loops despite GitHub not allowing self-approval."
     created_at: 2026-01-18T18:04:19.579Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:14.432Z
+    resolved_by: "@claude"
   - _ulid: 01KF94F0W0BPTB5RP6FDWH63SM
     type: success
     content: "Incremental refactoring pattern: Large multi-iteration refactors work well when pattern is
@@ -364,8 +400,10 @@ observations:
       execution speed."
     created_at: 2026-01-18T18:04:20.737Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:14.851Z
+    resolved_by: "@claude"
   - _ulid: 01KF94F20W3MKFPBA1XN0ABQ7P
     type: success
     content: "Implementation pattern (schema→parser→CLI→tests): New features follow clean path. Reuse
@@ -377,8 +415,10 @@ observations:
       commit. Could extract into reusable helper."
     created_at: 2026-01-18T18:04:21.916Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:15.326Z
+    resolved_by: "@claude"
   - _ulid: 01KF94FHX7C98EFRCSGAXAKBBR
     type: success
     content: "Reference implementation value: Checking prior work (../kspec-acp-test,
@@ -390,8 +430,10 @@ observations:
       exploration as standard first step for implementation tasks."
     created_at: 2026-01-18T18:04:38.184Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:15.816Z
+    resolved_by: "@claude"
   - _ulid: 01KF94FK4G7W86NXDVTAZ77SK8
     type: success
     content: "Task verification workflow: Some ready tasks are already implemented from prior sessions.
@@ -403,8 +445,10 @@ observations:
       status' step especially for CLI commands."
     created_at: 2026-01-18T18:04:39.441Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:16.168Z
+    resolved_by: "@claude"
   - _ulid: 01KF94FMF9Y5VCS7EQXP4G2FRJ
     type: success
     content: "Session/workflow patterns: Spike tasks with no code output don't need commits - value is
@@ -415,8 +459,10 @@ observations:
       implementation exists, complete task, no code changes needed."
     created_at: 2026-01-18T18:04:40.810Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:16.582Z
+    resolved_by: "@claude"
   - _ulid: 01KF94G1HYX2DCY796SKB9XB7P
     type: success
     content: "Task guardrails and completion checks: Feature dogfooded successfully - tested on itself
@@ -426,8 +472,10 @@ observations:
       if status doesn't exist yet."
     created_at: 2026-01-18T18:04:54.208Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:17.054Z
+    resolved_by: "@claude"
   - _ulid: 01KF94G2RY8JAX71K9BC8HJSF7
     type: success
     content: "Context and session integration: Meta focus command implementation straightforward thanks
@@ -438,8 +486,10 @@ observations:
       about' while active tasks are 'what doing'."
     created_at: 2026-01-18T18:04:55.454Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:17.500Z
+    resolved_by: "@claude"
   - _ulid: 01KF94G3YV75DYWZENYG19N9NX
     type: success
     content: "Review subagent catches real issues: Found validation strictness issue with RefSchema (too
@@ -449,8 +499,10 @@ observations:
       --debug-shadow based on review finding conflict."
     created_at: 2026-01-18T18:04:56.668Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:17.832Z
+    resolved_by: "@claude"
   - _ulid: 01KF94GR1RQ0JXWNHD6RQGZ4SE
     type: success
     content: "Schema strictness value: ULID validation strictness caught real bugs - test fixtures had
@@ -459,8 +511,10 @@ observations:
       corruption."
     created_at: 2026-01-18T18:05:17.241Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:18.266Z
+    resolved_by: "@claude"
   - _ulid: 01KF94GSM8KQP9QSQK47KT3J7X
     type: success
     content: "JSON output helper pattern: output() provides clean separation between JSON and
@@ -469,8 +523,10 @@ observations:
       duplicate/mixed output that happens with separate success() + output() calls."
     created_at: 2026-01-18T18:05:18.857Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:18.669Z
+    resolved_by: "@claude"
   - _ulid: 01KF94GV0DY58HXPVZJRQWBBAP
     type: success
     content: "findChildItems path-based hierarchy: Implementation based on _path nesting worked well -
@@ -478,8 +534,10 @@ observations:
       could be useful for other hierarchical queries: siblings, ancestors, tree depth."
     created_at: 2026-01-18T18:05:20.270Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:19.089Z
+    resolved_by: "@claude"
   - _ulid: 01KF94GWFGAHGPNM9HNCCESTSC
     type: success
     content: "Commander introspection for help: Commander's structure is stable and well-defined, making
@@ -487,8 +545,10 @@ observations:
       yargs). Separation of auto-generated syntax vs curated concepts is clean and maintainable."
     created_at: 2026-01-18T18:05:21.777Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:19.568Z
+    resolved_by: "@claude"
   - _ulid: 01KF94GXWR0CDRDG5GJ898XR24
     type: success
     content: "Command suggestion with Levenshtein: Feature implemented cleanly using Levenshtein
@@ -496,8 +556,10 @@ observations:
       already handles subcommand suggestions, so only needed top-level command handling."
     created_at: 2026-01-18T18:05:23.225Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:19.960Z
+    resolved_by: "@claude"
   - _ulid: 01KF94HCFSAD6WJ4PJG1T0SSY1
     type: success
     content: "Validation architecture scales: Adding warnings alongside errors required minimal changes
@@ -507,8 +569,10 @@ observations:
       errors."
     created_at: 2026-01-18T18:05:38.169Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:20.309Z
+    resolved_by: "@claude"
   - _ulid: 01KF94HDYHTGCMZCC6MMFYJGNJ
     type: success
     content: "Spike workflow refinement: When completing spike, capture recommendation in closed_reason
@@ -517,8 +581,10 @@ observations:
       references, recommended MVP approach all in notes."
     created_at: 2026-01-18T18:05:39.666Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:20.795Z
+    resolved_by: "@claude"
   - _ulid: 01KF94HFCXHSBAYMYXVTKRV3T8
     type: success
     content: "Convention validation foundation: Implementation validates convention schema. To be fully
@@ -526,8 +592,10 @@ observations:
       note validation, etc.). Foundation is complete, content gathering is future enhancement."
     created_at: 2026-01-18T18:05:41.150Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:21.247Z
+    resolved_by: "@claude"
   - _ulid: 01KF94HGRMD0BF4524V3KQ8V2Q
     type: success
     content: "Task origin field tracking: Added origin enum to track task creation source (manual,
@@ -535,8 +603,10 @@ observations:
       'test_failure', 'lint_error'. Useful for metrics and understanding task flow."
     created_at: 2026-01-18T18:05:42.548Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:21.698Z
+    resolved_by: "@claude"
   - _ulid: 01KF96T3VVQ8CTXQYQ4XNMTQ1W
     type: question
     content: "Shadow branch PR workflow clarification: When work only updates shadow branch (.kspec/)
@@ -547,8 +617,10 @@ observations:
       different review process than code changes."
     created_at: 2026-01-18T18:45:21.404Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:22.131Z
+    resolved_by: "@claude"
   - _ulid: 01KF96T6E67ZB7FVJ8JEDBKTYS
     type: success
     content: "Iteration workflow patterns: (1) Verification-only iterations produce no commits -
@@ -560,8 +632,10 @@ observations:
       implementation for context-rich sessions."
     created_at: 2026-01-18T18:45:24.039Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:22.610Z
+    resolved_by: "@claude"
   - _ulid: 01KF96TKTHJ8DNBGCTR8ACQ7DN
     type: success
     content: "PR review momentum: When reviewing own PRs from previous iterations, fix trivial issues
@@ -569,8 +643,10 @@ observations:
       changes are substantial. This keeps momentum going in automation loops."
     created_at: 2026-01-18T18:45:37.746Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:23.094Z
+    resolved_by: "@claude"
   - _ulid: 01KF96TN2JQ4PPH7MW0G42MXBT
     type: success
     content: "CLI label centralization: item.ts and inbox.ts had drifted from established
@@ -579,8 +655,10 @@ observations:
       drift: new commands should import from strings/ from the start."
     created_at: 2026-01-18T18:45:39.027Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:23.455Z
+    resolved_by: "@claude"
   - _ulid: 01KF96TPK7BTRZ1XZ9BK5YD6G8
     type: success
     content: "Reference directory exploration: For spikes, launching dedicated Explore subagent for
@@ -589,8 +667,10 @@ observations:
       worked well - consider for other research tasks."
     created_at: 2026-01-18T18:45:40.584Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:23.878Z
+    resolved_by: "@claude"
   - _ulid: 01KF96TQV69YX5RQKAJQDQ1S25
     type: success
     content: "Shadow CLI verification: Picked task from ready list, found all three commands (status,
@@ -599,8 +679,10 @@ observations:
       'implemented' were accurate."
     created_at: 2026-01-18T18:45:41.863Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:24.454Z
+    resolved_by: "@claude"
   - _ulid: 01KF96V5J1QJR44K8M7MMGFS0M
     type: success
     content: "Meta schema verification batch: Completed 8 meta-related tasks in single iteration by
@@ -609,8 +691,10 @@ observations:
       tasks when implementation already exists."
     created_at: 2026-01-18T18:45:55.906Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:24.860Z
+    resolved_by: "@claude"
   - _ulid: 01KF96V6MZKAJC86KJD949CW8P
     type: success
     content: "Display-first implementation strategy: Many derived tasks for meta-spec features were
@@ -620,8 +704,10 @@ observations:
       testing of schema design."
     created_at: 2026-01-18T18:45:57.023Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:25.443Z
+    resolved_by: "@claude"
   - _ulid: 01KF96V82FAJANHX3P5GWEH8HQ
     type: success
     content: "Convention schema test gap: Schema was already implemented but lacked test coverage. When
@@ -629,8 +715,10 @@ observations:
       documentation rather than new code. Tests added brought coverage up to spec."
     created_at: 2026-01-18T18:45:58.480Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:25.758Z
+    resolved_by: "@claude"
   - _ulid: 01KF96V9DF3FX5XH224TM996TE
     type: success
     content: "Session checkpoint hook value: Hook caught uncommitted .gitignore change. Important to
@@ -638,15 +726,19 @@ observations:
       prevented incomplete session state."
     created_at: 2026-01-18T18:45:59.857Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:26.087Z
+    resolved_by: "@claude"
   - _ulid: 01KF9WR7HTSHYCHSFKYFG31JSJ
     type: success
     content: Parallel exploration agents gave comprehensive context quickly for documentation audit
     created_at: 2026-01-19T01:08:48.314Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:26.540Z
+    resolved_by: "@claude"
   - _ulid: 01KF9ZFAGH35RQG6J9BA20TM6E
     type: success
     content: "Ralph loop iteration 1 completed successfully: merged PR #58 (meta thread), implemented
@@ -655,8 +747,10 @@ observations:
       tests passing."
     created_at: 2026-01-19T01:56:22.161Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:27.048Z
+    resolved_by: "@claude"
   - _ulid: 01KFA0DVCMDFM7QFDJQ2ZCY21G
     type: success
     content: "Task descriptions with clear problem statements enable fast resolution - the ralph newline
@@ -664,8 +758,10 @@ observations:
       success() call. Spent <5 min from task start to fix complete."
     created_at: 2026-01-19T02:13:02.485Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:27.570Z
+    resolved_by: "@claude"
   - _ulid: 01KFA0S3X005NWJY3D8931BGP5
     type: success
     content: "Hook debugging methodology: For hook errors, test with synthetic inputs (valid JSON,
@@ -673,8 +769,10 @@ observations:
       commands reveals stderr leakage that wouldn't be visible in normal hook execution."
     created_at: 2026-01-19T02:19:11.648Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:28.048Z
+    resolved_by: "@claude"
   - _ulid: 01KFA0WGSE81VFMN080ARJEQHG
     type: success
     content: "Task verification pattern successful: Check git history for related commits before
@@ -682,8 +780,10 @@ observations:
       saved duplicate work."
     created_at: 2026-01-19T02:21:03.150Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:28.565Z
+    resolved_by: "@claude"
   - _ulid: 01KFA17QWT1KQJGG4J8E6ZT6AZ
     type: success
     content: Clear task scope led to clean implementation - 'ralph loop session save' was well-defined
@@ -692,8 +792,10 @@ observations:
       minimal design decisions needed.
     created_at: 2026-01-19T02:27:10.874Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:28.966Z
+    resolved_by: "@claude"
   - _ulid: 01KFA1T2TD09TXAD8KHNAB0JFJ
     type: success
     content: Comprehensive design work captured entirely in task notes - created detailed analysis of
@@ -702,8 +804,10 @@ observations:
       spec creation.
     created_at: 2026-01-19T02:37:11.885Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:29.515Z
+    resolved_by: "@claude"
   - _ulid: 01KFA1T7F256DV5H7W73GG1V3C
     type: friction
     content: Shadow branch worktree was missing at iteration start - required manual 'git worktree add
@@ -712,8 +816,10 @@ observations:
       disappeared between iterations.
     created_at: 2026-01-19T02:37:16.642Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:30.005Z
+    resolved_by: "@claude"
   - _ulid: 01KFA2BWD2KC305W3SBDYQR2DH
     type: success
     content: "Minimal viable implementation pattern works well: Started with complex task (subagent
@@ -723,8 +829,10 @@ observations:
       manageable."
     created_at: 2026-01-19T02:46:55.139Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:30.439Z
+    resolved_by: "@claude"
   - _ulid: 01KFA32BJBH3D2HY6ACYNJBNWA
     type: success
     content: PR review subagent workflow worked effectively - launched dedicated review agent,
@@ -733,8 +841,10 @@ observations:
       iteration.
     created_at: 2026-01-19T02:59:11.564Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:30.782Z
+    resolved_by: "@claude"
   - _ulid: 01KFA380DVCVJT84GA2XNBRWY0
     type: success
     content: Documentation-focused task worked well with todo tracking - broke down 5 documentation
@@ -742,8 +852,10 @@ observations:
       all updates in single iteration with comprehensive commit message
     created_at: 2026-01-19T03:02:16.764Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:31.185Z
+    resolved_by: "@claude"
   - _ulid: 01KFA3SBMD2507GB1TYZTN8G8R
     type: success
     content: Smooth workflow on implementing kspec meta context - spec was clear, implementation
@@ -752,8 +864,10 @@ observations:
       thread, question).
     created_at: 2026-01-19T03:11:45.294Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:31.619Z
+    resolved_by: "@claude"
   - _ulid: 01KFA4RFT8D2T2SW95A8ZK1JZE
     type: success
     content: Shadow branch auto-commit workflow is seamless - created 5 spec items with ACs, all
@@ -761,8 +875,10 @@ observations:
       worktrees.
     created_at: 2026-01-19T03:28:45.385Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:32.212Z
+    resolved_by: "@claude"
   - _ulid: 01KFA4Y20RN7W6ZMG7ZNE1VE3E
     type: success
     content: "ACs discovery pattern: Reading implementation code + corresponding tests provides complete
@@ -771,8 +887,10 @@ observations:
       examining handleStatusCascade function and integration tests."
     created_at: 2026-01-19T03:31:47.864Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:32.655Z
+    resolved_by: "@claude"
   - _ulid: 01KFA599DH7QAR73HRWZMMWR5Z
     type: success
     content: "Efficient workflow iteration: picked task, analyzed code (Read tool), identified root
@@ -781,8 +899,10 @@ observations:
       created PR. Single-focus iteration completed in ~10 minutes of work."
     created_at: 2026-01-19T03:37:55.889Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:33.151Z
+    resolved_by: "@claude"
   - _ulid: 01KFA63VXRCMDNFNEVSNNHQ71M
     type: success
     content: Tree view implementation was straightforward - used existing findChildItems pattern and
@@ -791,8 +911,10 @@ observations:
       seamlessly because tree formatting happens at display layer, not query layer.
     created_at: 2026-01-19T03:52:26.808Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:33.546Z
+    resolved_by: "@claude"
   - _ulid: 01KFA6WBT1A8WRNQ4F7NM2KAFX
     type: success
     content: "PR workflow smooth - auto-generated branch name from task slug
@@ -802,8 +924,10 @@ observations:
       to a new branch."
     created_at: 2026-01-19T04:05:49.505Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:34.020Z
+    resolved_by: "@claude"
   - _ulid: 01KFA8C874AX1X3SDB2BZWC6AE
     type: success
     content: "Task start spec context feature - clean DX improvement that follows existing patterns.
@@ -812,8 +936,10 @@ observations:
       is effective for maintaining consistent agent messaging."
     created_at: 2026-01-19T04:31:58.693Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:34.442Z
+    resolved_by: "@claude"
   - _ulid: 01KFA9KJ13NES8R3R26QESDS02
     type: success
     content: "Test coverage tracking implementation demonstrates good separation of concerns -
@@ -823,8 +949,10 @@ observations:
       be extracted to utils if pattern grows."
     created_at: 2026-01-19T04:53:26.691Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:34.910Z
+    resolved_by: "@claude"
   - _ulid: 01KFA9N9FMZCAJAQNE97K479RF
     type: friction
     content: "Task state management across sessions: found task @01KF9G2X left in_progress from previous
@@ -834,8 +962,10 @@ observations:
       abandoned mid-work."
     created_at: 2026-01-19T04:54:23.476Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:35.387Z
+    resolved_by: "@claude"
   - _ulid: 01KFAA0XW7PHR9EWXEP3HR1HR7
     type: success
     content: "Iteration 16 handled two tasks effectively: completed test coverage tracking (my primary
@@ -845,8 +975,10 @@ observations:
       messages."
     created_at: 2026-01-19T05:00:44.808Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:35.760Z
+    resolved_by: "@claude"
   - _ulid: 01KFAAC1AYM45CE8B8MDWGJ4GW
     type: success
     content: Reusing NoteSchema across both tasks and spec items worked perfectly - no code duplication,
@@ -854,8 +986,10 @@ observations:
       './task.js' into spec.ts demonstrates good schema reuse.
     created_at: 2026-01-19T05:06:48.798Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:36.184Z
+    resolved_by: "@claude"
   - _ulid: 01KFABRSMHWD0Q33800AX7TYSS
     type: success
     content: "PR review workflow worked well: subagent found TypeScript compilation errors (missing
@@ -863,8 +997,10 @@ observations:
       separation between review agent and implementation agent."
     created_at: 2026-01-19T05:31:15.473Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:36.709Z
+    resolved_by: "@claude"
   - _ulid: 01KFABRY971XP4KD8D3198R2KT
     type: success
     content: "Spec-first workflow for schema changes: Updated @maturity-states spec with new 'deferred'
@@ -872,8 +1008,10 @@ observations:
       and provides clear acceptance criteria for implementation."
     created_at: 2026-01-19T05:31:20.231Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:37.258Z
+    resolved_by: "@claude"
   - _ulid: 01KFADNW4SYG78Y13M8KHXAR92
     type: success
     content: Auto-generating implementation notes from specs during derive significantly streamlines the
@@ -883,8 +1021,10 @@ observations:
       level of detail for implementation reference.
     created_at: 2026-01-19T06:04:36.889Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:37.742Z
+    resolved_by: "@claude"
   - _ulid: 01KFADRNQN3SG8FMZF3EMWHF6N
     type: success
     content: "INSTALL.md creation went smoothly - clear task description made it easy to know what to
@@ -892,8 +1032,10 @@ observations:
       snippets, clear success criteria after each section, troubleshooting for common gotchas."
     created_at: 2026-01-19T06:06:08.629Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:38.272Z
+    resolved_by: "@claude"
   - _ulid: 01KFAEFD4XYVVXH61FNA9HWHGT
     type: success
     content: "PR review workflow with subagent worked smoothly. The review subagent provided detailed
@@ -903,8 +1045,10 @@ observations:
       PR."
     created_at: 2026-01-19T06:18:33.501Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:38.692Z
+    resolved_by: "@claude"
   - _ulid: 01KFAF48W58CCFZBC0DBGCCK21
     type: success
     content: Git worktrees use hooks from main .git/hooks (via commondir), not from
@@ -913,8 +1057,10 @@ observations:
       points to '../..' which makes git look for hooks in the main repo.
     created_at: 2026-01-19T06:29:57.253Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:39.120Z
+    resolved_by: "@claude"
   - _ulid: 01KFAFEAADJPTN5ZRHK0PDYGJY
     type: success
     content: "Small DX improvements (like setup:dev script) have high impact for low effort. Pattern:
@@ -922,8 +1068,10 @@ observations:
       script instead."
     created_at: 2026-01-19T06:35:26.413Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:39.559Z
+    resolved_by: "@claude"
   - _ulid: 01KFAGYE5VYH1YSNS7ZD4R20BX
     type: friction
     content: "Shadow branch worktree repair workflow issues: (1) Nested .kspec/.kspec directories
@@ -937,8 +1085,10 @@ observations:
       (c) Idempotent repair commands that check current state before operations."
     created_at: 2026-01-19T07:01:43.227Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:40.049Z
+    resolved_by: "@claude"
   - _ulid: 01KFAH2B2H0P3ZZRXMKY7F35BV
     type: success
     content: "Completed full task cycle in iteration 25: merged open PR, resolved shadow branch sync
@@ -947,8 +1097,10 @@ observations:
       completion workflow worked smoothly once shadow branch was synchronized."
     created_at: 2026-01-19T07:03:51.122Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:40.632Z
+    resolved_by: "@claude"
   - _ulid: 01KFAHKB1REKZMA6EP9HM7J1FZ
     type: success
     content: "Integration test strategy: Using command JSON output directly from promote command instead
@@ -957,8 +1109,10 @@ observations:
       exactly what we need to verify."
     created_at: 2026-01-19T07:13:08.152Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:41.043Z
+    resolved_by: "@claude"
   - _ulid: 01KFAJSS392ZV47Z373HK29HAM
     type: success
     content: "Batch operation pattern scales well - created reusable executeBatchOperation() utility
@@ -968,8 +1122,10 @@ observations:
       Makes adding batch support to new commands straightforward."
     created_at: 2026-01-19T07:34:07.722Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:41.409Z
+    resolved_by: "@claude"
   - _ulid: 01KFAM6VF2MY7QKC526SZX8PY8
     type: success
     content: |-
@@ -993,15 +1149,19 @@ observations:
       This separation of concerns made the fix safe and testable.
     created_at: 2026-01-19T07:58:44.706Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:41.783Z
+    resolved_by: "@claude"
   - _ulid: 01KFANADZJA4VAFBSH0F8FAWXP
     type: friction
     content: Test observation from Ralph Loop
     created_at: 2026-01-19T08:18:10.546Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:42.284Z
+    resolved_by: "@claude"
   - _ulid: 01KFAND9RY95MCTPE02QB9103E
     type: success
     content: "Iteration 29 workflow was efficient and clean: picked highest priority task, implemented
@@ -1010,8 +1170,10 @@ observations:
       during triage - items captured in wrong bucket can be easily converted."
     created_at: 2026-01-19T08:19:44.542Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:42.833Z
+    resolved_by: "@claude"
   - _ulid: 01KFAPKVHCJGKTVM1690P8P8CF
     type: success
     content: Passthrough args implementation pattern - When adding passthrough args to CLI commands that
@@ -1020,8 +1182,10 @@ observations:
       passthroughArgs.length > 0, avoiding format conflicts.
     created_at: 2026-01-19T08:40:47.917Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:43.177Z
+    resolved_by: "@claude"
   - _ulid: 01KFAPWQVB7K0DV4ZK6TDRJMM2
     type: success
     content: PR review and merge workflow worked smoothly. Dedicated review subagent provided
@@ -1030,8 +1194,10 @@ observations:
       pattern in RALPH_LOOP_INSTRUCTIONS.
     created_at: 2026-01-19T08:45:39.051Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:43.493Z
+    resolved_by: "@claude"
   - _ulid: 01KFAQN66S95434T70FPXES77X
     type: success
     content: Implemented kspec setup worktree detection cleanly by leveraging existing shadow module
@@ -1040,8 +1206,10 @@ observations:
       the value of the shadow module's well-factored utilities for worktree management.
     created_at: 2026-01-19T08:59:00.185Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:43.850Z
+    resolved_by: "@claude"
   - _ulid: 01KFARJ6TDYJFKS5EP5XAJB89W
     type: success
     content: "Bulk refactoring pattern: Created automated script to replace magic numbers with constants
@@ -1051,8 +1219,10 @@ observations:
       standardization, import path updates)."
     created_at: 2026-01-19T09:14:51.085Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:44.386Z
+    resolved_by: "@claude"
   - _ulid: 01KFATCXG9439H99JN0KK8SV71
     type: success
     content: "Multi-round PR review with dedicated subagents worked extremely well. Pattern: (1) Launch
@@ -1063,8 +1233,10 @@ observations:
       cases."
     created_at: 2026-01-19T09:46:54.857Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:44.886Z
+    resolved_by: "@claude"
   - _ulid: 01KFATQ46A835BQ657YX7AC853
     type: success
     content: "Implementing features with clear acceptance criteria is much faster than without. The
@@ -1074,8 +1246,10 @@ observations:
       understand data structures before writing validation logic."
     created_at: 2026-01-19T09:52:29.386Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:45.251Z
+    resolved_by: "@claude"
   - _ulid: 01KFATS86AMESWQJA9E1T2JCVM
     type: success
     content: "Staleness detection implementation completed successfully. The feature detects status
@@ -1084,8 +1258,10 @@ observations:
       tests pass."
     created_at: 2026-01-19T09:53:39.018Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:45.817Z
+    resolved_by: "@claude"
   - _ulid: 01KFATSF5A7KEEY4CHSKTCFG4G
     type: friction
     content: "Found task in progress but work already committed. This may happen when: (1) previous
@@ -1094,8 +1270,10 @@ observations:
       at session start to ensure state is current."
     created_at: 2026-01-19T09:53:46.155Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:46.180Z
+    resolved_by: "@claude"
   - _ulid: 01KFATSKF22KHRZYCQ0TJP1P1E
     type: success
     content: "Complete iteration workflow: (1) Check open PRs and review/merge, (2) Pick highest
@@ -1104,8 +1282,10 @@ observations:
       are either merged or created by end of iteration. The /pr skill makes PR creation seamless."
     created_at: 2026-01-19T09:53:50.562Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:46.720Z
+    resolved_by: "@claude"
   - _ulid: 01KFATTDS4G9VHDXXF4DDHS1C2
     type: success
     content: "Iteration 34 outcome: Merged 1 PR (semantic exit codes with 4 commits), implemented and
@@ -1115,8 +1295,10 @@ observations:
       consistently."
     created_at: 2026-01-19T09:54:17.508Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:47.283Z
+    resolved_by: "@claude"
   - _ulid: 01KFAVMTHF0KRC1YKH8QMF1W9W
     type: friction
     content: "Global --json mode interactions complicate command-specific JSON output. Commands that
@@ -1125,8 +1307,10 @@ observations:
       output stream, or (3) convention that commands bypass global mode for simple output."
     created_at: 2026-01-19T10:08:42.543Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:47.870Z
+    resolved_by: "@claude"
   - _ulid: 01KFAVYRDBQYJEAK4Z8E5QMQXA
     type: friction
     content: Task was cancelled prematurely by automation (01KEZ9DSD3). The automation cancelled the
@@ -1136,8 +1320,10 @@ observations:
       cancelling tasks that appear to be in research/investigation phase.
     created_at: 2026-01-19T10:14:08.043Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:48.302Z
+    resolved_by: "@claude"
   - _ulid: 01KFAVYYD7GKN0VXBP67B4CR8G
     type: success
     content: Successfully improved YAML formatting consistency by switching from js-yaml to modern
@@ -1147,8 +1333,10 @@ observations:
       experience without requiring complex CST manipulation.
     created_at: 2026-01-19T10:14:14.183Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:48.734Z
+    resolved_by: "@claude"
   - _ulid: 01KFAY1AB5CT6KEJ2J9NY37WQX
     type: success
     content: "Complete YAML library migration completed successfully. Initial implementation had
@@ -1159,8 +1347,10 @@ observations:
       done."
     created_at: 2026-01-19T10:50:29.093Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:49.163Z
+    resolved_by: "@claude"
   - _ulid: 01KFAY1FS7QHBMV350A899878F
     type: friction
     content: Task automation cancelled 01KEZ9DSD3 prematurely during investigation phase, but work was
@@ -1169,8 +1359,10 @@ observations:
       progressing even if lots of notes are being added.
     created_at: 2026-01-19T10:50:34.663Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:49.658Z
+    resolved_by: "@claude"
   - _ulid: 01KFAY281BQT8BGFP3YRF6SYXF
     type: success
     content: "Full iteration workflow executed successfully: Task pickup → Implementation → PR creation
@@ -1179,8 +1371,10 @@ observations:
       including bug fix."
     created_at: 2026-01-19T10:50:59.500Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:50.042Z
+    resolved_by: "@claude"
   - _ulid: 01KFAY7NM46JVAJ0JAKEDHAH0C
     type: success
     content: "Research spikes captured in task notes provide durable artifacts. Task 01KF9G22
@@ -1189,8 +1383,10 @@ observations:
       for future spec/task creation."
     created_at: 2026-01-19T10:53:57.252Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:50.446Z
+    resolved_by: "@claude"
   - _ulid: 01KFAY7ZXQ0P119X3S9N42KZVW
     type: friction
     content: "Task 01KF9G22 was cancelled in previous iteration but appeared in ready_tasks list. When
@@ -1199,6 +1395,8 @@ observations:
       a way to reopen/uncancell tasks that get picked up again."
     created_at: 2026-01-19T10:54:07.799Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Reviewed in retrospective - actionable items extracted to tasks, patterns retained as reference
+    resolved_at: 2026-01-19T16:12:50.887Z
+    resolved_by: "@claude"
 includes: []

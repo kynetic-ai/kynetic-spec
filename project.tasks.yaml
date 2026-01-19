@@ -1261,11 +1261,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1407,6 +1427,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1522,6 +1552,16 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11893,5 +11933,227 @@
         - Clears started_at timestamp
         - Adds note documenting the reset and reason
         - Maybe warns if task has notes (work was done)
+      supersedes: null
+  todos: []
+- _ulid: 01KFBD5P8JBW3BW8JV3WJ0RHPS
+  slugs: []
+  title: Improve shadow branch robustness and enforce temp dir testing
+  type: infra
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T15:15:01.010Z
+  notes:
+    - _ulid: 01KFBD60A324N8K89SZR80M2Z3
+      created_at: 2026-01-19T15:15:11.299Z
+      author: "@claude"
+      content: >-
+        From ralph loop retrospective - shadow branch issues during overnight session:
+
+
+        **Root Causes Identified:**
+
+        1. Repeated `git worktree add` without checking existing state created nested .kspec/.kspec
+        directories
+
+        2. Stale git worktree metadata in .git/worktrees/ caused spawn ENOENT errors
+
+        3. Directory context leaked between commands (cd .kspec persisted)
+
+
+        **Improvements Needed:**
+
+
+        1. **Idempotent worktree operations:**
+           - Check if worktree exists before creating
+           - Run `git worktree prune` before repair operations
+           - Detect and handle nested directories
+
+        2. **Better error messages:**
+           - Show current directory context in errors
+           - Explain spawn ENOENT as worktree metadata issue
+
+        3. **CRITICAL: Enforce temp dir testing:**
+           - All kspec tests MUST use /tmp or system temp dir
+           - NEVER test kspec within the kspec repo itself
+           - Add validation/guard to prevent self-referential testing
+           - This prevents nested directory issues and worktree corruption
+
+        4. **Session startup robustness:**
+           - Verify worktree health at session start
+           - Auto-repair or fail-fast with clear instructions
+      supersedes: null
+  todos: []
+- _ulid: 01KFBD9N2QAYNCHWVHCBY2KYT6
+  slugs: []
+  title: Add CI check for unresolved PR review comments before merge
+  type: task
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T15:17:10.871Z
+  notes:
+    - _ulid: 01KFBD9WV8G7CSZTKKRM5D6V45
+      created_at: 2026-01-19T15:17:18.825Z
+      author: "@claude"
+      content: >-
+        From retrospective: PR review feedback was merged without being addressed.
+
+
+        **Problem:**
+
+        - PR #87: 6 exit code issues identified by review, merged without fixing
+
+        - PR #89: Explicit request for inbox item, never created
+
+        - Velocity too high to process feedback properly
+
+
+        **Solution:**
+
+        Add CI check that blocks merge when PR has unresolved review comments:
+
+
+        1. Check for unresolved conversation threads on the PR
+
+        2. Check for review requests that haven't been addressed
+
+        3. Optionally: check for explicit action items in comments (e.g., 'TODO:', 'Fix:',
+        'Please...')
+
+
+        The review agent (claude-pr-review or similar) creates comments - CI should enforce they're
+        addressed before merge is allowed.
+
+
+        Could use GitHub's review thread resolution status or custom comment parsing.
+      supersedes: null
+  todos: []
+- _ulid: 01KFBDM8ZD201SSV9NEETHADE7
+  slugs: []
+  title: Audit and fix JSON output consistency across CLI
+  type: infra
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T15:22:58.924Z
+  notes:
+    - _ulid: 01KFBDMFJBB1A6GBW2M8NMT2ZY
+      created_at: 2026-01-19T15:23:05.675Z
+      author: "@claude"
+      content: |-
+        From retrospective observations - multiple friction points around JSON output:
+
+        **Issues identified:**
+        1. Global --json flag conflicts with command-specific output formats
+        2. stderr messages leak into JSON output (especially git stderr)
+        3. Some commands wrap output, others return raw
+        4. Inconsistent envelope formats between commands
+
+        **Actions needed:**
+        1. Audit all commands for JSON output behavior
+        2. Document convention: global --json only, no command-specific JSON flags
+        3. Use output() helper consistently 
+        4. Separate stderr stream for git/subprocess output
+        5. Standardize envelope format (success, data, error)
+      supersedes: null
+  todos: []
+- _ulid: 01KFBDQED41BH9A9REH81KX34J
+  slugs: []
+  title: Add spec-schema drift detection to validation
+  type: task
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T15:24:42.787Z
+  notes:
+    - _ulid: 01KFBDQN3WXXNKVDPF2GCVME5M
+      created_at: 2026-01-19T15:24:49.661Z
+      author: "@claude"
+      content: |-
+        From retrospective observations - spec-code drift causes implementation surprises:
+
+        **Issues identified:**
+        1. ACs reference fields that don't exist in schema (e.g., 'spec_ref.children')
+        2. Implementation status updated in task.spec_ref but not in actual spec item
+        3. Fixtures conflict with derive tests when spec_refs overlap
+
+        **Proposed validation additions to kspec validate:**
+        1. Check AC field references against actual schema types
+        2. Warn when task.spec_ref.implementation differs from spec.implementation
+        3. Detect fixture conflicts with spec refs
+        4. Pre-implementation check: validate spec before starting task
+
+        Could be part of --strict mode or separate --drift flag.
+      supersedes: null
+  todos: []
+- _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
+  slugs: []
+  title: Improve Result type enforcement and type guards
+  type: infra
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T15:25:08.697Z
+  notes:
+    - _ulid: 01KFBDREPGR2FS63DC3DAG15EA
+      created_at: 2026-01-19T15:25:15.856Z
+      author: "@claude"
+      content: >-
+        From retrospective observations - Result pattern type safety issues:
+
+
+        **Issues identified:**
+
+        1. Result<T, E> objects have .ok field but TypeScript doesn't enforce checking it
+
+        2. Type guards on Result types check optional fields instead of status
+
+        3. Error unions missing types causes unhandled cases
+
+
+        **Proposed improvements:**
+
+        1. Create branded type for 'checked' results to enforce .ok check before accessing .value
+
+        2. Lint rule or pattern: type guards must check discriminant property (ok), not optional
+        fields
+
+        3. Use Required<> or Exhaustive<> utility types for complete error handling
+
+        4. Consider neverthrow or similar library for stricter Result handling
+
+
+        Reference: ReferenceIndex.resolve() returns Result but callers often skip .ok check.
       supersedes: null
   todos: []
