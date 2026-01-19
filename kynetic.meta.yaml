@@ -951,4 +951,14 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFADRNQN3SG8FMZF3EMWHF6N
+    type: success
+    content: >-
+      INSTALL.md creation went smoothly - clear task description made it easy to know what to write.
+      Agent-focused documentation should always have: concise commands, copy-pasteable snippets,
+      clear success criteria after each section, troubleshooting for common gotchas.
+    created_at: '2026-01-19T06:06:08.629Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
