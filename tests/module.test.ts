@@ -5,71 +5,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import * as os from 'node:os';
-import { execSync } from 'node:child_process';
-
-const FIXTURES_DIR = path.join(__dirname, 'fixtures');
-const CLI_PATH = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
-
-/**
- * Run a kspec CLI command and return stdout
- */
-function kspec(args: string, cwd: string): string {
-  const cmd = `npx tsx ${CLI_PATH} ${args}`;
-  try {
-    return execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    }).trim();
-  } catch (error: unknown) {
-    const execError = error as { stdout?: string; stderr?: string; message?: string; status?: number };
-    // Throw for actual failures
-    throw new Error(`Command failed (exit ${execError.status}): ${cmd}\n${execError.stderr || execError.message}`);
-  }
-}
-
-/**
- * Run kspec and return JSON output
- */
-function kspecJson<T>(args: string, cwd: string): T {
-  const output = kspec(`${args} --json`, cwd);
-  return JSON.parse(output);
-}
-
-/**
- * Run kspec expecting failure, return the error
- */
-function kspecExpectFail(args: string, cwd: string): string {
-  const cmd = `npx tsx ${CLI_PATH} ${args}`;
-  try {
-    execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    });
-    throw new Error('Expected command to fail but it succeeded');
-  } catch (error: unknown) {
-    const execError = error as { stderr?: string; message?: string };
-    return execError.stderr || execError.message || '';
-  }
-}
-
-/**
- * Copy fixtures to a temp directory for isolated testing
- */
-async function setupTempFixtures(): Promise<string> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-test-'));
-  await fs.cp(FIXTURES_DIR, tempDir, { recursive: true });
-  return tempDir;
-}
-
-/**
- * Clean up temp directory
- */
-async function cleanupTempDir(dir: string): Promise<void> {
-  await fs.rm(dir, { recursive: true, force: true });
-}
+import { kspec, kspecJson, kspecExpectFail, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
 describe('Integration: module add', () => {
   let tempDir: string;

@@ -6,57 +6,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import * as os from 'node:os';
 import { execSync } from 'node:child_process';
-
-const FIXTURES_DIR = path.join(__dirname, 'fixtures');
-const CLI_PATH = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
-
-/**
- * Run a kspec CLI command and return stdout
- */
-function kspec(args: string, cwd: string): string {
-  const cmd = `npx tsx ${CLI_PATH} ${args}`;
-  try {
-    return execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    }).trim();
-  } catch (error: unknown) {
-    const execError = error as { stdout?: string; stderr?: string; message?: string };
-    // Return stdout even on error (some commands exit non-zero with valid output)
-    if (execError.stdout) return execError.stdout.trim();
-    throw new Error(`Command failed: ${cmd}\n${execError.stderr || execError.message}`);
-  }
-}
-
-/**
- * Run kspec and return JSON output
- */
-function kspecJson<T>(args: string, cwd: string): T {
-  const output = kspec(`${args} --json`, cwd);
-  return JSON.parse(output);
-}
-
-/**
- * Copy fixtures to a temp directory for isolated testing
- */
-async function setupTempFixtures(): Promise<string> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-test-'));
-
-  // Copy all fixture files
-  await fs.cp(FIXTURES_DIR, tempDir, { recursive: true });
-
-  return tempDir;
-}
-
-/**
- * Clean up temp directory
- */
-async function cleanupTempDir(dir: string): Promise<void> {
-  await fs.rm(dir, { recursive: true, force: true });
-}
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, FIXTURES_DIR, CLI_PATH } from './helpers/cli';
 
 describe('Integration: validate', () => {
   let tempDir: string;
@@ -298,7 +249,7 @@ describe('Integration: task set', () => {
 
   it('should reject nonexistent spec ref', () => {
     expect(() => {
-      execSync(`npx tsx ${path.join(__dirname, '..', 'src', 'cli', 'index.ts')} task set @test-task-pending --spec-ref @nonexistent`, {
+      execSync(`node ${CLI_PATH} task set @test-task-pending --spec-ref @nonexistent`, {
         cwd: tempDir,
         encoding: 'utf-8',
         stdio: 'pipe',
@@ -308,7 +259,7 @@ describe('Integration: task set', () => {
 
   it('should reject task as spec ref', () => {
     expect(() => {
-      execSync(`npx tsx ${path.join(__dirname, '..', 'src', 'cli', 'index.ts')} task set @test-task-pending --spec-ref @test-task-blocked`, {
+      execSync(`node ${CLI_PATH} task set @test-task-pending --spec-ref @test-task-blocked`, {
         cwd: tempDir,
         encoding: 'utf-8',
         stdio: 'pipe',
@@ -325,7 +276,7 @@ describe('Integration: task set', () => {
 
   it('should reject invalid priority', () => {
     expect(() => {
-      execSync(`npx tsx ${path.join(__dirname, '..', 'src', 'cli', 'index.ts')} task set @test-task-pending --priority 6`, {
+      execSync(`node ${CLI_PATH} task set @test-task-pending --priority 6`, {
         cwd: tempDir,
         encoding: 'utf-8',
         stdio: 'pipe',
@@ -397,7 +348,7 @@ describe('Integration: task patch', () => {
   it('should error on invalid JSON syntax', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} task patch @test-task-pending --data 'bad'`,
+        `node ${CLI_PATH} task patch @test-task-pending --data 'bad'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -407,7 +358,7 @@ describe('Integration: task patch', () => {
   it('should error on unknown field by default', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} task patch @test-task-pending --data '{"unknown":true}'`,
+        `node ${CLI_PATH} task patch @test-task-pending --data '{"unknown":true}'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -534,7 +485,7 @@ describe('Integration: item set', () => {
     // Try to remove the only slug
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item set @only-slug --remove-slug only-slug`,
+        `node ${CLI_PATH} item set @only-slug --remove-slug only-slug`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -571,7 +522,7 @@ describe('Integration: item patch', () => {
 
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item patch @json-test --data 'not json'`,
+        `node ${CLI_PATH} item patch @json-test --data 'not json'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -582,7 +533,7 @@ describe('Integration: item patch', () => {
     kspec('item add --under @test-core --title "Stdin Test" --slug stdin-test --type feature', tempDir);
 
     execSync(
-      `echo '{"description":"From stdin"}' | npx tsx ${CLI_PATH} item patch @stdin-test`,
+      `echo '{"description":"From stdin"}' | node ${CLI_PATH} item patch @stdin-test`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -609,7 +560,7 @@ describe('Integration: item patch', () => {
 
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item patch @unknown-test --data '{"foobar":"value"}'`,
+        `node ${CLI_PATH} item patch @unknown-test --data '{"foobar":"value"}'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -630,7 +581,7 @@ describe('Integration: item patch', () => {
 
     const jsonl = '{"ref":"@bulk-test-1","data":{"priority":"high"}}\\n{"ref":"@bulk-test-2","data":{"priority":"low"}}';
     const result = execSync(
-      `printf '${jsonl}' | npx tsx ${CLI_PATH} item patch --bulk --json`,
+      `printf '${jsonl}' | node ${CLI_PATH} item patch --bulk --json`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -649,7 +600,7 @@ describe('Integration: item patch', () => {
       { ref: '@array-test-2', data: { priority: 'low' } }
     ]);
     const result = execSync(
-      `echo '${json}' | npx tsx ${CLI_PATH} item patch --bulk --json`,
+      `echo '${json}' | node ${CLI_PATH} item patch --bulk --json`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -664,7 +615,7 @@ describe('Integration: item patch', () => {
     const jsonl = '{"ref":"@nonexistent","data":{"title":"X"}}\\n{"ref":"@continue-test","data":{"priority":"high"}}';
     try {
       const result = execSync(
-        `printf '${jsonl}' | npx tsx ${CLI_PATH} item patch --bulk --json`,
+        `printf '${jsonl}' | node ${CLI_PATH} item patch --bulk --json`,
         { cwd: tempDir, encoding: 'utf-8' }
       );
       const parsed = JSON.parse(result);
@@ -690,7 +641,7 @@ describe('Integration: item patch', () => {
     const jsonl = '{"ref":"@nonexistent","data":{"title":"X"}}\\n{"ref":"@failfast-test","data":{"priority":"high"}}';
     try {
       execSync(
-        `printf '${jsonl}' | npx tsx ${CLI_PATH} item patch --bulk --fail-fast --json`,
+        `printf '${jsonl}' | node ${CLI_PATH} item patch --bulk --fail-fast --json`,
         { cwd: tempDir, encoding: 'utf-8' }
       );
     } catch (error: unknown) {
@@ -708,7 +659,7 @@ describe('Integration: item patch', () => {
   it('should reject task refs', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item patch @test-task-pending --data '{"title":"X"}'`,
+        `node ${CLI_PATH} item patch @test-task-pending --data '{"title":"X"}'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow(/is a task, not a spec item/);
@@ -718,7 +669,7 @@ describe('Integration: item patch', () => {
   it('should error on nonexistent ref', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item patch @nonexistent --data '{"title":"X"}'`,
+        `node ${CLI_PATH} item patch @nonexistent --data '{"title":"X"}'`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow(/Item not found/);
@@ -861,7 +812,7 @@ describe('Integration: derive', () => {
   // AC: @cmd-derive ac-13
   it('should error on invalid reference', () => {
     expect(() => {
-      execSync(`npx tsx ${CLI_PATH} derive @nonexistent`, {
+      execSync(`node ${CLI_PATH} derive @nonexistent`, {
         cwd: tempDir,
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -1015,7 +966,7 @@ describe('Integration: item ac', () => {
 
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item ac add @test-feature --id unique-ac --given "g2" --when "w2" --then "t2"`,
+        `node ${CLI_PATH} item ac add @test-feature --id unique-ac --given "g2" --when "w2" --then "t2"`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1024,7 +975,7 @@ describe('Integration: item ac', () => {
   it('should reject adding AC to a task', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item ac add @test-task-pending --given "g" --when "w" --then "t"`,
+        `node ${CLI_PATH} item ac add @test-task-pending --given "g" --when "w" --then "t"`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1054,7 +1005,7 @@ describe('Integration: item ac', () => {
   it('should reject updating nonexistent AC', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item ac set @test-feature nonexistent-ac --then "new value"`,
+        `node ${CLI_PATH} item ac set @test-feature nonexistent-ac --then "new value"`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1085,7 +1036,7 @@ describe('Integration: item ac', () => {
   it('should reject removing nonexistent AC', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} item ac remove @test-feature nonexistent-ac --force`,
+        `node ${CLI_PATH} item ac remove @test-feature nonexistent-ac --force`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1190,7 +1141,7 @@ describe('Integration: task delete', () => {
   it('should reject deleting nonexistent task', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} task delete @nonexistent-task --force`,
+        `node ${CLI_PATH} task delete @nonexistent-task --force`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1449,7 +1400,7 @@ describe('Integration: kspec log', () => {
   // AC: @cmd-log ac-5
   it('should error on invalid reference', () => {
     expect(() => {
-      execSync(`npx tsx ${CLI_PATH} log @nonexistent-ref`, {
+      execSync(`node ${CLI_PATH} log @nonexistent-ref`, {
         cwd: tempDir,
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -1532,7 +1483,7 @@ describe('Integration: kspec log', () => {
 
     // Try to use invalid git flag
     expect(() => {
-      execSync(`npx tsx ${CLI_PATH} log @test-task-pending -- --invalid-git-flag`, {
+      execSync(`node ${CLI_PATH} log @test-task-pending -- --invalid-git-flag`, {
         cwd: tempDir,
         encoding: 'utf-8',
         stdio: 'pipe',
@@ -1626,7 +1577,7 @@ describe('Integration: link commands', () => {
   it('should error on invalid relationship type', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} link create @test-feature @test-requirement --type invalid_type`,
+        `node ${CLI_PATH} link create @test-feature @test-requirement --type invalid_type`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1635,7 +1586,7 @@ describe('Integration: link commands', () => {
   it('should error when referencing non-existent item', () => {
     expect(() => {
       execSync(
-        `npx tsx ${CLI_PATH} link create @test-feature @nonexistent --type depends_on`,
+        `node ${CLI_PATH} link create @test-feature @nonexistent --type depends_on`,
         { cwd: tempDir, encoding: 'utf-8', stdio: 'pipe' }
       );
     }).toThrow();
@@ -1669,7 +1620,7 @@ describe('Integration: status cascade', () => {
     // test-feature has a child requirement
     // Pipe "n" to reject the cascade
     const output = execSync(
-      `echo "n" | npx tsx ${CLI_PATH} item set @test-feature --status implemented`,
+      `echo "n" | node ${CLI_PATH} item set @test-feature --status implemented`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -1688,7 +1639,7 @@ describe('Integration: status cascade', () => {
 
     // Cascade update by piping "y"
     execSync(
-      `echo "y" | npx tsx ${CLI_PATH} item set @test-feature --status verified`,
+      `echo "y" | node ${CLI_PATH} item set @test-feature --status verified`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -1711,7 +1662,7 @@ describe('Integration: status cascade', () => {
 
     // Reject cascade by piping "n"
     execSync(
-      `echo "n" | npx tsx ${CLI_PATH} item set @test-feature --status implemented`,
+      `echo "n" | node ${CLI_PATH} item set @test-feature --status implemented`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -1725,7 +1676,7 @@ describe('Integration: status cascade', () => {
 
   it('should skip prompt in JSON mode', () => {
     const output = execSync(
-      `npx tsx ${CLI_PATH} item set @test-feature --status in_progress --json`,
+      `node ${CLI_PATH} item set @test-feature --status in_progress --json`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -1741,7 +1692,7 @@ describe('Integration: status cascade', () => {
   it('should handle items with no children', () => {
     // test-requirement has no children
     const output = execSync(
-      `echo "n" | npx tsx ${CLI_PATH} item set @test-requirement --status implemented`,
+      `echo "n" | node ${CLI_PATH} item set @test-requirement --status implemented`,
       { cwd: tempDir, encoding: 'utf-8' }
     );
 

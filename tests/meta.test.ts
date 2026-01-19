@@ -6,54 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import * as os from 'node:os';
-import { execSync } from 'node:child_process';
-
-const FIXTURES_DIR = path.join(__dirname, 'fixtures');
-const CLI_PATH = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
-
-/**
- * Run a kspec CLI command and return stdout
- */
-function kspec(args: string, cwd: string): string {
-  const cmd = `npx tsx ${CLI_PATH} ${args}`;
-  try {
-    return execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test' },
-    }).trim();
-  } catch (error: unknown) {
-    const execError = error as { stdout?: string; stderr?: string; message?: string };
-    // Return stdout even on error (some commands exit non-zero with valid output)
-    if (execError.stdout) return execError.stdout.trim();
-    throw new Error(`Command failed: ${cmd}\n${execError.stderr || execError.message}`);
-  }
-}
-
-/**
- * Run kspec and return JSON output
- */
-function kspecJson<T>(args: string, cwd: string): T {
-  const output = kspec(`${args} --json`, cwd);
-  return JSON.parse(output);
-}
-
-/**
- * Copy fixtures to a temp directory for isolated testing
- */
-async function setupTempFixtures(): Promise<string> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-test-'));
-  await fs.cp(FIXTURES_DIR, tempDir, { recursive: true });
-  return tempDir;
-}
-
-/**
- * Clean up temp directory
- */
-async function cleanupTempDir(dir: string): Promise<void> {
-  await fs.rm(dir, { recursive: true, force: true });
-}
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
 describe('Integration: meta agents', () => {
   let tempDir: string;
