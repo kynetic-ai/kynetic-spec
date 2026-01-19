@@ -5,6 +5,7 @@ import {
   loadAllItems,
   saveTask,
   createTask,
+  createNote,
   ReferenceIndex,
   AlignmentIndex,
   type LoadedTask,
@@ -210,6 +211,32 @@ interface DeriveResult {
 }
 
 /**
+ * Generate implementation notes from spec item for newly derived task.
+ * Includes description and acceptance criteria summary.
+ */
+function generateImplementationNotes(specItem: LoadedSpecItem): string | undefined {
+  const parts: string[] = [];
+
+  // Add description if present
+  if (specItem.description) {
+    parts.push(specItem.description.trim());
+  }
+
+  // Add acceptance criteria summary if present
+  if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
+    const acSection = ['', 'Acceptance Criteria:'];
+    for (const ac of specItem.acceptance_criteria) {
+      const summary = `${ac.given ? 'Given ' + ac.given + ', ' : ''}when ${ac.when}, then ${ac.then}`;
+      acSection.push(`- ${ac.id}: ${summary}`);
+    }
+    parts.push(acSection.join('\n'));
+  }
+
+  // Return combined content, or undefined if nothing to add
+  return parts.length > 0 ? parts.join('\n\n') : undefined;
+}
+
+/**
  * Derive a task from a spec item.
  * Returns result describing what happened.
  *
@@ -251,7 +278,13 @@ async function deriveTaskFromSpec(
     slugSuffix++;
   }
 
-  // Build task input with depends_on
+  // Generate implementation notes from spec
+  const noteContent = generateImplementationNotes(specItem);
+  const initialNotes = noteContent
+    ? [createNote(`Implementation notes (auto-generated from spec):\n\n${noteContent}`, '@kspec-derive')]
+    : [];
+
+  // Build task input with depends_on and initial notes
   const taskInput: TaskInput = {
     title: `Implement: ${specItem.title}`,
     type: 'task',
@@ -261,6 +294,7 @@ async function deriveTaskFromSpec(
     slugs: [slug],
     tags: [...(specItem.tags || [])],
     depends_on: options.dependsOn || [],
+    notes: initialNotes,
   };
 
   // Dry run - don't actually create
