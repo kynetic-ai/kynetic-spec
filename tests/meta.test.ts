@@ -1781,3 +1781,158 @@ describe('Integration: meta focus', () => {
     expect(sessionOutput).toContain('Focus: @test-feature');
   });
 });
+
+describe('Integration: meta thread', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @meta-thread-cmd - list action
+  it('should show no threads when none exist', () => {
+    const output = kspec('meta thread list', tempDir);
+    expect(output).toContain('No active threads');
+  });
+
+  // AC: @meta-thread-cmd - add action
+  it('should add a thread', () => {
+    const output = kspec('meta thread add "Implement feature X"', tempDir);
+    expect(output).toContain('Added thread: Implement feature X');
+  });
+
+  // AC: @meta-thread-cmd - list action
+  it('should list all threads', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta thread add "Thread 2"', tempDir);
+    kspec('meta thread add "Thread 3"', tempDir);
+
+    const output = kspec('meta thread list', tempDir);
+    expect(output).toContain('Active threads:');
+    expect(output).toContain('1. Thread 1');
+    expect(output).toContain('2. Thread 2');
+    expect(output).toContain('3. Thread 3');
+  });
+
+  // AC: @meta-thread-cmd - remove action
+  it('should remove a thread by index', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta thread add "Thread 2"', tempDir);
+    kspec('meta thread add "Thread 3"', tempDir);
+
+    const output = kspec('meta thread remove 2', tempDir);
+    expect(output).toContain('Removed thread: Thread 2');
+
+    const listOutput = kspec('meta thread list', tempDir);
+    expect(listOutput).toContain('Thread 1');
+    expect(listOutput).not.toContain('Thread 2');
+    expect(listOutput).toContain('Thread 3');
+  });
+
+  // AC: @meta-thread-cmd - clear action
+  it('should clear all threads', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta thread add "Thread 2"', tempDir);
+
+    const output = kspec('meta thread clear', tempDir);
+    expect(output).toContain('Cleared all threads');
+
+    const listOutput = kspec('meta thread list', tempDir);
+    expect(listOutput).toContain('No active threads');
+  });
+
+  // AC: @meta-thread-cmd - JSON output
+  it('should support JSON output for list', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta thread add "Thread 2"', tempDir);
+
+    const data = kspecJson<{ threads: string[] }>('meta thread list', tempDir);
+    expect(data.threads).toEqual(['Thread 1', 'Thread 2']);
+  });
+
+  // AC: @meta-thread-cmd - JSON output
+  it('should support JSON output for add', () => {
+    const data = kspecJson<{ threads: string[]; added: string }>(
+      'meta thread add "New thread"',
+      tempDir
+    );
+    expect(data.added).toBe('New thread');
+    expect(data.threads).toContain('New thread');
+  });
+
+  // AC: @meta-thread-cmd - JSON output
+  it('should support JSON output for remove', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta thread add "Thread 2"', tempDir);
+
+    const data = kspecJson<{ threads: string[]; removed: string }>(
+      'meta thread remove 1',
+      tempDir
+    );
+    expect(data.removed).toBe('Thread 1');
+    expect(data.threads).toEqual(['Thread 2']);
+  });
+
+  // AC: @meta-thread-cmd - JSON output
+  it('should support JSON output for clear', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+
+    const data = kspecJson<{ threads: string[] }>('meta thread clear', tempDir);
+    expect(data.threads).toEqual([]);
+  });
+
+  it('should persist threads across command invocations', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+
+    // Run a different command
+    kspec('tasks ready', tempDir);
+
+    // Threads should still be set
+    const data = kspecJson<{ threads: string[] }>('meta thread list', tempDir);
+    expect(data.threads).toEqual(['Thread 1']);
+  });
+
+  it('should error when adding without text', () => {
+    try {
+      kspec('meta thread add', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Thread text is required');
+    }
+  });
+
+  it('should error when removing without index', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+
+    try {
+      kspec('meta thread remove', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Index is required');
+    }
+  });
+
+  it('should error when removing invalid index', () => {
+    kspec('meta thread add "Thread 1"', tempDir);
+
+    try {
+      kspec('meta thread remove 5', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Invalid index');
+    }
+  });
+
+  it('should error on unknown action', () => {
+    try {
+      kspec('meta thread unknown', tempDir);
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Unknown action');
+    }
+  });
+});

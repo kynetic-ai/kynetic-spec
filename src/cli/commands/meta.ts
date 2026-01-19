@@ -1314,4 +1314,98 @@ export function registerMetaCommands(program: Command): void {
         process.exit(1);
       }
     });
+
+  // meta-thread-cmd: kspec meta thread <action> [text]
+  meta
+    .command('thread <action> [text]')
+    .description('Manage active threads')
+    .action(async (action: string, text: string | undefined) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(1);
+        }
+
+        const sessionCtx = await loadSessionContext(ctx);
+
+        // List threads
+        if (action === 'list') {
+          output(
+            { threads: sessionCtx.threads },
+            () => {
+              if (sessionCtx.threads.length === 0) {
+                console.log(chalk.yellow('No active threads'));
+              } else {
+                console.log('Active threads:');
+                sessionCtx.threads.forEach((thread, idx) => {
+                  console.log(`  ${idx + 1}. ${thread}`);
+                });
+              }
+            }
+          );
+          return;
+        }
+
+        // Clear all threads
+        if (action === 'clear') {
+          sessionCtx.threads = [];
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { threads: [] },
+            () => success('Cleared all threads')
+          );
+          return;
+        }
+
+        // Add thread
+        if (action === 'add') {
+          if (!text) {
+            error('Thread text is required for add action');
+            process.exit(1);
+          }
+
+          sessionCtx.threads.push(text);
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { threads: sessionCtx.threads, added: text },
+            () => success(`Added thread: ${text}`)
+          );
+          return;
+        }
+
+        // Remove thread by index (1-based)
+        if (action === 'remove') {
+          if (!text) {
+            error('Index is required for remove action');
+            process.exit(1);
+          }
+
+          const index = parseInt(text, 10);
+          if (isNaN(index) || index < 1 || index > sessionCtx.threads.length) {
+            error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.threads.length}`);
+            process.exit(1);
+          }
+
+          const removed = sessionCtx.threads.splice(index - 1, 1)[0];
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            { threads: sessionCtx.threads, removed },
+            () => success(`Removed thread: ${removed}`)
+          );
+          return;
+        }
+
+        // Unknown action
+        error(`Unknown action: ${action}. Use add, remove, list, or clear`);
+        process.exit(1);
+      } catch (err) {
+        error(errors.failures.updateSessionContext, err);
+        process.exit(1);
+      }
+    });
 }
