@@ -935,3 +935,7 @@ features:
             given: user runs 'kspec item trait add @spec @trait'
             when: spec already has that trait
             then: no duplicate added (idempotent operation)
+          - id: ac-7
+            given: user runs 'kspec item trait add @spec @trait'
+            when: trait doesn't exist
+            then: error with descriptive message
