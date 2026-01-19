@@ -701,3 +701,7 @@ requirements:
         given: a new task is created
         when: no automation value is specified
         then: the task has no automation field (treated as unassessed)
+      - id: ac-3
+        given: ralph is selecting tasks
+        when: filtering ready tasks
+        then: "only tasks with automation: eligible are presented to the agent"
