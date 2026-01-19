@@ -459,9 +459,9 @@ export function registerRalphCommand(program: Command): void {
             }
 
             if (succeeded) {
+              console.log(); // Newline after streaming output
               success(`Completed iteration ${iteration}`);
               consecutiveFailures = 0;
-              console.log(); // Newline after streaming output
             } else {
               consecutiveFailures++;
               error(errors.failures.iterationFailedAfterRetries(iteration, maxRetries, consecutiveFailures, maxFailures));
