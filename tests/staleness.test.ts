@@ -49,7 +49,7 @@ tasks:
     // Create a spec module
     await fs.writeFile(
       path.join(specDir, 'module.yaml'),
-      `- _ulid: 01TEST000000000000000000001
+      `- _ulid: 01JHNKAB01TESTSPEC00000001
   slugs:
     - test-feature
   title: Test Feature
@@ -63,18 +63,18 @@ tasks:
     await fs.writeFile(
       path.join(specDir, 'test.tasks.yaml'),
       `tasks:
-  - _ulid: 01TASK000000000000000000001
+  - _ulid: 01JHNKAB01TASK100000000001
     slugs:
       - task-dep-1
     title: Dependency Task 1
     status: completed
     spec_ref: "@test-feature"
-  - _ulid: 01TASK000000000000000000002
+  - _ulid: 01JHNKAB01TASK200000000002
     slugs:
       - task-dep-2
     title: Dependency Task 2
     status: completed
-  - _ulid: 01TASK000000000000000000003
+  - _ulid: 01JHNKAB01TASK300000000003
     slugs:
       - task-parent
     title: Parent Task
@@ -118,7 +118,7 @@ tasks:
     // Create a spec marked as implemented
     await fs.writeFile(
       path.join(specDir, 'module.yaml'),
-      `- _ulid: 01TEST000000000000000000001
+      `- _ulid: 01JHNKAB01SPEC0000000000A1
   slugs:
     - orphan-spec
   title: Orphan Spec
@@ -132,7 +132,7 @@ tasks:
     await fs.writeFile(
       path.join(specDir, 'test.tasks.yaml'),
       `tasks:
-  - _ulid: 01TASK000000000000000000001
+  - _ulid: 01JHNKAB01TASK0000000000A1
     slugs:
       - unrelated-task
     title: Unrelated Task
@@ -173,7 +173,7 @@ tasks:
     // Create a spec marked as not_started
     await fs.writeFile(
       path.join(specDir, 'module.yaml'),
-      `- _ulid: 01TEST000000000000000000001
+      `- _ulid: 01JHNKAB01SPEC0000000000A1
   slugs:
     - stale-spec
   title: Stale Spec
@@ -187,7 +187,7 @@ tasks:
     await fs.writeFile(
       path.join(specDir, 'test.tasks.yaml'),
       `tasks:
-  - _ulid: 01TASK000000000000000000001
+  - _ulid: 01JHNKAB01TASK0000000000A1
     slugs:
       - completed-task
     title: Completed Task
@@ -230,7 +230,7 @@ tasks:
     // Create a spec marked as not_started
     await fs.writeFile(
       path.join(specDir, 'module.yaml'),
-      `- _ulid: 01TEST000000000000000000001
+      `- _ulid: 01JHNKAB01SPEC0000000000A1
   slugs:
     - stale-spec
   title: Stale Spec
@@ -244,7 +244,7 @@ tasks:
     await fs.writeFile(
       path.join(specDir, 'test.tasks.yaml'),
       `tasks:
-  - _ulid: 01TASK000000000000000000001
+  - _ulid: 01JHNKAB01TASK0000000000A1
     slugs:
       - completed-task
     title: Completed Task
@@ -294,7 +294,7 @@ tasks:
     // Create a spec marked as not_started
     await fs.writeFile(
       path.join(specDir, 'module.yaml'),
-      `- _ulid: 01TEST000000000000000000001
+      `- _ulid: 01JHNKAB01SPEC0000000000A1
   slugs:
     - stale-spec
   title: Stale Spec
@@ -308,7 +308,7 @@ tasks:
     await fs.writeFile(
       path.join(specDir, 'test.tasks.yaml'),
       `tasks:
-  - _ulid: 01TASK000000000000000000001
+  - _ulid: 01JHNKAB01TASK0000000000A1
     slugs:
       - completed-task
     title: Completed Task
@@ -366,7 +366,7 @@ tasks:
     // Create a spec marked as implemented
     await fs.writeFile(
       path.join(specDir, 'module.yaml'),
-      `- _ulid: 01TEST000000000000000000001
+      `- _ulid: 01JHNKAB01SPEC0000000000A1
   slugs:
     - aligned-spec
   title: Aligned Spec
@@ -380,7 +380,7 @@ tasks:
     await fs.writeFile(
       path.join(specDir, 'test.tasks.yaml'),
       `tasks:
-  - _ulid: 01TASK000000000000000000001
+  - _ulid: 01JHNKAB01TASK0000000000A1
     slugs:
       - aligned-task
     title: Aligned Task
