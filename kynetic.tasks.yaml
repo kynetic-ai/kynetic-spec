@@ -487,6 +487,7 @@ tasks:
     derivation: manual
     status: completed
     blocked_by: []
+    closed_reason: Implemented deprecation warnings in reference validation with full test coverage
     depends_on:
       - '@task-ref-validation'
     context: []
@@ -499,6 +500,7 @@ tasks:
     vcs_refs: []
     created_at: '2026-01-15T03:58:00.000Z'
     started_at: '2026-01-18T07:23:07.151Z'
+    completed_at: '2026-01-18T07:23:07.151Z'
     notes:
       - _ulid: 01KF7ZBSG8XMZ63HS2553N0DV1
         created_at: '2026-01-18T07:15:57.576Z'
@@ -544,8 +546,6 @@ tasks:
           All tests pass (432 tests). Feature works correctly when running 'kspec validate --refs'.
         supersedes: null
     todos: []
-    completed_at: '2026-01-18T07:23:07.151Z'
-    closed_reason: Implemented deprecation warnings in reference validation with full test coverage
   - _ulid: 01JHNKAB12TASK320000000000
     slugs:
       - task-validation-output
@@ -1159,7 +1159,7 @@ tasks:
 
       This significantly affects user experience for human-edited files.
     derivation: manual
-    status: pending
+    status: in_progress
     blocked_by: []
     depends_on:
       - '@task-fix-write-location'
@@ -1173,6 +1173,7 @@ tasks:
     created_at: '2026-01-14T22:20:00Z'
     notes: []
     todos: []
+    started_at: '2026-01-19T10:09:21.519Z'
   - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3N
     slugs:
       - task-meta-spec
