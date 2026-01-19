@@ -780,3 +780,8 @@ features:
         tests: []
         notes: []
         created: 2026-01-19T21:07:03.467Z
+        acceptance_criteria:
+          - id: ac-1
+            given: spec item
+            when: traits field contains refs
+            then: refs must resolve to trait-type items
