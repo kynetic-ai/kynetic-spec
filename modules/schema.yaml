@@ -749,3 +749,8 @@ features:
         tests: []
         notes: []
         created: 2026-01-19T21:06:34.572Z
+        acceptance_criteria:
+          - id: ac-1
+            given: trait item created
+            when: type is 'trait'
+            then: accepted by schema validation
