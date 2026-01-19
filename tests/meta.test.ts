@@ -2091,3 +2091,136 @@ describe('Integration: meta question', () => {
     }
   });
 });
+
+describe('Integration: meta context', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @meta-context-cmd - show full session context
+  it('should display full session context with all fields', () => {
+    // Set up some context
+    kspec('meta focus @task-test', tempDir);
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta thread add "Thread 2"', tempDir);
+    kspec('meta question add "Question 1"', tempDir);
+
+    const output = kspec('meta context', tempDir);
+
+    // Should contain headers
+    expect(output).toContain('Session Context');
+    expect(output).toContain('Focus:');
+    expect(output).toContain('Active Threads:');
+    expect(output).toContain('Open Questions:');
+    expect(output).toContain('Last Updated:');
+
+    // Should contain the data
+    expect(output).toContain('@task-test');
+    expect(output).toContain('Thread 1');
+    expect(output).toContain('Thread 2');
+    expect(output).toContain('Question 1');
+  });
+
+  // AC: @meta-context-cmd - show empty context gracefully
+  it('should show (none) for empty context fields', () => {
+    const output = kspec('meta context', tempDir);
+
+    // Should show (none) for empty fields
+    expect(output).toContain('(none)');
+    expect(output).toContain('Focus:');
+    expect(output).toContain('Active Threads:');
+    expect(output).toContain('Open Questions:');
+  });
+
+  // AC: @meta-context-cmd - JSON output
+  it('should output JSON with all context fields', () => {
+    // Set up some context
+    kspec('meta focus @task-test', tempDir);
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta question add "Question 1"', tempDir);
+
+    interface ContextJson {
+      focus: string | null;
+      threads: string[];
+      open_questions: string[];
+      updated_at: string;
+    }
+
+    const data = kspecJson<ContextJson>('meta context', tempDir);
+
+    expect(data.focus).toBe('@task-test');
+    expect(data.threads).toEqual(['Thread 1']);
+    expect(data.open_questions).toEqual(['Question 1']);
+    expect(data.updated_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
+  // AC: @meta-context-cmd - --clear option
+  it('should clear all session context with --clear flag', () => {
+    // Set up some context
+    kspec('meta focus @task-test', tempDir);
+    kspec('meta thread add "Thread 1"', tempDir);
+    kspec('meta question add "Question 1"', tempDir);
+
+    // Clear all context
+    const output = kspec('meta context --clear', tempDir);
+    expect(output).toContain('Cleared all session context');
+
+    // Verify everything is cleared
+    interface ContextJson {
+      focus: string | null;
+      threads: string[];
+      open_questions: string[];
+      updated_at: string;
+    }
+
+    const data = kspecJson<ContextJson>('meta context', tempDir);
+    expect(data.focus).toBeNull();
+    expect(data.threads).toEqual([]);
+    expect(data.open_questions).toEqual([]);
+  });
+
+  // AC: @meta-context-cmd - --clear with JSON output
+  it('should output cleared context in JSON mode', () => {
+    // Set up some context
+    kspec('meta focus @task-test', tempDir);
+    kspec('meta thread add "Thread 1"', tempDir);
+
+    interface ContextJson {
+      focus: string | null;
+      threads: string[];
+      open_questions: string[];
+      updated_at: string;
+    }
+
+    const data = kspecJson<ContextJson>('meta context --clear', tempDir);
+
+    expect(data.focus).toBeNull();
+    expect(data.threads).toEqual([]);
+    expect(data.open_questions).toEqual([]);
+    expect(data.updated_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
+  // AC: @meta-context-cmd - display with numbered lists
+  it('should display threads and questions with numbered lists', () => {
+    kspec('meta thread add "First thread"', tempDir);
+    kspec('meta thread add "Second thread"', tempDir);
+    kspec('meta thread add "Third thread"', tempDir);
+    kspec('meta question add "First question"', tempDir);
+    kspec('meta question add "Second question"', tempDir);
+
+    const output = kspec('meta context', tempDir);
+
+    // Should have numbered lists
+    expect(output).toContain('1. First thread');
+    expect(output).toContain('2. Second thread');
+    expect(output).toContain('3. Third thread');
+    expect(output).toContain('1. First question');
+    expect(output).toContain('2. Second question');
+  });
+});

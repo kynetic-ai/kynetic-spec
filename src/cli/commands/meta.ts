@@ -1502,4 +1502,92 @@ export function registerMetaCommands(program: Command): void {
         process.exit(1);
       }
     });
+
+  // meta-context-cmd: kspec meta context
+  meta
+    .command('context')
+    .description('Show full session context')
+    .option('--clear', 'Clear all session context')
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(1);
+        }
+
+        const sessionCtx = await loadSessionContext(ctx);
+
+        // Clear all context
+        if (options.clear) {
+          sessionCtx.focus = null;
+          sessionCtx.threads = [];
+          sessionCtx.open_questions = [];
+          await saveSessionContext(ctx, sessionCtx);
+
+          output(
+            {
+              focus: null,
+              threads: [],
+              open_questions: [],
+              updated_at: sessionCtx.updated_at,
+            },
+            () => success('Cleared all session context')
+          );
+          return;
+        }
+
+        // Show full session context
+        output(
+          {
+            focus: sessionCtx.focus,
+            threads: sessionCtx.threads,
+            open_questions: sessionCtx.open_questions,
+            updated_at: sessionCtx.updated_at,
+          },
+          () => {
+            console.log(chalk.bold('Session Context'));
+            console.log(chalk.gray('─'.repeat(60)));
+
+            // Focus
+            console.log(chalk.bold('\nFocus:'));
+            if (sessionCtx.focus) {
+              console.log(`  ${sessionCtx.focus}`);
+            } else {
+              console.log(chalk.gray('  (none)'));
+            }
+
+            // Active threads
+            console.log(chalk.bold('\nActive Threads:'));
+            if (sessionCtx.threads.length > 0) {
+              sessionCtx.threads.forEach((thread, idx) => {
+                console.log(`  ${idx + 1}. ${thread}`);
+              });
+            } else {
+              console.log(chalk.gray('  (none)'));
+            }
+
+            // Open questions
+            console.log(chalk.bold('\nOpen Questions:'));
+            if (sessionCtx.open_questions.length > 0) {
+              sessionCtx.open_questions.forEach((question, idx) => {
+                console.log(`  ${idx + 1}. ${question}`);
+              });
+            } else {
+              console.log(chalk.gray('  (none)'));
+            }
+
+            // Last updated
+            console.log(chalk.bold('\nLast Updated:'));
+            const updatedDate = new Date(sessionCtx.updated_at);
+            console.log(`  ${updatedDate.toISOString()}`);
+            console.log(chalk.gray(`  (${updatedDate.toLocaleString()})`));
+          }
+        );
+      } catch (err) {
+        error(errors.failures.updateSessionContext, err);
+        process.exit(1);
+      }
+    });
 }
