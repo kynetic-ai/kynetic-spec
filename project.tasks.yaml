@@ -10195,24 +10195,81 @@
         - tests/integration/multi-refs.test.ts - Integration tests
       supersedes: null
   todos: []
-- title: Add meta observe --from-inbox command
+- _ulid: 01KFACWSV9475NTYSG9FDJBW7V
+  slugs: []
+  title: Add meta observe --from-inbox command
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - reflection
-    - cli
-    - meta
   description: >-
     meta observe --from-inbox @ref - convert inbox item to observation, preserving content. Useful
     during triage when items were captured in wrong bucket.
-  _ulid: 01KFACWSV9475NTYSG9FDJBW7V
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - reflection
+    - cli
+    - meta
   vcs_refs: []
   created_at: '2026-01-19T05:50:55.336Z'
-  notes: []
+  notes:
+    - _ulid: 01KFACX65YAK4MYR5GTPT3AK4D
+      created_at: '2026-01-19T05:51:07.966Z'
+      author: '@claude'
+      content: >-
+        Command: kspec meta observe --from-inbox @inbox-ref
+
+
+        **Purpose:** Convert an inbox item to an observation, preserving content. Useful during
+        triage when items were captured in the wrong bucket (should have been observation, not
+        inbox).
+
+
+        **Behavior:**
+
+        1. Resolve @inbox-ref to inbox item
+
+        2. Create new observation with:
+           - type: inferred from content or default to 'idea'
+           - content: inbox item text
+           - author: original inbox item author
+        3. Delete the inbox item
+
+        4. Output: Show created observation ref
+
+
+        **CLI signature:**
+
+        kspec meta observe --from-inbox <ref> [--type <type>]
+
+
+        Where --type is optional override (friction|success|question|idea). If not provided, default
+        to 'idea'.
+
+
+        **Error cases:**
+
+        - Ref not found in inbox: exit 3 with 'Inbox item not found: @ref'
+
+        - Invalid --type value: exit 3 with 'Invalid observation type. Must be: friction, success,
+        question, idea'
+
+
+        **File to modify:** src/cli/commands/meta.ts
+
+
+        **Implementation:**
+
+        - Add --from-inbox option to existing 'observe' command
+
+        - When --from-inbox is provided, ignore positional <type> argument
+
+        - Load inbox, resolve ref, get item content
+
+        - Call existing observation creation logic
+
+        - Delete inbox item after observation created successfully
+      supersedes: null
   todos: []
