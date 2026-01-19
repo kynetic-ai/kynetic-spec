@@ -571,3 +571,18 @@ features:
     relates_to: []
     tests: []
     created: '2026-01-19T03:25:25.371Z'
+    requirements:
+      - _ulid: 01KFA4JN8597CWFW7CTNE4T6A9
+        slugs:
+          - alignment-auto-sync
+        title: Automatic Spec Status Synchronization
+        type: requirement
+        tags: []
+        description: >-
+          When tasks referencing a spec item change state (start, complete, cancel), the spec's
+          implementation status automatically updates to reflect progress.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-19T03:25:34.341Z'
