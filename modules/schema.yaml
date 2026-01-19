@@ -622,3 +622,17 @@ features:
             given: A task has spec_ref field
             when: getSpecForTask(taskUlid, refIndex) is called
             then: Returns the LoadedSpecItem that task implements
+      - _ulid: 01KFA4KTKFC1JW1F4002Q58VT9
+        slugs:
+          - alignment-warnings
+        title: Alignment Validation and Warnings
+        type: requirement
+        tags: []
+        description: >-
+          Detect and report alignment issues: orphaned specs (no tasks), status mismatches (spec
+          status doesn't match task progress), and stale implementation status.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        created: '2026-01-19T03:26:12.591Z'
