@@ -1318,11 +1318,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1578,6 +1580,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1693,6 +1696,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12893,15 +12897,21 @@
         - Constraints: Agents can't mark eligible (human only), needs_review requires note
       supersedes: null
   todos: []
-- title: "Implement: Spec Traits System"
+- _ulid: 01KFC1GKGFBGKAVP1PKWCR7G02
+  slugs:
+    - task-spec-traits-system
+  title: "Implement: Spec Traits System"
   type: task
   spec_ref: "@spec-traits"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-spec-traits-system
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T21:10:30.159Z
   notes:
     - _ulid: 01KFC1GKGF9JKCWXQK4TV1RF29
       created_at: 2026-01-19T21:10:30.159Z
@@ -12915,10 +12925,47 @@
         implement, and validation checks that all trait AC have test coverage. Display shows
         inherited trait AC inline when viewing specs or tasks.
       supersedes: null
-  _ulid: 01KFC1GKGFBGKAVP1PKWCR7G02
+  todos: []
+- title: "Implement: Trait Type"
+  type: task
+  spec_ref: "@trait-type"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-trait-type
+  tags: []
+  depends_on:
+    - "@task-spec-traits-system"
+  notes:
+    - _ulid: 01KFC1GKMKTZH0QC4HT8Y3N3YJ
+      created_at: 2026-01-19T21:10:30.291Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Spec items can have type: trait to define reusable acceptance criteria bundles. Traits are
+        validated for completeness (should have AC and description).
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given trait item created, when type is 'trait', then accepted by schema validation
+
+        - ac-2: Given trait item exists, when missing acceptance_criteria, then validation emits
+        completeness warning
+
+        - ac-3: Given trait item exists, when missing description, then validation emits
+        completeness warning
+
+        - ac-4: Given non-trait item type (feature, requirement), when has traits field, then
+        accepted by schema (traits can be implemented by any item type)
+      supersedes: null
+  _ulid: 01KFC1GKMKN61T9J9XAP6QCEH2
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-19T21:10:30.159Z
+  created_at: 2026-01-19T21:10:30.291Z
   todos: []
