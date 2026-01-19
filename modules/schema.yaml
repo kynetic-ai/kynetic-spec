@@ -148,17 +148,29 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
+        description: |-
           status.maturity tracks spec content stability:
 
           - draft: Initial capture, may change significantly
           - proposed: Ready for review, seeking approval
           - stable: Approved, changes require process
+          - deferred: Intentionally postponed, not abandoned
           - deprecated: Superseded or no longer relevant
 
           Lifecycle: draft -> proposed -> stable -> deprecated
+                      draft -> deferred (for stub specs)
+                      deferred -> draft (when resuming work)
         implements:
           - '@status-lifecycle'
+        acceptance_criteria:
+          - id: ac-1
+            given: 'a spec item with maturity: deferred'
+            when: viewing or filtering items
+            then: the deferred status is recognized and displayed correctly
+          - id: ac-2
+            given: creating or updating a spec item
+            when: setting maturity to deferred
+            then: the value is accepted and persisted
       - _ulid: 01JHNKA2W2STAT200000000000
         slugs:
           - implementation-states
