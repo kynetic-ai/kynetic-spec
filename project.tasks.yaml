@@ -10216,6 +10216,7 @@
     - dx
   vcs_refs: []
   created_at: '2026-01-19T05:44:31.097Z'
+  started_at: '2026-01-19T07:23:12.186Z'
   notes:
     - _ulid: 01KFACHE0N13A1RX8C4YNWEERF
       created_at: '2026-01-19T05:44:42.773Z'
@@ -10397,8 +10398,36 @@
         - tests/refs.test.ts - Unit tests for resolveMultiple()
         - tests/integration/multi-refs.test.ts - Integration tests
       supersedes: null
+    - _ulid: 01KFAJ780EBKCDBZGG216GSJBP
+      created_at: '2026-01-19T07:24:00.399Z'
+      author: '@claude'
+      content: |-
+        Explored current command structure. Key findings:
+
+        Commands to update (7 total):
+        - task complete, cancel, set, delete
+        - item set, delete  
+        - inbox delete
+
+        Current pattern:
+        - All use positional <ref> parameter
+        - All call resolveTaskRef/resolveItemRef to resolve refs
+        - All have their own error handling and output logic
+        - Complete/cancel have options like --reason
+        - Delete has --force and --dry-run
+        - Set has various field-specific options
+
+        Design approach:
+        - Create shared batchOperation utility that handles:
+          - --refs flag parsing
+          - Mutual exclusion check (positional vs --refs)
+          - Per-ref resolution and operation execution
+          - Partial failure tracking
+          - Unified output (human + JSON)
+        - Each command wraps its single-ref logic in batch-compatible form
+        - Maintain backward compatibility with positional ref
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T07:23:12.186Z'
 - _ulid: 01KFACWSV9475NTYSG9FDJBW7V
   slugs: []
   title: Add meta observe --from-inbox command
