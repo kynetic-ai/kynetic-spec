@@ -896,3 +896,17 @@ features:
             given: trait deleted
             when: spec still references it
             then: validation reports broken ref error
+      - _ulid: 01KFC1E178WYP06TTVGY12VVE4
+        slugs:
+          - trait-cli
+        title: Trait CLI Commands
+        type: requirement
+        tags: []
+        description: "CLI commands for managing traits: creating traits, listing traits, and adding/removing
+          traits from specs."
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-19T21:09:05.896Z
