@@ -1086,4 +1086,15 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAPKVHCJGKTVM1690P8P8CF
+    type: success
+    content: >-
+      Passthrough args implementation pattern - When adding passthrough args to CLI commands that
+      normally parse output, create separate raw output path. Trying to parse structured output with
+      custom format flags breaks. Used searchCommitsRaw() for raw git output when
+      passthroughArgs.length > 0, avoiding format conflicts.
+    created_at: '2026-01-19T08:40:47.917Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
