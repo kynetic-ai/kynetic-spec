@@ -741,3 +741,7 @@ requirements:
         given: a user wants to clear automation status
         when: running kspec task set @ref --automation none (or --no-automation)
         then: the task's automation field is removed (returns to unassessed)
+      - id: ac-13
+        given: a task is created via kspec task add
+        when: the --automation flag is provided
+        then: the task is created with the specified automation value
