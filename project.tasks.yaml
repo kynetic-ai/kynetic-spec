@@ -9587,6 +9587,22 @@
         This eliminates the manual 'kspec task note' step mentioned in CLAUDE.md and spec-plan
         workflow.
       supersedes: null
+    - _ulid: 01KFADN60MB7PV4X3M0VPMQPJN
+      created_at: '2026-01-19T06:04:14.228Z'
+      author: '@claude'
+      content: |-
+        Completed: Implemented automatic implementation notes when deriving tasks from specs.
+
+        Implementation details:
+        - Added generateImplementationNotes() helper function in derive.ts
+        - Includes spec description (if present)
+        - Includes formatted acceptance criteria summary (if present)
+        - Notes are only added if there's content to include (no empty notes)
+        - Author is set to '@kspec-derive' to indicate auto-generation
+        - Added 3 comprehensive integration tests covering all scenarios
+
+        All 575 tests pass.
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
   slugs: []
