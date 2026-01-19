@@ -9491,6 +9491,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Added 'deferred' maturity status option for stub specs. Schema updated, spec documented with
+    ACs, comprehensive test coverage (unit + integration). All 572 tests pass.
   depends_on: []
   context: []
   priority: 3
@@ -9500,6 +9503,7 @@
   vcs_refs: []
   created_at: '2026-01-18T21:39:35.001Z'
   started_at: '2026-01-19T05:17:49.207Z'
+  completed_at: '2026-01-19T05:30:23.626Z'
   notes:
     - _ulid: 01KFAB1TQXXK3SBFKHTPXEP4QX
       created_at: '2026-01-19T05:18:42.942Z'
@@ -9541,10 +9545,6 @@
         abandoned.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T05:30:23.626Z'
-  closed_reason: >-
-    Added 'deferred' maturity status option for stub specs. Schema updated, spec documented with
-    ACs, comprehensive test coverage (unit + integration). All 572 tests pass.
 - _ulid: 01KF9GTEQX0ZCNPT52CA06ME2R
   slugs: []
   title: Add implementation notes when deriving tasks from specs
@@ -9995,4 +9995,23 @@
         Add --description flag to 'inbox promote' command. Allows setting task description during
         promote instead of needing separate 'task note' call after. Streamlines triage workflow.
       supersedes: null
+  todos: []
+- title: 'Implement: Multi-ref batch operations'
+  type: task
+  spec_ref: '@multi-ref-batch'
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-multi-ref-batch-operations
+  tags:
+    - cli
+    - dx
+  depends_on: []
+  _ulid: 01KFACH2KTRWKBDYQARTVBV3QD
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: '2026-01-19T05:44:31.097Z'
+  notes: []
   todos: []
