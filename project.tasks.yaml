@@ -9901,21 +9901,42 @@
   created_at: '2026-01-19T05:22:47.104Z'
   notes: []
   todos: []
-- title: Document ESM symlink fix for contributors
+- _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
+  slugs: []
+  title: Document ESM symlink fix for contributors
+  type: task
+  description: Document ESM symlink realpathSync fix for contributors
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - docs
+    - reflection
+  vcs_refs: []
+  created_at: '2026-01-19T05:22:49.797Z'
+  notes: []
+  todos: []
+- title: Add --description flag to inbox promote
   type: task
   priority: 3
   spec_ref: null
   tags:
-    - docs
     - reflection
-  description: Document ESM symlink realpathSync fix for contributors
-  _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
+    - cli
+    - dx
+  description: >-
+    inbox promote --description flag - add description during promote instead of needing to add note
+    separately after. Preserves workflow continuity.
+  _ulid: 01KFAB9DZ9V095N4XJ0DE164BF
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-19T05:22:49.797Z'
+  created_at: '2026-01-19T05:22:52.009Z'
   notes: []
   todos: []
