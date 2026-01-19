@@ -1325,11 +1325,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1599,6 +1601,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1714,6 +1717,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12949,6 +12953,40 @@
         implement, and validation checks that all trait AC have test coverage. Display shows
         inherited trait AC inline when viewing specs or tasks.
       supersedes: null
+    - _ulid: 01KFC1HA9K4WBJDMSVS0BQHJSC
+      created_at: 2026-01-19T21:10:53.491Z
+      author: "@claude"
+      content: |-
+        Implementation approach from approved plan:
+
+        **Files to modify:**
+        - src/schema/common.ts - Add 'trait' to ItemTypeSchema
+        - src/schema/spec.ts - Add traits: z.array(RefSchema).default([]) to SpecItemSchema
+        - src/parser/traits.ts - NEW: TraitIndex class
+        - src/parser/index.ts - Export TraitIndex
+        - src/parser/validate.ts - Add trait AC coverage to completeness check
+        - src/cli/commands/trait.ts - NEW: trait add, trait list, trait get
+        - src/cli/commands/item.ts - Add item trait add/remove subcommands
+        - src/cli/commands/index.ts - Register trait commands
+        - .kspec/modules/traits.yaml - NEW: Initial trait definitions
+        - .kspec/kynetic.yaml - Add traits.yaml to includes
+
+        **Key design decisions:**
+        - Traits are spec items with type: trait (not meta manifest)
+        - Display-time composition: trait AC shown inline but NOT merged into spec data
+        - AC references are scoped to parent: @trait-ref ac-1 vs @spec ac-1
+        - JSON output includes inherited_traits array with resolved trait info
+
+        **Order:**
+        1. Schema changes (trait type + traits field)
+        2. TraitIndex class
+        3. Parser integration
+        4. Display updates (item get, task get)
+        5. Validation integration
+        6. CLI commands
+        7. Initial traits file
+        8. Tests
+      supersedes: null
   todos: []
 - _ulid: 01KFC1GKMKN61T9J9XAP6QCEH2
   slugs:
@@ -13228,16 +13266,22 @@
         then removes trait from traits array
       supersedes: null
   todos: []
-- title: "Implement: Trait Edge Cases"
+- _ulid: 01KFC1GM9JNBEY4RR4PNHB5VSX
+  slugs:
+    - task-trait-edge-cases
+  title: "Implement: Trait Edge Cases"
   type: task
   spec_ref: "@trait-edge-cases"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-trait-edge-cases
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-spec-traits-system"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-19T21:10:30.962Z
   notes:
     - _ulid: 01KFC1GM9JY304NYM4BWEFQCYS
       created_at: 2026-01-19T21:10:30.962Z
@@ -13265,10 +13309,4 @@
         - ac-4: Given trait list empty, when running 'kspec trait list', then shows 'No traits
         defined' message
       supersedes: null
-  _ulid: 01KFC1GM9JNBEY4RR4PNHB5VSX
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-19T21:10:30.962Z
   todos: []
