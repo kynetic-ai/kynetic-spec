@@ -613,3 +613,8 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-19T03:25:56.664Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: AlignmentIndex is built with tasks and spec items
+            when: getTasksForSpec(specUlid) is called
+            then: Returns array of LoadedTask objects that reference the spec via spec_ref
