@@ -258,3 +258,10 @@ inbox:
       - docs
       - release
     added_by: '@claude'
+  - _ulid: 01KF9WQX8ZAB4F0HBTD790KWHM
+    text: Add setup:dev npm script (install + build + link)
+    created_at: '2026-01-19T01:08:37.791Z'
+    tags:
+      - dx
+      - reflection
+    added_by: '@claude'
