@@ -9883,21 +9883,39 @@
   created_at: '2026-01-19T05:22:43.488Z'
   notes: []
   todos: []
-- title: Add CI test for kspec command
+- _ulid: 01KFAB9960F1YGQQQKFYF3H7ZY
+  slugs: []
+  title: Add CI test for kspec command
+  type: task
+  description: Add CI test that kspec command works after build
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - ci
+    - reflection
+  vcs_refs: []
+  created_at: '2026-01-19T05:22:47.104Z'
+  notes: []
+  todos: []
+- title: Document ESM symlink fix for contributors
   type: task
   priority: 3
   spec_ref: null
   tags:
-    - ci
+    - docs
     - reflection
-  description: Add CI test that kspec command works after build
-  _ulid: 01KFAB9960F1YGQQQKFYF3H7ZY
+  description: Document ESM symlink realpathSync fix for contributors
+  _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: '2026-01-19T05:22:47.104Z'
+  created_at: '2026-01-19T05:22:49.797Z'
   notes: []
   todos: []
