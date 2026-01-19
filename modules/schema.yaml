@@ -910,3 +910,8 @@ features:
         tests: []
         notes: []
         created: 2026-01-19T21:09:05.896Z
+        acceptance_criteria:
+          - id: ac-1
+            given: user runs 'kspec trait add <title>'
+            when: title provided
+            then: "creates trait-type item with type: trait"
