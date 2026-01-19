@@ -10037,6 +10037,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Added setup:dev npm script. Script runs: npm install && npm run build && npm link. Tested
+    successfully. Simplifies contributor onboarding to a single command.
   depends_on: []
   context: []
   priority: 3
@@ -10046,6 +10049,7 @@
   vcs_refs: []
   created_at: '2026-01-19T05:22:43.488Z'
   started_at: '2026-01-19T06:34:51.232Z'
+  completed_at: '2026-01-19T06:35:15.755Z'
   notes:
     - _ulid: 01KFAB9TA7RX0Z1M8ZH81MV9TN
       created_at: '2026-01-19T05:23:04.647Z'
@@ -10055,17 +10059,13 @@
         contributor setup.
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T06:35:15.755Z'
-  closed_reason: >-
-    Added setup:dev npm script. Script runs: npm install && npm run build && npm link. Tested
-    successfully. Simplifies contributor onboarding to a single command.
 - _ulid: 01KFAB9960F1YGQQQKFYF3H7ZY
   slugs: []
   title: Add CI test for kspec command
   type: task
   description: Add CI test that kspec command works after build
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -10084,6 +10084,7 @@
         built CLI is functional. Catches build issues that pass tsc but fail at runtime.
       supersedes: null
   todos: []
+  started_at: '2026-01-19T06:49:43.620Z'
 - _ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
   slugs: []
   title: Document ESM symlink fix for contributors
