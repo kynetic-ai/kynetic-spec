@@ -1,5 +1,7 @@
 import { Command } from 'commander';
 import { ulid } from 'ulid';
+import chalk from 'chalk';
+import * as path from 'node:path';
 import {
   initContext,
   loadAllTasks,
