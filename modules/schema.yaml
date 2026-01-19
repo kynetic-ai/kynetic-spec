@@ -965,3 +965,7 @@ features:
             given: "circular trait reference (trait A has traits: [@trait-B], trait B has traits: [@trait-A])"
             when: loading or validating
             then: error reported (cycles not allowed in traits field)
+          - id: ac-3
+            given: spec implements trait that gets deleted
+            when: validating
+            then: broken ref error reported
