@@ -11092,6 +11092,7 @@
     - cli
   vcs_refs: []
   created_at: '2026-01-19T05:58:55.286Z'
+  started_at: '2026-01-19T08:52:36.127Z'
   notes:
     - _ulid: 01KFADBVQ9E3DQ0PDJTTCGT6CV
       created_at: '2026-01-19T05:59:08.778Z'
@@ -11186,8 +11187,37 @@
 
         **Call site:** At start of setup command handler, before other setup logic.
       supersedes: null
+    - _ulid: 01KFAQKD03V8HC0BV4FEMEN7HH
+      created_at: '2026-01-19T08:58:01.603Z'
+      author: '@claude'
+      content: >-
+        Implemented worktree detection for kspec setup command.
+
+
+        Implementation:
+
+        - Added ensureWorktree() function that detects kspec-meta branch without .kspec worktree
+
+        - Uses repairShadow() from shadow module to create worktree when needed
+
+        - Added promptYesNo() utility for user confirmation
+
+        - Added --auto-worktree CLI flag to skip prompting
+
+
+        Test coverage:
+
+        - AC: worktree-already-exists - skips creation when worktree is valid
+
+        - AC: auto-worktree-flag - automatically creates worktree with --auto-worktree
+
+        - AC: detect-existing-repo - prompts user when branch exists but worktree missing
+
+
+        All 3 new tests passing. Full test suite: 600 passed, 2 pre-existing failures in batch
+        operations tests (unrelated to this change).
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T08:52:36.127Z'
 - _ulid: 01KFADD78BS8EARJHSXXBRM9W8
   slugs:
     - task-semantic-exit-codes
