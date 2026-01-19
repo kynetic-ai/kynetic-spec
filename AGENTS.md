@@ -565,6 +565,34 @@ If an issue can't be fixed in the current PR:
 2. Create a task or inbox item to track it
 3. Get explicit user approval to merge with known issues
 
+### Local Review Subagents
+
+When spawning a subagent to review your work before creating a PR, instruct it to be **strict** about:
+
+1. **AC Coverage** - Every acceptance criterion MUST have at least one test that validates it
+   - Missing AC coverage is a **blocking issue**, not a suggestion
+   - Use `// AC: @spec-item ac-N` annotations to link tests to criteria
+
+2. **Test Quality** - Tests must actually validate behavior, not just exist
+   - Reject "fluff tests" that don't meaningfully verify the AC
+   - A test that always passes or tests implementation details is not valid coverage
+   - Tests should fail if the feature breaks
+
+3. **What to Check**
+   - Read the linked spec and its acceptance criteria
+   - Verify each AC has corresponding test(s)
+   - Verify tests would catch regressions
+   - Flag any AC without proper test coverage as MUST-FIX
+
+Example prompt for review subagent:
+```
+Review this implementation against the spec @spec-ref. Be strict:
+- Every AC must have test coverage with // AC: annotation
+- Missing tests are blocking issues, not suggestions
+- Verify tests actually validate the behavior, not fluff
+- List any ACs without proper coverage as MUST-FIX
+```
+
 ## Code Annotations
 
 Link code to acceptance criteria using this pattern:
