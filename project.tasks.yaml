@@ -11084,6 +11084,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Implemented all 3 acceptance criteria for kspec setup worktree detection. Added ensureWorktree()
+    function, --auto-worktree flag, and comprehensive test coverage. All tests passing.
   depends_on: []
   context: []
   priority: 3
@@ -11093,6 +11096,7 @@
   vcs_refs: []
   created_at: '2026-01-19T05:58:55.286Z'
   started_at: '2026-01-19T08:52:36.127Z'
+  completed_at: '2026-01-19T08:58:08.180Z'
   notes:
     - _ulid: 01KFADBVQ9E3DQ0PDJTTCGT6CV
       created_at: '2026-01-19T05:59:08.778Z'
@@ -11218,10 +11222,6 @@
         operations tests (unrelated to this change).
       supersedes: null
   todos: []
-  completed_at: '2026-01-19T08:58:08.180Z'
-  closed_reason: >-
-    Implemented all 3 acceptance criteria for kspec setup worktree detection. Added ensureWorktree()
-    function, --auto-worktree flag, and comprehensive test coverage. All tests passing.
 - _ulid: 01KFADD78BS8EARJHSXXBRM9W8
   slugs:
     - task-semantic-exit-codes
@@ -11229,7 +11229,7 @@
   type: task
   spec_ref: '@cli-exit-codes'
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -11315,6 +11315,7 @@
         - Test help --exit-codes output format
       supersedes: null
   todos: []
+  started_at: '2026-01-19T09:10:14.946Z'
 - _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
   slugs:
     - task-stale-status-detection
