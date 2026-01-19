@@ -573,24 +573,40 @@ When spawning a subagent to review your work before creating a PR, instruct it t
    - Missing AC coverage is a **blocking issue**, not a suggestion
    - Use `// AC: @spec-item ac-N` annotations to link tests to criteria
 
-2. **Test Quality** - Tests must actually validate behavior, not just exist
-   - Reject "fluff tests" that don't meaningfully verify the AC
-   - A test that always passes or tests implementation details is not valid coverage
+2. **Test Quality** - All tests must properly validate their intended purpose
+   - AC-specific tests validate acceptance criteria
+   - Non-AC tests are fine if they test something important (edge cases, integrations, etc.)
+   - Reject "fluff tests" - tests that don't meaningfully verify anything
+   - A test that always passes or only tests implementation details is not valid
    - Tests should fail if the feature breaks
 
-3. **What to Check**
+3. **Test Strategy** - Prioritize E2E over unit tests
+   - **Prefer end-to-end tests** that validate actual user functionality
+   - Test the CLI as a user would invoke it, not just internal functions
+   - Unit tests are okay for complex logic, but E2E proves the feature works
+
+4. **Test Isolation** - NEVER test kspec within the kspec repo
+   - All tests MUST run in temp directories (system temp, `/tmp`, etc.)
+   - Manual testing and validation MUST also use temp directories
+   - This prevents nested worktree issues and data corruption
+   - Test fixtures should create isolated test repos, not use the real `.kspec/`
+
+5. **What to Check**
    - Read the linked spec and its acceptance criteria
    - Verify each AC has corresponding test(s)
    - Verify tests would catch regressions
-   - Flag any AC without proper test coverage as MUST-FIX
+   - Verify tests run in temp directories, not kspec repo
+   - Flag any ACs without proper coverage as MUST-FIX
 
 Example prompt for review subagent:
 ```
 Review this implementation against the spec @spec-ref. Be strict:
 - Every AC must have test coverage with // AC: annotation
 - Missing tests are blocking issues, not suggestions
-- Verify tests actually validate the behavior, not fluff
-- List any ACs without proper coverage as MUST-FIX
+- Prioritize E2E tests over unit tests
+- Verify tests run in temp dirs, not kspec repo
+- Reject fluff tests that don't validate real behavior
+- List any issues as MUST-FIX
 ```
 
 ## Code Annotations
