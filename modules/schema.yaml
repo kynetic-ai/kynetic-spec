@@ -661,3 +661,10 @@ features:
         relates_to: []
         tests: []
         created: '2026-01-19T03:26:27.907Z'
+        acceptance_criteria:
+          - id: ac-1
+            given: A spec item exists with linked tasks
+            when: getImplementationSummary(specUlid) is called
+            then: >-
+              Returns SpecImplementationSummary with currentStatus, expectedStatus, linkedTasks
+              array, and isAligned boolean
