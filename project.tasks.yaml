@@ -8486,9 +8486,45 @@
     - ralph
   vcs_refs: []
   created_at: '2026-01-18T20:01:11.098Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T02:21:22.787Z'
+  notes:
+    - _ulid: 01KFA0YC53EHVWVNVSQEEE3T67
+      created_at: '2026-01-19T02:22:03.939Z'
+      author: '@claude'
+      content: >-
+        Analyzed ralph and session storage code. The task is to save the session context snapshot
+        (the full SessionContext object passed in the prompt) after each iteration completes.
+
+
+        Current state:
+
+        - ralph.ts gathers SessionContext using gatherSessionContext() at line 332
+
+        - Session events are already logged to sessions/{id}/events.jsonl
+
+        - Session metadata is stored in sessions/{id}/session.yaml  
+
+        - But the full context snapshot itself is NOT persisted
+
+
+        Plan:
+
+        1. Add a new file in session directory: context-{iteration}.json
+
+        2. After each successful iteration, save the SessionContext to this file
+
+        3. This creates an audit trail of what context the agent saw at each iteration
+
+
+        Implementation approach:
+
+        - Add saveSessionContext() function to sessions/store.ts
+
+        - Call it in ralph.ts after iteration succeeds, before moving to next
+
+        - File naming: context-iter-{N}.json for clarity
+      supersedes: null
+  todos: []
 - _ulid: 01KF9C1EVJGF7W9AN8M7Q3CTCP
   slugs: []
   title: Design agent-first CLI spec improvements
