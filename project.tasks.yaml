@@ -8327,9 +8327,53 @@
     - debt
   vcs_refs: []
   created_at: '2026-01-18T20:00:38.313Z'
-  notes: []
-  todos: []
   started_at: '2026-01-19T03:23:27.556Z'
+  notes:
+    - _ulid: 01KFA4GVVTKWTQDS0RG9DTZEM4
+      created_at: '2026-01-19T03:24:35.579Z'
+      author: '@claude'
+      content: >-
+        Initial survey of alignment system:
+
+
+        IMPLEMENTED FEATURES (from src/parser/alignment.ts):
+
+        1. AlignmentIndex class - bidirectional spec<->task mapping
+
+        2. Automatic status calculation (not_started, in_progress, implemented) based on linked task
+        states
+
+        3. syncSpecImplementationStatus() - auto-updates spec.status.implementation when tasks
+        change
+
+        4. Alignment warnings: orphaned_spec, status_mismatch, stale_implementation
+
+        5. Implementation summaries per spec item
+
+        6. Stats tracking (totalSpecs, specsWithTasks, alignedSpecs, orphanedSpecs)
+
+
+        CURRENT USAGE:
+
+        - task start/complete: calls syncSpecImplementationStatus()
+
+        - validate command: uses AlignmentIndex for alignment checks
+
+        - item get: shows implementation summary with linked tasks
+
+        - derive: uses AlignmentIndex to check existing tasks
+
+
+        CURRENT SPEC COVERAGE:
+
+        - @alignment-guidance (01KF3H9Z) - only covers AC count reminder in task workflows
+
+        - This is a NARROW slice of what the alignment system does
+
+
+        Next: Identify gaps and create comprehensive spec coverage
+      supersedes: null
+  todos: []
 - _ulid: 01KF9B41KHRT5VDM12JGAGT90B
   slugs: []
   title: Add missing ACs to status-cascade spec
