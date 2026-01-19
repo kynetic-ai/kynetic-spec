@@ -1031,4 +1031,16 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAJSS392ZV47Z373HK29HAM
+    type: success
+    content: >-
+      Batch operation pattern scales well - created reusable executeBatchOperation() utility that
+      handles all common concerns (mutual exclusion, partial failures, output formatting). Applied
+      to 3 commands (complete, cancel, delete) with minimal duplication. Pattern: extract
+      single-item logic into executeOperation callback, utility handles iteration/error collection.
+      Makes adding batch support to new commands straightforward.
+    created_at: '2026-01-19T07:34:07.722Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []

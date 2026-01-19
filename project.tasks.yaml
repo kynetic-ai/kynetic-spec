@@ -10457,6 +10457,45 @@
         2. Apply same pattern to item/inbox commands
         3. Write tests covering all 8 ACs
       supersedes: null
+    - _ulid: 01KFAJVG7S37B6EWX9TXDHTGDZ
+      created_at: '2026-01-19T07:35:04.186Z'
+      author: '@claude'
+      content: >-
+        Session 27 checkpoint - WIP state documented in PR #82
+
+
+        Implementation progress:
+
+        ✅ Core batch.ts utility complete with all error handling
+
+        ✅ task complete, cancel, delete have full batch support
+
+        ✅ All tests passing (578), build succeeds
+
+        ✅ PR created: https://github.com/kynetic-ai/kynetic-spec/pull/82
+
+
+        Next session priorities:
+
+        1. Complete task set batch implementation (started, needs body refactor)
+
+        2. Apply batch pattern to item set/delete commands
+
+        3. Apply batch pattern to inbox delete command
+
+        4. Write integration tests covering all 8 ACs:
+           - Basic multi-ref syntax
+           - Backward compatibility
+           - Mutual exclusion error
+           - Partial failure handling
+           - Human output format
+           - JSON output format
+           - Empty refs error
+           - Ref resolution using existing logic
+
+        The batch.ts utility is well-designed and makes adding batch support straightforward. Each
+        command wraps its single-ref logic in executeOperation callback.
+      supersedes: null
   todos: []
 - _ulid: 01KFACWSV9475NTYSG9FDJBW7V
   slugs: []
