@@ -114,13 +114,156 @@ This shows active work, recently completed tasks, ready tasks, inbox items, and 
 
 ## Session Context
 
-Track focus, threads, and questions to maintain continuity across sessions.
+Track focus, threads, questions, and observations to maintain continuity across sessions.
 
 - **Focus**: What you're working on right now
 - **Threads**: Parallel work streams to track
 - **Questions**: Open questions about the work
+- **Observations**: Patterns, friction, and learnings captured during work
+
+### Example Session Context Commands
+
+```bash
+# Set focus before starting work
+kspec meta focus "Implementing @task-slug"
+
+# Capture friction as you encounter it
+kspec meta observe friction "Command X failed when Y condition..."
+
+# Capture successes for future reference
+kspec meta observe success "Using pattern Z made refactoring much cleaner"
+
+# Track parallel work
+kspec meta thread add "Background: investigating performance issue"
+
+# Capture open questions
+kspec meta question add "Should we support legacy format in v2?"
+```
 
 **For managing session context, run `/meta`.**
+
+## Observations System
+
+Observations capture patterns, learnings, friction, and questions that emerge **during work**. They're different from inbox items - observations document what you noticed, while inbox captures what you might do.
+
+### Observation Types
+
+- **friction**: Things that didn't work, gotchas, blockers, pain points
+- **success**: Patterns that worked well, useful approaches worth replicating
+- **question**: Clarifications needed, process decisions, open questions
+- **idea**: Thoughts that emerge but aren't actionable yet
+
+### When to Use Observations vs Inbox
+
+**Observations** (`kspec meta observe`) - capture during work:
+- "This command failed in X situation" (friction)
+- "Using pattern Y made Z much easier" (success)
+- "Should we handle edge case A?" (question)
+- "Could explore approach B" (idea - not yet scoped)
+
+**Inbox** (`kspec inbox add`) - capture for later:
+- Feature ideas that might become specs/tasks
+- Enhancement suggestions with potential scope
+- Things you want to do but haven't defined
+
+**Key distinction**: Observations are about learning and reflection. Inbox is about potential work.
+
+### Observation Workflow
+
+```bash
+# Capture during work
+kspec meta observe friction "Description of what went wrong..."
+kspec meta observe success "Pattern that worked well..."
+
+# Review later
+kspec meta observations list
+
+# Resolve when addressed
+kspec meta resolve @observation-ref "How it was resolved"
+
+# Promote to task if actionable
+kspec meta promote @observation-ref --title "Task title"
+```
+
+### Triage Routing
+
+When processing items:
+- If tagged `[reflection, ...]` → observation
+- If describes 'what worked' or 'what didn't work' → observation
+- If describes a feature or improvement → inbox
+- If has clear action → promote to task
+
+## Meta Commands Reference
+
+The meta system manages session context, observations, and meta-specifications (agents, workflows, conventions).
+
+### Session Context Commands
+
+```bash
+# Show current context summary
+kspec meta show
+
+# Manage focus (what you're working on now)
+kspec meta focus "Working on @task-slug"
+kspec meta focus --clear
+
+# Manage threads (parallel work streams)
+kspec meta thread add "Background work on feature X"
+kspec meta thread remove 1
+kspec meta thread list
+
+# Manage questions (open questions about work)
+kspec meta question add "Should we support format Y?"
+kspec meta question remove 1
+kspec meta question list
+```
+
+### Observation Lifecycle
+
+```bash
+# Capture observations
+kspec meta observe friction "Description..."
+kspec meta observe success "Pattern that worked..."
+kspec meta observe question "Open question..."
+kspec meta observe idea "Thought to explore..."
+
+# Review observations
+kspec meta observations list
+kspec meta observations list --type friction
+kspec meta observations list --unresolved
+
+# Resolve observations
+kspec meta resolve @obs-ref "Resolution notes"
+
+# Promote to task
+kspec meta promote @obs-ref --title "Task title"
+```
+
+### Meta Items (Agents, Workflows, Conventions)
+
+```bash
+# Browse meta items
+kspec meta agents
+kspec meta workflows
+kspec meta conventions
+
+# CRUD operations
+kspec meta add agent --id agent-name --role "Description"
+kspec meta set @agent-ref --status active
+kspec meta get @agent-ref
+kspec meta delete @agent-ref
+kspec meta list agents
+```
+
+### Context Integration
+
+Meta context persists across sessions:
+- Focus shows in `kspec session start` output
+- Threads track parallel work
+- Questions capture decisions to make
+- Observations feed into reflection and learning
+
+**For detailed workflows, run `/meta`.**
 
 ## Spec-First Development
 
@@ -150,22 +293,41 @@ This flow bridges spec-reality gaps **in the moment** rather than after the fact
 **For systematic triage, run `/triage`.**
 **After plan approval, run `/spec-plan` to translate plan to specs.**
 
-### Inbox (for unclear scope or quick capture)
+### Inbox vs Observations
 
-The inbox is a low-friction capture space for ideas that aren't tasks yet. Use it liberally - the cost of capture is near zero, and good ideas often emerge from rough notes.
+Two capture mechanisms serve different purposes:
+
+**Inbox** (for potential work):
+- Feature ideas that might become specs/tasks
+- Enhancement suggestions
+- Things you want to do but haven't scoped
+- User mentions something that might be worth doing later
+
+**Observations** (for learnings and patterns):
+- Friction encountered during work
+- Patterns that worked well
+- Open questions about approach
+- Ideas that emerged but aren't actionable yet
 
 **Use inbox when:**
 - You have a vague idea but no clear scope
 - Something comes up mid-task that you don't want to forget
-- The user mentions something that might be worth doing later
 - You notice a potential improvement but it's not the current focus
 
-**Skip inbox and create a task directly when:**
+**Use observations when:**
+- You encounter friction or blockers
+- You discover a useful pattern
+- You have questions about process or approach
+- You notice something worth remembering for future work
+
+**Skip both and create a task directly when:**
 - The scope is clear and actionable
 - It's blocking current work
 - The user explicitly asked for it to be done
 
-**Rule of thumb**: If an inbox item survives 3+ triage sessions without action, either promote it with a clear scope or delete it.
+**Rule of thumb**:
+- Inbox items that survive 3+ triage sessions without action should be promoted with clear scope or deleted
+- Observations accumulate as learning - review periodically with `/reflect` to identify patterns
 
 ### Default: Always Confirm
 
