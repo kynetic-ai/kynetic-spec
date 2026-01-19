@@ -1254,11 +1254,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1386,6 +1388,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1501,6 +1504,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -11721,19 +11725,40 @@
         Should use writeYamlFilePreserveFormat() instead for consistent YAML output.
       supersedes: null
   todos: []
-- title: Add completion validation to prevent premature task closure
+- _ulid: 01KFBBSKBCCGR0P5HAVFP6PA9P
+  slugs: []
+  title: Add completion validation to prevent premature task closure
   type: infra
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KFBBSKBCCGR0P5HAVFP6PA9P
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-01-19T14:50:56.235Z
-  notes: []
+  notes:
+    - _ulid: 01KFBBSVAJ24MQEYYB19Z9Q42C
+      created_at: 2026-01-19T14:51:04.402Z
+      author: "@claude"
+      content: >-
+        Retrospective finding: Task 01KFACH2 was marked complete with WIP notes and missing
+        functionality.
+
+
+        Potential validation approaches:
+
+        1. Scan final note for 'WIP', 'TODO', 'still need' patterns and warn
+
+        2. Require explicit AC-by-AC confirmation before completion
+
+        3. Check for unresolved issues mentioned in notes
+
+        4. Require tests passing before completion (if spec has ACs)
+
+
+        The existing task guardrails feature partially addresses this but didn't catch this case.
+      supersedes: null
   todos: []
