@@ -11237,6 +11237,7 @@
   tags: []
   vcs_refs: []
   created_at: '2026-01-19T05:59:53.354Z'
+  started_at: '2026-01-19T09:10:14.946Z'
   notes:
     - _ulid: 01KFADDKAG82HC2SRSVKK3AZMY
       created_at: '2026-01-19T06:00:05.713Z'
@@ -11314,8 +11315,31 @@
         - Integration tests verify specific commands return expected codes
         - Test help --exit-codes output format
       supersedes: null
+    - _ulid: 01KFARGERFFB8PWDW5X4GS15YB
+      created_at: '2026-01-19T09:13:53.679Z'
+      author: '@claude'
+      content: >-
+        Implemented all 3 acceptance criteria for semantic exit codes:
+
+
+        1. exit-code-constants: Created src/cli/exit-codes.ts with EXIT_CODES object containing
+        named constants (SUCCESS=0, ERROR=1, USAGE_ERROR=2, NOT_FOUND=3, VALIDATION_FAILED=4,
+        CONFLICT=5)
+
+
+        2. exit-codes-documented: Added EXIT_CODE_METADATA array documenting each code's meaning and
+        which commands use them. Created 'exit-codes' help topic in src/cli/help/content.ts with
+        full documentation and scripting examples.
+
+
+        3. consistent-usage: Refactored all 18 command files + batch.ts + index.ts to use EXIT_CODES
+        constants instead of magic numbers. Used automated script for bulk replacement, then fixed
+        import paths manually.
+
+
+        All 10 tests passing. Help command works: 'kspec help exit-codes' shows full documentation.
+      supersedes: null
   todos: []
-  started_at: '2026-01-19T09:10:14.946Z'
 - _ulid: 01KFADF9WEDW4APAA3XGSDW67Z
   slugs:
     - task-stale-status-detection
