@@ -49,7 +49,7 @@ features:
           - kspec task start @impl-login
           - kspec tasks ready
         implements:
-          - '@cli-design'
+          - "@cli-design"
       - _ulid: 01KEZCJPHWKVBFSAEP0MMH57DQ
         slugs:
           - cli-json-output
@@ -69,7 +69,7 @@ features:
           - data: The result
           - errors: Array of error objects (if any)
         implements:
-          - '@cli-design'
+          - "@cli-design"
       - _ulid: 01KEZCJPHWB81SAWT4ZGCV75FC
         slugs:
           - cli-exit-codes
@@ -90,14 +90,13 @@ features:
 
           Scripts can handle specific cases.
         implements:
-          - '@cli-design'
+          - "@cli-design"
         acceptance_criteria:
           - id: exit-code-constants
             given: CLI codebase uses exit codes
             when: Commands need to exit with specific code
-            then: >-
-              Uses named constants from a centralized EXIT_CODES object (e.g., EXIT_CODES.NOT_FOUND
-              instead of magic number 3)
+            then: Uses named constants from a centralized EXIT_CODES object (e.g., EXIT_CODES.NOT_FOUND instead
+              of magic number 3)
           - id: exit-codes-documented
             given: User wants to script kspec commands
             when: User runs kspec help --exit-codes or checks documentation
@@ -105,13 +104,12 @@ features:
           - id: consistent-usage
             given: Multiple commands use exit codes
             when: Commands exit with errors
-            then: >-
-              All commands use consistent exit codes for the same error types (e.g., all 'not found'
-              errors exit 3, all validation errors exit 4)
+            then: All commands use consistent exit codes for the same error types (e.g., all 'not found' errors
+              exit 3, all validation errors exit 4)
         notes:
           - _ulid: 01KFADD1NW999DBZJHBDBSPFZM
-            created_at: '2026-01-19T05:59:47.645Z'
-            author: '@claude'
+            created_at: 2026-01-19T05:59:47.645Z
+            author: "@claude"
             content: >-
               Enhancement: Formalize exit code implementation
 
@@ -171,7 +169,7 @@ features:
 
           Agents should be able to use kspec without interaction.
         implements:
-          - '@cli-design'
+          - "@cli-design"
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
@@ -217,7 +215,7 @@ features:
 
           Returns created item (with generated ULID).
         implements:
-          - '@item-commands'
+          - "@item-commands"
       - _ulid: 01KEZCJPHXKYVVP0YWF261A8N3
         slugs:
           - item-get
@@ -235,7 +233,7 @@ features:
 
           Resolves @reference, displays full item.
         implements:
-          - '@item-commands'
+          - "@item-commands"
         acceptance_criteria:
           - id: ac-1
             given: a spec item @login has acceptance criteria
@@ -268,7 +266,7 @@ features:
 
           Returns list of matching items.
         implements:
-          - '@item-commands'
+          - "@item-commands"
       - _ulid: 01KEZCJPHX678F01J6TZE5SX1Q
         slugs:
           - item-set
@@ -295,7 +293,7 @@ features:
 
           Updates item in place and auto-commits to shadow branch.
         implements:
-          - '@item-commands'
+          - "@item-commands"
         acceptance_criteria:
           - id: ac-1
             given: item @my-item exists with slugs ['original']
@@ -308,7 +306,7 @@ features:
           - id: ac-3
             given: item @my-item has only one slug 'only-one'
             when: kspec item set @my-item --remove-slug only-one runs
-            then: 'error: cannot remove last slug'
+            then: "error: cannot remove last slug"
           - id: ac-4
             given: item @my-item exists
             when: kspec item set @my-item --status implemented runs
@@ -330,7 +328,7 @@ features:
 
           Warns if item has references. Consider deprecation instead.
         implements:
-          - '@item-commands'
+          - "@item-commands"
       - _ulid: 01KF374D6206HGMP55HGE8VNAQ
         slugs:
           - item-ac
@@ -356,9 +354,7 @@ features:
           - id: ac-item-ac-add
             given: a spec item exists
             when: kspec item ac add @ref --given "precondition" --when "action" --then "outcome" runs
-            then: >-
-              AC is added with auto-generated ID; outputs "OK Added acceptance criterion: ac-N to
-              @ref"
+            then: 'AC is added with auto-generated ID; outputs "OK Added acceptance criterion: ac-N to @ref"'
           - id: ac-item-ac-add-id
             given: a spec item exists
             when: kspec item ac add @ref --id custom-id --given "..." --when "..." --then "..." runs
@@ -382,9 +378,7 @@ features:
           - id: ac-item-ac-set
             given: a spec item with AC id "ac-1"
             when: kspec item ac set @ref ac-1 --then "new outcome" runs
-            then: >-
-              AC then field is updated; outputs "OK Updated acceptance criterion: ac-1 on @ref
-              (then)"
+            then: 'AC then field is updated; outputs "OK Updated acceptance criterion: ac-1 on @ref (then)"'
           - id: ac-item-ac-set-notfound
             given: a spec item without AC id "ac-99"
             when: kspec item ac set @ref ac-99 --then "..." runs
@@ -397,7 +391,7 @@ features:
             given: a spec item with AC id "ac-1"
             when: kspec item ac remove @ref ac-1 runs (no --force)
             then: prompts for confirmation before removing
-        created: '2026-01-16T10:55:32.034Z'
+        created: 2026-01-16T10:55:32.034Z
         status:
           maturity: draft
           implementation: implemented
@@ -413,7 +407,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T12:57:30.058Z'
+        created: 2026-01-16T12:57:30.058Z
         description: |-
           kspec item patch <ref> [options]
 
@@ -449,7 +443,7 @@ features:
             when: echo '{"title":"New"}' | kspec item patch @my-item runs
             then: stdin JSON is used for update
           - id: ac-4
-            given: '--dry-run flag provided'
+            given: --dry-run flag provided
             when: kspec item patch @my-item --data '{"title":"New"}' --dry-run runs
             then: shows what would change without writing
           - id: ac-5
@@ -479,11 +473,11 @@ features:
           - id: ac-11
             given: ref points to a task (not spec item)
             when: kspec item patch @some-task --data '{...}' runs
-            then: 'error: Not a spec item'
+            then: "error: Not a spec item"
           - id: ac-12
             given: ref does not exist
             when: kspec item patch @nonexistent --data '{...}' runs
-            then: 'error: Item not found: @nonexistent'
+            then: "error: Item not found: @nonexistent"
         status:
           maturity: draft
           implementation: implemented
@@ -523,7 +517,7 @@ features:
 
           Creates task in pending status.
         implements:
-          - '@task-commands'
+          - "@task-commands"
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
@@ -539,9 +533,9 @@ features:
           Sets started_at timestamp.
           Fails if task is blocked or already in_progress.
         implements:
-          - '@task-commands'
+          - "@task-commands"
         depends_on:
-          - '@state-in-progress'
+          - "@state-in-progress"
       - _ulid: 01JHNKA8W9CTSK300000000000
         slugs:
           - task-complete
@@ -559,9 +553,9 @@ features:
           Transitions task to completed status.
           Sets completed_at timestamp.
         implements:
-          - '@task-commands'
+          - "@task-commands"
         depends_on:
-          - '@state-completed'
+          - "@state-completed"
       - _ulid: 01JHNKA9W0CTSK400000000000
         slugs:
           - task-block
@@ -579,9 +573,9 @@ features:
           Transitions task to blocked status.
           Adds reason to blocked_by array.
         implements:
-          - '@task-commands'
+          - "@task-commands"
         depends_on:
-          - '@state-blocked'
+          - "@state-blocked"
       - _ulid: 01JHNKA9W1CTSK500000000000
         slugs:
           - task-unblock
@@ -596,7 +590,7 @@ features:
           Transitions task from blocked back to in_progress (or pending).
           Clears blocked_by array.
         implements:
-          - '@task-commands'
+          - "@task-commands"
       - _ulid: 01JHNKA9W2CTSK600000000000
         slugs:
           - task-cancel
@@ -614,9 +608,9 @@ features:
           Transitions task to cancelled status.
           Terminal state.
         implements:
-          - '@task-commands'
+          - "@task-commands"
         depends_on:
-          - '@state-cancelled'
+          - "@state-cancelled"
       - _ulid: 01KF0VJEHSCEQ5SVD6XRYV81M1
         slugs:
           - cmd-task-delete
@@ -635,7 +629,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-15T12:55:00.409Z'
+        created: 2026-01-15T12:55:00.409Z
         status:
           maturity: draft
           implementation: implemented
@@ -700,7 +694,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T00:51:05.853Z'
+        created: 2026-01-16T00:51:05.853Z
         status:
           maturity: draft
           implementation: implemented
@@ -724,7 +718,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T00:51:19.234Z'
+        created: 2026-01-16T00:51:19.234Z
         status:
           implementation: implemented
       - _ulid: 01KF24J46CY5Y7MPN1PXZT2GRB
@@ -745,7 +739,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T00:51:21.422Z'
+        created: 2026-01-16T00:51:21.422Z
         status:
           implementation: implemented
       - _ulid: 01KF24J6HENWZ8KS5ZHQHCMA9B
@@ -763,7 +757,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T00:51:23.823Z'
+        created: 2026-01-16T00:51:23.823Z
         status:
           implementation: implemented
       - _ulid: 01KF24J8KKT3Y1N6M6JR7ACHQ8
@@ -781,7 +775,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T00:51:25.939Z'
+        created: 2026-01-16T00:51:25.939Z
         status:
           implementation: implemented
       - _ulid: 01KF24JAEM65BGJ5ZK0QM4XQNN
@@ -803,7 +797,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T00:51:27.829Z'
+        created: 2026-01-16T00:51:27.829Z
         status:
           implementation: implemented
       - _ulid: 01KF3E3S2Y8PZ1E75G202DG2JR
@@ -818,7 +812,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T12:57:31.487Z'
+        created: 2026-01-16T12:57:31.487Z
         description: |-
           kspec task patch <ref> [options]
 
@@ -845,7 +839,7 @@ features:
             when: kspec task patch @my-task --data '{"unknown":true}' runs
             then: error about unknown field (strict by default)
           - id: ac-4
-            given: '--allow-unknown flag and unknown field'
+            given: --allow-unknown flag and unknown field
             when: kspec task patch @my-task --data '{"unknown":true}' --allow-unknown runs
             then: field is written
         status:
@@ -885,16 +879,16 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T18:42:37.515Z'
+        created: 2026-01-16T18:42:37.515Z
         acceptance_criteria:
           - id: ac-1
             given: task has spec_ref
             when: task complete runs
-            then: 'output includes both Task: and Spec: trailers'
+            then: "output includes both Task: and Spec: trailers"
           - id: ac-2
             given: task has no spec_ref
             when: task complete runs
-            then: 'output includes Task: trailer and warning about potential spec gap'
+            then: "output includes Task: trailer and warning about potential spec gap"
           - id: ac-3
             given: task in_progress with uncommitted changes
             when: session checkpoint runs
@@ -940,8 +934,8 @@ features:
 
           THE primary command for agents and humans.
         implements:
-          - '@query-commands'
-          - '@query-ready'
+          - "@query-commands"
+          - "@query-ready"
       - _ulid: 01JHNKA9W5CQRY200000000000
         slugs:
           - cmd-tasks-next
@@ -956,8 +950,8 @@ features:
           Returns single highest-priority ready task.
           Useful for "give me something to do" workflow.
         implements:
-          - '@query-commands'
-          - '@query-next'
+          - "@query-commands"
+          - "@query-next"
       - _ulid: 01JHNKA9W6CQRY300000000000
         slugs:
           - cmd-tasks-list
@@ -972,7 +966,7 @@ features:
           General task listing with filters.
           See @query-filters for filter options.
         implements:
-          - '@query-commands'
+          - "@query-commands"
       - _ulid: 01JHNKA9W7CQRY400000000000
         slugs:
           - cmd-tasks-blocked
@@ -987,7 +981,7 @@ features:
           Returns all blocked tasks with their blockers.
           Useful for identifying what's stuck.
         implements:
-          - '@query-commands'
+          - "@query-commands"
       - _ulid: 01KF41T5PN7Z6K6SXQK2S8K6DH
         slugs:
           - cmd-log
@@ -1028,22 +1022,22 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T18:41:48.245Z'
+        created: 2026-01-16T18:41:48.245Z
         acceptance_criteria:
           - id: ac-1
-            given: 'commits exist with Task: @my-task trailer'
+            given: "commits exist with Task: @my-task trailer"
             when: kspec log @my-task runs
             then: matching commits are displayed
           - id: ac-2
             given: reference is a spec item
             when: kspec log @spec-item runs
-            then: 'searches for both Spec: trailer and Task: trailers of linked tasks'
+            then: "searches for both Spec: trailer and Task: trailers of linked tasks"
           - id: ac-3
             given: no matching commits exist
             when: kspec log @ref runs
             then: displays 'No commits found' message
           - id: ac-4
-            given: '--oneline flag provided'
+            given: --oneline flag provided
             when: kspec log @ref --oneline runs
             then: shows compact hash + subject format
           - id: ac-5
@@ -1053,9 +1047,8 @@ features:
           - id: list-all-tracked
             given: No ref argument provided
             when: User runs kspec log without any ref or filter
-            then: >-
-              Shows all commits with Task: or Spec: trailers in reverse chronological order,
-              respecting --limit (default 10)
+            then: "Shows all commits with Task: or Spec: trailers in reverse chronological order, respecting
+              --limit (default 10)"
           - id: passthrough-args
             given: User wants additional git log formatting (like -p, --stat, --graph)
             when: User runs kspec log @ref -- -p --stat
@@ -1069,12 +1062,14 @@ features:
           implementation: implemented
         notes:
           - _ulid: 01KFACYYRM33Z9W1PW01ASMWTZ
-            created_at: '2026-01-19T05:52:05.909Z'
-            author: '@claude'
-            content: |-
+            created_at: 2026-01-19T05:52:05.909Z
+            author: "@claude"
+            content: >-
               Enhancement: List all tracked commits and git log passthrough
 
+
               **New features (ACs list-all-tracked, passthrough-args, passthrough-invalid):**
+
 
               1. **List all tracked commits without ref:**
                  Running `kspec log` without any ref should show all commits that have Task: or Spec: trailers. This gives visibility into all tracked work across the repo.
@@ -1120,18 +1115,17 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-17T00:24:20.795Z'
+        created: 2026-01-17T00:24:20.795Z
         acceptance_criteria:
           - id: ac-1
             given: A user runs tasks ready/list/blocked/in-progress with --full or -vv
             when: Tasks are displayed
-            then: >-
-              Each task shows: notes count, most recent note (first 50 chars), pending todos count,
-              created_at timestamp
+            then: "Each task shows: notes count, most recent note (first 50 chars), pending todos count,
+              created_at timestamp"
           - id: ac-2
             given: A user runs tasks ready with -v (single verbose)
             when: Tasks are displayed
-            then: 'Current behavior preserved: shows spec_ref, depends_on, tags inline'
+            then: "Current behavior preserved: shows spec_ref, depends_on, tags inline"
           - id: ac-3
             given: A task has no notes or todos
             when: Displayed in full mode
@@ -1143,9 +1137,7 @@ features:
           - id: ac-5
             given: A task has a spec_ref linking to a spec item
             when: Displayed in full mode (--full or -vv)
-            then: >-
-              Shows the linked spec's description and acceptance criteria inline, similar to task
-              get output
+            then: Shows the linked spec's description and acceptance criteria inline, similar to task get output
         status:
           maturity: draft
           implementation: implemented
@@ -1181,7 +1173,7 @@ features:
           Creates relationship from source to target.
           Updates the source item's relationship array.
         implements:
-          - '@link-commands'
+          - "@link-commands"
       - _ulid: 01KEZCJPHY64RH5PPE6WJSPH03
         slugs:
           - link-list
@@ -1200,7 +1192,7 @@ features:
 
           Shows relationships matching filters.
         implements:
-          - '@link-commands'
+          - "@link-commands"
       - _ulid: 01KEZCJPHYBD2BSED0D9ZHRMGQ
         slugs:
           - link-delete
@@ -1217,7 +1209,7 @@ features:
 
           Removes relationship. Updates source item.
         implements:
-          - '@link-commands'
+          - "@link-commands"
   - _ulid: 01KEZCJPHYBMBBKESVKBBV4CGM
     slugs:
       - validate-commands
@@ -1261,8 +1253,8 @@ features:
           - Excludes test fixtures from auto-fixing
           - Re-validates after fixes to confirm resolution
         implements:
-          - '@validate-commands'
-          - '@validation-modes'
+          - "@validate-commands"
+          - "@validation-modes"
       - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
         slugs:
           - cmd-lint
@@ -1281,7 +1273,7 @@ features:
           Combines validation with style checks.
           Good for CI: kspec lint --strict
         implements:
-          - '@validate-commands'
+          - "@validate-commands"
       - _ulid: 01KFADE3F4XFXX4E0WTFYZ839W
         slugs:
           - stale-status-detection
@@ -1290,8 +1282,7 @@ features:
         tags:
           - validation
           - dx
-        description: >-
-          Detect and warn about status inconsistencies between specs, tasks, and implementation.
+        description: Detect and warn about status inconsistencies between specs, tasks, and implementation.
           Helps maintain alignment between what's documented and what's actually done.
         depends_on: []
         implements: []
@@ -1299,8 +1290,8 @@ features:
         tests: []
         notes:
           - _ulid: 01KFADF5PMS0ECF20AAX4SRAZ2
-            created_at: '2026-01-19T06:00:57.301Z'
-            author: '@claude'
+            created_at: 2026-01-19T06:00:57.301Z
+            author: "@claude"
             content: >-
               Design: Stale status detection
 
@@ -1350,36 +1341,32 @@ features:
 
               - --strict: Treat warnings as errors (exit 4)
             supersedes: null
-        created: '2026-01-19T06:00:22.244Z'
+        created: 2026-01-19T06:00:22.244Z
         acceptance_criteria:
           - id: parent-pending-children-done
             given: Umbrella/parent task is pending but all child spec items are marked implemented
             when: kspec validate --staleness runs
-            then: >-
-              Warns: 'Task @parent-task is pending but all linked specs are implemented. Consider
-              completing or reviewing.'
+            then: "Warns: 'Task @parent-task is pending but all linked specs are implemented. Consider
+              completing or reviewing.'"
           - id: spec-implemented-no-task
             given: Spec item is marked implemented but no completed tasks reference it
             when: kspec validate --staleness runs
-            then: >-
-              Warns: 'Spec @spec-item is implemented but has no completed tasks. Verify
-              implementation or link existing task.'
+            then: "Warns: 'Spec @spec-item is implemented but has no completed tasks. Verify implementation or
+              link existing task.'"
           - id: task-done-spec-not-started
             given: Task is completed but linked spec is still not_started
             when: kspec validate --staleness runs
-            then: 'Warns: ''Task @task completed but spec @spec-item is not_started. Update spec status.'''
+            then: "Warns: 'Task @task completed but spec @spec-item is not_started. Update spec status.'"
           - id: staleness-flag
             given: User wants to check for stale statuses
             when: kspec validate --staleness runs
-            then: >-
-              Performs staleness checks in addition to standard validation. Can be combined with
-              other validate flags.
+            then: Performs staleness checks in addition to standard validation. Can be combined with other
+              validate flags.
           - id: staleness-exit-code
             given: Staleness issues are found
             when: kspec validate --staleness completes
-            then: >-
-              Exits with code 0 (warnings don't fail validation by default). With --strict, exits
-              code 4 if any staleness warnings.
+            then: Exits with code 0 (warnings don't fail validation by default). With --strict, exits code 4 if
+              any staleness warnings.
         status:
           maturity: draft
           implementation: implemented
@@ -1439,13 +1426,13 @@ features:
 
           Idempotent by default.
         implements:
-          - '@derive-commands'
-          - '@derive-command'
+          - "@derive-commands"
+          - "@derive-command"
         acceptance_criteria:
           - id: ac-1
             given: a spec item with no children
             when: kspec derive @item runs
-            then: 'creates one task with spec_ref=@item; outputs ''Created task: <ref>'''
+            then: "creates one task with spec_ref=@item; outputs 'Created task: <ref>'"
           - id: ac-2
             given: a module with 2 child features
             when: kspec derive @module runs
@@ -1469,7 +1456,7 @@ features:
           - id: ac-7
             given: a spec item already has a linked task
             when: kspec derive @item runs (no --force)
-            then: 'no task created; outputs ''Skipped @item (task exists: @task-ref)'''
+            then: "no task created; outputs 'Skipped @item (task exists: @task-ref)'"
           - id: ac-8
             given: module has task, feature-a has task, feature-b has no task
             when: kspec derive @module runs
@@ -1484,18 +1471,17 @@ features:
             then: outputs 'Would create:' followed by task list; no tasks actually created; exit 0
           - id: ac-11
             given: derive creates tasks
-            when: '--json flag is passed'
-            then: >-
-              outputs JSON array with objects {ulid, slug, spec_ref, depends_on, action:
-              'created'|'skipped'}
+            when: --json flag is passed
+            then: "outputs JSON array with objects {ulid, slug, spec_ref, depends_on, action:
+              'created'|'skipped'}"
           - id: ac-12
             given: 3 spec items exist, 1 already has a task
             when: kspec derive --all runs
             then: creates tasks for 2 items without tasks; skips the one with existing task
           - id: ac-13
-            given: '@nonexistent does not resolve'
+            given: "@nonexistent does not resolve"
             when: kspec derive @nonexistent runs
-            then: 'exits code 1; error ''Reference not found: @nonexistent'''
+            then: "exits code 1; error 'Reference not found: @nonexistent'"
           - id: ac-14
             given: all spec items already have tasks
             when: kspec derive --all runs
@@ -1537,7 +1523,7 @@ features:
 
           Interactive prompts unless --no-prompt.
         implements:
-          - '@init-commands'
+          - "@init-commands"
       - _ulid: 01KEZCJPHYZKAW6006AM7P5KWT
         slugs:
           - cmd-hooks
@@ -1554,7 +1540,7 @@ features:
           Reads hooks from manifest config section.
           Sets up git hooks for validation.
         implements:
-          - '@init-commands'
+          - "@init-commands"
       - _ulid: 01KF14PTK6XWQPE0ZG32WMVJRK
         slugs:
           - cmd-setup
@@ -1608,7 +1594,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-15T15:34:40.999Z'
+        created: 2026-01-15T15:34:40.999Z
         status:
           maturity: draft
           implementation: implemented
@@ -1616,9 +1602,8 @@ features:
           - id: detect-existing-repo
             given: Repository has kspec-meta branch but no .kspec worktree
             when: User runs kspec setup or any kspec command
-            then: >-
-              Detects missing worktree and prompts: 'kspec-meta branch exists but .kspec worktree is
-              missing. Create it? (y/N)', creates worktree if confirmed
+            then: "Detects missing worktree and prompts: 'kspec-meta branch exists but .kspec worktree is
+              missing. Create it? (y/N)', creates worktree if confirmed"
           - id: auto-worktree-flag
             given: Repository has kspec-meta branch but no .kspec worktree
             when: User runs kspec setup --auto-worktree
@@ -1629,8 +1614,8 @@ features:
             then: Skips worktree creation, proceeds with other setup steps
         notes:
           - _ulid: 01KFADB7BNJMB4YSV75Z79SS7G
-            created_at: '2026-01-19T05:58:47.925Z'
-            author: '@claude'
+            created_at: 2026-01-19T05:58:47.925Z
+            author: "@claude"
             content: >-
               Enhancement: Auto-detect and setup existing kspec repos
 
@@ -1677,7 +1662,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T13:02:14.166Z'
+        created: 2026-01-16T13:02:14.166Z
         description: |-
           kspec module add [options]
 
@@ -1726,17 +1711,16 @@ features:
           - cli
           - testing
           - dx
-        description: >-
-          kspec clone-for-testing - Creates isolated repo copy for testing with proper kspec setup.
-          Eliminates manual setup errors that can cause confusing test failures.
+        description: kspec clone-for-testing - Creates isolated repo copy for testing with proper kspec
+          setup. Eliminates manual setup errors that can cause confusing test failures.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         notes:
           - _ulid: 01KFADH7GYZ42DXV5XJBCAYNXB
-            created_at: '2026-01-19T06:02:04.703Z'
-            author: '@claude'
+            created_at: 2026-01-19T06:02:04.703Z
+            author: "@claude"
             content: >-
               Design: Test repo setup command
 
@@ -1801,14 +1785,13 @@ features:
 
               - Reproducing issues in isolation
             supersedes: null
-        created: '2026-01-19T06:01:34.703Z'
+        created: 2026-01-19T06:01:34.703Z
         acceptance_criteria:
           - id: creates-isolated-copy
             given: User needs isolated repo for testing
             when: User runs kspec clone-for-testing [source] [dest]
-            then: >-
-              Creates full clone of source repo (default: current repo) to dest directory, removes
-              remote origin, preserves all branches including kspec-meta
+            then: "Creates full clone of source repo (default: current repo) to dest directory, removes remote
+              origin, preserves all branches including kspec-meta"
           - id: sets-up-worktree
             given: Cloned repo has kspec-meta branch
             when: Clone completes
@@ -1822,11 +1805,9 @@ features:
             when: User runs kspec clone-for-testing
             then: Creates clone in system temp directory with generated name, prints path to stdout
           - id: json-output
-            given: '--json flag provided'
+            given: --json flag provided
             when: Clone completes successfully
-            then: >-
-              Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch":
-              "main"}
+            then: 'Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch": "main"}'
         status:
           maturity: draft
           implementation: implemented
@@ -1868,7 +1849,7 @@ features:
           - kspec inbox add "maybe we need better error messages"
           - kspec inbox add "refactor auth flow" --tag auth --tag refactor
         implements:
-          - '@inbox-commands'
+          - "@inbox-commands"
       - _ulid: 01KF15N59E5B55QEM6KVJHGSN5
         slugs:
           - cmd-inbox-list
@@ -1888,7 +1869,7 @@ features:
           Shows inbox items. Default sort is oldest first to
           encourage dealing with older items.
         implements:
-          - '@inbox-commands'
+          - "@inbox-commands"
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
@@ -1915,7 +1896,7 @@ features:
           - kspec inbox promote @01KF0... (interactive)
           - kspec inbox promote @01KF0... --title "Improve errors" --priority 2
         implements:
-          - '@inbox-commands'
+          - "@inbox-commands"
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
@@ -1932,7 +1913,7 @@ features:
 
           Removes inbox item. Use when idea is no longer relevant.
         implements:
-          - '@inbox-commands'
+          - "@inbox-commands"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
@@ -1942,15 +1923,14 @@ features:
     tags:
       - dx
       - cli
-    description: >-
-      Infrastructure for fuzzy string matching across kspec. Enables approximate matching for
+    description: Infrastructure for fuzzy string matching across kspec. Enables approximate matching for
       item/task search and CLI command suggestions. Uses Levenshtein distance or similar algorithm
       for scoring matches.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-15T17:11:48.677Z'
+    created: 2026-01-15T17:11:48.677Z
     requirements:
       - _ulid: 01KF1A8Z6VHV4TKGS9GNZHSDZA
         slugs:
@@ -2006,7 +1986,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-15T17:11:58.428Z'
+        created: 2026-01-15T17:11:58.428Z
         status:
           maturity: draft
           implementation: implemented
@@ -2014,9 +1994,8 @@ features:
           - id: ac-1
             given: A user runs kspec search "TODO"
             when: The search runs across all loaded items and tasks
-            then: >-
-              Returns items/tasks where any text field matches, showing the item itself (not just
-              the matched line)
+            then: Returns items/tasks where any text field matches, showing the item itself (not just the
+              matched line)
           - id: ac-2
             given: A user searches with a regex pattern like "shadow.*branch"
             when: The pattern is applied to content
@@ -2024,15 +2003,11 @@ features:
           - id: ac-3
             given: An item matches in multiple fields
             when: Results are displayed
-            then: >-
-              Shows which field(s) matched (e.g., matched: notes[1].content, description) for
-              context
+            then: "Shows which field(s) matched (e.g., matched: notes[1].content, description) for context"
           - id: ac-4
             given: A match is found in nested content like notes or AC
             when: Results are displayed
-            then: >-
-              The full item is returned with match location indicator, not just the matched text
-              snippet
+            then: The full item is returned with match location indicator, not just the matched text snippet
           - id: ac-5
             given: User combines search with filters like --type task or --status pending
             when: Search runs
@@ -2071,7 +2046,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-15T17:12:08.507Z'
+        created: 2026-01-15T17:12:08.507Z
         status:
           maturity: draft
           implementation: implemented
@@ -2083,15 +2058,14 @@ features:
     tags:
       - dx
       - documentation
-    description: >-
-      CLI help system that auto-generates command syntax from Commander.js definitions. Eliminates
-      manual sync between code and documentation. Combines auto-generated syntax with curated
-      conceptual content.
+    description: CLI help system that auto-generates command syntax from Commander.js definitions.
+      Eliminates manual sync between code and documentation. Combines auto-generated syntax with
+      curated conceptual content.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-16T14:40:37.876Z'
+    created: 2026-01-16T14:40:37.876Z
     acceptance_criteria:
       - id: ac-1
         given: The CLI program is registered with commands
@@ -2099,21 +2073,19 @@ features:
         then: Returns complete tree with names, descriptions, options, arguments, and subcommands
       - id: ac-2
         given: A help topic exists for the 'task' command group
-        when: '''kspec help task'' is run'
-        then: >-
-          The Commands section dynamically lists ALL current task subcommands including recent
-          additions
+        when: "'kspec help task' is run"
+        then: The Commands section dynamically lists ALL current task subcommands including recent additions
       - id: ac-3
         given: The CLI has multiple command groups
-        when: '''kspec help --all'' is run'
+        when: "'kspec help --all' is run"
         then: Output shows every command with all options and descriptions as a full reference
       - id: ac-4
         given: An agent needs structured CLI documentation
-        when: '''kspec help --json'' is run'
+        when: "'kspec help --json' is run"
         then: Returns JSON with complete command tree for programmatic consumption
       - id: ac-5
         given: A new subcommand is added to Commander definition
-        when: '''kspec help <parent>'' is run without updating help.ts'
+        when: "'kspec help <parent>' is run without updating help.ts"
         then: The new subcommand appears in help output automatically
     status:
       maturity: draft
@@ -2124,16 +2096,15 @@ features:
     title: Ralph command - automated task loop
     type: feature
     tags: []
-    description: >-
-      Automated task loop using ACP protocol. Runs claude-code-acp agent in a loop to process kspec
-      tasks autonomously with full event logging and streaming output.
+    description: Automated task loop using ACP protocol. Runs claude-code-acp agent in a loop to process
+      kspec tasks autonomously with full event logging and streaming output.
     depends_on:
-      - '@acp-client'
-      - '@session-events'
+      - "@acp-client"
+      - "@session-events"
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-17T05:27:36.354Z'
+    created: 2026-01-17T05:27:36.354Z
     acceptance_criteria:
       - id: ac-1
         given: ready tasks exist
@@ -2150,15 +2121,14 @@ features:
       - id: ac-4
         given: a loop iteration ends with work still in progress
         when: agent cannot complete the task in one iteration
-        then: >-
-          agent commits WIP, adds note documenting progress, and task remains in_progress for next
+        then: agent commits WIP, adds note documenting progress, and task remains in_progress for next
           iteration
       - id: ac-5
         given: a loop iteration completes (task done or WIP)
         when: there are uncommitted changes
         then: agent commits the changes with appropriate message
       - id: ac-6
-        given: '--dry-run flag is provided'
+        given: --dry-run flag is provided
         when: kspec ralph --dry-run is run
         then: shows the prompt that would be sent without executing agent
       - id: ac-7
@@ -2170,7 +2140,7 @@ features:
         when: the failure count reaches max-failures threshold
         then: the loop exits early with an error message
       - id: ac-9
-        given: '--adapter flag is provided'
+        given: --adapter flag is provided
         when: kspec ralph --adapter <id> is run
         then: uses specified adapter (default claude-code-acp)
       - id: ac-10
@@ -2194,10 +2164,9 @@ features:
         when: building prompt for the agent
         then: creates a fresh ACP session so each iteration has a clean context window
       - id: ac-15
-        given: '--focus flag is provided with instructions'
+        given: --focus flag is provided with instructions
         when: building prompt for each iteration
-        then: >-
-          includes the focus instructions prominently in the prompt, emphasizing they apply to all
+        then: includes the focus instructions prominently in the prompt, emphasizing they apply to all
           iterations
     status:
       maturity: draft
@@ -2238,27 +2207,23 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-17T19:01:42.519Z'
+        created: 2026-01-17T19:01:42.519Z
         acceptance_criteria:
           - id: ac-1
             given: ACP agent streams agent_message events
             when: messages are displayed in CLI
-            then: >-
-              messages show with visual separation (section header or newline), chalk.blue for
-              content, and streaming indicator while incomplete
+            then: messages show with visual separation (section header or newline), chalk.blue for content, and
+              streaming indicator while incomplete
           - id: ac-2
             given: ACP agent streams tool_call and tool_call_update events
             when: tool calls are displayed in CLI
-            then: >-
-              shows tool name, input summary (command for Bash, path for Read/Write, pattern for
-              Grep/Glob), status indicator (pending/running/completed/failed), and truncated output
-              (first 20 lines or 1000 chars with expansion hint)
+            then: shows tool name, input summary (command for Bash, path for Read/Write, pattern for Grep/Glob),
+              status indicator (pending/running/completed/failed), and truncated output (first 20
+              lines or 1000 chars with expansion hint)
           - id: ac-3
             given: ralph is streaming output
             when: each significant event is displayed
-            then: >-
-              shows relative timestamp from session start (e.g., +5s, +2m) prefixed to the event
-              line
+            then: shows relative timestamp from session start (e.g., +5s, +2m) prefixed to the event line
           - id: ac-4
             given: ACP agent emits debug or internal log messages (e.g., 'No onPostToolUseHook found')
             when: these messages arrive in the event stream
@@ -2279,28 +2244,24 @@ features:
           - ralph
           - dx
           - validation
-        description: >-
-          Validate that the specified ACP adapter package exists before attempting to spawn the
+        description: Validate that the specified ACP adapter package exists before attempting to spawn the
           agent. Provides clear error message instead of cryptic connection failures.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         notes: []
-        created: '2026-01-19T05:57:33.619Z'
+        created: 2026-01-19T05:57:33.619Z
         acceptance_criteria:
           - id: valid-adapter-proceeds
             given: User runs kspec ralph with valid adapter (default or --adapter)
             when: Startup validation runs
-            then: >-
-              Adapter package is verified to exist (via npm/npx check), and command proceeds to
-              spawn agent
+            then: Adapter package is verified to exist (via npm/npx check), and command proceeds to spawn agent
           - id: invalid-adapter-error
             given: User runs kspec ralph --adapter @nonexistent/package
             when: Startup validation runs
-            then: >-
-              Command exits immediately with exit code 3 and error message: 'Adapter package not
-              found: @nonexistent/package. Install with: npm install -g @nonexistent/package'
+            then: "Command exits immediately with exit code 3 and error message: 'Adapter package not found:
+              @nonexistent/package. Install with: npm install -g @nonexistent/package'"
           - id: validation-before-spawn
             given: Adapter validation fails
             when: Error is shown
@@ -2314,15 +2275,14 @@ features:
     title: ACP Protocol Client
     type: feature
     tags: []
-    description: >-
-      JSON-RPC 2.0 based client for Agent Client Protocol communication. Handles bidirectional stdio
-      communication with ACP-compliant agents, request/response correlation, session lifecycle, and
-      event streaming.
+    description: JSON-RPC 2.0 based client for Agent Client Protocol communication. Handles
+      bidirectional stdio communication with ACP-compliant agents, request/response correlation,
+      session lifecycle, and event streaming.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-17T15:15:27.389Z'
+    created: 2026-01-17T15:15:27.389Z
     acceptance_criteria:
       - id: ac-1
         given: an ACP agent process
@@ -2369,14 +2329,13 @@ features:
     title: Session Event Storage
     type: feature
     tags: []
-    description: >-
-      JSONL-based event storage for agent sessions. Provides append-only event logs for
+    description: JSONL-based event storage for agent sessions. Provides append-only event logs for
       auditability, session metadata tracking, and integration with kspec commit boundaries.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-17T15:16:24.306Z'
+    created: 2026-01-17T15:16:24.306Z
     acceptance_criteria:
       - id: ac-1
         given: a new session is started
@@ -2397,7 +2356,7 @@ features:
       - id: ac-5
         given: session metadata
         when: stored
-        then: 'includes: task_id (optional), agent_type, status, started_at, ended_at'
+        then: "includes: task_id (optional), agent_type, status, started_at, ended_at"
       - id: ac-6
         given: session ends
         when: updateSessionStatus(id, status) is called
@@ -2416,14 +2375,13 @@ features:
     type: feature
     tags:
       - deferred
-    description: >-
-      Implement fs read/write and terminal handlers for ACP agents with security checks. Deferred:
-      Test if claude-code-acp works without them first.
+    description: "Implement fs read/write and terminal handlers for ACP agents with security checks.
+      Deferred: Test if claude-code-acp works without them first."
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-17T15:18:25.264Z'
+    created: 2026-01-17T15:18:25.264Z
   - _ulid: 01KF68JJ2XEPEEN5XTKQSJ36MT
     slugs:
       - ralph-orchestrator
@@ -2431,14 +2389,13 @@ features:
     type: feature
     tags:
       - deferred
-    description: >-
-      Higher-level agent that coordinates task agents, provides guidance beyond raw tasks. Deferred:
-      Requires design of orchestrator prompt, session coordination, agent spawning.
+    description: "Higher-level agent that coordinates task agents, provides guidance beyond raw tasks.
+      Deferred: Requires design of orchestrator prompt, session coordination, agent spawning."
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-17T15:18:27.678Z'
+    created: 2026-01-17T15:18:27.678Z
   - _ulid: 01KFACEZX6E7G3XJAHE3H8ZT8B
     slugs:
       - multi-ref-batch
@@ -2447,19 +2404,18 @@ features:
     tags:
       - cli
       - dx
-    description: >-
-      Support --refs @a @b @c flag pattern for batch operations on multiple items/tasks. Uses hybrid
-      syntax: single-ref positional remains for backward compat, --refs flag enables batch
-      operations. Applies to: task complete, task cancel, task set, task delete, item set, item
-      delete, inbox delete.
+    description: "Support --refs @a @b @c flag pattern for batch operations on multiple items/tasks.
+      Uses hybrid syntax: single-ref positional remains for backward compat, --refs flag enables
+      batch operations. Applies to: task complete, task cancel, task set, task delete, item set,
+      item delete, inbox delete."
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     notes:
       - _ulid: 01KFACGT1MYEZM3WQG3P60QCWZ
-        created_at: '2026-01-19T05:44:22.325Z'
-        author: '@claude'
+        created_at: 2026-01-19T05:44:22.325Z
+        author: "@claude"
         content: >-
           Design decisions and implementation context:
 
@@ -2513,14 +2469,13 @@ features:
           3. Options unsafe for batch (e.g., --slug): Document which options shouldn't be used with
           multi-refs
         supersedes: null
-    created: '2026-01-19T05:43:22.791Z'
+    created: 2026-01-19T05:43:22.791Z
     acceptance_criteria:
       - id: basic-multi-ref-syntax
         given: A command that supports multi-ref (e.g., task complete)
         when: User runs kspec task complete --refs @task-a @task-b @task-c
-        then: >-
-          The operation applies to all three refs, each ref is processed independently, and results
-          are collected for final output
+        then: The operation applies to all three refs, each ref is processed independently, and results are
+          collected for final output
       - id: backward-compatibility
         given: Existing single-ref positional usage
         when: User runs kspec task complete @task-a
@@ -2528,44 +2483,48 @@ features:
       - id: mutual-exclusion-error
         given: Both positional ref AND --refs flag provided
         when: User runs kspec task complete @task-a --refs @task-b @task-c
-        then: >-
-          Command exits with code 3, error message says cannot use both positional ref and --refs
-          flag, no operations are performed
+        then: Command exits with code 3, error message says cannot use both positional ref and --refs flag,
+          no operations are performed
       - id: partial-failure-handling
-        given: '--refs with mix of valid and invalid refs'
+        given: --refs with mix of valid and invalid refs
         when: User runs kspec task complete --refs @valid-task @nonexistent @another-valid
-        then: >-
-          Valid refs are processed successfully, invalid refs are skipped with error recorded, exit
-          code is 2 (partial failure), output shows which succeeded and which failed with reasons
+        then: Valid refs are processed successfully, invalid refs are skipped with error recorded, exit code
+          is 2 (partial failure), output shows which succeeded and which failed with reasons
       - id: human-output-format
         given: Batch operation completes (success or partial)
         when: Output is rendered without --json flag
-        then: >-
-          First line shows summary count (e.g., Completed 2 of 3 tasks:), each item listed with
-          status indicator (checkmark for success, X for failure), failed items include failure
-          reason
+        then: First line shows summary count (e.g., Completed 2 of 3 tasks:), each item listed with status
+          indicator (checkmark for success, X for failure), failed items include failure reason
       - id: json-output-format
         given: Batch operation with --json flag
         when: Command completes
-        then: >-
-          Output is valid JSON with structure: {success: boolean, summary: {total, succeeded,
-          failed}, results: [{ref, ulid, status, error?, message?}]}
+        then: "Output is valid JSON with structure: {success: boolean, summary: {total, succeeded, failed},
+          results: [{ref, ulid, status, error?, message?}]}"
       - id: empty-refs-error
-        given: '--refs flag with no values'
+        given: --refs flag with no values
         when: User runs kspec task complete --refs
-        then: >-
-          Command exits with code 3, error message says --refs requires at least one reference, no
+        then: Command exits with code 3, error message says --refs requires at least one reference, no
           operations are performed
       - id: ref-resolution-uses-existing
         given: Refs can be slugs, full ULIDs, or ULID prefixes
         when: User runs kspec task complete --refs @task-slug @01KFAB95 @01KFA
-        then: >-
-          Each ref resolves using existing ReferenceIndex.resolve() logic, ambiguous ULID prefixes
-          are reported as errors for that specific ref, other refs in the batch still process
-          normally
+        then: Each ref resolves using existing ReferenceIndex.resolve() logic, ambiguous ULID prefixes are
+          reported as errors for that specific ref, other refs in the batch still process normally
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFBRWRRMXWEZP8PAZVNVY1GT
+    slugs:
+      - dynamic-workflow-skills
+    title: Dynamic Workflow Skills
+    type: feature
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    notes: []
+    created: 2026-01-19T18:39:51.573Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
@@ -2613,7 +2572,7 @@ requirements:
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-15T14:17:25.508Z'
+    created: 2026-01-15T14:17:25.508Z
     status:
       maturity: draft
       implementation: implemented
@@ -2656,23 +2615,22 @@ requirements:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-15T18:04:41.618Z'
+        created: 2026-01-15T18:04:41.618Z
   - _ulid: 01KF2C5P8BGYKT9GDTYNXTSTQM
     slugs:
       - cmd-session-start
     title: kspec session start
     type: requirement
     tags: []
-    description: >-
-      Display session context for starting work. Shows: active tasks, recently completed, ready
-      tasks, inbox items, recent commits, working tree status. Options: --brief (default), --full,
-      --since <time>, --no-git, -n <limit>. Output is human-readable with sections for each context
-      type. Designed as the first command agents run to orient themselves.
+    description: "Display session context for starting work. Shows: active tasks, recently completed,
+      ready tasks, inbox items, recent commits, working tree status. Options: --brief (default),
+      --full, --since <time>, --no-git, -n <limit>. Output is human-readable with sections for each
+      context type. Designed as the first command agents run to orient themselves."
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-16T03:04:22.540Z'
+    created: 2026-01-16T03:04:22.540Z
     requirements:
       - _ulid: 01KF2C60QQP8CT8F77PTRGQ7YB
         slugs:
@@ -2680,16 +2638,16 @@ requirements:
         title: Contextual Command Hints
         type: requirement
         tags: []
-        description: >-
-          Add a 'Quick Commands' section to session start output showing relevant commands based on
-          current state. Commands are contextual: task note/complete when active work exists, task
-          start when ready tasks available, inbox promote for oldest inbox item, git commit when
-          working tree dirty. Uses actual refs from session context for copy-paste convenience.
+        description: "Add a 'Quick Commands' section to session start output showing relevant commands based
+          on current state. Commands are contextual: task note/complete when active work exists,
+          task start when ready tasks available, inbox promote for oldest inbox item, git commit
+          when working tree dirty. Uses actual refs from session context for copy-paste
+          convenience."
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T03:04:33.272Z'
+        created: 2026-01-16T03:04:33.272Z
         status:
           maturity: draft
           implementation: implemented

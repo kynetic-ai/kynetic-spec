@@ -112,6 +112,13 @@ workflows:
       - type: check
         content: Has item survived 3+ triage sessions?
         on_fail: Either promote with clear scope or delete
+  - _ulid: 01KFBQCCJFBAAT6JAP5KYTKRHV
+    id: codebase-audit
+    trigger: pre-release
+    description: "Comprehensive codebase audit for release readiness. Five-phase workflow: parallel
+      exploration (docs, code, config, tests, specs), compilation by severity, interactive triage,
+      execution, and summary."
+    steps: []
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
