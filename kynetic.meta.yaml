@@ -909,4 +909,14 @@ observations:
     author: '@claude'
     resolved: false
     resolution: null
+  - _ulid: 01KFAAC1AYM45CE8B8MDWGJ4GW
+    type: success
+    content: >-
+      Reusing NoteSchema across both tasks and spec items worked perfectly - no code duplication,
+      consistent behavior, and symmetric CLI commands. The pattern of import { NoteSchema } from
+      './task.js' into spec.ts demonstrates good schema reuse.
+    created_at: '2026-01-19T05:06:48.798Z'
+    author: '@claude'
+    resolved: false
+    resolution: null
 includes: []
