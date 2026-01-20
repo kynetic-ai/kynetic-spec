@@ -93,6 +93,12 @@ features:
           Examples: "Passwords must be hashed with bcrypt"
         implements:
           - "@item-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a requirement-type item is created
+            when: validation runs
+            then: requirement structure is validated (must have title and description, should have implements
+              relationship to parent feature)
       - _ulid: 01JHNKA1W7TYPE400000000000
         slugs:
           - type-constraint
