@@ -485,6 +485,10 @@ features:
             given: a step has exit_criteria defined
             when: kspec workflow next completes the step
             then: outputs exit criteria after completion; strict mode blocks without --confirm
+          - id: ac-5
+            given: a run is at the last step
+            when: kspec workflow next @run-id is executed
+            then: status=completed, completed_at set, outputs summary with duration and step count
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
