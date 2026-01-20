@@ -448,6 +448,10 @@ features:
             given: item A blocks item B
             when: item B is a task
             then: task B cannot transition to in_progress while A is unresolved (blocking relationship enforced)
+          - id: ac-2
+            given: item A blocks item B
+            when: item A is resolved or completed
+            then: item B becomes unblocked (blocks relationship is inverse of depends_on)
       - _ulid: 01KEZCJPJ2HC490BP03G39SX8R
         slugs:
           - rel-tests
