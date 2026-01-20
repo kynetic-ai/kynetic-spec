@@ -1,4 +1,4 @@
-kynetic: '1.0'
+kynetic: "1.0"
 project:
   name: Kynetic Spec
   version: 0.1.0
@@ -10,3 +10,17 @@ includes:
   - modules/cli.yaml
   - modules/meta.yaml
   - modules/shadow.yaml
+traits:
+  - _ulid: 01KFDZD3EZ86HAQ98A7QYW19K3
+    slugs: []
+    title: Test Trait
+    type: trait
+    tags: []
+    description: Validation test to confirm trait system works E2E
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-20T15:12:07.136Z
