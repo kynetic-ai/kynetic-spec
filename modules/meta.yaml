@@ -494,6 +494,10 @@ features:
             when: kspec workflow runs is executed
             then: "outputs table with: ID (short ULID), Workflow, Status, Step (N/M), Started; supports
               --active, --completed, --workflow filters"
+          - id: ac-7
+            given: workflow.enforcement=strict and step has criteria
+            when: kspec workflow next is executed
+            then: requires --confirm flag to proceed; --skip requires --force flag
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
