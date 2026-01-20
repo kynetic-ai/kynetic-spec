@@ -1483,11 +1483,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2073,6 +2075,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2188,6 +2191,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15640,6 +15644,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16133,6 +16138,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Added 34 acceptance criteria (2 per item) to 17 critical spec items across schema
+    types, task types, relationships, and YAML conventions. All AC follow given/when/then format and
+    define testable behavior.
   depends_on: []
   context: []
   priority: 1
@@ -16140,6 +16148,7 @@
   vcs_refs: []
   created_at: 2026-01-20T14:53:22.422Z
   started_at: 2026-01-20T15:20:39.810Z
+  completed_at: 2026-01-20T15:24:02.626Z
   notes:
     - _ulid: 01KFDYC46DTV4SJVNVJ4R3AWJS
       created_at: 2026-01-20T14:54:06.542Z
@@ -16252,10 +16261,6 @@
         has clear acceptance criteria that can guide implementation and test coverage.
       supersedes: null
   todos: []
-  completed_at: 2026-01-20T15:24:02.626Z
-  closed_reason: Added 34 acceptance criteria (2 per item) to 17 critical spec items across schema
-    types, task types, relationships, and YAML conventions. All AC follow given/when/then format and
-    define testable behavior.
 - _ulid: 01KFDYAW8AQ0B54800XVX56BEE
   slugs: []
   title: Remove auth.yaml from manifest
@@ -16298,7 +16303,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -16330,6 +16335,7 @@
         - `@trait-error-guidance` - all commands
       supersedes: null
   todos: []
+  started_at: 2026-01-20T15:24:59.864Z
 - _ulid: 01KFDYB73CMS9GN83XMW8MQGVS
   slugs: []
   title: Apply traits to item CRUD commands

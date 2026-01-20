@@ -1831,4 +1831,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFE03DTPTD76XA5J8DH6H5KM
+    type: success
+    content: "Systematic AC addition workflow worked efficiently: grouped items by category (schema
+      types, task types, relationships, YAML), added 2 AC per item following given/when/then format.
+      Pattern: each AC should test a specific aspect of the item's behavior. For type definitions,
+      one AC validates structure and one validates usage/purpose."
+    created_at: 2026-01-20T15:24:18.647Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

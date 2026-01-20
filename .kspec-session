@@ -1,18 +1,18 @@
 focus: |-
-  @SPEC REVIEW TASKS - Progress 3/7 complete
+  @SPEC REVIEW TASKS - Progress 4/7 complete
 
   COMPLETED:
   ✓ @01KFDYAW - Remove auth.yaml from manifest [MERGED]
   ✓ @01KFDYAJ - Validate trait system E2E [COMPLETE]
   ✓ @01KFDYAP - Create 8 core traits [COMPLETE]
+  ✓ @01KFDYAS - Add AC to 17 critical spec items [COMPLETE - 34 AC added]
 
   REMAINING (in order):
-  4. @01KFDYAS - Add AC to 17 critical spec items
   5. @01KFDYB4 - Apply traits to task lifecycle commands
   6. @01KFDYB7 - Apply traits to item CRUD commands
   7. @01KFDYBA - Apply traits to query and inbox commands
 
-  NEXT: @01KFDYAS - Add AC to 17 critical spec items
+  NEXT: @01KFDYB4 - Apply traits to task lifecycle commands
 threads: []
 open_questions: []
-updated_at: 2026-01-20T15:20:17.251Z
+updated_at: 2026-01-20T15:24:26.281Z
