@@ -7,7 +7,7 @@ import {
   initContext,
   buildIndexes,
   checkSlugUniqueness,
-  writeYamlFile,
+  writeYamlFilePreserveFormat,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { SpecItem, Manifest } from '../../schema/index.js';
@@ -88,7 +88,7 @@ export function registerModuleCommands(program: Command): void {
         }
 
         // Write module file
-        await writeYamlFile(moduleFilePath, moduleItem);
+        await writeYamlFilePreserveFormat(moduleFilePath, moduleItem);
 
         // Update manifest includes
         const manifest = ctx.manifest;
@@ -104,7 +104,7 @@ export function registerModuleCommands(program: Command): void {
         }
 
         // Write updated manifest
-        await writeYamlFile(ctx.manifestPath, manifest);
+        await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
 
         // Auto-commit to shadow if enabled
         await commitIfShadow(ctx.shadow, 'module-add', options.slug);
