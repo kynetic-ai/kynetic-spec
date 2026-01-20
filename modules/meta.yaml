@@ -610,6 +610,10 @@ features:
                 when: kspec workflow show @run-id is executed
                 then: "outputs run details: workflow_ref, status, current_step/total_steps, step_results with
                   timestamps, initiated_by"
+              - id: ac-5
+                given: a run with status=completed or status=aborted exists
+                when: kspec workflow abort @run-id is executed
+                then: errors indicating run cannot be aborted in current state
           - _ulid: 01KFESTXHYVDTW4X0Y13RN78K3
             slugs:
               - workflow-step-navigation
