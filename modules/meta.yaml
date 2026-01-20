@@ -473,6 +473,10 @@ features:
             when: kspec workflow start @ref is executed
             then: creates WorkflowRun in .kspec/kynetic.runs.yaml with status=active, current_step=0,
               started_at; outputs run ID
+          - id: ac-2
+            given: an active run exists
+            when: kspec workflow next @run-id is executed
+            then: completes current step, records in step_results, shows next step; if last step, completes run
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
