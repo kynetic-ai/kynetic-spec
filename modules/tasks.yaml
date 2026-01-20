@@ -809,6 +809,10 @@ features:
         given: kspec tasks assess automation is run
         when: output completes
         then: shows summary counts of recommendations at end
+      - id: ac-6
+        given: kspec tasks assess automation @task-ref is run
+        when: a specific task reference is provided
+        then: assesses only that task
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
