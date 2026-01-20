@@ -700,6 +700,10 @@ features:
                 given: no run-id provided and no active runs exist
                 when: kspec workflow next is executed
                 then: errors with message 'No active workflow runs'
+              - id: ac-6
+                given: an active run exists
+                when: kspec workflow next @run-id --notes 'Note text' is executed
+                then: step_results.notes contains the note text for completed step
           - _ulid: 01KFESVX00JT6YJ406QX5N63XQ
             slugs:
               - workflow-enforcement-modes
