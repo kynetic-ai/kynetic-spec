@@ -587,6 +587,7 @@ features:
             traits:
               - "@trait-json-output"
               - "@trait-filterable-list"
+              - "@trait-error-guidance"
             notes: []
             created: 2026-01-20T22:53:32.314Z
             acceptance_criteria:
