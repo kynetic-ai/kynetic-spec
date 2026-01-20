@@ -767,6 +767,84 @@ features:
                 given: workflow.enforcement=advisory (or omitted)
                 when: kspec workflow next is executed
                 then: shows criteria as guidance only; skip allowed without --force
+          - _ulid: 01KFESWWBX1QYPJTNJBW3YHHZN
+            slugs:
+              - workflow-advanced-features
+            title: Workflow Advanced Features
+            type: requirement
+            tags: []
+            description: |-
+              Pause/resume functionality and structured step inputs.
+
+              ## Pause/Resume Commands
+
+              ```
+              kspec workflow pause @run-id [--json]
+              kspec workflow resume @run-id [--json]
+              ```
+
+              ### Pause Behavior
+              - Set status='paused'
+              - Set paused_at timestamp
+              - Shadow commit with 'workflow-pause' message
+              - Output: 'Paused run @id at step N/M'
+
+              ### Resume Behavior
+              - Verify status='paused' (error if not)
+              - Set status='active'
+              - Clear paused_at
+              - Shadow commit with 'workflow-resume' message
+              - Output current step ready to continue
+
+              ## Structured Step Inputs
+
+              ### StepInputSchema
+              ```typescript
+              {
+                name: string,           // e.g., 'spec_ref'
+                description?: string,   // Human explanation
+                required?: boolean,     // Default true
+                type?: 'string' | 'ref' | 'number',  // Default 'string'
+              }
+              ```
+
+              ### Extended WorkflowStepSchema
+              Add field: `inputs?: StepInput[]`
+
+              ### CLI
+              Add to `kspec workflow next`:
+              - `--input key=value` (repeatable)
+
+              ### Behavior
+              1. When step has inputs defined, display them:
+                 ```
+                 Step 3/5: [action] Derive task from spec
+                   Inputs required:
+                     - spec_ref (ref): Reference to the spec item
+                 ```
+
+              2. If required input missing: error 'Missing required input: spec_ref'
+
+              3. Captured inputs stored in step_results.inputs:
+                 ```typescript
+                 { spec_ref: '@my-feature' }
+                 ```
+
+              ## Key Files
+
+              - src/schema/meta.ts (StepInputSchema, extend WorkflowStepSchema)
+              - src/cli/commands/workflow.ts (pause, resume, --input flag)
+
+              ## Dependencies
+
+              Requires @workflow-step-navigation to be implemented first.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-01-20T22:55:07.133Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
