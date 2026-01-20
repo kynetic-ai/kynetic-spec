@@ -768,7 +768,7 @@ features:
             then: accepted by schema (traits can be implemented by any item type)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KFC1A9NA56A1RFAMZ5S0JPNA
         slugs:
           - traits-field
