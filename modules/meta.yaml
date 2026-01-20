@@ -663,6 +663,7 @@ features:
             tests: []
             traits:
               - "@trait-json-output"
+              - "@trait-error-guidance"
             notes: []
             created: 2026-01-20T22:54:02.814Z
             acceptance_criteria:
