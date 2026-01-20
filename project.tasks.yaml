@@ -1445,11 +1445,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1959,6 +1961,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2074,6 +2077,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15450,6 +15454,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -15512,6 +15517,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T12:50:06.100Z
+  started_at: 2026-01-20T13:39:53.565Z
   notes:
     - _ulid: 01KFDQ9FJBWFJH7N2B78DHM6G3
       created_at: 2026-01-20T12:50:19.852Z
@@ -15594,5 +15600,89 @@
 
         - Add this to the shadow branch troubleshooting section
       supersedes: null
+    - _ulid: 01KFDT5BFBC28H76PCQFY7XX1A
+      created_at: 2026-01-20T13:40:30.316Z
+      author: "@claude"
+      content: >-
+        ## Final Implementation Plan
+
+
+        ### Root Cause
+
+        When cwd is .kspec/, `getGitRoot()` returns the worktree root. Then `detectShadow()` looks
+        for `.kspec/.kspec/` which doesn't exist, returning null. Commands execute but
+        auto-commit/push silently fails.
+
+
+        ### Solution
+
+        Add early detection in `initContext()` that checks if cwd is inside the shadow worktree by:
+
+        1. Checking if `.git` is a file (worktrees have .git files)
+
+        2. Reading the gitdir reference
+
+        3. Checking if it points to a shadow worktree pattern
+
+
+        If detected, throw `ShadowError` with code `RUNNING_FROM_SHADOW` and actionable suggestion.
+
+
+        ### Files to Modify
+
+        - src/parser/shadow.ts - Add `detectRunningFromShadowWorktree()` function, update
+        ShadowError type
+
+        - src/parser/yaml.ts - Add check in `initContext()` before `detectShadow()`
+
+        - src/parser/index.ts - Export new function
+
+        - src/strings/errors.ts - Add error messages
+
+        - tests/shadow.test.ts - Unit tests + E2E CLI tests
+
+        - AGENTS.md - Document the behavior and agent cwd pitfall
+
+
+        ### Spec Coverage
+
+        Added comprehensive AC to @shadow-errors for ALL error scenarios:
+
+
+        1. AC-1: Shadow not initialized → suggests `kspec init`
+
+        2. AC-2: Worktree disconnected → suggests `kspec shadow repair`
+
+        3. AC-3: .kspec directory missing → suggests `kspec shadow repair`
+
+        4. AC-4: Running from inside .kspec/ → suggests `cd` to project root (NEW)
+
+        5. AC-5: All errors are actionable with specific fix command
+
+
+        ### Test Strategy
+
+        1. Unit test: `detectRunningFromShadowWorktree()` returns null for regular repos, returns
+        project root for .kspec/ worktree
+
+        2. Integration test: `initContext(worktreeDir)` throws ShadowError with RUNNING_FROM_SHADOW
+        code
+
+        3. E2E test: Run `kspec task list` from .kspec/ directory, verify error message in output
+
+
+        ### Implementation Order
+
+        1. Add spec AC first (establishes what we're building) ✓
+
+        2. Add error strings
+
+        3. Add detection function
+
+        4. Add check in initContext()
+
+        5. Add tests
+
+        6. Update docs
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T13:39:53.565Z
