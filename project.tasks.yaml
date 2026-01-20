@@ -1443,11 +1443,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1953,6 +1955,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2068,6 +2071,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15440,6 +15444,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -15488,19 +15493,100 @@
         All 624 tests pass.
       supersedes: null
   todos: []
-- title: Fix shadow detection when running kspec from inside .kspec/ folder
+- _ulid: 01KFDQ924NXA19T1K6F1B356Y0
+  slugs: []
+  title: Fix shadow detection when running kspec from inside .kspec/ folder
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KFDQ924NXA19T1K6F1B356Y0
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-20T12:50:06.100Z
-  notes: []
+  notes:
+    - _ulid: 01KFDQ9FJBWFJH7N2B78DHM6G3
+      created_at: 2026-01-20T12:50:19.852Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        When kspec commands are run from inside the .kspec/ folder (the shadow branch worktree),
+        auto-commit and auto-push silently fail.
+
+
+        ### Root Cause
+
+
+        In `src/cli/shadow.ts`, `detectShadow()` calls `getGitRoot(startDir)` which returns the
+        worktree's root when cwd is .kspec/:
+
+        - `getGitRoot()` returns `/path/to/project/.kspec` (wrong - this is the worktree root)
+
+        - `detectShadow()` then looks for `.kspec/.kspec/` which doesn't exist
+
+        - Shadow detection returns `null`
+
+        - `commitIfShadow()` silently returns `false` - no auto-commit or push
+
+
+        ### Why It's Silent
+
+
+        The error handling in `shadowAutoCommit()` (lines 351-357) only logs errors in debug mode:
+
+        ```typescript
+
+        if (debug) {
+          console.error('Shadow auto-commit failed:', error);
+        }
+
+        return false;  // Silent failure
+
+        ```
+
+
+        ### Evidence
+
+
+        Ralph loop session got into .kspec/ and ran commands. Result: uncommitted changes in shadow
+        branch:
+
+        - kynetic.meta.yaml (modified)
+
+        - sessions/01KFDNXYFJ2K8J33CJRZFHQ7W4/*.yaml and *.jsonl files
+
+        - Shadow branch 1 commit ahead of origin (not pushed)
+
+
+        ## Fix Required
+
+
+        ### 1. Core CLI Fix
+
+        Options:
+
+        a) Detect if running from inside .kspec/ and error with clear guidance
+
+        b) Normalize working directory automatically by searching upward for main repo
+
+        c) Use parent directory logic in detectShadow() to find actual project root
+
+
+        ### 2. Documentation/Instructions Update
+
+        Add to AGENTS.md or CLAUDE.md:
+
+        - Always verify cwd is project root before troubleshooting kspec issues
+
+        - Never cd into .kspec/ to run kspec commands
+
+        - If kspec seems broken, first check `pwd` and ensure you're at project root
+
+        - Add this to the shadow branch troubleshooting section
+      supersedes: null
   todos: []
