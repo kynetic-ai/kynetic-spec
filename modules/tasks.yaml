@@ -297,6 +297,10 @@ features:
             when: kspec session start is run
             then: pending_review tasks are displayed in an 'Awaiting Review' or similar section separate from
               active work
+          - id: ac-6
+            given: a task with status pending_review
+            when: kspec tasks list --status pending_review is run
+            then: the task appears in the filtered list
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
