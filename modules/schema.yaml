@@ -458,6 +458,11 @@ features:
             when: the YAML is written
             then: literal block style (|) is used for cleaner formatting (preserves newlines without \n escape
               sequences)
+          - id: ac-2
+            given: multiline content uses literal block style
+            when: the YAML is parsed
+            then: newlines are preserved and the content is readable (recommended practice for descriptions and
+              notes)
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs:
       - validation
