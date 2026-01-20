@@ -1543,4 +1543,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCWZ8SEY6Z49V14D2X73ZGE
+    type: friction
+    content: "loadSpecFile() only parsed first YAML document when multiple documents present (---
+      separators). Root cause: YAML.parse() vs YAML.parseAllDocuments(). This broke tests that
+      appended traits to files using document separators. Fix was straightforward once identified,
+      but debugging took time because manual tests worked (single document) while multi-document
+      tests failed silently."
+    created_at: 2026-01-20T05:10:22.255Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
