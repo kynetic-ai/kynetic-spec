@@ -1411,11 +1411,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1857,6 +1859,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1972,6 +1975,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14019,6 +14023,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T21:10:30.751Z
+  started_at: 2026-01-20T05:14:09.002Z
   notes:
     - _ulid: 01KFC1GM2ZKTMVQPWQXB5XFR48
       created_at: 2026-01-19T21:10:30.751Z
@@ -14083,8 +14088,30 @@
         **Tests**:
         - tests/parser/validate.test.ts - Test trait AC coverage warnings
       supersedes: null
+    - _ulid: 01KFCX76MV0BC8HZGMPGR723CV
+      created_at: 2026-01-20T05:14:42.204Z
+      author: "@claude"
+      content: |-
+        Understanding requirements:
+
+        AC-1: When a spec implements a trait, validate that all trait ACs have test coverage
+        AC-2: Test annotation format is '// AC: @trait-ref ac-N' 
+        AC-3: Trait AC coverage included automatically in 'kspec validate' (no special flag)
+        AC-4: Validation error when spec references deleted trait
+
+        Implementation approach:
+        1. Extend checkCompleteness() in validate.ts to scan for trait AC coverage
+        2. Use TraitIndex.getInheritedAC() to get all trait ACs for a spec
+        3. Check test coverage for each inherited AC using same mechanism as direct ACs
+        4. Add trait broken ref check to ref validation
+        5. Add tests covering all 4 ACs
+
+        Current architecture: 
+        - checkCompleteness() already scans test annotations and checks AC coverage
+        - TraitIndex provides getInheritedAC() to get trait ACs for a spec
+        - Need to integrate these in the completeness check
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T05:14:09.002Z
 - _ulid: 01KFC1GM6DWKP5VVAXRCWKCXXT
   slugs:
     - task-trait-cli-commands
@@ -14654,6 +14681,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
