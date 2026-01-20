@@ -124,6 +124,11 @@ features:
             when: validation runs
             then: constraint structure is validated (must have title and description defining system boundary or
               limitation)
+          - id: ac-2
+            given: a constraint defines a system limitation
+            when: the constraint is enforced in implementation
+            then: the system operates within the defined boundary (e.g., 10k concurrent users, must use
+              PostgreSQL)
       - _ulid: 01JHNKA1W8TYPE500000000000
         slugs:
           - type-decision
