@@ -793,6 +793,10 @@ features:
         given: kspec tasks assess automation is run
         when: displaying results
         then: lists pending tasks without automation field (unassessed) by default
+      - id: ac-2
+        given: kspec tasks assess automation is run
+        when: the --all flag is provided
+        then: includes tasks that already have automation set
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
