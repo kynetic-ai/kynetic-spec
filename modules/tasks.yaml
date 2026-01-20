@@ -877,6 +877,10 @@ features:
         given: kspec tasks assess automation --dry-run is run
         when: displaying output
         then: shows what would change without modifying tasks
+      - id: ac-23
+        given: kspec tasks assess automation --dry-run --auto is run
+        when: combining flags
+        then: shows auto mode changes without applying them
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
