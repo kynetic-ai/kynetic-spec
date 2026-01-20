@@ -468,11 +468,6 @@ features:
         notes: []
         created: 2026-01-20T22:44:37.458Z
         acceptance_criteria:
-          - id: ac-6
-            given: workflow runs exist
-            when: kspec workflow runs is executed
-            then: "outputs table with: ID (short ULID), Workflow, Status, Step (N/M), Started; supports
-              --active, --completed, --workflow filters"
           - id: ac-7
             given: workflow.enforcement=strict and step has criteria
             when: kspec workflow next is executed
