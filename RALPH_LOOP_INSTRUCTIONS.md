@@ -39,6 +39,11 @@ Then follow this decision tree:
 
 **Merge strategy**: Use `--merge` (not `--squash`) to preserve kspec trailers in commit messages.
 
+**After merge**: Complete the linked task:
+```bash
+kspec task complete @task-ref --reason "Merged in PR #N"
+```
+
 ## Problematic Tasks
 
 | Situation | Action |
@@ -50,13 +55,24 @@ Then follow this decision tree:
 
 ## After Commit: Create PR (REQUIRED)
 
-The built-in prompt handles committing. **After that, create a PR:**
+The built-in prompt handles committing. **After that:**
 
-```
-/pr
-```
+1. **Submit task for review** (marks as pending_review):
+   ```bash
+   kspec task submit @task-ref
+   ```
+
+2. **Create PR**:
+   ```
+   /pr
+   ```
 
 Never leave changes only on main. Every iteration should end with a PR.
+
+**After PR is merged** (by you or a subsequent iteration):
+```bash
+kspec task complete @task-ref --reason "Merged in PR #N"
+```
 
 ## Reflect Guidance
 
