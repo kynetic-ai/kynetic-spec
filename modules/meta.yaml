@@ -468,10 +468,6 @@ features:
         notes: []
         created: 2026-01-20T22:44:37.458Z
         acceptance_criteria:
-          - id: ac-7
-            given: workflow.enforcement=strict and step has criteria
-            when: kspec workflow next is executed
-            then: requires --confirm flag to proceed; --skip requires --force flag
           - id: ac-8
             given: workflow.enforcement=advisory (or omitted) and step has criteria
             when: kspec workflow next is executed
