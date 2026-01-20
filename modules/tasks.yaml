@@ -885,6 +885,10 @@ features:
         given: kspec tasks assess automation --json is run
         when: outputting results
         then: outputs structured JSON with criteria details for each task
+      - id: ac-25
+        given: kspec tasks assess automation --json is run
+        when: outputting results
+        then: JSON includes summary counts of recommendations
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
