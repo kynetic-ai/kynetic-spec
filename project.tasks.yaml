@@ -1361,11 +1361,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1707,6 +1709,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1822,6 +1825,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13976,4 +13980,64 @@
 
         All 618 tests passing in CI.
       supersedes: null
+  todos: []
+- title: "Implement: Pending Review State"
+  type: task
+  spec_ref: "@pending-review-state"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-pending-review-state
+  tags:
+    - tasks
+  depends_on:
+    - "@task-state-transitions"
+  notes:
+    - _ulid: 01KFCJVC08H9ABPRBGE1BSAAK5
+      created_at: 2026-01-20T02:13:28.712Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Add pending_review status to task lifecycle. This state represents 'code complete, awaiting
+        merge' - bridging the gap between in_progress (actively working) and completed
+        (merged/shipped). Tasks transition to pending_review when work is done but PR needs
+        review/merge, then to completed when actually shipped.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given TaskStatusSchema in common.ts, when validating a task status value, then
+        pending_review is accepted as a valid enum value
+
+        - ac-2: Given a task with status pending_review, when kspec task complete is run, then the
+        task transitions to completed (pending_review is a valid pre-state for completion)
+
+        - ac-3: Given a task with status in_progress, when kspec task set @task --status
+        pending_review is run, then the task transitions to pending_review
+
+        - ac-4: Given a task with status pending_review, when ready tasks are queried via kspec
+        tasks ready, then the pending_review task is NOT included (only pending tasks are ready)
+
+        - ac-5: Given tasks exist with status pending_review, when kspec session start is run, then
+        pending_review tasks are displayed in an 'Awaiting Review' or similar section separate from
+        active work
+
+        - ac-6: Given a task with status pending_review, when kspec tasks list --status
+        pending_review is run, then the task appears in the filtered list
+
+        - ac-7: Given the AGENTS.md task state diagram, when describing task lifecycle, then
+        pending_review appears between in_progress and completed with valid transition paths
+
+        - ac-8: Given the CLI help content for task commands, when viewing help for task state
+        transitions, then pending_review is documented with its purpose and valid transitions
+      supersedes: null
+  _ulid: 01KFCJVC09RSPN0M8J2HGS49Y2
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-20T02:13:28.713Z
   todos: []
