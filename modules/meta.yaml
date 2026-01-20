@@ -468,10 +468,6 @@ features:
         notes: []
         created: 2026-01-20T22:44:37.458Z
         acceptance_criteria:
-          - id: ac-4
-            given: a step has exit_criteria defined
-            when: kspec workflow next completes the step
-            then: outputs exit criteria after completion; strict mode blocks without --confirm
           - id: ac-5
             given: a run is at the last step
             when: kspec workflow next @run-id is executed
