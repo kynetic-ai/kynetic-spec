@@ -1518,11 +1518,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2178,6 +2180,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2293,6 +2296,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13891,6 +13895,7 @@
   derivation: auto
   status: cancelled
   blocked_by: []
+  closed_reason: Replaced by guided workflow execution feature
   depends_on: []
   context: []
   priority: 3
@@ -13951,7 +13956,6 @@
         - Eliminates need for static files entirely
       supersedes: null
   todos: []
-  closed_reason: Replaced by guided workflow execution feature
 - _ulid: 01KFBX5FDNJ4Q662C36S97KFE7
   slugs: []
   title: Implement task automation eligibility system
@@ -15951,6 +15955,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17165,4 +17170,85 @@
         5. Amended AC-22 in @task-automation-eligibility to clarify agents CAN mark eligible when
         reviewing
       supersedes: null
+  todos: []
+- title: "Implement: Guided Workflow Execution"
+  type: task
+  spec_ref: "@guided-workflow-execution"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-guided-workflow-execution
+  tags:
+    - meta
+    - workflows
+  depends_on:
+    - "@task-workflow-definitions"
+  notes:
+    - _ulid: 01KFESC8PD900QBNMHG2FFVQSN
+      created_at: 2026-01-20T22:46:02.701Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Transform workflows into interactive, guided processes with entry/exit criteria, workflow
+        runs as durable artifacts, step-by-step progression, and configurable enforcement (advisory
+        or strict).
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given a workflow exists, when kspec workflow start @ref is executed, then creates
+        WorkflowRun in .kspec/kynetic.runs.yaml with status=active, current_step=0, started_at;
+        outputs run ID
+
+        - ac-2: Given an active run exists, when kspec workflow next @run-id is executed, then
+        completes current step, records in step_results, shows next step; if last step, completes
+        run
+
+        - ac-3: Given a step has entry_criteria defined, when kspec workflow next reaches that step,
+        then outputs entry criteria; strict mode blocks until --confirm flag passed
+
+        - ac-4: Given a step has exit_criteria defined, when kspec workflow next completes the step,
+        then outputs exit criteria after completion; strict mode blocks without --confirm
+
+        - ac-5: Given a run is at the last step, when kspec workflow next @run-id is executed, then
+        status=completed, completed_at set, outputs summary with duration and step count
+
+        - ac-6: Given workflow runs exist, when kspec workflow runs is executed, then outputs table
+        with: ID (short ULID), Workflow, Status, Step (N/M), Started; supports --active,
+        --completed, --workflow filters
+
+        - ac-7: Given workflow.enforcement=strict and step has criteria, when kspec workflow next is
+        executed, then requires --confirm flag to proceed; --skip requires --force flag
+
+        - ac-8: Given workflow.enforcement=advisory (or omitted) and step has criteria, when kspec
+        workflow next is executed, then shows criteria as guidance only; skip allowed without
+        --force
+
+        - ac-9: Given an active run exists, when kspec workflow abort @run-id --reason '...' is
+        executed, then status=aborted, abort_reason recorded, completed_at set
+
+        - ac-10: Given an active run exists, when kspec workflow pause @run-id is executed, then
+        status=paused, paused_at set; can resume later
+
+        - ac-11: Given a paused run exists, when kspec workflow resume @run-id is executed, then
+        status=active, paused_at cleared, continues from current_step
+
+        - ac-12: Given a step defines inputs, when kspec workflow next @run-id is executed, then
+        outputs required inputs; --input key=value captures input in step_results.inputs
+
+        - ac-13: Given no run-id provided and one active run exists, when kspec workflow next is
+        executed, then infers the single active run and operates on it
+
+        - ac-14: Given no run-id provided and multiple active runs exist, when kspec workflow next
+        is executed, then errors with list of active runs to choose from
+      supersedes: null
+  _ulid: 01KFESC8PDRM0BYHVNMC3XKH2H
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-20T22:46:02.701Z
   todos: []
