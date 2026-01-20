@@ -688,6 +688,7 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 | `/audit` | Comprehensive codebase audit for release readiness |
 | `/kspec` | Task and spec management workflows |
 | `/meta` | Session context (focus, threads, questions, observations) |
+| `/spec` | Spec authoring guide - item types, acceptance criteria, traits |
 | `/triage` | Systematic inbox and observation processing |
 | `/spec-plan` | Translate approved plans to specs |
 | `/reflect` | Session reflection and learning capture |
