@@ -1431,11 +1431,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1917,6 +1919,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2032,6 +2035,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14793,6 +14797,37 @@
         4. Re-run tests to verify 4/4 pass
         5. Submit task and create PR
       supersedes: null
+    - _ulid: 01KFD1PV8S90J6MW0RAY0WGJWD
+      created_at: 2026-01-20T06:33:09.145Z
+      author: "@claude"
+      content: >-
+        Fixed trait edge case handling - all 4 tests passing.
+
+
+        **Root cause**: validate() wasn't loading items from manifest, so traits were never included
+        in validation.
+
+
+        **Fix**: Added extractItemsFromRaw() call in validate() to load manifest items (traits,
+        inline modules).
+
+
+        **Test fixes**:
+
+        - AC-2: Working correctly (cycle detection)
+
+        - AC-3: Simplified test to modify existing core.yaml feature instead of creating nested
+        items
+
+        - All 4 ACs now have passing E2E tests
+
+
+        Files modified:
+
+        - src/parser/validate.ts: Load manifest items, import extractItemsFromRaw
+
+        - tests/trait-edge-cases.test.ts: Fix AC-3 test approach
+      supersedes: null
   todos: []
 - _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   slugs: []
@@ -15156,6 +15191,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
