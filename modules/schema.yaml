@@ -172,6 +172,12 @@ features:
           - "@item-types"
         relates_to:
           - "@tasks"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task-type spec item is created
+            when: validation runs
+            then: task structure is validated (must have title, can have spec_ref to link to spec item, can have
+              task-specific fields like priority and status)
   - _ulid: 01JHNKA2W0STAT000000000000
     slugs:
       - status-lifecycle
