@@ -1498,11 +1498,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2118,6 +2120,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2233,6 +2236,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12971,7 +12975,7 @@
   type: bug
   spec_ref: "@stale-status-detection"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -13088,6 +13092,10 @@
         - AC now accurately describes the implementation
       supersedes: null
   todos: []
+  completed_at: 2026-01-20T15:46:47.616Z
+  closed_reason: Spec AC-1 updated to match implementation. Changed from 'parent task with child spec
+    items' to 'task with dependency tasks' - aligns spec with what's actually implemented and
+    tested.
 - _ulid: 01KFBBZCX42JR4DTVYA1TJ6PRC
   slugs:
     - task-reset-command
@@ -15665,6 +15673,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
