@@ -440,6 +440,12 @@ features:
           Used for: cross-references, "see also" links.
         implements:
           - "@relationship-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: item A relates_to item B
+            when: viewing item A
+            then: B is shown as a related reference (general association without specific semantics like 'see
+              also')
       - _ulid: 01KEZCJPJ26Q09SD3GCQAXJWP9
         slugs:
           - rel-blocks
