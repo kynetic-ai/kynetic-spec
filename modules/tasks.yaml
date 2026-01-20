@@ -880,8 +880,9 @@ requirements:
       - id: ac-22
         given: a task's automation status needs to change
         when: considering valid transitions
-        then: any status can transition to any other status, but transitions TO eligible require human
-          action (agents cannot mark tasks eligible)
+        then: any status can transition to any other status; CLI auto-mode (kspec tasks assess automation
+          --auto) does NOT mark tasks eligible, but agents/humans reviewing interactively CAN mark
+          eligible via kspec task set
       - id: ac-23
         given: "a task has automation: eligible"
         when: its spec_ref is removed or the referenced spec is deleted
