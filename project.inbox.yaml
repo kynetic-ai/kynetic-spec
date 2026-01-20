@@ -251,3 +251,9 @@ inbox:
     created_at: 2026-01-20T12:51:58.887Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KFE2X9RP7HS3SPGH4MGYJCDF
+    text: "Ralph loop: Add signal/mechanism for agents to explicitly end the loop when target work is
+      complete (e.g., special exit command or completion marker)"
+    created_at: 2026-01-20T16:13:23.607Z
+    tags: []
+    added_by: "@claude"
