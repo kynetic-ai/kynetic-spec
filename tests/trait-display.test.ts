@@ -21,14 +21,16 @@ describe('Trait Display - Item Get', () => {
     tempDir = await setupTempFixtures();
     await initGitRepo(tempDir);
 
-    // Create a trait with AC
-    const traitModule = `
-_ulid: 01TRAIT00000000000000000
+    // Create a trait module
+    const traitModule = `_ulid: 01KFCVXQ97E9XPWSD35B21CR2X
 slugs:
   - trait-json-output
 title: JSON Output Support
 type: trait
 description: Trait for specs that support JSON output
+status:
+  maturity: draft
+  implementation: not_started
 acceptance_criteria:
   - id: ac-1
     given: command with --json flag
@@ -40,26 +42,30 @@ acceptance_criteria:
     then: contains all required fields
 `;
 
-    await fs.mkdir(path.join(tempDir, 'modules'), { recursive: true });
     await fs.writeFile(
       path.join(tempDir, 'modules/traits.yaml'),
       traitModule
     );
 
-    // Create a spec that implements the trait
-    const specModule = `
-_ulid: 01SPEC0000000000000000000
+    // Create a module with a feature that implements the trait
+    const specModule = `_ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
 slugs:
   - spec-with-trait
 title: Spec Module
 type: module
+status:
+  maturity: draft
+  implementation: not_started
 
 features:
-  - _ulid: 01SPEC0001000000000000000
+  - _ulid: 01KFCVXQBB00112233445566YY
     slugs:
       - feature-with-trait
     title: Feature with Trait
     type: feature
+    status:
+      maturity: draft
+      implementation: not_started
     traits:
       - "@trait-json-output"
     acceptance_criteria:
@@ -147,12 +153,15 @@ features:
 
     const updatedTraits = traitModule + `
 ---
-_ulid: 01TRAIT00000000000000001
+_ulid: 01KFCVXQCCAABBCCDDEEFF00XX
 slugs:
   - trait-api
 title: API Support
 type: trait
 description: Trait for API endpoints
+status:
+  maturity: draft
+  implementation: not_started
 acceptance_criteria:
   - id: ac-1
     given: API endpoint
@@ -197,12 +206,15 @@ describe('Trait Display - Task Get', () => {
     await initGitRepo(tempDir);
 
     // Create trait and spec (same as above)
-    const traitModule = `
-_ulid: 01TRAIT00000000000000000
+    const traitModule = `_ulid: 01TRAIT10000000000000000
 slugs:
   - trait-json-output
 title: JSON Output Support
 type: trait
+description: Trait for specs that support JSON output
+status:
+  maturity: draft
+  implementation: not_started
 acceptance_criteria:
   - id: ac-1
     given: command with --json flag
@@ -210,25 +222,29 @@ acceptance_criteria:
     then: outputs valid JSON
 `;
 
-    await fs.mkdir(path.join(tempDir, 'modules'), { recursive: true });
     await fs.writeFile(
       path.join(tempDir, 'modules/traits.yaml'),
       traitModule
     );
 
-    const specModule = `
-_ulid: 01SPEC0000000000000000000
+    const specModule = `_ulid: 01SPEC100000000000000000
 slugs:
   - spec-with-trait
 title: Spec Module
 type: module
+status:
+  maturity: draft
+  implementation: not_started
 
 features:
-  - _ulid: 01SPEC0001000000000000000
+  - _ulid: 01SPEC101000000000000000
     slugs:
       - feature-with-trait
     title: Feature with Trait
     type: feature
+    status:
+      maturity: draft
+      implementation: not_started
     traits:
       - "@trait-json-output"
     acceptance_criteria:
@@ -258,12 +274,11 @@ features:
     );
 
     // Create task linked to spec
-    const tasksFile = `
-_version: "0.1"
+    const tasksFile = `_version: "0.1"
 _updated_at: "2026-01-20T00:00:00Z"
 
 tasks:
-  - _ulid: 01TASK000000000000000000
+  - _ulid: 01KFCVXQDD1122334455667788
     slugs:
       - task-with-trait-spec
     title: Task with Trait Spec
