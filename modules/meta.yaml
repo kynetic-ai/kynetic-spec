@@ -614,6 +614,10 @@ features:
                 given: a run with status=completed or status=aborted exists
                 when: kspec workflow abort @run-id is executed
                 then: errors indicating run cannot be aborted in current state
+              - id: ac-6
+                given: a workflow and task exist
+                when: kspec workflow start @workflow --task @task-ref is executed
+                then: creates run with task_ref field set, linking run to task context
           - _ulid: 01KFESTXHYVDTW4X0Y13RN78K3
             slugs:
               - workflow-step-navigation
