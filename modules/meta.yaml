@@ -683,6 +683,10 @@ features:
                 given: no run-id provided and multiple active runs exist
                 when: kspec workflow next is executed
                 then: errors with list of active runs to choose from
+              - id: ac-5
+                given: no run-id provided and no active runs exist
+                when: kspec workflow next is executed
+                then: errors with message 'No active workflow runs'
           - _ulid: 01KFESVX00JT6YJ406QX5N63XQ
             slugs:
               - workflow-enforcement-modes
