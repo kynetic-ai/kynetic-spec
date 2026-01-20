@@ -1523,11 +1523,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2193,6 +2195,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2308,6 +2311,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15976,6 +15980,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17191,18 +17196,24 @@
         reviewing
       supersedes: null
   todos: []
-- title: "Implement: Guided Workflow Execution"
+- _ulid: 01KFESYSE8RGFG64K1VDAP056W
+  slugs:
+    - task-guided-workflow-execution
+  title: "Implement: Guided Workflow Execution"
   type: task
   spec_ref: "@guided-workflow-execution"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-workflow-definitions"
+  context: []
   priority: 3
-  slugs:
-    - task-guided-workflow-execution
   tags:
     - meta
     - workflows
-  depends_on:
-    - "@task-workflow-definitions"
+  vcs_refs: []
+  created_at: 2026-01-20T22:56:09.672Z
   notes:
     - _ulid: 01KFESYSE79G8H9Y4NTRJ4DFQR
       created_at: 2026-01-20T22:56:09.671Z
@@ -17215,10 +17226,149 @@
         runs as durable artifacts, step-by-step progression, and configurable enforcement (advisory
         or strict).
       supersedes: null
-  _ulid: 01KFESYSE8RGFG64K1VDAP056W
+  todos: []
+- title: "Implement: Workflow Run Foundation"
+  type: task
+  spec_ref: "@workflow-run-foundation"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-workflow-run-foundation
+  tags: []
+  depends_on:
+    - "@task-guided-workflow-execution"
+  notes:
+    - _ulid: 01KFESYSK4NWB4H592KMR26SDP
+      created_at: 2026-01-20T22:56:09.828Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Schema definitions, storage operations, and basic run lifecycle commands (start, list,
+        abort).
+
+
+        ## Schema Definitions
+
+
+        ### WorkflowRunSchema
+
+        ```typescript
+
+        {
+          _ulid: UlidSchema,
+          workflow_ref: RefSchema,           // @workflow-id reference
+          status: 'active' | 'paused' | 'completed' | 'aborted',
+          current_step: number,              // 0-indexed
+          total_steps: number,               // Snapshot at creation
+          started_at: DateTimeSchema,
+          paused_at?: DateTimeSchema,
+          completed_at?: DateTimeSchema,
+          step_results: StepResultSchema[],
+          initiated_by?: string,             // getAuthor()
+          abort_reason?: string,
+          task_ref?: RefSchema,              // Optional task link
+        }
+
+        ```
+
+
+        ### StepResultSchema
+
+        ```typescript
+
+        {
+          step_index: number,
+          status: 'completed' | 'skipped' | 'failed',
+          started_at: DateTimeSchema,
+          completed_at: DateTimeSchema,
+          entry_confirmed?: boolean,
+          exit_confirmed?: boolean,
+          notes?: string,
+          inputs?: Record<string, string>,
+        }
+
+        ```
+
+
+        ### WorkflowRunsFileSchema
+
+        ```typescript
+
+        {
+          kynetic_runs: '1.0',
+          runs: WorkflowRun[],
+        }
+
+        ```
+
+
+        ### Extended WorkflowSchema
+
+        Add field: `enforcement?: 'advisory' | 'strict'` (default: advisory)
+
+
+        ## Storage Operations
+
+
+        File: `src/parser/meta.ts`
+
+
+        - `loadWorkflowRuns()`: Load from .kspec/kynetic.runs.yaml
+
+        - `saveWorkflowRun(run)`: Create new run, shadow commit
+
+        - `updateWorkflowRun(run)`: Update existing, shadow commit
+
+        - `findWorkflowRunByRef(ref)`: Find by ULID prefix
+
+
+        Shadow commit messages: workflow-start, workflow-abort
+
+
+        ## CLI Commands
+
+
+        - `kspec workflow start @ref [--task @ref] [--json]`
+
+        - `kspec workflow runs [--active] [--completed] [--workflow @ref] [--json]`
+
+        - `kspec workflow show @run [--json]`
+
+        - `kspec workflow abort @run [--reason text] [--json]`
+
+
+        ## Key Files
+
+
+        - src/schema/meta.ts (add schemas)
+
+        - src/parser/meta.ts (add storage functions)
+
+        - src/cli/commands/workflow.ts (new file)
+
+        - src/strings/errors.ts (add error messages)
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given a workflow exists, when kspec workflow start @ref is executed, then creates
+        WorkflowRun in .kspec/kynetic.runs.yaml with status=active, current_step=0, total_steps from
+        workflow, started_at; outputs run ID
+
+        - ac-2: Given workflow runs exist, when kspec workflow runs is executed, then outputs table
+        with: ID (short ULID), Workflow, Status, Step (N/M), Started; supports --active,
+        --completed, --workflow filters
+
+        - ac-3: Given an active run exists, when kspec workflow abort @run-id --reason '...' is
+        executed, then status=aborted, abort_reason recorded, completed_at set; shadow committed
+      supersedes: null
+  _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-20T22:56:09.672Z
+  created_at: 2026-01-20T22:56:09.828Z
   todos: []
