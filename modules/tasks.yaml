@@ -901,6 +901,9 @@ features:
         given: kspec tasks assess automation is run
         when: filtering tasks
         then: non-pending tasks (completed, cancelled, in_progress, blocked) are excluded
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
