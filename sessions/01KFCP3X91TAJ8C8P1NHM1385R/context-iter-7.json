@@ -1,0 +1,342 @@
+{
+  "generated_at": "2026-01-20T04:26:16.879Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-19T03:06:10.499Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFC1GKW",
+      "title": "Implement: TraitIndex",
+      "priority": 1,
+      "spec_ref": "@trait-index",
+      "tags": []
+    },
+    {
+      "ref": "01KFC1GKZ",
+      "title": "Implement: Trait Display in Spec/Task Output",
+      "priority": 1,
+      "spec_ref": "@trait-display",
+      "tags": []
+    },
+    {
+      "ref": "01KFC1GM2",
+      "title": "Implement: Trait AC Coverage Validation",
+      "priority": 1,
+      "spec_ref": "@trait-validation",
+      "tags": []
+    },
+    {
+      "ref": "01KFC1GM6",
+      "title": "Implement: Trait CLI Commands",
+      "priority": 1,
+      "spec_ref": "@trait-cli",
+      "tags": []
+    },
+    {
+      "ref": "01KFC1GM9",
+      "title": "Implement: Trait Edge Cases",
+      "priority": 1,
+      "spec_ref": "@trait-edge-cases",
+      "tags": []
+    },
+    {
+      "ref": "01KFBBTT",
+      "title": "Fix test repo setup command issues",
+      "priority": 2,
+      "spec_ref": "@cmd-clone-for-testing",
+      "tags": []
+    },
+    {
+      "ref": "01KFBBXC",
+      "title": "Fix stale status AC-1: use spec hierarchy not task dependencies",
+      "priority": 2,
+      "spec_ref": "@stale-status-detection",
+      "tags": []
+    },
+    {
+      "ref": "01KFBBZC",
+      "title": "Add kspec task reset command to return task to pending",
+      "priority": 2,
+      "spec_ref": "@cmd-task",
+      "tags": []
+    },
+    {
+      "ref": "01KFBD5P",
+      "title": "Improve shadow branch robustness and enforce temp dir testing",
+      "priority": 2,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KFBD9N",
+      "title": "Add CI check for unresolved PR review comments before merge",
+      "priority": 2,
+      "spec_ref": null,
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KFC1GKR",
+      "title": "Implement: Traits Field on Specs",
+      "completed_at": "2026-01-20T04:25:47.153Z",
+      "closed_reason": "Merged in PR #100. Implemented traits field validation with 100% AC coverage (5/5 ACs). Both unit tests and E2E CLI tests added. All 645 tests passing."
+    },
+    {
+      "ref": "01KFC1GKM",
+      "title": "Implement: Trait Type",
+      "completed_at": "2026-01-20T04:07:38.316Z",
+      "closed_reason": "Merged in PR #99. Implemented trait-specific validation warnings with 100% AC coverage (4/4 ACs). All 634 tests passing."
+    },
+    {
+      "ref": "01KFBB5R",
+      "title": "Complete YAML library migration in 3 remaining files",
+      "completed_at": "2026-01-20T03:53:04.788Z",
+      "closed_reason": "Merged in PR #98. Successfully migrated all remaining writeYamlFile usages to writeYamlFilePreserveFormat in fix.ts, module.ts, and meta.ts. All 630 tests passing."
+    },
+    {
+      "ref": "01KFC1GKG",
+      "title": "Implement: Spec Traits System",
+      "completed_at": "2026-01-20T03:43:02.397Z",
+      "closed_reason": "Merged in PR #97"
+    },
+    {
+      "ref": "01KFBB1B",
+      "title": "Fix 6 incorrect exit codes from PR #87 review",
+      "completed_at": "2026-01-20T03:22:14.062Z",
+      "closed_reason": "Merged in PR #96"
+    },
+    {
+      "ref": "01KFCNB6",
+      "title": "Fix adapter validation using adapter ID instead of package name",
+      "completed_at": "2026-01-20T03:08:47.565Z",
+      "closed_reason": "Merged in PR #95"
+    },
+    {
+      "ref": "01KFCJVC",
+      "title": "Implement: Pending Review State",
+      "completed_at": "2026-01-20T02:52:19.319Z",
+      "closed_reason": "Merged in PR #94"
+    },
+    {
+      "ref": "01KFBNG4",
+      "title": "Spec out pending_review task state",
+      "completed_at": "2026-01-20T02:13:53.435Z",
+      "closed_reason": "Created spec @pending-review-state with 8 acceptance criteria covering schema, transitions, session display, and documentation. Derived implementation task @task-pending-review-state with detailed notes."
+    },
+    {
+      "ref": "01KFC7FZ",
+      "title": "Improve test performance: centralize utilities and use pre-built CLI",
+      "completed_at": "2026-01-19T23:09:34.230Z",
+      "closed_reason": "Centralized test utilities in tests/helpers/cli.ts, switched to pre-built CLI, achieved 6x speedup (200s → 33s). PR #93 created."
+    },
+    {
+      "ref": "01KFC4PJ",
+      "title": "Fix staleness.test.ts to use CLI_PATH pattern instead of global kspec",
+      "completed_at": "2026-01-19T22:11:59.343Z",
+      "closed_reason": "Fixed staleness tests to use CLI_PATH pattern. PR #92 created."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "9a932dd",
+      "full_hash": "9a932dde1a03d134e382031bbb78882340ff725b",
+      "date": "2026-01-20T04:25:35.000Z",
+      "message": "Implement traits field validation (#100)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "451df52",
+      "full_hash": "451df52b482620a2c5f1e7fed348cf26a2375b10",
+      "date": "2026-01-20T04:21:10.000Z",
+      "message": "test: Add E2E CLI tests for traits field validation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "54c8ff3",
+      "full_hash": "54c8ff363c5b93d2166d53c820c6ff2f3d6bf39b",
+      "date": "2026-01-20T04:12:57.000Z",
+      "message": "feat: Implement traits field validation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "58cca8e",
+      "full_hash": "58cca8e92b80f68d20aadbdfc5d0803e23b59e5e",
+      "date": "2026-01-20T04:07:26.000Z",
+      "message": "Implement trait type completeness validation (#99)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "cc48ca3",
+      "full_hash": "cc48ca313fa6ac278167416dd61a22073325a769",
+      "date": "2026-01-20T04:01:42.000Z",
+      "message": "feat: Add trait completeness validation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e590058",
+      "full_hash": "e590058cad13c64499cc34baeeb47b2a01a9fec4",
+      "date": "2026-01-20T03:52:52.000Z",
+      "message": "Complete YAML library migration to writeYamlFilePreserveFormat (#98)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "32b4fe6",
+      "full_hash": "32b4fe6c645ea047428ad3b6e8c1546e34ee0ecd",
+      "date": "2026-01-20T03:47:09.000Z",
+      "message": "refactor: Complete YAML library migration to writeYamlFilePreserveFormat",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "aa46389",
+      "full_hash": "aa463893eb9e6dab28507534db5636dcaa4a9d62",
+      "date": "2026-01-20T03:42:44.000Z",
+      "message": "feat: Add trait type and traits field to schema foundation (#97)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "798155a",
+      "full_hash": "798155a95121d5fd8ad22846c867519055c4ae6c",
+      "date": "2026-01-20T03:37:28.000Z",
+      "message": "test: Add AC-annotated tests for trait schema foundation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ef0659a",
+      "full_hash": "ef0659a93dec28f49c390542900f754d963281eb",
+      "date": "2026-01-20T03:25:41.000Z",
+      "message": "feat: Add trait type and traits field to schema foundation",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6H34",
+      "text": "ACP type safety audit: Review and strengthen typing across ACP client implementation. Current state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add typed response methods for file/read, file/write, terminal/run (2) Type the request params using SDK types (3) Evaluate if we're correctly implementing the full ACP protocol - check SDK docs for any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be deprecated in favor of typed methods only. The { granted: true } bug showed the value of compile-time enforcement.",
+      "created_at": "2026-01-17T17:47:19.570Z",
+      "tags": [
+        "acp",
+        "types",
+        "tech-debt"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6KSA",
+      "text": "ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission requests like the real agent does. Currently mock auto-succeeds tool calls without permission flow. Would have caught the { granted: true } format bug in tests rather than live testing.",
+      "created_at": "2026-01-17T18:34:23.491Z",
+      "tags": [
+        "testing",
+        "acp",
+        "mock"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF9W2H",
+      "text": "Figure out and document a versioning strategy for the package",
+      "created_at": "2026-01-19T00:56:57.571Z",
+      "tags": [
+        "docs",
+        "release"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 227,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 30,
+    "blocked": 0,
+    "completed": 191,
+    "inbox_items": 20
+  }
+}
