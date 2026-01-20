@@ -1364,11 +1364,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1716,6 +1718,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1831,6 +1834,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12818,19 +12822,19 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Created spec @pending-review-state with 8 acceptance criteria covering schema,
+    transitions, session display, and documentation. Derived implementation task
+    @task-pending-review-state with detailed notes.
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T17:40:32.358Z
+  started_at: 2026-01-20T02:13:53.435Z
+  completed_at: 2026-01-20T02:13:53.435Z
   notes: []
   todos: []
-  completed_at: 2026-01-20T02:13:53.435Z
-  closed_reason: Created spec @pending-review-state with 8 acceptance criteria covering schema,
-    transitions, session display, and documentation. Derived implementation task
-    @task-pending-review-state with detailed notes.
-  started_at: 2026-01-20T02:13:53.435Z
 - _ulid: 01KFBNP8HRSA74YFRPWG7A8FYN
   slugs: []
   title: Spec out task automation eligibility system
@@ -14006,7 +14010,7 @@
   depends_on:
     - "@task-state-transitions"
   context: []
-  priority: 3
+  priority: 2
   tags:
     - tasks
   vcs_refs: []
