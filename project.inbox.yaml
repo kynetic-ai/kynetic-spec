@@ -212,19 +212,6 @@ inbox:
       - docs
       - spec
     added_by: "@claude"
-  - _ulid: 01KFC3AFVYV41RPX15EHW10MHC
-    text: "Guided workflow system - Skills become entry points to multi-step workflows. Each step has:
-      entry criteria (prerequisites), actions, exit criteria (completion check), valid next steps.
-      Agent progresses through steps with explicit state tracking. Example: spec-plan workflow would
-      be [Requirements Gathering] → [Exploration] → [Design] → [Review] → [Spec Creation] → [AC
-      Addition] → [Derive Tasks] → [Task Notes]. Prevents skipping steps, ensures proper sequencing.
-      Could extend existing meta-spec workflow concept or be new pattern."
-    created_at: 2026-01-19T21:42:06.974Z
-    tags:
-      - workflow
-      - meta
-      - skills
-    added_by: "@claude"
   - _ulid: 01KFC3SV1V0NBY01W9X12K0G08
     text: 'Batch command execution via JSON - Generic kspec batch command that accepts JSON array of CLI
       commands with args. Example: [{"cmd": "item ac add", "ref": "@spec-1", "given": "...", ...}].
