@@ -9,7 +9,7 @@
 
 import { ulid } from 'ulid';
 import { ulidPattern } from '../schema/common.js';
-import { readYamlFile, writeYamlFile } from './yaml.js';
+import { readYamlFile, writeYamlFilePreserveFormat } from './yaml.js';
 
 // ============================================================
 // TYPES
@@ -161,7 +161,7 @@ export async function fixFile(filePath: string): Promise<AppliedFix[]> {
       }
     }
     if (modified) {
-      await writeYamlFile(filePath, data);
+      await writeYamlFilePreserveFormat(filePath, data);
     }
   } else if (data && typeof data === 'object') {
     const record = data as Record<string, unknown>;
@@ -175,7 +175,7 @@ export async function fixFile(filePath: string): Promise<AppliedFix[]> {
         }
       }
       if (modified) {
-        await writeYamlFile(filePath, data);
+        await writeYamlFilePreserveFormat(filePath, data);
       }
     }
     // Check for inbox file format
@@ -187,13 +187,13 @@ export async function fixFile(filePath: string): Promise<AppliedFix[]> {
         }
       }
       if (modified) {
-        await writeYamlFile(filePath, data);
+        await writeYamlFilePreserveFormat(filePath, data);
       }
     }
     // Spec file (root is a spec item)
     else if ('_ulid' in record) {
       if (fixObject(data, filePath, '', fixes)) {
-        await writeYamlFile(filePath, data);
+        await writeYamlFilePreserveFormat(filePath, data);
       }
     }
   }

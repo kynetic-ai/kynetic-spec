@@ -28,7 +28,7 @@ import {
   type SessionContext,
   getMetaItemType,
 } from '../schema/index.js';
-import { readYamlFile, writeYamlFile, expandIncludePattern, getAuthor } from './yaml.js';
+import { readYamlFile, writeYamlFilePreserveFormat, expandIncludePattern, getAuthor } from './yaml.js';
 import type { KspecContext } from './yaml.js';
 
 /**
@@ -317,7 +317,7 @@ async function saveMetaManifest(
   manifestPath: string,
   manifest: MetaManifest
 ): Promise<void> {
-  await writeYamlFile(manifestPath, manifest);
+  await writeYamlFilePreserveFormat(manifestPath, manifest);
 }
 
 /**
@@ -606,5 +606,5 @@ export async function saveSessionContext(ctx: KspecContext, context: SessionCont
   // Update timestamp
   context.updated_at = new Date().toISOString();
 
-  await writeYamlFile(contextPath, context);
+  await writeYamlFilePreserveFormat(contextPath, context);
 }
