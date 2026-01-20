@@ -26,7 +26,8 @@ describe('trait edge cases', () => {
     // Should contain completeness warning for missing AC
     expect(rawOutput).toContain('Completeness warnings');
     expect(rawOutput).toContain('Missing acceptance criteria');
-    expect(rawOutput).toContain('@test-trait');
+    // Trait shows up as title in completeness warnings
+    expect(rawOutput).toContain('Test Trait');
   });
 
   // AC: @trait-edge-cases ac-2
@@ -36,20 +37,9 @@ describe('trait edge cases', () => {
     kspec('trait add "Trait A" --slug trait-a', tempDir);
     kspec('trait add "Trait B" --slug trait-b', tempDir);
 
-    // Manually edit kynetic.yaml to add circular references
-    const manifestPath = path.join(tempDir, 'kynetic.yaml');
-    const manifestContent = await fs.readFile(manifestPath, 'utf-8');
-
-    // Add traits field to trait-a that references trait-b
-    const updatedContent = manifestContent.replace(
-      /(_ulid: \w+\s+slugs:\s+- trait-a\s+title: Trait A\s+type: trait)/,
-      '$1\n  traits:\n    - "@trait-b"'
-    ).replace(
-      /(_ulid: \w+\s+slugs:\s+- trait-b\s+title: Trait B\s+type: trait)/,
-      '$1\n  traits:\n    - "@trait-a"'
-    );
-
-    await fs.writeFile(manifestPath, updatedContent, 'utf-8');
+    // Use CLI to add trait references creating a cycle
+    kspec('item trait add @trait-a @trait-b', tempDir);
+    kspec('item trait add @trait-b @trait-a', tempDir);
 
     // Run validation
     const rawOutput = kspec('validate', tempDir);
@@ -64,38 +54,43 @@ describe('trait edge cases', () => {
   it('should report broken trait reference when trait is deleted', async () => {
     // Create a trait and a spec that implements it
     kspec('trait add "Test Trait" --slug test-trait', tempDir);
-    // Add a module first, then add spec under it
-    kspec('module add "Test Module" --slug test-module', tempDir);
-    kspec('item add --under @test-module --title "Test Spec" --slug test-spec', tempDir);
-    kspec('item trait add @test-spec @test-trait', tempDir);
 
-    // Manually delete the trait from kynetic.yaml
+    // Create module and spec manually since CLI doesn't support module creation at root
+    const modulePath = path.join(tempDir, 'modules/test.yaml');
+    const moduleContent = `_ulid: 01TEST0000000000000000001
+slugs:
+  - test-module
+title: Test Module
+type: module
+items:
+  - _ulid: 01TEST0000000000000000002
+    slugs:
+      - test-spec
+    title: Test Spec
+    type: feature
+    traits:
+      - "@test-trait"
+    status:
+      maturity: draft
+      implementation: not_started
+`;
+    await fs.writeFile(modulePath, moduleContent, 'utf-8');
+
+    // Manually delete the trait from kynetic.yaml using yaml library
     const manifestPath = path.join(tempDir, 'kynetic.yaml');
-    let manifestContent = await fs.readFile(manifestPath, 'utf-8');
+    const yaml = require('yaml');
+    const manifestContent = await fs.readFile(manifestPath, 'utf-8');
+    const doc = yaml.parseDocument(manifestContent);
 
     // Remove the trait from traits array
-    // Find the trait section and remove it
-    const lines = manifestContent.split('\n');
-    const traitStart = lines.findIndex(line => line.includes('title: Test Trait'));
-    if (traitStart > 0) {
-      // Find the start of this trait item (look backwards for the _ulid)
-      let itemStart = traitStart;
-      while (itemStart > 0 && !lines[itemStart].includes('_ulid:')) {
-        itemStart--;
-      }
-
-      // Find the end (next item or end of traits array)
-      let itemEnd = traitStart + 1;
-      while (itemEnd < lines.length &&
-             !lines[itemEnd].match(/^  - _ulid:/) &&
-             !lines[itemEnd].match(/^[a-z]/)) {
-        itemEnd++;
-      }
-
-      // Remove the trait item
-      lines.splice(itemStart, itemEnd - itemStart);
-      manifestContent = lines.join('\n');
-      await fs.writeFile(manifestPath, manifestContent, 'utf-8');
+    const traits = doc.get('traits');
+    if (traits && traits.items) {
+      const newTraits = traits.items.filter((trait: any) => {
+        const slugs = trait.get('slugs');
+        return !(slugs && slugs.items && slugs.items[0] === 'test-trait');
+      });
+      doc.set('traits', newTraits);
+      await fs.writeFile(manifestPath, doc.toString(), 'utf-8');
     }
 
     // Run validation
