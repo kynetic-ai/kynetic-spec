@@ -68,6 +68,12 @@ features:
           Examples: "User Login", "Data Export", "Search"
         implements:
           - "@item-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a feature-type item is created
+            when: validation runs
+            then: feature structure is validated (must have title, can have requirements array, can be nested in
+              modules)
       - _ulid: 01JHNKA1W6TYPE300000000000
         slugs:
           - type-requirement
