@@ -141,6 +141,12 @@ features:
           Examples: CI setup, dependency updates, tooling.
         implements:
           - "@task-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task with type 'infra' is created
+            when: the task is validated
+            then: "it is accepted as infrastructure/tooling work without requiring spec_ref (examples: CI setup,
+              dependency updates)"
   - _ulid: 01JHNKA4W6TSTA000000000000
     slugs:
       - task-states
