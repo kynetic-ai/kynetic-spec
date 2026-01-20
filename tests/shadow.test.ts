@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import { execSync } from 'node:child_process';
 import {
   detectShadow,
+  detectRunningFromShadowWorktree,
   getShadowStatus,
   generateCommitMessage,
   isValidWorktree,
@@ -27,6 +28,7 @@ import {
   shadowAutoCommit,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
+import { kspec as kspecRun } from './helpers/cli.js';
 
 describe('Shadow Branch', () => {
   // Use /tmp to ensure we're outside any git repo for proper isolation
@@ -998,6 +1000,108 @@ describe('Shadow Branch', () => {
       expect(consoleErrorSpy).not.toHaveBeenCalled();
 
       consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe('detectRunningFromShadowWorktree', () => {
+    it('returns null for non-git directory', async () => {
+      const result = await detectRunningFromShadowWorktree(testDir);
+      expect(result).toBeNull();
+    });
+
+    it('returns null for regular git repo (has .git directory)', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      const result = await detectRunningFromShadowWorktree(testDir);
+      expect(result).toBeNull();
+    });
+
+    it('returns project root when inside .kspec/ worktree', async () => {
+      // Setup shadow worktree
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const result = await detectRunningFromShadowWorktree(worktreeDir);
+      expect(result).toBe(testDir);
+    });
+
+    it('returns null for non-kspec worktree', async () => {
+      // Setup a regular (non-kspec) worktree
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git branch other-branch', { cwd: testDir, stdio: 'pipe' });
+
+      const otherWorktreeDir = path.join(testDir, 'other-worktree');
+      execSync(`git worktree add ${otherWorktreeDir} other-branch`, { cwd: testDir, stdio: 'pipe' });
+
+      const result = await detectRunningFromShadowWorktree(otherWorktreeDir);
+      expect(result).toBeNull();
+
+      // Cleanup
+      execSync(`git worktree remove ${otherWorktreeDir}`, { cwd: testDir, stdio: 'pipe' });
+    });
+  });
+
+  // AC: @shadow-errors ac-4 - Running from inside .kspec
+  describe('initContext from .kspec/ (E2E)', () => {
+    it('throws ShadowError with RUNNING_FROM_SHADOW code', async () => {
+      // Setup
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await expect(initContext(worktreeDir)).rejects.toMatchObject({
+        code: 'RUNNING_FROM_SHADOW',
+      });
+    });
+
+    // AC: @shadow-errors ac-4, ac-5 - Error is actionable
+    it('error message includes actionable suggestion', async () => {
+      // Setup
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      try {
+        await initContext(worktreeDir);
+        expect.fail('Should have thrown ShadowError');
+      } catch (err) {
+        expect(err).toBeInstanceOf(ShadowError);
+        const shadowErr = err as ShadowError;
+        expect(shadowErr.message).toContain('Cannot run kspec from inside .kspec/ directory');
+        expect(shadowErr.suggestion).toContain('Run from project root');
+      }
+    });
+
+    it('CLI exits with error when run from .kspec/', async () => {
+      // Setup
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Run CLI from .kspec/ directory - use 'tasks ready' which calls initContext()
+      const result = kspecRun('tasks ready', worktreeDir, { expectFail: true });
+
+      // Check combined output (error message may be in stdout or stderr)
+      const combinedOutput = `${result.stdout}\n${result.stderr}`;
+      expect(combinedOutput).toContain('Cannot run kspec from inside .kspec/ directory');
+      expect(combinedOutput).toContain('Run from project root');
     });
   });
 });

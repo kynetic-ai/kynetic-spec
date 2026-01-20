@@ -140,6 +140,28 @@ git branch --set-upstream-to=origin/kspec-meta kspec-meta
 | Shadow branch exists but no worktree | Run `kspec shadow repair` |
 | Sync conflicts | Run `kspec shadow resolve` (manual resolution) |
 | `.kspec/` not gitignored | `kspec init` adds it automatically |
+| Running kspec from .kspec/ | Run from project root: `cd ..` |
+| kspec commands seem broken | First check `pwd` - ensure you're at project root, not inside .kspec/ |
+
+### Important: Always Run from Project Root
+
+kspec commands must be run from the project root, not from inside `.kspec/`:
+
+```bash
+# Correct
+kspec task list
+
+# Incorrect - will error
+cd .kspec && kspec task list
+```
+
+**Common agent pitfall:** Agents sometimes forget they changed their working directory during a session (e.g., to inspect files in `.kspec/`). Before running kspec commands:
+
+1. Check your current directory: `pwd`
+2. If you're inside `.kspec/`, return to project root: `cd ..`
+3. Then run the kspec command
+
+If you see the error "Cannot run kspec from inside .kspec/ directory", this is the cause.
 
 ### Integration with Main Branch
 

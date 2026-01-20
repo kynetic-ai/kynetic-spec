@@ -56,7 +56,7 @@ export interface ShadowStatus {
 export class ShadowError extends Error {
   constructor(
     message: string,
-    public code: 'NOT_INITIALIZED' | 'WORKTREE_DISCONNECTED' | 'DIRECTORY_MISSING' | 'GIT_ERROR',
+    public code: 'NOT_INITIALIZED' | 'WORKTREE_DISCONNECTED' | 'DIRECTORY_MISSING' | 'GIT_ERROR' | 'RUNNING_FROM_SHADOW',
     public suggestion: string
   ) {
     super(message);
@@ -161,6 +161,53 @@ export async function isValidWorktree(worktreeDir: string): Promise<boolean> {
     return false;
   } catch {
     return false;
+  }
+}
+
+/**
+ * Detect if running from inside the shadow worktree directory.
+ * Returns the main project root if detected, null otherwise.
+ *
+ * Detection logic:
+ * 1. Check if .git is a file (worktrees have .git files, not directories)
+ * 2. Read the gitdir reference from the .git file
+ * 3. Check if it points to a worktree for .kspec (pattern: <project>/.git/worktrees/-kspec)
+ */
+export async function detectRunningFromShadowWorktree(cwd: string): Promise<string | null> {
+  try {
+    const gitPath = path.join(cwd, '.git');
+    const stat = await fs.stat(gitPath);
+
+    // Worktrees have a .git file, not directory
+    if (!stat.isFile()) {
+      return null;
+    }
+
+    const content = await fs.readFile(gitPath, 'utf-8');
+    const match = content.trim().match(/^gitdir:\s*(.+)$/);
+    if (!match) {
+      return null;
+    }
+
+    const gitdir = match[1];
+
+    // Check if this is a shadow worktree (pattern: <project>/.git/worktrees/-kspec)
+    if (gitdir.includes('.git/worktrees/')) {
+      const worktreesMatch = gitdir.match(/^(.+)\/\.git\/worktrees\//);
+      if (worktreesMatch) {
+        const mainProjectRoot = worktreesMatch[1];
+        const cwdBase = path.basename(cwd);
+        const worktreeName = path.basename(gitdir);
+
+        if (cwdBase === SHADOW_WORKTREE_DIR || worktreeName.includes('kspec')) {
+          return mainProjectRoot;
+        }
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
   }
 }
 
