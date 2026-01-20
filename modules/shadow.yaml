@@ -224,6 +224,11 @@ features:
             when: User runs a kspec command
             then: Error message says '.kspec/ directory missing' and suggests 'Run kspec shadow repair to
               recreate'
+          - id: ac-4
+            given: User is inside the .kspec/ directory (cwd is .kspec/)
+            when: User runs any kspec command
+            then: Error message says 'Cannot run kspec from inside .kspec/ directory' and suggests running from
+              project root
       - _ulid: 01KF3CTXYNWH7TQMJNQZR0HHA9
         slugs:
           - shadow-debug-mode
