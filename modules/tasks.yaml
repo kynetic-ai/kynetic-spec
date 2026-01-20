@@ -275,6 +275,11 @@ features:
         tests: []
         notes: []
         created: 2026-01-20T02:12:04.565Z
+        acceptance_criteria:
+          - id: ac-1
+            given: TaskStatusSchema in common.ts
+            when: validating a task status value
+            then: pending_review is accepted as a valid enum value
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
