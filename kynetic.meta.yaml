@@ -1880,4 +1880,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFE13K905B3263M48Y7Z4M19
+    type: success
+    content: Spec review task series completed efficiently. Breaking down large spec updates into 7
+      focused tasks (trait creation, AC addition, trait application by command category) enabled
+      systematic progress tracking and validation at each step. TodoWrite tool helped track progress
+      within each task.
+    created_at: 2026-01-20T15:41:52.801Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFE13RKXKERPMTNPY7PJHGJN
+    type: friction
+    content: "Working directory confusion: Agent tools (Read, Edit, etc.) can change working directory
+      during exploration, but this isn't always obvious. When pwd shows .kspec/, kspec commands
+      fail. Need to be more aware of current directory before running kspec commands. Pattern:
+      always use absolute paths or check pwd before kspec commands."
+    created_at: 2026-01-20T15:41:58.270Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
