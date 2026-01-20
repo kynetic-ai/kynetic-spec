@@ -797,6 +797,10 @@ features:
         given: kspec tasks assess automation is run
         when: the --all flag is provided
         then: includes tasks that already have automation set
+      - id: ac-3
+        given: kspec tasks assess automation is run
+        when: displaying each task
+        then: "shows criteria check results: has_spec_ref, spec_has_acs, not_spike with pass/fail status"
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
