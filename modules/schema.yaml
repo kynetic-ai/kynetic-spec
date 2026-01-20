@@ -960,7 +960,7 @@ features:
             then: removes trait from traits array
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KFC1FGKR7S29HE1DYX8KJ8KT
         slugs:
           - trait-edge-cases
