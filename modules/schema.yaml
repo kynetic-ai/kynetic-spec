@@ -44,6 +44,11 @@ features:
           Examples: "Authentication", "API", "Data Export"
         implements:
           - "@item-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a module-type item is created
+            when: validation runs
+            then: module structure is validated (must have title, can have features array)
       - _ulid: 01JHNKA1W5TYPE200000000000
         slugs:
           - type-feature
