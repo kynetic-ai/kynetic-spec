@@ -1386,11 +1386,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1782,6 +1784,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1897,6 +1900,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12270,7 +12274,7 @@
   type: infra
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -12297,6 +12301,7 @@
         Should use writeYamlFilePreserveFormat() instead for consistent YAML output.
       supersedes: null
   todos: []
+  started_at: 2026-01-20T03:43:25.224Z
 - _ulid: 01KFBBSKBCCGR0P5HAVFP6PA9P
   slugs:
     - completion-validation
@@ -13225,6 +13230,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #97"
   depends_on: []
   context: []
   priority: 1
@@ -13232,6 +13238,7 @@
   vcs_refs: []
   created_at: 2026-01-19T21:10:30.159Z
   started_at: 2026-01-20T03:22:26.141Z
+  completed_at: 2026-01-20T03:43:02.397Z
   notes:
     - _ulid: 01KFC1GKGF9JKCWXQK4TV1RF29
       created_at: 2026-01-19T21:10:30.159Z
@@ -13340,8 +13347,6 @@
         All 630 tests passing. PR ready for merge.
       supersedes: null
   todos: []
-  completed_at: 2026-01-20T03:43:02.397Z
-  closed_reason: "Merged in PR #97"
 - _ulid: 01KFC1GKMKN61T9J9XAP6QCEH2
   slugs:
     - task-trait-type
@@ -14337,6 +14342,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
