@@ -18,3 +18,4 @@ export { registerMetaCommands } from './meta.js';
 export { registerLinkCommands } from './link.js';
 export { registerModuleCommands } from './module.js';
 export { registerTraitCommands, registerItemTraitCommands } from './trait.js';
+export { registerCloneForTestingCommand } from './clone-for-testing.js';
