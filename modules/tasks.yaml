@@ -49,6 +49,10 @@ features:
             when: the task is validated
             then: it is accepted as atomic unit of work with standard task lifecycle (pending -> in_progress ->
               completed)
+          - id: ac-2
+            given: a task has no type specified
+            when: the task is created or validated
+            then: it defaults to type 'task'
       - _ulid: 01JHNKA4W2TTPE200000000000
         slugs:
           - task-type-epic
