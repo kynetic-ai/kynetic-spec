@@ -481,6 +481,10 @@ features:
             given: a step has entry_criteria defined
             when: kspec workflow next reaches that step
             then: outputs entry criteria; strict mode blocks until --confirm flag passed
+          - id: ac-4
+            given: a step has exit_criteria defined
+            when: kspec workflow next completes the step
+            then: outputs exit criteria after completion; strict mode blocks without --confirm
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
