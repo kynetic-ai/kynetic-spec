@@ -219,6 +219,32 @@ describe('Task Automation Eligibility', () => {
       // Should not contain warning about this specific task
       expect(output).not.toContain('Eligible with spec');
     });
+
+    // AC: @task-automation-eligibility ac-23
+    it('should warn when eligible task has unresolvable spec_ref', async () => {
+      // Create task with eligible status and a valid spec_ref
+      kspec('task add --title "Bad spec ref" --automation eligible --spec-ref @test-feature', tempDir);
+
+      // Get the task to find its ULID
+      const tasks = kspecJson<any[]>('tasks list', tempDir);
+      const task = tasks.find(t => t.title === 'Bad spec ref');
+
+      // Manually patch the task file to have an unresolvable spec_ref
+      // This simulates a spec being deleted after the task was created
+      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
+      const content = await fs.readFile(tasksFile, 'utf-8');
+      // Replace the valid spec_ref with an invalid one
+      const updatedContent = content.replace(
+        /spec_ref: "@test-feature"/,
+        'spec_ref: "@nonexistent-deleted-spec"'
+      );
+      await fs.writeFile(tasksFile, updatedContent);
+
+      // Now validate should warn about the unresolvable spec_ref
+      const output = kspec('validate --completeness', tempDir);
+      expect(output).toContain('Completeness warnings');
+      expect(output).toContain('cannot be resolved');
+    });
   });
 
   describe('JSON output', () => {
