@@ -78,7 +78,7 @@ features:
           - *.inbox.yaml - inbox files
           - modules/*.yaml - spec modules
         implements:
-          - '@shadow-concept'
+          - "@shadow-concept"
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
@@ -126,7 +126,7 @@ features:
           - Low overhead (local commits only)
           - Commit includes all changes from the operation
         implements:
-          - '@shadow-concept'
+          - "@shadow-concept"
         acceptance_criteria:
           - id: ac-1
             given: shadow branch is enabled and task @my-task exists
@@ -175,7 +175,7 @@ features:
           - Ref resolution uses .kspec/ file paths
           - Source file tracking uses .kspec/ paths
         implements:
-          - '@shadow-concept'
+          - "@shadow-concept"
       - _ulid: 01KF1V209B3C1C7AB3Y63SPSPB
         slugs:
           - shadow-write-path
@@ -191,7 +191,7 @@ features:
           - After write, auto-commit triggered
           - No interaction with main branch's working tree
         implements:
-          - '@shadow-concept'
+          - "@shadow-concept"
       - _ulid: 01KF1V20H5PEMHYR3AEA9FQF6T
         slugs:
           - shadow-errors
@@ -209,7 +209,12 @@ features:
 
           Errors should be actionable with clear next steps.
         implements:
-          - '@shadow-concept'
+          - "@shadow-concept"
+        acceptance_criteria:
+          - id: ac-1
+            given: Git repo exists but shadow branch has never been initialized
+            when: User runs a kspec command that requires shadow (e.g., task list)
+            then: Error message says 'Shadow branch not initialized' and suggests 'Run kspec init to create'
       - _ulid: 01KF3CTXYNWH7TQMJNQZR0HHA9
         slugs:
           - shadow-debug-mode
@@ -222,7 +227,7 @@ features:
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T12:35:12.982Z'
+        created: 2026-01-16T12:35:12.982Z
         description: |-
           Optional verbose output for shadow branch operations.
 
@@ -243,7 +248,7 @@ features:
             when: any state-changing command runs
             then: error message is printed to stderr
           - id: ac-2
-            given: '--debug-shadow flag is passed and auto-commit fails'
+            given: --debug-shadow flag is passed and auto-commit fails
             when: any state-changing command runs
             then: error message is printed to stderr
           - id: ac-3
@@ -295,7 +300,7 @@ features:
         when: kspec init runs
         then: it fails with error explaining the issue
     implements:
-      - '@cmd-init'
+      - "@cmd-init"
     requirements:
       - _ulid: 01KF1V20ZWB6DG3DAYKHMHM0XN
         slugs:
@@ -314,8 +319,8 @@ features:
           This must be documented in generated README or kspec docs.
           The worktree is not committed to git, so CI must recreate it.
         implements:
-          - '@shadow-init'
-          - '@cmd-init'
+          - "@shadow-init"
+          - "@cmd-init"
     features:
       - _ulid: 01KF47G9P4VFQZR8MX8WPN3YZ0
         slugs:
@@ -323,14 +328,13 @@ features:
         title: Init Remote Detection
         type: feature
         tags: []
-        description: >-
-          When running kspec init in a fresh clone, automatically detect if kspec-meta branch exists
-          on remote and attach to it rather than creating a new orphan branch.
+        description: When running kspec init in a fresh clone, automatically detect if kspec-meta branch
+          exists on remote and attach to it rather than creating a new orphan branch.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T20:21:16.100Z'
+        created: 2026-01-16T20:21:16.100Z
         acceptance_criteria:
           - id: ac-1
             given: git remote origin exists and origin/kspec-meta branch exists
@@ -366,7 +370,7 @@ features:
       CLI commands for shadow branch management.
       Minimal surface: status, log, repair.
     implements:
-      - '@cli'
+      - "@cli"
     requirements:
       - _ulid: 01KF1V21EKDF1VB0BMTHRAH59Z
         slugs:
@@ -395,7 +399,7 @@ features:
           - Shadow branch exists
           - No uncommitted changes (should be none with auto-commit)
         implements:
-          - '@shadow-cli'
+          - "@shadow-cli"
       - _ulid: 01KF1V21P816NQFKF0C8426M0D
         slugs:
           - shadow-log-cmd
@@ -420,7 +424,7 @@ features:
           - --oneline: Compact format
           - --json: Structured output
         implements:
-          - '@shadow-cli'
+          - "@shadow-cli"
   - _ulid: 01KF1VBPN5J53QJJM3FTXK2J9R
     slugs:
       - shadow-recovery
@@ -493,7 +497,7 @@ features:
           - Reports clear error if shadow branch itself is missing
           - Idempotent (safe to run multiple times)
         implements:
-          - '@shadow-recovery'
+          - "@shadow-recovery"
       - _ulid: 01KF1VBRG99HYJ00CVABVKV0QM
         slugs:
           - shadow-validation
@@ -511,22 +515,21 @@ features:
           - No uncommitted changes (should be zero with auto-commit)
           - All spec files valid YAML with correct schema
         implements:
-          - '@shadow-recovery'
+          - "@shadow-recovery"
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
     title: Shadow Remote Sync
     type: feature
     tags: []
-    description: >-
-      Automatic synchronization of shadow branch with remote repository. After each local
+    description: Automatic synchronization of shadow branch with remote repository. After each local
       auto-commit, attempt push to remote. On session start or read operations, pull remote changes
       first.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: '2026-01-16T20:20:38.087Z'
+    created: 2026-01-16T20:20:38.087Z
     acceptance_criteria:
       - id: ac-1
         given: remote tracking is configured for shadow branch
