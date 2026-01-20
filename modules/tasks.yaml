@@ -805,6 +805,10 @@ features:
         given: kspec tasks assess automation is run
         when: displaying each task
         then: shows recommendation (review_for_eligible, needs_review, or manual_only)
+      - id: ac-5
+        given: kspec tasks assess automation is run
+        when: output completes
+        then: shows summary counts of recommendations at end
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
