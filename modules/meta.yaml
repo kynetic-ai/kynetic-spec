@@ -602,6 +602,65 @@ features:
                 given: an active run exists
                 when: kspec workflow abort @run-id --reason '...' is executed
                 then: status=aborted, abort_reason recorded, completed_at set; shadow committed
+          - _ulid: 01KFESTXHYVDTW4X0Y13RN78K3
+            slugs:
+              - workflow-step-navigation
+            title: Workflow Step Navigation
+            type: requirement
+            tags: []
+            description: |-
+              Step-by-step progression through workflow runs via the next command.
+
+              ## Command
+
+              `kspec workflow next [run-ref] [--skip] [--notes text] [--json]`
+
+              ## Behavior
+
+              1. If no run-ref provided:
+                 - Find active runs
+                 - If exactly one: use it (AC inference)
+                 - If multiple: error with list of run IDs to choose from
+                 - If none: error 'No active workflow runs'
+
+              2. Complete current step:
+                 - Record StepResult with status='completed' (or 'skipped' if --skip)
+                 - Set started_at to previous step's completed_at (or run's started_at for step 0)
+                 - Set completed_at to now
+                 - Capture --notes if provided
+
+              3. Advance to next step:
+                 - Increment current_step
+                 - Display next step with [type] prefix and content
+
+              4. If was last step:
+                 - Set run status='completed'
+                 - Set completed_at
+                 - Output summary: total duration, steps completed, steps skipped
+
+              ## Output Format
+
+              ```
+              Completed step 1/5: [check] Does the spec cover this change?
+
+              Step 2/5: [action] Update spec if needed
+              ```
+
+              ## Key Files
+
+              - src/cli/commands/workflow.ts (add next subcommand)
+              - src/parser/meta.ts (findActiveRuns helper)
+
+              ## Dependencies
+
+              Requires @workflow-run-foundation to be implemented first.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-01-20T22:54:02.814Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
