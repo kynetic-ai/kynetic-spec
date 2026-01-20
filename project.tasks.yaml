@@ -1412,11 +1412,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1860,6 +1862,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1975,6 +1978,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14111,6 +14115,32 @@
         - TraitIndex provides getInheritedAC() to get trait ACs for a spec
         - Need to integrate these in the completeness check
       supersedes: null
+    - _ulid: 01KFCXERHSKYDPGYZPT6YXSYM4
+      created_at: 2026-01-20T05:18:49.914Z
+      author: "@claude"
+      content: |-
+        Implementation complete with 100% AC coverage.
+
+        Changes made:
+        1. Extended checkCompleteness() in src/parser/validate.ts to validate trait AC coverage
+           - Added optional TraitIndex parameter
+           - Scans inherited trait ACs using TraitIndex.getInheritedAC()
+           - Checks test coverage for each inherited AC using same mechanism as direct ACs
+           - Emits 'missing_test_coverage' warnings for uncovered trait ACs
+
+        2. Updated validate() function to build TraitIndex and pass to checkCompleteness()
+
+        3. Broken trait ref validation already handled by existing validateRefs() in refs.ts (AC-4)
+
+        4. Created comprehensive test suite in tests/trait-ac-coverage.test.ts:
+           - AC-1: Warns when spec implementing trait has no test coverage for trait AC ✓
+           - AC-2: No warning when trait AC has test annotation ✓
+           - AC-3: Trait AC coverage included in default kspec validate ✓
+           - AC-4: Error when spec references deleted trait ✓
+           - Additional edge case tests for multiple specs/traits ✓
+
+        All 674 tests passing. Ready for PR.
+      supersedes: null
   todos: []
 - _ulid: 01KFC1GM6DWKP5VVAXRCWKCXXT
   slugs:
@@ -14681,6 +14711,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
