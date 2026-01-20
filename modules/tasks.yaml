@@ -873,6 +873,10 @@ features:
         given: kspec tasks assess automation --auto is run
         when: task passes all criteria
         then: task appears with review_for_eligible recommendation but automation field is NOT modified
+      - id: ac-22
+        given: kspec tasks assess automation --dry-run is run
+        when: displaying output
+        then: shows what would change without modifying tasks
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
