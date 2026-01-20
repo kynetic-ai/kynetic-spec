@@ -661,6 +661,11 @@ features:
             traits: []
             notes: []
             created: 2026-01-20T22:54:02.814Z
+            acceptance_criteria:
+              - id: ac-1
+                given: an active run exists
+                when: kspec workflow next @run-id is executed
+                then: completes current step (records in step_results), shows next step; if last step, completes run
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
