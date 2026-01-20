@@ -92,6 +92,12 @@ features:
           Used for issues found after implementation.
         implements:
           - "@task-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task with type 'bug' is created
+            when: the task is validated
+            then: it is accepted as defect fix work (may or may not have spec_ref depending on whether it
+              reveals spec gap)
       - _ulid: 01JHNKA4W4TTPE400000000000
         slugs:
           - task-type-spike
