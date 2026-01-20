@@ -118,6 +118,12 @@ features:
           Examples: "Must support 10k concurrent users", "Must use PostgreSQL"
         implements:
           - "@item-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a constraint-type item is created
+            when: validation runs
+            then: constraint structure is validated (must have title and description defining system boundary or
+              limitation)
       - _ulid: 01JHNKA1W8TYPE500000000000
         slugs:
           - type-decision
