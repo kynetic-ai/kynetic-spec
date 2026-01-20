@@ -51,9 +51,11 @@ describe('kspec setup', () => {
     await fs.writeFile(manifestPath, 'kynetic: "1.0"\n', 'utf-8');
 
     // Run kspec setup with dry-run to avoid actual agent config
+    // Set CLAUDECODE=1 to simulate Claude Code environment (so agent detection works)
     const result = spawnSync('node', [kspecBin, 'setup', '--dry-run'], {
       cwd: testDir,
       encoding: 'utf-8',
+      env: { ...process.env, CLAUDECODE: '1' },
     });
 
     // Should succeed without prompting for worktree creation
