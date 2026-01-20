@@ -678,6 +678,78 @@ features:
                 given: no run-id provided and multiple active runs exist
                 when: kspec workflow next is executed
                 then: errors with list of active runs to choose from
+          - _ulid: 01KFESVX00JT6YJ406QX5N63XQ
+            slugs:
+              - workflow-enforcement-modes
+            title: Workflow Enforcement Modes
+            type: requirement
+            tags: []
+            description: |-
+              Entry/exit criteria display and enforcement modes (advisory vs strict).
+
+              ## Extended WorkflowStepSchema
+
+              Add fields to WorkflowStepSchema in src/schema/meta.ts:
+              ```typescript
+              entry_criteria?: string[],  // Conditions before step
+              exit_criteria?: string[],   // Conditions after step
+              ```
+
+              ## Behavior
+
+              ### Advisory Mode (default)
+
+              When workflow.enforcement is 'advisory' or omitted:
+              - Entry criteria displayed when showing next step
+              - Exit criteria displayed after completing step
+              - --skip allowed without --force
+              - Criteria are guidance only, not blocking
+
+              ### Strict Mode
+
+              When workflow.enforcement is 'strict':
+              - Entry criteria must be confirmed with --confirm flag to proceed
+              - Exit criteria must be confirmed with --confirm flag to advance
+              - --skip requires --force flag
+              - Record entry_confirmed/exit_confirmed in StepResult
+
+              ## Output Format
+
+              ```
+              Step 2/5: [action] Update spec if needed
+                Entry criteria:
+                  - Spec coverage has been checked
+                  - Change scope is understood
+                Exit criteria:
+                  - Spec reflects intended behavior change
+              ```
+
+              In strict mode without --confirm:
+              ```
+              error: Entry criteria not confirmed. Use --confirm to acknowledge.
+              ```
+
+              ## CLI Flags
+
+              Add to `kspec workflow next`:
+              - `--confirm`: Acknowledge entry/exit criteria (required in strict mode)
+              - `--force`: Allow --skip in strict mode
+
+              ## Key Files
+
+              - src/schema/meta.ts (extend WorkflowStepSchema)
+              - src/cli/commands/workflow.ts (criteria display, enforcement)
+
+              ## Dependencies
+
+              Requires @workflow-step-navigation to be implemented first.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-01-20T22:54:35.008Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
