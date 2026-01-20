@@ -241,6 +241,7 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
   const missingDesc = warnings.filter(w => w.type === 'missing_description');
   const statusMismatch = warnings.filter(w => w.type === 'status_inconsistency');
   const missingTestCoverage = warnings.filter(w => w.type === 'missing_test_coverage');
+  const automationNoSpec = warnings.filter(w => w.type === 'automation_eligible_no_spec');
 
   // AC: @spec-completeness ac-4
   // Show summary with counts by issue type
@@ -287,6 +288,19 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
     }
     if (!verbose && missingTestCoverage.length > 3) {
       console.log(chalk.gray(`    ... and ${missingTestCoverage.length - 3} more`));
+    }
+  }
+
+  // AC: @task-automation-eligibility ac-21, ac-23
+  if (automationNoSpec.length > 0) {
+    console.log(chalk.yellow(`  Automation without spec: ${automationNoSpec.length}`));
+    const shown = verbose ? automationNoSpec : automationNoSpec.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
+      console.log(chalk.gray(`      ${w.message}`));
+    }
+    if (!verbose && automationNoSpec.length > 3) {
+      console.log(chalk.gray(`    ... and ${automationNoSpec.length - 3} more`));
     }
   }
 }

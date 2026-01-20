@@ -33,6 +33,7 @@ export const fieldLabels = {
   type: 'Type:',
   status: 'Status:',
   priority: 'Priority:',
+  automation: 'Automation:',
   maturity: 'Maturity:',
   specRef: 'Spec ref:',
   metaRef: 'Meta ref:',

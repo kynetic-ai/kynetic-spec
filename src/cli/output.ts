@@ -243,6 +243,78 @@ function formatFullModeContext(task: Task, index?: ReferenceIndex): void {
 }
 
 /**
+ * Format automation status as a colored label
+ * AC: @task-automation-eligibility ac-14
+ */
+function formatAutomationStatus(automation: string | undefined): string {
+  if (!automation) {
+    return chalk.gray('[unassessed]');
+  }
+  switch (automation) {
+    case 'eligible':
+      return chalk.green('[eligible]');
+    case 'needs_review':
+      return chalk.yellow('[needs_review]');
+    case 'manual_only':
+      return chalk.red('[manual_only]');
+    default:
+      return chalk.gray(`[${automation}]`);
+  }
+}
+
+/**
+ * Format a list of tasks with automation status
+ * AC: @task-automation-eligibility ac-14
+ */
+export function formatTaskListWithAutomation(tasks: Task[], verbose = false, index?: ReferenceIndex, grepPattern?: string, full = false): void {
+  if (tasks.length === 0) {
+    console.log(summaries.noTasks);
+    return;
+  }
+
+  for (const task of tasks) {
+    const ref = formatTaskRef(task, index);
+    const status = statusColor(task.status)(`[${task.status}]`);
+    const priority = task.priority <= 2 ? chalk.red(`P${task.priority}`) : chalk.gray(`P${task.priority}`);
+    const automationLabel = formatAutomationStatus(task.automation);
+
+    let line = `${ref} ${status} ${priority} ${automationLabel} ${task.title}`;
+
+    if (verbose && !full) {
+      if (task.spec_ref) {
+        line += chalk.gray(` (spec: ${task.spec_ref})`);
+      }
+      if (task.depends_on.length > 0) {
+        line += chalk.gray(` deps: [${task.depends_on.join(', ')}]`);
+      }
+      if (task.tags.length > 0) {
+        line += chalk.cyan(` #${task.tags.join(' #')}`);
+      }
+    }
+
+    console.log(line);
+
+    // Show matched fields if grep pattern provided
+    if (grepPattern) {
+      const match = grepItem(task as unknown as Record<string, unknown>, grepPattern);
+      if (match && match.matchedFields.length > 0) {
+        console.log(chalk.gray(`    matched: ${formatMatchedFields(match.matchedFields)}`));
+      }
+    } else if (full) {
+      formatFullModeContext(task, index);
+    } else {
+      // Show context line: first line of description (if present)
+      const context = getFirstLine(task.description);
+      if (context) {
+        console.log(chalk.gray(`    ${context}`));
+      }
+    }
+  }
+
+  console.log(summaries.taskCount(tasks.length));
+}
+
+/**
  * Format a list of tasks
  */
 export function formatTaskList(tasks: Task[], verbose = false, index?: ReferenceIndex, grepPattern?: string, full = false): void {
@@ -288,6 +360,14 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
   console.log(`${fieldLabels.type}      ${task.type}`);
   console.log(`${fieldLabels.status}    ${statusColor(task.status)(task.status)}`);
   console.log(`${fieldLabels.priority}  ${task.priority}`);
+
+  // AC: @task-automation-eligibility ac-17 - show automation status
+  const automationDisplay = task.automation || 'unassessed';
+  const automationColor = task.automation === 'eligible' ? chalk.green
+    : task.automation === 'needs_review' ? chalk.yellow
+    : task.automation === 'manual_only' ? chalk.red
+    : chalk.gray;
+  console.log(`${fieldLabels.automation} ${automationColor(automationDisplay)}`);
 
   if (task.spec_ref) {
     console.log(`${fieldLabels.specRef}  ${task.spec_ref}`);
