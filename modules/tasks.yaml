@@ -897,6 +897,10 @@ features:
         given: kspec tasks assess automation is run without --all
         when: filtering tasks
         then: tasks already marked eligible/needs_review/manual_only are skipped
+      - id: ac-28
+        given: kspec tasks assess automation is run
+        when: filtering tasks
+        then: non-pending tasks (completed, cancelled, in_progress, blocked) are excluded
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
