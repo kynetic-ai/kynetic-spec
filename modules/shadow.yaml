@@ -229,6 +229,10 @@ features:
             when: User runs any kspec command
             then: Error message says 'Cannot run kspec from inside .kspec/ directory' and suggests running from
               project root
+          - id: ac-5
+            given: Any shadow-related error occurs
+            when: Error is displayed to user
+            then: Error includes specific command to run to fix the issue
       - _ulid: 01KF3CTXYNWH7TQMJNQZR0HHA9
         slugs:
           - shadow-debug-mode
