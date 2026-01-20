@@ -54,7 +54,7 @@ features:
 
           All other fields are optional with sensible defaults.
         implements:
-          - '@spec-item'
+          - "@spec-item"
       - _ulid: 01KEZCJPHZ67B47NKNJZ8C1H3G
         slugs:
           - item-optional-fields
@@ -76,7 +76,7 @@ features:
           - traceability: Links to code, tests, commits
           - created, created_by: Lifecycle metadata
         implements:
-          - '@spec-item'
+          - "@spec-item"
       - _ulid: 01KF3H8QTT6W0FMEGQ97FH5VYA
         slugs:
           - item-derive-hint
@@ -85,23 +85,22 @@ features:
         tags:
           - dx
           - cli
-        description: >-
-          After creating or modifying a spec item, CLI shows a hint suggesting task derivation:
-          'Derive implementation task? kspec derive @new-item'
+        description: "After creating or modifying a spec item, CLI shows a hint suggesting task derivation:
+          'Derive implementation task? kspec derive @new-item'"
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: '2026-01-16T13:52:39.770Z'
+        created: 2026-01-16T13:52:39.770Z
         acceptance_criteria:
           - id: ac-1
             given: User runs 'kspec item add' and creates a new spec item
             when: The item is created successfully
-            then: 'CLI shows hint: ''Derive implementation task? kspec derive @new-slug'''
+            then: "CLI shows hint: 'Derive implementation task? kspec derive @new-slug'"
           - id: ac-2
             given: User runs 'kspec item set @existing-item --description new'
             when: The item is updated successfully
-            then: 'CLI shows hint: ''Derive implementation task? kspec derive @slug'''
+            then: "CLI shows hint: 'Derive implementation task? kspec derive @slug'"
         status:
           maturity: draft
           implementation: verified
@@ -153,7 +152,7 @@ features:
 
           Example: 01KEZCJPHZ86X9PA509GREWDM0
         implements:
-          - '@ulid-system'
+          - "@ulid-system"
       - _ulid: 01KEZCJPJ0MZSX946EF3ZPW9TA
         slugs:
           - ulid-immutability
@@ -167,7 +166,7 @@ features:
           If an item is deprecated, its ULID remains; a superseding
           item gets a new ULID and links via supersedes relationship.
         implements:
-          - '@ulid-system'
+          - "@ulid-system"
       - _ulid: 01KEZCJPJ0W8V4JZRYZFX56DX5
         slugs:
           - ulid-shortening
@@ -184,7 +183,7 @@ features:
           Minimum recommended: 6 characters
           Full length: 26 characters
         implements:
-          - '@ulid-system'
+          - "@ulid-system"
   - _ulid: 01KEZCJPJ0K5S6G1QMBXEVC54W
     slugs:
       - slug-system
@@ -231,7 +230,7 @@ features:
 
           Examples: auth-login, user-model, impl-session-v2
         implements:
-          - '@slug-system'
+          - "@slug-system"
       - _ulid: 01KEZCJPJ1HD0JRARXD5AY3ZAW
         slugs:
           - slug-uniqueness
@@ -247,7 +246,7 @@ features:
           - Validation: kspec validate reports duplicate slug errors
           - Prevention: CLI commands reject duplicate slugs at creation/update time
         implements:
-          - '@slug-system'
+          - "@slug-system"
         acceptance_criteria:
           - id: ac-1
             given: a slug 'auth-login' exists in the spec
@@ -284,23 +283,23 @@ features:
           3. If still not found, report broken reference error
           4. If ambiguous (multiple matches), report ambiguity error
         implements:
-          - '@slug-system'
+          - "@slug-system"
         acceptance_criteria:
           - id: ac-1
             given: a new item is created with slug 'my-feature'
-            when: '@my-feature is referenced immediately after creation'
+            when: "@my-feature is referenced immediately after creation"
             then: reference resolves to the newly created item without requiring reload
           - id: ac-2
             given: an item exists with slug 'auth-login'
-            when: '@auth-login is referenced'
+            when: "@auth-login is referenced"
             then: reference resolves to that item
           - id: ac-3
             given: no item exists with slug 'nonexistent'
-            when: '@nonexistent is referenced'
+            when: "@nonexistent is referenced"
             then: broken reference error is reported
           - id: ac-4
             given: multiple items share ULID prefix '01KEZ'
-            when: '@01KEZ is referenced'
+            when: "@01KEZ is referenced"
             then: ambiguity error is reported listing matching items
   - _ulid: 01JHNKA0W2REFS000000000000
     slugs:
@@ -351,7 +350,7 @@ features:
           References appear in relationship fields:
           depends_on, implements, relates_to, tests, supersedes, blocked_by
         implements:
-          - '@reference-system'
+          - "@reference-system"
       - _ulid: 01JHNKA0W4REFS200000000000
         slugs:
           - ref-validation
@@ -369,7 +368,7 @@ features:
 
           Validation is triggered by `kspec validate --refs`
         implements:
-          - '@reference-system'
+          - "@reference-system"
   - _ulid: 01KEZCJPJ1SMT5AJJ2Y6Z0S21K
     slugs:
       - relationship-types
@@ -402,7 +401,7 @@ features:
 
           For tasks: Auto-blocks A until B is completed.
         implements:
-          - '@relationship-types'
+          - "@relationship-types"
       - _ulid: 01KEZCJPJ2MKTF1V4PCN9X6Y7K
         slugs:
           - rel-implements
@@ -417,7 +416,7 @@ features:
 
           Enables traceability from high-level to concrete.
         implements:
-          - '@relationship-types'
+          - "@relationship-types"
       - _ulid: 01KEZCJPJ2JS9T7PSR30RMDCFE
         slugs:
           - rel-relates-to
@@ -430,7 +429,7 @@ features:
           "A relates_to B" is a general association without specific semantics.
           Used for: cross-references, "see also" links.
         implements:
-          - '@relationship-types'
+          - "@relationship-types"
       - _ulid: 01KEZCJPJ26Q09SD3GCQAXJWP9
         slugs:
           - rel-blocks
@@ -443,7 +442,12 @@ features:
           "A blocks B" means B cannot proceed while A is unresolved.
           The inverse of depends_on, used for explicit blocking issues.
         implements:
-          - '@relationship-types'
+          - "@relationship-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: item A blocks item B
+            when: item B is a task
+            then: task B cannot transition to in_progress while A is unresolved (blocking relationship enforced)
       - _ulid: 01KEZCJPJ2HC490BP03G39SX8R
         slugs:
           - rel-tests
@@ -456,7 +460,7 @@ features:
           "A tests B" means A validates or verifies B.
           Used for: linking test items to features/requirements.
         implements:
-          - '@relationship-types'
+          - "@relationship-types"
       - _ulid: 01KEZCJPJ2ZJMV482PPMTCSZKN
         slugs:
           - rel-supersedes
@@ -469,10 +473,10 @@ features:
           "A supersedes B" means A replaces B, which is now deprecated.
           The old item's ULID remains stable; the relationship links them.
         implements:
-          - '@relationship-types'
+          - "@relationship-types"
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
-    created_at: '2026-01-19T04:57:56.798Z'
-    author: '@claude'
+    created_at: 2026-01-19T04:57:56.798Z
+    author: "@claude"
     content: Test note for spec item notes feature
     supersedes: null
