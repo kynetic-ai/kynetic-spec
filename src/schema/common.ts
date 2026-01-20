@@ -73,6 +73,7 @@ export const ItemTypeSchema = z.enum([
   'constraint',
   'decision',
   'task',
+  'trait',
 ]);
 
 // VCS reference

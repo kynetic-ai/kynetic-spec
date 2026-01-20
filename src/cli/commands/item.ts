@@ -483,6 +483,7 @@ export function registerItemCommands(program: Command): void {
           implements: [],
           relates_to: [],
           tests: [],
+          traits: [],
           notes: [],
         };
 
