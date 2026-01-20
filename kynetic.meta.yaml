@@ -1564,4 +1564,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCXGBQSPN7XYPRTV625E1TZ
+    type: success
+    content: Trait AC coverage validation implementation went smoothly by building on existing
+      infrastructure. The TraitIndex and checkCompleteness() architecture made it straightforward to
+      add inherited AC checking - just scan trait ACs the same way we scan direct ACs. The existing
+      test coverage scanning and ref validation already handled most of the heavy lifting. Clean
+      separation of concerns paid off.
+    created_at: 2026-01-20T05:19:42.330Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
