@@ -1481,11 +1481,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2067,6 +2069,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2182,6 +2185,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15630,6 +15634,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16129,6 +16134,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T14:53:22.422Z
+  started_at: 2026-01-20T15:20:39.810Z
   notes:
     - _ulid: 01KFDYC46DTV4SJVNVJ4R3AWJS
       created_at: 2026-01-20T14:54:06.542Z
@@ -16183,8 +16189,64 @@
 
         - `@yaml-multiline`: AC for multiline format rules
       supersedes: null
+    - _ulid: 01KFE02RKVKJHPDX2029QPAKGQ
+      created_at: 2026-01-20T15:23:56.923Z
+      author: "@claude"
+      content: >-
+        Completed: Added 2 acceptance criteria to each of the 17 critical spec items (34 total AC
+        added).
+
+
+        **Schema.yaml type requirements (6 items, 12 AC):**
+
+        - @type-module: 2 AC covering validation and nesting rules
+
+        - @type-feature: 2 AC covering structure validation and AC display
+
+        - @type-requirement: 2 AC covering structure and testable details
+
+        - @type-constraint: 2 AC covering structure and boundary enforcement
+
+        - @type-decision: 2 AC covering ADR-style documentation
+
+        - @type-task: 1 AC covering task structure validation
+
+
+        **Tasks.yaml type requirements (5 items, 9 AC):**
+
+        - @task-type-task: 2 AC covering default behavior and lifecycle
+
+        - @task-type-epic: 2 AC covering container grouping and derivation
+
+        - @task-type-bug: 2 AC covering defect fix with optional spec_ref
+
+        - @task-type-spike: 2 AC covering research outcomes and findings
+
+        - @task-type-infra: 1 AC covering infrastructure work without spec_ref
+
+
+        **Core.yaml relationship requirements (3 items, 6 AC):**
+
+        - @rel-blocks: 2 AC covering blocking enforcement and inverse relationship
+
+        - @rel-implements: 2 AC covering traceability and bidirectional view
+
+        - @rel-relates-to: 2 AC covering general association without constraints
+
+
+        **Schema.yaml YAML requirements (3 items, 6 AC):**
+
+        - @yaml-version: 2 AC covering YAML 1.2 enforcement and safe parsing
+
+        - @yaml-quoting: 2 AC covering ambiguous value detection and warnings
+
+        - @yaml-multiline: 2 AC covering literal block style usage and readability
+
+
+        All AC follow the given/when/then format and define testable behavior. Each spec item now
+        has clear acceptance criteria that can guide implementation and test coverage.
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T15:20:39.810Z
 - _ulid: 01KFDYAW8AQ0B54800XVX56BEE
   slugs: []
   title: Remove auth.yaml from manifest
