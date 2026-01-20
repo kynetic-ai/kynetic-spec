@@ -845,6 +845,10 @@ features:
         given: computing recommendation
         when: task is a spike
         then: recommends manual_only regardless of other criteria
+      - id: ac-15
+        given: computing recommendation
+        when: spec_ref is missing or spec has no ACs
+        then: recommends needs_review
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
