@@ -27,6 +27,7 @@ import {
 } from './yaml.js';
 import { ReferenceIndex, validateRefs, type RefValidationError, type RefValidationWarning } from './refs.js';
 import { findMetaManifest, loadMetaContext, type MetaContext } from './meta.js';
+import { TraitIndex } from './traits.js';
 
 // ============================================================
 // TYPES
@@ -557,11 +558,13 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
 /**
  * Check spec items for completeness
  * AC: @spec-completeness ac-1, ac-2, ac-3
+ * AC: @trait-validation ac-1, ac-2, ac-3
  */
 async function checkCompleteness(
   items: LoadedSpecItem[],
   index: ReferenceIndex,
-  rootDir: string
+  rootDir: string,
+  traitIndex?: TraitIndex
 ): Promise<CompletenessWarning[]> {
   const warnings: CompletenessWarning[] = [];
 
@@ -666,6 +669,47 @@ async function checkCompleteness(
           itemTitle: item.title,
           message: `Item ${itemRef} has ${uncoveredACs.length} AC(s) without test coverage`,
           details: `Uncovered: ${uncoveredACs.join(', ')}`,
+        });
+      }
+    }
+
+    // AC: @trait-validation ac-1, ac-2
+    // Check for test coverage of trait acceptance criteria
+    if (traitIndex && item.traits && item.traits.length > 0) {
+      const inheritedACs = traitIndex.getInheritedAC(item._ulid);
+      const uncoveredTraitACs: Array<{ traitSlug: string; acId: string }> = [];
+
+      for (const { trait, ac } of inheritedACs) {
+        // Build all possible references for this trait AC
+        const possibleRefs: string[] = [];
+
+        // Try with trait slug
+        possibleRefs.push(`@${trait.slug} ${ac.id}`);
+        possibleRefs.push(`@${trait.slug}`);
+
+        // Try with trait ULID (short form)
+        possibleRefs.push(`@${trait.ulid.slice(0, 8)} ${ac.id}`);
+        possibleRefs.push(`@${trait.ulid.slice(0, 8)}`);
+
+        // Check if any of these references are covered
+        const isCovered = possibleRefs.some(ref => coveredACs.has(ref));
+
+        if (!isCovered) {
+          uncoveredTraitACs.push({ traitSlug: trait.slug, acId: ac.id });
+        }
+      }
+
+      // Only warn if there are uncovered trait ACs
+      if (uncoveredTraitACs.length > 0) {
+        const details = uncoveredTraitACs
+          .map(({ traitSlug, acId }) => `@${traitSlug} ${acId}`)
+          .join(', ');
+        warnings.push({
+          type: 'missing_test_coverage',
+          itemRef,
+          itemTitle: item.title,
+          message: `Item ${itemRef} has ${uncoveredTraitACs.length} inherited trait AC(s) without test coverage`,
+          details: `Uncovered trait ACs: ${details}`,
         });
       }
     }
@@ -801,8 +845,11 @@ export async function validate(
 
     // Completeness validation
     // AC: @spec-completeness ac-1, ac-2, ac-3
+    // AC: @trait-validation ac-3
     if (runCompleteness) {
-      result.completenessWarnings = await checkCompleteness(allItems, index, ctx.rootDir);
+      // Build trait index for trait AC coverage validation
+      const traitIndex = new TraitIndex(allItems, index);
+      result.completenessWarnings = await checkCompleteness(allItems, index, ctx.rootDir, traitIndex);
     }
   }
 
