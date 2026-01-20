@@ -10,3 +10,4 @@ export * from './fix.js';
 export * from './shadow.js';
 export * from './meta.js';
 export * from './convention-validation.js';
+export * from './assess.js';

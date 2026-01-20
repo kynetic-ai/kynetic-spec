@@ -1,17 +1,29 @@
 import { Command } from 'commander';
+import chalk from 'chalk';
 import {
   initContext,
   loadAllTasks,
   loadAllItems,
   getReadyTasks,
   ReferenceIndex,
+  saveTask,
+  createNote,
+  assessTask,
+  filterTasksForAssessment,
+  computeSummary,
+  computeAutoModeChanges,
+  type TaskAssessment,
+  type AssessmentSummary,
+  type AutoModeChange,
 } from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 import {
   output,
   formatTaskList,
   formatTaskListWithAutomation,
   error,
   info,
+  success,
 } from '../output.js';
 import type { TaskStatus } from '../../schema/index.js';
 import { grepItem } from '../../utils/grep.js';
@@ -214,4 +226,178 @@ export function registerTasksCommands(program: Command): void {
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // kspec tasks assess - assess command group
+  // AC: @tasks-assess-automation
+  const assess = tasks
+    .command('assess')
+    .description('Assess tasks for various criteria');
+
+  // kspec tasks assess automation [taskRef]
+  // AC: @tasks-assess-automation ac-1 through ac-28
+  assess
+    .command('automation [taskRef]')
+    .description('Assess task automation eligibility based on criteria')
+    .option('--all', 'Include already-assessed tasks')
+    .option('--auto', 'Auto-mark obvious cases (spikes -> manual_only, missing criteria -> needs_review)')
+    .option('--dry-run', 'Show what would change without modifying tasks')
+    .action(async (taskRef: string | undefined, options) => {
+      try {
+        const ctx = await initContext();
+        const allTasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(allTasks, items);
+
+        // AC: @tasks-assess-automation ac-6, ac-7 - Single task assessment
+        if (taskRef) {
+          const resolved = index.resolve(taskRef);
+          if (!resolved.ok) {
+            error(`Task not found: ${taskRef}`);
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+        }
+
+        // AC: @tasks-assess-automation ac-1, ac-2, ac-27, ac-28 - Filter tasks
+        const tasksToAssess = filterTasksForAssessment(allTasks, { all: options.all, taskRef }, index);
+
+        // AC: @tasks-assess-automation ac-26 - No unassessed tasks
+        if (tasksToAssess.length === 0) {
+          output({ tasks: [], summary: { review_for_eligible: 0, needs_review: 0, manual_only: 0, total: 0 } }, () => {
+            if (taskRef) {
+              info(`Task ${taskRef} is not pending or already assessed (use --all to include)`);
+            } else {
+              info('No unassessed pending tasks');
+            }
+          });
+          return;
+        }
+
+        // Assess each task
+        // AC: @tasks-assess-automation ac-3, ac-4, ac-8-16
+        const assessments: TaskAssessment[] = tasksToAssess.map(task =>
+          assessTask(task, index, items)
+        );
+
+        // AC: @tasks-assess-automation ac-5, ac-25 - Compute summary
+        const summary = computeSummary(assessments);
+
+        // Handle auto mode
+        // AC: @tasks-assess-automation ac-17-21
+        if (options.auto) {
+          const changes = computeAutoModeChanges(assessments);
+          const actualChanges = changes.filter(c => c.action !== 'no_change');
+
+          // AC: @tasks-assess-automation ac-22, ac-23 - Dry run
+          if (options.dryRun) {
+            output({ assessments, summary, changes, dryRun: true }, () => {
+              formatAssessmentOutput(assessments, summary, index);
+              console.log('');
+              console.log(chalk.yellow('Dry run - would make these changes:'));
+              for (const change of actualChanges) {
+                console.log(`  ${change.taskRef}: set automation=${change.newStatus} (${change.reason})`);
+              }
+              if (actualChanges.length === 0) {
+                console.log('  (no changes - all tasks need agent/human review)');
+              }
+            });
+            return;
+          }
+
+          // Apply changes
+          // AC: @tasks-assess-automation ac-17, ac-19, ac-20
+          let changeCount = 0;
+          for (const change of actualChanges) {
+            const task = allTasks.find(t => t._ulid === change.taskUlid);
+            if (!task) continue;
+
+            // Set automation status
+            task.automation = change.newStatus;
+
+            // AC: @tasks-assess-automation ac-19, ac-20 - Add note explaining assessment
+            const noteContent = `Automation assessment: set to ${change.newStatus}. ${change.reason}`;
+            const note = createNote(noteContent, '@automation-assess');
+            task.notes = [...task.notes, note];
+
+            await saveTask(ctx, task);
+            changeCount++;
+          }
+
+          if (changeCount > 0) {
+            await commitIfShadow(ctx.shadow, 'tasks-assess', 'automation', `${changeCount} task(s)`);
+          }
+
+          output({ assessments, summary, changes, applied: true }, () => {
+            formatAssessmentOutput(assessments, summary, index);
+            console.log('');
+            if (changeCount > 0) {
+              success(`Applied ${changeCount} change(s)`);
+            } else {
+              info('No changes applied - all tasks need agent/human review to mark eligible');
+            }
+          });
+          return;
+        }
+
+        // Default: just show assessment output
+        // AC: @tasks-assess-automation ac-24, ac-25 - JSON output handled by output()
+        output({ assessments, summary }, () => {
+          formatAssessmentOutput(assessments, summary, index);
+        });
+
+      } catch (err) {
+        error('Failed to assess tasks', err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Format assessment output for human-readable display
+ * AC: @tasks-assess-automation ac-3, ac-4, ac-5
+ */
+function formatAssessmentOutput(
+  assessments: TaskAssessment[],
+  summary: AssessmentSummary,
+  index: ReferenceIndex
+): void {
+  for (const assessment of assessments) {
+    // Task header
+    console.log(`${assessment.taskRef}  "${assessment.taskTitle}"`);
+
+    // Criteria results
+    // AC: @tasks-assess-automation ac-3
+    const specRefResult = assessment.criteria.has_spec_ref;
+    const specRefIcon = specRefResult.pass ? chalk.green('✓') : chalk.red('✗');
+    const specRefDetail = specRefResult.pass
+      ? specRefResult.spec_ref
+      : specRefResult.detail || 'missing';
+    console.log(`  spec_ref:     ${specRefIcon} ${specRefDetail}`);
+
+    const acsResult = assessment.criteria.spec_has_acs;
+    const acsIcon = acsResult.skipped ? chalk.gray('-') : (acsResult.pass ? chalk.green('✓') : chalk.red('✗'));
+    const acsDetail = acsResult.skipped
+      ? `(${acsResult.detail})`
+      : (acsResult.pass ? `${acsResult.ac_count} acceptance criteria` : acsResult.detail || 'no ACs');
+    console.log(`  has_acs:      ${acsIcon} ${acsDetail}`);
+
+    const spikeResult = assessment.criteria.not_spike;
+    const spikeIcon = spikeResult.pass ? chalk.green('✓') : chalk.red('✗');
+    console.log(`  not_spike:    ${spikeIcon} ${spikeResult.detail}`);
+
+    // Recommendation
+    // AC: @tasks-assess-automation ac-4
+    const recColor = assessment.recommendation === 'review_for_eligible'
+      ? chalk.cyan
+      : (assessment.recommendation === 'needs_review' ? chalk.yellow : chalk.red);
+    console.log(`  → ${recColor(assessment.recommendation)} (${assessment.reason})`);
+    console.log('');
+  }
+
+  // Summary
+  // AC: @tasks-assess-automation ac-5
+  console.log(chalk.bold('Summary:'));
+  console.log(`  review_for_eligible: ${summary.review_for_eligible}`);
+  console.log(`  needs_review: ${summary.needs_review}`);
+  console.log(`  manual_only: ${summary.manual_only}`);
+  console.log(`  total: ${summary.total}`);
 }
