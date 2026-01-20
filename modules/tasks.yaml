@@ -258,6 +258,23 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KFCJRSTMPG1VTBVV74X2A2NK
+        slugs:
+          - pending-review-state
+        title: Pending Review State
+        type: requirement
+        tags:
+          - tasks
+        description: Add pending_review status to task lifecycle. This state represents 'code complete,
+          awaiting merge' - bridging the gap between in_progress (actively working) and completed
+          (merged/shipped). Tasks transition to pending_review when work is done but PR needs
+          review/merge, then to completed when actually shipped.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        notes: []
+        created: 2026-01-20T02:12:04.565Z
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
