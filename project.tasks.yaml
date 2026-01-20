@@ -1524,11 +1524,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2196,6 +2198,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2311,6 +2314,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15981,6 +15985,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17227,16 +17232,22 @@
         or strict).
       supersedes: null
   todos: []
-- title: "Implement: Workflow Run Foundation"
+- _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
+  slugs:
+    - task-workflow-run-foundation
+  title: "Implement: Workflow Run Foundation"
   type: task
   spec_ref: "@workflow-run-foundation"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-workflow-run-foundation
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-guided-workflow-execution"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-20T22:56:09.828Z
   notes:
     - _ulid: 01KFESYSK4NWB4H592KMR26SDP
       created_at: 2026-01-20T22:56:09.828Z
@@ -17365,10 +17376,105 @@
         - ac-3: Given an active run exists, when kspec workflow abort @run-id --reason '...' is
         executed, then status=aborted, abort_reason recorded, completed_at set; shadow committed
       supersedes: null
-  _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
+  todos: []
+- title: "Implement: Workflow Step Navigation"
+  type: task
+  spec_ref: "@workflow-step-navigation"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-workflow-step-navigation
+  tags: []
+  depends_on:
+    - "@task-guided-workflow-execution"
+  notes:
+    - _ulid: 01KFESYSRAWQN3H0DVRJVW83V0
+      created_at: 2026-01-20T22:56:09.994Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Step-by-step progression through workflow runs via the next command.
+
+
+        ## Command
+
+
+        `kspec workflow next [run-ref] [--skip] [--notes text] [--json]`
+
+
+        ## Behavior
+
+
+        1. If no run-ref provided:
+           - Find active runs
+           - If exactly one: use it (AC inference)
+           - If multiple: error with list of run IDs to choose from
+           - If none: error 'No active workflow runs'
+
+        2. Complete current step:
+           - Record StepResult with status='completed' (or 'skipped' if --skip)
+           - Set started_at to previous step's completed_at (or run's started_at for step 0)
+           - Set completed_at to now
+           - Capture --notes if provided
+
+        3. Advance to next step:
+           - Increment current_step
+           - Display next step with [type] prefix and content
+
+        4. If was last step:
+           - Set run status='completed'
+           - Set completed_at
+           - Output summary: total duration, steps completed, steps skipped
+
+        ## Output Format
+
+
+        ```
+
+        Completed step 1/5: [check] Does the spec cover this change?
+
+
+        Step 2/5: [action] Update spec if needed
+
+        ```
+
+
+        ## Key Files
+
+
+        - src/cli/commands/workflow.ts (add next subcommand)
+
+        - src/parser/meta.ts (findActiveRuns helper)
+
+
+        ## Dependencies
+
+
+        Requires @workflow-run-foundation to be implemented first.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given an active run exists, when kspec workflow next @run-id is executed, then
+        completes current step (records in step_results), shows next step; if last step, completes
+        run
+
+        - ac-2: Given a run is at the last step, when kspec workflow next @run-id is executed, then
+        status=completed, completed_at set, outputs summary with total duration and step counts
+
+        - ac-3: Given no run-id provided and one active run exists, when kspec workflow next is
+        executed, then infers the single active run and operates on it
+
+        - ac-4: Given no run-id provided and multiple active runs exist, when kspec workflow next is
+        executed, then errors with list of active runs to choose from
+      supersedes: null
+  _ulid: 01KFESYSRAWCSMC2Z7N1BY4Z4G
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-20T22:56:09.828Z
+  created_at: 2026-01-20T22:56:09.994Z
   todos: []
