@@ -1490,11 +1490,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2094,6 +2096,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2209,6 +2212,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15675,6 +15679,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16472,6 +16477,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T14:53:39.886Z
+  started_at: 2026-01-20T15:36:38.700Z
   notes:
     - _ulid: 01KFDYCTT33EYQ997DR7DPSJHK
       created_at: 2026-01-20T14:54:29.700Z
@@ -16496,5 +16502,34 @@
         - `@trait-semantic-exit-codes` - all commands
         - `@trait-error-guidance` - all commands
       supersedes: null
+    - _ulid: 01KFE11FEWDKQWQH2MJQKR1HS0
+      created_at: 2026-01-20T15:40:43.357Z
+      author: "@claude"
+      content: >-
+        Applied traits to all 8 query and inbox command specs:
+
+
+        ✓ @cmd-tasks-ready - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+        ✓ @cmd-tasks-list - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+        ✓ @cmd-tasks-blocked - added json-output, filterable-list, semantic-exit-codes,
+        error-guidance
+
+        ✓ @fuzzy-item-search (kspec search) - added json-output, filterable-list,
+        semantic-exit-codes, error-guidance
+
+        ✓ @cmd-inbox-add - added json-output, semantic-exit-codes, error-guidance
+
+        ✓ @cmd-inbox-list - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+        ✓ @cmd-inbox-promote - added json-output, semantic-exit-codes, error-guidance
+
+        ✓ @cmd-inbox-delete - added json-output, confirmation-prompt, semantic-exit-codes,
+        error-guidance
+
+
+        All trait references validated successfully. This completes the spec review task series (7/7
+        complete).
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T15:36:38.700Z

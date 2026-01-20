@@ -1006,6 +1006,11 @@ features:
         implements:
           - "@query-commands"
           - "@query-ready"
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01JHNKA9W5CQRY200000000000
         slugs:
           - cmd-tasks-next
@@ -1037,6 +1042,11 @@ features:
           See @query-filters for filter options.
         implements:
           - "@query-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01JHNKA9W7CQRY400000000000
         slugs:
           - cmd-tasks-blocked
@@ -1052,6 +1062,11 @@ features:
           Useful for identifying what's stuck.
         implements:
           - "@query-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KF41T5PN7Z6K6SXQK2S8K6DH
         slugs:
           - cmd-log
@@ -1920,6 +1935,10 @@ features:
           - kspec inbox add "refactor auth flow" --tag auth --tag refactor
         implements:
           - "@inbox-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KF15N59E5B55QEM6KVJHGSN5
         slugs:
           - cmd-inbox-list
@@ -1940,6 +1959,11 @@ features:
           encourage dealing with older items.
         implements:
           - "@inbox-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
@@ -1967,6 +1991,10 @@ features:
           - kspec inbox promote @01KF0... --title "Improve errors" --priority 2
         implements:
           - "@inbox-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
@@ -1984,6 +2012,11 @@ features:
           Removes inbox item. Use when idea is no longer relevant.
         implements:
           - "@inbox-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-confirmation-prompt"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
@@ -2086,6 +2119,11 @@ features:
             given: Search finds no matches
             when: Results are displayed
             then: Shows empty result with helpful message, not an error
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KF1A991VFFQ99EBQGQ9XB55D
         slugs:
           - fuzzy-command-suggest
