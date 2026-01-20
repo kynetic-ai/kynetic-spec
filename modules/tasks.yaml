@@ -788,6 +788,11 @@ features:
     traits: []
     notes: []
     created: 2026-01-20T20:52:20.356Z
+    acceptance_criteria:
+      - id: ac-1
+        given: kspec tasks assess automation is run
+        when: displaying results
+        then: lists pending tasks without automation field (unassessed) by default
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
