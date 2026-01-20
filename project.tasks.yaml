@@ -1450,11 +1450,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1974,6 +1976,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2089,6 +2092,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15475,6 +15479,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -15722,6 +15727,63 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T14:16:46.174Z
-  notes: []
-  todos: []
   started_at: 2026-01-20T14:16:52.817Z
+  notes:
+    - _ulid: 01KFDWDR0QWF6ANH8GX4230CWE
+      created_at: 2026-01-20T14:20:02.456Z
+      author: "@claude"
+      content: >-
+        Completed comprehensive analysis via 5 parallel subagents:
+
+
+        **1. Trait Pattern Analysis**: Identified 20 cross-cutting CLI patterns that could become
+        traits:
+
+        - Core patterns (8): JSON output, multi-ref batch, confirmation prompts, filterable lists,
+        priority parameter, dry-run preview, semantic exit codes, error with guidance
+
+        - Domain patterns (12): Task state machine, reference resolution, append-only notes, nested
+        hierarchy, slug uniqueness, implementation status, meta associations, verbosity levels,
+        tree/flat display, spec-task alignment, slug generation, preview with limits
+
+
+        **2. AC Coverage Audit**:
+
+        - 69 items WITHOUT any acceptance criteria
+
+        - 18 items with incomplete/vague AC
+
+        - Critical gaps: all @type-* requirements (9 items), YAML conventions, task type
+        requirements
+
+        - Pattern: Parent features often have AC while child requirements lack them
+
+
+        **3. Code/Spec Alignment**:
+
+        - HIGH: Task automation eligibility field completely missing from schema (spec exists, no
+        implementation)
+
+        - MEDIUM: YAML convention enforcement not implemented
+
+        - MEDIUM: Auto-adaptive file splitting spec'd but not implemented
+
+        - LOW: Validation completeness checks partially implemented (missing parent-child status
+        consistency)
+
+
+        **4. CLI Command Inventory**: Cataloged 50+ commands with full behavior documentation
+
+
+        **5. Spec Structure Review**:
+
+        - CLI module oversized (2684 lines vs ~500 for others)
+
+        - auth.yaml referenced in manifest but doesn't exist
+
+        - Suggests: Split CLI into domains, extract alignment system
+
+
+        **Next step**: Enter plan mode to detail spec changes
+      supersedes: null
+  todos: []
