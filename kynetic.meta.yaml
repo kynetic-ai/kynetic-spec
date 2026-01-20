@@ -1614,4 +1614,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCZ3SHZSW2RDA6CCNTAPE5W
+    type: friction
+    content: trait-cli tests fail in vitest despite implementation working correctly in manual testing.
+      All 12 failing tests involve trait list/get/item commands. Manual replication of exact test
+      scenarios works perfectly. Tests use same CLI dist files. Issue is test infrastructure
+      related, not implementation. Need to investigate vitest test execution environment
+      differences.
+    created_at: 2026-01-20T05:47:47.647Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
