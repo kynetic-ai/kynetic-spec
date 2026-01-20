@@ -506,6 +506,10 @@ features:
             given: an active run exists
             when: kspec workflow abort @run-id --reason '...' is executed
             then: status=aborted, abort_reason recorded, completed_at set
+          - id: ac-10
+            given: an active run exists
+            when: kspec workflow pause @run-id is executed
+            then: status=paused, paused_at set; can resume later
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
