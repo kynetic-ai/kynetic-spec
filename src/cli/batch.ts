@@ -74,7 +74,7 @@ export async function executeBatchOperation<TItem, TContext>(
   // AC: @multi-ref-batch ac-3 - Mutual exclusion check
   if (positionalRef && refsFlag && refsFlag.length > 0) {
     error('Cannot use both positional ref and --refs flag');
-    process.exit(EXIT_CODES.NOT_FOUND);
+    process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
   // Determine which refs to process
@@ -86,7 +86,7 @@ export async function executeBatchOperation<TItem, TContext>(
   } else {
     // AC: @multi-ref-batch ac-7 - Empty refs error
     error('--refs requires at least one reference');
-    process.exit(EXIT_CODES.NOT_FOUND);
+    process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
   // Process each ref
@@ -211,7 +211,7 @@ export function formatBatchOutput(result: BatchResult, operationName: string): v
   if (!result.success) {
     if (result.summary.succeeded > 0) {
       // Partial failure
-      process.exit(EXIT_CODES.USAGE_ERROR);
+      process.exit(EXIT_CODES.ERROR);
     } else {
       // Complete failure
       process.exit(EXIT_CODES.ERROR);

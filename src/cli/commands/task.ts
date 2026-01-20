@@ -315,7 +315,7 @@ export function registerTaskCommands(program: Command): void {
           const priority = parseInt(options.priority, 10);
           if (isNaN(priority) || priority < 1 || priority > 5) {
             error(errors.validation.priorityOutOfRange);
-            process.exit(EXIT_CODES.NOT_FOUND);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
           updatedTask.priority = priority;
           changes.push('priority');
@@ -850,7 +850,7 @@ export function registerTaskCommands(program: Command): void {
         // For batch mode (--refs), require --force
         if (options.refs && options.refs.length > 0 && !options.force && !options.dryRun) {
           error('Batch delete requires --force flag');
-          process.exit(EXIT_CODES.NOT_FOUND);
+          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         const result = await executeBatchOperation({
@@ -1270,7 +1270,7 @@ export function registerTaskCommands(program: Command): void {
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
           error(errors.todo.invalidId(idStr));
-          process.exit(EXIT_CODES.NOT_FOUND);
+          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         const todoIndex = foundTask.todos.findIndex(t => t.id === id);
@@ -1320,7 +1320,7 @@ export function registerTaskCommands(program: Command): void {
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
           error(errors.todo.invalidId(idStr));
-          process.exit(EXIT_CODES.NOT_FOUND);
+          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         const todoIndex = foundTask.todos.findIndex(t => t.id === id);
