@@ -7,6 +7,8 @@ import {
   SlugSchema,
   RefSchema,
   MaturitySchema,
+  ItemTypeSchema,
+  SpecItemSchema,
 } from '../src/schema/index.js';
 
 describe('UlidSchema', () => {
@@ -140,5 +142,95 @@ describe('MaturitySchema', () => {
     expect(MaturitySchema.safeParse('invalid').success).toBe(false);
     expect(MaturitySchema.safeParse('pending').success).toBe(false);
     expect(MaturitySchema.safeParse('').success).toBe(false);
+  });
+});
+
+describe('ItemTypeSchema', () => {
+  // AC: @trait-type ac-1
+  it('should accept trait type', () => {
+    expect(ItemTypeSchema.safeParse('trait').success).toBe(true);
+  });
+
+  it('should accept all valid item types', () => {
+    expect(ItemTypeSchema.safeParse('feature').success).toBe(true);
+    expect(ItemTypeSchema.safeParse('requirement').success).toBe(true);
+    expect(ItemTypeSchema.safeParse('constraint').success).toBe(true);
+    expect(ItemTypeSchema.safeParse('trait').success).toBe(true);
+  });
+
+  it('should reject invalid types', () => {
+    expect(ItemTypeSchema.safeParse('invalid').success).toBe(false);
+    expect(ItemTypeSchema.safeParse('').success).toBe(false);
+  });
+});
+
+describe('SpecItemSchema - traits field', () => {
+  // AC: @trait-type ac-4
+  it('should accept non-trait items with traits field', () => {
+    const feature = {
+      _ulid: '01HQ3K5XJ8MPVB2XCJZ0KE9YWN',
+      slugs: ['test-feature'],
+      title: 'Test Feature',
+      type: 'feature',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      depends_on: [],
+      implements: [],
+      relates_to: [],
+      tests: [],
+      traits: ['@trait-1', '@trait-2'],
+      notes: [],
+      created: '2025-01-14T10:00:00Z'
+    };
+    const result = SpecItemSchema.safeParse(feature);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.traits).toEqual(['@trait-1', '@trait-2']);
+    }
+  });
+
+  // AC: @traits-field ac-4
+  it('should default traits field to empty array when omitted', () => {
+    const spec = {
+      _ulid: '01HQ3K5XJ8MPVB2XCJZ0KE9YWN',
+      slugs: ['test-spec'],
+      title: 'Test Spec',
+      type: 'requirement',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      depends_on: [],
+      implements: [],
+      relates_to: [],
+      tests: [],
+      notes: [],
+      created: '2025-01-14T10:00:00Z'
+    };
+    const result = SpecItemSchema.safeParse(spec);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.traits).toEqual([]);
+    }
+  });
+
+  // AC: @trait-type ac-1 (integration test)
+  it('should accept complete trait item with type trait', () => {
+    const trait = {
+      _ulid: '01HQ3K5XJ8MPVB2XCJZ0KE9YWN',
+      slugs: ['test-trait'],
+      title: 'Test Trait',
+      type: 'trait',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      description: 'A test trait',
+      acceptance_criteria: [
+        { id: 'ac-1', given: 'precondition', when: 'action', then: 'result' }
+      ],
+      depends_on: [],
+      implements: [],
+      relates_to: [],
+      tests: [],
+      traits: [],
+      notes: [],
+      created: '2025-01-14T10:00:00Z'
+    };
+    const result = SpecItemSchema.safeParse(trait);
+    expect(result.success).toBe(true);
   });
 });
