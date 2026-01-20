@@ -302,14 +302,14 @@ export function registerRalphCommand(program: Command): void {
           options.adapter = 'custom';
         }
 
-        // Validate adapter exists before proceeding
-        // Skip validation for custom adapters (--adapter-cmd)
-        if (!options.adapterCmd) {
-          validateAdapter(options.adapter);
-        }
-
         // Resolve adapter
         const adapter = resolveAdapter(options.adapter);
+
+        // Validate adapter package exists before proceeding
+        // Skip validation for custom adapters (--adapter-cmd) and non-npx adapters
+        if (!options.adapterCmd && adapter.command === 'npx' && adapter.args[0]) {
+          validateAdapter(adapter.args[0]);
+        }
 
         // Add yolo flag to adapter args if needed
         if (options.yolo && options.adapter === 'claude-code-acp') {
