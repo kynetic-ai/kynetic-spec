@@ -1678,4 +1678,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFD15XE0W20ZA8M475J43TKY
+    type: friction
+    content: "Test-driven development revealed implementation bugs in trait edge case handling. AC-2
+      (cycle detection) and AC-3 (broken ref detection) both show validation passing when should
+      fail. This pattern (write tests → discover implementation incomplete) is good but slows
+      progress when implementation gaps are large. Consider: (1) Review implementation completeness
+      before writing E2E tests (2) Add unit tests for validation logic first (3) Use TDD for new
+      features but integration-test existing features differently"
+    created_at: 2026-01-20T06:23:54.304Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

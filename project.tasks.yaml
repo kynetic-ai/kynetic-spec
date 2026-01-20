@@ -1430,11 +1430,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1914,6 +1916,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2029,6 +2032,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14748,6 +14752,47 @@
 
         3. May need to fix implementation code, not just tests
       supersedes: null
+    - _ulid: 01KFD16PNBE1QNWY8R298VEMC7
+      created_at: 2026-01-20T06:24:20.140Z
+      author: "@claude"
+      content: |-
+        End of iteration 17 - WIP checkpoint.
+
+        **What's done:**
+        ✅ Test structure improved for all 4 ACs
+        ✅ AC-1 and AC-4 tests passing (2/4)
+        ✅ Committed test improvements (commit 4143c1d)
+        ✅ Root cause identified: implementation bugs, not test bugs
+
+        **What's NOT done:**
+        ❌ AC-2 (circular trait detection) - implementation bug in detectTraitCycles()
+        ❌ AC-3 (broken trait ref validation) - reference validation not checking traits field
+        ❌ Need to fix validation logic in src/parser/validate.ts
+
+        **Bug specifics:**
+        1. detectTraitCycles() exists at validate.ts:524-613 but doesn't find cycles
+        2. Function is called at validate.ts:954 and checked in valid flag at line 995
+        3. Tests show validation passing when it should fail with cycle/ref errors
+        4. Either cycle detection algorithm is broken OR item trait add isn't creating the refs
+
+        **Investigation needed:**
+        - Add debug logging to detectTraitCycles() to trace execution
+        - Verify item trait add actually modifies the traits field
+        - Check if reference validation validates traits field for broken refs
+        - May need to check TraitIndex construction for cycle detection
+
+        **Files involved:**
+        - tests/trait-edge-cases.test.ts (test file - improved but 2 tests fail due to impl bugs)
+        - src/parser/validate.ts (validation logic - has bugs)
+        - src/cli/commands/validate.ts (display logic - works fine)
+
+        **Next session should:**
+        1. Debug why item trait add @trait-a @trait-b succeeds but doesn't create circular ref
+        2. OR manually verify YAML has circular refs and debug detectTraitCycles()
+        3. Fix implementation bugs in validation
+        4. Re-run tests to verify 4/4 pass
+        5. Submit task and create PR
+      supersedes: null
   todos: []
 - _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   slugs: []
@@ -15111,6 +15156,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
