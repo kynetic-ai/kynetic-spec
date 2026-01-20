@@ -292,6 +292,11 @@ features:
             given: a task with status pending_review
             when: ready tasks are queried via kspec tasks ready
             then: the pending_review task is NOT included (only pending tasks are ready)
+          - id: ac-5
+            given: tasks exist with status pending_review
+            when: kspec session start is run
+            then: pending_review tasks are displayed in an 'Awaiting Review' or similar section separate from
+              active work
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
