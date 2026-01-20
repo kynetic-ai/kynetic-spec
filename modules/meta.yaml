@@ -468,10 +468,6 @@ features:
         notes: []
         created: 2026-01-20T22:44:37.458Z
         acceptance_criteria:
-          - id: ac-13
-            given: no run-id provided and one active run exists
-            when: kspec workflow next is executed
-            then: infers the single active run and operates on it
           - id: ac-14
             given: no run-id provided and multiple active runs exist
             when: kspec workflow next is executed
