@@ -522,6 +522,10 @@ features:
             given: no run-id provided and one active run exists
             when: kspec workflow next is executed
             then: infers the single active run and operates on it
+          - id: ac-14
+            given: no run-id provided and multiple active runs exist
+            when: kspec workflow next is executed
+            then: errors with list of active runs to choose from
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
