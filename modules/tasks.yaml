@@ -841,6 +841,10 @@ features:
         given: assessing a task
         when: task type is spike
         then: not_spike criterion fails
+      - id: ac-14
+        given: computing recommendation
+        when: task is a spike
+        then: recommends manual_only regardless of other criteria
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
