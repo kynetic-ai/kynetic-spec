@@ -301,6 +301,10 @@ features:
             given: a task with status pending_review
             when: kspec tasks list --status pending_review is run
             then: the task appears in the filtered list
+          - id: ac-7
+            given: the AGENTS.md task state diagram
+            when: describing task lifecycle
+            then: pending_review appears between in_progress and completed with valid transition paths
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
