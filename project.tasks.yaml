@@ -1429,11 +1429,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1911,6 +1913,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2026,6 +2029,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14695,6 +14699,55 @@
 
         - tests/trait-edge-cases.test.ts: E2E tests for all 4 ACs
       supersedes: null
+    - _ulid: 01KFD15CA25RVCHTCKM98AJT9J
+      created_at: 2026-01-20T06:23:36.770Z
+      author: "@claude"
+      content: >-
+        Test fixes applied but tests still failing. Root cause: implementation bugs in cycle
+        detection and reference validation.
+
+
+        **Current test status:** 2/4 passing
+
+        - AC-1: ✅ PASS (trait completeness warning)
+
+        - AC-2: ❌ FAIL (circular trait detection not working - validation passes when it should
+        fail)
+
+        - AC-3: ❌ FAIL (broken trait ref detection not working - validation passes when it should
+        fail)
+
+        - AC-4: ✅ PASS (empty list message)
+
+
+        **Bug analysis:**
+
+        Both AC-2 and AC-3 show validation passing when it should be detecting errors. This means:
+
+        1. Either detectTraitCycles() isn't finding cycles correctly
+
+        2. Or broken trait references aren't being caught by reference validation
+
+        3. Need to debug the actual validation logic, not just the tests
+
+
+        **Test improvements made:**
+
+        - AC-1: Changed to check for 'Test Trait' title instead of '@test-trait' ref
+
+        - AC-2: Changed to use 'item trait add' CLI command to create circular refs
+
+        - AC-3: Created module+spec manually in YAML, use proper YAML deletion
+
+
+        **Next steps:**
+
+        1. Add debug logging to detectTraitCycles() to see if it's being called
+
+        2. Check if reference validation checks the traits field for broken refs
+
+        3. May need to fix implementation code, not just tests
+      supersedes: null
   todos: []
 - _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   slugs: []
@@ -15058,6 +15111,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
