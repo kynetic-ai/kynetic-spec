@@ -19,8 +19,11 @@ kspec task get @task-slug
 kspec task start @task-slug
 kspec task note @task-slug "What you're doing..."
 
-# When done
+# When done (code complete, PR created)
 kspec task note @task-slug "What was done, how, why..."
+kspec task submit @task-slug
+
+# After PR merged
 kspec task complete @task-slug --reason "Summary"
 
 # Create a new task
