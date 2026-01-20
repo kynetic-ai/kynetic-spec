@@ -26,6 +26,7 @@ import {
   registerModuleCommands,
   registerTraitCommands,
   registerItemTraitCommands,
+  registerCloneForTestingCommand,
 } from './commands/index.js';
 import { EXIT_CODES } from './exit-codes.js';
 
@@ -77,6 +78,7 @@ registerRalphCommand(program);
 registerMetaCommands(program);
 registerLinkCommands(program);
 registerModuleCommands(program);
+registerCloneForTestingCommand(program);
 
 // Handle unknown commands with suggestions
 program.on('command:*', (operands) => {

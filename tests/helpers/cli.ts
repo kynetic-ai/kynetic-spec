@@ -183,7 +183,7 @@ export async function createTempDir(prefix = 'kspec-test-'): Promise<string> {
  * @param dir - Directory to initialize
  */
 export function initGitRepo(dir: string): void {
-  execSync('git init', { cwd: dir, stdio: 'pipe' });
+  execSync('git init -b main', { cwd: dir, stdio: 'pipe' });
   execSync('git config user.email "test@example.com"', { cwd: dir, stdio: 'pipe' });
   execSync('git config user.name "Test User"', { cwd: dir, stdio: 'pipe' });
 }
