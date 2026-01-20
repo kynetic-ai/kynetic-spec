@@ -1382,11 +1382,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1770,6 +1772,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1885,6 +1888,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13215,6 +13219,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T21:10:30.159Z
+  started_at: 2026-01-20T03:22:26.141Z
   notes:
     - _ulid: 01KFC1GKGF9JKCWXQK4TV1RF29
       created_at: 2026-01-19T21:10:30.159Z
@@ -13288,8 +13293,28 @@
 
         - Existing tests pass
       supersedes: null
+    - _ulid: 01KFCPZ6AHWW2XT6W4AEN5NA5V
+      created_at: 2026-01-20T03:25:28.274Z
+      author: "@claude"
+      content: |-
+        Schema foundation complete:
+
+        1. Added 'trait' to ItemTypeSchema in src/schema/common.ts:76
+        2. Added 'traits: z.array(RefSchema).default([])' to SpecItemSchema in src/schema/spec.ts:77
+        3. Updated all SpecItem construction sites to initialize traits: []:
+           - src/cli/commands/item.ts:486
+           - src/cli/commands/module.ts:68
+           - src/parser/yaml.ts:1169
+
+        All 624 tests pass. Schema now accepts type: trait and traits field on any spec item.
+
+        Next steps (handled by child tasks):
+        - TraitIndex class for trait resolution
+        - Display integration (item get, task get showing inherited trait AC)
+        - Validation integration (checking trait AC test coverage)
+        - CLI commands (trait add, trait list, item trait add/remove)
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T03:22:26.141Z
 - _ulid: 01KFC1GKMKN61T9J9XAP6QCEH2
   slugs:
     - task-trait-type
@@ -14285,6 +14310,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
