@@ -1699,4 +1699,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFD2G0RJ53P1Z0YQWBTF7WEM
+    type: friction
+    content: Testing git operations in isolated test environments - git clone --mirror fails in vitest
+      with 'repository does not exist' despite source repo being properly initialized with commits.
+      Same commands work when run manually. May be related to how vitest sandboxes processes or
+      handles child_process spawn. Need to investigate if this is a PATH issue, git config issue, or
+      test isolation problem. This pattern will affect any future commands that need to test git
+      cloning or repository manipulation.
+    created_at: 2026-01-20T06:46:53.970Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
