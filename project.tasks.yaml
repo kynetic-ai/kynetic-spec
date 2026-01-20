@@ -1371,11 +1371,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1737,6 +1739,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1852,6 +1855,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -11481,6 +11485,18 @@
 
         - tests/ralph.test.ts: Added 3 AC tests
       supersedes: null
+    - _ulid: 01KFCNBZ6ZX6513MVWEGJEPXCH
+      created_at: 2026-01-20T02:57:29.823Z
+      author: "@claude"
+      content: >-
+        Bug found: Implementation passes adapter ID ('claude-code-acp') to validateAdapter() instead
+        of the package name ('@zed-industries/claude-code-acp'). This causes the error message to
+        suggest 'npm install -g claude-code-acp' which is not a real npm package. The actual package
+        is at github.com/zed-industries/claude-code-acp.
+
+
+        Fix tracked in @01KFCNB6
+      supersedes: null
   todos: []
 - _ulid: 01KFADBEHQMMS3PG701HFKX501
   slugs:
@@ -14191,6 +14207,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
           
         But the actual package is defined in src/agents/adapters.ts:34:
