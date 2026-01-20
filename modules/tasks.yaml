@@ -772,6 +772,22 @@ features:
           All queries support --json output.
         implements:
           - "@task-queries"
+  - _ulid: 01KFEJW283E3ADMC1G6WGV7MGC
+    slugs:
+      - tasks-assess-automation
+    title: Task Automation Assessment
+    type: feature
+    tags: []
+    description: CLI command to assess task automation eligibility based on criteria (has spec_ref, spec
+      has ACs, not spike). Provides visibility into task readiness for automation and enables fast
+      triage of obvious cases via --auto mode.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-20T20:52:20.356Z
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
