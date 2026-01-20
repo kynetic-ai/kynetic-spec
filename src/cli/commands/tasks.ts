@@ -9,6 +9,7 @@ import {
 import {
   output,
   formatTaskList,
+  formatTaskListWithAutomation,
   error,
   info,
 } from '../output.js';
@@ -91,24 +92,52 @@ export function registerTasksCommands(program: Command): void {
     });
 
   // kspec tasks ready
+  // AC: @task-automation-eligibility ac-14, ac-19, ac-20, ac-24
   tasks
     .command('ready')
     .description('List tasks that are ready to work on')
     .option('-v, --verbose', 'Show more details')
     .option('--full', 'Show full details (notes, todos, timestamps)')
+    .option('--eligible', 'Show only tasks with automation: eligible')
+    .option('--unassessed', 'Show only tasks without automation status')
+    .option('--needs-review', 'Show only tasks with automation: needs_review')
     .action(async (options) => {
       try {
         const ctx = await initContext();
         const allTasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
-        const readyTasks = getReadyTasks(allTasks);
+        let readyTasks = getReadyTasks(allTasks);
+
+        // AC: @task-automation-eligibility ac-19 - filter by --eligible
+        if (options.eligible) {
+          readyTasks = readyTasks.filter(t => t.automation === 'eligible');
+        }
+
+        // AC: @task-automation-eligibility ac-20 - filter by --unassessed
+        if (options.unassessed) {
+          readyTasks = readyTasks.filter(t => !t.automation);
+        }
+
+        // AC: @task-automation-eligibility ac-24 - filter by --needs-review
+        if (options.needsReview) {
+          readyTasks = readyTasks.filter(t => t.automation === 'needs_review');
+        }
 
         output(readyTasks, () => {
           if (readyTasks.length === 0) {
-            info('No tasks ready - all pending tasks are blocked or have unmet dependencies');
+            if (options.eligible) {
+              info('No eligible tasks ready - no tasks with automation: eligible');
+            } else if (options.unassessed) {
+              info('No unassessed tasks ready');
+            } else if (options.needsReview) {
+              info('No tasks need review');
+            } else {
+              info('No tasks ready - all pending tasks are blocked or have unmet dependencies');
+            }
           } else {
-            formatTaskList(readyTasks, options.verbose, index, undefined, options.full);
+            // AC: @task-automation-eligibility ac-14 - formatTaskListWithAutomation shows automation status
+            formatTaskListWithAutomation(readyTasks, options.verbose, index, undefined, options.full);
           }
         });
       } catch (err) {

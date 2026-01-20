@@ -61,7 +61,8 @@ export type CompletenessWarningType =
   | 'missing_acceptance_criteria'
   | 'missing_description'
   | 'status_inconsistency'
-  | 'missing_test_coverage';
+  | 'missing_test_coverage'
+  | 'automation_eligible_no_spec';
 
 /**
  * Trait cycle error
@@ -830,6 +831,52 @@ async function checkCompleteness(
 }
 
 // ============================================================
+// AUTOMATION VALIDATION
+// ============================================================
+
+/**
+ * Check task automation status for warnings
+ * AC: @task-automation-eligibility ac-21, ac-23
+ */
+function checkAutomationEligibility(
+  tasks: LoadedTask[],
+  index: ReferenceIndex
+): CompletenessWarning[] {
+  const warnings: CompletenessWarning[] = [];
+
+  for (const task of tasks) {
+    const taskRef = task.slugs?.[0] ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
+
+    // AC: @task-automation-eligibility ac-21
+    // Warn if eligible but no spec_ref
+    if (task.automation === 'eligible' && !task.spec_ref) {
+      warnings.push({
+        type: 'automation_eligible_no_spec',
+        itemRef: taskRef,
+        itemTitle: task.title,
+        message: `Task ${taskRef} is automation: eligible but has no spec_ref - eligible tasks should have linked specs`,
+      });
+    }
+
+    // AC: @task-automation-eligibility ac-23
+    // Warn if eligible but spec_ref doesn't resolve
+    if (task.automation === 'eligible' && task.spec_ref) {
+      const specResult = index.resolve(task.spec_ref);
+      if (!specResult.ok) {
+        warnings.push({
+          type: 'automation_eligible_no_spec',
+          itemRef: taskRef,
+          itemTitle: task.title,
+          message: `Task ${taskRef} is automation: eligible but spec_ref ${task.spec_ref} cannot be resolved`,
+        });
+      }
+    }
+  }
+
+  return warnings;
+}
+
+// ============================================================
 // MAIN VALIDATION
 // ============================================================
 
@@ -973,6 +1020,11 @@ export async function validate(
       // Build trait index for trait AC coverage validation
       const traitIndex = new TraitIndex(allItems, index);
       result.completenessWarnings = await checkCompleteness(allItems, index, ctx.rootDir, traitIndex);
+
+      // AC: @task-automation-eligibility ac-21, ac-23
+      // Check automation eligibility warnings for tasks
+      const automationWarnings = checkAutomationEligibility(allTasks, index);
+      result.completenessWarnings.push(...automationWarnings);
     }
   }
 

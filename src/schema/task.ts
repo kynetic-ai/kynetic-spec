@@ -10,6 +10,16 @@ import {
 } from './common.js';
 
 /**
+ * Automation eligibility status for tasks
+ * AC: @task-automation-eligibility ac-1
+ * - eligible: Task can be processed by automation loops
+ * - needs_review: Task was rejected by automation and needs human review
+ * - manual_only: Task should only be handled by humans
+ * - undefined/absent: Task has not been assessed for automation (unassessed)
+ */
+export const AutomationStatusSchema = z.enum(['eligible', 'needs_review', 'manual_only']);
+
+/**
  * Note entry - append-only work log
  */
 export const NoteSchema = z.object({
@@ -85,6 +95,10 @@ export const TaskSchema = z.object({
 
   // Todos (emergent subtasks)
   todos: z.array(TodoSchema).default([]),
+
+  // Automation eligibility (AC: @task-automation-eligibility ac-1, ac-2)
+  // Optional - absent means unassessed
+  automation: AutomationStatusSchema.optional(),
 });
 
 /**
@@ -139,6 +153,9 @@ export const TaskInputSchema = z.object({
 
   // Todos (emergent subtasks)
   todos: z.array(TodoSchema).optional(),
+
+  // Automation eligibility (AC: @task-automation-eligibility ac-1, ac-2, ac-13)
+  automation: AutomationStatusSchema.optional(),
 });
 
 /**

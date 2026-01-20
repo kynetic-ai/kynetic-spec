@@ -206,6 +206,7 @@ export function registerTaskCommands(program: Command): void {
     .option('--priority <n>', 'Priority (1-5)', '3')
     .option('--slug <slug>', 'Human-friendly slug')
     .option('--tag <tag...>', 'Tags')
+    .option('--automation <status>', 'Automation eligibility (eligible, needs_review, manual_only)')
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -253,6 +254,17 @@ export function registerTaskCommands(program: Command): void {
           }
         }
 
+        // AC: @task-automation-eligibility ac-13 - validate automation if provided
+        let automationValue: 'eligible' | 'needs_review' | 'manual_only' | undefined;
+        if (options.automation) {
+          const validStatuses = ['eligible', 'needs_review', 'manual_only'];
+          if (!validStatuses.includes(options.automation)) {
+            error(`Invalid automation status: ${options.automation}. Must be one of: ${validStatuses.join(', ')}`);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          automationValue = options.automation as 'eligible' | 'needs_review' | 'manual_only';
+        }
+
         const input: TaskInput = {
           title: options.title,
           type: options.type,
@@ -261,6 +273,7 @@ export function registerTaskCommands(program: Command): void {
           priority: parseInt(options.priority, 10),
           slugs: options.slug ? [options.slug] : [],
           tags: options.tag || [],
+          automation: automationValue,
         };
 
         const newTask = createTask(input);
@@ -288,6 +301,9 @@ export function registerTaskCommands(program: Command): void {
     .option('--slug <slug>', 'Add a slug alias')
     .option('--tag <tag...>', 'Add tags')
     .option('--depends-on <refs...>', 'Set dependencies (replaces existing)')
+    .option('--automation <status>', 'Set automation eligibility (eligible, needs_review, manual_only)')
+    .option('--no-automation', 'Clear automation status (return to unassessed)')
+    .option('--reason <reason>', 'Reason for status change (required when setting needs_review)')
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -399,6 +415,40 @@ export function registerTaskCommands(program: Command): void {
           }
           updatedTask.depends_on = options.dependsOn;
           changes.push('depends_on');
+        }
+
+        // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
+        // Handle automation status changes
+        // Note: --no-automation sets options.automation to false, so check that first
+        if (options.automation === false) {
+          // --no-automation flag clears the automation status (AC: ac-12)
+          delete updatedTask.automation;
+          changes.push('automation');
+        } else if (options.automation !== undefined) {
+          const validStatuses = ['eligible', 'needs_review', 'manual_only'];
+          if (!validStatuses.includes(options.automation)) {
+            error(`Invalid automation status: ${options.automation}. Must be one of: ${validStatuses.join(', ')}`);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+
+          // AC: @task-automation-eligibility ac-18 - require reason for needs_review
+          if (options.automation === 'needs_review' && !options.reason) {
+            error('Setting automation to needs_review requires --reason flag explaining why');
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+
+          updatedTask.automation = options.automation as 'eligible' | 'needs_review' | 'manual_only';
+          changes.push('automation');
+
+          // If reason provided, add a note documenting the change
+          if (options.reason) {
+            const note = createNote(
+              `Automation status set to ${options.automation}: ${options.reason}`,
+              '@human'
+            );
+            updatedTask.notes = [...updatedTask.notes, note];
+            changes.push('note');
+          }
         }
 
         if (changes.length === 0) {
