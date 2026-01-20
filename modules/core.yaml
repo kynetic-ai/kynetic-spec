@@ -423,6 +423,10 @@ features:
             when: querying implementation traceability
             then: A is linked to B showing concrete realization (e.g., requirement implements feature, task
               implements requirement)
+          - id: ac-2
+            given: multiple items implement the same item
+            when: viewing the implemented item
+            then: all implementers are shown enabling traceability from high-level to concrete
       - _ulid: 01KEZCJPJ2JS9T7PSR30RMDCFE
         slugs:
           - rel-relates-to
