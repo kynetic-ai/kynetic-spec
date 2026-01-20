@@ -398,6 +398,11 @@ features:
           YAML 1.2 is stricter and safer.
         implements:
           - "@yaml-conventions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a YAML file is parsed by kspec
+            when: the parser initializes
+            then: YAML 1.2 parser is used (not YAML 1.1) to avoid dangerous implicit typing
       - _ulid: 01KEZCJPJ3MFX4H51TN64GEB6T
         slugs:
           - yaml-quoting
