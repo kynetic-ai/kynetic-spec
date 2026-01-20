@@ -424,6 +424,12 @@ features:
           The linter should catch unquoted ambiguous values.
         implements:
           - "@yaml-conventions"
+        acceptance_criteria:
+          - id: ac-1
+            given: YAML content contains ambiguous values like 'NO', 'YES', '3.14', 'null'
+            when: the linter runs
+            then: warnings are emitted for unquoted ambiguous strings (they must be quoted to prevent
+              misinterpretation)
       - _ulid: 01KEZCJPJ3M7T6ZNEMTVYBWP96
         slugs:
           - yaml-multiline
