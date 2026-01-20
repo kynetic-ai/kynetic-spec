@@ -1454,7 +1454,7 @@ features:
               any staleness warnings.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
