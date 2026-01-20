@@ -801,6 +801,10 @@ features:
         given: kspec tasks assess automation is run
         when: displaying each task
         then: "shows criteria check results: has_spec_ref, spec_has_acs, not_spike with pass/fail status"
+      - id: ac-4
+        given: kspec tasks assess automation is run
+        when: displaying each task
+        then: shows recommendation (review_for_eligible, needs_review, or manual_only)
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
