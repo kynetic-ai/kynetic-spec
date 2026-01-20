@@ -50,6 +50,7 @@ export const ImplementationStatusSchema = z.enum([
 export const TaskStatusSchema = z.enum([
   'pending',
   'in_progress',
+  'pending_review',
   'blocked',
   'completed',
   'cancelled',

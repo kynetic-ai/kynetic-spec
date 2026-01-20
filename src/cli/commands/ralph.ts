@@ -76,10 +76,10 @@ ${JSON.stringify(sessionCtx, null, 2)}
    kspec task note @task-ref "What you did, decisions made, etc."
    \`\`\`
 
-5. **Complete or checkpoint**:
-   - If task is DONE:
+5. **Submit or checkpoint**:
+   - If code is DONE (ready for PR):
      \`\`\`bash
-     kspec task complete @task-ref --reason "Summary of completion"
+     kspec task submit @task-ref
      \`\`\`
    - If task is NOT done (WIP):
      \`\`\`bash

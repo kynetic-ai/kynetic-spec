@@ -194,12 +194,20 @@ Tasks reference spec items via `spec_ref` field. They don't duplicate spec conte
 ### Task States
 
 ```
-pending → in_progress → completed
-                ↓
-            blocked → (unblock) → in_progress
-                ↓
-            cancelled
+pending → in_progress → pending_review → completed
+              ↓              ↓
+          blocked ←──────────┘
+              ↓
+          cancelled
 ```
+
+**State transitions:**
+- `kspec task start` → `in_progress`
+- `kspec task submit` → `pending_review` (code done, awaiting merge)
+- `kspec task complete` → `completed` (from in_progress, pending, or pending_review)
+- `kspec task block` → `blocked`
+- `kspec task unblock` → `pending`
+- `kspec task cancel` → `cancelled`
 
 `blocked` is auto-computed when `depends_on` tasks aren't completed.
 
