@@ -605,6 +605,11 @@ features:
                 given: an active run exists
                 when: kspec workflow abort @run-id --reason '...' is executed
                 then: status=aborted, abort_reason recorded, completed_at set; shadow committed
+              - id: ac-4
+                given: a workflow run exists
+                when: kspec workflow show @run-id is executed
+                then: "outputs run details: workflow_ref, status, current_step/total_steps, step_results with
+                  timestamps, initiated_by"
           - _ulid: 01KFESTXHYVDTW4X0Y13RN78K3
             slugs:
               - workflow-step-navigation
