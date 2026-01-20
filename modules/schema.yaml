@@ -876,7 +876,7 @@ features:
             then: each trait's AC shown in separate labeled section
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KFC1D57K060RM5XZNE9SV3QE
         slugs:
           - trait-validation
