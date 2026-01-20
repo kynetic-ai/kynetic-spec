@@ -1377,11 +1377,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1755,6 +1757,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1870,6 +1873,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12160,7 +12164,7 @@
   type: bug
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -12193,6 +12197,7 @@
         These cause incorrect exit codes for scripts/automation integrating with kspec.
       supersedes: null
   todos: []
+  started_at: 2026-01-20T03:10:51.309Z
 - _ulid: 01KFBB5R04Y5WRZ2ZD1PTV88F3
   slugs:
     - yaml-migration-remaining
@@ -14210,6 +14215,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #95"
   depends_on: []
   context: []
   priority: 1
@@ -14217,6 +14223,7 @@
   vcs_refs: []
   created_at: 2026-01-20T02:57:04.025Z
   started_at: 2026-01-20T02:58:55.834Z
+  completed_at: 2026-01-20T03:08:47.565Z
   notes:
     - _ulid: 01KFCNBFNAGWG0JW8YD9RA00DV
       created_at: 2026-01-20T02:57:13.899Z
@@ -14228,6 +14235,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
@@ -14283,5 +14291,3 @@
         All 624 tests pass.
       supersedes: null
   todos: []
-  completed_at: 2026-01-20T03:08:47.565Z
-  closed_reason: "Merged in PR #95"
