@@ -759,6 +759,10 @@ features:
                 given: a step has exit_criteria defined
                 when: kspec workflow next completes the step
                 then: outputs exit criteria; in strict mode blocks without --confirm
+              - id: ac-3
+                given: workflow.enforcement=strict and step has criteria
+                when: kspec workflow next is executed
+                then: requires --confirm to proceed; --skip requires --force; records confirmations in step_results
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
