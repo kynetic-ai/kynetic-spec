@@ -222,18 +222,22 @@ Validate refs with: kspec validate --refs
 Task lifecycle states and transitions.
 
 States:
-  pending      → Ready to start (or waiting on dependencies)
-  in_progress  → Currently being worked on
-  completed    → Done
-  blocked      → Manually blocked (has blocked_by entries)
-  cancelled    → Cancelled, won't be done
+  pending        → Ready to start (or waiting on dependencies)
+  in_progress    → Currently being worked on
+  pending_review → Code done, awaiting review/merge
+  completed      → Done (merged/shipped)
+  blocked        → Manually blocked (has blocked_by entries)
+  cancelled      → Cancelled, won't be done
 
 Transitions:
-  pending → in_progress     kspec task start
-  in_progress → completed   kspec task complete
-  in_progress → blocked     kspec task block
-  blocked → pending         kspec task unblock
-  any → cancelled           kspec task cancel
+  pending → in_progress          kspec task start
+  in_progress → pending_review   kspec task submit
+  pending_review → completed     kspec task complete
+  in_progress → completed        kspec task complete (skip review)
+  in_progress → blocked          kspec task block
+  pending_review → blocked       kspec task block
+  blocked → pending              kspec task unblock
+  any → cancelled                kspec task cancel
 
 Auto-blocking:
   Tasks with unfinished depends_on entries are effectively blocked
@@ -259,7 +263,8 @@ Working on a task:
   2. kspec task note @task "Starting work on X..."
   3. Do the work (use todos for tracking sub-items)
   4. kspec task note @task "Completed X, approach was Y..."
-  5. kspec task complete @task --reason "Summary"
+  5. kspec task submit @task  # Code done, PR created (pending_review)
+  6. kspec task complete @task --reason "Summary"  # After merge
 
 Using todos during work:
   kspec task todo add @task "Review error handling"

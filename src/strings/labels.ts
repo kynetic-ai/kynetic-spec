@@ -11,6 +11,7 @@ export const sessionHeaders = {
   title: chalk.blue.bold('=== Session Context ==='),
   activeWork: chalk.cyan.bold('--- Active Work ---'),
   noActiveWork: chalk.gray('--- No Active Work ---'),
+  awaitingReview: chalk.yellow.bold('--- Awaiting Review ---'),
   recentlyCompleted: chalk.green.bold('--- Recently Completed ---'),
   recentNotes: chalk.cyan.bold('--- Recent Notes ---'),
   incompleteTodos: chalk.yellow.bold('--- Incomplete Todos ---'),

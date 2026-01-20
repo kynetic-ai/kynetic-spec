@@ -186,6 +186,89 @@ describe('Integration: task lifecycle', () => {
   });
 });
 
+// AC: @pending-review-state ac-1, ac-2, ac-9, ac-4, ac-6
+describe('Integration: task submit (pending_review state)', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @pending-review-state ac-9
+  it('should submit a task from in_progress to pending_review', () => {
+    // Start task first
+    kspec('task start @test-task-pending', tempDir);
+
+    // Submit for review
+    const output = kspec('task submit @test-task-pending', tempDir);
+    expect(output).toContain('Submitted task for review');
+
+    // Verify status changed
+    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
+    expect(task.status).toBe('pending_review');
+  });
+
+  // AC: @pending-review-state ac-9
+  it('should reject submit from non-in_progress state', () => {
+    // Task is pending (not in_progress)
+    const result = kspecRun('task submit @test-task-pending', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Task must be in_progress');
+  });
+
+  // AC: @pending-review-state ac-2
+  it('should complete a task from pending_review state', () => {
+    // Start, then submit
+    kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
+
+    // Complete from pending_review
+    const output = kspec('task complete @test-task-pending --reason "Merged"', tempDir);
+    expect(output).toContain('Completed task');
+
+    // Verify status is completed
+    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
+    expect(task.status).toBe('completed');
+  });
+
+  // AC: @pending-review-state ac-4
+  it('should exclude pending_review tasks from ready list', () => {
+    // Start and submit
+    kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
+
+    // Should not be in ready list
+    const readyOutput = kspec('tasks ready', tempDir);
+    expect(readyOutput).not.toContain('test-task-pending');
+  });
+
+  // AC: @pending-review-state ac-6
+  it('should filter tasks by pending_review status', () => {
+    // Start and submit
+    kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
+
+    // Should appear in filtered list
+    const output = kspec('tasks list --status pending_review', tempDir);
+    expect(output).toContain('test-task-pending');
+  });
+
+  // AC: @pending-review-state ac-1
+  it('should accept pending_review as valid status in schema', () => {
+    // Start, submit, then verify get works (schema validation)
+    kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
+
+    // If schema was invalid, this would fail
+    const task = kspecJson<{ status: string }>('task get @test-task-pending', tempDir);
+    expect(task.status).toBe('pending_review');
+  });
+});
+
 describe('Integration: task add', () => {
   let tempDir: string;
 

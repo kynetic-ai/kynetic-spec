@@ -588,7 +588,7 @@ export function registerTaskCommands(program: Command): void {
                 };
               }
 
-              if (foundTask.status !== 'in_progress' && foundTask.status !== 'pending') {
+              if (foundTask.status !== 'in_progress' && foundTask.status !== 'pending' && foundTask.status !== 'pending_review') {
                 return {
                   success: false,
                   error: errors.status.cannotComplete(foundTask.status),
@@ -667,6 +667,38 @@ export function registerTaskCommands(program: Command): void {
         }
       } catch (err) {
         error(errors.failures.completeTask, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec task submit <ref>
+  // Transitions in_progress → pending_review (code done, awaiting merge)
+  task
+    .command('submit <ref>')
+    .description('Submit task for review (transitions to pending_review)')
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        if (foundTask.status !== 'in_progress') {
+          error(`Cannot submit task with status: ${foundTask.status}. Task must be in_progress.`);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        const updatedTask: Task = {
+          ...foundTask,
+          status: 'pending_review',
+        };
+
+        await saveTask(ctx, updatedTask);
+        await commitIfShadow(ctx.shadow, 'task-submit', foundTask.slugs[0] || index.shortUlid(foundTask._ulid));
+        success(`Submitted task for review: ${index.shortUlid(updatedTask._ulid)}`, { task: updatedTask });
+      } catch (err) {
+        error(errors.failures.updateTask, err);
         process.exit(EXIT_CODES.ERROR);
       }
     });

@@ -72,6 +72,9 @@ export interface SessionContext {
   /** Tasks currently in progress */
   active_tasks: ActiveTaskSummary[];
 
+  /** Tasks awaiting review (code done, PR pending) */
+  pending_review_tasks: ActiveTaskSummary[];
+
   /** Recent notes from active tasks */
   recent_notes: NoteSummary[];
 
@@ -164,6 +167,7 @@ export interface CommitSummary {
 export interface SessionStats {
   total_tasks: number;
   in_progress: number;
+  pending_review: number;
   ready: number;
   blocked: number;
   completed: number;
@@ -348,6 +352,7 @@ export async function gatherSessionContext(
   const stats: SessionStats = {
     total_tasks: allTasks.length,
     in_progress: allTasks.filter((t) => t.status === 'in_progress').length,
+    pending_review: allTasks.filter((t) => t.status === 'pending_review').length,
     ready: getReadyTasks(allTasks).length,
     blocked: allTasks.filter((t) => t.status === 'blocked').length,
     completed: allTasks.filter((t) => t.status === 'completed').length,
@@ -357,6 +362,13 @@ export async function gatherSessionContext(
   // Get active tasks
   const activeTasks = allTasks
     .filter((t) => t.status === 'in_progress')
+    .sort((a, b) => a.priority - b.priority)
+    .slice(0, options.full ? undefined : limit)
+    .map((t) => toActiveTaskSummary(t, index));
+
+  // Get pending review tasks
+  const pendingReviewTasks = allTasks
+    .filter((t) => t.status === 'pending_review')
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
@@ -448,6 +460,7 @@ export async function gatherSessionContext(
     branch,
     context: sessionContext,
     active_tasks: activeTasks,
+    pending_review_tasks: pendingReviewTasks,
     recent_notes: recentNotes,
     active_todos: activeTodos,
     ready_tasks: readyTasks,
@@ -662,12 +675,15 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   }
 
   // Stats summary
+  const pendingReviewNote = ctx.stats.pending_review > 0
+    ? `${ctx.stats.pending_review} awaiting review, `
+    : '';
   const inboxNote = ctx.stats.inbox_items > 0
     ? ` | Inbox: ${ctx.stats.inbox_items}`
     : '';
   console.log(
     chalk.gray(
-      `Tasks: ${ctx.stats.in_progress} active, ${ctx.stats.ready} ready, ` +
+      `Tasks: ${ctx.stats.in_progress} active, ${pendingReviewNote}${ctx.stats.ready} ready, ` +
         `${ctx.stats.blocked} blocked, ${ctx.stats.completed}/${ctx.stats.total_tasks} completed${inboxNote}`
     )
   );
@@ -712,6 +728,20 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     }
   } else {
     console.log(`\n${sessionHeaders.noActiveWork}`);
+  }
+
+  // Awaiting review section
+  if (ctx.pending_review_tasks.length > 0) {
+    console.log(`\n${sessionHeaders.awaitingReview}`);
+    for (const task of ctx.pending_review_tasks) {
+      const priority =
+        task.priority <= 2
+          ? chalk.red(`P${task.priority}`)
+          : chalk.gray(`P${task.priority}`);
+      console.log(
+        `  ${chalk.yellow('[pending_review]')} ${priority} ${task.ref} ${task.title}`
+      );
+    }
   }
 
   // Recently completed section
