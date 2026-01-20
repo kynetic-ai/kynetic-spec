@@ -1765,4 +1765,23 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFDZBXCJQWP1CHC0277JAA0V
+    type: success
+    content: Completed first task in spec review sequence (@01KFDYAW). Simple cleanup task (removing
+      non-existent file reference) was straightforward. Shadow branch auto-commit worked correctly -
+      no manual commit needed for .kspec/ changes.
+    created_at: 2026-01-20T15:11:28.146Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFDZC1RFZFR8FEHBFCEQ9S7G
+    type: friction
+    content: Easy to accidentally stay in .kspec/ directory after checking git log and then run kspec
+      commands, which fail. The error message is clear ('Cannot run kspec from inside .kspec/
+      directory'), but would be better to avoid this by being more careful about pwd or using
+      absolute paths.
+    created_at: 2026-01-20T15:11:32.624Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

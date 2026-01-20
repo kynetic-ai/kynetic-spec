@@ -1,50 +1,18 @@
-focus: >-
-  @SPEC REVIEW TASKS - Work through these 7 tasks in order:
+focus: |-
+  @SPEC REVIEW TASKS - Progress 1/7 complete
 
+  COMPLETED:
+  ✓ @01KFDYAW - Remove auth.yaml from manifest [PENDING_REVIEW]
 
-  TASK ORDER (by priority and dependencies):
-
-  1. @01KFDYAW - Remove auth.yaml from manifest (simple cleanup)
-
+  REMAINING (in order):
   2. @01KFDYAJ - Validate trait system E2E (test before creating traits)
-
   3. @01KFDYAP - Create 8 core traits (needed by tasks 5-7)
-
   4. @01KFDYAS - Add AC to 17 critical spec items
-
   5. @01KFDYB4 - Apply traits to task lifecycle commands
-
   6. @01KFDYB7 - Apply traits to item CRUD commands
-
   7. @01KFDYBA - Apply traits to query and inbox commands
 
-
-  EACH ITERATION:
-
-  1. Run `kspec tasks ready` and check statuses of the 7 tasks above
-
-  2. IF any task is `pending_review`: Validate that task's work by reviewing the changes, then
-  `kspec task complete @ref --reason "Validated: ..."` if correct
-
-  3. ELSE find the first task in the list above that is `pending`/ready:
-     - Run `kspec task start @ref`
-     - Follow the steps in the task notes (run `kspec task get @ref` to see them)
-     - Add notes documenting what you did
-     - Run `kspec task submit @ref` when done
-  4. IF all 7 tasks are completed: Report success and stop
-
-
-  VALIDATION CRITERIA for review:
-
-  - For auth.yaml removal: Verify the line is removed from kynetic.yaml
-
-  - For trait validation: Confirm test trait worked and was cleaned up
-
-  - For trait creation: Verify 8 traits exist with proper AC
-
-  - For AC additions: Verify the 17 items have appropriate AC
-
-  - For trait applications: Verify traits field added to correct commands
+  NEXT: @01KFDYAJ - Validate trait system E2E
 threads: []
 open_questions: []
-updated_at: 2026-01-20T15:10:06.702Z
+updated_at: 2026-01-20T15:11:40.597Z
