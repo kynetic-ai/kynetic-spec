@@ -1362,11 +1362,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1710,6 +1712,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1825,6 +1828,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13981,17 +13985,23 @@
         All 618 tests passing in CI.
       supersedes: null
   todos: []
-- title: "Implement: Pending Review State"
+- _ulid: 01KFCJVC09RSPN0M8J2HGS49Y2
+  slugs:
+    - task-pending-review-state
+  title: "Implement: Pending Review State"
   type: task
   spec_ref: "@pending-review-state"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-pending-review-state
-  tags:
-    - tasks
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-state-transitions"
+  context: []
+  priority: 3
+  tags:
+    - tasks
+  vcs_refs: []
+  created_at: 2026-01-20T02:13:28.713Z
   notes:
     - _ulid: 01KFCJVC08H9ABPRBGE1BSAAK5
       created_at: 2026-01-20T02:13:28.712Z
@@ -14034,10 +14044,60 @@
         - ac-8: Given the CLI help content for task commands, when viewing help for task state
         transitions, then pending_review is documented with its purpose and valid transitions
       supersedes: null
-  _ulid: 01KFCJVC09RSPN0M8J2HGS49Y2
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-20T02:13:28.713Z
+    - _ulid: 01KFCJVSM03HNNP1B0XE1HBCM7
+      created_at: 2026-01-20T02:13:42.657Z
+      author: "@claude"
+      content: >-
+        Implementation approach from codebase exploration:
+
+
+        **Files to modify:**
+
+        1. `src/schema/common.ts` (line ~52) - Add 'pending_review' to TaskStatusSchema enum
+
+        2. `src/cli/commands/task.ts` (line ~591) - Update task complete validation to accept
+        pending_review
+
+        3. `src/cli/commands/session.ts` - Add 'Awaiting Review' section for pending_review tasks
+
+        4. `src/cli/help/content.ts` (line ~233) - Update state transition docs
+
+        5. `AGENTS.md` (lines 194-204) - Update state machine diagram
+
+
+        **Key decisions:**
+
+        - Use `kspec task set --status pending_review` for transition (generic setter pattern, no
+        new command needed)
+
+        - pending_review tasks excluded from ready list automatically (isTaskReady only returns
+        pending)
+
+        - Status filtering via `kspec tasks list --status pending_review` works automatically once
+        schema updated
+
+
+        **Tests needed:**
+
+        - Schema accepts pending_review value
+
+        - task complete accepts pending_review as valid pre-state
+
+        - task set transitions in_progress → pending_review
+
+        - tasks ready excludes pending_review tasks
+
+        - tasks list --status pending_review filters correctly
+
+        - session start shows pending_review section
+
+
+        **No changes needed:**
+
+        - `src/parser/yaml.ts` - Ready task logic already only returns pending
+
+        - `src/strings/errors.ts` - Error message is already generic
+
+        - Ralph/automation - separate from task status
+      supersedes: null
   todos: []
