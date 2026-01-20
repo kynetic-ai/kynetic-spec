@@ -1360,11 +1360,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1704,6 +1706,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1819,6 +1822,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13879,6 +13883,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Centralized test utilities in tests/helpers/cli.ts, switched to pre-built CLI,
+    achieved 6x speedup (200s → 33s). PR #93 created."
   depends_on: []
   context: []
   priority: 3
@@ -13889,6 +13895,7 @@
   vcs_refs: []
   created_at: 2026-01-19T22:55:01.561Z
   started_at: 2026-01-19T23:02:37.477Z
+  completed_at: 2026-01-19T23:09:34.230Z
   notes:
     - _ulid: 01KFC7GE2B8ZPBFZR060NKAH6J
       created_at: 2026-01-19T22:55:16.044Z
@@ -13946,7 +13953,27 @@
         - Added pretest build hook
         - Updated CI workflow to build before test
       supersedes: null
+    - _ulid: 01KFCBXPEZD0EGAEEZ13J7ZF6M
+      created_at: 2026-01-20T00:12:24.927Z
+      author: "@claude"
+      content: >-
+        Additional fixes for CI failures:
+
+
+        1. setup.test.ts - Added git branch -M main for cross-platform compatibility (some systems
+        default to 'master')
+
+        2. setup.test.ts - Added CLAUDECODE=1 env var to simulate Claude Code environment in CI
+
+        3. integration.test.ts - Changed ULID prefix test to use full ULIDs (avoids ambiguity when
+        tasks created quickly)
+
+        4. integration.test.ts - Fixed kspec log tests by adding initial commit and creating new
+        files before each test commit
+
+        5. Converted raw execSync + expect().toThrow() to centralized kspecRun() helper
+
+
+        All 618 tests passing in CI.
+      supersedes: null
   todos: []
-  completed_at: 2026-01-19T23:09:34.230Z
-  closed_reason: "Centralized test utilities in tests/helpers/cli.ts, switched to pre-built CLI,
-    achieved 6x speedup (200s → 33s). PR #93 created."
