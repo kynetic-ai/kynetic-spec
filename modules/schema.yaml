@@ -804,6 +804,9 @@ features:
             given: spec with same trait listed twice
             when: validating
             then: warning emitted (duplicate)
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFC1B8DT80QA3V46340MT1BJ
         slugs:
           - trait-index
