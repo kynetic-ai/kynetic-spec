@@ -1603,4 +1603,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCYH1P91QYPT0Q1WKW9JJZE
+    type: success
+    content: "Trait CLI implementation followed clean separation: parser infrastructure
+      (TYPE_TO_CHILD_FIELD, NESTED_ITEM_FIELDS) before CLI commands. This pattern worked well -
+      infrastructure changes enabled CLI to use existing patterns (addChildItem, buildIndexes)
+      without special cases. E2E tests caught integration issues early (traits not loading from
+      manifest)."
+    created_at: 2026-01-20T05:37:33.385Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
