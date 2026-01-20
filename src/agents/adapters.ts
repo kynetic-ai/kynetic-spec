@@ -82,18 +82,26 @@ export function registerAdapter(id: string, adapter: AgentAdapter): void {
 /**
  * Resolve adapter by ID or use default.
  *
- * @param id - Optional adapter ID
+ * If the ID matches a registered adapter, returns that adapter.
+ * If not, treats the ID as an npm package name and creates an ad-hoc npx adapter.
+ * This allows users to use any ACP-compatible package without registering it.
+ *
+ * @param id - Optional adapter ID or npm package name
  * @returns Adapter definition
- * @throws If adapter not found
  */
 export function resolveAdapter(id?: string): AgentAdapter {
   const adapterId = id ?? 'claude-code-acp';
   const adapter = getAdapter(adapterId);
 
-  if (!adapter) {
-    const available = listAdapters().join(', ');
-    throw new Error(`Unknown adapter: ${adapterId}. Available: ${available}`);
+  if (adapter) {
+    return adapter;
   }
 
-  return adapter;
+  // Treat unknown IDs as npm package names - create ad-hoc npx adapter
+  return {
+    command: 'npx',
+    args: [adapterId],
+    shell: process.platform === 'win32',
+    description: `Ad-hoc adapter for ${adapterId}`,
+  };
 }
