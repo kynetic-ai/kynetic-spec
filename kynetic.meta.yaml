@@ -1861,4 +1861,23 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFE0RJTKJG04MGEVZ5NFJZ6G
+    type: success
+    content: "Shadow branch auto-commit workflow: File changes made via Edit tool are automatically
+      committed when kspec commands (like task note) run. No manual git add/commit needed for
+      shadow-tracked files. This is the expected behavior and works well."
+    created_at: 2026-01-20T15:35:51.892Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFE0RS0XE3AYATECAMNNPN2X
+    type: friction
+    content: "Directory context confusion: When running git/bash commands that cd into .kspec,
+      subsequent kspec commands fail with 'Cannot run from .kspec directory'. Need to be explicit
+      about returning to project root or use absolute paths. Mitigated by using 'cd /absolute/path
+      && command' pattern."
+    created_at: 2026-01-20T15:35:58.237Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
