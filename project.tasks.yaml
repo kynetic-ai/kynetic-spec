@@ -1426,11 +1426,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1902,6 +1904,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2017,6 +2020,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14488,6 +14492,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T21:10:30.962Z
+  started_at: 2026-01-20T06:13:39.394Z
   notes:
     - _ulid: 01KFC1GM9JY304NYM4BWEFQCYS
       created_at: 2026-01-19T21:10:30.962Z
@@ -14565,8 +14570,32 @@
 
         - tests/cli/trait.test.ts - Empty list output test
       supersedes: null
+    - _ulid: 01KFD0MMXPWMQ569AK25Y8WH8T
+      created_at: 2026-01-20T06:14:28.534Z
+      author: "@claude"
+      content: >-
+        Analysis complete. AC-1 already implemented in validate.ts:576-588. Need to implement:
+
+        - AC-2: Circular trait reference detection (traits field can reference other traits, need
+        cycle detection)
+
+        - AC-3: Broken trait references (already partly handled by general ref validation, but need
+        trait-specific messaging)
+
+        - AC-4: Empty trait list message in CLI command
+
+
+        Implementation plan:
+
+        1. Add detectTraitCycles() function to validate.ts
+
+        2. Call it from validate() function
+
+        3. Update trait list command to show 'No traits defined' message
+
+        4. Write E2E tests for all 4 ACs
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T06:13:39.394Z
 - _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   slugs: []
   title: Add --description flag to task add command
@@ -14929,6 +14958,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
