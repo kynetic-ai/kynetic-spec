@@ -874,6 +874,9 @@ features:
             given: spec with multiple traits
             when: displaying
             then: each trait's AC shown in separate labeled section
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFC1D57K060RM5XZNE9SV3QE
         slugs:
           - trait-validation
