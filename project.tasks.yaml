@@ -1441,11 +1441,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1947,6 +1949,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2062,6 +2065,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12586,7 +12590,7 @@
   type: bug
   spec_ref: "@cmd-clone-for-testing"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -12730,6 +12734,12 @@
         All 8 tests now passing (8/8). Full test suite: 707 tests passing.
       supersedes: null
   todos: []
+  completed_at: 2026-01-20T12:36:07.612Z
+  closed_reason: "Merged in PR #106. Fixed critical worktree setup bug causing 7/8 tests to fail. Root
+    cause: git clone --mirror copied .git/worktrees/ metadata from source repo, conflicting with new
+    worktree creation. Solution: Clean up .git/worktrees/ after clone. Also fixed test setup to
+    ensure main branch exists. All 8 tests passing, 707 total tests passing, CI green, review
+    approved with no issues."
 - _ulid: 01KFBBXCCS51V79FK4ZMPC7GT0
   slugs:
     - fix-stale-status-ac1
@@ -15353,6 +15363,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
