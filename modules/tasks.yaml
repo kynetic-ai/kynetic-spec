@@ -865,6 +865,10 @@ features:
         given: kspec tasks assess automation --auto is run
         when: marking a task
         then: adds note to task explaining the assessment
+      - id: ac-20
+        given: kspec tasks assess automation --auto is run
+        when: marking task as needs_review
+        then: note includes reason explaining what is missing
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
