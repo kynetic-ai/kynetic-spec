@@ -99,6 +99,10 @@ features:
             when: validation runs
             then: requirement structure is validated (must have title and description, should have implements
               relationship to parent feature)
+          - id: ac-2
+            given: a requirement specifies testable details
+            when: the requirement describes how a feature works
+            then: acceptance criteria can be added to define specific testable conditions
       - _ulid: 01JHNKA1W7TYPE400000000000
         slugs:
           - type-constraint
