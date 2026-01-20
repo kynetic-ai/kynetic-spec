@@ -305,6 +305,10 @@ features:
             given: the CLI help content for task commands
             when: viewing help for task state transitions
             then: pending_review is documented with its purpose and valid transitions
+          - id: ac-9
+            given: a task with status in_progress
+            when: kspec task submit is run
+            then: the task transitions to pending_review
         status:
           maturity: draft
           implementation: in_progress
