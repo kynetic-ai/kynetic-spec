@@ -837,7 +837,7 @@ features:
             then: returns all specs that implement that trait
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KFC1C406T11X5C4M954R7FP9
         slugs:
           - trait-display
