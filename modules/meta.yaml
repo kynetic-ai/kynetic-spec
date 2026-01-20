@@ -598,6 +598,10 @@ features:
                 when: kspec workflow runs is executed
                 then: "outputs table with: ID (short ULID), Workflow, Status, Step (N/M), Started; supports
                   --active, --completed, --workflow filters"
+              - id: ac-3
+                given: an active run exists
+                when: kspec workflow abort @run-id --reason '...' is executed
+                then: status=aborted, abort_reason recorded, completed_at set; shadow committed
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
