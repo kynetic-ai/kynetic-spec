@@ -280,6 +280,10 @@ features:
             given: TaskStatusSchema in common.ts
             when: validating a task status value
             then: pending_review is accepted as a valid enum value
+          - id: ac-2
+            given: a task with status pending_review
+            when: kspec task complete is run
+            then: the task transitions to completed (pending_review is a valid pre-state for completion)
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
