@@ -68,6 +68,11 @@ features:
           Can have subtasks that depends_on it.
         implements:
           - "@task-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task with type 'epic' is created
+            when: other tasks reference it via depends_on
+            then: the epic serves as a container grouping related subtasks
       - _ulid: 01JHNKA4W3TTPE300000000000
         slugs:
           - task-type-bug
