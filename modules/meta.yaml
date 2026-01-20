@@ -107,7 +107,7 @@ features:
 
           Version field enables schema evolution.
         implements:
-          - '@meta-manifest'
+          - "@meta-manifest"
       - _ulid: 01KF1XMNF20000000000000000
         slugs:
           - meta-includes
@@ -129,7 +129,7 @@ features:
           Allows splitting large meta-specs into focused files.
           Same pattern as spec manifest includes.
         implements:
-          - '@meta-manifest'
+          - "@meta-manifest"
       - _ulid: 01KF1XMNF30000000000000000
         slugs:
           - meta-validation
@@ -147,7 +147,7 @@ features:
 
           Unified validation ensures consistency across both layers.
         implements:
-          - '@meta-manifest'
+          - "@meta-manifest"
   - _ulid: 01KF1XAGT00000000000000000
     slugs:
       - agent-definitions
@@ -226,7 +226,7 @@ features:
 
           All agents have ULIDs for tracking and references.
         implements:
-          - '@agent-definitions'
+          - "@agent-definitions"
       - _ulid: 01KF1XAGT20000000000000000
         slugs:
           - agent-capabilities
@@ -249,7 +249,7 @@ features:
           Projects can define custom capabilities as needed.
           Capabilities inform workflow decisions and task routing.
         implements:
-          - '@agent-definitions'
+          - "@agent-definitions"
       - _ulid: 01KF1XAGT30000000000000000
         slugs:
           - agent-session-protocol
@@ -271,7 +271,7 @@ features:
           Protocols ensure consistent behavior across sessions.
           Commands are strings (not enforced, just documented).
         implements:
-          - '@agent-definitions'
+          - "@agent-definitions"
   - _ulid: 01KF1XWKF00000000000000000
     slugs:
       - workflow-definitions
@@ -350,7 +350,7 @@ features:
           Steps have types: check, action, decision
           on_fail provides guidance when checks fail.
         implements:
-          - '@workflow-definitions'
+          - "@workflow-definitions"
       - _ulid: 01KF1XWKF20000000000000000
         slugs:
           - workflow-steps
@@ -374,7 +374,7 @@ features:
           Steps are executed in order. Agents interpret them,
           they're not automatically enforced.
         implements:
-          - '@workflow-definitions'
+          - "@workflow-definitions"
       - _ulid: 01KF2XWKF40000000000000000
         slugs:
           - workflow-execution-model
@@ -427,7 +427,7 @@ features:
           - silent: Log step, don't wait
           - skip: Skip in checklist mode (documentation only)
         implements:
-          - '@workflow-definitions'
+          - "@workflow-definitions"
       - _ulid: 01KF1XWKF30000000000000000
         slugs:
           - workflow-triggers
@@ -447,7 +447,26 @@ features:
           Triggers are documentation, not automation.
           Agents decide when workflows apply based on context.
         implements:
-          - '@workflow-definitions'
+          - "@workflow-definitions"
+    features:
+      - _ulid: 01KFES9NEJJ4EVPXH45H53B650
+        slugs:
+          - guided-workflow-execution
+        title: Guided Workflow Execution
+        type: feature
+        tags:
+          - meta
+          - workflows
+        description: Transform workflows into interactive, guided processes with entry/exit criteria,
+          workflow runs as durable artifacts, step-by-step progression, and configurable enforcement
+          (advisory or strict).
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-20T22:44:37.458Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
@@ -523,7 +542,7 @@ features:
           Domains: commits, notes, naming, tags, etc.
           Examples provide concrete guidance.
         implements:
-          - '@convention-definitions'
+          - "@convention-definitions"
       - _ulid: 01KF1XCNV20000000000000000
         slugs:
           - convention-domains
@@ -544,7 +563,7 @@ features:
 
           Projects can define custom domains as needed.
         implements:
-          - '@convention-definitions'
+          - "@convention-definitions"
       - _ulid: 01KF2XCNV30000000000000000
         slugs:
           - convention-validation
@@ -598,7 +617,7 @@ features:
           `kspec validate --conventions` runs all validatable conventions.
           Prose-type conventions are skipped with info message.
         implements:
-          - '@convention-definitions'
+          - "@convention-definitions"
   - _ulid: 01KF1XFBK00000000000000000
     slugs:
       - observations
@@ -705,7 +724,7 @@ features:
           Types capture the nature of the feedback.
           workflow_ref links to relevant workflow for tracking.
         implements:
-          - '@observations'
+          - "@observations"
       - _ulid: 01KF1XFBK20000000000000000
         slugs:
           - observation-types
@@ -726,7 +745,7 @@ features:
           most often lead to workflow changes. Success confirms
           what's working. Questions may reveal documentation gaps.
         implements:
-          - '@observations'
+          - "@observations"
       - _ulid: 01KF1XFBK30000000000000000
         slugs:
           - observation-promotion
@@ -752,7 +771,7 @@ features:
 
           Original observation marked with promoted_to reference.
         implements:
-          - '@observations'
+          - "@observations"
       - _ulid: 01KF1XFBK40000000000000000
         slugs:
           - observation-resolution
@@ -777,7 +796,7 @@ features:
           Resolved observations remain for history.
           Unresolved observations show in session context.
         implements:
-          - '@observations'
+          - "@observations"
       - _ulid: 01KF2XFBK50000000000000000
         slugs:
           - observation-task-loop
@@ -837,7 +856,7 @@ features:
           This explicit loop ensures observations aren't lost when tasks
           complete, and creates traceable process improvement history.
         implements:
-          - '@observations'
+          - "@observations"
   - _ulid: 01KF1XCTX00000000000000000
     slugs:
       - session-context
@@ -884,7 +903,7 @@ features:
 
           Ephemeral by design - not part of project history.
         implements:
-          - '@session-context'
+          - "@session-context"
       - _ulid: 01KF1XCTX20000000000000000
         slugs:
           - context-storage
@@ -904,7 +923,7 @@ features:
           This keeps project-level meta (agents, workflows) separate
           from session-level state (focus, threads).
         implements:
-          - '@session-context'
+          - "@session-context"
       - _ulid: 01KF1XCTX30000000000000000
         slugs:
           - context-integration
@@ -929,7 +948,7 @@ features:
 
           Helps agents quickly understand current state.
         implements:
-          - '@session-context'
+          - "@session-context"
   - _ulid: 01KF1XCMD00000000000000000
     slugs:
       - meta-commands
@@ -969,7 +988,7 @@ features:
 
           Quick overview of project process definitions.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD20000000000000000
         slugs:
           - meta-agents-cmd
@@ -987,7 +1006,7 @@ features:
 
           Output shows id, name, capabilities for each agent.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD30000000000000000
         slugs:
           - meta-workflows-cmd
@@ -1005,7 +1024,7 @@ features:
 
           Output shows id, trigger, step count for each workflow.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD40000000000000000
         slugs:
           - meta-conventions-cmd
@@ -1023,7 +1042,7 @@ features:
 
           Output shows domain, rule count for each convention.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD50000000000000000
         slugs:
           - meta-observe-cmd
@@ -1046,18 +1065,17 @@ features:
           Example:
           kspec meta observe friction "Spec-first is slow for typos"
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
         acceptance_criteria:
           - id: from-inbox-conversion
             given: An inbox item exists that should have been an observation
             when: User runs kspec meta observe --from-inbox @inbox-ref [--type <type>]
-            then: >-
-              Inbox item content is used to create observation, inbox item is deleted, observation
-              ref is returned. Type defaults to 'idea' if not specified.
+            then: Inbox item content is used to create observation, inbox item is deleted, observation ref is
+              returned. Type defaults to 'idea' if not specified.
         notes:
           - _ulid: 01KFAD3FMNYEZP6ZZ98X34E13R
-            created_at: '2026-01-19T05:54:34.261Z'
-            author: '@claude'
+            created_at: 2026-01-19T05:54:34.261Z
+            author: "@claude"
             content: >-
               Enhancement: --from-inbox flag for bucket correction
 
@@ -1103,7 +1121,7 @@ features:
 
           Shows unresolved observations by default.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD70000000000000000
         slugs:
           - meta-promote-cmd
@@ -1123,7 +1141,7 @@ features:
           Creates task with meta_ref to related workflow.
           Marks observation with promoted_to reference.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD80000000000000000
         slugs:
           - meta-resolve-cmd
@@ -1144,7 +1162,7 @@ features:
           Example:
           kspec meta resolve @obs-123 "Added --quick flag"
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMD90000000000000000
         slugs:
           - meta-focus-cmd
@@ -1163,7 +1181,7 @@ features:
 
           Focus is stored in .kspec-session.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMDA0000000000000000
         slugs:
           - meta-thread-cmd
@@ -1183,7 +1201,7 @@ features:
 
           Threads are stored in .kspec-session.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMK00000000000000000
         slugs:
           - meta-question-cmd
@@ -1203,7 +1221,7 @@ features:
 
           Questions are stored in .kspec-session.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF1XCMX00000000000000000
         slugs:
           - meta-context-cmd
@@ -1227,7 +1245,7 @@ features:
 
           Reads from .kspec-session.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF2XCMG00000000000000000
         slugs:
           - meta-get-cmd
@@ -1250,7 +1268,7 @@ features:
 
           Unified access to any meta item by reference.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF2XCMN00000000000000000
         slugs:
           - meta-list-cmd
@@ -1271,7 +1289,7 @@ features:
           Complements type-specific commands (meta agents, meta workflows)
           with a unified view of all meta items.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF2XCMA00000000000000000
         slugs:
           - meta-add-cmd
@@ -1301,7 +1319,7 @@ features:
 
           ULID generated automatically. Returns created item reference.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF2XCMS00000000000000000
         slugs:
           - meta-set-cmd
@@ -1327,7 +1345,7 @@ features:
 
           Preserves fields not explicitly changed.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
       - _ulid: 01KF2XCMD00000000000000000
         slugs:
           - meta-delete-cmd
@@ -1350,7 +1368,7 @@ features:
           Error if item is referenced by tasks (meta_ref) or observations
           (workflow_ref). Use --confirm to override.
         implements:
-          - '@meta-commands'
+          - "@meta-commands"
   - _ulid: 01KF1XREF00000000000000000
     slugs:
       - meta-ref
@@ -1418,7 +1436,7 @@ features:
           meta_ref points to workflow, agent, or convention.
           Enables queries like "what tasks improve this workflow?"
         implements:
-          - '@meta-ref'
+          - "@meta-ref"
       - _ulid: 01KF1XREF20000000000000000
         slugs:
           - task-add-meta-ref
@@ -1440,7 +1458,7 @@ features:
           Creates task with meta_ref linking to meta item.
           Validation ensures meta_ref resolves to valid meta item.
         implements:
-          - '@meta-ref'
+          - "@meta-ref"
       - _ulid: 01KF1XREF30000000000000000
         slugs:
           - meta-ref-queries
@@ -1459,7 +1477,7 @@ features:
           Returns all tasks linked to that workflow.
           Useful for tracking improvement progress.
         implements:
-          - '@meta-ref'
+          - "@meta-ref"
       - _ulid: 01KF2XREF40000000000000000
         slugs:
           - meta-ref-validation
@@ -1500,4 +1518,4 @@ features:
           identified by their source file (kynetic.meta.yaml or meta/ includes)
           or by explicit type markers.
         implements:
-          - '@meta-ref'
+          - "@meta-ref"
