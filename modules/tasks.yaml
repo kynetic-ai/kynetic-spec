@@ -869,6 +869,10 @@ features:
         given: kspec tasks assess automation --auto is run
         when: marking task as needs_review
         then: note includes reason explaining what is missing
+      - id: ac-21
+        given: kspec tasks assess automation --auto is run
+        when: task passes all criteria
+        then: task appears with review_for_eligible recommendation but automation field is NOT modified
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
