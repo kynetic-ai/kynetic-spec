@@ -1517,11 +1517,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2175,6 +2177,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2290,6 +2293,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13885,7 +13889,7 @@
   type: task
   spec_ref: "@dynamic-workflow-skills"
   derivation: auto
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -13947,6 +13951,7 @@
         - Eliminates need for static files entirely
       supersedes: null
   todos: []
+  closed_reason: Replaced by guided workflow execution feature
 - _ulid: 01KFBX5FDNJ4Q662C36S97KFE7
   slugs: []
   title: Implement task automation eligibility system
@@ -15945,6 +15950,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17023,6 +17029,8 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Implemented kspec tasks assess automation command with full AC coverage. All 28 ACs
+    have tests, CLI works with --auto and --dry-run modes, triage skill updated with focus modes.
   depends_on: []
   context: []
   priority: 3
@@ -17030,6 +17038,7 @@
   vcs_refs: []
   created_at: 2026-01-20T20:54:47.589Z
   started_at: 2026-01-20T20:54:55.221Z
+  completed_at: 2026-01-20T21:03:52.521Z
   notes:
     - _ulid: 01KFEK0J15REDMKTPHVKQKWT91
       created_at: 2026-01-20T20:54:47.589Z
@@ -17157,6 +17166,3 @@
         reviewing
       supersedes: null
   todos: []
-  completed_at: 2026-01-20T21:03:52.521Z
-  closed_reason: Implemented kspec tasks assess automation command with full AC coverage. All 28 ACs
-    have tests, CLI works with --auto and --dry-run modes, triage skill updated with focus modes.
