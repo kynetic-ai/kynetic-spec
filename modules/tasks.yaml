@@ -813,6 +813,10 @@ features:
         given: kspec tasks assess automation @task-ref is run
         when: a specific task reference is provided
         then: assesses only that task
+      - id: ac-7
+        given: kspec tasks assess automation @task-ref is run
+        when: task is not found
+        then: returns non-zero exit code
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
