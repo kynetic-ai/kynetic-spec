@@ -903,7 +903,7 @@ features:
         then: non-pending tasks (completed, cancelled, in_progress, blocked) are excluded
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
