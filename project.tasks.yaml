@@ -1428,11 +1428,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1908,6 +1910,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2023,6 +2026,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14634,6 +14638,63 @@
 
         Tests need minor fixes but implementation is complete.
       supersedes: null
+    - _ulid: 01KFD0WJYJQDQBB3HGSSZJA97K
+      created_at: 2026-01-20T06:18:48.658Z
+      author: "@claude"
+      content: >-
+        WIP checkpoint - implementation complete, tests need minor fixes.
+
+
+        **Status:** All code implemented and committed to feat/trait-edge-cases branch (commit
+        c7c0401). Ready for test fixes and PR creation.
+
+
+        **What's done:**
+
+        ✅ AC-1: Trait no-AC warning (validate.ts:576-588, already existed)
+
+        ✅ AC-2: Circular trait detection (detectTraitCycles() with DFS, validate.ts:524-613)
+
+        ✅ AC-3: Broken trait refs (handled by existing ref validation)
+
+        ✅ AC-4: Empty list message (trait.ts:130, changed to 'No traits defined')
+
+        ✅ E2E test file created (tests/trait-edge-cases.test.ts)
+
+
+        **Test status:** 1/4 passing, 3 need fixes
+
+        - AC-1 test: Trait not showing @test-trait in output (shows 'Test Trait' title instead)
+
+        - AC-2 test: Manual YAML edit causes indentation error - need better approach
+
+        - AC-3 test: Wrong command (module add doesn't exist, use item add --type module)
+
+        - AC-4 test: ✅ PASSING
+
+
+        **Next steps:**
+
+        1. Fix test issues (should take ~15-20 min)
+
+        2. Run full test suite to verify no regressions
+
+        3. Submit task and create PR
+
+        4. Review and merge
+
+
+        **Files modified:**
+
+        - src/parser/validate.ts: Added TraitCycleError type, detectTraitCycles(), integrated into
+        validate()
+
+        - src/cli/commands/validate.ts: Display trait cycle errors
+
+        - src/cli/commands/trait.ts: Updated empty list message
+
+        - tests/trait-edge-cases.test.ts: E2E tests for all 4 ACs
+      supersedes: null
   todos: []
 - _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   slugs: []
@@ -14997,6 +15058,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
