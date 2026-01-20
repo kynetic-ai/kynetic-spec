@@ -7,13 +7,11 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import * as os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { createTranslator } from '../src/ralph/events.js';
 import type { SessionUpdate } from '../src/acp/types.js';
+import { CLI_PATH, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
-const FIXTURES_DIR = path.join(__dirname, 'fixtures');
-const CLI_PATH = path.join(__dirname, '..', 'src', 'cli', 'index.ts');
 const MOCK_ACP = path.join(__dirname, 'mocks', 'acp-mock.js');
 
 interface RalphResult {
@@ -32,8 +30,8 @@ function runRalph(
   env: Record<string, string> = {}
 ): RalphResult {
   const result = spawnSync(
-    'npx',
-    ['tsx', CLI_PATH, 'ralph', ...args.split(/\s+/), '--adapter-cmd', `node ${MOCK_ACP}`],
+    'node',
+    [CLI_PATH, 'ralph', ...args.split(/\s+/), '--adapter-cmd', `node ${MOCK_ACP}`],
     {
       cwd,
       encoding: 'utf-8',
@@ -57,15 +55,6 @@ function runRalph(
   };
 }
 
-/**
- * Copy fixtures to a temp directory for isolated testing
- */
-async function setupTempFixtures(): Promise<string> {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-ralph-test-'));
-  await fs.cp(FIXTURES_DIR, tempDir, { recursive: true });
-  return tempDir;
-}
-
 describe('ralph command', () => {
   let tempDir: string;
   let stateFile: string;
@@ -76,7 +65,7 @@ describe('ralph command', () => {
   });
 
   afterEach(async () => {
-    await fs.rm(tempDir, { recursive: true, force: true });
+    await cleanupTempDir(tempDir);
   });
 
   // AC-1: Basic loop execution
@@ -287,8 +276,8 @@ describe('ralph command', () => {
   it('exits with code 3 and clear error for invalid adapter', async () => {
     // Run without --adapter-cmd to trigger validation
     const result = spawnSync(
-      'npx',
-      ['tsx', CLI_PATH, 'ralph', '--adapter', '@nonexistent/adapter-package', '--dry-run'],
+      'node',
+      [CLI_PATH, 'ralph', '--adapter', '@nonexistent/adapter-package', '--dry-run'],
       {
         cwd: tempDir,
         encoding: 'utf-8',
@@ -311,8 +300,8 @@ describe('ralph command', () => {
   it('validates adapter before spawning agent or creating session', async () => {
     // Run with invalid adapter
     const result = spawnSync(
-      'npx',
-      ['tsx', CLI_PATH, 'ralph', '--adapter', '@invalid/package'],
+      'node',
+      [CLI_PATH, 'ralph', '--adapter', '@invalid/package'],
       {
         cwd: tempDir,
         encoding: 'utf-8',
