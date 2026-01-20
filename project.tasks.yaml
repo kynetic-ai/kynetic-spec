@@ -1434,11 +1434,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1926,6 +1928,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2041,6 +2044,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12558,7 +12562,7 @@
   type: bug
   spec_ref: "@cmd-clone-for-testing"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -12580,6 +12584,7 @@
         These need investigation and fixes.
       supersedes: null
   todos: []
+  started_at: 2026-01-20T06:42:23.749Z
 - _ulid: 01KFBBXCCS51V79FK4ZMPC7GT0
   slugs:
     - fix-stale-status-ac1
@@ -14513,6 +14518,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #105. Implemented all 4 trait edge case handling ACs with 100% test
+    coverage. Critical fix for manifest item loading in validation. All 699 tests passing, CI green,
+    review approved with no issues."
   depends_on:
     - "@task-spec-traits-system"
   context: []
@@ -14521,6 +14529,7 @@
   vcs_refs: []
   created_at: 2026-01-19T21:10:30.962Z
   started_at: 2026-01-20T06:13:39.394Z
+  completed_at: 2026-01-20T06:42:08.601Z
   notes:
     - _ulid: 01KFC1GM9JY304NYM4BWEFQCYS
       created_at: 2026-01-19T21:10:30.962Z
@@ -14837,10 +14846,6 @@
         - tests/trait-edge-cases.test.ts: Fix AC-3 test approach
       supersedes: null
   todos: []
-  completed_at: 2026-01-20T06:42:08.601Z
-  closed_reason: "Merged in PR #105. Implemented all 4 trait edge case handling ACs with 100% test
-    coverage. Critical fix for manifest item loading in validation. All 699 tests passing, CI green,
-    review approved with no issues."
 - _ulid: 01KFC3ARNGH0BYA05GRNHNPXQG
   slugs: []
   title: Add --description flag to task add command
@@ -15203,6 +15208,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
