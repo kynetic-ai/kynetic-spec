@@ -993,7 +993,7 @@ features:
             then: shows 'No traits defined' message
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     status:
       maturity: draft
       implementation: implemented
