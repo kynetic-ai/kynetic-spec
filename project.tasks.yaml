@@ -1504,11 +1504,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2136,6 +2138,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2251,6 +2254,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15835,6 +15839,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16695,19 +16700,174 @@
         complete).
       supersedes: null
   todos: []
-- title: Create /spec skill for spec authoring guidance
+- _ulid: 01KFE43Y5P33VWN6HRPHVCG70H
+  slugs: []
+  title: Create /spec skill for spec authoring guidance
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KFE43Y5P33VWN6HRPHVCG70H
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-20T16:34:29.686Z
-  notes: []
+  notes:
+    - _ulid: 01KFE44HAXRCWBEH1ZMMDH1P86
+      created_at: 2026-01-20T16:34:49.310Z
+      author: "@claude"
+      content: >-
+        ## Overview
+
+
+        Create a new skill `/spec` that provides comprehensive guidance for writing specification
+        items, acceptance criteria, and using traits. This consolidates scattered documentation into
+        a single authoritative source.
+
+
+        ## Problem
+
+
+        Currently spec-writing guidance is scattered across:
+
+        - KYNETIC_SPEC_DESIGN.md (comprehensive but dense)
+
+        - AGENTS.md (principles, decision flow)
+
+        - /spec-plan skill (AC tips, buried)
+
+        - /triage skill (decision tree)
+
+        - /kspec skill (commands only, no guidance)
+
+
+        Key gaps:
+
+        1. **Traits completely undocumented** - 8 working traits exist but no user guidance
+
+        2. **No item type decision guide** - When to use feature vs requirement vs constraint?
+
+        3. **AC quality guidelines scattered** - Best content buried in /spec-plan
+
+        4. **Spec hierarchy patterns missing** - How to structure parent/child
+
+
+        ## Deliverable
+
+
+        Create `.claude/skills/spec/SKILL.md` with:
+
+
+        ### 1. When to Create a Spec (Decision Tree)
+
+        - Behavior change? → Spec needed
+
+        - Infrastructure/tooling? → Task only  
+
+        - Bug fix? → Check if spec gap exists
+
+
+        ### 2. Item Types Guide
+
+        Explain when to use each:
+
+        - **Module**: High-level organizational (e.g., 'Authentication', 'CLI Commands')
+
+        - **Feature**: User-facing capability with AC (e.g., 'User Login')
+
+        - **Requirement**: Specific testable behavior under features
+
+        - **Constraint**: System boundaries/limitations
+
+        - **Decision**: ADR-style architectural decisions
+
+        - **Trait**: Reusable AC bundles for cross-cutting concerns
+
+
+        ### 3. Writing Acceptance Criteria
+
+        - Given/When/Then format with examples
+
+        - Quality guidelines: specific, testable, independent, complete
+
+        - Patterns: happy path + errors, state transitions
+
+        - Target 3-5 AC per item
+
+
+        ### 4. Traits Guide (Currently Missing)
+
+        - What traits are for (reusable AC for cross-cutting concerns)
+
+        - When to create a trait (same AC applies to 3+ specs)
+
+        - How to create traits: `kspec trait add`, `kspec item ac add @trait`
+
+        - How to apply traits: `kspec item trait add @spec @trait`
+
+        - List existing traits: `kspec trait list`
+
+        - Point to `.kspec/kynetic.yaml` for real examples
+
+
+        ### 5. Spec Hierarchy Patterns
+
+        - Module → Feature → Requirement structure
+
+        - When to nest vs keep flat
+
+        - Parent-child relationships
+
+
+        ### 6. Status Lifecycle
+
+        - Maturity: draft → proposed → stable → deprecated
+
+        - Implementation: not_started → in_progress → implemented → verified
+
+
+        ### 7. Quick Reference
+
+        Common commands:
+
+        ```bash
+
+        kspec item add --under @parent --title "..." --type feature --slug slug
+
+        kspec item ac add @slug --given "..." --when "..." --then "..."
+
+        kspec item trait add @spec @trait
+
+        kspec item set @slug --implementation implemented
+
+        kspec derive @slug
+
+        kspec validate
+
+        ```
+
+
+        ## Reference Materials
+
+
+        - Existing traits in `.kspec/kynetic.yaml` (8 traits with full AC)
+
+        - AC examples in `.kspec/modules/*.yaml` (100+ real examples)
+
+        - /spec-plan skill AC tips (consolidate into new skill)
+
+        - KYNETIC_SPEC_DESIGN.md schema section
+
+
+        ## Post-Creation
+
+
+        1. Update AGENTS.md to reference /spec skill for spec-writing guidance
+
+        2. Update /spec-plan to focus on plan→spec workflow, defer general guidance to /spec
+
+        3. Test skill by running `/spec` and verifying output is helpful
+      supersedes: null
   todos: []
