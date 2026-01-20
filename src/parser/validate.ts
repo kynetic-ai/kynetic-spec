@@ -63,6 +63,16 @@ export type CompletenessWarningType =
   | 'missing_test_coverage';
 
 /**
+ * Trait cycle error
+ */
+export interface TraitCycleError {
+  traitRef: string;
+  traitTitle: string;
+  cycle: string[];
+  message: string;
+}
+
+/**
  * Completeness warning
  */
 export interface CompletenessWarning {
@@ -83,6 +93,7 @@ export interface ValidationResult {
   refWarnings: RefValidationWarning[];
   orphans: OrphanItem[];
   completenessWarnings: CompletenessWarning[];
+  traitCycleErrors: TraitCycleError[];
   stats: {
     filesChecked: number;
     itemsChecked: number;
@@ -503,6 +514,105 @@ function findOrphans(
 }
 
 // ============================================================
+// TRAIT CYCLE DETECTION
+// ============================================================
+
+/**
+ * Detect circular trait references
+ * AC: @trait-edge-cases ac-2
+ */
+function detectTraitCycles(
+  items: LoadedSpecItem[],
+  index: ReferenceIndex
+): TraitCycleError[] {
+  const errors: TraitCycleError[] = [];
+  const traits = items.filter(item => item.type === 'trait');
+
+  // Build adjacency list: trait ULID → trait ULIDs it references
+  const graph = new Map<string, string[]>();
+  const traitInfo = new Map<string, { ref: string; title: string }>();
+
+  for (const trait of traits) {
+    const ref = trait.slugs?.[0] ? `@${trait.slugs[0]}` : `@${trait._ulid.slice(0, 8)}`;
+    traitInfo.set(trait._ulid, { ref, title: trait.title });
+
+    const dependencies: string[] = [];
+    if (trait.traits && trait.traits.length > 0) {
+      for (const traitRef of trait.traits) {
+        const result = index.resolve(traitRef);
+        if (result.ok) {
+          dependencies.push(result.ulid);
+        }
+      }
+    }
+    graph.set(trait._ulid, dependencies);
+  }
+
+  // DFS-based cycle detection
+  const visiting = new Set<string>();
+  const visited = new Set<string>();
+
+  function dfs(ulid: string, path: string[]): string[] | null {
+    if (visiting.has(ulid)) {
+      // Found a cycle - return the cycle path
+      const cycleStart = path.indexOf(ulid);
+      return path.slice(cycleStart);
+    }
+
+    if (visited.has(ulid)) {
+      return null; // Already checked this path
+    }
+
+    visiting.add(ulid);
+    path.push(ulid);
+
+    const dependencies = graph.get(ulid) || [];
+    for (const depUlid of dependencies) {
+      const cycle = dfs(depUlid, path);
+      if (cycle) {
+        return cycle;
+      }
+    }
+
+    visiting.delete(ulid);
+    visited.add(ulid);
+    path.pop();
+
+    return null;
+  }
+
+  // Check each trait for cycles
+  for (const trait of traits) {
+    if (!visited.has(trait._ulid)) {
+      const cycle = dfs(trait._ulid, []);
+      if (cycle) {
+        const info = traitInfo.get(cycle[0]);
+        if (info) {
+          const cycleRefs = cycle.map(ulid => {
+            const cycleInfo = traitInfo.get(ulid);
+            return cycleInfo ? cycleInfo.ref : `@${ulid.slice(0, 8)}`;
+          });
+
+          errors.push({
+            traitRef: info.ref,
+            traitTitle: info.title,
+            cycle: cycleRefs,
+            message: `Circular trait reference: ${cycleRefs.join(' → ')} → ${cycleRefs[0]}`,
+          });
+        }
+
+        // Mark all traits in cycle as visited to avoid duplicate errors
+        for (const ulid of cycle) {
+          visited.add(ulid);
+        }
+      }
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================
 // COMPLETENESS VALIDATION
 // ============================================================
 
@@ -742,6 +852,7 @@ export async function validate(
     refWarnings: [],
     orphans: [],
     completenessWarnings: [],
+    traitCycleErrors: [],
     stats: {
       filesChecked: 0,
       itemsChecked: 0,
@@ -838,6 +949,10 @@ export async function validate(
     result.refErrors = refResult.errors;
     result.refWarnings = refResult.warnings;
 
+    // AC: @trait-edge-cases ac-2
+    // Detect circular trait references
+    result.traitCycleErrors = detectTraitCycles(allItems, index);
+
     // Orphan detection
     if (runOrphans) {
       result.orphans = findOrphans(allTasks, allItems, index);
@@ -877,7 +992,7 @@ export async function validate(
   }
 
   // Set valid flag
-  result.valid = result.schemaErrors.length === 0 && result.refErrors.length === 0;
+  result.valid = result.schemaErrors.length === 0 && result.refErrors.length === 0 && result.traitCycleErrors.length === 0;
 
   return result;
 }

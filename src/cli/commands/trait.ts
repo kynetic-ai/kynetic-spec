@@ -122,11 +122,12 @@ export function registerTraitCommands(program: Command): void {
 
         const traits = traitIndex.getAllTraits();
 
+        // AC: @trait-edge-cases ac-4
         output(
           { traits },
           () => {
             if (traits.length === 0) {
-              console.log(chalk.gray('No traits found'));
+              console.log(chalk.gray('No traits defined'));
               return;
             }
 

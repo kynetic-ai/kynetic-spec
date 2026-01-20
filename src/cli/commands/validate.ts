@@ -467,6 +467,16 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
     }
   }
 
+  // AC: @trait-edge-cases ac-2
+  // Trait cycle errors
+  if (result.traitCycleErrors.length > 0) {
+    console.log(chalk.red(`\nTrait cycle errors: ${result.traitCycleErrors.length}`));
+    for (const err of result.traitCycleErrors) {
+      console.log(chalk.red(`  ✗ ${err.traitRef} - ${err.traitTitle}`));
+      console.log(chalk.gray(`    ${err.message}`));
+    }
+  }
+
   // Orphans (warnings, not errors)
   if (result.orphans.length > 0) {
     console.log(chalk.yellow(`\nOrphans (not referenced): ${result.orphans.length}`));
