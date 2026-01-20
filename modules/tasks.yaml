@@ -829,6 +829,10 @@ features:
         given: assessing a task with spec_ref
         when: linked spec has at least one acceptance criterion
         then: spec_has_acs criterion passes
+      - id: ac-11
+        given: assessing a task
+        when: task has no spec_ref
+        then: spec_has_acs criterion is skipped (neutral)
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
