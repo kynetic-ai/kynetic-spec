@@ -81,29 +81,14 @@ describe('Trait CLI - trait list', () => {
     await initGitRepo(tempDir);
 
     // Create some traits
-    kspec('trait add "Trait One"', tempDir);
+    kspec('trait add "Trait One" --slug trait-one', tempDir);
     kspec('trait add "Trait Two" --description "Second trait"', tempDir);
     kspec('trait add "Trait Three" --slug trait-three', tempDir);
 
-    // Add AC to one of the traits
-    const manifest = await fs.readFile(
-      path.join(tempDir, 'kynetic.yaml'),
-      'utf-8'
-    );
-
-    const withAC = manifest.replace(
-      'title: Trait One',
-      `title: Trait One
-acceptance_criteria:
-  - id: ac-1
-    given: condition
-    when: action
-    then: result`
-    );
-
-    await fs.writeFile(
-      path.join(tempDir, 'kynetic.yaml'),
-      withAC
+    // Add AC to Trait One using CLI
+    kspec(
+      'item ac add @trait-one --given "condition" --when "action" --then "result"',
+      tempDir
     );
   });
 
@@ -157,29 +142,14 @@ describe('Trait CLI - trait get', () => {
     // Create a trait with AC
     kspec('trait add "JSON Output Support" --slug json-output --description "Trait for JSON support"', tempDir);
 
-    // Add AC to the trait
-    const manifest = await fs.readFile(
-      path.join(tempDir, 'kynetic.yaml'),
-      'utf-8'
+    // Add ACs using CLI
+    kspec(
+      'item ac add @json-output --given "command with --json flag" --when "executed" --then "outputs valid JSON"',
+      tempDir
     );
-
-    const withAC = manifest.replace(
-      'description: Trait for JSON support',
-      `description: Trait for JSON support
-acceptance_criteria:
-  - id: ac-1
-    given: command with --json flag
-    when: executed
-    then: outputs valid JSON
-  - id: ac-2
-    given: JSON output
-    when: parsed
-    then: contains required fields`
-    );
-
-    await fs.writeFile(
-      path.join(tempDir, 'kynetic.yaml'),
-      withAC
+    kspec(
+      'item ac add @json-output --given "JSON output" --when "parsed" --then "contains required fields"',
+      tempDir
     );
   });
 
@@ -270,16 +240,26 @@ describe('Trait CLI - item trait add', () => {
     // Create a trait
     kspec('trait add "JSON Output Support" --slug json-output', tempDir);
 
-    // Create a spec item
+    // Create a spec item in a module file
     await fs.mkdir(path.join(tempDir, 'modules'), { recursive: true });
-    const specModule = `_ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
+    const specModule = `_ulid: 01KFCVXQ00MODULE00000000000
 slugs:
-  - test-feature
-title: Test Feature
-type: feature
+  - test-module
+title: Test Module
+type: module
 status:
   maturity: draft
   implementation: not_started
+
+features:
+  - _ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
+    slugs:
+      - test-trait-feature
+    title: Test Trait Feature
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
 `;
     await fs.writeFile(
       path.join(tempDir, 'modules/test.yaml'),
@@ -307,17 +287,17 @@ status:
   // AC: @trait-cli ac-5
   it('should add trait to spec traits array', () => {
     const result = kspecJson<{ added: boolean; spec: string; trait: string }>(
-      'item trait add @test-feature @json-output',
+      'item trait add @test-trait-feature @json-output',
       tempDir
     );
 
     expect(result.added).toBe(true);
-    expect(result.spec).toContain('test-feature');
+    expect(result.spec).toContain('test-trait-feature');
     expect(result.trait).toBe('@json-output');
   });
 
   it('should persist trait in spec file', async () => {
-    kspec('item trait add @test-feature @json-output', tempDir);
+    kspec('item trait add @test-trait-feature @json-output', tempDir);
 
     const specFile = await fs.readFile(
       path.join(tempDir, 'modules/test.yaml'),
@@ -331,11 +311,11 @@ status:
   // AC: @trait-cli ac-6
   it('should be idempotent - no duplicate when trait already added', async () => {
     // Add trait once
-    kspec('item trait add @test-feature @json-output', tempDir);
+    kspec('item trait add @test-trait-feature @json-output', tempDir);
 
     // Add again - should be idempotent
     const result = kspecJson<{ added: boolean }>(
-      'item trait add @test-feature @json-output',
+      'item trait add @test-trait-feature @json-output',
       tempDir
     );
 
@@ -354,7 +334,7 @@ status:
   // AC: @trait-cli ac-7
   it('should error when trait does not exist', () => {
     expect(() => {
-      kspec('item trait add @test-feature @nonexistent-trait', tempDir);
+      kspec('item trait add @test-trait-feature @nonexistent-trait', tempDir);
     }).toThrow();
   });
 
@@ -377,7 +357,7 @@ tasks:
     type: task
     status: pending
     priority: 2
-    spec_ref: "@test-feature"
+    spec_ref: "@test-trait-feature"
     tags: []
     depends_on: []
     blocked_by: []
@@ -407,20 +387,31 @@ describe('Trait CLI - item trait remove', () => {
     // Create traits
     kspec('trait add "Trait One" --slug trait-one', tempDir);
     kspec('trait add "Trait Two" --slug trait-two', tempDir);
+    kspec('trait add "JSON Output" --slug json-output', tempDir);
 
-    // Create a spec with both traits
+    // Create a spec with both traits in a module file
     await fs.mkdir(path.join(tempDir, 'modules'), { recursive: true });
-    const specModule = `_ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
+    const specModule = `_ulid: 01KFCVXQ00MODULE00000000000
 slugs:
-  - test-feature
-title: Test Feature
-type: feature
+  - test-module
+title: Test Module
+type: module
 status:
   maturity: draft
   implementation: not_started
-traits:
-  - "@trait-one"
-  - "@trait-two"
+
+features:
+  - _ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
+    slugs:
+      - test-trait-feature
+    title: Test Trait Feature
+    type: feature
+    status:
+      maturity: draft
+      implementation: not_started
+    traits:
+      - "@trait-one"
+      - "@trait-two"
 `;
     await fs.writeFile(
       path.join(tempDir, 'modules/test.yaml'),
@@ -448,17 +439,17 @@ traits:
   // AC: @trait-cli ac-8
   it('should remove trait from traits array', () => {
     const result = kspecJson<{ removed: boolean; spec: string; trait: string }>(
-      'item trait remove @test-feature @trait-one',
+      'item trait remove @test-trait-feature @trait-one',
       tempDir
     );
 
     expect(result.removed).toBe(true);
-    expect(result.spec).toContain('test-feature');
+    expect(result.spec).toContain('test-trait-feature');
     expect(result.trait).toBe('@trait-one');
   });
 
   it('should persist removal in spec file', async () => {
-    kspec('item trait remove @test-feature @trait-one', tempDir);
+    kspec('item trait remove @test-trait-feature @trait-one', tempDir);
 
     const specFile = await fs.readFile(
       path.join(tempDir, 'modules/test.yaml'),
@@ -471,7 +462,7 @@ traits:
 
   it('should warn when trait not in spec traits array', () => {
     const result = kspecJson<{ removed: boolean }>(
-      'item trait remove @test-feature @json-output',
+      'item trait remove @test-trait-feature @json-output',
       tempDir
     );
 
@@ -479,8 +470,8 @@ traits:
   });
 
   it('should allow removing all traits', async () => {
-    kspec('item trait remove @test-feature @trait-one', tempDir);
-    kspec('item trait remove @test-feature @trait-two', tempDir);
+    kspec('item trait remove @test-trait-feature @trait-one', tempDir);
+    kspec('item trait remove @test-trait-feature @trait-two', tempDir);
 
     const specFile = await fs.readFile(
       path.join(tempDir, 'modules/test.yaml'),
@@ -493,7 +484,7 @@ traits:
 
   it('should error when trait ref is invalid', () => {
     expect(() => {
-      kspec('item trait remove @test-feature @nonexistent', tempDir);
+      kspec('item trait remove @test-trait-feature @nonexistent', tempDir);
     }).toThrow();
   });
 });
