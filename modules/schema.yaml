@@ -49,6 +49,10 @@ features:
             given: a module-type item is created
             when: validation runs
             then: module structure is validated (must have title, can have features array)
+          - id: ac-2
+            given: a module contains nested features and requirements
+            when: nesting depth is validated
+            then: modules can contain features, features can contain requirements (proper hierarchy enforced)
       - _ulid: 01JHNKA1W5TYPE200000000000
         slugs:
           - type-feature
