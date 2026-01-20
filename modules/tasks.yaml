@@ -821,6 +821,10 @@ features:
         given: assessing a task
         when: task has spec_ref pointing to resolvable spec
         then: has_spec_ref criterion passes
+      - id: ac-9
+        given: assessing a task
+        when: spec_ref is missing or unresolvable
+        then: has_spec_ref criterion fails
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
