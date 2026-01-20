@@ -833,6 +833,10 @@ features:
         given: assessing a task
         when: task has no spec_ref
         then: spec_has_acs criterion is skipped (neutral)
+      - id: ac-12
+        given: assessing a task
+        when: task type is not spike
+        then: not_spike criterion passes
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
