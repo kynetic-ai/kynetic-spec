@@ -1486,4 +1486,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCS35ZYSCC5209668HWBZDA
+    type: success
+    content: "Test-first debugging workflow effective: Added debug output to failing tests to identify
+      root cause (invalid ULID format), then fixed and removed debug code. Faster than guessing."
+    created_at: 2026-01-20T04:02:36.159Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
