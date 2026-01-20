@@ -1554,4 +1554,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCX5DYS83R2SYQ1SNCNY03P
+    type: success
+    content: "Systematic debugging approach: When implementation code looks correct but tests fail,
+      investigate test infrastructure first. Created isolated debug scripts to replicate exact test
+      scenario, which revealed YAML parser only reading first document. This pattern of creating
+      minimal reproduction scripts in scratchpad is valuable for debugging test failures."
+    created_at: 2026-01-20T05:13:44.153Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
