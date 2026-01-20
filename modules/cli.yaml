@@ -1429,9 +1429,9 @@ features:
         created: 2026-01-19T06:00:22.244Z
         acceptance_criteria:
           - id: parent-pending-children-done
-            given: Umbrella/parent task is pending but all child spec items are marked implemented
-            when: kspec validate --staleness runs
-            then: "Warns: 'Task @parent-task is pending but all linked specs are implemented. Consider
+            given: Task with dependency tasks, where task status is pending or in_progress
+            when: kspec validate --staleness runs and all dependency tasks are completed
+            then: "Warns: 'Task @task is pending/in_progress but all dependencies are completed. Consider
               completing or reviewing.'"
           - id: spec-implemented-no-task
             given: Spec item is marked implemented but no completed tasks reference it
