@@ -1533,4 +1533,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCW3TDDPB6G1G8DFS10NAEE
+    type: friction
+    content: ULID validation in tests requires Crockford base32 alphabet (excludes I, L, O, U). Common
+      test ULID patterns like 01TRAIT10... or 01TASK10... are invalid because they contain 'I'.
+      Should document this in test helpers or provide a utility function that generates valid test
+      ULIDs with readable prefixes.
+    created_at: 2026-01-20T04:55:22.797Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
