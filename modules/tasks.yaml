@@ -881,6 +881,10 @@ features:
         given: kspec tasks assess automation --dry-run --auto is run
         when: combining flags
         then: shows auto mode changes without applying them
+      - id: ac-24
+        given: kspec tasks assess automation --json is run
+        when: outputting results
+        then: outputs structured JSON with criteria details for each task
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
