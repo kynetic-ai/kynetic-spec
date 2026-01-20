@@ -468,10 +468,6 @@ features:
         notes: []
         created: 2026-01-20T22:44:37.458Z
         acceptance_criteria:
-          - id: ac-9
-            given: an active run exists
-            when: kspec workflow abort @run-id --reason '...' is executed
-            then: status=aborted, abort_reason recorded, completed_at set
           - id: ac-10
             given: an active run exists
             when: kspec workflow pause @run-id is executed
