@@ -958,6 +958,9 @@ features:
             given: user runs 'kspec item trait remove @spec @trait'
             when: trait in spec's list
             then: removes trait from traits array
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFC1FGKR7S29HE1DYX8KJ8KT
         slugs:
           - trait-edge-cases
