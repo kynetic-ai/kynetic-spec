@@ -908,6 +908,9 @@ features:
             given: trait deleted
             when: spec still references it
             then: validation reports broken ref error
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFC1E178WYP06TTVGY12VVE4
         slugs:
           - trait-cli
