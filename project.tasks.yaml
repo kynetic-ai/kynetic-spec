@@ -1484,11 +1484,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2076,6 +2078,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2191,6 +2194,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15645,6 +15649,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16311,6 +16316,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T14:53:33.578Z
+  started_at: 2026-01-20T15:24:59.864Z
   notes:
     - _ulid: 01KFDYCMJ6BJVQ26RDG1450V92
       created_at: 2026-01-20T14:54:23.303Z
@@ -16334,8 +16340,33 @@
         - `@trait-semantic-exit-codes` - all commands
         - `@trait-error-guidance` - all commands
       supersedes: null
+    - _ulid: 01KFE0D46ES08DK4BZKCX1MJS3
+      created_at: 2026-01-20T15:29:36.463Z
+      author: "@claude"
+      content: >-
+        Applied traits to 7 task lifecycle command specs in cli.yaml:
+
+
+        ✓ @task-start - added json-output, semantic-exit-codes, error-guidance
+
+        ✓ @task-complete - added json-output, semantic-exit-codes, error-guidance, multi-ref-batch
+
+        ✓ @task-block - added json-output, semantic-exit-codes, error-guidance
+
+        ✓ @task-unblock - added json-output, semantic-exit-codes, error-guidance
+
+        ✓ @task-cancel - added json-output, semantic-exit-codes, error-guidance, multi-ref-batch
+
+        ✓ @task-submit - created new spec (ULID: 01KFDZYWG0CTSK250000000000) with json-output,
+        semantic-exit-codes, error-guidance
+
+        ✓ @cmd-task-delete - added json-output, semantic-exit-codes, error-guidance,
+        multi-ref-batch, confirmation-prompt
+
+
+        All trait references validated successfully. Task complete and ready for commit.
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T15:24:59.864Z
 - _ulid: 01KFDYB73CMS9GN83XMW8MQGVS
   slugs: []
   title: Apply traits to item CRUD commands

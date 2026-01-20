@@ -536,6 +536,10 @@ features:
           - "@task-commands"
         depends_on:
           - "@state-in-progress"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01JHNKA8W9CTSK300000000000
         slugs:
           - task-complete
@@ -556,6 +560,31 @@ features:
           - "@task-commands"
         depends_on:
           - "@state-completed"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-multi-ref-batch"
+      - _ulid: 01KFDZYWG0CTSK250000000000
+        slugs:
+          - task-submit
+          - cmd-task-submit
+        title: kspec task submit
+        type: requirement
+        status:
+          maturity: draft
+          implementation: implemented
+        description: |
+          kspec task submit <ref>
+
+          Transitions task from in_progress to pending_review.
+          Indicates code is complete and ready for review/merge.
+        implements:
+          - "@task-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01JHNKA9W0CTSK400000000000
         slugs:
           - task-block
@@ -576,6 +605,10 @@ features:
           - "@task-commands"
         depends_on:
           - "@state-blocked"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01JHNKA9W1CTSK500000000000
         slugs:
           - task-unblock
@@ -591,6 +624,10 @@ features:
           Clears blocked_by array.
         implements:
           - "@task-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01JHNKA9W2CTSK600000000000
         slugs:
           - task-cancel
@@ -611,6 +648,11 @@ features:
           - "@task-commands"
         depends_on:
           - "@state-cancelled"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-multi-ref-batch"
       - _ulid: 01KF0VJEHSCEQ5SVD6XRYV81M1
         slugs:
           - cmd-task-delete
@@ -633,6 +675,12 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-multi-ref-batch"
+          - "@trait-confirmation-prompt"
         acceptance_criteria:
           - id: ac-1
             given: A task exists with ref @test-task
