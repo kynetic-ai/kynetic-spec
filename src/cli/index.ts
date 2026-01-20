@@ -24,6 +24,8 @@ import {
   registerMetaCommands,
   registerLinkCommands,
   registerModuleCommands,
+  registerTraitCommands,
+  registerItemTraitCommands,
 } from './commands/index.js';
 import { EXIT_CODES } from './exit-codes.js';
 
@@ -55,7 +57,15 @@ registerTaskCommands(program);
 registerSetupCommand(program);
 registerSessionCommands(program);
 registerInitCommand(program);
+
+// Register item commands first, then add trait subcommands to it
 registerItemCommands(program);
+const itemCmd = program.commands.find(cmd => cmd.name() === 'item');
+if (itemCmd) {
+  registerItemTraitCommands(itemCmd);
+}
+
+registerTraitCommands(program);
 registerValidateCommand(program);
 registerHelpCommand(program);
 registerDeriveCommand(program);

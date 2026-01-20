@@ -868,6 +868,7 @@ const NESTED_ITEM_FIELDS = [
   'requirements',
   'constraints',
   'decisions',
+  'traits',
   'acceptance_criteria',
 ];
 
@@ -1203,6 +1204,7 @@ const TYPE_TO_CHILD_FIELD: Record<string, string> = {
   constraint: 'constraints',
   decision: 'decisions',
   module: 'modules',
+  trait: 'traits',
 };
 
 /**
