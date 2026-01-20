@@ -1636,4 +1636,37 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFD0A2TX3WZFG6RQMN45Y8CR
+    type: friction
+    content: "Test fixture anti-patterns found: (1) Naive YAML string manipulation breaks structure -
+      use CLI commands or proper YAML parsers instead. (2) Tests creating invalid kspec structures -
+      spec items must be nested under module items in type-specific fields. (3) Slug collisions with
+      existing fixtures - tests need unique identifiers. (4) Missing test dependencies - tests
+      assuming entities exist without creating them. These issues compound and hide real
+      implementation bugs."
+    created_at: 2026-01-20T06:08:42.334Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFD0A8HPBCD40WAZSF3GMZRX
+    type: success
+    content: "Systematic test debugging approach worked well: (1) Run tests to see failures, (2) Isolate
+      root cause through manual reproduction, (3) Fix fixtures to match actual kspec requirements,
+      (4) Verify all tests pass. Using manual CLI invocations in temp dirs helped identify
+      structural issues that weren't obvious from test code alone."
+    created_at: 2026-01-20T06:08:48.182Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFD0DWVHZJSMHVAQY11HFPEF
+    type: success
+    content: "PR review feedback loop worked well: (1) Subagent identified test quality issues with
+      clear MUST-FIX verdict, (2) Systematic debugging traced root causes (YAML structure, slug
+      conflicts, missing deps), (3) Fixed all 12 test failures, (4) All 695 tests pass locally, (5)
+      PR updated and CI re-running. The strict review criteria (E2E tests, temp dirs, AC coverage,
+      no fluff) ensured high quality implementation."
+    created_at: 2026-01-20T06:10:47.281Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
