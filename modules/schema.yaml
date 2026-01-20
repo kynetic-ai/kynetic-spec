@@ -145,6 +145,12 @@ features:
           Examples: "Use PostgreSQL for persistence", "Choose YAML over JSON"
         implements:
           - "@item-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a decision-type item is created
+            when: validation runs
+            then: decision structure is validated (must have title, description, should include why the choice
+              was made and alternatives considered)
       - _ulid: 01JHNKA1W9TYPE600000000000
         slugs:
           - type-task
