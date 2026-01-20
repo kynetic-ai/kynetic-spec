@@ -910,7 +910,7 @@ features:
             then: validation reports broken ref error
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KFC1E178WYP06TTVGY12VVE4
         slugs:
           - trait-cli
