@@ -489,6 +489,11 @@ features:
             given: a run is at the last step
             when: kspec workflow next @run-id is executed
             then: status=completed, completed_at set, outputs summary with duration and step count
+          - id: ac-6
+            given: workflow runs exist
+            when: kspec workflow runs is executed
+            then: "outputs table with: ID (short ULID), Workflow, Status, Step (N/M), Started; supports
+              --active, --completed, --workflow filters"
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
