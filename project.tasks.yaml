@@ -1510,11 +1510,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2154,6 +2156,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2269,6 +2272,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13933,6 +13937,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T19:54:31.220Z
+  started_at: 2026-01-20T17:50:19.101Z
   notes:
     - _ulid: 01KFBX5R6E5PD4HPVERVS2HVMP
       created_at: 2026-01-19T19:54:40.207Z
@@ -13953,8 +13958,49 @@
 
         - Constraints: Agents can't mark eligible (human only), needs_review requires note
       supersedes: null
+    - _ulid: 01KFE8YT0N1VQP5BR96QCCXZPQ
+      created_at: 2026-01-20T17:59:04.470Z
+      author: "@claude"
+      content: >-
+        Implemented task automation eligibility system:
+
+
+        **Schema:**
+
+        - Added AutomationStatusSchema with values: eligible, needs_review, manual_only
+
+        - Added optional automation field to TaskSchema and TaskInputSchema
+
+
+        **CLI Commands:**
+
+        - task set: --automation <status> to set, --no-automation to clear (returns to unassessed)
+
+        - task set: --reason required when setting needs_review, adds note documenting change
+
+        - task add: --automation <status> to create with initial status
+
+        - task get: Displays automation status (or 'unassessed' if not set)
+
+        - tasks ready: Shows automation status in list, filters: --eligible, --unassessed,
+        --needs-review
+
+
+        **Validation:**
+
+        - Warns when eligible task has no spec_ref (AC-21)
+
+        - Warns when eligible task's spec_ref doesn't resolve (AC-23)
+
+
+        **Tests:**
+
+        - 22 E2E tests covering all ACs in tests/automation-eligibility.test.ts
+
+
+        All 737 tests pass (714 existing + 22 new + 1 skipped).
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T17:50:19.101Z
 - _ulid: 01KFC1GKGFBGKAVP1PKWCR7G02
   slugs:
     - task-spec-traits-system
@@ -15726,6 +15772,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
