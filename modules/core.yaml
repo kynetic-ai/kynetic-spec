@@ -446,6 +446,11 @@ features:
             when: viewing item A
             then: B is shown as a related reference (general association without specific semantics like 'see
               also')
+          - id: ac-2
+            given: item A relates_to item B
+            when: validating relationships
+            then: relates_to is accepted as valid cross-reference without enforcing specific constraints (unlike
+              depends_on or blocks)
       - _ulid: 01KEZCJPJ26Q09SD3GCQAXJWP9
         slugs:
           - rel-blocks
