@@ -24,6 +24,7 @@ import {
   findTaskFiles,
   loadSpecFile,
   expandIncludePattern,
+  extractItemsFromRaw,
 } from './yaml.js';
 import { ReferenceIndex, validateRefs, type RefValidationError, type RefValidationWarning } from './refs.js';
 import { findMetaManifest, loadMetaContext, type MetaContext } from './meta.js';
@@ -868,6 +869,13 @@ export async function validate(
     const manifestErrors = await validateManifestFile(ctx.manifestPath);
     result.schemaErrors.push(...manifestErrors);
     result.stats.filesChecked++;
+  }
+
+  // Load items from manifest (traits, inline modules, etc.)
+  if (ctx.manifest && ctx.manifestPath) {
+    const manifestItems = extractItemsFromRaw(ctx.manifest, ctx.manifestPath);
+    allItems.push(...manifestItems);
+    result.stats.itemsChecked += manifestItems.length;
   }
 
   // Find and validate task files

@@ -52,48 +52,34 @@ describe('trait edge cases', () => {
 
   // AC: @trait-edge-cases ac-3
   it('should report broken trait reference when trait is deleted', async () => {
-    // Create a trait and a spec that implements it
+    // Create a trait
     kspec('trait add "Test Trait" --slug test-trait', tempDir);
 
-    // Create module and spec manually since CLI doesn't support module creation at root
-    const modulePath = path.join(tempDir, 'modules/test.yaml');
-    const moduleContent = `_ulid: 01TEST0000000000000000001
-slugs:
-  - test-module
-title: Test Module
-type: module
-items:
-  - _ulid: 01TEST0000000000000000002
-    slugs:
-      - test-spec
-    title: Test Spec
-    type: feature
-    traits:
-      - "@test-trait"
-    status:
-      maturity: draft
-      implementation: not_started
-`;
-    await fs.writeFile(modulePath, moduleContent, 'utf-8');
-
-    // Manually delete the trait from kynetic.yaml using yaml library
-    const manifestPath = path.join(tempDir, 'kynetic.yaml');
+    // Create a feature with a trait reference in core.yaml
+    const corePath = path.join(tempDir, 'modules/core.yaml');
     const yaml = require('yaml');
-    const manifestContent = await fs.readFile(manifestPath, 'utf-8');
-    const doc = yaml.parseDocument(manifestContent);
+    const coreContent = await fs.readFile(corePath, 'utf-8');
+    const doc = yaml.parseDocument(coreContent);
 
-    // Remove the trait from traits array
-    const traits = doc.get('traits');
-    if (traits && traits.items) {
-      const newTraits = traits.items.filter((trait: any) => {
-        const slugs = trait.get('slugs');
-        return !(slugs && slugs.items && slugs.items[0] === 'test-trait');
-      });
-      doc.set('traits', newTraits);
-      await fs.writeFile(manifestPath, doc.toString(), 'utf-8');
+    // Add traits field to the first feature
+    const features = doc.get('features');
+    if (features && features.items && features.items.length > 0) {
+      features.items[0].set('traits', ['@test-trait']);
     }
+    await fs.writeFile(corePath, doc.toString(), 'utf-8');
 
-    // Run validation
+    // Verify the trait reference works before deletion
+    const beforeOutput = kspec('validate', tempDir);
+    expect(beforeOutput).toContain('References: OK');
+
+    // Delete the trait from manifest
+    const manifestPath = path.join(tempDir, 'kynetic.yaml');
+    const manifestContent = await fs.readFile(manifestPath, 'utf-8');
+    const manifestDoc = yaml.parseDocument(manifestContent);
+    manifestDoc.set('traits', []);
+    await fs.writeFile(manifestPath, manifestDoc.toString(), 'utf-8');
+
+    // Run validation - should now have reference error
     const rawOutput = kspec('validate', tempDir);
 
     // Should have reference error for broken trait reference
