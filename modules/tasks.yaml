@@ -288,6 +288,10 @@ features:
             given: a task with status in_progress
             when: kspec task set @task --status pending_review is run
             then: the task transitions to pending_review
+          - id: ac-4
+            given: a task with status pending_review
+            when: ready tasks are queried via kspec tasks ready
+            then: the pending_review task is NOT included (only pending tasks are ready)
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
