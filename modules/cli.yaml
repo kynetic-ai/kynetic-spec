@@ -2621,38 +2621,6 @@ features:
     status:
       maturity: draft
       implementation: implemented
-  - _ulid: 01KFBRWRRMXWEZP8PAZVNVY1GT
-    slugs:
-      - dynamic-workflow-skills
-    title: Dynamic Workflow Skills
-    type: feature
-    tags: []
-    depends_on: []
-    implements: []
-    relates_to: []
-    tests: []
-    notes: []
-    created: 2026-01-19T18:39:51.573Z
-    description: Enable workflows defined in meta to serve as first-class skills without requiring
-      static .md files. Workflows become the single source of truth for procedural knowledge, with
-      skill files either generated or dynamically served.
-    acceptance_criteria:
-      - id: ac-1
-        given: a workflow with skill_content field defined
-        when: running kspec workflow export @workflow-id
-        then: generates a valid SKILL.md file with proper frontmatter
-      - id: ac-2
-        given: a workflow definition
-        when: adding skill_content, phases, or prompt_templates fields
-        then: the workflow schema validates and stores the enhanced content
-      - id: ac-3
-        given: workflows with skill_content defined
-        when: running kspec workflow sync
-        then: all workflow skill files are generated/updated in .claude/skills/
-      - id: ac-4
-        given: a workflow with phases containing parallel agents
-        when: exporting the workflow
-        then: the generated skill includes properly formatted parallel agent instructions
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
