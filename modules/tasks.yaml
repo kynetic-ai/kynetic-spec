@@ -893,6 +893,10 @@ features:
         given: kspec tasks assess automation is run
         when: no unassessed pending tasks exist
         then: outputs 'No unassessed tasks' message
+      - id: ac-27
+        given: kspec tasks assess automation is run without --all
+        when: filtering tasks
+        then: tasks already marked eligible/needs_review/manual_only are skipped
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
