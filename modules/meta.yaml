@@ -468,10 +468,6 @@ features:
         notes: []
         created: 2026-01-20T22:44:37.458Z
         acceptance_criteria:
-          - id: ac-2
-            given: an active run exists
-            when: kspec workflow next @run-id is executed
-            then: completes current step, records in step_results, shows next step; if last step, completes run
           - id: ac-3
             given: a step has entry_criteria defined
             when: kspec workflow next reaches that step
