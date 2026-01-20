@@ -853,6 +853,10 @@ features:
         given: computing recommendation
         when: all criteria pass (has spec, has ACs, not spike)
         then: recommends review_for_eligible (agent/human must verify spec/AC adequacy)
+      - id: ac-17
+        given: kspec tasks assess automation --auto is run
+        when: processing tasks
+        then: "applies only obvious cases: spikes -> manual_only, missing criteria -> needs_review"
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
