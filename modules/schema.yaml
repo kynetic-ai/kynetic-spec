@@ -991,6 +991,9 @@ features:
             given: trait list empty
             when: running 'kspec trait list'
             then: shows 'No traits defined' message
+        status:
+          maturity: draft
+          implementation: in_progress
     status:
       maturity: draft
       implementation: implemented
