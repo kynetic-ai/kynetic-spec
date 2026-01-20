@@ -452,6 +452,12 @@ features:
           This is cleaner than quoted strings with \n.
         implements:
           - "@yaml-conventions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a spec item has multiline description
+            when: the YAML is written
+            then: literal block style (|) is used for cleaner formatting (preserves newlines without \n escape
+              sequences)
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs:
       - validation
