@@ -1711,4 +1711,33 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFD2YKYFJ9WB1EX5R8D38WD1
+    type: success
+    content: Test helper pattern clarity - integration.test.ts showed the correct pattern of importing
+      kspecOutput as kspec for string output. When tests fail due to type mismatches (expecting
+      string, getting object), check imports against working test files.
+    created_at: 2026-01-20T06:54:52.367Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFD2YSFK15FSYZC7X4J9GPX3
+    type: friction
+    content: "Optional positional parameter order in CLI commands can create usability issues. [source]
+      [dest] signature made it impossible to provide dest and default source. Changed to [dest]
+      [source] which better matches common usage patterns. Consider: use named options (--source,
+      --dest) for commands where both parameters are truly optional and order-independent."
+    created_at: 2026-01-20T06:54:58.035Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFD2YYTAEEPDQ6CA3P6WSJ9H
+    type: success
+    content: "Systematic debugging approach worked well: (1) Verified git clone works standalone, (2)
+      Added debug output to trace actual parameters, (3) Discovered output was empty not error, (4)
+      Checked test helper return types, (5) Found pattern in working tests. Each step narrowed the
+      problem space until root cause was clear."
+    created_at: 2026-01-20T06:55:03.498Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

@@ -1440,11 +1440,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1944,6 +1946,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2059,6 +2062,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -12704,6 +12708,27 @@
         All 8 tests passing, full test suite passes (708 tests). Implementation complete with 100%
         AC coverage.
       supersedes: null
+    - _ulid: 01KFDP5PA82S7XNCHC8EP6YS5M
+      created_at: 2026-01-20T12:30:47.113Z
+      author: "@claude"
+      content: >-
+        Fixed all 3 blocking issues from PR review:
+
+
+        1. Fixed worktree setup - Added cleanup of .git/worktrees/ directory after mirror clone to
+        prevent 'already in use' errors. This was the root cause of 7/8 test failures.
+
+
+        2. Fixed test setup - Updated initGitRepo() helper to use 'git init -b main' ensuring all
+        test repos have main branch by default, preventing 'pathspec main did not match' errors.
+
+
+        3. Fixed test that used execSync directly - Replaced direct execSync('kspec...') call with
+        kspec() test helper on line 287 for consistency with other tests.
+
+
+        All 8 tests now passing (8/8). Full test suite: 707 tests passing.
+      supersedes: null
   todos: []
 - _ulid: 01KFBBXCCS51V79FK4ZMPC7GT0
   slugs:
@@ -15328,6 +15353,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
