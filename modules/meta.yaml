@@ -750,6 +750,11 @@ features:
             traits: []
             notes: []
             created: 2026-01-20T22:54:35.008Z
+            acceptance_criteria:
+              - id: ac-1
+                given: a step has entry_criteria defined
+                when: kspec workflow next reaches that step
+                then: outputs entry criteria; in strict mode blocks until --confirm passed
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
