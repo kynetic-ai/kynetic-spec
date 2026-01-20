@@ -1,6 +1,12 @@
 /**
  * Tests for trait AC coverage validation
  * AC: @trait-validation ac-1, ac-2, ac-3, ac-4
+ *
+ * NOTE: These tests validate the coverage detection mechanism.
+ * The fixture tests shown here (like "expect(true).toBe(true)")
+ * are ONLY for validating the scanner - they are NOT examples
+ * of good test quality. Production tests should meaningfully
+ * validate the acceptance criteria they claim to cover.
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
@@ -138,8 +144,13 @@ import { describe, it, expect } from 'vitest';
 
 describe('Test spec', () => {
   // AC: @test-trait ac-1
-  it('should pass trait AC-1', () => {
-    expect(true).toBe(true);
+  it('should satisfy test condition when action taken', () => {
+    // Given: test condition
+    const condition = true;
+    // When: test action
+    const result = condition;
+    // Then: test result
+    expect(result).toBe(true);
   });
 });
 `;
