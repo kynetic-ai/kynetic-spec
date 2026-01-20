@@ -43,6 +43,12 @@ features:
           Default task type if not specified.
         implements:
           - "@task-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task with type 'task' is created
+            when: the task is validated
+            then: it is accepted as atomic unit of work with standard task lifecycle (pending -> in_progress ->
+              completed)
       - _ulid: 01JHNKA4W2TTPE200000000000
         slugs:
           - task-type-epic
