@@ -1519,11 +1519,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2181,6 +2183,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2296,6 +2299,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15956,6 +15960,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17171,18 +17176,24 @@
         reviewing
       supersedes: null
   todos: []
-- title: "Implement: Guided Workflow Execution"
+- _ulid: 01KFESC8PDRM0BYHVNMC3XKH2H
+  slugs:
+    - task-guided-workflow-execution
+  title: "Implement: Guided Workflow Execution"
   type: task
   spec_ref: "@guided-workflow-execution"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-workflow-definitions"
+  context: []
   priority: 3
-  slugs:
-    - task-guided-workflow-execution
   tags:
     - meta
     - workflows
-  depends_on:
-    - "@task-workflow-definitions"
+  vcs_refs: []
+  created_at: 2026-01-20T22:46:02.701Z
   notes:
     - _ulid: 01KFESC8PD900QBNMHG2FFVQSN
       created_at: 2026-01-20T22:46:02.701Z
@@ -17245,10 +17256,91 @@
         - ac-14: Given no run-id provided and multiple active runs exist, when kspec workflow next
         is executed, then errors with list of active runs to choose from
       supersedes: null
-  _ulid: 01KFESC8PDRM0BYHVNMC3XKH2H
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-20T22:46:02.701Z
+    - _ulid: 01KFESCS4W7RAA7JS68N4SGZPK
+      created_at: 2026-01-20T22:46:19.548Z
+      author: "@claude"
+      content: >-
+        Implementation approach from approved plan:
+
+
+        **Key Design Decisions:**
+
+        - Enforcement: Configurable per-workflow (advisory default, strict optional)
+
+        - Persistence: Workflow runs stored in .kspec/kynetic.runs.yaml (shadow branch)
+
+        - Confirmation: Non-interactive (each next call = one step advance)
+
+        - Concurrency: Multiple runs of same workflow allowed
+
+        - Step Inputs: Structured inputs for capturing step outputs
+
+
+        **Schema Changes:**
+
+        - WorkflowRunSchema: _ulid, workflow_ref, status, current_step, total_steps, step_results[],
+        initiated_by, task_ref
+
+        - StepResultSchema: step_index, status, timestamps, entry/exit_confirmed, notes, inputs
+
+        - StepInputSchema: name, description, required, type
+
+        - Extended WorkflowStepSchema: entry_criteria[], exit_criteria[], inputs[]
+
+        - Extended WorkflowSchema: enforcement field
+
+
+        **CLI Commands:**
+
+        - kspec workflow start @ref
+
+        - kspec workflow next [run] (--skip, --force, --notes, --input k=v, --confirm)
+
+        - kspec workflow runs (--active, --completed, --workflow)
+
+        - kspec workflow show @run
+
+        - kspec workflow abort @run
+
+        - kspec workflow pause @run
+
+        - kspec workflow resume @run
+
+
+        **Implementation Phases:**
+
+        1. Schema + Types
+
+        2. Run Storage (loadWorkflowRuns, saveWorkflowRun)
+
+        3. Basic CLI (start, runs, show, abort)
+
+        4. Step Navigation (next with inference)
+
+        5. Entry/Exit Criteria display
+
+        6. Strict Mode enforcement
+
+        7. Pause/Resume
+
+        8. Step Inputs
+
+        9. Session Integration
+
+        10. Polish
+
+
+        **Key Files:**
+
+        - src/schema/meta.ts
+
+        - src/parser/meta.ts
+
+        - src/cli/commands/workflow.ts (new)
+
+        - tests/workflow-execution.test.ts (new)
+
+
+        See plan file: /home/chapel/.claude/plans/cheerful-sauteeing-teapot.md
+      supersedes: null
   todos: []
