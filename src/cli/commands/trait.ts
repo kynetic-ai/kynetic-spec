@@ -5,7 +5,6 @@ import {
   buildIndexes,
   createSpecItem,
   updateSpecItem,
-  addChildItem,
   checkSlugUniqueness,
   ReferenceIndex,
   type LoadedSpecItem,

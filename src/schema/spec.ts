@@ -120,6 +120,7 @@ export const ManifestSchema = z.object({
   requirements: z.array(z.any()).optional(),
   constraints: z.array(z.any()).optional(),
   decisions: z.array(z.any()).optional(),
+  traits: z.array(z.any()).optional(),
 
   // External references (large projects)
   includes: z.array(z.string()).optional(),
