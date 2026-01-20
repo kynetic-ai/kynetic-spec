@@ -849,6 +849,10 @@ features:
         given: computing recommendation
         when: spec_ref is missing or spec has no ACs
         then: recommends needs_review
+      - id: ac-16
+        given: computing recommendation
+        when: all criteria pass (has spec, has ACs, not spike)
+        then: recommends review_for_eligible (agent/human must verify spec/AC adequacy)
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
