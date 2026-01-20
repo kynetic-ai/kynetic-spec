@@ -1513,11 +1513,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2163,6 +2165,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2278,6 +2281,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -13939,6 +13943,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Implemented automation eligibility system - PR #109 merged"
   depends_on: []
   context: []
   priority: 2
@@ -13946,6 +13951,7 @@
   vcs_refs: []
   created_at: 2026-01-19T19:54:31.220Z
   started_at: 2026-01-20T17:50:19.101Z
+  completed_at: 2026-01-20T18:22:29.700Z
   notes:
     - _ulid: 01KFBX5R6E5PD4HPVERVS2HVMP
       created_at: 2026-01-19T19:54:40.207Z
@@ -14009,8 +14015,6 @@
         All 737 tests pass (714 existing + 22 new + 1 skipped).
       supersedes: null
   todos: []
-  completed_at: 2026-01-20T18:22:29.700Z
-  closed_reason: "Implemented automation eligibility system - PR #109 merged"
 - _ulid: 01KFC1GKGFBGKAVP1PKWCR7G02
   slugs:
     - task-spec-traits-system
@@ -15925,6 +15929,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16993,4 +16998,120 @@
 
         **Total: 821 lines across 4 files**
       supersedes: null
+  todos: []
+- title: "Implement: Task Automation Assessment"
+  type: task
+  spec_ref: "@tasks-assess-automation"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-task-automation-assessment
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KFEK0J15REDMKTPHVKQKWT91
+      created_at: 2026-01-20T20:54:47.589Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        CLI command to assess task automation eligibility based on criteria (has spec_ref, spec has
+        ACs, not spike). Provides visibility into task readiness for automation and enables fast
+        triage of obvious cases via --auto mode.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given kspec tasks assess automation is run, when displaying results, then lists
+        pending tasks without automation field (unassessed) by default
+
+        - ac-2: Given kspec tasks assess automation is run, when the --all flag is provided, then
+        includes tasks that already have automation set
+
+        - ac-3: Given kspec tasks assess automation is run, when displaying each task, then shows
+        criteria check results: has_spec_ref, spec_has_acs, not_spike with pass/fail status
+
+        - ac-4: Given kspec tasks assess automation is run, when displaying each task, then shows
+        recommendation (review_for_eligible, needs_review, or manual_only)
+
+        - ac-5: Given kspec tasks assess automation is run, when output completes, then shows
+        summary counts of recommendations at end
+
+        - ac-6: Given kspec tasks assess automation @task-ref is run, when a specific task reference
+        is provided, then assesses only that task
+
+        - ac-7: Given kspec tasks assess automation @task-ref is run, when task is not found, then
+        returns non-zero exit code
+
+        - ac-8: Given assessing a task, when task has spec_ref pointing to resolvable spec, then
+        has_spec_ref criterion passes
+
+        - ac-9: Given assessing a task, when spec_ref is missing or unresolvable, then has_spec_ref
+        criterion fails
+
+        - ac-10: Given assessing a task with spec_ref, when linked spec has at least one acceptance
+        criterion, then spec_has_acs criterion passes
+
+        - ac-11: Given assessing a task, when task has no spec_ref, then spec_has_acs criterion is
+        skipped (neutral)
+
+        - ac-12: Given assessing a task, when task type is not spike, then not_spike criterion
+        passes
+
+        - ac-13: Given assessing a task, when task type is spike, then not_spike criterion fails
+
+        - ac-14: Given computing recommendation, when task is a spike, then recommends manual_only
+        regardless of other criteria
+
+        - ac-15: Given computing recommendation, when spec_ref is missing or spec has no ACs, then
+        recommends needs_review
+
+        - ac-16: Given computing recommendation, when all criteria pass (has spec, has ACs, not
+        spike), then recommends review_for_eligible (agent/human must verify spec/AC adequacy)
+
+        - ac-17: Given kspec tasks assess automation --auto is run, when processing tasks, then
+        applies only obvious cases: spikes -> manual_only, missing criteria -> needs_review
+
+        - ac-18: Given kspec tasks assess automation --auto is run, when task passes all criteria,
+        then does NOT mark task as eligible (requires agent/human review)
+
+        - ac-19: Given kspec tasks assess automation --auto is run, when marking a task, then adds
+        note to task explaining the assessment
+
+        - ac-20: Given kspec tasks assess automation --auto is run, when marking task as
+        needs_review, then note includes reason explaining what is missing
+
+        - ac-21: Given kspec tasks assess automation --auto is run, when task passes all criteria,
+        then task appears with review_for_eligible recommendation but automation field is NOT
+        modified
+
+        - ac-22: Given kspec tasks assess automation --dry-run is run, when displaying output, then
+        shows what would change without modifying tasks
+
+        - ac-23: Given kspec tasks assess automation --dry-run --auto is run, when combining flags,
+        then shows auto mode changes without applying them
+
+        - ac-24: Given kspec tasks assess automation --json is run, when outputting results, then
+        outputs structured JSON with criteria details for each task
+
+        - ac-25: Given kspec tasks assess automation --json is run, when outputting results, then
+        JSON includes summary counts of recommendations
+
+        - ac-26: Given kspec tasks assess automation is run, when no unassessed pending tasks exist,
+        then outputs 'No unassessed tasks' message
+
+        - ac-27: Given kspec tasks assess automation is run without --all, when filtering tasks,
+        then tasks already marked eligible/needs_review/manual_only are skipped
+
+        - ac-28: Given kspec tasks assess automation is run, when filtering tasks, then non-pending
+        tasks (completed, cancelled, in_progress, blocked) are excluded
+      supersedes: null
+  _ulid: 01KFEK0J1595BWVAHXR75K9G7A
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-20T20:54:47.589Z
   todos: []
