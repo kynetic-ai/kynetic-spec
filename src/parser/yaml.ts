@@ -30,10 +30,13 @@ import { TraitIndex } from './traits.js';
 import {
   type ShadowConfig,
   detectShadow,
+  detectRunningFromShadowWorktree,
   shadowAutoCommit,
   generateCommitMessage,
   SHADOW_WORKTREE_DIR,
+  ShadowError,
 } from './shadow.js';
+import { errors } from '../strings/index.js';
 
 /**
  * Spec item with runtime metadata for source tracking.
@@ -217,6 +220,16 @@ export interface KspecContext {
  */
 export async function initContext(startDir?: string): Promise<KspecContext> {
   const cwd = startDir || process.cwd();
+
+  // Check if running from inside the shadow worktree
+  const mainProjectRoot = await detectRunningFromShadowWorktree(cwd);
+  if (mainProjectRoot) {
+    throw new ShadowError(
+      errors.project.runningFromShadow,
+      'RUNNING_FROM_SHADOW',
+      `Run from project root: cd ${path.relative(cwd, mainProjectRoot) || mainProjectRoot}`
+    );
+  }
 
   // Try to detect shadow branch first
   const shadow = await detectShadow(cwd);

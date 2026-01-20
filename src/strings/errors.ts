@@ -153,6 +153,9 @@ export const projectErrors = {
   noKspecProject: 'No kspec project found',
   shadowInitFailed: (error: string) => `Shadow initialization failed: ${error}`,
   couldNotGetImplSummary: 'Could not get implementation summary',
+  runningFromShadow: 'Cannot run kspec from inside .kspec/ directory',
+  runningFromShadowHint: (projectRoot: string) =>
+    `The .kspec/ directory is a git worktree. Run from project root: ${projectRoot}`,
 } as const;
 
 /**

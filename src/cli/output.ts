@@ -71,6 +71,13 @@ export function error(message: string, details?: unknown): void {
     console.error(chalk.red('✗'), message);
     if (details) {
       console.error(chalk.gray(String(details)));
+      // Show suggestion if it's a ShadowError with a suggestion
+      if (details && typeof details === 'object' && 'suggestion' in details) {
+        const suggestion = (details as { suggestion?: string }).suggestion;
+        if (suggestion) {
+          console.error(chalk.yellow('  Suggestion:'), suggestion);
+        }
+      }
     }
   }
 }
