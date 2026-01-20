@@ -587,6 +587,12 @@ features:
             traits: []
             notes: []
             created: 2026-01-20T22:53:32.314Z
+            acceptance_criteria:
+              - id: ac-1
+                given: a workflow exists
+                when: kspec workflow start @ref is executed
+                then: creates WorkflowRun in .kspec/kynetic.runs.yaml with status=active, current_step=0,
+                  total_steps from workflow, started_at; outputs run ID
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
