@@ -430,6 +430,10 @@ features:
             when: the linter runs
             then: warnings are emitted for unquoted ambiguous strings (they must be quoted to prevent
               misinterpretation)
+          - id: ac-2
+            given: YAML content has properly quoted ambiguous values
+            when: validation runs
+            then: quoted values are accepted without warnings (e.g., '"NO"', '"3.14"', '"null"')
       - _ulid: 01KEZCJPJ3M7T6ZNEMTVYBWP96
         slugs:
           - yaml-multiline
