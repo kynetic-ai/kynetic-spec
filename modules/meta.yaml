@@ -586,6 +586,7 @@ features:
             tests: []
             traits:
               - "@trait-json-output"
+              - "@trait-filterable-list"
             notes: []
             created: 2026-01-20T22:53:32.314Z
             acceptance_criteria:
