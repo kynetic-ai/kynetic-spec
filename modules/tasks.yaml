@@ -122,6 +122,10 @@ features:
             given: a task with type 'spike' is created
             when: the task is time-boxed research or investigation
             then: it is validated as spike with expected output being knowledge/findings, not code
+          - id: ac-2
+            given: a spike task is completed
+            when: the completion note is added
+            then: the note documents findings and recommendations (what was learned)
       - _ulid: 01JHNKA4W5TTPE500000000000
         slugs:
           - task-type-infra
