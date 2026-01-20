@@ -74,6 +74,7 @@ export const SpecItemSchema = z.object({
   implements: z.array(RefSchema).default([]),
   relates_to: z.array(RefSchema).default([]),
   tests: z.array(RefSchema).default([]),
+  traits: z.array(RefSchema).default([]),
   supersedes: RefSchema.nullable().optional(),
 
   // Traceability
