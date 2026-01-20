@@ -1366,11 +1366,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1722,6 +1724,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -1837,6 +1840,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14019,6 +14023,7 @@
     - tasks
   vcs_refs: []
   created_at: 2026-01-20T02:13:28.713Z
+  started_at: 2026-01-20T02:15:59.174Z
   notes:
     - _ulid: 01KFCJVC08H9ABPRBGE1BSAAK5
       created_at: 2026-01-20T02:13:28.712Z
@@ -14117,5 +14122,29 @@
 
         - Ralph/automation - separate from task status
       supersedes: null
+    - _ulid: 01KFCKP0XBQNJSKCRGQ5GGA92B
+      created_at: 2026-01-20T02:28:02.092Z
+      author: "@claude"
+      content: |-
+        Implementation complete. All 8 acceptance criteria addressed:
+
+        **Code changes:**
+        - `src/schema/common.ts`: Added 'pending_review' to TaskStatusSchema enum (AC-1)
+        - `src/cli/commands/task.ts`: 
+          - Updated complete validation to accept pending_review (AC-2)
+          - Added new `task submit` command for in_progress → pending_review (AC-9)
+        - `src/cli/commands/session.ts`: Added Awaiting Review section with stats (AC-5)
+        - `src/strings/labels.ts`: Added awaitingReview header
+        - `src/cli/help/content.ts`: Updated statuses and workflow docs (AC-8)
+        - `AGENTS.md`: Updated state diagram with all transitions (AC-7)
+
+        **Tests added:**
+        - 6 new integration tests covering AC-1, AC-2, AC-4, AC-6, AC-9
+        - All 624 tests pass
+
+        **How it works:**
+        1. `kspec task start @task` → in_progress
+        2. `kspec task submit @task` → pending_review (code done, PR created)
+        3. `kspec task complete @task --reason 'Merged'` → completed (after merge)
+      supersedes: null
   todos: []
-  started_at: 2026-01-20T02:15:59.174Z
