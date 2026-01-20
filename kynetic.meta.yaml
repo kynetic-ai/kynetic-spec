@@ -1793,4 +1793,42 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFDZVK4MA028H031BR26YZCE
+    type: friction
+    content: >-
+      Manually editing .kspec/kynetic.yaml to add traits requires:
+
+      1. Understanding ULID format constraints (no I, L, O, U chars)
+
+      2. Manually generating valid ULIDs
+
+      3. Working around shadow branch auto-commit restrictions
+
+
+      The kspec trait add command would have handled all this, but for bulk creation of 8 traits
+      with detailed AC, manual YAML editing was more practical. Future improvement: support adding
+      AC during trait creation, or bulk trait import from YAML file.
+    created_at: 2026-01-20T15:20:01.941Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFDZVT1Z2HBAY7D8T3M1JEE2
+    type: success
+    content: >-
+      Debugging approach for YAML loading issues:
+
+      1. Used node scripts to test individual components (initContext, extractItemsFromRaw,
+      SpecItemSchema)
+
+      2. Isolated the failure point (ULID validation regex)
+
+      3. This incremental debugging approach was much faster than adding console.logs to source code
+
+
+      Pattern to remember: when kspec commands don't work as expected, test the parser/schema layers
+      directly with minimal scripts.
+    created_at: 2026-01-20T15:20:09.024Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
