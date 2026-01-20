@@ -1841,4 +1841,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFE0E736KWBTZDRA1M01W1W8
+    type: success
+    content: Shadow branch auto-commit pattern works seamlessly for spec changes. Modified cli.yaml
+      (spec file) and all changes were automatically committed to shadow branch via kspec commands
+      (task note, task complete). No manual git operations needed. This confirms the design - spec
+      changes live in shadow branch, auto-committed by CLI.
+    created_at: 2026-01-20T15:30:12.199Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFE0EM48X85MQSJDCJJMDWPR
+    type: success
+    content: "Trait application pattern for CLI commands: (1) All commands get json-output,
+      semantic-exit-codes, error-guidance. (2) Batch operations add multi-ref-batch. (3) Destructive
+      operations add confirmation-prompt. Applied consistently to 7 task lifecycle commands. Pattern
+      is clear and repeatable for remaining commands."
+    created_at: 2026-01-20T15:30:25.545Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
