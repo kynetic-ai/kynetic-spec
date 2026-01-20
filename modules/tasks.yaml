@@ -284,6 +284,10 @@ features:
             given: a task with status pending_review
             when: kspec task complete is run
             then: the task transitions to completed (pending_review is a valid pre-state for completion)
+          - id: ac-3
+            given: a task with status in_progress
+            when: kspec task set @task --status pending_review is run
+            then: the task transitions to pending_review
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
