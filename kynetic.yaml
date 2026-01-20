@@ -24,3 +24,8 @@ traits:
     traits: []
     notes: []
     created: 2026-01-20T15:12:07.136Z
+    acceptance_criteria:
+      - id: ac-1
+        given: a test condition exists
+        when: validation is performed
+        then: the trait system should work correctly
