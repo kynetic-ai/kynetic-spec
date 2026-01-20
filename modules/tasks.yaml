@@ -305,6 +305,10 @@ features:
             given: the AGENTS.md task state diagram
             when: describing task lifecycle
             then: pending_review appears between in_progress and completed with valid transition paths
+          - id: ac-8
+            given: the CLI help content for task commands
+            when: viewing help for task state transitions
+            then: pending_review is documented with its purpose and valid transitions
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
