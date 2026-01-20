@@ -124,9 +124,7 @@ describe('Integration: clone-for-testing', () => {
 
     try {
       // Initialize git repo
-      execSync('git init', { cwd: noMetaRepo });
-      execSync('git config user.email "test@example.com"', { cwd: noMetaRepo });
-      execSync('git config user.name "Test User"', { cwd: noMetaRepo });
+      initGitRepo(noMetaRepo);
 
       // Create and commit a file
       fs.writeFileSync(path.join(noMetaRepo, 'readme.txt'), 'test');
@@ -283,11 +281,8 @@ describe('Integration: clone-for-testing', () => {
     const dest = path.join(os.tmpdir(), `clone-test-${Date.now()}`);
 
     try {
-      // Run from within source repo
-      const output = execSync(`kspec clone-for-testing ${dest}`, {
-        cwd: sourceRepo,
-        encoding: 'utf-8',
-      });
+      // Run from within source repo using test helper
+      const output = kspec(`clone-for-testing ${dest}`, sourceRepo);
 
       expect(output).toContain(dest);
 

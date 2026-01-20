@@ -60,6 +60,13 @@ function cloneRepo(source: string, dest: string): { success: boolean; error?: st
   // Don't fail if no remote exists
   // remoteResult.status will be non-zero if origin doesn't exist, which is fine
 
+  // Clean up worktree metadata from source repo to prevent conflicts
+  // The mirror clone copies .git/worktrees/ which causes "already in use" errors
+  const worktreesPath = path.join(dest, '.git', 'worktrees');
+  if (fs.existsSync(worktreesPath)) {
+    fs.rmSync(worktreesPath, { recursive: true, force: true });
+  }
+
   return { success: true };
 }
 
