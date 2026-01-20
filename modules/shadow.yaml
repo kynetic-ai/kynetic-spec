@@ -215,6 +215,10 @@ features:
             given: Git repo exists but shadow branch has never been initialized
             when: User runs a kspec command that requires shadow (e.g., task list)
             then: Error message says 'Shadow branch not initialized' and suggests 'Run kspec init to create'
+          - id: ac-2
+            given: Shadow branch exists but .kspec/.git file is missing or corrupt
+            when: User runs a kspec command
+            then: Error message says 'Worktree disconnected' and suggests 'Run kspec shadow repair to fix'
       - _ulid: 01KF3CTXYNWH7TQMJNQZR0HHA9
         slugs:
           - shadow-debug-mode
