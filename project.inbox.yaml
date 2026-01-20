@@ -269,3 +269,9 @@ inbox:
     created_at: 2026-01-20T16:13:27.700Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFE2XFQKG1SV7KQ4RSBD6DYP
+    text: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to
+      prevent scope creep beyond target work"
+    created_at: 2026-01-20T16:13:29.715Z
+    tags: []
+    added_by: "@claude"
