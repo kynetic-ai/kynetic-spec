@@ -26,6 +26,7 @@ import {
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
 import { ItemIndex } from './items.js';
+import { TraitIndex } from './traits.js';
 import {
   type ShadowConfig,
   detectShadow,
@@ -1043,6 +1044,7 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
 export async function buildIndexes(ctx: KspecContext): Promise<{
   refIndex: ReferenceIndex;
   itemIndex: ItemIndex;
+  traitIndex: TraitIndex;
   tasks: LoadedTask[];
   items: LoadedSpecItem[];
 }> {
@@ -1050,7 +1052,8 @@ export async function buildIndexes(ctx: KspecContext): Promise<{
   const items = await loadAllItems(ctx);
   const refIndex = new ReferenceIndex(tasks, items);
   const itemIndex = new ItemIndex(tasks, items);
-  return { refIndex, itemIndex, tasks, items };
+  const traitIndex = new TraitIndex(items, refIndex);
+  return { refIndex, itemIndex, traitIndex, tasks, items };
 }
 
 // ============================================================
