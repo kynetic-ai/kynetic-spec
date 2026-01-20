@@ -1458,11 +1458,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1998,6 +2000,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2113,6 +2116,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15515,6 +15519,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -15836,7 +15841,31 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T14:53:16.045Z
-  notes: []
+  notes:
+    - _ulid: 01KFDYBXQGK8AE7PB3V6RGQJ7E
+      created_at: 2026-01-20T14:53:59.921Z
+      author: "@claude"
+      content: >-
+        **Scope**: Create test trait, verify inheritance works, clean up. Confirms system is
+        production-ready.
+
+
+        **Steps**:
+
+        1. Create a single test trait via `kspec trait add "Test Trait" --description "Validation
+        test"`
+
+        2. Add one AC to it
+
+        3. Verify `kspec trait list` shows the trait
+
+        4. Apply it to a spec item and verify `kspec item get @spec` shows inherited AC
+
+        5. Delete the test trait if successful, or investigate if issues
+
+
+        **Why**: No traits exist currently. The system is implemented but untested in production.
+      supersedes: null
   todos: []
 - _ulid: 01KFDYAP0M0KXMPCQ7VPGJSNK7
   slugs: []
@@ -15918,18 +15947,18 @@
   created_at: 2026-01-20T14:53:36.748Z
   notes: []
   todos: []
-- title: Apply traits to query and inbox commands
+- _ulid: 01KFDYBA5EMW60DKC5DWN3REHH
+  slugs: []
+  title: Apply traits to query and inbox commands
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KFDYBA5EMW60DKC5DWN3REHH
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-01-20T14:53:39.886Z
   notes: []
