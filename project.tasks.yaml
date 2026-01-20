@@ -1526,11 +1526,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2202,6 +2204,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2317,6 +2320,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15991,6 +15995,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17483,16 +17488,22 @@
         executed, then errors with list of active runs to choose from
       supersedes: null
   todos: []
-- title: "Implement: Workflow Enforcement Modes"
+- _ulid: 01KFESYSWBB2R797HKWA965MC9
+  slugs:
+    - task-workflow-enforcement-modes
+  title: "Implement: Workflow Enforcement Modes"
   type: task
   spec_ref: "@workflow-enforcement-modes"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-workflow-enforcement-modes
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-guided-workflow-execution"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-20T22:56:10.123Z
   notes:
     - _ulid: 01KFESYSWBJKYS1NNNZPMNDW55
       created_at: 2026-01-20T22:56:10.123Z
@@ -17612,10 +17623,141 @@
         - ac-4: Given workflow.enforcement=advisory (or omitted), when kspec workflow next is
         executed, then shows criteria as guidance only; skip allowed without --force
       supersedes: null
-  _ulid: 01KFESYSWBB2R797HKWA965MC9
+  todos: []
+- title: "Implement: Workflow Advanced Features"
+  type: task
+  spec_ref: "@workflow-advanced-features"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-workflow-advanced-features
+  tags: []
+  depends_on:
+    - "@task-guided-workflow-execution"
+  notes:
+    - _ulid: 01KFESYT0HVY45N3Q4TF36VA5C
+      created_at: 2026-01-20T22:56:10.257Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Pause/resume functionality and structured step inputs.
+
+
+        ## Pause/Resume Commands
+
+
+        ```
+
+        kspec workflow pause @run-id [--json]
+
+        kspec workflow resume @run-id [--json]
+
+        ```
+
+
+        ### Pause Behavior
+
+        - Set status='paused'
+
+        - Set paused_at timestamp
+
+        - Shadow commit with 'workflow-pause' message
+
+        - Output: 'Paused run @id at step N/M'
+
+
+        ### Resume Behavior
+
+        - Verify status='paused' (error if not)
+
+        - Set status='active'
+
+        - Clear paused_at
+
+        - Shadow commit with 'workflow-resume' message
+
+        - Output current step ready to continue
+
+
+        ## Structured Step Inputs
+
+
+        ### StepInputSchema
+
+        ```typescript
+
+        {
+          name: string,           // e.g., 'spec_ref'
+          description?: string,   // Human explanation
+          required?: boolean,     // Default true
+          type?: 'string' | 'ref' | 'number',  // Default 'string'
+        }
+
+        ```
+
+
+        ### Extended WorkflowStepSchema
+
+        Add field: `inputs?: StepInput[]`
+
+
+        ### CLI
+
+        Add to `kspec workflow next`:
+
+        - `--input key=value` (repeatable)
+
+
+        ### Behavior
+
+        1. When step has inputs defined, display them:
+           ```
+           Step 3/5: [action] Derive task from spec
+             Inputs required:
+               - spec_ref (ref): Reference to the spec item
+           ```
+
+        2. If required input missing: error 'Missing required input: spec_ref'
+
+
+        3. Captured inputs stored in step_results.inputs:
+           ```typescript
+           { spec_ref: '@my-feature' }
+           ```
+
+        ## Key Files
+
+
+        - src/schema/meta.ts (StepInputSchema, extend WorkflowStepSchema)
+
+        - src/cli/commands/workflow.ts (pause, resume, --input flag)
+
+
+        ## Dependencies
+
+
+        Requires @workflow-step-navigation to be implemented first.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given an active run exists, when kspec workflow pause @run-id is executed, then
+        status=paused, paused_at set; can resume later
+
+        - ac-2: Given a paused run exists, when kspec workflow resume @run-id is executed, then
+        status=active, paused_at cleared, continues from current_step
+
+        - ac-3: Given a step defines inputs, when kspec workflow next @run-id is executed, then
+        outputs required inputs; --input key=value captures input in step_results.inputs; errors if
+        required input missing
+      supersedes: null
+  _ulid: 01KFESYT0HJ68Q85JSJ6AWAC1M
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-20T22:56:10.123Z
+  created_at: 2026-01-20T22:56:10.257Z
   todos: []
