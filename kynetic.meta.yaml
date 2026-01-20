@@ -1740,4 +1740,29 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFDPKZC956WTYA4BA7Q7SDQB
+    type: friction
+    content: "Shadow branch worktree gets removed when checking out branches. After merging PR and
+      checking out main, .kspec/ worktree was removed. Attempting to recreate with 'git worktree add
+      .kspec kspec-meta' created nested .kspec/.kspec/ worktree breaking kspec. Fix required
+      absolute paths and manual cleanup. Root cause: git worktree add interprets paths relative to
+      CWD which may be inside .kspec. Consider: (1) kspec commands that detect missing worktree and
+      auto-repair (2) fix spawn error in 'kspec shadow repair' (3) prevent nested worktree
+      creation."
+    created_at: 2026-01-20T12:38:35.146Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFDPM7VF7ZGE02MCP3JB7131
+    type: success
+    content: "Ralph Loop iteration completed successfully: (1) Checked for open PRs per instructions (2)
+      Found PR #106 with failing tests (7/8) (3) Launched review subagent to identify issues (4)
+      Fixed all 3 blocking issues (worktree metadata cleanup, test setup, helper usage) (5) Verified
+      locally (8/8 tests + full suite 707 passing) (6) Pushed and waited for CI (all green) (7)
+      Merged PR and completed task @01KFBBTT (8) Captured 4 observations. Full workflow from PR
+      review to merge completion in single iteration."
+    created_at: 2026-01-20T12:38:43.824Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
