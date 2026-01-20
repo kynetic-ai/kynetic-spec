@@ -937,8 +937,26 @@ export function extractItemsFromRaw(
  */
 export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> {
   try {
-    const raw = await readYamlFile<unknown>(filePath);
-    return extractItemsFromRaw(raw, filePath);
+    const content = await fs.readFile(filePath, 'utf-8');
+    const items: LoadedSpecItem[] = [];
+
+    // Parse all YAML documents in the file (handles files with ---)
+    const documents = YAML.parseAllDocuments(content);
+
+    for (const doc of documents) {
+      if (doc.errors.length > 0) {
+        // Skip documents with parse errors
+        continue;
+      }
+
+      const raw = doc.toJS();
+      if (raw) {
+        const docItems = extractItemsFromRaw(raw, filePath);
+        items.push(...docItems);
+      }
+    }
+
+    return items;
   } catch (error) {
     // File doesn't exist or parse error
     return [];

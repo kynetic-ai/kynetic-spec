@@ -206,7 +206,7 @@ describe('Trait Display - Task Get', () => {
     await initGitRepo(tempDir);
 
     // Create trait and spec (same as above)
-    const traitModule = `_ulid: 01TRAIT10000000000000000
+    const traitModule = `_ulid: 01KFCVXQ97E9XPWSD35B21CR2X
 slugs:
   - trait-json-output
 title: JSON Output Support
@@ -220,6 +220,10 @@ acceptance_criteria:
     given: command with --json flag
     when: executed
     then: outputs valid JSON
+  - id: ac-2
+    given: JSON output
+    when: parsed
+    then: contains all required fields
 `;
 
     await fs.writeFile(
@@ -227,7 +231,7 @@ acceptance_criteria:
       traitModule
     );
 
-    const specModule = `_ulid: 01SPEC100000000000000000
+    const specModule = `_ulid: 01KFCVXQAABBCCDDEEFFGGHHXX
 slugs:
   - spec-with-trait
 title: Spec Module
@@ -237,7 +241,7 @@ status:
   implementation: not_started
 
 features:
-  - _ulid: 01SPEC101000000000000000
+  - _ulid: 01KFCVXQBB00112233445566YY
     slugs:
       - feature-with-trait
     title: Feature with Trait
