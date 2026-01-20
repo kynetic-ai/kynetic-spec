@@ -1455,11 +1455,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1989,6 +1991,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2104,6 +2107,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15500,6 +15504,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -15855,19 +15860,35 @@
   created_at: 2026-01-20T14:53:22.422Z
   notes: []
   todos: []
-- title: Remove auth.yaml from manifest
+- _ulid: 01KFDYAW8AQ0B54800XVX56BEE
+  slugs: []
+  title: Remove auth.yaml from manifest
   type: task
   spec_ref: null
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-20T14:53:25.642Z
+  notes: []
+  todos: []
+- title: Apply traits to task lifecycle commands
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFDYAW8AQ0B54800XVX56BEE
+  _ulid: 01KFDYB40AAQVN4GG1S5NDQ35E
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-20T14:53:25.642Z
+  created_at: 2026-01-20T14:53:33.578Z
   notes: []
   todos: []
