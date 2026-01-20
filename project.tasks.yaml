@@ -1478,11 +1478,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2058,6 +2060,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2173,6 +2176,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -15615,6 +15619,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -16064,6 +16069,37 @@
       author: "@claude"
       content: Ralph loop (b8191fa) actively working on this task. Creating 8 core traits in kynetic.yaml.
         Loop running with 20 max iterations.
+      supersedes: null
+    - _ulid: 01KFDZTV2B7PXTVSJYQRK1JHQ0
+      created_at: 2026-01-20T15:19:37.292Z
+      author: "@claude"
+      content: >-
+        Created 8 core traits in kynetic.yaml with full acceptance criteria:
+
+
+        1. @trait-json-output (6 AC) - JSON output mode support
+
+        2. @trait-multi-ref-batch (8 AC) - Batch operations via --refs flag
+
+        3. @trait-confirmation-prompt (6 AC) - Destructive operation confirmation
+
+        4. @trait-filterable-list (7 AC) - List filtering and pagination
+
+        5. @trait-priority-parameter (6 AC) - Priority 1-5 scale
+
+        6. @trait-dry-run (6 AC) - Preview mode
+
+        7. @trait-semantic-exit-codes (8 AC) - Consistent exit code meanings
+
+        8. @trait-error-guidance (6 AC) - Error messages with suggestions
+
+
+        Initial implementation used invalid ULIDs (contained 'O' which is not allowed in Crockford
+        base32). Fixed by regenerating valid ULIDs using ulid library.
+
+
+        Validation: kspec trait list shows all 8 traits with correct AC counts. kspec validate
+        confirms schema validation passes.
       supersedes: null
   todos: []
 - _ulid: 01KFDYAS3PT6Y9J7NANKS6YJ0S
