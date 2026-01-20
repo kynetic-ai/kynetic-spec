@@ -1422,11 +1422,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -1890,6 +1892,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2005,6 +2008,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -14420,6 +14424,31 @@
         Current status: Implementation complete and functional. Tests need separate investigation.
         Should not merge until tests pass per Ralph instructions.
       supersedes: null
+    - _ulid: 01KFD06WCG137KEZD0GR7PQEZ6
+      created_at: 2026-01-20T06:06:57.424Z
+      author: "@claude"
+      content: >-
+        Fixed all 12 test failures identified in PR review:
+
+
+        1. **Naive YAML string replacement** (3 tests fixed):
+           - Replaced manual string.replace() with proper CLI command 'kspec item ac add' to add acceptance criteria to traits
+           - Fixed in 'trait list' and 'trait get' test suites
+
+        2. **Missing module structure** (8 tests fixed):
+           - Tests were creating standalone spec items, but kspec requires module files to have a module root with nested items under type-specific fields (e.g. 'features:')
+           - Fixed module YAML structure to match kspec's hierarchical format
+
+        3. **Slug conflicts** (all tests):
+           - Test fixtures already had @test-feature in modules/core.yaml
+           - Changed tests to use unique slug @test-trait-feature
+
+        4. **Missing trait reference** (1 test fixed):
+           - Test expected to remove non-existent trait from spec, but trait didn't exist globally
+           - Added @json-output trait creation to test setup
+
+        All 21 tests now passing with 100% AC coverage (8/8 ACs covered).
+      supersedes: null
   todos: []
 - _ulid: 01KFC1GM9JNBEY4RR4PNHB5VSX
   slugs:
@@ -14877,6 +14906,7 @@
 
         Location: src/cli/commands/ralph.ts:308
           validateAdapter(options.adapter) passes 'claude-code-acp'
+
 
 
 
