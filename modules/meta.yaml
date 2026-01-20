@@ -848,7 +848,8 @@ features:
             implements: []
             relates_to: []
             tests: []
-            traits: []
+            traits:
+              - "@trait-json-output"
             notes: []
             created: 2026-01-20T22:55:07.133Z
             acceptance_criteria:
