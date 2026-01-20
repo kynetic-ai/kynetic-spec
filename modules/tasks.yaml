@@ -98,6 +98,10 @@ features:
             when: the task is validated
             then: it is accepted as defect fix work (may or may not have spec_ref depending on whether it
               reveals spec gap)
+          - id: ac-2
+            given: a bug is found after implementation
+            when: it doesn't correspond to existing spec item
+            then: bug task can be created standalone without spec_ref
       - _ulid: 01JHNKA4W4TTPE400000000000
         slugs:
           - task-type-spike
