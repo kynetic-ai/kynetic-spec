@@ -98,7 +98,7 @@ kspec item add --under <parent> --title "..." --type <type> [--slug <slug>]
 # Update items
 kspec item set <ref> --title "..."   # Update specific fields
 kspec item set <ref> --description "..."
-kspec item set <ref> --implementation <status>
+kspec item set <ref> --status <implementation-status>
 kspec item patch <ref> --data '{...}'  # Complex updates
 
 # Delete items
@@ -189,7 +189,7 @@ kspec item set @existing-feature --description "Updated description"
 kspec item ac add @existing-feature --given "..." --when "..." --then "..."
 
 # Update implementation status
-kspec item set @existing-feature --implementation implemented
+kspec item set @existing-feature --status implemented
 ```
 
 ### Validating Spec Quality
