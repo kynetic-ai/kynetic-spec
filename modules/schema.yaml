@@ -766,6 +766,9 @@ features:
             given: non-trait item type (feature, requirement)
             when: has traits field
             then: accepted by schema (traits can be implemented by any item type)
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFC1A9NA56A1RFAMZ5S0JPNA
         slugs:
           - traits-field
