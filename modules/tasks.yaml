@@ -73,6 +73,10 @@ features:
             given: a task with type 'epic' is created
             when: other tasks reference it via depends_on
             then: the epic serves as a container grouping related subtasks
+          - id: ac-2
+            given: an epic is often derived from a feature
+            when: the feature has child requirements
+            then: subtasks can be created with depends_on relationships to the epic
       - _ulid: 01JHNKA4W3TTPE300000000000
         slugs:
           - task-type-bug
