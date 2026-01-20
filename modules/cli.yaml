@@ -216,6 +216,10 @@ features:
           Returns created item (with generated ULID).
         implements:
           - "@item-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KEZCJPHXKYVVP0YWF261A8N3
         slugs:
           - item-get
@@ -234,6 +238,10 @@ features:
           Resolves @reference, displays full item.
         implements:
           - "@item-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: a spec item @login has acceptance criteria
@@ -267,6 +275,11 @@ features:
           Returns list of matching items.
         implements:
           - "@item-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KEZCJPHX678F01J6TZE5SX1Q
         slugs:
           - item-set
@@ -294,6 +307,10 @@ features:
           Updates item in place and auto-commits to shadow branch.
         implements:
           - "@item-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
         acceptance_criteria:
           - id: ac-1
             given: item @my-item exists with slugs ['original']
@@ -329,6 +346,11 @@ features:
           Warns if item has references. Consider deprecation instead.
         implements:
           - "@item-commands"
+        traits:
+          - "@trait-json-output"
+          - "@trait-confirmation-prompt"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
       - _ulid: 01KF374D6206HGMP55HGE8VNAQ
         slugs:
           - item-ac
