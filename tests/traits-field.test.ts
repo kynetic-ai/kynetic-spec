@@ -1,9 +1,14 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   ReferenceIndex,
   validateRefs,
   type LoadedSpecItem,
 } from '../src/parser/index.js';
+import { kspec, createTempDir, initGitRepo } from './helpers/cli.js';
+import { writeYamlFilePreserveFormat } from '../src/parser/yaml.js';
+import { ulid } from 'ulid';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 describe('Traits field validation', () => {
   // AC: @traits-field ac-1
@@ -258,5 +263,173 @@ describe('Traits field validation', () => {
 
     expect(result.errors).toHaveLength(0);
     expect(result.warnings).toHaveLength(0);
+  });
+});
+
+describe('Traits field E2E validation (CLI)', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir('kspec-traits-e2e-');
+    initGitRepo(tempDir);
+
+    // Create minimal kspec structure
+    const specDir = path.join(tempDir, 'spec');
+    const modulesDir = path.join(specDir, 'modules');
+    await fs.mkdir(modulesDir, { recursive: true });
+
+    // Create manifest
+    const manifest = {
+      project: { name: 'test-project' },
+      includes: ['modules/traits.yaml', 'modules/features.yaml'],
+    };
+    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+
+    // Create valid trait
+    const trait = {
+      _ulid: ulid(),
+      slugs: ['my-trait'],
+      title: 'My Trait',
+      type: 'trait',
+      description: 'A test trait',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      acceptance_criteria: [
+        {
+          id: 'ac-1',
+          given: 'context',
+          when: 'action',
+          then: 'result',
+        },
+      ],
+    };
+    await writeYamlFilePreserveFormat(path.join(modulesDir, 'traits.yaml'), trait);
+  });
+
+  afterEach(async () => {
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  // AC: @traits-field ac-1 (E2E)
+  it('should pass validation when spec has valid trait reference', async () => {
+    // Create spec with valid trait ref
+    const spec = {
+      _ulid: ulid(),
+      slugs: ['my-spec'],
+      title: 'My Spec',
+      type: 'requirement',
+      traits: ['@my-trait'],
+      status: { maturity: 'draft', implementation: 'not_started' },
+    };
+    await writeYamlFilePreserveFormat(
+      path.join(tempDir, 'spec', 'modules', 'features.yaml'),
+      spec
+    );
+
+    const result = kspec('validate --refs', tempDir);
+    expect(result.stdout).toContain('References: OK');
+  });
+
+  // AC: @traits-field ac-2 (E2E)
+  it('should report error when trait reference does not exist', async () => {
+    // Create spec with invalid trait ref
+    const spec = {
+      _ulid: ulid(),
+      slugs: ['my-spec'],
+      title: 'My Spec',
+      type: 'requirement',
+      traits: ['@nonexistent-trait'],
+      status: { maturity: 'draft', implementation: 'not_started' },
+    };
+    await writeYamlFilePreserveFormat(
+      path.join(tempDir, 'spec', 'modules', 'features.yaml'),
+      spec
+    );
+
+    const result = kspec('validate --refs', tempDir, { expectFail: true });
+    const output = result.stderr || result.stdout;
+    expect(output).toContain('@nonexistent-trait');
+    expect(output).toContain('not found');
+    expect(result.exitCode).toBe(1);
+  });
+
+  // AC: @traits-field ac-3 (E2E)
+  it('should report error when trait reference points to non-trait item', async () => {
+    // Create a module with a feature and a spec
+    const module = {
+      _ulid: ulid(),
+      slugs: ['test-module'],
+      title: 'Test Module',
+      type: 'module',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      features: [
+        {
+          _ulid: ulid(),
+          slugs: ['my-feature'],
+          title: 'My Feature',
+          type: 'feature',
+          status: { maturity: 'draft', implementation: 'not_started' },
+        },
+      ],
+      requirements: [
+        {
+          _ulid: ulid(),
+          slugs: ['my-spec'],
+          title: 'My Spec',
+          type: 'requirement',
+          traits: ['@my-feature'], // Points to feature, not trait
+          status: { maturity: 'draft', implementation: 'not_started' },
+        },
+      ],
+    };
+    await writeYamlFilePreserveFormat(
+      path.join(tempDir, 'spec', 'modules', 'features.yaml'),
+      module
+    );
+
+    const result = kspec('validate --refs', tempDir, { expectFail: true });
+    const output = result.stderr || result.stdout;
+    expect(output).toContain('@my-feature');
+    expect(output).toContain('non-trait');
+    expect(result.exitCode).toBe(1);
+  });
+
+  // AC: @traits-field ac-4 (E2E)
+  it('should pass validation when spec has no traits field', async () => {
+    // Create spec without traits field
+    const spec = {
+      _ulid: ulid(),
+      slugs: ['my-spec'],
+      title: 'My Spec',
+      type: 'requirement',
+      status: { maturity: 'draft', implementation: 'not_started' },
+    };
+    await writeYamlFilePreserveFormat(
+      path.join(tempDir, 'spec', 'modules', 'features.yaml'),
+      spec
+    );
+
+    const result = kspec('validate --refs', tempDir);
+    expect(result.stdout).toContain('References: OK');
+  });
+
+  // AC: @traits-field ac-5 (E2E)
+  it('should warn when spec has duplicate trait references', async () => {
+    // Create spec with duplicate trait refs
+    const spec = {
+      _ulid: ulid(),
+      slugs: ['my-spec'],
+      title: 'My Spec',
+      type: 'requirement',
+      traits: ['@my-trait', '@my-trait'], // Duplicate
+      status: { maturity: 'draft', implementation: 'not_started' },
+    };
+    await writeYamlFilePreserveFormat(
+      path.join(tempDir, 'spec', 'modules', 'features.yaml'),
+      spec
+    );
+
+    const result = kspec('validate --refs', tempDir);
+    expect(result.stdout).toContain('Duplicate');
+    expect(result.stdout).toContain('@my-trait');
   });
 });
