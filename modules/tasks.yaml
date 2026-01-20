@@ -837,6 +837,10 @@ features:
         given: assessing a task
         when: task type is not spike
         then: not_spike criterion passes
+      - id: ac-13
+        given: assessing a task
+        when: task type is spike
+        then: not_spike criterion fails
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
