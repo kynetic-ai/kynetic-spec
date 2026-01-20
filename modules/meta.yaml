@@ -666,6 +666,10 @@ features:
                 given: an active run exists
                 when: kspec workflow next @run-id is executed
                 then: completes current step (records in step_results), shows next step; if last step, completes run
+              - id: ac-2
+                given: a run is at the last step
+                when: kspec workflow next @run-id is executed
+                then: status=completed, completed_at set, outputs summary with total duration and step counts
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
