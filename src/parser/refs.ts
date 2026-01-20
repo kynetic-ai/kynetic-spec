@@ -324,6 +324,7 @@ export class ReferenceIndex {
  * Fields that contain references
  * AC: @agent-definitions ac-agent-3 - added_by for agent references
  * AC: @workflow-definitions ac-workflow-3 - meta_ref for workflow references
+ * AC: @traits-field ac-1 - traits field contains refs to trait-type items
  */
 const REF_FIELDS = [
   'depends_on',
@@ -339,6 +340,7 @@ const REF_FIELDS = [
   'resolved_by', // Agent reference
   'workflow_ref', // Workflow reference
   'meta_ref', // Meta reference (workflow, agent, convention)
+  'traits', // Trait references (AC: @traits-field ac-1)
 ];
 
 /**
@@ -444,6 +446,9 @@ export function validateRefs(
     const refs = extractRefs(item);
     const sourceFile = (item as LoadedTask | LoadedSpecItem)._sourceFile;
 
+    // Track traits for duplicate detection (AC: @traits-field ac-5)
+    const seenTraits = new Set<string>();
+
     for (const { field, ref } of refs) {
       const result = index.resolve(ref);
 
@@ -482,6 +487,35 @@ export function validateRefs(
             warning: 'deprecated_target',
             message: `Reference "${ref}" points to deprecated item: ${targetTitle}`,
           });
+        }
+
+        // AC: @traits-field ac-3 - traits ref must point to trait-type item
+        if (field === 'traits') {
+          const targetItem = result.item as { type?: string };
+          if (targetItem.type !== 'trait') {
+            errors.push({
+              ref,
+              sourceFile,
+              sourceUlid: item._ulid,
+              field,
+              error: 'not_found', // Reuse error type
+              message: `Trait reference "${ref}" points to non-trait item (type: ${targetItem.type || 'unknown'})`,
+            });
+          }
+
+          // AC: @traits-field ac-5 - warn on duplicate traits
+          if (seenTraits.has(result.ulid)) {
+            const targetTitle = (result.item as { title?: string }).title || result.ulid;
+            warnings.push({
+              ref,
+              sourceFile,
+              sourceUlid: item._ulid,
+              field,
+              warning: 'deprecated_target', // Reuse warning type for now
+              message: `Duplicate trait reference "${ref}" (${targetTitle})`,
+            });
+          }
+          seenTraits.add(result.ulid);
         }
       }
     }
