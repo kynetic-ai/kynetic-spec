@@ -151,6 +151,10 @@ features:
             when: validation runs
             then: decision structure is validated (must have title, description, should include why the choice
               was made and alternatives considered)
+          - id: ac-2
+            given: an architectural decision is documented
+            when: the decision is implemented
+            then: the decision record serves as ADR-style documentation explaining the rationale and context
       - _ulid: 01JHNKA1W9TYPE600000000000
         slugs:
           - type-task
