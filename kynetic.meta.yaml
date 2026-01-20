@@ -1584,4 +1584,23 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFCXY2PK61MY006C48874R44
+    type: success
+    content: "Full PR review → fix → merge cycle completed successfully in one iteration. The Ralph Loop
+      workflow of dedicating review subagent, fixing issues, waiting for CI, and merging is working
+      smoothly. Key: strict review criteria and blocking on CI checks before merge."
+    created_at: 2026-01-20T05:27:11.828Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFCXYZYP9E8CJMRS7TJMW29G
+    type: friction
+    content: "CI checks can take 3-4 minutes to complete, which can consume a significant portion of an
+      iteration when waiting for merge approval. Consider: (1) Starting CI early if possible, (2)
+      Using wait time productively for reflection/documentation, (3) Maybe implementing a timeout
+      strategy in Ralph Loop for when CI takes too long."
+    created_at: 2026-01-20T05:27:41.782Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
