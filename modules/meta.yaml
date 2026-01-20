@@ -467,11 +467,7 @@ features:
         traits: []
         notes: []
         created: 2026-01-20T22:44:37.458Z
-        acceptance_criteria:
-          - id: ac-14
-            given: no run-id provided and multiple active runs exist
-            when: kspec workflow next is executed
-            then: errors with list of active runs to choose from
+        acceptance_criteria: []
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
