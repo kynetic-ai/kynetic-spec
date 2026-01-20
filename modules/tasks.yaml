@@ -857,6 +857,10 @@ features:
         given: kspec tasks assess automation --auto is run
         when: processing tasks
         then: "applies only obvious cases: spikes -> manual_only, missing criteria -> needs_review"
+      - id: ac-18
+        given: kspec tasks assess automation --auto is run
+        when: task passes all criteria
+        then: does NOT mark task as eligible (requires agent/human review)
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
