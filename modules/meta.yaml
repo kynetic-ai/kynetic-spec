@@ -854,6 +854,11 @@ features:
                 given: a paused run exists
                 when: kspec workflow resume @run-id is executed
                 then: status=active, paused_at cleared, continues from current_step
+              - id: ac-3
+                given: a step defines inputs
+                when: kspec workflow next @run-id is executed
+                then: outputs required inputs; --input key=value captures input in step_results.inputs; errors if
+                  required input missing
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
