@@ -133,10 +133,62 @@ export function registerTaskCommands(program: Command): void {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+
+        // Build all indexes including TraitIndex
+        const { refIndex: index, traitIndex } = await (async () => {
+          const { buildIndexes } = await import('../../parser/index.js');
+          return buildIndexes(ctx);
+        })();
+
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        output(foundTask, () => formatTaskDetails(foundTask, index));
+        // AC: @trait-display ac-3 - task get shows inherited AC sections
+        // Get inherited traits if task has spec_ref
+        let inheritedTraits: Array<{ trait: { ulid: string; slug: string; title: string; description?: string }; acs: Array<{ id: string; given?: string; when?: string; then?: string }> }> = [];
+        if (foundTask.spec_ref) {
+          const specResult = index.resolve(foundTask.spec_ref);
+          if (specResult.ok) {
+            const specUlid = specResult.ulid;
+            const inheritedAC = traitIndex.getInheritedAC(specUlid);
+            const traitsByTrait = new Map<string, { trait: typeof inheritedAC[0]['trait']; acs: Array<{ id: string; given?: string; when?: string; then?: string }> }>();
+            for (const { trait, ac } of inheritedAC) {
+              if (!traitsByTrait.has(trait.ulid)) {
+                traitsByTrait.set(trait.ulid, { trait, acs: [] });
+              }
+              traitsByTrait.get(trait.ulid)!.acs.push(ac);
+            }
+            inheritedTraits = Array.from(traitsByTrait.values());
+          }
+        }
+
+        // Build JSON output with inherited traits (AC: @trait-display ac-2)
+        const jsonOutput = {
+          ...foundTask,
+          ...(inheritedTraits.length > 0 && {
+            inherited_traits: inheritedTraits.map(({ trait, acs }) => ({
+              ref: `@${trait.slug}`,
+              title: trait.title,
+              acceptance_criteria: acs,
+            })),
+          }),
+        };
+
+        output(jsonOutput, () => {
+          formatTaskDetails(foundTask, index);
+
+          // AC: @trait-display ac-3, ac-4, ac-5 - Show inherited AC per trait in labeled sections
+          if (inheritedTraits.length > 0) {
+            for (const { trait, acs } of inheritedTraits) {
+              console.log(chalk.gray(`\n─── Inherited from @${trait.slug} ───`));
+              for (const ac of acs) {
+                console.log(chalk.cyan(`  [${ac.id}]`) + chalk.gray(` (from @${trait.slug})`));
+                if (ac.given) console.log(`    Given: ${ac.given}`);
+                if (ac.when) console.log(`    When: ${ac.when}`);
+                if (ac.then) console.log(`    Then: ${ac.then}`);
+              }
+            }
+          }
+        });
       } catch (err) {
         error(errors.failures.getTask, err);
         process.exit(EXIT_CODES.ERROR);

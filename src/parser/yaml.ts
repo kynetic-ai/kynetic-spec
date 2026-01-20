@@ -26,6 +26,7 @@ import {
 } from '../schema/index.js';
 import { ReferenceIndex } from './refs.js';
 import { ItemIndex } from './items.js';
+import { TraitIndex } from './traits.js';
 import {
   type ShadowConfig,
   detectShadow,
@@ -936,8 +937,26 @@ export function extractItemsFromRaw(
  */
 export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> {
   try {
-    const raw = await readYamlFile<unknown>(filePath);
-    return extractItemsFromRaw(raw, filePath);
+    const content = await fs.readFile(filePath, 'utf-8');
+    const items: LoadedSpecItem[] = [];
+
+    // Parse all YAML documents in the file (handles files with ---)
+    const documents = YAML.parseAllDocuments(content);
+
+    for (const doc of documents) {
+      if (doc.errors.length > 0) {
+        // Skip documents with parse errors
+        continue;
+      }
+
+      const raw = doc.toJS();
+      if (raw) {
+        const docItems = extractItemsFromRaw(raw, filePath);
+        items.push(...docItems);
+      }
+    }
+
+    return items;
   } catch (error) {
     // File doesn't exist or parse error
     return [];
@@ -1043,6 +1062,7 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
 export async function buildIndexes(ctx: KspecContext): Promise<{
   refIndex: ReferenceIndex;
   itemIndex: ItemIndex;
+  traitIndex: TraitIndex;
   tasks: LoadedTask[];
   items: LoadedSpecItem[];
 }> {
@@ -1050,7 +1070,8 @@ export async function buildIndexes(ctx: KspecContext): Promise<{
   const items = await loadAllItems(ctx);
   const refIndex = new ReferenceIndex(tasks, items);
   const itemIndex = new ItemIndex(tasks, items);
-  return { refIndex, itemIndex, tasks, items };
+  const traitIndex = new TraitIndex(items, refIndex);
+  return { refIndex, itemIndex, traitIndex, tasks, items };
 }
 
 // ============================================================

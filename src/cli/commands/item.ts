@@ -322,7 +322,7 @@ export function registerItemCommands(program: Command): void {
     .action(async (ref) => {
       try {
         const ctx = await initContext();
-        const { refIndex, items } = await buildIndexes(ctx);
+        const { refIndex, traitIndex, items } = await buildIndexes(ctx);
 
         const result = refIndex.resolve(ref);
 
@@ -333,7 +333,27 @@ export function registerItemCommands(program: Command): void {
 
         const item = result.item as LoadedSpecItem;
 
-        output(item, () => {
+        // AC: @trait-display ac-2 - JSON mode includes inherited_traits array
+        const inheritedTraits = traitIndex.getInheritedAC(item._ulid);
+        const traitsByTrait = new Map<string, { trait: typeof inheritedTraits[0]['trait']; acs: AcceptanceCriterion[] }>();
+        for (const { trait, ac } of inheritedTraits) {
+          if (!traitsByTrait.has(trait.ulid)) {
+            traitsByTrait.set(trait.ulid, { trait, acs: [] });
+          }
+          traitsByTrait.get(trait.ulid)!.acs.push(ac);
+        }
+
+        // Build JSON output with inherited traits
+        const jsonOutput = {
+          ...item,
+          inherited_traits: Array.from(traitsByTrait.values()).map(({ trait, acs }) => ({
+            ref: `@${trait.slug}`,
+            title: trait.title,
+            acceptance_criteria: acs,
+          })),
+        };
+
+        output(jsonOutput, () => {
           console.log(chalk.bold(item.title));
           console.log(chalk.gray('─'.repeat(40)));
           console.log(`${fieldLabels.ulid}      ${item._ulid}`);
@@ -357,6 +377,7 @@ export function registerItemCommands(program: Command): void {
             console.log(item.description);
           }
 
+          // AC: @trait-display ac-1 - Show own AC first
           if ('acceptance_criteria' in item && Array.isArray(item.acceptance_criteria) && item.acceptance_criteria.length > 0) {
             console.log('\n' + sectionHeaders.acceptanceCriteria);
             for (const ac of item.acceptance_criteria) {
@@ -366,6 +387,19 @@ export function registerItemCommands(program: Command): void {
                 if (acObj.given) console.log(`    Given: ${acObj.given}`);
                 if (acObj.when) console.log(`    When: ${acObj.when}`);
                 if (acObj.then) console.log(`    Then: ${acObj.then}`);
+              }
+            }
+          }
+
+          // AC: @trait-display ac-1, ac-4, ac-5 - Show inherited AC per trait in labeled sections
+          if (traitsByTrait.size > 0) {
+            for (const { trait, acs } of traitsByTrait.values()) {
+              console.log(chalk.gray(`\n─── Inherited from @${trait.slug} ───`));
+              for (const ac of acs) {
+                console.log(chalk.cyan(`  [${ac.id}]`) + chalk.gray(` (from @${trait.slug})`));
+                if (ac.given) console.log(`    Given: ${ac.given}`);
+                if (ac.when) console.log(`    When: ${ac.when}`);
+                if (ac.then) console.log(`    Then: ${ac.then}`);
               }
             }
           }
