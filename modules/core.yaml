@@ -417,6 +417,12 @@ features:
           Enables traceability from high-level to concrete.
         implements:
           - "@relationship-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: item A implements item B
+            when: querying implementation traceability
+            then: A is linked to B showing concrete realization (e.g., requirement implements feature, task
+              implements requirement)
       - _ulid: 01KEZCJPJ2JS9T7PSR30RMDCFE
         slugs:
           - rel-relates-to
