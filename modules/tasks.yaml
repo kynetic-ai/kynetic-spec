@@ -309,6 +309,9 @@ features:
             given: the CLI help content for task commands
             when: viewing help for task state transitions
             then: pending_review is documented with its purpose and valid transitions
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
