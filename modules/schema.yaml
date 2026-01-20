@@ -74,6 +74,10 @@ features:
             when: validation runs
             then: feature structure is validated (must have title, can have requirements array, can be nested in
               modules)
+          - id: ac-2
+            given: a feature has acceptance_criteria defined
+            when: the feature is displayed or validated
+            then: AC are shown/validated as testable outcomes for the feature
       - _ulid: 01JHNKA1W6TYPE300000000000
         slugs:
           - type-requirement
