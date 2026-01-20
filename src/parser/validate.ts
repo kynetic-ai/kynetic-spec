@@ -570,26 +570,29 @@ async function checkCompleteness(
 
   for (const item of items) {
     const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${item._ulid.slice(0, 8)}`;
+    const isTrait = item.type === 'trait';
 
     // AC: @spec-completeness ac-1
+    // AC: @trait-type ac-2 - Traits should have acceptance criteria for completeness
     // Check for missing acceptance criteria
     if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
       warnings.push({
         type: 'missing_acceptance_criteria',
         itemRef,
         itemTitle: item.title,
-        message: `Item ${itemRef} has no acceptance criteria`,
+        message: `${isTrait ? 'Trait' : 'Item'} ${itemRef} has no acceptance criteria`,
       });
     }
 
     // AC: @spec-completeness ac-2
+    // AC: @trait-type ac-3 - Traits should have description for completeness
     // Check for missing description
     if (!item.description || item.description.trim() === '') {
       warnings.push({
         type: 'missing_description',
         itemRef,
         itemTitle: item.title,
-        message: `Item ${itemRef} has no description`,
+        message: `${isTrait ? 'Trait' : 'Item'} ${itemRef} has no description`,
       });
     }
 
