@@ -10,4 +10,3 @@ includes:
   - modules/cli.yaml
   - modules/meta.yaml
   - modules/shadow.yaml
-  - modules/auth.yaml
