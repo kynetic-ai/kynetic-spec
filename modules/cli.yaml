@@ -2773,3 +2773,7 @@ requirements:
         given: repo has no commits (fresh init)
         when: kspec log executed
         then: "shows info message: No commits in repository yet"
+      - id: ac-2
+        given: repo has no commits
+        when: kspec log @ref executed
+        then: "shows info message: No commits in repository yet"
