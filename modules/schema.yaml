@@ -1115,3 +1115,7 @@ requirements:
         given: item has child items (nested in YAML)
         when: kspec item delete @ref executed
         then: "error: Cannot delete: item has N children. Use --cascade to delete recursively"
+      - id: ac-2
+        given: item has child items
+        when: kspec item delete @ref --cascade executed
+        then: deletes item and all descendants, reports count
