@@ -1173,3 +1173,7 @@ requirements:
         given: AC exists on spec
         when: kspec item ac remove @spec ac-1 executed without --force
         then: "prompt: Remove acceptance criterion ac-1? [y/N]"
+      - id: ac-2
+        given: user confirms
+        when: enters y
+        then: AC removed, success message
