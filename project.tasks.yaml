@@ -20218,4 +20218,64 @@
 
         Suggest deriving child tasks after spec is approved.
       supersedes: null
+    - _ulid: 01KFH4HA9E7N1QRF1FPYV511ST
+      created_at: 2026-01-21T20:39:31.374Z
+      author: "@claude"
+      content: >-
+        ## Benefits
+
+
+        1. **Clean validation**: Warnings become meaningful (only real issues)
+
+        2. **Legacy adoption**: Clear pattern for adding kspec to existing projects
+
+        3. **Audit trail**: verified_at/verified_by captures who confirmed implementation
+
+        4. **Consistent model**: Uses existing trait mechanism (no new concepts)
+
+        5. **Explicit opt-in**: Each spec must deliberately use the trait
+
+        6. **Self-documenting**: Trait definition explains the pattern
+
+
+        ## Design Rationale
+
+
+        **Why a trait vs other options?**
+
+
+        Considered alternatives:
+
+        - Flag on spec (retrospective: true) - works but traits are the existing cross-cutting
+        mechanism
+
+        - Audit tasks - creates 127 tiny tasks, noise
+
+        - Derivation mode - on task not spec, wrong place
+
+        - Implementation source field - similar to trait but less flexible
+
+
+        Trait approach wins because:
+
+        - Traits ARE the kspec mechanism for cross-cutting behavior
+
+        - Validation already understands traits
+
+        - Can add AC to the trait itself (self-describing)
+
+        - Consistent with existing patterns
+
+
+        **Why require verified_at/verified_by?**
+
+
+        - Creates audit trail (who verified, when)
+
+        - Prevents lazy use without verification
+
+        - Useful for compliance/auditing scenarios
+
+        - Answers 'how do we know this is implemented?'
+      supersedes: null
   todos: []
