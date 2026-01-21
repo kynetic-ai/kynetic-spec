@@ -14902,6 +14902,7 @@
     - security
   vcs_refs: []
   created_at: 2026-01-19T17:51:35.268Z
+  started_at: 2026-01-21T10:02:39.378Z
   notes:
     - _ulid: 01KFBP4K153WRBJ3J5KREED81J
       created_at: 2026-01-19T17:51:42.117Z
@@ -14909,9 +14910,37 @@
       content: npm audit shows 4 moderate vulns in esbuild/vite/vitest chain. Fix requires vitest 1.x ->
         4.x breaking change. May require test adjustments.
       supersedes: null
+    - _ulid: 01KFG0EZ7WS87CF5EY5XS0HBP9
+      created_at: 2026-01-21T10:09:05.788Z
+      author: "@claude"
+      content: >-
+        Successfully upgraded vitest from v1.2.0 to v4.0.17 to fix npm audit security
+        vulnerabilities.
+
+
+        Changes made:
+
+        1. Updated package.json: vitest ^1.2.0 -> ^4.0.17
+
+        2. Ran npm install (added 13 packages, removed 50 packages, changed 12 packages)
+
+        3. Fixed vitest v4 breaking change: Added missing 'await' to async
+        expect().rejects.toThrow() in tests/acp.test.ts:322
+
+        4. Verified all 841 tests pass (2 skipped as documented)
+
+        5. Confirmed npm audit shows 0 vulnerabilities (was 4 moderate severity vulnerabilities)
+
+
+        The upgrade resolves 4 moderate severity esbuild vulnerabilities in the dependency chain
+        (esbuild->vite->vite-node->vitest). Only one test file needed updating for vitest v4
+        compatibility (async test assertion).
+
+
+        Ready to submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T10:02:39.378Z
 - _ulid: 01KFBP98HFVG1WE75DKPYTXSK1
   slugs:
     - extract-test-helpers
