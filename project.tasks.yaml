@@ -17794,6 +17794,7 @@
         required input missing
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFF0CPRH39F2E7G81DXERTW2
   slugs:
     - fix-yaml-blank-line-bug
