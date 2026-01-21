@@ -1096,3 +1096,7 @@ requirements:
         given: task status is pending_review
         when: kspec task complete @ref executed
         then: completes successfully
+      - id: ac-2
+        given: task status is in_progress
+        when: kspec task complete @ref executed
+        then: "error: Task must be submitted for review first. Use kspec task submit @ref"
