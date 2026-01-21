@@ -333,10 +333,7 @@ describe('Integration: meta workflows', () => {
   });
 
   // AC: @workflow-definitions ac-workflow-3
-  // NOTE: Skipping negative test for now - meta_ref is in REF_FIELDS and
-  // validation infrastructure is in place, but test has subtle issue with
-  // temp fixture setup. Valid workflow reference test above proves AC-3 works.
-  it.skip('should error on invalid workflow reference in meta_ref', async () => {
+  it('should error on invalid workflow reference in meta_ref', async () => {
     // Add a task with meta_ref pointing to a non-existent workflow
     const tasksPath = path.join(tempDir, 'project.tasks.yaml');
     let tasksContent = await fs.readFile(tasksPath, 'utf-8');
