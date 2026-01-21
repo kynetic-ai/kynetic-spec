@@ -13492,6 +13492,7 @@
         Reference: ReferenceIndex.resolve() returns Result but callers often skip .ok check.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBJCDVM7R0J2PKG5PA7S4NX
   slugs:
     - fix-skipped-workflow-test
