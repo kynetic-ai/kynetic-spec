@@ -13787,6 +13787,48 @@
         - Check AC text for field references (e.g., 'spec_ref.children' when SpecItem has no
         children field)
       supersedes: null
+    - _ulid: 01KFFVBQW2Q0C69S6RPVH8PS0Z
+      created_at: 2026-01-21T08:39:57.058Z
+      author: "@claude"
+      content: >-
+        WIP checkpoint - iteration 14:
+
+
+        This task requires more scoping before implementation. The original note mentions three
+        specific issues:
+
+        1. ACs reference fields that don't exist in schema (e.g., 'spec_ref.children')
+
+        2. Implementation status updated in task.spec_ref but not in actual spec item
+
+        3. Fixtures conflict with derive tests when spec_refs overlap
+
+
+        **Issue #2 appears to be a misunderstanding** - tasks don't have a 'spec_ref.implementation'
+        field to update. They have a 'spec_ref' reference field that points to a spec, and the spec
+        itself has 'status.implementation'. So this isn't about drift, it's about stale status
+        (already covered by --staleness check).
+
+
+        **Issue #1 is interesting** - could parse AC text for field references and validate against
+        Zod schemas. Would need to extract references like 'foo.bar' from AC text and check if
+        SpecItem/Task schemas define those paths.
+
+
+        **Issue #3 needs clarification** - what specific fixture conflicts occurred? Where are these
+        fixtures? Need examples to understand the problem.
+
+
+        **Next steps:**
+
+        1. Get concrete examples of the three issues (especially #3)
+
+        2. Verify #2 is already handled by existing --staleness check
+
+        3. Design AC field reference validation approach for #1
+
+        4. Consider whether this should be multiple tasks vs one omnibus task
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
