@@ -1127,3 +1127,7 @@ requirements:
         given: item has no children
         when: kspec item delete @ref executed
         then: normal deletion (with confirmation prompt per trait)
+      - id: ac-5
+        given: cascade with no children
+        when: kspec item delete @ref --cascade executed
+        then: same as normal deletion (--cascade is no-op)
