@@ -1086,7 +1086,8 @@ requirements:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-error-guidance"
     notes: []
     created: 2026-01-21T05:22:52.908Z
     description: Enforce that tasks must go through pending_review before completion. The complete
