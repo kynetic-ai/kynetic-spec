@@ -18591,7 +18591,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -18599,6 +18599,8 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-21T06:32:17.244Z
+  started_at: 2026-01-21T06:32:21.546Z
   notes: []
   todos: []
-  started_at: 2026-01-21T06:32:21.546Z
+  completed_at: 2026-01-21T06:32:25.907Z
+  closed_reason: Testing reset command
