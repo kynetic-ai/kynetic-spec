@@ -1232,3 +1232,5 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-21T14:27:55.982Z
+    description: Allow clearing all dependencies from a task via the task set command. Currently
+      --depends-on can only set dependencies to new values, not clear them to an empty list.
