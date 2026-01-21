@@ -2401,4 +2401,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFZSMSZMRKN2SQKZS42QC6F
+    type: success
+    content: "Tech debt cleanup pattern: When finding duplicate logic, check if the duplication serves a
+      purpose (e.g., specialized behavior) or is truly redundant. In this case, inbox.ts had a local
+      shortUlid() helper that was functionally identical to .slice(0,8) used elsewhere. The 'smart'
+      ReferenceIndex.shortUlid() method wasn't needed for ephemeral inbox items without slugs.
+      Solution: remove helper, use direct string slicing consistently. This makes code more
+      maintainable and easier to understand."
+    created_at: 2026-01-21T09:57:26.975Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

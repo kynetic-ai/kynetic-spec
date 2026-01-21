@@ -14680,6 +14680,23 @@
         ReferenceIndex. Since inbox items lack slugs and are ephemeral, they don't benefit from
         ReferenceIndex's smart unique-prefix computation. All 841 tests pass.
       supersedes: null
+    - _ulid: 01KFG02XJN9BHZR02209H5GP9M
+      created_at: 2026-01-21T10:02:30.869Z
+      author: "@claude"
+      content: >-
+        PR #126 reviewed and PASSES technical review. All 841 tests pass locally. Code is correct -
+        simple refactoring from shortUlid() helper to direct .slice(0,8) calls, consistent with
+        codebase patterns.
+
+
+        BLOCKED: Cannot merge due to GitHub Actions billing issue affecting all CI runs. All 3 CI
+        checks fail immediately with: 'recent account payments have failed or spending limit needs
+        to be increased'.
+
+
+        ACTION NEEDED: User must resolve GitHub billing in repo settings. Once CI is fixed, PR can
+        be merged immediately with no code changes needed.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBMAE30DXK93EJPVJ2PKJJH
