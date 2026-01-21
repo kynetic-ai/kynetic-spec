@@ -18584,3 +18584,20 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Test Reset Command
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 3
+  slugs:
+    - test-reset-cmd
+  tags: []
+  _ulid: 01KFFM1ZJW5AATNNJMVNZMGGAM
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-21T06:32:17.244Z
+  notes: []
+  todos: []
