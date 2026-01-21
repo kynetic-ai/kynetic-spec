@@ -14020,6 +14020,7 @@
         - Check both main and shadow branches before reporting 'no commits'
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
   slugs:
     - task-dynamic-workflow-skills
