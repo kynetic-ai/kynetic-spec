@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import * as os from 'node:os';
 import * as fs from 'node:fs';
 import { ulid } from 'ulid';
-import { output, error as outputError } from '../output.js';
+import { output, error as outputError, isJsonMode } from '../output.js';
 import { EXIT_CODES } from '../exit-codes.js';
 
 // AC: @cmd-clone-for-testing ac-1
@@ -144,8 +144,7 @@ export function registerCloneForTestingCommand(program: Command): void {
     .command('clone-for-testing [dest] [source]')
     .description('Create isolated repo copy for testing')
     .option('--branch <name>', 'Branch to checkout after cloning')
-    .option('--json', 'Output result as JSON')
-    .action(async (dest: string | undefined, source: string | undefined, options: { branch?: string; json?: boolean }) => {
+    .action(async (dest: string | undefined, source: string | undefined, options: { branch?: string }) => {
       // Default source to current directory
       if (!source) {
         source = process.cwd();
@@ -189,18 +188,13 @@ export function registerCloneForTestingCommand(program: Command): void {
       }
 
       // AC: @cmd-clone-for-testing ac-5
-      // Output result
-      if (options.json) {
-        // Output raw JSON object (not wrapped in success object)
-        console.log(JSON.stringify({ path: dest, branch: currentBranch }));
-      } else {
-        output({ path: dest, branch: currentBranch }, () => {
-          console.log(`Created test repo at: ${dest}`);
-          if (options.branch) {
-            console.log(`Checked out branch: ${currentBranch}`);
-          }
-        });
-      }
+      // Output result (respects global --json flag)
+      output({ path: dest, branch: currentBranch }, () => {
+        console.log(`Created test repo at: ${dest}`);
+        if (options.branch) {
+          console.log(`Checked out branch: ${currentBranch}`);
+        }
+      });
       } catch (err) {
         outputError(`Unexpected error: ${err instanceof Error ? err.message : String(err)}`);
         process.exit(EXIT_CODES.ERROR);
