@@ -2050,4 +2050,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFQQAFR8FZY9EBESFK1MFBZ
+    type: success
+    content: "Test fixture management pattern: Using setupTempFixtures() + removing .git + git init
+      creates clean test environment with kspec structure but no commits. More reliable than
+      manually constructing YAML. Pattern used successfully in AC-2 and AC-5 tests."
+    created_at: 2026-01-21T07:36:22.264Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

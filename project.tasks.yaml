@@ -14251,6 +14251,12 @@
 
         - All 790 tests pass
       supersedes: null
+    - _ulid: 01KFFQS9C16QSKA3F5PYKC71Z9
+      created_at: 2026-01-21T07:37:26.658Z
+      author: "@claude"
+      content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/118. Ready for review and
+        merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
