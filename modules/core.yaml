@@ -174,7 +174,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           ULIDs can be shortened for display and references, similar
           to git commit short hashes. The system resolves short ULIDs
