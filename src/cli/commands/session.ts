@@ -188,6 +188,7 @@ export interface SessionOptions {
   since?: string;
   git?: boolean;
   limit?: string;
+  eligible?: boolean; // Only include automation-eligible tasks in ready_tasks
 }
 
 // ─── Data Gathering ──────────────────────────────────────────────────────────
@@ -387,8 +388,9 @@ export async function gatherSessionContext(
     { limit: options.full ? limit * 2 : limit }
   );
 
-  // Get ready tasks
+  // Get ready tasks (optionally filtered to automation-eligible only)
   const readyTasks = getReadyTasks(allTasks)
+    .filter((t) => !options.eligible || t.automation === 'eligible')
     .slice(0, options.full ? undefined : limit)
     .map((t) => toReadyTaskSummary(t, index));
 

@@ -6,6 +6,7 @@ tasks:
     type: task
     status: pending
     priority: 2
+    automation: eligible
     tags:
       - test
     description: A task that is pending and ready to work on

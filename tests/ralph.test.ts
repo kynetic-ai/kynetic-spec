@@ -94,9 +94,46 @@ describe('ralph command', () => {
       MOCK_ACP_EXIT_CODE: '0',
     });
 
-    expect(result.output).toContain('No active or ready tasks');
+    expect(result.output).toContain('No active or eligible ready tasks');
     // Should not attempt multiple iterations
     expect(result.output).not.toContain('Iteration 2/5');
+  });
+
+  // AC-16: Only process automation-eligible tasks
+  it('only considers automation-eligible tasks, ignoring manual_only and unassessed', async () => {
+    // Modify fixtures: mark one task as manual_only (should be ignored)
+    // The pending task has no automation field (unassessed) - should also be ignored
+    const tasksPath = path.join(tempDir, 'project.tasks.yaml');
+    const content = await fs.readFile(tasksPath, 'utf-8');
+
+    // Add automation: manual_only to the pending task
+    const modified = content.replace(
+      /title: Test pending task\n    type: task\n    status: pending/,
+      'title: Test pending task\n    type: task\n    status: pending\n    automation: manual_only'
+    );
+    await fs.writeFile(tasksPath, modified);
+
+    const result = runRalph('--max-loops 5', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    // Should exit with no eligible tasks message (after starting iteration 1)
+    expect(result.output).toContain('No active or eligible ready tasks');
+    // Should not continue to iteration 2 (exits early)
+    expect(result.output).not.toContain('Iteration 2/5');
+    // Should not show "Completed iteration" since no work was done
+    expect(result.output).not.toContain('Completed iteration');
+  });
+
+  it('processes automation-eligible tasks when available', async () => {
+    // Fixture already has automation: eligible on test-task-pending
+    const result = runRalph('--max-loops 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    // Should process the eligible task
+    expect(result.output).toContain('Iteration 1/1');
+    expect(result.output).toContain('Completed iteration 1');
   });
 
   // AC-6: Dry run mode
