@@ -23,13 +23,13 @@ npm install && npm run build && npm link
 Once published to npm:
 
 ```bash
-npm install -g @kynetic/spec
+npm install -g @kynetic-ai/spec
 ```
 
 Or without global install:
 
 ```bash
-npx @kynetic/spec <command>
+npx @kynetic-ai/spec <command>
 ```
 
 ## Setup

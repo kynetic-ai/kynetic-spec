@@ -1,5 +1,5 @@
 {
-  "name": "@kynetic/spec",
+  "name": "@kynetic-ai/spec",
   "version": "0.1.0",
   "description": "Kynetic Spec - Structured specification format for human-AI collaboration",
   "type": "module",
@@ -8,6 +8,15 @@
   "bin": {
     "kspec": "./dist/cli/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kynetic-ai/kynetic-spec.git"
+  },
+  "homepage": "https://github.com/kynetic-ai/kynetic-spec#readme",
+  "bugs": {
+    "url": "https://github.com/kynetic-ai/kynetic-spec/issues"
+  },
+  "author": "Kynetic AI",
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli/index.ts",
