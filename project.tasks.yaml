@@ -1540,11 +1540,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2244,6 +2246,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2359,6 +2362,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16061,6 +16065,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -18177,5 +18182,46 @@
 
 
         **Awaiting user decision on which approach to implement.**
+      supersedes: null
+    - _ulid: 01KFF6NJYHGDQ1JHYXBR3XSSXS
+      created_at: 2026-01-21T02:38:19.602Z
+      author: "@claude"
+      content: >-
+        ## Library Code Analysis
+
+
+        Analyzed yaml library source (stringifyString.ts):
+
+
+        **Key finding:** The blockString() function adds indentation after newlines via:
+
+        ```typescript
+
+        value = value.replace(/\n+/g, \`$&${indent}\`)
+
+        ```
+
+
+        When content has blank lines followed by whitespace-only lines, the parse-stringify cycle
+        causes indentation to accumulate. This is expected library behavior, not a bug.
+
+
+        **No library option exists** to prevent this - checked blockQuote, lineWidth, and all
+        stringify options.
+
+
+        **Confirmed fix approach - Option C (Hybrid):**
+
+        1. Trim content at creation (createNote, etc.)
+
+        2. Post-process output to strip whitespace-only lines:
+           ```typescript
+           output.split('\n').filter(line => !/^[ \t]+$/.test(line)).join('\n')
+           ```
+
+        This targets the specific corruption pattern without affecting legitimate blank lines.
+
+
+        **Awaiting user approval to implement.**
       supersedes: null
   todos: []
