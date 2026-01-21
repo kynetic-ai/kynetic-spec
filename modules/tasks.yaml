@@ -1041,7 +1041,8 @@ requirements:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-json-output"
     notes: []
     created: 2026-01-21T05:21:12.009Z
     description: New `kspec task reset` command to return any task to pending state, clearing
