@@ -830,7 +830,7 @@ describe('Integration: derive', () => {
   });
 
   // AC: @cmd-derive ac-13
-  it('should error on invalid reference', () => {
+  it('should error on invalid reference (derive)', () => {
     const result = kspecRun('derive @nonexistent', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
@@ -1399,7 +1399,7 @@ describe('Integration: kspec log', () => {
   });
 
   // AC: @cmd-log ac-5
-  it('should error on invalid reference', () => {
+  it('should error on invalid reference (log)', () => {
     const result = kspecRun('log @nonexistent-ref', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });

@@ -907,7 +907,7 @@ describe('Integration: meta mutation commands', () => {
       }
     });
 
-    it('should support JSON output', () => {
+    it('should support JSON output (add agent)', () => {
       const agent = kspecJson<any>(
         'meta add agent --id json-agent --name "JSON Agent"',
         tempDir
@@ -998,7 +998,7 @@ describe('Integration: meta mutation commands', () => {
       expect(agent.name).toBe('Updated via ULID');
     });
 
-    it('should support JSON output', () => {
+    it('should support JSON output (set)', () => {
       kspec('meta add agent --id json-update --name "JSON Update"', tempDir);
 
       const agent = kspecJson<any>('meta set @json-update --name "JSON Updated"', tempDir);
@@ -1698,7 +1698,7 @@ describe('Integration: meta focus', () => {
   });
 
   // AC: @meta-focus-cmd ac-focus-1, ac-focus-2, ac-focus-3
-  it('should support JSON output mode', () => {
+  it('should support JSON output (focus)', () => {
     // No focus set
     const noFocus = kspecJson<{ focus: null }>('meta focus', tempDir);
     expect(noFocus.focus).toBeNull();
@@ -1798,7 +1798,7 @@ describe('Integration: meta thread', () => {
   });
 
   // AC: @meta-thread-cmd - JSON output
-  it('should support JSON output for list', () => {
+  it('should support JSON output for list (thread)', () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
 
@@ -1807,7 +1807,7 @@ describe('Integration: meta thread', () => {
   });
 
   // AC: @meta-thread-cmd - JSON output
-  it('should support JSON output for add', () => {
+  it('should support JSON output for add (thread)', () => {
     const data = kspecJson<{ threads: string[]; added: string }>(
       'meta thread add "New thread"',
       tempDir
@@ -1817,7 +1817,7 @@ describe('Integration: meta thread', () => {
   });
 
   // AC: @meta-thread-cmd - JSON output
-  it('should support JSON output for remove', () => {
+  it('should support JSON output for remove (thread)', () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
 
@@ -1830,7 +1830,7 @@ describe('Integration: meta thread', () => {
   });
 
   // AC: @meta-thread-cmd - JSON output
-  it('should support JSON output for clear', () => {
+  it('should support JSON output for clear (thread)', () => {
     kspec('meta thread add "Thread 1"', tempDir);
 
     const data = kspecJson<{ threads: string[] }>('meta thread clear', tempDir);
@@ -1953,7 +1953,7 @@ describe('Integration: meta question', () => {
   });
 
   // AC: @meta-question-cmd - JSON output
-  it('should support JSON output for list', () => {
+  it('should support JSON output for list (question)', () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
 
@@ -1962,7 +1962,7 @@ describe('Integration: meta question', () => {
   });
 
   // AC: @meta-question-cmd - JSON output
-  it('should support JSON output for add', () => {
+  it('should support JSON output for add (question)', () => {
     const data = kspecJson<{ questions: string[]; added: string }>(
       'meta question add "New question"',
       tempDir
@@ -1972,7 +1972,7 @@ describe('Integration: meta question', () => {
   });
 
   // AC: @meta-question-cmd - JSON output
-  it('should support JSON output for remove', () => {
+  it('should support JSON output for remove (question)', () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
 
@@ -1985,7 +1985,7 @@ describe('Integration: meta question', () => {
   });
 
   // AC: @meta-question-cmd - JSON output
-  it('should support JSON output for clear', () => {
+  it('should support JSON output for clear (question)', () => {
     kspec('meta question add "Question 1"', tempDir);
 
     const data = kspecJson<{ questions: string[] }>('meta question clear', tempDir);
