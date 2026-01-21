@@ -433,3 +433,14 @@ inbox:
       - derive
       - dx
     added_by: "@claude"
+  - _ulid: 01KFEZDXXX1XR1M2EAG3BK2GZA
+    text: "Ephemeral workflow runs - Add support for workflows that don't persist run state. Use cases:
+      simple instruction flows, quick checklists, trivial step sequences. Options: (1) --ephemeral
+      flag on 'workflow start', (2) workflow.ephemeral field in definition, (3) both with override.
+      Ephemeral runs: no file storage, no shadow commits, not shown in 'workflow runs', state only
+      in session context or just sequential display. Reduces noise for simple flows."
+    created_at: 2026-01-21T00:31:48.669Z
+    tags:
+      - workflow
+      - dx
+    added_by: "@claude"
