@@ -13914,6 +13914,7 @@
         meta.test.ts, shadow.test.ts, and others. Extract to tests/helpers.ts.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBPQANQR1NMWZ72QW6KX579
   slugs:
     - fix-log-empty-repo
