@@ -1234,3 +1234,8 @@ requirements:
     created: 2026-01-21T14:27:55.982Z
     description: Allow clearing all dependencies from a task via the task set command. Currently
       --depends-on can only set dependencies to new values, not clear them to an empty list.
+    acceptance_criteria:
+      - id: ac-1
+        given: a task has dependencies
+        when: kspec task set @ref --clear-deps is executed
+        then: depends_on is set to empty array, task note added, shadow committed
