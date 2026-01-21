@@ -2068,4 +2068,30 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFR8HXWQ2TS9R6TGDCY90R0
+    type: success
+    content: >-
+      Iteration 8: Successfully implemented @01KFC3AR (--description flag for task add) from start
+      to PR creation. Pattern that worked well:
+
+      1. Read spec to understand all ACs
+
+      2. Check existing schema (description field already existed)
+
+      3. Add CLI option and wire to TaskInput
+
+      4. Write comprehensive tests FIRST with AC annotations
+
+      5. Fix shell escaping issues in tests (not implementation bugs)
+
+      6. All 792 tests pass on first implementation try
+
+      7. Created PR with full context
+
+
+      Total time: ~15 minutes for feature + tests + PR. Clean handoff to next iteration.
+    created_at: 2026-01-21T07:45:46.941Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

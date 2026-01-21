@@ -14257,6 +14257,13 @@
       content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/118. Ready for review and
         merge."
       supersedes: null
+    - _ulid: 01KFFRCSZGRZM36N7DVXVFMJ1S
+      created_at: 2026-01-21T07:48:06.256Z
+      author: "@claude"
+      content: "Fixed CI test failure: The 'shadow branch when main is empty' test was failing in CI
+        because git user.email and user.name were not configured. Added git config commands to match
+        pattern used in other tests. Pushed fix to PR #118."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
