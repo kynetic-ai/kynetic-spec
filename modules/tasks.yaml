@@ -1186,3 +1186,7 @@ requirements:
         given: description provided
         when: kspec task add --title X --description 'Details...' executed
         then: task created with description field populated
+      - id: ac-2
+        given: no description provided
+        when: kspec task add --title X executed
+        then: task created without description (existing behavior)
