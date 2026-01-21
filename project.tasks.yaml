@@ -13325,6 +13325,7 @@
            - Auto-repair or fail-fast with clear instructions
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBD9N2QAYNCHWVHCBY2KYT6
   slugs: []
   title: Add CI check for unresolved PR review comments before merge
