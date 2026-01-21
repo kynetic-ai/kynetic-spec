@@ -1150,3 +1150,7 @@ requirements:
         given: multiple refs provided
         when: kspec task set --refs @a @b @c --priority 1 executed
         then: all tasks updated with same field values
+      - id: ac-2
+        given: setting multiple fields
+        when: kspec task set --refs @a @b --priority 2 --tag urgent executed
+        then: all specified fields updated
