@@ -14075,6 +14075,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-01-19T17:10:00.443Z
+  started_at: 2026-01-21T08:40:28.896Z
   notes:
     - _ulid: 01KFBKRSK4KF28MBKZ5NYKYZ30
       created_at: 2026-01-19T17:10:18.468Z
@@ -14092,9 +14093,73 @@
         - Reject --status flag entirely in task set (both single and batch mode)
         - Single shadow commit for all changes
       supersedes: null
+    - _ulid: 01KFFVE3ZAEC7HYC785QF7GP4C
+      created_at: 2026-01-21T08:41:14.986Z
+      author: "@claude"
+      content: >-
+        Implementation research - iteration 14:
+
+
+        **Current state:**
+
+        - task set command: lines 299-473 in src/cli/commands/task.ts
+
+        - Existing TODO at line 300 mentions @multi-ref-batch
+
+        - Single-ref mode only (positional <ref> argument)
+
+        - Validates all field changes before saving
+
+        - Does NOT currently allow status changes via task set
+
+
+        **Batch pattern (from batch.ts):**
+
+        - executeBatchOperation() handles --refs flag pattern
+
+        - Supports partial failures (some refs succeed, some fail)
+
+        - Returns BatchResult with summary and per-ref results
+
+        - formatBatchOutput() handles both JSON and human output
+
+        - Sets exit codes correctly (0 if all succeed, 1 if any fail)
+
+
+        **Implementation plan:**
+
+        1. Add --refs option to task set command definition (line ~302)
+
+        2. Add mutual exclusion check (positional ref XOR --refs)
+
+        3. Extract current logic into setTaskFields() helper function (lines 343-459)
+
+        4. Call executeBatchOperation() when --refs provided, passing setTaskFields as
+        executeOperation
+
+        5. Add explicit status rejection check at top of setTaskFields (AC-3)
+
+        6. Add 'no changes' warning that doesn't exit (AC-4)
+
+        7. Keep validation errors per-ref (AC-5)
+
+        8. Write E2E tests for all 5 direct ACs + 8 inherited trait ACs
+
+
+        **AC-3 note:** Currently no --status option exists in task set. Need to ADD it but
+        immediately reject it with error message pointing to state transition commands.
+
+
+        **Next steps:**
+
+        - Implement the changes
+
+        - Write comprehensive tests
+
+        - Test manually before submitting
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T08:40:28.896Z
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
   slugs:
     - ac-delete-confirm
