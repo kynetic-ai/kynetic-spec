@@ -13291,6 +13291,36 @@
         - Auto-note format: Reset from {status} to pending (append cancel_reason if present)
         - No batch support initially (can add later if needed)
       supersedes: null
+    - _ulid: 01KFFM5RN0S15ND9YXXD6J024F
+      created_at: 2026-01-21T06:34:21.216Z
+      author: "@claude"
+      content: >-
+        Implemented kspec task reset command with full AC coverage:
+
+
+        - AC-1: Resets tasks from any status to pending, clears completion-related fields
+        (completed_at, started_at, closed_reason, blocked_by)
+
+        - AC-2: Returns validation error if task is already pending
+
+        - AC-3: Creates shadow commit with 'task-reset' message
+
+        - AC-4: Auto-adds note documenting the reset with previous status (includes cancel reason if
+        applicable)
+
+        - AC-5: Does not affect dependent tasks (dependency checking happens on start, not reset)
+
+        - AC-6: JSON output includes previous_status, new_status, and cleared_fields array
+
+
+        Implementation follows existing patterns from task.ts (cancel, complete, block commands).
+
+        Added comprehensive test suite with 15 tests covering all ACs plus trait-inherited ACs
+        (json-output, semantic-exit-codes, error-guidance).
+
+
+        All 783 tests pass. Command tested manually and works correctly.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBD5P8JBW3BW8JV3WJ0RHPS
