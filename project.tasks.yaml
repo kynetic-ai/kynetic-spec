@@ -19787,4 +19787,11 @@
         --depends-on. Also fixed JSON output for no-changes case. All 845 tests pass including 4 new
         tests."
       supersedes: null
+    - _ulid: 01KFGG3BS5WJNFR12F5AYYGB1P
+      created_at: 2026-01-21T14:42:22.631Z
+      author: "@claude"
+      content: "Added traits @trait-json-output and @trait-multi-ref-batch to spec. Added 3 additional
+        tests covering trait ACs for JSON mode and batch refs mode. Total: 7 tests, 848 tests
+        passing."
+      supersedes: null
   todos: []
