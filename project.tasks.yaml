@@ -14664,6 +14664,7 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:18:51.531Z
+  started_at: 2026-01-21T09:52:39.532Z
   notes:
     - _ulid: 01KFBM8MSP8EXGTW0KCGGHC6S7
       created_at: 2026-01-19T17:18:57.846Z
@@ -14671,9 +14672,16 @@
       content: Local shortUlid() at src/cli/commands/inbox.ts:51-53 duplicates ULID shortening logic.
         Consider using ReferenceIndex methods instead.
       supersedes: null
+    - _ulid: 01KFFZQP36H9R9DC57PB58H2P1
+      created_at: 2026-01-21T09:56:22.758Z
+      author: "@claude"
+      content: Removed local shortUlid() helper at line 41-43. Replaced all usages with direct .slice(0,
+        8) calls, consistent with how session.ts and other commands handle items not in
+        ReferenceIndex. Since inbox items lack slugs and are ephemeral, they don't benefit from
+        ReferenceIndex's smart unique-prefix computation. All 841 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T09:52:39.532Z
 - _ulid: 01KFBMAE30DXK93EJPVJ2PKJJH
   slugs:
     - clarify-test-names
