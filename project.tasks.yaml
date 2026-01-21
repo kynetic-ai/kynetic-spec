@@ -13651,7 +13651,7 @@
     - item-delete-child-check
   title: Add child item check before item deletion
   type: task
-  spec_ref: null
+  spec_ref: "@spec-item-delete-children"
   meta_ref: null
   status: pending
   blocked_by: []
