@@ -1135,7 +1135,7 @@ requirements:
         then: "@a completes, @b fails with guidance error, exit code 1"
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFFG78570JEVEXN6QF1B23Q8
     slugs:
       - spec-task-set-batch
