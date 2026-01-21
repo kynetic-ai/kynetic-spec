@@ -530,3 +530,14 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFH764ACCCT0ABX1G3493VCS
+    text: "Expand kspec search to cover inbox and meta (observations, agents, workflows, conventions).
+      Currently only searches items and tasks. Should support --scope flag or search all by default.
+      Related: need pattern for cross-feature requirements - when new entity type added, features
+      like search should automatically need to support it."
+    created_at: 2026-01-21T21:25:50.541Z
+    tags:
+      - search
+      - cli
+      - design
+    added_by: "@claude"
