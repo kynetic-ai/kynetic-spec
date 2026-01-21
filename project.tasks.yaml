@@ -1539,11 +1539,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2241,6 +2243,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2356,6 +2359,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16056,6 +16060,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17838,6 +17843,7 @@
     - yaml
   vcs_refs: []
   created_at: 2026-01-21T00:48:37.137Z
+  started_at: 2026-01-21T02:18:37.385Z
   notes:
     - _ulid: 01KFF0D8CJ9JZM3X5KV9V7JQ2Z
       created_at: 2026-01-21T00:48:55.186Z
@@ -18136,5 +18142,40 @@
         This analysis was done 2026-01-20. All findings are based on the state at commit aeecd57 and
         earlier.
       supersedes: null
+    - _ulid: 01KFF5N7QQ7HMCKD0JE95WMG0Z
+      created_at: 2026-01-21T02:20:39.544Z
+      author: "@claude"
+      content: >-
+        ## Session: Options Analysis
+
+
+        Investigated the bug and presented 4 fix options to user:
+
+
+        **Option A - Content Trimming:** Trim strings in createNote() before saving. Simple but
+        requires cleanup.
+
+
+        **Option B - Post-Process Output:** Filter whitespace-only lines after YAML.stringify().
+        More robust.
+
+
+        **Option C - Hybrid (Recommended):** Both A + B as belt-and-suspenders approach.
+
+
+        **Option D - Library Options:** Investigate yaml library settings for block scalar handling.
+
+
+        **Key findings from exploration:**
+
+        - Root cause: yaml library adds blank line before whitespace-only lines in block scalars on
+        each stringify
+
+        - Affected functions: writeYamlFilePreserveFormat(), saveTask(), createNote()
+
+        - File: src/parser/yaml.ts lines 71-77, 104-118, 486-557, 696
+
+
+        **Awaiting user decision on which approach to implement.**
+      supersedes: null
   todos: []
-  started_at: 2026-01-21T02:18:37.385Z
