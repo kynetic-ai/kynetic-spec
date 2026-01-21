@@ -2768,3 +2768,8 @@ requirements:
     notes: []
     created: 2026-01-21T05:26:10.467Z
     description: Handle uninitialized git repos (no commits yet) gracefully instead of showing raw git error.
+    acceptance_criteria:
+      - id: ac-1
+        given: repo has no commits (fresh init)
+        when: kspec log executed
+        then: "shows info message: No commits in repository yet"
