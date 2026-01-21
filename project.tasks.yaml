@@ -13540,6 +13540,7 @@
         version has week-level formatting. Remove local, use utils.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBKK2E61MHW5PAERRPD9GV4
   slugs:
     - audit-spec-statuses
