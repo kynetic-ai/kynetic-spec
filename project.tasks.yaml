@@ -20137,4 +20137,43 @@
 
         This could be a follow-up enhancement - initial implementation can use individual commands.
       supersedes: null
+    - _ulid: 01KFH4GH40ZCZJJ9R27A7MRYTC
+      created_at: 2026-01-21T20:39:05.600Z
+      author: "@claude"
+      content: |-
+        ## Usage Example
+
+        Applying to a bootstrap spec:
+
+        ```yaml
+        - _ulid: 01K...
+          slugs:
+            - core
+          title: 'Core Primitives'
+          type: module
+          status: implemented
+          uses:
+            - '@trait-retrospective'
+          verified_at: '2025-01-15T00:00:00Z'
+          verified_by: '@claude'
+          description: 'ULID generation, slug management, reference resolution'
+        ```
+
+        ## Migration Plan for kspec's Own Specs
+
+        After implementation:
+
+        1. Create the @trait-retrospective trait definition
+        2. Identify all bootstrap/retrospective specs (currently ~127 with status mismatches)
+        3. Apply trait and verification metadata to each
+        4. Re-run validation to confirm warnings resolved
+
+        Candidates for @trait-retrospective in kspec:
+        - All specs in modules/core.yaml (Core Primitives, ULID, Slugs, etc.)
+        - All specs in modules/schema.yaml (Item types, Status lifecycle, etc.)
+        - All specs in modules/tasks.yaml (Task system, States, etc.)
+        - All specs in modules/cli.yaml (CLI commands implemented during bootstrap)
+
+        This is a one-time migration for kspec itself, demonstrating the pattern for other adopters.
+      supersedes: null
   todos: []
