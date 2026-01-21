@@ -14193,6 +14193,35 @@
 
         - Test manually before submitting
       supersedes: null
+    - _ulid: 01KFFVFRBYMEWB2M9N9JYPGED1
+      created_at: 2026-01-21T08:42:08.639Z
+      author: "@claude"
+      content: |-
+        Session checkpoint - Iteration 14:
+
+        **Status:** Research complete, ready to implement in next iteration.
+
+        **Implementation approach:**
+        1. Add --refs option to command definition (line ~302 in src/cli/commands/task.ts)
+        2. Add mutual exclusion check (positional <ref> XOR --refs flag)
+        3. Extract current single-ref logic (lines 343-459) into setTaskFields() helper
+        4. Use executeBatchOperation() from src/cli/batch.ts for --refs mode
+        5. Add explicit --status option that always errors (AC-3)
+        6. Change 'no changes' from early return to warning (AC-4)
+        7. Keep validation errors per-ref (AC-5 - already works with batch pattern)
+
+        **Test requirements:**
+        - 5 direct ACs from spec
+        - 8 inherited trait ACs from @trait-multi-ref-batch
+        - All tests should be E2E with // AC: annotations
+        - Use temp directories, not kspec repo
+
+        **Files to modify:**
+        - src/cli/commands/task.ts (task set command)
+        - tests/task-set.test.ts (new file or add to existing task tests)
+
+        **Next session:** Implement and test.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
