@@ -19779,4 +19779,12 @@
         - ac-3: Given --clear-deps and --depends-on are both provided, when command is executed,
         then error indicating flags are mutually exclusive
       supersedes: null
+    - _ulid: 01KFGFPB7EPXT08RP4NYQBG351
+      created_at: 2026-01-21T14:35:16.079Z
+      author: "@claude"
+      content: "Implemented --clear-deps flag for task set command. Added 3 ACs: (1) clears dependencies
+        and adds note, (2) no-op when no dependencies exist, (3) mutual exclusivity with
+        --depends-on. Also fixed JSON output for no-changes case. All 845 tests pass including 4 new
+        tests."
+      supersedes: null
   todos: []
