@@ -468,3 +468,13 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFGRV8PQ7F14YYGEJZEXZ2P5
+    text: Validation warning for manual_only parent with automation-eligible children that depend on it
+      - Catches modeling errors where children are blocked by a parent that will never be worked by
+      automation
+    created_at: 2026-01-21T17:15:14.519Z
+    tags:
+      - reflection
+      - validation
+      - workflow
+    added_by: "@claude"
