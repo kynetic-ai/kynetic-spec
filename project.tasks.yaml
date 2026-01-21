@@ -13839,8 +13839,14 @@
     - sessions
   vcs_refs: []
   created_at: 2026-01-19T17:37:54.924Z
-  notes: []
+  notes:
+    - _ulid: 01KFFHED2QZAKGGPBS5N4DA7SW
+      created_at: 2026-01-21T05:46:38.551Z
+      author: "@human"
+      content: "Automation status set to manual_only: Design/spec task, not implementation"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
   slugs: []
   title: Spec out pending_review task state
