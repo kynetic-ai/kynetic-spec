@@ -15875,6 +15875,26 @@
 
         Schema already supports description field (task.ts:58, 116), so no schema changes needed.
       supersedes: null
+    - _ulid: 01KFFR6RAKNTVYF7GY58GKR070
+      created_at: 2026-01-21T07:44:47.955Z
+      author: "@claude"
+      content: |-
+        Implementation complete:
+
+        ✅ Added --description flag to task add command (src/cli/commands/task.ts:203)
+        ✅ Handled empty/whitespace-only descriptions (AC-6) - omitted from TaskInput
+        ✅ Comprehensive test coverage (tests/task-add-description.test.ts):
+           - AC-1: Basic description flag ✅
+           - AC-2: No description (existing behavior) ✅
+           - AC-3: Multiline descriptions ✅
+           - AC-4: Special character escaping ✅
+           - AC-5: JSON output includes description ✅
+           - AC-6: Empty description treated as omitted ✅
+           - Plus bonus test for whitespace-only
+           - Plus inherited trait test for JSON output validation
+
+        All 792 tests pass including 8 new tests for this feature.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFC4PJ16QG1X7NT22FKCKHQ8
