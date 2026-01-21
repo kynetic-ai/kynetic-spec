@@ -13698,6 +13698,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-19T16:46:04.659Z
+  started_at: 2026-01-21T07:12:03.213Z
   notes:
     - _ulid: 01KFBJCMV538CDGZN0P8D9ZS75
       created_at: 2026-01-19T16:46:11.814Z
@@ -13705,9 +13706,16 @@
       content: tests/meta.test.ts:386 is skipped due to 'subtle issue with temp fixture setup'. Needs AC
         coverage for @workflow-definitions ac-workflow-3.
       supersedes: null
+    - _ulid: 01KFFPEG0FBGYFX42DQ4422141
+      created_at: 2026-01-21T07:14:04.431Z
+      author: "@claude"
+      content: "Fixed skipped test by unskipping it - test now passes. The 'subtle issue with temp fixture
+        setup' appears to have been resolved by subsequent validation infrastructure improvements.
+        Test validates AC-3 for @workflow-definitions: meta_ref validation rejects invalid workflow
+        references."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T07:12:03.213Z
 - _ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
   slugs:
     - dedupe-format-relative-time
