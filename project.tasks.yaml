@@ -13770,6 +13770,7 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:07:10.917Z
+  started_at: 2026-01-21T08:03:53.875Z
   notes:
     - _ulid: 01KFBKKAEHM7D8HFN4X93EJQC8
       created_at: 2026-01-19T17:07:19.122Z
@@ -13789,9 +13790,38 @@
       author: "@human"
       content: "Automation status set to manual_only: Manual audit task - reviewing specs vs implementation"
       supersedes: null
+    - _ulid: 01KFFSCTK6D0TZ8ZW98SX0RDEG
+      created_at: 2026-01-21T08:05:35.462Z
+      author: "@claude"
+      content: >-
+        Initial audit findings:
+
+
+        ## Implementation Status Mismatches
+
+
+        1. **ULID Shortening** (@spec-ulid-shortening) - marked not_started but IS implemented
+           - Implementation in src/parser/refs.ts with ulid-prefix matching
+           - Used throughout CLI for short references
+
+        2. **Cascade Status Updates** (@spec-cascade-status) - marked in_progress but IS implemented
+           - Implementation in src/cli/commands/item.ts handleStatusCascade()
+           - Prompts user when setting status on parent items
+
+        3. **YAML Conventions** (@spec-yaml-conventions) - marked not_started but IS implemented
+           - Uses 'yaml' v2.8.2 which defaults to YAML 1.2
+           - Handles ambiguous strings correctly by default
+
+        4. **blocks Relationship** (@spec-blocks-relationship) - marked not_started and NOT
+        implemented
+           - Correct status, no implementation found
+
+        5. **Auto-Adaptive Structure** (@spec-auto-adaptive-structure) - marked not_started and NOT
+        implemented  
+           - Correct status, no implementation found
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-01-21T08:03:53.875Z
 - _ulid: 01KFBKR7ZV58GWPSX4FSACHRF2
   slugs:
     - task-set-batch
