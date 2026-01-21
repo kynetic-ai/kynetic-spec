@@ -1167,3 +1167,16 @@ requirements:
         given: partial validation failure
         when: --refs @a @b where @a has invalid spec-ref target executed
         then: "@b updated, @a fails with validation error, exit code 1"
+  - _ulid: 01KFFGAPXJNAGKWFS8B669PPBP
+    slugs:
+      - spec-task-add-description
+    title: Task Add Description Flag
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T05:27:08.979Z
