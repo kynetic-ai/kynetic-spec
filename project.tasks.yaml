@@ -14892,7 +14892,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14911,6 +14911,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T10:02:39.378Z
 - _ulid: 01KFBP98HFVG1WE75DKPYTXSK1
   slugs:
     - extract-test-helpers
