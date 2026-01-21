@@ -13656,6 +13656,16 @@
       author: "@claude"
       content: TODO at src/cli/commands/item.ts:1163
       supersedes: null
+    - _ulid: 01KFFGDYMAS5C7AZ261J4KMA18
+      created_at: 2026-01-21T05:28:55.179Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+        - File: src/cli/commands/item.ts - modify AC remove handler (line ~1180)
+        - Existing TODO at line 1198: Add confirmation prompt when !options.force
+        - Use readline pattern from task delete
+        - Check process.stdin.isTTY for interactive detection
+      supersedes: null
   todos: []
 - _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
   slugs:
