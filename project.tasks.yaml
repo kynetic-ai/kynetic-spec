@@ -19967,7 +19967,14 @@
         Future consideration captured in inbox @01KFH3HM: Could add auto_generated metadata flag if
         filtering becomes important.
       supersedes: null
+    - _ulid: 01KFHFG1BHH978HV0MCDSPA4YS
+      created_at: 2026-01-21T23:51:03.793Z
+      author: "@human"
+      content: "Automation status set to needs_review: Small bug fix - well-scoped, may not need formal
+        spec"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KFH4F3854392DJM0R17T79M2
   slugs: []
   title: Implement @trait-retrospective for specs without task tracking
@@ -20035,7 +20042,6 @@
             - Bootstrap specs (kspec tracking itself)
             - Legacy adoption (adding kspec to existing codebase)
             - Reverse-engineered specs from existing code
-            
             Specs with this trait:
             - Do not require linked implementation tasks
             - Must have verified_at and verified_by fields
