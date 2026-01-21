@@ -13995,6 +13995,16 @@
         Currently shows raw git error: 'fatal: your current branch main does not have any commits
         yet'. Should show friendly message."
       supersedes: null
+    - _ulid: 01KFFGABCTTFYCTCG10NMAR2XC
+      created_at: 2026-01-21T05:26:57.178Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+        - File: src/cli/commands/log.ts
+        - Detect 'does not have any commits yet' or 'bad revision' in git stderr
+        - Test file: tests/integration.test.ts:1462 (currently failing)
+        - Check both main and shadow branches before reporting 'no commits'
+      supersedes: null
   todos: []
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
   slugs:
