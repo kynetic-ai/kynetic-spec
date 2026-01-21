@@ -14257,6 +14257,36 @@
 
         - Use temp directories only
       supersedes: null
+    - _ulid: 01KFFW9201FS173Q66B6RB0M56
+      created_at: 2026-01-21T08:55:57.697Z
+      author: "@claude"
+      content: |-
+        Implementation complete - iteration 15.
+
+        **What was done:**
+        - Added --refs option to task set command for batch operations
+        - Added --status option that always rejects with usage error (AC-3)
+        - Extracted setTaskFields() helper function for both single and batch modes
+        - Implemented batch mode using executeBatchOperation() from batch.ts
+        - Added deduplication of refs (AC trait ac-8)
+        - Changed 'no changes' from early return to warning (AC-4)
+        - Validation errors are per-ref in batch mode (AC-5)
+
+        **Test coverage:**
+        - 15 E2E tests covering all ACs:
+          - 5 direct ACs from @spec-task-set-batch
+          - 8 inherited trait ACs from @trait-multi-ref-batch
+          - 2 additional tests for backward compatibility and edge cases
+        - All tests have // AC: annotations linking to acceptance criteria
+        - Tests run in temp directories (not kspec repo)
+        - All 823 tests pass
+
+        **Files modified:**
+        - src/cli/commands/task.ts (task set command implementation)
+        - tests/task-set-batch.test.ts (new test file with 15 tests)
+
+        Ready to submit.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
