@@ -13668,6 +13668,17 @@
       author: "@claude"
       content: TODO at src/cli/commands/item.ts:656
       supersedes: null
+    - _ulid: 01KFFG6WXWAQ5YHG2K9B6VYG4M
+      created_at: 2026-01-21T05:25:04.061Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+        - File: src/cli/commands/item.ts - modify delete handler (line ~661)
+        - Add --cascade flag
+        - Implement findDescendants(itemUlid) helper in parser (traverse nested items in YAML)
+        - Confirmation shows total items to be deleted
+        - Trait implementor check uses existing implements relationship tracking
+      supersedes: null
   todos: []
 - _ulid: 01KFBKRGDJJW58T5YASXDMM394
   slugs:
