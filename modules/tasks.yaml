@@ -1069,3 +1069,7 @@ requirements:
         given: task A is completed, task B depends on A
         when: kspec task reset @task-a executed
         then: A becomes pending; B unaffected (dependency check happens on B's start)
+      - id: ac-6
+        given: JSON mode
+        when: kspec task reset @ref --json executed
+        then: output includes previous_status, new_status, cleared_fields array
