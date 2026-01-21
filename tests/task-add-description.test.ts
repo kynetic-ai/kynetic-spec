@@ -47,10 +47,9 @@ describe('Integration: task add --description', () => {
 
   // AC: @spec-task-add-description ac-3
   it('should preserve multiline descriptions', () => {
-    // Use $'...' syntax to interpret \n as newlines in bash
-    const multilineDesc = 'Line 1\nLine 2\nLine 3';
+    // Use printf to properly handle newlines in bash
     const output = kspec(
-      `task add --title "Multiline Task" --description $'${multilineDesc}' --slug multiline-test`,
+      `task add --title "Multiline Task" --description "$(printf 'Line 1\\nLine 2\\nLine 3')" --slug multiline-test`,
       tempDir
     );
     expect(output).toContain('Created task');
