@@ -13714,6 +13714,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T15:24:42.787Z
+  started_at: 2026-01-21T08:38:37.263Z
   notes:
     - _ulid: 01KFBDQN3WXXNKVDPF2GCVME5M
       created_at: 2026-01-19T15:24:49.661Z
@@ -13734,9 +13735,60 @@
 
         Could be part of --strict mode or separate --drift flag.
       supersedes: null
+    - _ulid: 01KFFVB1DFST5GX8446N4PZ3V9
+      created_at: 2026-01-21T08:39:34.063Z
+      author: "@claude"
+      content: >-
+        Research findings:
+
+
+        **Current validation architecture:**
+
+        - validate.ts: Main validation command with multiple check types (schema, refs, orphans,
+        alignment, completeness, staleness, conventions)
+
+        - Can run checks selectively via flags: --schema, --refs, --orphans, --alignment,
+        --completeness, --conventions, --staleness
+
+        - Validation results have warning types: CompletenessWarning, AlignmentWarning,
+        StalenessWarning
+
+
+        **Schema types examined:**
+
+        - SpecItem: Has fields like status.implementation, acceptance_criteria, depends_on,
+        implements, relates_to, tests, traits
+
+        - Task: Has spec_ref, meta_ref, depends_on, context, blocked_by fields
+
+        - Task.spec_ref can reference a SpecItem but doesn't copy its data (avoids duplication)
+
+
+        **Proposed drift detection checks:**
+
+        1. AC field references: Check if AC given/when/then text references fields that don't exist
+        in schema types
+
+        2. Implementation status sync: Warn when task references spec_ref but the spec's
+        status.implementation differs from what task notes/status suggests
+
+        3. Fixture conflicts: Detect when test fixtures use spec_refs that are already in use by
+        real specs
+
+
+        **Implementation strategy:**
+
+        - Add new drift detection function similar to checkStaleness()
+
+        - Add --drift flag to validation command
+
+        - Return DriftWarning[] type similar to other warning types
+
+        - Check AC text for field references (e.g., 'spec_ref.children' when SpecItem has no
+        children field)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T08:38:37.263Z
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
   slugs: []
   title: Improve Result type enforcement and type guards
