@@ -15026,7 +15026,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -15068,6 +15068,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-21T10:28:24.176Z
+  closed_reason: Already implemented in commit 971caec. Verified tests/helpers/cli.ts contains all
+    shared helpers, no duplicates remain, and all 841 tests pass.
 - _ulid: 01KFBPQANQR1NMWZ72QW6KX579
   slugs:
     - fix-log-empty-repo
