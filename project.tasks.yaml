@@ -20077,4 +20077,64 @@
           Status mismatches: 5             # Only real issues
         ```
       supersedes: null
+    - _ulid: 01KFH4G5HHC1QSWEQMMWY5KRJM
+      created_at: 2026-01-21T20:38:53.745Z
+      author: "@claude"
+      content: >-
+        ## CLI Support
+
+
+        ### New flags for kspec item set
+
+
+        ```bash
+
+        kspec item set <ref> --verified-by <agent-ref> --verified-at <iso-timestamp>
+
+        kspec item set <ref> --verified-by @claude  # verified_at defaults to now
+
+        ```
+
+
+        ### Updated kspec item get output
+
+
+        When viewing a retrospective spec:
+
+        ```
+
+        Core Primitives
+
+        ────────────────────────────────────────
+
+        ULID:       01K...
+
+        Type:       module
+
+        Status:     implemented (retrospective)    # Indicate source
+
+        Verified:   2025-01-15 by @claude          # Show verification info
+
+        Uses:       @trait-retrospective
+
+        ...
+
+        ```
+
+
+        ### Potential bulk command (future/optional)
+
+
+        ```bash
+
+        # Apply trait to all implemented specs without tasks
+
+        kspec item trait add --bulk --filter 'status:implemented AND orphaned:true'
+        @trait-retrospective
+
+        ```
+
+
+        This could be a follow-up enhancement - initial implementation can use individual commands.
+      supersedes: null
   todos: []
