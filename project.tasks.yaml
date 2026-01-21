@@ -18591,16 +18591,21 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: completed
+  status: pending
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
   created_at: 2026-01-21T06:32:17.244Z
-  started_at: 2026-01-21T06:32:21.546Z
-  notes: []
+  started_at: null
+  completed_at: null
+  notes:
+    - _ulid: 01KFFM2GMZWM6DADDZ573G34P9
+      created_at: 2026-01-21T06:32:34.719Z
+      author: "@human"
+      content: Reset from completed to pending
+      supersedes: null
   todos: []
-  completed_at: 2026-01-21T06:32:25.907Z
-  closed_reason: Testing reset command
