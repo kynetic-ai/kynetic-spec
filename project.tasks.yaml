@@ -19803,21 +19803,82 @@
         passing."
       supersedes: null
   todos: []
-- title: Fix hardcoded @human author in CLI auto-generated notes
+- _ulid: 01KFH367CW1HS1CDY9S34SZQMV
+  slugs: []
+  title: Fix hardcoded @human author in CLI auto-generated notes
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - bug
-    - cli
-  _ulid: 01KFH367CW1HS1CDY9S34SZQMV
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - bug
+    - cli
   vcs_refs: []
   created_at: 2026-01-21T20:15:59.385Z
-  notes: []
+  notes:
+    - _ulid: 01KFH36M015Z9PA40KXSQTVHE0
+      created_at: 2026-01-21T20:16:12.290Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        4 locations in src/cli/commands/task.ts hardcode '@human' as the author for auto-generated
+        notes instead of using getAuthor() from parser/yaml.ts:
+
+
+        1. Line 257: task set --clear-deps - 'Dependencies cleared (was: ...)'
+
+        2. Line 293: task set --automation --reason - 'Automation status set to...'  
+
+        3. Line 892: task complete --skip-review - 'Completed with --skip-review: ...'
+
+        4. Line 1184: task reset - 'Reset from X to pending'
+
+
+        This causes validation errors (29 broken @human references) because @human isn't defined as
+        an agent.
+
+
+        ## Root Cause
+
+
+        getAuthor() in yaml.ts properly reads KSPEC_AUTHOR env var, but these CLI commands bypass
+        it.
+
+
+        ## Suggested Fix
+
+
+        Replace hardcoded '@human' with getAuthor() calls in all 4 locations.
+
+
+        ## Design Consideration
+
+
+        Should author support be a trait that enforces consistent usage? Current state:
+
+        - getAuthor() exists but isn't consistently used
+
+        - No validation that author refs resolve to defined agents
+
+        - Easy to accidentally hardcode values
+
+
+        A trait could:
+
+        - Define the author resolution pattern once
+
+        - Ensure all note-creating code paths use it
+
+        - Validate author refs against defined agents/special values
+
+
+        Consider whether @human should be a reserved/built-in author that doesn't require explicit
+        agent definition, or if all authors must be defined.
+      supersedes: null
   todos: []
