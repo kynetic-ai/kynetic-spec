@@ -15157,7 +15157,7 @@
     - task-dynamic-workflow-skills
   title: "Implement: Dynamic Workflow Skills"
   type: task
-  spec_ref: "@dynamic-workflow-skills"
+  spec_ref: null
   derivation: auto
   status: cancelled
   blocked_by: []
