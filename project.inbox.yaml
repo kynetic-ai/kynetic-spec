@@ -305,7 +305,6 @@ inbox:
          - Any existing notes
 
       3. **Guide the eligibility decision** with criteria checklist:
-         
          **Eligible if ALL true:**
          - Has spec_ref with clear acceptance criteria
          - Scope is well-defined and bounded
@@ -313,7 +312,6 @@ inbox:
          - No security-critical changes
          - No irreversible operations without confirmation
          - Implementation path is straightforward
-         
          **Manual_only if ANY true:**
          - Requires creative/architectural decisions
          - Involves user-facing UX judgment
@@ -321,7 +319,6 @@ inbox:
          - Affects billing/payments
          - Requires human approval by design
          - Vague or exploratory scope
-         
          **Needs_review when:**
          - Ralph attempted but got stuck
          - Partial progress, unclear how to continue
@@ -443,4 +440,11 @@ inbox:
     tags:
       - workflow
       - dx
+    added_by: "@claude"
+  - _ulid: 01KFFJVW59XB3CK7C5PYQZDEGN
+    text: "Audit and fix incorrect AC annotations in tests - many tests use old format like '// AC-N:'
+      instead of the convention '// AC: @spec-ref ac-N'. Should sweep through test files and
+      standardize."
+    created_at: 2026-01-21T06:11:28.554Z
+    tags: []
     added_by: "@claude"
