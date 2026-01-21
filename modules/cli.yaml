@@ -2785,3 +2785,7 @@ requirements:
         given: JSON mode, no commits
         when: kspec log --json executed
         then: "returns { commits: [], message: No commits in repository yet }"
+      - id: ac-5
+        given: passthrough args in empty repo
+        when: kspec log -- --stat executed
+        then: shows info message (not raw git error)
