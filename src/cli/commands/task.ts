@@ -934,6 +934,84 @@ export function registerTaskCommands(program: Command): void {
       }
     });
 
+  // kspec task reset <ref>
+  // AC: @spec-task-reset ac-1, ac-2, ac-3, ac-4, ac-5, ac-6
+  task
+    .command('reset <ref>')
+    .description('Reset a task to pending state')
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // AC: @spec-task-reset ac-2 - Error if already pending
+        if (foundTask.status === 'pending') {
+          error('Task is already pending');
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // Track previous status and reason for note (AC-4)
+        const previousStatus = foundTask.status;
+        const hadCancelReason = foundTask.closed_reason && foundTask.status === 'cancelled';
+        const cancelReasonText = hadCancelReason ? ` (was cancelled: ${foundTask.closed_reason})` : '';
+
+        // AC: @spec-task-reset ac-1 - Reset to pending, clear completion-related fields
+        const clearedFields: string[] = [];
+        const updatedTask: Task = {
+          ...foundTask,
+          status: 'pending',
+        };
+
+        // Clear timestamps and reasons based on previous status
+        if (foundTask.completed_at !== undefined && foundTask.completed_at !== null) {
+          updatedTask.completed_at = null;
+          clearedFields.push('completed_at');
+        }
+        if (foundTask.started_at !== undefined && foundTask.started_at !== null) {
+          updatedTask.started_at = null;
+          clearedFields.push('started_at');
+        }
+        if (foundTask.closed_reason !== undefined && foundTask.closed_reason !== null) {
+          updatedTask.closed_reason = null;
+          clearedFields.push('closed_reason');
+        }
+        if (foundTask.blocked_by.length > 0) {
+          updatedTask.blocked_by = [];
+          clearedFields.push('blocked_by');
+        }
+
+        // AC: @spec-task-reset ac-4 - Add note documenting the reset
+        const noteContent = `Reset from ${previousStatus} to pending${cancelReasonText}`;
+        const note = createNote(noteContent, '@human');
+        updatedTask.notes = [...updatedTask.notes, note];
+
+        await saveTask(ctx, updatedTask);
+        // AC: @spec-task-reset ac-3 - Shadow commit with message task-reset
+        await commitIfShadow(ctx.shadow, 'task-reset', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), `from ${previousStatus}`);
+
+        // AC: @spec-task-reset ac-6 - JSON output includes previous_status, new_status, cleared_fields
+        const jsonOutput = {
+          task: updatedTask,
+          previous_status: previousStatus,
+          new_status: 'pending' as const,
+          cleared_fields: clearedFields,
+        };
+
+        output(jsonOutput, () => {
+          success(`Reset task: ${index.shortUlid(updatedTask._ulid)} (${previousStatus} → pending)`, undefined);
+          if (clearedFields.length > 0) {
+            info(`Cleared fields: ${clearedFields.join(', ')}`);
+          }
+        });
+      } catch (err) {
+        error('Failed to reset task', err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
   // kspec task delete <ref> | --refs <refs...>
   // AC: @multi-ref-batch ac-1, ac-2
   task
