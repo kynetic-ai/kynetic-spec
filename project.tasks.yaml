@@ -19746,7 +19746,7 @@
   type: task
   spec_ref: "@spec-task-clear-deps"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
