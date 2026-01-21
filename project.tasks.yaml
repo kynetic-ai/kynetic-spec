@@ -19834,7 +19834,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -20002,6 +20002,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-21T23:59:19.074Z
 - _ulid: 01KFH4F3854392DJM0R17T79M2
   slugs: []
   title: Implement @trait-retrospective for specs without task tracking
