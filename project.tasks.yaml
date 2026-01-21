@@ -18584,33 +18584,3 @@
       supersedes: null
   todos: []
   automation: eligible
-- _ulid: 01KFFM1ZJW5AATNNJMVNZMGGAM
-  slugs:
-    - test-reset-cmd
-  title: Test Reset Command
-  type: task
-  spec_ref: null
-  meta_ref: null
-  status: pending
-  blocked_by: []
-  closed_reason: null
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: 2026-01-21T06:32:17.244Z
-  started_at: null
-  completed_at: null
-  notes:
-    - _ulid: 01KFFM2GMZWM6DADDZ573G34P9
-      created_at: 2026-01-21T06:32:34.719Z
-      author: "@human"
-      content: Reset from completed to pending
-      supersedes: null
-    - _ulid: 01KFFM34790BS858CT0GW02949
-      created_at: 2026-01-21T06:32:54.761Z
-      author: "@human"
-      content: "Reset from cancelled to pending (was cancelled: Cancelled for testing)"
-      supersedes: null
-  todos: []
