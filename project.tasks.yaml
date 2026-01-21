@@ -13427,6 +13427,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T15:17:10.871Z
+  started_at: 2026-01-21T07:06:28.624Z
   notes:
     - _ulid: 01KFBD9WV8G7CSZTKKRM5D6V45
       created_at: 2026-01-19T15:17:18.825Z
@@ -13463,9 +13464,34 @@
 
         Could use GitHub's review thread resolution status or custom comment parsing.
       supersedes: null
+    - _ulid: 01KFFP2G654S94ZEZBWKQ42V0M
+      created_at: 2026-01-21T07:07:31.397Z
+      author: "@claude"
+      content: >-
+        WIP: Designing CI check for unresolved PR review comments.
+
+
+        Current approach:
+
+        1. Create new GitHub Actions workflow (.github/workflows/check-review-comments.yml)
+
+        2. Trigger on PR events: opened, synchronize, ready_for_review, reopened
+
+        3. Also trigger on review events: submitted, dismissed
+
+        4. Use actions/github-script@v7 to check GitHub API for:
+           - CHANGES_REQUESTED reviews that haven't been dismissed
+           - Review comments with action item keywords (TODO, Fix, Must, etc.)
+        5. Fail CI check if unresolved CHANGES_REQUESTED found
+
+        6. Warn (but don't fail) if action item comments found
+
+
+        Encountered stream closed error when trying to write the workflow file - will need to retry
+        in next iteration.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T07:06:28.624Z
 - _ulid: 01KFBDM8ZD201SSV9NEETHADE7
   slugs: []
   title: Audit and fix JSON output consistency across CLI
