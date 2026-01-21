@@ -1156,7 +1156,7 @@ requirements:
         then: JSON error includes children array with refs
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFFGCG6Q91D0TFGAJ3AB5VDK
     slugs:
       - spec-ac-delete-confirmation
