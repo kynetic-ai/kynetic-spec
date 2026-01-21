@@ -14130,7 +14130,7 @@
   type: task
   spec_ref: "@spec-task-set-batch"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -14326,6 +14326,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-21T09:03:50.449Z
+  closed_reason: "Merged in PR #122. All 13 ACs have E2E test coverage with proper AC annotations. All
+    15 tests pass. Implementation uses shared batch infrastructure correctly."
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
   slugs:
     - ac-delete-confirm
