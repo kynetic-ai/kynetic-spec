@@ -15568,7 +15568,7 @@
   slugs: []
   title: Add --description flag to task add command
   type: task
-  spec_ref: null
+  spec_ref: "@spec-task-add-description"
   meta_ref: null
   status: pending
   blocked_by: []
