@@ -1147,7 +1147,7 @@ tasks:
 
       This significantly affects user experience for human-edited files.
     derivation: manual
-    status: in_progress
+    status: pending_review
     blocked_by: []
     closed_reason: null
     depends_on:
