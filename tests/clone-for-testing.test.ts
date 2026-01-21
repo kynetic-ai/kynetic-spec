@@ -225,9 +225,9 @@ describe('Integration: clone-for-testing', () => {
     const dest = path.join(os.tmpdir(), `clone-test-${Date.now()}`);
 
     try {
-      // Clone with --json flag - run from temp dir
+      // Clone with global --json flag (added by kspecJson helper)
       const result = kspecJson<{ path: string; branch: string }>(
-        `clone-for-testing ${dest} ${sourceRepo} --json`,
+        `clone-for-testing ${dest} ${sourceRepo}`,
         tempDir
       );
 
@@ -255,9 +255,9 @@ describe('Integration: clone-for-testing', () => {
     const dest = path.join(os.tmpdir(), `clone-test-${Date.now()}`);
 
     try {
-      // Clone with both --json and --branch flags - run from temp dir
+      // Clone with --branch and global --json flag (added by kspecJson helper)
       const result = kspecJson<{ path: string; branch: string }>(
-        `clone-for-testing ${dest} ${sourceRepo} --branch feature-json --json`,
+        `clone-for-testing ${dest} ${sourceRepo} --branch feature-json`,
         tempDir
       );
 
