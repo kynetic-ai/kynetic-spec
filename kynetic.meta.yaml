@@ -2094,4 +2094,36 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFRD1Q9A8Q1M2YE5VK8R8CD
+    type: friction
+    content: "CI test failures can occur when tests don't configure git user.name/email before running
+      git commit in temp dirs. Pattern to follow: Always add 'git config user.email/user.name'
+      commands after 'git init' in tests that create fresh repos and commit. Found in PR #118 - test
+      passed locally but failed in CI."
+    created_at: 2026-01-21T07:48:14.185Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFRDEN1V6A68Y2RSDFPX84V
+    type: success
+    content: |-
+      Iteration 8 complete - accomplished multiple tasks:
+
+      1. Reviewed PR #118 (log empty repo fix) - comprehensive review passed
+      2. Implemented @01KFC3AR (--description flag) with full AC coverage
+      3. Created PR #119 for --description implementation
+      4. Fixed failing CI test in PR #118 (missing git config)
+      5. Captured observations (success + friction patterns)
+
+      Key patterns:
+      - PR review workflow with subagent worked well
+      - Implementation -> tests -> PR flow is smooth
+      - CI failures often reveal env config issues (git user.name/email)
+      - Test patterns: always configure git after init in temp dirs
+
+      Both PRs now ready for merge once CI completes.
+    created_at: 2026-01-21T07:48:27.426Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
