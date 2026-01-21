@@ -14373,6 +14373,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #124. All 6 ACs have E2E test coverage with proper AC annotations.
+    Implementation adds confirmation prompt for AC deletion without --force flag. All 831 tests
+    pass."
   depends_on: []
   context: []
   priority: 3
@@ -14381,6 +14384,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:10:03.453Z
   started_at: 2026-01-21T09:16:04.175Z
+  completed_at: 2026-01-21T09:26:51.053Z
   notes:
     - _ulid: 01KFBKRVH9NWYB7AJVH92533VQ
       created_at: 2026-01-19T17:10:20.457Z
@@ -14436,10 +14440,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T09:26:51.053Z
-  closed_reason: "Merged in PR #124. All 6 ACs have E2E test coverage with proper AC annotations.
-    Implementation adds confirmation prompt for AC deletion without --force flag. All 831 tests
-    pass."
 - _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
   slugs:
     - item-delete-child-check
@@ -14447,7 +14447,7 @@
   type: task
   spec_ref: "@spec-item-delete-children"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14475,6 +14475,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T09:26:58.884Z
 - _ulid: 01KFBKRGDJJW58T5YASXDMM394
   slugs:
     - ralph-permission-prompt
