@@ -117,6 +117,192 @@ function resolveTaskRefForBatch(
 }
 
 /**
+ * Helper function to update task fields.
+ * Used by both single-ref and batch modes of task set.
+ * AC: @spec-task-set-batch ac-1, ac-2, ac-4, ac-5
+ */
+async function setTaskFields(
+  foundTask: LoadedTask,
+  ctx: any,
+  tasks: LoadedTask[],
+  items: LoadedSpecItem[],
+  allMetaItems: any[],
+  index: ReferenceIndex,
+  options: any
+): Promise<{ success: boolean; message?: string; error?: string; data?: unknown }> {
+  try {
+    // Check slug uniqueness if adding a new slug
+    if (options.slug) {
+      const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
+      if (!slugCheck.ok) {
+        return {
+          success: false,
+          error: `Slug "${slugCheck.slug}" already exists on ${slugCheck.existingUlid}`,
+        };
+      }
+    }
+
+    // Build updated task with only provided options
+    const updatedTask: Task = { ...foundTask };
+    const changes: string[] = [];
+
+    if (options.title) {
+      updatedTask.title = options.title;
+      changes.push('title');
+    }
+
+    if (options.specRef) {
+      // Validate the spec ref exists and is a spec item
+      const specResult = index.resolve(options.specRef);
+      if (!specResult.ok) {
+        return {
+          success: false,
+          error: errors.reference.specRefNotFound(options.specRef),
+        };
+      }
+      // Check it's not a task
+      const isTask = tasks.some(t => t._ulid === specResult.ulid);
+      if (isTask) {
+        return {
+          success: false,
+          error: errors.reference.specRefIsTask(options.specRef),
+        };
+      }
+      updatedTask.spec_ref = options.specRef;
+      changes.push('spec_ref');
+    }
+
+    if (options.metaRef) {
+      // Validate the meta ref exists and is a meta item
+      const metaRefResult = index.resolve(options.metaRef);
+      if (!metaRefResult.ok) {
+        return {
+          success: false,
+          error: errors.reference.metaRefNotFound(options.metaRef),
+        };
+      }
+
+      // Check if the resolved item is a meta item (not a spec item or task)
+      const isTask = tasks.some(t => t._ulid === metaRefResult.ulid);
+      const isSpecItem = items.some(i => i._ulid === metaRefResult.ulid);
+
+      if (isTask || isSpecItem) {
+        return {
+          success: false,
+          error: errors.reference.metaRefPointsToSpec(options.metaRef),
+        };
+      }
+
+      updatedTask.meta_ref = options.metaRef;
+      changes.push('meta_ref');
+    }
+
+    if (options.priority) {
+      const priority = parseInt(options.priority, 10);
+      if (isNaN(priority) || priority < 1 || priority > 5) {
+        return {
+          success: false,
+          error: 'Priority must be between 1 and 5',
+        };
+      }
+      updatedTask.priority = priority;
+      changes.push('priority');
+    }
+
+    if (options.slug) {
+      if (!updatedTask.slugs.includes(options.slug)) {
+        updatedTask.slugs = [...updatedTask.slugs, options.slug];
+        changes.push('slug');
+      }
+    }
+
+    if (options.tag) {
+      const newTags = options.tag.filter((t: string) => !updatedTask.tags.includes(t));
+      if (newTags.length > 0) {
+        updatedTask.tags = [...updatedTask.tags, ...newTags];
+        changes.push('tags');
+      }
+    }
+
+    if (options.dependsOn) {
+      // Validate all dependency refs
+      for (const depRef of options.dependsOn) {
+        const depResult = index.resolve(depRef);
+        if (!depResult.ok) {
+          return {
+            success: false,
+            error: errors.reference.depNotFound(depRef),
+          };
+        }
+      }
+      updatedTask.depends_on = options.dependsOn;
+      changes.push('depends_on');
+    }
+
+    // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
+    // Handle automation status changes
+    // Note: --no-automation sets options.automation to false, so check that first
+    if (options.automation === false) {
+      // --no-automation flag clears the automation status (AC: ac-12)
+      delete updatedTask.automation;
+      changes.push('automation');
+    } else if (options.automation !== undefined) {
+      const validStatuses = ['eligible', 'needs_review', 'manual_only'];
+      if (!validStatuses.includes(options.automation)) {
+        return {
+          success: false,
+          error: `Invalid automation status: ${options.automation}. Must be one of: ${validStatuses.join(', ')}`,
+        };
+      }
+
+      // AC: @task-automation-eligibility ac-18 - require reason for needs_review
+      if (options.automation === 'needs_review' && !options.reason) {
+        return {
+          success: false,
+          error: 'Setting automation to needs_review requires --reason flag explaining why',
+        };
+      }
+
+      updatedTask.automation = options.automation as 'eligible' | 'needs_review' | 'manual_only';
+      changes.push('automation');
+
+      // If reason provided, add a note documenting the change
+      if (options.reason) {
+        const note = createNote(
+          `Automation status set to ${options.automation}: ${options.reason}`,
+          '@human'
+        );
+        updatedTask.notes = [...updatedTask.notes, note];
+        changes.push('note');
+      }
+    }
+
+    // AC: @spec-task-set-batch ac-4 - Warn on no changes, don't fail
+    if (changes.length === 0) {
+      return {
+        success: true,
+        message: 'No changes specified',
+        data: { task: updatedTask },
+      };
+    }
+
+    await saveTask(ctx, updatedTask);
+    await commitIfShadow(ctx.shadow, 'task-set', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), changes.join(', '));
+
+    return {
+      success: true,
+      message: `Updated task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`,
+      data: { task: updatedTask },
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+/**
  * Register the 'task' command group (singular - operations on individual tasks)
  */
 export function registerTaskCommands(program: Command): void {
@@ -297,10 +483,10 @@ export function registerTaskCommands(program: Command): void {
     });
 
   // kspec task set <ref>
-  // TODO: Add batch support with --refs flag (see @multi-ref-batch)
   task
-    .command('set <ref>')
+    .command('set [ref]')
     .description('Update task fields')
+    .option('--refs <refs...>', 'Update multiple tasks (AC: @spec-task-set-batch ac-1)')
     .option('--title <title>', 'Update task title')
     .option('--spec-ref <ref>', 'Link to spec item')
     .option('--meta-ref <ref>', 'Link to meta item (workflow, agent, or convention)')
@@ -311,8 +497,15 @@ export function registerTaskCommands(program: Command): void {
     .option('--automation <status>', 'Set automation eligibility (eligible, needs_review, manual_only)')
     .option('--no-automation', 'Clear automation status (return to unassessed)')
     .option('--reason <reason>', 'Reason for status change (required when setting needs_review)')
-    .action(async (ref: string, options) => {
+    .option('--status <status>', 'Reject with error - use state transition commands instead')
+    .action(async (ref: string | undefined, options) => {
       try {
+        // AC: @spec-task-set-batch ac-3 - Reject --status flag
+        if (options.status !== undefined) {
+          error('Use state transition commands (start, complete, block, etc.) to change status');
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
@@ -328,144 +521,54 @@ export function registerTaskCommands(program: Command): void {
         ];
 
         const index = new ReferenceIndex(tasks, items, allMetaItems);
-        const foundTask = resolveTaskRef(ref, tasks, index);
 
-        // Check slug uniqueness if adding a new slug
-        if (options.slug) {
-          const slugCheck = checkSlugUniqueness(index, [options.slug], foundTask._ulid);
-          if (!slugCheck.ok) {
-            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
-            process.exit(EXIT_CODES.CONFLICT);
-          }
-        }
+        // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
+        const refsFlag = options.refs ? [...new Set(options.refs as string[])] : undefined;
 
-        // Build updated task with only provided options
-        const updatedTask: Task = { ...foundTask };
-        const changes: string[] = [];
+        // Batch mode or single mode?
+        if (refsFlag && refsFlag.length > 0) {
+          // Batch mode - AC: @spec-task-set-batch ac-1, ac-2, ac-5
+          const result = await executeBatchOperation({
+            positionalRef: ref,
+            refsFlag,
+            context: { ctx, tasks, items, allMetaItems, index, options },
+            items: tasks,
+            index,
+            resolveRef: (refStr: string, taskList: LoadedTask[], idx: ReferenceIndex) => {
+              const result = resolveTaskRefForBatch(refStr, taskList, idx);
+              return { item: result.task, error: result.error };
+            },
+            executeOperation: async (task: LoadedTask, context) => {
+              return await setTaskFields(task, context.ctx, context.tasks, context.items, context.allMetaItems, context.index, context.options);
+            },
+            getUlid: (task: LoadedTask) => task._ulid,
+          });
 
-        if (options.title) {
-          updatedTask.title = options.title;
-          changes.push('title');
-        }
-
-        if (options.specRef) {
-          // Validate the spec ref exists and is a spec item
-          const specResult = index.resolve(options.specRef);
-          if (!specResult.ok) {
-            error(errors.reference.specRefNotFound(options.specRef));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-          // Check it's not a task
-          const isTask = tasks.some(t => t._ulid === specResult.ulid);
-          if (isTask) {
-            error(errors.reference.specRefIsTask(options.specRef));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-          updatedTask.spec_ref = options.specRef;
-          changes.push('spec_ref');
-        }
-
-        if (options.metaRef) {
-          // Validate the meta ref exists and is a meta item
-          const metaRefResult = index.resolve(options.metaRef);
-          if (!metaRefResult.ok) {
-            error(errors.reference.metaRefNotFound(options.metaRef));
-            process.exit(EXIT_CODES.NOT_FOUND);
+          formatBatchOutput(result, 'Set');
+        } else {
+          // Single mode - existing behavior
+          if (!ref) {
+            error('Either provide a positional ref or use --refs flag');
+            process.exit(EXIT_CODES.USAGE_ERROR);
           }
 
-          // Check if the resolved item is a meta item (not a spec item or task)
-          const isTask = tasks.some(t => t._ulid === metaRefResult.ulid);
-          const isSpecItem = items.some(i => i._ulid === metaRefResult.ulid);
+          const foundTask = resolveTaskRef(ref, tasks, index);
+          const result = await setTaskFields(foundTask, ctx, tasks, items, allMetaItems, index, options);
 
-          if (isTask || isSpecItem) {
-            error(errors.reference.metaRefPointsToSpec(options.metaRef));
-            process.exit(EXIT_CODES.NOT_FOUND);
+          if (!result.success) {
+            error(result.error || 'Failed to update task');
+            process.exit(EXIT_CODES.ERROR);
           }
 
-          updatedTask.meta_ref = options.metaRef;
-          changes.push('meta_ref');
-        }
-
-        if (options.priority) {
-          const priority = parseInt(options.priority, 10);
-          if (isNaN(priority) || priority < 1 || priority > 5) {
-            error(errors.validation.priorityOutOfRange);
-            process.exit(EXIT_CODES.VALIDATION_FAILED);
-          }
-          updatedTask.priority = priority;
-          changes.push('priority');
-        }
-
-        if (options.slug) {
-          if (!updatedTask.slugs.includes(options.slug)) {
-            updatedTask.slugs = [...updatedTask.slugs, options.slug];
-            changes.push('slug');
-          }
-        }
-
-        if (options.tag) {
-          const newTags = options.tag.filter((t: string) => !updatedTask.tags.includes(t));
-          if (newTags.length > 0) {
-            updatedTask.tags = [...updatedTask.tags, ...newTags];
-            changes.push('tags');
-          }
-        }
-
-        if (options.dependsOn) {
-          // Validate all dependency refs
-          for (const depRef of options.dependsOn) {
-            const depResult = index.resolve(depRef);
-            if (!depResult.ok) {
-              error(errors.reference.depNotFound(depRef));
-              process.exit(EXIT_CODES.NOT_FOUND);
+          if (result.message) {
+            // AC: @spec-task-set-batch ac-4 - Warn on no changes
+            if (result.message.includes('No changes')) {
+              warn(result.message);
+            } else {
+              success(result.message, result.data as Record<string, unknown> | undefined);
             }
           }
-          updatedTask.depends_on = options.dependsOn;
-          changes.push('depends_on');
         }
-
-        // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
-        // Handle automation status changes
-        // Note: --no-automation sets options.automation to false, so check that first
-        if (options.automation === false) {
-          // --no-automation flag clears the automation status (AC: ac-12)
-          delete updatedTask.automation;
-          changes.push('automation');
-        } else if (options.automation !== undefined) {
-          const validStatuses = ['eligible', 'needs_review', 'manual_only'];
-          if (!validStatuses.includes(options.automation)) {
-            error(`Invalid automation status: ${options.automation}. Must be one of: ${validStatuses.join(', ')}`);
-            process.exit(EXIT_CODES.VALIDATION_FAILED);
-          }
-
-          // AC: @task-automation-eligibility ac-18 - require reason for needs_review
-          if (options.automation === 'needs_review' && !options.reason) {
-            error('Setting automation to needs_review requires --reason flag explaining why');
-            process.exit(EXIT_CODES.VALIDATION_FAILED);
-          }
-
-          updatedTask.automation = options.automation as 'eligible' | 'needs_review' | 'manual_only';
-          changes.push('automation');
-
-          // If reason provided, add a note documenting the change
-          if (options.reason) {
-            const note = createNote(
-              `Automation status set to ${options.automation}: ${options.reason}`,
-              '@human'
-            );
-            updatedTask.notes = [...updatedTask.notes, note];
-            changes.push('note');
-          }
-        }
-
-        if (changes.length === 0) {
-          warn('No changes specified');
-          return;
-        }
-
-        await saveTask(ctx, updatedTask);
-        await commitIfShadow(ctx.shadow, 'task-set', foundTask.slugs[0] || index.shortUlid(foundTask._ulid), changes.join(', '));
-        success(`Updated task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(', ')})`, { task: updatedTask });
       } catch (err) {
         error(errors.failures.updateTask, err);
         process.exit(EXIT_CODES.ERROR);
