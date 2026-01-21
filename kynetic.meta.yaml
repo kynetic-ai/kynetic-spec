@@ -1975,4 +1975,31 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFN7TYV4VEBM6J47RWDRQYV
+    type: success
+    content: "PR review workflow validated: spawned subagent for strict review before merge, identified
+      blocking issues (spec field name mismatch, fluff test), fixed them, then merged. Review agent
+      correctly flagged AC-5 test as not validating its criterion."
+    created_at: 2026-01-21T06:52:57.691Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFN7ZAX6FD7G6EC21N9M15X
+    type: friction
+    content: "Merged PR #114 before pushing fix commit (66010b6) that addressed review feedback. Had to
+      create new PR #115 with the fixes. Should push all commits before merging PR."
+    created_at: 2026-01-21T06:53:02.174Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFN83NCYJACXVPC2A0EA0RZ
+    type: success
+    content: "Test improvement strategy: AC-5 test was fluff (admitted in comments it didn't test the
+      scenario). Rewrote to actually set up dependency scenario and validate via tasks ready
+      command. Understanding how dependency checking works (at query time, not start time) was key
+      to writing correct test."
+    created_at: 2026-01-21T06:53:06.604Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
