@@ -1195,10 +1195,43 @@ export function registerItemCommands(program: Command): void {
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        // TODO: Add confirmation prompt when !options.force
-        // For now, proceed with deletion
+        // Confirmation required unless --force
+        if (!options.force) {
+          // AC-5: JSON mode requires --force
+          if (isJsonMode()) {
+            error('Confirmation required. Use --force with --json');
+            process.exit(EXIT_CODES.ERROR);
+          }
 
-        // Remove the AC
+          // AC-6: Non-interactive environment requires --force
+          // Allow KSPEC_TEST_TTY for testing interactive prompts
+          const isTTY = process.env.KSPEC_TEST_TTY === '1' || process.stdin.isTTY;
+          if (!isTTY) {
+            error('Non-interactive environment. Use --force to proceed');
+            process.exit(EXIT_CODES.ERROR);
+          }
+
+          // AC-1: Prompt for confirmation
+          const readline = await import('readline');
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+
+          const answer = await new Promise<string>((resolve) => {
+            rl.question(`Remove acceptance criterion ${acId}? [y/N] `, resolve);
+          });
+          rl.close();
+
+          // AC-3: User declines (n, N, or empty)
+          if (answer.toLowerCase() !== 'y') {
+            error('Operation cancelled');
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+        }
+
+        // AC-4: With --force, proceed immediately without prompt
+        // AC-2: User confirmed, proceed with removal
         const updatedAc = existingAc.filter(ac => ac.id !== acId);
         await updateSpecItem(ctx, item, { acceptance_criteria: updatedAc });
 
