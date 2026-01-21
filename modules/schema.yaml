@@ -371,7 +371,7 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: implemented
     priority: high
     tags:
       - mvp
@@ -387,7 +387,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           Parsers MUST use YAML 1.2 (not 1.1).
           YAML 1.1 has dangerous implicit typing:
