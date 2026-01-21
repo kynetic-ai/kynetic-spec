@@ -1166,6 +1166,7 @@ requirements:
     tests: []
     traits:
       - "@trait-confirmation-prompt"
+      - "@trait-semantic-exit-codes"
     notes: []
     created: 2026-01-21T05:28:07.640Z
     description: Add confirmation prompt when removing acceptance criteria without --force.
