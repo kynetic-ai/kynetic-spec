@@ -18561,8 +18561,7 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on:
-    - "@task-guided-workflow-execution"
+  depends_on: []
   context: []
   priority: 3
   tags: []
@@ -18695,6 +18694,11 @@
 
         - ac-3: Given an active run exists, when kspec workflow abort @run-id --reason '...' is
         executed, then status=aborted, abort_reason recorded, completed_at set; shadow committed
+      supersedes: null
+    - _ulid: 01KFGFBYSSBC0ZAT2A931T8RG8
+      created_at: 2026-01-21T14:29:35.674Z
+      author: "@human"
+      content: "Dependencies cleared (was: @task-guided-workflow-execution)"
       supersedes: null
   todos: []
   automation: eligible
@@ -19750,6 +19754,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-21T14:28:23.635Z
+  started_at: 2026-01-21T14:28:28.673Z
   notes:
     - _ulid: 01KFGF9REJ1HCR58CGZJM07GMD
       created_at: 2026-01-21T14:28:23.635Z
@@ -19775,4 +19780,3 @@
         then error indicating flags are mutually exclusive
       supersedes: null
   todos: []
-  started_at: 2026-01-21T14:28:28.673Z
