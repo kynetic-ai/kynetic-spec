@@ -18555,7 +18555,29 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-21T05:54:22.909Z
-  notes: []
+  started_at: 2026-01-21T05:54:34.842Z
+  notes:
+    - _ulid: 01KFFJ42NGGJJF1VYWKBAGZPM4
+      created_at: 2026-01-21T05:58:28.785Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        1. Added `eligible?: boolean` option to SessionOptions interface (session.ts:191)
+
+        2. Added filter in gatherSessionContext to only include tasks with automation=eligible when
+        option is set (session.ts:393)
+
+        3. Updated ralph to pass `eligible: true` when gathering session context (ralph.ts:364)
+
+        4. Updated exit message to 'No active or eligible ready tasks' for clarity
+
+        5. Added 2 tests for ac-16: one verifying non-eligible tasks are ignored, one verifying
+        eligible tasks are processed
+
+        6. Updated test fixture to have automation: eligible by default so existing tests continue
+        to work
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T05:54:34.842Z
