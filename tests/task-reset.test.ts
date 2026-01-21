@@ -29,7 +29,7 @@ describe('Integration: task reset', () => {
   it('should reset completed task to pending and clear completed_at', () => {
     // Start and complete a task
     kspec('task start @test-task-pending', tempDir);
-    kspec('task complete @test-task-pending --reason "Test completion"', tempDir);
+    kspec('task complete @test-task-pending --skip-review --reason "Test completion"', tempDir);
 
     // Verify it's completed
     const beforeReset = kspecJson<{ status: string; completed_at: string | null; closed_reason: string | null }>(
@@ -173,7 +173,7 @@ describe('Integration: task reset', () => {
   it('should create shadow commit when resetting task', () => {
     // Start and complete a task
     kspec('task start @test-task-pending', tempDir);
-    kspec('task complete @test-task-pending --reason "Done"', tempDir);
+    kspec('task complete @test-task-pending --skip-review --reason "Done"', tempDir);
 
     // Reset the task - should create shadow commit
     const output = kspec('task reset @test-task-pending', tempDir);
@@ -187,7 +187,7 @@ describe('Integration: task reset', () => {
   it('should add note documenting the reset', () => {
     // Start and complete a task
     kspec('task start @test-task-pending', tempDir);
-    kspec('task complete @test-task-pending --reason "Done"', tempDir);
+    kspec('task complete @test-task-pending --skip-review --reason "Done"', tempDir);
 
     // Reset the task
     kspec('task reset @test-task-pending', tempDir);
@@ -231,7 +231,7 @@ describe('Integration: task reset', () => {
 
     // Step 1: Complete task A (test-task-pending)
     kspec('task start @test-task-pending', tempDir);
-    kspec('task complete @test-task-pending --reason "Done"', tempDir);
+    kspec('task complete @test-task-pending --skip-review --reason "Done"', tempDir);
 
     // Step 2: Verify task A is completed
     const taskA = kspecJson<{ status: string }>(
@@ -283,7 +283,7 @@ describe('Integration: task reset', () => {
   it('should output correct JSON structure', () => {
     // Start and complete a task
     kspec('task start @test-task-pending', tempDir);
-    kspec('task complete @test-task-pending --reason "Done"', tempDir);
+    kspec('task complete @test-task-pending --skip-review --reason "Done"', tempDir);
 
     // Reset with JSON output
     const result = kspecJson<{

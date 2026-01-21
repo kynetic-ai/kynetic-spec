@@ -618,8 +618,9 @@ describe('Integration: observation-task resolution loop', () => {
     const taskMatch = promoteOutput.match(/Created task: @([A-Z0-9]{8})/);
     const taskRef = taskMatch![1];
 
-    // Start and complete the task
+    // Start, submit, and complete the task
     kspec(`task start @${taskRef}`, tempDir);
+    kspec(`task submit @${taskRef}`, tempDir);
     kspec(`task complete @${taskRef} --reason "Reduced startup time by 50%"`, tempDir);
 
     // Resolve observation without explicit text (should auto-populate)
@@ -664,6 +665,7 @@ describe('Integration: observation-task resolution loop', () => {
     const taskRef = taskMatch![1];
 
     kspec(`task start @${taskRef}`, tempDir);
+    kspec(`task submit @${taskRef}`, tempDir);
     kspec(`task complete @${taskRef} --reason "Fixed"`, tempDir);
 
     // List pending resolution

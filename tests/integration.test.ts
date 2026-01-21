@@ -163,6 +163,7 @@ describe('Integration: task lifecycle', () => {
   it('should complete a task', () => {
     // First start it
     kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
 
     // Then complete it
     const output = kspec('task complete @test-task-pending --reason "Done"', tempDir);
@@ -180,6 +181,7 @@ describe('Integration: task lifecycle', () => {
 
     // Complete the blocking task
     kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
     kspec('task complete @test-task-pending --reason "Done"', tempDir);
 
     // Now blocked task should be ready
@@ -1282,6 +1284,7 @@ describe('Integration: commit guidance', () => {
     // Create a task linked to the spec
     kspec('task add --title "Test Commit Task" --spec-ref @commit-test-spec --slug commit-test-task', tempDir);
     kspec('task start @commit-test-task', tempDir);
+    kspec('task submit @commit-test-task', tempDir);
 
     const output = kspec('task complete @commit-test-task --reason "Done"', tempDir);
     expect(output).toContain('Suggested Commit');
@@ -1294,6 +1297,7 @@ describe('Integration: commit guidance', () => {
     // Create a task without spec_ref
     kspec('task add --title "Orphan Task" --slug orphan-task', tempDir);
     kspec('task start @orphan-task', tempDir);
+    kspec('task submit @orphan-task', tempDir);
 
     const output = kspec('task complete @orphan-task --reason "Done"', tempDir);
     expect(output).toContain('Suggested Commit');
@@ -1305,6 +1309,7 @@ describe('Integration: commit guidance', () => {
   it('should not show guidance in JSON mode', () => {
     kspec('task add --title "JSON Test Task" --slug json-test-task', tempDir);
     kspec('task start @json-test-task', tempDir);
+    kspec('task submit @json-test-task', tempDir);
 
     const output = kspec('task complete @json-test-task --reason "Done" --json', tempDir);
     expect(output).not.toContain('Suggested Commit');
@@ -1971,10 +1976,13 @@ describe('Integration: Batch operations', () => {
       tempDir
     );
 
-    // Start each task individually
+    // Start and submit each task individually
     kspec(`task start @${task1.task._ulid}`, tempDir);
     kspec(`task start @${task2.task._ulid}`, tempDir);
     kspec(`task start @${task3.task._ulid}`, tempDir);
+    kspec(`task submit @${task1.task._ulid}`, tempDir);
+    kspec(`task submit @${task2.task._ulid}`, tempDir);
+    kspec(`task submit @${task3.task._ulid}`, tempDir);
 
     // Complete all three with --refs
     const result = kspecJson<{
@@ -2042,9 +2050,11 @@ describe('Integration: Batch operations', () => {
       tempDir
     );
 
-    // Start both tasks
+    // Start and submit both tasks
     kspec(`task start @${task1.task._ulid}`, tempDir);
     kspec(`task start @${task2.task._ulid}`, tempDir);
+    kspec(`task submit @${task1.task._ulid}`, tempDir);
+    kspec(`task submit @${task2.task._ulid}`, tempDir);
 
     // Complete tasks with one invalid ref in the middle
     const result = kspecJson<{
@@ -2094,9 +2104,11 @@ describe('Integration: Batch operations', () => {
     const shortUlid1 = ulid1.slice(0, 8);
     const shortUlid2 = ulid2.slice(0, 8);
 
-    // Start both tasks
+    // Start and submit both tasks
     kspec(`task start @${ulid1}`, tempDir);
     kspec(`task start @${ulid2}`, tempDir);
+    kspec(`task submit @${ulid1}`, tempDir);
+    kspec(`task submit @${ulid2}`, tempDir);
 
     // Test slug resolution
     const slugResult = kspecJson<{
@@ -2121,9 +2133,11 @@ describe('Integration: Batch operations', () => {
     const ulid3 = task3.task._ulid;
     const ulid4 = task4.task._ulid;
 
-    // Start both
+    // Start and submit both
     kspec(`task start @${ulid3}`, tempDir);
     kspec(`task start @${ulid4}`, tempDir);
+    kspec(`task submit @${ulid3}`, tempDir);
+    kspec(`task submit @${ulid4}`, tempDir);
 
     // Test ULID resolution with full ULIDs (ref resolution still uses the same logic)
     const prefixResult = kspecJson<{
@@ -2158,6 +2172,9 @@ describe('Integration: Batch operations', () => {
     kspec(`task start @${task1.task._ulid}`, tempDir);
     kspec(`task start @${task2.task._ulid}`, tempDir);
     kspec(`task start @${task3.task._ulid}`, tempDir);
+    kspec(`task submit @${task1.task._ulid}`, tempDir);
+    kspec(`task submit @${task2.task._ulid}`, tempDir);
+    kspec(`task submit @${task3.task._ulid}`, tempDir);
 
     // Batch complete
     const result = kspecJson<{
