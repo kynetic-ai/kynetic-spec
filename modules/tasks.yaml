@@ -1116,3 +1116,7 @@ requirements:
         given: task status is completed
         when: kspec task complete @ref executed
         then: "error: Task is already completed"
+      - id: ac-7
+        given: user wants to skip review
+        when: kspec task complete @ref --skip-review --reason 'Hotfix, no review needed' executed
+        then: bypasses enforcement, completes directly, reason documented in note
