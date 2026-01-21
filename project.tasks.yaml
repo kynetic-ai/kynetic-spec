@@ -14719,6 +14719,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-19T17:19:56.512Z
+  started_at: 2026-01-21T10:14:57.991Z
   notes:
     - _ulid: 01KFBMAM6BJQVYY01GJG17SZ60
       created_at: 2026-01-19T17:20:02.763Z
@@ -14727,9 +14728,61 @@
         1450). 'should support JSON output' appears 11 times in meta.test.ts. Add command context to
         test names."
       supersedes: null
+    - _ulid: 01KFG123462KSXY96N2VZ055RG
+      created_at: 2026-01-21T10:19:32.358Z
+      author: "@claude"
+      content: >-
+        Fixed all duplicate test names:
+
+
+        Integration tests (integration.test.ts):
+
+        - Renamed 'should error on invalid reference' (line 833) → 'should error on invalid
+        reference (derive)'
+
+        - Renamed 'should error on invalid reference' (line 1402) → 'should error on invalid
+        reference (log)'
+
+
+        Meta tests (meta.test.ts):
+
+        - Renamed 'should support JSON output' (line 910) → 'should support JSON output (add agent)'
+
+        - Renamed 'should support JSON output' (line 1001) → 'should support JSON output (set)'
+
+        - Renamed 'should support JSON output mode' (line 1701) → 'should support JSON output
+        (focus)'
+
+        - Renamed 'should support JSON output for list' (line 1801) → 'should support JSON output
+        for list (thread)'
+
+        - Renamed 'should support JSON output for add' (line 1810) → 'should support JSON output for
+        add (thread)'
+
+        - Renamed 'should support JSON output for remove' (line 1820) → 'should support JSON output
+        for remove (thread)'
+
+        - Renamed 'should support JSON output for clear' (line 1833) → 'should support JSON output
+        for clear (thread)'
+
+        - Renamed 'should support JSON output for list' (line 1956) → 'should support JSON output
+        for list (question)'
+
+        - Renamed 'should support JSON output for add' (line 1965) → 'should support JSON output for
+        add (question)'
+
+        - Renamed 'should support JSON output for remove' (line 1975) → 'should support JSON output
+        for remove (question)'
+
+        - Renamed 'should support JSON output for clear' (line 1988) → 'should support JSON output
+        for clear (question)'
+
+
+        All 841 tests pass (2 skipped as documented). Test names now have command-specific context
+        in parentheses to avoid duplication while maintaining clarity.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T10:14:57.991Z
 - _ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
   slugs:
     - fix-yaml-formatting-status
