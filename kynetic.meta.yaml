@@ -2177,4 +2177,21 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFT1E7G0FE9P83PPAJAQ0WJ
+    type: success
+    content: State enforcement implementation went smoothly - clear spec with detailed ACs made
+      implementation straightforward. Breaking existing tests was expected and fixing them
+      reinforced the new workflow.
+    created_at: 2026-01-21T08:16:50.929Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFT1JE45D0FKYAESH496GWV
+    type: success
+    content: Test helper pattern (kspecWithStatus vs kspecError) worked well once I found the right
+      function. The cli.ts helper exports are well-structured for different test needs.
+    created_at: 2026-01-21T08:16:55.236Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
