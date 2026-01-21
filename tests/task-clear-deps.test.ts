@@ -86,4 +86,70 @@ describe('Integration: task set --clear-deps', () => {
     expect(clearNote?.content).toContain('@dep-a');
     expect(clearNote?.content).toContain('@dep-b');
   });
+
+  // AC: @trait-json-output ac-1, ac-2 - JSON output is valid and contains task data
+  it('should output valid JSON with task data when --json flag provided', () => {
+    kspec('task add --title "Dep Task" --slug json-dep', tempDir);
+    kspec('task add --title "JSON Task" --slug json-task', tempDir);
+    kspec('task set @json-task --depends-on @json-dep', tempDir);
+
+    const result = kspec('task set @json-task --clear-deps --json', tempDir);
+
+    // Verify valid JSON (no ANSI codes would cause parse failure)
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.success).toBe(true);
+    expect(parsed.message).toContain('Updated task');
+
+    // Verify task data is included
+    expect(parsed.task).toBeDefined();
+    expect(parsed.task.depends_on).toEqual([]);
+    expect(parsed.task.notes).toBeDefined();
+  });
+
+  // AC: @trait-multi-ref-batch ac-1, ac-5 - Batch mode clears deps on multiple tasks
+  it('should clear dependencies on multiple tasks with --refs flag', () => {
+    // Setup: create dep and two tasks that depend on it
+    kspec('task add --title "Shared Dep" --slug shared-dep', tempDir);
+    kspec('task add --title "Batch Task 1" --slug batch-1', tempDir);
+    kspec('task add --title "Batch Task 2" --slug batch-2', tempDir);
+    kspec('task set @batch-1 --depends-on @shared-dep', tempDir);
+    kspec('task set @batch-2 --depends-on @shared-dep', tempDir);
+
+    // Clear deps on both tasks at once
+    const result = kspec('task set --refs @batch-1 @batch-2 --clear-deps', tempDir);
+
+    // Verify batch output format
+    expect(result.stdout).toContain('2 of 2');
+
+    // Verify both tasks had deps cleared
+    const task1 = kspecJson<{ depends_on: string[] }>('task get @batch-1', tempDir);
+    const task2 = kspecJson<{ depends_on: string[] }>('task get @batch-2', tempDir);
+    expect(task1.depends_on).toHaveLength(0);
+    expect(task2.depends_on).toHaveLength(0);
+  });
+
+  // AC: @trait-multi-ref-batch ac-7 - JSON mode with batch refs
+  it('should output JSON array with results for each ref in batch mode', () => {
+    kspec('task add --title "Dep" --slug batch-json-dep', tempDir);
+    kspec('task add --title "Task A" --slug batch-json-a', tempDir);
+    kspec('task add --title "Task B" --slug batch-json-b', tempDir);
+    kspec('task set @batch-json-a --depends-on @batch-json-dep', tempDir);
+    kspec('task set @batch-json-b --depends-on @batch-json-dep', tempDir);
+
+    const result = kspec('task set --refs @batch-json-a @batch-json-b --clear-deps --json', tempDir);
+    const parsed = JSON.parse(result.stdout);
+
+    // Verify batch JSON structure
+    expect(parsed.success).toBe(true);
+    expect(parsed.summary).toBeDefined();
+    expect(parsed.summary.total).toBe(2);
+    expect(parsed.summary.succeeded).toBe(2);
+    expect(parsed.results).toHaveLength(2);
+
+    // Verify each result contains task data
+    for (const r of parsed.results) {
+      expect(r.status).toBe('success');
+      expect(r.data.task.depends_on).toEqual([]);
+    }
+  });
 });
