@@ -412,3 +412,13 @@ inbox:
     created_at: 2026-01-20T18:24:11.077Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFEYSWAKR8W5B23CJV27SSKX
+    text: Skip cancelled tasks in derive parent lookup - when deriving tasks, don't use cancelled tasks
+      as parent dependencies. Currently a cancelled task is still found and used, requiring manual
+      deletion before derive works correctly.
+    created_at: 2026-01-21T00:20:51.667Z
+    tags:
+      - cli
+      - derive
+      - bug
+    added_by: "@claude"
