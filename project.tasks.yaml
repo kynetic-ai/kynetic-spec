@@ -1535,11 +1535,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2229,6 +2231,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2344,6 +2347,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16036,6 +16040,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -18018,5 +18023,59 @@
         # Returns: 611
 
         ```
+      supersedes: null
+    - _ulid: 01KFF0F2PN05XNZ9XW7YD13KCV
+      created_at: 2026-01-21T00:49:54.901Z
+      author: "@claude"
+      content: >-
+        ## Suggested Fix Approaches
+
+
+        ### Option 1: Trim content before saving (Quick fix)
+
+        In saveTask() or createNote(), trim trailing whitespace/newlines from content strings before
+        saving. This would prevent new accumulation but requires a one-time cleanup of existing
+        data.
+
+
+        ### Option 2: YAML stringify options
+
+        The yaml library may have options to control block scalar formatting. Investigate:
+
+        - blockQuote option
+
+        - lineWidth adjustments
+
+        - Custom stringify for string values
+
+
+        ### Option 3: Use different scalar style
+
+        Force all multiline content to use quoted strings instead of block scalars. Less readable
+        but more predictable.
+
+
+        ### Option 4: Post-process output
+
+        After YAML.stringify(), clean up the output string before writing to file. Remove excessive
+        blank lines or normalize whitespace-only lines.
+
+
+        ### Required: One-time data cleanup
+
+        Regardless of which fix is chosen, the existing project.tasks.yaml needs cleanup:
+
+        - Remove the ~4500 accumulated blank lines
+
+        - Restore note 01KF7NXW2HRKJBBT7EAWX8SBMG to its original content (1309 chars, not 1881)
+
+        - Same for other affected notes (at least 5 locations with this pattern)
+
+
+        ## Files to Modify
+
+        - src/parser/yaml.ts (writeYamlFilePreserveFormat, possibly saveTask)
+
+        - .kspec/project.tasks.yaml (data cleanup)
       supersedes: null
   todos: []
