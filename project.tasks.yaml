@@ -13601,7 +13601,13 @@
       content: "Also review: YAML convention specs in schema.yaml and 'kspec hooks' in cli.yaml marked
         not_started - consider marking maturity: deferred if these are post-release features."
       supersedes: null
+    - _ulid: 01KFFHEB9NJNVKMV914FTQQJ48
+      created_at: 2026-01-21T05:46:36.725Z
+      author: "@human"
+      content: "Automation status set to manual_only: Manual audit task - reviewing specs vs implementation"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KFBKR7ZV58GWPSX4FSACHRF2
   slugs:
     - task-set-batch
