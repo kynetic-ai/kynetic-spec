@@ -1124,3 +1124,7 @@ requirements:
         given: --skip-review provided without --reason
         when: kspec task complete @ref --skip-review executed
         then: "error: --skip-review requires --reason to document why"
+      - id: ac-9
+        given: batch mode with mixed states
+        when: kspec task complete --refs @a @b where @a is pending_review, @b is in_progress
+        then: "@a completes, @b fails with guidance error, exit code 1"
