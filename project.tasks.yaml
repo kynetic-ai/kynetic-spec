@@ -18261,6 +18261,13 @@
         The fix prevents future accumulation. Any existing whitespace-only lines are automatically
         cleaned on next save.
       supersedes: null
+    - _ulid: 01KFF8M17Z3Q55WTZBVVR4HJWF
+      created_at: 2026-01-21T03:12:25.855Z
+      author: "@claude"
+      content: "Updated fix to unify YAML API: moved whitespace-only line filter to toYaml() so all
+        serialization paths benefit. Removed unused js-yaml import. writeYamlFilePreserveFormat()
+        now just calls toYaml() like writeYamlFile() does."
+      supersedes: null
   todos: []
 - _ulid: 01KFF8DVY8KZ9NSQ4M5XXH5H2K
   slugs: []
