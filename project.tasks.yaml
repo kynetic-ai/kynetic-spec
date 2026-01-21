@@ -14101,7 +14101,7 @@
   type: task
   spec_ref: "@spec-task-set-batch"
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
