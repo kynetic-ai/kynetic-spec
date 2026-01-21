@@ -15594,6 +15594,15 @@
 
         Pattern: Follow existing --title, --priority flag patterns
       supersedes: null
+    - _ulid: 01KFFGC40E9RGP5156ZJHG8VQX
+      created_at: 2026-01-21T05:27:55.151Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+        - File: src/cli/commands/task.ts - modify add handler (line ~199)
+        - Add .option('--description <text>', 'Task description')
+        - Pass to task creation, skip if empty string
+      supersedes: null
   todos: []
 - _ulid: 01KFC4PJ16QG1X7NT22FKCKHQ8
   slugs: []
