@@ -19943,22 +19943,95 @@
         filtering becomes important.
       supersedes: null
   todos: []
-- title: Implement @trait-retrospective for specs without task tracking
+- _ulid: 01KFH4F3854392DJM0R17T79M2
+  slugs: []
+  title: Implement @trait-retrospective for specs without task tracking
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - feature
-    - traits
-    - validation
-  _ulid: 01KFH4F3854392DJM0R17T79M2
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - feature
+    - traits
+    - validation
   vcs_refs: []
   created_at: 2026-01-21T20:38:18.629Z
-  notes: []
+  notes:
+    - _ulid: 01KFH4FF4RCGTJDJHE17MV1C4E
+      created_at: 2026-01-21T20:38:30.809Z
+      author: "@claude"
+      content: >-
+        ## Overview
+
+
+        Create a trait for specs that describe already-implemented functionality where
+        implementation predates formal task tracking. This enables kspec adoption on legacy projects
+        and properly handles bootstrap-era specs.
+
+
+        ## Problem Statement
+
+
+        Currently, validation reports:
+
+        - 15 orphaned specs (no implementing tasks)
+
+        - 127 status mismatches (specs marked implemented but no tasks)
+
+
+        These are false positives for bootstrap/legacy scenarios where specs were written after
+        implementation.
+
+
+        ## Solution: @trait-retrospective
+
+
+        A trait that specs can use to indicate they follow retrospective verification rather than
+        task-driven implementation.
+
+
+        ## Trait Definition
+
+
+        ```yaml
+
+        - _ulid: <generated>
+          slugs:
+            - trait-retrospective
+          title: 'Retrospective Verification'
+          type: trait
+          description: |
+            Applied to specs describing already-implemented functionality where
+            implementation predates formal task tracking. Common scenarios:
+            - Bootstrap specs (kspec tracking itself)
+            - Legacy adoption (adding kspec to existing codebase)
+            - Reverse-engineered specs from existing code
+            
+            Specs with this trait:
+            - Do not require linked implementation tasks
+            - Must have verified_at and verified_by fields
+            - Status is manually set rather than derived from task completion
+          acceptance_criteria:
+            - ac-1:
+                given: a spec item uses @trait-retrospective
+                when: validation runs alignment checks
+                then: no 'orphaned spec' warning is generated for missing tasks
+            - ac-2:
+                given: a spec uses @trait-retrospective
+                when: status is set to implemented or verified
+                then: verified_at (ISO timestamp) and verified_by (agent ref) are required
+            - ac-3:
+                given: a spec uses @trait-retrospective without verified_at/verified_by
+                when: validation runs
+                then: warning indicates missing verification metadata
+            - ac-4:
+                given: a retrospective spec exists
+                when: viewing item details (kspec item get)
+                then: output indicates retrospective verification source
+        ```
+      supersedes: null
   todos: []
