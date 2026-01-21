@@ -15026,7 +15026,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -15036,7 +15036,7 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:54:15.214Z
-  started_at: null
+  started_at: 2026-01-21T10:28:19.393Z
   notes:
     - _ulid: 01KFBP9FDAHQF4A6X1DQ93HXBT
       created_at: 2026-01-19T17:54:22.251Z
