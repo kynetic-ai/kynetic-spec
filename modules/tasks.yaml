@@ -1140,7 +1140,8 @@ requirements:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-multi-ref-batch"
     notes: []
     created: 2026-01-21T05:25:15.560Z
     description: "Add --refs support to kspec task set for bulk updates. Note: status changes must use
