@@ -1948,4 +1948,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFM7NAN2GW0BEXX6JZR5MV5
+    type: success
+    content: Task reset implementation went smoothly. Following existing patterns from task.ts (cancel,
+      complete, block) made implementation straightforward. Comprehensive test coverage (15 tests
+      for 6 ACs) caught no issues. Shadow commit verification simplified by trusting commitIfShadow
+      success rather than parsing git internals. All 783 tests pass on first try.
+    created_at: 2026-01-21T06:35:23.349Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
