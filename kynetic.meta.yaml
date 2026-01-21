@@ -2002,4 +2002,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFP5DB5QDZT8HR91XN8C7SQ
+    type: success
+    content: "CI workflow implementation pattern: GitHub Actions with github-script action provides
+      clean GraphQL API integration without custom tooling. For review thread resolution checks, the
+      isResolved and isOutdated fields are exactly what's needed - filtering for \\!isResolved &&
+      \\!isOutdated gives accurate results. Excluding outdated threads prevents false positives from
+      force-pushed commits."
+    created_at: 2026-01-21T07:09:06.789Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
