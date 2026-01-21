@@ -20176,4 +20176,46 @@
 
         This is a one-time migration for kspec itself, demonstrating the pattern for other adopters.
       supersedes: null
+    - _ulid: 01KFH4GYF31DJWB110NN46ZMDD
+      created_at: 2026-01-21T20:39:19.267Z
+      author: "@claude"
+      content: |-
+        ## Documentation
+
+        ### Update traits.md skill
+
+        Add section on @trait-retrospective:
+        - When to use (bootstrap, legacy adoption)
+        - Required fields (verified_at, verified_by)
+        - How validation treats retrospective specs
+
+        ### Update AGENTS.md
+
+        Add guidance for agents:
+        - When encountering orphaned spec warnings, consider if retrospective
+        - How to apply the trait during legacy adoption
+        - Verification metadata requirements
+
+        ### Example in README or docs
+
+        Document the legacy adoption workflow:
+        1. Write specs describing existing functionality
+        2. Apply @trait-retrospective
+        3. Set verified_at/verified_by
+        4. Run validation to confirm
+
+        ## Subtask Breakdown
+
+        This task should be broken into:
+
+        1. **Spec**: Create formal spec for @trait-retrospective with AC (this task covers design)
+        2. **Schema**: Add verified_at/verified_by fields to item schema
+        3. **Trait**: Create @trait-retrospective trait definition in kspec's specs
+        4. **Validation**: Update alignment checks to respect the trait
+        5. **CLI**: Add --verified-by/--verified-at flags to item set
+        6. **Migration**: Apply trait to kspec's bootstrap specs (~127 items)
+        7. **Docs**: Update traits.md, AGENTS.md with guidance
+
+        Suggest deriving child tasks after spec is approved.
+      supersedes: null
   todos: []
