@@ -14006,6 +14006,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #123 created. Code change is simple refactoring with no behavior change. All 823 tests pass."
   depends_on: []
   context: []
   priority: 3
@@ -14014,6 +14015,7 @@
   vcs_refs: []
   created_at: 2026-01-19T16:47:44.094Z
   started_at: 2026-01-21T09:06:04.724Z
+  completed_at: 2026-01-21T09:09:02.992Z
   notes:
     - _ulid: 01KFBJFNB2GP21YXGCG0ENPK10
       created_at: 2026-01-19T16:47:50.627Z
@@ -14037,8 +14039,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T09:09:02.992Z
-  closed_reason: "PR #123 created. Code change is simple refactoring with no behavior change. All 823 tests pass."
 - _ulid: 01KFBKK2E61MHW5PAERRPD9GV4
   slugs:
     - audit-spec-statuses
@@ -14371,7 +14371,7 @@
   type: task
   spec_ref: "@spec-ac-delete-confirmation"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14398,6 +14398,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T09:16:04.175Z
 - _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
   slugs:
     - item-delete-child-check
