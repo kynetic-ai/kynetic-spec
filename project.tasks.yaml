@@ -13901,8 +13901,13 @@
   type: infra
   spec_ref: null
   meta_ref: null
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Needs clearer scope. Investigation shows Result pattern is well-implemented with proper .ok
+      checks throughout codebase. No concrete bugs or problems identified. Task suggests multiple
+      potential improvements but unclear which would add value. Needs: (1) Concrete examples of
+      missed checks or bugs, OR (2) Narrower scope focusing on specific improvement (e.g., just
+      documentation, or just lint rules)"
   depends_on: []
   context: []
   priority: 3

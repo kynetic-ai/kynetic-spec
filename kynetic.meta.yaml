@@ -2287,4 +2287,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFWV250GFXWADZX4VW2ARSW
+    type: friction
+    content: "Task @01KFBDR7 'Improve Result type enforcement' has unclear scope. Initial investigation
+      shows current Result pattern (discriminated unions with 'ok' field) is well-implemented and
+      consistently used. Most code properly checks .ok before accessing success fields. Task note
+      suggests multiple improvements (branded types, lint rules, never throw library) but unclear
+      which is actually needed or would provide value. Without concrete examples of bugs or
+      near-misses from this pattern, hard to prioritize improvements. Recommendation: Block task
+      pending concrete evidence of problems, or pivot to documentation task."
+    created_at: 2026-01-21T09:05:47.681Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
