@@ -2800,3 +2800,6 @@ requirements:
         given: shadow branch has commits, main doesn't
         when: kspec log executed
         then: searches shadow branch, shows any matches found
+    status:
+      maturity: draft
+      implementation: in_progress
