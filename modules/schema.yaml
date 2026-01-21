@@ -1154,3 +1154,16 @@ requirements:
         given: JSON mode with children error
         when: kspec item delete @ref --json (has children) executed
         then: JSON error includes children array with refs
+  - _ulid: 01KFFGCG6Q91D0TFGAJ3AB5VDK
+    slugs:
+      - spec-ac-delete-confirmation
+    title: AC Delete Confirmation
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T05:28:07.640Z
