@@ -1177,3 +1177,7 @@ requirements:
         given: user confirms
         when: enters y
         then: AC removed, success message
+      - id: ac-3
+        given: user declines
+        when: enters n or empty
+        then: operation cancelled, exit code 2
