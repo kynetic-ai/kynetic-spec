@@ -19746,7 +19746,7 @@
   type: task
   spec_ref: "@spec-task-clear-deps"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -19795,3 +19795,6 @@
         passing."
       supersedes: null
   todos: []
+  completed_at: 2026-01-21T16:36:19.499Z
+  closed_reason: "Merged PR #129. Added --clear-deps flag with 7 E2E tests covering 3 direct ACs plus
+    trait ACs for JSON output and batch refs mode."
