@@ -1,7 +1,6 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
-import yaml from 'js-yaml';
 import * as YAML from 'yaml';
 import { ulid } from 'ulid';
 import { z } from 'zod';
@@ -66,14 +65,29 @@ export function parseYaml<T>(content: string): T {
 
 /**
  * Serialize object to YAML
- * Uses the modern yaml library for consistent formatting
+ * Uses the modern yaml library for consistent formatting.
+ *
+ * WORKAROUND: The 'yaml' library (v2.8.2+) has a known behavior where block scalars
+ * containing whitespace-only lines accumulate extra blank lines on each parse-stringify
+ * cycle. The library's blockString() function adds indentation after newlines, which
+ * causes lines containing only spaces to grow. We post-process the output to filter
+ * these whitespace-only lines. See: https://github.com/eemeli/yaml - stringifyString.ts
  */
 export function toYaml(obj: unknown): string {
-  return YAML.stringify(obj, {
+  let yamlString = YAML.stringify(obj, {
     indent: 2,
     lineWidth: 100,
     sortMapEntries: false,
   });
+
+  // Post-process to fix yaml library blank line accumulation bug.
+  // Filter out lines that contain only spaces/tabs (not truly empty lines).
+  yamlString = yamlString
+    .split('\n')
+    .filter(line => !/^[ \t]+$/.test(line))
+    .join('\n');
+
+  return yamlString;
 }
 
 /**
@@ -94,27 +108,17 @@ export async function writeYamlFile(filePath: string, data: unknown): Promise<vo
 
 /**
  * Write object to YAML file while preserving formatting and comments.
- * This is preferred over writeYamlFile for updating existing files.
  *
- * Uses the 'yaml' library which provides better formatting than js-yaml.
- * Note: This implementation uses yaml library's default formatting rules,
- * which are generally nicer than js-yaml but don't preserve exact original formatting.
- * True format preservation would require more complex CST manipulation.
+ * Note: This function is now equivalent to writeYamlFile() - the "preserve format"
+ * naming is historical. Both use toYaml() which includes the whitespace-only line
+ * fix. Kept for backwards compatibility with existing callers.
  */
 export async function writeYamlFilePreserveFormat(
   filePath: string,
   data: unknown
 ): Promise<void> {
-  // Use the modern yaml library which has better defaults
-  // Convert to YAML string with formatting options
-  const yamlString = YAML.stringify(data, {
-    indent: 2,
-    lineWidth: 100,
-    // Don't sort keys - preserve logical ordering
-    sortMapEntries: false,
-  });
-
-  await fs.writeFile(filePath, yamlString, 'utf-8');
+  const content = toYaml(data);
+  await fs.writeFile(filePath, content, 'utf-8');
 }
 
 /**
@@ -698,7 +702,9 @@ export function createNote(content: string, author?: string, supersedes?: string
     _ulid: ulid(),
     created_at: new Date().toISOString(),
     author: author ?? getAuthor(),
-    content,
+    // Trim content to prevent whitespace-only lines from accumulating
+    // in block scalars during YAML parse-stringify cycles
+    content: content.trim(),
     supersedes: supersedes || null,
   };
 }
@@ -710,7 +716,9 @@ export function createNote(content: string, author?: string, supersedes?: string
 export function createTodo(id: number, text: string, addedBy?: string): Todo {
   return {
     id,
-    text,
+    // Trim text to prevent whitespace-only lines from accumulating
+    // in block scalars during YAML parse-stringify cycles
+    text: text.trim(),
     done: false,
     added_at: new Date().toISOString(),
     added_by: addedBy ?? getAuthor(),
