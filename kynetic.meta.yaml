@@ -2311,4 +2311,23 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFXTYEDSFF82Q1JXGX8CGME
+    type: success
+    content: KSPEC_TEST_TTY pattern works well for testing interactive prompts. By adding an env var
+      check alongside process.stdin.isTTY, we can simulate TTY in tests while preserving real TTY
+      detection in production. This pattern can be reused for other interactive commands.
+    created_at: 2026-01-21T09:23:12.461Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFXV389J8EPW2ZJXQF6CEYR
+    type: success
+    content: "Test error message checking pattern: When commands fail, error messages can be in either
+      stdout or stderr. Using 'const output = result.stdout + result.stderr' and checking that
+      combined output is more robust than checking just stdout. This worked for all 4 initially
+      failing tests."
+    created_at: 2026-01-21T09:23:17.386Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
