@@ -359,15 +359,16 @@ export function registerRalphCommand(program: Command): void {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
-            // Gather fresh context each iteration
-            const sessionCtx = await gatherSessionContext(ctx, { limit: '10' });
+            // Gather fresh context each iteration (only automation-eligible tasks)
+            // AC: @cli-ralph ac-16
+            const sessionCtx = await gatherSessionContext(ctx, { limit: '10', eligible: true });
 
             // Check for ready tasks or active tasks
             const hasActiveTasks = sessionCtx.active_tasks.length > 0;
             const hasReadyTasks = sessionCtx.ready_tasks.length > 0;
 
             if (!hasActiveTasks && !hasReadyTasks) {
-              info('No active or ready tasks. Exiting loop.');
+              info('No active or eligible ready tasks. Exiting loop.');
               break;
             }
 
