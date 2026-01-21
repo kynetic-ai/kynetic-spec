@@ -17798,7 +17798,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -18259,3 +18259,6 @@
         cleaned on next save.
       supersedes: null
   todos: []
+  completed_at: 2026-01-21T02:47:05.130Z
+  closed_reason: "Fixed YAML blank line accumulation: added post-processing filter and input trimming.
+    All 766 tests pass, file is stable across parse-stringify cycles."
