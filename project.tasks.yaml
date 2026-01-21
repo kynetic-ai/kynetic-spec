@@ -13639,7 +13639,7 @@
     - ac-delete-confirm
   title: Add confirmation prompt for AC deletion without --force
   type: task
-  spec_ref: null
+  spec_ref: "@spec-ac-delete-confirmation"
   meta_ref: null
   status: pending
   blocked_by: []
