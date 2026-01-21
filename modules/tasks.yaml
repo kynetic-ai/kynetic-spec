@@ -1078,7 +1078,7 @@ requirements:
         then: output includes previous_status, new_status, cleared_fields array
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFFG2WVCZY014JX2CN4S07GS
     slugs:
       - spec-completion-enforcement
