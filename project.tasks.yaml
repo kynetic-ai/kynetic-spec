@@ -14066,7 +14066,7 @@
   type: task
   spec_ref: "@spec-task-set-batch"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14094,6 +14094,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T08:40:28.896Z
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
   slugs:
     - ac-delete-confirm

@@ -2225,4 +2225,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFVC7840GWEQVAE422SRD8H
+    type: friction
+    content: "Task @01KFBDQE 'Add spec-schema drift detection' needs clearer scoping. The original note
+      mentions three issues but #2 appears to be a misunderstanding (already handled by --staleness
+      check), and #3 (fixture conflicts) lacks concrete examples. Tasks derived from retrospective
+      observations should include specific examples or reproduction steps, not just abstract
+      descriptions of problems."
+    created_at: 2026-01-21T08:40:12.805Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
