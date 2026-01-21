@@ -20034,4 +20034,47 @@
                 then: output indicates retrospective verification source
         ```
       supersedes: null
+    - _ulid: 01KFH4FTW0N0E8R3CRZAADWZCZ
+      created_at: 2026-01-21T20:38:42.816Z
+      author: "@claude"
+      content: |-
+        ## Schema Changes
+
+        Add optional fields to spec item schema (src/schema/items.ts):
+
+        ```typescript
+        // Verification metadata for retrospective specs
+        verified_at: z.string().datetime().optional(),
+        verified_by: z.string().startsWith('@').optional(),
+        ```
+
+        These fields are:
+        - Optional on all specs
+        - Required when spec uses @trait-retrospective AND status is implemented/verified
+        - verified_by should be a valid agent reference
+
+        ## Validation Behavior Changes
+
+        Update src/cli/commands/validate.ts alignment checking:
+
+        1. When checking for orphaned specs:
+           - Skip specs that use @trait-retrospective
+           - Report them separately as 'Retrospective specs: N' (informational)
+
+        2. When checking status mismatches:
+           - Skip specs with @trait-retrospective (status is manually verified)
+           - Only report mismatches for task-tracked specs
+
+        3. New validation for retrospective specs:
+           - Warn if @trait-retrospective used but missing verified_at/verified_by
+           - Warn if verified_by doesn't resolve to a valid agent
+
+        Example output after implementation:
+        ```
+        Alignment warnings: 12
+          Orphaned specs (no tasks): 0
+          Retrospective specs: 127         # Informational, not warning
+          Status mismatches: 5             # Only real issues
+        ```
+      supersedes: null
   todos: []
