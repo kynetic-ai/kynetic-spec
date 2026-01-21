@@ -1112,3 +1112,7 @@ requirements:
         given: task status is cancelled
         when: kspec task complete @ref executed
         then: "error: Cannot complete cancelled task. Use kspec task reset @ref first"
+      - id: ac-6
+        given: task status is completed
+        when: kspec task complete @ref executed
+        then: "error: Task is already completed"
