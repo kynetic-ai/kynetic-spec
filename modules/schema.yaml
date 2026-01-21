@@ -1195,3 +1195,6 @@ requirements:
         given: non-interactive environment
         when: no TTY available
         then: "error: Non-interactive environment. Use --force to proceed"
+    status:
+      maturity: draft
+      implementation: in_progress
