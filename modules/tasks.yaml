@@ -1145,3 +1145,8 @@ requirements:
     created: 2026-01-21T05:25:15.560Z
     description: "Add --refs support to kspec task set for bulk updates. Note: status changes must use
       dedicated commands (start, complete, etc.), not task set."
+    acceptance_criteria:
+      - id: ac-1
+        given: multiple refs provided
+        when: kspec task set --refs @a @b @c --priority 1 executed
+        then: all tasks updated with same field values
