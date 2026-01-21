@@ -14,6 +14,7 @@ import {
   checkSlugUniqueness,
   patchSpecItems,
   findChildItems,
+  findTraitImplementors,
   createNote,
   type LoadedSpecItem,
   type PatchOperation,
@@ -663,6 +664,7 @@ export function registerItemCommands(program: Command): void {
     .command('delete <ref>')
     .description('Delete a spec item (including nested items)')
     .option('--force', 'Skip confirmation')
+    .option('--cascade', 'Delete item and all descendants')
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();
@@ -687,14 +689,117 @@ export function registerItemCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // Warn about nested children being deleted too
-        // TODO: could add a check here for child items
+        // AC-7: Check if this is a trait with implementors
+        const implementors = findTraitImplementors(foundItem, items);
+        if (implementors.length > 0) {
+          const implementorRefs = implementors.map(i => `@${i.slugs[0] || i._ulid.slice(0, 8)}`).join(', ');
+          const errorMsg = `Cannot delete: trait is used by ${implementors.length} specs. Remove trait from specs first: ${implementorRefs}`;
 
-        const deleted = await deleteSpecItem(ctx, foundItem);
-        if (deleted) {
+          if (isJsonMode()) {
+            error(errorMsg, {
+              error: 'trait_in_use',
+              implementors: implementors.map(i => ({
+                ulid: i._ulid,
+                slug: i.slugs[0],
+                title: i.title,
+              })),
+            });
+          } else {
+            error(errorMsg);
+          }
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        // AC-1/AC-8: Check for child items (nested YAML items, not relates_to refs)
+        const children = findChildItems(foundItem, items);
+
+        if (children.length > 0 && !options.cascade) {
+          // AC-1: Block deletion if children exist without --cascade
+          const errorMsg = `Cannot delete: item has ${children.length} children. Use --cascade to delete recursively`;
+
+          if (isJsonMode()) {
+            // AC-10: JSON error includes children array
+            error(errorMsg, {
+              error: 'has_children',
+              children: children.map(c => ({
+                ulid: c._ulid,
+                slug: c.slugs[0],
+                title: c.title,
+                ref: `@${c.slugs[0] || c._ulid.slice(0, 8)}`,
+              })),
+            });
+          } else {
+            error(errorMsg);
+          }
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        // AC-9: Custom confirmation prompt for cascade
+        if (children.length > 0 && options.cascade && !options.force) {
+          const itemRef = `@${foundItem.slugs[0] || foundItem._ulid.slice(0, 8)}`;
+
+          // Check for JSON mode - requires --force
+          if (isJsonMode()) {
+            error('Confirmation required. Use --force with --json');
+            process.exit(EXIT_CODES.ERROR);
+          }
+
+          // Check for non-interactive environment
+          const isTTY = process.env.KSPEC_TEST_TTY === 'true' || process.stdin.isTTY;
+          if (!isTTY) {
+            error('Non-interactive environment. Use --force to proceed');
+            process.exit(EXIT_CODES.ERROR);
+          }
+
+          // Show confirmation prompt
+          const readline = await import('readline');
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+
+          const response = await new Promise<string>(resolve => {
+            rl.question(chalk.yellow(`Delete ${itemRef} and ${children.length} descendant items? [y/N] `), answer => {
+              rl.close();
+              resolve(answer);
+            });
+          });
+
+          if (response.toLowerCase() !== 'y') {
+            console.log(chalk.gray('Operation cancelled'));
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+        }
+
+        // AC-2/AC-3: Delete item and all descendants with cascade
+        const itemsToDelete = options.cascade ? [foundItem, ...children] : [foundItem];
+        let deletedCount = 0;
+
+        // Delete in reverse order (deepest first) to avoid path issues
+        const sortedItems = [...itemsToDelete].sort((a, b) => {
+          const aDepth = a._path ? a._path.split('.').length : 0;
+          const bDepth = b._path ? b._path.split('.').length : 0;
+          return bDepth - aDepth;
+        });
+
+        for (const itemToDelete of sortedItems) {
+          const deleted = await deleteSpecItem(ctx, itemToDelete);
+          if (deleted) {
+            deletedCount++;
+          }
+        }
+
+        if (deletedCount > 0) {
+          // AC-6: Single shadow commit with all deletions
           const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
-          await commitIfShadow(ctx.shadow, 'item-delete', itemSlug);
-          success(`Deleted item: ${foundItem.title}`, { deleted: true, ulid: foundItem._ulid });
+          const commitMsg = deletedCount > 1 ? `${deletedCount} items` : itemSlug;
+          await commitIfShadow(ctx.shadow, 'item-delete', commitMsg);
+
+          if (deletedCount > 1) {
+            success(`Deleted ${deletedCount} items`, { deleted: deletedCount, root_ulid: foundItem._ulid });
+          } else {
+            success(`Deleted item: ${foundItem.title}`, { deleted: true, ulid: foundItem._ulid });
+          }
         } else {
           error(errors.failures.deleteItem);
           console.log(chalk.gray('Edit the source file directly: ' + foundItem._sourceFile));

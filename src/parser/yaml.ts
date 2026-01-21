@@ -1337,6 +1337,24 @@ export async function updateSpecItem(
 }
 
 /**
+ * Check if an item is a trait with implementors.
+ * Returns array of items that use this trait via the 'traits' field.
+ */
+export function findTraitImplementors(trait: LoadedSpecItem, allItems: LoadedSpecItem[]): LoadedSpecItem[] {
+  // Check if the item is actually a trait
+  if (trait.type !== 'trait') {
+    return [];
+  }
+
+  // Find all items that reference this trait in their 'traits' array
+  const traitRefs = ['@' + trait._ulid, ...trait.slugs.map(s => '@' + s)];
+  return allItems.filter(item => {
+    if (!item.traits || item.traits.length === 0) return false;
+    return item.traits.some((traitRef: string) => traitRefs.includes(traitRef));
+  });
+}
+
+/**
  * Delete a spec item from its source file.
  * Works with nested structures using the _path field.
  */
