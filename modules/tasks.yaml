@@ -1194,3 +1194,7 @@ requirements:
         given: multiline description
         when: --description 'Line1\nLine2' or heredoc provided
         then: description preserves newlines
+      - id: ac-4
+        given: special characters in description
+        when: "--description 'Contains: colons, quotes, and doubles' provided"
+        then: description preserved correctly (proper YAML escaping)
