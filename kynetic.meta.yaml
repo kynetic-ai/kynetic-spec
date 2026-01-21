@@ -2443,4 +2443,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFG1JNM235TJ78BTXQZJYKN2
+    type: success
+    content: Task @extract-test-helpers was already completed before being picked up. The workflow
+      correctly handled this by verifying implementation (tests/helpers/cli.ts exists with all
+      helpers, no duplicates in test files, 841 tests pass) and documenting findings in task notes
+      before marking complete. This demonstrates good verification practices when tasks may have
+      been completed out of band.
+    created_at: 2026-01-21T10:28:35.586Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

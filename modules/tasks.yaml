@@ -1219,3 +1219,16 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFGF8XEDNW7Q9RTR1Z47ATRM
+    slugs:
+      - spec-task-clear-deps
+    title: Clear Task Dependencies
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T14:27:55.982Z
