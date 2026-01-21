@@ -1106,6 +1106,7 @@ requirements:
     tests: []
     traits:
       - "@trait-confirmation-prompt"
+      - "@trait-json-output"
     notes: []
     created: 2026-01-21T05:24:01.143Z
     description: Block item deletion when children exist. Require --cascade flag to recursively delete
