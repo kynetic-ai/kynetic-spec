@@ -1572,6 +1572,8 @@ describe('Integration: kspec log', () => {
     try {
       // Create a repo with only shadow branch commits
       execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync('git config user.email "test@test.com"', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync('git config user.name "Test"', { cwd: emptyTempDir, stdio: 'ignore' });
 
       // Create an orphan shadow branch with a commit
       execSync('git checkout --orphan kspec-meta', { cwd: emptyTempDir, stdio: 'ignore' });
