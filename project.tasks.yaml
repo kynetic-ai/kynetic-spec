@@ -12917,6 +12917,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T14:50:56.235Z
+  started_at: 2026-01-21T08:07:54.047Z
   notes:
     - _ulid: 01KFBBSVAJ24MQEYYB19Z9Q42C
       created_at: 2026-01-19T14:51:04.402Z
@@ -12950,9 +12951,17 @@
         - Add --skip-review and --reason flags
         - Update error messages in src/strings/errors.ts
       supersedes: null
+    - _ulid: 01KFFT0MZBA6JXXJ2BCWCACMV6
+      created_at: 2026-01-21T08:16:25.067Z
+      author: "@claude"
+      content: Implementation complete. Added --skip-review and --reason flags to task complete command.
+        Enforced that tasks must be in pending_review state before completion unless --skip-review
+        is used. All 9 ACs have comprehensive test coverage with proper AC annotations. Updated
+        existing tests to use proper workflow (submit before complete) or --skip-review flag where
+        appropriate. All 808 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T08:07:54.047Z
 - _ulid: 01KFBBTTJ9XBBN9BAMVXBJVTM9
   slugs:
     - fix-test-repo-setup
