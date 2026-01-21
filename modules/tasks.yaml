@@ -1052,3 +1052,7 @@ requirements:
         when: kspec task reset @ref executed
         then: status becomes pending, timestamps cleared (completed_at, submitted_at, blocked_reason,
           cancel_reason)
+      - id: ac-2
+        given: task has status pending
+        when: kspec task reset @ref executed
+        then: "error: Task is already pending"
