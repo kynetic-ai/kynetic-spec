@@ -15619,6 +15619,7 @@
         - Pass to task creation, skip if empty string
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFC4PJ16QG1X7NT22FKCKHQ8
   slugs: []
   title: Fix staleness.test.ts to use CLI_PATH pattern instead of global kspec
