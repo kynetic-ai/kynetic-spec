@@ -1202,3 +1202,7 @@ requirements:
         given: JSON output with description
         when: --description X --json provided
         then: JSON output includes description field
+      - id: ac-6
+        given: empty description
+        when: --description '' provided
+        then: treated as no description (field omitted)
