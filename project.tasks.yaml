@@ -1533,11 +1533,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2223,6 +2225,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2338,6 +2341,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16026,6 +16030,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17901,5 +17906,45 @@
         - task-note operations: +2 blank lines each
         - Derive operations: varies (+20-60 lines)
         - Consistent growth on every state-changing operation
+      supersedes: null
+    - _ulid: 01KFF0E5N2QX23QTHJ42ZACABZ
+      created_at: 2026-01-21T00:49:25.154Z
+      author: "@claude"
+      content: |-
+        ## Investigation: YAML Library Behavior
+
+        ### Test Results
+        Created test files comparing original vs stringified output:
+        ```
+        diff /tmp/original.yaml /tmp/output.yaml
+        1531a1532
+        > 
+        1822a1824
+        > 
+        2213a2216
+        > 
+        2614a2618
+        > 
+        15849a15854
+        >
+        ```
+
+        ### What the yaml library does
+        - Pure round-trip (parse -> stringify) on the CURRENT file adds 5 blank lines
+        - File goes from 17774 lines to 17779 lines
+        - Blank lines go from 4816 to 4821
+
+        ### What the yaml library does NOT do
+        - Simple test cases with multiline content are stable
+        - Folded scalars (>-) converted to literal scalars (|-) correctly
+        - Normal block scalar content round-trips without issues
+
+        ### The Specific Trigger
+        The issue occurs when block scalar content contains:
+        1. Many consecutive empty lines (already accumulated)
+        2. A line with ONLY whitespace/indentation (like '          ' - 10 spaces)
+        3. Followed by content at normal indentation
+
+        The library inserts a blank line before the whitespace-only line.
       supersedes: null
   todos: []
