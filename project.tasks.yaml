@@ -13689,6 +13689,7 @@
         Consider using ReferenceIndex methods instead.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBMAE30DXK93EJPVJ2PKJJH
   slugs:
     - clarify-test-names
