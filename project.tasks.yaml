@@ -13670,6 +13670,7 @@
         - Check process.stdin.isTTY for interactive detection
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
   slugs:
     - item-delete-child-check
