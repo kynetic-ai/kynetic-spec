@@ -226,26 +226,57 @@ describe('Integration: task reset', () => {
 
   // AC: @spec-task-reset ac-5 - Dependency check happens on B's start, not A's reset
   it('should reset task without affecting dependent tasks', () => {
-    // Task fixture has test-task-blocked which depends on test-task-pending
-    // Complete test-task-pending first
+    // Fixture: test-task-blocked depends on @test-task-pending
+    // AC scenario: task A is completed, task B depends on A
+
+    // Step 1: Complete task A (test-task-pending)
     kspec('task start @test-task-pending', tempDir);
     kspec('task complete @test-task-pending --reason "Done"', tempDir);
 
-    // Verify test-task-blocked can now start (dependency satisfied)
-    // Note: In fixtures, test-task-blocked depends on test-task-completed, not test-task-pending
-    // So let's manually verify the behavior is correct
-
-    // Reset test-task-pending (which nothing depends on in fixtures)
-    const output = kspec('task reset @test-task-pending', tempDir);
-    expect(output).toContain('Reset task');
-
-    // The dependent task should remain unaffected
-    // Dependency checking happens when starting the dependent task, not when resetting the dependency
-    const pendingTask = kspecJson<{ status: string }>(
+    // Step 2: Verify task A is completed
+    const taskA = kspecJson<{ status: string }>(
       'task get @test-task-pending',
       tempDir
     );
-    expect(pendingTask.status).toBe('pending');
+    expect(taskA.status).toBe('completed');
+
+    // Step 3: Get status of task B (test-task-blocked) before reset
+    const taskBBefore = kspecJson<{ status: string; depends_on: string[] }>(
+      'task get @test-task-blocked',
+      tempDir
+    );
+    expect(taskBBefore.depends_on).toContain('@test-task-pending');
+    const taskBStatusBefore = taskBBefore.status;
+
+    // Step 4: Verify task B is ready (dependency satisfied)
+    const readyBefore = kspec('tasks ready', tempDir);
+    expect(readyBefore).toContain('test-task-blocked');
+
+    // Step 5: Reset task A to pending
+    const output = kspec('task reset @test-task-pending', tempDir);
+    expect(output).toContain('Reset task');
+
+    // Step 6: Verify task A is now pending
+    const taskAAfterReset = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskAAfterReset.status).toBe('pending');
+
+    // Step 7: Verify task B status is unaffected by the reset
+    // AC-5: "B unaffected (dependency check happens on B's start)"
+    // The reset of A doesn't change B's status field
+    const taskBAfter = kspecJson<{ status: string }>(
+      'task get @test-task-blocked',
+      tempDir
+    );
+    expect(taskBAfter.status).toBe(taskBStatusBefore);
+
+    // Step 8: But dependency checking means B is no longer ready
+    // This validates that "dependency check happens on B's start" -
+    // it's not ready to start anymore because A is pending again
+    const readyAfter = kspec('tasks ready', tempDir);
+    expect(readyAfter).not.toContain('test-task-blocked');
   });
 
   // AC: @spec-task-reset ac-6 - JSON output includes previous_status, new_status, cleared_fields
