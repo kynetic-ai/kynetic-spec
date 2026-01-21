@@ -2454,4 +2454,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFGRVJPBP5HS9S19ENFGS448
+    type: success
+    content: "Spec-first with traits: Creating spec, adding traits, then deriving task immediately
+      surfaced what tests were needed (trait ACs). Applied to --clear-deps feature."
+    created_at: 2026-01-21T17:15:24.748Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
