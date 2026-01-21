@@ -12951,6 +12951,7 @@
         - Update error messages in src/strings/errors.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBBTTJ9XBBN9BAMVXBJVTM9
   slugs:
     - fix-test-repo-setup
