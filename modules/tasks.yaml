@@ -1060,3 +1060,8 @@ requirements:
         given: task reset succeeds
         when: operation completes
         then: shadow commit with message task-reset
+      - id: ac-4
+        given: task reset succeeds
+        when: operation completes
+        then: "note auto-added: Reset from {previous_status} to pending (includes cancel_reason if was
+          cancelled)"
