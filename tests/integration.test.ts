@@ -5,6 +5,8 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
+import * as fssync from 'node:fs';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
 import {
@@ -1484,6 +1486,112 @@ describe('Integration: kspec log', () => {
     expect(output).toContain('--spec');
     expect(output).toContain('--task');
     expect(output).toContain('--oneline');
+  });
+
+  // AC: @spec-log-empty-repo ac-1
+  it('should show friendly message when repo has no commits', () => {
+    // Create a fresh repo with no commits
+    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-empty-'));
+    try {
+      execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
+
+      const output = kspec('log', emptyTempDir);
+      expect(output).toContain('No commits in repository yet');
+      expect(output).not.toContain('fatal');
+    } finally {
+      fssync.rmSync(emptyTempDir, { recursive: true, force: true });
+    }
+  });
+
+  // AC: @spec-log-empty-repo ac-2
+  it('should show friendly message when repo has no commits and ref is provided', async () => {
+    // Create a NEW temp dir with fixtures but NO git commits
+    const emptyWithFixtures = await setupTempFixtures();
+    try {
+      // setupTempFixtures creates git repo and makes one commit, so we need fresh repo
+      // Remove .git and reinit without commits
+      fssync.rmSync(path.join(emptyWithFixtures, '.git'), { recursive: true, force: true });
+      execSync('git init', { cwd: emptyWithFixtures, stdio: 'ignore' });
+
+      const output = kspec('log @test-task-pending', emptyWithFixtures);
+      expect(output).toContain('No commits in repository yet');
+      expect(output).not.toContain('fatal');
+    } finally {
+      await cleanupTempDir(emptyWithFixtures);
+    }
+  });
+
+  // AC: @spec-log-empty-repo ac-3
+  it('should differentiate between no commits and no matching commits', () => {
+    // This test uses the existing tempDir which has commits
+    // When looking for a non-existent ref, should show "No commits found" not "No commits in repository yet"
+    const output = kspec('log @test-task-pending', tempDir);
+    // Should show "No commits found" because there ARE commits, just none matching
+    expect(output).toContain('No commits found');
+    expect(output).not.toContain('No commits in repository yet');
+  });
+
+  // AC: @spec-log-empty-repo ac-4
+  it('should return proper JSON for empty repo', () => {
+    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-empty-'));
+    try {
+      execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
+
+      const output = kspec('log --json', emptyTempDir);
+      const parsed = JSON.parse(output);
+
+      expect(parsed).toHaveProperty('commits');
+      expect(parsed.commits).toEqual([]);
+      expect(parsed).toHaveProperty('message');
+      expect(parsed.message).toBe('No commits in repository yet');
+    } finally {
+      fssync.rmSync(emptyTempDir, { recursive: true, force: true });
+    }
+  });
+
+  // AC: @spec-log-empty-repo ac-5
+  it('should show friendly message with passthrough args in empty repo', async () => {
+    const emptyWithFixtures = await setupTempFixtures();
+    try {
+      // Remove .git and reinit without commits
+      fssync.rmSync(path.join(emptyWithFixtures, '.git'), { recursive: true, force: true });
+      execSync('git init', { cwd: emptyWithFixtures, stdio: 'ignore' });
+
+      // Use a ref with passthrough args (ref comes before --)
+      const output = kspec('log @test-task-pending -- --stat', emptyWithFixtures);
+      expect(output).toContain('No commits in repository yet');
+      expect(output).not.toContain('fatal');
+    } finally {
+      await cleanupTempDir(emptyWithFixtures);
+    }
+  });
+
+  // AC: @spec-log-empty-repo ac-6
+  it('should search shadow branch when main is empty but shadow has commits', () => {
+    const emptyTempDir = fssync.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-shadow-'));
+    try {
+      // Create a repo with only shadow branch commits
+      execSync('git init', { cwd: emptyTempDir, stdio: 'ignore' });
+
+      // Create an orphan shadow branch with a commit
+      execSync('git checkout --orphan kspec-meta', { cwd: emptyTempDir, stdio: 'ignore' });
+      fssync.writeFileSync(path.join(emptyTempDir, 'test.txt'), 'test');
+      execSync('git add test.txt', { cwd: emptyTempDir, stdio: 'ignore' });
+      execSync('git commit -m "test: shadow commit\n\nTask: @test-task"', {
+        cwd: emptyTempDir,
+        stdio: 'ignore',
+      });
+
+      // Switch back to main (which has no commits)
+      execSync('git checkout -b main', { cwd: emptyTempDir, stdio: 'ignore' });
+
+      // Should find commits from shadow branch
+      const output = kspec('log', emptyTempDir);
+      expect(output).toContain('test: shadow commit');
+      expect(output).not.toContain('No commits in repository yet');
+    } finally {
+      fssync.rmSync(emptyTempDir, { recursive: true, force: true });
+    }
   });
 });
 
