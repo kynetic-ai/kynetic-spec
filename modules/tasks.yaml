@@ -1108,3 +1108,7 @@ requirements:
         given: task status is blocked
         when: kspec task complete @ref executed
         then: "error: Cannot complete blocked task"
+      - id: ac-5
+        given: task status is cancelled
+        when: kspec task complete @ref executed
+        then: "error: Cannot complete cancelled task. Use kspec task reset @ref first"
