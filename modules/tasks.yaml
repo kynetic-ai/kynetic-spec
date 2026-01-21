@@ -1239,3 +1239,7 @@ requirements:
         given: a task has dependencies
         when: kspec task set @ref --clear-deps is executed
         then: depends_on is set to empty array, task note added, shadow committed
+      - id: ac-2
+        given: a task has no dependencies
+        when: kspec task set @ref --clear-deps is executed
+        then: succeeds with no changes needed message
