@@ -79,7 +79,8 @@ jobs:
             for (const thread of unresolvedThreads) {
               const comment = thread.comments.nodes[0];
               if (comment) {
-                console.log(`Thread by @${comment.author.login}:`);
+                const authorName = comment.author?.login ?? 'unknown';
+                console.log(`Thread by @${authorName}:`);
                 if (comment.path && comment.line) {
                   console.log(`  Location: ${comment.path}:${comment.line}`);
                 }
