@@ -19735,15 +19735,21 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: "Implement: Clear Task Dependencies"
+- _ulid: 01KFGF9REKV186CTKTV1SB0FD9
+  slugs:
+    - task-clear-task-dependencies
+  title: "Implement: Clear Task Dependencies"
   type: task
   spec_ref: "@spec-task-clear-deps"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-clear-task-dependencies
-  tags: []
+  status: in_progress
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-21T14:28:23.635Z
   notes:
     - _ulid: 01KFGF9REJ1HCR58CGZJM07GMD
       created_at: 2026-01-21T14:28:23.635Z
@@ -19768,10 +19774,5 @@
         - ac-3: Given --clear-deps and --depends-on are both provided, when command is executed,
         then error indicating flags are mutually exclusive
       supersedes: null
-  _ulid: 01KFGF9REKV186CTKTV1SB0FD9
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-21T14:28:23.635Z
   todos: []
+  started_at: 2026-01-21T14:28:28.673Z
