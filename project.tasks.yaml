@@ -13760,7 +13760,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -13791,6 +13791,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-01-21T08:03:53.875Z
 - _ulid: 01KFBKR7ZV58GWPSX4FSACHRF2
   slugs:
     - task-set-batch
@@ -15836,6 +15837,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #119. All 6 ACs have test coverage with proper AC annotations. Fixed
+    shell escaping bug in multiline test - changed from $'...' to printf syntax. All 792 tests
+    pass."
   depends_on: []
   context: []
   priority: 2
@@ -15845,6 +15849,7 @@
   vcs_refs: []
   created_at: 2026-01-19T21:42:15.984Z
   started_at: 2026-01-21T07:41:23.310Z
+  completed_at: 2026-01-21T08:01:39.276Z
   notes:
     - _ulid: 01KFC3B3WKRSWDR5T51C03HZWS
       created_at: 2026-01-19T21:42:27.475Z
@@ -15916,10 +15921,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T08:01:39.276Z
-  closed_reason: "Merged in PR #119. All 6 ACs have test coverage with proper AC annotations. Fixed
-    shell escaping bug in multiline test - changed from $'...' to printf syntax. All 792 tests
-    pass."
 - _ulid: 01KFC4PJ16QG1X7NT22FKCKHQ8
   slugs: []
   title: Fix staleness.test.ts to use CLI_PATH pattern instead of global kspec
