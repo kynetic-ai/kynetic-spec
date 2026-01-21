@@ -1104,3 +1104,7 @@ requirements:
         given: task status is pending
         when: kspec task complete @ref executed
         then: "error: Task must be started and submitted first"
+      - id: ac-4
+        given: task status is blocked
+        when: kspec task complete @ref executed
+        then: "error: Cannot complete blocked task"
