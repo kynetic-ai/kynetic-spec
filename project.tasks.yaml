@@ -13561,6 +13561,13 @@
 
         Next: Wait for CI to complete, then submit task for review.
       supersedes: null
+    - _ulid: 01KFFPH3EPAYVYN2Y8CN7BVWPW
+      created_at: 2026-01-21T07:15:29.878Z
+      author: "@claude"
+      content: "Fixed PR review issue: added null check for comment.author using optional chaining
+        (comment.author?.login ?? 'unknown') to handle deleted user accounts. Pushed fix to
+        feat/ci-review-check branch."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBDM8ZD201SSV9NEETHADE7
