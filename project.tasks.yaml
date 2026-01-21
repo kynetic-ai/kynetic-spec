@@ -17417,6 +17417,7 @@
         executed, then status=aborted, abort_reason recorded, completed_at set; shadow committed
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFESYSRAWCSMC2Z7N1BY4Z4G
   slugs:
     - task-workflow-step-navigation
@@ -18277,6 +18278,7 @@
   meta_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: "Addressed in PR #111 - fix was unified to toYaml() level in the same PR"
   depends_on: []
   context: []
   priority: 2
@@ -18406,4 +18408,3 @@
         be closed once PR #111 is merged."
       supersedes: null
   todos: []
-  closed_reason: "Addressed in PR #111 - fix was unified to toYaml() level in the same PR"
