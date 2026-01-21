@@ -13889,6 +13889,7 @@
         4.x breaking change. May require test adjustments.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBP98HFVG1WE75DKPYTXSK1
   slugs:
     - extract-test-helpers
