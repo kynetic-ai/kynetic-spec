@@ -13622,6 +13622,17 @@
       author: "@claude"
       content: TODO at src/cli/commands/task.ts:228 - see @multi-ref-batch spec
       supersedes: null
+    - _ulid: 01KFFG8J4QRS8W2BBNR5AG6J72
+      created_at: 2026-01-21T05:25:58.551Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+        - File: src/cli/commands/task.ts - modify set handler (line ~292)
+        - Existing TODO at line 293: Does not support --refs yet
+        - Use executeBatchOperation() from src/cli/batch.ts
+        - Reject --status flag entirely in task set (both single and batch mode)
+        - Single shadow commit for all changes
+      supersedes: null
   todos: []
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
   slugs:
