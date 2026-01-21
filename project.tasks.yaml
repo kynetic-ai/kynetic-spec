@@ -15028,6 +15028,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Already implemented in commit 971caec. Verified tests/helpers/cli.ts contains all
+    shared helpers, no duplicates remain, and all 841 tests pass.
   depends_on: []
   context: []
   priority: 4
@@ -15037,6 +15039,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:54:15.214Z
   started_at: 2026-01-21T10:28:19.393Z
+  completed_at: 2026-01-21T10:28:24.176Z
   notes:
     - _ulid: 01KFBP9FDAHQF4A6X1DQ93HXBT
       created_at: 2026-01-19T17:54:22.251Z
@@ -15068,9 +15071,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T10:28:24.176Z
-  closed_reason: Already implemented in commit 971caec. Verified tests/helpers/cli.ts contains all
-    shared helpers, no duplicates remain, and all 841 tests pass.
 - _ulid: 01KFBPQANQR1NMWZ72QW6KX579
   slugs:
     - fix-log-empty-repo
@@ -19735,3 +19735,43 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: "Implement: Clear Task Dependencies"
+  type: task
+  spec_ref: "@spec-task-clear-deps"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-clear-task-dependencies
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KFGF9REJ1HCR58CGZJM07GMD
+      created_at: 2026-01-21T14:28:23.635Z
+      author: "@kspec-derive"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Allow clearing all dependencies from a task via the task set command. Currently --depends-on
+        can only set dependencies to new values, not clear them to an empty list.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given a task has dependencies, when kspec task set @ref --clear-deps is executed,
+        then depends_on is set to empty array, task note added, shadow committed
+
+        - ac-2: Given a task has no dependencies, when kspec task set @ref --clear-deps is executed,
+        then succeeds with no changes needed message
+
+        - ac-3: Given --clear-deps and --depends-on are both provided, when command is executed,
+        then error indicating flags are mutually exclusive
+      supersedes: null
+  _ulid: 01KFGF9REKV186CTKTV1SB0FD9
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-21T14:28:23.635Z
+  todos: []
