@@ -422,3 +422,14 @@ inbox:
       - derive
       - bug
     added_by: "@claude"
+  - _ulid: 01KFEYXF9Y42AYHFPQC43PR13F
+    text: "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec item set
+      for spec items. When deriving tasks, automatically create task dependencies based on spec
+      dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates task-A
+      depending on task-B. Removes need to manually set task dependencies after derive."
+    created_at: 2026-01-21T00:22:49.407Z
+    tags:
+      - cli
+      - derive
+      - dx
+    added_by: "@claude"

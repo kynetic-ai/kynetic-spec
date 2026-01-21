@@ -1921,4 +1921,21 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFEYT39MFQGBH9YY7K8GSH8K
+    type: success
+    content: Subagent review of specs before implementation caught 4 missing ACs and 2 missing flag
+      behaviors. Worth doing for non-trivial specs.
+    created_at: 2026-01-21T00:20:58.804Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFEYT8CH48P6B4WGKTCM7627
+    type: success
+    content: Breaking monolithic feature into requirements before deriving tasks produces self-contained
+      tasks with proper dependencies. One feature with 14 ACs became 4 requirements with 4-6 ACs
+      each.
+    created_at: 2026-01-21T00:21:04.018Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
