@@ -13593,6 +13593,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #121. Fixed JSON output consistency by removing command-specific --json
+    flag from clone-for-testing. All 5 ACs have E2E test coverage with AC annotations. All 808 tests
+    pass."
   depends_on: []
   context: []
   priority: 3
@@ -13600,6 +13603,7 @@
   vcs_refs: []
   created_at: 2026-01-19T15:22:58.924Z
   started_at: 2026-01-21T08:25:27.223Z
+  completed_at: 2026-01-21T08:38:22.851Z
   notes:
     - _ulid: 01KFBDMFJBB1A6GBW2M8NMT2ZY
       created_at: 2026-01-19T15:23:05.675Z
@@ -13696,17 +13700,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T08:38:22.851Z
-  closed_reason: "Merged in PR #121. Fixed JSON output consistency by removing command-specific --json
-    flag from clone-for-testing. All 5 ACs have E2E test coverage with AC annotations. All 808 tests
-    pass."
 - _ulid: 01KFBDQED41BH9A9REH81KX34J
   slugs: []
   title: Add spec-schema drift detection to validation
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -13736,6 +13736,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T08:38:37.263Z
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
   slugs: []
   title: Improve Result type enforcement and type guards
