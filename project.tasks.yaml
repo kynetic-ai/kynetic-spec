@@ -14794,7 +14794,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-reset-command"
@@ -14827,6 +14827,10 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-01-21T10:25:16.187Z
+  closed_reason: Fixed incorrect task status for @task-yaml-formatting. Used kspec task reset to
+    change from cancelled to pending, then properly completed it with documentation of the yaml
+    library migration work.
 - _ulid: 01KFBNBB7DZWZBA1ZA8E7QVX80
   slugs: []
   title: Spec out session log analysis tooling
