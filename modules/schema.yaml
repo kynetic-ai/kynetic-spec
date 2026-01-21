@@ -1139,3 +1139,7 @@ requirements:
         given: item is trait with implementors
         when: kspec item delete @trait-ref executed
         then: "error: Cannot delete: trait is used by N specs. Remove trait from specs first"
+      - id: ac-8
+        given: item has relates_to refs
+        when: kspec item delete @ref executed
+        then: deletion proceeds (relates_to is not parent-child)
