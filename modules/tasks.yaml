@@ -1120,3 +1120,7 @@ requirements:
         given: user wants to skip review
         when: kspec task complete @ref --skip-review --reason 'Hotfix, no review needed' executed
         then: bypasses enforcement, completes directly, reason documented in note
+      - id: ac-8
+        given: --skip-review provided without --reason
+        when: kspec task complete @ref --skip-review executed
+        then: "error: --skip-review requires --reason to document why"
