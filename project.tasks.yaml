@@ -20309,4 +20309,11 @@
 
         - Answers 'how do we know this is implemented?'
       supersedes: null
+    - _ulid: 01KFHFG3SMNFX4DQ36565968HT
+      created_at: 2026-01-21T23:51:06.292Z
+      author: "@human"
+      content: "Automation status set to needs_review: Feature with thorough design in notes - needs spec
+        creation from drafted ACs before automation"
+      supersedes: null
   todos: []
+  automation: needs_review
