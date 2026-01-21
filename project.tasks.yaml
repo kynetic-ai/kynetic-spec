@@ -13670,7 +13670,14 @@
       author: "@claude"
       content: TODO at src/cli/commands/ralph.ts:189 - currently auto-denies in non-yolo mode
       supersedes: null
+    - _ulid: 01KFFEMBZ663C0KH80GTW0RQF1
+      created_at: 2026-01-21T04:57:28.294Z
+      author: "@human"
+      content: "Automation status set to needs_review: Needs spec: define permission prompt UX,
+        interaction model, timeout behavior"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KFBM8EMBQWHDTRN8CGCRFYK4
   slugs:
     - consolidate-short-ulid
