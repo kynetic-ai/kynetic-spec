@@ -99,7 +99,7 @@ describe('ralph command', () => {
     expect(result.output).not.toContain('Iteration 2/5');
   });
 
-  // AC-16: Only process automation-eligible tasks
+  // AC: @cli-ralph ac-16
   it('only considers automation-eligible tasks, ignoring manual_only and unassessed', async () => {
     // Modify fixtures: mark one task as manual_only (should be ignored)
     // The pending task has no automation field (unassessed) - should also be ignored
