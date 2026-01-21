@@ -1532,11 +1532,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2220,6 +2222,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2335,6 +2338,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16021,6 +16025,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17867,5 +17872,34 @@
         4. Writes ALL tasks back with writeYamlFilePreserveFormat
 
         5. Each write adds blank lines to the output
+      supersedes: null
+    - _ulid: 01KFF0DS3BEF80GTMM54PM39CB
+      created_at: 2026-01-21T00:49:12.299Z
+      author: "@claude"
+      content: |-
+        ## Evidence: Blank Line Growth
+
+        Tracked one specific note (01KF7NXW2HRKJBBT7EAWX8SBMG) across commits:
+
+        Original (commit f647d49):
+        - Note section: 39 lines
+        - Content length: 1309 characters
+        - Trailing newlines: 0
+
+        Current (commit aeecd57~1):
+        - Note section: 611 lines (grew by 572 lines!)
+        - Content length: 1881 characters
+        - Extra 572 characters are ALL newlines
+
+        ### File-wide growth:
+        - bc90cca (initial): 278 blank lines
+        - aeecd57 (recent): 4820 blank lines
+        - Growth: +4542 blank lines over project history
+
+        ### Per-commit pattern (from git log analysis):
+        - task-set operations: +5 blank lines each
+        - task-note operations: +2 blank lines each
+        - Derive operations: varies (+20-60 lines)
+        - Consistent growth on every state-changing operation
       supersedes: null
   todos: []
