@@ -1168,3 +1168,8 @@ requirements:
     notes: []
     created: 2026-01-21T05:28:07.640Z
     description: Add confirmation prompt when removing acceptance criteria without --force.
+    acceptance_criteria:
+      - id: ac-1
+        given: AC exists on spec
+        when: kspec item ac remove @spec ac-1 executed without --force
+        then: "prompt: Remove acceptance criterion ac-1? [y/N]"
