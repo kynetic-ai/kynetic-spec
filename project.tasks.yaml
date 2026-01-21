@@ -13700,6 +13700,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #117. Test unskipped and validates AC-3 for workflow reference
+    validation. All 784 tests pass."
   depends_on: []
   context: []
   priority: 2
@@ -13708,6 +13710,7 @@
   vcs_refs: []
   created_at: 2026-01-19T16:46:04.659Z
   started_at: 2026-01-21T07:12:03.213Z
+  completed_at: 2026-01-21T07:27:54.880Z
   notes:
     - _ulid: 01KFBJCMV538CDGZN0P8D9ZS75
       created_at: 2026-01-19T16:46:11.814Z
@@ -13725,9 +13728,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T07:27:54.880Z
-  closed_reason: "Merged in PR #117. Test unskipped and validates AC-3 for workflow reference
-    validation. All 784 tests pass."
 - _ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
   slugs:
     - dedupe-format-relative-time
@@ -14201,7 +14201,7 @@
   type: bug
   spec_ref: "@spec-log-empty-repo"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14230,6 +14230,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T07:28:10.700Z
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
   slugs:
     - task-dynamic-workflow-skills
