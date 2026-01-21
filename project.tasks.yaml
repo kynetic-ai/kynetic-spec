@@ -13377,6 +13377,7 @@
         Could use GitHub's review thread resolution status or custom comment parsing.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBDM8ZD201SSV9NEETHADE7
   slugs: []
   title: Audit and fix JSON output consistency across CLI
