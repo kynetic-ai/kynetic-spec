@@ -2247,4 +2247,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFVG0YMGCGHMCBRPPE67CGT
+    type: success
+    content: Stop hook successfully caught incomplete session cleanup. Ralph loop should always
+      checkpoint in-progress tasks before ending iteration, even if not completing them. The hook
+      reminder ensures continuity for next session.
+    created_at: 2026-01-21T08:42:17.428Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

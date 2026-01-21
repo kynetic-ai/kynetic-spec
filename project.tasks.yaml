@@ -14222,6 +14222,41 @@
 
         **Next session:** Implement and test.
       supersedes: null
+    - _ulid: 01KFFVH5WSZKRYR4F5G8WX4AJQ
+      created_at: 2026-01-21T08:42:55.258Z
+      author: "@claude"
+      content: >-
+        Starting implementation - iteration 15.
+
+
+        **Implementation plan:**
+
+        1. Add --refs option to command definition (~line 302)
+
+        2. Add --status option that always rejects with error (AC-3)
+
+        3. Extract lines 343-459 into setTaskFields() helper
+
+        4. Add batch mode routing: if --refs, use executeBatchOperation; else use existing
+        single-ref logic
+
+        5. Change 'no changes' from early return to warning (AC-4)
+
+        6. Handle duplicate refs by deduplicating (AC trait ac-8)
+
+        7. Write comprehensive E2E tests
+
+
+        **Test coverage plan:**
+
+        - 5 direct ACs from @spec-task-set-batch
+
+        - 8 inherited ACs from @trait-multi-ref-batch (13 total)
+
+        - All tests E2E with // AC: annotations
+
+        - Use temp directories only
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
