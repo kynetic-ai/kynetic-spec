@@ -36,13 +36,6 @@ function formatRelativeTime(dateStr: string): string {
 }
 
 /**
- * Get short ULID for display (first 8 chars)
- */
-function shortUlid(ulid: string): string {
-  return ulid.slice(0, 8);
-}
-
-/**
  * Resolve inbox item ref with error handling
  */
 function resolveInboxRef(ref: string, items: LoadedInboxItem[]): LoadedInboxItem {
@@ -97,7 +90,7 @@ export function registerInboxCommands(program: Command): void {
         await saveInboxItem(ctx, item);
         await commitIfShadow(ctx.shadow, 'inbox-add', undefined, text);
 
-        success(`Captured: ${shortUlid(item._ulid)}`, { item });
+        success(`Captured: ${item._ulid.slice(0, 8)}`, { item });
       } catch (err) {
         error(errors.failures.addInboxItem, err);
         process.exit(EXIT_CODES.ERROR);
@@ -146,7 +139,7 @@ export function registerInboxCommands(program: Command): void {
             const tags = item.tags.length > 0 ? ` [${item.tags.join(', ')}]` : '';
             const age = formatRelativeTime(item.created_at);
             const author = item.added_by ? ` by ${item.added_by}` : '';
-            console.log(`  ${shortUlid(item._ulid)} (${age}${author})${tags}`);
+            console.log(`  ${item._ulid.slice(0, 8)} (${age}${author})${tags}`);
             console.log(`    ${item.text}`);
             console.log('');
           }
@@ -208,7 +201,7 @@ export function registerInboxCommands(program: Command): void {
         // Delete inbox item unless --keep
         if (!options.keep) {
           await deleteInboxItem(ctx, item._ulid);
-          info(`Removed from inbox: ${shortUlid(item._ulid)}`);
+          info(`Removed from inbox: ${item._ulid.slice(0, 8)}`);
         }
 
         await commitIfShadow(ctx.shadow, 'inbox-promote', task.slugs[0] || index.shortUlid(task._ulid));
@@ -242,8 +235,8 @@ export function registerInboxCommands(program: Command): void {
 
         const deleted = await deleteInboxItem(ctx, item._ulid);
         if (deleted) {
-          await commitIfShadow(ctx.shadow, 'inbox-delete', shortUlid(item._ulid));
-          success(`Deleted inbox item: ${shortUlid(item._ulid)}`);
+          await commitIfShadow(ctx.shadow, 'inbox-delete', item._ulid.slice(0, 8));
+          success(`Deleted inbox item: ${item._ulid.slice(0, 8)}`);
         } else {
           error(errors.failures.deleteInboxItem);
           process.exit(EXIT_CODES.ERROR);
