@@ -13703,6 +13703,7 @@
         - Trait implementor check uses existing implements relationship tracking
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBKRGDJJW58T5YASXDMM394
   slugs:
     - ralph-permission-prompt
