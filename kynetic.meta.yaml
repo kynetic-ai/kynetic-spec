@@ -2330,4 +2330,22 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFYBZ4Z6V0DQQBYTJ4XCJYA
+    type: friction
+    content: "Test helper API mismatch: kspec() expects string args but wrote tests using array syntax.
+      Need to convert ['item', 'delete', '@ref'] to 'item delete @ref'. Should have checked helper
+      signature before writing all tests."
+    created_at: 2026-01-21T09:32:30.239Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFYC3N6H7K8XPZ26MKMAAQV
+    type: success
+    content: "findChildItems already existed in items.ts with correct implementation - avoided duplicate
+      code by discovering existing helper. Good pattern: search for existing helpers before
+      implementing new ones."
+    created_at: 2026-01-21T09:32:34.854Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
