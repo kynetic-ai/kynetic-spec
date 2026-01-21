@@ -13636,6 +13636,7 @@
         - Single shadow commit for all changes
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
   slugs:
     - ac-delete-confirm
