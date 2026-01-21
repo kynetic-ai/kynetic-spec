@@ -2789,3 +2789,7 @@ requirements:
         given: passthrough args in empty repo
         when: kspec log -- --stat executed
         then: shows info message (not raw git error)
+      - id: ac-6
+        given: shadow branch has commits, main doesn't
+        when: kspec log executed
+        then: searches shadow branch, shows any matches found
