@@ -13976,7 +13976,7 @@
     - fix-log-empty-repo
   title: Fix kspec log to handle empty repos gracefully
   type: bug
-  spec_ref: null
+  spec_ref: "@spec-log-empty-repo"
   meta_ref: null
   status: pending
   blocked_by: []
