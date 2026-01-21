@@ -13706,8 +13706,9 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Needs clearer scoping - see latest note for details
   depends_on: []
   context: []
   priority: 3
