@@ -1154,3 +1154,7 @@ requirements:
         given: setting multiple fields
         when: kspec task set --refs @a @b --priority 2 --tag urgent executed
         then: all specified fields updated
+      - id: ac-3
+        given: attempting to set status
+        when: kspec task set --refs @a @b --status completed executed
+        then: "error: Use state transition commands (start, complete, block, etc.) to change status"
