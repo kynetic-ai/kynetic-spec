@@ -18227,4 +18227,35 @@
       author: "@claude"
       content: Triggering cleanup via save operation
       supersedes: null
+    - _ulid: 01KFF700EGM9DK0F5QDZWJV6YM
+      created_at: 2026-01-21T02:44:01.104Z
+      author: "@claude"
+      content: >-
+        ## Fix Complete
+
+
+        **Changes made:**
+
+        1. `writeYamlFilePreserveFormat()` now post-processes YAML output to filter whitespace-only
+        lines
+
+        2. `createNote()` and `createTodo()` now trim content before saving
+
+        3. Added idempotency test to verify parse-stringify cycles are stable
+
+        4. Added documentation in code comments explaining the yaml library behavior
+
+
+        **Verification:**
+
+        - All 64 parser tests pass
+
+        - File is now stable across multiple parse-stringify cycles (0 line count change)
+
+        - Existing data was already cleaned by previous operations
+
+
+        The fix prevents future accumulation. Any existing whitespace-only lines are automatically
+        cleaned on next save.
+      supersedes: null
   todos: []
