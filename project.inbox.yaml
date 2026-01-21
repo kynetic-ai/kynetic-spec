@@ -541,3 +541,15 @@ inbox:
       - cli
       - design
     added_by: "@claude"
+  - _ulid: 01KFH76CQV9J2NQKQE8QRYVQC3
+    text: "Cross-feature requirement pattern: How to express that core features (search, validate,
+      export) must support all entity types. When new entity type added, should automatically imply
+      tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity
+      types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec
+      that entity types must satisfy. Surfaced when realizing search doesn't cover inbox."
+    created_at: 2026-01-21T21:25:59.163Z
+    tags:
+      - design
+      - spec-model
+      - meta
+    added_by: "@claude"
