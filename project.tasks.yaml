@@ -13411,6 +13411,7 @@
         5. Standardize envelope format (success, data, error)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBDQED41BH9A9REH81KX34J
   slugs: []
   title: Add spec-schema drift detection to validation
