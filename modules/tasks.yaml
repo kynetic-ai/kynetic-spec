@@ -1212,4 +1212,4 @@ requirements:
         then: treated as no description (field omitted)
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
