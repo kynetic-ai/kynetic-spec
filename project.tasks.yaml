@@ -13447,6 +13447,7 @@
         Could be part of --strict mode or separate --drift flag.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
   slugs: []
   title: Improve Result type enforcement and type guards
