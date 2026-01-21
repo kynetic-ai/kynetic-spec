@@ -13516,6 +13516,7 @@
         coverage for @workflow-definitions ac-workflow-3.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
   slugs:
     - dedupe-format-relative-time
