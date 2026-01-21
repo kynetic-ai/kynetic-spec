@@ -10844,12 +10844,9 @@
     worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
     concise, copy-pasteable commands, clear success criteria."
   spec_ref: null
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: Created comprehensive INSTALL.md with agent-focused setup instructions covering new
-    repo setup, existing repo integration, worktree architecture, agent environment configuration,
-    development mode, verification steps, and common troubleshooting. Document is concise with
-    copy-pasteable commands and clear success criteria.
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
@@ -10858,8 +10855,8 @@
     - agents
   vcs_refs: []
   created_at: 2026-01-18T23:29:26.784Z
-  started_at: 2026-01-19T06:04:58.995Z
-  completed_at: 2026-01-19T06:05:56.715Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KFADR4FT04ZMTHHSSV2YRNDM
       created_at: 2026-01-19T06:05:50.970Z
@@ -19748,6 +19745,8 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #129. Added --clear-deps flag with 7 E2E tests covering 3 direct ACs plus
+    trait ACs for JSON output and batch refs mode."
   depends_on: []
   context: []
   priority: 3
@@ -19755,6 +19754,7 @@
   vcs_refs: []
   created_at: 2026-01-21T14:28:23.635Z
   started_at: 2026-01-21T14:28:28.673Z
+  completed_at: 2026-01-21T16:36:19.499Z
   notes:
     - _ulid: 01KFGF9REJ1HCR58CGZJM07GMD
       created_at: 2026-01-21T14:28:23.635Z
@@ -19795,6 +19795,3 @@
         passing."
       supersedes: null
   todos: []
-  completed_at: 2026-01-21T16:36:19.499Z
-  closed_reason: "Merged PR #129. Added --clear-deps flag with 7 E2E tests covering 3 direct ACs plus
-    trait ACs for JSON output and batch refs mode."
