@@ -316,10 +316,10 @@ describe('JsonRpcFraming', () => {
   });
 
   // AC: @acp-client ac-8
-  it('should throw when closed', () => {
+  it('should throw when closed', async () => {
     framing.close();
 
-    expect(() => framing.sendRequest('test')).rejects.toThrow('closed');
+    await expect(() => framing.sendRequest('test')).rejects.toThrow('closed');
     expect(() => framing.sendNotification('test')).toThrow('closed');
     expect(() => framing.sendResponse(1, {})).toThrow('closed');
   });
