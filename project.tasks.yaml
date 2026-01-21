@@ -19943,3 +19943,22 @@
         filtering becomes important.
       supersedes: null
   todos: []
+- title: Implement @trait-retrospective for specs without task tracking
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - feature
+    - traits
+    - validation
+  _ulid: 01KFH4F3854392DJM0R17T79M2
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-21T20:38:18.629Z
+  notes: []
+  todos: []
