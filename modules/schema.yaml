@@ -1135,3 +1135,7 @@ requirements:
         given: cascade deletes multiple
         when: operation completes
         then: single shadow commit with all deletions
+      - id: ac-7
+        given: item is trait with implementors
+        when: kspec item delete @trait-ref executed
+        then: "error: Cannot delete: trait is used by N specs. Remove trait from specs first"
