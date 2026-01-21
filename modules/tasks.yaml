@@ -1181,3 +1181,8 @@ requirements:
     notes: []
     created: 2026-01-21T05:27:08.979Z
     description: Add --description flag to kspec task add for setting initial task description.
+    acceptance_criteria:
+      - id: ac-1
+        given: description provided
+        when: kspec task add --title X --description 'Details...' executed
+        then: task created with description field populated
