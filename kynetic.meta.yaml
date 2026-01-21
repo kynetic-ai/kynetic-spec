@@ -1958,4 +1958,21 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFMRZ746PMVGB00TDS532GR
+    type: success
+    content: Task scoping from retrospective notes works well - the task notes from the ralph loop
+      retrospective provided clear, actionable improvements that translated directly into
+      implementation steps.
+    created_at: 2026-01-21T06:44:50.533Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFMS3G3EZ6PGSN7DV8WGJ76
+    type: success
+    content: PR CI waiting pattern - when CI is pending on a PR, better to move to next task rather than
+      blocking iteration. The PR will be picked up in a future iteration once CI completes.
+    created_at: 2026-01-21T06:44:54.915Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

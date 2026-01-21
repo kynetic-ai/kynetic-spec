@@ -1053,8 +1053,8 @@ requirements:
       - id: ac-1
         given: task has status blocked/cancelled/completed/in_progress/pending_review
         when: kspec task reset @ref executed
-        then: status becomes pending, timestamps cleared (completed_at, submitted_at, blocked_reason,
-          cancel_reason)
+        then: status becomes pending, timestamps cleared (completed_at, started_at, closed_reason,
+          blocked_by array)
       - id: ac-2
         given: task has status pending
         when: kspec task reset @ref executed
