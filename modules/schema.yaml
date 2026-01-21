@@ -289,7 +289,7 @@ features:
             then: No cascade prompt is shown (since there are no children to cascade to)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs:
       - file-structure
