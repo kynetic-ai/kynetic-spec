@@ -1180,3 +1180,4 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-21T05:27:08.979Z
+    description: Add --description flag to kspec task add for setting initial task description.
