@@ -1147,9 +1147,11 @@ tasks:
 
       This significantly affects user experience for human-edited files.
     derivation: manual
-    status: pending_review
+    status: completed
     blocked_by: []
-    closed_reason: null
+    closed_reason: "Migrated from js-yaml to yaml library for better formatting consistency. Implemented
+      writeYamlFilePreserveFormat() and updated all YAML write operations. Provides deterministic
+      formatting with indent: 2, lineWidth: 100. All tests pass."
     depends_on:
       - "@task-fix-write-location"
     context: []
@@ -1288,6 +1290,7 @@ tasks:
           to ready queue)"
         supersedes: null
     todos: []
+    completed_at: 2026-01-21T10:24:57.037Z
   - _ulid: 01KEZB4J6BJ6RHA11Y5Z7WSV3N
     slugs:
       - task-meta-spec
