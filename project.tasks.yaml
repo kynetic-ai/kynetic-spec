@@ -14710,7 +14710,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14729,6 +14729,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T10:14:57.991Z
 - _ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
   slugs:
     - fix-yaml-formatting-status
@@ -14898,6 +14899,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #127. Upgraded vitest from v1.2.0 to v4.0.17, fixing 4 moderate
+    security vulnerabilities. Handled single breaking change (async/await for rejects assertion).
+    All 841 tests pass locally. 0 vulnerabilities after upgrade."
   depends_on: []
   context: []
   priority: 3
@@ -14907,6 +14911,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:51:35.268Z
   started_at: 2026-01-21T10:02:39.378Z
+  completed_at: 2026-01-21T10:14:45.129Z
   notes:
     - _ulid: 01KFBP4K153WRBJ3J5KREED81J
       created_at: 2026-01-19T17:51:42.117Z
@@ -14945,10 +14950,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T10:14:45.129Z
-  closed_reason: "Merged in PR #127. Upgraded vitest from v1.2.0 to v4.0.17, fixing 4 moderate
-    security vulnerabilities. Handled single breaking change (async/await for rejects assertion).
-    All 841 tests pass locally. 0 vulnerabilities after upgrade."
 - _ulid: 01KFBP98HFVG1WE75DKPYTXSK1
   slugs:
     - extract-test-helpers
