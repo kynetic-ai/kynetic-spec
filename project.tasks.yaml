@@ -13421,6 +13421,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #116. CI check for unresolved review comments implemented and tested successfully."
   depends_on: []
   context: []
   priority: 2
@@ -13428,6 +13429,7 @@
   vcs_refs: []
   created_at: 2026-01-19T15:17:10.871Z
   started_at: 2026-01-21T07:06:28.624Z
+  completed_at: 2026-01-21T07:21:29.926Z
   notes:
     - _ulid: 01KFBD9WV8G7CSZTKKRM5D6V45
       created_at: 2026-01-19T15:17:18.825Z
@@ -13570,8 +13572,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T07:21:29.926Z
-  closed_reason: "Merged in PR #116. CI check for unresolved review comments implemented and tested successfully."
 - _ulid: 01KFBDM8ZD201SSV9NEETHADE7
   slugs: []
   title: Audit and fix JSON output consistency across CLI
@@ -13698,7 +13698,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -13725,6 +13725,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-21T07:27:54.880Z
+  closed_reason: "Merged in PR #117. Test unskipped and validates AC-3 for workflow reference
+    validation. All 784 tests pass."
 - _ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
   slugs:
     - dedupe-format-relative-time
