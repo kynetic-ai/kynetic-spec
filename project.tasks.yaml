@@ -17519,6 +17519,7 @@
         executed, then errors with list of active runs to choose from
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFESYSWBB2R797HKWA965MC9
   slugs:
     - task-workflow-enforcement-modes
