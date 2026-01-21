@@ -1091,3 +1091,8 @@ requirements:
     created: 2026-01-21T05:22:52.908Z
     description: Enforce that tasks must go through pending_review before completion. The complete
       command only accepts tasks in pending_review state.
+    acceptance_criteria:
+      - id: ac-1
+        given: task status is pending_review
+        when: kspec task complete @ref executed
+        then: completes successfully
