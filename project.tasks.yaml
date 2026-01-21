@@ -13230,7 +13230,7 @@
     - task-reset-command
   title: Add kspec task reset command to return task to pending
   type: task
-  spec_ref: "@cmd-task"
+  spec_ref: "@spec-task-reset"
   meta_ref: null
   status: pending
   blocked_by: []
