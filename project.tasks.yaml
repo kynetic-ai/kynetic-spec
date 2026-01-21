@@ -12939,6 +12939,17 @@
 
         The existing task guardrails feature partially addresses this but didn't catch this case.
       supersedes: null
+    - _ulid: 01KFFG4KRKFF9XG90QKNDH035S
+      created_at: 2026-01-21T05:23:49.139Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+        - File: src/cli/commands/task.ts - modify complete handler (line ~693)
+        - Current: allows in_progress, pending, pending_review
+        - New: only pending_review unless --skip-review --reason
+        - Add --skip-review and --reason flags
+        - Update error messages in src/strings/errors.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFBBTTJ9XBBN9BAMVXBJVTM9
   slugs:
