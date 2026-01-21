@@ -1534,11 +1534,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2226,6 +2228,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2341,6 +2344,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16031,6 +16035,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17946,5 +17951,72 @@
         3. Followed by content at normal indentation
 
         The library inserts a blank line before the whitespace-only line.
+      supersedes: null
+    - _ulid: 01KFF0EM728Y4SEXX30YBD0CKP
+      created_at: 2026-01-21T00:49:40.066Z
+      author: "@claude"
+      content: >-
+        ## How to Reproduce
+
+
+        ### Quick verification:
+
+        ```bash
+
+        # From kspec-meta branch, run:
+
+        cd .kspec
+
+        git show aeecd57~1:project.tasks.yaml | wc -l  # 17774 lines
+
+        git show aeecd57:project.tasks.yaml | wc -l   # 17780 lines (+6)
+
+
+        # Count blank lines:
+
+        git show aeecd57~1:project.tasks.yaml | grep -c '^$'  # 4816
+
+        git show aeecd57:project.tasks.yaml | grep -c '^$'   # 4821 (+5)
+
+        ```
+
+
+        ### Node.js reproduction:
+
+        ```javascript
+
+        const YAML = require('yaml');
+
+        const { execSync } = require('child_process');
+
+
+        const original = execSync('git show aeecd57~1:project.tasks.yaml').toString();
+
+        const parsed = YAML.parse(original);
+
+        const output = YAML.stringify(parsed, { indent: 2, lineWidth: 100, sortMapEntries: false });
+
+
+        console.log('Original lines:', original.split('\n').length);  // 17774
+
+        console.log('Output lines:', output.split('\n').length);      // 17779
+
+        console.log('Diff:', output.split('\n').length - original.split('\n').length);  // +5
+
+        ```
+
+
+        ### View the corrupted content:
+
+        ```bash
+
+        # See the note with 600+ lines of mostly blank:
+
+        git show aeecd57~1:project.tasks.yaml | awk
+        '/01KF7NXW2HRKJBBT7EAWX8SBMG/,/^      supersedes:/' | wc -l
+
+        # Returns: 611
+
+        ```
       supersedes: null
   todos: []
