@@ -1243,3 +1243,7 @@ requirements:
         given: a task has no dependencies
         when: kspec task set @ref --clear-deps is executed
         then: succeeds with no changes needed message
+      - id: ac-3
+        given: --clear-deps and --depends-on are both provided
+        when: command is executed
+        then: error indicating flags are mutually exclusive
