@@ -48,6 +48,54 @@ priority: 2
     expect(yaml).toContain('status: pending');
     expect(yaml).toContain('priority: 2');
   });
+
+  it('should be idempotent: parse-stringify cycles should not add blank lines', () => {
+    // This test ensures the YAML blank line accumulation bug is fixed.
+    // The yaml library can add blank lines before whitespace-only lines
+    // in block scalars on each parse-stringify cycle.
+    const contentWithBlockScalar = {
+      title: 'Test Task',
+      notes: [
+        {
+          _ulid: '01TEST000000000000000000',
+          content: `Line 1
+
+Line 3 after blank
+
+Line 5 after blank`,
+          created_at: '2025-01-14T10:00:00Z',
+        },
+      ],
+    };
+
+    // First cycle
+    const yaml1 = toYaml(contentWithBlockScalar);
+    const parsed1 = parseYaml<typeof contentWithBlockScalar>(yaml1);
+    const yaml2 = toYaml(parsed1);
+
+    // Second cycle
+    const parsed2 = parseYaml<typeof contentWithBlockScalar>(yaml2);
+    const yaml3 = toYaml(parsed2);
+
+    // Third cycle
+    const parsed3 = parseYaml<typeof contentWithBlockScalar>(yaml3);
+    const yaml4 = toYaml(parsed3);
+
+    // Line count should not grow across cycles
+    const lineCount1 = yaml1.split('\n').length;
+    const lineCount2 = yaml2.split('\n').length;
+    const lineCount3 = yaml3.split('\n').length;
+    const lineCount4 = yaml4.split('\n').length;
+
+    expect(lineCount2).toBe(lineCount1);
+    expect(lineCount3).toBe(lineCount1);
+    expect(lineCount4).toBe(lineCount1);
+
+    // Content should remain identical
+    expect(yaml2).toBe(yaml1);
+    expect(yaml3).toBe(yaml1);
+    expect(yaml4).toBe(yaml1);
+  });
 });
 
 describe('createTask', () => {
