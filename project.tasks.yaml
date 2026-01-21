@@ -19973,6 +19973,33 @@
       content: "Automation status set to needs_review: Small bug fix - well-scoped, may not need formal
         spec"
       supersedes: null
+    - _ulid: 01KFHFYZDH1K2DGT1GDV1W6FGB
+      created_at: 2026-01-21T23:59:13.330Z
+      author: "@claude"
+      content: >-
+        ## Spec Coverage Added
+
+
+        Before implementing, identified spec gap: no ACs specified author attribution for
+        auto-generated notes.
+
+
+        Added ac-author to three affected spec items:
+
+        - @spec-task-reset (reset notes)
+
+        - @spec-completion-enforcement (--skip-review notes)
+
+        - @task-set (--clear-deps and --automation notes)
+
+
+        AC definition: 'note author is set via getAuthor() (KSPEC_AUTHOR env var, or git user
+        fallback)'
+
+
+        Decision: Keep bug task as-is without spec_ref since it's a bug fix bringing code into
+        compliance with now-specified behavior. Tests will annotate the relevant ACs.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFH4F3854392DJM0R17T79M2
