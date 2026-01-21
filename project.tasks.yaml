@@ -19803,3 +19803,21 @@
         passing."
       supersedes: null
   todos: []
+- title: Fix hardcoded @human author in CLI auto-generated notes
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - bug
+    - cli
+  _ulid: 01KFH367CW1HS1CDY9S34SZQMV
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-21T20:15:59.385Z
+  notes: []
+  todos: []
