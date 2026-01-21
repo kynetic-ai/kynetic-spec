@@ -1147,3 +1147,7 @@ requirements:
         given: cascade confirmation prompt
         when: kspec item delete @ref --cascade (no --force) executed
         then: "prompt: Delete @ref and N descendant items? [y/N]"
+      - id: ac-10
+        given: JSON mode with children error
+        when: kspec item delete @ref --json (has children) executed
+        then: JSON error includes children array with refs
