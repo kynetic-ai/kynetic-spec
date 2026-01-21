@@ -13901,7 +13901,7 @@
   type: infra
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -13942,6 +13942,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T09:04:35.447Z
 - _ulid: 01KFBJCDVM7R0J2PKG5PA7S4NX
   slugs:
     - fix-skipped-workflow-test
@@ -14132,6 +14133,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #122. All 13 ACs have E2E test coverage with proper AC annotations. All
+    15 tests pass. Implementation uses shared batch infrastructure correctly."
   depends_on: []
   context: []
   priority: 3
@@ -14140,6 +14143,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:10:00.443Z
   started_at: 2026-01-21T08:40:28.896Z
+  completed_at: 2026-01-21T09:03:50.449Z
   notes:
     - _ulid: 01KFBKRSK4KF28MBKZ5NYKYZ30
       created_at: 2026-01-19T17:10:18.468Z
@@ -14326,9 +14330,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T09:03:50.449Z
-  closed_reason: "Merged in PR #122. All 13 ACs have E2E test coverage with proper AC annotations. All
-    15 tests pass. Implementation uses shared batch infrastructure correctly."
 - _ulid: 01KFBKRAXX7A5T4DAER5SWASAD
   slugs:
     - ac-delete-confirm
