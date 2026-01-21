@@ -17656,6 +17656,7 @@
         executed, then shows criteria as guidance only; skip allowed without --force
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFESYT0HJ68Q85JSJ6AWAC1M
   slugs:
     - task-workflow-advanced-features
