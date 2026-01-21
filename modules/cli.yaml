@@ -1158,18 +1158,14 @@ features:
 
               1. **List all tracked commits without ref:**
                  Running `kspec log` without any ref should show all commits that have Task: or Spec: trailers. This gives visibility into all tracked work across the repo.
-                 
                  Implementation: Use git log --grep pattern that matches either trailer:
                  git log --grep='Task: @' --grep='Spec: @' --all-match=false
-                 
                  Respects existing --limit flag (default 10).
 
               2. **Passthrough git log args:**
                  Allow passing additional git log flags after -- separator:
                  `kspec log @ref -- -p --stat --graph`
-                 
                  This enables power users to get diffs (-p), stats (--stat), or other git log formatting without kspec needing to wrap every possible option.
-                 
                  Implementation: Detect -- in argv, split args, pass remainder to git log.
                  Commander.js supports -- passthrough via .passThroughOptions() or manual argv handling.
 
@@ -2758,3 +2754,16 @@ requirements:
             then: Quick Commands section shows task note and complete hints
     status:
       implementation: implemented
+  - _ulid: 01KFFG8XS20YMJR11CA4YZNX9N
+    slugs:
+      - spec-log-empty-repo
+    title: Log Empty Repo Handling
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T05:26:10.467Z
