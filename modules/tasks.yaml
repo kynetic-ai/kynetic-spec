@@ -1143,3 +1143,5 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-21T05:25:15.560Z
+    description: "Add --refs support to kspec task set for bulk updates. Note: status changes must use
+      dedicated commands (start, complete, etc.), not task set."
