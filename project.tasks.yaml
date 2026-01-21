@@ -1531,11 +1531,13 @@
 
 
 
+
           
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
           - Extract to categorized error message objects
+
 
 
 
@@ -2217,6 +2219,7 @@
 
 
 
+
           
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
@@ -2332,6 +2335,7 @@
         - Phase 4 continuation: Complete remaining 7 command files
           - tasks.ts (6), derive.ts (14), ralph.ts (8)
           - item.ts (45), task.ts (42), meta.ts (43), output.ts (4)
+
 
 
 
@@ -16016,6 +16020,7 @@
 
 
 
+
           
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
@@ -17781,21 +17786,86 @@
         required input missing
       supersedes: null
   todos: []
-- title: Fix YAML serialization adding blank lines on each save
+- _ulid: 01KFF0CPRH39F2E7G81DXERTW2
+  slugs: []
+  title: Fix YAML serialization adding blank lines on each save
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - bug
-    - yaml
-  _ulid: 01KFF0CPRH39F2E7G81DXERTW2
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - bug
+    - yaml
   vcs_refs: []
   created_at: 2026-01-21T00:48:37.137Z
-  notes: []
+  notes:
+    - _ulid: 01KFF0D8CJ9JZM3X5KV9V7JQ2Z
+      created_at: 2026-01-21T00:48:55.186Z
+      author: "@claude"
+      content: >-
+        ## Bug Summary
+
+
+        Every kspec operation that saves a task file adds blank lines to the YAML. The
+        project.tasks.yaml file has grown from 278 blank lines (original) to 4820+ blank lines over
+        ~200 commits. Each operation adds approximately 5 blank lines.
+
+
+        ## Reproduction
+
+
+        Any task operation (task set, task note, task start, task complete, etc.) triggers the
+        issue. Example commit showing the bug: kspec-meta branch
+        aeecd57f5f25fe7f9cfce875dac491c4ec61a4e6
+
+
+        The diff from that commit shows 5 blank line insertions at lines 1531, 1822, 2213, 2614, and
+        15849 - each in the same pattern location.
+
+
+        ## Technical Details
+
+
+        ### The Pattern
+
+        Each insertion point has this structure:
+
+        - Multiple blank lines (empty lines)
+
+        - A line containing ONLY indentation spaces (e.g., 10 spaces, no content)
+
+        - Actual content (e.g., '- Phase 4: ...')
+
+
+        The yaml library adds one blank line BEFORE each 'spaces-only' line on every stringify
+        operation.
+
+
+        ### Code Location
+
+        The issue is in src/parser/yaml.ts:
+
+        - writeYamlFilePreserveFormat() at line 104-118
+
+        - Uses YAML.stringify() from 'yaml' package v2.8.2
+
+        - Options: { indent: 2, lineWidth: 100, sortMapEntries: false }
+
+
+        ### saveTask Flow (yaml.ts:486-557)
+
+        1. Reads raw YAML with readYamlFile (uses YAML.parse)
+
+        2. Parses each task through Zod TaskSchema.safeParse
+
+        3. Updates one task in the array
+
+        4. Writes ALL tasks back with writeYamlFilePreserveFormat
+
+        5. Each write adds blank lines to the output
+      supersedes: null
   todos: []
