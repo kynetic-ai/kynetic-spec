@@ -12,7 +12,7 @@ Kynetic Spec (`kspec`) is a **self-hosting specification and task management sys
 
 This project was bootstrapped using itself. The initial implementation was created by:
 
-1. Writing a design document (`KYNETIC_SPEC_DESIGN.md`)
+1. Writing a design document (now archived at `docs/history/KYNETIC_SPEC_DESIGN.md`)
 2. Running parallel subagents in git worktrees:
    - One agent wrote the spec defining kspec
    - One agent wrote the parser/CLI (`src/` directory)
@@ -25,7 +25,6 @@ The spec files in `.kspec/` define what kspec should do. The TypeScript code in 
 
 ```
 kynetic-spec/
-├── KYNETIC_SPEC_DESIGN.md    # Comprehensive design document (read this first)
 ├── .kspec/                    # kspec's own spec (shadow branch worktree)
 │   ├── kynetic.yaml          # Root manifest
 │   ├── kynetic.tasks.yaml    # Bootstrap tasks
@@ -707,7 +706,7 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 
 ## Design Decisions
 
-Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:
+Key decisions are documented in `docs/history/KYNETIC_SPEC_DESIGN.md` under "Resolved Decisions". Important ones:
 
 - **Format**: YAML with Zod validation
 - **Schema source**: Zod (TypeScript-native)
@@ -718,7 +717,5 @@ Key decisions are documented in `KYNETIC_SPEC_DESIGN.md` under "Resolved Decisio
 
 ## Related Files
 
-- `KYNETIC_SPEC_DESIGN.md` - Full design specification
-- `FORMAT_COMPARISON.md` - Why YAML was chosen
-- `RESEARCH_NOTES.md` - Research that informed design
 - `README.md` - User-facing documentation
+- `docs/history/KYNETIC_SPEC_DESIGN.md` - Archived design specification (historical)
