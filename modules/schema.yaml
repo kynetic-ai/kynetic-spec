@@ -1185,3 +1185,7 @@ requirements:
         given: force flag provided
         when: kspec item ac remove @spec ac-1 --force executed
         then: no prompt, AC removed immediately
+      - id: ac-5
+        given: JSON mode without force
+        when: kspec item ac remove @spec ac-1 --json executed
+        then: "error: Confirmation required. Use --force with --json"
