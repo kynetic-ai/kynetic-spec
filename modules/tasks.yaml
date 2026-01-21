@@ -1175,7 +1175,7 @@ requirements:
         then: "@b updated, @a fails with validation error, exit code 1"
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFFGAPXJNAGKWFS8B669PPBP
     slugs:
       - spec-task-add-description
