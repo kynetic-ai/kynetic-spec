@@ -478,3 +478,13 @@ inbox:
       - validation
       - workflow
     added_by: "@claude"
+  - _ulid: 01KFGRVB35DPCST95STSM8GR72
+    text: Umbrella/parent tasks should depend on children, not vice versa - Parent represents 'validate
+      complete feature' and becomes ready when all implementation children are done. Current pattern
+      had children depending on parent which blocks them when parent is manual_only
+    created_at: 2026-01-21T17:15:16.966Z
+    tags:
+      - reflection
+      - workflow
+      - modeling
+    added_by: "@claude"
