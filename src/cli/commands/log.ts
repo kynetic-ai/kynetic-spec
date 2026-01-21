@@ -25,6 +25,37 @@ export interface LogCommit {
 }
 
 /**
+ * Check if a git repo has any commits (checks both current branch and shadow)
+ */
+function hasCommits(cwd?: string, checkShadow = true): boolean {
+  try {
+    // Check current branch
+    execSync('git rev-parse HEAD', {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    return true;
+  } catch {
+    // AC: @spec-log-empty-repo ac-6
+    // If main has no commits, check shadow branch
+    if (checkShadow) {
+      try {
+        execSync('git rev-parse kspec-meta', {
+          cwd,
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+}
+
+/**
  * Search git log for commits with trailer pattern
  */
 function searchCommits(
@@ -34,14 +65,15 @@ function searchCommits(
     since?: string;
     cwd?: string;
     passthroughArgs?: string[];
+    branch?: string;
   }
 ): LogCommit[] {
-  const { limit, since, cwd, passthroughArgs = [] } = options;
+  const { limit, since, cwd, passthroughArgs = [], branch } = options;
 
   // Escape special regex characters in pattern except @
   const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-  let cmd = `git log --grep="${escapedPattern}" --format="%H|%aI|%s|%an" -n ${limit}`;
+  let cmd = `git log ${branch || ''}--grep="${escapedPattern}" --format="%H|%aI|%s|%an" -n ${limit}`;
   if (since) {
     cmd += ` --since="${since}"`;
   }
@@ -71,9 +103,16 @@ function searchCommits(
       };
     });
   } catch (err: any) {
-    // If git command fails, show error and exit
+    // Check for empty repo errors
     if (err.stderr) {
-      error(err.stderr.toString());
+      const stderr = err.stderr.toString();
+      // Detect "does not have any commits yet" or "bad revision" (empty repo)
+      if (stderr.includes('does not have any commits yet') || stderr.includes('bad revision')) {
+        // Return empty array - caller will handle empty repo message
+        return [];
+      }
+      // Other git errors should still be shown
+      error(stderr);
       process.exit(err.status || 1);
     }
     return [];
@@ -115,9 +154,16 @@ function searchCommitsRaw(
       stdio: ['pipe', 'pipe', 'pipe'],
     });
   } catch (err: any) {
-    // If git command fails, show error and exit
+    // Check for empty repo errors
     if (err.stderr) {
-      error(err.stderr.toString());
+      const stderr = err.stderr.toString();
+      // Detect "does not have any commits yet" or "bad revision" (empty repo)
+      if (stderr.includes('does not have any commits yet') || stderr.includes('bad revision')) {
+        // Return empty string - caller will handle empty repo message
+        return '';
+      }
+      // Other git errors should still be shown
+      error(stderr);
       process.exit(err.status || 1);
     }
     return '';
@@ -227,12 +273,24 @@ export function registerLogCommand(program: Command): void {
             });
 
             if (!rawOutput.trim()) {
-              info('No commits found');
+              // AC: @spec-log-empty-repo ac-5
+              // Check if repo has no commits vs no matching commits
+              if (!hasCommits(ctx.rootDir)) {
+                info('No commits in repository yet');
+              } else {
+                info('No commits found');
+              }
             } else {
               console.log(rawOutput);
             }
             return;
           }
+
+          // AC: @spec-log-empty-repo ac-6
+          // Check if we should search shadow branch (main has no commits but shadow does)
+          const mainHasCommits = hasCommits(ctx.rootDir, false);
+          const shadowHasCommits = !mainHasCommits && hasCommits(ctx.rootDir, true);
+          const searchBranch = shadowHasCommits ? 'kspec-meta ' : undefined;
 
           // Search for all patterns and dedupe
           const allCommits: LogCommit[] = [];
@@ -243,6 +301,7 @@ export function registerLogCommand(program: Command): void {
               limit,
               since: options.since,
               cwd: ctx.rootDir,
+              branch: searchBranch,
             });
 
             for (const commit of commits) {
@@ -259,11 +318,28 @@ export function registerLogCommand(program: Command): void {
           // Limit results
           const limited = allCommits.slice(0, limit);
 
-          output(limited, () => {
-            if (limited.length === 0) {
-              info('No commits found');
-              return;
+          // AC: @spec-log-empty-repo ac-1, ac-2, ac-3, ac-4
+          // Handle empty results - differentiate between no commits and no matches
+          if (limited.length === 0) {
+            if (!hasCommits(ctx.rootDir)) {
+              // AC: @spec-log-empty-repo ac-4
+              output(
+                { commits: [], message: 'No commits in repository yet' },
+                () => {
+                  info('No commits in repository yet');
+                }
+              );
+            } else {
+              // AC: @spec-log-empty-repo ac-3 - existing behavior for no matches
+              const refStr = ref ? ` for ${ref.startsWith('@') ? ref : '@' + ref}` : '';
+              output({ commits: [] }, () => {
+                info(`No commits found${refStr}`);
+              });
             }
+            return;
+          }
+
+          output(limited, () => {
 
             if (options.oneline) {
               for (const commit of limited) {
