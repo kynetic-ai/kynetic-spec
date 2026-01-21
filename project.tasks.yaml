@@ -13291,6 +13291,7 @@
         - No batch support initially (can add later if needed)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBD5P8JBW3BW8JV3WJ0RHPS
   slugs: []
   title: Improve shadow branch robustness and enforce temp dir testing
