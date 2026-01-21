@@ -10898,6 +10898,25 @@
         file does not exist in the repository. Previous notes describe intended content which is
         still useful as a guide for implementation."
       supersedes: null
+    - _ulid: 01KFH8B23XZNMZ0SKBB6HHA6Q0
+      created_at: 2026-01-21T21:46:00.701Z
+      author: "@claude"
+      content: |-
+        Created INSTALL.md with agent-focused setup instructions. Key features:
+        - Two distinct flows: Fresh Project vs Cloning Existing (most common for agents)
+        - From Source installation first (npm coming soon)
+        - Agent configuration with kspec setup --auto-worktree for cloned repos
+        - Working directory warning (common agent pitfall)
+        - Troubleshooting table with recovery commands
+        - Links to README.md and AGENTS.md for deeper dives
+
+        Incorporated subagent review feedback:
+        - Reordered install sections (From Source first since npm not published)
+        - Added 'kspec: command not found' to troubleshooting
+        - Clarified git repo requirement in prerequisites
+
+        Verified commands work in temp directory.
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
