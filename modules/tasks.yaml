@@ -1076,3 +1076,16 @@ requirements:
         given: JSON mode
         when: kspec task reset @ref --json executed
         then: output includes previous_status, new_status, cleared_fields array
+  - _ulid: 01KFFG2WVCZY014JX2CN4S07GS
+    slugs:
+      - spec-completion-enforcement
+    title: Task Completion State Enforcement
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T05:22:52.908Z
