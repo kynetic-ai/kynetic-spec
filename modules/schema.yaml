@@ -1093,3 +1093,17 @@ features:
     status:
       maturity: draft
       implementation: implemented
+requirements:
+  - _ulid: 01KFFG4ZFPVR9GT7X321TH50FF
+    slugs:
+      - spec-item-delete-children
+    title: Item Delete Child Check
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T05:24:01.143Z
