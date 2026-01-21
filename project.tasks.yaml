@@ -17368,7 +17368,14 @@
         runs as durable artifacts, step-by-step progression, and configurable enforcement (advisory
         or strict).
       supersedes: null
+    - _ulid: 01KFFHCT8N9K8B02KA7BRX2ETB
+      created_at: 2026-01-21T05:45:46.518Z
+      author: "@human"
+      content: "Automation status set to manual_only: Parent feature task - children have ACs and are
+        eligible"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
   slugs:
     - task-workflow-run-foundation
