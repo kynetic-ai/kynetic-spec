@@ -13599,6 +13599,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T15:22:58.924Z
+  started_at: 2026-01-21T08:25:27.223Z
   notes:
     - _ulid: 01KFBDMFJBB1A6GBW2M8NMT2ZY
       created_at: 2026-01-19T15:23:05.675Z
@@ -13619,9 +13620,51 @@
         4. Separate stderr stream for git/subprocess output
         5. Standardize envelope format (success, data, error)
       supersedes: null
+    - _ulid: 01KFFTJSFSW1EQJKBWXHJ5ZR7R
+      created_at: 2026-01-21T08:26:19.513Z
+      author: "@claude"
+      content: >-
+        Audit findings:
+
+
+        **Issues identified:**
+
+
+        1. **clone-for-testing command has its own --json flag** (line 147): This conflicts with
+        global --json flag pattern. Should use isJsonMode() from output helper instead.
+
+
+        2. **Inconsistent envelope formats:**
+           - output() helper: outputs raw data in JSON mode
+           - success() helper: wraps in { success: true, message, ...data }
+           - error() helper: wraps in { success: false, error, details }
+           - batch.ts: outputs raw BatchResult structure
+           - derive.ts: outputs custom array format
+           - meta.ts: outputs raw item data
+           - session checkpoint: outputs { decision, reason } (special case for Claude Code hooks)
+
+        3. **Direct JSON.stringify usage found in:**
+           - output.ts (helpers - OK)
+           - batch.ts (formatBatchOutput - OK, uses isJsonMode())
+           - session.ts (checkpoint - special case for hooks, OK)
+           - clone-for-testing.ts (uses own --json flag - ISSUE)
+           - item.ts (--dry-run output - OK, not JSON mode)
+           - derive.ts (outputs data directly - uses isJsonMode(), OK)
+           - meta.ts (outputs data directly - uses isJsonMode(), OK)
+           - setup.ts (outputs example config - OK, not for JSON mode)
+
+        4. **Stderr handling:** git commands properly use stdio: ['pipe', 'pipe', 'pipe'] to
+        suppress stderr. No issues found.
+
+
+        **Recommended fixes:**
+
+        1. Remove --json option from clone-for-testing, use global --json flag
+
+        2. Document envelope format conventions (no change needed - current pattern is intentional)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T08:25:27.223Z
 - _ulid: 01KFBDQED41BH9A9REH81KX34J
   slugs: []
   title: Add spec-schema drift detection to validation
