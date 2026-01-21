@@ -1031,3 +1031,16 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFFFZTA9V1WPHADEDRYJ78XM
+    slugs:
+      - spec-task-reset
+    title: Task Reset Command
+    type: requirement
+    tags: []
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-21T05:21:12.009Z
