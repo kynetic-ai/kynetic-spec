@@ -382,13 +382,10 @@
 
         Extended:
           kspec task unblock <ref>
-          
           Clears manual blockers and sets status to pending.
-          
           Note: This clears the blocked_by field (manual string blockers),
           NOT depends_on (task references). Dependencies auto-resolve
           when referenced tasks complete.
-          
           Example:
             kspec task block @my-task --reason 'Waiting on design review'
             kspec task unblock @my-task  # clears all blocked_by entries
@@ -1541,7 +1538,7 @@
 
 
 
-          
+
         - Phase 4: Centralize error messages across command files
           - Will need new src/strings/errors.ts module
           - Audit all error() calls across CLI commands
@@ -1844,7 +1841,7 @@
 
 
 
-          
+
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
           - Already partially done in strings/labels.ts
@@ -2247,7 +2244,7 @@
 
 
 
-          
+
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
           - Already partially done in strings/labels.ts
@@ -2660,7 +2657,7 @@
 
 
 
-          
+
         - Phase 5: Extract output.ts field labels
           - Field labels like 'Status:', 'Priority:', etc.
           - Already partially done in strings/labels.ts
@@ -3800,21 +3797,17 @@
         1. Fundamentally different purposes:
            - Inbox: General ideation, low friction, no structure required
            - Observations: Workflow feedback with explicit types and workflow_ref
-           
         2. Query patterns differ:
            - Inbox: Time-based triage (oldest first), general filtering
            - Observations: Workflow-specific filtering, type-based queries
-           
         3. Mental model clarity:
            - Inbox: 'I have an idea but no clear scope yet'
            - Observations: 'This workflow has friction/success/question'
-           
         4. Prior work findings (from ../kspec-acp-test):
            - 142+ observations in meta manifest (workflow-specific)
            - 55+ inbox items (general ideas across all domains)
            - No confusion observed in practice
            - Research finding: 'Most systems have single capture mechanism. Two risks dilution.'
-           
         5. However: Two systems CAN coexist if semantically distinct
            - Like tasks vs specs (different purposes, both valuable)
            - Cross-references maintain linkage (observations → tasks with meta_ref)
@@ -12076,13 +12069,11 @@
             encoding: 'utf-8',
             stdio: 'pipe'
           });
-          
           // Option 2: Use 'npx --no-install' dry run
           const result = spawnSync('npx', ['--no-install', adapterPackage, '--version'], {
             encoding: 'utf-8',
             stdio: 'pipe'
           });
-          
           if (result.status \!== 0) {
             error(`Adapter package not found: ${adapterPackage}. Install with: npm install -g ${adapterPackage}`);
             process.exit(3);
@@ -12219,7 +12210,6 @@
         async function ensureWorktree(options: { autoWorktree?: boolean }): Promise<boolean> {
           // Check if .kspec exists and is valid worktree
           const kspecPath = path.join(process.cwd(), '.kspec');
-          
           if (fs.existsSync(kspecPath)) {
             // Verify it's a valid worktree (has .git file pointing to main repo)
             const gitFile = path.join(kspecPath, '.git');
@@ -12230,33 +12220,27 @@
             console.warn('Warning: .kspec exists but is not a git worktree');
             return false;
           }
-          
           // Check if kspec-meta branch exists
           const branchCheck = spawnSync('git', ['branch', '--list', 'kspec-meta'], {
             encoding: 'utf-8'
           });
-          
           if (!branchCheck.stdout.trim()) {
             return false; // No kspec-meta branch, fresh repo
           }
-          
           // Branch exists, worktree doesn't
           if (options.autoWorktree) {
             // Auto-create
             createWorktree();
             return true;
           }
-          
           // Prompt user
           const answer = await prompt(
             'kspec-meta branch exists but .kspec worktree is missing. Create it? (y/N)'
           );
-          
           if (answer.toLowerCase() === 'y') {
             createWorktree();
             return true;
           }
-          
           return false;
         }
 
@@ -12266,12 +12250,10 @@
             encoding: 'utf-8',
             stdio: 'inherit'
           });
-          
           if (result.status !== 0) {
             error('Failed to create .kspec worktree');
             process.exit(1);
           }
-          
           console.log('Created .kspec worktree from kspec-meta branch');
         }
 
@@ -12497,22 +12479,17 @@
           tasks: Task[]
         ): StalenessWarning[] {
           const warnings: StalenessWarning[] = [];
-          
           // Check 1: Parent task pending but children done
           for (const task of tasks) {
             if (task.status \!== 'pending' && task.status \!== 'in_progress') continue;
             if (\!task.spec_ref) continue;
-            
             const spec = findSpec(task.spec_ref, items);
             if (\!spec) continue;
-            
             const children = findChildSpecs(spec, items);
             if (children.length === 0) continue;
-            
             const allImplemented = children.every(
               c => c.implementation_status === 'implemented'
             );
-            
             if (allImplemented) {
               warnings.push({
                 type: 'parent-pending',
@@ -12521,15 +12498,12 @@
               });
             }
           }
-          
           // Check 2: Spec implemented but no completed task
           for (const item of items) {
             if (item.implementation_status \!== 'implemented') continue;
-            
             const completedTasks = tasks.filter(
               t => t.status === 'completed' && t.spec_ref === `@${item.slug}`
             );
-            
             if (completedTasks.length === 0) {
               warnings.push({
                 type: 'spec-no-task',
@@ -12538,15 +12512,12 @@
               });
             }
           }
-          
           // Check 3: Task completed but spec not started
           for (const task of tasks) {
             if (task.status \!== 'completed') continue;
             if (\!task.spec_ref) continue;
-            
             const spec = findSpec(task.spec_ref, items);
             if (\!spec) continue;
-            
             if (spec.implementation_status === 'not_started') {
               warnings.push({
                 type: 'task-spec-mismatch',
@@ -12555,7 +12526,6 @@
               });
             }
           }
-          
           return warnings;
         }
         ```
@@ -12565,13 +12535,11 @@
         ```typescript
         if (options.staleness) {
           const warnings = checkStaleness(items, tasks);
-          
           if (warnings.length > 0) {
             console.log(`\nStaleness warnings (${warnings.length}):`);
             for (const w of warnings) {
               console.log(`  ⚠ ${w.message}`);
             }
-            
             if (options.strict) {
               process.exit(EXIT_CODES.VALIDATION);
             }
@@ -12717,35 +12685,29 @@
             if (!dest) {
               dest = path.join(os.tmpdir(), `kspec-test-${ulid().slice(0, 8)}`);
             }
-            
             // Clone repo (no hardlinks for true isolation)
             const cloneResult = spawnSync('git', [
               'clone', '--no-hardlinks', source, dest
             ], { encoding: 'utf-8', stdio: 'pipe' });
-            
             if (cloneResult.status !== 0) {
               console.error(`Failed to clone: ${cloneResult.stderr}`);
               process.exit(1);
             }
-            
             // Remove remote origin
             spawnSync('git', ['remote', 'remove', 'origin'], {
               cwd: dest,
               encoding: 'utf-8'
             });
-            
             // Check for kspec-meta branch
             const branchCheck = spawnSync('git', [
               'branch', '--list', 'kspec-meta'
             ], { cwd: dest, encoding: 'utf-8' });
-            
             if (branchCheck.stdout.trim()) {
               // Create .kspec worktree
               spawnSync('git', [
                 'worktree', 'add', '.kspec', 'kspec-meta'
               ], { cwd: dest, encoding: 'utf-8' });
             }
-            
             // Checkout specified branch
             let branch = 'main';  // or detect default
             if (options.branch) {
@@ -12755,7 +12717,6 @@
               });
               branch = options.branch;
             }
-            
             // Output result
             if (options.json) {
               console.log(JSON.stringify({ path: dest, branch }));
@@ -14562,7 +14523,6 @@
 
         export class TraitIndex {
           constructor(items: LoadedSpecItem[], refIndex: ReferenceIndex);
-          
           getTraitsForSpec(specUlid: string): TraitInfo[];
           getSpecsForTrait(traitUlid: string): string[];
           getInheritedAC(specUlid: string): { trait: TraitInfo; ac: AcceptanceCriterion }[];
@@ -16066,7 +16026,7 @@
 
 
 
-          
+
         But the actual package is defined in src/agents/adapters.ts:34:
           args: ['@zed-industries/claude-code-acp']
 
@@ -18223,5 +18183,43 @@
 
 
         **Awaiting user approval to implement.**
+      supersedes: null
+    - _ulid: 01KFF6W6VZ1KRGAN570B853W03
+      created_at: 2026-01-21T02:41:56.609Z
+      author: "@claude"
+      content: >-
+        ## Library Behavior Documentation
+
+
+        The 'yaml' library (v2.8.2+) has expected behavior where block scalars with whitespace-only
+        lines accumulate extra blank lines on each parse-stringify cycle.
+
+
+        ### Root Cause
+
+        In stringifyString.ts, the blockString() function adds indentation after newlines:
+
+        ```typescript
+
+        value = value.replace(/\n+/g, \`$&${indent}\`)
+
+        ```
+
+
+        When content contains a line with only spaces (e.g., from poorly trimmed input), this
+        pattern causes the library to insert additional indentation markers that manifest as blank
+        lines on each cycle.
+
+
+        ### Workaround Applied
+
+        1. **Post-processing**: writeYamlFilePreserveFormat() now filters whitespace-only lines from
+        output
+
+        2. **Input sanitization**: createNote() and createTodo() now trim content before saving
+
+
+        This is not a bug in the yaml library - it's faithfully preserving whitespace. The
+        workaround prevents whitespace-only lines from entering or persisting in our data.
       supersedes: null
   todos: []
