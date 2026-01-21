@@ -1143,3 +1143,7 @@ requirements:
         given: item has relates_to refs
         when: kspec item delete @ref executed
         then: deletion proceeds (relates_to is not parent-child)
+      - id: ac-9
+        given: cascade confirmation prompt
+        when: kspec item delete @ref --cascade (no --force) executed
+        then: "prompt: Delete @ref and N descendant items? [y/N]"
