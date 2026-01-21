@@ -10890,6 +10890,14 @@
       content: Task was started in a previous iteration but not worked on. Leaving in_progress for next
         session to pick up. No progress made in iteration 19.
       supersedes: null
+    - _ulid: 01KFH14HMR4PC82M4HF433KX5C
+      created_at: 2026-01-21T19:40:07.193Z
+      author: "@claude"
+      content: "Reopening task: Investigation found this was marked complete on Jan 19 but INSTALL.md was
+        never actually created. Commit 45eaa38 only modified task metadata in the shadow branch. The
+        file does not exist in the repository. Previous notes describe intended content which is
+        still useful as a guide for implementation."
+      supersedes: null
   todos: []
 - _ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
   slugs: []
