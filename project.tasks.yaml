@@ -12909,7 +12909,7 @@
   type: infra
   spec_ref: "@spec-completion-enforcement"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -12952,6 +12952,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T08:07:54.047Z
 - _ulid: 01KFBBTTJ9XBBN9BAMVXBJVTM9
   slugs:
     - fix-test-repo-setup
@@ -13762,6 +13763,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Completed spec implementation status audit. Updated 5 spec items from incorrect
+    statuses to 'implemented': ULID Shortening, Cascade Status Updates, YAML Conventions, YAML 1.2
+    Required, and Quote Ambiguous Strings. Verified blocks relationship and auto-adaptive structure
+    are correctly marked not_started. Cascade to yaml-conventions updated 18 child items. All
+    changes committed to shadow branch."
   depends_on: []
   context: []
   priority: 2
@@ -13771,6 +13777,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:07:10.917Z
   started_at: 2026-01-21T08:03:53.875Z
+  completed_at: 2026-01-21T08:07:21.946Z
   notes:
     - _ulid: 01KFBKKAEHM7D8HFN4X93EJQC8
       created_at: 2026-01-19T17:07:19.122Z
@@ -13866,12 +13873,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-01-21T08:07:21.946Z
-  closed_reason: "Completed spec implementation status audit. Updated 5 spec items from incorrect
-    statuses to 'implemented': ULID Shortening, Cascade Status Updates, YAML Conventions, YAML 1.2
-    Required, and Quote Ambiguous Strings. Verified blocks relationship and auto-adaptive structure
-    are correctly marked not_started. Cascade to yaml-conventions updated 18 child items. All
-    changes committed to shadow branch."
 - _ulid: 01KFBKR7ZV58GWPSX4FSACHRF2
   slugs:
     - task-set-batch

@@ -2166,4 +2166,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFSGAE5R6B49N4G4P52NQDD
+    type: success
+    content: Spec status audit revealed that implementation often outpaces spec updates. ULID
+      shortening, cascade updates, and YAML conventions were all implemented but marked not_started.
+      The cascade feature in item set updated 18 child items automatically, demonstrating the value
+      of hierarchical status propagation. Shadow branch separation meant no main branch PR was
+      needed for metadata updates.
+    created_at: 2026-01-21T08:07:29.989Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
