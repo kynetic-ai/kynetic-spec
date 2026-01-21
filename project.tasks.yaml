@@ -14210,6 +14210,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-01-19T18:01:56.151Z
+  started_at: 2026-01-21T07:28:10.700Z
   notes:
     - _ulid: 01KFBPQGVA8XDXMS55GCY9R8JR
       created_at: 2026-01-19T18:02:02.475Z
@@ -14228,9 +14229,30 @@
         - Test file: tests/integration.test.ts:1462 (currently failing)
         - Check both main and shadow branches before reporting 'no commits'
       supersedes: null
+    - _ulid: 01KFFQPXG7DV6X4NXCKY045ERD
+      created_at: 2026-01-21T07:36:08.968Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        - Modified searchCommits and searchCommitsRaw to detect empty repo errors (does not have any
+        commits yet, bad revision)
+
+        - Added hasCommits helper that checks both main and shadow branches
+
+        - Updated output logic to differentiate between empty repos and no matching commits
+
+        - JSON mode returns {commits: [], message: 'No commits in repository yet'}
+
+        - Shadow branch search: automatically searches kspec-meta branch if main is empty
+
+        - Added 6 tests covering all acceptance criteria (AC-1 through AC-6)
+
+        - All 790 tests pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T07:28:10.700Z
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
   slugs:
     - task-dynamic-workflow-skills
