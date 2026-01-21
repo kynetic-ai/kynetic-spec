@@ -13591,7 +13591,7 @@
   type: infra
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -13696,6 +13696,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-21T08:38:22.851Z
+  closed_reason: "Merged in PR #121. Fixed JSON output consistency by removing command-specific --json
+    flag from clone-for-testing. All 5 ACs have E2E test coverage with AC annotations. All 808 tests
+    pass."
 - _ulid: 01KFBDQED41BH9A9REH81KX34J
   slugs: []
   title: Add spec-schema drift detection to validation
