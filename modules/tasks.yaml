@@ -1158,3 +1158,7 @@ requirements:
         given: attempting to set status
         when: kspec task set --refs @a @b --status completed executed
         then: "error: Use state transition commands (start, complete, block, etc.) to change status"
+      - id: ac-4
+        given: no changes specified
+        when: kspec task set --refs @a @b (no field flags) executed
+        then: warns No changes specified for each, no changes saved
