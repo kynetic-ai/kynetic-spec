@@ -12907,7 +12907,7 @@
     - completion-validation
   title: Add completion validation to prevent premature task closure
   type: infra
-  spec_ref: null
+  spec_ref: "@spec-completion-enforcement"
   meta_ref: null
   status: pending
   blocked_by: []
