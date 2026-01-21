@@ -1190,3 +1190,7 @@ requirements:
         given: no description provided
         when: kspec task add --title X executed
         then: task created without description (existing behavior)
+      - id: ac-3
+        given: multiline description
+        when: --description 'Line1\nLine2' or heredoc provided
+        then: description preserves newlines
