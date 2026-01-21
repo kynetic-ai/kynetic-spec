@@ -1107,3 +1107,6 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-21T05:24:01.143Z
+    description: Block item deletion when children exist. Require --cascade flag to recursively delete
+      item and all descendants. Children means nested YAML items (e.g., requirements under
+      features), NOT relationship refs like relates_to.
