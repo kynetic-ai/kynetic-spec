@@ -666,9 +666,10 @@ export function registerTaskCommands(program: Command): void {
   // AC: @multi-ref-batch ac-2 - Backward compatibility
   task
     .command('complete [ref]')
-    .description('Complete a task (in_progress -> completed)')
+    .description('Complete a task (pending_review -> completed)')
     .option('--refs <refs...>', 'Complete multiple tasks by ref')
     .option('--reason <reason>', 'Completion reason/notes')
+    .option('--skip-review', 'Skip review requirement (requires --reason)')
     .option('--no-sync', 'Skip syncing spec implementation status')
     .action(async (ref: string | undefined, options) => {
       try {
@@ -676,6 +677,12 @@ export function registerTaskCommands(program: Command): void {
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks, items);
+
+        // AC: @spec-completion-enforcement ac-8
+        if (options.skipReview && !options.reason) {
+          error(errors.status.skipReviewRequiresReason);
+          process.exit(EXIT_CODES.ERROR);
+        }
 
         // AC: @multi-ref-batch ac-1, ac-2, ac-3, ac-4
         const result = await executeBatchOperation({
@@ -690,21 +697,68 @@ export function registerTaskCommands(program: Command): void {
           },
           executeOperation: async (foundTask, { ctx, tasks, items, index, options }) => {
             try {
+              // AC: @spec-completion-enforcement ac-6
               if (foundTask.status === 'completed') {
                 return {
                   success: false,
-                  error: 'Task is already completed',
+                  error: errors.status.completeAlreadyCompleted,
                 };
               }
 
-              if (foundTask.status !== 'in_progress' && foundTask.status !== 'pending' && foundTask.status !== 'pending_review') {
-                return {
-                  success: false,
-                  error: errors.status.cannotComplete(foundTask.status),
-                };
+              // AC: @spec-completion-enforcement ac-7 - Allow skip-review bypass
+              if (!options.skipReview) {
+                // AC: @spec-completion-enforcement ac-2
+                if (foundTask.status === 'in_progress') {
+                  return {
+                    success: false,
+                    error: errors.status.completeRequiresReview,
+                  };
+                }
+
+                // AC: @spec-completion-enforcement ac-3
+                if (foundTask.status === 'pending') {
+                  return {
+                    success: false,
+                    error: errors.status.completeRequiresStart,
+                  };
+                }
+
+                // AC: @spec-completion-enforcement ac-4
+                if (foundTask.status === 'blocked') {
+                  return {
+                    success: false,
+                    error: errors.status.completeBlockedTask,
+                  };
+                }
+
+                // AC: @spec-completion-enforcement ac-5
+                if (foundTask.status === 'cancelled') {
+                  return {
+                    success: false,
+                    error: errors.status.completeCancelledTask,
+                  };
+                }
+
+                // AC: @spec-completion-enforcement ac-1 - Only pending_review allowed
+                if (foundTask.status !== 'pending_review') {
+                  return {
+                    success: false,
+                    error: errors.status.cannotComplete(foundTask.status),
+                  };
+                }
               }
 
               const now = new Date().toISOString();
+
+              // AC: @spec-completion-enforcement ac-7 - Document skip-review reason
+              let taskNotes = foundTask.notes;
+              if (options.skipReview && options.reason) {
+                const skipNote = createNote(
+                  `Completed with --skip-review: ${options.reason}`,
+                  '@human'
+                );
+                taskNotes = [...taskNotes, skipNote];
+              }
 
               // Update status
               const updatedTask: Task = {
@@ -713,6 +767,7 @@ export function registerTaskCommands(program: Command): void {
                 completed_at: now,
                 closed_reason: options.reason || null,
                 started_at: foundTask.started_at || now,
+                notes: taskNotes,
               };
 
               await saveTask(ctx, updatedTask);

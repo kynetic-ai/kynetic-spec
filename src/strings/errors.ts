@@ -104,6 +104,18 @@ export const statusErrors = {
   cannotStart: (status: string) => `Cannot start task with status: ${status}`,
   cannotComplete: (status: string) => `Cannot complete task with status: ${status}`,
   cannotBlock: (status: string) => `Cannot block task with status: ${status}`,
+  // AC: @spec-completion-enforcement ac-2
+  completeRequiresReview: 'Task must be submitted for review first. Use: kspec task submit @ref',
+  // AC: @spec-completion-enforcement ac-3
+  completeRequiresStart: 'Task must be started and submitted first',
+  // AC: @spec-completion-enforcement ac-4
+  completeBlockedTask: 'Cannot complete blocked task',
+  // AC: @spec-completion-enforcement ac-5
+  completeCancelledTask: 'Cannot complete cancelled task. Use: kspec task reset @ref first',
+  // AC: @spec-completion-enforcement ac-6
+  completeAlreadyCompleted: 'Task is already completed',
+  // AC: @spec-completion-enforcement ac-8
+  skipReviewRequiresReason: '--skip-review requires --reason to document why',
 } as const;
 
 /**
