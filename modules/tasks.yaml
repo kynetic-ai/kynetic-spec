@@ -1065,3 +1065,7 @@ requirements:
         when: operation completes
         then: "note auto-added: Reset from {previous_status} to pending (includes cancel_reason if was
           cancelled)"
+      - id: ac-5
+        given: task A is completed, task B depends on A
+        when: kspec task reset @task-a executed
+        then: A becomes pending; B unaffected (dependency check happens on B's start)
