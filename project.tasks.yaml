@@ -17800,6 +17800,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Fixed YAML blank line accumulation: added post-processing filter and input trimming.
+    All 766 tests pass, file is stable across parse-stringify cycles."
   depends_on: []
   context: []
   priority: 2
@@ -17809,6 +17811,7 @@
   vcs_refs: []
   created_at: 2026-01-21T00:48:37.137Z
   started_at: 2026-01-21T02:18:37.385Z
+  completed_at: 2026-01-21T02:47:05.130Z
   notes:
     - _ulid: 01KFF0D8CJ9JZM3X5KV9V7JQ2Z
       created_at: 2026-01-21T00:48:55.186Z
@@ -18259,6 +18262,22 @@
         cleaned on next save.
       supersedes: null
   todos: []
-  completed_at: 2026-01-21T02:47:05.130Z
-  closed_reason: "Fixed YAML blank line accumulation: added post-processing filter and input trimming.
-    All 766 tests pass, file is stable across parse-stringify cycles."
+- title: Unify YAML serialization API to prevent inconsistent behavior
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - tech-debt
+    - yaml
+    - api
+  _ulid: 01KFF8DVY8KZ9NSQ4M5XXH5H2K
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-21T03:09:03.815Z
+  notes: []
+  todos: []
