@@ -13820,6 +13820,50 @@
         implemented  
            - Correct status, no implementation found
       supersedes: null
+    - _ulid: 01KFFSEZK5DMQ3BWASWJ5SK10B
+      created_at: 2026-01-21T08:06:46.117Z
+      author: "@claude"
+      content: >-
+        Complete audit of spec implementation statuses:
+
+
+        ## Updated Statuses
+
+
+        ### Changed from not_started to implemented:
+
+        1. **@ulid-shortening** - ULID prefix matching in src/parser/refs.ts (ulid-prefix matchType)
+
+        2. **@yaml-conventions** - Uses yaml v2.8.2 with YAML 1.2 by default
+
+        3. **@yaml-version** - yaml v2.8.2 implements YAML 1.2 spec
+
+        4. **@yaml-quoting** - yaml v2.8.2 handles ambiguous strings correctly
+
+
+        ### Changed from in_progress to implemented:
+
+        5. **@status-cascade** - Cascade implementation in src/cli/commands/item.ts
+        handleStatusCascade()
+
+
+        ### Verified as correctly marked not_started:
+
+        - **@rel-blocks** - blocks relationship NOT implemented (correct)
+
+        - **@auto-adaptive-structure** - Auto-adaptive file structure NOT implemented (correct)
+
+        - **@cmd-hooks** - kspec hooks CLI command NOT implemented (should be deferred per notes)
+
+
+        ## Cascade Effects
+
+        Updating @yaml-conventions cascaded to 18 child items including ref-syntax, ref-validation,
+        derive commands, cmd-tasks-* commands, and shadow commands.
+
+
+        All spec implementation statuses now accurately reflect actual code.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KFBKR7ZV58GWPSX4FSACHRF2
