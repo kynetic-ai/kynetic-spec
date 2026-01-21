@@ -13716,6 +13716,7 @@
         test names."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
   slugs:
     - fix-yaml-formatting-status
