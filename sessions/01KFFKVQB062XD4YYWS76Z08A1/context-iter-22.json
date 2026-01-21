@@ -1,0 +1,330 @@
+{
+  "generated_at": "2026-01-21T09:57:38.117Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-20T17:45:11.271Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFBM8E",
+      "title": "Consolidate shortUlid helper in inbox.ts with ReferenceIndex",
+      "started_at": "2026-01-21T09:52:39.532Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-01-21T09:56:22.758Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFBP4C",
+      "title": "Upgrade vitest to v4 (fix npm audit vulns)",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "testing",
+        "security"
+      ]
+    },
+    {
+      "ref": "01KFBMAE",
+      "title": "Clarify duplicate test names in integration and meta tests",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "testing"
+      ]
+    },
+    {
+      "ref": "01KFBP98",
+      "title": "Extract shared test helpers to utility file",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "testing",
+        "tech-debt"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    },
+    {
+      "ref": "01KFBDR7",
+      "title": "Improve Result type enforcement and type guards",
+      "blocked_by": [
+        "Needs clearer scope. Investigation shows Result pattern is well-implemented with proper .ok checks throughout codebase. No concrete bugs or problems identified. Task suggests multiple potential improvements but unclear which would add value. Needs: (1) Concrete examples of missed checks or bugs, OR (2) Narrower scope focusing on specific improvement (e.g., just documentation, or just lint rules)"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFBKRD",
+      "title": "Add child item check before item deletion",
+      "completed_at": "2026-01-21T09:51:28.592Z",
+      "closed_reason": "Merged in PR #125 after fixing critical blocking issue. Removed accidentally committed file with invalid multiline YAML filename from git history using interactive rebase. All 841 tests pass locally (2 skipped for AC-6/AC-7 as documented). 8/10 ACs have E2E test coverage with proper AC annotations. Implementation includes child detection, cascade deletion, trait implementor checks, confirmation prompts, and proper error handling."
+    },
+    {
+      "ref": "01KFBKRA",
+      "title": "Add confirmation prompt for AC deletion without --force",
+      "completed_at": "2026-01-21T09:26:51.053Z",
+      "closed_reason": "Merged in PR #124. All 6 ACs have E2E test coverage with proper AC annotations. Implementation adds confirmation prompt for AC deletion without --force flag. All 831 tests pass."
+    },
+    {
+      "ref": "01KFBJFE",
+      "title": "Deduplicate formatRelativeTime in inbox.ts",
+      "completed_at": "2026-01-21T09:09:02.992Z",
+      "closed_reason": "PR #123 created. Code change is simple refactoring with no behavior change. All 823 tests pass."
+    },
+    {
+      "ref": "01KFBKR7",
+      "title": "Add batch support to task set command",
+      "completed_at": "2026-01-21T09:03:50.449Z",
+      "closed_reason": "Merged in PR #122. All 13 ACs have E2E test coverage with proper AC annotations. All 15 tests pass. Implementation uses shared batch infrastructure correctly."
+    },
+    {
+      "ref": "01KFBDM8",
+      "title": "Audit and fix JSON output consistency across CLI",
+      "completed_at": "2026-01-21T08:38:22.851Z",
+      "closed_reason": "Merged in PR #121. Fixed JSON output consistency by removing command-specific --json flag from clone-for-testing. All 5 ACs have E2E test coverage with AC annotations. All 808 tests pass."
+    },
+    {
+      "ref": "01KFBBSK",
+      "title": "Add completion validation to prevent premature task closure",
+      "completed_at": "2026-01-21T08:18:12.633Z",
+      "closed_reason": "PR #120 created with implementation and comprehensive test coverage. All 9 ACs validated. 808 tests pass."
+    },
+    {
+      "ref": "01KFBKK2",
+      "title": "Audit spec implementation statuses vs actual code",
+      "completed_at": "2026-01-21T08:07:21.946Z",
+      "closed_reason": "Completed spec implementation status audit. Updated 5 spec items from incorrect statuses to 'implemented': ULID Shortening, Cascade Status Updates, YAML Conventions, YAML 1.2 Required, and Quote Ambiguous Strings. Verified blocks relationship and auto-adaptive structure are correctly marked not_started. Cascade to yaml-conventions updated 18 child items. All changes committed to shadow branch."
+    },
+    {
+      "ref": "01KFC3AR",
+      "title": "Add --description flag to task add command",
+      "completed_at": "2026-01-21T08:01:39.276Z",
+      "closed_reason": "Merged in PR #119. All 6 ACs have test coverage with proper AC annotations. Fixed shell escaping bug in multiline test - changed from $'...' to printf syntax. All 792 tests pass."
+    },
+    {
+      "ref": "01KFBPQA",
+      "title": "Fix kspec log to handle empty repos gracefully",
+      "completed_at": "2026-01-21T07:55:23.439Z",
+      "closed_reason": "Merged in PR #118. All 6 ACs have comprehensive E2E test coverage with proper AC annotations. Implementation handles empty repos gracefully with proper error messages and JSON output."
+    },
+    {
+      "ref": "01KFBJCD",
+      "title": "Fix skipped test: invalid workflow reference in meta_ref",
+      "completed_at": "2026-01-21T07:27:54.880Z",
+      "closed_reason": "Merged in PR #117. Test unskipped and validates AC-3 for workflow reference validation. All 784 tests pass."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "c13704b",
+      "full_hash": "c13704bbd00c270d1508aac764e8523367a4e37e",
+      "date": "2026-01-21T09:51:17.000Z",
+      "message": "Add child item check and cascade delete for spec items (#125)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a8d90b8",
+      "full_hash": "a8d90b876f814fc51a2dd8f9a75184d139e41909",
+      "date": "2026-01-21T09:42:30.000Z",
+      "message": "test: Fix test API usage for item delete children",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "052c647",
+      "full_hash": "052c647bf18f47da4f59d6caacdd2b1a86354ecc",
+      "date": "2026-01-21T09:32:24.000Z",
+      "message": "feat: Add child item check and cascade delete for spec items",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a59060f",
+      "full_hash": "a59060f9bf79209a0af5c71702ae9d21e8565773",
+      "date": "2026-01-21T09:26:31.000Z",
+      "message": "Add confirmation prompt for AC deletion without --force (#124)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f185e02",
+      "full_hash": "f185e02cff562ddd4ca55634342ea1f378229d35",
+      "date": "2026-01-21T09:23:06.000Z",
+      "message": "feat: Add confirmation prompt for AC deletion without --force",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7fae9f9",
+      "full_hash": "7fae9f92b80326e8e8670865e5b73ce6c3587551",
+      "date": "2026-01-21T09:15:44.000Z",
+      "message": "Deduplicate formatRelativeTime in inbox.ts (#123)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "542b1ac",
+      "full_hash": "542b1ac6b8703b9593a3b73247932e0ed14b660e",
+      "date": "2026-01-21T09:08:27.000Z",
+      "message": "refactor: Deduplicate formatRelativeTime in inbox.ts",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fb37abb",
+      "full_hash": "fb37abbd1e0d67ad895d0d7b09b780e2716bd395",
+      "date": "2026-01-21T09:03:44.000Z",
+      "message": "Add batch support to task set command (#122)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "88e5fa2",
+      "full_hash": "88e5fa21d015c7dda63e915f3a1de2b64b90f35e",
+      "date": "2026-01-21T08:56:13.000Z",
+      "message": "feat: Add batch support to task set command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f4a6700",
+      "full_hash": "f4a6700758a03c28fd7504b765e78cd3f6853c85",
+      "date": "2026-01-21T08:38:12.000Z",
+      "message": "Fix JSON output consistency: Remove command-specific --json flag (#121)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6H34",
+      "text": "ACP type safety audit: Review and strengthen typing across ACP client implementation. Current state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add typed response methods for file/read, file/write, terminal/run (2) Type the request params using SDK types (3) Evaluate if we're correctly implementing the full ACP protocol - check SDK docs for any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be deprecated in favor of typed methods only. The { granted: true } bug showed the value of compile-time enforcement.",
+      "created_at": "2026-01-17T17:47:19.570Z",
+      "tags": [
+        "acp",
+        "types",
+        "tech-debt"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6KSA",
+      "text": "ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission requests like the real agent does. Currently mock auto-succeeds tool calls without permission flow. Would have caught the { granted: true } format bug in tests rather than live testing.",
+      "created_at": "2026-01-17T18:34:23.491Z",
+      "tags": [
+        "testing",
+        "acp",
+        "mock"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF9W2H",
+      "text": "Figure out and document a versioning strategy for the package",
+      "created_at": "2026-01-19T00:56:57.571Z",
+      "tags": [
+        "docs",
+        "release"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 246,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 7,
+    "blocked": 2,
+    "completed": 225,
+    "inbox_items": 31
+  }
+}

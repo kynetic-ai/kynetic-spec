@@ -2413,4 +2413,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFG0GWZC73H2GXDA2E5DDEJG
+    type: success
+    content: "Vitest v1 to v4 major version upgrade required only minimal changes: single async/await
+      fix in test file. Breaking changes were well-contained. The vitest v4 warning message
+      ('Promise returned by expect(actual).rejects.toThrow(expected) was not awaited') was clear and
+      pointed directly to the issue, making the fix trivial. Major version upgrades don't always
+      require extensive refactoring if the codebase follows best practices."
+    created_at: 2026-01-21T10:10:09.005Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
