@@ -1,0 +1,96 @@
+name: PR Review Resolution Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  pull_request_review_comment:
+    types: [created, edited, deleted]
+
+jobs:
+  check-unresolved-comments:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Check for unresolved review threads
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+
+            console.log(`Checking PR #${pull_number} for unresolved review threads...`);
+
+            // Use GraphQL to get review threads with resolution status
+            const query = `
+              query($owner: String!, $repo: String!, $pull_number: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  pullRequest(number: $pull_number) {
+                    reviewThreads(first: 100) {
+                      nodes {
+                        id
+                        isResolved
+                        isOutdated
+                        comments(first: 1) {
+                          nodes {
+                            body
+                            author {
+                              login
+                            }
+                            path
+                            line
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            const variables = {
+              owner,
+              repo,
+              pull_number
+            };
+
+            const result = await github.graphql(query, variables);
+            const reviewThreads = result.repository.pullRequest.reviewThreads.nodes;
+
+            // Filter for unresolved, non-outdated threads
+            const unresolvedThreads = reviewThreads.filter(thread =>
+              !thread.isResolved && !thread.isOutdated
+            );
+
+            if (unresolvedThreads.length === 0) {
+              console.log('✅ All review threads are resolved!');
+              return;
+            }
+
+            // Build a detailed error message
+            console.log(`❌ Found ${unresolvedThreads.length} unresolved review thread(s):`);
+            console.log('');
+
+            for (const thread of unresolvedThreads) {
+              const comment = thread.comments.nodes[0];
+              if (comment) {
+                console.log(`Thread by @${comment.author.login}:`);
+                if (comment.path && comment.line) {
+                  console.log(`  Location: ${comment.path}:${comment.line}`);
+                }
+                // Show first 200 chars of comment
+                const body = comment.body.substring(0, 200);
+                console.log(`  "${body}${comment.body.length > 200 ? '...' : ''}"`);
+                console.log('');
+              }
+            }
+
+            core.setFailed(
+              `This PR has ${unresolvedThreads.length} unresolved review thread(s). ` +
+              `Please resolve all review comments before merging.`
+            );

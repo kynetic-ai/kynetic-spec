@@ -553,6 +553,17 @@ Spec: @spec-ref
 2. **All review comments addressed** - PRs have automated Claude review that posts comments identifying issues. These MUST be fixed before merge.
 3. **User requests completed** - If the user asks for something via `@claude` in PR comments and the PR agent couldn't complete it (limited permissions), YOU must complete it before merging
 
+### Automated Review Resolution Check
+
+The repository includes a CI workflow (`pr-review-resolution-check.yml`) that automatically blocks merging if there are unresolved review threads. This check:
+
+- Runs on PR open, sync, reopen, and review events
+- Uses GitHub's GraphQL API to query review thread resolution status
+- Fails the check if any non-outdated review threads remain unresolved
+- Lists unresolved threads in the CI output for easy triage
+
+**To resolve:** Click "Resolve conversation" on each review thread in the GitHub UI after addressing the feedback. The CI check will automatically re-run and pass once all threads are resolved.
+
 ### How PR Review Works
 
 PRs have an automated `@claude` agent that:
