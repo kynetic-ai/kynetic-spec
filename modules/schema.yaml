@@ -1131,3 +1131,7 @@ requirements:
         given: cascade with no children
         when: kspec item delete @ref --cascade executed
         then: same as normal deletion (--cascade is no-op)
+      - id: ac-6
+        given: cascade deletes multiple
+        when: operation completes
+        then: single shadow commit with all deletions
