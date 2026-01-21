@@ -2126,4 +2126,34 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFS1A3YTHSJ31GK245P75VC
+    type: success
+    content: "PR review subagents worked excellently in parallel. Spawned two review agents
+      simultaneously - both produced comprehensive, strict reviews identifying issues (PR #119 had
+      failing test, PR #118 was clean). The parallel approach saved time and both reviews were
+      thorough with proper AC coverage validation."
+    created_at: 2026-01-21T07:59:18.142Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFS1G84GSYKT6AFWVA8R0GM
+    type: friction
+    content: Shell escaping in tests is tricky across environments. The $'...' syntax worked locally but
+      failed in CI. Using printf with double-escaped newlines ($(printf 'Line 1\\nLine 2\\nLine 3'))
+      is more portable and explicit. Tests should prefer printf over $'...' for multiline string
+      handling in bash commands.
+    created_at: 2026-01-21T07:59:24.421Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFFS1PAWEHVW5E4JA8FXJ2BD
+    type: success
+    content: "RALPH_LOOP_INSTRUCTIONS.md PR review workflow is well-designed: check for PRs first, spawn
+      review subagents, use decision tree (pass→merge, fail→fix). Following this process caught
+      issues before merge and ensured quality. The --merge flag (not --squash) preserves kspec
+      trailers which is critical for kspec log @ref functionality."
+    created_at: 2026-01-21T07:59:30.652Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
