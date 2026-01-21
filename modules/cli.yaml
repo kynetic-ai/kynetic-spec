@@ -2272,6 +2272,11 @@ features:
         when: building prompt for each iteration
         then: includes the focus instructions prominently in the prompt, emphasizing they apply to all
           iterations
+      - id: ac-16
+        given: ralph loop is running
+        when: checking for available tasks
+        then: "only considers tasks with automation: eligible, ignoring manual_only, needs_review, and
+          unassessed tasks"
     status:
       maturity: draft
       implementation: implemented
