@@ -14712,6 +14712,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #128. Clarified 13 duplicate test names across integration.test.ts (2
+    names) and meta.test.ts (11 names) by adding command context in parentheses. All 841 tests pass
+    locally. Pure refactoring with no behavior changes."
   depends_on: []
   context: []
   priority: 4
@@ -14720,6 +14723,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:19:56.512Z
   started_at: 2026-01-21T10:14:57.991Z
+  completed_at: 2026-01-21T10:24:10.942Z
   notes:
     - _ulid: 01KFBMAM6BJQVYY01GJG17SZ60
       created_at: 2026-01-19T17:20:02.763Z
@@ -14783,10 +14787,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T10:24:10.942Z
-  closed_reason: "Merged in PR #128. Clarified 13 duplicate test names across integration.test.ts (2
-    names) and meta.test.ts (11 names) by adding command context in parentheses. All 841 tests pass
-    locally. Pure refactoring with no behavior changes."
 - _ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
   slugs:
     - fix-yaml-formatting-status
@@ -14794,7 +14794,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-reset-command"
@@ -14819,6 +14819,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-01-21T10:24:28.141Z
 - _ulid: 01KFBNBB7DZWZBA1ZA8E7QVX80
   slugs: []
   title: Spec out session log analysis tooling
