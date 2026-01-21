@@ -1119,3 +1119,7 @@ requirements:
         given: item has child items
         when: kspec item delete @ref --cascade executed
         then: deletes item and all descendants, reports count
+      - id: ac-3
+        given: item has deeply nested children (A->B->C)
+        when: kspec item delete @A --cascade executed
+        then: all three items deleted, count shows 3 items deleted
