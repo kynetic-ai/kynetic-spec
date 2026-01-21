@@ -14004,7 +14004,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -14022,6 +14022,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T09:06:04.724Z
 - _ulid: 01KFBKK2E61MHW5PAERRPD9GV4
   slugs:
     - audit-spec-statuses
