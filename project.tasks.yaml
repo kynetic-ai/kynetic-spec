@@ -19924,4 +19924,22 @@
         there be a system author like @system or @kspec-cli for CLI-generated notes distinct from
         agent-authored notes?
       supersedes: null
+    - _ulid: 01KFH3HWD0YZ9MJSMAM50MBRC6
+      created_at: 2026-01-21T20:22:21.344Z
+      author: "@claude"
+      content: >-
+        ## Decision
+
+
+        Use Option A: Auto-generated notes should use getAuthor() (the authoring agent who ran the
+        command).
+
+
+        Rationale: Simpler, accurate about who triggered, consistent with manual task note. The
+        distinction between auto-generated vs agent-authored rarely matters in practice.
+
+
+        Future consideration captured in inbox @01KFH3HM: Could add auto_generated metadata flag if
+        filtering becomes important.
+      supersedes: null
   todos: []
