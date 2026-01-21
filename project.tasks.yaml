@@ -18262,22 +18262,133 @@
         cleaned on next save.
       supersedes: null
   todos: []
-- title: Unify YAML serialization API to prevent inconsistent behavior
+- _ulid: 01KFF8DVY8KZ9NSQ4M5XXH5H2K
+  slugs: []
+  title: Unify YAML serialization API to prevent inconsistent behavior
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - tech-debt
-    - yaml
-    - api
-  _ulid: 01KFF8DVY8KZ9NSQ4M5XXH5H2K
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - tech-debt
+    - yaml
+    - api
   vcs_refs: []
   created_at: 2026-01-21T03:09:03.815Z
-  notes: []
+  notes:
+    - _ulid: 01KFF8EKEKX8Q9RV336550X938
+      created_at: 2026-01-21T03:09:27.892Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        The YAML serialization code in `src/parser/yaml.ts` has inconsistent API surface that will
+        lead to bugs:
+
+
+        ### Current State
+
+
+        **Low-level functions:**
+
+        - `parseYaml<T>(content: string): T` - parses YAML string to object
+
+        - `toYaml(obj: unknown): string` - serializes object to YAML string
+
+
+        **File I/O functions:**
+
+        - `readYamlFile<T>(filePath: string)` - reads file, calls parseYaml()
+
+        - `writeYamlFile(filePath: string, data: unknown)` - calls toYaml(), writes to file
+
+        - `writeYamlFilePreserveFormat(filePath: string, data: unknown)` - YAML.stringify() +
+        post-processing
+
+
+        ### The Inconsistency
+
+
+        After the blank line fix (PR #111), `writeYamlFilePreserveFormat()` has post-processing that
+        filters whitespace-only lines:
+
+
+        ```typescript
+
+        yamlString = yamlString
+          .split('\n')
+          .filter(line => !/^[ \t]+$/.test(line))
+          .join('\n');
+        ```
+
+
+        But `toYaml()` and `writeYamlFile()` do NOT have this fix. This means:
+
+
+        1. Code using `toYaml()` directly will still produce whitespace-only lines
+
+        2. Code using `writeYamlFile()` will still have the accumulation bug
+
+        3. The fix is inconsistently applied based on which function you happen to use
+
+
+        ### Legacy Code
+
+
+        The file also has an unused import:
+
+        ```typescript
+
+        import yaml from 'js-yaml';  // Never used
+
+        ```
+
+
+        The codebase migrated from js-yaml to the 'yaml' library but left this import.
+
+
+        ### Why This Matters
+
+
+        - New code might use `toYaml()` or `writeYamlFile()` and reintroduce the bug
+
+        - The naming is confusing - `writeYamlFilePreserveFormat` doesn't actually preserve format
+        differently
+
+        - Having multiple paths for the same operation violates DRY
+
+
+        ## Proposed Solution
+
+
+        1. **Centralize the fix in `toYaml()`** - apply the whitespace-only line filter there
+
+        2. **Make `writeYamlFile()` use `toYaml()`** - it already does, so the fix propagates
+
+        3. **Simplify `writeYamlFilePreserveFormat()`** - either:
+           - Remove it entirely (it's now identical to writeYamlFile)
+           - Or rename to clarify its purpose and keep as alias
+        4. **Remove unused `js-yaml` import**
+
+
+        ## Files to Modify
+
+
+        - `src/parser/yaml.ts` (lines 4, 71-77, 90-93, 104-128)
+
+
+        ## Verification
+
+
+        - Run full test suite (766 tests)
+
+        - Verify idempotency test still passes
+
+        - Check all callers of toYaml() and writeYamlFile() aren't broken
+      supersedes: null
   todos: []
