@@ -1056,3 +1056,7 @@ requirements:
         given: task has status pending
         when: kspec task reset @ref executed
         then: "error: Task is already pending"
+      - id: ac-3
+        given: task reset succeeds
+        when: operation completes
+        then: shadow commit with message task-reset
