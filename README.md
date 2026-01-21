@@ -1,5 +1,11 @@
 # Kynetic Spec (kspec)
 
+> **Warning: Experimental Software**
+>
+> This project is a work-in-progress and is not ready for production use. APIs, file formats, and CLI commands may change without notice. Use at your own risk.
+>
+> If you're interested in the project, feel free to explore the code and design docs, but please don't depend on it for real work yet.
+
 A structured specification and task management system designed for AI-assisted development. kspec provides a YAML-based format for defining project specifications that can be programmatically manipulated, with a task system to track implementation progress.
 
 **Key feature**: kspec is self-hosting - it tracks its own development using itself.
