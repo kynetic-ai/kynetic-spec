@@ -200,6 +200,7 @@ export function registerTaskCommands(program: Command): void {
     .command('add')
     .description('Create a new task')
     .requiredOption('--title <title>', 'Task title')
+    .option('--description <description>', 'Task description')
     .option('--type <type>', 'Task type (task, epic, bug, spike, infra)', 'task')
     .option('--spec-ref <ref>', 'Reference to spec item')
     .option('--meta-ref <ref>', 'Reference to meta item (workflow, agent, or convention)')
@@ -265,8 +266,14 @@ export function registerTaskCommands(program: Command): void {
           automationValue = options.automation as 'eligible' | 'needs_review' | 'manual_only';
         }
 
+        // AC: @spec-task-add-description ac-6 - Omit description if empty string
+        const descriptionValue = options.description && options.description.trim() !== ''
+          ? options.description
+          : undefined;
+
         const input: TaskInput = {
           title: options.title,
+          description: descriptionValue,
           type: options.type,
           spec_ref: options.specRef || null,
           meta_ref: options.metaRef || null,
