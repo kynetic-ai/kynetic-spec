@@ -2767,3 +2767,4 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-21T05:26:10.467Z
+    description: Handle uninitialized git repos (no commits yet) gracefully instead of showing raw git error.
