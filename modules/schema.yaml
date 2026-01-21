@@ -1189,3 +1189,7 @@ requirements:
         given: JSON mode without force
         when: kspec item ac remove @spec ac-1 --json executed
         then: "error: Confirmation required. Use --force with --json"
+      - id: ac-6
+        given: non-interactive environment
+        when: no TTY available
+        then: "error: Non-interactive environment. Use --force to proceed"
