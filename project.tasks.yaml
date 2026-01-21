@@ -13663,6 +13663,37 @@
 
         2. Document envelope format conventions (no change needed - current pattern is intentional)
       supersedes: null
+    - _ulid: 01KFFTQZP58HRGJP0179ZX09FP
+      created_at: 2026-01-21T08:29:09.701Z
+      author: "@claude"
+      content: >-
+        Completed JSON output consistency audit and fix.
+
+
+        **Changes made:**
+
+        1. Removed command-specific --json flag from clone-for-testing command
+
+        2. Updated clone-for-testing to use global isJsonMode() helper
+
+        3. Updated tests to use global --json flag (via kspecJson helper)
+
+
+        **Audit results:**
+
+        - No stderr leakage issues found (git commands properly use stdio pipes)
+
+        - Envelope formats are intentionally varied:
+          - output(): raw data for general use
+          - success(): wrapped { success, message, ...data } for success confirmations
+          - error(): wrapped { success: false, error, details } for errors
+          - session checkpoint: special { decision, reason } format for Claude Code hooks
+        - All commands now use global --json flag consistently
+
+
+        All 808 tests pass. The one inconsistency (clone-for-testing's own --json flag) has been
+        fixed.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBDQED41BH9A9REH81KX34J
