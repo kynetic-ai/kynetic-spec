@@ -1198,3 +1198,7 @@ requirements:
         given: special characters in description
         when: "--description 'Contains: colons, quotes, and doubles' provided"
         then: description preserved correctly (proper YAML escaping)
+      - id: ac-5
+        given: JSON output with description
+        when: --description X --json provided
+        then: JSON output includes description field
