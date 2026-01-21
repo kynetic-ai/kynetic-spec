@@ -2348,4 +2348,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFZ0F443X3JG15DVT86TQS9
+    type: success
+    content: "Test helper API documentation was critical for fixing tests. The kspec() helper signature
+      (string args, not array) wasn't obvious from test file alone. Reading tests/helpers/cli.ts
+      revealed correct usage pattern. Future: consider adding JSDoc examples in helper file showing
+      common patterns."
+    created_at: 2026-01-21T09:43:41.957Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
