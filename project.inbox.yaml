@@ -518,3 +518,15 @@ inbox:
     created_at: 2026-01-21T20:22:12.922Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFH6XF1C0AD2QF7WAMEJ9M57
+    text: "Trait: Verbose Output Mode (@trait-verbose-output) - Cross-cutting behavior for commands that
+      display lists. Defines --verbose/-v flag to show complete output without truncation. AC: (1)
+      truncated lists show all items with --verbose, (2) summaries expand to detailed info. Applies
+      to: validate (orphaned specs, mismatches), tasks list, inbox list, item list. Ensures
+      consistent flag naming and behavior across CLI."
+    created_at: 2026-01-21T21:21:06.605Z
+    tags:
+      - trait
+      - cli
+      - dx
+    added_by: "@claude"
