@@ -463,6 +463,16 @@ features:
             when: the YAML is parsed
             then: newlines are preserved and the content is readable (recommended practice for descriptions and
               notes)
+    notes:
+      - _ulid: 01KFF74KDRTV1HZMR7GRANXD3W
+        created_at: 2026-01-21T02:46:31.609Z
+        author: "@claude"
+        content: The 'yaml' library (v2.8.2+) has a known behavior where block scalars containing
+          whitespace-only lines accumulate extra blank lines on each parse-stringify cycle. This is
+          expected library behavior, not a bug. The writeYamlFilePreserveFormat() function includes
+          a workaround that filters whitespace-only lines from output. See src/parser/yaml.ts for
+          implementation details.
+        supersedes: null
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs:
       - validation
