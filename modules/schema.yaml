@@ -1110,3 +1110,8 @@ requirements:
     description: Block item deletion when children exist. Require --cascade flag to recursively delete
       item and all descendants. Children means nested YAML items (e.g., requirements under
       features), NOT relationship refs like relates_to.
+    acceptance_criteria:
+      - id: ac-1
+        given: item has child items (nested in YAML)
+        when: kspec item delete @ref executed
+        then: "error: Cannot delete: item has N children. Use --cascade to delete recursively"
