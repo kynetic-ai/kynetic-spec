@@ -13337,6 +13337,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-19T15:15:01.010Z
+  started_at: 2026-01-21T06:40:20.331Z
   notes:
     - _ulid: 01KFBD60A324N8K89SZR80M2Z3
       created_at: 2026-01-19T15:15:11.299Z
@@ -13377,9 +13378,37 @@
            - Verify worktree health at session start
            - Auto-repair or fail-fast with clear instructions
       supersedes: null
+    - _ulid: 01KFFMRDVXWAYG5KYFBT1BRA25
+      created_at: 2026-01-21T06:44:32.765Z
+      author: "@claude"
+      content: >-
+        Completed all improvements:
+
+
+        1. **Idempotent worktree operations**: Added 'git worktree prune' at start of init process
+        to clean stale metadata. Added detection for nested .kspec/.kspec directories with debug
+        logging.
+
+
+        2. **Improved error messages**: Wrapped all 'git worktree add' commands with try-catch that
+        detects ENOENT errors and provides context (current directory + suggestion to run git
+        worktree prune).
+
+
+        3. **Temp dir testing enforcement**: Added prominent comments to test helpers
+        (setupTempFixtures, createTempDir) emphasizing CRITICAL requirement to use temp dirs. Tests
+        already properly use os.tmpdir().
+
+
+        4. **Session startup health check**: Added automatic worktree health verification at session
+        start. If issues detected, attempts automatic repair via repairShadow(). Provides clear
+        feedback to user about repair status.
+
+
+        All 783 tests pass. Changes improve robustness based on overnight ralph loop issues.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T06:40:20.331Z
 - _ulid: 01KFBD9N2QAYNCHWVHCBY2KYT6
   slugs: []
   title: Add CI check for unresolved PR review comments before merge
