@@ -13823,7 +13823,14 @@
       content: Use 'kspec task reset' to change @task-yaml-formatting from cancelled to pending, then
         complete it with proper reason.
       supersedes: null
+    - _ulid: 01KFFHM0VTDP46HHKMSF032P1T
+      created_at: 2026-01-21T05:49:42.651Z
+      author: "@human"
+      content: "Automation status set to manual_only: Admin task - fixing incorrect task status, not
+        implementation work"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KFBNBB7DZWZBA1ZA8E7QVX80
   slugs: []
   title: Spec out session log analysis tooling
