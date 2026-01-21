@@ -1162,3 +1162,7 @@ requirements:
         given: no changes specified
         when: kspec task set --refs @a @b (no field flags) executed
         then: warns No changes specified for each, no changes saved
+      - id: ac-5
+        given: partial validation failure
+        when: --refs @a @b where @a has invalid spec-ref target executed
+        then: "@b updated, @a fails with validation error, exit code 1"
