@@ -1181,3 +1181,7 @@ requirements:
         given: user declines
         when: enters n or empty
         then: operation cancelled, exit code 2
+      - id: ac-4
+        given: force flag provided
+        when: kspec item ac remove @spec ac-1 --force executed
+        then: no prompt, AC removed immediately
