@@ -239,6 +239,26 @@ async function setTaskFields(
       changes.push('depends_on');
     }
 
+    // AC: @spec-task-clear-deps ac-1, ac-2 - Clear all dependencies
+    if (options.clearDeps) {
+      if (foundTask.depends_on.length === 0) {
+        // AC: @spec-task-clear-deps ac-2 - No changes needed
+        return {
+          success: true,
+          message: 'No changes: task has no dependencies to clear',
+        };
+      }
+      updatedTask.depends_on = [];
+      changes.push('depends_on');
+
+      // Add note documenting the change
+      const note = createNote(
+        `Dependencies cleared (was: ${foundTask.depends_on.join(', ')})`,
+        '@human'
+      );
+      updatedTask.notes = [...updatedTask.notes, note];
+    }
+
     // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
     // Handle automation status changes
     // Note: --no-automation sets options.automation to false, so check that first
@@ -494,6 +514,7 @@ export function registerTaskCommands(program: Command): void {
     .option('--slug <slug>', 'Add a slug alias')
     .option('--tag <tag...>', 'Add tags')
     .option('--depends-on <refs...>', 'Set dependencies (replaces existing)')
+    .option('--clear-deps', 'Clear all dependencies')
     .option('--automation <status>', 'Set automation eligibility (eligible, needs_review, manual_only)')
     .option('--no-automation', 'Clear automation status (return to unassessed)')
     .option('--reason <reason>', 'Reason for status change (required when setting needs_review)')
@@ -503,6 +524,12 @@ export function registerTaskCommands(program: Command): void {
         // AC: @spec-task-set-batch ac-3 - Reject --status flag
         if (options.status !== undefined) {
           error('Use state transition commands (start, complete, block, etc.) to change status');
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // AC: @spec-task-clear-deps ac-3 - Mutual exclusivity check
+        if (options.clearDeps && options.dependsOn) {
+          error('Cannot use --clear-deps and --depends-on together');
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
@@ -563,7 +590,11 @@ export function registerTaskCommands(program: Command): void {
           if (result.message) {
             // AC: @spec-task-set-batch ac-4 - Warn on no changes
             if (result.message.includes('No changes')) {
-              warn(result.message);
+              if (isJsonMode()) {
+                output({ success: true, message: result.message });
+              } else {
+                warn(result.message);
+              }
             } else {
               success(result.message, result.data as Record<string, unknown> | undefined);
             }
