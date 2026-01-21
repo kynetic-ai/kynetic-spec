@@ -1066,7 +1066,7 @@ requirements:
       - id: ac-4
         given: task reset succeeds
         when: operation completes
-        then: "note auto-added: Reset from {previous_status} to pending (includes cancel_reason if was
+        then: "note auto-added: Reset from {previous_status} to pending (includes closed_reason if was
           cancelled)"
       - id: ac-5
         given: task A is completed, task B depends on A
