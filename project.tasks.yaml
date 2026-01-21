@@ -14013,6 +14013,7 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T16:47:44.094Z
+  started_at: 2026-01-21T09:06:04.724Z
   notes:
     - _ulid: 01KFBJFNB2GP21YXGCG0ENPK10
       created_at: 2026-01-19T16:47:50.627Z
@@ -14020,9 +14021,16 @@
       content: inbox.ts:33-46 has local formatRelativeTime() that duplicates utils/time.ts version. Utils
         version has week-level formatting. Remove local, use utils.
       supersedes: null
+    - _ulid: 01KFFWZC9BH6FNM7VG6DNYVJS9
+      created_at: 2026-01-21T09:08:09.131Z
+      author: "@claude"
+      content: Removed duplicate formatRelativeTime function from inbox.ts and replaced with import from
+        utils/time.ts. Created a wrapper function to maintain compatibility with string input (utils
+        version takes Date). This gains week-level formatting that was missing in the duplicate. All
+        823 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T09:06:04.724Z
 - _ulid: 01KFBKK2E61MHW5PAERRPD9GV4
   slugs:
     - audit-spec-statuses
