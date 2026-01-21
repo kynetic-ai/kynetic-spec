@@ -15036,6 +15036,7 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-19T17:54:15.214Z
+  started_at: 2026-01-21T10:25:46.304Z
   notes:
     - _ulid: 01KFBP9FDAHQF4A6X1DQ93HXBT
       created_at: 2026-01-19T17:54:22.251Z
@@ -15043,9 +15044,25 @@
       content: kspec(), kspecJson(), setupTempFixtures() duplicated across integration.test.ts,
         meta.test.ts, shadow.test.ts, and others. Extract to tests/helpers.ts.
       supersedes: null
+    - _ulid: 01KFG1HFGD8XMWCXRMECFWSNZK
+      created_at: 2026-01-21T10:27:56.557Z
+      author: "@claude"
+      content: >-
+        Task already completed in commit 971caec (Jan 19, 2026). The refactoring created
+        tests/helpers/cli.ts with all shared test utilities (kspec, kspecJson, setupTempFixtures,
+        cleanupTempDir, etc.) and updated all test files to use these shared helpers. Verification
+        shows:
+
+        - No duplicate function definitions remain in test files
+
+        - All 841 tests pass (2 skipped)
+
+        - 19 test files import from './helpers/cli'
+
+        - 6x performance improvement by using pre-built CLI instead of tsx transpilation
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T10:25:46.304Z
 - _ulid: 01KFBPQANQR1NMWZ72QW6KX579
   slugs:
     - fix-log-empty-repo
