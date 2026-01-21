@@ -18398,4 +18398,11 @@
 
         - Check all callers of toYaml() and writeYamlFile() aren't broken
       supersedes: null
+    - _ulid: 01KFF8MASD239AM9F4WBH2KZ3R
+      created_at: 2026-01-21T03:12:35.630Z
+      author: "@claude"
+      content: "Addressed in PR #111 - the fix was unified to apply at the toYaml() level, so all
+        serialization paths now benefit. The unused js-yaml import was also removed. This task can
+        be closed once PR #111 is merged."
+      supersedes: null
   todos: []
