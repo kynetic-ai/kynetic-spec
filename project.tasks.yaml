@@ -18540,20 +18540,21 @@
         be closed once PR #111 is merged."
       supersedes: null
   todos: []
-- title: Filter ralph to only process automation-eligible tasks
+- _ulid: 01KFFHWJHX41RXRAC22J196NR5
+  slugs:
+    - ralph-eligible-filter
+  title: Filter ralph to only process automation-eligible tasks
   type: task
   spec_ref: "@cli-ralph"
   meta_ref: null
-  priority: 2
-  slugs:
-    - ralph-eligible-filter
-  tags: []
-  _ulid: 01KFFHWJHX41RXRAC22J196NR5
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-21T05:54:22.909Z
   notes: []
   todos: []
+  automation: eligible
