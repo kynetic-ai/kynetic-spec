@@ -14380,6 +14380,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-01-19T17:10:03.453Z
+  started_at: 2026-01-21T09:16:04.175Z
   notes:
     - _ulid: 01KFBKRVH9NWYB7AJVH92533VQ
       created_at: 2026-01-19T17:10:20.457Z
@@ -14396,9 +14397,36 @@
         - Use readline pattern from task delete
         - Check process.stdin.isTTY for interactive detection
       supersedes: null
+    - _ulid: 01KFFXT8FQ3RC0EHYK9EYBGYGC
+      created_at: 2026-01-21T09:22:49.976Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        - Added confirmation prompt logic to item ac remove command
+        (src/cli/commands/item.ts:1198-1231)
+
+        - Checks for --json mode without --force (AC-5)
+
+        - Checks for non-interactive environment without --force (AC-6)
+
+        - Prompts for confirmation in interactive mode when not --force (AC-1)
+
+        - Accepts 'y' to proceed (AC-2)
+
+        - Declines on 'n' or empty input with exit code 2 (AC-3)
+
+        - Skips prompt with --force flag (AC-4)
+
+        - Added KSPEC_TEST_TTY env var for testing interactive prompts
+
+        - Created tests/ac-delete-confirmation.test.ts with E2E tests for all 6 ACs
+
+        - All 831 tests pass including 8 new AC-specific tests
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-21T09:16:04.175Z
 - _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
   slugs:
     - item-delete-child-check
