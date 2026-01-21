@@ -510,3 +510,11 @@ inbox:
       - shadow
       - multi-repo
     added_by: "@claude"
+  - _ulid: 01KFH3HM5T869SHSWDG8V0P44C
+    text: "Track auto-generated artifacts (notes, etc.) with metadata flag. Could add auto_generated:
+      true to notes created by CLI commands vs agent-authored content. Would enable filtering
+      mechanical notes from substantive ones in UIs/queries. Low priority - current approach (use
+      authoring agent) works, this is a refinement if filtering becomes important."
+    created_at: 2026-01-21T20:22:12.922Z
+    tags: []
+    added_by: "@claude"
