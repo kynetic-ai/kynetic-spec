@@ -14203,6 +14203,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #118. All 6 ACs have comprehensive E2E test coverage with proper AC
+    annotations. Implementation handles empty repos gracefully with proper error messages and JSON
+    output."
   depends_on: []
   context: []
   priority: 2
@@ -14211,6 +14214,7 @@
   vcs_refs: []
   created_at: 2026-01-19T18:01:56.151Z
   started_at: 2026-01-21T07:28:10.700Z
+  completed_at: 2026-01-21T07:55:23.439Z
   notes:
     - _ulid: 01KFBPQGVA8XDXMS55GCY9R8JR
       created_at: 2026-01-19T18:02:02.475Z
@@ -14266,10 +14270,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-21T07:55:23.439Z
-  closed_reason: "Merged in PR #118. All 6 ACs have comprehensive E2E test coverage with proper AC
-    annotations. Implementation handles empty repos gracefully with proper error messages and JSON
-    output."
 - _ulid: 01KFBRXWYDCNB3G05EY37JZC19
   slugs:
     - task-dynamic-workflow-skills
@@ -15905,6 +15905,14 @@
            - Plus inherited trait test for JSON output validation
 
         All 792 tests pass including 8 new tests for this feature.
+      supersedes: null
+    - _ulid: 01KFFRVK9JA90KZA22MZFZ921P
+      created_at: 2026-01-21T07:56:10.931Z
+      author: "@claude"
+      content: "Fixed failing multiline description test. Issue was shell escaping - the test used $'...'
+        syntax which wasn't being interpreted correctly by execSync. Changed to use printf with
+        double-escaped newlines: $(printf 'Line 1\\\\nLine 2\\\\nLine 3'). All 8 tests now pass
+        locally. Pushed fix, waiting for CI to confirm."
       supersedes: null
   todos: []
   automation: eligible
