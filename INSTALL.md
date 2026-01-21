@@ -10,17 +10,7 @@ This guide covers installing and setting up kspec in your own projects. For deve
 
 ## Installation
 
-### From Source (Current)
-
-```bash
-git clone https://github.com/kynetic-ai/kynetic-spec.git ~/tools/kspec
-cd ~/tools/kspec
-npm install && npm run build && npm link
-```
-
-### npm (Coming Soon)
-
-Once published to npm:
+### npm (Recommended)
 
 ```bash
 npm install -g @kynetic-ai/spec
@@ -30,6 +20,16 @@ Or without global install:
 
 ```bash
 npx @kynetic-ai/spec <command>
+```
+
+### From Source
+
+For development or pre-release versions:
+
+```bash
+git clone https://github.com/kynetic-ai/kynetic-spec.git ~/tools/kspec
+cd ~/tools/kspec
+npm install && npm run build && npm link
 ```
 
 ## Setup
@@ -127,7 +127,7 @@ See [README.md](README.md#task-management) for full command reference.
 
 | Issue | Solution |
 |-------|----------|
-| "kspec: command not found" | Run `npm link` again from kspec directory, or use full path |
+| "kspec: command not found" | Run `npm install -g @kynetic-ai/spec`, or if using source: `npm link` |
 | "Not a git repository" | Run `git init` first, or use `kspec init --no-shadow` |
 | "Cannot find .kspec" | Run `kspec init` (fresh project) or `kspec setup --auto-worktree` (cloned repo) |
 | ".kspec already exists" | Use `kspec init --force` to reinitialize |
