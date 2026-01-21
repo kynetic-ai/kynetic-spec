@@ -1210,3 +1210,6 @@ requirements:
         given: empty description
         when: --description '' provided
         then: treated as no description (field omitted)
+    status:
+      maturity: draft
+      implementation: in_progress
