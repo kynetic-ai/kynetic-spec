@@ -13605,7 +13605,7 @@
     - task-set-batch
   title: Add batch support to task set command
   type: task
-  spec_ref: null
+  spec_ref: "@spec-task-set-batch"
   meta_ref: null
   status: pending
   blocked_by: []
