@@ -15823,7 +15823,7 @@
   type: task
   spec_ref: "@spec-task-add-description"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -15858,6 +15858,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-21T07:41:23.310Z
 - _ulid: 01KFC4PJ16QG1X7NT22FKCKHQ8
   slugs: []
   title: Fix staleness.test.ts to use CLI_PATH pattern instead of global kspec
