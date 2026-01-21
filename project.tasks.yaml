@@ -18591,9 +18591,9 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
-  closed_reason: null
+  closed_reason: Cancelled for testing
   depends_on: []
   context: []
   priority: 3
