@@ -13244,7 +13244,7 @@
   type: task
   spec_ref: "@spec-task-reset"
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   closed_reason: Ralph loop started this before being killed - no work done, freeing for future implementation
   depends_on: []
