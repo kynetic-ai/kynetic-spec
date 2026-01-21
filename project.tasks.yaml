@@ -13829,6 +13829,41 @@
 
         4. Consider whether this should be multiple tasks vs one omnibus task
       supersedes: null
+    - _ulid: 01KFFVF9KHP102SMK283FFQZ51
+      created_at: 2026-01-21T08:41:53.521Z
+      author: "@claude"
+      content: >-
+        Session checkpoint - Iteration 14:
+
+
+        **Status:** Research complete, needs clearer scoping before implementation.
+
+
+        **Key finding:** Issue #2 from original note appears to be a misunderstanding - tasks don't
+        have 'spec_ref.implementation' field. The spec itself has 'status.implementation', and stale
+        status is already handled by existing --staleness check.
+
+
+        **Remaining viable items:**
+
+        1. AC field reference validation - parse AC text for field references (e.g., 'foo.bar') and
+        validate against Zod schemas
+
+        2. Fixture conflicts - needs concrete examples to understand the problem
+
+
+        **Recommendation:** Before continuing, either:
+
+        - Get specific examples of the three original issues (especially fixture conflicts)
+
+        - Split into separate tasks: one for AC field validation, separate task for fixture issues
+
+        - Or close this task and create better-scoped tasks from concrete observations
+
+
+        **Next session:** Review whether this should be broken down or if original reporter can
+        provide examples.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY

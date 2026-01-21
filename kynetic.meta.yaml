@@ -2236,4 +2236,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFFVEK1FMH6M89DZJRGQYSSP
+    type: success
+    content: "Ralph loop iteration 14: Successfully merged PR #121 (JSON output consistency), researched
+      drift detection task (found it under-specified), and started well-defined task-set-batch task.
+      Pattern: When a ready task lacks concrete examples or clear scope, checkpoint it with
+      observations and move to a better-defined task rather than spinning on requirements
+      gathering."
+    created_at: 2026-01-21T08:41:30.415Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
