@@ -13490,6 +13490,53 @@
         Encountered stream closed error when trying to write the workflow file - will need to retry
         in next iteration.
       supersedes: null
+    - _ulid: 01KFFP30JBZZ5MR5YWGKTNT3JF
+      created_at: 2026-01-21T07:07:48.172Z
+      author: "@claude"
+      content: >-
+        Implemented CI check for unresolved PR review comments.
+
+
+        **What was done:**
+
+        1. Created .github/workflows/pr-review-resolution-check.yml workflow
+
+        2. Uses GitHub GraphQL API to query review thread resolution status
+
+        3. Workflow triggers on PR events and review comment events
+
+        4. Fails check if unresolved, non-outdated review threads exist
+
+        5. Provides detailed output listing unresolved threads with location/author
+
+        6. Documented new check in AGENTS.md under PR Merge Requirements section
+
+
+        **How it works:**
+
+        - Queries GitHub's reviewThreads with isResolved and isOutdated fields
+
+        - Filters for threads that are NOT resolved AND NOT outdated
+
+        - If any found, fails the check with descriptive error message
+
+        - Lists first 200 chars of each unresolved comment for quick triage
+
+
+        **Key decisions:**
+
+        - Used github-script@v7 action for clean GraphQL integration
+
+        - Excluded outdated threads (comments on old commits that were force-pushed)
+
+        - Limited to first 100 review threads (pagination not needed for typical PRs)
+
+        - Displays comment author, file path, and snippet for context
+
+
+        This addresses the issue from retrospective where PRs were merged with unaddressed review
+        feedback.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFBDM8ZD201SSV9NEETHADE7
