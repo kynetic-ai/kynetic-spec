@@ -18275,7 +18275,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -18406,3 +18406,4 @@
         be closed once PR #111 is merged."
       supersedes: null
   todos: []
+  closed_reason: "Addressed in PR #111 - fix was unified to toYaml() level in the same PR"
