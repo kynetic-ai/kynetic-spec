@@ -43,7 +43,7 @@ kspec validate
 2. **This project tracks itself** - Use kspec commands to track your work
 3. **Add notes** - Document what you do in task notes for future context
 4. **Check dependencies** - Tasks have `depends_on` relationships; complete prerequisites first
-5. **Read the design doc** - `KYNETIC_SPEC_DESIGN.md` has comprehensive details
+5. **Historical context** - `docs/history/KYNETIC_SPEC_DESIGN.md` has design rationale
 6. **Spec is source of truth** - `.kspec/` defines what to build; code implements it
 
 ## Plan Mode Workflow
