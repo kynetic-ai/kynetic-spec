@@ -14371,7 +14371,7 @@
   type: task
   spec_ref: "@spec-ac-delete-confirmation"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -14436,6 +14436,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-21T09:26:51.053Z
+  closed_reason: "Merged in PR #124. All 6 ACs have E2E test coverage with proper AC annotations.
+    Implementation adds confirmation prompt for AC deletion without --force flag. All 831 tests
+    pass."
 - _ulid: 01KFBKRDJR554HSD04ZRS8KY9P
   slugs:
     - item-delete-child-check
