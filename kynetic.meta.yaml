@@ -1541,8 +1541,13 @@ observations:
       ULIDs with readable prefixes.
     created_at: 2026-01-20T04:55:22.797Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Added testUlid() helper function to tests/helpers/cli.ts that generates valid Crockford
+      base32 ULIDs. Also added documentation at top of file explaining ULID character restrictions
+      (no I, L, O, U). Example: testUlid('TASK') produces valid '01TASK00000000000000000000' -
+      invalid chars are auto-replaced."
+    resolved_at: 2026-01-22T19:37:28.386Z
+    resolved_by: "@claude"
   - _ulid: 01KFCWZ8SEY6Z49V14D2X73ZGE
     type: friction
     content: "loadSpecFile() only parsed first YAML document when multiple documents present (---
@@ -1552,8 +1557,11 @@ observations:
       tests failed silently."
     created_at: 2026-01-20T05:10:22.255Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: This was a code bug that was fixed. loadSpecFile() now correctly uses
+      YAML.parseAllDocuments() for multi-document files.
+    resolved_at: 2026-01-22T19:37:51.390Z
+    resolved_by: "@claude"
   - _ulid: 01KFCX5DYS83R2SYQ1SNCNY03P
     type: success
     content: "Systematic debugging approach: When implementation code looks correct but tests fail,
@@ -1623,8 +1631,10 @@ observations:
       differences.
     created_at: 2026-01-20T05:47:47.647Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: This was a test infrastructure issue that was resolved. Trait CLI tests now pass.
+    resolved_at: 2026-01-22T19:37:56.472Z
+    resolved_by: "@claude"
   - _ulid: 01KFCZ4SK76NHJM1N4YT2RHS4Y
     type: success
     content: "Used dedicated review subagent to identify critical schema bug in PR #104. The subagent's
@@ -1646,8 +1656,14 @@ observations:
       implementation bugs."
     created_at: 2026-01-20T06:08:42.334Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Added documentation to tests/helpers/cli.ts header explaining: (1) Don't use
+      JSON.stringify for YAML fixtures (2) Use setupTempFixtures() with pre-built fixtures
+      (preferred) (3) Write YAML strings directly with template literals (4) Use yaml library
+      stringify for programmatic creation. Also added testUlid() helper to avoid invalid ULID
+      issues."
+    resolved_at: 2026-01-22T19:37:35.380Z
+    resolved_by: "@claude"
   - _ulid: 01KFD0A8HPBCD40WAZSF3GMZRX
     type: success
     content: "Systematic test debugging approach worked well: (1) Run tests to see failures, (2) Isolate
@@ -1688,8 +1704,11 @@ observations:
       features but integration-test existing features differently"
     created_at: 2026-01-20T06:23:54.304Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: This is expected TDD behavior - discovering implementation gaps through tests is part of
+      the process. Not a problem to fix but a useful pattern to be aware of.
+    resolved_at: 2026-01-22T19:38:07.580Z
+    resolved_by: "@claude"
   - _ulid: 01KFD1TCR2MSTXEQE6TJD3ETG7
     type: success
     content: "Bug investigation pattern: When validation passes unexpectedly, check item counts in
@@ -1709,8 +1728,11 @@ observations:
       cloning or repository manipulation.
     created_at: 2026-01-20T06:46:53.970Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Known vitest environment issue. initGitRepo() helper handles basic git setup. Complex
+      git cloning scenarios may need simpler approaches in tests.
+    resolved_at: 2026-01-22T19:38:01.946Z
+    resolved_by: "@claude"
   - _ulid: 01KFD2YKYFJ9WB1EX5R8D38WD1
     type: success
     content: Test helper pattern clarity - integration.test.ts showed the correct pattern of importing
@@ -2337,8 +2359,11 @@ observations:
       signature before writing all tests."
     created_at: 2026-01-21T09:32:30.239Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Test helper API is documented - kspec() takes string args. Check helper signature before
+      writing tests.
+    resolved_at: 2026-01-22T19:38:17.603Z
+    resolved_by: "@claude"
   - _ulid: 01KFFYC3N6H7K8XPZ26MKMAAQV
     type: success
     content: "findChildItems already existed in items.ts with correct implementation - avoided duplicate
@@ -2500,8 +2525,11 @@ observations:
       patterns in testing guide."
     created_at: 2026-01-22T06:26:07.300Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Documented in tests/helpers/cli.ts header: Don't use JSON.stringify() for YAML - use
+      template literals, yaml library stringify, or pre-built fixtures."
+    resolved_at: 2026-01-22T19:37:40.972Z
+    resolved_by: "@claude"
   - _ulid: 01KFJ6YNZMPF5YKAJWVDRFP1K1
     type: friction
     content: Test fixtures with invalid ULIDs (e.g., 01TEST000...) silently fail schema validation.
@@ -2509,8 +2537,12 @@ observations:
       helper that validates fixture data before use, or use ulid() to generate proper test IDs.
     created_at: 2026-01-22T06:41:00.916Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Added testUlid() helper that generates valid Crockford base32 ULIDs and auto-replaces
+      invalid characters (I->J, L->K, O->0, U->V). Also documented common invalid patterns in
+      tests/helpers/cli.ts header.
+    resolved_at: 2026-01-22T19:37:45.999Z
+    resolved_by: "@claude"
   - _ulid: 01KFJ7AGSPNACKH2TCY9SZT5E8
     type: success
     content: "Test fixture ULID validation issue was quickly identified through systematic debugging.
@@ -2665,8 +2697,11 @@ observations:
       changes.
     created_at: 2026-01-22T08:03:41.938Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Expected behavior during architectural changes. Test failures from changed expectations
+      (not bugs) are part of refactoring.
+    resolved_at: 2026-01-22T19:38:12.290Z
+    resolved_by: "@claude"
   - _ulid: 01KFJBZJXM7ETYK1NKSY5S7CKW
     type: success
     content: "Workflow advanced features implementation completed smoothly. Key success factors: (1)
