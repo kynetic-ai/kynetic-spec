@@ -19090,7 +19090,7 @@
   type: task
   spec_ref: "@workflow-enforcement-modes"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-workflow-step-navigation"
