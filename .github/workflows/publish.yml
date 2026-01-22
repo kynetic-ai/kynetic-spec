@@ -14,7 +14,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: publish
     permissions:
       contents: write  # Required for pushing version back to main
       id-token: write  # Required for npm trusted publishers (OIDC)
