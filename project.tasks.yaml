@@ -22049,7 +22049,7 @@
     before runtime. Could be a pre-commit hook or CI check that validates skill SKILL.md files parse
     correctly.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
