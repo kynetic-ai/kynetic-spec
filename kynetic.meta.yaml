@@ -2533,4 +2533,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJ7SAGTW27KKHS2RSXV019H
+    type: success
+    content: "When fixing bugs with AC coverage: First read the code to understand the implementation,
+      then identify the exact function/logic that needs updating, then add tests that validate the
+      AC before implementing. This workflow ensures the fix is correct and properly validated. For
+      AC-15, updating getParentTaskRef() to filter cancelled tasks was straightforward once the
+      problem was identified."
+    created_at: 2026-01-22T06:55:33.914Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

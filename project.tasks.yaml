@@ -18589,7 +18589,7 @@
   type: task
   spec_ref: "@workflow-run-foundation"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -18940,6 +18940,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T06:55:58.903Z
+  closed_reason: "Merged PR #154. Implemented workflow run foundation with all 6 ACs covered by 21 E2E
+    tests. Fixed test setup issues (valid ULIDs, non-shadow mode). All CI checks passed.
+    Comprehensive review confirmed implementation quality."
 - _ulid: 01KFESYSRAWCSMC2Z7N1BY4Z4G
   slugs:
     - task-workflow-step-navigation
