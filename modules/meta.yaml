@@ -709,7 +709,7 @@ features:
                 then: step_results.notes contains the note text for completed step
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KFESVX00JT6YJ406QX5N63XQ
             slugs:
               - workflow-enforcement-modes
