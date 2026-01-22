@@ -21487,6 +21487,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #161. All CI checks passed, both Claude and Greptile reviews found no
+    issues. Fix properly captures stderr on successful commands."
   depends_on: []
   context: []
   priority: 3
@@ -21497,6 +21499,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:04:34.309Z
   started_at: 2026-01-22T08:18:16.320Z
+  completed_at: 2026-01-22T08:33:13.238Z
   notes:
     - _ulid: 01KFJ4WDDC3F85VXQV9PD61A3K
       created_at: 2026-01-22T06:04:49.453Z
@@ -21547,9 +21550,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T08:33:13.238Z
-  closed_reason: "Merged PR #161. All CI checks passed, both Claude and Greptile reviews found no
-    issues. Fix properly captures stderr on successful commands."
 - _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
   slugs: []
   title: Set up biome for linting (replace eslint)
@@ -21624,6 +21624,12 @@
 
         These are acceptable and don't block the setup. The linter is working and can be run with
         'npm run lint'.
+      supersedes: null
+    - _ulid: 01KFJDE0KJR2BMPH673Z9WSEKT
+      created_at: 2026-01-22T08:34:14.770Z
+      author: "@claude"
+      content: "PR #162 created: https://github.com/kynetic-ai/kynetic-spec/pull/162 - Awaiting automated
+        review and CI checks before merge"
       supersedes: null
   todos: []
   automation: eligible
