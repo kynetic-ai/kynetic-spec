@@ -470,7 +470,7 @@ describe('Shadow Branch', () => {
       expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(true);
     });
 
-    // AC: @shadow-init ac-1 - Remote has shadow branch → creates worktree from it with tracking
+    // AC: @shadow-init-remote ac-1 - Remote has shadow branch → creates worktree from it with tracking
     it('attaches to existing remote shadow branch', async () => {
       await setupBareRemote();
       await setupLocalWithRemote();

@@ -1125,7 +1125,7 @@ export async function initializeShadow(
       }
 
       if (remoteHasShadow) {
-        // AC: @shadow-init ac-1 - Remote has shadow branch - create worktree from it with tracking
+        // AC: @shadow-init-remote ac-1 - Remote has shadow branch - create worktree from it with tracking
         await execAsync(
           `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
           { cwd: projectRoot }
@@ -1137,7 +1137,7 @@ export async function initializeShadow(
         );
         result.createdFromRemote = true;
       } else if (!status.branchExists) {
-        // AC: @shadow-init ac-2 ac-3 - No remote branch or no remote - create orphan branch
+        // AC: @shadow-init-remote ac-2 ac-3 - No remote branch or no remote - create orphan branch
         await execAsync(
           `git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`,
           { cwd: projectRoot }
