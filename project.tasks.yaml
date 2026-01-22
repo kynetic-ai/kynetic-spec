@@ -20413,6 +20413,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-22T00:40:24.145Z
+  started_at: 2026-01-22T01:21:15.314Z
   notes:
     - _ulid: 01KFHJATMRSD94WHCC1EMQZMZY
       created_at: 2026-01-22T00:40:38.808Z
@@ -20460,7 +20461,6 @@
         `.claude/skills/release/` alongside pr skill
       supersedes: null
   todos: []
-  started_at: 2026-01-22T01:21:15.314Z
 - _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
   slugs: []
   title: Spec out Web UI and Daemon Mode feature
@@ -20608,5 +20608,30 @@
         - Should daemon auto-start when CLI is used, or always explicit?
         - Port configuration: fixed vs dynamic with service discovery?
         - Auth for multi-user scenarios (future)?
+      supersedes: null
+    - _ulid: 01KFHMQ3YT5ADZFCK25CV9AX99
+      created_at: 2026-01-22T01:22:18.715Z
+      author: "@claude"
+      content: |-
+        ## Premature Spec Items Created
+
+        During research, the following spec items were created prematurely (before proper planning):
+
+        **Module:**
+        - @web-ui - "Web UI System" module
+
+        **Features under @web-ui:**
+        - @daemon-server - "Daemon Server Mode" (has 6 ACs added)
+        - @web-dashboard - "Web Dashboard" (has 2 ACs added)
+        - @gh-pages-export - "GitHub Pages Export" (no ACs yet)
+
+        These were created in error before the full planning was complete. When working this task:
+        1. Review these items against the final plan
+        2. If they align with the plan, keep and extend them
+        3. If they contradict the plan, delete and recreate properly
+        4. The ACs added may be useful as starting points but should be validated
+
+        To inspect: `kspec item get @web-ui` and `kspec item get @daemon-server` etc.
+        To delete if needed: delete children first, then parent module.
       supersedes: null
   todos: []
