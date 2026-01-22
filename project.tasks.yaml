@@ -21065,3 +21065,24 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Improve ACP mock to require permission requests
+  type: infra
+  priority: 3
+  spec_ref: null
+  tags:
+    - testing
+    - acp
+    - mock
+  description: "ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission
+    requests like the real agent does. Currently mock auto-succeeds tool calls without permission
+    flow. Would have caught the { granted: true } format bug in tests rather than live testing."
+  _ulid: 01KFJ52WHDSCA9ZQ8GKY57X8SC
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T06:08:21.548Z
+  notes: []
+  todos: []

@@ -111,16 +111,6 @@ inbox:
       - types
       - tech-debt
     added_by: "@claude"
-  - _ulid: 01KF6KSAC2Z2PT2Q96WDJEH4ZA
-    text: "ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission requests
-      like the real agent does. Currently mock auto-succeeds tool calls without permission flow.
-      Would have caught the { granted: true } format bug in tests rather than live testing."
-    created_at: 2026-01-17T18:34:23.491Z
-    tags:
-      - testing
-      - acp
-      - mock
-    added_by: "@claude"
   - _ulid: 01KF8TQ5X9Q0Y6DEGWQ9YPECHN
     text: "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes
       don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on
