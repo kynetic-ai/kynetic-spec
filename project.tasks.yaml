@@ -19090,7 +19090,7 @@
   type: task
   spec_ref: "@workflow-enforcement-modes"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-workflow-step-navigation"
@@ -19225,6 +19225,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T07:41:05.407Z
 - _ulid: 01KFESYT0HJ68Q85JSJ6AWAC1M
   slugs:
     - task-workflow-advanced-features
@@ -21319,6 +21320,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #158. Added 3 comprehensive E2E tests covering hook installation,
+    unauthorized commit blocking, and authorized commits. All tests use isolated temp directories
+    and real hook file. All 61 shadow tests pass, all CI checks passed, automated reviews found no
+    issues."
   depends_on: []
   context: []
   priority: 3
@@ -21328,6 +21333,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:04:30.551Z
   started_at: 2026-01-22T07:33:50.372Z
+  completed_at: 2026-01-22T07:40:53.412Z
   notes:
     - _ulid: 01KFJ4WAREF787P83P6CC1SXTV
       created_at: 2026-01-22T06:04:46.735Z
@@ -21357,11 +21363,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T07:40:53.412Z
-  closed_reason: "Merged PR #158. Added 3 comprehensive E2E tests covering hook installation,
-    unauthorized commit blocking, and authorized commits. All tests use isolated temp directories
-    and real hook file. All 61 shadow tests pass, all CI checks passed, automated reviews found no
-    issues."
 - _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
   slugs: []
   title: Fix test helper to capture stderr on success
