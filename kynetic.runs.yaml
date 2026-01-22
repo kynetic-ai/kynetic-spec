@@ -74,7 +74,7 @@ runs:
   - _ulid: 01KFKS903R68228GKCEKC2AVR9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-22T21:20:27.769Z
     step_results:
@@ -91,5 +91,15 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-22T21:20:47.291Z
-        completed_at: 2026-01-22T21:20:47.291Z
+        completed_at: 2026-01-22T21:20:55.859Z
+        notes: |-
+          Friction points identified:
+          1. No --steps flag on 'meta add workflow' - had to manually edit YAML
+          2. 'workflow show' requires run-ref even when only one active run (unlike next)
+          3. --input flags silently ignored when step has no defined inputs - could confuse users
+          4. cwd issue after 'cd .kspec && git commit' - easy to forget to cd back
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-22T21:20:55.859Z
+        completed_at: 2026-01-22T21:20:55.859Z
     initiated_by: "@claude"
