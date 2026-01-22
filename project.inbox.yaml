@@ -497,3 +497,12 @@ inbox:
       - meta
       - dx
     added_by: "@claude"
+  - _ulid: 01KFKSF667VYMH5QJN9GE5X2J3
+    text: Make 'workflow show' infer active run like 'workflow next' - when only one active run exists,
+      allow omitting run-ref for consistency
+    created_at: 2026-01-22T21:23:50.599Z
+    tags:
+      - cli
+      - workflow
+      - dx
+    added_by: "@claude"
