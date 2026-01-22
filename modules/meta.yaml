@@ -707,6 +707,9 @@ features:
                 given: an active run exists
                 when: kspec workflow next @run-id --notes 'Note text' is executed
                 then: step_results.notes contains the note text for completed step
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KFESVX00JT6YJ406QX5N63XQ
             slugs:
               - workflow-enforcement-modes
