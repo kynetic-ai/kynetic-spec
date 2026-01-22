@@ -1,4 +1,6 @@
-focus: null
-threads: []
-open_questions: []
-updated_at: 2026-01-20T17:45:11.271Z
+focus: "@Testing workflow features"
+threads:
+  - "Background: Evaluating overnight changes"
+open_questions:
+  - Are all workflow features working as expected?
+updated_at: 2026-01-22T21:02:23.126Z
