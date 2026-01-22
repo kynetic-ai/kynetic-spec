@@ -21966,10 +21966,9 @@
     by default. Related: need pattern for cross-feature requirements - when new entity type added,
     features like search should automatically need to support it."
   spec_ref: "@fuzzy-item-search"
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: Implementation complete and merged to main. Extended kspec search to cover inbox
-    items and meta entities (observations, agents, workflows, conventions). All 942 tests pass.
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
@@ -21979,8 +21978,8 @@
     - design
   vcs_refs: []
   created_at: 2026-01-22T06:10:40.773Z
-  started_at: 2026-01-22T09:23:49.859Z
-  completed_at: 2026-01-22T09:33:56.830Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KFJ591F87V1RYSA67RP4RM74
       created_at: 2026-01-22T06:11:43.209Z
@@ -22038,6 +22037,11 @@
 
 
         Next: Submit for PR.
+      supersedes: null
+    - _ulid: 01KFK6JC5CAFRGFFAYSKM8N1E5
+      created_at: 2026-01-22T15:53:32.076Z
+      author: "@claude"
+      content: Reset from completed to pending
       supersedes: null
   todos: []
   automation: eligible
