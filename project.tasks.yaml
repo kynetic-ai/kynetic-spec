@@ -20910,5 +20910,43 @@
         Verify with multiple grep patterns to catch variations. Goal is zero old-format annotations
         anywhere in the codebase, not just the known locations.
       supersedes: null
+    - _ulid: 01KFJ4QV4PJT8APVWRMK6SSY39
+      created_at: 2026-01-22T06:02:19.671Z
+      author: "@claude"
+      content: >-
+        Scope is larger than initially thought:
+
+
+        **Tests (20 occurrences in 3 files):**
+
+        - tests/ralph.test.ts
+
+        - tests/shadow.test.ts  
+
+        - tests/task-reset.test.ts
+
+
+        **Implementation comments (40+ occurrences in 8 files):**
+
+        - src/cli/output.ts
+
+        - src/parser/shadow.ts
+
+        - src/sessions/store.ts
+
+        - src/sessions/types.ts
+
+        - src/cli/commands/task.ts
+
+        - src/cli/commands/shadow.ts
+
+        - src/cli/commands/item.ts
+
+        - src/cli/commands/session.ts
+
+
+        All use old format like '// AC-1:' or '// AC-2:'. Should be '// AC: @spec-ref ac-N' for
+        traceability.
+      supersedes: null
   todos: []
   automation: eligible
