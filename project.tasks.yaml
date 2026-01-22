@@ -19090,7 +19090,7 @@
   type: task
   spec_ref: "@workflow-enforcement-modes"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-workflow-step-navigation"
@@ -19297,6 +19297,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T08:03:28.446Z
+  closed_reason: "Merged PR #159. Implemented workflow enforcement modes with entry/exit criteria.
+    Fixed critical issue where entry_confirmed was never recorded - now creates stub step results
+    when advancing to properly track confirmations. All 915 tests pass, all CI checks passed."
 - _ulid: 01KFESYT0HJ68Q85JSJ6AWAC1M
   slugs:
     - task-workflow-advanced-features
