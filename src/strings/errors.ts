@@ -313,6 +313,17 @@ export const relationshipErrors = {
 } as const;
 
 /**
+ * Workflow run errors
+ */
+export const workflowRunErrors = {
+  workflowNotFound: (ref: string) => `Workflow not found: ${ref}`,
+  runNotFound: (ref: string) => `Workflow run not found: ${ref}`,
+  cannotAbortCompleted: 'Cannot abort workflow run: already completed',
+  cannotAbortAborted: 'Cannot abort workflow run: already aborted',
+  invalidRunStatus: (status: string) => `Cannot abort run with status: ${status}`,
+} as const;
+
+/**
  * Re-export all error categories as a single object for convenience
  */
 export const errors = {
@@ -328,4 +339,5 @@ export const errors = {
   failures: operationFailures,
   todo: todoErrors,
   relationship: relationshipErrors,
+  workflowRun: workflowRunErrors,
 } as const;

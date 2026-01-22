@@ -19,3 +19,4 @@ export { registerLinkCommands } from './link.js';
 export { registerModuleCommands } from './module.js';
 export { registerTraitCommands, registerItemTraitCommands } from './trait.js';
 export { registerCloneForTestingCommand } from './clone-for-testing.js';
+export { registerWorkflowCommand } from './workflow.js';

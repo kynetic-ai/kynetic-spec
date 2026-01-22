@@ -63,6 +63,7 @@ export const WorkflowSchema = z.object({
   trigger: z.string().min(1, 'Workflow trigger is required'),
   description: z.string().optional(),
   steps: z.array(WorkflowStepSchema).default([]),
+  enforcement: z.enum(['advisory', 'strict']).default('advisory').optional(),
 });
 
 /**
@@ -133,6 +134,56 @@ export const SessionContextSchema = z.object({
 });
 
 /**
+ * Step result status
+ */
+export const StepResultStatusSchema = z.enum(['completed', 'skipped', 'failed']);
+
+/**
+ * Step result schema - result of executing a workflow step
+ */
+export const StepResultSchema = z.object({
+  step_index: z.number(),
+  status: StepResultStatusSchema,
+  started_at: DateTimeSchema,
+  completed_at: DateTimeSchema,
+  entry_confirmed: z.boolean().optional(),
+  exit_confirmed: z.boolean().optional(),
+  notes: z.string().optional(),
+  inputs: z.record(z.string()).optional(),
+});
+
+/**
+ * Workflow run status
+ */
+export const WorkflowRunStatusSchema = z.enum(['active', 'paused', 'completed', 'aborted']);
+
+/**
+ * Workflow run schema - tracks execution of a workflow
+ */
+export const WorkflowRunSchema = z.object({
+  _ulid: UlidSchema,
+  workflow_ref: RefSchema,
+  status: WorkflowRunStatusSchema,
+  current_step: z.number(),
+  total_steps: z.number(),
+  started_at: DateTimeSchema,
+  paused_at: DateTimeSchema.optional(),
+  completed_at: DateTimeSchema.optional(),
+  step_results: z.array(StepResultSchema).default([]),
+  initiated_by: z.string().optional(),
+  abort_reason: z.string().optional(),
+  task_ref: RefSchema.optional(),
+});
+
+/**
+ * Workflow runs file schema - container for all workflow runs
+ */
+export const WorkflowRunsFileSchema = z.object({
+  kynetic_runs: z.string().default('1.0'),
+  runs: z.array(WorkflowRunSchema).default([]),
+});
+
+/**
  * Meta manifest schema - the root structure for kynetic.meta.yaml
  */
 export const MetaManifestSchema = z.object({
@@ -158,6 +209,11 @@ export type ObservationType = z.infer<typeof ObservationTypeSchema>;
 export type Observation = z.infer<typeof ObservationSchema>;
 export type SessionContext = z.infer<typeof SessionContextSchema>;
 export type MetaManifest = z.infer<typeof MetaManifestSchema>;
+export type StepResultStatus = z.infer<typeof StepResultStatusSchema>;
+export type StepResult = z.infer<typeof StepResultSchema>;
+export type WorkflowRunStatus = z.infer<typeof WorkflowRunStatusSchema>;
+export type WorkflowRun = z.infer<typeof WorkflowRunSchema>;
+export type WorkflowRunsFile = z.infer<typeof WorkflowRunsFileSchema>;
 
 /**
  * Meta item type - union of all meta item types
