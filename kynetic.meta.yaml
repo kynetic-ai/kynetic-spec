@@ -162,6 +162,58 @@ workflows:
           - Friction patterns: kspec meta observe friction "..."
           - Success patterns: kspec meta observe success "..."
           - Open questions: kspec meta question add "..."
+  - _ulid: 01KFKVCT4EAWJ1EEGDVE6X66R4
+    id: create-workflow
+    trigger: manual
+    description: Meta-workflow for creating new workflows. Ensures consistent structure and matching
+      skill integration.
+    steps:
+      - type: action
+        content: |
+          Identify the pattern to formalize.
+          What process/checklist are you capturing? Where is it documented?
+          Look for: step-by-step instructions, checklists, repeated sequences.
+        inputs:
+          - name: pattern_source
+            description: Where the pattern comes from (file:line, skill name, or description)
+            type: string
+      - type: action
+        content: |
+          Define the trigger - when does this workflow start?
+          Common triggers: manual, session-start, session-end, task-complete,
+          behavior-change, pre-release, pr-merge
+        inputs:
+          - name: trigger
+            description: The trigger for this workflow
+            type: string
+          - name: workflow_id
+            description: Kebab-case ID for the workflow
+            type: string
+      - type: action
+        content: |
+          Design the steps. For each step decide:
+          - Type: action (do something), check (verify condition), decision (choose path)
+          - Content: clear instruction, can be multiline
+          - For checks: on_fail message
+          - For decisions: options list
+          - Entry/exit criteria if step needs verification
+          - Inputs if step captures structured data
+      - type: action
+        content: |
+          Create the workflow:
+          kspec meta add workflow --id <id> --trigger <trigger> --description "..."
+          Then edit .kspec/kynetic.meta.yaml to add the steps (until --steps flag exists).
+      - type: check
+        content: Does this workflow need a matching skill?
+        on_fail: Create skill in .claude/skills/<name>/SKILL.md with workflow integration
+      - type: action
+        content: |
+          Test the workflow:
+          kspec workflow start @workflow-id
+          Run through each step with workflow next
+          Verify inputs/notes are captured correctly
+      - type: check
+        content: Commit changes to both main (skill) and shadow (workflow) branches
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
