@@ -18,6 +18,8 @@ import {
   ConventionSchema,
   ObservationSchema,
   SessionContextSchema,
+  WorkflowRunsFileSchema,
+  WorkflowRunSchema,
   type MetaManifest,
   type Agent,
   type Workflow,
@@ -26,6 +28,8 @@ import {
   type MetaItem,
   type ObservationType,
   type SessionContext,
+  type WorkflowRun,
+  type WorkflowRunsFile,
   getMetaItemType,
 } from '../schema/index.js';
 import { readYamlFile, writeYamlFilePreserveFormat, expandIncludePattern, getAuthor } from './yaml.js';
@@ -607,4 +611,82 @@ export async function saveSessionContext(ctx: KspecContext, context: SessionCont
   context.updated_at = new Date().toISOString();
 
   await writeYamlFilePreserveFormat(contextPath, context);
+}
+
+// ============================================================
+// WORKFLOW RUNS
+// ============================================================
+
+/**
+ * Get the workflow runs file path
+ */
+export function getWorkflowRunsPath(ctx: KspecContext): string {
+  return path.join(ctx.specDir, 'kynetic.runs.yaml');
+}
+
+/**
+ * Load workflow runs from file
+ */
+export async function loadWorkflowRuns(ctx: KspecContext): Promise<WorkflowRun[]> {
+  const runsPath = getWorkflowRunsPath(ctx);
+
+  try {
+    const raw = await readYamlFile<unknown>(runsPath);
+    const parsed = WorkflowRunsFileSchema.safeParse(raw);
+
+    if (!parsed.success) {
+      return [];
+    }
+
+    return parsed.data.runs;
+  } catch {
+    // File doesn't exist
+    return [];
+  }
+}
+
+/**
+ * Save a workflow run (create or update)
+ */
+export async function saveWorkflowRun(ctx: KspecContext, run: WorkflowRun): Promise<void> {
+  const runsPath = getWorkflowRunsPath(ctx);
+
+  // Load existing runs
+  const runs = await loadWorkflowRuns(ctx);
+
+  // Update or add
+  const existingIndex = runs.findIndex((r) => r._ulid === run._ulid);
+  if (existingIndex >= 0) {
+    runs[existingIndex] = run;
+  } else {
+    runs.push(run);
+  }
+
+  // Save back
+  const runsFile: WorkflowRunsFile = {
+    kynetic_runs: '1.0',
+    runs,
+  };
+
+  await writeYamlFilePreserveFormat(runsPath, runsFile);
+}
+
+/**
+ * Update an existing workflow run
+ */
+export async function updateWorkflowRun(ctx: KspecContext, run: WorkflowRun): Promise<void> {
+  await saveWorkflowRun(ctx, run);
+}
+
+/**
+ * Find a workflow run by reference (ULID or ULID prefix)
+ */
+export async function findWorkflowRunByRef(
+  ctx: KspecContext,
+  ref: string
+): Promise<WorkflowRun | undefined> {
+  const runs = await loadWorkflowRuns(ctx);
+  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+
+  return runs.find((r) => r._ulid === cleanRef || r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()));
 }
