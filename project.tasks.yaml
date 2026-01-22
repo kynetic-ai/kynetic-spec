@@ -19317,6 +19317,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T22:56:10.257Z
+  started_at: 2026-01-22T08:04:06.941Z
   notes:
     - _ulid: 01KFESYT0HVY45N3Q4TF36VA5C
       created_at: 2026-01-20T22:56:10.257Z
@@ -19442,9 +19443,43 @@
       author: "@claude"
       content: "Automation status set to eligible: Has spec with 4 testable ACs, clear workflow feature"
       supersedes: null
+    - _ulid: 01KFJBYXF58Y8KYNWEQZY8QGG8
+      created_at: 2026-01-22T08:08:31.462Z
+      author: "@claude"
+      content: |-
+        Implementation complete:
+
+        Schema updates:
+        - Added StepInputSchema for defining structured workflow step inputs
+        - Extended WorkflowStepSchema with optional inputs field
+        - Inputs support name, description, required flag, and type (string/ref/number)
+
+        CLI commands:
+        - Added kspec workflow pause @run-id [--json] - pauses active runs
+        - Added kspec workflow resume @run-id [--json] - resumes paused runs
+        - Extended kspec workflow next with --input key=value flag (repeatable)
+
+        Pause/resume behavior:
+        - Pause sets status=paused, records paused_at timestamp
+        - Resume validates status=paused, clears paused_at, sets status=active
+        - Both commands commit to shadow with appropriate commit messages
+
+        Step inputs behavior:
+        - When step has inputs defined, displays required inputs before execution
+        - Validates required inputs are provided via --input flags
+        - Captures inputs in step_results.inputs record
+        - Supports optional inputs that can be omitted
+        - Handles edge cases (values with = signs, invalid format)
+
+        Test coverage:
+        - AC-1: Pause active run (3 tests - JSON output, human output, error cases)
+        - AC-2: Resume paused run (2 tests - JSON output, human output)
+        - AC-3: Step inputs (6 tests - display, capture, validation, edge cases)
+        - AC-4: Resume validation (2 tests - error on non-paused status)
+        - All 74 workflow tests pass, 930 total tests pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T08:04:06.941Z
 - _ulid: 01KFF0CPRH39F2E7G81DXERTW2
   slugs:
     - fix-yaml-blank-line-bug
