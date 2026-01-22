@@ -524,12 +524,3 @@ inbox:
       - workflow
       - cli
     added_by: "@claude"
-  - _ulid: 01KFKTHRRT5KKT0EC79X4Y8W4T
-    text: Show notes and inputs in 'workflow show' human-readable output - step table should include
-      notes column, and inputs section below table when present
-    created_at: 2026-01-22T21:42:43.738Z
-    tags:
-      - workflow
-      - cli
-      - dx
-    added_by: "@claude"
