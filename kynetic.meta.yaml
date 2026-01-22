@@ -2633,4 +2633,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJAVEGVBTYJ38PFTP30V5C2
+    type: success
+    content: "Test-driven workflow implementation pattern worked well: wrote comprehensive E2E tests
+      covering all ACs before refining implementation. The tests caught a subtle ordering issue
+      (exit criteria must be checked before entry criteria) and a logical issue (skipping should
+      bypass entry criteria for next step). Having 15 tests covering edge cases (strict/advisory
+      modes, skip/confirm/force combinations) gave confidence that the implementation was correct.
+      All 915 tests passing confirms no regressions."
+    created_at: 2026-01-22T07:49:09.276Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
