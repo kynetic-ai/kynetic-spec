@@ -3,18 +3,10 @@ project:
   name: Kynetic Spec
   version: 0.1.0
   status: draft
-includes:
-  - modules/core.yaml
-  - modules/schema.yaml
-  - modules/tasks.yaml
-  - modules/cli.yaml
-  - modules/meta.yaml
-  - modules/shadow.yaml
-
-# Core traits - reusable cross-cutting CLI patterns
 traits:
-  - _ulid: "01KFDZSHF748JN4K9PAVM60NQ8"
-    slugs: [trait-json-output]
+  - _ulid: 01KFDZSHF748JN4K9PAVM60NQ8
+    slugs:
+      - trait-json-output
     title: JSON Output Mode
     type: trait
     description: Commands support --json flag for structured JSON output with consistent formatting
@@ -43,9 +35,9 @@ traits:
         given: command supports --json
         when: used with other formatting flags
         then: --json takes precedence over other format options
-
-  - _ulid: "01KFDZSHFAV02EW1F6Y20MAF51"
-    slugs: [trait-multi-ref-batch]
+  - _ulid: 01KFDZSHFAV02EW1F6Y20MAF51
+    slugs:
+      - trait-multi-ref-batch
     title: Multi-Reference Batch Operations
     type: trait
     description: Commands support --refs flag to operate on multiple items in a single invocation
@@ -82,9 +74,9 @@ traits:
         given: batch operation with duplicate refs
         when: --refs @a @a @b provided
         then: each ref processed once only
-
-  - _ulid: "01KFDZSHFANRHKH2PJGT0907PC"
-    slugs: [trait-confirmation-prompt]
+  - _ulid: 01KFDZSHFANRHKH2PJGT0907PC
+    slugs:
+      - trait-confirmation-prompt
     title: Confirmation Prompt for Destructive Operations
     type: trait
     description: Commands prompt for confirmation before destructive operations unless --force is provided
@@ -113,9 +105,9 @@ traits:
         given: command supports --force
         when: used in non-interactive environment
         then: operations require explicit --force flag
-
-  - _ulid: "01KFDZSHFAP21C8TDCQ54Z1R0T"
-    slugs: [trait-filterable-list]
+  - _ulid: 01KFDZSHFAP21C8TDCQ54Z1R0T
+    slugs:
+      - trait-filterable-list
     title: Filterable List Commands
     type: trait
     description: List commands support filtering, pagination, and sorting options
@@ -148,9 +140,9 @@ traits:
         given: list command output
         when: results are displayed
         then: summary shows total matching items and filter state
-
-  - _ulid: "01KFDZSHFAEN1ATTA5QKQVGCVJ"
-    slugs: [trait-priority-parameter]
+  - _ulid: 01KFDZSHFAEN1ATTA5QKQVGCVJ
+    slugs:
+      - trait-priority-parameter
     title: Priority Parameter
     type: trait
     description: Commands support --priority flag with 1-5 scale where 1 is highest priority
@@ -179,9 +171,9 @@ traits:
         given: legacy priority values exist
         when: command encounters high/medium/low
         then: mapped to 1/3/5 respectively
-
-  - _ulid: "01KFDZSHFA5KYRM58WCP6RJCQE"
-    slugs: [trait-dry-run]
+  - _ulid: 01KFDZSHFA5KYRM58WCP6RJCQE
+    slugs:
+      - trait-dry-run
     title: Dry Run Preview Mode
     type: trait
     description: Commands support --dry-run flag to preview changes without applying them
@@ -210,9 +202,9 @@ traits:
         given: dry run in JSON mode
         when: --dry-run --json provided
         then: JSON output includes dry_run boolean field
-
-  - _ulid: "01KFDZSHFATXZJ577K8Q7DSJSR"
-    slugs: [trait-semantic-exit-codes]
+  - _ulid: 01KFDZSHFATXZJ577K8Q7DSJSR
+    slugs:
+      - trait-semantic-exit-codes
     title: Semantic Exit Codes
     type: trait
     description: Commands use consistent exit codes to indicate different types of outcomes
@@ -249,9 +241,9 @@ traits:
         given: command documentation
         when: developers implement commands
         then: exit code meanings documented in code
-
-  - _ulid: "01KFDZSHFBEGRP3JKBHH31NYJT"
-    slugs: [trait-error-guidance]
+  - _ulid: 01KFDZSHFBEGRP3JKBHH31NYJT
+    slugs:
+      - trait-error-guidance
     title: Error Messages with Recovery Guidance
     type: trait
     description: Error messages include actionable suggestions for resolution
@@ -280,3 +272,11 @@ traits:
         given: error in JSON mode
         when: --json is active
         then: guidance included in structured error object
+includes:
+  - modules/core.yaml
+  - modules/schema.yaml
+  - modules/tasks.yaml
+  - modules/cli.yaml
+  - modules/meta.yaml
+  - modules/shadow.yaml
+  - modules/web-ui.yaml

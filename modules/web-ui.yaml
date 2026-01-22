@@ -1,0 +1,20 @@
+_ulid: 01KFHMF5ZS4RD70JBQNGBQJVFY
+slugs:
+  - web-ui
+title: Web UI System
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: Web-based interface for viewing, editing, and managing kspec state. Includes local
+  daemon mode with real-time updates and static GitHub Pages export for read-only sharing.
+tags:
+  - web
+  - ui
+  - daemon
+depends_on: []
+implements: []
+relates_to: []
+tests: []
+traits: []
+notes: []
