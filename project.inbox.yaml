@@ -534,3 +534,13 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFKVC06CWRNN4Z6EG25QG83J
+    text: "Create PR Review & Merge workflow - 8-step quality gate: create PR, wait for CI, read review
+      comments, fix issues, re-run CI, check user @claude comments, complete pending actions, merge
+      when green. Needs matching skill with context."
+    created_at: 2026-01-22T21:57:03.308Z
+    tags:
+      - workflow
+      - pr
+      - quality
+    added_by: "@claude"
