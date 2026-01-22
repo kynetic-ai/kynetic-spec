@@ -2511,4 +2511,26 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJ7AGSPNACKH2TCY9SZT5E8
+    type: success
+    content: "Test fixture ULID validation issue was quickly identified through systematic debugging.
+      The root cause (invalid ULID format in test fixtures) was found by examining validation
+      failures and understanding that ULIDs must match proper regex format. Fix was straightforward:
+      import ulid() and generate valid ULIDs. This pattern of using valid test data that matches
+      production validation rules is important for reliable tests."
+    created_at: 2026-01-22T06:47:28.823Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJ7APXVT6TXJH0CCEVY64XB
+    type: success
+    content: "Tests should use non-shadow mode setup (files in project root) unless specifically testing
+      shadow functionality. The .kspec/ directory is ONLY used when shadow branch is properly
+      configured. This keeps test setup simple and matches how kspec actually discovers files in
+      non-shadow environments. Pattern: create kynetic.yaml, kynetic.meta.yaml, project.tasks.yaml
+      directly in temp root directory."
+    created_at: 2026-01-22T06:47:35.099Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

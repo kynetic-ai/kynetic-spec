@@ -21055,7 +21055,7 @@
     tasks as parent dependencies. Currently a cancelled task is still found and used, requiring
     manual deletion before derive works correctly.
   spec_ref: "@cmd-derive"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21074,6 +21074,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T06:50:01.550Z
 - _ulid: 01KFJ4N0A88X2QGY58G79CNJAC
   slugs: []
   title: Fix old AC annotation format in tests
