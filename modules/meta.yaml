@@ -800,6 +800,9 @@ features:
                 given: workflow.enforcement=advisory (or omitted)
                 when: kspec workflow next is executed
                 then: shows criteria as guidance only; skip allowed without --force
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KFESWWBX1QYPJTNJBW3YHHZN
             slugs:
               - workflow-advanced-features
