@@ -21877,6 +21877,7 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-22T06:10:37.549Z
+  started_at: 2026-01-22T09:11:30.547Z
   notes:
     - _ulid: 01KFJ58YSVDM995ZY0WSV8HT48
       created_at: 2026-01-22T06:11:40.475Z
@@ -21897,9 +21898,58 @@
 
         The { granted: true } bug showed value of compile-time enforcement.
       supersedes: null
+    - _ulid: 01KFJFV6Q5YNF13VTKB1KYCZ3F
+      created_at: 2026-01-22T09:16:24.165Z
+      author: "@claude"
+      content: >-
+        Strengthened ACP type safety:
+
+
+        **What was done:**
+
+
+        1. **Exported additional SDK types** - Added file/terminal request/response types to
+        src/acp/types.ts and src/acp/index.ts:
+           - ReadTextFileRequest, ReadTextFileResponse  
+           - WriteTextFileRequest, WriteTextFileResponse
+           - CreateTerminalRequest, CreateTerminalResponse
+           - TerminalOutputRequest, TerminalOutputResponse
+
+        2. **Added typed response methods to ACPClient** (src/acp/client.ts):
+           - respondReadTextFile(id, response: ReadTextFileResponse)
+           - respondWriteTextFile(id, response: WriteTextFileResponse)
+           - These join existing respondPermission() for compile-time type safety
+
+        3. **Updated ralph.ts request handling** (src/cli/commands/ralph.ts):
+           - Replaced unsafe 'unknown' casts with proper SDK types
+           - file/read now uses ReadTextFileRequest params + respondReadTextFile()
+           - file/write now uses WriteTextFileRequest params + respondWriteTextFile()
+           - session/request_permission now uses RequestPermissionRequest params
+           - terminal/run marked as custom (not part of ACP spec) with inline type
+
+        **Impact:**
+
+        - Compile-time enforcement prevents response structure bugs like the { granted: true } bug
+        mentioned in task description
+
+        - Type safety extends from request params through to response methods
+
+        - respond(unknown) now only used for custom methods (terminal/run)
+
+        - All 937 tests pass, build succeeds
+
+
+        **Notes:**
+
+        - terminal/run is a custom method, not part of ACP spec (which uses
+        createTerminal/terminalOutput)
+
+        - Added TODO comment suggesting migration to standard ACP terminal methods for future work
+
+        - No behavioral changes - purely type safety improvements
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T09:11:30.547Z
 - _ulid: 01KFJ574G610B5Z7J6KAVVETBW
   slugs: []
   title: Expand kspec search to cover inbox and meta entities
