@@ -2786,4 +2786,26 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJENJNKYQABQ67HVNHQ7MTP
+    type: success
+    content: PR review workflow caught missing test coverage - the automated review correctly identified
+      that new mock functionality had zero tests, blocking merge until tests were added. Added 6
+      comprehensive tests by spawning the mock subprocess and using ACPClient to validate the full
+      JSON-RPC protocol flow. The review requirement to test through the actual mock process (not
+      just unit testing the logic) ensured we validated the complete integration.
+    created_at: 2026-01-22T08:55:51.219Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJENS73FRJ811YBX4TGAD7K
+    type: success
+    content: "Successfully executed ralph loop PR review workflow: spawned review subagent → identified
+      MUST-FIX issue (missing tests) → added test coverage → pushed to PR branch → waited for CI →
+      verified all checks pass → merged with --merge flag to preserve trailers. Review agent
+      correctly identified the gap between stated goal (catch format bugs) and reality (no tests
+      exercising the code)."
+    created_at: 2026-01-22T08:55:57.924Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

@@ -21647,6 +21647,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #163. Added comprehensive test coverage for mock's handleRequestPermission
+    function with 6 tests covering auto-approval, cancellation, preference ordering, and error
+    cases. All 936 tests pass, all CI checks passed."
   depends_on: []
   context: []
   priority: 3
@@ -21657,6 +21660,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:08:21.548Z
   started_at: 2026-01-22T08:42:52.432Z
+  completed_at: 2026-01-22T08:55:41.500Z
   notes:
     - _ulid: 01KFJ536DGRCA6CZ1K8M6N5QZ2
       created_at: 2026-01-22T06:08:31.665Z
@@ -21756,10 +21760,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T08:55:41.500Z
-  closed_reason: "Merged PR #163. Added comprehensive test coverage for mock's handleRequestPermission
-    function with 6 tests covering auto-approval, cancellation, preference ordering, and error
-    cases. All 936 tests pass, all CI checks passed."
 - _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
   slugs: []
   title: Add validation warning for manual_only parent with eligible children
@@ -21768,7 +21768,7 @@
     on it - Catches modeling errors where children are blocked by a parent that will never be worked
     by automation
   spec_ref: "@validation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21803,6 +21803,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T08:56:22.422Z
 - _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
   slugs: []
   title: ACP type safety audit - strengthen typing
