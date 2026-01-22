@@ -1104,4 +1104,134 @@ describe('Shadow Branch', () => {
       expect(combinedOutput).toContain('Run from project root');
     });
   });
+
+  // Shadow hook installation and authorization tests
+  describe('installShadowHook', () => {
+    it('installs pre-commit hook during shadow initialization', async () => {
+      // Setup: Create source hook file
+      const hooksSourceDir = path.join(testDir, 'hooks');
+      const sourceHookPath = path.join(hooksSourceDir, 'pre-commit');
+      await fs.mkdir(hooksSourceDir, { recursive: true });
+      await fs.writeFile(sourceHookPath, '#!/bin/sh\necho "test hook"\nexit 0\n', { mode: 0o755 });
+
+      // Initialize git repo with initial commit
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow - should install hook
+      const result = await initializeShadow(testDir);
+      expect(result.success).toBe(true);
+
+      // Verify hook was installed to .git/hooks/pre-commit
+      const installedHookPath = path.join(testDir, '.git', 'hooks', 'pre-commit');
+      try {
+        const hookContent = await fs.readFile(installedHookPath, 'utf-8');
+        expect(hookContent).toBe('#!/bin/sh\necho "test hook"\nexit 0\n');
+
+        // Verify hook is executable
+        const stats = await fs.stat(installedHookPath);
+        expect(stats.mode & 0o111).toBeGreaterThan(0); // At least one execute bit set
+      } catch (err) {
+        expect.fail(`Hook should be installed at ${installedHookPath}: ${err}`);
+      }
+    });
+
+    it('blocks unauthorized commits to shadow branch', async () => {
+      // Setup with real kspec pre-commit hook
+      const realHookPath = path.resolve(__dirname, '../hooks/pre-commit');
+      const hooksSourceDir = path.join(testDir, 'hooks');
+      const sourceHookPath = path.join(hooksSourceDir, 'pre-commit');
+
+      await fs.mkdir(hooksSourceDir, { recursive: true });
+      // Copy the real hook
+      const realHookContent = await fs.readFile(realHookPath, 'utf-8');
+      await fs.writeFile(sourceHookPath, realHookContent, { mode: 0o755 });
+
+      // Initialize git repo
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow
+      await initializeShadow(testDir);
+
+      // Try to commit to shadow branch WITHOUT authorization
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: unauthorized');
+      execSync('git add -A', { cwd: worktreeDir, stdio: 'pipe' });
+
+      // Attempt commit without KSPEC_SHADOW_COMMIT - should fail
+      try {
+        execSync('git commit -m "unauthorized commit"', {
+          cwd: worktreeDir,
+          stdio: 'pipe',
+        });
+        expect.fail('Commit should have been blocked by pre-commit hook');
+      } catch (err: any) {
+        // Hook should have blocked the commit
+        expect(err.status).toBe(1);
+      }
+
+      // Verify no commit was created (still at initial shadow commit)
+      const logOutput = execSync('git log --oneline', {
+        cwd: worktreeDir,
+        encoding: 'utf-8',
+      });
+      const commitCount = logOutput.trim().split('\n').length;
+      expect(commitCount).toBe(1); // Only the initial commit
+    });
+
+    it('allows commits with KSPEC_SHADOW_COMMIT=1 env var', async () => {
+      // Setup with real kspec pre-commit hook
+      const realHookPath = path.resolve(__dirname, '../hooks/pre-commit');
+      const hooksSourceDir = path.join(testDir, 'hooks');
+      const sourceHookPath = path.join(hooksSourceDir, 'pre-commit');
+
+      await fs.mkdir(hooksSourceDir, { recursive: true });
+      const realHookContent = await fs.readFile(realHookPath, 'utf-8');
+      await fs.writeFile(sourceHookPath, realHookContent, { mode: 0o755 });
+
+      // Initialize git repo
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Initialize shadow
+      await initializeShadow(testDir);
+
+      // Try to commit WITH authorization
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await fs.writeFile(path.join(worktreeDir, 'test.yaml'), 'test: authorized');
+      execSync('git add -A', { cwd: worktreeDir, stdio: 'pipe' });
+
+      // Commit with KSPEC_SHADOW_COMMIT=1 - should succeed
+      execSync('git commit -m "authorized commit"', {
+        cwd: worktreeDir,
+        stdio: 'pipe',
+        env: { ...process.env, KSPEC_SHADOW_COMMIT: '1' },
+      });
+
+      // Verify commit was created
+      const logOutput = execSync('git log --oneline', {
+        cwd: worktreeDir,
+        encoding: 'utf-8',
+      });
+      const commitCount = logOutput.trim().split('\n').length;
+      expect(commitCount).toBe(2); // Initial + authorized commit
+
+      // Verify commit message
+      const latestCommit = execSync('git log -1 --pretty=%B', {
+        cwd: worktreeDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(latestCommit).toBe('authorized commit');
+    });
+  });
 });
