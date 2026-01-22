@@ -21162,8 +21162,15 @@
     - tech-debt
   vcs_refs: []
   created_at: 2026-01-22T06:10:37.549Z
-  notes: []
+  notes:
+    - _ulid: 01KFJ58YSVDM995ZY0WSV8HT48
+      created_at: 2026-01-22T06:11:40.475Z
+      author: "@claude"
+      content: "Automation status set to eligible: Tech debt cleanup bounded to ACP files, verifiable via
+        TypeScript compilation"
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFJ574G610B5Z7J6KAVVETBW
   slugs: []
   title: Expand kspec search to cover inbox and meta entities
