@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { PassThrough } from 'node:stream';
+import { spawn } from 'node:child_process';
+import * as path from 'node:path';
 import {
   isRequest,
   isResponse,
@@ -705,6 +707,147 @@ describe('ACPClient', () => {
       client.close();
 
       await expect(client.newSession({ cwd: '/' })).rejects.toThrow('closed');
+    });
+  });
+});
+
+// ============================================================================
+// ACP Mock Tests (for mock agent implementation)
+// ============================================================================
+
+describe('ACP Mock Agent', () => {
+  let mockProcess: ReturnType<typeof spawn>;
+  let client: ACPClient;
+
+  beforeEach(() => {
+    // Spawn the mock agent as a subprocess
+    const { spawn } = require('node:child_process');
+    const mockPath = path.join(__dirname, 'mocks', 'acp-mock.js');
+    mockProcess = spawn('node', [mockPath]);
+
+    // Create ACP client connected to the mock
+    client = new ACPClient({
+      stdin: mockProcess.stdout, // Our stdin reads from mock's stdout
+      stdout: mockProcess.stdin, // Our stdout writes to mock's stdin
+      timeout: 5000,
+      clientInfo: {
+        name: 'test-client',
+        version: '1.0.0',
+      },
+    });
+  });
+
+  afterEach(() => {
+    client.close();
+    mockProcess.kill();
+  });
+
+  describe('session/request_permission', () => {
+    beforeEach(async () => {
+      // Initialize the mock agent before each test
+      await client.initialize();
+    });
+
+    it('should auto-approve with allow_always option', async () => {
+      // Send permission request with allow_always option
+      // Note: We need to use the framing layer directly since ACPClient doesn't expose requestPermission
+      const result = await (client as any).framing.sendRequest('session/request_permission', {
+        options: [
+          { optionId: 'deny-1', kind: 'deny' },
+          { optionId: 'allow-always-1', kind: 'allow_always' },
+          { optionId: 'allow-once-1', kind: 'allow_once' },
+        ],
+      });
+
+      // Should select the allow_always option
+      expect(result).toEqual({
+        outcome: { outcome: 'selected', optionId: 'allow-always-1' },
+      });
+    });
+
+    it('should auto-approve with allow_once when allow_always not available', async () => {
+      const result = await (client as any).framing.sendRequest('session/request_permission', {
+        options: [
+          { optionId: 'deny-1', kind: 'deny' },
+          { optionId: 'allow-once-1', kind: 'allow_once' },
+        ],
+      });
+
+      // Should select the allow_once option
+      expect(result).toEqual({
+        outcome: { outcome: 'selected', optionId: 'allow-once-1' },
+      });
+    });
+
+    it('should cancel permission requests with no allow options', async () => {
+      const result = await (client as any).framing.sendRequest('session/request_permission', {
+        options: [
+          { optionId: 'deny-1', kind: 'deny' },
+          { optionId: 'deny-2', kind: 'deny' },
+        ],
+      });
+
+      // Should cancel since no allow option available
+      expect(result).toEqual({
+        outcome: { outcome: 'cancelled' },
+      });
+    });
+
+    it('should handle empty options array', async () => {
+      const result = await (client as any).framing.sendRequest('session/request_permission', {
+        options: [],
+      });
+
+      // Should cancel since no options available
+      expect(result).toEqual({
+        outcome: { outcome: 'cancelled' },
+      });
+    });
+
+    it('should prefer allow_always over allow_once', async () => {
+      const result = await (client as any).framing.sendRequest('session/request_permission', {
+        options: [
+          { optionId: 'allow-once-1', kind: 'allow_once' },
+          { optionId: 'allow-always-1', kind: 'allow_always' },
+        ],
+      });
+
+      // Should prefer allow_always
+      expect(result).toEqual({
+        outcome: { outcome: 'selected', optionId: 'allow-always-1' },
+      });
+    });
+  });
+
+  describe('session/request_permission - error handling', () => {
+    it('should error on permission requests before initialization', async () => {
+      // Don't initialize - create a fresh client and send request directly
+      const { spawn } = require('node:child_process');
+      const mockPath = path.join(__dirname, 'mocks', 'acp-mock.js');
+      const freshMock = spawn('node', [mockPath]);
+
+      const freshClient = new ACPClient({
+        stdin: freshMock.stdout,
+        stdout: freshMock.stdin,
+        timeout: 5000,
+        clientInfo: { name: 'test', version: '1.0.0' },
+      });
+
+      try {
+        // Suppress console.error for this test
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        await expect(
+          (freshClient as any).framing.sendRequest('session/request_permission', {
+            options: [{ optionId: 'allow-1', kind: 'allow_once' }],
+          }),
+        ).rejects.toThrow('Not initialized');
+
+        consoleSpy.mockRestore();
+      } finally {
+        freshClient.close();
+        freshMock.kill();
+      }
     });
   });
 });
