@@ -3,6 +3,28 @@
  *
  * Provides centralized helpers for running kspec CLI commands in tests.
  * Uses pre-built dist/cli/index.js for performance (eliminates tsx transpilation overhead).
+ *
+ * ## ULID Patterns for Test Fixtures
+ *
+ * ULIDs use Crockford base32 which EXCLUDES: I, L, O, U
+ * Valid characters: 0-9, A-H, J-K, M-N, P-T, V-Z
+ *
+ * Common test ULID mistakes:
+ * - ❌ 01TRAIT10... (contains I)
+ * - ❌ 01TASK100... (contains I)
+ * - ❌ 01MODULE0... (contains O and U)
+ * - ✅ 01TRATT100... (valid - no I, L, O, U)
+ * - ✅ 01TASK0000... (valid - T, A, S, K are allowed)
+ *
+ * Use testUlid() to generate valid test ULIDs with readable prefixes.
+ *
+ * ## YAML Fixture Creation
+ *
+ * Don't use JSON.stringify() for YAML - it produces invalid syntax.
+ * Options:
+ * 1. Use setupTempFixtures() with pre-built fixtures (preferred)
+ * 2. Write YAML strings directly with template literals
+ * 3. Use the yaml library: import { stringify } from 'yaml'
  */
 import { execSync, spawnSync } from 'node:child_process';
 import * as fs from 'node:fs/promises';
@@ -181,4 +203,69 @@ export function initGitRepo(dir: string): void {
  */
 export function git(cmd: string, cwd: string): void {
   execSync(`git ${cmd}`, { cwd, stdio: 'pipe' });
+}
+
+/**
+ * Crockford base32 alphabet (excludes I, L, O, U)
+ * Used for ULID generation
+ */
+const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+
+/**
+ * Generate a valid test ULID with an optional readable prefix
+ *
+ * ULIDs use Crockford base32 which excludes I, L, O, U.
+ * This function replaces any invalid characters in the prefix
+ * and pads to create a valid 26-character ULID.
+ *
+ * @param prefix - Optional prefix (invalid chars will be replaced)
+ * @returns A valid 26-character ULID
+ *
+ * @example
+ * // Generate deterministic ULID (use sequence for uniqueness)
+ * const id = testUlid(); // '01000000000000000000000000'
+ *
+ * @example
+ * // With prefix (great for debugging)
+ * testUlid('TASK')    // '01TASK00000000000000000000'
+ * testUlid('TASK', 1) // '01TASK00000001000000000001'
+ * testUlid('TRAIT')   // '01TRAJT0000000000000000000' (I replaced with J)
+ */
+export function testUlid(prefix = '', sequence = 0): string {
+  // Replace invalid Crockford chars: I->J, L->K, O->0, U->V
+  const safePrefix = prefix.toUpperCase()
+    .replace(/I/g, 'J')
+    .replace(/L/g, 'K')
+    .replace(/O/g, '0')
+    .replace(/U/g, 'V');
+
+  // Start with timestamp-like prefix (01 = valid ULID start)
+  const base = '01' + safePrefix;
+
+  // Pad with zeros, leaving room for sequence and checksum
+  const padLength = 24 - base.length; // 26 - 2 for suffix
+  const sequenceStr = sequence.toString().padStart(Math.min(padLength, 8), '0');
+  const padded = base + sequenceStr.slice(0, padLength);
+
+  // Fill remaining with zeros and add a final valid char
+  const filled = padded.padEnd(25, '0');
+
+  // Use a deterministic final char based on sequence for uniqueness
+  const finalChar = CROCKFORD_BASE32[sequence % 32];
+
+  return (filled + finalChar).slice(0, 26);
+}
+
+/**
+ * Generate multiple unique test ULIDs with the same prefix
+ *
+ * @param prefix - Prefix for all ULIDs
+ * @param count - Number of ULIDs to generate
+ * @returns Array of unique valid ULIDs
+ *
+ * @example
+ * const [id1, id2, id3] = testUlids('TASK', 3);
+ */
+export function testUlids(prefix: string, count: number): string[] {
+  return Array.from({ length: count }, (_, i) => testUlid(prefix, i));
 }
