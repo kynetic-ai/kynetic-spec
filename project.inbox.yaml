@@ -425,13 +425,6 @@ inbox:
       - workflow
       - dx
     added_by: "@claude"
-  - _ulid: 01KFFJVW59XB3CK7C5PYQZDEGN
-    text: "Audit and fix incorrect AC annotations in tests - many tests use old format like '// AC-N:'
-      instead of the convention '// AC: @spec-ref ac-N'. Should sweep through test files and
-      standardize."
-    created_at: 2026-01-21T06:11:28.554Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFGRV3Z5WW29YZJQSK05VGR9
     text: "Test helper should capture stderr on success - Currently helpers/cli.ts returns stderr: ''
       when exit code is 0, making it impossible to test warning messages without JSON mode
