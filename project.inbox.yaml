@@ -553,3 +553,14 @@ inbox:
       - spec-model
       - meta
     added_by: "@claude"
+  - _ulid: 01KFHJNR74AMDX2D9389906JPT
+    text: "AC coverage analysis tooling - soft check that identifies gaps between code AC annotations
+      and test coverage. Not a hard lint, but instructive to surface clear gaps. Could warn when //
+      AC: @spec ac-N appears in implementation but no test references that AC. Helps during review,
+      not blocking."
+    created_at: 2026-01-22T00:46:36.772Z
+    tags:
+      - dx
+      - tooling
+      - reflection
+    added_by: "@claude"
