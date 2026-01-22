@@ -672,6 +672,80 @@ it('should validate input', () => {
 
 This pattern is already used in this project's tests.
 
+## Test Fixture Patterns
+
+When writing tests, follow these patterns to avoid common friction points.
+
+### ULID Format Requirements
+
+ULIDs use **Crockford base32** which excludes: `I`, `L`, `O`, `U`
+
+Valid characters: `0-9`, `A-H`, `J-K`, `M-N`, `P-T`, `V-Z`
+
+**Common mistakes that cause silent failures:**
+```
+❌ 01TRAIT10...  (contains I)
+❌ 01TASK100...  (contains I - the second character after TASK)
+❌ 01MODULE0...  (contains O and U)
+✅ 01TRATT100... (valid - no I, L, O, U)
+✅ 01TASK0000... (valid - T, A, S, K are all allowed)
+```
+
+**Why this matters:** Invalid ULIDs fail schema validation silently. Tests pass locally because the fixture doesn't load, making it appear the feature works when it doesn't. This has caused multiple debugging sessions where "the code works manually but tests fail."
+
+**Solution - use `testUlid()` helper:**
+```typescript
+import { testUlid, testUlids } from './helpers/cli';
+
+// Generate valid ULID with readable prefix
+const taskId = testUlid('TASK');     // '01TASK00000000000000000000'
+const traitId = testUlid('TRAIT');   // '01TRAJT0000000000000000000' (I auto-replaced)
+
+// Generate multiple unique ULIDs
+const [id1, id2, id3] = testUlids('TASK', 3);
+```
+
+### YAML Fixture Creation
+
+**Don't use `JSON.stringify()` for YAML** - it produces invalid syntax that breaks parsing.
+
+```typescript
+// ❌ Wrong - produces invalid YAML
+await fs.writeFile('kynetic.yaml', JSON.stringify({ kynetic: '1.0' }));
+
+// ✅ Correct options:
+
+// 1. Use pre-built fixtures (preferred)
+const tempDir = await setupTempFixtures();
+
+// 2. Write YAML strings directly
+await fs.writeFile('kynetic.yaml', `
+kynetic: "1.0"
+project: Test Project
+`);
+
+// 3. Use yaml library for complex structures
+import { stringify } from 'yaml';
+await fs.writeFile('kynetic.yaml', stringify({ kynetic: '1.0' }));
+```
+
+**Why this matters:** JSON.stringify produces `{"kynetic":"1.0"}` which is technically valid YAML but behaves differently than expected multi-line YAML. Nested structures often break entirely.
+
+### Test Helper Reference
+
+| Helper | Purpose |
+|--------|---------|
+| `setupTempFixtures()` | Copy pre-built fixtures to temp dir (preferred) |
+| `createTempDir()` | Create empty temp dir |
+| `cleanupTempDir(dir)` | Remove temp dir |
+| `initGitRepo(dir)` | Initialize git with test user config |
+| `testUlid(prefix?, seq?)` | Generate valid test ULID |
+| `testUlids(prefix, count)` | Generate multiple unique ULIDs |
+| `kspec(args, cwd)` | Run CLI command, return result object |
+| `kspecJson<T>(args, cwd)` | Run CLI with --json, return parsed |
+
+See `tests/helpers/cli.ts` for full documentation.
+
 ## Session Reflection
 
 After significant work, use `/reflect` to identify learnings, friction points, and improvements.
