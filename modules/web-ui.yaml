@@ -49,3 +49,18 @@ features:
     traits: []
     notes: []
     created: 2026-01-22T01:18:11.366Z
+  - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
+    slugs:
+      - gh-pages-export
+    title: GitHub Pages Export
+    type: feature
+    tags: []
+    description: Static site generation from kspec state for hosting read-only views on GitHub Pages.
+      Enables deep linking to tasks/specs from PRs and issues.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-22T01:18:13.672Z
