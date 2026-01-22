@@ -162,6 +162,33 @@ workflows:
           - Friction patterns: kspec meta observe friction "..."
           - Success patterns: kspec meta observe success "..."
           - Open questions: kspec meta question add "..."
+  - _ulid: 01KFKSX2B8FCNQ6GQJEP0X26JB
+    id: test-inputs
+    trigger: manual
+    description: Test workflow to explore step inputs
+    steps:
+      - type: action
+        content: Choose a task to work on
+        inputs:
+          - name: task_ref
+            description: Reference to the task (e.g., @task-slug)
+            type: ref
+          - name: approach
+            description: Brief description of your approach
+            type: string
+      - type: check
+        content: Verify task is ready to start
+        inputs:
+          - name: confirmed
+            description: Type 'yes' to confirm task is ready
+            type: string
+      - type: action
+        content: Do the work
+        inputs:
+          - name: result
+            description: What was accomplished
+            type: string
+            required: false
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
