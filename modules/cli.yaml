@@ -185,6 +185,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-22T04:35:53.841Z
+        acceptance_criteria:
+          - id: ac-1
+            given: kspec is installed from npm
+            when: user runs 'kspec --version' or 'kspec -V'
+            then: displays the version from package.json (e.g., '0.1.1')
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
