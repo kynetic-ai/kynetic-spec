@@ -21645,7 +21645,7 @@
     requests like the real agent does. Currently mock auto-succeeds tool calls without permission
     flow. Would have caught the { granted: true } format bug in tests rather than live testing."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
