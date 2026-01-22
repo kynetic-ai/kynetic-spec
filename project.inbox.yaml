@@ -506,3 +506,12 @@ inbox:
       - workflow
       - dx
     added_by: "@claude"
+  - _ulid: 01KFKSGCTW2R3G9QYK9NH23FVY
+    text: Warn when --input flags passed to 'workflow next' but step has no inputs defined - show
+      warning that inputs are being ignored, don't fail
+    created_at: 2026-01-22T21:24:30.172Z
+    tags:
+      - cli
+      - workflow
+      - dx
+    added_by: "@claude"
