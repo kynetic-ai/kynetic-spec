@@ -198,6 +198,7 @@ workflows:
           - For decisions: options list
           - Entry/exit criteria if step needs verification
           - Inputs if step captures structured data
+          See: [Step Design Guide](docs/step-design.md)
       - type: action
         content: |
           Create the workflow:
