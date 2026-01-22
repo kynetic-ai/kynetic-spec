@@ -91,7 +91,7 @@ git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s"
 
 | Pattern | Bump |
 |---------|------|
-| `BREAKING CHANGE:` in body or `!` after type | major |
+| `BREAKING CHANGE:` in body or `feat!:` suffix | major |
 | `feat:` or `feat(scope):` | minor |
 | `fix:`, `perf:`, `refactor:`, `chore:` | patch |
 
