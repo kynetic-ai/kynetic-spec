@@ -20893,5 +20893,22 @@
         Requires: Look up which spec each test file covers, then update annotations with correct
         @spec-ref. Verify with: grep -r '// AC-[0-9]' tests/ returns empty.
       supersedes: null
+    - _ulid: 01KFJ4Q5M0Z3H9ZWRNSFS60EEA
+      created_at: 2026-01-22T06:01:57.632Z
+      author: "@claude"
+      content: >-
+        IMPORTANT: Don't just fix the 3 known files - do a full codebase sweep. Search ALL files for
+        any old AC annotation patterns:
+
+        - '// AC-N:' format
+
+        - '// AC N:' format  
+
+        - Any other non-standard patterns
+
+
+        Verify with multiple grep patterns to catch variations. Goal is zero old-format annotations
+        anywhere in the codebase, not just the known locations.
+      supersedes: null
   todos: []
   automation: eligible
