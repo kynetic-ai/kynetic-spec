@@ -54,7 +54,7 @@ runs:
     abort_reason: Completed skip testing
   - _ulid: 01KFKRD7VD0QJ481YBPBYDBCE9
     workflow_ref: "@01KF782ZSH8JG4CCJRWVQQ9G5R"
-    status: active
+    status: aborted
     current_step: 1
     total_steps: 5
     started_at: 2026-01-22T21:05:18.190Z
@@ -69,3 +69,5 @@ runs:
         started_at: 2026-01-22T21:05:25.516Z
         completed_at: 2026-01-22T21:05:25.516Z
     initiated_by: "@claude"
+    abort_reason: Completed inputs testing
+    completed_at: 2026-01-22T21:05:37.925Z
