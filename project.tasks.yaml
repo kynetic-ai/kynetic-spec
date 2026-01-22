@@ -20706,15 +20706,21 @@
         To delete if needed: delete children first, then parent module.
       supersedes: null
   todos: []
-- title: "Implement: CLI Version Display"
+- _ulid: 01KFHZT60CB7D2K13HP914B8YZ
+  slugs:
+    - task-cli-version-display
+  title: "Implement: CLI Version Display"
   type: task
   spec_ref: "@cli-version"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-cli-version-display
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-22T04:36:13.452Z
   notes:
     - _ulid: 01KFHZT60B91H5JZE2WRWCK55Z
       created_at: 2026-01-22T04:36:13.452Z
@@ -20739,10 +20745,22 @@
         - ac-3: Given kspec is run in development via 'npm run dev', when user runs 'npm run dev --
         --version', then displays the same version as package.json
       supersedes: null
-  _ulid: 01KFHZT60CB7D2K13HP914B8YZ
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-22T04:36:13.452Z
+    - _ulid: 01KFHZTETF2RPFTPRA1ZMRDZ95
+      created_at: 2026-01-22T04:36:22.480Z
+      author: "@claude"
+      content: >-
+        Implementation approach:
+
+        1. Read version from package.json at build time or runtime
+
+        2. Replace hardcoded '.version("0.1.0")' in src/cli/index.ts:41
+
+        3. Options:
+           - Runtime: Import package.json or use fs.readFile (requires JSON assertion or read)
+           - Build time: Generate version.ts during build
+        4. Test: Run 'kspec --version' and verify it matches package.json
+
+        5. Reference: Similar pattern used in many CLIs (e.g., import { version } from
+        '../package.json')
+      supersedes: null
   todos: []
