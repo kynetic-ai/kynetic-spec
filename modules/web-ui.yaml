@@ -51,6 +51,10 @@ features:
         given: daemon is running in background
         when: user runs 'kspec serve stop'
         then: daemon shuts down gracefully, removes PID file, and closes all connections
+      - id: ac-5
+        given: daemon is running
+        when: GET /api/tasks is called
+        then: returns JSON array of all tasks with status, notes, and dependencies
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
