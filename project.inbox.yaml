@@ -178,14 +178,6 @@ inbox:
       - cli
       - phase-2
     added_by: "@claude"
-  - _ulid: 01KFBJB72B55D3KVA8PAX3TX2P
-    text: Set up biome for linting (replace eslint script) - reference ../kynetic project for config
-    created_at: 2026-01-19T16:45:24.940Z
-    tags:
-      - cli
-      - dx
-      - tooling
-    added_by: "@claude"
   - _ulid: 01KFBJM1XW2DSC0V47Y86EZYHB
     text: "Review RALPH_LOOP_INSTRUCTIONS.md - consolidate into skills or delete. Unique content: PR
       review workflow for autonomous loops, 'every iteration ends with PR' rule, reflect guidance

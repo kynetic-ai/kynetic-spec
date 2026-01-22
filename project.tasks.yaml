@@ -20970,24 +20970,43 @@
   created_at: 2026-01-22T06:04:30.551Z
   notes: []
   todos: []
-- title: Fix test helper to capture stderr on success
+- _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
+  slugs: []
+  title: Fix test helper to capture stderr on success
   type: infra
-  priority: 3
+  description: "Test helper should capture stderr on success - Currently helpers/cli.ts returns
+    stderr: '' when exit code is 0, making it impossible to test warning messages without JSON mode
+    workaround"
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - reflection
     - dx
     - testing
-  description: "Test helper should capture stderr on success - Currently helpers/cli.ts returns
-    stderr: '' when exit code is 0, making it impossible to test warning messages without JSON mode
-    workaround"
-  _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
+  vcs_refs: []
+  created_at: 2026-01-22T06:04:34.309Z
+  notes: []
+  todos: []
+- title: Set up biome for linting (replace eslint)
+  type: infra
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+    - tooling
+  description: Set up biome for linting (replace eslint script) - reference ../kynetic project for config
+  _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-22T06:04:34.309Z
+  created_at: 2026-01-22T06:04:37.951Z
   notes: []
   todos: []
