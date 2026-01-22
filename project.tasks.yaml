@@ -22219,19 +22219,20 @@
   created_at: 2026-01-22T19:56:31.083Z
   notes: []
   todos: []
-- title: Add --steps flag to workflow add command
-  description: Add step editing to workflow add command
-  priority: 2
-  origin: observation_promotion
-  _ulid: 01KFKRBN1B8GKXNV8W443XC30A
+- _ulid: 01KFKRBN1B8GKXNV8W443XC30A
   slugs: []
+  title: Add --steps flag to workflow add command
   type: task
-  status: pending
+  description: Add step editing to workflow add command
+  origin: observation_promotion
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T21:04:26.155Z
   notes: []
   todos: []
+  closed_reason: Test task for workflow evaluation
