@@ -498,6 +498,10 @@ features:
         given: a spec with a broken @reference
         when: kspec validate --refs runs
         then: validation fails with error listing broken ref
+      - id: ac-1
+        given: a task has automation=manual_only
+        when: kspec validate runs and child tasks depend on this parent and are automation=eligible
+        then: "warning issued: manual_only parent @X blocks eligible children @Y, @Z"
     requirements:
       - _ulid: 01KEZCJPJ3MRSVNT5E9ETQD72W
         slugs:
