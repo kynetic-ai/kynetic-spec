@@ -20715,6 +20715,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Implemented and merged PR #151. CLI now reads version from package.json dynamically."
   depends_on: []
   context: []
   priority: 3
@@ -20722,6 +20723,7 @@
   vcs_refs: []
   created_at: 2026-01-22T04:36:13.452Z
   started_at: 2026-01-22T04:41:02.463Z
+  completed_at: 2026-01-22T04:57:35.836Z
   notes:
     - _ulid: 01KFHZT60B91H5JZE2WRWCK55Z
       created_at: 2026-01-22T04:36:13.452Z
@@ -20765,5 +20767,23 @@
         '../package.json')
       supersedes: null
   todos: []
-  completed_at: 2026-01-22T04:57:35.836Z
-  closed_reason: "Implemented and merged PR #151. CLI now reads version from package.json dynamically."
+- title: Remove auto-version-sync from publish workflow
+  type: task
+  priority: 2
+  spec_ref: null
+  tags: []
+  description: "Rework /release skill to create PR for version sync instead of direct push. Current
+    publish workflow fails on repos with branch protection. Options: (1) Remove auto-version-sync
+    from CI entirely - just tag/release, (2) Have CI create a PR for version bump, (3) Document
+    manual PR step in skill. Simplest is probably removing auto-sync and documenting the manual PR
+    step."
+  _ulid: 01KFJ3810ZGSZ82AWS3BK4R081
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T05:36:12.831Z
+  notes: []
+  todos: []
