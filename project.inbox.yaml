@@ -488,15 +488,6 @@ inbox:
     created_at: 2026-01-22T20:03:38.922Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KFKSEDVD0JZC908CYXA2GWRD
-    text: Add --steps flag to 'meta add workflow' command - allow defining workflow steps at creation
-      time using JSON array, avoiding manual YAML edits
-    created_at: 2026-01-22T21:23:25.677Z
-    tags:
-      - cli
-      - meta
-      - dx
-    added_by: "@claude"
   - _ulid: 01KFKSF667VYMH5QJN9GE5X2J3
     text: Make 'workflow show' infer active run like 'workflow next' - when only one active run exists,
       allow omitting run-ref for consistency
