@@ -544,3 +544,13 @@ inbox:
       - pr
       - quality
     added_by: "@claude"
+  - _ulid: 01KFKVC2DTWG3WAR31KY2FP19T
+    text: "Create Task Work Session workflow - core daily pattern: verify not already done, kspec task
+      start, add notes while working, kspec task complete, commit changes, check unblocked work.
+      Needs matching skill with guidance."
+    created_at: 2026-01-22T21:57:05.594Z
+    tags:
+      - workflow
+      - tasks
+      - core
+    added_by: "@claude"
