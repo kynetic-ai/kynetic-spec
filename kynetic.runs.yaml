@@ -74,7 +74,7 @@ runs:
   - _ulid: 01KFKS903R68228GKCEKC2AVR9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-22T21:20:27.769Z
     step_results:
@@ -126,5 +126,14 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-22T21:21:24.339Z
-        completed_at: 2026-01-22T21:21:24.339Z
+        completed_at: 2026-01-22T21:24:38.594Z
+        notes: |-
+          Discussed 3 improvements with user, all approved and captured:
+          - @01KFKSED: --steps flag for workflow add
+          - @01KFKSF6: workflow show run inference
+          - @01KFKSGC: warn on ignored --input flags
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-22T21:24:38.594Z
+        completed_at: 2026-01-22T21:24:38.594Z
     initiated_by: "@claude"
