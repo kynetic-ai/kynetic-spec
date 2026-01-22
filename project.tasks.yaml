@@ -21022,5 +21022,12 @@
     - tooling
   vcs_refs: []
   created_at: 2026-01-22T06:04:37.951Z
-  notes: []
+  notes:
+    - _ulid: 01KFJ4WG9CV6S1Y40ACW2REBFZ
+      created_at: 2026-01-22T06:04:52.397Z
+      author: "@claude"
+      content: "Automation status set to eligible: Config setup task, reference ../kynetic project,
+        verifiable via lint passing"
+      supersedes: null
   todos: []
+  automation: eligible
