@@ -21066,15 +21066,22 @@
     - bug
   vcs_refs: []
   created_at: 2026-01-22T05:57:49.108Z
+  started_at: 2026-01-22T06:50:01.550Z
   notes:
     - _ulid: 01KFJ4FSM45C5C729XZTPXH7BZ
       created_at: 2026-01-22T05:57:55.973Z
       author: "@claude"
       content: "Automation status set to eligible: Bug fix with clear AC, single code path, testable"
       supersedes: null
+    - _ulid: 01KFJ7GACACQ59TWDVJ094CMKV
+      created_at: 2026-01-22T06:50:38.858Z
+      author: "@claude"
+      content: "Found the issue: getParentTaskRef() in derive.ts (lines 345-364) doesn't check task
+        status. It includes cancelled tasks in depends_on. Need to filter to only include
+        non-cancelled tasks when looking up parent task refs."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T06:50:01.550Z
 - _ulid: 01KFJ4N0A88X2QGY58G79CNJAC
   slugs: []
   title: Fix old AC annotation format in tests
