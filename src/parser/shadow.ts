@@ -514,7 +514,7 @@ export async function commitIfShadow(
   const message = generateCommitMessage(operation, ref, detail);
   const committed = await shadowAutoCommit(shadowConfig.worktreeDir, message, verbose);
 
-  // AC-1: Fire-and-forget push after each commit
+  // AC: @shadow-sync ac-1 - Fire-and-forget push after each commit
   if (committed) {
     shadowPushAsync(shadowConfig.worktreeDir, verbose);
   }
@@ -721,7 +721,7 @@ export interface ShadowSyncResult {
 export async function shadowPushAsync(worktreeDir: string, verbose?: boolean): Promise<void> {
   const debug = isDebugMode(verbose);
 
-  // AC-8: Auto-configure tracking if main has remote but shadow doesn't
+  // AC: @shadow-sync ac-8 - Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
   await ensureRemoteTracking(worktreeDir, projectRoot);
 
@@ -730,7 +730,7 @@ export async function shadowPushAsync(worktreeDir: string, verbose?: boolean): P
     if (debug) {
       console.error('[DEBUG] Shadow push: No remote tracking configured, skipping');
     }
-    return; // AC-4: silently skip if no tracking
+    return; // AC: @shadow-sync ac-4 - silently skip if no tracking
   }
 
   try {
@@ -767,11 +767,11 @@ export async function shadowPull(worktreeDir: string): Promise<ShadowSyncResult>
     hadConflict: false,
   };
 
-  // AC-8: Auto-configure tracking if main has remote but shadow doesn't
+  // AC: @shadow-sync ac-8 - Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
   await ensureRemoteTracking(worktreeDir, projectRoot);
 
-  // AC-4: Skip if no remote tracking
+  // AC: @shadow-sync ac-4 - Skip if no remote tracking
   if (!(await hasRemoteTracking(worktreeDir))) {
     result.success = true;
     return result;
@@ -798,7 +798,7 @@ export async function shadowPull(worktreeDir: string): Promise<ShadowSyncResult>
   }
 
   try {
-    // AC-6: Fall back to rebase
+    // AC: @shadow-sync ac-6 - Fall back to rebase
     await execAsync('git pull --rebase', { cwd: worktreeDir });
     result.success = true;
     result.pulled = true;
@@ -807,7 +807,7 @@ export async function shadowPull(worktreeDir: string): Promise<ShadowSyncResult>
     // Rebase failed - likely conflict
   }
 
-  // AC-3: Conflict detected - abort rebase and report
+  // AC: @shadow-sync ac-3 - Conflict detected - abort rebase and report
   try {
     await execAsync('git rebase --abort', { cwd: worktreeDir });
   } catch {
@@ -1125,7 +1125,7 @@ export async function initializeShadow(
       }
 
       if (remoteHasShadow) {
-        // AC-1: Remote has shadow branch - create worktree from it with tracking
+        // AC: @shadow-init ac-1 - Remote has shadow branch - create worktree from it with tracking
         await execAsync(
           `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
           { cwd: projectRoot }
@@ -1137,7 +1137,7 @@ export async function initializeShadow(
         );
         result.createdFromRemote = true;
       } else if (!status.branchExists) {
-        // AC-2/AC-3: No remote branch or no remote - create orphan branch
+        // AC: @shadow-init ac-2 ac-3 - No remote branch or no remote - create orphan branch
         await execAsync(
           `git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`,
           { cwd: projectRoot }

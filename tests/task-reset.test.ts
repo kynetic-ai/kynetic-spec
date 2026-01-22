@@ -265,7 +265,7 @@ describe('Integration: task reset', () => {
     expect(taskAAfterReset.status).toBe('pending');
 
     // Step 7: Verify task B status is unaffected by the reset
-    // AC-5: "B unaffected (dependency check happens on B's start)"
+    // AC: @spec-task-reset ac-5 - B unaffected (dependency check happens on B's start)
     // The reset of A doesn't change B's status field
     const taskBAfter = kspecJson<{ status: string }>(
       'task get @test-task-blocked',

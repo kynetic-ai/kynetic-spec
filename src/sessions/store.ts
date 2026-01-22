@@ -262,7 +262,7 @@ export async function appendEvent(
   // Validate event
   const validated = SessionEventSchema.parse(event);
 
-  // AC-3: Use synchronous append for crash safety
+  // AC: @session-events ac-3 - Use synchronous append for crash safety
   // This ensures the line is fully written before returning
   const line = JSON.stringify(validated) + '\n';
   fs.appendFileSync(eventsPath, line, 'utf-8');
@@ -300,7 +300,7 @@ export async function readEvents(
       }
     }
 
-    // AC-4: Sort by sequence number
+    // AC: @session-events ac-4 - Sort by sequence number
     return events.sort((a, b) => a.seq - b.seq);
   } catch {
     return [];

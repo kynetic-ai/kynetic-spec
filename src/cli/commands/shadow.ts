@@ -192,7 +192,7 @@ export function registerShadowCommands(program: Command): void {
       }
     });
 
-  // AC-5: Shadow resolve command for conflict resolution
+  // AC: @shadow-sync ac-5 - Shadow resolve command for conflict resolution
   shadow
     .command('resolve')
     .description('Resolve shadow branch sync conflicts')
