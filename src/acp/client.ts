@@ -25,9 +25,11 @@ import type {
   NewSessionResponse,
   PromptRequest,
   PromptResponse,
+  ReadTextFileResponse,
   RequestPermissionResponse,
   SessionNotification,
   SessionUpdate,
+  WriteTextFileResponse,
 } from "./types.js";
 
 /**
@@ -315,6 +317,32 @@ export class ACPClient extends EventEmitter {
   respondPermission(
     id: string | number,
     response: RequestPermissionResponse,
+  ): void {
+    this.framing.sendResponse(id, response);
+  }
+
+  /**
+   * Send a typed response to a file read request
+   *
+   * @param id - The request ID to respond to
+   * @param response - The file read response
+   */
+  respondReadTextFile(
+    id: string | number,
+    response: ReadTextFileResponse,
+  ): void {
+    this.framing.sendResponse(id, response);
+  }
+
+  /**
+   * Send a typed response to a file write request
+   *
+   * @param id - The request ID to respond to
+   * @param response - The file write response
+   */
+  respondWriteTextFile(
+    id: string | number,
+    response: WriteTextFileResponse,
   ): void {
     this.framing.sendResponse(id, response);
   }

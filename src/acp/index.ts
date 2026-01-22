@@ -24,6 +24,8 @@ export type {
   AgentCapabilities,
   ClientCapabilities,
   ContentBlock,
+  CreateTerminalRequest,
+  CreateTerminalResponse,
   InitializeRequest,
   InitializeResponse,
   JsonRpcError,
@@ -36,12 +38,18 @@ export type {
   NewSessionResponse,
   PromptRequest,
   PromptResponse,
+  ReadTextFileRequest,
+  ReadTextFileResponse,
   RequestPermissionRequest,
   RequestPermissionResponse,
   SessionNotification,
   SessionUpdate,
   StopReason,
+  TerminalOutputRequest,
+  TerminalOutputResponse,
   TextContent,
+  WriteTextFileRequest,
+  WriteTextFileResponse,
 } from "./types.js";
 // Types - Type guards
 export {

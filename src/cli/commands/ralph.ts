@@ -18,7 +18,12 @@ const require = createRequire(import.meta.url);
 const { version: packageVersion } = require("../../../package.json");
 
 import type { ACPClient } from "../../acp/client.js";
-import type { SessionUpdate } from "../../acp/index.js";
+import type {
+  ReadTextFileRequest,
+  RequestPermissionRequest,
+  SessionUpdate,
+  WriteTextFileRequest,
+} from "../../acp/index.js";
 import {
   type AgentAdapter,
   registerAdapter,
@@ -185,19 +190,13 @@ async function handleRequest(
   params: unknown,
   yolo: boolean,
 ): Promise<void> {
-  const p = params as Record<string, unknown>;
-
   try {
     switch (method) {
       case "session/request_permission": {
+        const p = params as RequestPermissionRequest;
         // In yolo mode, auto-approve all permissions
         // In normal mode, would need to implement permission UI
-        const options =
-          (p.options as Array<{
-            optionId: string;
-            kind: string;
-            name: string;
-          }>) || [];
+        const options = p.options || [];
 
         if (yolo) {
           // Find an "allow" option (prefer allow_always, then allow_once)
@@ -221,25 +220,31 @@ async function handleRequest(
       }
 
       case "file/read": {
-        const filePath = p.path as string;
-        const content = await fs.readFile(filePath, "utf-8");
-        client.respond(id, { content });
+        const p = params as ReadTextFileRequest;
+        const content = await fs.readFile(p.path, "utf-8");
+        client.respondReadTextFile(id, { content });
         break;
       }
 
       case "file/write": {
-        const filePath = p.path as string;
-        const content = p.content as string;
-        await fs.mkdir(path.dirname(filePath), { recursive: true });
-        await fs.writeFile(filePath, content, "utf-8");
-        client.respond(id, {});
+        const p = params as WriteTextFileRequest;
+        await fs.mkdir(path.dirname(p.path), { recursive: true });
+        await fs.writeFile(p.path, p.content, "utf-8");
+        client.respondWriteTextFile(id, {});
         break;
       }
 
       case "terminal/run": {
-        const command = p.command as string;
-        const cwd = (p.cwd as string) || process.cwd();
-        const timeout = (p.timeout as number) || 60000;
+        // Custom method (not part of ACP spec - ACP uses createTerminal instead)
+        // TODO: Consider migrating to standard ACP terminal methods
+        const p = params as {
+          command: string;
+          cwd?: string;
+          timeout?: number;
+        };
+        const command = p.command;
+        const cwd = p.cwd || process.cwd();
+        const timeout = p.timeout || 60000;
 
         const result = await new Promise<{
           stdout: string;
@@ -272,6 +277,7 @@ async function handleRequest(
           });
         });
 
+        // Using generic respond() since this is a custom method
         client.respond(id, result);
         break;
       }
