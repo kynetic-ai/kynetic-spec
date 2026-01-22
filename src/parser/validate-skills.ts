@@ -93,6 +93,12 @@ function parseFrontmatter(content: string): {
 /**
  * Check for unescaped pipes in table rows
  * Tables should have pipes escaped when they appear in content
+ *
+ * Limitations:
+ * - Only detects tables with >1 empty cells AND >4 columns
+ * - Single unescaped pipes or narrow tables (≤4 columns) won't be caught
+ * - This is a heuristic to reduce false positives; perfect detection
+ *   would require full markdown table parsing
  */
 function checkTablePipes(
   content: string,
