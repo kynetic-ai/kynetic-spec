@@ -618,6 +618,9 @@ features:
                 given: a workflow and task exist
                 when: kspec workflow start @workflow --task @task-ref is executed
                 then: creates run with task_ref field set, linking run to task context
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KFESTXHYVDTW4X0Y13RN78K3
             slugs:
               - workflow-step-navigation
