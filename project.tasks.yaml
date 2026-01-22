@@ -21157,25 +21157,45 @@
   created_at: 2026-01-22T06:10:37.549Z
   notes: []
   todos: []
-- title: Expand kspec search to cover inbox and meta entities
+- _ulid: 01KFJ574G610B5Z7J6KAVVETBW
+  slugs: []
+  title: Expand kspec search to cover inbox and meta entities
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - search
-    - cli
-    - design
   description: "Expand kspec search to cover inbox and meta (observations, agents, workflows,
     conventions). Currently only searches items and tasks. Should support --scope flag or search all
     by default. Related: need pattern for cross-feature requirements - when new entity type added,
     features like search should automatically need to support it."
-  _ulid: 01KFJ574G610B5Z7J6KAVVETBW
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - search
+    - cli
+    - design
+  vcs_refs: []
+  created_at: 2026-01-22T06:10:40.773Z
+  notes: []
+  todos: []
+- title: Add skill file linting/validation
+  type: infra
+  priority: 3
+  spec_ref: null
+  tags:
+    - dx
+    - skills
+  description: Skill file linting/validation - catch markdown parsing issues (like pipes in tables)
+    before runtime. Could be a pre-commit hook or CI check that validates skill SKILL.md files parse
+    correctly.
+  _ulid: 01KFJ5780YBQDBQH3Y4VFZ1343
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-22T06:10:40.773Z
+  created_at: 2026-01-22T06:10:44.382Z
   notes: []
   todos: []
