@@ -1,0 +1,387 @@
+{
+  "generated_at": "2026-01-22T07:09:23.709Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-20T17:45:11.271Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFJ4N0",
+      "title": "Fix old AC annotation format in tests",
+      "started_at": "2026-01-22T07:03:00.956Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 5,
+      "last_note_at": "2026-01-22T07:08:47.410Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFESYSR",
+      "title": "Implement: Workflow Step Navigation",
+      "priority": 3,
+      "spec_ref": "@workflow-step-navigation",
+      "tags": []
+    },
+    {
+      "ref": "01KFJ4VT",
+      "title": "Add tests for shadow hook installation and authorization",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "testing",
+        "reflection"
+      ]
+    },
+    {
+      "ref": "01KFJ4VY",
+      "title": "Fix test helper to capture stderr on success",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "reflection",
+        "dx",
+        "testing"
+      ]
+    },
+    {
+      "ref": "01KFJ4W2",
+      "title": "Set up biome for linting (replace eslint)",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "cli",
+        "dx",
+        "tooling"
+      ]
+    },
+    {
+      "ref": "01KFJ52W",
+      "title": "Improve ACP mock to require permission requests",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "testing",
+        "acp",
+        "mock"
+      ]
+    },
+    {
+      "ref": "01KFJ56X",
+      "title": "Add validation warning for manual_only parent with eligible children",
+      "priority": 3,
+      "spec_ref": "@validation",
+      "tags": [
+        "reflection",
+        "validation",
+        "workflow"
+      ]
+    },
+    {
+      "ref": "01KFJ571",
+      "title": "ACP type safety audit - strengthen typing",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "acp",
+        "types",
+        "tech-debt"
+      ]
+    },
+    {
+      "ref": "01KFJ574",
+      "title": "Expand kspec search to cover inbox and meta entities",
+      "priority": 3,
+      "spec_ref": "@fuzzy-item-search",
+      "tags": [
+        "search",
+        "cli",
+        "design"
+      ]
+    },
+    {
+      "ref": "01KFJ578",
+      "title": "Add skill file linting/validation",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "dx",
+        "skills"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFJ4FJ",
+      "title": "Fix derive to skip cancelled tasks in parent lookup",
+      "completed_at": "2026-01-22T07:02:49.027Z",
+      "closed_reason": "Merged PR #155. All CI checks passed, Claude review found no issues, comprehensive E2E test coverage for AC-15 verified."
+    },
+    {
+      "ref": "01KFESYSK",
+      "title": "Implement: Workflow Run Foundation",
+      "completed_at": "2026-01-22T06:55:58.903Z",
+      "closed_reason": "Merged PR #154. Implemented workflow run foundation with all 6 ACs covered by 21 E2E tests. Fixed test setup issues (valid ULIDs, non-shadow mode). All CI checks passed. Comprehensive review confirmed implementation quality."
+    },
+    {
+      "ref": "01KFJ381",
+      "title": "Remove auto-version-sync from publish workflow",
+      "completed_at": "2026-01-22T05:50:03.185Z",
+      "closed_reason": "Merged PR #153. Removed auto-version-sync from workflow, rewrote /release skill with correct flow (version PR first), addressed all review findings."
+    },
+    {
+      "ref": "01KFHZT6",
+      "title": "Implement: CLI Version Display",
+      "completed_at": "2026-01-22T04:57:35.836Z",
+      "closed_reason": "Implemented and merged PR #151. CLI now reads version from package.json dynamically."
+    },
+    {
+      "ref": "01KFHJAC",
+      "title": "Create /release skill for versioning and tagging",
+      "completed_at": "2026-01-22T04:29:06.063Z",
+      "closed_reason": "Release skill implemented and working. v0.1.1 published to npm via trusted publishers. Includes: skill file, CI workflow with version sync, troubleshooting docs for npm OIDC auth issues."
+    },
+    {
+      "ref": "01KFH367",
+      "title": "Fix hardcoded @human author in CLI auto-generated notes",
+      "completed_at": "2026-01-22T00:32:35.089Z",
+      "closed_reason": "PR #141 merged. Fixed hardcoded @human and @kspec-derive, added ac-author specs, migrated 29 existing references, full test coverage. Version 0.1.1"
+    },
+    {
+      "ref": "01KF9Q29",
+      "title": "Create INSTALL.md with agent-focused setup instructions",
+      "completed_at": "2026-01-21T21:46:32.727Z",
+      "closed_reason": "Created INSTALL.md with agent-focused setup instructions. Covers From Source install (npm coming soon), two setup flows (fresh vs cloning), agent configuration, verification checklist, troubleshooting table, and working directory warning. Reviewed by subagent, verified commands in temp directory."
+    },
+    {
+      "ref": "01KFGF9R",
+      "title": "Implement: Clear Task Dependencies",
+      "completed_at": "2026-01-21T16:36:19.499Z",
+      "closed_reason": "Merged PR #129. Added --clear-deps flag with 7 E2E tests covering 3 direct ACs plus trait ACs for JSON output and batch refs mode."
+    },
+    {
+      "ref": "01KFBP98",
+      "title": "Extract shared test helpers to utility file",
+      "completed_at": "2026-01-21T10:28:24.176Z",
+      "closed_reason": "Already implemented in commit 971caec. Verified tests/helpers/cli.ts contains all shared helpers, no duplicates remain, and all 841 tests pass."
+    },
+    {
+      "ref": "01KFBN1J",
+      "title": "Fix task-yaml-formatting status (should be completed)",
+      "completed_at": "2026-01-21T10:25:16.187Z",
+      "closed_reason": "Fixed incorrect task status for @task-yaml-formatting. Used kspec task reset to change from cancelled to pending, then properly completed it with documentation of the yaml library migration work."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "1c6bdd3",
+      "full_hash": "1c6bdd31b788cc4a492d91260fe3f314e393f885",
+      "date": "2026-01-22T07:09:00.000Z",
+      "message": "chore: fix old AC annotation format across codebase",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e28ed77",
+      "full_hash": "e28ed77b454c621f520d28c190534d53072c9737",
+      "date": "2026-01-22T07:02:32.000Z",
+      "message": "fix: derive skips cancelled tasks in parent lookup (#155)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c594483",
+      "full_hash": "c59448364d2dd025bc96c46effd62a0955deff9c",
+      "date": "2026-01-22T06:55:27.000Z",
+      "message": "fix: derive skips cancelled tasks in parent lookup",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ac1acb7",
+      "full_hash": "ac1acb7f5956dfcec32768ec51f0b97d0007e98a",
+      "date": "2026-01-22T06:55:44.000Z",
+      "message": "feat: implement workflow run foundation (#154)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6e6af0c",
+      "full_hash": "6e6af0c2240643016618485f8ed6ae27206dd82c",
+      "date": "2026-01-22T06:46:20.000Z",
+      "message": "fix: workflow run tests - use valid ULIDs and non-shadow test setup",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e72eda2",
+      "full_hash": "e72eda2dc25055ad85ed75e1e0547230d1e040ac",
+      "date": "2026-01-22T06:41:11.000Z",
+      "message": "wip: fix test fixture ULIDs (need valid ULID format)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fb0b93c",
+      "full_hash": "fb0b93cd0f63b6db66e020d2c06b476dfdb41b35",
+      "date": "2026-01-22T06:25:48.000Z",
+      "message": "feat: implement workflow run foundation (WIP)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "dbedf6a",
+      "full_hash": "dbedf6a51537f9c94d17cdb60f7c5d3034a848bc",
+      "date": "2026-01-22T05:49:48.000Z",
+      "message": "fix: remove auto-version-sync from publish workflow (#153)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7398f28",
+      "full_hash": "7398f28a34791029417c1082c222229ed5e6fed0",
+      "date": "2026-01-22T05:45:49.000Z",
+      "message": "docs: comprehensive release skill rewrite",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fa72628",
+      "full_hash": "fa7262890d1bf8a5bf1f1ba413cd3ebef15a0245",
+      "date": "2026-01-22T05:40:17.000Z",
+      "message": "fix: version bump PR before tag, not after",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 263,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 14,
+    "blocked": 1,
+    "completed": 238,
+    "inbox_items": 33
+  }
+}

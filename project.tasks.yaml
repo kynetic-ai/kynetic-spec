@@ -18951,7 +18951,7 @@
   type: task
   spec_ref: "@workflow-step-navigation"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-workflow-run-foundation"
@@ -19051,6 +19051,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T07:21:22.900Z
 - _ulid: 01KFESYSWBB2R797HKWA965MC9
   slugs:
     - task-workflow-enforcement-modes
@@ -21121,6 +21122,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #156. Fixed 72 old-format AC annotations across 9 files. Review found and
+    fixed 3 incorrect spec references. All CI checks passed."
   depends_on: []
   context: []
   priority: 3
@@ -21128,6 +21131,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:00:46.664Z
   started_at: 2026-01-22T07:03:00.956Z
+  completed_at: 2026-01-22T07:20:50.868Z
   notes:
     - _ulid: 01KFJ4N7CYQ312RQBCH5X6FFT2
       created_at: 2026-01-22T06:00:53.918Z
@@ -21274,9 +21278,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T07:20:50.868Z
-  closed_reason: "Merged PR #156. Fixed 72 old-format AC annotations across 9 files. Review found and
-    fixed 3 incorrect spec references. All CI checks passed."
 - _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
   slugs: []
   title: Add tests for shadow hook installation and authorization

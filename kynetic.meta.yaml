@@ -2566,4 +2566,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJ97VFR4WDPKNCVQJ9QMKAE
+    type: success
+    content: "PR review workflow is effective: spawned review subagent found 3 incorrect spec references
+      that would have been missed. The strict review caught that annotations referenced @shadow-init
+      instead of @shadow-init-remote for remote detection code. Fixed before merge, maintaining
+      proper traceability."
+    created_at: 2026-01-22T07:20:58.616Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
