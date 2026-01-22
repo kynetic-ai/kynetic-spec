@@ -119,6 +119,49 @@ workflows:
       exploration (docs, code, config, tests, specs), compilation by severity, interactive triage,
       execution, and summary."
     steps: []
+  - _ulid: 01KFKS5NT2T98M70QQ4FZB2VTW
+    id: session-reflect
+    trigger: session-end
+    description: Structured reflection after work sessions. Surfaces learnings, identifies friction, and
+      captures improvements for system evolution.
+    steps:
+      - type: action
+        content: |
+          Identify what worked well this session.
+          Be specific: "categorizing items first" not "good planning".
+          Consider: workflows, tools/commands, communication, decisions.
+      - type: action
+        content: |
+          Identify friction points - where things were harder than needed.
+          Focus on systemic issues, not one-off mistakes.
+          Consider: repetitive steps, missing commands, context loss, workarounds.
+      - type: action
+        content: |
+          Check if friction points are already tracked.
+          Search specs, tasks, AND inbox before proposing new improvements.
+          For each: note if already tracked, partially covered, or untracked.
+        exit_criteria:
+          - Searched specs for relevant features
+          - Searched tasks for existing work
+          - Searched inbox for captured ideas
+      - type: action
+        content: |
+          For untracked friction, propose concrete improvements.
+          Include: what it would do, how it helps, rough scope (small/medium/large).
+      - type: decision
+        content: Present findings to user - ask about each improvement one at a time
+        options:
+          - Worth capturing -> proceed to capture
+          - Needs refinement -> discuss and refine
+          - Not worth it -> skip and continue
+          - Done with reflection -> complete workflow
+      - type: action
+        content: |
+          Capture approved items using appropriate destination:
+          - Actionable improvements: kspec inbox add "..." --tag reflection
+          - Friction patterns: kspec meta observe friction "..."
+          - Success patterns: kspec meta observe success "..."
+          - Open questions: kspec meta question add "..."
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
