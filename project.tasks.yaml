@@ -22254,6 +22254,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T23:35:06.730Z
+  started_at: 2026-01-22T23:40:54.287Z
   notes:
     - _ulid: 01KFM108PCTQYH5ZBQQXMRZ7TF
       created_at: 2026-01-22T23:35:30.253Z
@@ -22331,5 +22332,36 @@
 
         ```
       supersedes: null
+    - _ulid: 01KFM1HHM1M846N41008V6WQN2
+      created_at: 2026-01-22T23:44:56.449Z
+      author: "@claude"
+      content: |-
+        ## Implementation Complete
+
+        Added `--steps <json>` flag to `kspec meta add workflow` command.
+
+        **Files modified:**
+        1. `src/strings/errors.ts` - Added 3 new validation error messages:
+           - `invalidStepsJson(err)`
+           - `stepsNotArray`
+           - `invalidStepsSchema(issues)`
+
+        2. `src/cli/commands/meta.ts`:
+           - Added imports for `z` and `WorkflowStepSchema`
+           - Added `--steps <json>` option to `meta add` command
+           - Added JSON parsing, array check, and schema validation logic
+           - Uses validated steps instead of empty array when --steps provided
+
+        3. `tests/meta.test.ts` - Added 6 tests covering all 4 ACs:
+           - ac-1: Valid steps with all step types (check/action/decision)
+           - ac-1: Optional fields (on_fail, entry_criteria)
+           - ac-1: Empty array allowed
+           - ac-2: Malformed JSON error
+           - ac-3: Non-array error
+           - ac-4: Invalid step type and missing content errors
+
+        **Verified:**
+        - All 118 meta tests pass
+        - Manual testing confirms workflow steps persist correctly
+      supersedes: null
   todos: []
-  started_at: 2026-01-22T23:40:54.287Z
