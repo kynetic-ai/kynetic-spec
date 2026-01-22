@@ -148,7 +148,7 @@ export function formatTask(task: Task, verbose = false, index?: ReferenceIndex, 
   let line = `${ref} ${status} ${priority} ${task.title}`;
 
   if (verbose && !full) {
-    // AC-2: Single verbose (-v) shows current behavior
+    // AC: @task-list-verbose ac-2 - Single verbose (-v) shows current behavior
     if (task.spec_ref) {
       line += chalk.gray(` (spec: ${task.spec_ref})`);
     }
@@ -333,7 +333,7 @@ export function formatTaskList(tasks: Task[], verbose = false, index?: Reference
         console.log(chalk.gray(`    matched: ${formatMatchedFields(match.matchedFields)}`));
       }
     } else if (full) {
-      // AC-1: Full mode shows richer context
+      // AC: @task-list-verbose ac-1 - Full mode shows richer context
       formatFullModeContext(task, index);
     } else {
       // Show context line: first line of description (if present)

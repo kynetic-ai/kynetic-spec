@@ -68,7 +68,7 @@ describe('ralph command', () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC-1: Basic loop execution
+  // AC: @cli-ralph ac-1 - Basic loop execution
   it('executes loop iterations when ready tasks exist', async () => {
     const result = runRalph('--max-loops 2', tempDir, {
       MOCK_ACP_EXIT_CODE: '0',
@@ -81,7 +81,7 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('Ralph loop completed');
   });
 
-  // AC-2: No ready tasks exit
+  // AC: @cli-ralph ac-2 - No ready tasks exit
   it('exits when no ready tasks exist', async () => {
     // Modify fixtures to have no ready tasks - mark all pending as completed
     const tasksPath = path.join(tempDir, 'project.tasks.yaml');
@@ -136,7 +136,7 @@ describe('ralph command', () => {
     expect(result.output).toContain('Completed iteration 1');
   });
 
-  // AC-6: Dry run mode
+  // AC: @cli-ralph ac-6 - Dry run mode
   it('shows prompt without executing in dry-run mode', async () => {
     const result = runRalph('--dry-run', tempDir);
 
@@ -147,7 +147,7 @@ describe('ralph command', () => {
     expect(result.stdout).not.toContain('Completed iteration');
   });
 
-  // AC-7: Retry on error
+  // AC: @cli-ralph ac-7 - Retry on error
   it('retries iteration on failure', async () => {
     // Fail twice then succeed
     const result = runRalph('--max-loops 1 --max-retries 3', tempDir, {
@@ -171,7 +171,7 @@ describe('ralph command', () => {
     expect(result.output).toContain('Iteration 2/2');
   });
 
-  // AC-8: Consecutive failure guard
+  // AC: @cli-ralph ac-8 - Consecutive failure guard
   it('exits after max consecutive failures', async () => {
     // Always fail
     const result = runRalph('--max-loops 10 --max-retries 0 --max-failures 2', tempDir, {
@@ -196,7 +196,7 @@ describe('ralph command', () => {
     expect(result.output).not.toContain('consecutive failures');
   });
 
-  // AC-9: Adapter selection
+  // AC: @cli-ralph ac-9 - Adapter selection
   it('uses specified adapter', async () => {
     const result = runRalph('--dry-run --adapter custom --adapter-cmd "echo test"', tempDir);
 
@@ -204,7 +204,7 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('adapter=custom');
   });
 
-  // AC-10: Session creation
+  // AC: @cli-ralph ac-10 - Session creation
   it('creates session and logs events', async () => {
     const result = runRalph('--max-loops 1', tempDir, {
       MOCK_ACP_EXIT_CODE: '0',
@@ -225,7 +225,7 @@ describe('ralph command', () => {
     }
   });
 
-  // AC-11: Streaming output
+  // AC: @cli-ralph ac-11 - Streaming output
   it('displays streaming output from agent', async () => {
     const result = runRalph('--max-loops 1', tempDir, {
       MOCK_ACP_EXIT_CODE: '0',
@@ -236,7 +236,7 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('Streaming test output');
   });
 
-  // AC-12: Event logging
+  // AC: @cli-ralph ac-12 - Event logging
   it('logs prompt.sent events', async () => {
     const result = runRalph('--max-loops 1', tempDir, {
       MOCK_ACP_EXIT_CODE: '0',
@@ -257,7 +257,7 @@ describe('ralph command', () => {
     }
   });
 
-  // AC-13: Context snapshot saving
+  // AC: @cli-ralph ac-13 - Context snapshot saving
   it('saves session context snapshot after each iteration', async () => {
     const result = runRalph('--max-loops 2', tempDir, {
       MOCK_ACP_EXIT_CODE: '0',

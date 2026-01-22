@@ -937,11 +937,11 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
   try {
     const ctx = await initContext();
 
-    // AC-2: Pull remote changes before showing session context
+    // AC: @shadow-sync ac-2 - Pull remote changes before showing session context
     let syncResult: ShadowSyncResult | null = null;
     if (ctx.shadow?.enabled) {
       syncResult = await shadowPull(ctx.shadow.worktreeDir);
-      // AC-3: Warn about conflicts but continue with local state
+      // AC: @shadow-sync ac-3 - Warn about conflicts but continue with local state
       if (syncResult.hadConflict) {
         console.log(
           chalk.yellow('⚠ Shadow sync conflict detected. Run `kspec shadow resolve` to fix.')

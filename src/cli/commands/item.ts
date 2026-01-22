@@ -689,7 +689,7 @@ export function registerItemCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // AC-7: Check if this is a trait with implementors
+        // AC: @spec-item-delete-children ac-7 - Check if this is a trait with implementors
         const implementors = findTraitImplementors(foundItem, items);
         if (implementors.length > 0) {
           const implementorRefs = implementors.map(i => `@${i.slugs[0] || i._ulid.slice(0, 8)}`).join(', ');
@@ -710,15 +710,15 @@ export function registerItemCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // AC-1/AC-8: Check for child items (nested YAML items, not relates_to refs)
+        // AC: @spec-item-delete-children ac-1 ac-8 - Check for child items (nested YAML items, not relates_to refs)
         const children = findChildItems(foundItem, items);
 
         if (children.length > 0 && !options.cascade) {
-          // AC-1: Block deletion if children exist without --cascade
+          // AC: @spec-item-delete-children ac-1 - Block deletion if children exist without --cascade
           const errorMsg = `Cannot delete: item has ${children.length} children. Use --cascade to delete recursively`;
 
           if (isJsonMode()) {
-            // AC-10: JSON error includes children array
+            // AC: @spec-item-delete-children ac-10 - JSON error includes children array
             error(errorMsg, {
               error: 'has_children',
               children: children.map(c => ({
@@ -734,7 +734,7 @@ export function registerItemCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // AC-9: Custom confirmation prompt for cascade
+        // AC: @spec-item-delete-children ac-9 - Custom confirmation prompt for cascade
         if (children.length > 0 && options.cascade && !options.force) {
           const itemRef = `@${foundItem.slugs[0] || foundItem._ulid.slice(0, 8)}`;
 
@@ -771,7 +771,7 @@ export function registerItemCommands(program: Command): void {
           }
         }
 
-        // AC-2/AC-3: Delete item and all descendants with cascade
+        // AC: @spec-item-delete-children ac-2 ac-3 - Delete item and all descendants with cascade
         const itemsToDelete = options.cascade ? [foundItem, ...children] : [foundItem];
         let deletedCount = 0;
 
@@ -790,7 +790,7 @@ export function registerItemCommands(program: Command): void {
         }
 
         if (deletedCount > 0) {
-          // AC-6: Single shadow commit with all deletions
+          // AC: @spec-item-delete-children ac-6 - Single shadow commit with all deletions
           const itemSlug = foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
           const commitMsg = deletedCount > 1 ? `${deletedCount} items` : itemSlug;
           await commitIfShadow(ctx.shadow, 'item-delete', commitMsg);
@@ -1302,13 +1302,13 @@ export function registerItemCommands(program: Command): void {
 
         // Confirmation required unless --force
         if (!options.force) {
-          // AC-5: JSON mode requires --force
+          // AC: @spec-item-delete-children ac-5 - JSON mode requires --force
           if (isJsonMode()) {
             error('Confirmation required. Use --force with --json');
             process.exit(EXIT_CODES.ERROR);
           }
 
-          // AC-6: Non-interactive environment requires --force
+          // AC: @spec-item-delete-children ac-6 - Non-interactive environment requires --force
           // Allow KSPEC_TEST_TTY for testing interactive prompts
           const isTTY = process.env.KSPEC_TEST_TTY === '1' || process.stdin.isTTY;
           if (!isTTY) {
@@ -1316,7 +1316,7 @@ export function registerItemCommands(program: Command): void {
             process.exit(EXIT_CODES.ERROR);
           }
 
-          // AC-1: Prompt for confirmation
+          // AC: @spec-item-delete-children ac-1 - Prompt for confirmation
           const readline = await import('readline');
           const rl = readline.createInterface({
             input: process.stdin,
@@ -1328,15 +1328,15 @@ export function registerItemCommands(program: Command): void {
           });
           rl.close();
 
-          // AC-3: User declines (n, N, or empty)
+          // AC: @spec-item-delete-children ac-3 - User declines (n, N, or empty)
           if (answer.toLowerCase() !== 'y') {
             error('Operation cancelled');
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
         }
 
-        // AC-4: With --force, proceed immediately without prompt
-        // AC-2: User confirmed, proceed with removal
+        // AC: @spec-item-delete-children ac-4 - With --force, proceed immediately without prompt
+        // AC: @spec-item-delete-children ac-2 - User confirmed, proceed with removal
         const updatedAc = existingAc.filter(ac => ac.id !== acId);
         await updateSpecItem(ctx, item, { acceptance_criteria: updatedAc });
 

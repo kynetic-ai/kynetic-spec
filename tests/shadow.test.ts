@@ -286,7 +286,7 @@ describe('Shadow Branch', () => {
       await initializeShadow(testDir);
     }
 
-    // AC-recovery-1: Branch exists but .kspec/ deleted → repair recreates
+    // AC: @shadow-recovery ac-recovery-1 - Branch exists but .kspec/ deleted → repair recreates
     it('recreates worktree when .kspec/ directory is deleted', async () => {
       await setupHealthyShadow();
       const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
@@ -316,7 +316,7 @@ describe('Shadow Branch', () => {
       expect(await isValidWorktree(worktreeDir)).toBe(true);
     });
 
-    // AC-recovery-2: .kspec/ exists but .git file corrupt → repair recreates
+    // AC: @shadow-recovery ac-recovery-2 - .kspec/ exists but .git file corrupt → repair recreates
     it('recreates worktree when .git file is corrupted', async () => {
       await setupHealthyShadow();
       const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
@@ -345,7 +345,7 @@ describe('Shadow Branch', () => {
       expect(status.healthy).toBe(true);
     });
 
-    // AC-recovery-3: No shadow branch → repair fails suggesting init
+    // AC: @shadow-recovery ac-recovery-3 - No shadow branch → repair fails suggesting init
     it('fails with helpful error when shadow branch does not exist', async () => {
       // Just a git repo without shadow branch
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
@@ -357,7 +357,7 @@ describe('Shadow Branch', () => {
       expect(result.error).toContain('kspec init');
     });
 
-    // AC-recovery-4: Healthy → repair succeeds without changes (idempotent)
+    // AC: @shadow-recovery ac-recovery-4 - Healthy → repair succeeds without changes (idempotent)
     it('succeeds without changes when already healthy', async () => {
       await setupHealthyShadow();
 
@@ -367,7 +367,7 @@ describe('Shadow Branch', () => {
       expect(result.worktreeCreated).toBe(false);
     });
 
-    // AC-recovery-5: Healthy → status reports healthy
+    // AC: @shadow-recovery ac-recovery-5 - Healthy → status reports healthy
     it('status reports healthy when shadow is working', async () => {
       await setupHealthyShadow();
 
@@ -379,7 +379,7 @@ describe('Shadow Branch', () => {
       expect(status.error).toBeUndefined();
     });
 
-    // AC-recovery-6: Issues → status reports issue and suggests repair
+    // AC: @shadow-recovery ac-recovery-6 - Issues → status reports issue and suggests repair
     it('status reports specific issue when worktree is broken', async () => {
       await setupHealthyShadow();
 
@@ -470,7 +470,7 @@ describe('Shadow Branch', () => {
       expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(true);
     });
 
-    // AC-1: Remote has shadow branch → creates worktree from it with tracking
+    // AC: @shadow-init-remote ac-1 - Remote has shadow branch → creates worktree from it with tracking
     it('attaches to existing remote shadow branch', async () => {
       await setupBareRemote();
       await setupLocalWithRemote();
@@ -512,7 +512,7 @@ describe('Shadow Branch', () => {
       }
     });
 
-    // AC-2: Remote exists but no shadow branch → creates orphan and pushes
+    // AC: @shadow-init-remote ac-2 - Remote exists but no shadow branch → creates orphan and pushes
     it('creates orphan branch and pushes to remote', async () => {
       await setupBareRemote();
       await setupLocalWithRemote();
@@ -531,7 +531,7 @@ describe('Shadow Branch', () => {
       expect(await remoteBranchExists(testDir, SHADOW_BRANCH_NAME)).toBe(true);
     });
 
-    // AC-3: No remote configured → creates orphan locally (no push attempt)
+    // AC: @shadow-init-remote ac-3 - No remote configured → creates orphan locally (no push attempt)
     it('creates orphan locally when no remote configured', async () => {
       // Just a local git repo, no remote
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
@@ -547,7 +547,7 @@ describe('Shadow Branch', () => {
       expect(result.createdFromRemote).toBe(false);
     });
 
-    // AC-4: Fetches before checking for remote branch
+    // AC: @shadow-init-remote ac-4 - Fetches before checking for remote branch
     it('fetches before checking remote branch existence', async () => {
       await setupBareRemote();
       await setupLocalWithRemote();
@@ -614,7 +614,7 @@ describe('Shadow Branch', () => {
       await initializeShadow(testDir);
     }
 
-    // AC-4: No remote tracking → sync silently skipped
+    // AC: @shadow-sync ac-4 - No remote tracking → sync silently skipped
     it('hasRemoteTracking returns false when no tracking configured', async () => {
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
@@ -636,7 +636,7 @@ describe('Shadow Branch', () => {
       expect(await hasRemoteTracking(worktreeDir)).toBe(true);
     });
 
-    // AC-4: shadowPull succeeds immediately when no tracking
+    // AC: @shadow-sync ac-4 - shadowPull succeeds immediately when no tracking
     it('shadowPull succeeds immediately when no remote tracking', async () => {
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
       execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
@@ -653,7 +653,7 @@ describe('Shadow Branch', () => {
       expect(result.hadConflict).toBe(false);
     });
 
-    // AC-6: shadowPull uses --ff-only first, falls back to --rebase
+    // AC: @shadow-sync ac-6 - shadowPull uses --ff-only first, falls back to --rebase
     it('shadowPull pulls changes from remote', async () => {
       await setupSyncTest();
 
@@ -736,7 +736,7 @@ describe('Shadow Branch', () => {
       }
     });
 
-    // AC-8: Auto-configure tracking when main has remote but shadow doesn't
+    // AC: @shadow-sync ac-8 - Auto-configure tracking when main has remote but shadow doesn't
     it('ensureRemoteTracking sets up tracking when main has remote', async () => {
       // Create local repo WITHOUT using setupSyncTest (which auto-pushes shadow)
       await fs.mkdir(remoteDir, { recursive: true });
@@ -782,7 +782,7 @@ describe('Shadow Branch', () => {
       expect(remote).toBe('origin');
     });
 
-    // AC-8: shadowPull auto-configures tracking
+    // AC: @shadow-sync ac-8 - shadowPull auto-configures tracking
     it('shadowPull auto-configures tracking when main has remote', async () => {
       // Same setup as above
       await fs.mkdir(remoteDir, { recursive: true });
