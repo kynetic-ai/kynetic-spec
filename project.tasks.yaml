@@ -20777,7 +20777,7 @@
     manual PR step in skill. Simplest is probably removing auto-sync and documenting the manual PR
     step."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -20815,3 +20815,6 @@
         - Total: 175 lines added, 82 removed
       supersedes: null
   todos: []
+  completed_at: 2026-01-22T05:50:03.185Z
+  closed_reason: "Merged PR #153. Removed auto-version-sync from workflow, rewrote /release skill with
+    correct flow (version PR first), addressed all review findings."
