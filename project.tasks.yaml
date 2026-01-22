@@ -21645,7 +21645,7 @@
     requests like the real agent does. Currently mock auto-succeeds tool calls without permission
     flow. Would have caught the { granted: true } format bug in tests rather than live testing."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21731,8 +21731,35 @@
         requesting tool access. This will catch format bugs in permission responses during testing
         rather than requiring live agent testing.
       supersedes: null
+    - _ulid: 01KFJED2VVKZ008KB04Y3H1EWD
+      created_at: 2026-01-22T08:51:12.892Z
+      author: "@claude"
+      content: >-
+        Added comprehensive test coverage for the mock's handleRequestPermission function. 6 new
+        tests verify:
+
+        1. Auto-approval with allow_always option (prefers this over allow_once)
+
+        2. Auto-approval with allow_once when allow_always not available  
+
+        3. Cancellation when only deny options present
+
+        4. Cancellation when options array is empty
+
+        5. Preference ordering (always > once)
+
+        6. Error handling before initialization
+
+
+        Tests spawn the actual mock agent subprocess and use ACPClient to send requests, validating
+        the full JSON-RPC protocol flow. All 936 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T08:55:41.500Z
+  closed_reason: "Merged PR #163. Added comprehensive test coverage for mock's handleRequestPermission
+    function with 6 tests covering auto-approval, cancellation, preference ordering, and error
+    cases. All 936 tests pass, all CI checks passed."
 - _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
   slugs: []
   title: Add validation warning for manual_only parent with eligible children
