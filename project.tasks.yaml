@@ -21130,8 +21130,15 @@
     - workflow
   vcs_refs: []
   created_at: 2026-01-22T06:10:33.440Z
-  notes: []
+  notes:
+    - _ulid: 01KFJ58W34TC1FZ1AA2JM1A1YA
+      created_at: 2026-01-22T06:11:37.701Z
+      author: "@claude"
+      content: "Automation status set to eligible: Clear validation rule with testable AC, single behavior
+        addition"
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
   slugs: []
   title: ACP type safety audit - strengthen typing
