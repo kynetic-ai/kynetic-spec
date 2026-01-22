@@ -1766,6 +1766,10 @@ features:
             given: kspec meta add workflow is executed with --steps containing malformed JSON
             when: JSON.parse fails
             then: command exits with error 'Invalid JSON in --steps' followed by the parse error details
+          - id: ac-3
+            given: kspec meta add workflow is executed with --steps containing a JSON object (not an array)
+            when: the parsed JSON is not an array
+            then: command exits with error 'Steps must be a JSON array'
       - _ulid: 01KF2XCMS00000000000000000
         slugs:
           - meta-set-cmd
