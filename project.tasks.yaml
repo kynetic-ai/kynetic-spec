@@ -21111,3 +21111,24 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Add validation warning for manual_only parent with eligible children
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - reflection
+    - validation
+    - workflow
+  description: Validation warning for manual_only parent with automation-eligible children that depend
+    on it - Catches modeling errors where children are blocked by a parent that will never be worked
+    by automation
+  _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T06:10:33.440Z
+  notes: []
+  todos: []
