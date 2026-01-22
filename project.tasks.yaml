@@ -21184,6 +21184,19 @@
       content: "Automation status set to eligible: Tech debt cleanup bounded to ACP files, verifiable via
         TypeScript compilation"
       supersedes: null
+    - _ulid: 01KFJ59PBWHHW1AMXTACXFK7KV
+      created_at: 2026-01-22T06:12:04.605Z
+      author: "@claude"
+      content: |-
+        ACP type safety improvements in src/:
+
+        1. Add typed response methods for file/read, file/write, terminal/run
+        2. Type request params using SDK types
+        3. Check if implementing full ACP protocol correctly
+        4. Consider deprecating respond(unknown) in favor of typed methods
+
+        The { granted: true } bug showed value of compile-time enforcement.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ574G610B5Z7J6KAVVETBW
