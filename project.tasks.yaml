@@ -22059,7 +22059,7 @@
     before runtime. Could be a pre-commit hook or CI check that validates skill SKILL.md files parse
     correctly.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -22119,6 +22119,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T16:42:52.676Z
+  closed_reason: "Merged PR #167. Added skill file validation with frontmatter and table pipe checks."
 - _ulid: 01KFK6JYVRMMDRCKK9DGYDX6AN
   slugs: []
   title: Fix derive cancelled task filtering inconsistency
