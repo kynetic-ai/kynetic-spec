@@ -802,7 +802,7 @@ features:
                 then: shows criteria as guidance only; skip allowed without --force
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KFESWWBX1QYPJTNJBW3YHHZN
             slugs:
               - workflow-advanced-features
