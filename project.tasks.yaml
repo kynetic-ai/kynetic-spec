@@ -19099,6 +19099,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T22:56:10.123Z
+  started_at: 2026-01-22T07:41:05.407Z
   notes:
     - _ulid: 01KFESYSWBJKYS1NNNZPMNDW55
       created_at: 2026-01-20T22:56:10.123Z
@@ -19223,9 +19224,74 @@
       author: "@claude"
       content: "Automation status set to eligible: Has spec with 4 testable ACs, clear workflow feature"
       supersedes: null
+    - _ulid: 01KFJATTS99Z8R5JJEPPNWEGZW
+      created_at: 2026-01-22T07:48:49.065Z
+      author: "@claude"
+      content: >-
+        Implemented workflow enforcement modes with entry/exit criteria:
+
+
+        ✅ Schema changes:
+
+        - Extended WorkflowStepSchema with entry_criteria and exit_criteria optional arrays
+
+        - Both workflow run commands and step result schema already supported
+        entry_confirmed/exit_confirmed fields
+
+
+        ✅ CLI enhancements:
+
+        - Added --confirm flag to workflow next: acknowledges entry/exit criteria (required in
+        strict mode)
+
+        - Added --force flag to workflow next: allows --skip in strict mode
+
+        - Registered new flags in command options
+
+
+        ✅ Enforcement logic:
+
+        - Exit criteria checked first (current step completion)
+
+        - Entry criteria checked for next step (when not skipping)
+
+        - Strict mode blocks without --confirm, shows criteria in yellow
+
+        - Advisory mode shows criteria in gray as guidance only
+
+        - --skip bypasses exit criteria check and entry criteria check (no need to check entry for
+        next step when skipping current)
+
+        - Confirmations recorded in step_results (exit_confirmed field)
+
+
+        ✅ Error messages:
+
+        - Added entryCriteriaNotConfirmed, exitCriteriaNotConfirmed, skipRequiresForce to
+        workflowRunErrors
+
+
+        ✅ Test coverage:
+
+        - Added 15 comprehensive E2E tests covering all 4 direct ACs plus 3 trait ACs
+
+        - Tests cover strict/advisory modes, entry/exit criteria display and enforcement,
+        --confirm/--force flags, confirmation recording, JSON output
+
+        - All 915 tests pass
+
+
+        Implementation notes:
+
+        - Key insight: when using --skip, we don't check entry criteria for the next step because
+        we're not actually starting it yet
+
+        - Exit criteria checked before entry criteria to ensure proper ordering
+
+        - --force only bypasses skip restriction, not criteria checks
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T07:41:05.407Z
 - _ulid: 01KFESYT0HJ68Q85JSJ6AWAC1M
   slugs:
     - task-workflow-advanced-features
