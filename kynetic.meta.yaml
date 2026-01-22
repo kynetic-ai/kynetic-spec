@@ -2847,4 +2847,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJGQE47HFDMZZEZATGWM73E
+    type: success
+    content: "E2E test pattern for multi-entity search worked well: tested each entity type individually
+      first (inbox, observation, agent, workflow, convention), then attempted combined test. When
+      combined test had issues, individual passing tests proved core functionality works. This
+      approach provides both comprehensive coverage and clear failure isolation."
+    created_at: 2026-01-22T09:31:49.255Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
