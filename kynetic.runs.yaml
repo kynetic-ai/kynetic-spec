@@ -144,7 +144,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFKSXY1EQFF4AYY3C6DA6X4T
     workflow_ref: "@01KFKSX2B8FCNQ6GQJEP0X26JB"
-    status: active
+    status: completed
     current_step: 2
     total_steps: 3
     started_at: 2026-01-22T21:31:53.774Z
@@ -165,5 +165,7 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-22T21:32:17.995Z
-        completed_at: 2026-01-22T21:32:17.995Z
+        completed_at: 2026-01-22T21:32:23.883Z
+        notes: Completed without optional input
     initiated_by: "@claude"
+    completed_at: 2026-01-22T21:32:23.884Z
