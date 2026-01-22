@@ -145,8 +145,19 @@ runs:
   - _ulid: 01KFKSXY1EQFF4AYY3C6DA6X4T
     workflow_ref: "@01KFKSX2B8FCNQ6GQJEP0X26JB"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 3
     started_at: 2026-01-22T21:31:53.774Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-22T21:31:53.774Z
+        completed_at: 2026-01-22T21:32:04.723Z
+        inputs:
+          task_ref: "@test-task"
+          approach: Testing the input system
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-22T21:32:04.723Z
+        completed_at: 2026-01-22T21:32:04.723Z
     initiated_by: "@claude"
