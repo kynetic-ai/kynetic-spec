@@ -21317,7 +21317,7 @@
     installShadowHook function, hook blocking unauthorized commits, hook allowing commits with
     KSPEC_SHADOW_COMMIT=1 env var
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
