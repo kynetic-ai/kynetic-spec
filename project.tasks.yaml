@@ -20874,5 +20874,24 @@
       content: "Automation status set to eligible: Infra cleanup: 20 occurrences in 3 files, pattern
         replacement, verifiable via grep"
       supersedes: null
+    - _ulid: 01KFJ4NFQXPY4FVG9MN1M6SG34
+      created_at: 2026-01-22T06:01:02.461Z
+      author: "@claude"
+      content: >-
+        Scope: 3 files with 20 old-format annotations:
+
+        - tests/ralph.test.ts (10)
+
+        - tests/shadow.test.ts (9)  
+
+        - tests/task-reset.test.ts (1)
+
+
+        Pattern: Change '// AC-N:' to '// AC: @spec-ref ac-N'
+
+
+        Requires: Look up which spec each test file covers, then update annotations with correct
+        @spec-ref. Verify with: grep -r '// AC-[0-9]' tests/ returns empty.
+      supersedes: null
   todos: []
   automation: eligible
