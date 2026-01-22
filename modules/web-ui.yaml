@@ -43,6 +43,10 @@ features:
         given: daemon is running
         when: any .kspec/*.yaml file changes
         then: connected clients receive SSE update within 200ms
+      - id: ac-3
+        given: daemon is running
+        when: user runs 'kspec serve --daemon'
+        then: process detaches to background, writes PID file, and CLI returns immediately
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
