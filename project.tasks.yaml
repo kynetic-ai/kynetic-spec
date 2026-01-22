@@ -21768,7 +21768,7 @@
     on it - Catches modeling errors where children are blocked by a parent that will never be worked
     by automation
   spec_ref: "@validation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
