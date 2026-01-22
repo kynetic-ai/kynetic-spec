@@ -32,7 +32,8 @@ interface StalenessWarning {
   type:
     | "parent-pending-children-done"
     | "spec-implemented-no-task"
-    | "task-done-spec-not-started";
+    | "task-done-spec-not-started"
+    | "automation-blocking";
   message: string;
   refs: string[];
 }
@@ -136,6 +137,39 @@ function checkStaleness(
     }
   }
 
+  // AC: @validation ac-1
+  // Check for manual_only parents blocking eligible children
+  for (const parentTask of tasks) {
+    if (parentTask.automation !== "manual_only") continue;
+
+    // Find tasks that depend on this parent
+    const dependentTasks = tasks.filter((t) =>
+      t.depends_on?.some((depRef) => {
+        const result = refIndex.resolve(depRef);
+        return result.ok && result.ulid === parentTask._ulid;
+      }),
+    );
+
+    // Filter for eligible children
+    const eligibleChildren = dependentTasks.filter(
+      (t) => t.automation === "eligible",
+    );
+
+    if (eligibleChildren.length > 0) {
+      const parentRef =
+        parentTask.slugs[0] || refIndex.shortUlid(parentTask._ulid);
+      const childRefs = eligibleChildren.map(
+        (c) => `@${c.slugs[0] || refIndex.shortUlid(c._ulid)}`,
+      );
+
+      warnings.push({
+        type: "automation-blocking",
+        message: `Task @${parentRef} is manual_only and blocks ${eligibleChildren.length} eligible child task(s): ${childRefs.join(", ")}`,
+        refs: [parentTask._ulid, ...eligibleChildren.map((c) => c._ulid)],
+      });
+    }
+  }
+
   return warnings;
 }
 
@@ -163,6 +197,9 @@ function formatStalenessWarnings(
   );
   const taskDoneSpecNot = warnings.filter(
     (w) => w.type === "task-done-spec-not-started",
+  );
+  const automationBlocking = warnings.filter(
+    (w) => w.type === "automation-blocking",
   );
 
   if (parentPending.length > 0) {
@@ -201,6 +238,21 @@ function formatStalenessWarnings(
     }
     if (!verbose && taskDoneSpecNot.length > 3) {
       console.log(chalk.gray(`    ... and ${taskDoneSpecNot.length - 3} more`));
+    }
+  }
+
+  if (automationBlocking.length > 0) {
+    console.log(
+      chalk.yellow(`  Automation blocking: ${automationBlocking.length}`),
+    );
+    const shown = verbose ? automationBlocking : automationBlocking.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+    }
+    if (!verbose && automationBlocking.length > 3) {
+      console.log(
+        chalk.gray(`    ... and ${automationBlocking.length - 3} more`),
+      );
     }
   }
 }
