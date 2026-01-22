@@ -18951,7 +18951,7 @@
   type: task
   spec_ref: "@workflow-step-navigation"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-workflow-run-foundation"
@@ -19078,6 +19078,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T07:33:16.710Z
+  closed_reason: "Merged PR #157. Implemented workflow step navigation with kspec workflow next
+    command. All 6 ACs covered by 23 E2E tests. Clean implementation with run reference inference,
+    step completion/skipping, notes capture, and run completion with summary. All 897 tests pass,
+    all CI checks passed, automated reviews found no issues."
 - _ulid: 01KFESYSWBB2R797HKWA965MC9
   slugs:
     - task-workflow-enforcement-modes
