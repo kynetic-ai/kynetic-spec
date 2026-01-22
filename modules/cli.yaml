@@ -2131,7 +2131,7 @@ features:
         created: 2026-01-15T17:11:58.428Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         acceptance_criteria:
           - id: ac-1
             given: A user runs kspec search "TODO"
