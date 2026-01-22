@@ -844,10 +844,11 @@ describe('Integration: derive', () => {
     const task = JSON.parse(taskOutput);
 
     // Task should have a note with implementation context
+    // AC: @cmd-derive ac-author - author set via getAuthor()
     expect(task.notes).toHaveLength(1);
     expect(task.notes[0].content).toContain('Implementation notes (auto-generated from spec)');
     expect(task.notes[0].content).toContain('A test feature for integration testing'); // From description
-    expect(task.notes[0].author).toBe('@kspec-derive');
+    expect(task.notes[0].author).toBe('@test'); // From KSPEC_AUTHOR env in test helper
   });
 
   it('should add implementation notes with acceptance criteria', () => {

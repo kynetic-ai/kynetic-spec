@@ -198,10 +198,11 @@ describe('Integration: task reset', () => {
       tempDir
     );
 
+    // AC: @spec-task-reset ac-author - author set via getAuthor()
     const resetNote = task.notes.find(n => n.content.includes('Reset from'));
     expect(resetNote).toBeTruthy();
     expect(resetNote?.content).toContain('Reset from completed to pending');
-    expect(resetNote?.author).toBe('@human');
+    expect(resetNote?.author).toBe('@test'); // From KSPEC_AUTHOR env in test helper
   });
 
   // AC: @spec-task-reset ac-4 - Note includes cancel_reason if was cancelled

@@ -6,6 +6,7 @@ import {
   saveTask,
   createTask,
   createNote,
+  getAuthor,
   ReferenceIndex,
   AlignmentIndex,
   type LoadedTask,
@@ -280,9 +281,10 @@ async function deriveTaskFromSpec(
   }
 
   // Generate implementation notes from spec
+  // AC: @cmd-derive ac-author
   const noteContent = generateImplementationNotes(specItem);
   const initialNotes = noteContent
-    ? [createNote(`Implementation notes (auto-generated from spec):\n\n${noteContent}`, '@kspec-derive')]
+    ? [createNote(`Implementation notes (auto-generated from spec):\n\n${noteContent}`, getAuthor())]
     : [];
 
   // Build task input with depends_on and initial notes

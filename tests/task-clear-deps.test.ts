@@ -30,13 +30,15 @@ describe('Integration: task set --clear-deps', () => {
     expect(result.stdout).toContain('depends_on');
 
     // Verify dependencies cleared
-    const after = kspecJson<{ depends_on: string[]; notes: Array<{ content: string }> }>('task get @child-task', tempDir);
+    const after = kspecJson<{ depends_on: string[]; notes: Array<{ content: string; author?: string }> }>('task get @child-task', tempDir);
     expect(after.depends_on).toHaveLength(0);
 
     // Verify note was added documenting the change
+    // AC: @task-set ac-author
     const clearNote = after.notes.find(n => n.content.includes('Dependencies cleared'));
     expect(clearNote).toBeDefined();
     expect(clearNote?.content).toContain('@parent-task');
+    expect(clearNote?.author).toBe('@test'); // From KSPEC_AUTHOR env in test helper
   });
 
   // AC: @spec-task-clear-deps ac-2
