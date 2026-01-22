@@ -113,6 +113,12 @@ export const validationErrors = {
   workflowRequiresId: "Workflow requires --id",
   workflowRequiresTrigger: "Workflow requires --trigger",
   conventionRequiresDomain: "Convention requires --domain",
+
+  // Workflow steps validation
+  invalidStepsJson: (err: string) =>
+    `Invalid JSON in --steps${err ? `: ${err}` : ""}`,
+  stepsNotArray: "Steps must be a JSON array",
+  invalidStepsSchema: (issues: string) => `Invalid workflow steps: ${issues}`,
 } as const;
 
 /**

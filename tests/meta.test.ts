@@ -917,6 +917,114 @@ describe('Integration: meta mutation commands', () => {
       expect(agent.name).toBe('JSON Agent');
       expect(agent._ulid).toMatch(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
     });
+
+    // AC: @meta-add-cmd ac-1
+    it('should create workflow with --steps containing valid JSON array', () => {
+      const steps = JSON.stringify([
+        { type: 'check', content: 'Verify prerequisites' },
+        { type: 'action', content: 'Execute the task' },
+        { type: 'decision', content: 'Was it successful?', options: ['Yes', 'No'] }
+      ]);
+
+      const output = kspec(
+        `meta add workflow --id steps-workflow --trigger "manual" --steps '${steps}'`,
+        tempDir
+      );
+
+      expect(output).toContain('Created workflow: steps-workflow');
+
+      // Verify the workflow has steps
+      const workflow = kspecJson<any>('meta get @steps-workflow', tempDir);
+      expect(workflow.id).toBe('steps-workflow');
+      expect(workflow.steps).toHaveLength(3);
+      expect(workflow.steps[0].type).toBe('check');
+      expect(workflow.steps[0].content).toBe('Verify prerequisites');
+      expect(workflow.steps[1].type).toBe('action');
+      expect(workflow.steps[1].content).toBe('Execute the task');
+      expect(workflow.steps[2].type).toBe('decision');
+      expect(workflow.steps[2].options).toEqual(['Yes', 'No']);
+    });
+
+    // AC: @meta-add-cmd ac-1
+    it('should create workflow with --steps including optional fields', () => {
+      const steps = JSON.stringify([
+        { type: 'check', content: 'Verify tests pass', on_fail: 'Fix failing tests' },
+        { type: 'action', content: 'Deploy', entry_criteria: ['All checks passed'] }
+      ]);
+
+      const workflow = kspecJson<any>(
+        `meta add workflow --id optional-steps --trigger "deploy" --steps '${steps}'`,
+        tempDir
+      );
+
+      expect(workflow.steps).toHaveLength(2);
+      expect(workflow.steps[0].on_fail).toBe('Fix failing tests');
+      expect(workflow.steps[1].entry_criteria).toEqual(['All checks passed']);
+    });
+
+    // AC: @meta-add-cmd ac-1
+    it('should create workflow with empty steps array', () => {
+      const workflow = kspecJson<any>(
+        'meta add workflow --id empty-steps --trigger "manual" --steps \'[]\'',
+        tempDir
+      );
+
+      expect(workflow.steps).toEqual([]);
+    });
+
+    // AC: @meta-add-cmd ac-2
+    it('should error on malformed JSON in --steps', () => {
+      try {
+        kspec(
+          'meta add workflow --id bad-json --trigger "manual" --steps "not valid json"',
+          tempDir
+        );
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Invalid JSON in --steps');
+      }
+    });
+
+    // AC: @meta-add-cmd ac-3
+    it('should error when --steps is not an array', () => {
+      try {
+        kspec(
+          'meta add workflow --id not-array --trigger "manual" --steps \'{"type":"check","content":"Test"}\'',
+          tempDir
+        );
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Steps must be a JSON array');
+      }
+    });
+
+    // AC: @meta-add-cmd ac-4
+    it('should error on invalid step type', () => {
+      try {
+        kspec(
+          'meta add workflow --id invalid-type --trigger "manual" --steps \'[{"type":"invalid","content":"Test"}]\'',
+          tempDir
+        );
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Invalid workflow steps');
+        expect(e.message).toContain('0.type');
+      }
+    });
+
+    // AC: @meta-add-cmd ac-4
+    it('should error when content field is missing', () => {
+      try {
+        kspec(
+          'meta add workflow --id missing-content --trigger "manual" --steps \'[{"type":"check"}]\'',
+          tempDir
+        );
+        expect.fail('Should have thrown error');
+      } catch (e: any) {
+        expect(e.message).toContain('Invalid workflow steps');
+        expect(e.message).toContain('content');
+      }
+    });
   });
 
   describe('meta set', () => {
