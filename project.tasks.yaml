@@ -21553,7 +21553,7 @@
   type: infra
   description: Set up biome for linting (replace eslint script) - reference ../kynetic project for config
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
