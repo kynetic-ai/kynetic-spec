@@ -341,6 +341,8 @@ function getTaskRef(task: LoadedTask, index: ReferenceIndex): string {
  * Looks in:
  * 1. Tasks created in this derive session (specToTaskMap)
  * 2. Existing tasks linked to the parent spec (alignmentIndex)
+ *
+ * Only returns tasks that are NOT in 'cancelled' state (AC-15).
  */
 function getParentTaskRef(
   parentSpec: LoadedSpecItem,
@@ -350,14 +352,16 @@ function getParentTaskRef(
 ): string | undefined {
   // Check if we created a task for this parent in this session
   const sessionTask = specToTaskMap.get(parentSpec._ulid);
-  if (sessionTask) {
+  if (sessionTask && sessionTask.status !== 'cancelled') {
     return getTaskRef(sessionTask, index);
   }
 
   // Check if an existing task is linked to this parent spec
+  // AC: @cmd-derive ac-15 - skip cancelled tasks
   const linkedTasks = alignmentIndex.getTasksForSpec(parentSpec._ulid);
-  if (linkedTasks.length > 0) {
-    return getTaskRef(linkedTasks[0], index);
+  const activeTask = linkedTasks.find(task => task.status !== 'cancelled');
+  if (activeTask) {
+    return getTaskRef(activeTask, index);
   }
 
   return undefined;
