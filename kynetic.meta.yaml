@@ -2826,4 +2826,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJFVX5KC3R69Z10BAJ0FSAX
+    type: success
+    content: "Type safety improvements catch bugs at compile-time: Adding typed response methods
+      (respondReadTextFile, respondWriteTextFile) to ACPClient prevents runtime bugs by enforcing
+      correct response structures. The pattern of replacing 'unknown' with SDK types
+      (ReadTextFileRequest, etc.) provides IDE autocomplete and catches errors early. This approach
+      worked well - build caught all type mismatches immediately."
+    created_at: 2026-01-22T09:16:47.155Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

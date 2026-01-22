@@ -21768,7 +21768,7 @@
     on it - Catches modeling errors where children are blocked by a parent that will never be worked
     by automation
   spec_ref: "@validation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21854,6 +21854,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T09:17:33.476Z
+  closed_reason: "Merged PR #164. Added validation warning for manual_only parent with eligible
+    children. All CI checks passed (937 tests), automated reviews positive, no issues found."
 - _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
   slugs: []
   title: ACP type safety audit - strengthen typing
