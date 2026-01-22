@@ -38,7 +38,12 @@ import {
   type Workflow,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { ObservationType } from "../../schema/index.js";
+import { z } from "zod";
+import {
+  type ObservationType,
+  type WorkflowStep,
+  WorkflowStepSchema,
+} from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
@@ -1096,6 +1101,7 @@ export function registerMetaCommands(program: Command): void {
     .option("--tool <tool...>", "Tools (for agents)")
     .option("--convention <conv...>", "Convention references (for agents)")
     .option("--rule <rule...>", "Rules (for conventions)")
+    .option("--steps <json>", "Workflow steps as JSON array (for workflows)")
     .action(async (type: string, options) => {
       try {
         const ctx = await initContext();
@@ -1144,12 +1150,43 @@ export function registerMetaCommands(program: Command): void {
             process.exit(EXIT_CODES.ERROR);
           }
 
+          // Parse and validate --steps if provided
+          let steps: WorkflowStep[] = [];
+          if (options.steps) {
+            // AC: @meta-add-cmd ac-2 - Parse JSON
+            let parsedSteps: unknown;
+            try {
+              parsedSteps = JSON.parse(options.steps);
+            } catch (err) {
+              const message = err instanceof Error ? err.message : String(err);
+              error(errors.validation.invalidStepsJson(message));
+              process.exit(EXIT_CODES.ERROR);
+            }
+
+            // AC: @meta-add-cmd ac-3 - Verify it's an array
+            if (!Array.isArray(parsedSteps)) {
+              error(errors.validation.stepsNotArray);
+              process.exit(EXIT_CODES.ERROR);
+            }
+
+            // AC: @meta-add-cmd ac-4 - Validate with schema
+            const result = z.array(WorkflowStepSchema).safeParse(parsedSteps);
+            if (!result.success) {
+              const issues = result.error.issues
+                .map((i) => `${i.path.join(".")}: ${i.message}`)
+                .join("; ");
+              error(errors.validation.invalidStepsSchema(issues));
+              process.exit(EXIT_CODES.ERROR);
+            }
+            steps = result.data;
+          }
+
           item = {
             _ulid: itemUlid,
             id: options.id,
             trigger: options.trigger,
             description: options.description || "",
-            steps: [],
+            steps,
           };
         } else {
           // convention
