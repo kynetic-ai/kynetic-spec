@@ -14,6 +14,7 @@ import {
   syncSpecImplementationStatus,
   ReferenceIndex,
   checkSlugUniqueness,
+  getAuthor,
   type LoadedTask,
   type LoadedSpecItem,
 } from '../../parser/index.js';
@@ -252,9 +253,10 @@ async function setTaskFields(
       changes.push('depends_on');
 
       // Add note documenting the change
+      // AC: @task-set ac-author
       const note = createNote(
         `Dependencies cleared (was: ${foundTask.depends_on.join(', ')})`,
-        '@human'
+        getAuthor()
       );
       updatedTask.notes = [...updatedTask.notes, note];
     }
@@ -287,10 +289,11 @@ async function setTaskFields(
       changes.push('automation');
 
       // If reason provided, add a note documenting the change
+      // AC: @task-set ac-author
       if (options.reason) {
         const note = createNote(
           `Automation status set to ${options.automation}: ${options.reason}`,
-          '@human'
+          getAuthor()
         );
         updatedTask.notes = [...updatedTask.notes, note];
         changes.push('note');
@@ -885,11 +888,12 @@ export function registerTaskCommands(program: Command): void {
               const now = new Date().toISOString();
 
               // AC: @spec-completion-enforcement ac-7 - Document skip-review reason
+              // AC: @spec-completion-enforcement ac-author
               let taskNotes = foundTask.notes;
               if (options.skipReview && options.reason) {
                 const skipNote = createNote(
                   `Completed with --skip-review: ${options.reason}`,
-                  '@human'
+                  getAuthor()
                 );
                 taskNotes = [...taskNotes, skipNote];
               }
@@ -1180,8 +1184,9 @@ export function registerTaskCommands(program: Command): void {
         }
 
         // AC: @spec-task-reset ac-4 - Add note documenting the reset
+        // AC: @spec-task-reset ac-author
         const noteContent = `Reset from ${previousStatus} to pending${cancelReasonText}`;
-        const note = createNote(noteContent, '@human');
+        const note = createNote(noteContent, getAuthor());
         updatedTask.notes = [...updatedTask.notes, note];
 
         await saveTask(ctx, updatedTask);
