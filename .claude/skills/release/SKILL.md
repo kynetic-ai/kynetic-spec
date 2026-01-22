@@ -1,11 +1,11 @@
 ---
 name: release
-description: Create versioned releases with git tags and GitHub releases. CI automatically syncs version and publishes to npm.
+description: Create versioned releases with git tags and GitHub releases. CI publishes to npm, then create a PR to sync version.
 ---
 
 # Release Skill
 
-Create versioned releases with proper git tagging and GitHub release creation. CI handles version syncing and npm publishing automatically.
+Create versioned releases with proper git tagging and GitHub release creation. CI publishes to npm; version sync requires a manual PR (due to branch protection).
 
 ## When to Use
 
@@ -203,11 +203,34 @@ EOF
 
 **CI automatically:**
 - Triggers on `release.published` event
-- Syncs version in package.json from tag
-- Runs tests and publishes to npm
-- Commits version back to main
+- Runs tests and publishes to npm with provenance
 
-### Phase 7: Report Summary
+**Manual step required:**
+- Create a PR to sync package.json version (branch protection prevents auto-commit)
+
+### Phase 7: Create Version Sync PR
+
+After the release is created and CI publishes to npm, create a PR to sync package.json:
+
+```bash
+# Create branch for version sync
+git checkout -b chore/sync-version-X.Y.Z
+
+# Update version without creating a tag
+npm version X.Y.Z --no-git-tag-version
+
+# Commit and push
+git add package.json package-lock.json
+git commit -m "chore: sync version to X.Y.Z"
+git push -u origin chore/sync-version-X.Y.Z
+
+# Create PR
+gh pr create --title "chore: sync version to X.Y.Z" --body "Syncs package.json with published npm package vX.Y.Z"
+```
+
+This is required because branch protection rules prevent CI from pushing directly to main.
+
+### Phase 8: Report Summary
 
 After successful release:
 
@@ -224,11 +247,8 @@ After successful release:
 - [x] GitHub release created
 
 ### Next Steps
-- CI will automatically:
-  - Sync package.json version
-  - Run tests
-  - Publish to npm
-  - Commit version back to main
+- CI will automatically run tests and publish to npm
+- **You must create a PR** to sync package.json version (see Phase 7)
 
 **Release:** https://github.com/owner/repo/releases/tag/v0.1.2
 ```
@@ -280,10 +300,11 @@ Brief high-level summary of what this release brings (1-2 sentences describing t
 ```
 User: /release patch
 Agent: [Validates state, creates v0.1.2 tag, pushes, creates GH release]
+Agent: [Creates PR to sync package.json version]
 
 Release v0.1.2 created successfully.
 GitHub release: https://github.com/kynetic-ai/kynetic-spec/releases/tag/v0.1.2
-CI will sync version and publish to npm automatically.
+CI will publish to npm. PR created to sync version: #123
 ```
 
 ### Auto-detect version
@@ -311,7 +332,8 @@ Agent: [Creates v0.2.0-alpha.0]
 - **Validation first**: Check all constraints before any changes
 - **Dry-run shows everything**: Preview should be comprehensive enough to catch issues
 - **Friendly release notes**: Write for users, not developers
-- **CI handles publishing**: Skill creates release, CI does the rest
+- **CI handles publishing**: Skill creates release and version sync PR, CI publishes to npm
+- **Branch protection compatible**: Version sync via PR, not direct push
 - **kspec integration**: Surface completed tasks in release context
 
 ## Troubleshooting
