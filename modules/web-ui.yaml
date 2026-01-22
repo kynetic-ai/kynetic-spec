@@ -34,6 +34,11 @@ features:
     traits: []
     notes: []
     created: 2026-01-22T01:18:09.314Z
+    acceptance_criteria:
+      - id: ac-1
+        given: kspec is installed
+        when: user runs 'kspec serve'
+        then: HTTP server starts on configurable port (default 3456) and serves API endpoints
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
