@@ -20824,24 +20824,30 @@
         - Total: 175 lines added, 82 removed
       supersedes: null
   todos: []
-- title: Fix derive to skip cancelled tasks in parent lookup
+- _ulid: 01KFJ4FJXM4X26AHEHT5JEKJ96
+  slugs: []
+  title: Fix derive to skip cancelled tasks in parent lookup
   type: task
-  priority: 3
-  spec_ref: "@cmd-derive"
-  tags:
-    - cli
-    - derive
-    - bug
   description: Skip cancelled tasks in derive parent lookup - when deriving tasks, don't use cancelled
     tasks as parent dependencies. Currently a cancelled task is still found and used, requiring
     manual deletion before derive works correctly.
-  _ulid: 01KFJ4FJXM4X26AHEHT5JEKJ96
-  slugs: []
+  spec_ref: "@cmd-derive"
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - derive
+    - bug
   vcs_refs: []
   created_at: 2026-01-22T05:57:49.108Z
-  notes: []
+  notes:
+    - _ulid: 01KFJ4FSM45C5C729XZTPXH7BZ
+      created_at: 2026-01-22T05:57:55.973Z
+      author: "@claude"
+      content: "Automation status set to eligible: Bug fix with clear AC, single code path, testable"
+      supersedes: null
   todos: []
+  automation: eligible
