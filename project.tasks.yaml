@@ -22236,21 +22236,22 @@
   created_at: 2026-01-22T21:04:26.155Z
   notes: []
   todos: []
-- title: Add --steps flag to kspec meta add workflow
+- _ulid: 01KFM0ZHQACKE82JJ491HCSBV6
+  slugs:
+    - add-steps-flag-workflow
+  title: Add --steps flag to kspec meta add workflow
+  type: task
   description: Add --steps <json> flag to allow defining workflow steps at creation time via JSON
     array, avoiding manual YAML edits. This implements the new acceptance criteria ac-1 through ac-4
     on @meta-add-cmd.
-  type: task
   spec_ref: "@meta-add-cmd"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KFM0ZHQACKE82JJ491HCSBV6
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-22T23:35:06.730Z
   notes: []
