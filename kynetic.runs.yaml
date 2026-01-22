@@ -6,6 +6,7 @@ runs:
     current_step: 2
     total_steps: 3
     started_at: 2026-01-22T21:02:47.329Z
+    completed_at: 2026-01-22T21:03:22.400Z
     step_results:
       - step_index: 0
         status: completed
@@ -22,4 +23,11 @@ runs:
         completed_at: 2026-01-22T21:03:22.400Z
         notes: Final check passed
     initiated_by: "@claude"
-    completed_at: 2026-01-22T21:03:22.400Z
+  - _ulid: 01KFKR9XD955RJW2G38WFZ84MC
+    workflow_ref: "@01KF782ZSH103A99NV1VY65CFB"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-22T21:03:29.194Z
+    step_results: []
+    initiated_by: "@claude"
