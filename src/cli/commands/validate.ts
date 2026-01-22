@@ -20,6 +20,10 @@ import {
   validate,
   validateConventions,
 } from "../../parser/index.js";
+import {
+  type SkillValidationResult,
+  validateSkills,
+} from "../../parser/validate-skills.js";
 import { validation as validationStrings } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output } from "../output.js";
@@ -302,6 +306,50 @@ function formatConventionValidationResult(
   console.log(
     chalk.gray(`Conventions skipped: ${result.stats.conventionsSkipped}`),
   );
+}
+
+/**
+ * Format skill validation results for display
+ */
+function formatSkillValidationResult(
+  result: SkillValidationResult,
+  verbose: boolean,
+): void {
+  if (result.filesChecked === 0) {
+    console.log(chalk.gray("Skills: No skill files found"));
+    return;
+  }
+
+  if (result.valid) {
+    console.log(
+      chalk.green(`Skills: OK (${result.filesChecked} files checked)`),
+    );
+    return;
+  }
+
+  console.log(chalk.red(`\nSkill validation errors: ${result.errors.length}`));
+  console.log(chalk.gray(`Files checked: ${result.filesChecked}`));
+
+  // Group errors by file
+  const errorsByFile = new Map<string, typeof result.errors>();
+  for (const err of result.errors) {
+    const existing = errorsByFile.get(err.file) || [];
+    existing.push(err);
+    errorsByFile.set(err.file, existing);
+  }
+
+  for (const [file, errors] of errorsByFile.entries()) {
+    console.log(chalk.yellow(`\n  ${file}:`));
+    const shown = verbose ? errors : errors.slice(0, 5);
+    for (const err of shown) {
+      const location = err.line ? `:${err.line}` : "";
+      console.log(chalk.red(`    ✗ ${err.type}${location}`));
+      console.log(chalk.gray(`      ${err.message}`));
+    }
+    if (!verbose && errors.length > 5) {
+      console.log(chalk.gray(`    ... and ${errors.length - 5} more`));
+    }
+  }
 }
 
 /**
@@ -681,6 +729,7 @@ export function registerValidateCommand(program: Command): void {
       "--staleness",
       "Check for stale status mismatches between specs and tasks",
     )
+    .option("--skills", "Validate skill files (.claude/skills/*/SKILL.md)")
     .option(
       "--fix",
       "Auto-fix issues where possible (invalid ULIDs, missing timestamps)",
@@ -704,7 +753,8 @@ export function registerValidateCommand(program: Command): void {
           !options.orphans &&
           !options.alignment &&
           !options.completeness &&
-          !options.conventions;
+          !options.conventions &&
+          !options.skills;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
@@ -820,6 +870,16 @@ export function registerValidateCommand(program: Command): void {
           // With --strict, staleness warnings cause validation failure
           if (options.strict && stalenessWarnings.length > 0) {
             process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+        }
+
+        // Run skill file validation if requested or running all checks
+        if (runAll || options.skills) {
+          const skillResult = await validateSkills(ctx.rootDir);
+          formatSkillValidationResult(skillResult, options.verbose);
+
+          if (!skillResult.valid) {
+            result.valid = false;
           }
         }
 
