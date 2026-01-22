@@ -18886,6 +18886,58 @@
 
         Ready for quick completion next iteration.
       supersedes: null
+    - _ulid: 01KFJ78VQPHFGJMBQ1QAV3J5KG
+      created_at: 2026-01-22T06:46:34.486Z
+      author: "@claude"
+      content: >-
+        **Task Complete - All Tests Pass**
+
+
+        Fixed the last remaining issue with workflow run tests. The problem was test fixtures using
+        invalid ULID format ('01TEST000...') which failed regex validation.
+
+
+        **Final Changes:**
+
+        1. Import ulid() and generate valid ULIDs for test fixtures (3 ULIDs: workflow1, workflow2,
+        task)
+
+        2. Updated test setup to use non-shadow mode (files in project root, not .kspec/)
+
+        3. Fixed all assertions to use dynamic ULIDs via template literals
+
+        4. Removed all debug console.error() statements from workflow.ts (5 lines) and meta.ts (9
+        lines)
+
+
+        **Test Results:**
+
+        ✅ All 21 E2E tests pass (was 1/21, now 21/21)
+
+        ✅ Tests cover all 6 acceptance criteria:
+          - AC 1: workflow start creates run with correct state
+          - AC 2: workflow runs lists/filters runs
+          - AC 3: workflow abort sets status and reason
+          - AC 4: workflow show displays run details
+          - AC 5: abort validation prevents double-abort
+          - AC 6: workflow start with task link
+
+        **Implementation Summary:**
+
+        - Schema: WorkflowRun, StepResult, WorkflowRunsFile (src/schema/meta.ts)
+
+        - Storage: loadWorkflowRuns, saveWorkflowRun, updateWorkflowRun, findWorkflowRunByRef
+        (src/parser/meta.ts)
+
+        - CLI: workflow start/runs/show/abort commands (src/cli/commands/workflow.ts)
+
+        - Tests: 21 E2E tests with full AC coverage (tests/workflow-runs.test.ts)
+
+        - Error messages: workflowRun error strings (src/strings/errors.ts)
+
+
+        Ready for PR creation.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFESYSRAWCSMC2Z7N1BY4Z4G
