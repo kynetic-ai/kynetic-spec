@@ -21111,24 +21111,49 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Add validation warning for manual_only parent with eligible children
+- _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
+  slugs: []
+  title: Add validation warning for manual_only parent with eligible children
   type: task
-  priority: 3
+  description: Validation warning for manual_only parent with automation-eligible children that depend
+    on it - Catches modeling errors where children are blocked by a parent that will never be worked
+    by automation
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - reflection
     - validation
     - workflow
-  description: Validation warning for manual_only parent with automation-eligible children that depend
-    on it - Catches modeling errors where children are blocked by a parent that will never be worked
-    by automation
-  _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
+  vcs_refs: []
+  created_at: 2026-01-22T06:10:33.440Z
+  notes: []
+  todos: []
+- title: ACP type safety audit - strengthen typing
+  type: infra
+  priority: 3
+  spec_ref: null
+  tags:
+    - acp
+    - types
+    - tech-debt
+  description: "ACP type safety audit: Review and strengthen typing across ACP client implementation.
+    Current state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add
+    typed response methods for file/read, file/write, terminal/run (2) Type the request params using
+    SDK types (3) Evaluate if we're correctly implementing the full ACP protocol - check SDK docs
+    for any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be
+    deprecated in favor of typed methods only. The { granted: true } bug showed the value of
+    compile-time enforcement."
+  _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-22T06:10:33.440Z
+  created_at: 2026-01-22T06:10:37.549Z
   notes: []
   todos: []
