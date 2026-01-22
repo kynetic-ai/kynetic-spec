@@ -21127,6 +21127,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T06:00:46.664Z
+  started_at: 2026-01-22T07:03:00.956Z
   notes:
     - _ulid: 01KFJ4N7CYQ312RQBCH5X6FFT2
       created_at: 2026-01-22T06:00:53.918Z
@@ -21208,9 +21209,64 @@
         All use old format like '// AC-1:' or '// AC-2:'. Should be '// AC: @spec-ref ac-N' for
         traceability.
       supersedes: null
+    - _ulid: 01KFJ8HHDH1GB3WMJ3XB6QDMJ0
+      created_at: 2026-01-22T07:08:47.410Z
+      author: "@claude"
+      content: >-
+        Fixed all 72 old-format AC annotations across codebase:
+
+
+        **Source files (6):**
+
+        - src/cli/commands/shadow.ts (1 annotation)
+
+        - src/cli/commands/session.ts (2 annotations)
+
+        - src/cli/commands/item.ts (15 annotations)
+
+        - src/cli/output.ts (2 annotations)
+
+        - src/parser/shadow.ts (8 annotations)
+
+        - src/sessions/store.ts (2 annotations)
+
+
+        **Test files (3):**
+
+        - tests/shadow.test.ts (9 annotations)
+
+        - tests/ralph.test.ts (10 annotations)
+
+        - tests/task-reset.test.ts (1 annotation)
+
+
+        All annotations updated from old format (`// AC-N:`) to new format (`// AC: @spec-ref
+        ac-N`).
+
+
+        Mapped each annotation to correct spec:
+
+        - @shadow-sync (sync operations)
+
+        - @shadow-init, @shadow-init-remote (initialization)
+
+        - @shadow-recovery (recovery operations)
+
+        - @spec-item-delete-children (item deletion)
+
+        - @task-list-verbose (output formatting)
+
+        - @session-events (session storage)
+
+        - @cli-ralph (ralph command)
+
+        - @spec-task-reset (task reset)
+
+
+        All 874 tests pass after changes.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T07:03:00.956Z
 - _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
   slugs: []
   title: Add tests for shadow hook installation and authorization
