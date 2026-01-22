@@ -21327,6 +21327,7 @@
     - reflection
   vcs_refs: []
   created_at: 2026-01-22T06:04:30.551Z
+  started_at: 2026-01-22T07:33:50.372Z
   notes:
     - _ulid: 01KFJ4WAREF787P83P6CC1SXTV
       created_at: 2026-01-22T06:04:46.735Z
@@ -21346,9 +21347,16 @@
         Location: src/parser/shadow.ts has installShadowHook function
         Tests should go in: tests/shadow.test.ts or new tests/shadow-hook.test.ts
       supersedes: null
+    - _ulid: 01KFJA06BMHN5R0F5NHGF5BT69
+      created_at: 2026-01-22T07:34:16.180Z
+      author: "@claude"
+      content: "Adding tests for installShadowHook function. The hook protects kspec-meta branch by
+        blocking commits unless KSPEC_SHADOW_COMMIT=1 is set. Tests will verify: 1) Hook is
+        installed to .git/hooks/pre-commit during init, 2) Hook blocks unauthorized commits, 3) Hook
+        allows commits with KSPEC_SHADOW_COMMIT=1"
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T07:33:50.372Z
 - _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
   slugs: []
   title: Fix test helper to capture stderr on success
