@@ -73,7 +73,7 @@ runs:
     abort_reason: Completed inputs testing
   - _ulid: 01KFKS903R68228GKCEKC2AVR9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-22T21:20:27.769Z
@@ -135,5 +135,10 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-22T21:24:38.594Z
-        completed_at: 2026-01-22T21:24:38.594Z
+        completed_at: 2026-01-22T21:24:53.041Z
+        notes: |-
+          Capture complete:
+          - 3 inbox items for DX improvements
+          - 1 success observation about hybrid skill-workflow model
     initiated_by: "@claude"
+    completed_at: 2026-01-22T21:24:53.041Z

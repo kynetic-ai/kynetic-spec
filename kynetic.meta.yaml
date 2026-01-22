@@ -2962,4 +2962,13 @@ observations:
     resolved: false
     resolution: null
     promoted_to: "@01KFKRBN"
+  - _ulid: 01KFKSGWR6SK7A59EVY54X7V34
+    type: success
+    content: "Hybrid skill-workflow model works well: skill as entrypoint providing context, workflow
+      for structure and tracking. Reduced reflect skill from 215 to 152 lines while adding progress
+      tracking."
+    created_at: 2026-01-22T21:24:46.470Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
