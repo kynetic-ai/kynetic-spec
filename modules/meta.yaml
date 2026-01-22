@@ -1762,6 +1762,10 @@ features:
               steps
             when: each step object has required 'type' (check/action/decision) and 'content' fields
             then: workflow is created with provided steps; steps array persists in meta manifest
+          - id: ac-2
+            given: kspec meta add workflow is executed with --steps containing malformed JSON
+            when: JSON.parse fails
+            then: command exits with error 'Invalid JSON in --steps' followed by the parse error details
       - _ulid: 01KF2XCMS00000000000000000
         slugs:
           - meta-set-cmd
