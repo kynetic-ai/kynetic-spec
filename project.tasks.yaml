@@ -20950,3 +20950,23 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Add tests for shadow hook installation and authorization
+  type: infra
+  priority: 3
+  spec_ref: null
+  tags:
+    - testing
+    - reflection
+  description: Add automated tests for git hook installation and authorization - test
+    installShadowHook function, hook blocking unauthorized commits, hook allowing commits with
+    KSPEC_SHADOW_COMMIT=1 env var
+  _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T06:04:30.551Z
+  notes: []
+  todos: []
