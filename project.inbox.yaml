@@ -565,3 +565,12 @@ inbox:
       - meta
       - dx
     added_by: "@claude"
+  - _ulid: 01KFKW1ZGTR4BZ3QB87184MTM3
+    text: Add update/note capability to inbox items - allow 'inbox update @ref --content' or 'inbox note
+      @ref' to modify/append to items without delete+re-add cycle
+    created_at: 2026-01-22T22:09:03.514Z
+    tags:
+      - cli
+      - inbox
+      - dx
+    added_by: "@claude"
