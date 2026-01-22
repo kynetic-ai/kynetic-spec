@@ -302,12 +302,13 @@ async function workflowAbort(runRef: string, options: { reason?: string; json?: 
 }
 
 /**
- * Command: kspec workflow next [run-ref] [--skip] [--notes text] [--json]
+ * Command: kspec workflow next [run-ref] [--skip] [--notes text] [--confirm] [--force] [--json]
  * AC: @workflow-step-navigation ac-1 through ac-6
+ * AC: @workflow-enforcement-modes ac-1 through ac-4
  */
 async function workflowNext(
   runRef: string | undefined,
-  options: { skip?: boolean; notes?: string; json?: boolean }
+  options: { skip?: boolean; notes?: string; confirm?: boolean; force?: boolean; json?: boolean }
 ) {
   const ctx = await initContext();
   const metaCtx = await loadMetaContext(ctx);
@@ -353,24 +354,93 @@ async function workflowNext(
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
-  // AC: @workflow-step-navigation ac-1, ac-6 - Complete current step
+  // Get current step and next step
   const currentStepIndex = run.current_step;
+  const currentStep = workflow.steps[currentStepIndex];
+  const isStrictMode = workflow.enforcement === 'strict';
+  const isLastStep = currentStepIndex === run.total_steps - 1;
+
+  // AC: @workflow-enforcement-modes ac-3 - Strict mode: --skip requires --force
+  if (options.skip && isStrictMode && !options.force) {
+    error(errors.workflowRun.skipRequiresForce);
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  // AC: @workflow-enforcement-modes ac-2, ac-3 - Check exit criteria for CURRENT step
+  if (currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && !options.skip) {
+    // AC: @workflow-enforcement-modes ac-3 - Strict mode requires --confirm
+    if (isStrictMode && !options.confirm) {
+      if (!isJsonMode()) {
+        console.log(`Completing step ${currentStepIndex + 1}/${run.total_steps}: [${currentStep.type}] ${currentStep.content}`);
+        console.log(chalk.yellow('  Exit criteria:'));
+        for (const criterion of currentStep.exit_criteria) {
+          console.log(chalk.yellow(`    - ${criterion}`));
+        }
+        console.log();
+      }
+      error(errors.workflowRun.exitCriteriaNotConfirmed);
+      process.exit(EXIT_CODES.VALIDATION_FAILED);
+    }
+
+    // AC: @workflow-enforcement-modes ac-4 - Advisory mode shows criteria as guidance
+    if (!isStrictMode && !isJsonMode()) {
+      console.log(chalk.gray('  Exit criteria:'));
+      for (const criterion of currentStep.exit_criteria) {
+        console.log(chalk.gray(`    - ${criterion}`));
+      }
+    }
+  }
+
+  // AC: @workflow-enforcement-modes ac-1, ac-3 - Check entry criteria for NEXT step
+  // (Only applies when advancing from current step normally, not when skipping or completing the workflow)
+  // When skipping, we don't check entry criteria because we're not actually starting the next step yet
+  if (!isLastStep && !options.skip) {
+    const nextStep = workflow.steps[currentStepIndex + 1];
+    if (nextStep.entry_criteria && nextStep.entry_criteria.length > 0) {
+      // AC: @workflow-enforcement-modes ac-3 - Strict mode requires --confirm
+      if (isStrictMode && !options.confirm) {
+        if (!isJsonMode()) {
+          console.log(`Step ${currentStepIndex + 2}/${run.total_steps}: [${nextStep.type}] ${nextStep.content}`);
+          console.log(chalk.yellow('  Entry criteria:'));
+          for (const criterion of nextStep.entry_criteria) {
+            console.log(chalk.yellow(`    - ${criterion}`));
+          }
+          console.log();
+        }
+        error(errors.workflowRun.entryCriteriaNotConfirmed);
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+      }
+
+      // AC: @workflow-enforcement-modes ac-4 - Advisory mode shows criteria as guidance
+      if (!isStrictMode && !isJsonMode()) {
+        console.log(`Step ${currentStepIndex + 2}/${run.total_steps}: [${nextStep.type}] ${nextStep.content}`);
+        console.log(chalk.gray('  Entry criteria:'));
+        for (const criterion of nextStep.entry_criteria) {
+          console.log(chalk.gray(`    - ${criterion}`));
+        }
+        console.log();
+      }
+    }
+  }
+
+  // AC: @workflow-step-navigation ac-1, ac-6 - Complete current step
   const previousResult = run.step_results[run.step_results.length - 1];
   const startedAt = previousResult ? previousResult.completed_at : run.started_at;
 
+  // AC: @workflow-enforcement-modes ac-3 - Record confirmations in StepResult
   const stepResult = {
     step_index: currentStepIndex,
     status: options.skip ? ('skipped' as const) : ('completed' as const),
     started_at: startedAt,
     completed_at: new Date().toISOString(),
     notes: options.notes,
+    exit_confirmed: currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm ? true : undefined,
+    entry_confirmed: undefined, // Entry confirmation is for the NEXT step, recorded when we advance
   };
 
   run.step_results.push(stepResult);
 
   // AC: @workflow-step-navigation ac-1 - Advance to next step or complete run
-  const isLastStep = currentStepIndex === run.total_steps - 1;
-
   if (isLastStep) {
     // AC: @workflow-step-navigation ac-2 - Complete the run
     run.status = 'completed';
@@ -478,6 +548,8 @@ export function registerWorkflowCommand(program: Command): void {
     .argument('[run-ref]', 'Run reference (optional if only one active run)')
     .option('--skip', 'Mark current step as skipped')
     .option('--notes <text>', 'Notes for the completed step')
+    .option('--confirm', 'Acknowledge entry/exit criteria (required in strict mode)')
+    .option('--force', 'Allow --skip in strict mode')
     .option('--json', 'Output JSON')
     .action(workflowNext);
 }
