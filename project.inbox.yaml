@@ -524,3 +524,13 @@ inbox:
       - workflow
       - cli
     added_by: "@claude"
+  - _ulid: 01KFKTNR690N4KNMMK5GK9NSCJ
+    text: Improve 'workflow show' human-readable output - use verbose vertical format like 'meta
+      workflows --verbose' instead of cramped table. Show each step with [N] prefix, status
+      indicator (✓/○/⊘), content, and indented notes/inputs below when present
+    created_at: 2026-01-22T21:44:54.217Z
+    tags:
+      - workflow
+      - cli
+      - dx
+    added_by: "@claude"
