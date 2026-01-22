@@ -21061,6 +21061,8 @@
   spec_ref: "@cmd-derive"
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #155. All CI checks passed, Claude review found no issues, comprehensive
+    E2E test coverage for AC-15 verified."
   depends_on: []
   context: []
   priority: 3
@@ -21071,6 +21073,7 @@
   vcs_refs: []
   created_at: 2026-01-22T05:57:49.108Z
   started_at: 2026-01-22T06:50:01.550Z
+  completed_at: 2026-01-22T07:02:49.027Z
   notes:
     - _ulid: 01KFJ4FSM45C5C729XZTPXH7BZ
       created_at: 2026-01-22T05:57:55.973Z
@@ -21108,9 +21111,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T07:02:49.027Z
-  closed_reason: "Merged PR #155. All CI checks passed, Claude review found no issues, comprehensive
-    E2E test coverage for AC-15 verified."
 - _ulid: 01KFJ4N0A88X2QGY58G79CNJAC
   slugs: []
   title: Fix old AC annotation format in tests
@@ -21119,7 +21119,7 @@
     AC-N:' instead of the convention '// AC: @spec-ref ac-N'. Should sweep through test files and
     standardize."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21210,6 +21210,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T07:03:00.956Z
 - _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
   slugs: []
   title: Add tests for shadow hook installation and authorization
