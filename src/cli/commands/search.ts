@@ -147,7 +147,7 @@ interface SearchResult {
 export function registerSearchCommand(program: Command): void {
   program
     .command("search <pattern>")
-    .description("Search across all items and tasks with regex pattern")
+    .description("Search across items, tasks, inbox, and meta entities with regex pattern")
     .option("-t, --type <type>", "Filter by item type")
     .option("-s, --status <status>", "Filter by task status")
     .option("--items-only", "Search only spec items")
