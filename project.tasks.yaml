@@ -21055,7 +21055,7 @@
     tasks as parent dependencies. Currently a cancelled task is still found and used, requiring
     manual deletion before derive works correctly.
   spec_ref: "@cmd-derive"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
