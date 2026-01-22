@@ -1770,6 +1770,11 @@ features:
             given: kspec meta add workflow is executed with --steps containing a JSON object (not an array)
             when: the parsed JSON is not an array
             then: command exits with error 'Steps must be a JSON array'
+          - id: ac-4
+            given: kspec meta add workflow is executed with --steps containing steps with invalid schema
+            when: step objects fail WorkflowStepSchema validation (e.g., invalid type, missing content)
+            then: "command exits with error 'Invalid workflow steps' showing field path and validation issue
+              (e.g., '0.type: Invalid enum value')"
       - _ulid: 01KF2XCMS00000000000000000
         slugs:
           - meta-set-cmd
