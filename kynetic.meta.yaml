@@ -2808,4 +2808,22 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJF6NH0EF6DWG9EYGSGQ607
+    type: success
+    content: "Implementing validation warnings follows a clear pattern: 1) Add warning type to
+      interface, 2) Add check logic in validation function, 3) Add formatting in display function,
+      4) Add E2E test. The existing staleness checks provided a good template to follow."
+    created_at: 2026-01-22T09:05:11.201Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJF6V40XSX7CDANPJWWY5GA
+    type: success
+    content: "PR workflow from main branch with unpushed commits: create feature branch, reset main to
+      origin/main, push feature branch. This cleanly separates completed work from main without
+      losing commits."
+    created_at: 2026-01-22T09:05:16.928Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
