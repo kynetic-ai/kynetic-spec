@@ -18,3 +18,19 @@ relates_to: []
 tests: []
 traits: []
 notes: []
+features:
+  - _ulid: 01KFHMFGD2563NGHJWPPXGN9CB
+    slugs:
+      - daemon-server
+    title: Daemon Server Mode
+    type: feature
+    tags: []
+    description: Long-running server mode that exposes kspec state via HTTP API and SSE for real-time
+      updates. Enables CLI-to-daemon IPC for faster operations.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-22T01:18:09.314Z
