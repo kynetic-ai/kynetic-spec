@@ -21191,8 +21191,15 @@
     - design
   vcs_refs: []
   created_at: 2026-01-22T06:10:40.773Z
-  notes: []
+  notes:
+    - _ulid: 01KFJ591F87V1RYSA67RP4RM74
+      created_at: 2026-01-22T06:11:43.209Z
+      author: "@claude"
+      content: "Automation status set to eligible: Feature extension with clear AC, follows existing
+        search patterns"
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFJ5780YBQDBQH3Y4VFZ1343
   slugs: []
   title: Add skill file linting/validation
