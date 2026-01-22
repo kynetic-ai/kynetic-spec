@@ -74,8 +74,22 @@ runs:
   - _ulid: 01KFKS903R68228GKCEKC2AVR9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-22T21:20:27.769Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-22T21:20:27.769Z
+        completed_at: 2026-01-22T21:20:47.291Z
+        notes: |-
+          What worked well:
+          1. Subagent exploration gave comprehensive overview quickly
+          2. Systematic testing of each feature area (session context, observations, workflow runs)
+          3. workflow next auto-inferring active run - reduced command verbosity
+          4. Multiline step content works in YAML - enables rich guidance
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-22T21:20:47.291Z
+        completed_at: 2026-01-22T21:20:47.291Z
     initiated_by: "@claude"
