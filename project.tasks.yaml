@@ -21317,7 +21317,7 @@
     installShadowHook function, hook blocking unauthorized commits, hook allowing commits with
     KSPEC_SHADOW_COMMIT=1 env var
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21357,6 +21357,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T07:40:53.412Z
+  closed_reason: "Merged PR #158. Added 3 comprehensive E2E tests covering hook installation,
+    unauthorized commit blocking, and authorized commits. All tests use isolated temp directories
+    and real hook file. All 61 shadow tests pass, all CI checks passed, automated reviews found no
+    issues."
 - _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
   slugs: []
   title: Fix test helper to capture stderr on success

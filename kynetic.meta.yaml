@@ -2609,4 +2609,28 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJA21CHKVD52598EQ9994FS
+    type: success
+    content: "Added comprehensive E2E tests for shadow hook functionality. Tests verify: 1) Hook
+      installation during init copies from hooks/pre-commit to .git/hooks/pre-commit with executable
+      permissions, 2) Hook blocks unauthorized commits (verifies commit count stays at 1), 3) Hook
+      allows commits with KSPEC_SHADOW_COMMIT=1 env var (verifies commit count increases and message
+      is correct). Used real hook file for tests 2 and 3 to ensure accurate behavior. All tests run
+      in isolated temp directories. Task notes captured implementation approach before coding."
+    created_at: 2026-01-22T07:35:16.626Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJA3PTYEPFHK8XHNEQGCRJV
+    type: success
+    content: "Iteration 8 completed: Merged PR #157 (workflow step navigation), then completed task
+      @01KFJ4VT (shadow hook tests). Created PR #158. Workflow: reviewed and merged open PR first
+      (per RALPH_LOOP_INSTRUCTIONS), then picked highest priority ready task. Task had clear 3-case
+      scope from notes. Added tests to existing shadow.test.ts file, all 61 tests pass. PR created
+      with /pr skill - auto-generated branch name test/shadow-hook-tests from commit message and
+      task context."
+    created_at: 2026-01-22T07:36:11.358Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
