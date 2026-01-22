@@ -1,36 +1,35 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
-import * as path from 'node:path';
-import * as fs from 'node:fs/promises';
-import { ulid } from 'ulid';
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import type { Command } from "commander";
+import { ulid } from "ulid";
 import {
-  initContext,
   buildIndexes,
   checkSlugUniqueness,
+  initContext,
   writeYamlFilePreserveFormat,
-} from '../../parser/index.js';
-import { commitIfShadow } from '../../parser/shadow.js';
-import type { SpecItem, Manifest } from '../../schema/index.js';
-import { output, error, success } from '../output.js';
-import { errors } from '../../strings/errors.js';
-import { EXIT_CODES } from '../exit-codes.js';
+} from "../../parser/index.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import type { SpecItem } from "../../schema/index.js";
+import { errors } from "../../strings/errors.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, success } from "../output.js";
 
 /**
  * Register module commands
  */
 export function registerModuleCommands(program: Command): void {
   const module = program
-    .command('module')
-    .description('Module management commands');
+    .command("module")
+    .description("Module management commands");
 
   // kspec module add - create a new module YAML file
   module
-    .command('add')
-    .description('Create a new module YAML file')
-    .requiredOption('--title <title>', 'Module title')
-    .requiredOption('--slug <slug>', 'Module slug (becomes filename)')
-    .option('--description <desc>', 'Module description')
-    .option('--tag <tag...>', 'Tags')
+    .command("add")
+    .description("Create a new module YAML file")
+    .requiredOption("--title <title>", "Module title")
+    .requiredOption("--slug <slug>", "Module slug (becomes filename)")
+    .option("--description <desc>", "Module description")
+    .option("--tag <tag...>", "Tags")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -45,7 +44,9 @@ export function registerModuleCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
+            error(
+              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
+            );
             process.exit(EXIT_CODES.CONFLICT);
           }
         }
@@ -55,12 +56,12 @@ export function registerModuleCommands(program: Command): void {
           _ulid: ulid(),
           slugs: [options.slug],
           title: options.title,
-          type: 'module',
+          type: "module",
           status: {
-            maturity: 'draft',
-            implementation: 'not_started',
+            maturity: "draft",
+            implementation: "not_started",
           },
-          description: options.description || '',
+          description: options.description || "",
           tags: options.tag || [],
           depends_on: [],
           implements: [],
@@ -72,7 +73,7 @@ export function registerModuleCommands(program: Command): void {
 
         // Determine module file path
         const manifestDir = path.dirname(ctx.manifestPath);
-        const modulesDir = path.join(manifestDir, 'modules');
+        const modulesDir = path.join(manifestDir, "modules");
         const moduleFilePath = path.join(modulesDir, `${options.slug}.yaml`);
 
         // Ensure modules directory exists
@@ -107,7 +108,7 @@ export function registerModuleCommands(program: Command): void {
         await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
 
         // Auto-commit to shadow if enabled
-        await commitIfShadow(ctx.shadow, 'module-add', options.slug);
+        await commitIfShadow(ctx.shadow, "module-add", options.slug);
 
         success(`Created module: @${options.slug}`, {
           module: moduleItem,
@@ -115,7 +116,7 @@ export function registerModuleCommands(program: Command): void {
           includedInManifest: true,
         });
       } catch (err) {
-        error('Failed to create module', err);
+        error("Failed to create module", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });

@@ -1,17 +1,18 @@
 // AC: @auto-cli-docs ac-2, ac-3, ac-4, ac-5
-import { Command } from 'commander';
-import chalk from 'chalk';
-import { program } from '../index.js';
+
+import chalk from "chalk";
+import type { Command } from "commander";
+import { EXIT_CODES } from "../exit-codes.js";
+import { type HelpContent, helpContent } from "../help/content.js";
+import { program } from "../index.js";
 import {
+  type CommandMeta,
   extractCommandTree,
   findCommand,
   flattenCommandTree,
   formatCommandUsage,
-  type CommandMeta,
-} from '../introspection.js';
-import { helpContent, type HelpContent } from '../help/content.js';
-import { output } from '../output.js';
-import { EXIT_CODES } from '../exit-codes.js';
+} from "../introspection.js";
+import { output } from "../output.js";
 
 /**
  * Show help for a specific topic (command or concept)
@@ -21,7 +22,7 @@ function showTopic(topic: string): void {
   const tree = extractCommandTree(program);
 
   // Try to find as a command first
-  const command = findCommand(tree, topic.split(' '));
+  const command = findCommand(tree, topic.split(" "));
 
   if (command) {
     showCommandHelp(command);
@@ -37,7 +38,7 @@ function showTopic(topic: string): void {
 
   // Not found
   console.log(chalk.red(`Unknown topic: ${topic}`));
-  console.log(`\nAvailable topics: ${getAllTopics(tree).join(', ')}`);
+  console.log(`\nAvailable topics: ${getAllTopics(tree).join(", ")}`);
   console.log(`\nRun 'kspec help' to see all topics.`);
   process.exit(EXIT_CODES.ERROR);
 }
@@ -51,15 +52,15 @@ function showCommandHelp(command: CommandMeta): void {
   // Title: use content title, or command name
   const title = content?.title || `${command.name} - ${command.description}`;
   console.log(chalk.bold.cyan(title));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray("─".repeat(40)));
 
   // Usage
-  console.log(chalk.bold('\nUsage:'));
+  console.log(chalk.bold("\nUsage:"));
   console.log(`  ${formatCommandUsage(command)}`);
 
   // Subcommands (auto-generated from Commander)
   if (command.subcommands.length > 0) {
-    console.log(chalk.bold('\nCommands:'));
+    console.log(chalk.bold("\nCommands:"));
     for (const sub of command.subcommands) {
       const nameCol = sub.name.padEnd(20);
       console.log(`  ${chalk.green(nameCol)} ${sub.description}`);
@@ -68,7 +69,7 @@ function showCommandHelp(command: CommandMeta): void {
 
   // Options (auto-generated from Commander)
   if (command.options.length > 0) {
-    console.log(chalk.bold('\nOptions:'));
+    console.log(chalk.bold("\nOptions:"));
     for (const opt of command.options) {
       // Format flags column
       const flagsCol = opt.flags.padEnd(30);
@@ -79,12 +80,12 @@ function showCommandHelp(command: CommandMeta): void {
   // Conceptual content (curated)
   if (content) {
     if (content.concept.trim()) {
-      console.log(chalk.bold('\nDetails:'));
+      console.log(chalk.bold("\nDetails:"));
       console.log(content.concept.trim());
     }
 
     if (content.examples && content.examples.length > 0) {
-      console.log(chalk.bold('\nExamples:'));
+      console.log(chalk.bold("\nExamples:"));
       for (const example of content.examples) {
         console.log(chalk.green(`  ${example}`));
       }
@@ -92,7 +93,9 @@ function showCommandHelp(command: CommandMeta): void {
 
     if (content.seeAlso && content.seeAlso.length > 0) {
       console.log(
-        chalk.gray(`\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(', ')}`)
+        chalk.gray(
+          `\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(", ")}`,
+        ),
       );
     }
   }
@@ -104,12 +107,12 @@ function showCommandHelp(command: CommandMeta): void {
 function showConceptHelp(topic: string, content: HelpContent): void {
   const title = content.title || topic;
   console.log(chalk.bold.cyan(title));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray("─".repeat(40)));
 
   console.log(content.concept.trim());
 
   if (content.examples && content.examples.length > 0) {
-    console.log(chalk.bold('\nExamples:'));
+    console.log(chalk.bold("\nExamples:"));
     for (const example of content.examples) {
       console.log(chalk.green(`  ${example}`));
     }
@@ -117,7 +120,9 @@ function showConceptHelp(topic: string, content: HelpContent): void {
 
   if (content.seeAlso && content.seeAlso.length > 0) {
     console.log(
-      chalk.gray(`\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(', ')}`)
+      chalk.gray(
+        `\nSee also: ${content.seeAlso.map((t) => `kspec help ${t}`).join(", ")}`,
+      ),
     );
   }
 }
@@ -127,10 +132,12 @@ function showConceptHelp(topic: string, content: HelpContent): void {
  */
 function getAllTopics(tree: CommandMeta): string[] {
   const commands = flattenCommandTree(tree)
-    .filter((cmd) => cmd.name !== 'kspec') // Skip root
+    .filter((cmd) => cmd.name !== "kspec") // Skip root
     .map((cmd) => cmd.name);
 
-  const concepts = Object.keys(helpContent).filter((key) => !commands.includes(key));
+  const concepts = Object.keys(helpContent).filter(
+    (key) => !commands.includes(key),
+  );
 
   return [...new Set([...commands, ...concepts])];
 }
@@ -141,19 +148,19 @@ function getAllTopics(tree: CommandMeta): string[] {
 function showTopicList(): void {
   const tree = extractCommandTree(program);
 
-  console.log(chalk.bold.cyan('kspec help'));
-  console.log(chalk.gray('─'.repeat(40)));
-  console.log('\nExtended help for kspec commands and concepts.\n');
+  console.log(chalk.bold.cyan("kspec help"));
+  console.log(chalk.gray("─".repeat(40)));
+  console.log("\nExtended help for kspec commands and concepts.\n");
 
   // Show top-level commands (auto-generated)
-  console.log(chalk.bold('Commands:'));
+  console.log(chalk.bold("Commands:"));
   for (const cmd of tree.subcommands) {
     const nameCol = cmd.name.padEnd(12);
     console.log(`  ${chalk.green(nameCol)} ${cmd.description}`);
   }
 
   // Show concept topics (curated)
-  console.log(chalk.bold('\nConcepts:'));
+  console.log(chalk.bold("\nConcepts:"));
   const conceptTopics = Object.keys(helpContent).filter((key) => {
     // Concepts are topics that don't match command names
     return !tree.subcommands.some((cmd) => cmd.name === key);
@@ -166,9 +173,9 @@ function showTopicList(): void {
     console.log(`  ${chalk.green(nameCol)} ${title}`);
   }
 
-  console.log(chalk.gray('\nUsage: kspec help <topic>'));
-  console.log(chalk.gray('       kspec help --all        (full reference)'));
-  console.log(chalk.gray('       kspec help --json       (structured output)'));
+  console.log(chalk.gray("\nUsage: kspec help <topic>"));
+  console.log(chalk.gray("       kspec help --all        (full reference)"));
+  console.log(chalk.gray("       kspec help --json       (structured output)"));
 }
 
 /**
@@ -176,10 +183,12 @@ function showTopicList(): void {
  */
 function showFullReference(): void {
   const tree = extractCommandTree(program);
-  const allCommands = flattenCommandTree(tree).filter((cmd) => cmd.name !== 'kspec');
+  const allCommands = flattenCommandTree(tree).filter(
+    (cmd) => cmd.name !== "kspec",
+  );
 
-  console.log(chalk.bold.cyan('kspec - Full Command Reference'));
-  console.log(chalk.gray('─'.repeat(60)));
+  console.log(chalk.bold.cyan("kspec - Full Command Reference"));
+  console.log(chalk.gray("─".repeat(60)));
 
   for (const cmd of allCommands) {
     console.log(chalk.bold(`\n${formatCommandUsage(cmd)}`));
@@ -188,9 +197,11 @@ function showFullReference(): void {
     }
 
     if (cmd.options.length > 0) {
-      console.log(chalk.gray('  Options:'));
+      console.log(chalk.gray("  Options:"));
       for (const opt of cmd.options) {
-        console.log(chalk.gray(`    ${opt.flags.padEnd(30)} ${opt.description}`));
+        console.log(
+          chalk.gray(`    ${opt.flags.padEnd(30)} ${opt.description}`),
+        );
       }
     }
   }
@@ -216,10 +227,10 @@ function showJson(): void {
  */
 export function registerHelpCommand(program: Command): void {
   program
-    .command('help [topic]')
-    .description('Extended help for commands and concepts')
-    .option('--all', 'Show full command reference')
-    .option('--json', 'Output as JSON')
+    .command("help [topic]")
+    .description("Extended help for commands and concepts")
+    .option("--all", "Show full command reference")
+    .option("--json", "Output as JSON")
     .action((topic?: string, options?: { all?: boolean; json?: boolean }) => {
       // Handle flags
       if (options?.json) {

@@ -1,28 +1,34 @@
-import { Command } from 'commander';
+import type { Command } from "commander";
 import {
-  initContext,
-  loadAllTasks,
-  loadAllItems,
-  saveTask,
-  createTask,
-  createNote,
-  getAuthor,
-  ReferenceIndex,
   AlignmentIndex,
-  type LoadedTask,
-  type LoadedSpecItem,
+  createNote,
+  createTask,
+  getAuthor,
+  initContext,
   type KspecContext,
-} from '../../parser/index.js';
-import { commitIfShadow } from '../../parser/shadow.js';
-import { output, success, error, warn, info, isJsonMode } from '../output.js';
-import type { TaskInput } from '../../schema/index.js';
-import { errors } from '../../strings/index.js';
-import { EXIT_CODES } from '../exit-codes.js';
+  type LoadedSpecItem,
+  type LoadedTask,
+  loadAllItems,
+  loadAllTasks,
+  ReferenceIndex,
+  saveTask,
+} from "../../parser/index.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import type { TaskInput } from "../../schema/index.js";
+import { errors } from "../../strings/index.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, info, isJsonMode, output } from "../output.js";
 
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
  */
-const NESTED_ITEM_FIELDS = ['modules', 'features', 'requirements', 'constraints', 'decisions'];
+const _NESTED_ITEM_FIELDS = [
+  "modules",
+  "features",
+  "requirements",
+  "constraints",
+  "decisions",
+];
 
 /**
  * Get the parent path from a child's _path.
@@ -30,9 +36,9 @@ const NESTED_ITEM_FIELDS = ['modules', 'features', 'requirements', 'constraints'
  * Returns empty string for top-level items.
  */
 function getParentPath(childPath: string | undefined): string {
-  if (!childPath) return '';
-  const lastDotIndex = childPath.lastIndexOf('.');
-  if (lastDotIndex === -1) return '';
+  if (!childPath) return "";
+  const lastDotIndex = childPath.lastIndexOf(".");
+  if (lastDotIndex === -1) return "";
   return childPath.slice(0, lastDotIndex);
 }
 
@@ -40,27 +46,30 @@ function getParentPath(childPath: string | undefined): string {
  * Check if an item is a direct child of another item based on _path.
  * Direct children have a path that extends the parent's path by exactly one field[index].
  */
-function isDirectChildOf(child: LoadedSpecItem, parent: LoadedSpecItem): boolean {
-  const childPath = child._path || '';
-  const parentPath = parent._path || '';
+function isDirectChildOf(
+  child: LoadedSpecItem,
+  parent: LoadedSpecItem,
+): boolean {
+  const childPath = child._path || "";
+  const parentPath = parent._path || "";
 
   // If paths are equal, not a child
   if (childPath === parentPath) return false;
 
   // Child path must start with parent path
-  if (parentPath && !childPath.startsWith(parentPath + '.')) return false;
+  if (parentPath && !childPath.startsWith(`${parentPath}.`)) return false;
 
   // For root parent (empty path), child must be a top-level path like "features[0]"
   if (!parentPath) {
     // Direct child of root has no '.' in its path
-    return !childPath.includes('.');
+    return !childPath.includes(".");
   }
 
   // Get the remaining path after parent
   const remaining = childPath.slice(parentPath.length + 1);
 
   // Direct child has no additional '.' (e.g., "requirements[0]" not "requirements[0].something")
-  return !remaining.includes('.');
+  return !remaining.includes(".");
 }
 
 /**
@@ -69,7 +78,7 @@ function isDirectChildOf(child: LoadedSpecItem, parent: LoadedSpecItem): boolean
  */
 function findParentItem(
   item: LoadedSpecItem,
-  allItems: LoadedSpecItem[]
+  allItems: LoadedSpecItem[],
 ): LoadedSpecItem | undefined {
   const parentPath = getParentPath(item._path);
 
@@ -79,7 +88,7 @@ function findParentItem(
 
   // Find item with matching path in the same source file
   return allItems.find(
-    i => i._path === parentPath && i._sourceFile === item._sourceFile
+    (i) => i._path === parentPath && i._sourceFile === item._sourceFile,
   );
 }
 
@@ -89,10 +98,11 @@ function findParentItem(
  */
 function getDirectChildren(
   parent: LoadedSpecItem,
-  allItems: LoadedSpecItem[]
+  allItems: LoadedSpecItem[],
 ): LoadedSpecItem[] {
   return allItems.filter(
-    item => item._sourceFile === parent._sourceFile && isDirectChildOf(item, parent)
+    (item) =>
+      item._sourceFile === parent._sourceFile && isDirectChildOf(item, parent),
   );
 }
 
@@ -102,7 +112,7 @@ function getDirectChildren(
  */
 function collectItemsRecursively(
   root: LoadedSpecItem,
-  allItems: LoadedSpecItem[]
+  allItems: LoadedSpecItem[],
 ): LoadedSpecItem[] {
   const result: LoadedSpecItem[] = [root];
   const children = getDirectChildren(root, allItems);
@@ -123,24 +133,26 @@ function resolveSpecRef(
   ref: string,
   items: LoadedSpecItem[],
   tasks: LoadedTask[],
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): LoadedSpecItem {
   const result = index.resolve(ref);
 
   if (!result.ok) {
     switch (result.error) {
-      case 'not_found':
+      case "not_found":
         error(errors.reference.specNotFound(ref));
         break;
-      case 'ambiguous':
+      case "ambiguous":
         error(errors.reference.ambiguous(ref));
         for (const candidate of result.candidates) {
-          const item = items.find(i => i._ulid === candidate);
-          const slug = item?.slugs[0] || '';
-          console.error(`  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ''}`);
+          const item = items.find((i) => i._ulid === candidate);
+          const slug = item?.slugs[0] || "";
+          console.error(
+            `  - ${index.shortUlid(candidate)} ${slug ? `(${slug})` : ""}`,
+          );
         }
         break;
-      case 'duplicate_slug':
+      case "duplicate_slug":
         error(errors.reference.slugMapsToMultiple(ref));
         for (const candidate of result.candidates) {
           console.error(`  - ${index.shortUlid(candidate)}`);
@@ -151,10 +163,10 @@ function resolveSpecRef(
   }
 
   // Check if it's actually a spec item (not a task)
-  const item = items.find(i => i._ulid === result.ulid);
+  const item = items.find((i) => i._ulid === result.ulid);
   if (!item) {
     // Check if it's a task
-    const task = tasks.find(t => t._ulid === result.ulid);
+    const task = tasks.find((t) => t._ulid === result.ulid);
     if (task) {
       error(errors.reference.notSpecItem(ref));
     } else {
@@ -172,11 +184,11 @@ function resolveSpecRef(
  */
 function generateSlugFromTitle(title: string): string {
   return (
-    'task-' +
+    "task-" +
     title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '')
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
       .slice(0, 50)
   );
 }
@@ -187,13 +199,13 @@ function generateSlugFromTitle(title: string): string {
  */
 function normalizePriority(priority: string | number | undefined): number {
   if (priority === undefined) return 3;
-  if (typeof priority === 'number') return priority;
+  if (typeof priority === "number") return priority;
   switch (priority) {
-    case 'high':
+    case "high":
       return 1;
-    case 'medium':
+    case "medium":
       return 3;
-    case 'low':
+    case "low":
       return 5;
     default:
       return 3;
@@ -205,7 +217,7 @@ function normalizePriority(priority: string | number | undefined): number {
  */
 interface DeriveResult {
   specItem: LoadedSpecItem;
-  action: 'created' | 'skipped' | 'would_create';
+  action: "created" | "skipped" | "would_create";
   task?: LoadedTask;
   reason?: string;
   /** Task ref that was used for depends_on (if any) */
@@ -216,7 +228,9 @@ interface DeriveResult {
  * Generate implementation notes from spec item for newly derived task.
  * Includes description and acceptance criteria summary.
  */
-function generateImplementationNotes(specItem: LoadedSpecItem): string | undefined {
+function generateImplementationNotes(
+  specItem: LoadedSpecItem,
+): string | undefined {
   const parts: string[] = [];
 
   // Add description if present
@@ -226,16 +240,16 @@ function generateImplementationNotes(specItem: LoadedSpecItem): string | undefin
 
   // Add acceptance criteria summary if present
   if (specItem.acceptance_criteria && specItem.acceptance_criteria.length > 0) {
-    const acSection = ['', 'Acceptance Criteria:'];
+    const acSection = ["", "Acceptance Criteria:"];
     for (const ac of specItem.acceptance_criteria) {
-      const summary = `${ac.given ? 'Given ' + ac.given + ', ' : ''}when ${ac.when}, then ${ac.then}`;
+      const summary = `${ac.given ? `Given ${ac.given}, ` : ""}when ${ac.when}, then ${ac.then}`;
       acSection.push(`- ${ac.id}: ${summary}`);
     }
-    parts.push(acSection.join('\n'));
+    parts.push(acSection.join("\n"));
   }
 
   // Return combined content, or undefined if nothing to add
-  return parts.length > 0 ? parts.join('\n\n') : undefined;
+  return parts.length > 0 ? parts.join("\n\n") : undefined;
 }
 
 /**
@@ -249,10 +263,15 @@ async function deriveTaskFromSpec(
   ctx: KspecContext,
   specItem: LoadedSpecItem,
   existingTasks: LoadedTask[],
-  items: LoadedSpecItem[],
+  _items: LoadedSpecItem[],
   index: ReferenceIndex,
   alignmentIndex: AlignmentIndex,
-  options: { force: boolean; dryRun: boolean; dependsOn?: string[]; priority?: number }
+  options: {
+    force: boolean;
+    dryRun: boolean;
+    dependsOn?: string[];
+    priority?: number;
+  },
 ): Promise<DeriveResult> {
   // Check if a task already exists for this spec
   const linkedTasks = alignmentIndex.getTasksForSpec(specItem._ulid);
@@ -263,7 +282,7 @@ async function deriveTaskFromSpec(
       : `@${index.shortUlid(linkedTasks[0]._ulid)}`;
     return {
       specItem,
-      action: 'skipped',
+      action: "skipped",
       task: linkedTasks[0],
       reason: `task exists: ${taskRef}`,
     };
@@ -275,7 +294,7 @@ async function deriveTaskFromSpec(
   let slugSuffix = 1;
 
   // Find unique slug if needed
-  while (existingTasks.some(t => t.slugs.includes(slug))) {
+  while (existingTasks.some((t) => t.slugs.includes(slug))) {
     slug = `${baseSlug}-${slugSuffix}`;
     slugSuffix++;
   }
@@ -284,15 +303,20 @@ async function deriveTaskFromSpec(
   // AC: @cmd-derive ac-author
   const noteContent = generateImplementationNotes(specItem);
   const initialNotes = noteContent
-    ? [createNote(`Implementation notes (auto-generated from spec):\n\n${noteContent}`, getAuthor())]
+    ? [
+        createNote(
+          `Implementation notes (auto-generated from spec):\n\n${noteContent}`,
+          getAuthor(),
+        ),
+      ]
     : [];
 
   // Build task input with depends_on and initial notes
   const taskInput: TaskInput = {
     title: `Implement: ${specItem.title}`,
-    type: 'task',
+    type: "task",
     spec_ref: `@${specItem.slugs[0] || specItem._ulid}`,
-    derivation: 'auto',
+    derivation: "auto",
     priority: options.priority ?? normalizePriority(specItem.priority),
     slugs: [slug],
     tags: [...(specItem.tags || [])],
@@ -305,7 +329,7 @@ async function deriveTaskFromSpec(
     const previewTask = createTask(taskInput) as LoadedTask;
     return {
       specItem,
-      action: 'would_create',
+      action: "would_create",
       task: previewTask,
       dependsOn: options.dependsOn,
     };
@@ -315,14 +339,14 @@ async function deriveTaskFromSpec(
   const newTask = createTask(taskInput);
   await saveTask(ctx, newTask);
   const specSlug = specItem.slugs[0] || specItem._ulid.slice(0, 8);
-  await commitIfShadow(ctx.shadow, 'derive', specSlug);
+  await commitIfShadow(ctx.shadow, "derive", specSlug);
 
   // Add to existing tasks list for slug collision checks
   existingTasks.push(newTask as LoadedTask);
 
   return {
     specItem,
-    action: 'created',
+    action: "created",
     task: newTask as LoadedTask,
     dependsOn: options.dependsOn,
   };
@@ -333,7 +357,9 @@ async function deriveTaskFromSpec(
  * Prefers slug over ULID for readability.
  */
 function getTaskRef(task: LoadedTask, index: ReferenceIndex): string {
-  return task.slugs[0] ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
+  return task.slugs[0]
+    ? `@${task.slugs[0]}`
+    : `@${index.shortUlid(task._ulid)}`;
 }
 
 /**
@@ -348,18 +374,18 @@ function getParentTaskRef(
   parentSpec: LoadedSpecItem,
   specToTaskMap: Map<string, LoadedTask>,
   alignmentIndex: AlignmentIndex,
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): string | undefined {
   // Check if we created a task for this parent in this session
   const sessionTask = specToTaskMap.get(parentSpec._ulid);
-  if (sessionTask && sessionTask.status !== 'cancelled') {
+  if (sessionTask && sessionTask.status !== "cancelled") {
     return getTaskRef(sessionTask, index);
   }
 
   // Check if an existing task is linked to this parent spec
   // AC: @cmd-derive ac-15 - skip cancelled tasks
   const linkedTasks = alignmentIndex.getTasksForSpec(parentSpec._ulid);
-  const activeTask = linkedTasks.find(task => task.status !== 'cancelled');
+  const activeTask = linkedTasks.find((task) => task.status !== "cancelled");
   if (activeTask) {
     return getTaskRef(activeTask, index);
   }
@@ -372,22 +398,29 @@ function getParentTaskRef(
  */
 export function registerDeriveCommand(program: Command): void {
   program
-    .command('derive [ref]')
-    .description('Create task(s) from spec item(s)')
-    .option('--all', 'Derive tasks for all spec items without linked tasks')
-    .option('--flat', 'Only derive for the specified item, not children (default: recursive)')
-    .option('--force', 'Create task even if one already exists for the spec')
-    .option('--dry-run', 'Show what would be created without making changes')
-    .option('--priority <n>', 'Set priority for created task(s) (1-5)', parseInt)
+    .command("derive [ref]")
+    .description("Create task(s) from spec item(s)")
+    .option("--all", "Derive tasks for all spec items without linked tasks")
+    .option(
+      "--flat",
+      "Only derive for the specified item, not children (default: recursive)",
+    )
+    .option("--force", "Create task even if one already exists for the spec")
+    .option("--dry-run", "Show what would be created without making changes")
+    .option(
+      "--priority <n>",
+      "Set priority for created task(s) (1-5)",
+      parseInt,
+    )
     .action(async (ref: string | undefined, options) => {
       try {
         // Validate arguments
         if (!ref && !options.all) {
           error(errors.usage.deriveNoRef);
-          console.error('Usage:');
-          console.error('  kspec derive @spec-ref');
-          console.error('  kspec derive @spec-ref --flat');
-          console.error('  kspec derive --all');
+          console.error("Usage:");
+          console.error("  kspec derive @spec-ref");
+          console.error("  kspec derive @spec-ref --flat");
+          console.error("  kspec derive --all");
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
@@ -398,8 +431,12 @@ export function registerDeriveCommand(program: Command): void {
 
         // Validate priority if provided
         if (options.priority !== undefined) {
-          if (isNaN(options.priority) || options.priority < 1 || options.priority > 5) {
-            error('Priority must be a number between 1 and 5');
+          if (
+            Number.isNaN(options.priority) ||
+            options.priority < 1 ||
+            options.priority > 5
+          ) {
+            error("Priority must be a number between 1 and 5");
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
         }
@@ -418,7 +455,7 @@ export function registerDeriveCommand(program: Command): void {
 
         if (options.all) {
           // Get all spec items without linked tasks
-          specsToDerive = items.filter(item => {
+          specsToDerive = items.filter((item) => {
             const linkedTasks = alignmentIndex.getTasksForSpec(item._ulid);
             return linkedTasks.length === 0 || options.force;
           });
@@ -427,7 +464,7 @@ export function registerDeriveCommand(program: Command): void {
             if (isJsonMode()) {
               console.log(JSON.stringify([]));
             } else {
-              info('Nothing to derive (all items have tasks)');
+              info("Nothing to derive (all items have tasks)");
             }
             return;
           }
@@ -462,7 +499,7 @@ export function registerDeriveCommand(program: Command): void {
                 parentSpec,
                 specToTaskMap,
                 alignmentIndex,
-                index
+                index,
               );
               if (parentTaskRef) {
                 dependsOn = [parentTaskRef];
@@ -482,15 +519,18 @@ export function registerDeriveCommand(program: Command): void {
               dryRun: options.dryRun || false,
               dependsOn,
               priority: options.priority,
-            }
+            },
           );
 
           // Track created/would_create tasks for dependency resolution
-          if (result.task && (result.action === 'created' || result.action === 'would_create')) {
+          if (
+            result.task &&
+            (result.action === "created" || result.action === "would_create")
+          ) {
             specToTaskMap.set(specItem._ulid, result.task);
           }
           // Also track skipped tasks (existing) for dependency resolution
-          if (result.action === 'skipped' && result.task) {
+          if (result.action === "skipped" && result.task) {
             specToTaskMap.set(specItem._ulid, result.task);
           }
 
@@ -500,7 +540,7 @@ export function registerDeriveCommand(program: Command): void {
         // Output results
         if (isJsonMode()) {
           // JSON output format - simplified per AC
-          const jsonOutput = results.map(r => ({
+          const jsonOutput = results.map((r) => ({
             ulid: r.task?._ulid || null,
             slug: r.task?.slugs[0] || null,
             spec_ref: `@${r.specItem.slugs[0] || r.specItem._ulid}`,
@@ -512,22 +552,28 @@ export function registerDeriveCommand(program: Command): void {
         } else {
           // Human-readable output
           output(results, () => {
-            const created = results.filter(r => r.action === 'created');
-            const skipped = results.filter(r => r.action === 'skipped');
-            const wouldCreate = results.filter(r => r.action === 'would_create');
+            const created = results.filter((r) => r.action === "created");
+            const skipped = results.filter((r) => r.action === "skipped");
+            const wouldCreate = results.filter(
+              (r) => r.action === "would_create",
+            );
 
             if (options.dryRun) {
-              console.log('Would create:');
+              console.log("Would create:");
               for (const r of wouldCreate) {
-                const taskSlug = r.task?.slugs[0] || '';
-                const deps = r.dependsOn?.length ? ` (depends: ${r.dependsOn.join(', ')})` : '';
+                const taskSlug = r.task?.slugs[0] || "";
+                const deps = r.dependsOn?.length
+                  ? ` (depends: ${r.dependsOn.join(", ")})`
+                  : "";
                 console.log(`  + ${r.specItem.title}`);
                 console.log(`    -> ${taskSlug}${deps}`);
               }
               if (skipped.length > 0) {
-                console.log('\nSkipped:');
+                console.log("\nSkipped:");
                 for (const r of skipped) {
-                  const specRef = r.specItem.slugs[0] ? `@${r.specItem.slugs[0]}` : `@${index.shortUlid(r.specItem._ulid)}`;
+                  const specRef = r.specItem.slugs[0]
+                    ? `@${r.specItem.slugs[0]}`
+                    : `@${index.shortUlid(r.specItem._ulid)}`;
                   console.log(`  - ${specRef} (${r.reason})`);
                 }
               }
@@ -540,8 +586,10 @@ export function registerDeriveCommand(program: Command): void {
 
             if (created.length > 0) {
               for (const r of created) {
-                const taskSlug = r.task?.slugs[0] || '';
-                const deps = r.dependsOn?.length ? ` (depends: ${r.dependsOn.join(', ')})` : '';
+                const taskSlug = r.task?.slugs[0] || "";
+                const deps = r.dependsOn?.length
+                  ? ` (depends: ${r.dependsOn.join(", ")})`
+                  : "";
                 console.log(`OK Created task: ${taskSlug}${deps}`);
               }
             }
@@ -549,14 +597,16 @@ export function registerDeriveCommand(program: Command): void {
             if (skipped.length > 0 && !options.all) {
               // Show skipped for explicit derive (not --all)
               for (const r of skipped) {
-                const specRef = r.specItem.slugs[0] ? `@${r.specItem.slugs[0]}` : `@${index.shortUlid(r.specItem._ulid)}`;
+                const specRef = r.specItem.slugs[0]
+                  ? `@${r.specItem.slugs[0]}`
+                  : `@${index.shortUlid(r.specItem._ulid)}`;
                 console.log(`Skipped ${specRef} (${r.reason})`);
               }
             }
 
             // Summary
             if (created.length > 0 || skipped.length > 0) {
-              console.log('');
+              console.log("");
               if (created.length > 0) {
                 console.log(`Created ${created.length} task(s)`);
               }

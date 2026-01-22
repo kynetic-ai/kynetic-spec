@@ -1,22 +1,22 @@
-import { z } from 'zod';
+import { z } from "zod";
 import {
-  UlidSchema,
-  SlugSchema,
-  RefSchema,
-  PrioritySchema,
   DateTimeSchema,
-  MaturitySchema,
   ImplementationStatusSchema,
   ItemTypeSchema,
-} from './common.js';
-import { NoteSchema } from './task.js';
+  MaturitySchema,
+  PrioritySchema,
+  RefSchema,
+  SlugSchema,
+  UlidSchema,
+} from "./common.js";
+import { NoteSchema } from "./task.js";
 
 /**
  * Status block for spec items
  */
 export const StatusSchema = z.object({
-  maturity: MaturitySchema.default('draft'),
-  implementation: ImplementationStatusSchema.default('not_started'),
+  maturity: MaturitySchema.default("draft"),
+  implementation: ImplementationStatusSchema.default("not_started"),
 });
 
 /**
@@ -55,7 +55,7 @@ export const SpecItemSchema = z.object({
   // Identity
   _ulid: UlidSchema,
   slugs: z.array(SlugSchema).default([]),
-  title: z.string().min(1, 'Title is required'),
+  title: z.string().min(1, "Title is required"),
   type: ItemTypeSchema.optional(),
 
   // Status
@@ -107,11 +107,11 @@ export const SpecItemPatchSchema = SpecItemInputSchema.partial().passthrough();
  * Root manifest schema
  */
 export const ManifestSchema = z.object({
-  kynetic: z.string().default('1.0'),
+  kynetic: z.string().default("1.0"),
   project: z.object({
     name: z.string(),
-    version: z.string().default('0.1.0'),
-    status: MaturitySchema.default('draft'),
+    version: z.string().default("0.1.0"),
+    status: MaturitySchema.default("draft"),
   }),
 
   // Inline items (small projects)

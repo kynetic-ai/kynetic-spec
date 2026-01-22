@@ -1,35 +1,38 @@
-import * as path from 'node:path';
-import { Command } from 'commander';
-import chalk from 'chalk';
+import * as path from "node:path";
+import chalk from "chalk";
+import type { Command } from "commander";
+import type { LoadedSpecItem, LoadedTask } from "../../parser/index.js";
 import {
-  initContext,
-  validate,
-  loadAllTasks,
-  loadAllItems,
   AlignmentIndex,
-  ReferenceIndex,
-  fixFiles,
-  findTaskFiles,
-  expandIncludePattern,
-  loadMetaContext,
-  validateConventions,
-  type ValidationResult,
   type AlignmentWarning,
   type CompletenessWarning,
-  type FixResult,
   type ConventionValidationResult,
-} from '../../parser/index.js';
-import { output, success, error, info } from '../output.js';
-import { validation as validationStrings } from '../../strings/index.js';
-import { EXIT_CODES } from '../exit-codes.js';
-import type { LoadedTask, LoadedSpecItem } from '../../parser/index.js';
+  expandIncludePattern,
+  type FixResult,
+  findTaskFiles,
+  fixFiles,
+  initContext,
+  loadAllItems,
+  loadAllTasks,
+  loadMetaContext,
+  ReferenceIndex,
+  type ValidationResult,
+  validate,
+  validateConventions,
+} from "../../parser/index.js";
+import { validation as validationStrings } from "../../strings/index.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, output } from "../output.js";
 
 /**
  * Staleness warning types
  * AC: @stale-status-detection
  */
 interface StalenessWarning {
-  type: 'parent-pending-children-done' | 'spec-implemented-no-task' | 'task-done-spec-not-started';
+  type:
+    | "parent-pending-children-done"
+    | "spec-implemented-no-task"
+    | "task-done-spec-not-started";
   message: string;
   refs: string[];
 }
@@ -38,37 +41,41 @@ interface StalenessWarning {
  * Check for stale status mismatches between specs and tasks
  * AC: @stale-status-detection ac-1, ac-2, ac-3
  */
-function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: ReferenceIndex): StalenessWarning[] {
+function checkStaleness(
+  items: LoadedSpecItem[],
+  tasks: LoadedTask[],
+  refIndex: ReferenceIndex,
+): StalenessWarning[] {
   const warnings: StalenessWarning[] = [];
 
   // AC: @stale-status-detection ac-1 (parent-pending-children-done)
   // Check if task with dependencies is pending but all dependencies are completed
   for (const task of tasks) {
     // Only check pending/in_progress tasks with dependencies
-    if (task.status !== 'pending' && task.status !== 'in_progress') continue;
+    if (task.status !== "pending" && task.status !== "in_progress") continue;
     if (!task.depends_on || task.depends_on.length === 0) continue;
 
     // Resolve all dependency tasks
     const depTasks = task.depends_on
-      .map(depRef => {
+      .map((depRef) => {
         const result = refIndex.resolve(depRef);
         if (!result.ok) return null;
-        return tasks.find(t => t._ulid === result.ulid);
+        return tasks.find((t) => t._ulid === result.ulid);
       })
       .filter((t): t is LoadedTask => t !== null);
 
     if (depTasks.length === 0) continue;
 
     // Check if all dependencies are completed and their linked specs are implemented
-    const allDepsDone = depTasks.every(depTask => {
-      if (depTask.status !== 'completed') return false;
+    const allDepsDone = depTasks.every((depTask) => {
+      if (depTask.status !== "completed") return false;
 
       // If the dep task has a spec_ref, check if that spec is implemented
       if (depTask.spec_ref) {
         const result = refIndex.resolve(depTask.spec_ref);
         if (!result.ok) return true; // Missing spec ref doesn't block
-        const spec = items.find(item => item._ulid === result.ulid);
-        return spec?.status?.implementation === 'implemented';
+        const spec = items.find((item) => item._ulid === result.ulid);
+        return spec?.status?.implementation === "implemented";
       }
       return true;
     });
@@ -76,7 +83,7 @@ function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: 
     if (allDepsDone) {
       const taskRef = task.slugs[0] || refIndex.shortUlid(task._ulid);
       warnings.push({
-        type: 'parent-pending-children-done',
+        type: "parent-pending-children-done",
         message: `Task @${taskRef} is ${task.status} but all dependencies are completed. Consider completing or reviewing.`,
         refs: [task._ulid],
       });
@@ -86,11 +93,11 @@ function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: 
   // AC: @stale-status-detection ac-2 (spec-implemented-no-task)
   // Check if spec is implemented but has no completed tasks
   for (const item of items) {
-    if (item.status?.implementation !== 'implemented') continue;
+    if (item.status?.implementation !== "implemented") continue;
 
     // Find completed tasks that reference this spec
-    const completedTasks = tasks.filter(task => {
-      if (task.status !== 'completed' || !task.spec_ref) return false;
+    const completedTasks = tasks.filter((task) => {
+      if (task.status !== "completed" || !task.spec_ref) return false;
       const result = refIndex.resolve(task.spec_ref);
       return result.ok && result.ulid === item._ulid;
     });
@@ -98,7 +105,7 @@ function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: 
     if (completedTasks.length === 0) {
       const specRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
       warnings.push({
-        type: 'spec-implemented-no-task',
+        type: "spec-implemented-no-task",
         message: `Spec @${specRef} is implemented but has no completed tasks. Verify implementation or link existing task.`,
         refs: [item._ulid],
       });
@@ -108,21 +115,21 @@ function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: 
   // AC: @stale-status-detection ac-3 (task-done-spec-not-started)
   // Check if task is completed but spec is still not_started
   for (const task of tasks) {
-    if (task.status !== 'completed') continue;
+    if (task.status !== "completed") continue;
     if (!task.spec_ref) continue;
 
     // Resolve spec reference
     const result = refIndex.resolve(task.spec_ref);
     if (!result.ok) continue;
 
-    const spec = items.find(item => item._ulid === result.ulid);
+    const spec = items.find((item) => item._ulid === result.ulid);
     if (!spec) continue;
 
-    if (spec.status?.implementation === 'not_started') {
+    if (spec.status?.implementation === "not_started") {
       const taskRef = task.slugs[0] || refIndex.shortUlid(task._ulid);
       const specRef = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
       warnings.push({
-        type: 'task-done-spec-not-started',
+        type: "task-done-spec-not-started",
         message: `Task @${taskRef} completed but spec @${specRef} is not_started. Update spec status.`,
         refs: [task._ulid, spec._ulid],
       });
@@ -136,21 +143,32 @@ function checkStaleness(items: LoadedSpecItem[], tasks: LoadedTask[], refIndex: 
  * Format staleness warnings for display
  * AC: @stale-status-detection ac-4
  */
-function formatStalenessWarnings(warnings: StalenessWarning[], verbose: boolean): void {
+function formatStalenessWarnings(
+  warnings: StalenessWarning[],
+  verbose: boolean,
+): void {
   if (warnings.length === 0) {
-    console.log(chalk.green('Staleness: OK'));
+    console.log(chalk.green("Staleness: OK"));
     return;
   }
 
   console.log(chalk.yellow(`\nStaleness warnings: ${warnings.length}`));
 
   // Group by type
-  const parentPending = warnings.filter(w => w.type === 'parent-pending-children-done');
-  const specNoTask = warnings.filter(w => w.type === 'spec-implemented-no-task');
-  const taskDoneSpecNot = warnings.filter(w => w.type === 'task-done-spec-not-started');
+  const parentPending = warnings.filter(
+    (w) => w.type === "parent-pending-children-done",
+  );
+  const specNoTask = warnings.filter(
+    (w) => w.type === "spec-implemented-no-task",
+  );
+  const taskDoneSpecNot = warnings.filter(
+    (w) => w.type === "task-done-spec-not-started",
+  );
 
   if (parentPending.length > 0) {
-    console.log(chalk.yellow(`  Parent pending, children done: ${parentPending.length}`));
+    console.log(
+      chalk.yellow(`  Parent pending, children done: ${parentPending.length}`),
+    );
     const shown = verbose ? parentPending : parentPending.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -161,7 +179,9 @@ function formatStalenessWarnings(warnings: StalenessWarning[], verbose: boolean)
   }
 
   if (specNoTask.length > 0) {
-    console.log(chalk.yellow(`  Spec implemented, no task: ${specNoTask.length}`));
+    console.log(
+      chalk.yellow(`  Spec implemented, no task: ${specNoTask.length}`),
+    );
     const shown = verbose ? specNoTask : specNoTask.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -172,7 +192,9 @@ function formatStalenessWarnings(warnings: StalenessWarning[], verbose: boolean)
   }
 
   if (taskDoneSpecNot.length > 0) {
-    console.log(chalk.yellow(`  Task done, spec not started: ${taskDoneSpecNot.length}`));
+    console.log(
+      chalk.yellow(`  Task done, spec not started: ${taskDoneSpecNot.length}`),
+    );
     const shown = verbose ? taskDoneSpecNot : taskDoneSpecNot.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.message}`));
@@ -187,9 +209,11 @@ function formatStalenessWarnings(warnings: StalenessWarning[], verbose: boolean)
  * Format convention validation results for display
  * AC: @convention-definitions ac-3, ac-4
  */
-function formatConventionValidationResult(result: ConventionValidationResult): void {
+function formatConventionValidationResult(
+  result: ConventionValidationResult,
+): void {
   if (result.valid && result.skipped.length === 0) {
-    console.log(chalk.green('Conventions: OK'));
+    console.log(chalk.green("Conventions: OK"));
     return;
   }
 
@@ -216,37 +240,54 @@ function formatConventionValidationResult(result: ConventionValidationResult): v
       }
     }
   } else {
-    console.log(chalk.green('\nConventions: OK'));
+    console.log(chalk.green("\nConventions: OK"));
   }
 
   // Stats
-  console.log(chalk.gray(`\nConventions checked: ${result.stats.conventionsChecked}`));
-  console.log(chalk.gray(`Conventions skipped: ${result.stats.conventionsSkipped}`));
+  console.log(
+    chalk.gray(`\nConventions checked: ${result.stats.conventionsChecked}`),
+  );
+  console.log(
+    chalk.gray(`Conventions skipped: ${result.stats.conventionsSkipped}`),
+  );
 }
 
 /**
  * Format completeness warnings for display
  * AC: @spec-completeness ac-4
  */
-function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: boolean): void {
+function formatCompletenessWarnings(
+  warnings: CompletenessWarning[],
+  verbose: boolean,
+): void {
   if (warnings.length === 0) {
-    console.log(chalk.green('Completeness: OK'));
+    console.log(chalk.green("Completeness: OK"));
     return;
   }
 
   console.log(chalk.yellow(`\nCompleteness warnings: ${warnings.length}`));
 
   // Group by type
-  const missingAC = warnings.filter(w => w.type === 'missing_acceptance_criteria');
-  const missingDesc = warnings.filter(w => w.type === 'missing_description');
-  const statusMismatch = warnings.filter(w => w.type === 'status_inconsistency');
-  const missingTestCoverage = warnings.filter(w => w.type === 'missing_test_coverage');
-  const automationNoSpec = warnings.filter(w => w.type === 'automation_eligible_no_spec');
+  const missingAC = warnings.filter(
+    (w) => w.type === "missing_acceptance_criteria",
+  );
+  const missingDesc = warnings.filter((w) => w.type === "missing_description");
+  const statusMismatch = warnings.filter(
+    (w) => w.type === "status_inconsistency",
+  );
+  const missingTestCoverage = warnings.filter(
+    (w) => w.type === "missing_test_coverage",
+  );
+  const automationNoSpec = warnings.filter(
+    (w) => w.type === "automation_eligible_no_spec",
+  );
 
   // AC: @spec-completeness ac-4
   // Show summary with counts by issue type
   if (missingAC.length > 0) {
-    console.log(chalk.yellow(`  Missing acceptance criteria: ${missingAC.length}`));
+    console.log(
+      chalk.yellow(`  Missing acceptance criteria: ${missingAC.length}`),
+    );
     const shown = verbose ? missingAC : missingAC.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.gray(`    ○ ${w.itemRef} - ${w.itemTitle}`));
@@ -268,7 +309,9 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
   }
 
   if (statusMismatch.length > 0) {
-    console.log(chalk.yellow(`  Status inconsistencies: ${statusMismatch.length}`));
+    console.log(
+      chalk.yellow(`  Status inconsistencies: ${statusMismatch.length}`),
+    );
     for (const w of statusMismatch) {
       console.log(chalk.yellow(`    ! ${w.message}`));
       if (w.details) {
@@ -278,8 +321,12 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
   }
 
   if (missingTestCoverage.length > 0) {
-    console.log(chalk.yellow(`  Missing test coverage: ${missingTestCoverage.length}`));
-    const shown = verbose ? missingTestCoverage : missingTestCoverage.slice(0, 3);
+    console.log(
+      chalk.yellow(`  Missing test coverage: ${missingTestCoverage.length}`),
+    );
+    const shown = verbose
+      ? missingTestCoverage
+      : missingTestCoverage.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
       if (w.details) {
@@ -287,20 +334,26 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
       }
     }
     if (!verbose && missingTestCoverage.length > 3) {
-      console.log(chalk.gray(`    ... and ${missingTestCoverage.length - 3} more`));
+      console.log(
+        chalk.gray(`    ... and ${missingTestCoverage.length - 3} more`),
+      );
     }
   }
 
   // AC: @task-automation-eligibility ac-21, ac-23
   if (automationNoSpec.length > 0) {
-    console.log(chalk.yellow(`  Automation without spec: ${automationNoSpec.length}`));
+    console.log(
+      chalk.yellow(`  Automation without spec: ${automationNoSpec.length}`),
+    );
     const shown = verbose ? automationNoSpec : automationNoSpec.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
       console.log(chalk.gray(`      ${w.message}`));
     }
     if (!verbose && automationNoSpec.length > 3) {
-      console.log(chalk.gray(`    ... and ${automationNoSpec.length - 3} more`));
+      console.log(
+        chalk.gray(`    ... and ${automationNoSpec.length - 3} more`),
+      );
     }
   }
 }
@@ -308,21 +361,26 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
 /**
  * Format alignment warnings for display
  */
-function formatAlignmentWarnings(warnings: AlignmentWarning[], verbose: boolean): void {
+function formatAlignmentWarnings(
+  warnings: AlignmentWarning[],
+  verbose: boolean,
+): void {
   if (warnings.length === 0) {
-    console.log(chalk.green('Alignment: OK'));
+    console.log(chalk.green("Alignment: OK"));
     return;
   }
 
   console.log(chalk.yellow(`\nAlignment warnings: ${warnings.length}`));
 
   // Group by type
-  const orphaned = warnings.filter(w => w.type === 'orphaned_spec');
-  const mismatches = warnings.filter(w => w.type === 'status_mismatch');
-  const stale = warnings.filter(w => w.type === 'stale_implementation');
+  const orphaned = warnings.filter((w) => w.type === "orphaned_spec");
+  const mismatches = warnings.filter((w) => w.type === "status_mismatch");
+  const stale = warnings.filter((w) => w.type === "stale_implementation");
 
   if (orphaned.length > 0) {
-    console.log(chalk.yellow(`  Orphaned specs (no tasks): ${orphaned.length}`));
+    console.log(
+      chalk.yellow(`  Orphaned specs (no tasks): ${orphaned.length}`),
+    );
     const shown = verbose ? orphaned : orphaned.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.gray(`    ○ ${w.specTitle}`));
@@ -353,17 +411,21 @@ function formatAlignmentWarnings(warnings: AlignmentWarning[], verbose: boolean)
  */
 function formatFixResult(result: FixResult): void {
   if (result.fixesApplied.length === 0) {
-    console.log(chalk.gray('\nNo auto-fixable issues found.'));
+    console.log(chalk.gray("\nNo auto-fixable issues found."));
     return;
   }
 
-  console.log(chalk.cyan(`\n✓ Applied ${result.fixesApplied.length} fix(es) to ${result.filesModified} file(s):`));
+  console.log(
+    chalk.cyan(
+      `\n✓ Applied ${result.fixesApplied.length} fix(es) to ${result.filesModified} file(s):`,
+    ),
+  );
 
   for (const fix of result.fixesApplied) {
     const typeLabel = {
-      ulid_regenerated: 'ULID regenerated',
-      timestamp_added: 'Timestamp added',
-      status_added: 'Status added',
+      ulid_regenerated: "ULID regenerated",
+      timestamp_added: "Timestamp added",
+      status_added: "Status added",
     }[fix.type];
 
     const shortFile = path.basename(fix.file);
@@ -381,14 +443,23 @@ function formatFixResult(result: FixResult): void {
 /**
  * Collect all files that can be fixed
  */
-async function collectFixableFiles(ctx: { rootDir: string; specDir?: string; manifest?: { includes?: string[] } | null; manifestPath?: string | null }): Promise<string[]> {
+async function collectFixableFiles(ctx: {
+  rootDir: string;
+  specDir?: string;
+  manifest?: { includes?: string[] } | null;
+  manifestPath?: string | null;
+}): Promise<string[]> {
   const files: string[] = [];
 
   // Task files (exclude test fixtures)
   const taskFiles = await findTaskFiles(ctx.rootDir);
-  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, 'spec'));
+  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
   const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])];
-  files.push(...allTaskFiles.filter(f => !f.includes('fixtures') && !f.includes('test')));
+  files.push(
+    ...allTaskFiles.filter(
+      (f) => !f.includes("fixtures") && !f.includes("test"),
+    ),
+  );
 
   // Spec files from includes
   if (ctx.manifest && ctx.manifestPath) {
@@ -402,9 +473,9 @@ async function collectFixableFiles(ctx: { rootDir: string; specDir?: string; man
   }
 
   // Inbox file
-  const inboxPath = path.join(ctx.rootDir, 'spec', 'kynetic.inbox.yaml');
+  const inboxPath = path.join(ctx.rootDir, "spec", "kynetic.inbox.yaml");
   try {
-    await import('node:fs/promises').then(fs => fs.access(inboxPath));
+    await import("node:fs/promises").then((fs) => fs.access(inboxPath));
     files.push(inboxPath);
   } catch {
     // Inbox file doesn't exist, skip
@@ -416,22 +487,27 @@ async function collectFixableFiles(ctx: { rootDir: string; specDir?: string; man
 /**
  * Format validation result for display
  */
-function formatValidationResult(result: ValidationResult, verbose: boolean): void {
+function formatValidationResult(
+  result: ValidationResult,
+  verbose: boolean,
+): void {
   // Header
   if (result.valid) {
-    console.log(chalk.green.bold('✓ Validation passed'));
+    console.log(chalk.green.bold("✓ Validation passed"));
   } else {
-    console.log(chalk.red.bold('✗ Validation failed'));
+    console.log(chalk.red.bold("✗ Validation failed"));
   }
 
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray("─".repeat(40)));
   console.log(`Files checked: ${result.stats.filesChecked}`);
   console.log(`Items checked: ${result.stats.itemsChecked}`);
   console.log(`Tasks checked: ${result.stats.tasksChecked}`);
 
   // AC-meta-manifest-2: Display meta summary line
   if (result.metaStats) {
-    console.log(`Meta: ${result.metaStats.agents} agents, ${result.metaStats.workflows} workflows, ${result.metaStats.conventions} conventions`);
+    console.log(
+      `Meta: ${result.metaStats.agents} agents, ${result.metaStats.workflows} workflows, ${result.metaStats.conventions} conventions`,
+    );
   }
 
   // Schema errors
@@ -446,7 +522,7 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
       }
     }
   } else {
-    console.log(chalk.green('\nSchema: OK'));
+    console.log(chalk.green("\nSchema: OK"));
   }
 
   // Reference errors
@@ -461,12 +537,14 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
       console.log(chalk.gray(`    in: ${location}`));
     }
   } else {
-    console.log(chalk.green('References: OK'));
+    console.log(chalk.green("References: OK"));
   }
 
   // Reference warnings (deprecated targets)
   if (result.refWarnings.length > 0) {
-    console.log(chalk.yellow(`\nReference warnings: ${result.refWarnings.length}`));
+    console.log(
+      chalk.yellow(`\nReference warnings: ${result.refWarnings.length}`),
+    );
     const shown = verbose ? result.refWarnings : result.refWarnings.slice(0, 5);
     for (const warn of shown) {
       const location = warn.sourceFile
@@ -477,14 +555,20 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
       console.log(chalk.gray(`    in: ${location}`));
     }
     if (!verbose && result.refWarnings.length > 5) {
-      console.log(chalk.gray(`  ... and ${result.refWarnings.length - 5} more (use -v to see all)`));
+      console.log(
+        chalk.gray(
+          `  ... and ${result.refWarnings.length - 5} more (use -v to see all)`,
+        ),
+      );
     }
   }
 
   // AC: @trait-edge-cases ac-2
   // Trait cycle errors
   if (result.traitCycleErrors.length > 0) {
-    console.log(chalk.red(`\nTrait cycle errors: ${result.traitCycleErrors.length}`));
+    console.log(
+      chalk.red(`\nTrait cycle errors: ${result.traitCycleErrors.length}`),
+    );
     for (const err of result.traitCycleErrors) {
       console.log(chalk.red(`  ✗ ${err.traitRef} - ${err.traitTitle}`));
       console.log(chalk.gray(`    ${err.message}`));
@@ -493,19 +577,33 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
 
   // Orphans (warnings, not errors)
   if (result.orphans.length > 0) {
-    console.log(chalk.yellow(`\nOrphans (not referenced): ${result.orphans.length}`));
+    console.log(
+      chalk.yellow(`\nOrphans (not referenced): ${result.orphans.length}`),
+    );
     if (verbose) {
       for (const orphan of result.orphans) {
-        console.log(chalk.yellow(`  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`));
+        console.log(
+          chalk.yellow(
+            `  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`,
+          ),
+        );
       }
     } else {
       // Show first few
       const shown = result.orphans.slice(0, 5);
       for (const orphan of shown) {
-        console.log(chalk.yellow(`  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`));
+        console.log(
+          chalk.yellow(
+            `  ○ ${orphan.ulid.slice(0, 8)} [${orphan.type}] ${orphan.title}`,
+          ),
+        );
       }
       if (result.orphans.length > 5) {
-        console.log(chalk.gray(`  ... and ${result.orphans.length - 5} more (use -v to see all)`));
+        console.log(
+          chalk.gray(
+            `  ... and ${result.orphans.length - 5} more (use -v to see all)`,
+          ),
+        );
       }
     }
   }
@@ -516,18 +614,27 @@ function formatValidationResult(result: ValidationResult, verbose: boolean): voi
  */
 export function registerValidateCommand(program: Command): void {
   program
-    .command('validate')
-    .description('Validate spec files')
-    .option('--schema', 'Check schema conformance only')
-    .option('--refs', 'Check reference resolution only')
-    .option('--orphans', 'Find orphaned items only')
-    .option('--alignment', 'Check spec-task alignment')
-    .option('--completeness', 'Check spec completeness (missing AC, descriptions, status inconsistencies)')
-    .option('--conventions', 'Validate conventions')
-    .option('--staleness', 'Check for stale status mismatches between specs and tasks')
-    .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
-    .option('-v, --verbose', 'Show detailed output')
-    .option('--strict', 'Treat orphans and staleness warnings as errors')
+    .command("validate")
+    .description("Validate spec files")
+    .option("--schema", "Check schema conformance only")
+    .option("--refs", "Check reference resolution only")
+    .option("--orphans", "Find orphaned items only")
+    .option("--alignment", "Check spec-task alignment")
+    .option(
+      "--completeness",
+      "Check spec completeness (missing AC, descriptions, status inconsistencies)",
+    )
+    .option("--conventions", "Validate conventions")
+    .option(
+      "--staleness",
+      "Check for stale status mismatches between specs and tasks",
+    )
+    .option(
+      "--fix",
+      "Auto-fix issues where possible (invalid ULIDs, missing timestamps)",
+    )
+    .option("-v, --verbose", "Show detailed output")
+    .option("--strict", "Treat orphans and staleness warnings as errors")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -539,7 +646,13 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Determine which checks to run
-        const runAll = !options.schema && !options.refs && !options.orphans && !options.alignment && !options.completeness && !options.conventions;
+        const runAll =
+          !options.schema &&
+          !options.refs &&
+          !options.orphans &&
+          !options.alignment &&
+          !options.completeness &&
+          !options.conventions;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
@@ -592,14 +705,21 @@ export function registerValidateCommand(program: Command): void {
           // Show alignment stats
           const stats = alignmentIndex.getStats();
           console.log(
-            validationStrings.alignmentStats(stats.specsWithTasks, stats.totalSpecs, stats.alignedSpecs)
+            validationStrings.alignmentStats(
+              stats.specsWithTasks,
+              stats.totalSpecs,
+              stats.alignedSpecs,
+            ),
           );
         }
 
         // Show completeness warnings if any
         // AC: @spec-completeness ac-4
         if (result.completenessWarnings.length > 0) {
-          formatCompletenessWarnings(result.completenessWarnings, options.verbose);
+          formatCompletenessWarnings(
+            result.completenessWarnings,
+            options.verbose,
+          );
         }
 
         // Run convention validation if requested
@@ -611,17 +731,26 @@ export function registerValidateCommand(program: Command): void {
               // For now, we just validate that conventions are well-formed
               // Full validation against actual content (commits, notes, etc.)
               // would require additional content gathering logic
-              const conventionResult = validateConventions(metaCtx.conventions, {});
+              const conventionResult = validateConventions(
+                metaCtx.conventions,
+                {},
+              );
               formatConventionValidationResult(conventionResult);
 
               if (!conventionResult.valid) {
                 result.valid = false;
               }
             } else {
-              console.log(chalk.gray('No conventions defined in meta manifest'));
+              console.log(
+                chalk.gray("No conventions defined in meta manifest"),
+              );
             }
-          } catch (err) {
-            console.log(chalk.yellow('Warning: Could not load meta manifest for convention validation'));
+          } catch (_err) {
+            console.log(
+              chalk.yellow(
+                "Warning: Could not load meta manifest for convention validation",
+              ),
+            );
           }
         }
 
@@ -653,15 +782,21 @@ export function registerValidateCommand(program: Command): void {
 
   // Alias: kspec lint
   program
-    .command('lint')
-    .description('Alias for validate with style checks')
-    .option('--schema', 'Check schema conformance only')
-    .option('--refs', 'Check reference resolution only')
-    .option('--orphans', 'Find orphaned items only')
-    .option('--completeness', 'Check spec completeness (missing AC, descriptions, status inconsistencies)')
-    .option('--fix', 'Auto-fix issues where possible (invalid ULIDs, missing timestamps)')
-    .option('-v, --verbose', 'Show detailed output')
-    .option('--strict', 'Treat orphans as errors')
+    .command("lint")
+    .description("Alias for validate with style checks")
+    .option("--schema", "Check schema conformance only")
+    .option("--refs", "Check reference resolution only")
+    .option("--orphans", "Find orphaned items only")
+    .option(
+      "--completeness",
+      "Check spec completeness (missing AC, descriptions, status inconsistencies)",
+    )
+    .option(
+      "--fix",
+      "Auto-fix issues where possible (invalid ULIDs, missing timestamps)",
+    )
+    .option("-v, --verbose", "Show detailed output")
+    .option("--strict", "Treat orphans as errors")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -671,7 +806,11 @@ export function registerValidateCommand(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const runAll = !options.schema && !options.refs && !options.orphans && !options.completeness;
+        const runAll =
+          !options.schema &&
+          !options.refs &&
+          !options.orphans &&
+          !options.completeness;
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,

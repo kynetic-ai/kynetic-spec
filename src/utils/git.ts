@@ -2,7 +2,7 @@
  * Git integration utilities
  */
 
-import { execSync } from 'node:child_process';
+import { execSync } from "node:child_process";
 
 export interface GitCommit {
   hash: string;
@@ -14,7 +14,7 @@ export interface GitCommit {
 
 export interface GitFileStatus {
   path: string;
-  status: 'modified' | 'added' | 'deleted' | 'renamed' | 'untracked';
+  status: "modified" | "added" | "deleted" | "renamed" | "untracked";
   staged: boolean;
 }
 
@@ -30,10 +30,10 @@ export interface GitWorkingTree {
  */
 export function isGitRepo(cwd?: string): boolean {
   try {
-    execSync('git rev-parse --git-dir', {
+    execSync("git rev-parse --git-dir", {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
     });
     return true;
   } catch {
@@ -47,10 +47,10 @@ export function isGitRepo(cwd?: string): boolean {
 export function getCurrentBranch(cwd?: string): string | null {
   try {
     return (
-      execSync('git branch --show-current', {
+      execSync("git branch --show-current", {
         cwd,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'ignore'],
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
       }).trim() || null
     );
   } catch {
@@ -83,14 +83,14 @@ export function getRecentCommits(options: {
 
     const output = execSync(cmd, {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
     }).trim();
 
     if (!output) return [];
 
-    return output.split('\n').map((line) => {
-      const [fullHash, dateStr, message, author] = line.split('|');
+    return output.split("\n").map((line) => {
+      const [fullHash, dateStr, message, author] = line.split("|");
       return {
         hash: fullHash.slice(0, 7),
         fullHash,
@@ -116,10 +116,10 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
   };
 
   try {
-    const output = execSync('git status --porcelain', {
+    const output = execSync("git status --porcelain", {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
     }).trim();
 
     if (!output) {
@@ -128,7 +128,7 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
 
     result.clean = false;
 
-    for (const line of output.split('\n')) {
+    for (const line of output.split("\n")) {
       if (!line) continue;
 
       const indexStatus = line[0];
@@ -137,13 +137,13 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
       const path = line.slice(2).trim();
 
       // Untracked files
-      if (indexStatus === '?' && workTreeStatus === '?') {
+      if (indexStatus === "?" && workTreeStatus === "?") {
         result.untracked.push(path);
         continue;
       }
 
       // Staged changes (index has changes)
-      if (indexStatus !== ' ' && indexStatus !== '?') {
+      if (indexStatus !== " " && indexStatus !== "?") {
         result.staged.push({
           path,
           status: parseStatusCode(indexStatus),
@@ -152,7 +152,7 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
       }
 
       // Unstaged changes (work tree has changes)
-      if (workTreeStatus !== ' ' && workTreeStatus !== '?') {
+      if (workTreeStatus !== " " && workTreeStatus !== "?") {
         result.unstaged.push({
           path,
           status: parseStatusCode(workTreeStatus),
@@ -184,20 +184,23 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
       `git log --format="%H" --before="${since.toISOString()}" -n 1`,
       {
         cwd,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      }
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+      },
     ).trim();
 
     if (!sinceCommit) {
       // No commit before this time, diff from the beginning
       // Using Git's magic empty tree hash - this is the hash of an empty tree object
       // that exists conceptually in every Git repo (commonly used for initial diffs)
-      const diff = execSync('git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD', {
-        cwd,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      }).trim();
+      const diff = execSync(
+        "git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD",
+        {
+          cwd,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "ignore"],
+        },
+      ).trim();
 
       return diff || null;
     }
@@ -205,19 +208,21 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
     // Get diff from that commit to HEAD (includes committed changes)
     const committedDiff = execSync(`git diff ${sinceCommit}..HEAD`, {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
     }).trim();
 
     // Get diff for working tree changes (uncommitted)
-    const workingTreeDiff = execSync('git diff HEAD', {
+    const workingTreeDiff = execSync("git diff HEAD", {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
     }).trim();
 
     // Combine both diffs
-    const combined = [committedDiff, workingTreeDiff].filter(Boolean).join('\n\n');
+    const combined = [committedDiff, workingTreeDiff]
+      .filter(Boolean)
+      .join("\n\n");
     return combined || null;
   } catch {
     return null;
@@ -225,18 +230,18 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
 }
 
 function parseStatusCode(
-  code: string
-): 'modified' | 'added' | 'deleted' | 'renamed' | 'untracked' {
+  code: string,
+): "modified" | "added" | "deleted" | "renamed" | "untracked" {
   switch (code) {
-    case 'M':
-      return 'modified';
-    case 'A':
-      return 'added';
-    case 'D':
-      return 'deleted';
-    case 'R':
-      return 'renamed';
+    case "M":
+      return "modified";
+    case "A":
+      return "added";
+    case "D":
+      return "deleted";
+    case "R":
+      return "renamed";
     default:
-      return 'modified';
+      return "modified";
   }
 }

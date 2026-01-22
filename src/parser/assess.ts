@@ -5,8 +5,8 @@
  * AC: @tasks-assess-automation
  */
 
-import type { LoadedTask, LoadedSpecItem } from './yaml.js';
-import type { ReferenceIndex } from './refs.js';
+import type { ReferenceIndex } from "./refs.js";
+import type { LoadedSpecItem, LoadedTask } from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -37,7 +37,7 @@ export interface TaskAssessment {
     spec_has_acs: CriterionResult & { ac_count?: number };
     not_spike: CriterionResult;
   };
-  recommendation: 'review_for_eligible' | 'needs_review' | 'manual_only';
+  recommendation: "review_for_eligible" | "needs_review" | "manual_only";
   reason: string;
 }
 
@@ -63,10 +63,11 @@ export interface AssessmentSummary {
 export function assessTask(
   task: LoadedTask,
   index: ReferenceIndex,
-  items: LoadedSpecItem[]
+  items: LoadedSpecItem[],
 ): TaskAssessment {
-  const taskRef = task.slugs.length > 0 ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
-  const taskType = task.type || 'task';
+  const taskRef =
+    task.slugs.length > 0 ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
+  const taskType = task.type || "task";
 
   // AC: @tasks-assess-automation ac-8, ac-9 - Check has_spec_ref
   const hasSpecRefResult = checkHasSpecRef(task, index);
@@ -83,7 +84,7 @@ export function assessTask(
     hasSpecRefResult,
     specHasAcsResult,
     notSpikeResult,
-    taskType
+    taskType,
   );
 
   return {
@@ -107,15 +108,15 @@ export function assessTask(
  */
 function checkHasSpecRef(
   task: LoadedTask,
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): CriterionResult & { spec_ref?: string } {
   if (!task.spec_ref) {
-    return { pass: false, detail: 'missing' };
+    return { pass: false, detail: "missing" };
   }
 
   const resolved = index.resolve(task.spec_ref);
   if (!resolved.ok) {
-    return { pass: false, detail: 'unresolvable', spec_ref: task.spec_ref };
+    return { pass: false, detail: "unresolvable", spec_ref: task.spec_ref };
   }
 
   return { pass: true, spec_ref: task.spec_ref };
@@ -128,27 +129,31 @@ function checkHasSpecRef(
 function checkSpecHasAcs(
   task: LoadedTask,
   index: ReferenceIndex,
-  items: LoadedSpecItem[]
+  items: LoadedSpecItem[],
 ): CriterionResult & { ac_count?: number } {
   // AC: @tasks-assess-automation ac-11 - skipped if no spec_ref
   if (!task.spec_ref) {
-    return { pass: false, skipped: true, detail: 'no spec to check' };
+    return { pass: false, skipped: true, detail: "no spec to check" };
   }
 
   const resolved = index.resolve(task.spec_ref);
   if (!resolved.ok) {
-    return { pass: false, skipped: true, detail: 'spec not resolvable' };
+    return { pass: false, skipped: true, detail: "spec not resolvable" };
   }
 
   // Find the spec item
-  const specItem = items.find(i => i._ulid === resolved.ulid);
+  const specItem = items.find((i) => i._ulid === resolved.ulid);
   if (!specItem) {
-    return { pass: false, skipped: true, detail: 'spec not found in items' };
+    return { pass: false, skipped: true, detail: "spec not found in items" };
   }
 
   const acCount = specItem.acceptance_criteria?.length || 0;
   if (acCount === 0) {
-    return { pass: false, ac_count: 0, detail: 'spec has no acceptance criteria' };
+    return {
+      pass: false,
+      ac_count: 0,
+      detail: "spec has no acceptance criteria",
+    };
   }
 
   return { pass: true, ac_count: acCount };
@@ -159,9 +164,9 @@ function checkSpecHasAcs(
  * AC: @tasks-assess-automation ac-12, ac-13
  */
 function checkNotSpike(task: LoadedTask): CriterionResult {
-  const taskType = task.type || 'task';
-  if (taskType === 'spike') {
-    return { pass: false, detail: 'type: spike' };
+  const taskType = task.type || "task";
+  if (taskType === "spike") {
+    return { pass: false, detail: "type: spike" };
   }
   return { pass: true, detail: `type: ${taskType}` };
 }
@@ -174,38 +179,38 @@ function computeRecommendation(
   hasSpecRef: CriterionResult,
   specHasAcs: CriterionResult,
   notSpike: CriterionResult,
-  taskType: string
-): { recommendation: TaskAssessment['recommendation']; reason: string } {
+  _taskType: string,
+): { recommendation: TaskAssessment["recommendation"]; reason: string } {
   // AC: @tasks-assess-automation ac-14 - Spikes are always manual_only
   if (!notSpike.pass) {
     return {
-      recommendation: 'manual_only',
-      reason: 'Spikes output knowledge, not automatable code',
+      recommendation: "manual_only",
+      reason: "Spikes output knowledge, not automatable code",
     };
   }
 
   // AC: @tasks-assess-automation ac-15 - Missing spec or no ACs → needs_review
   const reasons: string[] = [];
   if (!hasSpecRef.pass) {
-    reasons.push('missing spec_ref');
+    reasons.push("missing spec_ref");
   }
   if (!specHasAcs.pass && !specHasAcs.skipped) {
-    reasons.push('spec has no acceptance criteria');
+    reasons.push("spec has no acceptance criteria");
   } else if (specHasAcs.skipped && !hasSpecRef.pass) {
     // Only add this if spec is missing (not if spec is unresolvable)
   }
 
   if (reasons.length > 0) {
     return {
-      recommendation: 'needs_review',
-      reason: reasons.join(', '),
+      recommendation: "needs_review",
+      reason: reasons.join(", "),
     };
   }
 
   // AC: @tasks-assess-automation ac-16 - All criteria pass → review_for_eligible
   return {
-    recommendation: 'review_for_eligible',
-    reason: 'Criteria pass - verify spec is appropriate and ACs are adequate',
+    recommendation: "review_for_eligible",
+    reason: "Criteria pass - verify spec is appropriate and ACs are adequate",
   };
 }
 
@@ -216,12 +221,12 @@ function computeRecommendation(
 export function filterTasksForAssessment(
   tasks: LoadedTask[],
   options: { all?: boolean; taskRef?: string },
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): LoadedTask[] {
   let filtered = tasks;
 
   // AC: @tasks-assess-automation ac-28 - Exclude non-pending tasks
-  filtered = filtered.filter(t => t.status === 'pending');
+  filtered = filtered.filter((t) => t.status === "pending");
 
   // AC: @tasks-assess-automation ac-6 - Single task assessment
   if (options.taskRef) {
@@ -229,13 +234,13 @@ export function filterTasksForAssessment(
     if (!resolved.ok) {
       return []; // Will be handled by caller
     }
-    filtered = filtered.filter(t => t._ulid === resolved.ulid);
+    filtered = filtered.filter((t) => t._ulid === resolved.ulid);
     return filtered;
   }
 
   // AC: @tasks-assess-automation ac-1, ac-27 - Filter by unassessed unless --all
   if (!options.all) {
-    filtered = filtered.filter(t => !t.automation);
+    filtered = filtered.filter((t) => !t.automation);
   }
 
   return filtered;
@@ -245,7 +250,9 @@ export function filterTasksForAssessment(
  * Compute summary counts from assessments
  * AC: @tasks-assess-automation ac-5, ac-25
  */
-export function computeSummary(assessments: TaskAssessment[]): AssessmentSummary {
+export function computeSummary(
+  assessments: TaskAssessment[],
+): AssessmentSummary {
   const summary: AssessmentSummary = {
     review_for_eligible: 0,
     needs_review: 0,
@@ -268,33 +275,35 @@ export interface AutoModeChange {
   taskRef: string;
   taskUlid: string;
   taskTitle: string;
-  action: 'set_manual_only' | 'set_needs_review' | 'no_change';
-  newStatus?: 'manual_only' | 'needs_review';
+  action: "set_manual_only" | "set_needs_review" | "no_change";
+  newStatus?: "manual_only" | "needs_review";
   reason: string;
 }
 
-export function computeAutoModeChanges(assessments: TaskAssessment[]): AutoModeChange[] {
-  return assessments.map(assessment => {
+export function computeAutoModeChanges(
+  assessments: TaskAssessment[],
+): AutoModeChange[] {
+  return assessments.map((assessment) => {
     // AC: @tasks-assess-automation ac-17 - Spikes → manual_only
-    if (assessment.recommendation === 'manual_only') {
+    if (assessment.recommendation === "manual_only") {
       return {
         taskRef: assessment.taskRef,
         taskUlid: assessment.taskUlid,
         taskTitle: assessment.taskTitle,
-        action: 'set_manual_only' as const,
-        newStatus: 'manual_only' as const,
+        action: "set_manual_only" as const,
+        newStatus: "manual_only" as const,
         reason: assessment.reason,
       };
     }
 
     // AC: @tasks-assess-automation ac-17 - Missing criteria → needs_review
-    if (assessment.recommendation === 'needs_review') {
+    if (assessment.recommendation === "needs_review") {
       return {
         taskRef: assessment.taskRef,
         taskUlid: assessment.taskUlid,
         taskTitle: assessment.taskTitle,
-        action: 'set_needs_review' as const,
-        newStatus: 'needs_review' as const,
+        action: "set_needs_review" as const,
+        newStatus: "needs_review" as const,
         reason: assessment.reason,
       };
     }
@@ -304,8 +313,8 @@ export function computeAutoModeChanges(assessments: TaskAssessment[]): AutoModeC
       taskRef: assessment.taskRef,
       taskUlid: assessment.taskUlid,
       taskTitle: assessment.taskTitle,
-      action: 'no_change' as const,
-      reason: 'Passes criteria - requires agent/human review to mark eligible',
+      action: "no_change" as const,
+      reason: "Passes criteria - requires agent/human review to mark eligible",
     };
   });
 }

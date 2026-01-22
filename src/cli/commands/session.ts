@@ -4,38 +4,39 @@
  * Provides context for starting/resuming work sessions.
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
+import chalk from "chalk";
+import type { Command } from "commander";
 import {
-  initContext,
-  loadAllTasks,
-  loadAllItems,
-  loadInboxItems,
-  loadMetaContext,
-  loadSessionContext,
   getReadyTasks,
-  ReferenceIndex,
-  type LoadedTask,
-  type LoadedInboxItem,
+  initContext,
   type KspecContext,
-} from '../../parser/index.js';
-import type { SessionContext as StoredSessionContext } from '../../schema/index.js';
-import { output, error, info, isJsonMode } from '../output.js';
-import { sessionHeaders, hints, sessionPrompt, errors } from '../../strings/index.js';
+  type LoadedTask,
+  loadAllItems,
+  loadAllTasks,
+  loadInboxItems,
+  loadSessionContext,
+  ReferenceIndex,
+} from "../../parser/index.js";
+import { type ShadowSyncResult, shadowPull } from "../../parser/shadow.js";
+import type { SessionContext as StoredSessionContext } from "../../schema/index.js";
 import {
-  parseTimeSpec,
-  formatRelativeTime,
-  isGitRepo,
-  getRecentCommits,
-  getCurrentBranch,
-  getWorkingTreeStatus,
+  errors,
+  hints,
+  sessionHeaders,
+  sessionPrompt,
+} from "../../strings/index.js";
+import {
   formatCommitGuidance,
-  type GitCommit,
+  formatRelativeTime,
   type GitWorkingTree,
-} from '../../utils/index.js';
-import { shadowPull, type ShadowSyncResult } from '../../parser/shadow.js';
-import type { Note, Todo } from '../../schema/index.js';
-import { EXIT_CODES } from '../exit-codes.js';
+  getCurrentBranch,
+  getRecentCommits,
+  getWorkingTreeStatus,
+  isGitRepo,
+  parseTimeSpec,
+} from "../../utils/index.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, isJsonMode, output } from "../output.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -54,7 +55,7 @@ export interface CheckpointResult {
 }
 
 export interface CheckpointIssue {
-  type: 'uncommitted_changes' | 'in_progress_task' | 'incomplete_todo';
+  type: "uncommitted_changes" | "in_progress_task" | "incomplete_todo";
   description: string;
   details?: Record<string, unknown>;
 }
@@ -153,7 +154,7 @@ export interface CompletedTaskSummary {
   title: string;
   completed_at: string;
   closed_reason: string | null;
-  origin?: 'manual' | 'derived' | 'observation_promotion';
+  origin?: "manual" | "derived" | "observation_promotion";
 }
 
 export interface CommitSummary {
@@ -195,11 +196,11 @@ export interface SessionOptions {
 
 function toActiveTaskSummary(
   task: LoadedTask,
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): ActiveTaskSummary {
   const lastNote =
     task.notes.length > 0 ? task.notes[task.notes.length - 1] : null;
-  const incompleteTodos = task.todos.filter(t => !t.done).length;
+  const incompleteTodos = task.todos.filter((t) => !t.done).length;
   return {
     ref: index.shortUlid(task._ulid),
     title: task.title,
@@ -215,7 +216,7 @@ function toActiveTaskSummary(
 
 function toReadyTaskSummary(
   task: LoadedTask,
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): ReadyTaskSummary {
   return {
     ref: index.shortUlid(task._ulid),
@@ -228,8 +229,8 @@ function toReadyTaskSummary(
 
 function toBlockedTaskSummary(
   task: LoadedTask,
-  allTasks: LoadedTask[],
-  index: ReferenceIndex
+  _allTasks: LoadedTask[],
+  index: ReferenceIndex,
 ): BlockedTaskSummary {
   // Find unmet dependencies
   const unmetDeps: string[] = [];
@@ -237,7 +238,7 @@ function toBlockedTaskSummary(
     const result = index.resolve(depRef);
     if (result.ok) {
       const depItem = result.item;
-      if ('status' in depItem && depItem.status !== 'completed') {
+      if ("status" in depItem && depItem.status !== "completed") {
         unmetDeps.push(depRef);
       }
     }
@@ -253,12 +254,12 @@ function toBlockedTaskSummary(
 
 function toCompletedTaskSummary(
   task: LoadedTask,
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): CompletedTaskSummary {
   return {
     ref: index.shortUlid(task._ulid),
     title: task.title,
-    completed_at: task.completed_at || '',
+    completed_at: task.completed_at || "",
     closed_reason: task.closed_reason || null,
     origin: task.origin,
   };
@@ -267,7 +268,7 @@ function toCompletedTaskSummary(
 function collectRecentNotes(
   tasks: LoadedTask[],
   index: ReferenceIndex,
-  options: { limit: number; since: Date | null }
+  options: { limit: number; since: Date | null },
 ): NoteSummary[] {
   const allNotes: NoteSummary[] = [];
 
@@ -295,7 +296,7 @@ function collectRecentNotes(
   return allNotes
     .sort(
       (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     .slice(0, options.limit);
 }
@@ -303,7 +304,7 @@ function collectRecentNotes(
 function collectIncompleteTodos(
   tasks: LoadedTask[],
   index: ReferenceIndex,
-  options: { limit: number }
+  options: { limit: number },
 ): TodoSummary[] {
   const allTodos: TodoSummary[] = [];
 
@@ -326,8 +327,7 @@ function collectIncompleteTodos(
   // Sort by added_at descending (most recent first), take limit
   return allTodos
     .sort(
-      (a, b) =>
-        new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+      (a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime(),
     )
     .slice(0, options.limit);
 }
@@ -337,9 +337,9 @@ function collectIncompleteTodos(
  */
 export async function gatherSessionContext(
   ctx: KspecContext,
-  options: SessionOptions
+  options: SessionOptions,
 ): Promise<SessionContext> {
-  const limit = parseInt(options.limit || '10', 10);
+  const limit = parseInt(options.limit || "10", 10);
   const sinceDate = options.since ? parseTimeSpec(options.since) : null;
   const showGit = options.git !== false; // default true
 
@@ -352,58 +352,59 @@ export async function gatherSessionContext(
   // Compute stats
   const stats: SessionStats = {
     total_tasks: allTasks.length,
-    in_progress: allTasks.filter((t) => t.status === 'in_progress').length,
-    pending_review: allTasks.filter((t) => t.status === 'pending_review').length,
+    in_progress: allTasks.filter((t) => t.status === "in_progress").length,
+    pending_review: allTasks.filter((t) => t.status === "pending_review")
+      .length,
     ready: getReadyTasks(allTasks).length,
-    blocked: allTasks.filter((t) => t.status === 'blocked').length,
-    completed: allTasks.filter((t) => t.status === 'completed').length,
+    blocked: allTasks.filter((t) => t.status === "blocked").length,
+    completed: allTasks.filter((t) => t.status === "completed").length,
     inbox_items: inboxItems.length,
   };
 
   // Get active tasks
   const activeTasks = allTasks
-    .filter((t) => t.status === 'in_progress')
+    .filter((t) => t.status === "in_progress")
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
 
   // Get pending review tasks
   const pendingReviewTasks = allTasks
-    .filter((t) => t.status === 'pending_review')
+    .filter((t) => t.status === "pending_review")
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
 
   // Get recent notes from active tasks
   const recentNotes = collectRecentNotes(
-    allTasks.filter((t) => t.status === 'in_progress'),
+    allTasks.filter((t) => t.status === "in_progress"),
     index,
-    { limit: options.full ? limit * 2 : limit, since: sinceDate }
+    { limit: options.full ? limit * 2 : limit, since: sinceDate },
   );
 
   // Get incomplete todos from active tasks
   const activeTodos = collectIncompleteTodos(
-    allTasks.filter((t) => t.status === 'in_progress'),
+    allTasks.filter((t) => t.status === "in_progress"),
     index,
-    { limit: options.full ? limit * 2 : limit }
+    { limit: options.full ? limit * 2 : limit },
   );
 
   // Get ready tasks (optionally filtered to automation-eligible only)
   const readyTasks = getReadyTasks(allTasks)
-    .filter((t) => !options.eligible || t.automation === 'eligible')
+    .filter((t) => !options.eligible || t.automation === "eligible")
     .slice(0, options.full ? undefined : limit)
     .map((t) => toReadyTaskSummary(t, index));
 
   // Get blocked tasks
   const blockedTasks = allTasks
-    .filter((t) => t.status === 'blocked')
+    .filter((t) => t.status === "blocked")
     .slice(0, options.full ? undefined : limit)
     .map((t) => toBlockedTaskSummary(t, allTasks, index));
 
   // Get recently completed tasks
   const recentlyCompleted = allTasks
     .filter((t) => {
-      if (t.status !== 'completed' || !t.completed_at) return false;
+      if (t.status !== "completed" || !t.completed_at) return false;
       const completedDate = new Date(t.completed_at);
       if (sinceDate && completedDate < sinceDate) return false;
       return true;
@@ -444,7 +445,10 @@ export async function gatherSessionContext(
 
   // Get inbox items (oldest first to encourage triage)
   const inboxSummaries: InboxSummary[] = inboxItems
-    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    )
     .slice(0, options.full ? undefined : limit)
     .map((item) => ({
       ref: item._ulid.slice(0, 8),
@@ -503,7 +507,7 @@ export interface StopHookInput {
  */
 export async function performCheckpoint(
   ctx: KspecContext,
-  options: CheckpointOptions
+  options: CheckpointOptions,
 ): Promise<CheckpointResult> {
   const issues: CheckpointIssue[] = [];
   const instructions: string[] = [];
@@ -512,11 +516,13 @@ export async function performCheckpoint(
   const allTasks = await loadAllTasks(ctx);
 
   // Check for in-progress tasks
-  const inProgressTasks = allTasks.filter((t) => t.status === 'in_progress');
+  const inProgressTasks = allTasks.filter((t) => t.status === "in_progress");
   for (const task of inProgressTasks) {
-    const ref = task.slugs[0] ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
+    const ref = task.slugs[0]
+      ? `@${task.slugs[0]}`
+      : `@${task._ulid.slice(0, 8)}`;
     issues.push({
-      type: 'in_progress_task',
+      type: "in_progress_task",
       description: `Task ${ref} is still in progress: ${task.title}`,
       details: {
         ref,
@@ -529,7 +535,7 @@ export async function performCheckpoint(
     const incompleteTodos = task.todos.filter((t) => !t.done);
     for (const todo of incompleteTodos) {
       issues.push({
-        type: 'incomplete_todo',
+        type: "incomplete_todo",
         description: `Incomplete todo on ${ref}: ${todo.text}`,
         details: {
           task_ref: ref,
@@ -550,7 +556,7 @@ export async function performCheckpoint(
         workingTree.untracked.length;
 
       issues.push({
-        type: 'uncommitted_changes',
+        type: "uncommitted_changes",
         description: `${changeCount} uncommitted changes in working tree`,
         details: {
           staged: workingTree.staged.length,
@@ -563,52 +569,54 @@ export async function performCheckpoint(
 
   // Build instructions based on issues
   if (issues.length > 0 && !options.force) {
-    instructions.push('Before ending this session, please:');
+    instructions.push("Before ending this session, please:");
 
-    const hasInProgress = issues.some((i) => i.type === 'in_progress_task');
-    const hasUncommitted = issues.some((i) => i.type === 'uncommitted_changes');
-    const hasIncompleteTodos = issues.some((i) => i.type === 'incomplete_todo');
+    const hasInProgress = issues.some((i) => i.type === "in_progress_task");
+    const hasUncommitted = issues.some((i) => i.type === "uncommitted_changes");
+    const hasIncompleteTodos = issues.some((i) => i.type === "incomplete_todo");
 
     let step = 1;
 
     if (hasInProgress) {
       instructions.push(
-        `${step++}. Add notes to in-progress tasks documenting current state`
+        `${step++}. Add notes to in-progress tasks documenting current state`,
       );
       instructions.push(
-        `${step++}. Either complete the tasks or leave them in_progress with clear notes for next session`
+        `${step++}. Either complete the tasks or leave them in_progress with clear notes for next session`,
       );
     }
 
     if (hasIncompleteTodos) {
       instructions.push(
-        `${step++}. Complete or acknowledge incomplete todos on active tasks`
+        `${step++}. Complete or acknowledge incomplete todos on active tasks`,
       );
     }
 
     if (hasUncommitted) {
-      instructions.push(`${step++}. Commit your changes with a descriptive message`);
+      instructions.push(
+        `${step++}. Commit your changes with a descriptive message`,
+      );
 
       // Add WIP commit guidance if there are in-progress tasks
       if (inProgressTasks.length > 0) {
         const task = inProgressTasks[0];
         const guidance = formatCommitGuidance(task, { wip: true });
-        instructions.push('');
-        instructions.push('Suggested WIP commit:');
+        instructions.push("");
+        instructions.push("Suggested WIP commit:");
         instructions.push(`  ${guidance.message}`);
-        instructions.push('');
+        instructions.push("");
         for (const trailer of guidance.trailers) {
           instructions.push(`  ${trailer}`);
         }
       }
     }
 
-    instructions.push('');
+    instructions.push("");
     instructions.push(
-      'Use: kspec task note @task "Progress notes..." to document state'
+      'Use: kspec task note @task "Progress notes..." to document state',
     );
     instructions.push(
-      'Use: kspec task complete @task --reason "Summary" if task is done'
+      'Use: kspec task complete @task --reason "Summary" if task is done',
     );
   }
 
@@ -623,7 +631,7 @@ export async function performCheckpoint(
   if (isRetry && issues.length > 0) {
     message = `[kspec] Session checkpoint: ${issues.length} issue(s) acknowledged - allowing stop`;
   } else if (ok) {
-    message = '[kspec] Session checkpoint passed - ready to end session';
+    message = "[kspec] Session checkpoint passed - ready to end session";
   } else {
     message = `[kspec] Session checkpoint: ${issues.length} issue(s) need attention`;
   }
@@ -643,20 +651,20 @@ function formatCheckpointResult(result: CheckpointResult): void {
     console.log(chalk.green(result.message));
   } else {
     console.log(chalk.yellow(result.message));
-    console.log('');
+    console.log("");
 
     for (const issue of result.issues) {
       const icon =
-        issue.type === 'uncommitted_changes'
-          ? chalk.yellow('⚠')
-          : issue.type === 'in_progress_task'
-            ? chalk.blue('●')
-            : chalk.gray('○');
+        issue.type === "uncommitted_changes"
+          ? chalk.yellow("⚠")
+          : issue.type === "in_progress_task"
+            ? chalk.blue("●")
+            : chalk.gray("○");
       console.log(`  ${icon} ${issue.description}`);
     }
 
     if (result.instructions.length > 0) {
-      console.log('');
+      console.log("");
       for (const instruction of result.instructions) {
         console.log(chalk.gray(instruction));
       }
@@ -664,7 +672,10 @@ function formatCheckpointResult(result: CheckpointResult): void {
   }
 }
 
-function formatSessionContext(ctx: SessionContext, options: SessionOptions): void {
+function formatSessionContext(
+  ctx: SessionContext,
+  options: SessionOptions,
+): void {
   const isBrief = !options.full;
 
   // Header
@@ -677,36 +688,41 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   }
 
   // Stats summary
-  const pendingReviewNote = ctx.stats.pending_review > 0
-    ? `${ctx.stats.pending_review} awaiting review, `
-    : '';
-  const inboxNote = ctx.stats.inbox_items > 0
-    ? ` | Inbox: ${ctx.stats.inbox_items}`
-    : '';
+  const pendingReviewNote =
+    ctx.stats.pending_review > 0
+      ? `${ctx.stats.pending_review} awaiting review, `
+      : "";
+  const inboxNote =
+    ctx.stats.inbox_items > 0 ? ` | Inbox: ${ctx.stats.inbox_items}` : "";
   console.log(
     chalk.gray(
       `Tasks: ${ctx.stats.in_progress} active, ${pendingReviewNote}${ctx.stats.ready} ready, ` +
-        `${ctx.stats.blocked} blocked, ${ctx.stats.completed}/${ctx.stats.total_tasks} completed${inboxNote}`
-    )
+        `${ctx.stats.blocked} blocked, ${ctx.stats.completed}/${ctx.stats.total_tasks} completed${inboxNote}`,
+    ),
   );
 
   // Session context section (focus, threads, questions)
-  if (ctx.context && (ctx.context.focus || ctx.context.threads.length > 0 || ctx.context.open_questions.length > 0)) {
-    console.log('\n--- Session Context ---');
+  if (
+    ctx.context &&
+    (ctx.context.focus ||
+      ctx.context.threads.length > 0 ||
+      ctx.context.open_questions.length > 0)
+  ) {
+    console.log("\n--- Session Context ---");
 
     if (ctx.context.focus) {
-      console.log(`  ${chalk.cyan('Focus:')} ${ctx.context.focus}`);
+      console.log(`  ${chalk.cyan("Focus:")} ${ctx.context.focus}`);
     }
 
     if (ctx.context.threads.length > 0) {
-      console.log(`  ${chalk.cyan('Active Threads:')}`);
+      console.log(`  ${chalk.cyan("Active Threads:")}`);
       for (const thread of ctx.context.threads) {
         console.log(`    - ${thread}`);
       }
     }
 
     if (ctx.context.open_questions.length > 0) {
-      console.log(`  ${chalk.cyan('Open Questions:')}`);
+      console.log(`  ${chalk.cyan("Open Questions:")}`);
       for (const question of ctx.context.open_questions) {
         console.log(`    - ${question}`);
       }
@@ -718,14 +734,16 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     console.log(`\n${sessionHeaders.activeWork}`);
     for (const task of ctx.active_tasks) {
       const started = task.started_at
-        ? chalk.gray(` (started ${formatRelativeTime(new Date(task.started_at))})`)
-        : '';
+        ? chalk.gray(
+            ` (started ${formatRelativeTime(new Date(task.started_at))})`,
+          )
+        : "";
       const priority =
         task.priority <= 2
           ? chalk.red(`P${task.priority}`)
           : chalk.gray(`P${task.priority}`);
       console.log(
-        `  ${chalk.blue('[in_progress]')} ${priority} ${task.ref} ${task.title}${started}`
+        `  ${chalk.blue("[in_progress]")} ${priority} ${task.ref} ${task.title}${started}`,
       );
     }
   } else {
@@ -741,7 +759,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
           ? chalk.red(`P${task.priority}`)
           : chalk.gray(`P${task.priority}`);
       console.log(
-        `  ${chalk.yellow('[pending_review]')} ${priority} ${task.ref} ${task.title}`
+        `  ${chalk.yellow("[pending_review]")} ${priority} ${task.ref} ${task.title}`,
       );
     }
   }
@@ -752,28 +770,35 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     const observationPromotedTasks: string[] = [];
     for (const task of ctx.recently_completed) {
       const completedAge = formatRelativeTime(new Date(task.completed_at));
-      let reason = '';
+      let reason = "";
       if (task.closed_reason) {
         const maxLen = isBrief ? 60 : 120;
-        const truncated = task.closed_reason.length > maxLen
-          ? task.closed_reason.slice(0, maxLen).trim() + '...'
-          : task.closed_reason;
+        const truncated =
+          task.closed_reason.length > maxLen
+            ? `${task.closed_reason.slice(0, maxLen).trim()}...`
+            : task.closed_reason;
         reason = chalk.gray(` - ${truncated}`);
       }
       console.log(
-        `  ${chalk.green('[completed]')} ${task.ref} ${task.title} ${chalk.gray(`(${completedAge})`)}${reason}`
+        `  ${chalk.green("[completed]")} ${task.ref} ${task.title} ${chalk.gray(`(${completedAge})`)}${reason}`,
       );
 
       // Track tasks that came from observations
-      if (task.origin === 'observation_promotion') {
+      if (task.origin === "observation_promotion") {
         observationPromotedTasks.push(task.ref);
       }
     }
 
     // Show reminder about resolving observations
     if (observationPromotedTasks.length > 0) {
-      console.log(chalk.yellow(`\n  ℹ Consider resolving linked observations: ${observationPromotedTasks.join(', ')}`));
-      console.log(chalk.gray(`    Run: kspec meta observations --pending-resolution`));
+      console.log(
+        chalk.yellow(
+          `\n  ℹ Consider resolving linked observations: ${observationPromotedTasks.join(", ")}`,
+        ),
+      );
+      console.log(
+        chalk.gray(`    Run: kspec meta observations --pending-resolution`),
+      );
     }
   }
 
@@ -782,23 +807,25 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     console.log(`\n${sessionHeaders.recentNotes}`);
     for (const note of ctx.recent_notes) {
       const age = formatRelativeTime(new Date(note.created_at));
-      const author = note.author ? chalk.gray(` by ${note.author}`) : '';
+      const author = note.author ? chalk.gray(` by ${note.author}`) : "";
       console.log(`  ${chalk.yellow(age)} on ${note.task_ref}${author}:`);
 
       // Truncate content in brief mode
       let content = note.content.trim();
       if (isBrief && content.length > 200) {
-        content = content.slice(0, 200).trim() + '...';
+        content = `${content.slice(0, 200).trim()}...`;
       }
 
       // Indent content, limit lines in brief mode
-      const lines = content.split('\n');
+      const lines = content.split("\n");
       const maxLines = isBrief ? 3 : lines.length;
       for (const line of lines.slice(0, maxLines)) {
         console.log(`    ${chalk.white(line)}`);
       }
       if (isBrief && lines.length > maxLines) {
-        console.log(chalk.gray(`    ... (${lines.length - maxLines} more lines)`));
+        console.log(
+          chalk.gray(`    ... (${lines.length - maxLines} more lines)`),
+        );
       }
     }
   }
@@ -807,7 +834,9 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   if (ctx.active_todos.length > 0) {
     console.log(`\n${sessionHeaders.incompleteTodos}`);
     for (const todo of ctx.active_todos) {
-      console.log(`  ${chalk.yellow('[ ]')} ${todo.task_ref}#${todo.id}: ${todo.text}`);
+      console.log(
+        `  ${chalk.yellow("[ ]")} ${todo.task_ref}#${todo.id}: ${todo.text}`,
+      );
     }
   }
 
@@ -820,7 +849,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
           ? chalk.red(`P${task.priority}`)
           : chalk.gray(`P${task.priority}`);
       const tags =
-        task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(' #')}`) : '';
+        task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(" #")}`) : "";
       console.log(`  ${priority} ${task.ref} ${task.title}${tags}`);
     }
   }
@@ -829,12 +858,14 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
   if (ctx.blocked_tasks.length > 0) {
     console.log(`\n${sessionHeaders.blocked}`);
     for (const task of ctx.blocked_tasks) {
-      console.log(`  ${chalk.red('[blocked]')} ${task.ref} ${task.title}`);
+      console.log(`  ${chalk.red("[blocked]")} ${task.ref} ${task.title}`);
       if (task.blocked_by.length > 0) {
-        console.log(chalk.gray(`    Blockers: ${task.blocked_by.join(', ')}`));
+        console.log(chalk.gray(`    Blockers: ${task.blocked_by.join(", ")}`));
       }
       if (task.unmet_deps.length > 0) {
-        console.log(chalk.gray(`    Waiting on: ${task.unmet_deps.join(', ')}`));
+        console.log(
+          chalk.gray(`    Waiting on: ${task.unmet_deps.join(", ")}`),
+        );
       }
     }
   }
@@ -845,7 +876,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     for (const commit of ctx.recent_commits) {
       const age = formatRelativeTime(new Date(commit.date));
       console.log(
-        `  ${chalk.yellow(commit.hash)} ${commit.message} ${chalk.gray(`(${age}, ${commit.author})`)}`
+        `  ${chalk.yellow(commit.hash)} ${commit.message} ${chalk.gray(`(${age}, ${commit.author})`)}`,
       );
     }
   }
@@ -855,14 +886,17 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     console.log(`\n${sessionHeaders.inbox}`);
     for (const item of ctx.inbox_items) {
       const age = formatRelativeTime(new Date(item.created_at));
-      const author = item.added_by ? ` by ${item.added_by}` : '';
-      const tags = item.tags.length > 0 ? chalk.cyan(` [${item.tags.join(', ')}]`) : '';
+      const author = item.added_by ? ` by ${item.added_by}` : "";
+      const tags =
+        item.tags.length > 0 ? chalk.cyan(` [${item.tags.join(", ")}]`) : "";
       // Truncate text in brief mode
       let text = item.text;
       if (isBrief && text.length > 60) {
-        text = text.slice(0, 60).trim() + '...';
+        text = `${text.slice(0, 60).trim()}...`;
       }
-      console.log(`  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`);
+      console.log(
+        `  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`,
+      );
       console.log(`    ${text}`);
     }
     console.log(`  ${hints.inboxPromote}`);
@@ -873,27 +907,35 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     console.log(`\n${sessionHeaders.workingTree}`);
 
     if (ctx.working_tree.staged.length > 0) {
-      console.log(chalk.green('  Staged:'));
+      console.log(chalk.green("  Staged:"));
       for (const file of ctx.working_tree.staged) {
-        console.log(`    ${chalk.green(file.status[0].toUpperCase())} ${file.path}`);
+        console.log(
+          `    ${chalk.green(file.status[0].toUpperCase())} ${file.path}`,
+        );
       }
     }
 
     if (ctx.working_tree.unstaged.length > 0) {
-      console.log(chalk.red('  Modified:'));
+      console.log(chalk.red("  Modified:"));
       for (const file of ctx.working_tree.unstaged) {
-        console.log(`    ${chalk.red(file.status[0].toUpperCase())} ${file.path}`);
+        console.log(
+          `    ${chalk.red(file.status[0].toUpperCase())} ${file.path}`,
+        );
       }
     }
 
     if (ctx.working_tree.untracked.length > 0) {
-      console.log(chalk.gray('  Untracked:'));
+      console.log(chalk.gray("  Untracked:"));
       const limit = isBrief ? 5 : ctx.working_tree.untracked.length;
       for (const path of ctx.working_tree.untracked.slice(0, limit)) {
-        console.log(`    ${chalk.gray('?')} ${path}`);
+        console.log(`    ${chalk.gray("?")} ${path}`);
       }
       if (isBrief && ctx.working_tree.untracked.length > limit) {
-        console.log(chalk.gray(`    ... and ${ctx.working_tree.untracked.length - limit} more`));
+        console.log(
+          chalk.gray(
+            `    ... and ${ctx.working_tree.untracked.length - limit} more`,
+          ),
+        );
       }
     }
   } else if (ctx.working_tree?.clean) {
@@ -905,20 +947,30 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
 
   if (ctx.active_tasks.length > 0) {
     const ref = ctx.active_tasks[0].ref;
-    quickCommands.push(`kspec task note @${ref} "Progress..."  ${chalk.gray('# document work')}`);
-    quickCommands.push(`kspec task complete @${ref} --reason "..."  ${chalk.gray('# finish task')}`);
+    quickCommands.push(
+      `kspec task note @${ref} "Progress..."  ${chalk.gray("# document work")}`,
+    );
+    quickCommands.push(
+      `kspec task complete @${ref} --reason "..."  ${chalk.gray("# finish task")}`,
+    );
   } else if (ctx.ready_tasks.length > 0) {
     const ref = ctx.ready_tasks[0].ref;
-    quickCommands.push(`kspec task start @${ref}  ${chalk.gray('# begin work')}`);
+    quickCommands.push(
+      `kspec task start @${ref}  ${chalk.gray("# begin work")}`,
+    );
   }
 
   if (ctx.inbox_items.length > 0) {
     const ref = ctx.inbox_items[0].ref;
-    quickCommands.push(`kspec inbox promote @${ref} --title "..."  ${chalk.gray('# convert to task')}`);
+    quickCommands.push(
+      `kspec inbox promote @${ref} --title "..."  ${chalk.gray("# convert to task")}`,
+    );
   }
 
   if (ctx.working_tree && !ctx.working_tree.clean) {
-    quickCommands.push(`git add . && git commit -m "..."  ${chalk.gray('# commit changes')}`);
+    quickCommands.push(
+      `git add . && git commit -m "..."  ${chalk.gray("# commit changes")}`,
+    );
   }
 
   if (quickCommands.length > 0) {
@@ -928,7 +980,7 @@ function formatSessionContext(ctx: SessionContext, options: SessionOptions): voi
     }
   }
 
-  console.log(''); // Final newline
+  console.log(""); // Final newline
 }
 
 // ─── Command Registration ────────────────────────────────────────────────────
@@ -944,12 +996,14 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
       // AC: @shadow-sync ac-3 - Warn about conflicts but continue with local state
       if (syncResult.hadConflict) {
         console.log(
-          chalk.yellow('⚠ Shadow sync conflict detected. Run `kspec shadow resolve` to fix.')
+          chalk.yellow(
+            "⚠ Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",
+          ),
         );
-        console.log(chalk.gray('  Continuing with local state...'));
-        console.log('');
+        console.log(chalk.gray("  Continuing with local state..."));
+        console.log("");
       } else if (syncResult.pulled) {
-        console.log(chalk.gray('ℹ Synced shadow branch from remote'));
+        console.log(chalk.gray("ℹ Synced shadow branch from remote"));
       }
     }
 
@@ -972,21 +1026,21 @@ async function readStdinIfAvailable(): Promise<string | null> {
   }
 
   return new Promise((resolve) => {
-    let data = '';
+    let data = "";
     const timeout = setTimeout(() => {
       process.stdin.removeAllListeners();
       resolve(data || null);
     }, 100); // 100ms timeout for stdin
 
-    process.stdin.setEncoding('utf8');
-    process.stdin.on('data', (chunk) => {
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => {
       data += chunk;
     });
-    process.stdin.on('end', () => {
+    process.stdin.on("end", () => {
       clearTimeout(timeout);
       resolve(data || null);
     });
-    process.stdin.on('error', () => {
+    process.stdin.on("error", () => {
       clearTimeout(timeout);
       resolve(null);
     });
@@ -1019,7 +1073,9 @@ async function sessionPromptCheckAction(): Promise<void> {
   console.log(sessionPrompt.specCheck);
 }
 
-async function sessionCheckpointAction(options: CheckpointOptions): Promise<void> {
+async function sessionCheckpointAction(
+  options: CheckpointOptions,
+): Promise<void> {
   try {
     // Read stdin for Claude Code hook input
     const stdin = await readStdinIfAvailable();
@@ -1039,10 +1095,14 @@ async function sessionCheckpointAction(options: CheckpointOptions): Promise<void
     if (isJsonMode()) {
       if (!result.ok) {
         // Build reason message with issues and instructions
-        const issueLines = result.issues.map(i => `- ${i.description}`).join('\n');
-        const instructionLines = result.instructions.filter(i => i.trim()).join('\n');
+        const issueLines = result.issues
+          .map((i) => `- ${i.description}`)
+          .join("\n");
+        const instructionLines = result.instructions
+          .filter((i) => i.trim())
+          .join("\n");
         const reason = `${result.message}\n\nIssues:\n${issueLines}\n\n${instructionLines}`;
-        console.log(JSON.stringify({ decision: 'block', reason }));
+        console.log(JSON.stringify({ decision: "block", reason }));
       }
       // If ok, exit silently (Claude Code expects no output when allowing stop)
     } else {
@@ -1062,39 +1122,47 @@ async function sessionCheckpointAction(options: CheckpointOptions): Promise<void
  */
 export function registerSessionCommands(program: Command): void {
   const session = program
-    .command('session')
-    .description('Session management and context');
+    .command("session")
+    .description("Session management and context");
 
   session
-    .command('start')
-    .alias('resume')
-    .description('Surface relevant context for starting a new working session')
-    .option('--brief', 'Compact summary (default)')
-    .option('--full', 'Comprehensive context dump')
-    .option('--since <time>', 'Filter by recency (ISO8601 or relative: 1h, 2d, 1w)')
-    .option('--no-git', 'Skip git commit information')
-    .option('-n, --limit <n>', 'Limit items per section', '10')
+    .command("start")
+    .alias("resume")
+    .description("Surface relevant context for starting a new working session")
+    .option("--brief", "Compact summary (default)")
+    .option("--full", "Comprehensive context dump")
+    .option(
+      "--since <time>",
+      "Filter by recency (ISO8601 or relative: 1h, 2d, 1w)",
+    )
+    .option("--no-git", "Skip git commit information")
+    .option("-n, --limit <n>", "Limit items per section", "10")
     .action(sessionStartAction);
 
   session
-    .command('checkpoint')
-    .description('Pre-stop hook: check for uncommitted work before ending session')
-    .option('--force', 'Allow session end regardless of issues')
+    .command("checkpoint")
+    .description(
+      "Pre-stop hook: check for uncommitted work before ending session",
+    )
+    .option("--force", "Allow session end regardless of issues")
     .action(sessionCheckpointAction);
 
   session
-    .command('prompt-check')
-    .description('UserPromptSubmit hook: inject spec-first reminder')
+    .command("prompt-check")
+    .description("UserPromptSubmit hook: inject spec-first reminder")
     .action(sessionPromptCheckAction);
 
   // Top-level alias: kspec context
   program
-    .command('context')
-    .description('Alias for session start - surface session context')
-    .option('--brief', 'Compact summary (default)')
-    .option('--full', 'Comprehensive context dump')
-    .option('--since <time>', 'Filter by recency (ISO8601 or relative: 1h, 2d, 1w)')
-    .option('--no-git', 'Skip git commit information')
-    .option('-n, --limit <n>', 'Limit items per section', '10')
+    .command("context")
+    .description("Alias for session start - surface session context")
+    .option("--brief", "Compact summary (default)")
+    .option("--full", "Comprehensive context dump")
+    .option(
+      "--since <time>",
+      "Filter by recency (ISO8601 or relative: 1h, 2d, 1w)",
+    )
+    .option("--no-git", "Skip git commit information")
+    .option("-n, --limit <n>", "Limit items per section", "10")
     .action(sessionStartAction);
 }

@@ -1,35 +1,35 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
+import chalk from "chalk";
+import type { Command } from "commander";
 import {
-  initContext,
   buildIndexes,
-  createSpecItem,
-  updateSpecItem,
   checkSlugUniqueness,
-  ReferenceIndex,
+  createSpecItem,
+  initContext,
   type LoadedSpecItem,
-} from '../../parser/index.js';
-import { commitIfShadow } from '../../parser/shadow.js';
-import type { SpecItemInput } from '../../schema/index.js';
-import { output, error, success, warn } from '../output.js';
-import { errors } from '../../strings/errors.js';
-import { EXIT_CODES } from '../exit-codes.js';
+  ReferenceIndex,
+  updateSpecItem,
+} from "../../parser/index.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import type { SpecItemInput } from "../../schema/index.js";
+import { errors } from "../../strings/errors.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, output, success, warn } from "../output.js";
 
 /**
  * Register trait commands
  */
 export function registerTraitCommands(program: Command): void {
   const trait = program
-    .command('trait')
-    .description('Trait management commands');
+    .command("trait")
+    .description("Trait management commands");
 
   // kspec trait add <title>
   // AC: @trait-cli ac-1, ac-2
   trait
-    .command('add <title>')
-    .description('Create a new trait')
-    .option('--description <desc>', 'Trait description')
-    .option('--slug <slug>', 'Human-friendly slug')
+    .command("add <title>")
+    .description("Create a new trait")
+    .option("--description <desc>", "Trait description")
+    .option("--slug <slug>", "Human-friendly slug")
     .action(async (title: string, options) => {
       try {
         const ctx = await initContext();
@@ -39,7 +39,9 @@ export function registerTraitCommands(program: Command): void {
         if (options.slug) {
           const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
           if (!slugCheck.ok) {
-            error(errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid));
+            error(
+              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
+            );
             process.exit(EXIT_CODES.CONFLICT);
           }
         }
@@ -47,7 +49,7 @@ export function registerTraitCommands(program: Command): void {
         // AC: @trait-cli ac-1 - create trait-type item
         const input: SpecItemInput = {
           title,
-          type: 'trait',
+          type: "trait",
           slugs: options.slug ? [options.slug] : [],
           description: options.description, // AC: @trait-cli ac-2
           priority: undefined,
@@ -66,15 +68,19 @@ export function registerTraitCommands(program: Command): void {
         // This requires manually manipulating the manifest file since it's not loaded as an item
 
         if (!ctx.manifestPath) {
-          error('Could not find kynetic.yaml');
+          error("Could not find kynetic.yaml");
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const { readYamlFile, writeYamlFilePreserveFormat } = await import('../../parser/yaml.js');
-        const manifest = await readYamlFile<Record<string, unknown>>(ctx.manifestPath);
+        const { readYamlFile, writeYamlFilePreserveFormat } = await import(
+          "../../parser/yaml.js"
+        );
+        const manifest = await readYamlFile<Record<string, unknown>>(
+          ctx.manifestPath,
+        );
 
         if (!manifest) {
-          error('Could not load kynetic.yaml');
+          error("Could not load kynetic.yaml");
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -94,18 +100,23 @@ export function registerTraitCommands(program: Command): void {
         // For calculating path and ref
         const traitIndex = (manifest.traits as unknown[]).length - 1;
         const result = {
-          item: { ...newItem, _sourceFile: ctx.manifestPath, _path: `traits[${traitIndex}]` } as LoadedSpecItem,
+          item: {
+            ...newItem,
+            _sourceFile: ctx.manifestPath,
+            _path: `traits[${traitIndex}]`,
+          } as LoadedSpecItem,
           path: `traits[${traitIndex}]`,
         };
 
         // Build index with new item for short ULID
         const index = new ReferenceIndex([], [...items, result.item]);
-        const itemSlug = result.item.slugs?.[0] || index.shortUlid(result.item._ulid);
+        const itemSlug =
+          result.item.slugs?.[0] || index.shortUlid(result.item._ulid);
 
-        await commitIfShadow(ctx.shadow, 'trait-add', itemSlug);
+        await commitIfShadow(ctx.shadow, "trait-add", itemSlug);
         success(`Created trait: ${itemSlug}`, { trait: result.item });
       } catch (err) {
-        error('Failed to create trait', err);
+        error("Failed to create trait", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -113,8 +124,8 @@ export function registerTraitCommands(program: Command): void {
   // kspec trait list
   // AC: @trait-cli ac-3
   trait
-    .command('list')
-    .description('List all traits')
+    .command("list")
+    .description("List all traits")
     .action(async () => {
       try {
         const ctx = await initContext();
@@ -123,32 +134,32 @@ export function registerTraitCommands(program: Command): void {
         const traits = traitIndex.getAllTraits();
 
         // AC: @trait-edge-cases ac-4
-        output(
-          { traits },
-          () => {
-            if (traits.length === 0) {
-              console.log(chalk.gray('No traits defined'));
-              return;
-            }
-
-            console.log(chalk.bold('Traits'));
-            console.log(chalk.gray('─'.repeat(60)));
-
-            for (const trait of traits) {
-              const shortId = trait.ulid.slice(0, 8);
-              const acCount = trait.acceptanceCriteria.length;
-              const acInfo = acCount > 0 ? chalk.gray(` (${acCount} AC)`) : chalk.gray(' (no AC)');
-
-              console.log(
-                `${chalk.gray(shortId)} ${trait.title} ${chalk.cyan(`@${trait.slug}`)}${acInfo}`
-              );
-            }
-
-            console.log(chalk.gray(`\n${traits.length} trait(s)`));
+        output({ traits }, () => {
+          if (traits.length === 0) {
+            console.log(chalk.gray("No traits defined"));
+            return;
           }
-        );
+
+          console.log(chalk.bold("Traits"));
+          console.log(chalk.gray("─".repeat(60)));
+
+          for (const trait of traits) {
+            const shortId = trait.ulid.slice(0, 8);
+            const acCount = trait.acceptanceCriteria.length;
+            const acInfo =
+              acCount > 0
+                ? chalk.gray(` (${acCount} AC)`)
+                : chalk.gray(" (no AC)");
+
+            console.log(
+              `${chalk.gray(shortId)} ${trait.title} ${chalk.cyan(`@${trait.slug}`)}${acInfo}`,
+            );
+          }
+
+          console.log(chalk.gray(`\n${traits.length} trait(s)`));
+        });
       } catch (err) {
-        error('Failed to list traits', err);
+        error("Failed to list traits", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -156,8 +167,8 @@ export function registerTraitCommands(program: Command): void {
   // kspec trait get <ref>
   // AC: @trait-cli ac-4
   trait
-    .command('get <ref>')
-    .description('Show trait details')
+    .command("get <ref>")
+    .description("Show trait details")
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
@@ -172,7 +183,7 @@ export function registerTraitCommands(program: Command): void {
         const item = result.item as LoadedSpecItem;
 
         // Verify it's a trait
-        if (item.type !== 'trait') {
+        if (item.type !== "trait") {
           error(`Item ${ref} is not a trait (type: ${item.type})`);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -185,38 +196,37 @@ export function registerTraitCommands(program: Command): void {
 
         const specsUsingTrait = traitIndex.getSpecsForTrait(item._ulid);
 
-        output(
-          { trait, specs_using_trait: specsUsingTrait },
-          () => {
-            console.log(chalk.bold(trait.title));
-            console.log(chalk.gray('─'.repeat(40)));
-            console.log(`ULID:      ${trait.ulid}`);
-            console.log(`Slug:      @${trait.slug}`);
-            console.log(`Type:      trait`);
+        output({ trait, specs_using_trait: specsUsingTrait }, () => {
+          console.log(chalk.bold(trait.title));
+          console.log(chalk.gray("─".repeat(40)));
+          console.log(`ULID:      ${trait.ulid}`);
+          console.log(`Slug:      @${trait.slug}`);
+          console.log(`Type:      trait`);
 
-            if (trait.description) {
-              console.log('\n─── Description ───');
-              console.log(trait.description);
-            }
+          if (trait.description) {
+            console.log("\n─── Description ───");
+            console.log(trait.description);
+          }
 
-            // AC: @trait-cli ac-4 - show acceptance criteria
-            if (trait.acceptanceCriteria.length > 0) {
-              console.log('\n─── Acceptance Criteria ───');
-              for (const ac of trait.acceptanceCriteria) {
-                console.log(chalk.cyan(`  [${ac.id}]`));
-                if (ac.given) console.log(`    Given: ${ac.given}`);
-                if (ac.when) console.log(`    When: ${ac.when}`);
-                if (ac.then) console.log(`    Then: ${ac.then}`);
-              }
-            }
-
-            if (specsUsingTrait.length > 0) {
-              console.log(chalk.gray(`\nUsed by ${specsUsingTrait.length} spec(s)`));
+          // AC: @trait-cli ac-4 - show acceptance criteria
+          if (trait.acceptanceCriteria.length > 0) {
+            console.log("\n─── Acceptance Criteria ───");
+            for (const ac of trait.acceptanceCriteria) {
+              console.log(chalk.cyan(`  [${ac.id}]`));
+              if (ac.given) console.log(`    Given: ${ac.given}`);
+              if (ac.when) console.log(`    When: ${ac.when}`);
+              if (ac.then) console.log(`    Then: ${ac.then}`);
             }
           }
-        );
+
+          if (specsUsingTrait.length > 0) {
+            console.log(
+              chalk.gray(`\nUsed by ${specsUsingTrait.length} spec(s)`),
+            );
+          }
+        });
       } catch (err) {
-        error('Failed to get trait', err);
+        error("Failed to get trait", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -227,14 +237,14 @@ export function registerTraitCommands(program: Command): void {
  */
 export function registerItemTraitCommands(itemCommand: Command): void {
   const traitCmd = itemCommand
-    .command('trait')
-    .description('Manage traits on spec items');
+    .command("trait")
+    .description("Manage traits on spec items");
 
   // kspec item trait add <spec-ref> <trait-ref>
   // AC: @trait-cli ac-5, ac-6, ac-7
   traitCmd
-    .command('add <specRef> <traitRef>')
-    .description('Add a trait to a spec item')
+    .command("add <specRef> <traitRef>")
+    .description("Add a trait to a spec item")
     .action(async (specRef: string, traitRef: string) => {
       try {
         const ctx = await initContext();
@@ -250,7 +260,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         const spec = specResult.item as LoadedSpecItem;
 
         // Check if it's a task
-        if ('status' in spec && typeof spec.status === 'string') {
+        if ("status" in spec && typeof spec.status === "string") {
           error(`Cannot add traits to tasks. ${specRef} is a task.`);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -263,7 +273,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         }
 
         const traitItem = traitResult.item as LoadedSpecItem;
-        if (traitItem.type !== 'trait') {
+        if (traitItem.type !== "trait") {
           error(`${traitRef} is not a trait (type: ${traitItem.type})`);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -273,8 +283,13 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         const traitRefString = `@${traitItem.slugs[0] || traitItem._ulid}`;
 
         if (currentTraits.includes(traitRefString)) {
-          warn(`Spec already has trait ${traitRefString} (idempotent - no change)`);
-          output({ spec: spec._ulid, trait: traitRefString, added: false }, () => {});
+          warn(
+            `Spec already has trait ${traitRefString} (idempotent - no change)`,
+          );
+          output(
+            { spec: spec._ulid, trait: traitRefString, added: false },
+            () => {},
+          );
           return;
         }
 
@@ -283,7 +298,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         await updateSpecItem(ctx, spec, { traits: updatedTraits });
 
         const specSlug = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
-        await commitIfShadow(ctx.shadow, 'item-trait-add', specSlug);
+        await commitIfShadow(ctx.shadow, "item-trait-add", specSlug);
 
         success(`Added trait ${traitRefString} to ${specSlug}`, {
           spec: specSlug,
@@ -291,7 +306,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
           added: true,
         });
       } catch (err) {
-        error('Failed to add trait to spec', err);
+        error("Failed to add trait to spec", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -299,8 +314,8 @@ export function registerItemTraitCommands(itemCommand: Command): void {
   // kspec item trait remove <spec-ref> <trait-ref>
   // AC: @trait-cli ac-8
   traitCmd
-    .command('remove <specRef> <traitRef>')
-    .description('Remove a trait from a spec item')
+    .command("remove <specRef> <traitRef>")
+    .description("Remove a trait from a spec item")
     .action(async (specRef: string, traitRef: string) => {
       try {
         const ctx = await initContext();
@@ -316,7 +331,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         const spec = specResult.item as LoadedSpecItem;
 
         // Check if it's a task
-        if ('status' in spec && typeof spec.status === 'string') {
+        if ("status" in spec && typeof spec.status === "string") {
           error(`Cannot remove traits from tasks. ${specRef} is a task.`);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -337,15 +352,18 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         // Check if trait is in the list
         if (!currentTraits.includes(traitRefString)) {
           warn(`Spec does not have trait ${traitRefString}`);
-          output({ spec: spec._ulid, trait: traitRefString, removed: false }, () => {});
+          output(
+            { spec: spec._ulid, trait: traitRefString, removed: false },
+            () => {},
+          );
           return;
         }
 
-        const updatedTraits = currentTraits.filter(t => t !== traitRefString);
+        const updatedTraits = currentTraits.filter((t) => t !== traitRefString);
         await updateSpecItem(ctx, spec, { traits: updatedTraits });
 
         const specSlug = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
-        await commitIfShadow(ctx.shadow, 'item-trait-remove', specSlug);
+        await commitIfShadow(ctx.shadow, "item-trait-remove", specSlug);
 
         success(`Removed trait ${traitRefString} from ${specSlug}`, {
           spec: specSlug,
@@ -353,7 +371,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
           removed: true,
         });
       } catch (err) {
-        error('Failed to remove trait from spec', err);
+        error("Failed to remove trait from spec", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });

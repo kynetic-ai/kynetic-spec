@@ -6,7 +6,7 @@
  * by extracting command metadata directly from Commander.js definitions.
  */
 
-import { Command, Option as CommanderOption } from 'commander';
+import type { Command, Option as CommanderOption } from "commander";
 
 /**
  * Metadata for a single command option
@@ -66,7 +66,7 @@ export interface CommandMeta {
 function extractOptionMeta(option: CommanderOption): OptionMeta {
   return {
     flags: option.flags,
-    description: option.description || '',
+    description: option.description || "",
     required: option.required,
     defaultValue: option.defaultValue,
     variadic: option.variadic,
@@ -81,7 +81,7 @@ function extractArgumentsMeta(command: Command): ArgumentMeta[] {
   const args = command.registeredArguments || [];
   return args.map((arg) => ({
     name: arg.name(),
-    description: arg.description || '',
+    description: arg.description || "",
     required: arg.required,
     variadic: arg.variadic,
   }));
@@ -96,7 +96,7 @@ function extractArgumentsMeta(command: Command): ArgumentMeta[] {
  */
 export function extractCommandTree(
   command: Command,
-  parentPath: string[] = []
+  parentPath: string[] = [],
 ): CommandMeta {
   // Get command name - use first name if command has multiple
   const commandName = command.name();
@@ -119,7 +119,7 @@ export function extractCommandTree(
   return {
     name: commandName,
     fullPath,
-    description: command.description() || '',
+    description: command.description() || "",
     aliases: command.aliases(),
     arguments: args,
     options,
@@ -135,7 +135,10 @@ export function extractCommandTree(
  * @param path - Command path (e.g., ["task", "add"])
  * @returns Command metadata if found, null otherwise
  */
-export function findCommand(tree: CommandMeta, path: string[]): CommandMeta | null {
+export function findCommand(
+  tree: CommandMeta,
+  path: string[],
+): CommandMeta | null {
   if (path.length === 0) {
     return tree;
   }
@@ -183,21 +186,21 @@ export function flattenCommandTree(tree: CommandMeta): CommandMeta[] {
  * @returns Usage string (e.g., "kspec task add [options]")
  */
 export function formatCommandUsage(command: CommandMeta): string {
-  const parts = ['kspec', ...command.fullPath.slice(1)]; // Skip root 'kspec'
+  const parts = ["kspec", ...command.fullPath.slice(1)]; // Skip root 'kspec'
 
   // Add arguments
   for (const arg of command.arguments) {
     if (arg.required) {
-      parts.push(`<${arg.name}${arg.variadic ? '...' : ''}>`);
+      parts.push(`<${arg.name}${arg.variadic ? "..." : ""}>`);
     } else {
-      parts.push(`[${arg.name}${arg.variadic ? '...' : ''}]`);
+      parts.push(`[${arg.name}${arg.variadic ? "..." : ""}]`);
     }
   }
 
   // Add [options] if command has options
   if (command.options.length > 0) {
-    parts.push('[options]');
+    parts.push("[options]");
   }
 
-  return parts.join(' ');
+  return parts.join(" ");
 }

@@ -24,9 +24,9 @@ export interface GrepMatch {
 export function grepItem(
   item: Record<string, unknown>,
   pattern: string,
-  caseInsensitive = true
+  caseInsensitive = true,
 ): GrepMatch | null {
-  const flags = caseInsensitive ? 'i' : '';
+  const flags = caseInsensitive ? "i" : "";
   let regex: RegExp;
 
   try {
@@ -37,7 +37,7 @@ export function grepItem(
   }
 
   const matchedFields: string[] = [];
-  searchObject(item, '', regex, matchedFields);
+  searchObject(item, "", regex, matchedFields);
 
   if (matchedFields.length === 0) {
     return null;
@@ -53,13 +53,13 @@ function searchObject(
   obj: unknown,
   path: string,
   regex: RegExp,
-  matches: string[]
+  matches: string[],
 ): void {
   if (obj === null || obj === undefined) {
     return;
   }
 
-  if (typeof obj === 'string') {
+  if (typeof obj === "string") {
     if (regex.test(obj)) {
       matches.push(path);
     }
@@ -74,10 +74,10 @@ function searchObject(
     return;
   }
 
-  if (typeof obj === 'object') {
+  if (typeof obj === "object") {
     // Skip internal fields (starting with _)
     for (const [key, value] of Object.entries(obj)) {
-      if (key.startsWith('_')) continue;
+      if (key.startsWith("_")) continue;
 
       const fieldPath = path ? `${path}.${key}` : key;
       searchObject(value, fieldPath, regex, matches);
@@ -89,7 +89,7 @@ function searchObject(
  * Escape special regex characters in a string.
  */
 function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /**
@@ -97,18 +97,18 @@ function escapeRegex(str: string): string {
  * Groups and simplifies paths for readability.
  */
 export function formatMatchedFields(fields: string[]): string {
-  if (fields.length === 0) return '';
+  if (fields.length === 0) return "";
 
   // Simplify common patterns
-  const simplified = fields.map(field => {
+  const simplified = fields.map((field) => {
     // "acceptance_criteria[0].given" -> "ac[0].given"
     return field
-      .replace(/^acceptance_criteria/, 'ac')
-      .replace(/\.content$/, ''); // notes[0].content -> notes[0]
+      .replace(/^acceptance_criteria/, "ac")
+      .replace(/\.content$/, ""); // notes[0].content -> notes[0]
   });
 
   // Deduplicate
   const unique = [...new Set(simplified)];
 
-  return unique.join(', ');
+  return unique.join(", ");
 }

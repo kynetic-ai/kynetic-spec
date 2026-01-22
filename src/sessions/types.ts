@@ -7,7 +7,7 @@
  * - Integration with kspec commit boundaries
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 // ─── Session Status ──────────────────────────────────────────────────────────
 
@@ -17,7 +17,7 @@ import { z } from 'zod';
  * - completed: Session ended normally
  * - abandoned: Session ended without explicit close
  */
-export const SessionStatusSchema = z.enum(['active', 'completed', 'abandoned']);
+export const SessionStatusSchema = z.enum(["active", "completed", "abandoned"]);
 export type SessionStatus = z.infer<typeof SessionStatusSchema>;
 
 // ─── Session Metadata ────────────────────────────────────────────────────────
@@ -68,13 +68,13 @@ export type SessionMetadataInput = z.infer<typeof SessionMetadataInputSchema>;
  * Supported event types for session tracking.
  */
 export const EventTypeSchema = z.enum([
-  'session.start',
-  'session.update',
-  'session.end',
-  'prompt.sent',
-  'tool.call',
-  'tool.result',
-  'note',
+  "session.start",
+  "session.update",
+  "session.end",
+  "prompt.sent",
+  "tool.call",
+  "tool.result",
+  "note",
 ]);
 
 export type EventType = z.infer<typeof EventTypeSchema>;

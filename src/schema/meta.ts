@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { RefSchema, DateTimeSchema, UlidSchema } from './common.js';
+import { z } from "zod";
+import { DateTimeSchema, RefSchema, UlidSchema } from "./common.js";
 
 /**
  * ULID schema for meta items - uses the same strict validation as core items.
@@ -21,8 +21,8 @@ export const SessionProtocolSchema = z.object({
  */
 export const AgentSchema = z.object({
   _ulid: MetaUlidSchema,
-  id: z.string().min(1, 'Agent ID is required'),
-  name: z.string().min(1, 'Agent name is required'),
+  id: z.string().min(1, "Agent ID is required"),
+  name: z.string().min(1, "Agent name is required"),
   description: z.string().optional(),
   capabilities: z.array(z.string()).default([]),
   tools: z.array(z.string()).default([]),
@@ -33,13 +33,13 @@ export const AgentSchema = z.object({
 /**
  * Workflow step types
  */
-export const WorkflowStepTypeSchema = z.enum(['check', 'action', 'decision']);
+export const WorkflowStepTypeSchema = z.enum(["check", "action", "decision"]);
 
 /**
  * Workflow step execution hints
  */
 export const StepExecutionSchema = z.object({
-  mode: z.enum(['prompt', 'silent', 'skip']).default('prompt'),
+  mode: z.enum(["prompt", "silent", "skip"]).default("prompt"),
   timeout: z.number().nullable().optional(),
 });
 
@@ -47,10 +47,10 @@ export const StepExecutionSchema = z.object({
  * Workflow step input definition
  */
 export const StepInputSchema = z.object({
-  name: z.string().min(1, 'Input name is required'),
+  name: z.string().min(1, "Input name is required"),
   description: z.string().optional(),
   required: z.boolean().default(true).optional(),
-  type: z.enum(['string', 'ref', 'number']).default('string').optional(),
+  type: z.enum(["string", "ref", "number"]).default("string").optional(),
 });
 
 /**
@@ -72,11 +72,11 @@ export const WorkflowStepSchema = z.object({
  */
 export const WorkflowSchema = z.object({
   _ulid: MetaUlidSchema,
-  id: z.string().min(1, 'Workflow ID is required'),
-  trigger: z.string().min(1, 'Workflow trigger is required'),
+  id: z.string().min(1, "Workflow ID is required"),
+  trigger: z.string().min(1, "Workflow trigger is required"),
   description: z.string().optional(),
   steps: z.array(WorkflowStepSchema).default([]),
-  enforcement: z.enum(['advisory', 'strict']).default('advisory').optional(),
+  enforcement: z.enum(["advisory", "strict"]).default("advisory").optional(),
 });
 
 /**
@@ -91,7 +91,7 @@ export const ConventionExampleSchema = z.object({
  * Convention validation configuration
  */
 export const ConventionValidationSchema = z.object({
-  type: z.enum(['regex', 'enum', 'range', 'prose']),
+  type: z.enum(["regex", "enum", "range", "prose"]),
   // For regex
   pattern: z.string().optional(),
   message: z.string().optional(),
@@ -100,7 +100,7 @@ export const ConventionValidationSchema = z.object({
   // For range
   min: z.number().optional(),
   max: z.number().optional(),
-  unit: z.enum(['words', 'chars', 'lines']).optional(),
+  unit: z.enum(["words", "chars", "lines"]).optional(),
 });
 
 /**
@@ -108,7 +108,7 @@ export const ConventionValidationSchema = z.object({
  */
 export const ConventionSchema = z.object({
   _ulid: MetaUlidSchema,
-  domain: z.string().min(1, 'Convention domain is required'),
+  domain: z.string().min(1, "Convention domain is required"),
   rules: z.array(z.string()).default([]),
   examples: z.array(ConventionExampleSchema).default([]),
   validation: ConventionValidationSchema.optional(),
@@ -117,7 +117,12 @@ export const ConventionSchema = z.object({
 /**
  * Observation types
  */
-export const ObservationTypeSchema = z.enum(['friction', 'success', 'question', 'idea']);
+export const ObservationTypeSchema = z.enum([
+  "friction",
+  "success",
+  "question",
+  "idea",
+]);
 
 /**
  * Observation - feedback about workflows and conventions
@@ -126,7 +131,7 @@ export const ObservationSchema = z.object({
   _ulid: MetaUlidSchema,
   type: ObservationTypeSchema,
   workflow_ref: RefSchema.optional(),
-  content: z.string().min(1, 'Observation content is required'),
+  content: z.string().min(1, "Observation content is required"),
   created_at: DateTimeSchema,
   author: z.string().optional(),
   resolved: z.boolean().default(false),
@@ -149,7 +154,11 @@ export const SessionContextSchema = z.object({
 /**
  * Step result status
  */
-export const StepResultStatusSchema = z.enum(['completed', 'skipped', 'failed']);
+export const StepResultStatusSchema = z.enum([
+  "completed",
+  "skipped",
+  "failed",
+]);
 
 /**
  * Step result schema - result of executing a workflow step
@@ -168,7 +177,12 @@ export const StepResultSchema = z.object({
 /**
  * Workflow run status
  */
-export const WorkflowRunStatusSchema = z.enum(['active', 'paused', 'completed', 'aborted']);
+export const WorkflowRunStatusSchema = z.enum([
+  "active",
+  "paused",
+  "completed",
+  "aborted",
+]);
 
 /**
  * Workflow run schema - tracks execution of a workflow
@@ -192,7 +206,7 @@ export const WorkflowRunSchema = z.object({
  * Workflow runs file schema - container for all workflow runs
  */
 export const WorkflowRunsFileSchema = z.object({
-  kynetic_runs: z.string().default('1.0'),
+  kynetic_runs: z.string().default("1.0"),
   runs: z.array(WorkflowRunSchema).default([]),
 });
 
@@ -200,7 +214,7 @@ export const WorkflowRunsFileSchema = z.object({
  * Meta manifest schema - the root structure for kynetic.meta.yaml
  */
 export const MetaManifestSchema = z.object({
-  kynetic_meta: z.string().default('1.0'),
+  kynetic_meta: z.string().default("1.0"),
   agents: z.array(AgentSchema).default([]),
   workflows: z.array(WorkflowSchema).default([]),
   conventions: z.array(ConventionSchema).default([]),
@@ -237,9 +251,11 @@ export type MetaItem = Agent | Workflow | Convention | Observation;
 /**
  * Determine the type of a meta item
  */
-export function getMetaItemType(item: MetaItem): 'agent' | 'workflow' | 'convention' | 'observation' {
-  if ('capabilities' in item) return 'agent';
-  if ('trigger' in item) return 'workflow';
-  if ('domain' in item) return 'convention';
-  return 'observation';
+export function getMetaItemType(
+  item: MetaItem,
+): "agent" | "workflow" | "convention" | "observation" {
+  if ("capabilities" in item) return "agent";
+  if ("trigger" in item) return "workflow";
+  if ("domain" in item) return "convention";
+  return "observation";
 }

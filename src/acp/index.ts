@@ -5,35 +5,20 @@
  * Handles bidirectional stdio communication with ACP-compliant agents.
  */
 
+export type {
+  ACPClientEvents,
+  ACPClientOptions,
+  SessionState,
+} from "./client.js";
 // Client
-export { ACPClient } from './client.js';
-export type { ACPClientEvents, ACPClientOptions, SessionState } from './client.js';
-
-// Framing layer
-export { JsonRpcFraming } from './framing.js';
+export { ACPClient } from "./client.js";
 export type {
   JsonRpcFramingOptions,
   SendRequestOptions,
-} from './framing.js';
-
+} from "./framing.js";
+// Framing layer
+export { JsonRpcFraming } from "./framing.js";
 // Types - JSON-RPC
-export type {
-  JsonRpcError,
-  JsonRpcErrorObject,
-  JsonRpcMessage,
-  JsonRpcNotification,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from './types.js';
-
-// Types - Type guards
-export {
-  isError,
-  isNotification,
-  isRequest,
-  isResponse,
-} from './types.js';
-
 // Types - ACP (re-exported from SDK)
 export type {
   AgentCapabilities,
@@ -41,6 +26,12 @@ export type {
   ContentBlock,
   InitializeRequest,
   InitializeResponse,
+  JsonRpcError,
+  JsonRpcErrorObject,
+  JsonRpcMessage,
+  JsonRpcNotification,
+  JsonRpcRequest,
+  JsonRpcResponse,
   NewSessionRequest,
   NewSessionResponse,
   PromptRequest,
@@ -51,4 +42,11 @@ export type {
   SessionUpdate,
   StopReason,
   TextContent,
-} from './types.js';
+} from "./types.js";
+// Types - Type guards
+export {
+  isError,
+  isNotification,
+  isRequest,
+  isResponse,
+} from "./types.js";

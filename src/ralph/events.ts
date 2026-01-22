@@ -6,19 +6,19 @@
  * TUI or other renderers to consume the same event stream.
  */
 
-import type { SessionUpdate } from '../acp/types.js';
+import type { SessionUpdate } from "../acp/types.js";
 
 // ============================================================================
 // Event Types
 // ============================================================================
 
 export type RalphEventType =
-  | 'agent_message'
-  | 'agent_thought'
-  | 'tool_start'
-  | 'tool_update'
-  | 'tool_result'
-  | 'status';
+  | "agent_message"
+  | "agent_thought"
+  | "tool_start"
+  | "tool_update"
+  | "tool_result"
+  | "status";
 
 export interface RalphEvent {
   type: RalphEventType;
@@ -35,19 +35,19 @@ export type RalphEventData =
   | StatusData;
 
 export interface AgentMessageData {
-  kind: 'agent_message';
+  kind: "agent_message";
   content: string;
   isStreaming: boolean;
 }
 
 export interface AgentThoughtData {
-  kind: 'agent_thought';
+  kind: "agent_thought";
   content: string;
   isStreaming: boolean;
 }
 
 export interface ToolStartData {
-  kind: 'tool_start';
+  kind: "tool_start";
   toolCallId: string;
   tool: string;
   summary: string;
@@ -55,24 +55,24 @@ export interface ToolStartData {
 }
 
 export interface ToolUpdateData {
-  kind: 'tool_update';
+  kind: "tool_update";
   toolCallId: string;
   tool: string;
-  status: 'pending' | 'running';
+  status: "pending" | "running";
   summary?: string; // Present when input becomes available in phased events
 }
 
 export interface ToolResultData {
-  kind: 'tool_result';
+  kind: "tool_result";
   toolCallId: string;
   tool: string;
-  status: 'completed' | 'failed' | 'cancelled';
+  status: "completed" | "failed" | "cancelled";
   output?: string;
   truncated: boolean;
 }
 
 export interface StatusData {
-  kind: 'status';
+  kind: "status";
   status: string;
   message?: string;
 }
@@ -106,56 +106,56 @@ function getToolSummary(tool: string, input: unknown): string {
   const inp = input as Record<string, unknown>;
 
   switch (tool) {
-    case 'Bash': {
+    case "Bash": {
       const cmd = inp.command as string | undefined;
       if (cmd) {
-        return cmd.length > 50 ? cmd.slice(0, 47) + '...' : cmd;
+        return cmd.length > 50 ? `${cmd.slice(0, 47)}...` : cmd;
       }
-      return '';
+      return "";
     }
 
-    case 'Read':
-    case 'Write':
-    case 'Edit': {
+    case "Read":
+    case "Write":
+    case "Edit": {
       const filePath = inp.file_path as string | undefined;
       if (filePath) {
         // Extract filename from path
-        const parts = filePath.split('/');
+        const parts = filePath.split("/");
         return parts[parts.length - 1] || filePath;
       }
-      return '';
+      return "";
     }
 
-    case 'Grep': {
+    case "Grep": {
       const pattern = inp.pattern as string | undefined;
-      return pattern ? `/${pattern}/` : '';
+      return pattern ? `/${pattern}/` : "";
     }
 
-    case 'Glob': {
+    case "Glob": {
       const pattern = inp.pattern as string | undefined;
-      return pattern || '';
+      return pattern || "";
     }
 
-    case 'WebSearch': {
+    case "WebSearch": {
       const query = inp.query as string | undefined;
-      return query || '';
+      return query || "";
     }
 
-    case 'Task': {
+    case "Task": {
       const desc = inp.description as string | undefined;
-      return desc || '';
+      return desc || "";
     }
 
-    case 'TodoWrite': {
+    case "TodoWrite": {
       const todos = inp.todos as Array<{ content: string }> | undefined;
       if (todos && todos.length > 0) {
         return `${todos.length} item(s)`;
       }
-      return '';
+      return "";
     }
 
     default:
-      return '';
+      return "";
   }
 }
 
@@ -186,7 +186,7 @@ function extractToolName(update: Record<string, unknown>): string {
     return normalizeTool(update.title as string);
   }
 
-  return 'unknown';
+  return "unknown";
 }
 
 /**
@@ -204,7 +204,9 @@ function normalizeTool(name: string): string {
 /**
  * Extract tool output, handling Claude Code's non-standard delivery.
  */
-function extractToolOutput(update: Record<string, unknown>): string | undefined {
+function extractToolOutput(
+  update: Record<string, unknown>,
+): string | undefined {
   // Try rawOutput first
   if (update.rawOutput !== undefined) {
     return truncateOutput(String(update.rawOutput));
@@ -218,9 +220,10 @@ function extractToolOutput(update: Record<string, unknown>): string | undefined 
     if (claudeCode?.toolResponse !== undefined) {
       const toolResponse = claudeCode.toolResponse as Record<string, unknown>;
       // Extract stdout, falling back to stringifying the whole response
-      if (typeof toolResponse.stdout === 'string') {
+      if (typeof toolResponse.stdout === "string") {
         const combined =
-          toolResponse.stdout + (toolResponse.stderr ? `\n${toolResponse.stderr}` : '');
+          toolResponse.stdout +
+          (toolResponse.stderr ? `\n${toolResponse.stderr}` : "");
         return truncateOutput(combined.trim());
       }
       return truncateOutput(String(toolResponse));
@@ -238,7 +241,9 @@ function extractToolOutput(update: Record<string, unknown>): string | undefined 
 /**
  * Extract original (non-truncated) output for truncation detection.
  */
-function extractOriginalOutput(update: Record<string, unknown>): string | undefined {
+function extractOriginalOutput(
+  update: Record<string, unknown>,
+): string | undefined {
   if (update.rawOutput !== undefined) {
     return String(update.rawOutput);
   }
@@ -248,9 +253,10 @@ function extractOriginalOutput(update: Record<string, unknown>): string | undefi
     const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
     if (claudeCode?.toolResponse !== undefined) {
       const toolResponse = claudeCode.toolResponse as Record<string, unknown>;
-      if (typeof toolResponse.stdout === 'string') {
+      if (typeof toolResponse.stdout === "string") {
         return (
-          toolResponse.stdout + (toolResponse.stderr ? `\n${toolResponse.stderr}` : '')
+          toolResponse.stdout +
+          (toolResponse.stderr ? `\n${toolResponse.stderr}` : "")
         ).trim();
       }
     }
@@ -270,9 +276,9 @@ function truncateOutput(output: string): string {
   const MAX_LINES = 20;
   const MAX_CHARS = 1000;
 
-  const lines = output.split('\n');
+  const lines = output.split("\n");
   if (lines.length > MAX_LINES) {
-    return lines.slice(0, MAX_LINES).join('\n');
+    return lines.slice(0, MAX_LINES).join("\n");
   }
   if (output.length > MAX_CHARS) {
     return output.slice(0, MAX_CHARS);
@@ -283,7 +289,10 @@ function truncateOutput(output: string): string {
 /**
  * Check if output was truncated.
  */
-function wasOutputTruncated(original: string | undefined, truncated: string | undefined): boolean {
+function wasOutputTruncated(
+  original: string | undefined,
+  truncated: string | undefined,
+): boolean {
   if (!original || !truncated) return false;
   return original.length > truncated.length;
 }
@@ -310,8 +319,14 @@ function shouldSuppress(content: string): boolean {
 
 interface TranslatorState {
   sessionStart: number;
-  activeMessage: { type: 'agent_message' | 'agent_thought'; content: string } | null;
-  pendingTools: Map<string, { tool: string; input: unknown; startTime: number }>;
+  activeMessage: {
+    type: "agent_message" | "agent_thought";
+    content: string;
+  } | null;
+  pendingTools: Map<
+    string,
+    { tool: string; input: unknown; startTime: number }
+  >;
 }
 
 export function createTranslator(): RalphTranslator {
@@ -331,22 +346,24 @@ export function createTranslator(): RalphTranslator {
 
     switch (updateType) {
       // ─── Content Chunks ─────────────────────────────────────────────────────
-      case 'agent_message_chunk': {
-        const content = (update as { content?: { type: string; text?: string } }).content;
-        if (content?.type === 'text' && typeof content.text === 'string') {
+      case "agent_message_chunk": {
+        const content = (
+          update as { content?: { type: string; text?: string } }
+        ).content;
+        if (content?.type === "text" && typeof content.text === "string") {
           // Check for noise
           if (shouldSuppress(content.text)) {
             return null;
           }
 
           // Empty string signals finalization
-          if (content.text === '') {
-            if (state.activeMessage?.type === 'agent_message') {
+          if (content.text === "") {
+            if (state.activeMessage?.type === "agent_message") {
               const final: RalphEvent = {
-                type: 'agent_message',
+                type: "agent_message",
                 timestamp,
                 data: {
-                  kind: 'agent_message',
+                  kind: "agent_message",
                   content: state.activeMessage.content,
                   isStreaming: false,
                 },
@@ -358,17 +375,20 @@ export function createTranslator(): RalphTranslator {
           }
 
           // Accumulate content
-          if (state.activeMessage?.type === 'agent_message') {
+          if (state.activeMessage?.type === "agent_message") {
             state.activeMessage.content += content.text;
           } else {
-            state.activeMessage = { type: 'agent_message', content: content.text };
+            state.activeMessage = {
+              type: "agent_message",
+              content: content.text,
+            };
           }
 
           return {
-            type: 'agent_message',
+            type: "agent_message",
             timestamp,
             data: {
-              kind: 'agent_message',
+              kind: "agent_message",
               content: content.text,
               isStreaming: true,
             },
@@ -377,20 +397,22 @@ export function createTranslator(): RalphTranslator {
         return null;
       }
 
-      case 'agent_thought_chunk': {
-        const content = (update as { content?: { type: string; text?: string } }).content;
-        if (content?.type === 'text' && typeof content.text === 'string') {
+      case "agent_thought_chunk": {
+        const content = (
+          update as { content?: { type: string; text?: string } }
+        ).content;
+        if (content?.type === "text" && typeof content.text === "string") {
           if (shouldSuppress(content.text)) {
             return null;
           }
 
-          if (content.text === '') {
-            if (state.activeMessage?.type === 'agent_thought') {
+          if (content.text === "") {
+            if (state.activeMessage?.type === "agent_thought") {
               const final: RalphEvent = {
-                type: 'agent_thought',
+                type: "agent_thought",
                 timestamp,
                 data: {
-                  kind: 'agent_thought',
+                  kind: "agent_thought",
                   content: state.activeMessage.content,
                   isStreaming: false,
                 },
@@ -401,17 +423,20 @@ export function createTranslator(): RalphTranslator {
             return null;
           }
 
-          if (state.activeMessage?.type === 'agent_thought') {
+          if (state.activeMessage?.type === "agent_thought") {
             state.activeMessage.content += content.text;
           } else {
-            state.activeMessage = { type: 'agent_thought', content: content.text };
+            state.activeMessage = {
+              type: "agent_thought",
+              content: content.text,
+            };
           }
 
           return {
-            type: 'agent_thought',
+            type: "agent_thought",
             timestamp,
             data: {
-              kind: 'agent_thought',
+              kind: "agent_thought",
               content: content.text,
               isStreaming: true,
             },
@@ -420,13 +445,13 @@ export function createTranslator(): RalphTranslator {
         return null;
       }
 
-      case 'user_message_chunk': {
+      case "user_message_chunk": {
         // User messages are typically the prompt we sent, skip display
         return null;
       }
 
       // ─── Tool Events ────────────────────────────────────────────────────────
-      case 'tool_call': {
+      case "tool_call": {
         const u = update as Record<string, unknown>;
         const toolCallId = (u.tool_call_id || u.toolCallId || u.id) as string;
         const tool = extractToolName(u);
@@ -444,13 +469,13 @@ export function createTranslator(): RalphTranslator {
           // Only emit update if we now have a summary we didn't have before
           if (summary && !hadSummary) {
             return {
-              type: 'tool_update',
+              type: "tool_update",
               timestamp,
               data: {
-                kind: 'tool_update',
+                kind: "tool_update",
                 toolCallId,
                 tool,
-                status: 'pending' as const,
+                status: "pending" as const,
                 summary,
               },
             };
@@ -460,13 +485,17 @@ export function createTranslator(): RalphTranslator {
         }
 
         // First time seeing this tool_call_id - create entry and emit tool_start
-        state.pendingTools.set(toolCallId, { tool, input, startTime: timestamp });
+        state.pendingTools.set(toolCallId, {
+          tool,
+          input,
+          startTime: timestamp,
+        });
 
         return {
-          type: 'tool_start',
+          type: "tool_start",
           timestamp,
           data: {
-            kind: 'tool_start',
+            kind: "tool_start",
             toolCallId,
             tool,
             summary,
@@ -475,7 +504,7 @@ export function createTranslator(): RalphTranslator {
         };
       }
 
-      case 'tool_call_update': {
+      case "tool_call_update": {
         const u = update as Record<string, unknown>;
         const toolCallId = (u.tool_call_id || u.toolCallId || u.id) as string;
         const status = u.status as string | undefined;
@@ -483,30 +512,41 @@ export function createTranslator(): RalphTranslator {
         const tool = pending?.tool || extractToolName(u);
 
         // Non-terminal status update
-        if (status === 'pending' || status === 'in_progress' || status === 'running') {
+        if (
+          status === "pending" ||
+          status === "in_progress" ||
+          status === "running"
+        ) {
           return {
-            type: 'tool_update',
+            type: "tool_update",
             timestamp,
             data: {
-              kind: 'tool_update',
+              kind: "tool_update",
               toolCallId,
               tool,
-              status: status === 'in_progress' ? 'running' : (status as 'pending' | 'running'),
+              status:
+                status === "in_progress"
+                  ? "running"
+                  : (status as "pending" | "running"),
             },
           };
         }
 
         // Terminal status - treat as result
-        if (status === 'completed' || status === 'failed' || status === 'cancelled') {
+        if (
+          status === "completed" ||
+          status === "failed" ||
+          status === "cancelled"
+        ) {
           const rawOutput = extractToolOutput(u);
           const originalOutput = extractOriginalOutput(u);
           state.pendingTools.delete(toolCallId);
 
           return {
-            type: 'tool_result',
+            type: "tool_result",
             timestamp,
             data: {
-              kind: 'tool_result',
+              kind: "tool_result",
               toolCallId,
               tool,
               status,

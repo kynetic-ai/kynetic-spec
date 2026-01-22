@@ -54,16 +54,16 @@ Blocking vs Dependencies:
   Use 'task block' for manual blockers. Dependencies are set in YAML.
 `,
     examples: [
-      'kspec task get @task-cli-help',
+      "kspec task get @task-cli-help",
       'kspec task add --title "Fix login bug" --priority 1 --tag bug',
-      'kspec task start @my-task',
+      "kspec task start @my-task",
       'kspec task note @my-task "Investigated root cause, found issue in auth module"',
       'kspec task complete @my-task --reason "Fixed by updating token validation"',
       'kspec task todo add @my-task "Review error handling"',
-      'kspec task todo done @my-task 1',
-      'kspec task todos @my-task',
+      "kspec task todo done @my-task 1",
+      "kspec task todos @my-task",
     ],
-    seeAlso: ['tasks', 'refs', 'statuses'],
+    seeAlso: ["tasks", "refs", "statuses"],
   },
 
   tasks: {
@@ -73,13 +73,13 @@ Query and list tasks with various filters.
 Output shows: ULID (short), slug, status, priority, and title.
 `,
     examples: [
-      'kspec tasks ready',
-      'kspec tasks ready --priority 1',
-      'kspec tasks active',
-      'kspec tasks all --tag mvp',
-      'kspec tasks completed --limit 5',
+      "kspec tasks ready",
+      "kspec tasks ready --priority 1",
+      "kspec tasks active",
+      "kspec tasks all --tag mvp",
+      "kspec tasks completed --limit 5",
     ],
-    seeAlso: ['task', 'statuses'],
+    seeAlso: ["task", "statuses"],
   },
 
   validate: {
@@ -96,12 +96,12 @@ What it checks:
 Alias: 'kspec lint' does the same thing.
 `,
     examples: [
-      'kspec validate',
-      'kspec validate --refs',
-      'kspec validate --strict',
-      'kspec validate --json',
+      "kspec validate",
+      "kspec validate --refs",
+      "kspec validate --strict",
+      "kspec validate --json",
     ],
-    seeAlso: ['refs'],
+    seeAlso: ["refs"],
   },
 
   session: {
@@ -118,12 +118,12 @@ The session start command is designed for agents to quickly understand:
 Alias: 'kspec context' does the same thing.
 `,
     examples: [
-      'kspec session start',
-      'kspec session start --full',
-      'kspec session start --since 1d',
-      'kspec context',
+      "kspec session start",
+      "kspec session start --full",
+      "kspec session start --since 1d",
+      "kspec context",
     ],
-    seeAlso: ['tasks'],
+    seeAlso: ["tasks"],
   },
 
   init: {
@@ -138,9 +138,9 @@ Creates:
 Run in an existing directory or specify a path.
 `,
     examples: [
-      'kspec init',
-      'kspec init --name my-project',
-      'kspec init ./new-project --yes',
+      "kspec init",
+      "kspec init --name my-project",
+      "kspec init ./new-project --yes",
     ],
   },
 
@@ -159,11 +159,11 @@ including quick-start commands and workflow guidance.
 Run this after 'kspec init' to set up agent integration.
 `,
     examples: [
-      'kspec setup',
-      'kspec setup --agent claude-code',
-      'kspec setup --dry-run',
+      "kspec setup",
+      "kspec setup --agent claude-code",
+      "kspec setup --dry-run",
     ],
-    seeAlso: ['init', 'workflow'],
+    seeAlso: ["init", "workflow"],
   },
 
   item: {
@@ -174,19 +174,19 @@ Spec items define WHAT to build. Tasks track the WORK of building.
 Items are nested: modules contain features, features contain requirements.
 `,
     examples: [
-      'kspec item list --type feature',
-      'kspec item get @ref-validation',
+      "kspec item list --type feature",
+      "kspec item get @ref-validation",
       'kspec item add --under @core --title "New Feature" --type feature',
       'kspec item add --under @spec-item --title "New Req" --type requirement',
-      'kspec item set @my-feature --status implemented',
-      'kspec item delete @old-feature',
+      "kspec item set @my-feature --status implemented",
+      "kspec item delete @old-feature",
     ],
-    seeAlso: ['refs', 'task'],
+    seeAlso: ["refs", "task"],
   },
 
   // Concept topics
   refs: {
-    title: 'References (@refs)',
+    title: "References (@refs)",
     concept: `
 References link items together using @ prefix.
 
@@ -209,15 +209,15 @@ Resolution order:
 Validate refs with: kspec validate --refs
 `,
     examples: [
-      'kspec task get @task-cli-help',
-      'kspec task get @01KEZJNS',
-      'kspec item get @ref-validation',
+      "kspec task get @task-cli-help",
+      "kspec task get @01KEZJNS",
+      "kspec item get @ref-validation",
     ],
-    seeAlso: ['validate', 'task'],
+    seeAlso: ["validate", "task"],
   },
 
   statuses: {
-    title: 'Task Statuses',
+    title: "Task Statuses",
     concept: `
 Task lifecycle states and transitions.
 
@@ -246,11 +246,11 @@ Auto-blocking:
 The 'tasks ready' command shows pending tasks with no blockers
 and no incomplete dependencies.
 `,
-    seeAlso: ['task', 'tasks'],
+    seeAlso: ["task", "tasks"],
   },
 
   workflow: {
-    title: 'Typical Workflow',
+    title: "Typical Workflow",
     concept: `
 Common workflow for working on tasks.
 
@@ -282,11 +282,11 @@ Blocking/unblocking:
 Validating changes:
   kspec validate
 `,
-    seeAlso: ['session', 'task', 'tasks'],
+    seeAlso: ["session", "task", "tasks"],
   },
 
-  'exit-codes': {
-    title: 'Exit Codes',
+  "exit-codes": {
+    title: "Exit Codes",
     concept: `
 Kspec uses semantic exit codes for scripting and automation.
 
@@ -331,6 +331,6 @@ Scripting Examples:
     exit $code
   }
 `,
-    seeAlso: ['task', 'validate', 'item'],
+    seeAlso: ["task", "validate", "item"],
   },
 };

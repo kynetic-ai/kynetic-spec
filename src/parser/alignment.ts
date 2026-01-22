@@ -5,10 +5,10 @@
  * and detects alignment issues like orphaned specs or stale implementation status.
  */
 
-import type { LoadedSpecItem, LoadedTask, KspecContext } from './yaml.js';
-import { updateSpecItem } from './yaml.js';
-import type { ReferenceIndex } from './refs.js';
-import type { ImplementationStatus } from '../schema/index.js';
+import type { ImplementationStatus } from "../schema/index.js";
+import type { ReferenceIndex } from "./refs.js";
+import type { KspecContext, LoadedSpecItem, LoadedTask } from "./yaml.js";
+import { updateSpecItem } from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -40,7 +40,7 @@ export interface LinkedTaskSummary {
  * Alignment warning
  */
 export interface AlignmentWarning {
-  type: 'orphaned_spec' | 'status_mismatch' | 'stale_implementation';
+  type: "orphaned_spec" | "status_mismatch" | "stale_implementation";
   specUlid?: string;
   specTitle?: string;
   taskUlid?: string;
@@ -112,14 +112,17 @@ export class AlignmentIndex {
   getTasksForSpec(specUlid: string): LoadedTask[] {
     const taskUlids = this.specToTasks.get(specUlid) || [];
     return taskUlids
-      .map(ulid => this.tasks.get(ulid))
+      .map((ulid) => this.tasks.get(ulid))
       .filter((t): t is LoadedTask => t !== undefined);
   }
 
   /**
    * Get the spec item a task implements
    */
-  getSpecForTask(taskUlid: string, refIndex: ReferenceIndex): LoadedSpecItem | undefined {
+  getSpecForTask(
+    taskUlid: string,
+    refIndex: ReferenceIndex,
+  ): LoadedSpecItem | undefined {
     const specRef = this.taskToSpec.get(taskUlid);
     if (!specRef) return undefined;
 
@@ -136,50 +139,52 @@ export class AlignmentIndex {
   calculateExpectedStatus(specUlid: string): ImplementationStatus {
     const taskUlids = this.specToTasks.get(specUlid) || [];
     if (taskUlids.length === 0) {
-      return 'not_started';
+      return "not_started";
     }
 
     const tasks = taskUlids
-      .map(ulid => this.tasks.get(ulid))
+      .map((ulid) => this.tasks.get(ulid))
       .filter((t): t is LoadedTask => t !== undefined);
 
     if (tasks.length === 0) {
-      return 'not_started';
+      return "not_started";
     }
 
     // Check task statuses
-    const hasInProgress = tasks.some(t => t.status === 'in_progress');
-    const allCompleted = tasks.every(t => t.status === 'completed');
-    const someCompleted = tasks.some(t => t.status === 'completed');
+    const hasInProgress = tasks.some((t) => t.status === "in_progress");
+    const allCompleted = tasks.every((t) => t.status === "completed");
+    const someCompleted = tasks.some((t) => t.status === "completed");
 
     if (allCompleted) {
-      return 'implemented';
+      return "implemented";
     }
     if (hasInProgress || someCompleted) {
-      return 'in_progress';
+      return "in_progress";
     }
-    return 'not_started';
+    return "not_started";
   }
 
   /**
    * Get implementation summary for a spec item
    */
-  getImplementationSummary(specUlid: string): SpecImplementationSummary | undefined {
+  getImplementationSummary(
+    specUlid: string,
+  ): SpecImplementationSummary | undefined {
     const spec = this.specItems.get(specUlid);
     if (!spec) return undefined;
 
     const taskUlids = this.specToTasks.get(specUlid) || [];
     const linkedTasks: LinkedTaskSummary[] = taskUlids
-      .map(ulid => this.tasks.get(ulid))
+      .map((ulid) => this.tasks.get(ulid))
       .filter((t): t is LoadedTask => t !== undefined)
-      .map(t => ({
+      .map((t) => ({
         taskUlid: t._ulid,
         taskTitle: t.title,
         taskStatus: t.status,
         hasNotes: t.notes.length > 0,
       }));
 
-    const currentStatus = spec.status?.implementation || 'not_started';
+    const currentStatus = spec.status?.implementation || "not_started";
     const expectedStatus = this.calculateExpectedStatus(specUlid);
 
     return {
@@ -201,13 +206,13 @@ export class AlignmentIndex {
     // Check each spec item
     for (const [specUlid, spec] of this.specItems) {
       const taskUlids = this.specToTasks.get(specUlid) || [];
-      const currentStatus = spec.status?.implementation || 'not_started';
+      const currentStatus = spec.status?.implementation || "not_started";
       const expectedStatus = this.calculateExpectedStatus(specUlid);
 
       // Orphaned spec (no tasks)
-      if (taskUlids.length === 0 && currentStatus === 'not_started') {
+      if (taskUlids.length === 0 && currentStatus === "not_started") {
         warnings.push({
-          type: 'orphaned_spec',
+          type: "orphaned_spec",
           specUlid,
           specTitle: spec.title,
           message: `Spec item "${spec.title}" has no implementing tasks`,
@@ -217,7 +222,7 @@ export class AlignmentIndex {
       // Status mismatch
       if (currentStatus !== expectedStatus) {
         warnings.push({
-          type: 'status_mismatch',
+          type: "status_mismatch",
           specUlid,
           specTitle: spec.title,
           message: `Spec "${spec.title}" status is "${currentStatus}" but should be "${expectedStatus}" based on task progress`,
@@ -227,7 +232,7 @@ export class AlignmentIndex {
 
     // Check completed tasks with stale spec status
     for (const [taskUlid, task] of this.tasks) {
-      if (task.status === 'completed' && task.spec_ref) {
+      if (task.status === "completed" && task.spec_ref) {
         const specRef = this.taskToSpec.get(taskUlid);
         if (specRef) {
           // Note: We already checked this via spec iteration above
@@ -314,7 +319,7 @@ export async function syncSpecImplementationStatus(
   task: LoadedTask,
   allTasks: LoadedTask[],
   allItems: LoadedSpecItem[],
-  refIndex: ReferenceIndex
+  refIndex: ReferenceIndex,
 ): Promise<SyncResult | null> {
   // Skip if task has no spec_ref
   if (!task.spec_ref) {
@@ -328,7 +333,7 @@ export async function syncSpecImplementationStatus(
   }
 
   // Find the spec item
-  const specItem = allItems.find(item => item._ulid === result.ulid);
+  const specItem = allItems.find((item) => item._ulid === result.ulid);
   if (!specItem) {
     return null;
   }
@@ -338,7 +343,7 @@ export async function syncSpecImplementationStatus(
   alignmentIndex.buildLinks(refIndex);
 
   const expectedStatus = alignmentIndex.calculateExpectedStatus(specItem._ulid);
-  const currentStatus = specItem.status?.implementation || 'not_started';
+  const currentStatus = specItem.status?.implementation || "not_started";
 
   // No change needed
   if (currentStatus === expectedStatus) {
@@ -348,7 +353,7 @@ export async function syncSpecImplementationStatus(
   // Update the spec item
   await updateSpecItem(ctx, specItem, {
     status: {
-      maturity: specItem.status?.maturity || 'draft',
+      maturity: specItem.status?.maturity || "draft",
       implementation: expectedStatus,
     },
   });

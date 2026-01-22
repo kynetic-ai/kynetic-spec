@@ -8,40 +8,40 @@
  * AC-agent-2: kspec meta agents --json outputs JSON
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
-import Table from 'cli-table3';
-import { ulid } from 'ulid';
+import chalk from "chalk";
+import Table from "cli-table3";
+import type { Command } from "commander";
+import { ulid } from "ulid";
 import {
-  initContext,
-  loadMetaContext,
-  getMetaStats,
-  createObservation,
-  saveObservation,
-  saveMetaItem,
-  deleteMetaItem,
-  createTask,
-  saveTask,
-  loadAllTasks,
-  loadAllItems,
-  ReferenceIndex,
-  loadSessionContext,
-  saveSessionContext,
-  loadInboxItems,
-  findInboxItemByRef,
-  deleteInboxItem,
-  type MetaContext,
   type Agent,
-  type Workflow,
   type Convention,
-  type Observation,
+  createObservation,
+  createTask,
+  deleteInboxItem,
+  deleteMetaItem,
+  findInboxItemByRef,
+  getMetaStats,
+  initContext,
   type LoadedTask,
-} from '../../parser/index.js';
-import { type ObservationType } from '../../schema/index.js';
-import { output, error, success, isJsonMode } from '../output.js';
-import { errors } from '../../strings/errors.js';
-import { commitIfShadow } from '../../parser/shadow.js';
-import { EXIT_CODES } from '../exit-codes.js';
+  loadAllItems,
+  loadAllTasks,
+  loadInboxItems,
+  loadMetaContext,
+  loadSessionContext,
+  type MetaContext,
+  type Observation,
+  ReferenceIndex,
+  saveMetaItem,
+  saveObservation,
+  saveSessionContext,
+  saveTask,
+  type Workflow,
+} from "../../parser/index.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import type { ObservationType } from "../../schema/index.js";
+import { errors } from "../../strings/errors.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, isJsonMode, output, success } from "../output.js";
 
 /**
  * Resolve a meta reference to its ULID
@@ -49,33 +49,36 @@ import { EXIT_CODES } from '../exit-codes.js';
  */
 function resolveMetaRefToUlid(
   ref: string,
-  metaCtx: MetaContext
-): { ulid: string; type: 'agent' | 'workflow' | 'convention' | 'observation' } | null {
-  const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+  metaCtx: MetaContext,
+): {
+  ulid: string;
+  type: "agent" | "workflow" | "convention" | "observation";
+} | null {
+  const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
 
   // Check agents
   const agent = (metaCtx.agents || []).find(
-    (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+    (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
   );
-  if (agent) return { ulid: agent._ulid, type: 'agent' };
+  if (agent) return { ulid: agent._ulid, type: "agent" };
 
   // Check workflows
   const workflow = (metaCtx.workflows || []).find(
-    (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+    (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
   );
-  if (workflow) return { ulid: workflow._ulid, type: 'workflow' };
+  if (workflow) return { ulid: workflow._ulid, type: "workflow" };
 
   // Check conventions
   const convention = (metaCtx.conventions || []).find(
-    (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+    (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
   );
-  if (convention) return { ulid: convention._ulid, type: 'convention' };
+  if (convention) return { ulid: convention._ulid, type: "convention" };
 
   // Check observations
   const observation = (metaCtx.observations || []).find((o) =>
-    o._ulid.startsWith(normalizedRef)
+    o._ulid.startsWith(normalizedRef),
   );
-  if (observation) return { ulid: observation._ulid, type: 'observation' };
+  if (observation) return { ulid: observation._ulid, type: "observation" };
 
   return null;
 }
@@ -87,17 +90,23 @@ function formatMetaShow(meta: MetaContext): void {
   const stats = getMetaStats(meta);
 
   if (!meta.manifest) {
-    console.log(chalk.yellow('No meta manifest found (kynetic.meta.yaml)'));
-    console.log(chalk.gray('Create one to define agents, workflows, conventions, and observations'));
+    console.log(chalk.yellow("No meta manifest found (kynetic.meta.yaml)"));
+    console.log(
+      chalk.gray(
+        "Create one to define agents, workflows, conventions, and observations",
+      ),
+    );
     return;
   }
 
-  console.log(chalk.bold('Meta-Spec Summary'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.bold("Meta-Spec Summary"));
+  console.log(chalk.gray("─".repeat(40)));
   console.log(`Agents:       ${stats.agents}`);
   console.log(`Workflows:    ${stats.workflows}`);
   console.log(`Conventions:  ${stats.conventions}`);
-  console.log(`Observations: ${stats.observations} (${stats.unresolvedObservations} unresolved)`);
+  console.log(
+    `Observations: ${stats.observations} (${stats.unresolvedObservations} unresolved)`,
+  );
 }
 
 /**
@@ -106,12 +115,12 @@ function formatMetaShow(meta: MetaContext): void {
  */
 function formatAgents(agents: Agent[]): void {
   if (agents.length === 0) {
-    console.log(chalk.yellow('No agents defined'));
+    console.log(chalk.yellow("No agents defined"));
     return;
   }
 
   const table = new Table({
-    head: [chalk.bold('ID'), chalk.bold('Name'), chalk.bold('Capabilities')],
+    head: [chalk.bold("ID"), chalk.bold("Name"), chalk.bold("Capabilities")],
     style: {
       head: [],
       border: [],
@@ -119,11 +128,7 @@ function formatAgents(agents: Agent[]): void {
   });
 
   for (const agent of agents) {
-    table.push([
-      agent.id,
-      agent.name,
-      agent.capabilities.join(', '),
-    ]);
+    table.push([agent.id, agent.name, agent.capabilities.join(", ")]);
   }
 
   console.log(table.toString());
@@ -135,12 +140,12 @@ function formatAgents(agents: Agent[]): void {
  */
 function formatWorkflows(workflows: Workflow[]): void {
   if (workflows.length === 0) {
-    console.log(chalk.yellow('No workflows defined'));
+    console.log(chalk.yellow("No workflows defined"));
     return;
   }
 
   const table = new Table({
-    head: [chalk.bold('ID'), chalk.bold('Trigger'), chalk.bold('Steps')],
+    head: [chalk.bold("ID"), chalk.bold("Trigger"), chalk.bold("Steps")],
     style: {
       head: [],
       border: [],
@@ -164,7 +169,7 @@ function formatWorkflows(workflows: Workflow[]): void {
  */
 function formatWorkflowsVerbose(workflows: Workflow[]): void {
   if (workflows.length === 0) {
-    console.log(chalk.yellow('No workflows defined'));
+    console.log(chalk.yellow("No workflows defined"));
     return;
   }
 
@@ -173,13 +178,13 @@ function formatWorkflowsVerbose(workflows: Workflow[]): void {
     if (workflow.description) {
       console.log(chalk.gray(workflow.description));
     }
-    console.log(chalk.gray('─'.repeat(60)));
+    console.log(chalk.gray("─".repeat(60)));
 
     for (const step of workflow.steps) {
       const prefix = {
-        check: chalk.yellow('[check]'),
-        action: chalk.blue('[action]'),
-        decision: chalk.magenta('[decision]'),
+        check: chalk.yellow("[check]"),
+        action: chalk.blue("[action]"),
+        decision: chalk.magenta("[decision]"),
       }[step.type];
 
       console.log(`${prefix} ${step.content}`);
@@ -195,7 +200,7 @@ function formatWorkflowsVerbose(workflows: Workflow[]): void {
       }
     }
 
-    console.log('');
+    console.log("");
   }
 }
 
@@ -205,12 +210,12 @@ function formatWorkflowsVerbose(workflows: Workflow[]): void {
  */
 function formatConventions(conventions: Convention[]): void {
   if (conventions.length === 0) {
-    console.log(chalk.yellow('No conventions defined'));
+    console.log(chalk.yellow("No conventions defined"));
     return;
   }
 
   const table = new Table({
-    head: [chalk.bold('Domain'), chalk.bold('Rules'), chalk.bold('Validation')],
+    head: [chalk.bold("Domain"), chalk.bold("Rules"), chalk.bold("Validation")],
     style: {
       head: [],
       border: [],
@@ -221,7 +226,7 @@ function formatConventions(conventions: Convention[]): void {
     table.push([
       convention.domain,
       convention.rules.length.toString(),
-      convention.validation ? 'yes' : 'no',
+      convention.validation ? "yes" : "no",
     ]);
   }
 
@@ -234,15 +239,15 @@ function formatConventions(conventions: Convention[]): void {
  */
 function formatConventionDetail(convention: Convention): void {
   console.log(chalk.bold(`${convention.domain} Convention`));
-  console.log(chalk.gray('─'.repeat(60)));
+  console.log(chalk.gray("─".repeat(60)));
 
-  console.log(chalk.bold('\nRules:'));
+  console.log(chalk.bold("\nRules:"));
   for (const rule of convention.rules) {
     console.log(`  • ${rule}`);
   }
 
   if (convention.examples && convention.examples.length > 0) {
-    console.log(chalk.bold('\nExamples:'));
+    console.log(chalk.bold("\nExamples:"));
     for (const example of convention.examples) {
       console.log(chalk.green(`  ✓ ${example.good}`));
       console.log(chalk.red(`  ✗ ${example.bad}`));
@@ -250,7 +255,7 @@ function formatConventionDetail(convention: Convention): void {
   }
 
   if (convention.validation) {
-    console.log(chalk.bold('\nValidation:'));
+    console.log(chalk.bold("\nValidation:"));
     console.log(`  Type: ${convention.validation.type}`);
     if (convention.validation.pattern) {
       console.log(`  Pattern: ${convention.validation.pattern}`);
@@ -260,28 +265,37 @@ function formatConventionDetail(convention: Convention): void {
     }
   }
 
-  console.log('');
+  console.log("");
 }
 
 /**
  * Format observations table output
  * AC-obs-2: outputs table with columns: ID, Type, Workflow, Created, Content (truncated)
  */
-function formatObservations(observations: Observation[], showResolved: boolean): void {
-  const filtered = showResolved ? observations : observations.filter(o => !o.resolved);
+function formatObservations(
+  observations: Observation[],
+  showResolved: boolean,
+): void {
+  const filtered = showResolved
+    ? observations
+    : observations.filter((o) => !o.resolved);
 
   if (filtered.length === 0) {
-    console.log(chalk.yellow(showResolved ? 'No observations found' : 'No unresolved observations'));
+    console.log(
+      chalk.yellow(
+        showResolved ? "No observations found" : "No unresolved observations",
+      ),
+    );
     return;
   }
 
   const table = new Table({
     head: [
-      chalk.bold('ID'),
-      chalk.bold('Type'),
-      chalk.bold('Workflow'),
-      chalk.bold('Created'),
-      chalk.bold('Content'),
+      chalk.bold("ID"),
+      chalk.bold("Type"),
+      chalk.bold("Workflow"),
+      chalk.bold("Created"),
+      chalk.bold("Content"),
     ],
     style: {
       head: [],
@@ -293,9 +307,12 @@ function formatObservations(observations: Observation[], showResolved: boolean):
 
   for (const obs of filtered) {
     const id = obs._ulid.substring(0, 8);
-    const workflow = obs.workflow_ref || '-';
-    const created = new Date(obs.created_at).toISOString().split('T')[0];
-    const content = obs.content.length > 47 ? obs.content.substring(0, 47) + '...' : obs.content;
+    const workflow = obs.workflow_ref || "-";
+    const created = new Date(obs.created_at).toISOString().split("T")[0];
+    const content =
+      obs.content.length > 47
+        ? `${obs.content.substring(0, 47)}...`
+        : obs.content;
 
     table.push([id, obs.type, workflow, created, content]);
   }
@@ -308,13 +325,15 @@ function formatObservations(observations: Observation[], showResolved: boolean):
  */
 export function registerMetaCommands(program: Command): void {
   const meta = program
-    .command('meta')
-    .description('Meta-spec commands (agents, workflows, conventions, observations)');
+    .command("meta")
+    .description(
+      "Meta-spec commands (agents, workflows, conventions, observations)",
+    );
 
   // AC-meta-manifest-1: kspec meta show outputs summary with counts
   meta
-    .command('show')
-    .description('Display meta-spec summary')
+    .command("show")
+    .description("Display meta-spec summary")
     .action(async () => {
       try {
         const ctx = await initContext();
@@ -332,7 +351,7 @@ export function registerMetaCommands(program: Command): void {
             manifest: metaCtx.manifestPath,
             stats,
           },
-          () => formatMetaShow(metaCtx)
+          () => formatMetaShow(metaCtx),
         );
       } catch (err) {
         error(errors.failures.showMeta, err);
@@ -342,8 +361,8 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-agent-1, AC-agent-2: kspec meta agents
   meta
-    .command('agents')
-    .description('List agents defined in meta-spec')
+    .command("agents")
+    .description("List agents defined in meta-spec")
     .action(async () => {
       try {
         const ctx = await initContext();
@@ -368,7 +387,7 @@ export function registerMetaCommands(program: Command): void {
             conventions: agent.conventions,
           })),
           // AC-agent-1: Table output with ID, Name, Capabilities
-          () => formatAgents(agents)
+          () => formatAgents(agents),
         );
       } catch (err) {
         error(errors.failures.listAgents, err);
@@ -378,9 +397,9 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-workflow-1, AC-workflow-2, AC-workflow-4: kspec meta workflows
   meta
-    .command('workflows')
-    .description('List workflows defined in meta-spec')
-    .option('--verbose', 'Show full workflow details with all steps')
+    .command("workflows")
+    .description("List workflows defined in meta-spec")
+    .option("--verbose", "Show full workflow details with all steps")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -408,7 +427,7 @@ export function registerMetaCommands(program: Command): void {
             } else {
               formatWorkflows(workflows);
             }
-          }
+          },
         );
       } catch (err) {
         error(errors.failures.listWorkflows, err);
@@ -418,9 +437,9 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-conv-1, AC-conv-2, AC-conv-5: kspec meta conventions
   meta
-    .command('conventions')
-    .description('List conventions defined in meta-spec')
-    .option('--domain <domain>', 'Filter by specific domain')
+    .command("conventions")
+    .description("List conventions defined in meta-spec")
+    .option("--domain <domain>", "Filter by specific domain")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -453,7 +472,7 @@ export function registerMetaCommands(program: Command): void {
             } else {
               formatConventions(filtered);
             }
-          }
+          },
         );
       } catch (err) {
         error(errors.failures.listConventions, err);
@@ -463,8 +482,10 @@ export function registerMetaCommands(program: Command): void {
 
   // meta-get-cmd: kspec meta get <ref>
   meta
-    .command('get <ref>')
-    .description('Get a meta item by reference (agent, workflow, convention, or observation)')
+    .command("get <ref>")
+    .description(
+      "Get a meta item by reference (agent, workflow, convention, or observation)",
+    )
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
@@ -477,7 +498,7 @@ export function registerMetaCommands(program: Command): void {
         const metaCtx = await loadMetaContext(ctx);
 
         // Normalize reference
-        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
 
         // Search in all meta item types
         const agents = metaCtx.agents || [];
@@ -487,39 +508,48 @@ export function registerMetaCommands(program: Command): void {
 
         // Try to find by ID or ULID prefix
         let found: any = null;
-        let itemType: string = '';
+        let itemType: string = "";
 
         // Check agents (by id or ULID)
-        const agent = agents.find((a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef));
+        const agent = agents.find(
+          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
+        );
         if (agent) {
           found = agent;
-          itemType = 'agent';
+          itemType = "agent";
         }
 
         // Check workflows (by id or ULID)
         if (!found) {
-          const workflow = workflows.find((w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef));
+          const workflow = workflows.find(
+            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
+          );
           if (workflow) {
             found = workflow;
-            itemType = 'workflow';
+            itemType = "workflow";
           }
         }
 
         // Check conventions (by domain or ULID)
         if (!found) {
-          const convention = conventions.find((c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef));
+          const convention = conventions.find(
+            (c) =>
+              c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
+          );
           if (convention) {
             found = convention;
-            itemType = 'convention';
+            itemType = "convention";
           }
         }
 
         // Check observations (by ULID)
         if (!found) {
-          const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
+          const observation = observations.find((o) =>
+            o._ulid.startsWith(normalizedRef),
+          );
           if (observation) {
             found = observation;
-            itemType = 'observation';
+            itemType = "observation";
           }
         }
 
@@ -530,8 +560,12 @@ export function registerMetaCommands(program: Command): void {
 
         // Output the item
         output(found, () => {
-          console.log(chalk.bold(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)}: ${ref}`));
-          console.log(chalk.gray('─'.repeat(60)));
+          console.log(
+            chalk.bold(
+              `${itemType.charAt(0).toUpperCase() + itemType.slice(1)}: ${ref}`,
+            ),
+          );
+          console.log(chalk.gray("─".repeat(60)));
           console.log(JSON.stringify(found, null, 2));
         });
       } catch (err) {
@@ -542,9 +576,12 @@ export function registerMetaCommands(program: Command): void {
 
   // meta-list-cmd: kspec meta list
   meta
-    .command('list')
-    .description('List all meta items')
-    .option('--type <type>', 'Filter by type (agent, workflow, convention, observation)')
+    .command("list")
+    .description("List all meta items")
+    .option(
+      "--type <type>",
+      "Filter by type (agent, workflow, convention, observation)",
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -567,11 +604,11 @@ export function registerMetaCommands(program: Command): void {
         const items: MetaListItem[] = [];
 
         // Add agents
-        if (!options.type || options.type === 'agent') {
+        if (!options.type || options.type === "agent") {
           for (const agent of metaCtx.agents || []) {
             items.push({
               id: agent.id,
-              type: 'agent',
+              type: "agent",
               context: agent.name,
               ulid: agent._ulid,
             });
@@ -579,11 +616,11 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // Add workflows
-        if (!options.type || options.type === 'workflow') {
+        if (!options.type || options.type === "workflow") {
           for (const workflow of metaCtx.workflows || []) {
             items.push({
               id: workflow.id,
-              type: 'workflow',
+              type: "workflow",
               context: workflow.trigger,
               ulid: workflow._ulid,
             });
@@ -591,11 +628,11 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // Add conventions
-        if (!options.type || options.type === 'convention') {
+        if (!options.type || options.type === "convention") {
           for (const convention of metaCtx.conventions || []) {
             items.push({
               id: convention.domain,
-              type: 'convention',
+              type: "convention",
               context: `${convention.rules.length} rules`,
               ulid: convention._ulid,
             });
@@ -603,13 +640,13 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // Add observations
-        if (!options.type || options.type === 'observation') {
+        if (!options.type || options.type === "observation") {
           for (const observation of metaCtx.observations || []) {
             const ulidPrefix = observation._ulid.substring(0, 8);
             items.push({
               id: ulidPrefix,
-              type: 'observation',
-              context: `${observation.type} ${observation.resolved ? '(resolved)' : ''}`,
+              type: "observation",
+              context: `${observation.type} ${observation.resolved ? "(resolved)" : ""}`,
               ulid: observation._ulid,
             });
           }
@@ -618,12 +655,12 @@ export function registerMetaCommands(program: Command): void {
         // Output
         output(items, () => {
           if (items.length === 0) {
-            console.log(chalk.yellow('No meta items found'));
+            console.log(chalk.yellow("No meta items found"));
             return;
           }
 
           const table = new Table({
-            head: [chalk.bold('ID'), chalk.bold('Type'), chalk.bold('Context')],
+            head: [chalk.bold("ID"), chalk.bold("Type"), chalk.bold("Context")],
             style: {
               head: [],
               border: [],
@@ -645,117 +682,160 @@ export function registerMetaCommands(program: Command): void {
   // AC-obs-1: kspec meta observe <type> <content>
   // AC: @meta-observe-cmd from-inbox-conversion
   meta
-    .command('observe [type] [content]')
-    .description('Create an observation (friction, success, question, idea)')
-    .option('--workflow <ref>', 'Reference to workflow this observation relates to')
-    .option('--author <author>', 'Author of the observation')
-    .option('--from-inbox <ref>', 'Convert inbox item to observation')
-    .option('--type <type>', 'Override type when using --from-inbox (defaults to idea)')
-    .action(async (type: string | undefined, content: string | undefined, options) => {
-      try {
-        const ctx = await initContext();
+    .command("observe [type] [content]")
+    .description("Create an observation (friction, success, question, idea)")
+    .option(
+      "--workflow <ref>",
+      "Reference to workflow this observation relates to",
+    )
+    .option("--author <author>", "Author of the observation")
+    .option("--from-inbox <ref>", "Convert inbox item to observation")
+    .option(
+      "--type <type>",
+      "Override type when using --from-inbox (defaults to idea)",
+    )
+    .action(
+      async (
+        type: string | undefined,
+        content: string | undefined,
+        options,
+      ) => {
+        try {
+          const ctx = await initContext();
 
-        if (!ctx.manifestPath) {
-          error(errors.project.noKspecProject);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        // AC: @meta-observe-cmd from-inbox-conversion
-        // Handle --from-inbox flag
-        if (options.fromInbox) {
-          // Load inbox items
-          const inboxItems = await loadInboxItems(ctx);
-          const item = findInboxItemByRef(inboxItems, options.fromInbox);
-
-          if (!item) {
-            error(errors.reference.inboxNotFound(options.fromInbox));
-            process.exit(EXIT_CODES.NOT_FOUND);
+          if (!ctx.manifestPath) {
+            error(errors.project.noKspecProject);
+            process.exit(EXIT_CODES.ERROR);
           }
 
-          // Use inbox item content
-          const observationContent = item.text;
+          // AC: @meta-observe-cmd from-inbox-conversion
+          // Handle --from-inbox flag
+          if (options.fromInbox) {
+            // Load inbox items
+            const inboxItems = await loadInboxItems(ctx);
+            const item = findInboxItemByRef(inboxItems, options.fromInbox);
 
-          // Type defaults to 'idea' but can be overridden with --type flag
-          const observationType = (options.type || 'idea') as ObservationType;
+            if (!item) {
+              error(errors.reference.inboxNotFound(options.fromInbox));
+              process.exit(EXIT_CODES.NOT_FOUND);
+            }
+
+            // Use inbox item content
+            const observationContent = item.text;
+
+            // Type defaults to 'idea' but can be overridden with --type flag
+            const observationType = (options.type || "idea") as ObservationType;
+
+            // Validate observation type
+            const validTypes: ObservationType[] = [
+              "friction",
+              "success",
+              "question",
+              "idea",
+            ];
+            if (!validTypes.includes(observationType)) {
+              error(errors.validation.invalidObservationType(observationType));
+              console.log(`Valid types: ${validTypes.join(", ")}`);
+              process.exit(EXIT_CODES.ERROR);
+            }
+
+            // Create observation
+            const observation = createObservation(
+              observationType,
+              observationContent,
+              {
+                workflow_ref: options.workflow,
+                author: options.author,
+              },
+            );
+
+            // Save observation
+            await saveObservation(ctx, observation);
+
+            // Delete inbox item
+            const deleted = await deleteInboxItem(ctx, item._ulid);
+            if (!deleted) {
+              error("Failed to delete inbox item after creating observation");
+              process.exit(EXIT_CODES.ERROR);
+            }
+
+            await commitIfShadow(
+              ctx.shadow,
+              "meta-observe-from-inbox",
+              observation._ulid.substring(0, 8),
+              `Convert inbox item to ${observationType} observation`,
+            );
+
+            // Return observation ref
+            output(observation, () =>
+              success(
+                `Created observation: ${observation._ulid.substring(0, 8)}`,
+              ),
+            );
+            return;
+          }
+
+          // Standard observe flow (without --from-inbox)
+          if (!type || !content) {
+            error("Type and content are required when not using --from-inbox");
+            process.exit(EXIT_CODES.ERROR);
+          }
 
           // Validate observation type
-          const validTypes: ObservationType[] = ['friction', 'success', 'question', 'idea'];
-          if (!validTypes.includes(observationType)) {
-            error(errors.validation.invalidObservationType(observationType));
-            console.log(`Valid types: ${validTypes.join(', ')}`);
+          const validTypes: ObservationType[] = [
+            "friction",
+            "success",
+            "question",
+            "idea",
+          ];
+          if (!validTypes.includes(type as ObservationType)) {
+            error(errors.validation.invalidObservationType(type));
+            console.log(`Valid types: ${validTypes.join(", ")}`);
             process.exit(EXIT_CODES.ERROR);
           }
 
           // Create observation
-          const observation = createObservation(observationType, observationContent, {
-            workflow_ref: options.workflow,
-            author: options.author,
-          });
+          const observation = createObservation(
+            type as ObservationType,
+            content,
+            {
+              workflow_ref: options.workflow,
+              author: options.author,
+            },
+          );
 
-          // Save observation
+          // Save to manifest
           await saveObservation(ctx, observation);
 
-          // Delete inbox item
-          const deleted = await deleteInboxItem(ctx, item._ulid);
-          if (!deleted) {
-            error('Failed to delete inbox item after creating observation');
-            process.exit(EXIT_CODES.ERROR);
-          }
-
-          await commitIfShadow(ctx.shadow, 'meta-observe-from-inbox', observation._ulid.substring(0, 8), `Convert inbox item to ${observationType} observation`);
-
-          // Return observation ref
-          output(
-            observation,
-            () => success(`Created observation: ${observation._ulid.substring(0, 8)}`)
+          // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
+          // In JSON mode, return the created observation object
+          output(observation, () =>
+            success(
+              `Created observation: ${observation._ulid.substring(0, 8)}`,
+            ),
           );
-          return;
-        }
-
-        // Standard observe flow (without --from-inbox)
-        if (!type || !content) {
-          error('Type and content are required when not using --from-inbox');
+        } catch (err) {
+          error(errors.failures.createObservation, err);
           process.exit(EXIT_CODES.ERROR);
         }
-
-        // Validate observation type
-        const validTypes: ObservationType[] = ['friction', 'success', 'question', 'idea'];
-        if (!validTypes.includes(type as ObservationType)) {
-          error(errors.validation.invalidObservationType(type));
-          console.log(`Valid types: ${validTypes.join(', ')}`);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        // Create observation
-        const observation = createObservation(type as ObservationType, content, {
-          workflow_ref: options.workflow,
-          author: options.author,
-        });
-
-        // Save to manifest
-        await saveObservation(ctx, observation);
-
-        // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
-        // In JSON mode, return the created observation object
-        output(
-          observation,
-          () => success(`Created observation: ${observation._ulid.substring(0, 8)}`)
-        );
-      } catch (err) {
-        error(errors.failures.createObservation, err);
-        process.exit(EXIT_CODES.ERROR);
-      }
-    });
+      },
+    );
 
   // AC-obs-2, AC-obs-5: kspec meta observations
   meta
-    .command('observations')
-    .description('List observations (shows unresolved by default)')
-    .option('--type <type>', 'Filter by observation type (friction/success/question/idea)')
-    .option('--workflow <ref>', 'Filter by workflow reference')
-    .option('--all', 'Include resolved observations')
-    .option('--promoted', 'Show only observations promoted to tasks')
-    .option('--pending-resolution', 'Show observations with completed tasks awaiting resolution')
+    .command("observations")
+    .description("List observations (shows unresolved by default)")
+    .option(
+      "--type <type>",
+      "Filter by observation type (friction/success/question/idea)",
+    )
+    .option("--workflow <ref>", "Filter by workflow reference")
+    .option("--all", "Include resolved observations")
+    .option("--promoted", "Show only observations promoted to tasks")
+    .option(
+      "--pending-resolution",
+      "Show observations with completed tasks awaiting resolution",
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -770,15 +850,21 @@ export function registerMetaCommands(program: Command): void {
 
         // Apply filters
         if (options.type) {
-          observations = observations.filter((obs) => obs.type === options.type);
+          observations = observations.filter(
+            (obs) => obs.type === options.type,
+          );
         }
 
         if (options.workflow) {
-          observations = observations.filter((obs) => obs.workflow_ref === options.workflow);
+          observations = observations.filter(
+            (obs) => obs.workflow_ref === options.workflow,
+          );
         }
 
         if (options.promoted) {
-          observations = observations.filter((obs) => obs.promoted_to !== undefined);
+          observations = observations.filter(
+            (obs) => obs.promoted_to !== undefined,
+          );
         }
 
         if (options.pendingResolution) {
@@ -793,7 +879,11 @@ export function registerMetaCommands(program: Command): void {
             if (!taskResult.ok) return false;
             const item = taskResult.item;
             // Type guard: check if item is a task (has status and depends_on properties)
-            return 'status' in item && 'depends_on' in item && item.status === 'completed';
+            return (
+              "status" in item &&
+              "depends_on" in item &&
+              item.status === "completed"
+            );
           });
         }
 
@@ -813,7 +903,7 @@ export function registerMetaCommands(program: Command): void {
             promoted_to: obs.promoted_to ?? null,
           })),
           // AC-obs-2: Table output with ID, Type, Workflow, Created, Content
-          () => formatObservations(observations, options.all)
+          () => formatObservations(observations, options.all),
         );
       } catch (err) {
         error(errors.failures.listObservations, err);
@@ -823,11 +913,11 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-obs-3, AC-obs-6, AC-obs-8: kspec meta promote
   meta
-    .command('promote <ref>')
-    .description('Promote observation to a task')
-    .requiredOption('--title <title>', 'Task title')
-    .option('--priority <priority>', 'Task priority (1-5)', '2')
-    .option('--force', 'Force promotion even if observation is resolved')
+    .command("promote <ref>")
+    .description("Promote observation to a task")
+    .requiredOption("--title <title>", "Task title")
+    .option("--priority <priority>", "Task priority (1-5)", "2")
+    .option("--force", "Force promotion even if observation is resolved")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -841,8 +931,10 @@ export function registerMetaCommands(program: Command): void {
         const observations = metaCtx.observations || [];
 
         // Find observation
-        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
-        const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
+        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
+        const observation = observations.find((o) =>
+          o._ulid.startsWith(normalizedRef),
+        );
 
         if (!observation) {
           error(errors.reference.observationNotFound(ref));
@@ -851,7 +943,9 @@ export function registerMetaCommands(program: Command): void {
 
         // AC-obs-6: Check if already promoted
         if (observation.promoted_to) {
-          error(errors.conflict.observationAlreadyPromoted(observation.promoted_to));
+          error(
+            errors.conflict.observationAlreadyPromoted(observation.promoted_to),
+          );
           process.exit(EXIT_CODES.CONFLICT);
         }
 
@@ -867,12 +961,17 @@ export function registerMetaCommands(program: Command): void {
           description: observation.content,
           priority: Number.parseInt(options.priority, 10),
           meta_ref: observation.workflow_ref,
-          origin: 'observation_promotion',
+          origin: "observation_promotion",
         });
 
         // Save task
         await saveTask(ctx, task);
-        await commitIfShadow(ctx.shadow, 'task-add', task.slugs[0] || task._ulid.slice(0, 8), task.title);
+        await commitIfShadow(
+          ctx.shadow,
+          "task-add",
+          task.slugs[0] || task._ulid.slice(0, 8),
+          task.title,
+        );
         const taskRef = `@${task._ulid.substring(0, 8)}`;
 
         // Update observation with promoted_to field
@@ -881,10 +980,7 @@ export function registerMetaCommands(program: Command): void {
 
         // AC-obs-3: outputs "OK Created task: <ULID-prefix>"
         // In JSON mode, return the created task object
-        output(
-          task,
-          () => success(`Created task: ${taskRef.substring(0, 9)}`)
-        );
+        output(task, () => success(`Created task: ${taskRef.substring(0, 9)}`));
       } catch (err) {
         error(errors.failures.promoteObservation, err);
         process.exit(EXIT_CODES.ERROR);
@@ -893,8 +989,8 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-obs-4, AC-obs-7, AC-obs-9: kspec meta resolve
   meta
-    .command('resolve <ref> [resolution]')
-    .description('Resolve an observation')
+    .command("resolve <ref> [resolution]")
+    .description("Resolve an observation")
     .action(async (ref: string, resolution: string | undefined) => {
       try {
         const ctx = await initContext();
@@ -908,8 +1004,10 @@ export function registerMetaCommands(program: Command): void {
         const observations = metaCtx.observations || [];
 
         // Find observation
-        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
-        const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
+        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
+        const observation = observations.find((o) =>
+          o._ulid.startsWith(normalizedRef),
+        );
 
         if (!observation) {
           error(errors.reference.observationNotFound(ref));
@@ -918,12 +1016,17 @@ export function registerMetaCommands(program: Command): void {
 
         // AC-obs-7: Check if already resolved
         if (observation.resolved) {
-          const resolvedDate = new Date(observation.resolved_at!).toISOString().split('T')[0];
-          const resolutionText = observation.resolution || '';
-          const truncated = resolutionText.length > 50
-            ? resolutionText.substring(0, 50) + '...'
-            : resolutionText;
-          error(errors.conflict.observationAlreadyResolved(resolvedDate, truncated));
+          const resolvedDate = new Date(observation.resolved_at!)
+            .toISOString()
+            .split("T")[0];
+          const resolutionText = observation.resolution || "";
+          const truncated =
+            resolutionText.length > 50
+              ? `${resolutionText.substring(0, 50)}...`
+              : resolutionText;
+          error(
+            errors.conflict.observationAlreadyResolved(resolvedDate, truncated),
+          );
           process.exit(EXIT_CODES.CONFLICT);
         }
 
@@ -939,11 +1042,11 @@ export function registerMetaCommands(program: Command): void {
           if (taskResult.ok) {
             const item = taskResult.item;
             // Type guard: ensure this is a task (has status and depends_on properties)
-            if ('status' in item && 'depends_on' in item) {
+            if ("status" in item && "depends_on" in item) {
               const task = item as LoadedTask;
-              if (task.status === 'completed' && task.closed_reason) {
+              if (task.status === "completed" && task.closed_reason) {
                 finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
-              } else if (task.status === 'completed') {
+              } else if (task.status === "completed") {
                 finalResolution = `Resolved via task ${observation.promoted_to}`;
               } else {
                 error(`Task ${observation.promoted_to} is not completed yet`);
@@ -982,23 +1085,23 @@ export function registerMetaCommands(program: Command): void {
 
   // Meta add command - create new meta items
   meta
-    .command('add <type>')
-    .description('Create a new meta item (agent, workflow, or convention)')
-    .option('--id <id>', 'Semantic ID (required for agents and workflows)')
-    .option('--domain <domain>', 'Domain (required for conventions)')
-    .option('--name <name>', 'Name (for agents)')
-    .option('--trigger <trigger>', 'Trigger (for workflows)')
-    .option('--description <desc>', 'Description')
-    .option('--capability <cap...>', 'Capabilities (for agents)')
-    .option('--tool <tool...>', 'Tools (for agents)')
-    .option('--convention <conv...>', 'Convention references (for agents)')
-    .option('--rule <rule...>', 'Rules (for conventions)')
+    .command("add <type>")
+    .description("Create a new meta item (agent, workflow, or convention)")
+    .option("--id <id>", "Semantic ID (required for agents and workflows)")
+    .option("--domain <domain>", "Domain (required for conventions)")
+    .option("--name <name>", "Name (for agents)")
+    .option("--trigger <trigger>", "Trigger (for workflows)")
+    .option("--description <desc>", "Description")
+    .option("--capability <cap...>", "Capabilities (for agents)")
+    .option("--tool <tool...>", "Tools (for agents)")
+    .option("--convention <conv...>", "Convention references (for agents)")
+    .option("--rule <rule...>", "Rules (for conventions)")
     .action(async (type: string, options) => {
       try {
         const ctx = await initContext();
 
         // Validate type
-        const validTypes = ['agent', 'workflow', 'convention'];
+        const validTypes = ["agent", "workflow", "convention"];
         if (!validTypes.includes(type)) {
           error(errors.validation.invalidType(type, validTypes));
           process.exit(EXIT_CODES.ERROR);
@@ -1010,7 +1113,7 @@ export function registerMetaCommands(program: Command): void {
         // Create the item based on type
         let item: Agent | Workflow | Convention;
 
-        if (type === 'agent') {
+        if (type === "agent") {
           // Validate required fields
           if (!options.id) {
             error(errors.validation.agentRequiresId);
@@ -1025,12 +1128,12 @@ export function registerMetaCommands(program: Command): void {
             _ulid: itemUlid,
             id: options.id,
             name: options.name,
-            description: options.description || '',
+            description: options.description || "",
             capabilities: options.capability || [],
             tools: options.tool || [],
             conventions: options.convention || [],
           };
-        } else if (type === 'workflow') {
+        } else if (type === "workflow") {
           // Validate required fields
           if (!options.id) {
             error(errors.validation.workflowRequiresId);
@@ -1045,7 +1148,7 @@ export function registerMetaCommands(program: Command): void {
             _ulid: itemUlid,
             id: options.id,
             trigger: options.trigger,
-            description: options.description || '',
+            description: options.description || "",
             steps: [],
           };
         } else {
@@ -1064,14 +1167,21 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // Save the item
-        await saveMetaItem(ctx, item, type as 'agent' | 'workflow' | 'convention');
+        await saveMetaItem(
+          ctx,
+          item,
+          type as "agent" | "workflow" | "convention",
+        );
 
         if (isJsonMode()) {
           // In JSON mode, output the item data directly
           console.log(JSON.stringify(item, null, 2));
         } else {
-          const idOrDomain = 'id' in item ? item.id : 'domain' in item ? item.domain : itemUlid;
-          success(`Created ${type}: ${idOrDomain} (@${itemUlid.substring(0, 8)})`);
+          const idOrDomain =
+            "id" in item ? item.id : "domain" in item ? item.domain : itemUlid;
+          success(
+            `Created ${type}: ${idOrDomain} (@${itemUlid.substring(0, 8)})`,
+          );
         }
       } catch (err) {
         error(errors.failures.createMeta(type), err);
@@ -1081,44 +1191,44 @@ export function registerMetaCommands(program: Command): void {
 
   // Meta set command - update existing meta items
   meta
-    .command('set <ref>')
-    .description('Update an existing meta item')
-    .option('--name <name>', 'Update name (for agents)')
-    .option('--description <desc>', 'Update description')
-    .option('--trigger <trigger>', 'Update trigger (for workflows)')
-    .option('--add-capability <cap>', 'Add capability (for agents)')
-    .option('--add-tool <tool>', 'Add tool (for agents)')
-    .option('--add-convention <conv>', 'Add convention reference (for agents)')
-    .option('--add-rule <rule>', 'Add rule (for conventions)')
+    .command("set <ref>")
+    .description("Update an existing meta item")
+    .option("--name <name>", "Update name (for agents)")
+    .option("--description <desc>", "Update description")
+    .option("--trigger <trigger>", "Update trigger (for workflows)")
+    .option("--add-capability <cap>", "Add capability (for agents)")
+    .option("--add-tool <tool>", "Add tool (for agents)")
+    .option("--add-convention <conv>", "Add convention reference (for agents)")
+    .option("--add-rule <rule>", "Add rule (for conventions)")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
         const metaCtx = await loadMetaContext(ctx);
 
         // Find the item using unified lookup
-        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
+        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
         let found: Agent | Workflow | Convention | null = null;
-        let itemType: 'agent' | 'workflow' | 'convention' | null = null;
+        let itemType: "agent" | "workflow" | "convention" | null = null;
 
         // Search in agents
         const agents = metaCtx.manifest?.agents || [];
         const agent = agents.find(
-          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
         );
         if (agent) {
           found = agent;
-          itemType = 'agent';
+          itemType = "agent";
         }
 
         // Search in workflows
         if (!found) {
           const workflows = metaCtx.manifest?.workflows || [];
           const workflow = workflows.find(
-            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
           );
           if (workflow) {
             found = workflow;
-            itemType = 'workflow';
+            itemType = "workflow";
           }
         }
 
@@ -1126,11 +1236,12 @@ export function registerMetaCommands(program: Command): void {
         if (!found) {
           const conventions = metaCtx.manifest?.conventions || [];
           const convention = conventions.find(
-            (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+            (c) =>
+              c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
           );
           if (convention) {
             found = convention;
-            itemType = 'convention';
+            itemType = "convention";
           }
         }
 
@@ -1140,10 +1251,11 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // Update fields based on type
-        if (itemType === 'agent') {
+        if (itemType === "agent") {
           const item = found as Agent;
           if (options.name) item.name = options.name;
-          if (options.description !== undefined) item.description = options.description;
+          if (options.description !== undefined)
+            item.description = options.description;
           if (options.addCapability) {
             if (!item.capabilities.includes(options.addCapability)) {
               item.capabilities.push(options.addCapability);
@@ -1159,10 +1271,11 @@ export function registerMetaCommands(program: Command): void {
               item.conventions.push(options.addConvention);
             }
           }
-        } else if (itemType === 'workflow') {
+        } else if (itemType === "workflow") {
           const item = found as Workflow;
           if (options.trigger) item.trigger = options.trigger;
-          if (options.description !== undefined) item.description = options.description;
+          if (options.description !== undefined)
+            item.description = options.description;
         } else {
           const item = found as Convention;
           // Convention doesn't have a description field
@@ -1181,9 +1294,9 @@ export function registerMetaCommands(program: Command): void {
           console.log(JSON.stringify(found, null, 2));
         } else {
           const idOrDomain =
-            itemType === 'agent'
+            itemType === "agent"
               ? (found as Agent).id
-              : itemType === 'workflow'
+              : itemType === "workflow"
                 ? (found as Workflow).id
                 : (found as Convention).domain;
           success(`Updated ${itemType}: ${idOrDomain}`);
@@ -1196,27 +1309,32 @@ export function registerMetaCommands(program: Command): void {
 
   // Meta delete command - delete meta items
   meta
-    .command('delete <ref>')
-    .description('Delete a meta item')
-    .option('--confirm', 'Skip confirmation prompt')
+    .command("delete <ref>")
+    .description("Delete a meta item")
+    .option("--confirm", "Skip confirmation prompt")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
         const metaCtx = await loadMetaContext(ctx);
 
         // Find the item to determine type
-        const normalizedRef = ref.startsWith('@') ? ref.substring(1) : ref;
-        let itemType: 'agent' | 'workflow' | 'convention' | 'observation' | null = null;
+        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
+        let itemType:
+          | "agent"
+          | "workflow"
+          | "convention"
+          | "observation"
+          | null = null;
         let itemUlid: string | null = null;
         let itemLabel: string | null = null;
 
         // Search in agents
         const agents = metaCtx.manifest?.agents || [];
         const agent = agents.find(
-          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef)
+          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
         );
         if (agent) {
-          itemType = 'agent';
+          itemType = "agent";
           itemUlid = agent._ulid;
           itemLabel = `agent ${agent.id}`;
         }
@@ -1225,10 +1343,10 @@ export function registerMetaCommands(program: Command): void {
         if (!itemType) {
           const workflows = metaCtx.manifest?.workflows || [];
           const workflow = workflows.find(
-            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef)
+            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
           );
           if (workflow) {
-            itemType = 'workflow';
+            itemType = "workflow";
             itemUlid = workflow._ulid;
             itemLabel = `workflow ${workflow.id}`;
           }
@@ -1238,10 +1356,11 @@ export function registerMetaCommands(program: Command): void {
         if (!itemType) {
           const conventions = metaCtx.manifest?.conventions || [];
           const convention = conventions.find(
-            (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef)
+            (c) =>
+              c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
           );
           if (convention) {
-            itemType = 'convention';
+            itemType = "convention";
             itemUlid = convention._ulid;
             itemLabel = `convention ${convention.domain}`;
           }
@@ -1250,9 +1369,11 @@ export function registerMetaCommands(program: Command): void {
         // Search in observations
         if (!itemType) {
           const observations = metaCtx.observations || [];
-          const observation = observations.find((o) => o._ulid.startsWith(normalizedRef));
+          const observation = observations.find((o) =>
+            o._ulid.startsWith(normalizedRef),
+          );
           if (observation) {
-            itemType = 'observation';
+            itemType = "observation";
             itemUlid = observation._ulid;
             itemLabel = `observation ${observation._ulid.substring(0, 8)}`;
           }
@@ -1278,18 +1399,27 @@ export function registerMetaCommands(program: Command): void {
           if (referencingTasks.length > 0) {
             const taskRefs = referencingTasks
               .map((t) => `@${t.slugs?.[0] || t._ulid.substring(0, 8)}`)
-              .join(', ');
-            error(errors.operation.cannotDeleteReferencedByTasks(itemLabel, referencingTasks.length, taskRefs));
+              .join(", ");
+            error(
+              errors.operation.cannotDeleteReferencedByTasks(
+                itemLabel,
+                referencingTasks.length,
+                taskRefs,
+              ),
+            );
             process.exit(EXIT_CODES.ERROR);
           }
 
           // Check observations with workflow_ref (only for workflows)
-          if (itemType === 'workflow') {
+          if (itemType === "workflow") {
             const observations = metaCtx.observations || [];
             const referencingObservations = observations.filter((o) => {
               if (!o.workflow_ref) return false;
               // Resolve the observation's workflow_ref to a ULID
-              const obsWorkflowRef = resolveMetaRefToUlid(o.workflow_ref, metaCtx);
+              const obsWorkflowRef = resolveMetaRefToUlid(
+                o.workflow_ref,
+                metaCtx,
+              );
               // Compare ULIDs to handle both semantic IDs and ULID prefixes
               return obsWorkflowRef && obsWorkflowRef.ulid === itemUlid;
             });
@@ -1297,8 +1427,14 @@ export function registerMetaCommands(program: Command): void {
             if (referencingObservations.length > 0) {
               const obsRefs = referencingObservations
                 .map((o) => `@${o._ulid.substring(0, 8)}`)
-                .join(', ');
-              error(errors.operation.cannotDeleteReferencedByObservations(itemLabel, referencingObservations.length, obsRefs));
+                .join(", ");
+              error(
+                errors.operation.cannotDeleteReferencedByObservations(
+                  itemLabel,
+                  referencingObservations.length,
+                  obsRefs,
+                ),
+              );
               process.exit(EXIT_CODES.ERROR);
             }
           }
@@ -1325,9 +1461,9 @@ export function registerMetaCommands(program: Command): void {
 
   // meta-focus-cmd: kspec meta focus [ref]
   meta
-    .command('focus [ref]')
-    .description('Get or set session focus')
-    .option('--clear', 'Clear current focus')
+    .command("focus [ref]")
+    .description("Get or set session focus")
+    .option("--clear", "Clear current focus")
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
@@ -1344,35 +1480,28 @@ export function registerMetaCommands(program: Command): void {
           sessionCtx.focus = null;
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { focus: null },
-            () => success('Cleared session focus')
-          );
+          output({ focus: null }, () => success("Cleared session focus"));
           return;
         }
 
         // Show current focus
         if (!ref) {
-          output(
-            { focus: sessionCtx.focus },
-            () => {
-              if (sessionCtx.focus) {
-                console.log(`Current focus: ${sessionCtx.focus}`);
-              } else {
-                console.log(chalk.yellow('No focus set'));
-              }
+          output({ focus: sessionCtx.focus }, () => {
+            if (sessionCtx.focus) {
+              console.log(`Current focus: ${sessionCtx.focus}`);
+            } else {
+              console.log(chalk.yellow("No focus set"));
             }
-          );
+          });
           return;
         }
 
         // Set focus to ref
-        sessionCtx.focus = ref.startsWith('@') ? ref : `@${ref}`;
+        sessionCtx.focus = ref.startsWith("@") ? ref : `@${ref}`;
         await saveSessionContext(ctx, sessionCtx);
 
-        output(
-          { focus: sessionCtx.focus },
-          () => success(`Set focus to: ${sessionCtx.focus}`)
+        output({ focus: sessionCtx.focus }, () =>
+          success(`Set focus to: ${sessionCtx.focus}`),
         );
       } catch (err) {
         error(errors.failures.updateSessionContext, err);
@@ -1382,8 +1511,8 @@ export function registerMetaCommands(program: Command): void {
 
   // meta-thread-cmd: kspec meta thread <action> [text]
   meta
-    .command('thread <action> [text]')
-    .description('Manage active threads')
+    .command("thread <action> [text]")
+    .description("Manage active threads")
     .action(async (action: string, text: string | undefined) => {
       try {
         const ctx = await initContext();
@@ -1396,71 +1525,69 @@ export function registerMetaCommands(program: Command): void {
         const sessionCtx = await loadSessionContext(ctx);
 
         // List threads
-        if (action === 'list') {
-          output(
-            { threads: sessionCtx.threads },
-            () => {
-              if (sessionCtx.threads.length === 0) {
-                console.log(chalk.yellow('No active threads'));
-              } else {
-                console.log('Active threads:');
-                sessionCtx.threads.forEach((thread, idx) => {
-                  console.log(`  ${idx + 1}. ${thread}`);
-                });
-              }
+        if (action === "list") {
+          output({ threads: sessionCtx.threads }, () => {
+            if (sessionCtx.threads.length === 0) {
+              console.log(chalk.yellow("No active threads"));
+            } else {
+              console.log("Active threads:");
+              sessionCtx.threads.forEach((thread, idx) => {
+                console.log(`  ${idx + 1}. ${thread}`);
+              });
             }
-          );
+          });
           return;
         }
 
         // Clear all threads
-        if (action === 'clear') {
+        if (action === "clear") {
           sessionCtx.threads = [];
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { threads: [] },
-            () => success('Cleared all threads')
-          );
+          output({ threads: [] }, () => success("Cleared all threads"));
           return;
         }
 
         // Add thread
-        if (action === 'add') {
+        if (action === "add") {
           if (!text) {
-            error('Thread text is required for add action');
+            error("Thread text is required for add action");
             process.exit(EXIT_CODES.ERROR);
           }
 
           sessionCtx.threads.push(text);
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { threads: sessionCtx.threads, added: text },
-            () => success(`Added thread: ${text}`)
+          output({ threads: sessionCtx.threads, added: text }, () =>
+            success(`Added thread: ${text}`),
           );
           return;
         }
 
         // Remove thread by index (1-based)
-        if (action === 'remove') {
+        if (action === "remove") {
           if (!text) {
-            error('Index is required for remove action');
+            error("Index is required for remove action");
             process.exit(EXIT_CODES.ERROR);
           }
 
           const index = parseInt(text, 10);
-          if (isNaN(index) || index < 1 || index > sessionCtx.threads.length) {
-            error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.threads.length}`);
+          if (
+            Number.isNaN(index) ||
+            index < 1 ||
+            index > sessionCtx.threads.length
+          ) {
+            error(
+              `Invalid index: ${text}. Must be between 1 and ${sessionCtx.threads.length}`,
+            );
             process.exit(EXIT_CODES.ERROR);
           }
 
           const removed = sessionCtx.threads.splice(index - 1, 1)[0];
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { threads: sessionCtx.threads, removed },
-            () => success(`Removed thread: ${removed}`)
+          output({ threads: sessionCtx.threads, removed }, () =>
+            success(`Removed thread: ${removed}`),
           );
           return;
         }
@@ -1476,8 +1603,8 @@ export function registerMetaCommands(program: Command): void {
 
   // meta-question-cmd: kspec meta question <action> [text]
   meta
-    .command('question <action> [text]')
-    .description('Manage open questions')
+    .command("question <action> [text]")
+    .description("Manage open questions")
     .action(async (action: string, text: string | undefined) => {
       try {
         const ctx = await initContext();
@@ -1490,71 +1617,69 @@ export function registerMetaCommands(program: Command): void {
         const sessionCtx = await loadSessionContext(ctx);
 
         // List questions
-        if (action === 'list') {
-          output(
-            { questions: sessionCtx.open_questions },
-            () => {
-              if (sessionCtx.open_questions.length === 0) {
-                console.log(chalk.yellow('No open questions'));
-              } else {
-                console.log('Open questions:');
-                sessionCtx.open_questions.forEach((question, idx) => {
-                  console.log(`  ${idx + 1}. ${question}`);
-                });
-              }
+        if (action === "list") {
+          output({ questions: sessionCtx.open_questions }, () => {
+            if (sessionCtx.open_questions.length === 0) {
+              console.log(chalk.yellow("No open questions"));
+            } else {
+              console.log("Open questions:");
+              sessionCtx.open_questions.forEach((question, idx) => {
+                console.log(`  ${idx + 1}. ${question}`);
+              });
             }
-          );
+          });
           return;
         }
 
         // Clear all questions
-        if (action === 'clear') {
+        if (action === "clear") {
           sessionCtx.open_questions = [];
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { questions: [] },
-            () => success('Cleared all questions')
-          );
+          output({ questions: [] }, () => success("Cleared all questions"));
           return;
         }
 
         // Add question
-        if (action === 'add') {
+        if (action === "add") {
           if (!text) {
-            error('Question text is required for add action');
+            error("Question text is required for add action");
             process.exit(EXIT_CODES.ERROR);
           }
 
           sessionCtx.open_questions.push(text);
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { questions: sessionCtx.open_questions, added: text },
-            () => success(`Added question: ${text}`)
+          output({ questions: sessionCtx.open_questions, added: text }, () =>
+            success(`Added question: ${text}`),
           );
           return;
         }
 
         // Remove question by index (1-based)
-        if (action === 'remove') {
+        if (action === "remove") {
           if (!text) {
-            error('Index is required for remove action');
+            error("Index is required for remove action");
             process.exit(EXIT_CODES.ERROR);
           }
 
           const index = parseInt(text, 10);
-          if (isNaN(index) || index < 1 || index > sessionCtx.open_questions.length) {
-            error(`Invalid index: ${text}. Must be between 1 and ${sessionCtx.open_questions.length}`);
+          if (
+            Number.isNaN(index) ||
+            index < 1 ||
+            index > sessionCtx.open_questions.length
+          ) {
+            error(
+              `Invalid index: ${text}. Must be between 1 and ${sessionCtx.open_questions.length}`,
+            );
             process.exit(EXIT_CODES.ERROR);
           }
 
           const removed = sessionCtx.open_questions.splice(index - 1, 1)[0];
           await saveSessionContext(ctx, sessionCtx);
 
-          output(
-            { questions: sessionCtx.open_questions, removed },
-            () => success(`Removed question: ${removed}`)
+          output({ questions: sessionCtx.open_questions, removed }, () =>
+            success(`Removed question: ${removed}`),
           );
           return;
         }
@@ -1570,9 +1695,9 @@ export function registerMetaCommands(program: Command): void {
 
   // meta-context-cmd: kspec meta context
   meta
-    .command('context')
-    .description('Show full session context')
-    .option('--clear', 'Clear all session context')
+    .command("context")
+    .description("Show full session context")
+    .option("--clear", "Clear all session context")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -1598,7 +1723,7 @@ export function registerMetaCommands(program: Command): void {
               open_questions: [],
               updated_at: sessionCtx.updated_at,
             },
-            () => success('Cleared all session context')
+            () => success("Cleared all session context"),
           );
           return;
         }
@@ -1612,43 +1737,43 @@ export function registerMetaCommands(program: Command): void {
             updated_at: sessionCtx.updated_at,
           },
           () => {
-            console.log(chalk.bold('Session Context'));
-            console.log(chalk.gray('─'.repeat(60)));
+            console.log(chalk.bold("Session Context"));
+            console.log(chalk.gray("─".repeat(60)));
 
             // Focus
-            console.log(chalk.bold('\nFocus:'));
+            console.log(chalk.bold("\nFocus:"));
             if (sessionCtx.focus) {
               console.log(`  ${sessionCtx.focus}`);
             } else {
-              console.log(chalk.gray('  (none)'));
+              console.log(chalk.gray("  (none)"));
             }
 
             // Active threads
-            console.log(chalk.bold('\nActive Threads:'));
+            console.log(chalk.bold("\nActive Threads:"));
             if (sessionCtx.threads.length > 0) {
               sessionCtx.threads.forEach((thread, idx) => {
                 console.log(`  ${idx + 1}. ${thread}`);
               });
             } else {
-              console.log(chalk.gray('  (none)'));
+              console.log(chalk.gray("  (none)"));
             }
 
             // Open questions
-            console.log(chalk.bold('\nOpen Questions:'));
+            console.log(chalk.bold("\nOpen Questions:"));
             if (sessionCtx.open_questions.length > 0) {
               sessionCtx.open_questions.forEach((question, idx) => {
                 console.log(`  ${idx + 1}. ${question}`);
               });
             } else {
-              console.log(chalk.gray('  (none)'));
+              console.log(chalk.gray("  (none)"));
             }
 
             // Last updated
-            console.log(chalk.bold('\nLast Updated:'));
+            console.log(chalk.bold("\nLast Updated:"));
             const updatedDate = new Date(sessionCtx.updated_at);
             console.log(`  ${updatedDate.toISOString()}`);
             console.log(chalk.gray(`  (${updatedDate.toLocaleString()})`));
-          }
+          },
         );
       } catch (err) {
         error(errors.failures.updateSessionContext, err);

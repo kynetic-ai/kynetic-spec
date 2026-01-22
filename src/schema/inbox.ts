@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { UlidSchema, DateTimeSchema } from './common.js';
+import { z } from "zod";
+import { DateTimeSchema, UlidSchema } from "./common.js";
 
 /**
  * Inbox item - low-friction capture for ideas that aren't tasks yet.
@@ -7,7 +7,7 @@ import { UlidSchema, DateTimeSchema } from './common.js';
  */
 export const InboxItemSchema = z.object({
   _ulid: UlidSchema,
-  text: z.string().min(1, 'Text is required'),
+  text: z.string().min(1, "Text is required"),
   created_at: DateTimeSchema,
   tags: z.array(z.string()).default([]),
   added_by: z.string().optional(), // e.g., "@claude", "alice"
@@ -18,7 +18,7 @@ export const InboxItemSchema = z.object({
  */
 export const InboxItemInputSchema = z.object({
   _ulid: UlidSchema.optional(),
-  text: z.string().min(1, 'Text is required'),
+  text: z.string().min(1, "Text is required"),
   created_at: DateTimeSchema.optional(),
   tags: z.array(z.string()).optional(),
   added_by: z.string().optional(),

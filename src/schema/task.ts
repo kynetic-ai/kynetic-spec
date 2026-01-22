@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import { z } from "zod";
 import {
-  UlidSchema,
-  SlugSchema,
-  RefSchema,
   DateTimeSchema,
+  RefSchema,
+  SlugSchema,
   TaskStatusSchema,
   TaskTypeSchema,
+  UlidSchema,
   VcsRefSchema,
-} from './common.js';
+} from "./common.js";
 
 /**
  * Automation eligibility status for tasks
@@ -17,7 +17,11 @@ import {
  * - manual_only: Task should only be handled by humans
  * - undefined/absent: Task has not been assessed for automation (unassessed)
  */
-export const AutomationStatusSchema = z.enum(['eligible', 'needs_review', 'manual_only']);
+export const AutomationStatusSchema = z.enum([
+  "eligible",
+  "needs_review",
+  "manual_only",
+]);
 
 /**
  * Note entry - append-only work log
@@ -51,24 +55,24 @@ export const TaskSchema = z.object({
   // Identity
   _ulid: UlidSchema,
   slugs: z.array(SlugSchema).default([]),
-  title: z.string().min(1, 'Title is required'),
-  type: TaskTypeSchema.default('task'),
+  title: z.string().min(1, "Title is required"),
+  type: TaskTypeSchema.default("task"),
 
   // Content (doesn't duplicate spec - brief description for standalone context)
   description: z.string().optional(),
 
   // Spec relationship
   spec_ref: RefSchema.nullable().optional(),
-  derivation: z.enum(['auto', 'manual']).optional(),
+  derivation: z.enum(["auto", "manual"]).optional(),
 
   // Meta relationship (links to workflow, agent, or convention for process improvement tracking)
   meta_ref: RefSchema.nullable().optional(),
 
   // Origin tracking (where this task came from)
-  origin: z.enum(['manual', 'derived', 'observation_promotion']).optional(),
+  origin: z.enum(["manual", "derived", "observation_promotion"]).optional(),
 
   // State
-  status: TaskStatusSchema.default('pending'),
+  status: TaskStatusSchema.default("pending"),
   blocked_by: z.array(z.string()).default([]),
   closed_reason: z.string().nullable().optional(),
 
@@ -109,7 +113,7 @@ export const TaskInputSchema = z.object({
   // Identity (auto-generated if not provided)
   _ulid: UlidSchema.optional(),
   slugs: z.array(SlugSchema).optional(),
-  title: z.string().min(1, 'Title is required'),
+  title: z.string().min(1, "Title is required"),
   type: TaskTypeSchema.optional(),
 
   // Content
@@ -117,13 +121,13 @@ export const TaskInputSchema = z.object({
 
   // Spec relationship
   spec_ref: RefSchema.nullable().optional(),
-  derivation: z.enum(['auto', 'manual']).optional(),
+  derivation: z.enum(["auto", "manual"]).optional(),
 
   // Meta relationship
   meta_ref: RefSchema.nullable().optional(),
 
   // Origin tracking
-  origin: z.enum(['manual', 'derived', 'observation_promotion']).optional(),
+  origin: z.enum(["manual", "derived", "observation_promotion"]).optional(),
 
   // State
   status: TaskStatusSchema.optional(),
@@ -162,7 +166,7 @@ export const TaskInputSchema = z.object({
  * Tasks file schema (collection of tasks)
  */
 export const TasksFileSchema = z.object({
-  kynetic_tasks: z.string().default('1.0'),
+  kynetic_tasks: z.string().default("1.0"),
   tasks: z.array(TaskSchema),
 });
 
