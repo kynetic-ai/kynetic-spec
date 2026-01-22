@@ -21091,5 +21091,23 @@
       content: "Automation status set to eligible: Testing infrastructure improvement, bounded to single
         mock file, verifiable behavior"
       supersedes: null
+    - _ulid: 01KFJ538YEYFT0HGHY94CE1QDD
+      created_at: 2026-01-22T06:08:34.254Z
+      author: "@claude"
+      content: >-
+        Update tests/mocks/acp-mock.js to better match real ACP protocol:
+
+
+        Current: Mock auto-succeeds tool calls without permission flow
+
+        Target: Mock should require permission requests like real agent
+
+
+        This would catch format bugs (like { granted: true } vs correct format) in tests rather than
+        live testing.
+
+
+        Look at real ACP client implementation in src/ for correct protocol behavior.
+      supersedes: null
   todos: []
   automation: eligible
