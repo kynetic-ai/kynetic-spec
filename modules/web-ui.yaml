@@ -55,6 +55,10 @@ features:
         given: daemon is running
         when: GET /api/tasks is called
         then: returns JSON array of all tasks with status, notes, and dependencies
+      - id: ac-6
+        given: daemon is running
+        when: POST /api/tasks/:ref/start is called
+        then: task transitions to in_progress and SSE broadcasts update
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
