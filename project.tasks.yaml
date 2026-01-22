@@ -18953,6 +18953,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #157. Implemented workflow step navigation with kspec workflow next
+    command. All 6 ACs covered by 23 E2E tests. Clean implementation with run reference inference,
+    step completion/skipping, notes capture, and run completion with summary. All 897 tests pass,
+    all CI checks passed, automated reviews found no issues."
   depends_on:
     - "@task-workflow-run-foundation"
   context: []
@@ -18961,6 +18965,7 @@
   vcs_refs: []
   created_at: 2026-01-20T22:56:09.994Z
   started_at: 2026-01-22T07:21:22.900Z
+  completed_at: 2026-01-22T07:33:16.710Z
   notes:
     - _ulid: 01KFESYSRAWQN3H0DVRJVW83V0
       created_at: 2026-01-20T22:56:09.994Z
@@ -19078,11 +19083,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T07:33:16.710Z
-  closed_reason: "Merged PR #157. Implemented workflow step navigation with kspec workflow next
-    command. All 6 ACs covered by 23 E2E tests. Clean implementation with run reference inference,
-    step completion/skipping, notes capture, and run completion with summary. All 897 tests pass,
-    all CI checks passed, automated reviews found no issues."
 - _ulid: 01KFESYSWBB2R797HKWA965MC9
   slugs:
     - task-workflow-enforcement-modes
@@ -21317,7 +21317,7 @@
     installShadowHook function, hook blocking unauthorized commits, hook allowing commits with
     KSPEC_SHADOW_COMMIT=1 env var
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21348,6 +21348,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T07:33:50.372Z
 - _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
   slugs: []
   title: Fix test helper to capture stderr on success
