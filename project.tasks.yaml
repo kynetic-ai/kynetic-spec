@@ -20402,7 +20402,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -20460,6 +20460,7 @@
         `.claude/skills/release/` alongside pr skill
       supersedes: null
   todos: []
+  started_at: 2026-01-22T01:21:15.314Z
 - _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
   slugs: []
   title: Spec out Web UI and Daemon Mode feature
