@@ -25,9 +25,11 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFKR9XD955RJW2G38WFZ84MC
     workflow_ref: "@01KF782ZSH103A99NV1VY65CFB"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 4
     started_at: 2026-01-22T21:03:29.194Z
     step_results: []
     initiated_by: "@claude"
+    abort_reason: Testing abort functionality
+    completed_at: 2026-01-22T21:03:34.873Z
