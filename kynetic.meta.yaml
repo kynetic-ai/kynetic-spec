@@ -203,9 +203,11 @@ workflows:
           Create the workflow:
           kspec meta add workflow --id <id> --trigger <trigger> --description "..."
           Then edit .kspec/kynetic.meta.yaml to add the steps (until --steps flag exists).
-      - type: check
-        content: Does this workflow need a matching skill?
-        on_fail: Create skill in .claude/skills/<name>/SKILL.md with workflow integration
+      - type: decision
+        content: Does this workflow need a matching skill for additional context?
+        options:
+          - "Yes - create/update skill in .claude/skills/<name>/SKILL.md"
+          - "No - workflow is self-contained or context exists elsewhere"
       - type: action
         content: |
           Test the workflow:
