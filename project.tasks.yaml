@@ -21265,6 +21265,13 @@
 
         All 874 tests pass after changes.
       supersedes: null
+    - _ulid: 01KFJ92Z2Y57SF98NRGBTKG12H
+      created_at: 2026-01-22T07:18:18.462Z
+      author: "@claude"
+      content: "Created PR #156. Review agent found 3 incorrect spec references (@shadow-init should be
+        @shadow-init-remote). Fixed all 3 issues in commit 6655bb4. All 874 tests pass. Waiting for
+        CI to complete before merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G

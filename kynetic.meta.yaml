@@ -2544,4 +2544,26 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJ8J51FZP9DQY25PYYS3Y3Y
+    type: success
+    content: Systematic approach to code cleanup - created comprehensive mapping document before making
+      changes, built automated sed script to handle bulk replacements, then manually verified and
+      fixed edge cases. This pattern of 'map-script-verify-fix' worked well for 72 annotations
+      across 9 files with zero regressions (all 874 tests pass). Script-first approach with manual
+      verification is effective for large-scale mechanical refactoring.
+    created_at: 2026-01-22T07:09:07.503Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJ8JBSB7WR6M3VD2HAW3B32
+    type: success
+    content: "PR review-merge flow worked smoothly: spawned subagent for comprehensive review, verified
+      CI checks passed, checked for review comments, merged with --merge to preserve trailers, then
+      completed task. The strict review requirements (AC coverage, test quality, isolation) caught
+      in advance prevent merge issues. Subagent review before PR creation + automated CI review +
+      manual merge checks = robust quality gate."
+    created_at: 2026-01-22T07:09:14.411Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
