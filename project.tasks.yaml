@@ -21770,6 +21770,8 @@
   spec_ref: "@validation"
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #164. Added validation warning for manual_only parent with eligible
+    children. All CI checks passed (937 tests), automated reviews positive, no issues found."
   depends_on: []
   context: []
   priority: 3
@@ -21780,6 +21782,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:10:33.440Z
   started_at: 2026-01-22T08:56:22.422Z
+  completed_at: 2026-01-22T09:17:33.476Z
   notes:
     - _ulid: 01KFJ58W34TC1FZ1AA2JM1A1YA
       created_at: 2026-01-22T06:11:37.701Z
@@ -21854,9 +21857,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T09:17:33.476Z
-  closed_reason: "Merged PR #164. Added validation warning for manual_only parent with eligible
-    children. All CI checks passed (937 tests), automated reviews positive, no issues found."
 - _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
   slugs: []
   title: ACP type safety audit - strengthen typing
@@ -21869,7 +21869,7 @@
     deprecated in favor of typed methods only. The { granted: true } bug showed the value of
     compile-time enforcement."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21953,6 +21953,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T09:23:37.781Z
+  closed_reason: "Merged PR #165. Strengthened ACP type safety by adding typed response methods
+    (respondReadTextFile, respondWriteTextFile) and typed request parameters. All 937 tests pass,
+    all CI checks passed. Compile-time enforcement now prevents response structure bugs."
 - _ulid: 01KFJ574G610B5Z7J6KAVVETBW
   slugs: []
   title: Expand kspec search to cover inbox and meta entities
