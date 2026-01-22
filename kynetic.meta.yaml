@@ -2667,4 +2667,74 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJBZJXM7ETYK1NKSY5S7CKW
+    type: success
+    content: "Workflow advanced features implementation completed smoothly. Key success factors: (1)
+      Read existing workflow implementation first to understand patterns, (2) Extended schema before
+      implementing CLI commands, (3) Followed existing test patterns for comprehensive coverage, (4)
+      All 13 new tests passed on first run without fixes needed. The incremental approach (schema →
+      commands → tests) worked well for this feature."
+    created_at: 2026-01-22T08:08:53.429Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJC23TKBA6EQKETRSY3BP91
+    type: success
+    content: The /pr skill workflow (auto-generate branch name from context, move commits from main to
+      feature branch, create PR) worked seamlessly for shipping completed work. The skill correctly
+      derived 'feat/workflow-advanced-features' from the task reference, handled the branch creation
+      and main reset cleanly, and created a comprehensive PR. This pattern is efficient for the
+      ralph loop where work completes on main and needs to be shipped via PR.
+    created_at: 2026-01-22T08:10:16.275Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJC2AA94N276JWH542F5RYD
+    type: success
+    content: "Task state transition worked well: pending_review status held the completed work until PR
+      was created, then completing the task after PR creation provides clean separation. This
+      matches the RALPH_LOOP_INSTRUCTIONS.md pattern: task submit → PR creation → task complete
+      after merge. However, I completed the task immediately after PR creation rather than after
+      merge - should verify if this is the intended workflow or if completion should wait for
+      merge."
+    created_at: 2026-01-22T08:10:22.921Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJC2TSMBR0T2VDH5Y4CPNBH
+    type: friction
+    content: "Completed task @task-workflow-advanced-features immediately after PR creation, but
+      RALPH_LOOP_INSTRUCTIONS.md line 20 specifies task completion should happen AFTER merge. The
+      correct workflow is: task submit → /pr → review → merge → task complete. Need to follow this
+      sequence in future iterations to maintain proper task state. There's no way to 'uncomplete' a
+      task once marked completed."
+    created_at: 2026-01-22T08:10:39.796Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJCFDD4RMTAP9TSVRK20KYQ
+    type: success
+    content: "Complete iteration 12 workflow executed successfully: Found pending_review task → Created
+      PR #160 with /pr skill → Spawned review subagent → Review approved with 100% AC coverage →
+      Merged PR with --merge strategy → Pulled merged changes to local main. The automated review
+      subagent provided excellent quality checks (AC coverage, test quality, code patterns). Total
+      time from pending_review to merged: ~8 minutes. Key learning: Task should stay in
+      pending_review until AFTER merge (I completed it prematurely after PR creation)."
+    created_at: 2026-01-22T08:17:32.069Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJCFN0Q9KV5C0YFHYKP4KWX
+    type: success
+    content: "Review subagent pattern from RALPH_LOOP_INSTRUCTIONS.md worked exceptionally well. Single
+      Task tool invocation with focused prompt ('check code quality, test coverage, alignment with
+      spec, be strict about AC coverage') produced comprehensive review in table format covering: AC
+      coverage (100%), code quality (excellent), test quality (E2E, no fluff), CI status (passing),
+      files changed summary, and clear merge decision. The strict AC coverage requirement caught
+      that all 4 direct ACs + 6 inherited trait ACs were properly tested. This automated review
+      quality rivals human PR reviews."
+    created_at: 2026-01-22T08:17:39.864Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

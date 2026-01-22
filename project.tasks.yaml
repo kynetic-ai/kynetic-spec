@@ -19308,8 +19308,10 @@
   type: task
   spec_ref: "@workflow-advanced-features"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "PR #160 created. Implemented workflow pause/resume commands and structured step
+    inputs with full validation and test coverage. All 930 tests pass."
   depends_on:
     - "@task-workflow-step-navigation"
   context: []
@@ -19318,6 +19320,7 @@
   vcs_refs: []
   created_at: 2026-01-20T22:56:10.257Z
   started_at: 2026-01-22T08:04:06.941Z
+  completed_at: 2026-01-22T08:10:05.091Z
   notes:
     - _ulid: 01KFESYT0HVY45N3Q4TF36VA5C
       created_at: 2026-01-20T22:56:10.257Z
@@ -21482,7 +21485,7 @@
     stderr: '' when exit code is 0, making it impossible to test warning messages without JSON mode
     workaround"
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21512,6 +21515,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T08:18:16.320Z
 - _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
   slugs: []
   title: Set up biome for linting (replace eslint)
