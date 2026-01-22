@@ -4,7 +4,7 @@
  * Provides centralized helpers for running kspec CLI commands in tests.
  * Uses pre-built dist/cli/index.js for performance (eliminates tsx transpilation overhead).
  */
-import { execSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -64,52 +64,37 @@ export interface KspecResult {
 export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
   const { stdin, expectFail = false, env = {} } = options;
 
-  // Build command - use shell for stdin piping
-  let cmd: string;
-  if (stdin !== undefined) {
-    // Escape single quotes in stdin and use printf for reliable piping
-    // Add newline at end for interactive prompts
-    const stdinWithNewline = stdin.endsWith('\n') ? stdin : stdin + '\n';
-    const escapedStdin = stdinWithNewline.replace(/'/g, "'\\''");
-    cmd = `printf '%s' '${escapedStdin}' | node ${CLI_PATH} ${args}`;
-  } else {
-    cmd = `node ${CLI_PATH} ${args}`;
-  }
+  // Use spawnSync with shell to capture both stdout and stderr
+  // Always use shell mode to properly handle argument parsing and quoting
+  const result = spawnSync('/bin/sh', ['-c', `node ${CLI_PATH} ${args}`], {
+    cwd,
+    encoding: 'utf-8',
+    env: { ...process.env, KSPEC_AUTHOR: '@test', ...env },
+    input: stdin !== undefined ? (stdin.endsWith('\n') ? stdin : stdin + '\n') : undefined,
+  });
 
-  try {
-    const stdout = execSync(cmd, {
-      cwd,
-      encoding: 'utf-8',
-      env: { ...process.env, KSPEC_AUTHOR: '@test', ...env },
-      shell: stdin !== undefined ? '/bin/sh' : undefined,
-    });
-    return { exitCode: 0, stdout: stdout.trim(), stderr: '' };
-  } catch (error: unknown) {
-    const execError = error as {
-      status?: number;
-      stdout?: string;
-      stderr?: string;
-      message?: string;
-    };
+  const kspecResult: KspecResult = {
+    exitCode: result.status ?? 1,
+    stdout: (result.stdout || '').trim(),
+    stderr: (result.stderr || '').trim(),
+  };
 
-    const result: KspecResult = {
-      exitCode: execError.status ?? 1,
-      stdout: (execError.stdout || '').trim(),
-      stderr: (execError.stderr || '').trim(),
-    };
-
+  // Handle errors
+  if (kspecResult.exitCode !== 0) {
     if (expectFail) {
-      return result;
+      return kspecResult;
     }
 
     // For backwards compatibility: return stdout if present even on error
     // (some commands exit non-zero with valid output)
-    if (result.stdout) {
-      return result;
+    if (kspecResult.stdout) {
+      return kspecResult;
     }
 
-    throw new Error(`Command failed: ${cmd}\n${result.stderr || execError.message}`);
+    throw new Error(`Command failed: node ${CLI_PATH} ${args}\n${kspecResult.stderr || result.error?.message}`);
   }
+
+  return kspecResult;
 }
 
 /**
