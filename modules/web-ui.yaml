@@ -79,6 +79,10 @@ features:
         given: daemon is running and browser opens localhost:3456
         when: page loads
         then: dashboard shows task overview with ready, in_progress, blocked, and completed counts
+      - id: ac-2
+        given: user is viewing task list
+        when: clicking a task row
+        then: task detail panel opens showing description, notes, todos, and dependencies
   - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
     slugs:
       - gh-pages-export
