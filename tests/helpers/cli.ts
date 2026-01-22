@@ -222,14 +222,14 @@ const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
  * @returns A valid 26-character ULID
  *
  * @example
- * // Generate unique ULID
- * const id = testUlid(); // e.g., '01HQ3K5XJ8MPVB2XCJZ0KE9YWN'
+ * // Generate deterministic ULID (use sequence for uniqueness)
+ * const id = testUlid(); // '01000000000000000000000000'
  *
  * @example
  * // With prefix (great for debugging)
- * testUlid('TASK')    // '01TASK0000000000000000000A'
- * testUlid('TASK', 1) // '01TASK0000000000000000001A'
- * testUlid('TRAIT')   // '01TRATT000000000000000000' (I removed)
+ * testUlid('TASK')    // '01TASK00000000000000000000'
+ * testUlid('TASK', 1) // '01TASK00000001000000000001'
+ * testUlid('TRAIT')   // '01TRAJT0000000000000000000' (I replaced with J)
  */
 export function testUlid(prefix = '', sequence = 0): string {
   // Replace invalid Crockford chars: I->J, L->K, O->0, U->V
