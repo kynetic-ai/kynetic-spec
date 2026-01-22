@@ -2645,4 +2645,26 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJBNXX3C7PDGBTJ3PH4S070
+    type: success
+    content: Automated PR review (Greptile) caught critical bug where entry_confirmed was never recorded
+      - only exit_confirmed was working. The review identified that entry_confirmed remained
+      undefined in all cases. This demonstrates the value of automated code review in catching
+      semantic bugs that pass tests. The fix involved creating stub step results when advancing to
+      the next step to capture entry_confirmed, then updating those stubs when the step completes.
+    created_at: 2026-01-22T08:03:36.995Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJBP2QJF9JV14331T8YGTF8
+    type: friction
+    content: Test failures from architectural changes can be misleading - when implementing stub step
+      results, tests failed because they expected specific array lengths. The failures looked like
+      bugs but were actually correct behavior - the architecture changed. Need to carefully evaluate
+      whether test failures indicate bugs or just outdated expectations when making architectural
+      changes.
+    created_at: 2026-01-22T08:03:41.938Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
