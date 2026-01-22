@@ -225,14 +225,6 @@ inbox:
       - dx
       - bulk
     added_by: "@claude"
-  - _ulid: 01KFCZ3ZXSNS99MDZGMJZSAHC6
-    text: Investigate trait-cli.test.ts failures - 12 tests fail in vitest despite manual verification
-      working. Implementation is correct, issue is test infrastructure. All tests involve trait
-      listing/retrieval after creation. Manual replication works perfectly.
-    created_at: 2026-01-20T05:47:54.169Z
-    tags:
-      - testing
-    added_by: "@claude"
   - _ulid: 01KFDQCG96CYSJ5HEK1Q87QMFS
     text: Add feature to spawn worktree for an agent to work in
     created_at: 2026-01-20T12:51:58.887Z
