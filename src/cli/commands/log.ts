@@ -2,19 +2,19 @@
  * Log command - search git history by spec/task reference
  */
 
-import { Command } from 'commander';
-import { execSync } from 'node:child_process';
-import chalk from 'chalk';
+import { execSync } from "node:child_process";
+import chalk from "chalk";
+import type { Command } from "commander";
 import {
   initContext,
-  loadAllTasks,
   loadAllItems,
+  loadAllTasks,
   ReferenceIndex,
-} from '../../parser/index.js';
-import { output, error, info } from '../output.js';
-import { isGitRepo } from '../../utils/git.js';
-import { errors } from '../../strings/index.js';
-import { EXIT_CODES } from '../exit-codes.js';
+} from "../../parser/index.js";
+import { errors } from "../../strings/index.js";
+import { isGitRepo } from "../../utils/git.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, info, output } from "../output.js";
 
 export interface LogCommit {
   hash: string;
@@ -30,10 +30,10 @@ export interface LogCommit {
 function hasCommits(cwd?: string, checkShadow = true): boolean {
   try {
     // Check current branch
-    execSync('git rev-parse HEAD', {
+    execSync("git rev-parse HEAD", {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     });
     return true;
   } catch {
@@ -41,10 +41,10 @@ function hasCommits(cwd?: string, checkShadow = true): boolean {
     // If main has no commits, check shadow branch
     if (checkShadow) {
       try {
-        execSync('git rev-parse kspec-meta', {
+        execSync("git rev-parse kspec-meta", {
           cwd,
-          encoding: 'utf-8',
-          stdio: ['pipe', 'pipe', 'pipe'],
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "pipe"],
         });
         return true;
       } catch {
@@ -66,34 +66,34 @@ function searchCommits(
     cwd?: string;
     passthroughArgs?: string[];
     branch?: string;
-  }
+  },
 ): LogCommit[] {
   const { limit, since, cwd, passthroughArgs = [], branch } = options;
 
   // Escape special regex characters in pattern except @
-  const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-  let cmd = `git log ${branch || ''}--grep="${escapedPattern}" --format="%H|%aI|%s|%an" -n ${limit}`;
+  let cmd = `git log ${branch || ""}--grep="${escapedPattern}" --format="%H|%aI|%s|%an" -n ${limit}`;
   if (since) {
     cmd += ` --since="${since}"`;
   }
 
   // Add passthrough args if provided
   if (passthroughArgs.length > 0) {
-    cmd += ` ${passthroughArgs.join(' ')}`;
+    cmd += ` ${passthroughArgs.join(" ")}`;
   }
 
   try {
     const result = execSync(cmd, {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     }).trim();
 
     if (!result) return [];
 
-    return result.split('\n').map((line) => {
-      const [fullHash, dateStr, subject, author] = line.split('|');
+    return result.split("\n").map((line) => {
+      const [fullHash, dateStr, subject, author] = line.split("|");
       return {
         hash: fullHash.slice(0, 7),
         fullHash,
@@ -107,7 +107,10 @@ function searchCommits(
     if (err.stderr) {
       const stderr = err.stderr.toString();
       // Detect "does not have any commits yet" or "bad revision" (empty repo)
-      if (stderr.includes('does not have any commits yet') || stderr.includes('bad revision')) {
+      if (
+        stderr.includes("does not have any commits yet") ||
+        stderr.includes("bad revision")
+      ) {
         // Return empty array - caller will handle empty repo message
         return [];
       }
@@ -129,44 +132,47 @@ function searchCommitsRaw(
     since?: string;
     cwd?: string;
     passthroughArgs: string[];
-  }
+  },
 ): string {
   const { limit, since, cwd, passthroughArgs } = options;
 
   // Build grep args for all patterns
   const grepArgs = patterns.map((p) => {
-    const escaped = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escaped = p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return `--grep="${escaped}"`;
   });
 
-  let cmd = `git log ${grepArgs.join(' ')} -n ${limit}`;
+  let cmd = `git log ${grepArgs.join(" ")} -n ${limit}`;
   if (since) {
     cmd += ` --since="${since}"`;
   }
 
   // Add passthrough args
-  cmd += ` ${passthroughArgs.join(' ')}`;
+  cmd += ` ${passthroughArgs.join(" ")}`;
 
   try {
     return execSync(cmd, {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     });
   } catch (err: any) {
     // Check for empty repo errors
     if (err.stderr) {
       const stderr = err.stderr.toString();
       // Detect "does not have any commits yet" or "bad revision" (empty repo)
-      if (stderr.includes('does not have any commits yet') || stderr.includes('bad revision')) {
+      if (
+        stderr.includes("does not have any commits yet") ||
+        stderr.includes("bad revision")
+      ) {
         // Return empty string - caller will handle empty repo message
-        return '';
+        return "";
       }
       // Other git errors should still be shown
       error(stderr);
       process.exit(err.status || 1);
     }
-    return '';
+    return "";
   }
 }
 
@@ -175,13 +181,13 @@ function searchCommitsRaw(
  */
 export function registerLogCommand(program: Command): void {
   program
-    .command('log [ref]')
-    .description('Search git history for commits related to a spec or task')
-    .option('--spec <ref>', 'Search for commits with Spec: trailer')
-    .option('--task <ref>', 'Search for commits with Task: trailer')
-    .option('-n, --limit <n>', 'Limit results', '10')
-    .option('--oneline', 'Compact output format')
-    .option('--since <time>', 'Only commits after date')
+    .command("log [ref]")
+    .description("Search git history for commits related to a spec or task")
+    .option("--spec <ref>", "Search for commits with Spec: trailer")
+    .option("--task <ref>", "Search for commits with Task: trailer")
+    .option("-n, --limit <n>", "Limit results", "10")
+    .option("--oneline", "Compact output format")
+    .option("--since <time>", "Only commits after date")
     .allowUnknownOption()
     .action(
       async (
@@ -192,7 +198,7 @@ export function registerLogCommand(program: Command): void {
           limit: string;
           oneline?: boolean;
           since?: string;
-        }
+        },
       ) => {
         try {
           const ctx = await initContext();
@@ -203,7 +209,7 @@ export function registerLogCommand(program: Command): void {
           }
 
           // Parse passthrough args (everything after --)
-          const dashDashIndex = process.argv.indexOf('--');
+          const dashDashIndex = process.argv.indexOf("--");
           const passthroughArgs =
             dashDashIndex !== -1 ? process.argv.slice(dashDashIndex + 1) : [];
 
@@ -225,7 +231,7 @@ export function registerLogCommand(program: Command): void {
 
             // Determine if it's a task or spec
             const isTask = tasks.some((t) => t._ulid === result.ulid);
-            const refString = ref.startsWith('@') ? ref : `@${ref}`;
+            const refString = ref.startsWith("@") ? ref : `@${ref}`;
 
             if (isTask) {
               patterns.push(`Task: ${refString}`);
@@ -235,7 +241,9 @@ export function registerLogCommand(program: Command): void {
               // Also find tasks that reference this spec
               const linkedTasks = tasks.filter((t) => t.spec_ref === refString);
               for (const t of linkedTasks) {
-                const taskRef = t.slugs[0] ? `@${t.slugs[0]}` : `@${t._ulid.slice(0, 8)}`;
+                const taskRef = t.slugs[0]
+                  ? `@${t.slugs[0]}`
+                  : `@${t._ulid.slice(0, 8)}`;
                 patterns.push(`Task: ${taskRef}`);
               }
             }
@@ -243,21 +251,21 @@ export function registerLogCommand(program: Command): void {
 
           if (options.spec) {
             patterns.push(
-              `Spec: ${options.spec.startsWith('@') ? options.spec : '@' + options.spec}`
+              `Spec: ${options.spec.startsWith("@") ? options.spec : `@${options.spec}`}`,
             );
           }
 
           if (options.task) {
             patterns.push(
-              `Task: ${options.task.startsWith('@') ? options.task : '@' + options.task}`
+              `Task: ${options.task.startsWith("@") ? options.task : `@${options.task}`}`,
             );
           }
 
           // AC: @cmd-log list-all-tracked
           // If no patterns specified, list all commits with Task: or Spec: trailers
           if (patterns.length === 0) {
-            patterns.push('Task: @');
-            patterns.push('Spec: @');
+            patterns.push("Task: @");
+            patterns.push("Spec: @");
           }
 
           const limit = parseInt(options.limit, 10);
@@ -276,9 +284,9 @@ export function registerLogCommand(program: Command): void {
               // AC: @spec-log-empty-repo ac-5
               // Check if repo has no commits vs no matching commits
               if (!hasCommits(ctx.rootDir)) {
-                info('No commits in repository yet');
+                info("No commits in repository yet");
               } else {
-                info('No commits found');
+                info("No commits found");
               }
             } else {
               console.log(rawOutput);
@@ -289,8 +297,9 @@ export function registerLogCommand(program: Command): void {
           // AC: @spec-log-empty-repo ac-6
           // Check if we should search shadow branch (main has no commits but shadow does)
           const mainHasCommits = hasCommits(ctx.rootDir, false);
-          const shadowHasCommits = !mainHasCommits && hasCommits(ctx.rootDir, true);
-          const searchBranch = shadowHasCommits ? 'kspec-meta ' : undefined;
+          const shadowHasCommits =
+            !mainHasCommits && hasCommits(ctx.rootDir, true);
+          const searchBranch = shadowHasCommits ? "kspec-meta " : undefined;
 
           // Search for all patterns and dedupe
           const allCommits: LogCommit[] = [];
@@ -324,14 +333,16 @@ export function registerLogCommand(program: Command): void {
             if (!hasCommits(ctx.rootDir)) {
               // AC: @spec-log-empty-repo ac-4
               output(
-                { commits: [], message: 'No commits in repository yet' },
+                { commits: [], message: "No commits in repository yet" },
                 () => {
-                  info('No commits in repository yet');
-                }
+                  info("No commits in repository yet");
+                },
               );
             } else {
               // AC: @spec-log-empty-repo ac-3 - existing behavior for no matches
-              const refStr = ref ? ` for ${ref.startsWith('@') ? ref : '@' + ref}` : '';
+              const refStr = ref
+                ? ` for ${ref.startsWith("@") ? ref : `@${ref}`}`
+                : "";
               output({ commits: [] }, () => {
                 info(`No commits found${refStr}`);
               });
@@ -340,7 +351,6 @@ export function registerLogCommand(program: Command): void {
           }
 
           output(limited, () => {
-
             if (options.oneline) {
               for (const commit of limited) {
                 console.log(`${chalk.yellow(commit.hash)} ${commit.subject}`);
@@ -350,9 +360,9 @@ export function registerLogCommand(program: Command): void {
                 console.log(chalk.yellow(`commit ${commit.fullHash}`));
                 console.log(`Author: ${commit.author}`);
                 console.log(`Date:   ${commit.date.toISOString()}`);
-                console.log('');
+                console.log("");
                 console.log(`    ${commit.subject}`);
-                console.log('');
+                console.log("");
               }
             }
 
@@ -362,6 +372,6 @@ export function registerLogCommand(program: Command): void {
           error(errors.failures.searchCommits, err);
           process.exit(EXIT_CODES.ERROR);
         }
-      }
+      },
     );
 }

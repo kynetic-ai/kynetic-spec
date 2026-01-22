@@ -11,7 +11,7 @@ export {
   listAdapters,
   registerAdapter,
   resolveAdapter,
-} from './adapters.js';
+} from "./adapters.js";
 
 // Spawner
 export {
@@ -19,4 +19,4 @@ export {
   type SpawnedAgent,
   spawnAgent,
   spawnAndInitialize,
-} from './spawner.js';
+} from "./spawner.js";

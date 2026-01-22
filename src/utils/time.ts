@@ -14,7 +14,7 @@
 export function parseTimeSpec(timeSpec: string): Date | null {
   // Try ISO8601 first
   const isoDate = new Date(timeSpec);
-  if (!isNaN(isoDate.getTime())) {
+  if (!Number.isNaN(isoDate.getTime())) {
     return isoDate;
   }
 
@@ -26,13 +26,13 @@ export function parseTimeSpec(timeSpec: string): Date | null {
     const now = new Date();
 
     switch (unit) {
-      case 'h':
+      case "h":
         return new Date(now.getTime() - amount * 60 * 60 * 1000);
-      case 'd':
+      case "d":
         return new Date(now.getTime() - amount * 24 * 60 * 60 * 1000);
-      case 'w':
+      case "w":
         return new Date(now.getTime() - amount * 7 * 24 * 60 * 60 * 1000);
-      case 'm':
+      case "m":
         return new Date(now.getTime() - amount * 30 * 24 * 60 * 60 * 1000);
     }
   }
@@ -50,13 +50,15 @@ export function formatRelativeTime(date: Date): string {
   const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
   const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
 
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins} minute${diffMins === 1 ? '' : 's'} ago`;
-  if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
-  if (diffDays < 7) return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+  if (diffMins < 1) return "just now";
+  if (diffMins < 60)
+    return `${diffMins} minute${diffMins === 1 ? "" : "s"} ago`;
+  if (diffHours < 24)
+    return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
   if (diffDays < 30) {
     const weeks = Math.floor(diffDays / 7);
-    return `${weeks} week${weeks === 1 ? '' : 's'} ago`;
+    return `${weeks} week${weeks === 1 ? "" : "s"} ago`;
   }
   return date.toLocaleDateString();
 }

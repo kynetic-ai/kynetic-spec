@@ -5,7 +5,7 @@
  * request/response correlation, and timeout handling.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from "node:events";
 import type {
   JsonRpcError,
   JsonRpcErrorObject,
@@ -13,8 +13,8 @@ import type {
   JsonRpcNotification,
   JsonRpcRequest,
   JsonRpcResponse,
-} from './types.js';
-import { isError, isNotification, isRequest, isResponse } from './types.js';
+} from "./types.js";
+import { isError, isNotification, isRequest, isResponse } from "./types.js";
 
 /**
  * Options for JsonRpcFraming
@@ -62,8 +62,8 @@ interface PendingRequest {
  * These methods can legitimately take minutes, so they need longer timeouts.
  */
 const DEFAULT_METHOD_TIMEOUTS: Record<string, number> = {
-  'session/prompt': 5 * 60 * 1000, // 5 minutes
-  'session/resume': 5 * 60 * 1000, // 5 minutes
+  "session/prompt": 5 * 60 * 1000, // 5 minutes
+  "session/resume": 5 * 60 * 1000, // 5 minutes
 };
 
 /**
@@ -84,7 +84,7 @@ export class JsonRpcFraming extends EventEmitter {
   private methodTimeouts: Record<string, number>;
   private stdin: NodeJS.ReadableStream;
   private stdout: NodeJS.WritableStream;
-  private buffer = '';
+  private buffer = "";
   private closed = false;
 
   constructor(options: JsonRpcFramingOptions = {}) {
@@ -99,14 +99,14 @@ export class JsonRpcFraming extends EventEmitter {
     this.stdout = options.stdout ?? process.stdout;
 
     // Set up stdin to receive data
-    if ('setEncoding' in this.stdin) {
-      (this.stdin as NodeJS.ReadStream).setEncoding('utf8');
+    if ("setEncoding" in this.stdin) {
+      (this.stdin as NodeJS.ReadStream).setEncoding("utf8");
     }
-    this.stdin.on('data', (chunk: string | Buffer) =>
+    this.stdin.on("data", (chunk: string | Buffer) =>
       this.handleData(chunk.toString()),
     );
-    this.stdin.on('end', () => this.handleEnd());
-    this.stdin.on('error', (err) => this.handleError(err));
+    this.stdin.on("end", () => this.handleEnd());
+    this.stdin.on("error", (err) => this.handleError(err));
   }
 
   /**
@@ -118,12 +118,12 @@ export class JsonRpcFraming extends EventEmitter {
     options?: SendRequestOptions,
   ): Promise<unknown> {
     if (this.closed) {
-      throw new Error('JsonRpcFraming is closed');
+      throw new Error("JsonRpcFraming is closed");
     }
 
     const id = this.nextId++;
     const request: JsonRpcRequest = {
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       id,
       method,
       ...(params !== undefined && { params }),
@@ -144,7 +144,15 @@ export class JsonRpcFraming extends EventEmitter {
       }, timeoutMs);
 
       // Store pending request with timeout info for potential resets
-      this.pending.set(id, { resolve, reject, timer, method, timeoutMs, id, options });
+      this.pending.set(id, {
+        resolve,
+        reject,
+        timer,
+        method,
+        timeoutMs,
+        id,
+        options,
+      });
 
       // Send the request
       this.send(request);
@@ -156,11 +164,11 @@ export class JsonRpcFraming extends EventEmitter {
    */
   sendNotification(method: string, params?: unknown): void {
     if (this.closed) {
-      throw new Error('JsonRpcFraming is closed');
+      throw new Error("JsonRpcFraming is closed");
     }
 
     const notification: JsonRpcNotification = {
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       method,
       ...(params !== undefined && { params }),
     };
@@ -173,11 +181,11 @@ export class JsonRpcFraming extends EventEmitter {
    */
   sendResponse(id: string | number, result: unknown): void {
     if (this.closed) {
-      throw new Error('JsonRpcFraming is closed');
+      throw new Error("JsonRpcFraming is closed");
     }
 
     const response: JsonRpcResponse = {
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       id,
       result,
     };
@@ -190,11 +198,11 @@ export class JsonRpcFraming extends EventEmitter {
    */
   sendError(id: string | number | null, error: JsonRpcErrorObject): void {
     if (this.closed) {
-      throw new Error('JsonRpcFraming is closed');
+      throw new Error("JsonRpcFraming is closed");
     }
 
     const errorResponse: JsonRpcError = {
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       id,
       error,
     };
@@ -212,11 +220,11 @@ export class JsonRpcFraming extends EventEmitter {
     // Reject all pending requests
     for (const [id, pending] of this.pending.entries()) {
       clearTimeout(pending.timer);
-      pending.reject(new Error('JsonRpcFraming closed'));
+      pending.reject(new Error("JsonRpcFraming closed"));
       this.pending.delete(id);
     }
 
-    this.emit('close');
+    this.emit("close");
   }
 
   /**
@@ -270,7 +278,7 @@ export class JsonRpcFraming extends EventEmitter {
     this.buffer += chunk;
 
     // Process complete lines
-    let newlineIndex = this.buffer.indexOf('\n');
+    let newlineIndex = this.buffer.indexOf("\n");
     while (newlineIndex !== -1) {
       const line = this.buffer.slice(0, newlineIndex);
       this.buffer = this.buffer.slice(newlineIndex + 1);
@@ -278,7 +286,7 @@ export class JsonRpcFraming extends EventEmitter {
       if (line.trim()) {
         this.processLine(line);
       }
-      newlineIndex = this.buffer.indexOf('\n');
+      newlineIndex = this.buffer.indexOf("\n");
     }
   }
 
@@ -293,7 +301,7 @@ export class JsonRpcFraming extends EventEmitter {
       // Malformed JSON - send parse error response
       this.sendError(null, {
         code: -32700,
-        message: 'Parse error',
+        message: "Parse error",
         data: { line },
       });
     }
@@ -311,16 +319,16 @@ export class JsonRpcFraming extends EventEmitter {
       // Agent is sending us a request (e.g., tool call) - this proves it's alive
       // Reset timeout timers for any pending requests
       this.resetPendingTimers();
-      this.emit('request', message);
+      this.emit("request", message);
     } else if (isNotification(message)) {
       // Agent is sending us a notification - also proves it's alive
       this.resetPendingTimers();
-      this.emit('notification', message);
+      this.emit("notification", message);
     } else {
       // Invalid message
       this.sendError(null, {
         code: -32600,
-        message: 'Invalid Request',
+        message: "Invalid Request",
         data: message,
       });
     }
@@ -352,7 +360,7 @@ export class JsonRpcFraming extends EventEmitter {
 
     if (error.id === null) {
       // Error without request ID - emit as event
-      this.emit('error', error.error);
+      this.emit("error", error.error);
       return;
     }
 
@@ -397,7 +405,7 @@ export class JsonRpcFraming extends EventEmitter {
    */
   private handleError(err: Error): void {
     console.error(`Stdin error: ${err.message}`);
-    this.emit('error', err);
+    this.emit("error", err);
     this.close();
   }
 }

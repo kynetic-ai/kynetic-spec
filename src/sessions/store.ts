@@ -12,25 +12,25 @@
  *     events.jsonl      # Append-only event log
  */
 
-import * as fs from 'node:fs';
-import * as fsPromises from 'node:fs/promises';
-import * as path from 'node:path';
-import * as YAML from 'yaml';
+import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
+import * as path from "node:path";
+import * as YAML from "yaml";
 import {
-  SessionMetadataSchema,
+  type SessionEvent,
+  type SessionEventInput,
   SessionEventSchema,
   type SessionMetadata,
   type SessionMetadataInput,
-  type SessionEvent,
-  type SessionEventInput,
+  SessionMetadataSchema,
   type SessionStatus,
-} from './types.js';
+} from "./types.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const SESSIONS_DIR = 'sessions';
-const METADATA_FILE = 'session.yaml';
-const EVENTS_FILE = 'events.jsonl';
+const SESSIONS_DIR = "sessions";
+const METADATA_FILE = "session.yaml";
+const EVENTS_FILE = "events.jsonl";
 
 // ─── Path Helpers ────────────────────────────────────────────────────────────
 
@@ -51,22 +51,35 @@ export function getSessionDir(specDir: string, sessionId: string): string {
 /**
  * Get the path to a session's metadata file.
  */
-export function getSessionMetadataPath(specDir: string, sessionId: string): string {
+export function getSessionMetadataPath(
+  specDir: string,
+  sessionId: string,
+): string {
   return path.join(getSessionDir(specDir, sessionId), METADATA_FILE);
 }
 
 /**
  * Get the path to a session's events file.
  */
-export function getSessionEventsPath(specDir: string, sessionId: string): string {
+export function getSessionEventsPath(
+  specDir: string,
+  sessionId: string,
+): string {
   return path.join(getSessionDir(specDir, sessionId), EVENTS_FILE);
 }
 
 /**
  * Get the path to a session's context snapshot file for a given iteration.
  */
-export function getSessionContextPath(specDir: string, sessionId: string, iteration: number): string {
-  return path.join(getSessionDir(specDir, sessionId), `context-iter-${iteration}.json`);
+export function getSessionContextPath(
+  specDir: string,
+  sessionId: string,
+  iteration: number,
+): string {
+  return path.join(
+    getSessionDir(specDir, sessionId),
+    `context-iter-${iteration}.json`,
+  );
 }
 
 // ─── Session CRUD ────────────────────────────────────────────────────────────
@@ -83,7 +96,7 @@ export function getSessionContextPath(specDir: string, sessionId: string, iterat
  */
 export async function createSession(
   specDir: string,
-  input: SessionMetadataInput
+  input: SessionMetadataInput,
 ): Promise<SessionMetadata> {
   const sessionDir = getSessionDir(specDir, input.id);
   const metadataPath = getSessionMetadataPath(specDir, input.id);
@@ -96,15 +109,19 @@ export async function createSession(
     id: input.id,
     task_id: input.task_id,
     agent_type: input.agent_type,
-    status: input.status ?? 'active',
+    status: input.status ?? "active",
     started_at: input.started_at ?? new Date().toISOString(),
     ended_at: undefined,
   };
 
   // Validate and write metadata
   const validated = SessionMetadataSchema.parse(metadata);
-  const content = YAML.stringify(validated, { indent: 2, lineWidth: 100, sortMapEntries: false });
-  await fsPromises.writeFile(metadataPath, content, 'utf-8');
+  const content = YAML.stringify(validated, {
+    indent: 2,
+    lineWidth: 100,
+    sortMapEntries: false,
+  });
+  await fsPromises.writeFile(metadataPath, content, "utf-8");
 
   return validated;
 }
@@ -118,12 +135,12 @@ export async function createSession(
  */
 export async function getSession(
   specDir: string,
-  sessionId: string
+  sessionId: string,
 ): Promise<SessionMetadata | null> {
   const metadataPath = getSessionMetadataPath(specDir, sessionId);
 
   try {
-    const content = await fsPromises.readFile(metadataPath, 'utf-8');
+    const content = await fsPromises.readFile(metadataPath, "utf-8");
     const raw = YAML.parse(content);
     return SessionMetadataSchema.parse(raw);
   } catch {
@@ -144,7 +161,7 @@ export async function getSession(
 export async function updateSessionStatus(
   specDir: string,
   sessionId: string,
-  status: SessionStatus
+  status: SessionStatus,
 ): Promise<SessionMetadata | null> {
   const metadata = await getSession(specDir, sessionId);
   if (!metadata) {
@@ -155,12 +172,17 @@ export async function updateSessionStatus(
   const updated: SessionMetadata = {
     ...metadata,
     status,
-    ended_at: status !== 'active' ? new Date().toISOString() : metadata.ended_at,
+    ended_at:
+      status !== "active" ? new Date().toISOString() : metadata.ended_at,
   };
 
   const metadataPath = getSessionMetadataPath(specDir, sessionId);
-  const content = YAML.stringify(updated, { indent: 2, lineWidth: 100, sortMapEntries: false });
-  await fsPromises.writeFile(metadataPath, content, 'utf-8');
+  const content = YAML.stringify(updated, {
+    indent: 2,
+    lineWidth: 100,
+    sortMapEntries: false,
+  });
+  await fsPromises.writeFile(metadataPath, content, "utf-8");
 
   return updated;
 }
@@ -175,10 +197,10 @@ export async function listSessions(specDir: string): Promise<string[]> {
   const sessionsDir = getSessionsDir(specDir);
 
   try {
-    const entries = await fsPromises.readdir(sessionsDir, { withFileTypes: true });
-    return entries
-      .filter(e => e.isDirectory())
-      .map(e => e.name);
+    const entries = await fsPromises.readdir(sessionsDir, {
+      withFileTypes: true,
+    });
+    return entries.filter((e) => e.isDirectory()).map((e) => e.name);
   } catch {
     return [];
   }
@@ -187,7 +209,10 @@ export async function listSessions(specDir: string): Promise<string[]> {
 /**
  * Check if a session exists.
  */
-export async function sessionExists(specDir: string, sessionId: string): Promise<boolean> {
+export async function sessionExists(
+  specDir: string,
+  sessionId: string,
+): Promise<boolean> {
   const metadataPath = getSessionMetadataPath(specDir, sessionId);
   try {
     await fsPromises.access(metadataPath);
@@ -206,12 +231,18 @@ export async function sessionExists(specDir: string, sessionId: string): Promise
  * @param sessionId - Session ID
  * @returns Number of events in the session
  */
-async function getEventCount(specDir: string, sessionId: string): Promise<number> {
+async function getEventCount(
+  specDir: string,
+  sessionId: string,
+): Promise<number> {
   const eventsPath = getSessionEventsPath(specDir, sessionId);
 
   try {
-    const content = await fsPromises.readFile(eventsPath, 'utf-8');
-    const lines = content.trim().split('\n').filter(line => line.length > 0);
+    const content = await fsPromises.readFile(eventsPath, "utf-8");
+    const lines = content
+      .trim()
+      .split("\n")
+      .filter((line) => line.length > 0);
     return lines.length;
   } catch {
     return 0;
@@ -238,7 +269,7 @@ async function getEventCount(specDir: string, sessionId: string): Promise<number
  */
 export async function appendEvent(
   specDir: string,
-  input: SessionEventInput
+  input: SessionEventInput,
 ): Promise<SessionEvent> {
   const sessionDir = getSessionDir(specDir, input.session_id);
   const eventsPath = getSessionEventsPath(specDir, input.session_id);
@@ -247,7 +278,7 @@ export async function appendEvent(
   await fsPromises.mkdir(sessionDir, { recursive: true });
 
   // Get current event count for seq assignment
-  const seq = input.seq ?? await getEventCount(specDir, input.session_id);
+  const seq = input.seq ?? (await getEventCount(specDir, input.session_id));
 
   // Build full event
   const event: SessionEvent = {
@@ -264,8 +295,8 @@ export async function appendEvent(
 
   // AC: @session-events ac-3 - Use synchronous append for crash safety
   // This ensures the line is fully written before returning
-  const line = JSON.stringify(validated) + '\n';
-  fs.appendFileSync(eventsPath, line, 'utf-8');
+  const line = `${JSON.stringify(validated)}\n`;
+  fs.appendFileSync(eventsPath, line, "utf-8");
 
   return validated;
 }
@@ -281,13 +312,16 @@ export async function appendEvent(
  */
 export async function readEvents(
   specDir: string,
-  sessionId: string
+  sessionId: string,
 ): Promise<SessionEvent[]> {
   const eventsPath = getSessionEventsPath(specDir, sessionId);
 
   try {
-    const content = await fsPromises.readFile(eventsPath, 'utf-8');
-    const lines = content.trim().split('\n').filter(line => line.length > 0);
+    const content = await fsPromises.readFile(eventsPath, "utf-8");
+    const lines = content
+      .trim()
+      .split("\n")
+      .filter((line) => line.length > 0);
 
     const events: SessionEvent[] = [];
     for (const line of lines) {
@@ -320,10 +354,10 @@ export async function readEventsSince(
   specDir: string,
   sessionId: string,
   since: number,
-  until?: number
+  until?: number,
 ): Promise<SessionEvent[]> {
   const events = await readEvents(specDir, sessionId);
-  return events.filter(e => {
+  return events.filter((e) => {
     if (e.ts < since) return false;
     if (until !== undefined && e.ts > until) return false;
     return true;
@@ -339,7 +373,7 @@ export async function readEventsSince(
  */
 export async function getLastEvent(
   specDir: string,
-  sessionId: string
+  sessionId: string,
 ): Promise<SessionEvent | null> {
   const events = await readEvents(specDir, sessionId);
   if (events.length === 0) {
@@ -365,7 +399,7 @@ export async function saveSessionContext(
   specDir: string,
   sessionId: string,
   iteration: number,
-  context: unknown
+  context: unknown,
 ): Promise<void> {
   const sessionDir = getSessionDir(specDir, sessionId);
   const contextPath = getSessionContextPath(specDir, sessionId, iteration);
@@ -375,7 +409,7 @@ export async function saveSessionContext(
 
   // Write context snapshot as pretty JSON
   const content = JSON.stringify(context, null, 2);
-  await fsPromises.writeFile(contextPath, content, 'utf-8');
+  await fsPromises.writeFile(contextPath, content, "utf-8");
 }
 
 /**
@@ -389,12 +423,12 @@ export async function saveSessionContext(
 export async function readSessionContext(
   specDir: string,
   sessionId: string,
-  iteration: number
+  iteration: number,
 ): Promise<unknown | null> {
   const contextPath = getSessionContextPath(specDir, sessionId, iteration);
 
   try {
-    const content = await fsPromises.readFile(contextPath, 'utf-8');
+    const content = await fsPromises.readFile(contextPath, "utf-8");
     return JSON.parse(content);
   } catch {
     return null;

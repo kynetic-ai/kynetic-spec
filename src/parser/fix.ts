@@ -7,9 +7,9 @@
  * - Missing status objects (add defaults)
  */
 
-import { ulid } from 'ulid';
-import { ulidPattern } from '../schema/common.js';
-import { readYamlFile, writeYamlFilePreserveFormat } from './yaml.js';
+import { ulid } from "ulid";
+import { ulidPattern } from "../schema/common.js";
+import { readYamlFile, writeYamlFilePreserveFormat } from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -21,7 +21,7 @@ import { readYamlFile, writeYamlFilePreserveFormat } from './yaml.js';
 export interface AppliedFix {
   file: string;
   path: string;
-  type: 'ulid_regenerated' | 'timestamp_added' | 'status_added';
+  type: "ulid_regenerated" | "timestamp_added" | "status_added";
   oldValue?: unknown;
   newValue: unknown;
 }
@@ -43,7 +43,7 @@ export interface FixResult {
  * Check if a string is a valid ULID
  */
 function isValidUlid(value: unknown): boolean {
-  return typeof value === 'string' && ulidPattern.test(value);
+  return typeof value === "string" && ulidPattern.test(value);
 }
 
 // ============================================================
@@ -58,23 +58,23 @@ function fixObject(
   obj: unknown,
   file: string,
   pathPrefix: string,
-  fixes: AppliedFix[]
+  fixes: AppliedFix[],
 ): boolean {
-  if (!obj || typeof obj !== 'object') return false;
+  if (!obj || typeof obj !== "object") return false;
 
   let modified = false;
   const record = obj as Record<string, unknown>;
 
   // Fix invalid _ulid
-  if ('_ulid' in record) {
+  if ("_ulid" in record) {
     if (!isValidUlid(record._ulid)) {
       const oldValue = record._ulid;
       const newValue = ulid();
       record._ulid = newValue;
       fixes.push({
         file,
-        path: pathPrefix ? `${pathPrefix}._ulid` : '_ulid',
-        type: 'ulid_regenerated',
+        path: pathPrefix ? `${pathPrefix}._ulid` : "_ulid",
+        type: "ulid_regenerated",
         oldValue,
         newValue,
       });
@@ -84,23 +84,27 @@ function fixObject(
 
   // Fix missing created timestamp on items that have _ulid (spec items, tasks)
   // Tasks use created_at, spec items use created - check for both
-  if ('_ulid' in record && !('created' in record) && !('created_at' in record)) {
+  if (
+    "_ulid" in record &&
+    !("created" in record) &&
+    !("created_at" in record)
+  ) {
     const newValue = new Date().toISOString();
     record.created = newValue;
     fixes.push({
       file,
-      path: pathPrefix ? `${pathPrefix}.created` : 'created',
-      type: 'timestamp_added',
+      path: pathPrefix ? `${pathPrefix}.created` : "created",
+      type: "timestamp_added",
       newValue,
     });
     modified = true;
   }
 
   // Fix notes with invalid _ulid
-  if ('notes' in record && Array.isArray(record.notes)) {
+  if ("notes" in record && Array.isArray(record.notes)) {
     for (let i = 0; i < record.notes.length; i++) {
       const note = record.notes[i] as Record<string, unknown>;
-      if (note && typeof note === 'object' && '_ulid' in note) {
+      if (note && typeof note === "object" && "_ulid" in note) {
         if (!isValidUlid(note._ulid)) {
           const oldValue = note._ulid;
           const newValue = ulid();
@@ -108,7 +112,7 @@ function fixObject(
           fixes.push({
             file,
             path: `${pathPrefix}.notes[${i}]._ulid`,
-            type: 'ulid_regenerated',
+            type: "ulid_regenerated",
             oldValue,
             newValue,
           });
@@ -120,20 +124,22 @@ function fixObject(
 
   // Recurse into nested structures
   const nestedFields = [
-    'modules',
-    'features',
-    'requirements',
-    'constraints',
-    'decisions',
-    'items',
-    'tasks',
+    "modules",
+    "features",
+    "requirements",
+    "constraints",
+    "decisions",
+    "items",
+    "tasks",
   ];
 
   for (const field of nestedFields) {
     if (field in record && Array.isArray(record[field])) {
       const arr = record[field] as unknown[];
       for (let i = 0; i < arr.length; i++) {
-        const newPath = pathPrefix ? `${pathPrefix}.${field}[${i}]` : `${field}[${i}]`;
+        const newPath = pathPrefix
+          ? `${pathPrefix}.${field}[${i}]`
+          : `${field}[${i}]`;
         if (fixObject(arr[i], file, newPath, fixes)) {
           modified = true;
         }
@@ -163,11 +169,11 @@ export async function fixFile(filePath: string): Promise<AppliedFix[]> {
     if (modified) {
       await writeYamlFilePreserveFormat(filePath, data);
     }
-  } else if (data && typeof data === 'object') {
+  } else if (data && typeof data === "object") {
     const record = data as Record<string, unknown>;
 
     // Check for tasks file format
-    if ('tasks' in record && Array.isArray(record.tasks)) {
+    if ("tasks" in record && Array.isArray(record.tasks)) {
       let modified = false;
       for (let i = 0; i < record.tasks.length; i++) {
         if (fixObject(record.tasks[i], filePath, `tasks[${i}]`, fixes)) {
@@ -179,7 +185,7 @@ export async function fixFile(filePath: string): Promise<AppliedFix[]> {
       }
     }
     // Check for inbox file format
-    else if ('inbox' in record && Array.isArray(record.inbox)) {
+    else if ("inbox" in record && Array.isArray(record.inbox)) {
       let modified = false;
       for (let i = 0; i < record.inbox.length; i++) {
         if (fixObject(record.inbox[i], filePath, `inbox[${i}]`, fixes)) {
@@ -191,8 +197,8 @@ export async function fixFile(filePath: string): Promise<AppliedFix[]> {
       }
     }
     // Spec file (root is a spec item)
-    else if ('_ulid' in record) {
-      if (fixObject(data, filePath, '', fixes)) {
+    else if ("_ulid" in record) {
+      if (fixObject(data, filePath, "", fixes)) {
         await writeYamlFilePreserveFormat(filePath, data);
       }
     }

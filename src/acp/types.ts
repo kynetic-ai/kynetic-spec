@@ -32,7 +32,7 @@ export type {
   SessionUpdate,
   StopReason,
   TextContent,
-} from '@agentclientprotocol/sdk';
+} from "@agentclientprotocol/sdk";
 
 // ============================================================================
 // JSON-RPC 2.0 Base Types
@@ -47,7 +47,7 @@ export type {
  * JSON-RPC 2.0 Request
  */
 export interface JsonRpcRequest {
-  jsonrpc: '2.0';
+  jsonrpc: "2.0";
   id: string | number;
   method: string;
   params?: unknown;
@@ -57,7 +57,7 @@ export interface JsonRpcRequest {
  * JSON-RPC 2.0 Response (success)
  */
 export interface JsonRpcResponse {
-  jsonrpc: '2.0';
+  jsonrpc: "2.0";
   id: string | number;
   result: unknown;
 }
@@ -75,7 +75,7 @@ export interface JsonRpcErrorObject {
  * JSON-RPC 2.0 Error response
  */
 export interface JsonRpcError {
-  jsonrpc: '2.0';
+  jsonrpc: "2.0";
   id: string | number | null;
   error: JsonRpcErrorObject;
 }
@@ -84,7 +84,7 @@ export interface JsonRpcError {
  * JSON-RPC 2.0 Notification (no response expected)
  */
 export interface JsonRpcNotification {
-  jsonrpc: '2.0';
+  jsonrpc: "2.0";
   method: string;
   params?: unknown;
 }
@@ -108,21 +108,21 @@ export type JsonRpcMessage =
  * Check if a value is a non-null object
  */
 export function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /**
  * Check if a value is a string
  */
 export function isString(value: unknown): value is string {
-  return typeof value === 'string';
+  return typeof value === "string";
 }
 
 /**
  * Check if a value is a number
  */
 export function isNumber(value: unknown): value is number {
-  return typeof value === 'number' && !Number.isNaN(value);
+  return typeof value === "number" && !Number.isNaN(value);
 }
 
 /**
@@ -152,10 +152,10 @@ export function hasProperty<T extends string>(
 export function isRequest(msg: unknown): msg is JsonRpcRequest {
   return (
     isObject(msg) &&
-    hasProperty(msg, 'jsonrpc', '2.0') &&
-    'id' in msg &&
+    hasProperty(msg, "jsonrpc", "2.0") &&
+    "id" in msg &&
     (isString(msg.id) || isNumber(msg.id)) &&
-    hasProperty(msg, 'method') &&
+    hasProperty(msg, "method") &&
     isString(msg.method)
   );
 }
@@ -166,11 +166,11 @@ export function isRequest(msg: unknown): msg is JsonRpcRequest {
 export function isResponse(msg: unknown): msg is JsonRpcResponse {
   return (
     isObject(msg) &&
-    hasProperty(msg, 'jsonrpc', '2.0') &&
-    'id' in msg &&
+    hasProperty(msg, "jsonrpc", "2.0") &&
+    "id" in msg &&
     (isString(msg.id) || isNumber(msg.id)) &&
-    'result' in msg &&
-    !('error' in msg)
+    "result" in msg &&
+    !("error" in msg)
   );
 }
 
@@ -180,14 +180,14 @@ export function isResponse(msg: unknown): msg is JsonRpcResponse {
 export function isError(msg: unknown): msg is JsonRpcError {
   return (
     isObject(msg) &&
-    hasProperty(msg, 'jsonrpc', '2.0') &&
-    'id' in msg &&
+    hasProperty(msg, "jsonrpc", "2.0") &&
+    "id" in msg &&
     (msg.id === null || isString(msg.id) || isNumber(msg.id)) &&
-    hasProperty(msg, 'error') &&
+    hasProperty(msg, "error") &&
     isObject(msg.error) &&
-    hasProperty(msg.error, 'code') &&
+    hasProperty(msg.error, "code") &&
     isNumber(msg.error.code) &&
-    hasProperty(msg.error, 'message') &&
+    hasProperty(msg.error, "message") &&
     isString(msg.error.message)
   );
 }
@@ -198,9 +198,9 @@ export function isError(msg: unknown): msg is JsonRpcError {
 export function isNotification(msg: unknown): msg is JsonRpcNotification {
   return (
     isObject(msg) &&
-    hasProperty(msg, 'jsonrpc', '2.0') &&
-    !('id' in msg) &&
-    hasProperty(msg, 'method') &&
+    hasProperty(msg, "jsonrpc", "2.0") &&
+    !("id" in msg) &&
+    hasProperty(msg, "method") &&
     isString(msg.method)
   );
 }

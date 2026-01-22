@@ -8,32 +8,36 @@
  * - Observations: feedback about processes
  */
 
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { ulid } from 'ulid';
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { ulid } from "ulid";
 import {
-  MetaManifestSchema,
-  AgentSchema,
-  WorkflowSchema,
-  ConventionSchema,
-  ObservationSchema,
-  SessionContextSchema,
-  WorkflowRunsFileSchema,
-  WorkflowRunSchema,
-  type MetaManifest,
   type Agent,
-  type Workflow,
+  AgentSchema,
   type Convention,
-  type Observation,
+  ConventionSchema,
+  getMetaItemType,
   type MetaItem,
+  type MetaManifest,
+  MetaManifestSchema,
+  type Observation,
+  ObservationSchema,
   type ObservationType,
   type SessionContext,
+  SessionContextSchema,
+  type Workflow,
   type WorkflowRun,
   type WorkflowRunsFile,
-  getMetaItemType,
-} from '../schema/index.js';
-import { readYamlFile, writeYamlFilePreserveFormat, expandIncludePattern, getAuthor } from './yaml.js';
-import type { KspecContext } from './yaml.js';
+  WorkflowRunsFileSchema,
+  WorkflowSchema,
+} from "../schema/index.js";
+import type { KspecContext } from "./yaml.js";
+import {
+  expandIncludePattern,
+  getAuthor,
+  readYamlFile,
+  writeYamlFilePreserveFormat,
+} from "./yaml.js";
 
 /**
  * Loaded agent with runtime metadata
@@ -66,7 +70,11 @@ export interface LoadedObservation extends Observation {
 /**
  * Any loaded meta item
  */
-export type LoadedMetaItem = LoadedAgent | LoadedWorkflow | LoadedConvention | LoadedObservation;
+export type LoadedMetaItem =
+  | LoadedAgent
+  | LoadedWorkflow
+  | LoadedConvention
+  | LoadedObservation;
 
 /**
  * Meta context containing all loaded meta items
@@ -83,8 +91,10 @@ export interface MetaContext {
 /**
  * Find the meta manifest file (kynetic.meta.yaml)
  */
-export async function findMetaManifest(specDir: string): Promise<string | null> {
-  const candidates = ['kynetic.meta.yaml'];
+export async function findMetaManifest(
+  specDir: string,
+): Promise<string | null> {
+  const candidates = ["kynetic.meta.yaml"];
 
   for (const candidate of candidates) {
     const filePath = path.join(specDir, candidate);
@@ -104,15 +114,13 @@ export async function findMetaManifest(specDir: string): Promise<string | null> 
  * Returns path even if file doesn't exist yet.
  */
 export function getMetaManifestPath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, 'kynetic.meta.yaml');
+  return path.join(ctx.specDir, "kynetic.meta.yaml");
 }
 
 /**
  * Load meta items from a single file.
  */
-async function loadMetaFile(
-  filePath: string
-): Promise<{
+async function loadMetaFile(filePath: string): Promise<{
   agents: LoadedAgent[];
   workflows: LoadedWorkflow[];
   conventions: LoadedConvention[];
@@ -132,7 +140,7 @@ async function loadMetaFile(
 
   try {
     const raw = await readYamlFile<unknown>(filePath);
-    if (!raw || typeof raw !== 'object') {
+    if (!raw || typeof raw !== "object") {
       return result;
     }
 
@@ -273,9 +281,9 @@ export function getMetaStats(meta: MetaContext): {
  */
 export function findMetaItemByRef(
   meta: MetaContext,
-  ref: string
+  ref: string,
 ): LoadedMetaItem | undefined {
-  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   // Search all item types
   const allItems: LoadedMetaItem[] = [
@@ -290,13 +298,14 @@ export function findMetaItemByRef(
     if (item._ulid === cleanRef) return item;
 
     // Match short ULID (prefix)
-    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return item;
+    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
+      return item;
 
     // Match by id (for agents and workflows)
-    if ('id' in item && item.id === cleanRef) return item;
+    if ("id" in item && item.id === cleanRef) return item;
 
     // Match by domain (for conventions)
-    if ('domain' in item && item.domain === cleanRef) return item;
+    if ("domain" in item && item.domain === cleanRef) return item;
   }
 
   return undefined;
@@ -306,7 +315,7 @@ export function findMetaItemByRef(
  * Determine if an item is a meta item type
  */
 export function isMetaItemType(type: string): boolean {
-  return ['agent', 'workflow', 'convention', 'observation'].includes(type);
+  return ["agent", "workflow", "convention", "observation"].includes(type);
 }
 
 // ============================================================
@@ -318,7 +327,7 @@ export function isMetaItemType(type: string): boolean {
  */
 async function saveMetaManifest(
   manifestPath: string,
-  manifest: MetaManifest
+  manifest: MetaManifest,
 ): Promise<void> {
   await writeYamlFilePreserveFormat(manifestPath, manifest);
 }
@@ -326,9 +335,11 @@ async function saveMetaManifest(
 /**
  * Strip runtime metadata before serialization
  */
-function stripMetaMetadata<T extends LoadedMetaItem>(item: T): Omit<T, '_sourceFile'> {
+function stripMetaMetadata<T extends LoadedMetaItem>(
+  item: T,
+): Omit<T, "_sourceFile"> {
   const { _sourceFile, ...cleanItem } = item;
-  return cleanItem as Omit<T, '_sourceFile'>;
+  return cleanItem as Omit<T, "_sourceFile">;
 }
 
 /**
@@ -340,7 +351,7 @@ export function createObservation(
   options: {
     workflow_ref?: string;
     author?: string;
-  } = {}
+  } = {},
 ): Observation {
   return {
     _ulid: ulid(),
@@ -359,7 +370,7 @@ export function createObservation(
  */
 export async function saveObservation(
   ctx: KspecContext,
-  observation: LoadedObservation
+  observation: LoadedObservation,
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
@@ -369,7 +380,7 @@ export async function saveObservation(
 
   // Load existing manifest
   let manifest: MetaManifest = {
-    kynetic_meta: '1.0',
+    kynetic_meta: "1.0",
     agents: [],
     workflows: [],
     conventions: [],
@@ -392,7 +403,7 @@ export async function saveObservation(
 
   // Update or add
   const existingIndex = manifest.observations.findIndex(
-    (o) => o._ulid === observation._ulid
+    (o) => o._ulid === observation._ulid,
   );
   if (existingIndex >= 0) {
     manifest.observations[existingIndex] = cleanObs as Observation;
@@ -408,7 +419,7 @@ export async function saveObservation(
  */
 export async function deleteObservation(
   ctx: KspecContext,
-  ulid: string
+  ulid: string,
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
@@ -447,7 +458,7 @@ export type { Agent, Workflow, Convention, Observation, MetaItem };
 export async function saveMetaItem(
   ctx: KspecContext,
   item: LoadedMetaItem,
-  itemType: 'agent' | 'workflow' | 'convention'
+  itemType: "agent" | "workflow" | "convention",
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
@@ -457,7 +468,7 @@ export async function saveMetaItem(
 
   // Load existing manifest
   let manifest: MetaManifest = {
-    kynetic_meta: '1.0',
+    kynetic_meta: "1.0",
     agents: [],
     workflows: [],
     conventions: [],
@@ -481,11 +492,11 @@ export async function saveMetaItem(
   // Get the appropriate array
   const getArray = () => {
     switch (itemType) {
-      case 'agent':
+      case "agent":
         return manifest.agents;
-      case 'workflow':
+      case "workflow":
         return manifest.workflows;
-      case 'convention':
+      case "convention":
         return manifest.conventions;
     }
   };
@@ -509,7 +520,7 @@ export async function saveMetaItem(
 export async function deleteMetaItem(
   ctx: KspecContext,
   itemUlid: string,
-  itemType: 'agent' | 'workflow' | 'convention' | 'observation'
+  itemType: "agent" | "workflow" | "convention" | "observation",
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
@@ -524,13 +535,13 @@ export async function deleteMetaItem(
 
     const getArray = () => {
       switch (itemType) {
-        case 'agent':
+        case "agent":
           return manifest.agents;
-        case 'workflow':
+        case "workflow":
           return manifest.workflows;
-        case 'convention':
+        case "convention":
           return manifest.conventions;
-        case 'observation':
+        case "observation":
           return manifest.observations;
       }
     };
@@ -557,18 +568,20 @@ export async function deleteMetaItem(
  * Get the session context file path
  */
 export function getSessionContextPath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, '.kspec-session');
+  return path.join(ctx.specDir, ".kspec-session");
 }
 
 /**
  * Load session context (or return empty context if not exists)
  */
-export async function loadSessionContext(ctx: KspecContext): Promise<SessionContext> {
+export async function loadSessionContext(
+  ctx: KspecContext,
+): Promise<SessionContext> {
   const contextPath = getSessionContextPath(ctx);
 
   try {
     const raw = await readYamlFile<unknown>(contextPath);
-    if (!raw || typeof raw !== 'object') {
+    if (!raw || typeof raw !== "object") {
       return {
         focus: null,
         threads: [],
@@ -603,7 +616,10 @@ export async function loadSessionContext(ctx: KspecContext): Promise<SessionCont
 /**
  * Save session context
  */
-export async function saveSessionContext(ctx: KspecContext, context: SessionContext): Promise<void> {
+export async function saveSessionContext(
+  ctx: KspecContext,
+  context: SessionContext,
+): Promise<void> {
   const contextPath = getSessionContextPath(ctx);
 
   // Update timestamp
@@ -620,13 +636,15 @@ export async function saveSessionContext(ctx: KspecContext, context: SessionCont
  * Get the workflow runs file path
  */
 export function getWorkflowRunsPath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, 'kynetic.runs.yaml');
+  return path.join(ctx.specDir, "kynetic.runs.yaml");
 }
 
 /**
  * Load workflow runs from file
  */
-export async function loadWorkflowRuns(ctx: KspecContext): Promise<WorkflowRun[]> {
+export async function loadWorkflowRuns(
+  ctx: KspecContext,
+): Promise<WorkflowRun[]> {
   const runsPath = getWorkflowRunsPath(ctx);
 
   try {
@@ -647,7 +665,10 @@ export async function loadWorkflowRuns(ctx: KspecContext): Promise<WorkflowRun[]
 /**
  * Save a workflow run (create or update)
  */
-export async function saveWorkflowRun(ctx: KspecContext, run: WorkflowRun): Promise<void> {
+export async function saveWorkflowRun(
+  ctx: KspecContext,
+  run: WorkflowRun,
+): Promise<void> {
   const runsPath = getWorkflowRunsPath(ctx);
 
   // Load existing runs
@@ -663,7 +684,7 @@ export async function saveWorkflowRun(ctx: KspecContext, run: WorkflowRun): Prom
 
   // Save back
   const runsFile: WorkflowRunsFile = {
-    kynetic_runs: '1.0',
+    kynetic_runs: "1.0",
     runs,
   };
 
@@ -673,7 +694,10 @@ export async function saveWorkflowRun(ctx: KspecContext, run: WorkflowRun): Prom
 /**
  * Update an existing workflow run
  */
-export async function updateWorkflowRun(ctx: KspecContext, run: WorkflowRun): Promise<void> {
+export async function updateWorkflowRun(
+  ctx: KspecContext,
+  run: WorkflowRun,
+): Promise<void> {
   await saveWorkflowRun(ctx, run);
 }
 
@@ -682,18 +706,24 @@ export async function updateWorkflowRun(ctx: KspecContext, run: WorkflowRun): Pr
  */
 export async function findWorkflowRunByRef(
   ctx: KspecContext,
-  ref: string
+  ref: string,
 ): Promise<WorkflowRun | undefined> {
   const runs = await loadWorkflowRuns(ctx);
-  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
-  return runs.find((r) => r._ulid === cleanRef || r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()));
+  return runs.find(
+    (r) =>
+      r._ulid === cleanRef ||
+      r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+  );
 }
 
 /**
  * Find active workflow runs
  */
-export async function findActiveRuns(ctx: KspecContext): Promise<WorkflowRun[]> {
+export async function findActiveRuns(
+  ctx: KspecContext,
+): Promise<WorkflowRun[]> {
   const runs = await loadWorkflowRuns(ctx);
-  return runs.filter((r) => r.status === 'active');
+  return runs.filter((r) => r.status === "active");
 }

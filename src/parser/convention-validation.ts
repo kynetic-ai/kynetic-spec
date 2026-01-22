@@ -4,7 +4,7 @@
  * Validates content against convention rules with domain-specific strategies.
  */
 
-import type { Convention, ConventionValidation } from '../schema/meta.js';
+import type { Convention, ConventionValidation } from "../schema/meta.js";
 
 /**
  * Convention validation error
@@ -35,12 +35,12 @@ export interface ConventionValidationResult {
 function validateRegex(
   content: string,
   validation: ConventionValidation,
-  domain: string
+  domain: string,
 ): ConventionValidationError | null {
   if (!validation.pattern) {
     return {
       domain,
-      message: 'Regex validation requires a pattern',
+      message: "Regex validation requires a pattern",
     };
   }
 
@@ -49,7 +49,8 @@ function validateRegex(
     if (!regex.test(content)) {
       return {
         domain,
-        message: validation.message || `Content does not match required pattern`,
+        message:
+          validation.message || `Content does not match required pattern`,
         expected: validation.pattern,
       };
     }
@@ -69,12 +70,12 @@ function validateRegex(
 function validateEnum(
   content: string,
   validation: ConventionValidation,
-  domain: string
+  domain: string,
 ): ConventionValidationError | null {
   if (!validation.allowed || validation.allowed.length === 0) {
     return {
       domain,
-      message: 'Enum validation requires an allowed list',
+      message: "Enum validation requires an allowed list",
     };
   }
 
@@ -82,7 +83,7 @@ function validateEnum(
     return {
       domain,
       message: validation.message || `Value not in allowed list`,
-      expected: `One of: ${validation.allowed.join(', ')}`,
+      expected: `One of: ${validation.allowed.join(", ")}`,
     };
   }
 
@@ -95,20 +96,23 @@ function validateEnum(
 function validateRange(
   content: string,
   validation: ConventionValidation,
-  domain: string
+  domain: string,
 ): ConventionValidationError | null {
-  const unit = validation.unit || 'words';
+  const unit = validation.unit || "words";
 
   let count: number;
   switch (unit) {
-    case 'words':
-      count = content.trim().split(/\s+/).filter(w => w.length > 0).length;
+    case "words":
+      count = content
+        .trim()
+        .split(/\s+/)
+        .filter((w) => w.length > 0).length;
       break;
-    case 'chars':
+    case "chars":
       count = content.length;
       break;
-    case 'lines':
-      count = content.split('\n').length;
+    case "lines":
+      count = content.split("\n").length;
       break;
     default:
       return {
@@ -123,14 +127,18 @@ function validateRange(
   if (min !== undefined && count < min) {
     return {
       domain,
-      message: validation.message || `Content too short: ${count} ${unit}, minimum ${min} ${unit}`,
+      message:
+        validation.message ||
+        `Content too short: ${count} ${unit}, minimum ${min} ${unit}`,
     };
   }
 
   if (max !== undefined && count > max) {
     return {
       domain,
-      message: validation.message || `Content too long: ${count} ${unit}, maximum ${max} ${unit}`,
+      message:
+        validation.message ||
+        `Content too long: ${count} ${unit}, maximum ${max} ${unit}`,
     };
   }
 
@@ -146,7 +154,7 @@ function validateRange(
  */
 export function validateConvention(
   content: string,
-  convention: Convention
+  convention: Convention,
 ): ConventionValidationError | null {
   if (!convention.validation) {
     // Convention has no validation config - it's advisory only
@@ -157,13 +165,13 @@ export function validateConvention(
   const domain = convention.domain;
 
   switch (validation.type) {
-    case 'regex':
+    case "regex":
       return validateRegex(content, validation, domain);
-    case 'enum':
+    case "enum":
       return validateEnum(content, validation, domain);
-    case 'range':
+    case "range":
       return validateRange(content, validation, domain);
-    case 'prose':
+    case "prose":
       // Prose conventions are advisory only - no validation
       return null;
     default:
@@ -187,7 +195,7 @@ export function validateConvention(
  */
 export function validateConventions(
   conventions: Convention[],
-  contentMap: Record<string, string>
+  contentMap: Record<string, string>,
 ): ConventionValidationResult {
   const errors: ConventionValidationError[] = [];
   const skipped: string[] = [];
@@ -199,7 +207,7 @@ export function validateConventions(
       continue;
     }
 
-    if (convention.validation.type === 'prose') {
+    if (convention.validation.type === "prose") {
       skipped.push(convention.domain);
       continue;
     }

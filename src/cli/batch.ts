@@ -3,10 +3,10 @@
  * Supports --refs @a @b @c flag pattern for commands like task complete, cancel, etc.
  */
 
-import chalk from 'chalk';
-import type { ReferenceIndex } from '../parser/index.js';
-import { error, isJsonMode } from './output.js';
-import { EXIT_CODES } from './exit-codes.js';
+import chalk from "chalk";
+import type { ReferenceIndex } from "../parser/index.js";
+import { EXIT_CODES } from "./exit-codes.js";
+import { error, isJsonMode } from "./output.js";
 
 /**
  * Result of a single ref operation within a batch
@@ -14,7 +14,7 @@ import { EXIT_CODES } from './exit-codes.js';
 export interface BatchOperationResult {
   ref: string;
   ulid: string | null;
-  status: 'success' | 'error';
+  status: "success" | "error";
   error?: string;
   message?: string;
   data?: unknown;
@@ -53,9 +53,21 @@ export interface BatchOperationOptions<TItem, TContext> {
   /** Reference index for resolution */
   index: ReferenceIndex;
   /** Function to resolve a ref to an item - returns { item, error? } */
-  resolveRef: (ref: string, items: TItem[], index: ReferenceIndex) => { item: TItem | null; error?: string };
+  resolveRef: (
+    ref: string,
+    items: TItem[],
+    index: ReferenceIndex,
+  ) => { item: TItem | null; error?: string };
   /** Function to execute the operation on a single item */
-  executeOperation: (item: TItem, context: TContext) => Promise<{ success: boolean; message?: string; error?: string; data?: unknown }>;
+  executeOperation: (
+    item: TItem,
+    context: TContext,
+  ) => Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+    data?: unknown;
+  }>;
   /** Function to extract ULID from an item */
   getUlid: (item: TItem) => string;
 }
@@ -67,13 +79,22 @@ export interface BatchOperationOptions<TItem, TContext> {
  * Returns a BatchResult object. Caller should use formatBatchOutput() to render results.
  */
 export async function executeBatchOperation<TItem, TContext>(
-  options: BatchOperationOptions<TItem, TContext>
+  options: BatchOperationOptions<TItem, TContext>,
 ): Promise<BatchResult> {
-  const { positionalRef, refsFlag, context, items, index, resolveRef, executeOperation, getUlid } = options;
+  const {
+    positionalRef,
+    refsFlag,
+    context,
+    items,
+    index,
+    resolveRef,
+    executeOperation,
+    getUlid,
+  } = options;
 
   // AC: @multi-ref-batch ac-3 - Mutual exclusion check
   if (positionalRef && refsFlag && refsFlag.length > 0) {
-    error('Cannot use both positional ref and --refs flag');
+    error("Cannot use both positional ref and --refs flag");
     process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
@@ -85,7 +106,7 @@ export async function executeBatchOperation<TItem, TContext>(
     refs = [positionalRef];
   } else {
     // AC: @multi-ref-batch ac-7 - Empty refs error
-    error('--refs requires at least one reference');
+    error("--refs requires at least one reference");
     process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
@@ -103,7 +124,7 @@ export async function executeBatchOperation<TItem, TContext>(
         results.push({
           ref,
           ulid: null,
-          status: 'error',
+          status: "error",
           error: resolved.error || `Failed to resolve reference: ${ref}`,
         });
         continue;
@@ -117,7 +138,7 @@ export async function executeBatchOperation<TItem, TContext>(
       results.push({
         ref,
         ulid: index.shortUlid(ulid),
-        status: opResult.success ? 'success' : 'error',
+        status: opResult.success ? "success" : "error",
         message: opResult.message,
         error: opResult.error,
         data: opResult.data,
@@ -127,15 +148,15 @@ export async function executeBatchOperation<TItem, TContext>(
       results.push({
         ref,
         ulid: null,
-        status: 'error',
+        status: "error",
         error: err instanceof Error ? err.message : String(err),
       });
     }
   }
 
   // Calculate summary
-  const succeeded = results.filter(r => r.status === 'success').length;
-  const failed = results.filter(r => r.status === 'error').length;
+  const succeeded = results.filter((r) => r.status === "success").length;
+  const failed = results.filter((r) => r.status === "error").length;
   const summary: BatchSummary = {
     total: results.length,
     succeeded,
@@ -160,7 +181,10 @@ export async function executeBatchOperation<TItem, TContext>(
  * AC: @multi-ref-batch ac-5 - Human output format
  * AC: @multi-ref-batch ac-6 - JSON output format
  */
-export function formatBatchOutput(result: BatchResult, operationName: string): void {
+export function formatBatchOutput(
+  result: BatchResult,
+  operationName: string,
+): void {
   if (isJsonMode()) {
     // AC: @multi-ref-batch ac-6 - JSON output
     console.log(JSON.stringify(result, null, 2));
@@ -172,7 +196,7 @@ export function formatBatchOutput(result: BatchResult, operationName: string): v
     if (summary.total === 1) {
       // Single item - no summary needed, just show result
       const r = results[0];
-      if (r.status === 'success') {
+      if (r.status === "success") {
         console.log(chalk.green(`✓ ${operationName}: ${r.ulid || r.ref}`));
         if (r.message) {
           console.log(`  ${r.message}`);
@@ -185,13 +209,16 @@ export function formatBatchOutput(result: BatchResult, operationName: string): v
       }
     } else {
       // Multiple items - show summary
-      const verb = operationName.toLowerCase();
-      console.log(`${chalk.bold(`${operationName}d ${summary.succeeded} of ${summary.total}:`
-)}\n`);
+      const _verb = operationName.toLowerCase();
+      console.log(
+        `${chalk.bold(
+          `${operationName}d ${summary.succeeded} of ${summary.total}:`,
+        )}\n`,
+      );
 
       // List each result
       for (const r of results) {
-        if (r.status === 'success') {
+        if (r.status === "success") {
           console.log(chalk.green(`✓ ${r.ulid || r.ref}`));
           if (r.message) {
             console.log(`  ${r.message}`);

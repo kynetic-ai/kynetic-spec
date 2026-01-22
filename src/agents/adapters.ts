@@ -29,22 +29,22 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    * Claude Code ACP adapter - the primary production adapter.
    * Uses @zed-industries/claude-code-acp package.
    */
-  'claude-code-acp': {
-    command: 'npx',
-    args: ['@zed-industries/claude-code-acp'],
-    shell: process.platform === 'win32',
-    description: 'Claude Code via ACP protocol',
+  "claude-code-acp": {
+    command: "npx",
+    args: ["@zed-industries/claude-code-acp"],
+    shell: process.platform === "win32",
+    description: "Claude Code via ACP protocol",
   },
 
   /**
    * Mock ACP adapter for testing.
    * Uses a local mock script that simulates ACP behavior.
    */
-  'mock-acp': {
-    command: 'node',
+  "mock-acp": {
+    command: "node",
     args: [], // Path to mock script set at runtime via env
     env: {},
-    description: 'Mock ACP agent for testing',
+    description: "Mock ACP agent for testing",
   },
 };
 
@@ -90,7 +90,7 @@ export function registerAdapter(id: string, adapter: AgentAdapter): void {
  * @returns Adapter definition
  */
 export function resolveAdapter(id?: string): AgentAdapter {
-  const adapterId = id ?? 'claude-code-acp';
+  const adapterId = id ?? "claude-code-acp";
   const adapter = getAdapter(adapterId);
 
   if (adapter) {
@@ -99,9 +99,9 @@ export function resolveAdapter(id?: string): AgentAdapter {
 
   // Treat unknown IDs as npm package names - create ad-hoc npx adapter
   return {
-    command: 'npx',
+    command: "npx",
     args: [adapterId],
-    shell: process.platform === 'win32',
+    shell: process.platform === "win32",
     description: `Ad-hoc adapter for ${adapterId}`,
   };
 }

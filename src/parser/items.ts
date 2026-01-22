@@ -5,9 +5,14 @@
  * Complements ReferenceIndex which handles @reference resolution.
  */
 
-import type { LoadedSpecItem, LoadedTask, AnyLoadedItem } from './yaml.js';
-import type { ItemType, TaskStatus, Maturity, ImplementationStatus } from '../schema/index.js';
-import { grepItem } from '../utils/grep.js';
+import type {
+  ImplementationStatus,
+  ItemType,
+  Maturity,
+  TaskStatus,
+} from "../schema/index.js";
+import { grepItem } from "../utils/grep.js";
+import type { AnyLoadedItem, LoadedSpecItem, LoadedTask } from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -84,7 +89,10 @@ export class ItemIndex {
   private maturityIndex = new Map<Maturity, LoadedSpecItem[]>();
 
   /** Index by implementation status */
-  private implementationIndex = new Map<ImplementationStatus, LoadedSpecItem[]>();
+  private implementationIndex = new Map<
+    ImplementationStatus,
+    LoadedSpecItem[]
+  >();
 
   /**
    * Build index from loaded items
@@ -102,13 +110,13 @@ export class ItemIndex {
 
   private indexItem(item: AnyLoadedItem): void {
     // Index by type
-    const type = item.type || 'unknown';
+    const type = item.type || "unknown";
     const typeList = this.typeIndex.get(type) || [];
     typeList.push(item);
     this.typeIndex.set(type, typeList);
 
     // Index by tags
-    const tags = 'tags' in item ? (item.tags as string[]) : [];
+    const tags = "tags" in item ? (item.tags as string[]) : [];
     for (const tag of tags) {
       const tagList = this.tagIndex.get(tag) || [];
       tagList.push(item);
@@ -116,7 +124,7 @@ export class ItemIndex {
     }
 
     // Index tasks by status
-    if ('status' in item && typeof item.status === 'string') {
+    if ("status" in item && typeof item.status === "string") {
       const task = item as LoadedTask;
       const statusList = this.statusIndex.get(task.status) || [];
       statusList.push(task);
@@ -124,9 +132,16 @@ export class ItemIndex {
     }
 
     // Index spec items by maturity/implementation
-    if ('status' in item && typeof item.status === 'object' && item.status !== null) {
+    if (
+      "status" in item &&
+      typeof item.status === "object" &&
+      item.status !== null
+    ) {
       const specItem = item as LoadedSpecItem;
-      const status = specItem.status as { maturity?: Maturity; implementation?: ImplementationStatus };
+      const status = specItem.status as {
+        maturity?: Maturity;
+        implementation?: ImplementationStatus;
+      };
 
       if (status.maturity) {
         const maturityList = this.maturityIndex.get(status.maturity) || [];
@@ -135,7 +150,8 @@ export class ItemIndex {
       }
 
       if (status.implementation) {
-        const implList = this.implementationIndex.get(status.implementation) || [];
+        const implList =
+          this.implementationIndex.get(status.implementation) || [];
         implList.push(specItem);
         this.implementationIndex.set(status.implementation, implList);
       }
@@ -160,39 +176,49 @@ export class ItemIndex {
     // Apply type filter
     if (filter.type) {
       const types = Array.isArray(filter.type) ? filter.type : [filter.type];
-      results = results.filter(item => types.includes(item.type as ItemType));
+      results = results.filter((item) => types.includes(item.type as ItemType));
     }
 
     // Apply tag filter (ANY)
     if (filter.tags && filter.tags.length > 0) {
-      results = results.filter(item => {
-        const itemTags = 'tags' in item ? (item.tags as string[]) : [];
-        return filter.tags!.some(tag => itemTags.includes(tag));
+      results = results.filter((item) => {
+        const itemTags = "tags" in item ? (item.tags as string[]) : [];
+        return filter.tags?.some((tag) => itemTags.includes(tag));
       });
     }
 
     // Apply tag filter (ALL)
     if (filter.allTags && filter.allTags.length > 0) {
-      results = results.filter(item => {
-        const itemTags = 'tags' in item ? (item.tags as string[]) : [];
-        return filter.allTags!.every(tag => itemTags.includes(tag));
+      results = results.filter((item) => {
+        const itemTags = "tags" in item ? (item.tags as string[]) : [];
+        return filter.allTags?.every((tag) => itemTags.includes(tag));
       });
     }
 
     // Apply task status filter
     if (filter.status) {
-      const statuses = Array.isArray(filter.status) ? filter.status : [filter.status];
-      results = results.filter(item => {
-        if (!('status' in item) || typeof item.status !== 'string') return false;
+      const statuses = Array.isArray(filter.status)
+        ? filter.status
+        : [filter.status];
+      results = results.filter((item) => {
+        if (!("status" in item) || typeof item.status !== "string")
+          return false;
         return statuses.includes(item.status as TaskStatus);
       });
     }
 
     // Apply maturity filter
     if (filter.maturity) {
-      const maturities = Array.isArray(filter.maturity) ? filter.maturity : [filter.maturity];
-      results = results.filter(item => {
-        if (!('status' in item) || typeof item.status !== 'object' || !item.status) return false;
+      const maturities = Array.isArray(filter.maturity)
+        ? filter.maturity
+        : [filter.maturity];
+      results = results.filter((item) => {
+        if (
+          !("status" in item) ||
+          typeof item.status !== "object" ||
+          !item.status
+        )
+          return false;
         const status = item.status as { maturity?: Maturity };
         return status.maturity && maturities.includes(status.maturity);
       });
@@ -200,9 +226,16 @@ export class ItemIndex {
 
     // Apply implementation filter
     if (filter.implementation) {
-      const impls = Array.isArray(filter.implementation) ? filter.implementation : [filter.implementation];
-      results = results.filter(item => {
-        if (!('status' in item) || typeof item.status !== 'object' || !item.status) return false;
+      const impls = Array.isArray(filter.implementation)
+        ? filter.implementation
+        : [filter.implementation];
+      results = results.filter((item) => {
+        if (
+          !("status" in item) ||
+          typeof item.status !== "object" ||
+          !item.status
+        )
+          return false;
         const status = item.status as { implementation?: ImplementationStatus };
         return status.implementation && impls.includes(status.implementation);
       });
@@ -210,9 +243,9 @@ export class ItemIndex {
 
     // Apply has-fields filter
     if (filter.hasFields && filter.hasFields.length > 0) {
-      results = results.filter(item => {
+      results = results.filter((item) => {
         const obj = item as unknown as Record<string, unknown>;
-        return filter.hasFields!.every(field => {
+        return filter.hasFields?.every((field) => {
           const value = getNestedField(obj, field);
           return value !== undefined && value !== null;
         });
@@ -221,9 +254,9 @@ export class ItemIndex {
 
     // Apply field-equals filter
     if (filter.fieldEquals && filter.fieldEquals.length > 0) {
-      results = results.filter(item => {
+      results = results.filter((item) => {
         const obj = item as unknown as Record<string, unknown>;
-        return filter.fieldEquals!.every(({ field, value }) => {
+        return filter.fieldEquals?.every(({ field, value }) => {
           const itemValue = getNestedField(obj, field);
           return itemValue === value;
         });
@@ -233,13 +266,18 @@ export class ItemIndex {
     // Apply title search
     if (filter.titleContains) {
       const search = filter.titleContains.toLowerCase();
-      results = results.filter(item => item.title.toLowerCase().includes(search));
+      results = results.filter((item) =>
+        item.title.toLowerCase().includes(search),
+      );
     }
 
     // Apply grep search (regex across all text content)
     if (filter.grepSearch) {
-      results = results.filter(item => {
-        const match = grepItem(item as unknown as Record<string, unknown>, filter.grepSearch!);
+      results = results.filter((item) => {
+        const match = grepItem(
+          item as unknown as Record<string, unknown>,
+          filter.grepSearch!,
+        );
         return match !== null;
       });
     }
@@ -250,7 +288,11 @@ export class ItemIndex {
   /**
    * Query with pagination
    */
-  queryPaginated(filter: ItemFilter = {}, offset = 0, limit = 50): QueryResult<AnyLoadedItem> {
+  queryPaginated(
+    filter: ItemFilter = {},
+    offset = 0,
+    limit = 50,
+  ): QueryResult<AnyLoadedItem> {
     const allResults = this.query(filter);
     const items = allResults.slice(offset, offset + limit);
 
@@ -364,12 +406,12 @@ export class ItemIndex {
  * e.g., "status.maturity" -> item.status.maturity
  */
 function getNestedField(obj: Record<string, unknown>, path: string): unknown {
-  const parts = path.split('.');
+  const parts = path.split(".");
   let current: unknown = obj;
 
   for (const part of parts) {
     if (current === null || current === undefined) return undefined;
-    if (typeof current !== 'object') return undefined;
+    if (typeof current !== "object") return undefined;
     current = (current as Record<string, unknown>)[part];
   }
 
@@ -380,12 +422,15 @@ function getNestedField(obj: Record<string, unknown>, path: string): unknown {
  * Find direct child items of a parent item based on _path
  * Children have paths like "parent_path.field[N]"
  */
-export function findChildItems(parent: LoadedSpecItem, allItems: LoadedSpecItem[]): LoadedSpecItem[] {
+export function findChildItems(
+  parent: LoadedSpecItem,
+  allItems: LoadedSpecItem[],
+): LoadedSpecItem[] {
   // Handle both cases: parent at root and nested parent
-  const parentPath = parent._path || '';
+  const parentPath = parent._path || "";
 
   // Look for items whose path starts with parent's path
-  return allItems.filter(item => {
+  return allItems.filter((item) => {
     if (!item._path) return false;
     if (item._ulid === parent._ulid) return false; // Skip self
 
@@ -393,19 +438,19 @@ export function findChildItems(parent: LoadedSpecItem, allItems: LoadedSpecItem[
     // Examples:
     // - Parent: "features[0]", Child: "features[0].requirements[0]"
     // - Parent: "", Child: "features[0]"
-    if (parentPath === '') {
+    if (parentPath === "") {
       // Root level parent - children are top-level items like "features[0]"
-      return !item._path.includes('.');
+      return !item._path.includes(".");
     }
 
     // Nested parent - children start with parent path + dot
-    if (!item._path.startsWith(parentPath + '.')) {
+    if (!item._path.startsWith(`${parentPath}.`)) {
       return false;
     }
 
     // Must be direct child (no additional nesting)
     // Remove parent prefix and check for no more dots
     const remainder = item._path.slice(parentPath.length + 1);
-    return !remainder.includes('.');
+    return !remainder.includes(".");
   });
 }

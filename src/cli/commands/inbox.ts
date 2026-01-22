@@ -1,32 +1,26 @@
-import { Command } from 'commander';
+import * as readline from "node:readline";
+import type { Command } from "commander";
 import {
-  initContext,
-  loadInboxItems,
   createInboxItem,
-  saveInboxItem,
+  createTask,
   deleteInboxItem,
   findInboxItemByRef,
-  loadAllTasks,
-  loadAllItems,
-  createTask,
-  saveTask,
-  ReferenceIndex,
+  initContext,
   type LoadedInboxItem,
-} from '../../parser/index.js';
-import { commitIfShadow } from '../../parser/shadow.js';
-import {
-  output,
-  success,
-  error,
-  warn,
-  info,
-} from '../output.js';
-import type { InboxItemInput, TaskInput } from '../../schema/index.js';
-import * as readline from 'node:readline';
-import { errors } from '../../strings/index.js';
-import { fieldLabels } from '../../strings/labels.js';
-import { EXIT_CODES } from '../exit-codes.js';
-import { formatRelativeTime as formatRelativeTimeUtil } from '../../utils/time.js';
+  loadAllItems,
+  loadAllTasks,
+  loadInboxItems,
+  ReferenceIndex,
+  saveInboxItem,
+  saveTask,
+} from "../../parser/index.js";
+import { commitIfShadow } from "../../parser/shadow.js";
+import type { InboxItemInput, TaskInput } from "../../schema/index.js";
+import { errors } from "../../strings/index.js";
+import { fieldLabels } from "../../strings/labels.js";
+import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, info, output, success } from "../output.js";
 
 /**
  * Format relative time for display (wrapper for utils function)
@@ -38,7 +32,10 @@ function formatRelativeTime(dateStr: string): string {
 /**
  * Resolve inbox item ref with error handling
  */
-function resolveInboxRef(ref: string, items: LoadedInboxItem[]): LoadedInboxItem {
+function resolveInboxRef(
+  ref: string,
+  items: LoadedInboxItem[],
+): LoadedInboxItem {
   const item = findInboxItemByRef(items, ref);
   if (!item) {
     error(errors.reference.inboxNotFound(ref));
@@ -69,14 +66,14 @@ async function prompt(question: string): Promise<string> {
  */
 export function registerInboxCommands(program: Command): void {
   const inbox = program
-    .command('inbox')
-    .description('Low-friction capture for ideas (not yet tasks)');
+    .command("inbox")
+    .description("Low-friction capture for ideas (not yet tasks)");
 
   // kspec inbox add <text>
   inbox
-    .command('add <text>')
-    .description('Capture an idea quickly')
-    .option('--tag <tag...>', 'Add tags for categorization')
+    .command("add <text>")
+    .description("Capture an idea quickly")
+    .option("--tag <tag...>", "Add tags for categorization")
     .action(async (text: string, options) => {
       try {
         const ctx = await initContext();
@@ -88,7 +85,7 @@ export function registerInboxCommands(program: Command): void {
 
         const item = createInboxItem(input);
         await saveInboxItem(ctx, item);
-        await commitIfShadow(ctx.shadow, 'inbox-add', undefined, text);
+        await commitIfShadow(ctx.shadow, "inbox-add", undefined, text);
 
         success(`Captured: ${item._ulid.slice(0, 8)}`, { item });
       } catch (err) {
@@ -99,11 +96,11 @@ export function registerInboxCommands(program: Command): void {
 
   // kspec inbox list
   inbox
-    .command('list')
-    .description('Show inbox items (oldest first for triage)')
-    .option('--tag <tag>', 'Filter by tag')
-    .option('--limit <n>', 'Limit results')
-    .option('--newest', 'Sort newest first (default is oldest first)')
+    .command("list")
+    .description("Show inbox items (oldest first for triage)")
+    .option("--tag <tag>", "Filter by tag")
+    .option("--limit <n>", "Limit results")
+    .option("--newest", "Sort newest first (default is oldest first)")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -111,7 +108,7 @@ export function registerInboxCommands(program: Command): void {
 
         // Filter by tag
         if (options.tag) {
-          items = items.filter(i => i.tags.includes(options.tag));
+          items = items.filter((i) => i.tags.includes(options.tag));
         }
 
         // Sort: oldest first by default (for triage), newest if requested
@@ -129,19 +126,22 @@ export function registerInboxCommands(program: Command): void {
 
         output(items, () => {
           if (items.length === 0) {
-            console.log('Inbox is empty');
+            console.log("Inbox is empty");
             return;
           }
 
-          console.log(`Inbox (${items.length} item${items.length === 1 ? '' : 's'}):\n`);
+          console.log(
+            `Inbox (${items.length} item${items.length === 1 ? "" : "s"}):\n`,
+          );
 
           for (const item of items) {
-            const tags = item.tags.length > 0 ? ` [${item.tags.join(', ')}]` : '';
+            const tags =
+              item.tags.length > 0 ? ` [${item.tags.join(", ")}]` : "";
             const age = formatRelativeTime(item.created_at);
-            const author = item.added_by ? ` by ${item.added_by}` : '';
+            const author = item.added_by ? ` by ${item.added_by}` : "";
             console.log(`  ${item._ulid.slice(0, 8)} (${age}${author})${tags}`);
             console.log(`    ${item.text}`);
-            console.log('');
+            console.log("");
           }
         });
       } catch (err) {
@@ -152,15 +152,18 @@ export function registerInboxCommands(program: Command): void {
 
   // kspec inbox promote <ref>
   inbox
-    .command('promote <ref>')
-    .description('Convert inbox item to task')
-    .option('--title <title>', 'Task title (prompts if not provided)')
-    .option('--description <text>', 'Task description (defaults to inbox item text)')
-    .option('--priority <n>', 'Priority (1-5)', '3')
-    .option('--type <type>', 'Task type (task, bug, spike, etc.)', 'task')
-    .option('--spec-ref <ref>', 'Link to spec item')
-    .option('--tag <tag...>', 'Tags for the task')
-    .option('--keep', 'Keep inbox item after promoting')
+    .command("promote <ref>")
+    .description("Convert inbox item to task")
+    .option("--title <title>", "Task title (prompts if not provided)")
+    .option(
+      "--description <text>",
+      "Task description (defaults to inbox item text)",
+    )
+    .option("--priority <n>", "Priority (1-5)", "3")
+    .option("--type <type>", "Task type (task, bug, spike, etc.)", "task")
+    .option("--spec-ref <ref>", "Link to spec item")
+    .option("--tag <tag...>", "Tags for the task")
+    .option("--keep", "Keep inbox item after promoting")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -172,8 +175,8 @@ export function registerInboxCommands(program: Command): void {
         if (!title) {
           // Interactive prompt
           console.log(`Promoting: "${item.text}"`);
-          console.log('');
-          title = await prompt('Task title: ');
+          console.log("");
+          title = await prompt("Task title: ");
           if (!title) {
             error(errors.validation.titleRequired);
             process.exit(EXIT_CODES.USAGE_ERROR);
@@ -187,7 +190,8 @@ export function registerInboxCommands(program: Command): void {
           priority: parseInt(options.priority, 10),
           spec_ref: options.specRef || null,
           tags: options.tag || item.tags, // Inherit tags from inbox item if not specified
-          description: options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
+          description:
+            options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
         };
 
         const task = createTask(taskInput);
@@ -204,8 +208,14 @@ export function registerInboxCommands(program: Command): void {
           info(`Removed from inbox: ${item._ulid.slice(0, 8)}`);
         }
 
-        await commitIfShadow(ctx.shadow, 'inbox-promote', task.slugs[0] || index.shortUlid(task._ulid));
-        success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, { task });
+        await commitIfShadow(
+          ctx.shadow,
+          "inbox-promote",
+          task.slugs[0] || index.shortUlid(task._ulid),
+        );
+        success(`Created task: ${index.shortUlid(task._ulid)} - ${title}`, {
+          task,
+        });
       } catch (err) {
         error(errors.failures.promoteInboxItem, err);
         process.exit(EXIT_CODES.ERROR);
@@ -214,9 +224,9 @@ export function registerInboxCommands(program: Command): void {
 
   // kspec inbox delete <ref>
   inbox
-    .command('delete <ref>')
-    .description('Remove an inbox item')
-    .option('--force', 'Skip confirmation')
+    .command("delete <ref>")
+    .description("Remove an inbox item")
+    .option("--force", "Skip confirmation")
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -226,16 +236,20 @@ export function registerInboxCommands(program: Command): void {
         // Confirm unless --force
         if (!options.force) {
           console.log(`Delete: "${item.text}"`);
-          const confirm = await prompt('Are you sure? (y/N): ');
-          if (confirm.toLowerCase() !== 'y') {
-            console.log('Cancelled');
+          const confirm = await prompt("Are you sure? (y/N): ");
+          if (confirm.toLowerCase() !== "y") {
+            console.log("Cancelled");
             return;
           }
         }
 
         const deleted = await deleteInboxItem(ctx, item._ulid);
         if (deleted) {
-          await commitIfShadow(ctx.shadow, 'inbox-delete', item._ulid.slice(0, 8));
+          await commitIfShadow(
+            ctx.shadow,
+            "inbox-delete",
+            item._ulid.slice(0, 8),
+          );
           success(`Deleted inbox item: ${item._ulid.slice(0, 8)}`);
         } else {
           error(errors.failures.deleteInboxItem);
@@ -249,8 +263,8 @@ export function registerInboxCommands(program: Command): void {
 
   // kspec inbox get <ref>
   inbox
-    .command('get <ref>')
-    .description('Show details of an inbox item')
+    .command("get <ref>")
+    .description("Show details of an inbox item")
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
@@ -259,14 +273,16 @@ export function registerInboxCommands(program: Command): void {
 
         output(item, () => {
           console.log(`${fieldLabels.ulid}     ${item._ulid}`);
-          console.log(`${fieldLabels.created}  ${item.created_at} (${formatRelativeTime(item.created_at)})`);
+          console.log(
+            `${fieldLabels.created}  ${item.created_at} (${formatRelativeTime(item.created_at)})`,
+          );
           if (item.added_by) {
             console.log(`Added by: ${item.added_by}`);
           }
           if (item.tags.length > 0) {
-            console.log(`${fieldLabels.tags}     ${item.tags.join(', ')}`);
+            console.log(`${fieldLabels.tags}     ${item.tags.join(", ")}`);
           }
-          console.log('');
+          console.log("");
           console.log(item.text);
         });
       } catch (err) {

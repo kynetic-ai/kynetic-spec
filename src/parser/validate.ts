@@ -4,31 +4,36 @@
  * Provides schema validation, reference validation, and orphan detection.
  */
 
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import {
+  AgentSchema,
+  ConventionSchema,
+  ManifestSchema,
+  MetaManifestSchema,
+  ObservationSchema,
+  SpecItemSchema,
   TaskSchema,
   TasksFileSchema,
-  ManifestSchema,
-  SpecItemSchema,
-  MetaManifestSchema,
-  AgentSchema,
-  WorkflowSchema,
-  ConventionSchema,
-  ObservationSchema,
   UlidSchema,
-} from '../schema/index.js';
-import type { KspecContext, LoadedTask, LoadedSpecItem } from './yaml.js';
+  WorkflowSchema,
+} from "../schema/index.js";
+import { findMetaManifest, loadMetaContext } from "./meta.js";
 import {
-  readYamlFile,
-  findTaskFiles,
-  loadSpecFile,
+  ReferenceIndex,
+  type RefValidationError,
+  type RefValidationWarning,
+  validateRefs,
+} from "./refs.js";
+import { TraitIndex } from "./traits.js";
+import type { KspecContext, LoadedSpecItem, LoadedTask } from "./yaml.js";
+import {
   expandIncludePattern,
   extractItemsFromRaw,
-} from './yaml.js';
-import { ReferenceIndex, validateRefs, type RefValidationError, type RefValidationWarning } from './refs.js';
-import { findMetaManifest, loadMetaContext, type MetaContext } from './meta.js';
-import { TraitIndex } from './traits.js';
+  findTaskFiles,
+  loadSpecFile,
+  readYamlFile,
+} from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -58,11 +63,11 @@ export interface OrphanItem {
  * Completeness warning types
  */
 export type CompletenessWarningType =
-  | 'missing_acceptance_criteria'
-  | 'missing_description'
-  | 'status_inconsistency'
-  | 'missing_test_coverage'
-  | 'automation_eligible_no_spec';
+  | "missing_acceptance_criteria"
+  | "missing_description"
+  | "status_inconsistency"
+  | "missing_test_coverage"
+  | "automation_eligible_no_spec";
 
 /**
  * Trait cycle error
@@ -130,7 +135,9 @@ export interface ValidateOptions {
 /**
  * Validate a manifest file against schema
  */
-async function validateManifestFile(filePath: string): Promise<SchemaValidationError[]> {
+async function validateManifestFile(
+  filePath: string,
+): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -141,7 +148,7 @@ async function validateManifestFile(filePath: string): Promise<SchemaValidationE
       for (const issue of result.error.issues) {
         errors.push({
           file: filePath,
-          path: issue.path.join('.'),
+          path: issue.path.join("."),
           message: issue.message,
           details: issue,
         });
@@ -160,7 +167,9 @@ async function validateManifestFile(filePath: string): Promise<SchemaValidationE
 /**
  * Validate a tasks file against schema
  */
-async function validateTasksFile(filePath: string): Promise<SchemaValidationError[]> {
+async function validateTasksFile(
+  filePath: string,
+): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -171,7 +180,7 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
 
     if (Array.isArray(raw)) {
       taskList = raw;
-    } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
+    } else if (raw && typeof raw === "object" && "tasks" in raw) {
       // Try full TasksFile schema first
       const fileResult = TasksFileSchema.safeParse(raw);
       if (!fileResult.success) {
@@ -184,7 +193,8 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
     } else {
       errors.push({
         file: filePath,
-        message: 'Invalid tasks file format: expected array or { tasks: [...] }',
+        message:
+          "Invalid tasks file format: expected array or { tasks: [...] }",
       });
       return errors;
     }
@@ -198,7 +208,7 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
         for (const issue of result.error.issues) {
           errors.push({
             file: filePath,
-            path: `tasks[${i}].${issue.path.join('.')}`,
+            path: `tasks[${i}].${issue.path.join(".")}`,
             message: issue.message,
             details: issue,
           });
@@ -218,14 +228,16 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
 /**
  * Validate a spec module file against schema
  */
-async function validateSpecFile(filePath: string): Promise<SchemaValidationError[]> {
+async function validateSpecFile(
+  filePath: string,
+): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
     const raw = await readYamlFile<unknown>(filePath);
 
     // Recursively validate spec items
-    validateSpecItemRecursive(raw, filePath, '', errors);
+    validateSpecItemRecursive(raw, filePath, "", errors);
   } catch (err) {
     errors.push({
       file: filePath,
@@ -240,7 +252,9 @@ async function validateSpecFile(filePath: string): Promise<SchemaValidationError
  * Validate meta manifest file with strict ULID validation
  * AC-meta-manifest-3: Invalid schema exits with code 1 and shows field path + expected type
  */
-async function validateMetaManifestFile(filePath: string): Promise<SchemaValidationError[]> {
+async function validateMetaManifestFile(
+  filePath: string,
+): Promise<SchemaValidationError[]> {
   const errors: SchemaValidationError[] = [];
 
   try {
@@ -252,7 +266,7 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
       for (const issue of manifestResult.error.issues) {
         errors.push({
           file: filePath,
-          path: issue.path.join('.'),
+          path: issue.path.join("."),
           message: issue.message,
           details: issue,
         });
@@ -261,7 +275,12 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
     }
 
     // Validate each agent with strict ULID validation
-    if (raw && typeof raw === 'object' && 'agents' in raw && Array.isArray((raw as Record<string, unknown>).agents)) {
+    if (
+      raw &&
+      typeof raw === "object" &&
+      "agents" in raw &&
+      Array.isArray((raw as Record<string, unknown>).agents)
+    ) {
       const agents = (raw as Record<string, unknown>).agents as unknown[];
       for (let i = 0; i < agents.length; i++) {
         const agent = agents[i];
@@ -270,7 +289,7 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
           for (const issue of agentResult.error.issues) {
             errors.push({
               file: filePath,
-              path: `agents[${i}].${issue.path.join('.')}`,
+              path: `agents[${i}].${issue.path.join(".")}`,
               message: issue.message,
               details: issue,
             });
@@ -278,13 +297,15 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
         }
 
         // Strict ULID validation
-        if (agent && typeof agent === 'object' && '_ulid' in agent) {
-          const ulidResult = UlidSchema.safeParse((agent as Record<string, unknown>)._ulid);
+        if (agent && typeof agent === "object" && "_ulid" in agent) {
+          const ulidResult = UlidSchema.safeParse(
+            (agent as Record<string, unknown>)._ulid,
+          );
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
               path: `agents[${i}]._ulid`,
-              message: 'Invalid ULID format (expected 26 characters)',
+              message: "Invalid ULID format (expected 26 characters)",
             });
           }
         }
@@ -292,7 +313,12 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
     }
 
     // Validate each workflow with strict ULID validation
-    if (raw && typeof raw === 'object' && 'workflows' in raw && Array.isArray((raw as Record<string, unknown>).workflows)) {
+    if (
+      raw &&
+      typeof raw === "object" &&
+      "workflows" in raw &&
+      Array.isArray((raw as Record<string, unknown>).workflows)
+    ) {
       const workflows = (raw as Record<string, unknown>).workflows as unknown[];
       for (let i = 0; i < workflows.length; i++) {
         const workflow = workflows[i];
@@ -301,7 +327,7 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
           for (const issue of workflowResult.error.issues) {
             errors.push({
               file: filePath,
-              path: `workflows[${i}].${issue.path.join('.')}`,
+              path: `workflows[${i}].${issue.path.join(".")}`,
               message: issue.message,
               details: issue,
             });
@@ -309,13 +335,15 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
         }
 
         // Strict ULID validation
-        if (workflow && typeof workflow === 'object' && '_ulid' in workflow) {
-          const ulidResult = UlidSchema.safeParse((workflow as Record<string, unknown>)._ulid);
+        if (workflow && typeof workflow === "object" && "_ulid" in workflow) {
+          const ulidResult = UlidSchema.safeParse(
+            (workflow as Record<string, unknown>)._ulid,
+          );
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
               path: `workflows[${i}]._ulid`,
-              message: 'Invalid ULID format (expected 26 characters)',
+              message: "Invalid ULID format (expected 26 characters)",
             });
           }
         }
@@ -323,8 +351,14 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
     }
 
     // Validate each convention with strict ULID validation
-    if (raw && typeof raw === 'object' && 'conventions' in raw && Array.isArray((raw as Record<string, unknown>).conventions)) {
-      const conventions = (raw as Record<string, unknown>).conventions as unknown[];
+    if (
+      raw &&
+      typeof raw === "object" &&
+      "conventions" in raw &&
+      Array.isArray((raw as Record<string, unknown>).conventions)
+    ) {
+      const conventions = (raw as Record<string, unknown>)
+        .conventions as unknown[];
       for (let i = 0; i < conventions.length; i++) {
         const convention = conventions[i];
         const conventionResult = ConventionSchema.safeParse(convention);
@@ -332,7 +366,7 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
           for (const issue of conventionResult.error.issues) {
             errors.push({
               file: filePath,
-              path: `conventions[${i}].${issue.path.join('.')}`,
+              path: `conventions[${i}].${issue.path.join(".")}`,
               message: issue.message,
               details: issue,
             });
@@ -340,13 +374,19 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
         }
 
         // Strict ULID validation
-        if (convention && typeof convention === 'object' && '_ulid' in convention) {
-          const ulidResult = UlidSchema.safeParse((convention as Record<string, unknown>)._ulid);
+        if (
+          convention &&
+          typeof convention === "object" &&
+          "_ulid" in convention
+        ) {
+          const ulidResult = UlidSchema.safeParse(
+            (convention as Record<string, unknown>)._ulid,
+          );
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
               path: `conventions[${i}]._ulid`,
-              message: 'Invalid ULID format (expected 26 characters)',
+              message: "Invalid ULID format (expected 26 characters)",
             });
           }
         }
@@ -354,8 +394,14 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
     }
 
     // Validate each observation with strict ULID validation
-    if (raw && typeof raw === 'object' && 'observations' in raw && Array.isArray((raw as Record<string, unknown>).observations)) {
-      const observations = (raw as Record<string, unknown>).observations as unknown[];
+    if (
+      raw &&
+      typeof raw === "object" &&
+      "observations" in raw &&
+      Array.isArray((raw as Record<string, unknown>).observations)
+    ) {
+      const observations = (raw as Record<string, unknown>)
+        .observations as unknown[];
       for (let i = 0; i < observations.length; i++) {
         const observation = observations[i];
         const observationResult = ObservationSchema.safeParse(observation);
@@ -363,7 +409,7 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
           for (const issue of observationResult.error.issues) {
             errors.push({
               file: filePath,
-              path: `observations[${i}].${issue.path.join('.')}`,
+              path: `observations[${i}].${issue.path.join(".")}`,
               message: issue.message,
               details: issue,
             });
@@ -371,13 +417,19 @@ async function validateMetaManifestFile(filePath: string): Promise<SchemaValidat
         }
 
         // Strict ULID validation
-        if (observation && typeof observation === 'object' && '_ulid' in observation) {
-          const ulidResult = UlidSchema.safeParse((observation as Record<string, unknown>)._ulid);
+        if (
+          observation &&
+          typeof observation === "object" &&
+          "_ulid" in observation
+        ) {
+          const ulidResult = UlidSchema.safeParse(
+            (observation as Record<string, unknown>)._ulid,
+          );
           if (!ulidResult.success) {
             errors.push({
               file: filePath,
               path: `observations[${i}]._ulid`,
-              message: 'Invalid ULID format (expected 26 characters)',
+              message: "Invalid ULID format (expected 26 characters)",
             });
           }
         }
@@ -400,18 +452,20 @@ function validateSpecItemRecursive(
   raw: unknown,
   file: string,
   pathPrefix: string,
-  errors: SchemaValidationError[]
+  errors: SchemaValidationError[],
 ): void {
-  if (!raw || typeof raw !== 'object') return;
+  if (!raw || typeof raw !== "object") return;
 
   // Check if this is a spec item (has _ulid)
-  if ('_ulid' in raw) {
+  if ("_ulid" in raw) {
     const result = SpecItemSchema.safeParse(raw);
     if (!result.success) {
       for (const issue of result.error.issues) {
         errors.push({
           file,
-          path: pathPrefix ? `${pathPrefix}.${issue.path.join('.')}` : issue.path.join('.'),
+          path: pathPrefix
+            ? `${pathPrefix}.${issue.path.join(".")}`
+            : issue.path.join("."),
           message: issue.message,
           details: issue,
         });
@@ -420,14 +474,23 @@ function validateSpecItemRecursive(
   }
 
   // Recurse into nested structures
-  const nestedFields = ['modules', 'features', 'requirements', 'constraints', 'decisions', 'items'];
+  const nestedFields = [
+    "modules",
+    "features",
+    "requirements",
+    "constraints",
+    "decisions",
+    "items",
+  ];
   const obj = raw as Record<string, unknown>;
 
   for (const field of nestedFields) {
     if (field in obj && Array.isArray(obj[field])) {
       const arr = obj[field] as unknown[];
       for (let i = 0; i < arr.length; i++) {
-        const newPath = pathPrefix ? `${pathPrefix}.${field}[${i}]` : `${field}[${i}]`;
+        const newPath = pathPrefix
+          ? `${pathPrefix}.${field}[${i}]`
+          : `${field}[${i}]`;
         validateSpecItemRecursive(arr[i], file, newPath, errors);
       }
     }
@@ -444,7 +507,7 @@ function validateSpecItemRecursive(
 function findOrphans(
   tasks: LoadedTask[],
   items: LoadedSpecItem[],
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): OrphanItem[] {
   const orphans: OrphanItem[] = [];
 
@@ -455,14 +518,14 @@ function findOrphans(
 
   // Fields that contain references
   const refFields = [
-    'depends_on',
-    'blocked_by',
-    'implements',
-    'relates_to',
-    'tests',
-    'supersedes',
-    'spec_ref',
-    'context',
+    "depends_on",
+    "blocked_by",
+    "implements",
+    "relates_to",
+    "tests",
+    "supersedes",
+    "spec_ref",
+    "context",
   ];
 
   for (const item of allItems) {
@@ -471,14 +534,14 @@ function findOrphans(
     for (const field of refFields) {
       const value = obj[field];
 
-      if (typeof value === 'string' && value.startsWith('@')) {
+      if (typeof value === "string" && value.startsWith("@")) {
         const resolved = index.resolve(value);
         if (resolved.ok) {
           referenced.add(resolved.ulid);
         }
       } else if (Array.isArray(value)) {
         for (const v of value) {
-          if (typeof v === 'string' && v.startsWith('@')) {
+          if (typeof v === "string" && v.startsWith("@")) {
             const resolved = index.resolve(v);
             if (resolved.ok) {
               referenced.add(resolved.ulid);
@@ -491,13 +554,13 @@ function findOrphans(
 
   // Find items not in the referenced set
   // Skip entry point types: modules are spec entry points, tasks are work items
-  const entryPointTypes = ['module', 'task', 'epic', 'bug', 'spike', 'infra'];
+  const entryPointTypes = ["module", "task", "epic", "bug", "spike", "infra"];
 
   for (const item of items) {
     // Only check spec items, not tasks
     if (!referenced.has(item._ulid)) {
       // Skip entry point types
-      if (entryPointTypes.includes(item.type || '')) continue;
+      if (entryPointTypes.includes(item.type || "")) continue;
 
       // Skip nested items - they're implicitly referenced by their parent
       // _path indicates nesting (e.g., "features[0].requirements[2]")
@@ -506,7 +569,7 @@ function findOrphans(
       orphans.push({
         ulid: item._ulid,
         title: item.title,
-        type: item.type || 'unknown',
+        type: item.type || "unknown",
         file: item._sourceFile,
       });
     }
@@ -525,17 +588,19 @@ function findOrphans(
  */
 function detectTraitCycles(
   items: LoadedSpecItem[],
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): TraitCycleError[] {
   const errors: TraitCycleError[] = [];
-  const traits = items.filter(item => item.type === 'trait');
+  const traits = items.filter((item) => item.type === "trait");
 
   // Build adjacency list: trait ULID → trait ULIDs it references
   const graph = new Map<string, string[]>();
   const traitInfo = new Map<string, { ref: string; title: string }>();
 
   for (const trait of traits) {
-    const ref = trait.slugs?.[0] ? `@${trait.slugs[0]}` : `@${trait._ulid.slice(0, 8)}`;
+    const ref = trait.slugs?.[0]
+      ? `@${trait.slugs[0]}`
+      : `@${trait._ulid.slice(0, 8)}`;
     traitInfo.set(trait._ulid, { ref, title: trait.title });
 
     const dependencies: string[] = [];
@@ -590,7 +655,7 @@ function detectTraitCycles(
       if (cycle) {
         const info = traitInfo.get(cycle[0]);
         if (info) {
-          const cycleRefs = cycle.map(ulid => {
+          const cycleRefs = cycle.map((ulid) => {
             const cycleInfo = traitInfo.get(ulid);
             return cycleInfo ? cycleInfo.ref : `@${ulid.slice(0, 8)}`;
           });
@@ -599,7 +664,7 @@ function detectTraitCycles(
             traitRef: info.ref,
             traitTitle: info.title,
             cycle: cycleRefs,
-            message: `Circular trait reference: ${cycleRefs.join(' → ')} → ${cycleRefs[0]}`,
+            message: `Circular trait reference: ${cycleRefs.join(" → ")} → ${cycleRefs[0]}`,
           });
         }
 
@@ -624,7 +689,7 @@ function detectTraitCycles(
  */
 async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   const coveredACs = new Set<string>();
-  const testsDir = path.join(rootDir, 'tests');
+  const testsDir = path.join(rootDir, "tests");
 
   try {
     // Check if tests directory exists
@@ -632,15 +697,18 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
 
     // Read all test files
     const files = await fs.readdir(testsDir);
-    const testFiles = files.filter(f => f.endsWith('.test.ts') || f.endsWith('.test.js'));
+    const testFiles = files.filter(
+      (f) => f.endsWith(".test.ts") || f.endsWith(".test.js"),
+    );
 
     for (const file of testFiles) {
       const filePath = path.join(testsDir, file);
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await fs.readFile(filePath, "utf-8");
 
       // Match AC annotations: // AC: @spec-ref ac-N
       // Also handle multiple ACs on one line: // AC: @spec-ref ac-1, ac-2
-      const acPattern = /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
+      const acPattern =
+        /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
       let match;
 
       while ((match = acPattern.exec(content)) !== null) {
@@ -649,7 +717,7 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
 
         if (acList) {
           // Split by comma and trim
-          const acs = acList.split(',').map(ac => ac.trim());
+          const acs = acList.split(",").map((ac) => ac.trim());
           for (const ac of acs) {
             coveredACs.add(`${specRef} ${ac}`);
           }
@@ -660,7 +728,7 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
         }
       }
     }
-  } catch (err) {
+  } catch (_err) {
     // Tests directory doesn't exist or can't be read - that's ok
   }
 
@@ -674,9 +742,9 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
  */
 async function checkCompleteness(
   items: LoadedSpecItem[],
-  index: ReferenceIndex,
+  _index: ReferenceIndex,
   rootDir: string,
-  traitIndex?: TraitIndex
+  traitIndex?: TraitIndex,
 ): Promise<CompletenessWarning[]> {
   const warnings: CompletenessWarning[] = [];
 
@@ -684,57 +752,59 @@ async function checkCompleteness(
   const coveredACs = await scanTestCoverage(rootDir);
 
   for (const item of items) {
-    const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${item._ulid.slice(0, 8)}`;
-    const isTrait = item.type === 'trait';
+    const itemRef = item.slugs?.[0]
+      ? `@${item.slugs[0]}`
+      : `@${item._ulid.slice(0, 8)}`;
+    const isTrait = item.type === "trait";
 
     // AC: @spec-completeness ac-1
     // AC: @trait-type ac-2 - Traits should have acceptance criteria for completeness
     // Check for missing acceptance criteria
     if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
       warnings.push({
-        type: 'missing_acceptance_criteria',
+        type: "missing_acceptance_criteria",
         itemRef,
         itemTitle: item.title,
-        message: `${isTrait ? 'Trait' : 'Item'} ${itemRef} has no acceptance criteria`,
+        message: `${isTrait ? "Trait" : "Item"} ${itemRef} has no acceptance criteria`,
       });
     }
 
     // AC: @spec-completeness ac-2
     // AC: @trait-type ac-3 - Traits should have description for completeness
     // Check for missing description
-    if (!item.description || item.description.trim() === '') {
+    if (!item.description || item.description.trim() === "") {
       warnings.push({
-        type: 'missing_description',
+        type: "missing_description",
         itemRef,
         itemTitle: item.title,
-        message: `${isTrait ? 'Trait' : 'Item'} ${itemRef} has no description`,
+        message: `${isTrait ? "Trait" : "Item"} ${itemRef} has no description`,
       });
     }
 
     // AC: @spec-completeness ac-3
     // Check for status inconsistency between parent and children
-    if (item.status?.implementation === 'implemented') {
+    if (item.status?.implementation === "implemented") {
       // Check if this item has children with not_started status
       const childFields = [
-        'modules',
-        'features',
-        'requirements',
-        'constraints',
-        'epics',
-        'themes',
-        'capabilities',
+        "modules",
+        "features",
+        "requirements",
+        "constraints",
+        "epics",
+        "themes",
+        "capabilities",
       ];
 
       for (const field of childFields) {
         const children = (item as any)[field];
         if (Array.isArray(children)) {
           for (const child of children) {
-            if (child.status?.implementation === 'not_started') {
+            if (child.status?.implementation === "not_started") {
               const childRef = child.slugs?.[0]
                 ? `@${child.slugs[0]}`
-                : `@${child._ulid?.slice(0, 8) || 'unknown'}`;
+                : `@${child._ulid?.slice(0, 8) || "unknown"}`;
               warnings.push({
-                type: 'status_inconsistency',
+                type: "status_inconsistency",
                 itemRef,
                 itemTitle: item.title,
                 message: `Parent ${itemRef} is implemented but child ${childRef} is not_started`,
@@ -766,7 +836,7 @@ async function checkCompleteness(
         possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
 
         // Check if any of these references are covered
-        const isCovered = possibleRefs.some(ref => coveredACs.has(ref));
+        const isCovered = possibleRefs.some((ref) => coveredACs.has(ref));
 
         if (!isCovered) {
           uncoveredACs.push(ac.id);
@@ -776,11 +846,11 @@ async function checkCompleteness(
       // Only warn if there are uncovered ACs
       if (uncoveredACs.length > 0) {
         warnings.push({
-          type: 'missing_test_coverage',
+          type: "missing_test_coverage",
           itemRef,
           itemTitle: item.title,
           message: `Item ${itemRef} has ${uncoveredACs.length} AC(s) without test coverage`,
-          details: `Uncovered: ${uncoveredACs.join(', ')}`,
+          details: `Uncovered: ${uncoveredACs.join(", ")}`,
         });
       }
     }
@@ -804,7 +874,7 @@ async function checkCompleteness(
         possibleRefs.push(`@${trait.ulid.slice(0, 8)}`);
 
         // Check if any of these references are covered
-        const isCovered = possibleRefs.some(ref => coveredACs.has(ref));
+        const isCovered = possibleRefs.some((ref) => coveredACs.has(ref));
 
         if (!isCovered) {
           uncoveredTraitACs.push({ traitSlug: trait.slug, acId: ac.id });
@@ -815,9 +885,9 @@ async function checkCompleteness(
       if (uncoveredTraitACs.length > 0) {
         const details = uncoveredTraitACs
           .map(({ traitSlug, acId }) => `@${traitSlug} ${acId}`)
-          .join(', ');
+          .join(", ");
         warnings.push({
-          type: 'missing_test_coverage',
+          type: "missing_test_coverage",
           itemRef,
           itemTitle: item.title,
           message: `Item ${itemRef} has ${uncoveredTraitACs.length} inherited trait AC(s) without test coverage`,
@@ -840,18 +910,20 @@ async function checkCompleteness(
  */
 function checkAutomationEligibility(
   tasks: LoadedTask[],
-  index: ReferenceIndex
+  index: ReferenceIndex,
 ): CompletenessWarning[] {
   const warnings: CompletenessWarning[] = [];
 
   for (const task of tasks) {
-    const taskRef = task.slugs?.[0] ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
+    const taskRef = task.slugs?.[0]
+      ? `@${task.slugs[0]}`
+      : `@${task._ulid.slice(0, 8)}`;
 
     // AC: @task-automation-eligibility ac-21
     // Warn if eligible but no spec_ref
-    if (task.automation === 'eligible' && !task.spec_ref) {
+    if (task.automation === "eligible" && !task.spec_ref) {
       warnings.push({
-        type: 'automation_eligible_no_spec',
+        type: "automation_eligible_no_spec",
         itemRef: taskRef,
         itemTitle: task.title,
         message: `Task ${taskRef} is automation: eligible but has no spec_ref - eligible tasks should have linked specs`,
@@ -860,11 +932,11 @@ function checkAutomationEligibility(
 
     // AC: @task-automation-eligibility ac-23
     // Warn if eligible but spec_ref doesn't resolve
-    if (task.automation === 'eligible' && task.spec_ref) {
+    if (task.automation === "eligible" && task.spec_ref) {
       const specResult = index.resolve(task.spec_ref);
       if (!specResult.ok) {
         warnings.push({
-          type: 'automation_eligible_no_spec',
+          type: "automation_eligible_no_spec",
           itemRef: taskRef,
           itemTitle: task.title,
           message: `Task ${taskRef} is automation: eligible but spec_ref ${task.spec_ref} cannot be resolved`,
@@ -885,7 +957,7 @@ function checkAutomationEligibility(
  */
 export async function validate(
   ctx: KspecContext,
-  options: ValidateOptions = {}
+  options: ValidateOptions = {},
 ): Promise<ValidationResult> {
   // Default: run all checks
   const runSchema = options.schema !== false;
@@ -927,7 +999,7 @@ export async function validate(
 
   // Find and validate task files
   const taskFiles = await findTaskFiles(ctx.rootDir);
-  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, 'spec'));
+  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
   const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])];
 
   for (const taskFile of allTaskFiles) {
@@ -944,7 +1016,7 @@ export async function validate(
 
       if (Array.isArray(raw)) {
         taskList = raw;
-      } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
+      } else if (raw && typeof raw === "object" && "tasks" in raw) {
         taskList = (raw as { tasks: unknown[] }).tasks || [];
       }
 
@@ -998,7 +1070,10 @@ export async function validate(
   ];
 
   // Reference validation
-  if (runRefs && (allTasks.length > 0 || allItems.length > 0 || allMetaItems.length > 0)) {
+  if (
+    runRefs &&
+    (allTasks.length > 0 || allItems.length > 0 || allMetaItems.length > 0)
+  ) {
     const index = new ReferenceIndex(allTasks, allItems, allMetaItems);
     const refResult = validateRefs(index, allTasks, allItems);
     result.refErrors = refResult.errors;
@@ -1019,7 +1094,12 @@ export async function validate(
     if (runCompleteness) {
       // Build trait index for trait AC coverage validation
       const traitIndex = new TraitIndex(allItems, index);
-      result.completenessWarnings = await checkCompleteness(allItems, index, ctx.rootDir, traitIndex);
+      result.completenessWarnings = await checkCompleteness(
+        allItems,
+        index,
+        ctx.rootDir,
+        traitIndex,
+      );
 
       // AC: @task-automation-eligibility ac-21, ac-23
       // Check automation eligibility warnings for tasks
@@ -1044,7 +1124,7 @@ export async function validate(
       const metaErrors = await validateMetaManifestFile(metaManifestPath);
       // Prefix all meta errors with "meta:"
       for (const err of metaErrors) {
-        err.path = err.path ? `meta:${err.path}` : 'meta:';
+        err.path = err.path ? `meta:${err.path}` : "meta:";
       }
       result.schemaErrors.push(...metaErrors);
       result.stats.filesChecked++;
@@ -1052,7 +1132,10 @@ export async function validate(
   }
 
   // Set valid flag
-  result.valid = result.schemaErrors.length === 0 && result.refErrors.length === 0 && result.traitCycleErrors.length === 0;
+  result.valid =
+    result.schemaErrors.length === 0 &&
+    result.refErrors.length === 0 &&
+    result.traitCycleErrors.length === 0;
 
   return result;
 }

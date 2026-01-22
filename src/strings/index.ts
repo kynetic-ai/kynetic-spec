@@ -6,7 +6,7 @@
  * and review/update messaging across the entire CLI.
  */
 
-export * from './labels.js';
-export * from './guidance.js';
-export * from './validation.js';
-export * from './errors.js';
+export * from "./errors.js";
+export * from "./guidance.js";
+export * from "./labels.js";
+export * from "./validation.js";

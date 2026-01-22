@@ -10,9 +10,9 @@
  * - Cancel operations (optional)
  */
 
-import { EventEmitter } from 'node:events';
-import type { JsonRpcFramingOptions } from './framing.js';
-import { JsonRpcFraming } from './framing.js';
+import { EventEmitter } from "node:events";
+import type { JsonRpcFramingOptions } from "./framing.js";
+import { JsonRpcFraming } from "./framing.js";
 
 import type {
   AgentCapabilities,
@@ -28,14 +28,14 @@ import type {
   RequestPermissionResponse,
   SessionNotification,
   SessionUpdate,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Session state tracked by the client
  */
 export interface SessionState {
   id: string;
-  status: 'idle' | 'prompting' | 'cancelled';
+  status: "idle" | "prompting" | "cancelled";
 }
 
 /**
@@ -89,18 +89,18 @@ export class ACPClient extends EventEmitter {
     this.framing = new JsonRpcFraming(options);
 
     // Wire up notification handler for session updates
-    this.framing.on('notification', (notification: JsonRpcNotification) => {
+    this.framing.on("notification", (notification: JsonRpcNotification) => {
       this.handleNotification(notification);
     });
 
     // Forward request events for tool calls
-    this.framing.on('request', (request: JsonRpcRequest) => {
-      this.emit('request', request.id, request.method, request.params);
+    this.framing.on("request", (request: JsonRpcRequest) => {
+      this.emit("request", request.id, request.method, request.params);
     });
 
     // Forward framing events
-    this.framing.on('close', () => this.emit('close'));
-    this.framing.on('error', (err: Error) => this.emit('error', err));
+    this.framing.on("close", () => this.emit("close"));
+    this.framing.on("error", (err: Error) => this.emit("error", err));
   }
 
   /**
@@ -111,7 +111,7 @@ export class ACPClient extends EventEmitter {
    */
   async initialize(): Promise<AgentCapabilities> {
     if (this.initialized) {
-      throw new Error('Client already initialized');
+      throw new Error("Client already initialized");
     }
 
     const params: InitializeRequest = {
@@ -120,13 +120,13 @@ export class ACPClient extends EventEmitter {
       ...(this.clientInfo && {
         clientInfo: {
           name: this.clientInfo.name,
-          version: this.clientInfo.version ?? '0.0.0',
+          version: this.clientInfo.version ?? "0.0.0",
         },
       }),
     };
 
     const result = (await this.framing.sendRequest(
-      'initialize',
+      "initialize",
       params,
     )) as InitializeResponse;
 
@@ -145,18 +145,18 @@ export class ACPClient extends EventEmitter {
    */
   async newSession(params: NewSessionRequest): Promise<string> {
     if (!this.initialized) {
-      throw new Error('Client not initialized');
+      throw new Error("Client not initialized");
     }
 
     const result = (await this.framing.sendRequest(
-      'session/new',
+      "session/new",
       params,
     )) as NewSessionResponse;
 
     // Track session state
     this.sessions.set(result.sessionId, {
       id: result.sessionId,
-      status: 'idle',
+      status: "idle",
     });
 
     return result.sessionId;
@@ -171,7 +171,7 @@ export class ACPClient extends EventEmitter {
    */
   async prompt(params: PromptRequest): Promise<PromptResponse> {
     if (!this.initialized) {
-      throw new Error('Client not initialized');
+      throw new Error("Client not initialized");
     }
 
     const session = this.sessions.get(params.sessionId);
@@ -179,30 +179,30 @@ export class ACPClient extends EventEmitter {
       throw new Error(`Session not found: ${params.sessionId}`);
     }
 
-    if (session.status === 'prompting') {
+    if (session.status === "prompting") {
       throw new Error(`Session already prompting: ${params.sessionId}`);
     }
 
     // Update session state
-    session.status = 'prompting';
+    session.status = "prompting";
 
     try {
       const result = (await this.framing.sendRequest(
-        'session/prompt',
+        "session/prompt",
         params,
       )) as PromptResponse;
 
       // Update session state based on stop reason
-      if (result.stopReason === 'cancelled') {
-        session.status = 'cancelled';
+      if (result.stopReason === "cancelled") {
+        session.status = "cancelled";
       } else {
-        session.status = 'idle';
+        session.status = "idle";
       }
 
       return result;
     } catch (err) {
       // Reset to idle on error
-      session.status = 'idle';
+      session.status = "idle";
       throw err;
     }
   }
@@ -219,7 +219,7 @@ export class ACPClient extends EventEmitter {
    */
   async cancel(sessionId: string): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Client not initialized');
+      throw new Error("Client not initialized");
     }
 
     const session = this.sessions.get(sessionId);
@@ -230,13 +230,13 @@ export class ACPClient extends EventEmitter {
     try {
       // Use silentMethodNotFound since not all agents implement session/cancel
       await this.framing.sendRequest(
-        'session/cancel',
+        "session/cancel",
         { sessionId },
         { silentMethodNotFound: true },
       );
 
       // Update session state
-      session.status = 'cancelled';
+      session.status = "cancelled";
     } catch (err: unknown) {
       // Ignore "Method not found" errors - agent doesn't support cancel
       const error = err as { code?: number };
@@ -312,7 +312,10 @@ export class ACPClient extends EventEmitter {
    * @param id - The request ID to respond to
    * @param response - The permission response
    */
-  respondPermission(id: string | number, response: RequestPermissionResponse): void {
+  respondPermission(
+    id: string | number,
+    response: RequestPermissionResponse,
+  ): void {
     this.framing.sendResponse(id, response);
   }
 
@@ -340,10 +343,10 @@ export class ACPClient extends EventEmitter {
    * Handle incoming notifications from the agent
    */
   private handleNotification(notification: JsonRpcNotification): void {
-    if (notification.method === 'session/update') {
+    if (notification.method === "session/update") {
       const sessionNotification = notification.params as SessionNotification;
       this.emit(
-        'update',
+        "update",
         sessionNotification.sessionId,
         sessionNotification.update,
       );

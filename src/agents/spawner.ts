@@ -5,9 +5,9 @@
  * for bidirectional JSON-RPC communication.
  */
 
-import { spawn, type ChildProcess } from 'node:child_process';
-import { ACPClient, type ACPClientOptions } from '../acp/index.js';
-import type { AgentAdapter } from './adapters.js';
+import { type ChildProcess, spawn } from "node:child_process";
+import { ACPClient, type ACPClientOptions } from "../acp/index.js";
+import type { AgentAdapter } from "./adapters.js";
 
 /**
  * Options for spawning an agent.
@@ -18,7 +18,7 @@ export interface SpawnAgentOptions {
   /** Additional environment variables */
   env?: Record<string, string>;
   /** ACP client options */
-  clientOptions?: Omit<ACPClientOptions, 'stdin' | 'stdout'>;
+  clientOptions?: Omit<ACPClientOptions, "stdin" | "stdout">;
 }
 
 /**
@@ -45,7 +45,7 @@ export interface SpawnedAgent {
  */
 export function spawnAgent(
   adapter: AgentAdapter,
-  options: SpawnAgentOptions
+  options: SpawnAgentOptions,
 ): SpawnedAgent {
   const { cwd, env = {}, clientOptions = {} } = options;
 
@@ -61,13 +61,13 @@ export function spawnAgent(
     cwd,
     env: processEnv,
     shell: adapter.shell,
-    stdio: ['pipe', 'pipe', 'inherit'], // pipe stdin/stdout, inherit stderr
+    stdio: ["pipe", "pipe", "inherit"], // pipe stdin/stdout, inherit stderr
   });
 
   // Ensure stdin/stdout are available
   if (!child.stdin || !child.stdout) {
     child.kill();
-    throw new Error('Failed to create pipes for agent process');
+    throw new Error("Failed to create pipes for agent process");
   }
 
   // Create ACP client connected to child's stdio
@@ -81,14 +81,14 @@ export function spawnAgent(
   });
 
   // Forward process exit to client close
-  child.on('exit', () => {
+  child.on("exit", () => {
     if (!client.isClosed()) {
       client.close();
     }
   });
 
   // Kill function with graceful shutdown
-  const kill = (signal: NodeJS.Signals = 'SIGTERM'): void => {
+  const kill = (signal: NodeJS.Signals = "SIGTERM"): void => {
     if (!child.killed) {
       child.kill(signal);
     }
@@ -108,7 +108,7 @@ export function spawnAgent(
  */
 export async function spawnAndInitialize(
   adapter: AgentAdapter,
-  options: SpawnAgentOptions
+  options: SpawnAgentOptions,
 ): Promise<SpawnedAgent> {
   const agent = spawnAgent(adapter, options);
 

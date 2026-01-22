@@ -1,31 +1,32 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
-import {
-  initContext,
-  buildIndexes,
-} from '../../parser/index.js';
-import type { LoadedSpecItem, LoadedTask } from '../../parser/yaml.js';
-import { output, error, formatTaskList } from '../output.js';
-import { grepItem, formatMatchedFields } from '../../utils/grep.js';
-import { errors } from '../../strings/index.js';
-import { EXIT_CODES } from '../exit-codes.js';
+import chalk from "chalk";
+import type { Command } from "commander";
+import { buildIndexes, initContext } from "../../parser/index.js";
+import type { LoadedSpecItem, LoadedTask } from "../../parser/yaml.js";
+import { errors } from "../../strings/index.js";
+import { formatMatchedFields, grepItem } from "../../utils/grep.js";
+import { EXIT_CODES } from "../exit-codes.js";
+import { error, output } from "../output.js";
 
 /**
  * Format a spec item for search results
  */
 function formatSearchItem(item: LoadedSpecItem, matchedFields: string[]): void {
   const shortId = item._ulid.slice(0, 8);
-  const slugStr = item.slugs.length > 0 ? chalk.cyan(`@${item.slugs[0]}`) : '';
+  const slugStr = item.slugs.length > 0 ? chalk.cyan(`@${item.slugs[0]}`) : "";
   const typeStr = chalk.gray(`[${item.type}]`);
 
-  let status = '';
-  if (item.status && typeof item.status === 'object') {
+  let status = "";
+  if (item.status && typeof item.status === "object") {
     const s = item.status as { maturity?: string; implementation?: string };
     if (s.implementation) {
-      const implColor = s.implementation === 'verified' ? chalk.green
-        : s.implementation === 'implemented' ? chalk.cyan
-          : s.implementation === 'in_progress' ? chalk.yellow
-            : chalk.gray;
+      const implColor =
+        s.implementation === "verified"
+          ? chalk.green
+          : s.implementation === "implemented"
+            ? chalk.cyan
+            : s.implementation === "in_progress"
+              ? chalk.yellow
+              : chalk.gray;
       status = implColor(s.implementation);
     }
   }
@@ -43,14 +44,21 @@ function formatSearchItem(item: LoadedSpecItem, matchedFields: string[]): void {
  */
 function formatSearchTask(task: LoadedTask, matchedFields: string[]): void {
   const shortId = task._ulid.slice(0, 8);
-  const slugStr = task.slugs.length > 0 ? chalk.cyan(`@${task.slugs[0]}`) : '';
+  const slugStr = task.slugs.length > 0 ? chalk.cyan(`@${task.slugs[0]}`) : "";
 
-  const statusColor = task.status === 'completed' ? chalk.green
-    : task.status === 'in_progress' ? chalk.blue
-      : task.status === 'blocked' ? chalk.red
-        : chalk.gray;
+  const statusColor =
+    task.status === "completed"
+      ? chalk.green
+      : task.status === "in_progress"
+        ? chalk.blue
+        : task.status === "blocked"
+          ? chalk.red
+          : chalk.gray;
 
-  const priority = task.priority <= 2 ? chalk.red(`P${task.priority}`) : chalk.gray(`P${task.priority}`);
+  const priority =
+    task.priority <= 2
+      ? chalk.red(`P${task.priority}`)
+      : chalk.gray(`P${task.priority}`);
 
   let line = `${chalk.gray(shortId)} ${statusColor(`[${task.status}]`)} ${priority} ${task.title}`;
   if (slugStr) line += ` ${slugStr}`;
@@ -60,7 +68,7 @@ function formatSearchTask(task: LoadedTask, matchedFields: string[]): void {
 }
 
 interface SearchResult {
-  type: 'item' | 'task';
+  type: "item" | "task";
   item: LoadedSpecItem | LoadedTask;
   matchedFields: string[];
 }
@@ -70,13 +78,13 @@ interface SearchResult {
  */
 export function registerSearchCommand(program: Command): void {
   program
-    .command('search <pattern>')
-    .description('Search across all items and tasks with regex pattern')
-    .option('-t, --type <type>', 'Filter by item type')
-    .option('-s, --status <status>', 'Filter by task status')
-    .option('--items-only', 'Search only spec items')
-    .option('--tasks-only', 'Search only tasks')
-    .option('--limit <n>', 'Limit results', '50')
+    .command("search <pattern>")
+    .description("Search across all items and tasks with regex pattern")
+    .option("-t, --type <type>", "Filter by item type")
+    .option("-s, --status <status>", "Filter by task status")
+    .option("--items-only", "Search only spec items")
+    .option("--tasks-only", "Search only tasks")
+    .option("--limit <n>", "Limit results", "50")
     .action(async (pattern, options) => {
       try {
         const ctx = await initContext();
@@ -91,10 +99,13 @@ export function registerSearchCommand(program: Command): void {
             // Apply type filter
             if (options.type && item.type !== options.type) continue;
 
-            const match = grepItem(item as unknown as Record<string, unknown>, pattern);
+            const match = grepItem(
+              item as unknown as Record<string, unknown>,
+              pattern,
+            );
             if (match) {
               results.push({
-                type: 'item',
+                type: "item",
                 item,
                 matchedFields: match.matchedFields,
               });
@@ -108,10 +119,13 @@ export function registerSearchCommand(program: Command): void {
             // Apply status filter
             if (options.status && task.status !== options.status) continue;
 
-            const match = grepItem(task as unknown as Record<string, unknown>, pattern);
+            const match = grepItem(
+              task as unknown as Record<string, unknown>,
+              pattern,
+            );
             if (match) {
               results.push({
-                type: 'task',
+                type: "task",
                 item: task,
                 matchedFields: match.matchedFields,
               });
@@ -125,7 +139,7 @@ export function registerSearchCommand(program: Command): void {
         output(
           {
             pattern,
-            results: limitedResults.map(r => ({
+            results: limitedResults.map((r) => ({
               type: r.type,
               ulid: r.item._ulid,
               title: r.item.title,
@@ -141,15 +155,25 @@ export function registerSearchCommand(program: Command): void {
             }
 
             for (const result of limitedResults) {
-              if (result.type === 'item') {
-                formatSearchItem(result.item as LoadedSpecItem, result.matchedFields);
+              if (result.type === "item") {
+                formatSearchItem(
+                  result.item as LoadedSpecItem,
+                  result.matchedFields,
+                );
               } else {
-                formatSearchTask(result.item as LoadedTask, result.matchedFields);
+                formatSearchTask(
+                  result.item as LoadedTask,
+                  result.matchedFields,
+                );
               }
             }
 
-            console.log(chalk.gray(`\n${limitedResults.length} result(s)${results.length > limit ? ` (showing first ${limit})` : ''}`));
-          }
+            console.log(
+              chalk.gray(
+                `\n${limitedResults.length} result(s)${results.length > limit ? ` (showing first ${limit})` : ""}`,
+              ),
+            );
+          },
         );
       } catch (err) {
         error(errors.failures.search, err);

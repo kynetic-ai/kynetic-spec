@@ -1,41 +1,46 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
-import chalk from 'chalk';
-import { realpathSync } from 'fs';
-import { createRequire } from 'node:module';
+import { realpathSync } from "node:fs";
+import { createRequire } from "node:module";
+import chalk from "chalk";
+import { Command } from "commander";
 
 // Read version from package.json at runtime
 // AC: @cli-version ac-2 - version automatically reflects package.json without code changes
 const require = createRequire(import.meta.url);
-const { version } = require('../../package.json');
-import { setJsonMode, setVerboseMode, getVerboseMode } from './output.js';
-import { setVerboseModeGetter } from '../parser/shadow.js';
-import { findClosestCommand, getAllCommands, COMMAND_ALIASES } from './suggest.js';
+const { version } = require("../../package.json");
+
+import { setVerboseModeGetter } from "../parser/shadow.js";
 import {
-  registerTasksCommands,
-  registerTaskCommands,
-  registerSetupCommand,
-  registerSessionCommands,
+  registerCloneForTestingCommand,
+  registerDeriveCommand,
+  registerHelpCommand,
+  registerInboxCommands,
   registerInitCommand,
   registerItemCommands,
-  registerValidateCommand,
-  registerHelpCommand,
-  registerDeriveCommand,
-  registerInboxCommands,
-  registerShadowCommands,
-  registerLogCommand,
-  registerSearchCommand,
-  registerRalphCommand,
-  registerMetaCommands,
-  registerLinkCommands,
-  registerModuleCommands,
-  registerTraitCommands,
   registerItemTraitCommands,
-  registerCloneForTestingCommand,
+  registerLinkCommands,
+  registerLogCommand,
+  registerMetaCommands,
+  registerModuleCommands,
+  registerRalphCommand,
+  registerSearchCommand,
+  registerSessionCommands,
+  registerSetupCommand,
+  registerShadowCommands,
+  registerTaskCommands,
+  registerTasksCommands,
+  registerTraitCommands,
+  registerValidateCommand,
   registerWorkflowCommand,
-} from './commands/index.js';
-import { EXIT_CODES } from './exit-codes.js';
+} from "./commands/index.js";
+import { EXIT_CODES } from "./exit-codes.js";
+import { getVerboseMode, setJsonMode, setVerboseMode } from "./output.js";
+import {
+  COMMAND_ALIASES,
+  findClosestCommand,
+  getAllCommands,
+} from "./suggest.js";
 
 const program = new Command();
 
@@ -43,12 +48,12 @@ const program = new Command();
 setVerboseModeGetter(getVerboseMode);
 
 program
-  .name('kspec')
-  .description('Kynetic Spec - Structured specification format CLI')
+  .name("kspec")
+  .description("Kynetic Spec - Structured specification format CLI")
   .version(version)
-  .option('--json', 'Output in JSON format')
-  .option('--debug-shadow', 'Enable debug output for shadow operations')
-  .hook('preAction', (thisCommand) => {
+  .option("--json", "Output in JSON format")
+  .option("--debug-shadow", "Enable debug output for shadow operations")
+  .hook("preAction", (thisCommand) => {
     // Check for --json and --debug-shadow flags at top level or on subcommand
     const opts = thisCommand.opts();
     if (opts.json) {
@@ -68,7 +73,7 @@ registerInitCommand(program);
 
 // Register item commands first, then add trait subcommands to it
 registerItemCommands(program);
-const itemCmd = program.commands.find(cmd => cmd.name() === 'item');
+const itemCmd = program.commands.find((cmd) => cmd.name() === "item");
 if (itemCmd) {
   registerItemTraitCommands(itemCmd);
 }
@@ -89,13 +94,15 @@ registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 
 // Handle unknown commands with suggestions
-program.on('command:*', (operands) => {
+program.on("command:*", (operands) => {
   const unknownCommand = operands[0];
 
   // Check for direct alias match
   if (COMMAND_ALIASES[unknownCommand]) {
     console.error(chalk.red(`error: unknown command '${unknownCommand}'`));
-    console.error(chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`));
+    console.error(
+      chalk.yellow(`Did you mean: kspec ${COMMAND_ALIASES[unknownCommand]}?`),
+    );
     process.exit(EXIT_CODES.ERROR);
   }
 

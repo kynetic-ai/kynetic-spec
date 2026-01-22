@@ -7,8 +7,7 @@
  * - Integration with kspec commit boundaries
  */
 
-// Re-export types
-export * from './types.js';
-
 // Re-export storage functions
-export * from './store.js';
+export * from "./store.js";
+// Re-export types
+export * from "./types.js";

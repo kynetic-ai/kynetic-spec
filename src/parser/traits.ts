@@ -6,9 +6,9 @@
  * loaded items, queried efficiently.
  */
 
-import type { LoadedSpecItem } from './yaml.js';
-import type { ReferenceIndex } from './refs.js';
-import type { AcceptanceCriterion } from '../schema/index.js';
+import type { AcceptanceCriterion } from "../schema/index.js";
+import type { ReferenceIndex } from "./refs.js";
+import type { LoadedSpecItem } from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -51,7 +51,7 @@ export class TraitIndex {
   constructor(items: LoadedSpecItem[], refIndex: ReferenceIndex) {
     // First pass: index all trait-type items
     for (const item of items) {
-      if (item.type === 'trait') {
+      if (item.type === "trait") {
         const slug = item.slugs[0] || item._ulid;
         this.traits.set(item._ulid, {
           ulid: item._ulid,
@@ -97,7 +97,7 @@ export class TraitIndex {
   getTraitsForSpec(specUlid: string): TraitInfo[] {
     const traitUlids = this.specToTraits.get(specUlid) || [];
     return traitUlids
-      .map(ulid => this.traits.get(ulid))
+      .map((ulid) => this.traits.get(ulid))
       .filter((t): t is TraitInfo => t !== undefined);
   }
 
@@ -113,7 +113,9 @@ export class TraitIndex {
    * Get all acceptance criteria inherited from implemented traits
    * AC: @trait-index ac-2
    */
-  getInheritedAC(specUlid: string): Array<{ trait: TraitInfo; ac: AcceptanceCriterion }> {
+  getInheritedAC(
+    specUlid: string,
+  ): Array<{ trait: TraitInfo; ac: AcceptanceCriterion }> {
     const traits = this.getTraitsForSpec(specUlid);
     const inherited: Array<{ trait: TraitInfo; ac: AcceptanceCriterion }> = [];
 
@@ -151,13 +153,14 @@ export class TraitIndex {
     const specsWithTraits = this.specToTraits.size;
     const totalTraitRefs = Array.from(this.specToTraits.values()).reduce(
       (sum, traits) => sum + traits.length,
-      0
+      0,
     );
 
     return {
       totalTraits: this.traits.size,
       specsWithTraits,
-      avgTraitsPerSpec: specsWithTraits > 0 ? totalTraitRefs / specsWithTraits : 0,
+      avgTraitsPerSpec:
+        specsWithTraits > 0 ? totalTraitRefs / specsWithTraits : 0,
     };
   }
 }

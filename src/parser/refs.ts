@@ -5,8 +5,8 @@
  * with proper error handling for not-found and ambiguous cases.
  */
 
-import type { LoadedSpecItem, LoadedTask, AnyLoadedItem } from './yaml.js';
-import type { LoadedMetaItem } from './meta.js';
+import type { LoadedMetaItem } from "./meta.js";
+import type { AnyLoadedItem, LoadedSpecItem, LoadedTask } from "./yaml.js";
 
 // ============================================================
 // TYPES
@@ -21,7 +21,7 @@ export interface ResolveSuccess {
   ulid: string;
   item: AnyLoadedItem | LoadedMetaItem;
   /** How the reference was matched */
-  matchType: 'slug' | 'ulid-full' | 'ulid-prefix';
+  matchType: "slug" | "ulid-full" | "ulid-prefix";
 }
 
 /**
@@ -29,7 +29,7 @@ export interface ResolveSuccess {
  */
 export interface ResolveNotFound {
   ok: false;
-  error: 'not_found';
+  error: "not_found";
   ref: string;
 }
 
@@ -38,7 +38,7 @@ export interface ResolveNotFound {
  */
 export interface ResolveAmbiguous {
   ok: false;
-  error: 'ambiguous';
+  error: "ambiguous";
   ref: string;
   /** The matching ULIDs */
   candidates: string[];
@@ -49,7 +49,7 @@ export interface ResolveAmbiguous {
  */
 export interface ResolveDuplicateSlug {
   ok: false;
-  error: 'duplicate_slug';
+  error: "duplicate_slug";
   ref: string;
   /** The ULIDs that share this slug */
   candidates: string[];
@@ -74,7 +74,7 @@ export interface RefValidationError {
   /** The field containing this reference */
   field: string;
   /** Error type */
-  error: 'not_found' | 'ambiguous' | 'duplicate_slug';
+  error: "not_found" | "ambiguous" | "duplicate_slug";
   /** Additional context */
   message: string;
 }
@@ -92,7 +92,7 @@ export interface RefValidationWarning {
   /** The field containing this reference */
   field: string;
   /** Warning type */
-  warning: 'deprecated_target';
+  warning: "deprecated_target";
   /** Additional context */
   message: string;
 }
@@ -123,7 +123,7 @@ export class ReferenceIndex {
   constructor(
     tasks: LoadedTask[],
     items: LoadedSpecItem[],
-    metaItems: LoadedMetaItem[] = []
+    metaItems: LoadedMetaItem[] = [],
   ) {
     // Index tasks
     for (const task of tasks) {
@@ -197,7 +197,7 @@ export class ReferenceIndex {
    */
   resolve(ref: string): ResolveResult {
     // Strip @ prefix if present
-    const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+    const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
     const cleanRefLower = cleanRef.toLowerCase();
 
     // 1. Try slug match first
@@ -206,14 +206,14 @@ export class ReferenceIndex {
       if (slugMatches.length > 1) {
         return {
           ok: false,
-          error: 'duplicate_slug',
+          error: "duplicate_slug",
           ref,
           candidates: slugMatches,
         };
       }
       const ulid = slugMatches[0];
       const item = this.ulidIndex.get(ulid)!;
-      return { ok: true, ulid, item, matchType: 'slug' };
+      return { ok: true, ulid, item, matchType: "slug" };
     }
 
     // 2. Try full ULID match
@@ -223,23 +223,23 @@ export class ReferenceIndex {
         ok: true,
         ulid: exactMatch._ulid,
         item: exactMatch,
-        matchType: 'ulid-full',
+        matchType: "ulid-full",
       };
     }
 
     // 3. Try ULID prefix match
-    const prefixMatches = this.allUlids.filter(ulid =>
-      ulid.toLowerCase().startsWith(cleanRefLower)
+    const prefixMatches = this.allUlids.filter((ulid) =>
+      ulid.toLowerCase().startsWith(cleanRefLower),
     );
 
     if (prefixMatches.length === 0) {
-      return { ok: false, error: 'not_found', ref };
+      return { ok: false, error: "not_found", ref };
     }
 
     if (prefixMatches.length > 1) {
       return {
         ok: false,
-        error: 'ambiguous',
+        error: "ambiguous",
         ref,
         candidates: prefixMatches,
       };
@@ -247,7 +247,7 @@ export class ReferenceIndex {
 
     const ulid = prefixMatches[0];
     const item = this.ulidIndex.get(ulid)!;
-    return { ok: true, ulid, item, matchType: 'ulid-prefix' };
+    return { ok: true, ulid, item, matchType: "ulid-prefix" };
   }
 
   /**
@@ -272,8 +272,8 @@ export class ReferenceIndex {
 
     while (length < ulid.length) {
       const prefix = ulid.slice(0, length);
-      const matches = this.allUlids.filter(u =>
-        u.toUpperCase().startsWith(prefix.toUpperCase())
+      const matches = this.allUlids.filter((u) =>
+        u.toUpperCase().startsWith(prefix.toUpperCase()),
       );
 
       if (matches.length === 1) {
@@ -327,20 +327,20 @@ export class ReferenceIndex {
  * AC: @traits-field ac-1 - traits field contains refs to trait-type items
  */
 const REF_FIELDS = [
-  'depends_on',
-  'blocked_by',
-  'implements',
-  'relates_to',
-  'tests',
-  'supersedes',
-  'spec_ref',
-  'context',
-  'added_by', // Agent reference
-  'author', // Agent reference
-  'resolved_by', // Agent reference
-  'workflow_ref', // Workflow reference
-  'meta_ref', // Meta reference (workflow, agent, convention)
-  'traits', // Trait references (AC: @traits-field ac-1)
+  "depends_on",
+  "blocked_by",
+  "implements",
+  "relates_to",
+  "tests",
+  "supersedes",
+  "spec_ref",
+  "context",
+  "added_by", // Agent reference
+  "author", // Agent reference
+  "resolved_by", // Agent reference
+  "workflow_ref", // Workflow reference
+  "meta_ref", // Meta reference (workflow, agent, convention)
+  "traits", // Trait references (AC: @traits-field ac-1)
 ];
 
 /**
@@ -350,20 +350,20 @@ function isDeprecated(item: AnyLoadedItem | LoadedMetaItem): boolean {
   const obj = item as unknown as Record<string, unknown>;
 
   // Check for deprecated_in field (truthy value means deprecated)
-  if ('deprecated_in' in obj && obj.deprecated_in) {
+  if ("deprecated_in" in obj && obj.deprecated_in) {
     return true;
   }
 
   // Check for maturity: deprecated status
-  if ('status' in obj && obj.status && typeof obj.status === 'object') {
+  if ("status" in obj && obj.status && typeof obj.status === "object") {
     const status = obj.status as Record<string, unknown>;
-    if ('maturity' in status && status.maturity === 'deprecated') {
+    if ("maturity" in status && status.maturity === "deprecated") {
       return true;
     }
   }
 
   // Also check top-level maturity field (some items may have it there)
-  if ('maturity' in obj && obj.maturity === 'deprecated') {
+  if ("maturity" in obj && obj.maturity === "deprecated") {
     return true;
   }
 
@@ -374,18 +374,20 @@ function isDeprecated(item: AnyLoadedItem | LoadedMetaItem): boolean {
  * Extract all references from an item
  * AC: @agent-definitions ac-agent-3 - also checks nested notes for author refs
  */
-function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }> {
+function extractRefs(
+  item: AnyLoadedItem,
+): Array<{ field: string; ref: string }> {
   const refs: Array<{ field: string; ref: string }> = [];
   const obj = item as unknown as Record<string, unknown>;
 
   for (const field of REF_FIELDS) {
     const value = obj[field];
 
-    if (typeof value === 'string' && value.startsWith('@')) {
+    if (typeof value === "string" && value.startsWith("@")) {
       refs.push({ field, ref: value });
     } else if (Array.isArray(value)) {
       for (const v of value) {
-        if (typeof v === 'string' && v.startsWith('@')) {
+        if (typeof v === "string" && v.startsWith("@")) {
           refs.push({ field, ref: v });
         }
       }
@@ -394,24 +396,24 @@ function extractRefs(item: AnyLoadedItem): Array<{ field: string; ref: string }>
 
   // Check nested notes for author references
   // AC: @agent-definitions ac-agent-3
-  if ('notes' in obj && Array.isArray(obj.notes)) {
+  if ("notes" in obj && Array.isArray(obj.notes)) {
     for (const note of obj.notes) {
-      if (note && typeof note === 'object' && 'author' in note) {
+      if (note && typeof note === "object" && "author" in note) {
         const author = (note as { author?: string }).author;
-        if (typeof author === 'string' && author.startsWith('@')) {
-          refs.push({ field: 'notes[].author', ref: author });
+        if (typeof author === "string" && author.startsWith("@")) {
+          refs.push({ field: "notes[].author", ref: author });
         }
       }
     }
   }
 
   // Check nested todos for added_by references
-  if ('todos' in obj && Array.isArray(obj.todos)) {
+  if ("todos" in obj && Array.isArray(obj.todos)) {
     for (const todo of obj.todos) {
-      if (todo && typeof todo === 'object' && 'added_by' in todo) {
+      if (todo && typeof todo === "object" && "added_by" in todo) {
         const addedBy = (todo as { added_by?: string }).added_by;
-        if (typeof addedBy === 'string' && addedBy.startsWith('@')) {
-          refs.push({ field: 'todos[].added_by', ref: addedBy });
+        if (typeof addedBy === "string" && addedBy.startsWith("@")) {
+          refs.push({ field: "todos[].added_by", ref: addedBy });
         }
       }
     }
@@ -435,7 +437,7 @@ export interface RefValidationResult {
 export function validateRefs(
   index: ReferenceIndex,
   tasks: LoadedTask[],
-  items: LoadedSpecItem[]
+  items: LoadedSpecItem[],
 ): RefValidationResult {
   const errors: RefValidationError[] = [];
   const warnings: RefValidationWarning[] = [];
@@ -456,14 +458,14 @@ export function validateRefs(
         let message: string;
 
         switch (result.error) {
-          case 'not_found':
+          case "not_found":
             message = `Reference "${ref}" not found`;
             break;
-          case 'ambiguous':
-            message = `Reference "${ref}" is ambiguous, matches: ${result.candidates.join(', ')}`;
+          case "ambiguous":
+            message = `Reference "${ref}" is ambiguous, matches: ${result.candidates.join(", ")}`;
             break;
-          case 'duplicate_slug':
-            message = `Slug "${ref}" maps to multiple items: ${result.candidates.join(', ')}`;
+          case "duplicate_slug":
+            message = `Slug "${ref}" maps to multiple items: ${result.candidates.join(", ")}`;
             break;
         }
 
@@ -478,40 +480,42 @@ export function validateRefs(
       } else {
         // Check if resolved target is deprecated
         if (isDeprecated(result.item)) {
-          const targetTitle = (result.item as { title?: string }).title || result.ulid;
+          const targetTitle =
+            (result.item as { title?: string }).title || result.ulid;
           warnings.push({
             ref,
             sourceFile,
             sourceUlid: item._ulid,
             field,
-            warning: 'deprecated_target',
+            warning: "deprecated_target",
             message: `Reference "${ref}" points to deprecated item: ${targetTitle}`,
           });
         }
 
         // AC: @traits-field ac-3 - traits ref must point to trait-type item
-        if (field === 'traits') {
+        if (field === "traits") {
           const targetItem = result.item as { type?: string };
-          if (targetItem.type !== 'trait') {
+          if (targetItem.type !== "trait") {
             errors.push({
               ref,
               sourceFile,
               sourceUlid: item._ulid,
               field,
-              error: 'not_found', // Reuse error type
-              message: `Trait reference "${ref}" points to non-trait item (type: ${targetItem.type || 'unknown'})`,
+              error: "not_found", // Reuse error type
+              message: `Trait reference "${ref}" points to non-trait item (type: ${targetItem.type || "unknown"})`,
             });
           }
 
           // AC: @traits-field ac-5 - warn on duplicate traits
           if (seenTraits.has(result.ulid)) {
-            const targetTitle = (result.item as { title?: string }).title || result.ulid;
+            const targetTitle =
+              (result.item as { title?: string }).title || result.ulid;
             warnings.push({
               ref,
               sourceFile,
               sourceUlid: item._ulid,
               field,
-              warning: 'deprecated_target', // Reuse warning type for now
+              warning: "deprecated_target", // Reuse warning type for now
               message: `Duplicate trait reference "${ref}" (${targetTitle})`,
             });
           }
@@ -528,7 +532,9 @@ export function validateRefs(
  * Find duplicate slugs in the index.
  * Returns map of slug → ULIDs for slugs with multiple items.
  */
-export function findDuplicateSlugs(index: ReferenceIndex): Map<string, string[]> {
+export function findDuplicateSlugs(
+  index: ReferenceIndex,
+): Map<string, string[]> {
   const duplicates = new Map<string, string[]>();
 
   for (const [slug, ulids] of index.getAllSlugs()) {
@@ -570,7 +576,7 @@ export type SlugCheckResult = SlugCheckSuccess | SlugCheckConflict;
 export function checkSlugUniqueness(
   index: ReferenceIndex,
   slugs: string[],
-  excludeUlid?: string
+  excludeUlid?: string,
 ): SlugCheckResult {
   const allSlugs = index.getAllSlugs();
 
@@ -579,7 +585,7 @@ export function checkSlugUniqueness(
     if (existingUlids) {
       // Filter out the item being updated (if provided)
       const conflictingUlids = excludeUlid
-        ? existingUlids.filter(ulid => ulid !== excludeUlid)
+        ? existingUlids.filter((ulid) => ulid !== excludeUlid)
         : existingUlids;
 
       if (conflictingUlids.length > 0) {

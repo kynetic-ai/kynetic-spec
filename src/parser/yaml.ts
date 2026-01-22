@@ -1,41 +1,35 @@
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { execSync } from 'node:child_process';
-import * as YAML from 'yaml';
-import { ulid } from 'ulid';
-import { z } from 'zod';
+import { execSync } from "node:child_process";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { ulid } from "ulid";
+import * as YAML from "yaml";
 import {
-  TaskSchema,
-  TasksFileSchema,
-  TaskInputSchema,
-  ManifestSchema,
-  SpecItemSchema,
-  InboxItemSchema,
   InboxFileSchema,
-  type Task,
-  type TasksFile,
-  type TaskInput,
-  type Manifest,
-  type SpecItem,
-  type SpecItemInput,
-  type Note,
-  type Todo,
   type InboxItem,
   type InboxItemInput,
-} from '../schema/index.js';
-import { ReferenceIndex } from './refs.js';
-import { ItemIndex } from './items.js';
-import { TraitIndex } from './traits.js';
+  InboxItemSchema,
+  type Manifest,
+  ManifestSchema,
+  type Note,
+  type SpecItem,
+  type SpecItemInput,
+  SpecItemSchema,
+  type Task,
+  type TaskInput,
+  TaskSchema,
+  TasksFileSchema,
+  type Todo,
+} from "../schema/index.js";
+import { errors } from "../strings/index.js";
+import { ItemIndex } from "./items.js";
+import { ReferenceIndex } from "./refs.js";
 import {
-  type ShadowConfig,
-  detectShadow,
   detectRunningFromShadowWorktree,
-  shadowAutoCommit,
-  generateCommitMessage,
-  SHADOW_WORKTREE_DIR,
+  detectShadow,
+  type ShadowConfig,
   ShadowError,
-} from './shadow.js';
-import { errors } from '../strings/index.js';
+} from "./shadow.js";
+import { TraitIndex } from "./traits.js";
 
 /**
  * Spec item with runtime metadata for source tracking.
@@ -83,9 +77,9 @@ export function toYaml(obj: unknown): string {
   // Post-process to fix yaml library blank line accumulation bug.
   // Filter out lines that contain only spaces/tabs (not truly empty lines).
   yamlString = yamlString
-    .split('\n')
-    .filter(line => !/^[ \t]+$/.test(line))
-    .join('\n');
+    .split("\n")
+    .filter((line) => !/^[ \t]+$/.test(line))
+    .join("\n");
 
   return yamlString;
 }
@@ -94,16 +88,19 @@ export function toYaml(obj: unknown): string {
  * Read and parse a YAML file
  */
 export async function readYamlFile<T>(filePath: string): Promise<T> {
-  const content = await fs.readFile(filePath, 'utf-8');
+  const content = await fs.readFile(filePath, "utf-8");
   return parseYaml<T>(content);
 }
 
 /**
  * Write object to YAML file
  */
-export async function writeYamlFile(filePath: string, data: unknown): Promise<void> {
+export async function writeYamlFile(
+  filePath: string,
+  data: unknown,
+): Promise<void> {
   const content = toYaml(data);
-  await fs.writeFile(filePath, content, 'utf-8');
+  await fs.writeFile(filePath, content, "utf-8");
 }
 
 /**
@@ -115,10 +112,10 @@ export async function writeYamlFile(filePath: string, data: unknown): Promise<vo
  */
 export async function writeYamlFilePreserveFormat(
   filePath: string,
-  data: unknown
+  data: unknown,
 ): Promise<void> {
   const content = toYaml(data);
-  await fs.writeFile(filePath, content, 'utf-8');
+  await fs.writeFile(filePath, content, "utf-8");
 }
 
 /**
@@ -137,11 +134,11 @@ export async function findTaskFiles(dir: string): Promise<string[]> {
         // Recurse into subdirectories
         const subFiles = await findTaskFiles(fullPath);
         files.push(...subFiles);
-      } else if (entry.isFile() && entry.name.endsWith('.tasks.yaml')) {
+      } else if (entry.isFile() && entry.name.endsWith(".tasks.yaml")) {
         files.push(fullPath);
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // Directory doesn't exist or not readable
   }
 
@@ -155,7 +152,7 @@ export async function findManifest(startDir: string): Promise<string | null> {
   let dir = startDir;
 
   while (true) {
-    const candidates = ['kynetic.yaml', 'kynetic.spec.yaml'];
+    const candidates = ["kynetic.yaml", "kynetic.spec.yaml"];
 
     for (const candidate of candidates) {
       const filePath = path.join(dir, candidate);
@@ -168,7 +165,7 @@ export async function findManifest(startDir: string): Promise<string | null> {
     }
 
     // Also check in spec/ subdirectory
-    const specDir = path.join(dir, 'spec');
+    const specDir = path.join(dir, "spec");
     for (const candidate of candidates) {
       const filePath = path.join(specDir, candidate);
       try {
@@ -230,8 +227,8 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   if (mainProjectRoot) {
     throw new ShadowError(
       errors.project.runningFromShadow,
-      'RUNNING_FROM_SHADOW',
-      `Run from project root: cd ${path.relative(cwd, mainProjectRoot) || mainProjectRoot}`
+      "RUNNING_FROM_SHADOW",
+      `Run from project root: cd ${path.relative(cwd, mainProjectRoot) || mainProjectRoot}`,
     );
   }
 
@@ -272,7 +269,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   if (manifestPath) {
     const manifestDir = path.dirname(manifestPath);
     // Handle spec/ subdirectory
-    if (path.basename(manifestDir) === 'spec') {
+    if (path.basename(manifestDir) === "spec") {
       rootDir = path.dirname(manifestDir);
       specDir = manifestDir;
     } else {
@@ -296,7 +293,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
  * Used for shadow mode where we know exactly where to look.
  */
 async function findManifestInDir(dir: string): Promise<string | null> {
-  const candidates = ['kynetic.yaml', 'kynetic.spec.yaml'];
+  const candidates = ["kynetic.yaml", "kynetic.spec.yaml"];
 
   for (const candidate of candidates) {
     const filePath = path.join(dir, candidate);
@@ -326,7 +323,7 @@ async function loadTasksFromFile(filePath: string): Promise<LoadedTask[]> {
 
     if (Array.isArray(raw)) {
       taskList = raw;
-    } else if (raw && typeof raw === 'object' && 'tasks' in raw) {
+    } else if (raw && typeof raw === "object" && "tasks" in raw) {
       const parsed = TasksFileSchema.safeParse(raw);
       if (parsed.success) {
         // Add _sourceFile to each task from this file
@@ -371,11 +368,11 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
 
     // Also check for standalone files in specDir
     const standaloneLocations = [
-      path.join(ctx.specDir, 'tasks.yaml'),
-      path.join(ctx.specDir, 'project.tasks.yaml'),
-      path.join(ctx.specDir, 'kynetic.tasks.yaml'),
-      path.join(ctx.specDir, 'backlog.tasks.yaml'),
-      path.join(ctx.specDir, 'active.tasks.yaml'),
+      path.join(ctx.specDir, "tasks.yaml"),
+      path.join(ctx.specDir, "project.tasks.yaml"),
+      path.join(ctx.specDir, "kynetic.tasks.yaml"),
+      path.join(ctx.specDir, "backlog.tasks.yaml"),
+      path.join(ctx.specDir, "active.tasks.yaml"),
     ];
 
     for (const loc of standaloneLocations) {
@@ -404,8 +401,8 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
 
   // Also check common locations
   const additionalPaths = [
-    path.join(ctx.rootDir, 'tasks'),
-    path.join(ctx.rootDir, 'spec'),
+    path.join(ctx.rootDir, "tasks"),
+    path.join(ctx.rootDir, "spec"),
   ];
 
   for (const additionalPath of additionalPaths) {
@@ -415,11 +412,11 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
 
   // Also look for standalone tasks.yaml and project.tasks.yaml
   const standaloneLocations = [
-    path.join(ctx.rootDir, 'tasks.yaml'),
-    path.join(ctx.rootDir, 'project.tasks.yaml'),
-    path.join(ctx.rootDir, 'spec', 'project.tasks.yaml'),
-    path.join(ctx.rootDir, 'backlog.tasks.yaml'),
-    path.join(ctx.rootDir, 'active.tasks.yaml'),
+    path.join(ctx.rootDir, "tasks.yaml"),
+    path.join(ctx.rootDir, "project.tasks.yaml"),
+    path.join(ctx.rootDir, "spec", "project.tasks.yaml"),
+    path.join(ctx.rootDir, "backlog.tasks.yaml"),
+    path.join(ctx.rootDir, "active.tasks.yaml"),
   ];
 
   for (const loc of standaloneLocations) {
@@ -447,16 +444,20 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
 /**
  * Find a task by reference (ULID, slug, or short reference)
  */
-export function findTaskByRef(tasks: LoadedTask[], ref: string): LoadedTask | undefined {
+export function findTaskByRef(
+  tasks: LoadedTask[],
+  ref: string,
+): LoadedTask | undefined {
   // Remove @ prefix if present
-  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
-  return tasks.find(task => {
+  return tasks.find((task) => {
     // Match full ULID
     if (task._ulid === cleanRef) return true;
 
     // Match short ULID (prefix)
-    if (task._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return true;
+    if (task._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
+      return true;
 
     // Match slug
     if (task.slugs.includes(cleanRef)) return true;
@@ -472,7 +473,7 @@ export function findTaskByRef(tasks: LoadedTask[], ref: string): LoadedTask | un
  * Otherwise: spec/project.tasks.yaml
  */
 export function getDefaultTaskFilePath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, 'project.tasks.yaml');
+  return path.join(ctx.specDir, "project.tasks.yaml");
 }
 
 /**
@@ -487,7 +488,10 @@ function stripRuntimeMetadata(task: LoadedTask): Task {
  * Save a task to its source file (or default location for new tasks).
  * Preserves file format (tasks: [...] wrapper vs plain array).
  */
-export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+export async function saveTask(
+  ctx: KspecContext,
+  task: LoadedTask,
+): Promise<void> {
   // Determine target file: use _sourceFile if present, otherwise default
   const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
 
@@ -502,7 +506,11 @@ export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<voi
   try {
     existingRaw = await readYamlFile<unknown>(taskFilePath);
     // Detect if file uses { tasks: [...] } format
-    if (existingRaw && typeof existingRaw === 'object' && 'tasks' in existingRaw) {
+    if (
+      existingRaw &&
+      typeof existingRaw === "object" &&
+      "tasks" in existingRaw
+    ) {
       useTasksWrapper = true;
     }
   } catch {
@@ -544,7 +552,7 @@ export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<voi
   const cleanTask = stripRuntimeMetadata(task);
 
   // Update existing or add new
-  const existingIndex = fileTasks.findIndex(t => t._ulid === task._ulid);
+  const existingIndex = fileTasks.findIndex((t) => t._ulid === task._ulid);
   if (existingIndex >= 0) {
     fileTasks[existingIndex] = cleanTask;
   } else {
@@ -564,9 +572,12 @@ export async function saveTask(ctx: KspecContext, task: LoadedTask): Promise<voi
  * Delete a task from its source file.
  * Requires _sourceFile to know which file to modify.
  */
-export async function deleteTask(ctx: KspecContext, task: LoadedTask): Promise<void> {
+export async function deleteTask(
+  _ctx: KspecContext,
+  task: LoadedTask,
+): Promise<void> {
   if (!task._sourceFile) {
-    throw new Error('Cannot delete task without _sourceFile metadata');
+    throw new Error("Cannot delete task without _sourceFile metadata");
   }
 
   const taskFilePath = task._sourceFile;
@@ -577,7 +588,11 @@ export async function deleteTask(ctx: KspecContext, task: LoadedTask): Promise<v
 
   try {
     existingRaw = await readYamlFile<unknown>(taskFilePath);
-    if (existingRaw && typeof existingRaw === 'object' && 'tasks' in existingRaw) {
+    if (
+      existingRaw &&
+      typeof existingRaw === "object" &&
+      "tasks" in existingRaw
+    ) {
       useTasksWrapper = true;
     }
   } catch {
@@ -615,7 +630,7 @@ export async function deleteTask(ctx: KspecContext, task: LoadedTask): Promise<v
 
   // Remove the task
   const originalCount = fileTasks.length;
-  fileTasks = fileTasks.filter(t => t._ulid !== task._ulid);
+  fileTasks = fileTasks.filter((t) => t._ulid !== task._ulid);
 
   if (fileTasks.length === originalCount) {
     throw new Error(`Task not found in file: ${task._ulid}`);
@@ -639,8 +654,8 @@ export function createTask(input: TaskInput): Task {
     ...input,
     _ulid: input._ulid || ulid(),
     slugs: input.slugs || [],
-    type: input.type || 'task',
-    status: input.status || 'pending',
+    type: input.type || "task",
+    status: input.status || "pending",
     blocked_by: input.blocked_by || [],
     depends_on: input.depends_on || [],
     context: input.context || [],
@@ -672,9 +687,9 @@ export function getAuthor(): string | undefined {
 
   // 2. Git user.name
   try {
-    const gitUser = execSync('git config user.name', {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
+    const gitUser = execSync("git config user.name", {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
     }).trim();
     if (gitUser) {
       return gitUser;
@@ -697,7 +712,11 @@ export function getAuthor(): string | undefined {
  * Create a new note entry.
  * If author is not provided, attempts to auto-detect from environment.
  */
-export function createNote(content: string, author?: string, supersedes?: string): Note {
+export function createNote(
+  content: string,
+  author?: string,
+  supersedes?: string,
+): Note {
   return {
     _ulid: ulid(),
     created_at: new Date().toISOString(),
@@ -728,12 +747,15 @@ export function createTodo(id: number, text: string, addedBy?: string): Todo {
 /**
  * Check if task dependencies are met
  */
-export function areDependenciesMet(task: LoadedTask, allTasks: LoadedTask[]): boolean {
+export function areDependenciesMet(
+  task: LoadedTask,
+  allTasks: LoadedTask[],
+): boolean {
   if (task.depends_on.length === 0) return true;
 
   for (const depRef of task.depends_on) {
     const depTask = findTaskByRef(allTasks, depRef);
-    if (!depTask || depTask.status !== 'completed') {
+    if (!depTask || depTask.status !== "completed") {
       return false;
     }
   }
@@ -745,7 +767,7 @@ export function areDependenciesMet(task: LoadedTask, allTasks: LoadedTask[]): bo
  * Check if task is ready (pending + deps met + not blocked)
  */
 export function isTaskReady(task: LoadedTask, allTasks: LoadedTask[]): boolean {
-  if (task.status !== 'pending') return false;
+  if (task.status !== "pending") return false;
   if (task.blocked_by.length > 0) return false;
   return areDependenciesMet(task, allTasks);
 }
@@ -756,14 +778,16 @@ export function isTaskReady(task: LoadedTask, allTasks: LoadedTask[]): boolean {
  */
 export function getReadyTasks(tasks: LoadedTask[]): LoadedTask[] {
   return tasks
-    .filter(task => isTaskReady(task, tasks))
+    .filter((task) => isTaskReady(task, tasks))
     .sort((a, b) => {
       // Primary: priority (lower number = higher priority)
       if (a.priority !== b.priority) {
         return a.priority - b.priority;
       }
       // Secondary: creation time (older first - FIFO within priority)
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      return (
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
     });
 }
 
@@ -777,12 +801,14 @@ export function getReadyTasks(tasks: LoadedTask[]): LoadedTask[] {
  */
 export async function expandIncludePattern(
   pattern: string,
-  baseDir: string
+  baseDir: string,
 ): Promise<string[]> {
-  const fullPattern = path.isAbsolute(pattern) ? pattern : path.join(baseDir, pattern);
+  const fullPattern = path.isAbsolute(pattern)
+    ? pattern
+    : path.join(baseDir, pattern);
 
   // If no glob characters, just return the path if it exists
-  if (!pattern.includes('*')) {
+  if (!pattern.includes("*")) {
     try {
       await fs.access(fullPattern);
       return [fullPattern];
@@ -792,12 +818,12 @@ export async function expandIncludePattern(
   }
 
   // Split pattern into directory part and file pattern
-  const parts = pattern.split('/');
+  const parts = pattern.split("/");
   let currentDir = baseDir;
   const result: string[] = [];
 
   // Find the first part with a glob
-  let globIndex = parts.findIndex(p => p.includes('*'));
+  const globIndex = parts.findIndex((p) => p.includes("*"));
 
   // Navigate to the directory before the glob
   if (globIndex > 0) {
@@ -805,7 +831,7 @@ export async function expandIncludePattern(
   }
 
   // Get the remaining pattern
-  const remainingPattern = parts.slice(globIndex).join('/');
+  const remainingPattern = parts.slice(globIndex).join("/");
 
   await expandGlobRecursive(currentDir, remainingPattern, result);
   return result;
@@ -817,11 +843,11 @@ export async function expandIncludePattern(
 async function expandGlobRecursive(
   dir: string,
   pattern: string,
-  result: string[]
+  result: string[],
 ): Promise<void> {
-  const parts = pattern.split('/');
+  const parts = pattern.split("/");
   const currentPattern = parts[0];
-  const remainingPattern = parts.slice(1).join('/');
+  const remainingPattern = parts.slice(1).join("/");
 
   try {
     const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -839,10 +865,10 @@ async function expandGlobRecursive(
           }
         } else {
           // This is the final pattern part
-          if (currentPattern === '**') {
+          if (currentPattern === "**") {
             // ** matches any depth - need special handling
             if (entry.isDirectory()) {
-              await expandGlobRecursive(fullPath, '**', result);
+              await expandGlobRecursive(fullPath, "**", result);
             }
             // Also match files at this level
             result.push(fullPath);
@@ -853,7 +879,7 @@ async function expandGlobRecursive(
       }
 
       // Handle ** - also recurse into directories without consuming the pattern
-      if (currentPattern === '**' && entry.isDirectory()) {
+      if (currentPattern === "**" && entry.isDirectory()) {
         const fullPath = path.join(dir, entry.name);
         await expandGlobRecursive(fullPath, pattern, result);
       }
@@ -867,14 +893,14 @@ async function expandGlobRecursive(
  * Match a single path component against a glob pattern part
  */
 function matchGlobPart(name: string, pattern: string): boolean {
-  if (pattern === '*') return true;
-  if (pattern === '**') return true;
+  if (pattern === "*") return true;
+  if (pattern === "**") return true;
 
   // Convert glob pattern to regex
   const regexPattern = pattern
-    .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape special regex chars
-    .replace(/\*/g, '.*') // * matches anything
-    .replace(/\?/g, '.'); // ? matches single char
+    .replace(/[.+^${}()|[\]\\]/g, "\\$&") // Escape special regex chars
+    .replace(/\*/g, ".*") // * matches anything
+    .replace(/\?/g, "."); // ? matches single char
 
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(name);
@@ -884,13 +910,13 @@ function matchGlobPart(name: string, pattern: string): boolean {
  * Fields that may contain nested spec items
  */
 const NESTED_ITEM_FIELDS = [
-  'modules',
-  'features',
-  'requirements',
-  'constraints',
-  'decisions',
-  'traits',
-  'acceptance_criteria',
+  "modules",
+  "features",
+  "requirements",
+  "constraints",
+  "decisions",
+  "traits",
+  "acceptance_criteria",
 ];
 
 /**
@@ -902,14 +928,17 @@ export function extractItemsFromRaw(
   raw: unknown,
   sourceFile: string,
   items: LoadedSpecItem[] = [],
-  currentPath: string = ''
+  currentPath: string = "",
 ): LoadedSpecItem[] {
-  if (!raw || typeof raw !== 'object') {
+  if (!raw || typeof raw !== "object") {
     return items;
   }
 
   // Check if this object is itself a spec item (has _ulid)
-  if ('_ulid' in raw && typeof (raw as Record<string, unknown>)._ulid === 'string') {
+  if (
+    "_ulid" in raw &&
+    typeof (raw as Record<string, unknown>)._ulid === "string"
+  ) {
     const result = SpecItemSchema.safeParse(raw);
     if (result.success) {
       items.push({
@@ -925,7 +954,9 @@ export function extractItemsFromRaw(
       if (field in rawObj && Array.isArray(rawObj[field])) {
         const arr = rawObj[field] as unknown[];
         for (let i = 0; i < arr.length; i++) {
-          const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
+          const nestedPath = currentPath
+            ? `${currentPath}.${field}[${i}]`
+            : `${field}[${i}]`;
           extractItemsFromRaw(arr[i], sourceFile, items, nestedPath);
         }
       }
@@ -943,7 +974,9 @@ export function extractItemsFromRaw(
       if (field in rawObj && Array.isArray(rawObj[field])) {
         const arr = rawObj[field] as unknown[];
         for (let i = 0; i < arr.length; i++) {
-          const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
+          const nestedPath = currentPath
+            ? `${currentPath}.${field}[${i}]`
+            : `${field}[${i}]`;
           extractItemsFromRaw(arr[i], sourceFile, items, nestedPath);
         }
       }
@@ -957,9 +990,11 @@ export function extractItemsFromRaw(
  * Load spec items from a single file.
  * Handles module files (the file itself is an item with nested children).
  */
-export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> {
+export async function loadSpecFile(
+  filePath: string,
+): Promise<LoadedSpecItem[]> {
   try {
-    const content = await fs.readFile(filePath, 'utf-8');
+    const content = await fs.readFile(filePath, "utf-8");
     const items: LoadedSpecItem[] = [];
 
     // Parse all YAML documents in the file (handles files with ---)
@@ -979,7 +1014,7 @@ export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> 
     }
 
     return items;
-  } catch (error) {
+  } catch (_error) {
     // File doesn't exist or parse error
     return [];
   }
@@ -989,7 +1024,9 @@ export async function loadSpecFile(filePath: string): Promise<LoadedSpecItem[]> 
  * Load all spec items from the project.
  * Parses manifest, follows includes, and builds unified collection.
  */
-export async function loadAllItems(ctx: KspecContext): Promise<LoadedSpecItem[]> {
+export async function loadAllItems(
+  ctx: KspecContext,
+): Promise<LoadedSpecItem[]> {
   const items: LoadedSpecItem[] = [];
 
   if (!ctx.manifest || !ctx.manifestPath) {
@@ -1022,17 +1059,18 @@ export async function loadAllItems(ctx: KspecContext): Promise<LoadedSpecItem[]>
  */
 export function findItemByRef(
   items: LoadedSpecItem[],
-  ref: string
+  ref: string,
 ): LoadedSpecItem | undefined {
   // Remove @ prefix if present
-  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
-  return items.find(item => {
+  return items.find((item) => {
     // Match full ULID
     if (item._ulid === cleanRef) return true;
 
     // Match short ULID (prefix)
-    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return true;
+    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
+      return true;
 
     // Match slug
     if (item.slugs.includes(cleanRef)) return true;
@@ -1052,7 +1090,7 @@ export type AnyLoadedItem = LoadedTask | LoadedSpecItem;
 export function findAnyItemByRef(
   tasks: LoadedTask[],
   items: LoadedSpecItem[],
-  ref: string
+  ref: string,
 ): AnyLoadedItem | undefined {
   // Try tasks first (more commonly referenced)
   const task = findTaskByRef(tasks, ref);
@@ -1128,7 +1166,7 @@ function parsePath(pathStr: string): Array<[string, number]> {
  */
 function navigateToPath(
   root: unknown,
-  pathStr: string
+  pathStr: string,
 ): { parent: Record<string, unknown>; array: unknown[]; index: number } | null {
   if (!pathStr) return null;
 
@@ -1140,7 +1178,7 @@ function navigateToPath(
   // Navigate to the parent of the last segment
   for (let i = 0; i < segments.length - 1; i++) {
     const [field, index] = segments[i];
-    if (typeof current !== 'object' || current === null) return null;
+    if (typeof current !== "object" || current === null) return null;
     const obj = current as Record<string, unknown>;
     if (!Array.isArray(obj[field])) return null;
     current = (obj[field] as unknown[])[index];
@@ -1148,7 +1186,7 @@ function navigateToPath(
 
   // Get the final array and index
   const [finalField, finalIndex] = segments[segments.length - 1];
-  if (typeof current !== 'object' || current === null) return null;
+  if (typeof current !== "object" || current === null) return null;
   const parent = current as Record<string, unknown>;
   if (!Array.isArray(parent[finalField])) return null;
 
@@ -1166,9 +1204,9 @@ function navigateToPath(
 function findItemInStructure(
   root: unknown,
   ulid: string,
-  currentPath: string = ''
+  currentPath: string = "",
 ): { path: string; item: Record<string, unknown> } | null {
-  if (!root || typeof root !== 'object') return null;
+  if (!root || typeof root !== "object") return null;
 
   const obj = root as Record<string, unknown>;
 
@@ -1182,7 +1220,9 @@ function findItemInStructure(
     if (Array.isArray(obj[field])) {
       const arr = obj[field] as unknown[];
       for (let i = 0; i < arr.length; i++) {
-        const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
+        const nestedPath = currentPath
+          ? `${currentPath}.${field}[${i}]`
+          : `${field}[${i}]`;
         const result = findItemInStructure(arr[i], ulid, nestedPath);
         if (result) return result;
       }
@@ -1220,12 +1260,12 @@ export function createSpecItem(input: SpecItemInput): SpecItem {
  * Map from item type to the field name used to store children of that type.
  */
 const TYPE_TO_CHILD_FIELD: Record<string, string> = {
-  feature: 'features',
-  requirement: 'requirements',
-  constraint: 'constraints',
-  decision: 'decisions',
-  module: 'modules',
-  trait: 'traits',
+  feature: "features",
+  requirement: "requirements",
+  constraint: "constraints",
+  decision: "decisions",
+  module: "modules",
+  trait: "traits",
 };
 
 /**
@@ -1235,16 +1275,17 @@ const TYPE_TO_CHILD_FIELD: Record<string, string> = {
  * @param childField Optional field name override (defaults based on child.type)
  */
 export async function addChildItem(
-  ctx: KspecContext,
+  _ctx: KspecContext,
   parent: LoadedSpecItem,
   child: SpecItem,
-  childField?: string
+  childField?: string,
 ): Promise<{ item: SpecItem; path: string }> {
   if (!parent._sourceFile) {
-    throw new Error('Parent item has no source file');
+    throw new Error("Parent item has no source file");
   }
 
-  const field = childField || TYPE_TO_CHILD_FIELD[child.type || 'feature'] || 'features';
+  const field =
+    childField || TYPE_TO_CHILD_FIELD[child.type || "feature"] || "features";
 
   // Load the raw YAML
   const raw = await readYamlFile<unknown>(parent._sourceFile);
@@ -1263,7 +1304,7 @@ export async function addChildItem(
   } else {
     // Parent is the root item
     parentObj = raw as Record<string, unknown>;
-    parentPath = '';
+    parentPath = "";
   }
 
   // Ensure the child field array exists
@@ -1278,7 +1319,9 @@ export async function addChildItem(
 
   // Calculate the new child's path
   const childIndex = childArray.length - 1;
-  const childPath = parentPath ? `${parentPath}.${field}[${childIndex}]` : `${field}[${childIndex}]`;
+  const childPath = parentPath
+    ? `${parentPath}.${field}[${childIndex}]`
+    : `${field}[${childIndex}]`;
 
   // Write back with format preservation
   await writeYamlFilePreserveFormat(parent._sourceFile, raw);
@@ -1291,12 +1334,12 @@ export async function addChildItem(
  * Works with nested structures using the _path field.
  */
 export async function updateSpecItem(
-  ctx: KspecContext,
+  _ctx: KspecContext,
   item: LoadedSpecItem,
-  updates: Partial<SpecItemInput>
+  updates: Partial<SpecItemInput>,
 ): Promise<SpecItem> {
   if (!item._sourceFile) {
-    throw new Error('Item has no source file');
+    throw new Error("Item has no source file");
   }
 
   // Load the raw YAML
@@ -1325,7 +1368,7 @@ export async function updateSpecItem(
 
   // Apply updates (but never change _ulid)
   for (const [key, value] of Object.entries(updates)) {
-    if (key !== '_ulid' && key !== '_sourceFile' && key !== '_path') {
+    if (key !== "_ulid" && key !== "_sourceFile" && key !== "_path") {
       targetObj[key] = value;
     }
   }
@@ -1340,15 +1383,18 @@ export async function updateSpecItem(
  * Check if an item is a trait with implementors.
  * Returns array of items that use this trait via the 'traits' field.
  */
-export function findTraitImplementors(trait: LoadedSpecItem, allItems: LoadedSpecItem[]): LoadedSpecItem[] {
+export function findTraitImplementors(
+  trait: LoadedSpecItem,
+  allItems: LoadedSpecItem[],
+): LoadedSpecItem[] {
   // Check if the item is actually a trait
-  if (trait.type !== 'trait') {
+  if (trait.type !== "trait") {
     return [];
   }
 
   // Find all items that reference this trait in their 'traits' array
-  const traitRefs = ['@' + trait._ulid, ...trait.slugs.map(s => '@' + s)];
-  return allItems.filter(item => {
+  const traitRefs = [`@${trait._ulid}`, ...trait.slugs.map((s) => `@${s}`)];
+  return allItems.filter((item) => {
     if (!item.traits || item.traits.length === 0) return false;
     return item.traits.some((traitRef: string) => traitRefs.includes(traitRef));
   });
@@ -1358,7 +1404,10 @@ export function findTraitImplementors(trait: LoadedSpecItem, allItems: LoadedSpe
  * Delete a spec item from its source file.
  * Works with nested structures using the _path field.
  */
-export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): Promise<boolean> {
+export async function deleteSpecItem(
+  _ctx: KspecContext,
+  item: LoadedSpecItem,
+): Promise<boolean> {
   if (!item._sourceFile) {
     return false;
   }
@@ -1380,7 +1429,7 @@ export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): P
 
     // No path - try to find it by ULID
     const found = findItemInStructure(raw, item._ulid);
-    if (found && found.path) {
+    if (found?.path) {
       const nav = navigateToPath(raw, found.path);
       if (nav) {
         nav.array.splice(nav.index, 1);
@@ -1391,8 +1440,11 @@ export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): P
 
     // Maybe it's a root-level array item
     if (Array.isArray(raw)) {
-      const index = raw.findIndex((i: unknown) =>
-        typeof i === 'object' && i !== null && (i as Record<string, unknown>)._ulid === item._ulid
+      const index = raw.findIndex(
+        (i: unknown) =>
+          typeof i === "object" &&
+          i !== null &&
+          (i as Record<string, unknown>)._ulid === item._ulid,
       );
       if (index >= 0) {
         raw.splice(index, 1);
@@ -1411,7 +1463,10 @@ export async function deleteSpecItem(ctx: KspecContext, item: LoadedSpecItem): P
  * Save a spec item - either updates existing or adds to parent.
  * For new items, use addChildItem instead.
  */
-export async function saveSpecItem(ctx: KspecContext, item: LoadedSpecItem): Promise<void> {
+export async function saveSpecItem(
+  ctx: KspecContext,
+  item: LoadedSpecItem,
+): Promise<void> {
   // If item has a source file and path, it's an update
   if (item._sourceFile && item._path) {
     await updateSpecItem(ctx, item, item);
@@ -1419,7 +1474,9 @@ export async function saveSpecItem(ctx: KspecContext, item: LoadedSpecItem): Pro
   }
 
   // Otherwise, this is more complex - would need a parent
-  throw new Error('Cannot save new item without parent. Use addChildItem instead.');
+  throw new Error(
+    "Cannot save new item without parent. Use addChildItem instead.",
+  );
 }
 
 // ============================================================
@@ -1440,23 +1497,28 @@ export interface LoadedInboxItem extends InboxItem {
  * Otherwise: spec/project.inbox.yaml
  */
 export function getInboxFilePath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, 'project.inbox.yaml');
+  return path.join(ctx.specDir, "project.inbox.yaml");
 }
 
 /**
  * Load all inbox items from the project.
  */
-export async function loadInboxItems(ctx: KspecContext): Promise<LoadedInboxItem[]> {
+export async function loadInboxItems(
+  ctx: KspecContext,
+): Promise<LoadedInboxItem[]> {
   const inboxPath = getInboxFilePath(ctx);
 
   try {
     const raw = await readYamlFile<unknown>(inboxPath);
 
     // Handle { inbox: [...] } format
-    if (raw && typeof raw === 'object' && 'inbox' in raw) {
+    if (raw && typeof raw === "object" && "inbox" in raw) {
       const parsed = InboxFileSchema.safeParse(raw);
       if (parsed.success) {
-        return parsed.data.inbox.map(item => ({ ...item, _sourceFile: inboxPath }));
+        return parsed.data.inbox.map((item) => ({
+          ...item,
+          _sourceFile: inboxPath,
+        }));
       }
     }
 
@@ -1503,7 +1565,10 @@ function stripInboxMetadata(item: LoadedInboxItem): InboxItem {
 /**
  * Save an inbox item (add or update).
  */
-export async function saveInboxItem(ctx: KspecContext, item: LoadedInboxItem): Promise<void> {
+export async function saveInboxItem(
+  ctx: KspecContext,
+  item: LoadedInboxItem,
+): Promise<void> {
   const inboxPath = getInboxFilePath(ctx);
 
   // Ensure directory exists
@@ -1515,7 +1580,7 @@ export async function saveInboxItem(ctx: KspecContext, item: LoadedInboxItem): P
 
   try {
     const raw = await readYamlFile<unknown>(inboxPath);
-    if (raw && typeof raw === 'object' && 'inbox' in raw) {
+    if (raw && typeof raw === "object" && "inbox" in raw) {
       const parsed = InboxFileSchema.safeParse(raw);
       if (parsed.success) {
         existingItems = parsed.data.inbox;
@@ -1535,7 +1600,7 @@ export async function saveInboxItem(ctx: KspecContext, item: LoadedInboxItem): P
   const cleanItem = stripInboxMetadata(item);
 
   // Update existing or add new
-  const existingIndex = existingItems.findIndex(i => i._ulid === item._ulid);
+  const existingIndex = existingItems.findIndex((i) => i._ulid === item._ulid);
   if (existingIndex >= 0) {
     existingItems[existingIndex] = cleanItem;
   } else {
@@ -1549,21 +1614,24 @@ export async function saveInboxItem(ctx: KspecContext, item: LoadedInboxItem): P
 /**
  * Delete an inbox item by ULID.
  */
-export async function deleteInboxItem(ctx: KspecContext, ulid: string): Promise<boolean> {
+export async function deleteInboxItem(
+  ctx: KspecContext,
+  ulid: string,
+): Promise<boolean> {
   const inboxPath = getInboxFilePath(ctx);
 
   try {
     const raw = await readYamlFile<unknown>(inboxPath);
     let existingItems: InboxItem[] = [];
 
-    if (raw && typeof raw === 'object' && 'inbox' in raw) {
+    if (raw && typeof raw === "object" && "inbox" in raw) {
       const parsed = InboxFileSchema.safeParse(raw);
       if (parsed.success) {
         existingItems = parsed.data.inbox;
       }
     }
 
-    const index = existingItems.findIndex(i => i._ulid === ulid);
+    const index = existingItems.findIndex((i) => i._ulid === ulid);
     if (index < 0) {
       return false;
     }
@@ -1581,15 +1649,16 @@ export async function deleteInboxItem(ctx: KspecContext, ulid: string): Promise<
  */
 export function findInboxItemByRef(
   items: LoadedInboxItem[],
-  ref: string
+  ref: string,
 ): LoadedInboxItem | undefined {
-  const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
-  return items.find(item => {
+  return items.find((item) => {
     // Match full ULID
     if (item._ulid === cleanRef) return true;
     // Match short ULID (prefix)
-    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return true;
+    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
+      return true;
     return false;
   });
 }
@@ -1609,7 +1678,7 @@ export interface PatchOperation {
  */
 export interface PatchResult {
   ref: string;
-  status: 'updated' | 'skipped' | 'error';
+  status: "updated" | "skipped" | "error";
   ulid?: string;
   error?: string;
 }
@@ -1646,26 +1715,27 @@ export async function patchSpecItems(
   refIndex: ReferenceIndex,
   items: LoadedSpecItem[],
   patches: PatchOperation[],
-  options: PatchOptions = {}
+  options: PatchOptions = {},
 ): Promise<BulkPatchResult> {
   const results: PatchResult[] = [];
   let stopProcessing = false;
 
   for (const patch of patches) {
     if (stopProcessing) {
-      results.push({ ref: patch.ref, status: 'skipped' });
+      results.push({ ref: patch.ref, status: "skipped" });
       continue;
     }
 
     // Resolve ref
     const resolved = refIndex.resolve(patch.ref);
     if (!resolved.ok) {
-      const errorMsg = resolved.error === 'not_found'
-        ? `Item not found: ${patch.ref}`
-        : resolved.error === 'ambiguous'
-          ? `Ambiguous ref: ${patch.ref}`
-          : `Duplicate slug: ${patch.ref}`;
-      results.push({ ref: patch.ref, status: 'error', error: errorMsg });
+      const errorMsg =
+        resolved.error === "not_found"
+          ? `Item not found: ${patch.ref}`
+          : resolved.error === "ambiguous"
+            ? `Ambiguous ref: ${patch.ref}`
+            : `Duplicate slug: ${patch.ref}`;
+      results.push({ ref: patch.ref, status: "error", error: errorMsg });
       if (options.failFast) {
         stopProcessing = true;
       }
@@ -1673,10 +1743,14 @@ export async function patchSpecItems(
     }
 
     // Find the item
-    const item = items.find(i => i._ulid === resolved.ulid);
+    const item = items.find((i) => i._ulid === resolved.ulid);
     if (!item) {
       // Ref resolved but it's not a spec item (might be a task)
-      results.push({ ref: patch.ref, status: 'error', error: 'Not a spec item' });
+      results.push({
+        ref: patch.ref,
+        status: "error",
+        error: "Not a spec item",
+      });
       if (options.failFast) {
         stopProcessing = true;
       }
@@ -1685,17 +1759,17 @@ export async function patchSpecItems(
 
     // Dry run - just record what would happen
     if (options.dryRun) {
-      results.push({ ref: patch.ref, status: 'updated', ulid: item._ulid });
+      results.push({ ref: patch.ref, status: "updated", ulid: item._ulid });
       continue;
     }
 
     // Apply the patch
     try {
       await updateSpecItem(ctx, item, patch.data);
-      results.push({ ref: patch.ref, status: 'updated', ulid: item._ulid });
+      results.push({ ref: patch.ref, status: "updated", ulid: item._ulid });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
-      results.push({ ref: patch.ref, status: 'error', error: errorMsg });
+      results.push({ ref: patch.ref, status: "error", error: errorMsg });
       if (options.failFast) {
         stopProcessing = true;
       }
@@ -1706,9 +1780,9 @@ export async function patchSpecItems(
     results,
     summary: {
       total: patches.length,
-      updated: results.filter(r => r.status === 'updated').length,
-      failed: results.filter(r => r.status === 'error').length,
-      skipped: results.filter(r => r.status === 'skipped').length,
+      updated: results.filter((r) => r.status === "updated").length,
+      failed: results.filter((r) => r.status === "error").length,
+      skipped: results.filter((r) => r.status === "skipped").length,
     },
   };
 }
