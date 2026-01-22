@@ -11,6 +11,11 @@ import { ulid } from 'ulid';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+
+// Read version from package.json for ACP client info
+const require = createRequire(import.meta.url);
+const { version: packageVersion } = require('../../../package.json');
 import { initContext } from '../../parser/index.js';
 import { error, info, success } from '../output.js';
 import { gatherSessionContext, type SessionContext } from './session.js';
@@ -414,7 +419,7 @@ export function registerRalphCommand(program: Command): void {
                     clientOptions: {
                       clientInfo: {
                         name: 'kspec-ralph',
-                        version: '0.1.0',
+                        version: packageVersion,
                       },
                     },
                   });
