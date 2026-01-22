@@ -20713,7 +20713,7 @@
   type: task
   spec_ref: "@cli-version"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -20765,3 +20765,5 @@
         '../package.json')
       supersedes: null
   todos: []
+  completed_at: 2026-01-22T04:57:35.836Z
+  closed_reason: "Implemented and merged PR #151. CLI now reads version from package.json dynamically."
