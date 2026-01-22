@@ -21271,5 +21271,18 @@
       author: "@claude"
       content: "Automation status set to eligible: Infra task with clear scope, verifiable via CI/hook"
       supersedes: null
+    - _ulid: 01KFJ59VP0MA4SXQHWB3JKZZ8G
+      created_at: 2026-01-22T06:12:10.049Z
+      author: "@claude"
+      content: |-
+        Add skill file validation:
+
+        1. Parse .claude/skills/*/SKILL.md files
+        2. Validate markdown structure (frontmatter, tables, code blocks)
+        3. Catch issues like unescaped pipes in tables
+        4. Options: pre-commit hook, CI check, or 'kspec validate --skills'
+
+        Could use existing markdown parser or simple regex validation.
+      supersedes: null
   todos: []
   automation: eligible
