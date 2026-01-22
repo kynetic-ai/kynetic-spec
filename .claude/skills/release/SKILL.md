@@ -314,6 +314,24 @@ Agent: [Creates v0.2.0-alpha.0]
 - **CI handles publishing**: Skill creates release, CI does the rest
 - **kspec integration**: Surface completed tasks in release context
 
+## Troubleshooting
+
+### npm Trusted Publishers OIDC Failures
+
+If npm publish fails with "Access token expired or revoked" + 404:
+
+**Root cause:** Older npm versions (10.8.x bundled with Node 18) have bugs with OIDC authentication for trusted publishers.
+
+**Fix:** Ensure the publish workflow installs `npm@latest`:
+```yaml
+- name: Install latest npm
+  run: npm install -g npm@latest && npm --version
+```
+
+npm 11.x+ has the necessary fixes.
+
+**Debugging tip:** When hitting opaque CI auth errors, search GitHub issues for the specific tool + error message before extensive local debugging.
+
 ## Related Skills
 
 - `/pr` - Create pull requests before release
