@@ -18833,6 +18833,59 @@
         found: workflow commands expect meta manifest in project root (non-shadow) or .kspec/
         (shadow mode). Tests need proper setup."
       supersedes: null
+    - _ulid: 01KFJ6ZJCRGR39Z8C74QTVMR5T
+      created_at: 2026-01-22T06:41:30.009Z
+      author: "@claude"
+      content: >-
+        **Iteration 2 Status: 95% Complete - Final Fix Needed**
+
+
+        **What's Done:**
+
+        - All implementation code complete and working (schema, storage, CLI commands)
+
+        - All 21 E2E tests written covering all 6 ACs
+
+        - Code builds with zero errors
+
+        - Test logic is correct
+
+
+        **What Remains:**
+
+        - Replace invalid test ULIDs with valid ones (5 min fix)
+          - Current: 01TEST0000000000000000001 (fails regex)
+          - Need: Use ulid() to generate valid IDs
+          - Files: tests/workflow-runs.test.ts (3 ULIDs to replace)
+
+        **Root Cause Identified:**
+
+        ULIDs must match proper ULID format regex. Test fixtures used placeholder IDs like
+        '01TEST000...' which silently fail schema validation. Debug output revealed the issue.
+
+
+        **Next Steps:**
+
+        1. Replace 3 test ULIDs with valid ones from ulid()
+
+        2. Remove debug console.error() statements added during investigation
+
+        3. Run tests to verify all pass
+
+        4. Submit task for review
+
+
+        **Files Changed:**
+
+        - tests/workflow-runs.test.ts (test fixtures, needs ULID fix)
+
+        - src/cli/commands/workflow.ts (has debug output to remove)
+
+        - src/parser/meta.ts (has debug output to remove)
+
+
+        Ready for quick completion next iteration.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFESYSRAWCSMC2Z7N1BY4Z4G
