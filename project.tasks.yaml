@@ -21496,6 +21496,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-22T06:04:34.309Z
+  started_at: 2026-01-22T08:18:16.320Z
   notes:
     - _ulid: 01KFJ4WDDC3F85VXQV9PD61A3K
       created_at: 2026-01-22T06:04:49.453Z
@@ -21513,9 +21514,33 @@
         Change to always capture and return actual stderr output. This enables testing warning
         messages that go to stderr even on successful commands.
       supersedes: null
+    - _ulid: 01KFJCYJP7HK0N5X8TMMFV1J6V
+      created_at: 2026-01-22T08:25:48.999Z
+      author: "@claude"
+      content: >-
+        Fixed test helper to capture stderr on success by switching from execSync to spawnSync. The
+        key issue was that execSync only returns stdout when the command succeeds - stderr output is
+        lost. spawnSync properly captures both stdout and stderr regardless of exit code.
+
+
+        Changes made:
+
+        - Imported spawnSync from node:child_process
+
+        - Replaced execSync with spawnSync using shell mode for all invocations (consistent
+        behavior, proper arg parsing)
+
+        - spawnSync naturally captures both stdout and stderr in separate properties
+
+        - Fixed stdin handling to distinguish between undefined (no stdin) and empty string (send
+        empty line)
+
+
+        All 930 tests pass. The change enables testing warning messages that go to stderr even on
+        successful commands.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T08:18:16.320Z
 - _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
   slugs: []
   title: Set up biome for linting (replace eslint)
