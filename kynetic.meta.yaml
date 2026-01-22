@@ -2472,4 +2472,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFHYJ9DH26CRPRFWZJYXKPJP
+    type: success
+    content: When debugging opaque CI/auth errors, search GitHub issues early. A quick search for 'npm
+      trusted publishers OIDC' would have found the npm version bug immediately, saving significant
+      iteration time.
+    created_at: 2026-01-22T04:14:26.225Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
