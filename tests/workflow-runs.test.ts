@@ -3,9 +3,10 @@
  * Spec: @workflow-run-foundation
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { kspec, createTempDir, deleteTempDir, initGitRepo } from './helpers/cli.js';
+import { kspec, createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import * as YAML from 'yaml';
 import { parseDocument } from 'yaml';
 
 let tempDir: string;
@@ -13,76 +14,79 @@ let tempDir: string;
 beforeEach(async () => {
   tempDir = await createTempDir();
 
-  // Initialize git repo (required for kspec init)
+  // Initialize git repo (required for shadow operations)
   initGitRepo(tempDir);
 
-  // Initialize kspec project
-  kspec('init', tempDir);
+  // Create .kspec directory structure
+  const kspecDir = path.join(tempDir, '.kspec');
+  await fs.mkdir(kspecDir, { recursive: true });
 
-  // Create a simple workflow for testing
-  const metaManifest = {
-    kynetic_meta: '1.0',
-    workflows: [
-      {
-        _ulid: '01TEST0000000000000000001',
-        id: 'test-workflow',
-        trigger: 'manual',
-        description: 'Test workflow for run tests',
-        steps: [
-          {
-            type: 'check',
-            content: 'Verify prerequisites',
-          },
-          {
-            type: 'action',
-            content: 'Execute main task',
-          },
-          {
-            type: 'check',
-            content: 'Validate results',
-          },
-        ],
-      },
-      {
-        _ulid: '01TEST0000000000000000002',
-        id: 'another-workflow',
-        trigger: 'manual',
-        description: 'Another test workflow',
-        steps: [
-          {
-            type: 'action',
-            content: 'Do something',
-          },
-        ],
-      },
-    ],
-  };
+  // Create minimal root manifest
+  await fs.writeFile(
+    path.join(kspecDir, 'kynetic.yaml'),
+    `kynetic: "1.0"
+project: Test Project
+`,
+    'utf-8',
+  );
 
-  const metaPath = path.join(tempDir, '.kspec', 'kynetic.meta.yaml');
-  await fs.writeFile(metaPath, JSON.stringify(metaManifest), 'utf-8');
+  // Create workflows in meta manifest
+  await fs.writeFile(
+    path.join(kspecDir, 'kynetic.meta.yaml'),
+    `kynetic_meta: "1.0"
+workflows:
+  - _ulid: 01TEST0000000000000000001
+    id: test-workflow
+    trigger: manual
+    description: Test workflow for run tests
+    steps:
+      - type: check
+        content: Verify prerequisites
+      - type: action
+        content: Execute main task
+      - type: check
+        content: Validate results
+
+  - _ulid: 01TEST0000000000000000002
+    id: another-workflow
+    trigger: manual
+    description: Another test workflow
+    steps:
+      - type: action
+        content: Do something
+
+agents:
+  - _ulid: 01KF79QXTTX8KBRYK14NWV1KYK
+    id: test
+    name: Test Author
+    description: Generic test author
+    capabilities: []
+    tools: []
+    conventions: []
+`,
+    'utf-8',
+  );
 
   // Create a test task for task linking tests
-  const tasksFile = {
-    kynetic_tasks: '1.0',
-    tasks: [
-      {
-        _ulid: '01TESTTASK000000000000001',
-        slugs: ['test-task'],
-        title: 'Test Task',
-        status: 'pending',
-        priority: 3,
-        created_at: new Date().toISOString(),
-      },
-    ],
-  };
-
-  const tasksPath = path.join(tempDir, '.kspec', 'project.tasks.yaml');
-  await fs.writeFile(tasksPath, JSON.stringify(tasksFile), 'utf-8');
+  await fs.writeFile(
+    path.join(kspecDir, 'project.tasks.yaml'),
+    `kynetic_tasks: "1.0"
+tasks:
+  - _ulid: 01TESTTASK000000000000001
+    slugs:
+      - test-task
+    title: Test Task
+    status: pending
+    priority: 3
+    created_at: "${new Date().toISOString()}"
+`,
+    'utf-8',
+  );
 });
 
 afterEach(async () => {
   if (tempDir) {
-    await deleteTempDir(tempDir);
+    await cleanupTempDir(tempDir);
   }
 });
 
@@ -184,7 +188,10 @@ describe('workflow runs list', () => {
     runsData.runs[1].status = 'completed';
     runsData.runs[1].completed_at = new Date().toISOString();
 
-    await fs.writeFile(runsPath, JSON.stringify(runsData, null, 2), 'utf-8');
+    const doc2 = parseDocument(await fs.readFile(runsPath, 'utf-8'));
+    doc2.setIn(['runs', 1, 'status'], 'completed');
+    doc2.setIn(['runs', 1, 'completed_at'], runsData.runs[1].completed_at);
+    await fs.writeFile(runsPath, doc2.toString(), 'utf-8');
   });
 
   it('should list all runs with table output', async () => {
@@ -374,7 +381,10 @@ describe('workflow abort validation', () => {
     runsData.runs[0].status = 'completed';
     runsData.runs[0].completed_at = new Date().toISOString();
 
-    await fs.writeFile(runsPath, JSON.stringify(runsData, null, 2), 'utf-8');
+    const doc3 = parseDocument(await fs.readFile(runsPath, 'utf-8'));
+    doc3.setIn(['runs', 0, 'status'], 'completed');
+    doc3.setIn(['runs', 0, 'completed_at'], runsData.runs[0].completed_at);
+    await fs.writeFile(runsPath, doc3.toString(), 'utf-8');
 
     // Try to abort
     const result = kspec(`workflow abort @${run_id}`, tempDir, { expectFail: true });
