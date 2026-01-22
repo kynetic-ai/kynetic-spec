@@ -21968,6 +21968,8 @@
   spec_ref: "@fuzzy-item-search"
   status: completed
   blocked_by: []
+  closed_reason: Implementation complete and merged to main. Extended kspec search to cover inbox
+    items and meta entities (observations, agents, workflows, conventions). All 942 tests pass.
   depends_on: []
   context: []
   priority: 3
@@ -21978,6 +21980,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:10:40.773Z
   started_at: 2026-01-22T09:23:49.859Z
+  completed_at: 2026-01-22T09:33:56.830Z
   notes:
     - _ulid: 01KFJ591F87V1RYSA67RP4RM74
       created_at: 2026-01-22T06:11:43.209Z
@@ -22038,9 +22041,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T09:33:56.830Z
-  closed_reason: Implementation complete and merged to main. Extended kspec search to cover inbox
-    items and meta entities (observations, agents, workflows, conventions). All 942 tests pass.
 - _ulid: 01KFJ5780YBQDBQH3Y4VFZ1343
   slugs: []
   title: Add skill file linting/validation
@@ -22049,7 +22049,7 @@
     before runtime. Could be a pre-commit hook or CI check that validates skill SKILL.md files parse
     correctly.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -22080,3 +22080,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T09:34:05.845Z
