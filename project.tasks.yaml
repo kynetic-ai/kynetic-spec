@@ -20396,22 +20396,67 @@
       supersedes: null
   todos: []
   automation: needs_review
-- title: Create /release skill for versioning and tagging
+- _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
+  slugs: []
+  title: Create /release skill for versioning and tagging
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - cli
-    - skill
-    - dx
-  _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - cli
+    - skill
+    - dx
   vcs_refs: []
   created_at: 2026-01-22T00:40:24.145Z
-  notes: []
+  notes:
+    - _ulid: 01KFHJATMRSD94WHCC1EMQZMZY
+      created_at: 2026-01-22T00:40:38.808Z
+      author: "@claude"
+      content: |-
+        ## Context
+
+        During PR #141 we manually handled versioning:
+        1. `npm version patch --no-git-tag-version`
+        2. Amended commit to include package.json
+        3. Created tag after merge: `git tag v0.1.1 && git push origin v0.1.1`
+
+        This is error-prone and easy to forget steps (we almost forgot the tag).
+
+        ## Proposed /release Skill
+
+        A new skill to handle post-merge release workflow:
+
+        ```bash
+        /release patch   # 0.1.1 -> 0.1.2
+        /release minor   # 0.1.1 -> 0.2.0  
+        /release major   # 0.1.1 -> 1.0.0
+        ```
+
+        ### Workflow
+        1. Verify on main branch and clean working tree
+        2. Verify HEAD is ahead of last tag (has releasable changes)
+        3. Bump version in package.json
+        4. Commit: `chore: release vX.Y.Z`
+        5. Create git tag: `vX.Y.Z`
+        6. Push commit and tag
+        7. Optionally create GitHub release with auto-generated notes
+
+        ### Options
+        - `--dry-run`: Show what would happen
+        - `--no-github-release`: Skip GitHub release creation
+        - `--prerelease`: Mark as prerelease (alpha/beta/rc)
+
+        ### Integration
+        - Check for linked kspec task to include in release notes
+        - Warn if there are completed tasks without releases
+        - CI npm publish workflow triggers on new tags
+
+        ### Location
+        `.claude/skills/release/` alongside pr skill
+      supersedes: null
   todos: []
