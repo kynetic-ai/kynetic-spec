@@ -438,11 +438,15 @@ describe('workflow next - basic step advancement', () => {
 
     const run = runsData.runs[0];
     expect(run.current_step).toBe(1);
-    expect(run.step_results).toHaveLength(1);
+    // After advancing, we have: step 0 completed + step 1 stub (with entry_confirmed)
+    expect(run.step_results).toHaveLength(2);
     expect(run.step_results[0].step_index).toBe(0);
     expect(run.step_results[0].status).toBe('completed');
     expect(run.step_results[0].started_at).toBeDefined();
     expect(run.step_results[0].completed_at).toBeDefined();
+    // Step 1 stub created with started_at for tracking entry_confirmed
+    expect(run.step_results[1].step_index).toBe(1);
+    expect(run.step_results[1].started_at).toBeDefined();
   });
 
   it('should work with --json output', async () => {
@@ -477,7 +481,8 @@ describe('workflow next - basic step advancement', () => {
 
     const run = runsData.runs[0];
     expect(run.current_step).toBe(2);
-    expect(run.step_results).toHaveLength(2);
+    // After two advances: step 0 complete, step 1 complete, step 2 stub
+    expect(run.step_results).toHaveLength(3);
   });
 });
 
@@ -1085,8 +1090,12 @@ describe('strict mode enforcement', () => {
 
     const run = runsData.runs.find((r: any) => r._ulid === run_id);
     expect(run).toBeDefined();
-    expect(run.step_results).toHaveLength(1);
+    // After advance: step 0 complete + step 1 stub
+    expect(run.step_results).toHaveLength(2);
+    // Step 0 should have exit_confirmed
     expect(run.step_results[0].exit_confirmed).toBe(true);
+    // Step 1 should have entry_confirmed
+    expect(run.step_results[1].entry_confirmed).toBe(true);
   });
 });
 

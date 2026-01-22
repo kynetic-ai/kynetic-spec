@@ -428,17 +428,32 @@ async function workflowNext(
   const startedAt = previousResult ? previousResult.completed_at : run.started_at;
 
   // AC: @workflow-enforcement-modes ac-3 - Record confirmations in StepResult
-  const stepResult = {
-    step_index: currentStepIndex,
-    status: options.skip ? ('skipped' as const) : ('completed' as const),
-    started_at: startedAt,
-    completed_at: new Date().toISOString(),
-    notes: options.notes,
-    exit_confirmed: currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm ? true : undefined,
-    entry_confirmed: undefined, // Entry confirmation is for the NEXT step, recorded when we advance
-  };
+  // Check if a stub result already exists for this step (created when we advanced to it)
+  const existingResultIndex = run.step_results.findIndex((r) => r.step_index === currentStepIndex);
 
-  run.step_results.push(stepResult);
+  if (existingResultIndex >= 0) {
+    // Update existing stub result with completion data
+    const existingResult = run.step_results[existingResultIndex];
+    run.step_results[existingResultIndex] = {
+      ...existingResult,
+      status: options.skip ? ('skipped' as const) : ('completed' as const),
+      completed_at: new Date().toISOString(),
+      notes: options.notes,
+      exit_confirmed: currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm ? true : undefined,
+    };
+  } else {
+    // No stub exists (first step or old data), create complete result
+    const stepResult = {
+      step_index: currentStepIndex,
+      status: options.skip ? ('skipped' as const) : ('completed' as const),
+      started_at: startedAt,
+      completed_at: new Date().toISOString(),
+      notes: options.notes,
+      exit_confirmed: currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm ? true : undefined,
+      entry_confirmed: undefined,
+    };
+    run.step_results.push(stepResult);
+  }
 
   // AC: @workflow-step-navigation ac-1 - Advance to next step or complete run
   if (isLastStep) {
@@ -476,10 +491,22 @@ async function workflowNext(
     // Advance to next step
     run.current_step += 1;
 
+    // AC: @workflow-enforcement-modes ac-3 - Record entry confirmation for the next step
+    // Create a stub step result for the next step to capture entry_confirmed and started_at
+    // This will be updated with completion data when the step is completed
+    const nextStep = workflow.steps[run.current_step];
+    const nextStepStartedAt = run.step_results[run.step_results.length - 1]?.completed_at || new Date().toISOString();
+    const nextStepStub = {
+      step_index: run.current_step,
+      status: 'completed' as const, // Placeholder, will be updated
+      started_at: nextStepStartedAt,
+      completed_at: nextStepStartedAt, // Placeholder, will be updated
+      entry_confirmed: nextStep.entry_criteria && nextStep.entry_criteria.length > 0 && options.confirm ? true : undefined,
+    };
+    run.step_results.push(nextStepStub);
+
     await updateWorkflowRun(ctx, run);
     await commitIfShadow(ctx.shadow, 'workflow-next');
-
-    const nextStep = workflow.steps[run.current_step];
 
     if (isJsonMode()) {
       output({
