@@ -74,7 +74,7 @@ runs:
   - _ulid: 01KFKS903R68228GKCEKC2AVR9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-22T21:20:27.769Z
     step_results:
@@ -111,5 +111,20 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-22T21:21:16.795Z
-        completed_at: 2026-01-22T21:21:16.795Z
+        completed_at: 2026-01-22T21:21:24.339Z
+        notes: >-
+          Proposed improvements:
+
+          1. Add --steps flag to 'meta add workflow' (scope: small) - Allow defining steps at
+          creation time using JSON array
+
+          2. Make 'workflow show' infer active run like 'workflow next' (scope: small) -
+          Consistency, less typing
+
+          3. Warn when --input passed but step has no inputs defined (scope: small) - Prevent
+          confusion
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-22T21:21:24.339Z
+        completed_at: 2026-01-22T21:21:24.339Z
     initiated_by: "@claude"
