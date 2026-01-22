@@ -2481,4 +2481,25 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJ636YGAN4ACZ8D1HVT10HQ
+    type: success
+    content: Workflow run foundation implementation demonstrates good schema-first development pattern.
+      Defined all Zod schemas first, then storage operations, then CLI commands, then tests. This
+      ordering prevented type errors and made the implementation flow smoothly. The type safety from
+      Zod schemas caught issues early in compilation rather than at runtime.
+    created_at: 2026-01-22T06:26:00.785Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJ63DA38WC8GVKEQ4W0G2Q0
+    type: friction
+    content: "E2E test fixture setup requires understanding of proper YAML formatting. Using
+      JSON.stringify() to create YAML files doesn't work - produces invalid YAML syntax. Tests need
+      either: (1) setupTempFixtures() with pre-built fixtures, (2) manual YAML strings, or (3) yaml
+      library stringify. This pattern repeats across test files - consider documenting test fixture
+      patterns in testing guide."
+    created_at: 2026-01-22T06:26:07.300Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
