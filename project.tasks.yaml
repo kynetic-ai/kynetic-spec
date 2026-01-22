@@ -21137,6 +21137,21 @@
       content: "Automation status set to eligible: Clear validation rule with testable AC, single behavior
         addition"
       supersedes: null
+    - _ulid: 01KFJ59KP64W5AZ0V8Q7CDGYKY
+      created_at: 2026-01-22T06:12:01.862Z
+      author: "@claude"
+      content: >-
+        Implement validation warning in kspec validate:
+
+
+        When a task has automation=manual_only AND other tasks depend on it AND those tasks are
+        automation=eligible, warn that eligible children are blocked by a manual_only parent.
+
+
+        Location: src/cli/commands/validate.ts or validation logic
+
+        Test: Create parent manual_only task, child eligible task with depends_on, run validate
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
