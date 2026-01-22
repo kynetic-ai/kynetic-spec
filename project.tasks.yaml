@@ -21656,6 +21656,7 @@
     - mock
   vcs_refs: []
   created_at: 2026-01-22T06:08:21.548Z
+  started_at: 2026-01-22T08:42:52.432Z
   notes:
     - _ulid: 01KFJ536DGRCA6CZ1K8M6N5QZ2
       created_at: 2026-01-22T06:08:31.665Z
@@ -21681,9 +21682,35 @@
 
         Look at real ACP client implementation in src/ for correct protocol behavior.
       supersedes: null
+    - _ulid: 01KFJDYZVYV51FTYBBGK43DW23
+      created_at: 2026-01-22T08:43:31.070Z
+      author: "@claude"
+      content: >-
+        Understanding the gap:
+
+
+        Current: Mock only implements initialize, session/new, and session/prompt. It doesn't handle
+        session/request_permission requests that would come from the agent.
+
+
+        Real protocol: When an agent wants to use a tool (like Bash), it sends a
+        session/request_permission request. The client must respond with a
+        RequestPermissionResponse.
+
+
+        The real ralph command handles this in handleRequest() at src/cli/commands/ralph.ts:192-220,
+        responding with either:
+
+        - { outcome: { outcome: 'selected', optionId: <allow option> } } in yolo mode
+
+        - { outcome: { outcome: 'cancelled' } } otherwise
+
+
+        Need to add session/request_permission handler to mock that follows the same pattern as real
+        implementation.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T08:42:52.432Z
 - _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
   slugs: []
   title: Add validation warning for manual_only parent with eligible children
