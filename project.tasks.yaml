@@ -18832,6 +18832,11 @@
         - ac-4: Given no run-id provided and multiple active runs exist, when kspec workflow next is
         executed, then errors with list of active runs to choose from
       supersedes: null
+    - _ulid: 01KFJ5CEKC8CN5NVM4DSVX2X2S
+      created_at: 2026-01-22T06:13:34.956Z
+      author: "@claude"
+      content: "Automation status set to eligible: Has spec with 6 testable ACs, clear workflow feature"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFESYSWBB2R797HKWA965MC9
