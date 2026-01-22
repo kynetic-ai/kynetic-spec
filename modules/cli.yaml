@@ -194,6 +194,10 @@ features:
             given: a new version is released
             when: package.json version is updated
             then: CLI --version output automatically reflects the new version without code changes
+          - id: ac-3
+            given: kspec is run in development via 'npm run dev'
+            when: user runs 'npm run dev -- --version'
+            then: displays the same version as package.json
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
