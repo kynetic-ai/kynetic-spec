@@ -21556,7 +21556,7 @@
   type: infra
   description: Set up biome for linting (replace eslint script) - reference ../kynetic project for config
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21633,6 +21633,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T08:42:38.803Z
+  closed_reason: "Merged PR #162. Successfully set up Biome for linting and formatting, replacing
+    non-functional ESLint. All CI checks passed, 930/932 tests pass. Formatted 73 files with
+    consistent style. Some acceptable lint warnings documented in PR."
 - _ulid: 01KFJ52WHDSCA9ZQ8GKY57X8SC
   slugs: []
   title: Improve ACP mock to require permission requests
