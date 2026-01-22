@@ -19834,7 +19834,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -20051,6 +20051,9 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-22T00:32:35.089Z
+  closed_reason: "PR #141 merged. Fixed hardcoded @human and @kspec-derive, added ac-author specs,
+    migrated 29 existing references, full test coverage. Version 0.1.1"
 - _ulid: 01KFH4F3854392DJM0R17T79M2
   slugs: []
   title: Implement @trait-retrospective for specs without task tracking
