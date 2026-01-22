@@ -20777,7 +20777,7 @@
     manual PR step in skill. Simplest is probably removing auto-sync and documenting the manual PR
     step."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
