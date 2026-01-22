@@ -35,7 +35,7 @@ runs:
     abort_reason: Testing abort functionality
   - _ulid: 01KFKRCEGVZZZKY1TZ45H6MHZC
     workflow_ref: "@01KF782ZSJH58GHDTHC873XJMA"
-    status: active
+    status: aborted
     current_step: 1
     total_steps: 4
     started_at: 2026-01-22T21:04:52.251Z
@@ -50,3 +50,5 @@ runs:
         started_at: 2026-01-22T21:04:59.205Z
         completed_at: 2026-01-22T21:04:59.205Z
     initiated_by: "@claude"
+    abort_reason: Completed skip testing
+    completed_at: 2026-01-22T21:05:11.515Z
