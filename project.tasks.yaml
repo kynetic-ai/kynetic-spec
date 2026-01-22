@@ -20785,6 +20785,16 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T05:36:12.831Z
-  notes: []
-  todos: []
   started_at: 2026-01-22T05:36:19.646Z
+  notes:
+    - _ulid: 01KFJ3A7CN8A3Q8DZEGXBDXZ2E
+      created_at: 2026-01-22T05:37:24.885Z
+      author: "@claude"
+      content: |-
+        Changes made:
+        1. Removed auto-commit step from publish.yml (lines 62-71)
+        2. Changed permissions from contents:write to contents:read
+        3. Updated /release skill to document manual PR workflow (new Phase 7)
+        4. Updated examples and key principles to reflect branch-protection-compatible approach
+      supersedes: null
+  todos: []
