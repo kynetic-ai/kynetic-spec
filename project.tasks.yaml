@@ -22059,6 +22059,7 @@
     - skills
   vcs_refs: []
   created_at: 2026-01-22T06:10:44.382Z
+  started_at: 2026-01-22T09:34:05.845Z
   notes:
     - _ulid: 01KFJ5945469T8XYCMSW5BXQTR
       created_at: 2026-01-22T06:11:45.957Z
@@ -22078,6 +22079,27 @@
 
         Could use existing markdown parser or simple regex validation.
       supersedes: null
+    - _ulid: 01KFJH9BAZ4PJEN0ET8WD4VWA8
+      created_at: 2026-01-22T09:41:36.223Z
+      author: "@claude"
+      content: |-
+        Implementation complete. Added skill file validation:
+
+        1. Created src/parser/validate-skills.ts with:
+           - Frontmatter validation (checks for name and description fields)
+           - Table pipe detection heuristic (warns about potential unescaped pipes)
+           - Support for finding all .claude/skills/*/SKILL.md files
+
+        2. Integrated into validate command:
+           - Added --skills flag to kspec validate
+           - Runs as part of default validation (runAll mode)
+           - Outputs formatted results with file-grouped errors
+
+        3. Added comprehensive tests in tests/skill-validation.test.ts:
+           - 9 tests covering frontmatter validation, content checks, and table validation
+           - All tests pass
+
+        All 951 tests pass. Validation works on existing skills (found 9 files, all valid).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T09:34:05.845Z
