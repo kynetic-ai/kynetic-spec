@@ -21015,6 +21015,16 @@
       content: "Automation status set to eligible: Single file fix in helpers/cli.ts, verifiable behavior
         change"
       supersedes: null
+    - _ulid: 01KFJ4WYA2XYP60BMJ4D462KJZ
+      created_at: 2026-01-22T06:05:06.754Z
+      author: "@claude"
+      content: >-
+        Fix in tests/helpers/cli.ts - currently returns stderr: '' when exit code is 0.
+
+
+        Change to always capture and return actual stderr output. This enables testing warning
+        messages that go to stderr even on successful commands.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
