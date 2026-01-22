@@ -20713,7 +20713,7 @@
   type: task
   spec_ref: "@cli-version"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -20764,3 +20764,4 @@
         '../package.json')
       supersedes: null
   todos: []
+  started_at: 2026-01-22T04:41:02.463Z
