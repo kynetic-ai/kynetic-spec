@@ -36,8 +36,17 @@ runs:
   - _ulid: 01KFKRCEGVZZZKY1TZ45H6MHZC
     workflow_ref: "@01KF782ZSJH58GHDTHC873XJMA"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-22T21:04:52.251Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: skipped
+        started_at: 2026-01-22T21:04:52.251Z
+        completed_at: 2026-01-22T21:04:59.205Z
+        notes: Skipping for test
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-22T21:04:59.205Z
+        completed_at: 2026-01-22T21:04:59.205Z
     initiated_by: "@claude"
