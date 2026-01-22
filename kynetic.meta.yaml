@@ -2737,4 +2737,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJCZ4TFV7MBRTD896F4GR30
+    type: success
+    content: "Using spawnSync instead of execSync for test helpers provides better control over stdio
+      streams. Key insight: execSync only returns stdout on success - stderr is lost. spawnSync
+      captures both stdout/stderr in separate properties regardless of exit code. This pattern is
+      more predictable for testing CLI tools that write warnings to stderr."
+    created_at: 2026-01-22T08:26:07.567Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFJCZB7A5PA8KMX4WMPJP840
+    type: success
+    content: "Test-first verification for infrastructure changes: after making the helper change, ran
+      full test suite to verify no regressions. The failing tests revealed a subtle stdin handling
+      bug (empty string vs undefined) that would have been hard to catch otherwise. Full test
+      coverage paid off immediately."
+    created_at: 2026-01-22T08:26:14.122Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []

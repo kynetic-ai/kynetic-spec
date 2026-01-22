@@ -21539,6 +21539,12 @@
         All 930 tests pass. The change enables testing warning messages that go to stderr even on
         successful commands.
       supersedes: null
+    - _ulid: 01KFJD15DA1JSZD38TAWXG4R4A
+      created_at: 2026-01-22T08:27:13.707Z
+      author: "@claude"
+      content: "PR #161 created: https://github.com/kynetic-ai/kynetic-spec/pull/161 - Awaiting automated
+        review and CI checks before merge"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
