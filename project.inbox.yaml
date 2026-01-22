@@ -592,13 +592,6 @@ inbox:
       - dx
       - skills
     added_by: "@claude"
-  - _ulid: 01KFHZR2R6RXFGNRG888JMZ8YX
-    text: CLI version hardcoded as 0.1.0 in src/cli/index.ts:41 but should read from package.json. Needs
-      spec coverage (AC for version display behavior) and implementation fix. package.json is at
-      0.1.1.
-    created_at: 2026-01-22T04:35:04.582Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFHZR4K3JJT4C742GSVB1KG6
     text: "Shadow sync issues need stronger agent guidance and CLI warnings. Currently errors are silent
       unless KSPEC_DEBUG=1. Should: (1) Make warnings more visible in CLI output, (2) Strengthen
