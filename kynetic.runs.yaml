@@ -58,6 +58,7 @@ runs:
     current_step: 1
     total_steps: 5
     started_at: 2026-01-22T21:05:18.190Z
+    completed_at: 2026-01-22T21:05:37.925Z
     step_results:
       - step_index: 0
         status: completed
@@ -70,4 +71,11 @@ runs:
         completed_at: 2026-01-22T21:05:25.516Z
     initiated_by: "@claude"
     abort_reason: Completed inputs testing
-    completed_at: 2026-01-22T21:05:37.925Z
+  - _ulid: 01KFKS903R68228GKCEKC2AVR9
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-22T21:20:27.769Z
+    step_results: []
+    initiated_by: "@claude"
