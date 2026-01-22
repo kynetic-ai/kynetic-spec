@@ -20797,4 +20797,21 @@
         3. Updated /release skill to document manual PR workflow (new Phase 7)
         4. Updated examples and key principles to reflect branch-protection-compatible approach
       supersedes: null
+    - _ulid: 01KFJ3T002V0S7EEGA57ZYBP08
+      created_at: 2026-01-22T05:46:01.603Z
+      author: "@claude"
+      content: >-
+        Comprehensive skill rewrite based on subagent review:
+
+        - Fixed 3 critical issues (hardcoded URLs, misleading dry-run, inconsistent categories)
+
+        - Fixed 5 high-priority issues (rollback procedure, prerelease rules, commit filtering,
+        kspec timing, gh errors)
+
+        - Fixed 4 medium issues (tag naming, timing, validation clarity)
+
+        - Added prerequisites section, explicit version argument, Performance category
+
+        - Total: 175 lines added, 82 removed
+      supersedes: null
   todos: []
