@@ -21119,7 +21119,7 @@
     AC-N:' instead of the convention '// AC: @spec-ref ac-N'. Should sweep through test files and
     standardize."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21274,6 +21274,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T07:20:50.868Z
+  closed_reason: "Merged PR #156. Fixed 72 old-format AC annotations across 9 files. Review found and
+    fixed 3 incorrect spec references. All CI checks passed."
 - _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
   slugs: []
   title: Add tests for shadow hook installation and authorization
