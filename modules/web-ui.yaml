@@ -34,3 +34,18 @@ features:
     traits: []
     notes: []
     created: 2026-01-22T01:18:09.314Z
+  - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
+    slugs:
+      - web-dashboard
+    title: Web Dashboard
+    type: feature
+    tags: []
+    description: SvelteKit-based web interface for viewing and editing specs, tasks, inbox, and session
+      state. Uses shadcn-svelte components for accessible UI.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-22T01:18:11.366Z
