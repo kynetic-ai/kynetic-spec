@@ -39,6 +39,7 @@ runs:
     current_step: 1
     total_steps: 4
     started_at: 2026-01-22T21:04:52.251Z
+    completed_at: 2026-01-22T21:05:11.515Z
     step_results:
       - step_index: 0
         status: skipped
@@ -51,4 +52,11 @@ runs:
         completed_at: 2026-01-22T21:04:59.205Z
     initiated_by: "@claude"
     abort_reason: Completed skip testing
-    completed_at: 2026-01-22T21:05:11.515Z
+  - _ulid: 01KFKRD7VD0QJ481YBPBYDBCE9
+    workflow_ref: "@01KF782ZSH8JG4CCJRWVQQ9G5R"
+    status: active
+    current_step: 0
+    total_steps: 5
+    started_at: 2026-01-22T21:05:18.190Z
+    step_results: []
+    initiated_by: "@claude"
