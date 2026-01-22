@@ -20489,6 +20489,44 @@
         - Skill file follows existing patterns (PR skill structure)
         - Dry-run workflow logic validated against current repo state
       supersedes: null
+    - _ulid: 01KFHZBV8A0YBFH1ZYP4T147VG
+      created_at: 2026-01-22T04:28:23.691Z
+      author: "@claude"
+      content: >-
+        ## npm Trusted Publishers Debugging Session
+
+
+        **Issue:** First release attempt (v0.1.1) failed with npm OIDC auth errors: 'Access token
+        expired or revoked' + 404.
+
+
+        **Root cause:** npm 10.8.2 (bundled with Node 18) has a bug with trusted publishers OIDC
+        authentication.
+
+
+        **Fix:** Added `npm install -g npm@latest` step to workflow. npm 11.8.0 resolved the issue.
+
+
+        **Red herrings investigated:**
+
+        - Environment name with spaces ('Publish Package' → 'publish')
+
+        - Environment config mismatch between workflow and npm
+
+        - registry-url in setup-node interfering with OIDC
+
+        - npm trusted publisher config caching
+
+
+        **PRs merged during debugging:** #142-150
+
+
+        **Key learning:** When hitting opaque CI auth errors, search GitHub issues early. A quick
+        search would have found the npm version bug immediately.
+
+
+        **Documentation:** Added troubleshooting section to /release skill (SKILL.md).
+      supersedes: null
   todos: []
 - _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
   slugs: []
