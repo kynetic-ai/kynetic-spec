@@ -39,6 +39,10 @@ features:
         given: kspec is installed
         when: user runs 'kspec serve'
         then: HTTP server starts on configurable port (default 3456) and serves API endpoints
+      - id: ac-2
+        given: daemon is running
+        when: any .kspec/*.yaml file changes
+        then: connected clients receive SSE update within 200ms
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
