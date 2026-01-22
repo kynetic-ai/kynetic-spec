@@ -200,7 +200,7 @@ features:
             then: displays the same version as package.json
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
