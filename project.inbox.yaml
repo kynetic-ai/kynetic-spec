@@ -481,14 +481,3 @@ inbox:
     created_at: 2026-01-22T04:35:08.305Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KFK6GWFAV4FMFX3R7CMSYT3H
-    text: "Fix derive cancelled task filtering inconsistency - getParentTaskRef() filters cancelled
-      tasks but task existence check at lines 279-289 does not. A spec with only cancelled tasks
-      cannot be re-derived without --force. From PR #155 review feedback (greptile-apps, confidence
-      4/5)."
-    created_at: 2026-01-22T15:52:43.242Z
-    tags:
-      - bug
-      - derive
-      - review-feedback
-    added_by: "@claude"
