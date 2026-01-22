@@ -20460,3 +20460,23 @@
         `.claude/skills/release/` alongside pr skill
       supersedes: null
   todos: []
+- title: Spec out Web UI and Daemon Mode feature
+  type: spike
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - web
+    - ui
+    - daemon
+    - research
+  _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T01:20:12.418Z
+  notes: []
+  todos: []
