@@ -900,6 +900,9 @@ features:
                 given: a run with status other than paused exists
                 when: kspec workflow resume @run-id is executed
                 then: errors indicating run is not paused, shows current status
+            status:
+              maturity: draft
+              implementation: in_progress
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
