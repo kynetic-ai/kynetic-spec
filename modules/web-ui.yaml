@@ -47,6 +47,10 @@ features:
         given: daemon is running
         when: user runs 'kspec serve --daemon'
         then: process detaches to background, writes PID file, and CLI returns immediately
+      - id: ac-4
+        given: daemon is running in background
+        when: user runs 'kspec serve stop'
+        then: daemon shuts down gracefully, removes PID file, and closes all connections
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
