@@ -21226,6 +21226,25 @@
       content: "Automation status set to eligible: Feature extension with clear AC, follows existing
         search patterns"
       supersedes: null
+    - _ulid: 01KFJ59S29GQHVFPJ4KS8XQRJT
+      created_at: 2026-01-22T06:12:07.371Z
+      author: "@claude"
+      content: >-
+        Expand kspec search to cover:
+
+        - Inbox items (text field)
+
+        - Meta observations (content field)
+
+        - Meta agents, workflows, conventions
+
+
+        Follow existing search patterns in src/cli/commands/. Add --scope flag or search all by
+        default.
+
+
+        Spec: @fuzzy-item-search ac-7
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ5780YBQDBQH3Y4VFZ1343
