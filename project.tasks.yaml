@@ -21966,9 +21966,9 @@
     by default. Related: need pattern for cross-feature requirements - when new entity type added,
     features like search should automatically need to support it."
   spec_ref: "@fuzzy-item-search"
-  status: pending_review
+  status: completed
   blocked_by: []
-  closed_reason: null
+  closed_reason: "Merged PR #166. Extended kspec search to cover inbox items and meta entities."
   depends_on: []
   context: []
   priority: 3
@@ -21979,7 +21979,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:10:40.773Z
   started_at: 2026-01-22T15:53:34.360Z
-  completed_at: null
+  completed_at: 2026-01-22T16:42:50.411Z
   notes:
     - _ulid: 01KFJ591F87V1RYSA67RP4RM74
       created_at: 2026-01-22T06:11:43.209Z
@@ -22119,23 +22119,23 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix derive cancelled task filtering inconsistency
+- _ulid: 01KFK6JYVRMMDRCKK9DGYDX6AN
+  slugs: []
+  title: Fix derive cancelled task filtering inconsistency
   type: task
-  priority: 2
-  spec_ref: null
-  tags:
-    - bug
-    - derive
   description: "Fix derive cancelled task filtering inconsistency - getParentTaskRef() filters
     cancelled tasks but task existence check at lines 279-289 does not. A spec with only cancelled
     tasks cannot be re-derived without --force. From PR #155 review feedback (greptile-apps,
     confidence 4/5)."
-  _ulid: 01KFK6JYVRMMDRCKK9DGYDX6AN
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - bug
+    - derive
   vcs_refs: []
   created_at: 2026-01-22T15:53:51.224Z
   notes: []
