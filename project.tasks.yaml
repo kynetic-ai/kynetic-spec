@@ -21218,5 +21218,11 @@
     - skills
   vcs_refs: []
   created_at: 2026-01-22T06:10:44.382Z
-  notes: []
+  notes:
+    - _ulid: 01KFJ5945469T8XYCMSW5BXQTR
+      created_at: 2026-01-22T06:11:45.957Z
+      author: "@claude"
+      content: "Automation status set to eligible: Infra task with clear scope, verifiable via CI/hook"
+      supersedes: null
   todos: []
+  automation: eligible
