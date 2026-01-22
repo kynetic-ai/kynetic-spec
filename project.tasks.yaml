@@ -20950,23 +20950,44 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Add tests for shadow hook installation and authorization
+- _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
+  slugs: []
+  title: Add tests for shadow hook installation and authorization
+  type: infra
+  description: Add automated tests for git hook installation and authorization - test
+    installShadowHook function, hook blocking unauthorized commits, hook allowing commits with
+    KSPEC_SHADOW_COMMIT=1 env var
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - testing
+    - reflection
+  vcs_refs: []
+  created_at: 2026-01-22T06:04:30.551Z
+  notes: []
+  todos: []
+- title: Fix test helper to capture stderr on success
   type: infra
   priority: 3
   spec_ref: null
   tags:
-    - testing
     - reflection
-  description: Add automated tests for git hook installation and authorization - test
-    installShadowHook function, hook blocking unauthorized commits, hook allowing commits with
-    KSPEC_SHADOW_COMMIT=1 env var
-  _ulid: 01KFJ4VTYQ24MNQB0H62DZZA1G
+    - dx
+    - testing
+  description: "Test helper should capture stderr on success - Currently helpers/cli.ts returns
+    stderr: '' when exit code is 0, making it impossible to test warning messages without JSON mode
+    workaround"
+  _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-22T06:04:30.551Z
+  created_at: 2026-01-22T06:04:34.309Z
   notes: []
   todos: []

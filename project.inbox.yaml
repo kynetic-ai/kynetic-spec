@@ -408,16 +408,6 @@ inbox:
       - workflow
       - dx
     added_by: "@claude"
-  - _ulid: 01KFGRV3Z5WW29YZJQSK05VGR9
-    text: "Test helper should capture stderr on success - Currently helpers/cli.ts returns stderr: ''
-      when exit code is 0, making it impossible to test warning messages without JSON mode
-      workaround"
-    created_at: 2026-01-21T17:15:09.669Z
-    tags:
-      - reflection
-      - dx
-      - testing
-    added_by: "@claude"
   - _ulid: 01KFGRV6AK641DTPJ243ZAZXD7
     text: Generic --clear-<field> pattern for array fields - Instead of adding --clear-deps,
       --clear-tags, --clear-blocked-by separately, consider a general pattern like --clear <field>
