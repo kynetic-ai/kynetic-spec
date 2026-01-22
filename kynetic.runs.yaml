@@ -55,8 +55,17 @@ runs:
   - _ulid: 01KFKRD7VD0QJ481YBPBYDBCE9
     workflow_ref: "@01KF782ZSH8JG4CCJRWVQQ9G5R"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 5
     started_at: 2026-01-22T21:05:18.190Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-22T21:05:18.190Z
+        completed_at: 2026-01-22T21:05:25.516Z
+        notes: Testing inputs
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-22T21:05:25.516Z
+        completed_at: 2026-01-22T21:05:25.516Z
     initiated_by: "@claude"
