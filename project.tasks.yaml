@@ -22254,5 +22254,81 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T23:35:06.730Z
-  notes: []
+  notes:
+    - _ulid: 01KFM108PCTQYH5ZBQQXMRZ7TF
+      created_at: 2026-01-22T23:35:30.253Z
+      author: "@claude"
+      content: >-
+        ## Implementation Details
+
+
+        **Context:** Currently `kspec meta add workflow` creates workflows with empty steps array.
+        Users must manually edit YAML to add steps. This task adds `--steps <json>` flag to define
+        steps at creation time.
+
+
+        **Files to modify:**
+
+
+        1. **src/strings/errors.ts** - Add error messages in validationErrors object:
+           - `invalidStepsJson(err)` - "Invalid JSON in --steps: ..."
+           - `stepsNotArray` - "Steps must be a JSON array"
+           - `invalidStepsSchema(issues)` - "Invalid workflow steps: ..."
+
+        2. **src/cli/commands/meta.ts** - Add option and parsing:
+           - Add imports: `z` from zod, `WorkflowStepSchema` and `type WorkflowStep` from schema
+           - Add option: `.option("--steps <json>", "Workflow steps as JSON array")` around line 1098
+           - Modify workflow creation block (lines 1136-1153):
+             - Parse JSON with try/catch
+             - Verify it's an array with Array.isArray()
+             - Validate with z.array(WorkflowStepSchema).safeParse() for detailed errors
+             - Use validated steps instead of empty array
+
+        3. **tests/meta.test.ts** - Add test cases:
+           - Valid multi-step workflow with check/action/decision types
+           - Error on malformed JSON
+           - Error when --steps is not an array
+           - Error on invalid step type
+           - Error when content field missing
+           - Empty array should be allowed
+           - Optional fields (on_fail, options, entry_criteria) work
+
+        **Key pattern (use safeParse for detailed errors):**
+
+        ```typescript
+
+        const result = z.array(WorkflowStepSchema).safeParse(parsedSteps);
+
+        if (!result.success) {
+          const issues = result.error.issues
+            .map((i) => `${i.path.join(".")}: ${i.message}`)
+            .join("; ");
+          error(errors.validation.invalidStepsSchema(issues));
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        ```
+
+
+        **Verification:**
+
+        ```bash
+
+        # Happy path
+
+        kspec meta add workflow --id test-wf --trigger "manual" \
+          --steps '[{"type":"action","content":"Step 1"},{"type":"check","content":"Verify","on_fail":"Rollback"}]'
+        kspec meta get @test-wf  # Verify steps saved
+
+
+        # Error cases
+
+        kspec meta add workflow --id x --trigger "t" --steps "not json"
+
+        kspec meta add workflow --id x --trigger "t" --steps '{"not":"array"}'
+
+        kspec meta add workflow --id x --trigger "t" --steps '[{"type":"invalid"}]'
+
+        ```
+      supersedes: null
   todos: []
