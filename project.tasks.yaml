@@ -20402,7 +20402,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -20528,6 +20528,10 @@
         **Documentation:** Added troubleshooting section to /release skill (SKILL.md).
       supersedes: null
   todos: []
+  completed_at: 2026-01-22T04:29:06.063Z
+  closed_reason: "Release skill implemented and working. v0.1.1 published to npm via trusted
+    publishers. Includes: skill file, CI workflow with version sync, troubleshooting docs for npm
+    OIDC auth issues."
 - _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
   slugs: []
   title: Spec out Web UI and Daemon Mode feature
