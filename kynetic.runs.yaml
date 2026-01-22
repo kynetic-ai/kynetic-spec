@@ -29,7 +29,15 @@ runs:
     current_step: 0
     total_steps: 4
     started_at: 2026-01-22T21:03:29.194Z
+    completed_at: 2026-01-22T21:03:34.873Z
     step_results: []
     initiated_by: "@claude"
     abort_reason: Testing abort functionality
-    completed_at: 2026-01-22T21:03:34.873Z
+  - _ulid: 01KFKRCEGVZZZKY1TZ45H6MHZC
+    workflow_ref: "@01KF782ZSJH58GHDTHC873XJMA"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-22T21:04:52.251Z
+    step_results: []
+    initiated_by: "@claude"
