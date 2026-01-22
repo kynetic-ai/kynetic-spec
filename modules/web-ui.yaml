@@ -74,6 +74,11 @@ features:
     traits: []
     notes: []
     created: 2026-01-22T01:18:11.366Z
+    acceptance_criteria:
+      - id: ac-1
+        given: daemon is running and browser opens localhost:3456
+        when: page loads
+        then: dashboard shows task overview with ready, in_progress, blocked, and completed counts
   - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
     slugs:
       - gh-pages-export
