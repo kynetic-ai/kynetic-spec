@@ -1756,6 +1756,12 @@ features:
           ULID generated automatically. Returns created item reference.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: kspec meta add workflow is executed with --steps containing a valid JSON array of workflow
+              steps
+            when: each step object has required 'type' (check/action/decision) and 'content' fields
+            then: workflow is created with provided steps; steps array persists in meta manifest
       - _ulid: 01KF2XCMS00000000000000000
         slugs:
           - meta-set-cmd
