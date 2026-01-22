@@ -21558,6 +21558,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #162. Successfully set up Biome for linting and formatting, replacing
+    non-functional ESLint. All CI checks passed, 930/932 tests pass. Formatted 73 files with
+    consistent style. Some acceptable lint warnings documented in PR."
   depends_on: []
   context: []
   priority: 3
@@ -21568,6 +21571,7 @@
   vcs_refs: []
   created_at: 2026-01-22T06:04:37.951Z
   started_at: 2026-01-22T08:28:50.398Z
+  completed_at: 2026-01-22T08:42:38.803Z
   notes:
     - _ulid: 01KFJ4WG9CV6S1Y40ACW2REBFZ
       created_at: 2026-01-22T06:04:52.397Z
@@ -21633,10 +21637,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-22T08:42:38.803Z
-  closed_reason: "Merged PR #162. Successfully set up Biome for linting and formatting, replacing
-    non-functional ESLint. All CI checks passed, 930/932 tests pass. Formatted 73 files with
-    consistent style. Some acceptable lint warnings documented in PR."
 - _ulid: 01KFJ52WHDSCA9ZQ8GKY57X8SC
   slugs: []
   title: Improve ACP mock to require permission requests
@@ -21645,7 +21645,7 @@
     requests like the real agent does. Currently mock auto-succeeds tool calls without permission
     flow. Would have caught the { granted: true } format bug in tests rather than live testing."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21683,6 +21683,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T08:42:52.432Z
 - _ulid: 01KFJ56XB0XWW6VCHSNWAC7YJB
   slugs: []
   title: Add validation warning for manual_only parent with eligible children
