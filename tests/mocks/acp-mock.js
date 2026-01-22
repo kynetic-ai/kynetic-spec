@@ -6,6 +6,7 @@
  * - initialize
  * - session/new
  * - session/prompt
+ * - session/request_permission (auto-approves in yolo mode style)
  *
  * Controlled via environment variables:
  * - MOCK_ACP_EXIT_CODE: Exit code to return on prompt (default: 0 = success)
@@ -85,8 +86,8 @@ async function handleInitialize(id, _params) {
     protocolVersion: 1,
     agentCapabilities: {},
     agentInfo: {
-      name: 'mock-acp',
-      version: '1.0.0',
+      name: "mock-acp",
+      version: "1.0.0",
     },
   });
 }
@@ -103,12 +104,12 @@ async function handleNewSession(id, params) {
 
 async function handlePrompt(id, params) {
   if (!initialized) {
-    sendError(id, -32002, 'Not initialized');
+    sendError(id, -32002, "Not initialized");
     return;
   }
 
   if (!sessionId || params.sessionId !== sessionId) {
-    sendError(id, -32003, 'Invalid session');
+    sendError(id, -32003, "Invalid session");
     return;
   }
 
@@ -119,22 +120,48 @@ async function handlePrompt(id, params) {
 
   // Check if we should fail
   if (shouldFail()) {
-    sendError(id, -32000, 'Mock failure');
+    sendError(id, -32000, "Mock failure");
     return;
   }
 
   // Send streaming update notification (ACP SessionUpdate format)
   // SessionUpdate is a discriminated union with sessionUpdate as the discriminator
-  sendNotification('session/update', {
+  sendNotification("session/update", {
     sessionId,
     update: {
-      sessionUpdate: 'agent_message_chunk',
-      content: { type: 'text', text: responseText },
+      sessionUpdate: "agent_message_chunk",
+      content: { type: "text", text: responseText },
     },
   });
 
   // Send completion response
   sendResponse(id, { stopReason });
+}
+
+async function handleRequestPermission(id, params) {
+  if (!initialized) {
+    sendError(id, -32002, "Not initialized");
+    return;
+  }
+
+  // Extract options from request
+  const options = params.options || [];
+
+  // Auto-approve: Find an "allow" option (prefer allow_always, then allow_once)
+  // This matches the yolo mode behavior in the real ralph command
+  const allowOption =
+    options.find((o) => o.kind === "allow_always") ||
+    options.find((o) => o.kind === "allow_once");
+
+  if (allowOption) {
+    // Grant permission using the correct ACP response format
+    sendResponse(id, {
+      outcome: { outcome: "selected", optionId: allowOption.optionId },
+    });
+  } else {
+    // No allow option available - cancel the request
+    sendResponse(id, { outcome: { outcome: "cancelled" } });
+  }
 }
 
 // ─── Message Router ──────────────────────────────────────────────────────────
@@ -143,26 +170,29 @@ async function handleMessage(line) {
   try {
     const msg = JSON.parse(line);
 
-    if (msg.jsonrpc !== '2.0' || !msg.method) {
-      sendError(msg.id || null, -32600, 'Invalid Request');
+    if (msg.jsonrpc !== "2.0" || !msg.method) {
+      sendError(msg.id || null, -32600, "Invalid Request");
       return;
     }
 
     switch (msg.method) {
-      case 'initialize':
+      case "initialize":
         await handleInitialize(msg.id, msg.params);
         break;
-      case 'session/new':
+      case "session/new":
         await handleNewSession(msg.id, msg.params);
         break;
-      case 'session/prompt':
+      case "session/prompt":
         await handlePrompt(msg.id, msg.params);
+        break;
+      case "session/request_permission":
+        await handleRequestPermission(msg.id, msg.params);
         break;
       default:
         sendError(msg.id, -32601, `Method not found: ${msg.method}`);
     }
   } catch (err) {
-    sendError(null, -32700, 'Parse error');
+    sendError(null, -32700, "Parse error");
   }
 }
 
