@@ -52,6 +52,8 @@ export const WorkflowStepSchema = z.object({
   on_fail: z.string().optional(),
   options: z.array(z.string()).optional(), // For decision type
   execution: StepExecutionSchema.optional(),
+  entry_criteria: z.array(z.string()).optional(),
+  exit_criteria: z.array(z.string()).optional(),
 });
 
 /**

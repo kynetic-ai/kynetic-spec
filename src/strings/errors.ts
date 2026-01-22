@@ -326,6 +326,9 @@ export const workflowRunErrors = {
     `Multiple active runs found. Specify which run:\n${runIds.map((id) => `  kspec workflow next @${id}`).join('\n')}`,
   runNotActive: (ref: string, status: string) =>
     `Cannot advance workflow run: status is ${status} (expected active)`,
+  entryCriteriaNotConfirmed: 'Entry criteria not confirmed. Use --confirm to acknowledge.',
+  exitCriteriaNotConfirmed: 'Exit criteria not confirmed. Use --confirm to acknowledge.',
+  skipRequiresForce: 'Cannot skip step in strict mode without --force flag',
 } as const;
 
 /**

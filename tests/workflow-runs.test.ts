@@ -438,11 +438,15 @@ describe('workflow next - basic step advancement', () => {
 
     const run = runsData.runs[0];
     expect(run.current_step).toBe(1);
-    expect(run.step_results).toHaveLength(1);
+    // After advancing, we have: step 0 completed + step 1 stub (with entry_confirmed)
+    expect(run.step_results).toHaveLength(2);
     expect(run.step_results[0].step_index).toBe(0);
     expect(run.step_results[0].status).toBe('completed');
     expect(run.step_results[0].started_at).toBeDefined();
     expect(run.step_results[0].completed_at).toBeDefined();
+    // Step 1 stub created with started_at for tracking entry_confirmed
+    expect(run.step_results[1].step_index).toBe(1);
+    expect(run.step_results[1].started_at).toBeDefined();
   });
 
   it('should work with --json output', async () => {
@@ -477,7 +481,8 @@ describe('workflow next - basic step advancement', () => {
 
     const run = runsData.runs[0];
     expect(run.current_step).toBe(2);
-    expect(run.step_results).toHaveLength(2);
+    // After two advances: step 0 complete, step 1 complete, step 2 stub
+    expect(run.step_results).toHaveLength(3);
   });
 });
 
@@ -785,5 +790,445 @@ describe('workflow next - error guidance trait', () => {
     expect(result.stderr).toContain('Cannot advance workflow run');
     expect(result.stderr).toContain('completed'); // Current state
     expect(result.stderr).toContain('active'); // Expected state
+  });
+});
+
+/**
+ * Tests for workflow enforcement modes
+ * Spec: @workflow-enforcement-modes
+ */
+
+// AC: @workflow-enforcement-modes ac-1
+describe('entry criteria display and enforcement', () => {
+  let strictWorkflowUlid: string;
+  let advisoryWorkflowUlid: string;
+
+  beforeEach(async () => {
+    strictWorkflowUlid = ulid();
+    advisoryWorkflowUlid = ulid();
+
+    // Create workflows with entry criteria
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const doc = parseDocument(metaContent);
+    const metaData = doc.toJS() as any;
+
+    metaData.workflows.push({
+      _ulid: strictWorkflowUlid,
+      id: 'strict-workflow',
+      trigger: 'manual',
+      enforcement: 'strict',
+      steps: [
+        { type: 'check', content: 'First step' },
+        {
+          type: 'action',
+          content: 'Second step with entry criteria',
+          entry_criteria: ['Prerequisite A is complete', 'Prerequisite B is verified'],
+        },
+        { type: 'check', content: 'Third step' },
+      ],
+    });
+
+    metaData.workflows.push({
+      _ulid: advisoryWorkflowUlid,
+      id: 'advisory-workflow',
+      trigger: 'manual',
+      enforcement: 'advisory',
+      steps: [
+        { type: 'check', content: 'First step' },
+        {
+          type: 'action',
+          content: 'Second step with entry criteria',
+          entry_criteria: ['Advisory prerequisite A', 'Advisory prerequisite B'],
+        },
+        { type: 'check', content: 'Third step' },
+      ],
+    });
+
+    await fs.writeFile(metaPath, YAML.stringify(metaData), 'utf-8');
+  });
+
+  it('should display entry criteria in strict mode and block without --confirm', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @strict-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Try to advance without --confirm - should block
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir, { expectFail: true });
+
+    expect(nextResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(nextResult.stdout).toContain('Step 2/3');
+    expect(nextResult.stdout).toContain('Second step with entry criteria');
+    expect(nextResult.stdout).toContain('Entry criteria:');
+    expect(nextResult.stdout).toContain('Prerequisite A is complete');
+    expect(nextResult.stdout).toContain('Prerequisite B is verified');
+    expect(nextResult.stderr).toContain('Entry criteria not confirmed');
+    expect(nextResult.stderr).toContain('--confirm');
+  });
+
+  it('should allow advance in strict mode with --confirm', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @strict-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance with --confirm - should succeed
+    const nextResult = kspec(`workflow next @${run_id} --confirm`, tempDir);
+
+    expect(nextResult.exitCode).toBe(0);
+    expect(nextResult.stdout).toContain('Completed step 1/3');
+    expect(nextResult.stdout).toContain('Step 2/3');
+  });
+
+  it('should display entry criteria in advisory mode without blocking', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @advisory-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance without --confirm - should succeed and show criteria
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir);
+
+    expect(nextResult.exitCode).toBe(0);
+    expect(nextResult.stdout).toContain('Step 2/3');
+    expect(nextResult.stdout).toContain('Entry criteria:');
+    expect(nextResult.stdout).toContain('Advisory prerequisite A');
+    expect(nextResult.stdout).toContain('Advisory prerequisite B');
+  });
+
+  it('should not block in advisory mode without --confirm', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @advisory-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance without --confirm - should complete successfully
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir);
+
+    expect(nextResult.exitCode).toBe(0);
+    expect(nextResult.stdout).toContain('Completed step 1/3');
+  });
+});
+
+// AC: @workflow-enforcement-modes ac-2
+describe('exit criteria display and enforcement', () => {
+  let strictWorkflowUlid: string;
+  let advisoryWorkflowUlid: string;
+
+  beforeEach(async () => {
+    strictWorkflowUlid = ulid();
+    advisoryWorkflowUlid = ulid();
+
+    // Create workflows with exit criteria
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const doc = parseDocument(metaContent);
+    const metaData = doc.toJS() as any;
+
+    metaData.workflows.push({
+      _ulid: strictWorkflowUlid,
+      id: 'strict-exit-workflow',
+      trigger: 'manual',
+      enforcement: 'strict',
+      steps: [
+        {
+          type: 'action',
+          content: 'Step with exit criteria',
+          exit_criteria: ['Output A is generated', 'Output B is validated'],
+        },
+        { type: 'check', content: 'Final step' },
+      ],
+    });
+
+    metaData.workflows.push({
+      _ulid: advisoryWorkflowUlid,
+      id: 'advisory-exit-workflow',
+      trigger: 'manual',
+      enforcement: 'advisory',
+      steps: [
+        {
+          type: 'action',
+          content: 'Step with exit criteria',
+          exit_criteria: ['Advisory output A', 'Advisory output B'],
+        },
+        { type: 'check', content: 'Final step' },
+      ],
+    });
+
+    await fs.writeFile(metaPath, YAML.stringify(metaData), 'utf-8');
+  });
+
+  it('should display exit criteria in strict mode and block without --confirm', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @strict-exit-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Try to advance without --confirm - should block
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir, { expectFail: true });
+
+    expect(nextResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(nextResult.stdout).toContain('Completing step 1/2');
+    expect(nextResult.stdout).toContain('Exit criteria:');
+    expect(nextResult.stdout).toContain('Output A is generated');
+    expect(nextResult.stdout).toContain('Output B is validated');
+    expect(nextResult.stderr).toContain('Exit criteria not confirmed');
+    expect(nextResult.stderr).toContain('--confirm');
+  });
+
+  it('should allow advance in strict mode with --confirm', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @strict-exit-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance with --confirm - should succeed
+    const nextResult = kspec(`workflow next @${run_id} --confirm`, tempDir);
+
+    expect(nextResult.exitCode).toBe(0);
+    expect(nextResult.stdout).toContain('Completed step 1/2');
+  });
+
+  it('should display exit criteria in advisory mode without blocking', async () => {
+    // Start run
+    const startResult = kspec(`workflow start @advisory-exit-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance without --confirm - should succeed and show criteria
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir);
+
+    expect(nextResult.exitCode).toBe(0);
+    expect(nextResult.stdout).toContain('Exit criteria:');
+    expect(nextResult.stdout).toContain('Advisory output A');
+    expect(nextResult.stdout).toContain('Advisory output B');
+  });
+});
+
+// AC: @workflow-enforcement-modes ac-3
+describe('strict mode enforcement', () => {
+  let strictWorkflowUlid: string;
+
+  beforeEach(async () => {
+    strictWorkflowUlid = ulid();
+
+    // Create strict workflow with both entry and exit criteria
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const doc = parseDocument(metaContent);
+    const metaData = doc.toJS() as any;
+
+    metaData.workflows.push({
+      _ulid: strictWorkflowUlid,
+      id: 'strict-full-workflow',
+      trigger: 'manual',
+      enforcement: 'strict',
+      steps: [
+        {
+          type: 'action',
+          content: 'First step',
+          exit_criteria: ['First output complete'],
+        },
+        {
+          type: 'action',
+          content: 'Second step',
+          entry_criteria: ['First step verified'],
+          exit_criteria: ['Second output complete'],
+        },
+        { type: 'check', content: 'Final step' },
+      ],
+    });
+
+    await fs.writeFile(metaPath, YAML.stringify(metaData), 'utf-8');
+  });
+
+  it('should require --confirm to proceed with criteria', async () => {
+    const startResult = kspec(`workflow start @strict-full-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Try without --confirm - should fail
+    const failResult = kspec(`workflow next @${run_id}`, tempDir, { expectFail: true });
+    expect(failResult.exitCode).toBe(4);
+    expect(failResult.stderr).toContain('Exit criteria not confirmed');
+
+    // Try with --confirm - should succeed
+    const successResult = kspec(`workflow next @${run_id} --confirm`, tempDir);
+    expect(successResult.exitCode).toBe(0);
+  });
+
+  it('should require --force to skip in strict mode', async () => {
+    const startResult = kspec(`workflow start @strict-full-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Try --skip without --force - should fail
+    const failResult = kspec(`workflow next @${run_id} --skip`, tempDir, { expectFail: true });
+    expect(failResult.exitCode).toBe(4);
+    expect(failResult.stderr).toContain('Cannot skip step in strict mode without --force');
+
+    // Try --skip with --force - should succeed
+    const successResult = kspec(`workflow next @${run_id} --skip --force`, tempDir);
+    expect(successResult.exitCode).toBe(0);
+  });
+
+  it('should record confirmations in step_results', async () => {
+    const startResult = kspec(`workflow start @strict-full-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance with --confirm
+    const nextResult = kspec(`workflow next @${run_id} --confirm`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+
+    // Check that confirmation was recorded
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs.find((r: any) => r._ulid === run_id);
+    expect(run).toBeDefined();
+    // After advance: step 0 complete + step 1 stub
+    expect(run.step_results).toHaveLength(2);
+    // Step 0 should have exit_confirmed
+    expect(run.step_results[0].exit_confirmed).toBe(true);
+    // Step 1 should have entry_confirmed
+    expect(run.step_results[1].entry_confirmed).toBe(true);
+  });
+});
+
+// AC: @workflow-enforcement-modes ac-4
+describe('advisory mode behavior', () => {
+  let advisoryWorkflowUlid: string;
+
+  beforeEach(async () => {
+    advisoryWorkflowUlid = ulid();
+
+    // Create advisory workflow (default or explicit)
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const doc = parseDocument(metaContent);
+    const metaData = doc.toJS() as any;
+
+    metaData.workflows.push({
+      _ulid: advisoryWorkflowUlid,
+      id: 'advisory-full-workflow',
+      trigger: 'manual',
+      enforcement: 'advisory',
+      steps: [
+        {
+          type: 'action',
+          content: 'First step',
+          exit_criteria: ['Advisory output'],
+        },
+        {
+          type: 'action',
+          content: 'Second step',
+          entry_criteria: ['Advisory input'],
+        },
+      ],
+    });
+
+    await fs.writeFile(metaPath, YAML.stringify(metaData), 'utf-8');
+  });
+
+  it('should show criteria as guidance only', async () => {
+    const startResult = kspec(`workflow start @advisory-full-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Advance without --confirm - should succeed
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+    expect(nextResult.stdout).toContain('Exit criteria:');
+    expect(nextResult.stdout).toContain('Advisory output');
+  });
+
+  it('should allow --skip without --force', async () => {
+    const startResult = kspec(`workflow start @advisory-full-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Skip without --force - should succeed
+    const skipResult = kspec(`workflow next @${run_id} --skip`, tempDir);
+    expect(skipResult.exitCode).toBe(0);
+
+    // Verify step was marked as skipped
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs.find((r: any) => r._ulid === run_id);
+    expect(run).toBeDefined();
+    expect(run.step_results[0].status).toBe('skipped');
+  });
+});
+
+// AC: @trait-json-output ac-1, ac-2, ac-3
+describe('workflow next JSON output', () => {
+  let testWorkflowUlidLocal: string;
+
+  beforeEach(async () => {
+    testWorkflowUlidLocal = ulid();
+
+    // Create simple workflow for JSON testing
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const doc = parseDocument(metaContent);
+    const metaData = doc.toJS() as any;
+
+    metaData.workflows.push({
+      _ulid: testWorkflowUlidLocal,
+      id: 'json-test-workflow',
+      trigger: 'manual',
+      steps: [
+        { type: 'action', content: 'First step' },
+        { type: 'action', content: 'Second step' },
+      ],
+    });
+
+    await fs.writeFile(metaPath, YAML.stringify(metaData), 'utf-8');
+  });
+
+  it('should output valid JSON with no ANSI codes', async () => {
+    const startResult = kspec(`workflow start @json-test-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const nextResult = kspec(`workflow next @${run_id} --json`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+
+    // Should parse as valid JSON
+    const output = JSON.parse(nextResult.stdout);
+    expect(output).toBeDefined();
+
+    // Should not contain ANSI escape codes
+    expect(nextResult.stdout).not.toMatch(/\x1b\[/);
+  });
+
+  it('should include all data in JSON mode', async () => {
+    const startResult = kspec(`workflow start @json-test-workflow --json`, tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const nextResult = kspec(`workflow next @${run_id} --json`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+
+    const output = JSON.parse(nextResult.stdout);
+    expect(output).toHaveProperty('run_id');
+    expect(output).toHaveProperty('current_step');
+    expect(output).toHaveProperty('total_steps');
+    expect(output).toHaveProperty('next_step');
+  });
+
+  it('should return errors as JSON in JSON mode', async () => {
+    const result = kspec(`workflow next @nonexistent --json`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3); // NOT_FOUND
+    // Error output is on stderr, not stdout in JSON mode
+    expect(result.stderr).toContain('Workflow run not found');
   });
 });
