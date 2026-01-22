@@ -356,4 +356,76 @@ tasks:
 
     expect(result).toContain('Staleness: OK');
   });
+
+  // AC: @validation ac-1
+  it('should warn when manual_only parent blocks eligible children', async () => {
+    const specDir = path.join(tmpDir, 'spec');
+    await fs.mkdir(specDir);
+
+    // Create manifest
+    await fs.writeFile(
+      path.join(tmpDir, 'kynetic.yaml'),
+      `kynetic: "1.0"
+project:
+  name: test-project
+  version: 0.1.0
+includes:
+  - "spec/module.yaml"
+tasks:
+  - "spec/test.tasks.yaml"
+`
+    );
+
+    // Create a spec module
+    await fs.writeFile(
+      path.join(specDir, 'module.yaml'),
+      `- _ulid: 01JHNKAB01TESTSPEC00000001
+  slugs:
+    - test-feature
+  title: Test Feature
+  type: feature
+  status:
+    implementation: not_started
+`
+    );
+
+    // Create task file with manual_only parent and eligible children
+    await fs.writeFile(
+      path.join(specDir, 'test.tasks.yaml'),
+      `tasks:
+  - _ulid: 01JHNKAB01TASK100000000001
+    slugs:
+      - manual-parent
+    title: Manual Only Parent Task
+    status: pending
+    automation: manual_only
+  - _ulid: 01JHNKAB01TASK200000000002
+    slugs:
+      - eligible-child-1
+    title: Eligible Child Task 1
+    status: pending
+    automation: eligible
+    depends_on:
+      - "@manual-parent"
+  - _ulid: 01JHNKAB01TASK300000000003
+    slugs:
+      - eligible-child-2
+    title: Eligible Child Task 2
+    status: pending
+    automation: eligible
+    depends_on:
+      - "@manual-parent"
+`
+    );
+
+    // Run validate --staleness
+    const result = kspec('validate --staleness', tmpDir);
+
+    expect(result).toContain('Staleness warnings');
+    expect(result).toContain('Automation blocking');
+    expect(result).toContain('manual-parent');
+    expect(result).toContain('eligible-child-1');
+    expect(result).toContain('eligible-child-2');
+    expect(result).toContain('manual_only and blocks');
+  });
 });
