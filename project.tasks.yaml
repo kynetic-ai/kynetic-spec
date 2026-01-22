@@ -20404,6 +20404,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Release skill implemented and working. v0.1.1 published to npm via trusted
+    publishers. Includes: skill file, CI workflow with version sync, troubleshooting docs for npm
+    OIDC auth issues."
   depends_on: []
   context: []
   priority: 2
@@ -20414,6 +20417,7 @@
   vcs_refs: []
   created_at: 2026-01-22T00:40:24.145Z
   started_at: 2026-01-22T01:21:15.314Z
+  completed_at: 2026-01-22T04:29:06.063Z
   notes:
     - _ulid: 01KFHJATMRSD94WHCC1EMQZMZY
       created_at: 2026-01-22T00:40:38.808Z
@@ -20528,10 +20532,6 @@
         **Documentation:** Added troubleshooting section to /release skill (SKILL.md).
       supersedes: null
   todos: []
-  completed_at: 2026-01-22T04:29:06.063Z
-  closed_reason: "Release skill implemented and working. v0.1.1 published to npm via trusted
-    publishers. Includes: skill file, CI workflow with version sync, troubleshooting docs for npm
-    OIDC auth issues."
 - _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
   slugs: []
   title: Spec out Web UI and Daemon Mode feature
@@ -20705,4 +20705,44 @@
         To inspect: `kspec item get @web-ui` and `kspec item get @daemon-server` etc.
         To delete if needed: delete children first, then parent module.
       supersedes: null
+  todos: []
+- title: "Implement: CLI Version Display"
+  type: task
+  spec_ref: "@cli-version"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-cli-version-display
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KFHZT60B91H5JZE2WRWCK55Z
+      created_at: 2026-01-22T04:36:13.452Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        The CLI must display the correct version from package.json when running 'kspec --version' or
+        'kspec -V'. Version must stay in sync with the npm package version.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given kspec is installed from npm, when user runs 'kspec --version' or 'kspec -V',
+        then displays the version from package.json (e.g., '0.1.1')
+
+        - ac-2: Given a new version is released, when package.json version is updated, then CLI
+        --version output automatically reflects the new version without code changes
+
+        - ac-3: Given kspec is run in development via 'npm run dev', when user runs 'npm run dev --
+        --version', then displays the same version as package.json
+      supersedes: null
+  _ulid: 01KFHZT60CB7D2K13HP914B8YZ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T04:36:13.452Z
   todos: []
