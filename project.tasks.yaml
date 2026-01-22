@@ -21866,7 +21866,7 @@
     deprecated in favor of typed methods only. The { granted: true } bug showed the value of
     compile-time enforcement."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
