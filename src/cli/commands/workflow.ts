@@ -35,17 +35,13 @@ import { EXIT_CODES } from '../exit-codes.js';
  */
 function resolveWorkflowRef(ref: string, workflows: Workflow[]): Workflow | null {
   const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
-  console.error('DEBUG resolveWorkflowRef: cleanRef=', cleanRef);
-  console.error('DEBUG resolveWorkflowRef: workflows=', workflows);
 
   // Try by ID first
   let workflow = workflows.find((w) => w.id === cleanRef);
-  console.error('DEBUG: Found by ID?', !!workflow);
   if (workflow) return workflow;
 
   // Try by ULID or ULID prefix
   workflow = workflows.find((w) => w._ulid === cleanRef || w._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()));
-  console.error('DEBUG: Found by ULID?', !!workflow);
   return workflow || null;
 }
 
@@ -83,9 +79,6 @@ async function workflowStart(workflowRef: string, options: { task?: string; json
   const metaCtx = await loadMetaContext(ctx);
 
   // DEBUG: Log loaded workflows
-  console.error('DEBUG: Loaded workflows:', metaCtx.workflows.map((w) => ({ id: w.id, ulid: w._ulid })));
-  console.error('DEBUG: Looking for:', workflowRef);
-
   // Resolve workflow reference
   const workflow = resolveWorkflowRef(workflowRef, metaCtx.workflows);
   if (!workflow) {

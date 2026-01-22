@@ -8,34 +8,39 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as YAML from 'yaml';
 import { parseDocument } from 'yaml';
+import { ulid } from 'ulid';
 
 let tempDir: string;
+let testWorkflowUlid: string;
+let anotherWorkflowUlid: string;
+let testTaskUlid: string;
 
 beforeEach(async () => {
   tempDir = await createTempDir();
 
+  // Generate valid ULIDs for test fixtures
+  testWorkflowUlid = ulid();
+  anotherWorkflowUlid = ulid();
+  testTaskUlid = ulid();
+
   // Initialize git repo (required for shadow operations)
   initGitRepo(tempDir);
 
-  // Create .kspec directory structure
-  const kspecDir = path.join(tempDir, '.kspec');
-  await fs.mkdir(kspecDir, { recursive: true });
-
-  // Create minimal root manifest
+  // Create minimal root manifest (non-shadow mode: files in project root)
   await fs.writeFile(
-    path.join(kspecDir, 'kynetic.yaml'),
+    path.join(tempDir, 'kynetic.yaml'),
     `kynetic: "1.0"
 project: Test Project
 `,
     'utf-8',
   );
 
-  // Create workflows in meta manifest
+  // Create workflows in meta manifest (non-shadow mode: files in project root)
   await fs.writeFile(
-    path.join(kspecDir, 'kynetic.meta.yaml'),
+    path.join(tempDir, 'kynetic.meta.yaml'),
     `kynetic_meta: "1.0"
 workflows:
-  - _ulid: 01TEST0000000000000000001
+  - _ulid: ${testWorkflowUlid}
     id: test-workflow
     trigger: manual
     description: Test workflow for run tests
@@ -47,7 +52,7 @@ workflows:
       - type: check
         content: Validate results
 
-  - _ulid: 01TEST0000000000000000002
+  - _ulid: ${anotherWorkflowUlid}
     id: another-workflow
     trigger: manual
     description: Another test workflow
@@ -67,12 +72,12 @@ agents:
     'utf-8',
   );
 
-  // Create a test task for task linking tests
+  // Create a test task for task linking tests (non-shadow mode: files in project root)
   await fs.writeFile(
-    path.join(kspecDir, 'project.tasks.yaml'),
+    path.join(tempDir, 'project.tasks.yaml'),
     `kynetic_tasks: "1.0"
 tasks:
-  - _ulid: 01TESTTASK000000000000001
+  - _ulid: ${testTaskUlid}
     slugs:
       - test-task
     title: Test Task
@@ -99,11 +104,11 @@ describe('workflow start', () => {
     const output = JSON.parse(result.stdout);
 
     expect(output).toHaveProperty('run_id');
-    expect(output.workflow_ref).toBe('@01TEST0000000000000000001');
+    expect(output.workflow_ref).toBe(`@${testWorkflowUlid}`);
     expect(output.status).toBe('active');
 
     // Verify run was saved to file
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     const runsContent = await fs.readFile(runsPath, 'utf-8');
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
@@ -112,7 +117,7 @@ describe('workflow start', () => {
     const run = runsData.runs[0];
 
     expect(run._ulid).toBe(output.run_id);
-    expect(run.workflow_ref).toBe('@01TEST0000000000000000001');
+    expect(run.workflow_ref).toBe(`@${testWorkflowUlid}`);
     expect(run.status).toBe('active');
     expect(run.current_step).toBe(0);
     expect(run.total_steps).toBe(3);
@@ -147,20 +152,20 @@ describe('workflow start with task link', () => {
     const output = JSON.parse(result.stdout);
 
     // Verify output includes task reference
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     const runsContent = await fs.readFile(runsPath, 'utf-8');
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
 
     const run = runsData.runs[0];
-    expect(run.task_ref).toBe('@01TESTTASK000000000000001');
+    expect(run.task_ref).toBe(`@${testTaskUlid}`);
   });
 
   it('should display task link in human output', async () => {
     const result = kspec('workflow start @test-workflow --task @test-task', tempDir);
 
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain('Linked task: @01TESTTASK000000000000001');
+    expect(result.stdout).toContain(`Linked task: @${testTaskUlid}`);
   });
 
   it('should error if task does not exist', async () => {
@@ -179,7 +184,7 @@ describe('workflow runs list', () => {
     kspec('workflow start @another-workflow --json', tempDir);
 
     // Abort one of them
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     const runsContent = await fs.readFile(runsPath, 'utf-8');
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
@@ -242,12 +247,12 @@ describe('workflow runs list', () => {
     const output = JSON.parse(result.stdout);
 
     expect(output.runs).toHaveLength(1);
-    expect(output.runs[0].workflow_ref).toBe('@01TEST0000000000000000001');
+    expect(output.runs[0].workflow_ref).toBe(`@${testWorkflowUlid}`);
   });
 
   it('should show "No workflow runs found" when no runs exist', async () => {
     // Delete runs file
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     await fs.unlink(runsPath);
 
     const result = kspec('workflow runs', tempDir);
@@ -277,7 +282,7 @@ describe('workflow show', () => {
     expect(result.stdout).toContain('active');
     expect(result.stdout).toContain('0/3');
     expect(result.stdout).toContain('Initiated by: @test');
-    expect(result.stdout).toContain('Task: @01TESTTASK000000000000001');
+    expect(result.stdout).toContain(`@${testTaskUlid}`);
   });
 
   it('should output run details in JSON format', async () => {
@@ -287,11 +292,11 @@ describe('workflow show', () => {
     const output = JSON.parse(result.stdout);
 
     expect(output.run._ulid).toBe(runId);
-    expect(output.run.workflow_ref).toBe('@01TEST0000000000000000001');
+    expect(output.run.workflow_ref).toBe(`@${testWorkflowUlid}`);
     expect(output.run.status).toBe('active');
     expect(output.run.current_step).toBe(0);
     expect(output.run.total_steps).toBe(3);
-    expect(output.run.task_ref).toBe('@01TESTTASK000000000000001');
+    expect(output.run.task_ref).toBe(`@${testTaskUlid}`);
   });
 
   it('should work with ULID prefix', async () => {
@@ -330,7 +335,7 @@ describe('workflow abort', () => {
     expect(output.status).toBe('aborted');
 
     // Verify in file
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     const runsContent = await fs.readFile(runsPath, 'utf-8');
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
@@ -355,7 +360,7 @@ describe('workflow abort', () => {
     expect(result.exitCode).toBe(0);
 
     // Verify in file
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     const runsContent = await fs.readFile(runsPath, 'utf-8');
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };
@@ -373,7 +378,7 @@ describe('workflow abort validation', () => {
     const startResult = kspec('workflow start @test-workflow --json', tempDir);
     const { run_id } = JSON.parse(startResult.stdout);
 
-    const runsPath = path.join(tempDir, '.kspec', 'kynetic.runs.yaml');
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
     const runsContent = await fs.readFile(runsPath, 'utf-8');
     const doc = parseDocument(runsContent);
     const runsData = doc.toJS() as { runs: any[] };

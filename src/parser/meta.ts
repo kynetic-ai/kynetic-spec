@@ -149,16 +149,8 @@ async function loadMetaFile(
     }
 
     // Parse workflows
-    console.error('DEBUG loadMetaFile: obj.workflows=', obj.workflows);
     if (Array.isArray(obj.workflows)) {
-      console.error('DEBUG: workflows is array, length:', obj.workflows.length);
       for (const workflow of obj.workflows) {
-        console.error('DEBUG: Parsing workflow:', workflow);
-        const parsedWorkflow = WorkflowSchema.safeParse(workflow);
-        console.error('DEBUG: Workflow parse success?', parsedWorkflow.success);
-        if (!parsedWorkflow.success) {
-          console.error('DEBUG: Workflow parse errors:', parsedWorkflow.error.errors);
-        }
         const parsed = WorkflowSchema.safeParse(workflow);
         if (parsed.success) {
           result.workflows.push({ ...parsed.data, _sourceFile: filePath });
@@ -206,9 +198,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     observations: [],
   };
 
-  console.error('DEBUG loadMetaContext: specDir=', ctx.specDir);
   const manifestPath = await findMetaManifest(ctx.specDir);
-  console.error('DEBUG loadMetaContext: manifestPath=', manifestPath);
   if (!manifestPath) {
     return result;
   }
@@ -218,12 +208,9 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
   try {
     const raw = await readYamlFile<unknown>(manifestPath);
     const parsed = MetaManifestSchema.safeParse(raw);
-    console.error('DEBUG: safeParse success?', parsed.success);
     if (!parsed.success) {
-      console.error('DEBUG: safeParse failed, errors:', parsed.error.errors);
       // Invalid manifest, but we can still try to extract items
       const items = await loadMetaFile(manifestPath);
-      console.error('DEBUG: items from fallback, workflows.length=', items.workflows.length);
       result.agents.push(...items.agents);
       result.workflows.push(...items.workflows);
       result.conventions.push(...items.conventions);
@@ -235,10 +222,8 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
 
     // Load items from manifest
     const manifestItems = await loadMetaFile(manifestPath);
-    console.error('DEBUG: manifestItems.workflows.length=', manifestItems.workflows.length);
     result.agents.push(...manifestItems.agents);
     result.workflows.push(...manifestItems.workflows);
-    console.error('DEBUG: result.workflows.length after push=', result.workflows.length);
     result.conventions.push(...manifestItems.conventions);
     result.observations.push(...manifestItems.observations);
 
