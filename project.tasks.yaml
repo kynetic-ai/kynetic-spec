@@ -21966,7 +21966,7 @@
     by default. Related: need pattern for cross-feature requirements - when new entity type added,
     features like search should automatically need to support it."
   spec_ref: "@fuzzy-item-search"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
