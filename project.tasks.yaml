@@ -20975,6 +20975,18 @@
       content: "Automation status set to eligible: Test addition with 3 defined cases: install, block
         unauthorized, allow with env var"
       supersedes: null
+    - _ulid: 01KFJ4WV5RDWRCW38RPN5JHKGR
+      created_at: 2026-01-22T06:05:03.545Z
+      author: "@claude"
+      content: |-
+        Test cases to implement:
+        1. installShadowHook() creates pre-commit hook in .kspec/.git/hooks/
+        2. Hook blocks commits without KSPEC_SHADOW_COMMIT=1 env var
+        3. Hook allows commits when KSPEC_SHADOW_COMMIT=1 is set
+
+        Location: src/parser/shadow.ts has installShadowHook function
+        Tests should go in: tests/shadow.test.ts or new tests/shadow-hook.test.ts
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
