@@ -170,6 +170,21 @@ features:
           Agents should be able to use kspec without interaction.
         implements:
           - "@cli-design"
+      - _ulid: 01KFHZSJVGEX3KTM5CHM8J1XAN
+        slugs:
+          - cli-version
+        title: CLI Version Display
+        type: requirement
+        tags: []
+        description: The CLI must display the correct version from package.json when running 'kspec
+          --version' or 'kspec -V'. Version must stay in sync with the npm package version.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-22T04:35:53.841Z
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
