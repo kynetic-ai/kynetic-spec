@@ -703,6 +703,7 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 | `/spec-plan` | Translate approved plans to specs |
 | `/reflect` | Session reflection and learning capture |
 | `/pr` | Create pull requests from current work |
+| `/release` | Create versioned releases with git tags and GitHub releases |
 
 ## Design Decisions
 
