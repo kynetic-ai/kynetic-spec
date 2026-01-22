@@ -15,7 +15,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for pushing version back to main
+      contents: read   # Required for checkout
       id-token: write  # Required for npm trusted publishers (OIDC)
 
     steps:
@@ -59,13 +59,6 @@ jobs:
         if: ${{ github.event.inputs.dry-run != 'true' }}
         run: npm publish --provenance --access public
 
-      - name: Commit version back to main
-        if: github.event_name == 'release'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json
-          git commit -m "chore: sync version to ${{ github.event.release.tag_name }}" || echo "No changes to commit"
-          git push origin HEAD:main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Note: Version sync to main requires a manual PR due to branch protection rules.
+      # After release, create a PR to update package.json version.
+      # See /release skill for details.
