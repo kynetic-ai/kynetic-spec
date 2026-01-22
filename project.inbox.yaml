@@ -555,16 +555,6 @@ inbox:
       - review
       - quality
     added_by: "@claude"
-  - _ulid: 01KFKW0AM6FRM9T2XKBQSFS0PY
-    text: "Add --steps flag to 'meta add workflow' command - allow defining workflow steps at creation
-      time using JSON array, avoiding manual YAML edits. Note: @create-workflow workflow step 4
-      references this limitation and should be updated once implemented."
-    created_at: 2026-01-22T22:08:09.350Z
-    tags:
-      - cli
-      - meta
-      - dx
-    added_by: "@claude"
   - _ulid: 01KFKW1ZGTR4BZ3QB87184MTM3
     text: Add update/note capability to inbox items - allow 'inbox update @ref --content' or 'inbox note
       @ref' to modify/append to items without delete+re-add cycle
