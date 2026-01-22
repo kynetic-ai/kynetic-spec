@@ -18960,6 +18960,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-20T22:56:09.994Z
+  started_at: 2026-01-22T07:21:22.900Z
   notes:
     - _ulid: 01KFESYSRAWQN3H0DVRJVW83V0
       created_at: 2026-01-20T22:56:09.994Z
@@ -19049,9 +19050,34 @@
       author: "@claude"
       content: "Automation status set to eligible: Has spec with 6 testable ACs, clear workflow feature"
       supersedes: null
+    - _ulid: 01KFJ9KQCCA6HJH34W4WJJXFX2
+      created_at: 2026-01-22T07:27:27.628Z
+      author: "@claude"
+      content: |-
+        Implementation complete:
+
+        ## What was implemented
+        - Added findActiveRuns() helper to parser/meta.ts for AC-3/4/5
+        - Added workflow next command with run reference inference
+        - Handles step completion with status (completed/skipped) and optional notes
+        - Advances to next step or completes run when on last step
+        - Outputs summary with duration and step counts on completion
+
+        ## Test coverage
+        Added 44 E2E tests covering all 6 direct ACs plus inherited trait ACs:
+        - AC-1: Basic step advancement (3 tests)
+        - AC-2: Run completion on last step (3 tests)
+        - AC-3: Single active run inference (2 tests)
+        - AC-4: Multiple active runs error (1 test)
+        - AC-5: No active runs error (2 tests)
+        - AC-6: Notes capture (3 tests)
+        - JSON output trait (5 tests)
+        - Error guidance trait (4 tests)
+
+        All 897 tests pass. No regressions.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-22T07:21:22.900Z
 - _ulid: 01KFESYSWBB2R797HKWA965MC9
   slugs:
     - task-workflow-enforcement-modes
