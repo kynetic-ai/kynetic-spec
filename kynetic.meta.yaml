@@ -2857,4 +2857,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFJHA3H4EEANVVSC0HY4GHQY
+    type: success
+    content: "Pattern for adding new validation types: Created separate validation module
+      (validate-skills.ts), integrated into validate command with dedicated flag (--skills), added
+      comprehensive tests in matching test file. This modular approach makes validation extensible
+      without bloating the main validate.ts file."
+    created_at: 2026-01-22T09:42:00.996Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
