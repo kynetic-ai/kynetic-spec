@@ -21866,7 +21866,7 @@
     deprecated in favor of typed methods only. The { granted: true } bug showed the value of
     compile-time enforcement."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21899,6 +21899,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-22T09:11:30.547Z
 - _ulid: 01KFJ574G610B5Z7J6KAVVETBW
   slugs: []
   title: Expand kspec search to cover inbox and meta entities
