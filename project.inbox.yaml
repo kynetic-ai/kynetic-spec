@@ -244,12 +244,6 @@ inbox:
     created_at: 2026-01-20T16:13:23.607Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KFE2XBV8SSJFGQRHBSAP0D4G
-    text: "Ralph loop: Enforce submit before complete - task complete should error if task is
-      in_progress (not pending_review) with helpful message suggesting 'kspec task submit' first"
-    created_at: 2026-01-20T16:13:25.736Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFE2XDRMFSEAM7DHQCEKG2GT
     text: "Ralph loop: Treat pending_review tasks as highest priority - agents should validate and
       complete these before starting new work"
