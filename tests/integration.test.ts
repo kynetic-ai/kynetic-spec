@@ -891,6 +891,56 @@ describe('Integration: derive', () => {
     // Task should have no notes (empty array)
     expect(task.notes).toHaveLength(0);
   });
+
+  // AC: @cmd-derive ac-15
+  it('should exclude cancelled parent tasks from depends_on', () => {
+    // Use existing test-feature and test-requirement from fixtures
+    // First derive parent task
+    kspec('derive @test-feature --flat', tempDir);
+
+    // Cancel the parent task
+    kspec('task cancel @task-test-feature --reason "testing cancelled parent"', tempDir);
+
+    // Derive the child requirement - should NOT include cancelled parent in depends_on
+    kspec('derive @test-requirement', tempDir);
+
+    // Get the child task details
+    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Child task should have empty depends_on (cancelled parent excluded)
+    expect(task.depends_on).toEqual([]);
+  });
+
+  // AC: @cmd-derive ac-15 (variant: multiple parent tasks, one cancelled)
+  it('should use non-cancelled parent task when multiple tasks exist', () => {
+    // Use existing test-feature from fixtures
+    // Create first task and cancel it
+    kspec('derive @test-feature --flat', tempDir);
+    kspec('task cancel @task-test-feature --reason "cancelled first task"', tempDir);
+
+    // Create second task with --force (should not be cancelled)
+    kspec('derive @test-feature --flat --force', tempDir);
+
+    // Now derive the child requirement - should use the non-cancelled parent task
+    kspec('derive @test-requirement', tempDir);
+
+    // Get the child task details
+    const taskOutput = kspec('task get @task-test-requirement --json', tempDir);
+    const task = JSON.parse(taskOutput);
+
+    // Child should depend on the second (non-cancelled) parent task
+    // Note: with --force, second task gets slug like "task-test-feature-1"
+    expect(task.depends_on.length).toBe(1);
+    expect(task.depends_on[0]).toMatch(/^@task-test-feature/);
+
+    // Verify it's not the cancelled task (which has slug @task-test-feature)
+    const parentTaskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const parentTask = JSON.parse(parentTaskOutput);
+    expect(parentTask.status).toBe('cancelled');
+    // Should be the -1 variant, not the base slug
+    expect(task.depends_on[0]).not.toBe('@task-test-feature');
+  });
 });
 
 describe('Integration: session', () => {
