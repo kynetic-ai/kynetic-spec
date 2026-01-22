@@ -19836,6 +19836,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #141 merged. Fixed hardcoded @human and @kspec-derive, added ac-author specs,
+    migrated 29 existing references, full test coverage. Version 0.1.1"
   depends_on: []
   context: []
   priority: 2
@@ -19845,6 +19847,7 @@
   vcs_refs: []
   created_at: 2026-01-21T20:15:59.385Z
   started_at: 2026-01-21T23:59:19.074Z
+  completed_at: 2026-01-22T00:32:35.089Z
   notes:
     - _ulid: 01KFH36M015Z9PA40KXSQTVHE0
       created_at: 2026-01-21T20:16:12.290Z
@@ -20051,9 +20054,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-01-22T00:32:35.089Z
-  closed_reason: "PR #141 merged. Fixed hardcoded @human and @kspec-derive, added ac-author specs,
-    migrated 29 existing references, full test coverage. Version 0.1.1"
 - _ulid: 01KFH4F3854392DJM0R17T79M2
   slugs: []
   title: Implement @trait-retrospective for specs without task tracking
@@ -20396,3 +20396,22 @@
       supersedes: null
   todos: []
   automation: needs_review
+- title: Create /release skill for versioning and tagging
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - cli
+    - skill
+    - dx
+  _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-22T00:40:24.145Z
+  notes: []
+  todos: []
