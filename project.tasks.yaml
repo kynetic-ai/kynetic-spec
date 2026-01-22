@@ -21485,7 +21485,7 @@
     stderr: '' when exit code is 0, making it impossible to test warning messages without JSON mode
     workaround"
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -21547,6 +21547,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-22T08:33:13.238Z
+  closed_reason: "Merged PR #161. All CI checks passed, both Claude and Greptile reviews found no
+    issues. Fix properly captures stderr on successful commands."
 - _ulid: 01KFJ4W25ZMBKM3AWVR09F4Q7G
   slugs: []
   title: Set up biome for linting (replace eslint)
