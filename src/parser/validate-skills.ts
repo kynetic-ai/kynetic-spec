@@ -191,7 +191,12 @@ export async function validateSkillFile(
     }
 
     // Check required fields (frontmatter might be null if empty YAML)
-    if (!frontmatter || !frontmatter.name || frontmatter.name.trim().length === 0) {
+    if (
+      !frontmatter ||
+      !frontmatter.name ||
+      typeof frontmatter.name !== "string" ||
+      frontmatter.name.trim().length === 0
+    ) {
       errors.push({
         file: relativePath,
         type: "missing-name",
@@ -202,6 +207,7 @@ export async function validateSkillFile(
     if (
       !frontmatter ||
       !frontmatter.description ||
+      typeof frontmatter.description !== "string" ||
       frontmatter.description.trim().length === 0
     ) {
       errors.push({

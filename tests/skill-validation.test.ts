@@ -1,12 +1,22 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { validateSkillFile } from "../src/parser/validate-skills.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { tmpdir } from "node:os";
 
+const tempDirs: string[] = [];
+
 describe("validateSkillFile", () => {
+  afterEach(async () => {
+    for (const dir of tempDirs) {
+      await fs.rm(dir, { recursive: true, force: true });
+    }
+    tempDirs.length = 0;
+  });
+
   async function createTempSkillFile(content: string): Promise<string> {
     const tempDir = await fs.mkdtemp(path.join(tmpdir(), "skill-test-"));
+    tempDirs.push(tempDir);
     const skillDir = path.join(tempDir, ".claude", "skills", "test-skill");
     await fs.mkdir(skillDir, { recursive: true });
     const skillFile = path.join(skillDir, "SKILL.md");
@@ -77,6 +87,62 @@ name: test-skill
       const errors = await validateSkillFile(skillFile);
       expect(errors.length).toBeGreaterThan(0);
       expect(errors.some((e) => e.type === "missing-name")).toBe(true);
+      expect(errors.some((e) => e.type === "missing-description")).toBe(true);
+    });
+
+    it("should fail when name is whitespace-only", async () => {
+      const content = `---
+name: "   "
+description: A test skill
+---
+
+# Test Skill
+`;
+      const skillFile = await createTempSkillFile(content);
+      const errors = await validateSkillFile(skillFile);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors.some((e) => e.type === "missing-name")).toBe(true);
+    });
+
+    it("should fail when description is whitespace-only", async () => {
+      const content = `---
+name: test-skill
+description: "   "
+---
+
+# Test Skill
+`;
+      const skillFile = await createTempSkillFile(content);
+      const errors = await validateSkillFile(skillFile);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors.some((e) => e.type === "missing-description")).toBe(true);
+    });
+
+    it("should fail when name is not a string", async () => {
+      const content = `---
+name: 123
+description: A test skill
+---
+
+# Test Skill
+`;
+      const skillFile = await createTempSkillFile(content);
+      const errors = await validateSkillFile(skillFile);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors.some((e) => e.type === "missing-name")).toBe(true);
+    });
+
+    it("should fail when description is not a string", async () => {
+      const content = `---
+name: test-skill
+description: 456
+---
+
+# Test Skill
+`;
+      const skillFile = await createTempSkillFile(content);
+      const errors = await validateSkillFile(skillFile);
+      expect(errors.length).toBeGreaterThan(0);
       expect(errors.some((e) => e.type === "missing-description")).toBe(true);
     });
   });
