@@ -159,29 +159,59 @@ Bug fixes and improvements for kspec CLI.
 - Increase timeout for ref resolution
 
 ### Actions (would execute)
-1. Create tag: v0.1.2
-2. Push tag to origin
-3. Create GitHub release with notes above
-4. CI will sync version and publish to npm
+1. Create version bump PR (package.json -> 0.1.2)
+2. Merge PR
+3. Create tag: v0.1.2
+4. Push tag to origin
+5. Create GitHub release with notes above
+6. CI publishes to npm
 
 Run without --dry-run to execute.
 ```
 
-### Phase 6: Execute Release
+### Phase 6: Bump Version (PR)
 
-**Step 1: Create annotated tag**
+**Before creating the release**, update package.json via PR:
+
 ```bash
 VERSION="0.1.2"  # calculated version
+
+# Create branch for version bump
+git checkout -b release/v$VERSION
+
+# Update version without creating a tag
+npm version $VERSION --no-git-tag-version
+
+# Commit and push
+git add package.json package-lock.json
+git commit -m "chore: bump version to $VERSION"
+git push -u origin release/v$VERSION
+
+# Create and merge PR
+gh pr create --title "chore: bump version to $VERSION" --body "Prepare release v$VERSION"
+gh pr merge --merge --delete-branch
+```
+
+**Why version bump first?**
+- The tagged commit will have the correct version in package.json
+- CI publishes whatever version is in package.json
+- No sync PR needed after the fact
+
+### Phase 7: Create Release
+
+After the version PR is merged, pull main and create the release:
+
+```bash
+# Pull the merged version bump
+git checkout main && git pull
+
+# Create annotated tag
 git tag -a "v$VERSION" -m "Release v$VERSION"
-```
 
-**Step 2: Push tag**
-```bash
+# Push tag
 git push origin "v$VERSION"
-```
 
-**Step 3: Create GitHub release**
-```bash
+# Create GitHub release
 gh release create "v$VERSION" \
   --title "v$VERSION" \
   --notes "$(cat <<'EOF'
@@ -204,31 +234,7 @@ EOF
 **CI automatically:**
 - Triggers on `release.published` event
 - Runs tests and publishes to npm with provenance
-
-**Manual step required:**
-- Create a PR to sync package.json version (branch protection prevents auto-commit)
-
-### Phase 7: Create Version Sync PR
-
-After the release is created and CI publishes to npm, create a PR to sync package.json:
-
-```bash
-# Create branch for version sync
-git checkout -b chore/sync-version-X.Y.Z
-
-# Update version without creating a tag
-npm version X.Y.Z --no-git-tag-version
-
-# Commit and push
-git add package.json package-lock.json
-git commit -m "chore: sync version to X.Y.Z"
-git push -u origin chore/sync-version-X.Y.Z
-
-# Create PR
-gh pr create --title "chore: sync version to X.Y.Z" --body "Syncs package.json with published npm package vX.Y.Z"
-```
-
-This is required because branch protection rules prevent CI from pushing directly to main.
+- package.json already has correct version (from Phase 6)
 
 ### Phase 8: Report Summary
 
@@ -242,13 +248,11 @@ After successful release:
 **Commit:** abc1234
 
 ### Published
+- [x] Version PR merged
 - [x] Tag created: v0.1.2
 - [x] Tag pushed to origin
 - [x] GitHub release created
-
-### Next Steps
-- CI will automatically run tests and publish to npm
-- **You must create a PR** to sync package.json version (see Phase 7)
+- [ ] CI publishing to npm...
 
 **Release:** https://github.com/owner/repo/releases/tag/v0.1.2
 ```
@@ -299,12 +303,13 @@ Brief high-level summary of what this release brings (1-2 sentences describing t
 ### Standard patch release
 ```
 User: /release patch
-Agent: [Validates state, creates v0.1.2 tag, pushes, creates GH release]
-Agent: [Creates PR to sync package.json version]
+Agent: [Validates state, creates version bump PR, merges it]
+Agent: [Creates v0.1.2 tag, pushes, creates GH release]
 
 Release v0.1.2 created successfully.
-GitHub release: https://github.com/kynetic-ai/kynetic-spec/releases/tag/v0.1.2
-CI will publish to npm. PR created to sync version: #123
+- Version PR: #122 (merged)
+- GitHub release: https://github.com/kynetic-ai/kynetic-spec/releases/tag/v0.1.2
+- CI publishing to npm...
 ```
 
 ### Auto-detect version
