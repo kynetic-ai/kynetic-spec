@@ -2158,6 +2158,11 @@ features:
             given: Search finds no matches
             when: Results are displayed
             then: Shows empty result with helpful message, not an error
+          - id: ac-7
+            given: user runs kspec search with a pattern
+            when: search executes
+            then: searches inbox items and meta entities (observations, agents, workflows) in addition to spec
+              items and tasks
         traits:
           - "@trait-json-output"
           - "@trait-filterable-list"
