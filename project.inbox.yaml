@@ -133,13 +133,6 @@ inbox:
       - cli
       - architecture
     added_by: "@claude"
-  - _ulid: 01KF9W2HF2W635NJA8XPY81001
-    text: Figure out and document a versioning strategy for the package
-    created_at: 2026-01-19T00:56:57.571Z
-    tags:
-      - docs
-      - release
-    added_by: "@claude"
   - _ulid: 01KFA1Q5AQJN28QE0S7EGNXPT8
     text: "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type,
       map existing error() calls to structured codes, add recovery suggestions for common error
