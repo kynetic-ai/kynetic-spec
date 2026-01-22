@@ -1571,6 +1571,10 @@ features:
             given: all spec items already have tasks
             when: kspec derive --all runs
             then: outputs 'Nothing to derive (all items have tasks)'; exit 0
+          - id: ac-author
+            given: note is auto-generated from spec description
+            when: task created with implementation notes
+            then: note author is set via getAuthor() (KSPEC_AUTHOR env var, or git user fallback)
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
