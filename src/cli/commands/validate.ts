@@ -156,7 +156,8 @@ function checkStaleness(
     );
 
     if (eligibleChildren.length > 0) {
-      const parentRef = parentTask.slugs[0] || refIndex.shortUlid(parentTask._ulid);
+      const parentRef =
+        parentTask.slugs[0] || refIndex.shortUlid(parentTask._ulid);
       const childRefs = eligibleChildren.map(
         (c) => `@${c.slugs[0] || refIndex.shortUlid(c._ulid)}`,
       );
@@ -249,7 +250,9 @@ function formatStalenessWarnings(
       console.log(chalk.yellow(`    ! ${w.message}`));
     }
     if (!verbose && automationBlocking.length > 3) {
-      console.log(chalk.gray(`    ... and ${automationBlocking.length - 3} more`));
+      console.log(
+        chalk.gray(`    ... and ${automationBlocking.length - 3} more`),
+      );
     }
   }
 }
