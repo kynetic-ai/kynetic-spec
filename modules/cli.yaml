@@ -1509,7 +1509,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           kspec derive <ref> [options]
           kspec derive --all [options]
