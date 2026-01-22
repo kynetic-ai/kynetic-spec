@@ -15196,7 +15196,7 @@
   notes:
     - _ulid: 01KFBRXWYCPEVJA07GPPK6JJXN
       created_at: 2026-01-19T18:40:28.620Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -15348,7 +15348,7 @@
   notes:
     - _ulid: 01KFC1GKGF9JKCWXQK4TV1RF29
       created_at: 2026-01-19T21:10:30.159Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -15476,7 +15476,7 @@
   notes:
     - _ulid: 01KFC1GKMKTZH0QC4HT8Y3N3YJ
       created_at: 2026-01-19T21:10:30.291Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -15566,7 +15566,7 @@
   notes:
     - _ulid: 01KFC1GKRBJ5HEEXSY3DAY8G8D
       created_at: 2026-01-19T21:10:30.411Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -15706,7 +15706,7 @@
   notes:
     - _ulid: 01KFC1GKW3PS9T8665F0B0AWXC
       created_at: 2026-01-19T21:10:30.531Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -15838,7 +15838,7 @@
   notes:
     - _ulid: 01KFC1GKZR0S29X7QDS2GYH2MF
       created_at: 2026-01-19T21:10:30.648Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -16013,7 +16013,7 @@
   notes:
     - _ulid: 01KFC1GM2ZKTMVQPWQXB5XFR48
       created_at: 2026-01-19T21:10:30.751Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -16174,7 +16174,7 @@
   notes:
     - _ulid: 01KFC1GM6DP3G90G7NM2000HQ6
       created_at: 2026-01-19T21:10:30.861Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -16422,7 +16422,7 @@
   notes:
     - _ulid: 01KFC1GM9JY304NYM4BWEFQCYS
       created_at: 2026-01-19T21:10:30.962Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -17009,7 +17009,7 @@
   notes:
     - _ulid: 01KFCJVC08H9ABPRBGE1BSAAK5
       created_at: 2026-01-20T02:13:28.712Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -18420,7 +18420,7 @@
   notes:
     - _ulid: 01KFEK0J15REDMKTPHVKQKWT91
       created_at: 2026-01-20T20:54:47.589Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -18565,7 +18565,7 @@
   notes:
     - _ulid: 01KFESYSE79G8H9Y4NTRJ4DFQR
       created_at: 2026-01-20T22:56:09.671Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -18600,7 +18600,7 @@
   notes:
     - _ulid: 01KFESYSK4NWB4H592KMR26SDP
       created_at: 2026-01-20T22:56:09.828Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -18751,7 +18751,7 @@
   notes:
     - _ulid: 01KFESYSRAWQN3H0DVRJVW83V0
       created_at: 2026-01-20T22:56:09.994Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -18853,7 +18853,7 @@
   notes:
     - _ulid: 01KFESYSWBJKYS1NNNZPMNDW55
       created_at: 2026-01-20T22:56:10.123Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -18990,7 +18990,7 @@
   notes:
     - _ulid: 01KFESYT0HVY45N3Q4TF36VA5C
       created_at: 2026-01-20T22:56:10.257Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -19791,7 +19791,7 @@
   notes:
     - _ulid: 01KFGF9REJ1HCR58CGZJM07GMD
       created_at: 2026-01-21T14:28:23.635Z
-      author: "@kspec-derive"
+      author: "@claude"
       content: >-
         Implementation notes (auto-generated from spec):
 
@@ -19844,6 +19844,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-01-21T20:15:59.385Z
+  started_at: 2026-01-21T23:59:19.074Z
   notes:
     - _ulid: 01KFH36M015Z9PA40KXSQTVHE0
       created_at: 2026-01-21T20:16:12.290Z
@@ -20000,9 +20001,56 @@
         Decision: Keep bug task as-is without spec_ref since it's a bug fix bringing code into
         compliance with now-specified behavior. Tests will annotate the relevant ACs.
       supersedes: null
+    - _ulid: 01KFHGDJ4HQBBQ6AFV3H8NGBH9
+      created_at: 2026-01-22T00:07:11.249Z
+      author: "@claude"
+      content: >-
+        ## Implementation Complete
+
+
+        ### Code Changes
+
+        1. **task.ts**: Added getAuthor import, replaced 4 hardcoded '@human' with getAuthor() at:
+           - Line 258: task set --clear-deps
+           - Line 295: task set --automation --reason
+           - Line 894: task complete --skip-review
+           - Line 1187: task reset
+
+        2. **derive.ts**: Added getAuthor import, replaced '@kspec-derive' with getAuthor() at line
+        286
+
+
+        ### Spec Coverage Added
+
+        - @spec-task-reset ac-author
+
+        - @spec-completion-enforcement ac-author
+
+        - @task-set ac-author
+
+        - @cmd-derive ac-author
+
+
+        ### Data Migration
+
+        - Migrated 1 @human → @claude in kynetic.tasks.yaml
+
+        - Migrated 11 @human → @claude in project.tasks.yaml
+
+        - Migrated 17 @kspec-derive → @claude in project.tasks.yaml
+
+
+        ### Tests Updated
+
+        - integration.test.ts: Updated derive test to expect @test (from KSPEC_AUTHOR)
+
+        - task-reset.test.ts: Updated reset test to expect @test (from KSPEC_AUTHOR)
+
+
+        All 848 tests pass.
+      supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-21T23:59:19.074Z
 - _ulid: 01KFH4F3854392DJM0R17T79M2
   slugs: []
   title: Implement @trait-retrospective for specs without task tracking
