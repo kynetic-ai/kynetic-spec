@@ -564,3 +564,14 @@ inbox:
       - tooling
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFHJNZKSXJ2RNAT06VEAYR3R
+    text: "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that
+      reference or are implemented by a given code path. Useful for bug fixes to quickly discover
+      what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive,
+      helps find already-instrumented code."
+    created_at: 2026-01-22T00:46:44.345Z
+    tags:
+      - dx
+      - tooling
+      - reflection
+    added_by: "@claude"
