@@ -412,3 +412,378 @@ describe('workflow abort validation', () => {
     expect(result.stderr).toContain('Cannot abort workflow run: already aborted');
   });
 });
+
+// AC: @workflow-step-navigation ac-1
+describe('workflow next - basic step advancement', () => {
+  let runId: string;
+
+  beforeEach(async () => {
+    const result = kspec('workflow start @test-workflow --json', tempDir);
+    const output = JSON.parse(result.stdout);
+    runId = output.run_id;
+  });
+
+  it('should complete current step and show next step', async () => {
+    const result = kspec(`workflow next @${runId}`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Completed step 1/3: [check] Verify prerequisites');
+    expect(result.stdout).toContain('Step 2/3: [action] Execute main task');
+
+    // Verify step result was recorded
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.current_step).toBe(1);
+    expect(run.step_results).toHaveLength(1);
+    expect(run.step_results[0].step_index).toBe(0);
+    expect(run.step_results[0].status).toBe('completed');
+    expect(run.step_results[0].started_at).toBeDefined();
+    expect(run.step_results[0].completed_at).toBeDefined();
+  });
+
+  it('should work with --json output', async () => {
+    const result = kspec(`workflow next @${runId} --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.run_id).toBe(runId);
+    expect(output.current_step).toBe(1);
+    expect(output.total_steps).toBe(3);
+    expect(output.next_step).toEqual({
+      type: 'action',
+      content: 'Execute main task',
+    });
+  });
+
+  it('should advance through multiple steps', async () => {
+    // Step 0 -> 1
+    kspec(`workflow next @${runId}`, tempDir);
+    // Step 1 -> 2
+    const result = kspec(`workflow next @${runId}`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Completed step 2/3: [action] Execute main task');
+    expect(result.stdout).toContain('Step 3/3: [check] Validate results');
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.current_step).toBe(2);
+    expect(run.step_results).toHaveLength(2);
+  });
+});
+
+// AC: @workflow-step-navigation ac-2
+describe('workflow next - completing last step', () => {
+  let runId: string;
+
+  beforeEach(async () => {
+    const result = kspec('workflow start @test-workflow --json', tempDir);
+    const output = JSON.parse(result.stdout);
+    runId = output.run_id;
+
+    // Advance to last step
+    kspec(`workflow next @${runId}`, tempDir);
+    kspec(`workflow next @${runId}`, tempDir);
+  });
+
+  it('should complete the run when advancing from last step', async () => {
+    const result = kspec(`workflow next @${runId}`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Completed step 3/3: [check] Validate results');
+    expect(result.stdout).toContain('Workflow completed!');
+    expect(result.stdout).toMatch(/Duration: \d+s/);
+    expect(result.stdout).toContain('Steps completed: 3');
+    expect(result.stdout).toContain('Steps skipped: 0');
+
+    // Verify run is completed
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.status).toBe('completed');
+    expect(run.completed_at).toBeDefined();
+    expect(run.step_results).toHaveLength(3);
+  });
+
+  it('should output summary in JSON mode', async () => {
+    const result = kspec(`workflow next @${runId} --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.run_id).toBe(runId);
+    expect(output.status).toBe('completed');
+    expect(output.completed_at).toBeDefined();
+    expect(output.total_duration_ms).toBeGreaterThan(0);
+    expect(output.steps_completed).toBe(3);
+    expect(output.steps_skipped).toBe(0);
+  });
+
+  it('should count skipped steps in summary', async () => {
+    // Start a fresh run and skip some steps
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    kspec(`workflow next @${run_id} --skip`, tempDir);
+    kspec(`workflow next @${run_id}`, tempDir);
+    const result = kspec(`workflow next @${run_id} --skip`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Steps completed: 1');
+    expect(result.stdout).toContain('Steps skipped: 2');
+  });
+});
+
+// AC: @workflow-step-navigation ac-3
+describe('workflow next - run reference inference', () => {
+  it('should infer run when exactly one active run exists', async () => {
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Don't provide run reference
+    const result = kspec('workflow next', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Completed step 1/3');
+
+    // Verify the correct run was advanced
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run._ulid).toBe(run_id);
+    expect(run.current_step).toBe(1);
+  });
+
+  it('should work with JSON mode', async () => {
+    kspec('workflow start @test-workflow --json', tempDir);
+
+    const result = kspec('workflow next --json', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.run_id).toBeDefined();
+    expect(output.current_step).toBe(1);
+  });
+});
+
+// AC: @workflow-step-navigation ac-4
+describe('workflow next - multiple active runs error', () => {
+  it('should error with list of runs when multiple active runs exist', async () => {
+    const result1 = kspec('workflow start @test-workflow --json', tempDir);
+    const result2 = kspec('workflow start @another-workflow --json', tempDir);
+
+    const run1 = JSON.parse(result1.stdout);
+    const run2 = JSON.parse(result2.stdout);
+
+    const result = kspec('workflow next', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(result.stderr).toContain('Multiple active runs found');
+    expect(result.stderr).toContain(run1.run_id.slice(0, 8).toUpperCase());
+    expect(result.stderr).toContain(run2.run_id.slice(0, 8).toUpperCase());
+  });
+});
+
+// AC: @workflow-step-navigation ac-5
+describe('workflow next - no active runs error', () => {
+  it('should error when no active runs exist', async () => {
+    const result = kspec('workflow next', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3); // NOT_FOUND
+    expect(result.stderr).toContain('No active workflow runs found');
+    expect(result.stderr).toContain('kspec workflow start');
+  });
+
+  it('should error when only completed runs exist', async () => {
+    // Start and complete a run
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    doc.setIn(['runs', 0, 'status'], 'completed');
+    doc.setIn(['runs', 0, 'completed_at'], new Date().toISOString());
+    await fs.writeFile(runsPath, doc.toString(), 'utf-8');
+
+    const result = kspec('workflow next', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3); // NOT_FOUND
+    expect(result.stderr).toContain('No active workflow runs found');
+  });
+});
+
+// AC: @workflow-step-navigation ac-6
+describe('workflow next - notes capture', () => {
+  let runId: string;
+
+  beforeEach(async () => {
+    const result = kspec('workflow start @test-workflow --json', tempDir);
+    const output = JSON.parse(result.stdout);
+    runId = output.run_id;
+  });
+
+  it('should capture notes in step result', async () => {
+    const result = kspec(`workflow next @${runId} --notes "Verified all prerequisites met"`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+
+    // Verify notes were saved
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.step_results[0].notes).toBe('Verified all prerequisites met');
+  });
+
+  it('should work with --skip and --notes together', async () => {
+    const result = kspec(`workflow next @${runId} --skip --notes "Prerequisites not needed for this test"`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.step_results[0].status).toBe('skipped');
+    expect(run.step_results[0].notes).toBe('Prerequisites not needed for this test');
+  });
+
+  it('should handle empty notes', async () => {
+    const result = kspec(`workflow next @${runId}`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.step_results[0].notes).toBeUndefined();
+  });
+});
+
+// AC: @trait-json-output (inherited)
+describe('workflow next - JSON output trait', () => {
+  let runId: string;
+
+  beforeEach(async () => {
+    const result = kspec('workflow start @test-workflow --json', tempDir);
+    const output = JSON.parse(result.stdout);
+    runId = output.run_id;
+  });
+
+  it('should output valid JSON with no ANSI codes', async () => {
+    const result = kspec(`workflow next @${runId} --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(() => JSON.parse(result.stdout)).not.toThrow();
+    expect(result.stdout).not.toMatch(/\x1b\[/); // No ANSI codes
+  });
+
+  it('should include all data in JSON output', async () => {
+    const result = kspec(`workflow next @${runId} --json`, tempDir);
+
+    const output = JSON.parse(result.stdout);
+    expect(output.run_id).toBeDefined();
+    expect(output.current_step).toBeDefined();
+    expect(output.total_steps).toBeDefined();
+    expect(output.next_step).toBeDefined();
+  });
+
+  it('should return errors as JSON', async () => {
+    const result = kspec(`workflow next @nonexistent --json`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3);
+    // Error messages go to stderr, not JSON output in this implementation
+    expect(result.stderr).toContain('Workflow run not found');
+  });
+
+  it('should use @ prefix for references', async () => {
+    const result = kspec(`workflow next @${runId} --json`, tempDir);
+
+    const output = JSON.parse(result.stdout);
+    expect(output.run_id).toMatch(/^[A-Z0-9]{26}$/); // ULID without @
+  });
+
+  it('should use ISO 8601 timestamps in completion summary', async () => {
+    // Advance to last step
+    kspec(`workflow next @${runId}`, tempDir);
+    kspec(`workflow next @${runId}`, tempDir);
+
+    const result = kspec(`workflow next @${runId} --json`, tempDir);
+
+    const output = JSON.parse(result.stdout);
+    expect(output.completed_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+  });
+});
+
+// AC: @trait-error-guidance (inherited)
+describe('workflow next - error guidance trait', () => {
+  it('should provide guidance for no active runs', async () => {
+    const result = kspec('workflow next', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3);
+    expect(result.stderr).toContain('No active workflow runs found');
+    expect(result.stderr).toContain('kspec workflow start'); // Suggested action
+  });
+
+  it('should provide guidance for multiple active runs', async () => {
+    kspec('workflow start @test-workflow --json', tempDir);
+    kspec('workflow start @another-workflow --json', tempDir);
+
+    const result = kspec('workflow next', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(4);
+    expect(result.stderr).toContain('Multiple active runs found');
+    expect(result.stderr).toContain('kspec workflow next @'); // Shows how to specify
+  });
+
+  it('should indicate run not found', async () => {
+    const result = kspec('workflow next @nonexistent', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3);
+    expect(result.stderr).toContain('Workflow run not found');
+    expect(result.stderr).toContain('nonexistent');
+  });
+
+  it('should indicate invalid state transition', async () => {
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Manually set run to completed
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    doc.setIn(['runs', 0, 'status'], 'completed');
+    await fs.writeFile(runsPath, doc.toString(), 'utf-8');
+
+    const result = kspec(`workflow next @${run_id}`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(4);
+    expect(result.stderr).toContain('Cannot advance workflow run');
+    expect(result.stderr).toContain('completed'); // Current state
+    expect(result.stderr).toContain('active'); // Expected state
+  });
+});
