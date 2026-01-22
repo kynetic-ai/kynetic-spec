@@ -20713,7 +20713,7 @@
   type: task
   spec_ref: "@cli-version"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -20721,6 +20721,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T04:36:13.452Z
+  started_at: 2026-01-22T04:41:02.463Z
   notes:
     - _ulid: 01KFHZT60B91H5JZE2WRWCK55Z
       created_at: 2026-01-22T04:36:13.452Z
@@ -20764,4 +20765,3 @@
         '../package.json')
       supersedes: null
   todos: []
-  started_at: 2026-01-22T04:41:02.463Z
