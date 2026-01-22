@@ -44,6 +44,16 @@ export const StepExecutionSchema = z.object({
 });
 
 /**
+ * Workflow step input definition
+ */
+export const StepInputSchema = z.object({
+  name: z.string().min(1, 'Input name is required'),
+  description: z.string().optional(),
+  required: z.boolean().default(true).optional(),
+  type: z.enum(['string', 'ref', 'number']).default('string').optional(),
+});
+
+/**
  * Workflow step - a single step in a workflow
  */
 export const WorkflowStepSchema = z.object({
@@ -54,6 +64,7 @@ export const WorkflowStepSchema = z.object({
   execution: StepExecutionSchema.optional(),
   entry_criteria: z.array(z.string()).optional(),
   exit_criteria: z.array(z.string()).optional(),
+  inputs: z.array(StepInputSchema).optional(),
 });
 
 /**
@@ -202,6 +213,7 @@ export type SessionProtocol = z.infer<typeof SessionProtocolSchema>;
 export type Agent = z.infer<typeof AgentSchema>;
 export type WorkflowStepType = z.infer<typeof WorkflowStepTypeSchema>;
 export type StepExecution = z.infer<typeof StepExecutionSchema>;
+export type StepInput = z.infer<typeof StepInputSchema>;
 export type WorkflowStep = z.infer<typeof WorkflowStepSchema>;
 export type Workflow = z.infer<typeof WorkflowSchema>;
 export type ConventionExample = z.infer<typeof ConventionExampleSchema>;
