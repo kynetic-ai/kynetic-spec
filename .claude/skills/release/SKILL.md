@@ -1,11 +1,16 @@
 ---
 name: release
-description: Create versioned releases with git tags and GitHub releases. CI publishes to npm, then create a PR to sync version.
+description: Create versioned releases - bump version via PR, tag, create GitHub release. CI publishes to npm.
 ---
 
 # Release Skill
 
-Create versioned releases with proper git tagging and GitHub release creation. CI publishes to npm; version sync requires a manual PR (due to branch protection).
+Create versioned releases with proper git tagging and GitHub release creation. The workflow is:
+
+1. **Bump version** via PR (respects branch protection)
+2. **Create tag** on the merged commit
+3. **Create GitHub release** with notes
+4. **CI publishes** to npm automatically
 
 ## When to Use
 
@@ -14,10 +19,15 @@ Create versioned releases with proper git tagging and GitHub release creation. C
 - For pre-release versions (alpha, beta, rc)
 - When auditing what changes would be in a release (`--dry-run`)
 
+**Prerequisites:**
+- All related kspec tasks should be completed before release
+- Run `npm test` locally to verify tests pass
+- Ensure you're on `main` with a clean working tree
+
 ## Arguments
 
 ```
-/release [patch|minor|major] [options]
+/release [patch|minor|major|X.Y.Z] [options]
 ```
 
 | Argument | Description |
@@ -25,11 +35,12 @@ Create versioned releases with proper git tagging and GitHub release creation. C
 | `patch` | Bug fixes, backwards-compatible (0.1.1 -> 0.1.2) |
 | `minor` | New features, backwards-compatible (0.1.1 -> 0.2.0) |
 | `major` | Breaking changes (0.1.1 -> 1.0.0) |
+| `X.Y.Z` | Explicit version number |
 | (none) | Auto-detect from commits since last tag |
 
 | Option | Description |
 |--------|-------------|
-| `--dry-run` | Preview what would happen without making changes |
+| `--dry-run` | Preview only - NO changes to git, tags, PRs, or GitHub |
 | `--prerelease <type>` | Create prerelease (alpha, beta, rc) |
 
 ## Workflow
@@ -45,21 +56,19 @@ git branch --show-current
 # Check for uncommitted changes
 git status --porcelain
 
-# Get current version from package.json (for display)
+# Get current version from package.json
 node -p "require('./package.json').version"
 
 # Get last tag
 git describe --tags --abbrev=0 2>/dev/null || echo "no-tags"
 
-# Get commits since last tag (merge commits only for clean history)
-git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD --oneline --merges
-# If no merges, fall back to all commits
+# Get commits since last tag
 git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD --oneline
 ```
 
 **Context to gather:**
-- Current branch
-- Working tree status (clean/dirty)
+- Current branch (must be `main`)
+- Working tree status (must be clean)
 - Current version in package.json
 - Last tag (e.g., v0.1.1)
 - Commits since last tag (count and list)
@@ -73,69 +82,81 @@ All constraints must pass before proceeding:
 | On main branch | `git branch --show-current` = main | "Must be on main branch. Currently on: {branch}" |
 | Clean working tree | `git status --porcelain` is empty | "Working tree must be clean. Commit or stash changes first." |
 | Up to date with origin | After `git fetch`, local matches remote | "Local main is behind origin. Run: git pull" |
-| Has releasable changes | Commits exist since last tag | "No changes since last tag {tag}. Nothing to release." |
+| Has releasable changes | At least one commit since last tag | "No changes since last tag {tag}. Nothing to release." |
 | Tag doesn't exist | `git tag -l v{version}` is empty | "Tag v{version} already exists." |
 
-**Dry-run behavior:** In dry-run mode, report all validation results but continue to show what would happen.
+**Dry-run behavior:** In dry-run mode, validation failures are reported but the preview continues. In normal mode, ANY validation failure stops execution immediately.
 
 ### Phase 3: Determine Version
 
-If version type not specified, auto-detect from commits:
+If version type not specified, auto-detect from ALL commits since last tag:
 
 ```bash
-# Get commit messages since last tag
-git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s"
+# Get all commit messages since last tag (not just merges)
+git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s%n%b"
 ```
 
 **Auto-detection rules (conventional commits):**
 
-| Pattern | Bump |
-|---------|------|
-| `BREAKING CHANGE:` in body or `feat!:` suffix | major |
-| `feat:` or `feat(scope):` | minor |
-| `fix:`, `perf:`, `refactor:`, `chore:` | patch |
+| Pattern | Bump | Notes |
+|---------|------|-------|
+| `BREAKING CHANGE:` in body | major | Check commit body, not just subject |
+| `feat!:` or `fix!:` (with `!`) | major | The `!` suffix indicates breaking |
+| `feat:` or `feat(scope):` | minor | Scope is ignored for detection |
+| `fix:`, `perf:`, `refactor:`, `chore:` | patch | Any maintenance work |
 
 **Resolution order:**
-1. If any commit has breaking change -> major
-2. Else if any commit is `feat:` -> minor
+1. If ANY commit has breaking change indicator -> major
+2. Else if ANY commit starts with `feat:` -> minor
 3. Else -> patch
 
 **Prerelease handling (`--prerelease <type>`):**
 
-| Current | Type | Result |
-|---------|------|--------|
-| 0.1.1 | alpha | 0.1.2-alpha.0 |
-| 0.1.2-alpha.0 | alpha | 0.1.2-alpha.1 |
-| 0.1.2-alpha.1 | beta | 0.1.2-beta.0 |
-| 0.1.2-rc.0 | (stable) | 0.1.2 |
+| Current | Flag | Result | Rule |
+|---------|------|--------|------|
+| 0.1.1 | `--prerelease alpha` | 0.1.2-alpha.0 | Bump patch, add prerelease |
+| 0.1.2-alpha.0 | `--prerelease alpha` | 0.1.2-alpha.1 | Same type: increment counter |
+| 0.1.2-alpha.1 | `--prerelease beta` | 0.1.2-beta.0 | New type: reset counter to 0 |
+| 0.1.2-rc.0 | (no flag) | 0.1.2 | Stable release: drop prerelease suffix |
+
+**Prerelease rules:**
+1. Same prerelease type -> increment counter (alpha.0 -> alpha.1)
+2. Different prerelease type -> reset counter (alpha.1 -> beta.0)
+3. No prerelease flag on prerelease version -> promote to stable
 
 ### Phase 4: Analyze Changes for Release Notes
 
 Parse commits and categorize them for user-friendly release notes.
 
-**Filtering rules:**
-- **Include**: Merge commits with `(#N)` pattern (to avoid duplicates from branch commits)
-- **Include**: `feat:`, `fix:`, `perf:`, `refactor:` (if user-facing)
-- **Exclude**: `test:` commits, `docs:` commits (unless bundled with code), `ci:` commits
-- **Transform**: Convert commit messages to friendly descriptions
+**Commit selection:**
+- Prefer merge commits (contain `(#N)` PR reference) to avoid duplicates
+- If no merge commits, include all commits matching conventional patterns
+- Deduplicate by checking if a commit's changes are already in a merge commit
 
-**Categorization:**
-- `feat:` -> Features & Additions
-- `fix:` -> Bug Fixes
-- `perf:`, `refactor:`, `chore:` -> Other Changes
+**Categorization (commit type -> section):**
+
+| Commit Type | Release Notes Section |
+|-------------|----------------------|
+| `feat:` | Features & Additions |
+| `fix:` | Bug Fixes |
+| `perf:` | Performance |
+| `refactor:`, `chore:`, `build:` | Other Changes |
+| `test:`, `ci:`, `docs:` | (excluded unless user-facing) |
 
 **kspec integration:**
 ```bash
-# Extract task references from commit trailers
+# Extract completed task references from commit trailers
 git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%b" | grep -E "^Task: @" | sort -u
 ```
 
+Completed tasks provide context for what was accomplished in this release.
+
 ### Phase 5: Preview (--dry-run)
 
-For `--dry-run`, show comprehensive preview:
+For `--dry-run`, show comprehensive preview. **No changes are made** - no PRs, no tags, no releases.
 
 ```
-## Release Preview
+## Release Preview (DRY RUN)
 
 **Version bump:** 0.1.1 -> 0.1.2 (patch)
 **Detection:** Auto-detected from 5 commits (3 fix, 2 chore)
@@ -158,20 +179,20 @@ Bug fixes and improvements for kspec CLI.
 - Fix author attribution for auto-generated notes
 - Increase timeout for ref resolution
 
-### Actions (would execute)
+### Actions (dry-run: NOT executed)
 1. Create version bump PR (package.json -> 0.1.2)
-2. Merge PR
+2. Wait for CI, then merge PR
 3. Create tag: v0.1.2
 4. Push tag to origin
 5. Create GitHub release with notes above
-6. CI publishes to npm
+6. CI will publish to npm
 
-Run without --dry-run to execute.
+To execute: run `/release` without --dry-run
 ```
 
 ### Phase 6: Bump Version (PR)
 
-**Before creating the release**, update package.json via PR:
+**Before creating the tag**, update package.json via PR:
 
 ```bash
 VERSION="0.1.2"  # calculated version
@@ -187,31 +208,33 @@ git add package.json package-lock.json
 git commit -m "chore: bump version to $VERSION"
 git push -u origin release/v$VERSION
 
-# Create and merge PR
+# Create PR
 gh pr create --title "chore: bump version to $VERSION" --body "Prepare release v$VERSION"
+
+# Wait for CI to pass, then merge
 gh pr merge --merge --delete-branch
 ```
 
 **Why version bump first?**
-- The tagged commit will have the correct version in package.json
-- CI publishes whatever version is in package.json
-- No sync PR needed after the fact
+- The tagged commit has the correct version in package.json
+- CI publishes exactly what's in package.json
+- No out-of-sync state between git tag and package version
 
-### Phase 7: Create Release
+### Phase 7: Create Tag and Release
 
-After the version PR is merged, pull main and create the release:
+After the version PR is merged:
 
 ```bash
 # Pull the merged version bump
 git checkout main && git pull
 
-# Create annotated tag
+# Create annotated tag (v prefix is convention for npm/semver)
 git tag -a "v$VERSION" -m "Release v$VERSION"
 
-# Push tag
+# Push tag to origin
 git push origin "v$VERSION"
 
-# Create GitHub release
+# Create GitHub release (gh uses current repo automatically)
 gh release create "v$VERSION" \
   --title "v$VERSION" \
   --notes "$(cat <<'EOF'
@@ -226,15 +249,17 @@ Brief summary of this release.
 ### Other Changes
 - Change description
 
-**Full Changelog**: https://github.com/owner/repo/compare/v0.1.1...v0.1.2
+**Full Changelog**: compare/v{previous}...v{version}
 EOF
 )"
 ```
 
-**CI automatically:**
-- Triggers on `release.published` event
+**Tag naming:** Always use `v` prefix (e.g., `v0.1.2`) for consistency with npm versioning conventions and GitHub release detection.
+
+**CI behavior:**
+- Triggers on `release.published` event (within 1-2 minutes)
 - Runs tests and publishes to npm with provenance
-- package.json already has correct version (from Phase 6)
+- Monitor progress at the repo's Actions tab
 
 ### Phase 8: Report Summary
 
@@ -247,14 +272,14 @@ After successful release:
 **Tag:** v0.1.2
 **Commit:** abc1234
 
-### Published
-- [x] Version PR merged
-- [x] Tag created: v0.1.2
-- [x] Tag pushed to origin
+### Completed
+- [x] Version PR created and merged
+- [x] Tag created and pushed
 - [x] GitHub release created
-- [ ] CI publishing to npm...
+- [ ] CI publishing to npm... (check Actions tab)
 
-**Release:** https://github.com/owner/repo/releases/tag/v0.1.2
+**Release:** {repo}/releases/tag/v0.1.2
+**CI Status:** {repo}/actions
 ```
 
 ## Release Notes Format
@@ -262,7 +287,7 @@ After successful release:
 Generate **friendly, user-facing release notes** (not raw commit dumps):
 
 ```markdown
-Brief high-level summary of what this release brings (1-2 sentences describing the theme or main improvements).
+Brief high-level summary of what this release brings (1-2 sentences).
 
 ### Features & Additions
 - Feature description in plain language
@@ -272,11 +297,14 @@ Brief high-level summary of what this release brings (1-2 sentences describing t
 - Fixed issue with X when Y happened
 - Resolved problem where Z
 
-### Other Changes
-- Improved performance of X
-- Updated internal handling of Y
+### Performance
+- Improved speed of X operation
 
-**Full Changelog**: https://github.com/owner/repo/compare/v0.1.1...v0.1.2
+### Other Changes
+- Updated internal handling of Y
+- Refactored Z for maintainability
+
+**Full Changelog**: {repo}/compare/v0.1.1...v0.1.2
 ```
 
 **Writing guidelines:**
@@ -284,6 +312,7 @@ Brief high-level summary of what this release brings (1-2 sentences describing t
 - Focus on user impact, not implementation details
 - Group related changes together
 - Omit test-only and CI-only changes
+- Use repo-relative URLs (GitHub auto-links them)
 
 ## Error Handling
 
@@ -293,37 +322,73 @@ Brief high-level summary of what this release brings (1-2 sentences describing t
 | Dirty working tree | Commit or stash changes first |
 | Behind origin | `git pull origin main` |
 | No changes | Nothing to release since last tag |
-| Tag exists | Choose a different version or delete existing tag |
-| Push rejected | Check remote permissions |
-| gh not installed | Install GitHub CLI: https://cli.github.com/ |
-| Not authenticated | Run `gh auth login` |
+| Tag exists | Choose different version or `git tag -d v{version}` then `git push origin --delete v{version}` |
+| PR merge fails | Check CI status, fix issues, retry merge |
+| `gh` not installed | Install GitHub CLI: https://cli.github.com/ |
+| `gh` not authenticated | Run `gh auth login` |
+| `gh` API rate limit | Wait and retry, or use `--limit` flag |
+
+### Rollback Procedure
+
+If something goes wrong after partial release:
+
+**If tag was pushed but release failed:**
+```bash
+# Delete remote tag
+git push origin --delete v$VERSION
+# Delete local tag
+git tag -d v$VERSION
+# Fix issue and retry
+```
+
+**If release was created but CI publish failed:**
+```bash
+# Option 1: Delete and retry
+gh release delete v$VERSION --yes
+git push origin --delete v$VERSION
+git tag -d v$VERSION
+# Fix issue and retry from Phase 6
+
+# Option 2: Manually trigger publish
+# Go to Actions tab, run publish workflow manually
+```
+
+**If version PR was merged but you need to abort:**
+```bash
+# Revert the version bump
+git revert HEAD
+git push origin main
+# The tag was never created, so nothing else to clean up
+```
 
 ## Examples
 
 ### Standard patch release
 ```
 User: /release patch
-Agent: [Validates state, creates version bump PR, merges it]
+Agent: [Validates state]
+Agent: [Creates version bump PR, waits for CI, merges]
 Agent: [Creates v0.1.2 tag, pushes, creates GH release]
 
 Release v0.1.2 created successfully.
 - Version PR: #122 (merged)
-- GitHub release: https://github.com/kynetic-ai/kynetic-spec/releases/tag/v0.1.2
+- Tag: v0.1.2
+- Release: {repo}/releases/tag/v0.1.2
 - CI publishing to npm...
 ```
 
 ### Auto-detect version
 ```
 User: /release
-Agent: [Analyzes commits, finds 2 feat: commits]
-Detected: 2 feature commits -> minor bump (0.1.1 -> 0.2.0)
+Agent: [Analyzes 5 commits: 2 feat, 3 fix]
+Detected: feat commits present -> minor bump (0.1.1 -> 0.2.0)
 [Proceeds with release]
 ```
 
 ### Preview only
 ```
 User: /release --dry-run
-Agent: [Shows full preview without making changes]
+Agent: [Shows full preview, makes NO changes]
 ```
 
 ### Pre-release
@@ -332,14 +397,21 @@ User: /release minor --prerelease alpha
 Agent: [Creates v0.2.0-alpha.0]
 ```
 
+### Explicit version
+```
+User: /release 1.0.0
+Agent: [Creates v1.0.0 - useful for major milestones]
+```
+
 ## Key Principles
 
+- **Version bump first**: PR before tag ensures package.json matches release
 - **Validation first**: Check all constraints before any changes
-- **Dry-run shows everything**: Preview should be comprehensive enough to catch issues
+- **Dry-run is safe**: Preview makes zero changes
 - **Friendly release notes**: Write for users, not developers
-- **CI handles publishing**: Skill creates release and version sync PR, CI publishes to npm
-- **Branch protection compatible**: Version sync via PR, not direct push
-- **kspec integration**: Surface completed tasks in release context
+- **Branch protection compatible**: All changes via PR
+- **CI handles publishing**: Skill creates release, CI publishes to npm
+- **kspec integration**: Complete tasks before release, reference them in commits
 
 ## Troubleshooting
 
@@ -357,10 +429,31 @@ If npm publish fails with "Access token expired or revoked" + 404:
 
 npm 11.x+ has the necessary fixes.
 
-**Debugging tip:** When hitting opaque CI auth errors, search GitHub issues for the specific tool + error message before extensive local debugging.
+### PR Merge Blocked
+
+If the version bump PR can't merge:
+
+1. Check CI status - tests must pass
+2. Check for merge conflicts - rebase if needed
+3. Check branch protection rules - ensure you have merge permissions
+
+### Tag Already Exists
+
+If you need to re-release the same version:
+
+```bash
+# Delete existing tag (local and remote)
+git tag -d v0.1.2
+git push origin --delete v0.1.2
+
+# Delete GitHub release if it exists
+gh release delete v0.1.2 --yes
+
+# Now retry the release
+```
 
 ## Related Skills
 
-- `/pr` - Create pull requests before release
+- `/pr` - Create pull requests (used internally by this skill)
 - `/audit` - Pre-release codebase review
 - `/kspec` - Task completion tracking
