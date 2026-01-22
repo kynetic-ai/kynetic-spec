@@ -22246,7 +22246,7 @@
     on @meta-add-cmd.
   spec_ref: "@meta-add-cmd"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -22332,3 +22332,4 @@
         ```
       supersedes: null
   todos: []
+  started_at: 2026-01-22T23:40:54.287Z
