@@ -30,7 +30,6 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
@@ -56,9 +55,7 @@ jobs:
 
       - name: Publish to npm
         if: ${{ github.event.inputs.dry-run != 'true' }}
-        run: npm publish --access public
-        env:
-          NPM_CONFIG_PROVENANCE: true
+        run: npm publish --provenance --access public
 
       - name: Commit version back to main
         if: github.event_name == 'release'
