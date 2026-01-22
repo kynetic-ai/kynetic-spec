@@ -321,6 +321,11 @@ export const workflowRunErrors = {
   cannotAbortCompleted: 'Cannot abort workflow run: already completed',
   cannotAbortAborted: 'Cannot abort workflow run: already aborted',
   invalidRunStatus: (status: string) => `Cannot abort run with status: ${status}`,
+  noActiveRuns: 'No active workflow runs found. Start a run with: kspec workflow start @workflow-id',
+  multipleActiveRuns: (runIds: string[]) =>
+    `Multiple active runs found. Specify which run:\n${runIds.map((id) => `  kspec workflow next @${id}`).join('\n')}`,
+  runNotActive: (ref: string, status: string) =>
+    `Cannot advance workflow run: status is ${status} (expected active)`,
 } as const;
 
 /**

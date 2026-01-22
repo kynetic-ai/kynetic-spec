@@ -19,6 +19,7 @@ import {
   saveWorkflowRun,
   updateWorkflowRun,
   findWorkflowRunByRef,
+  findActiveRuns,
   getAuthor,
   ReferenceIndex,
   loadAllTasks,
@@ -301,6 +302,137 @@ async function workflowAbort(runRef: string, options: { reason?: string; json?: 
 }
 
 /**
+ * Command: kspec workflow next [run-ref] [--skip] [--notes text] [--json]
+ * AC: @workflow-step-navigation ac-1 through ac-6
+ */
+async function workflowNext(
+  runRef: string | undefined,
+  options: { skip?: boolean; notes?: string; json?: boolean }
+) {
+  const ctx = await initContext();
+  const metaCtx = await loadMetaContext(ctx);
+
+  let run: WorkflowRun | undefined;
+
+  // AC: @workflow-step-navigation ac-3, ac-4, ac-5
+  if (!runRef) {
+    const activeRuns = await findActiveRuns(ctx);
+
+    if (activeRuns.length === 0) {
+      // AC: @workflow-step-navigation ac-5
+      error(errors.workflowRun.noActiveRuns);
+      process.exit(EXIT_CODES.NOT_FOUND);
+    }
+
+    if (activeRuns.length > 1) {
+      // AC: @workflow-step-navigation ac-4
+      const runIds = activeRuns.map((r) => shortUlid(r._ulid));
+      error(errors.workflowRun.multipleActiveRuns(runIds));
+      process.exit(EXIT_CODES.VALIDATION_FAILED);
+    }
+
+    // AC: @workflow-step-navigation ac-3 - exactly one active run
+    run = activeRuns[0];
+  } else {
+    run = await findWorkflowRunByRef(ctx, runRef);
+    if (!run) {
+      error(errors.workflowRun.runNotFound(runRef));
+      process.exit(EXIT_CODES.NOT_FOUND);
+    }
+
+    if (run.status !== 'active') {
+      error(errors.workflowRun.runNotActive(runRef, run.status));
+      process.exit(EXIT_CODES.VALIDATION_FAILED);
+    }
+  }
+
+  // Get workflow definition to access steps
+  const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
+  if (!workflow) {
+    error(errors.workflowRun.workflowNotFound(run.workflow_ref));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  // AC: @workflow-step-navigation ac-1, ac-6 - Complete current step
+  const currentStepIndex = run.current_step;
+  const previousResult = run.step_results[run.step_results.length - 1];
+  const startedAt = previousResult ? previousResult.completed_at : run.started_at;
+
+  const stepResult = {
+    step_index: currentStepIndex,
+    status: options.skip ? ('skipped' as const) : ('completed' as const),
+    started_at: startedAt,
+    completed_at: new Date().toISOString(),
+    notes: options.notes,
+  };
+
+  run.step_results.push(stepResult);
+
+  // AC: @workflow-step-navigation ac-1 - Advance to next step or complete run
+  const isLastStep = currentStepIndex === run.total_steps - 1;
+
+  if (isLastStep) {
+    // AC: @workflow-step-navigation ac-2 - Complete the run
+    run.status = 'completed';
+    run.completed_at = new Date().toISOString();
+
+    await updateWorkflowRun(ctx, run);
+    await commitIfShadow(ctx.shadow, 'workflow-next');
+
+    // Calculate summary stats
+    const totalDuration = new Date(run.completed_at).getTime() - new Date(run.started_at).getTime();
+    const completedSteps = run.step_results.filter((r) => r.status === 'completed').length;
+    const skippedSteps = run.step_results.filter((r) => r.status === 'skipped').length;
+
+    if (isJsonMode()) {
+      output({
+        run_id: run._ulid,
+        status: run.status,
+        completed_at: run.completed_at,
+        total_duration_ms: totalDuration,
+        steps_completed: completedSteps,
+        steps_skipped: skippedSteps,
+      });
+    } else {
+      const currentStep = workflow.steps[currentStepIndex];
+      success(`Completed step ${currentStepIndex + 1}/${run.total_steps}: [${currentStep.type}] ${currentStep.content}`);
+      console.log();
+      console.log(chalk.bold('Workflow completed!'));
+      console.log(`  Duration: ${Math.round(totalDuration / 1000)}s`);
+      console.log(`  Steps completed: ${completedSteps}`);
+      console.log(`  Steps skipped: ${skippedSteps}`);
+    }
+  } else {
+    // Advance to next step
+    run.current_step += 1;
+
+    await updateWorkflowRun(ctx, run);
+    await commitIfShadow(ctx.shadow, 'workflow-next');
+
+    const nextStep = workflow.steps[run.current_step];
+
+    if (isJsonMode()) {
+      output({
+        run_id: run._ulid,
+        current_step: run.current_step,
+        total_steps: run.total_steps,
+        next_step: {
+          type: nextStep.type,
+          content: nextStep.content,
+        },
+      });
+    } else {
+      const previousStep = workflow.steps[currentStepIndex];
+      success(
+        `Completed step ${currentStepIndex + 1}/${run.total_steps}: [${previousStep.type}] ${previousStep.content}`
+      );
+      console.log();
+      console.log(`Step ${run.current_step + 1}/${run.total_steps}: [${nextStep.type}] ${nextStep.content}`);
+    }
+  }
+}
+
+/**
  * Register workflow commands
  */
 export function registerWorkflowCommand(program: Command): void {
@@ -339,4 +471,13 @@ export function registerWorkflowCommand(program: Command): void {
     .option('--reason <text>', 'Reason for aborting')
     .option('--json', 'Output JSON')
     .action(workflowAbort);
+
+  workflow
+    .command('next')
+    .description('Advance workflow run to next step')
+    .argument('[run-ref]', 'Run reference (optional if only one active run)')
+    .option('--skip', 'Mark current step as skipped')
+    .option('--notes <text>', 'Notes for the completed step')
+    .option('--json', 'Output JSON')
+    .action(workflowNext);
 }

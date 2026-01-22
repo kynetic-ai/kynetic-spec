@@ -689,3 +689,11 @@ export async function findWorkflowRunByRef(
 
   return runs.find((r) => r._ulid === cleanRef || r._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()));
 }
+
+/**
+ * Find active workflow runs
+ */
+export async function findActiveRuns(ctx: KspecContext): Promise<WorkflowRun[]> {
+  const runs = await loadWorkflowRuns(ctx);
+  return runs.filter((r) => r.status === 'active');
+}
