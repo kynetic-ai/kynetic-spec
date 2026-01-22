@@ -21132,14 +21132,10 @@
   created_at: 2026-01-22T06:10:33.440Z
   notes: []
   todos: []
-- title: ACP type safety audit - strengthen typing
+- _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
+  slugs: []
+  title: ACP type safety audit - strengthen typing
   type: infra
-  priority: 3
-  spec_ref: null
-  tags:
-    - acp
-    - types
-    - tech-debt
   description: "ACP type safety audit: Review and strengthen typing across ACP client implementation.
     Current state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add
     typed response methods for file/read, file/write, terminal/run (2) Type the request params using
@@ -21147,13 +21143,39 @@
     for any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be
     deprecated in favor of typed methods only. The { granted: true } bug showed the value of
     compile-time enforcement."
-  _ulid: 01KFJ571BDK2X1CKPBBS1RC61X
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - acp
+    - types
+    - tech-debt
+  vcs_refs: []
+  created_at: 2026-01-22T06:10:37.549Z
+  notes: []
+  todos: []
+- title: Expand kspec search to cover inbox and meta entities
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - search
+    - cli
+    - design
+  description: "Expand kspec search to cover inbox and meta (observations, agents, workflows,
+    conventions). Currently only searches items and tasks. Should support --scope flag or search all
+    by default. Related: need pattern for cross-feature requirements - when new entity type added,
+    features like search should automatically need to support it."
+  _ulid: 01KFJ574G610B5Z7J6KAVVETBW
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-22T06:10:37.549Z
+  created_at: 2026-01-22T06:10:40.773Z
   notes: []
   todos: []
