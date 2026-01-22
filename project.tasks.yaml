@@ -20460,23 +20460,152 @@
         `.claude/skills/release/` alongside pr skill
       supersedes: null
   todos: []
-- title: Spec out Web UI and Daemon Mode feature
+- _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
+  slugs: []
+  title: Spec out Web UI and Daemon Mode feature
   type: spike
   spec_ref: null
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - web
     - ui
     - daemon
     - research
-  _ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
   vcs_refs: []
   created_at: 2026-01-22T01:20:12.418Z
-  notes: []
+  notes:
+    - _ulid: 01KFHMM5S2CX5WYQJ54E528CRB
+      created_at: 2026-01-22T01:20:42.274Z
+      author: "@claude"
+      content: |-
+        ## Research Summary
+
+        ### Scope
+        Web UI for viewing/editing kspec state with:
+        1. Local daemon mode for real-time interactive editing
+        2. Static GitHub Pages export for read-only display/linking
+
+        ### Tech Stack (per user preference)
+        - **Frontend**: Svelte 5 + SvelteKit + shadcn-svelte
+        - **Backend**: Hono (lightweight HTTP server) with SSE for real-time
+        - **File watching**: Chokidar with debouncing
+        - **IPC**: Unix socket for CLI-daemon, HTTP for web UI
+
+        ---
+
+        ## Codebase Findings
+
+        The kspec codebase is **excellently architected** for web API:
+        - **Library-first**: All logic in src/parser/ and src/schema/, independent of CLI
+        - **Pre-built indexes**: ItemIndex, ReferenceIndex, TraitIndex ready for query APIs
+        - **Zod schemas**: Validation for all types, input/patch schemas exist
+        - **Pagination**: ItemIndex.queryPaginated() already built
+        - **Shadow branch**: Auto-commit infrastructure handles persistence
+
+        Key files for API layer:
+        - src/parser/yaml.ts - Core YAML I/O, context init
+        - src/parser/items.ts - ItemIndex for queries
+        - src/parser/refs.ts - ReferenceIndex for @refs
+        - src/schema/*.ts - All Zod schemas
+
+        ---
+
+        ## Architecture Recommendation
+
+        ```
+        CLI ←→ Unix Socket ←→ Daemon ←→ HTTP/SSE ←→ Web UI
+                                 ↓
+                            Chokidar (file watching)
+                                 ↓
+                            .kspec/*.yaml
+        ```
+
+        ### Daemon Mode
+        - `kspec serve` - foreground server
+        - `kspec serve --daemon` - background with PID file
+        - `kspec serve stop` - graceful shutdown
+        - Health endpoints: /livez, /readyz
+
+        ### API Endpoints (based on existing operations)
+        - GET/POST/PATCH/DELETE /api/tasks/:ref
+        - GET/POST/PATCH/DELETE /api/items/:ref  
+        - GET/POST/DELETE /api/inbox/:ref
+        - GET /api/meta/{agents,workflows,conventions,observations}
+        - POST /api/query (advanced filtering)
+        - GET /api/events (SSE stream)
+
+        ### Web UI Structure
+        ```
+        /                    - Dashboard overview
+        /tasks/              - Task list with filters
+        /tasks/@slug/        - Task detail (notes, todos, actions)
+        /specs/              - Spec tree view
+        /specs/@ref/         - Spec item detail with ACs
+        /inbox/              - Inbox management
+        /session/            - Current session context
+        ```
+
+        ### Dual Deployment
+        - **Dynamic**: adapter-node for local daemon
+        - **Static**: adapter-static for GitHub Pages
+        - Conditional adapter via env var at build time
+        - Static mode loads from pre-built JSON snapshots
+
+        ---
+
+        ## Svelte 5 Notes
+
+        - Uses runes: $state, $derived, $effect
+        - .svelte.ts files for shared reactive state
+        - shadcn-svelte has 50+ components (data-table, sidebar, etc.)
+        - SSE integration works well with runes for real-time
+
+        ---
+
+        ## GitHub Pages Patterns
+
+        - Trigger GitHub Action on kspec-meta branch push
+        - Checkout both branches (data + site code)
+        - Prerender routes for deep linking: /tasks/@slug/
+        - Show last-updated timestamps from git history
+        - Add .nojekyll to static/ dir
+
+        ---
+
+        ## Phased Implementation Suggestion
+
+        **Phase 1: Foundation**
+        - Daemon server with Hono
+        - Core API endpoints (tasks, items, inbox)
+        - SSE for real-time updates
+        - File watching with Chokidar
+
+        **Phase 2: Web Dashboard**
+        - SvelteKit project setup
+        - Dashboard overview page
+        - Task list and detail views
+        - Real-time update integration
+
+        **Phase 3: Full CRUD**
+        - Task actions (start, complete, add notes)
+        - Spec item viewing
+        - Inbox management
+
+        **Phase 4: GitHub Pages**
+        - Static export configuration
+        - GitHub Actions workflow
+        - Deep linking support
+
+        ---
+
+        ## Open Questions
+        - Should daemon auto-start when CLI is used, or always explicit?
+        - Port configuration: fixed vs dynamic with service discovery?
+        - Auth for multi-user scenarios (future)?
+      supersedes: null
   todos: []
