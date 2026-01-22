@@ -1232,3 +1232,287 @@ describe('workflow next JSON output', () => {
     expect(result.stderr).toContain('Workflow run not found');
   });
 });
+
+/**
+ * Tests for workflow advanced features
+ * Spec: @workflow-advanced-features
+ */
+
+// AC: @workflow-advanced-features ac-1
+describe('workflow pause', () => {
+  it('should pause an active run', async () => {
+    // Start a workflow run
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    expect(startResult.exitCode).toBe(0);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Pause the run
+    const pauseResult = kspec(`workflow pause @${run_id} --json`, tempDir);
+    expect(pauseResult.exitCode).toBe(0);
+
+    const output = JSON.parse(pauseResult.stdout);
+    expect(output.run_id).toBe(run_id);
+    expect(output.status).toBe('paused');
+    expect(output.paused_at).toBeDefined();
+
+    // Verify paused state is persisted
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.status).toBe('paused');
+    expect(run.paused_at).toBeDefined();
+  });
+
+  it('should display human-readable output without --json', async () => {
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const pauseResult = kspec(`workflow pause @${run_id}`, tempDir);
+    expect(pauseResult.exitCode).toBe(0);
+    expect(pauseResult.stdout).toContain('Paused run');
+    expect(pauseResult.stdout).toContain('at step 1/3');
+  });
+
+  it('should error if run does not exist', async () => {
+    const result = kspec('workflow pause @nonexistent --json', tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(3); // NOT_FOUND
+    expect(result.stderr).toContain('Workflow run not found');
+  });
+
+  it('should error if run is not active', async () => {
+    // Start and manually set to completed
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const doc = parseDocument(await fs.readFile(runsPath, 'utf-8'));
+    doc.setIn(['runs', 0, 'status'], 'completed');
+    await fs.writeFile(runsPath, doc.toString(), 'utf-8');
+
+    const pauseResult = kspec(`workflow pause @${run_id}`, tempDir, { expectFail: true });
+    expect(pauseResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(pauseResult.stderr).toContain('Cannot pause run');
+    expect(pauseResult.stderr).toContain('completed');
+  });
+});
+
+// AC: @workflow-advanced-features ac-2
+describe('workflow resume', () => {
+  it('should resume a paused run', async () => {
+    // Start and pause a run
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+    kspec(`workflow pause @${run_id}`, tempDir);
+
+    // Resume the run
+    const resumeResult = kspec(`workflow resume @${run_id} --json`, tempDir);
+    expect(resumeResult.exitCode).toBe(0);
+
+    const output = JSON.parse(resumeResult.stdout);
+    expect(output.run_id).toBe(run_id);
+    expect(output.status).toBe('active');
+    expect(output.current_step).toBe(0);
+    expect(output.total_steps).toBe(3);
+    expect(output.next_step).toBeDefined();
+    expect(output.next_step.type).toBe('check');
+    expect(output.next_step.content).toBe('Verify prerequisites');
+
+    // Verify paused_at is cleared
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.status).toBe('active');
+    expect(run.paused_at).toBeUndefined();
+  });
+
+  it('should display human-readable output without --json', async () => {
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+    kspec(`workflow pause @${run_id}`, tempDir);
+
+    const resumeResult = kspec(`workflow resume @${run_id}`, tempDir);
+    expect(resumeResult.exitCode).toBe(0);
+    expect(resumeResult.stdout).toContain('Resumed run');
+    expect(resumeResult.stdout).toContain('Step 1/3');
+    expect(resumeResult.stdout).toContain('[check] Verify prerequisites');
+  });
+
+  it('should error if run does not exist', async () => {
+    const result = kspec('workflow resume @nonexistent --json', tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(3); // NOT_FOUND
+    expect(result.stderr).toContain('Workflow run not found');
+  });
+});
+
+// AC: @workflow-advanced-features ac-4
+describe('workflow resume validation', () => {
+  it('should error if run is not paused', async () => {
+    // Start a run but don't pause it
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const resumeResult = kspec(`workflow resume @${run_id}`, tempDir, { expectFail: true });
+    expect(resumeResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(resumeResult.stderr).toContain('Cannot resume run');
+    expect(resumeResult.stderr).toContain('active');
+    expect(resumeResult.stderr).toContain('expected paused');
+  });
+
+  it('should error with current status when trying to resume completed run', async () => {
+    // Start and manually complete a run
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const doc = parseDocument(await fs.readFile(runsPath, 'utf-8'));
+    doc.setIn(['runs', 0, 'status'], 'completed');
+    await fs.writeFile(runsPath, doc.toString(), 'utf-8');
+
+    const resumeResult = kspec(`workflow resume @${run_id}`, tempDir, { expectFail: true });
+    expect(resumeResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(resumeResult.stderr).toContain('Cannot resume run');
+    expect(resumeResult.stderr).toContain('completed');
+    expect(resumeResult.stderr).toContain('expected paused');
+  });
+});
+
+// AC: @workflow-advanced-features ac-3
+describe('workflow next with step inputs', () => {
+  let inputWorkflowUlid: string;
+
+  beforeEach(async () => {
+    inputWorkflowUlid = ulid();
+
+    // Create workflow with step inputs
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const doc = parseDocument(metaContent);
+    const metaData = doc.toJS() as any;
+
+    metaData.workflows.push({
+      _ulid: inputWorkflowUlid,
+      id: 'input-workflow',
+      trigger: 'manual',
+      steps: [
+        {
+          type: 'action',
+          content: 'Derive task from spec',
+          inputs: [
+            {
+              name: 'spec_ref',
+              description: 'Reference to the spec item',
+              required: true,
+              type: 'ref',
+            },
+            {
+              name: 'priority',
+              description: 'Task priority',
+              required: false,
+              type: 'number',
+            },
+          ],
+        },
+        { type: 'check', content: 'Verify task created' },
+      ],
+    });
+
+    await fs.writeFile(metaPath, YAML.stringify(metaData), 'utf-8');
+  });
+
+  it('should display required inputs when step has inputs', async () => {
+    const startResult = kspec(`workflow start @input-workflow --json`, tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir, { expectFail: true });
+    expect(nextResult.exitCode).toBe(4); // VALIDATION_FAILED - missing required input
+    expect(nextResult.stdout).toContain('Step 1/2');
+    expect(nextResult.stdout).toContain('Derive task from spec');
+    expect(nextResult.stdout).toContain('Inputs required:');
+    expect(nextResult.stdout).toContain('spec_ref (ref): Reference to the spec item');
+    expect(nextResult.stdout).toContain('priority (number) (optional): Task priority');
+    expect(nextResult.stderr).toContain('Missing required input: spec_ref');
+  });
+
+  it('should capture inputs in step_results when provided', async () => {
+    const startResult = kspec(`workflow start @input-workflow --json`, tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    const nextResult = kspec(`workflow next @${run_id} --input spec_ref=@my-feature --input priority=1`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+
+    // Verify inputs were captured
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.step_results).toHaveLength(2); // Completed step + stub for next
+    expect(run.step_results[0].inputs).toBeDefined();
+    expect(run.step_results[0].inputs.spec_ref).toBe('@my-feature');
+    expect(run.step_results[0].inputs.priority).toBe('1');
+  });
+
+  it('should error if required input is missing', async () => {
+    const startResult = kspec(`workflow start @input-workflow --json`, tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Try to advance without providing required input
+    const nextResult = kspec(`workflow next @${run_id}`, tempDir, { expectFail: true });
+    expect(nextResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(nextResult.stderr).toContain('Missing required input: spec_ref');
+  });
+
+  it('should allow optional inputs to be omitted', async () => {
+    const startResult = kspec(`workflow start @input-workflow --json`, tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Provide only required input
+    const nextResult = kspec(`workflow next @${run_id} --input spec_ref=@my-feature`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+
+    // Verify only required input was captured
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.step_results[0].inputs.spec_ref).toBe('@my-feature');
+    expect(run.step_results[0].inputs.priority).toBeUndefined();
+  });
+
+  it('should handle input values with = signs', async () => {
+    const startResult = kspec(`workflow start @input-workflow --json`, tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Test input value containing = sign
+    const nextResult = kspec(`workflow next @${run_id} --input "spec_ref=a=b=c"`, tempDir);
+    expect(nextResult.exitCode).toBe(0);
+
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.step_results[0].inputs.spec_ref).toBe('a=b=c');
+  });
+
+  it('should error on invalid input format', async () => {
+    const startResult = kspec(`workflow start @input-workflow --json`, tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    // Try invalid format (no = sign)
+    const nextResult = kspec(`workflow next @${run_id} --input invalidformat`, tempDir, { expectFail: true });
+    expect(nextResult.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(nextResult.stderr).toContain('Invalid input format');
+    expect(nextResult.stderr).toContain('Expected format: key=value');
+  });
+});

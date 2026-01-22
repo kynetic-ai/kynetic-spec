@@ -302,13 +302,107 @@ async function workflowAbort(runRef: string, options: { reason?: string; json?: 
 }
 
 /**
- * Command: kspec workflow next [run-ref] [--skip] [--notes text] [--confirm] [--force] [--json]
+ * Command: kspec workflow pause @run-id [--json]
+ * AC: @workflow-advanced-features ac-1
+ */
+async function workflowPause(runRef: string, options: { json?: boolean }) {
+  const ctx = await initContext();
+
+  const run = await findWorkflowRunByRef(ctx, runRef);
+  if (!run) {
+    error(errors.workflowRun.runNotFound(runRef));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  // Only active runs can be paused
+  if (run.status !== 'active') {
+    error(`Cannot pause run ${shortUlid(run._ulid)}: current status is ${run.status}`);
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  // Update run status
+  run.status = 'paused';
+  run.paused_at = new Date().toISOString();
+
+  await updateWorkflowRun(ctx, run);
+  await commitIfShadow(ctx.shadow, 'workflow-pause');
+
+  if (isJsonMode()) {
+    output({ run_id: run._ulid, status: run.status, paused_at: run.paused_at });
+  } else {
+    success(`Paused run ${shortUlid(run._ulid)} at step ${run.current_step + 1}/${run.total_steps}`);
+  }
+}
+
+/**
+ * Command: kspec workflow resume @run-id [--json]
+ * AC: @workflow-advanced-features ac-2, ac-4
+ */
+async function workflowResume(runRef: string, options: { json?: boolean }) {
+  const ctx = await initContext();
+  const metaCtx = await loadMetaContext(ctx);
+
+  const run = await findWorkflowRunByRef(ctx, runRef);
+  if (!run) {
+    error(errors.workflowRun.runNotFound(runRef));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  // AC: @workflow-advanced-features ac-4 - Error if not paused
+  if (run.status !== 'paused') {
+    error(`Cannot resume run ${shortUlid(run._ulid)}: current status is ${run.status} (expected paused)`);
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  // Update run status
+  run.status = 'active';
+  run.paused_at = undefined;
+
+  await updateWorkflowRun(ctx, run);
+  await commitIfShadow(ctx.shadow, 'workflow-resume');
+
+  // Get workflow definition to show current step
+  const workflow = metaCtx.workflows.find((w) => `@${w._ulid}` === run.workflow_ref);
+  if (!workflow) {
+    error(errors.workflowRun.workflowNotFound(run.workflow_ref));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  const currentStep = workflow.steps[run.current_step];
+
+  if (isJsonMode()) {
+    output({
+      run_id: run._ulid,
+      status: run.status,
+      current_step: run.current_step,
+      total_steps: run.total_steps,
+      next_step: {
+        type: currentStep.type,
+        content: currentStep.content,
+      },
+    });
+  } else {
+    success(`Resumed run ${shortUlid(run._ulid)}`);
+    console.log(`\nStep ${run.current_step + 1}/${run.total_steps}: [${currentStep.type}] ${currentStep.content}`);
+  }
+}
+
+/**
+ * Command: kspec workflow next [run-ref] [--skip] [--notes text] [--confirm] [--force] [--input key=value] [--json]
  * AC: @workflow-step-navigation ac-1 through ac-6
  * AC: @workflow-enforcement-modes ac-1 through ac-4
+ * AC: @workflow-advanced-features ac-3
  */
 async function workflowNext(
   runRef: string | undefined,
-  options: { skip?: boolean; notes?: string; confirm?: boolean; force?: boolean; json?: boolean }
+  options: {
+    skip?: boolean;
+    notes?: string;
+    confirm?: boolean;
+    force?: boolean;
+    input?: string[];
+    json?: boolean;
+  }
 ) {
   const ctx = await initContext();
   const metaCtx = await loadMetaContext(ctx);
@@ -359,6 +453,43 @@ async function workflowNext(
   const currentStep = workflow.steps[currentStepIndex];
   const isStrictMode = workflow.enforcement === 'strict';
   const isLastStep = currentStepIndex === run.total_steps - 1;
+
+  // AC: @workflow-advanced-features ac-3 - Handle step inputs
+  let stepInputs: Record<string, string> = {};
+  if (currentStep.inputs && currentStep.inputs.length > 0) {
+    // Display required inputs if not in JSON mode
+    if (!isJsonMode()) {
+      console.log(`Step ${currentStepIndex + 1}/${run.total_steps}: [${currentStep.type}] ${currentStep.content}`);
+      console.log(chalk.cyan('  Inputs required:'));
+      for (const input of currentStep.inputs) {
+        const requiredLabel = input.required !== false ? '' : ' (optional)';
+        const typeLabel = input.type ? ` (${input.type})` : '';
+        const desc = input.description ? `: ${input.description}` : '';
+        console.log(chalk.cyan(`    - ${input.name}${typeLabel}${requiredLabel}${desc}`));
+      }
+      console.log();
+    }
+
+    // Parse --input flags
+    if (options.input) {
+      for (const inputStr of options.input) {
+        const [key, ...valueParts] = inputStr.split('=');
+        if (!valueParts.length) {
+          error(`Invalid input format: "${inputStr}". Expected format: key=value`);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+        stepInputs[key] = valueParts.join('='); // Rejoin in case value contains '='
+      }
+    }
+
+    // Validate required inputs
+    for (const input of currentStep.inputs) {
+      if (input.required !== false && !stepInputs[input.name]) {
+        error(`Missing required input: ${input.name}`);
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+      }
+    }
+  }
 
   // AC: @workflow-enforcement-modes ac-3 - Strict mode: --skip requires --force
   if (options.skip && isStrictMode && !options.force) {
@@ -440,6 +571,7 @@ async function workflowNext(
       completed_at: new Date().toISOString(),
       notes: options.notes,
       exit_confirmed: currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm ? true : undefined,
+      inputs: Object.keys(stepInputs).length > 0 ? stepInputs : undefined,
     };
   } else {
     // No stub exists (first step or old data), create complete result
@@ -451,6 +583,7 @@ async function workflowNext(
       notes: options.notes,
       exit_confirmed: currentStep.exit_criteria && currentStep.exit_criteria.length > 0 && options.confirm ? true : undefined,
       entry_confirmed: undefined,
+      inputs: Object.keys(stepInputs).length > 0 ? stepInputs : undefined,
     };
     run.step_results.push(stepResult);
   }
@@ -577,6 +710,21 @@ export function registerWorkflowCommand(program: Command): void {
     .option('--notes <text>', 'Notes for the completed step')
     .option('--confirm', 'Acknowledge entry/exit criteria (required in strict mode)')
     .option('--force', 'Allow --skip in strict mode')
+    .option('--input <key=value>', 'Provide step input (repeatable)', (value, previous: string[] = []) => [...previous, value])
     .option('--json', 'Output JSON')
     .action(workflowNext);
+
+  workflow
+    .command('pause')
+    .description('Pause an active workflow run')
+    .argument('<run-ref>', 'Run reference (@ulid or ulid prefix)')
+    .option('--json', 'Output JSON')
+    .action(workflowPause);
+
+  workflow
+    .command('resume')
+    .description('Resume a paused workflow run')
+    .argument('<run-ref>', 'Run reference (@ulid or ulid prefix)')
+    .option('--json', 'Output JSON')
+    .action(workflowResume);
 }
