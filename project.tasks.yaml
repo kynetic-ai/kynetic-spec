@@ -21080,6 +21080,28 @@
         status. It includes cancelled tasks in depends_on. Need to filter to only include
         non-cancelled tasks when looking up parent task refs."
       supersedes: null
+    - _ulid: 01KFJ7RQTVX3KPD9KGR94FJFGG
+      created_at: 2026-01-22T06:55:14.779Z
+      author: "@claude"
+      content: >-
+        Fix implemented and tested:
+
+
+        1. Updated getParentTaskRef() in src/cli/commands/derive.ts to filter out cancelled tasks
+
+        2. Added status check: sessionTask.status !== 'cancelled'
+
+        3. Added linkedTasks.find() to get first non-cancelled task
+
+        4. Added AC annotation: // AC: @cmd-derive ac-15
+
+        5. Added two comprehensive E2E tests in tests/integration.test.ts:
+           - Test 1: Verifies cancelled parent is excluded (empty depends_on)
+           - Test 2: Verifies non-cancelled task is used when multiple parent tasks exist
+
+        All 874 tests pass (2 skipped). The fix ensures derive only includes active/completed tasks
+        in depends_on, never cancelled ones.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFJ4N0A88X2QGY58G79CNJAC
