@@ -21165,7 +21165,7 @@
     conventions). Currently only searches items and tasks. Should support --scope flag or search all
     by default. Related: need pattern for cross-feature requirements - when new entity type added,
     features like search should automatically need to support it."
-  spec_ref: null
+  spec_ref: "@fuzzy-item-search"
   status: pending
   blocked_by: []
   depends_on: []
