@@ -74,7 +74,7 @@ runs:
   - _ulid: 01KFKS903R68228GKCEKC2AVR9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-22T21:20:27.769Z
     step_results:
@@ -101,5 +101,15 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-22T21:20:55.859Z
-        completed_at: 2026-01-22T21:20:55.859Z
+        completed_at: 2026-01-22T21:21:16.795Z
+        notes: |-
+          Coverage check results:
+          1. --steps flag for workflow add: NOT TRACKED
+          2. workflow show run inference: NOT TRACKED  
+          3. --input silent ignore: NOT TRACKED
+          4. cwd after .kspec operations: NOT TRACKED (agent behavior, not kspec)
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-22T21:21:16.795Z
+        completed_at: 2026-01-22T21:21:16.795Z
     initiated_by: "@claude"
