@@ -195,11 +195,14 @@ describe('Task Automation Eligibility', () => {
       const output = kspec('task set @test-task-pending --automation needs_review --reason "Needs human decision"', tempDir);
       expect(output).toContain('Updated task');
 
-      const task = kspecJson<{ automation: string; notes: any[] }>('task get @test-task-pending', tempDir);
+      const task = kspecJson<{ automation: string; notes: Array<{ content: string; author?: string }> }>('task get @test-task-pending', tempDir);
       expect(task.automation).toBe('needs_review');
       // Should have added a note documenting the change
+      // AC: @task-set ac-author
       expect(task.notes.length).toBeGreaterThan(0);
-      expect(task.notes.some(n => n.content.includes('needs_review'))).toBe(true);
+      const automationNote = task.notes.find(n => n.content.includes('needs_review'));
+      expect(automationNote).toBeDefined();
+      expect(automationNote?.author).toBe('@test'); // From KSPEC_AUTHOR env in test helper
     });
   });
 
