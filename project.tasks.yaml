@@ -31770,7 +31770,80 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:43.587Z
-  notes: []
+  notes:
+    - _ulid: 01KFP86RBE8RZP4CWZV5SMKHFJ
+      created_at: 2026-01-23T20:19:51.791Z
+      author: "@claude"
+      content: |-
+        ## Objective
+        Write E2E tests for the tasks view covering @web-dashboard ac-4 through ac-10 and ac-33.
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+        ## File
+        packages/web-ui/tests/e2e/tasks.spec.ts
+
+        ## Acceptance Criteria Coverage
+
+        | AC | Description |
+        |----|-------------|
+        | ac-4 | Task list shows title, status, priority, spec_ref, notes count |
+        | ac-5 | Click task opens detail with description, notes, todos, deps |
+        | ac-6 | Spec reference is clickable link |
+        | ac-7 | Start Task button triggers state change |
+        | ac-8 | Add Note form appends note |
+        | ac-9 | Filter controls for status, type, tag, assignee, automation |
+        | ac-10 | URL updates with filter params |
+        | ac-33 | WebSocket updates highlight changed items |
+
+        ## Test Cases
+
+        ```typescript
+        test.describe('Tasks View', () => {
+          test.describe('Task List', () => {
+            // AC: @web-dashboard ac-4
+            test('displays task with status, priority, spec_ref, notes count');
+            // AC: @web-dashboard ac-9 (full coverage)
+            test('filters by status');
+            test('filters by type');
+            test('filters by tag');
+            test('filters by assignee');
+            test('filters by automation status');
+            // AC: @web-dashboard ac-10
+            test('URL updates with filter query params');
+          });
+
+          test.describe('Task Detail', () => {
+            // AC: @web-dashboard ac-5
+            test('opens detail panel on task click');
+            test('shows notes in chronological order');
+            test('shows todos and dependencies');
+            // AC: @web-dashboard ac-6
+            test('spec reference links to item detail');
+          });
+
+          test.describe('Task Actions', () => {
+            // AC: @web-dashboard ac-7
+            test('starts a pending task');
+            // AC: @web-dashboard ac-8
+            test('adds note to task');
+            // AC: @web-dashboard ac-33
+            test('highlights task on WebSocket update');
+          });
+        });
+        ```
+
+        ## data-testid Attributes Needed
+        - task-list-item
+        - task-status-badge, task-priority, task-spec-ref, task-notes-count
+        - task-detail-panel
+        - task-description, task-notes, task-todos, task-dependencies
+        - filter-status, filter-type, filter-tag, filter-assignee, filter-automation
+        - start-task-button, add-note-form
+
+        ## Viewport Testing
+        Test filter behavior on mobile (may collapse to dropdown).
+      supersedes: null
   todos: []
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
   slugs: []
