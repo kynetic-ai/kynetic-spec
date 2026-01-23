@@ -31314,7 +31314,10 @@
         process.
       supersedes: null
   todos: []
-- title: Fix AC annotations in cli-serve.test.ts
+- _ulid: 01KFP5X0YC80184V84C3P80QCC
+  slugs: []
+  title: Fix AC annotations in cli-serve.test.ts
+  type: task
   description: >-
     PR #204 review feedback was ignored - AC annotations don't follow project standard.
 
@@ -31346,18 +31349,45 @@
 
     Context: claude-review provided explicit guidance but it was merged without addressing this
     standards feedback.
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T19:39:35.755Z
+  notes: []
+  todos: []
+- title: Fix daemon startup race condition in serve tests
+  description: |-
+    7 tests in cli-serve.test.ts are failing due to daemon startup race condition.
+
+    Issue: 5s timeout is insufficient for daemon to be ready before tests run.
+
+    Evidence from PR #206 notes:
+    - Tests fail intermittently
+    - Daemon path resolution was fixed but startup timing wasn't
+    - Tests pass locally but fail in CI sometimes
+
+    Needs investigation into:
+    1. Why daemon takes longer than expected to start
+    2. Whether to increase timeout or add proper ready-check
+    3. Consider health endpoint polling instead of fixed delay
   type: task
   spec_ref: null
   meta_ref: null
   priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFP5X0YC80184V84C3P80QCC
+  _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T19:39:35.755Z
+  created_at: 2026-01-23T19:39:59.042Z
   notes: []
   todos: []
