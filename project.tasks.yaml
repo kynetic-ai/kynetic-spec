@@ -22376,6 +22376,7 @@
   derivation: auto
   status: cancelled
   blocked_by: []
+  closed_reason: Breaking into smaller tasks for manageable session scope
   depends_on: []
   context: []
   priority: 3
@@ -22471,7 +22472,6 @@
         - On parse failure: copy ours verbatim, create .kspec-merge-failed marker
       supersedes: null
   todos: []
-  closed_reason: Breaking into smaller tasks for manageable session scope
 - _ulid: 01KFM7CR223GC9FK2Y2RE4SF7A
   slugs:
     - task-merge-driver-cli
@@ -22479,7 +22479,7 @@
   type: task
   spec_ref: "@merge-driver-cli"
   derivation: auto
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on:
     - "@task-semantic-yaml-merge-driver"
@@ -22514,6 +22514,7 @@
         conflicts as YAML comments instead of prompting
       supersedes: null
   todos: []
+  closed_reason: Restructuring task breakdown
 - _ulid: 01KFM7CRF0Z5XDYVV0ZH1YPNJT
   slugs:
     - task-file-type-detection
