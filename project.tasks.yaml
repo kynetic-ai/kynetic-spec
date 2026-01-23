@@ -24493,6 +24493,7 @@
         - packages/web-ui/src/lib/components/MobileNav.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
   slugs: []
   title: Task list and detail views
