@@ -22524,6 +22524,7 @@
   derivation: auto
   status: cancelled
   blocked_by: []
+  closed_reason: Restructuring task breakdown
   depends_on:
     - "@task-semantic-yaml-merge-driver"
   context: []
@@ -22564,4 +22565,34 @@
         back to default behavior (copy ours)
       supersedes: null
   todos: []
-  closed_reason: Restructuring task breakdown
+- title: "Merge driver foundation: types and parsing"
+  description: |-
+    Create merge module foundation:
+
+    **Files to create:**
+    - src/merge/types.ts - MergeResult, ConflictInfo, MergeOptions types
+    - src/merge/index.ts - Public API exports
+
+    **Covers ACs:**
+    - ac-1: Parse all three versions as structured data
+    - ac-11: Fallback on parse failure (copy ours, create marker)
+
+    **Scope:**
+    - Define types for merge results, conflicts, options
+    - Implement parseYamlVersions() to read base/ours/theirs
+    - Implement graceful fallback when parsing fails
+  type: task
+  spec_ref: "@yaml-merge-driver"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  _ulid: 01KFM7FQGVVN53MP741PSJGMBF
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:28:48.411Z
+  notes: []
+  todos: []
