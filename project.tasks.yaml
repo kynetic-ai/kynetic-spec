@@ -26667,7 +26667,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -26834,6 +26834,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T13:21:17.475Z
+  closed_reason: "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12
+    through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items
+    instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
   slugs: []
   title: Search and validation API endpoints
