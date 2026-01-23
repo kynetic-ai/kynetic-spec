@@ -24241,6 +24241,14 @@
         TODO for shared package, (5) Implemented port persistence via .daemon.port file so restart
         preserves port. All tests still pass (1166 passed)."
       supersedes: null
+    - _ulid: 01KFNA1YM3HZ5J38QJYC8JVS3S
+      created_at: 2026-01-23T11:32:57.091Z
+      author: "@claude"
+      content: "PR #189 fixes pushed and reviewed. All Greptile issues addressed in code. BLOCKER: 5
+        review conversation threads need manual resolution in GitHub UI - cannot be done
+        programmatically via gh CLI. Once resolved, PR will be ready to merge. Leaving PR in
+        pending_review state for manual conversation resolution and merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
