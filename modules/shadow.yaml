@@ -682,3 +682,7 @@ features:
             given: driver runs successfully
             when: processing completes
             then: stderr shows summary of what was merged/conflicted for user visibility
+          - id: ac-3
+            given: --non-interactive flag is passed
+            when: conflicts detected
+            then: driver writes conflicts as YAML comments instead of prompting
