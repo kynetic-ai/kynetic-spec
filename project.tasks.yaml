@@ -20924,6 +20924,7 @@
     - research
   vcs_refs: []
   created_at: 2026-01-22T01:20:12.418Z
+  started_at: 2026-01-23T04:25:53.449Z
   notes:
     - _ulid: 01KFHMM5S2CX5WYQJ54E528CRB
       created_at: 2026-01-22T01:20:42.274Z
@@ -21084,9 +21085,23 @@
       author: "@claude"
       content: "Automation status set to manual_only: Web UI spike requires human design decisions"
       supersedes: null
+    - _ulid: 01KFMKY53DTGVHFDB0SGSQZQ3B
+      created_at: 2026-01-23T05:06:23.981Z
+      author: "@claude"
+      content: |-
+        Starting spec creation per approved plan. Will create:
+        1. 3 new traits (@trait-websocket-protocol, @trait-api-endpoint, @trait-localhost-security)
+        2. Update @daemon-server ACs (6 → 16)
+        3. Add @api-contract feature (~35 ACs)
+        4. Expand @web-dashboard ACs (2 → 33)
+        5. Add @gh-pages-export ACs (0 → 15)
+        6. Add @cli-serve-commands feature (10 ACs)
+        7. Derive 31 implementation tasks
+
+        Tech stack: Elysia.js + Bun + WebSocket (per kynetic patterns)
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-01-23T04:25:53.449Z
 - _ulid: 01KFHZT60CB7D2K13HP914B8YZ
   slugs:
     - task-cli-version-display
