@@ -10,6 +10,7 @@ import type {
 	TaskDetail,
 	ItemSummary,
 	ItemDetail,
+	InboxItem,
 	PaginatedResponse,
 	ErrorResponse
 } from '@kynetic-ai/shared';
@@ -153,4 +154,63 @@ export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<Tas
 	}
 
 	return response.json();
+}
+
+/**
+ * Fetch inbox items
+ * AC: @web-dashboard ac-16
+ */
+export async function fetchInbox(params?: {
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<InboxItem>> {
+	const url = new URL(`${API_BASE}/api/inbox`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				url.searchParams.set(key, String(value));
+			}
+		});
+	}
+
+	const response = await fetch(url.toString());
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
+}
+
+/**
+ * Add a new inbox item
+ * AC: @web-dashboard ac-18
+ */
+export async function addInboxItem(text: string, tags?: string[]): Promise<void> {
+	const response = await fetch(`${API_BASE}/api/inbox`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ text, tags })
+	});
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+}
+
+/**
+ * Delete an inbox item
+ * AC: @web-dashboard ac-19
+ */
+export async function deleteInboxItem(ref: string): Promise<void> {
+	const response = await fetch(`${API_BASE}/api/inbox/${ref}`, {
+		method: 'DELETE'
+	});
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
 }
