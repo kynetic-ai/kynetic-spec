@@ -1,13 +1,13 @@
 ---
 name: task-work
-description: Work on a kspec task with proper lifecycle - verify, start, note, complete, commit.
+description: Work on a kspec task with proper lifecycle - verify, start, note, submit, PR, complete.
 ---
 
 Base directory for this skill: /home/chapel/Projects/kynetic-spec/.claude/skills/task-work
 
 # Task Work Session
 
-Structured workflow for working on tasks. Ensures proper lifecycle management.
+Structured workflow for working on tasks. Full lifecycle from start through PR merge.
 
 ## Quick Start
 
@@ -23,16 +23,29 @@ kspec workflow next --input task_ref="@task-slug"
 - Ensuring consistent task lifecycle
 - When you need to track progress with notes
 
+## Task States
+
+```
+pending → in_progress → pending_review → completed
+```
+
+- `task start` → in_progress (working on it)
+- `task submit` → pending_review (code done, PR created, awaiting merge)
+- `task complete` → completed (PR merged)
+
 ## Workflow Overview
 
-6 steps to complete a task properly:
+9 steps for full task lifecycle:
 
 1. **Choose Task** - Select from ready tasks
 2. **Verify Not Done** - Check git history, existing code
 3. **Start Task** - Mark in_progress
-4. **Work & Note** - Add notes during work, not just at end
-5. **Complete** - Mark done with summary
-6. **Commit** - Ensure changes committed with trailers
+4. **Work & Note** - Add notes during work
+5. **Commit** - Ensure changes committed with trailers
+6. **Submit Task** - Mark pending_review
+7. **Create PR** - Use /pr skill
+8. **PR Merged** - Wait for review and merge
+9. **Complete Task** - Mark completed after merge
 
 ## Key Commands
 
@@ -43,13 +56,16 @@ kspec tasks ready
 # Get task details
 kspec task get @task-slug
 
-# Start working
+# Start working (in_progress)
 kspec task start @task-slug
 
 # Add notes as you work
 kspec task note @task-slug "What you're doing..."
 
-# Complete with summary
+# Submit for review (pending_review) - code done, PR ready
+kspec task submit @task-slug
+
+# Complete after PR merged (completed)
 kspec task complete @task-slug --reason "Summary of what was done"
 ```
 
@@ -105,6 +121,23 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 This enables `kspec log @task` to find related commits.
 
+## Submit vs Complete
+
+**Submit** (`task submit`):
+- Use when code is done and you're creating a PR
+- Task moves to `pending_review`
+- Indicates "ready for review, not yet merged"
+
+**Complete** (`task complete`):
+- Use only after PR is merged to main
+- Task moves to `completed`
+- Indicates "work is done and shipped"
+
+**Why this matters:**
+- Tracks tasks awaiting merge separately from done tasks
+- `kspec tasks ready` won't show pending_review tasks as available
+- Gives accurate picture of what's in progress vs awaiting review
+
 ## After Completion
 
 After completing a task:
@@ -115,6 +148,7 @@ After completing a task:
 
 ## Integration with Other Workflows
 
-- **Before PR**: After task complete, use `/pr` to create PR
-- **After PR**: Use `@pr-review-merge` workflow for merge
-- **Before completing**: Consider `@local-review` for quality check
+- **Before submit**: Consider `/local-review` for quality check
+- **After submit**: Use `/pr` to create PR
+- **For merge**: Use `@pr-review-merge` workflow
+- **After merge**: Complete the task
