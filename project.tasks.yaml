@@ -20914,6 +20914,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Spec created with ~110 ACs across 5 features. 3 new traits added. 31 granular
+    implementation tasks derived with detailed notes.
   depends_on: []
   context: []
   priority: 2
@@ -20925,6 +20927,7 @@
   vcs_refs: []
   created_at: 2026-01-22T01:20:12.418Z
   started_at: 2026-01-23T04:25:53.449Z
+  completed_at: 2026-01-23T05:26:24.655Z
   notes:
     - _ulid: 01KFHMM5S2CX5WYQJ54E528CRB
       created_at: 2026-01-22T01:20:42.274Z
@@ -21224,9 +21227,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-01-23T05:26:24.655Z
-  closed_reason: Spec created with ~110 ACs across 5 features. 3 new traits added. 31 granular
-    implementation tasks derived with detailed notes.
 - _ulid: 01KFHZT60CB7D2K13HP914B8YZ
   slugs:
     - task-cli-version-display
@@ -23576,6 +23576,7 @@
         - None
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
   slugs: []
   title: Create shared types package
