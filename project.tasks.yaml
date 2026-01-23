@@ -26610,6 +26610,7 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:09.685Z
+  started_at: 2026-01-23T12:51:31.905Z
   notes:
     - _ulid: 01KFMMS43XYN0E6QPTB3RM7RQ4
       created_at: 2026-01-23T05:21:07.709Z
@@ -26647,9 +26648,31 @@
         - packages/daemon/src/routes/inbox.ts
         - packages/daemon/src/routes/meta.ts
       supersedes: null
+    - _ulid: 01KFNEK3K6PYG5C9AMQR4CHRXT
+      created_at: 2026-01-23T12:52:13.542Z
+      author: "@claude"
+      content: |-
+        Starting implementation of inbox and meta API endpoints.
+
+        PLAN:
+        1. Create packages/daemon/src/routes/inbox.ts with 3 endpoints:
+           - GET /api/inbox - list all inbox items (ac-12)
+           - POST /api/inbox - create inbox item (ac-13)
+           - DELETE /api/inbox/:ref - delete inbox item (ac-14)
+        2. Create packages/daemon/src/routes/meta.ts with 4 endpoints:
+           - GET /api/meta/session - get session context (ac-15)
+           - GET /api/meta/agents - list agents (ac-16)
+           - GET /api/meta/workflows - list workflows (ac-17)
+           - GET /api/meta/observations - list observations with filter (ac-18)
+
+        3. Register routes in packages/daemon/src/server.ts
+
+        4. Create E2E tests following project pattern (code inspection)
+
+        Following existing patterns from tasks.ts and items.ts routes.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T12:51:31.905Z
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
   slugs: []
   title: Search and validation API endpoints
