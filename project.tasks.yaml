@@ -28205,6 +28205,7 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:36.630Z
+  started_at: 2026-01-23T14:42:37.898Z
   notes:
     - _ulid: 01KFMMW7E4ACAAW1C9C85EY81W
       created_at: 2026-01-23T05:22:49.412Z
@@ -28236,9 +28237,32 @@
         - packages/web-ui/src/lib/components/Sidebar.svelte
         - packages/web-ui/src/lib/components/MobileNav.svelte
       supersedes: null
+    - _ulid: 01KFNMYGW16TBYJ18X1W434SZC
+      created_at: 2026-01-23T14:43:19.042Z
+      author: "@claude"
+      content: |-
+        Starting implementation of dashboard layout and navigation.
+
+        Scope for this task (from existing notes):
+        - ac-26: Responsive single column < 768px with bottom nav
+        - ac-27: Slide-over panels >= 1024px
+
+        Implementation plan:
+        1. Create Sidebar component using shadcn-svelte/sidebar
+        2. Create MobileNav component for bottom navigation
+        3. Update +layout.svelte to use new layout components
+        4. Add responsive breakpoints and navigation routing
+        5. Setup connection status indicator in footer
+
+        Components to create:
+        - packages/web-ui/src/lib/components/Sidebar.svelte
+        - packages/web-ui/src/lib/components/MobileNav.svelte
+
+        Components to update:
+        - packages/web-ui/src/routes/+layout.svelte
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T14:42:37.898Z
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
   slugs: []
   title: Task list and detail views
