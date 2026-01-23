@@ -145,7 +145,7 @@ describe('Validation API Endpoints', () => {
     );
 
     // Check imports from parser
-    expect(routesContent).toContain("from '../../../src/parser/index.js'");
+    expect(routesContent).toContain("from '../../parser/index.js'");
     expect(routesContent).toContain('initContext');
     expect(routesContent).toContain('buildIndexes');
     expect(routesContent).toContain('validate');
@@ -154,11 +154,11 @@ describe('Validation API Endpoints', () => {
     expect(routesContent).toContain('loadMetaContext');
 
     // Check imports from utils
-    expect(routesContent).toContain("from '../../../src/utils/grep.js'");
+    expect(routesContent).toContain("from '../../utils/grep.js'");
     expect(routesContent).toContain('grepItem');
 
     // Check meta types import
-    expect(routesContent).toContain("from '../../../src/parser/meta.js'");
+    expect(routesContent).toContain("from '../../parser/meta.js'");
     expect(routesContent).toContain('LoadedAgent');
     expect(routesContent).toContain('LoadedWorkflow');
     expect(routesContent).toContain('LoadedObservation');

@@ -4,9 +4,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createTempDir, cleanupTempDir, initGitRepo, setupTempFixtures } from './helpers/cli';
+import { createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { mkdirSync } from 'fs';
 
 describe('Daemon Server', () => {
   let tempDir: string;
@@ -14,7 +15,8 @@ describe('Daemon Server', () => {
   beforeEach(async () => {
     tempDir = await createTempDir();
     await initGitRepo(tempDir);
-    await setupTempFixtures(tempDir);
+    // Create .kspec directory for daemon PID file
+    mkdirSync(join(tempDir, '.kspec'), { recursive: true });
   });
 
   afterEach(async () => {

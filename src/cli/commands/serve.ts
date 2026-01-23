@@ -4,13 +4,26 @@
  */
 
 import type { Command } from 'commander';
-import { spawn, spawnSync } from 'child_process';
+import { spawn, spawnSync, execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { error, info, output, success, warn, isJsonMode } from '../output.js';
 import { EXIT_CODES } from '../exit-codes.js';
 import { PidFileManager } from '../pid-utils.js';
+
+/**
+ * Check if Bun runtime is available.
+ * Daemon requires Bun to run TypeScript directly.
+ */
+function isBunAvailable(): boolean {
+  try {
+    execSync('bun --version', { stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -169,26 +182,28 @@ async function startServer(opts: {
   }
 
   // Get path to daemon entry point
-  // In development (monorepo): packages/daemon/src/index.ts
-  // In production (npm install): node_modules/@kynetic-ai/daemon/dist/index.js
-  const packageRoot = join(__dirname, '../../..');  // From dist/cli/commands to project root
-
-  // Try production path first (npm install scenario)
-  let daemonBinary = join(packageRoot, 'node_modules/@kynetic-ai/daemon/dist/index.js');
-
-  // Fall back to development path (monorepo scenario)
-  if (!existsSync(daemonBinary)) {
-    daemonBinary = join(packageRoot, 'packages/daemon/src/index.ts');
-  }
+  // Daemon source is bundled at dist/daemon/index.ts (relative to package root)
+  // __dirname is dist/cli/commands, so go up 2 levels to dist/, then into daemon/
+  // Note: Daemon is TypeScript source - requires Bun runtime
+  const daemonBinary = join(__dirname, '../../daemon/index.ts');
 
   if (!existsSync(daemonBinary)) {
     if (isJsonMode()) {
-      output({ error: `Daemon binary not found`, hint: 'Ensure the kspec package is properly installed' });
+      output({ error: `Daemon binary not found at ${daemonBinary}`, hint: 'Ensure the kspec package is properly installed' });
     } else {
-      error(`Daemon binary not found at expected locations:`);
-      error(`  Production: ${join(packageRoot, 'node_modules/@kynetic-ai/daemon/dist/index.js')}`);
-      error(`  Development: ${join(packageRoot, 'packages/daemon/src/index.ts')}`);
+      error(`Daemon binary not found at: ${daemonBinary}`);
       error('Ensure the kspec package is properly installed');
+    }
+    process.exit(EXIT_CODES.ERROR);
+  }
+
+  // Daemon requires Bun to run TypeScript directly
+  if (!isBunAvailable()) {
+    if (isJsonMode()) {
+      output({ error: 'Bun runtime not found', hint: 'Install Bun: https://bun.sh/docs/installation' });
+    } else {
+      error('Bun runtime is required for the daemon server');
+      error('Install Bun: https://bun.sh/docs/installation');
     }
     process.exit(EXIT_CODES.ERROR);
   }
@@ -198,9 +213,7 @@ async function startServer(opts: {
     // Write port config for restart persistence (AC: @cli-serve-commands ac-7)
     writeDaemonPort(opts.kspecDir, opts.port);
 
-    // Determine runtime based on file extension
-    // .ts files need bun, .js files can use node
-    const runtime = daemonBinary.endsWith('.ts') ? 'bun' : 'node';
+    const runtime = 'bun';
 
     // Spawn detached process
     const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
@@ -247,8 +260,7 @@ async function startServer(opts: {
       info('Press Ctrl+C to stop');
     }
 
-    // Determine runtime based on file extension
-    const runtime = daemonBinary.endsWith('.ts') ? 'bun' : 'node';
+    const runtime = 'bun';
 
     const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       stdio: 'inherit',
@@ -382,10 +394,12 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
   } else {
     if (running) {
       output(`Daemon running (PID: ${pid})`);
+      if (port) {
+        output(`  Port: ${port}`);
+      }
     } else {
       output('Daemon not running');
     }
-    output(status);
   }
 }
 

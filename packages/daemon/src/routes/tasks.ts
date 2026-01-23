@@ -27,8 +27,8 @@ import {
   getAuthor,
   syncSpecImplementationStatus,
   type LoadedTask,
-} from '../../../src/parser/index.js';
-import { commitIfShadow } from '../../../src/parser/shadow.js';
+} from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
 
 interface TasksRouteOptions {

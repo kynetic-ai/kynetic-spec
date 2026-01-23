@@ -19,7 +19,7 @@ import {
   initContext,
   loadMetaContext,
   loadSessionContext,
-} from '../../../src/parser/index.js';
+} from '../../parser/index.js';
 
 interface MetaRouteOptions {
   kspecDir: string;
