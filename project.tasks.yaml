@@ -23458,6 +23458,7 @@
         informative message
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMJ8G6W8QGAGP599P4T7E8
   slugs:
     - task-cli-serve-commands
