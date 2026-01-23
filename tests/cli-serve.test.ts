@@ -4,10 +4,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createTempDir, cleanupTempDir, initGitRepo, setupTempFixtures, kspec, kspecJson } from './helpers/cli';
+import { createTempDir, cleanupTempDir, initGitRepo, kspec, kspecJson } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
 import { join } from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync } from 'fs';
 
 // Check if Bun runtime is available
 let bunAvailable = false;
@@ -25,7 +25,8 @@ describe('kspec serve commands', () => {
   beforeEach(async () => {
     tempDir = await createTempDir();
     await initGitRepo(tempDir);
-    await setupTempFixtures(tempDir);
+    // Create .kspec directory for daemon PID file
+    mkdirSync(join(tempDir, '.kspec'), { recursive: true });
     pidFilePath = join(tempDir, '.kspec', '.daemon.pid');
   });
 
@@ -216,18 +217,11 @@ describe('kspec serve commands', () => {
 
     const pid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
 
-    // Check status
-    const result = kspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    // Check status with --json flag
+    const result = kspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
 
-    expect(result.stdout).toContain('Daemon running');
-    expect(result.stdout).toContain(`PID: ${pid}`);
-
-    // Should output JSON
-    const lines = result.stdout.split('\n');
-    const jsonLine = lines.find(line => line.trim().startsWith('{'));
-    expect(jsonLine).toBeTruthy();
-
-    const status = JSON.parse(jsonLine!);
+    // Should output valid JSON with process info
+    const status = JSON.parse(result.stdout);
     expect(status).toMatchObject({
       running: true,
       pid: pid,

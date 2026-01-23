@@ -10,8 +10,8 @@
  * AC: @cli-serve-commands ac-4, ac-5, ac-6
  */
 
-import { readFileSync, writeFileSync, unlinkSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
 
 export class PidFileManager {
   private pidFilePath: string;
@@ -22,8 +22,13 @@ export class PidFileManager {
 
   /**
    * Writes current process PID to .kspec/.daemon.pid
+   * Creates parent directory if it doesn't exist.
    */
   write(): void {
+    const dir = dirname(this.pidFilePath);
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
     writeFileSync(this.pidFilePath, process.pid.toString(), 'utf-8');
   }
 
