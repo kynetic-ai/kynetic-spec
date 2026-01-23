@@ -29657,7 +29657,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -29699,6 +29699,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T15:51:34.551Z
 - _ulid: 01KFMMTVGX2BZQF7NBTMS4HP42
   slugs: []
   title: WebSocketManager with subscriptions
