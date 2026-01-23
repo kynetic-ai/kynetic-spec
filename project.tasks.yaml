@@ -28474,6 +28474,32 @@
         Both fixed in commit 7a31c08. Push triggered new CI run. Waiting for all checks to pass
         before using @pr-review-merge workflow.
       supersedes: null
+    - _ulid: 01KFNNGBXT3388PT7E8XA19T2G
+      created_at: 2026-01-23T14:53:03.802Z
+      author: "@claude"
+      content: >-
+        Iteration 37 blocker: Review thread resolution
+
+
+        Greptile review feedback has been addressed in code (commit 7a31c08), but the review threads
+        remain unresolved. The check-unresolved-comments CI check is failing.
+
+
+        **Manual intervention required:**
+
+        GitHub web UI interaction needed to click 'Resolve conversation' on the two Greptile review
+        threads.
+
+
+        **Alternatively:**
+
+        Could respond to review comments programmatically to trigger auto-resolution, but gh CLI
+        doesn't support review thread resolution via API.
+
+
+        Marking iteration complete. Next iteration should check if threads were resolved, or attempt
+        programmatic comment resolution.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
