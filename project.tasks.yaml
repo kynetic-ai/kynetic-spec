@@ -29946,7 +29946,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -30257,6 +30257,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T16:38:48.233Z
+  closed_reason: "PR #202 merged successfully. WebSocketManager implemented with all 6 ACs (ac-28 to
+    ac-33). Fixed Greptile-identified critical bugs: reconnect counter timing, state guard blocking
+    reconnection, connectionLost flag updates, redundant reactivity updates. All CI checks passed
+    (tests, claude-review, Greptile 4/5 confidence). All review threads resolved."
 - _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
   slugs: []
   title: Export command implementation
