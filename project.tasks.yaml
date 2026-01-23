@@ -24382,7 +24382,25 @@
   created_at: 2026-01-23T05:21:45.780Z
   notes: []
   todos: []
-- title: Inbox view
+- _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
+  slugs: []
+  title: Inbox view
+  type: task
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - phase-3
+    - dashboard
+  vcs_refs: []
+  created_at: 2026-01-23T05:21:50.232Z
+  notes: []
+  todos: []
+- title: Session context and observations panel
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
@@ -24391,12 +24409,12 @@
   tags:
     - phase-3
     - dashboard
-  _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
+  _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:21:50.232Z
+  created_at: 2026-01-23T05:21:54.863Z
   notes: []
   todos: []
