@@ -653,3 +653,7 @@ features:
         given: YAML parsing fails on any input file
         when: driver runs
         then: "falls back gracefully: copies ours verbatim, creates .kspec-merge-failed marker, exits 0"
+      - id: ac-12
+        given: kspec init runs in a new repo
+        when: initialization completes
+        then: merge driver is configured in .git/config and .gitattributes updated in shadow branch
