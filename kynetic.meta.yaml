@@ -3268,4 +3268,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFNKFR78AJY6J1MMY42J1H2M
+    type: friction
+    content: "Interactive CLI tools block automation loops. Encountered with 'sv add tailwindcss' and
+      'shadcn-svelte init' - both require user input even with --yes flag. This forces either: (1)
+      finding alternative non-interactive installation methods, (2) manual configuration, or (3)
+      pre-scripted answers via expect/stdin. For automation-friendly workflows, prefer tools with
+      true --yes/--no-interaction flags or configuration files over interactive prompts."
+    created_at: 2026-01-23T14:17:46.472Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
