@@ -2342,7 +2342,7 @@ runs:
   - _ulid: 01KFP8R7R6GCRG9QMGVQ1ZM78R
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-23T20:29:24.615Z
     step_results:
@@ -2457,5 +2457,56 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-23T20:30:51.490Z
-        completed_at: 2026-01-23T20:30:51.490Z
+        completed_at: 2026-01-23T20:31:06.291Z
+        notes: >-
+          ## Proposed Improvements for Untracked Friction
+
+
+          ### 1. --depends-on flag for task add (Small)
+
+          **What**: Add --depends-on flag to 'kspec task add' to set dependencies at creation time
+
+          **How helps**: Eliminates need for follow-up command or manual YAML edit when creating
+          dependent tasks
+
+          **Scope**: Small - single flag addition to existing command
+
+
+          ### 2. Session plan context persistence (Medium)
+
+          **What**: Option to attach plan content to task notes automatically when creating tasks
+          from plan mode
+
+          **How helps**: Ensures implementation context survives session boundaries without manual
+          embedding
+
+          **Scope**: Medium - requires Claude Code skill/workflow integration
+
+
+          ### 3. Compound task creation command (Medium)
+
+          **What**: 'kspec task add-batch' or 'kspec task add --from-file tasks.yaml' for creating
+          multiple related tasks with notes
+
+          **How helps**: Creating 10 E2E tasks took 20+ commands; batch would be ~2 commands
+
+          **Scope**: Medium - new command or file-based input mode
+
+          **Note**: Partially addressed by inbox item 01KFC3SV (batch JSON)
+
+
+          ### 4. Test coverage report command (Medium)
+
+          **What**: 'kspec coverage @spec-ref' that scans codebase for '// AC: @spec ac-N'
+          annotations and reports gaps
+
+          **How helps**: Automated verification that all ACs have test coverage
+
+          **Scope**: Medium - new command with code search
+
+          **Note**: Related to inbox item about AC coverage analysis tooling
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-23T20:31:06.291Z
+        completed_at: 2026-01-23T20:31:06.291Z
     initiated_by: "@claude"
