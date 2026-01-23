@@ -22217,9 +22217,40 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-22T19:56:31.083Z
-  notes: []
-  todos: []
   started_at: 2026-01-23T03:01:33.508Z
+  notes:
+    - _ulid: 01KFMFHGH4S4SN5CQR2MD6PEXE
+      created_at: 2026-01-23T03:49:35.396Z
+      author: "@claude"
+      content: >-
+        Spec work complete:
+
+
+        1. Created @trait-shadow-commit trait with 8 AC covering:
+           - Auto-commit on successful save (ac-1)
+           - Message format: operation:ref-short [detail] (ac-2)  
+           - ULID prefix or slug in commit (ac-3)
+           - No-op when shadow not configured (ac-4)
+           - No commit on save failure (ac-5)
+           - Fire-and-forget push (ac-6)
+           - Warning on commit/push failure (ac-7)
+           - Atomic commits for multi-save ops (ac-8)
+
+        2. Added trait to 6 meta command specs:
+           - @meta-observe-cmd
+           - @meta-promote-cmd
+           - @meta-resolve-cmd
+           - @meta-add-cmd
+           - @meta-set-cmd
+           - @meta-delete-cmd
+
+        Design decision: Session context (focus, threads, questions) intentionally NOT committed -
+        it's transient per-session state stored in .kspec/.kspec-session.
+
+
+        Code fix still needed: 6 missing commitIfShadow calls in src/cli/commands/meta.ts
+      supersedes: null
+  todos: []
 - _ulid: 01KFKRBN1B8GKXNV8W443XC30A
   slugs: []
   title: Add --steps flag to workflow add command
