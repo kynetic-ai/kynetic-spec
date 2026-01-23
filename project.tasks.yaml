@@ -24876,7 +24876,43 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:39.403Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMZ2RF2A6WANTXKG12GW2B
+      created_at: 2026-01-23T05:24:22.928Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement read-only mode detection and disabled UI states.
+
+        ### Steps
+        1. Detect read-only mode:
+           - No daemon connection available
+           - Loaded from static snapshot
+
+        2. Disable mutation buttons:
+           - Start Task: disabled with tooltip
+           - Add Note: disabled
+           - Add inbox item: hidden or disabled
+
+        3. Show read-only indicator:
+           - Banner or badge explaining mode
+           - Link to CLI usage
+
+        4. Data freshness indicator:
+           - Show 'Data as of: [timestamp]' prominently
+
+        ### ACs Covered
+        - ac-15: Data freshness indicator
+        - ac-16: Start Task disabled with tooltip
+        - ac-17: Add button disabled/hidden
+        - ac-18: Graceful no-op for write attempts
+
+        ### Files to Modify
+        - packages/web-ui/src/lib/stores/mode.svelte.ts
+        - packages/web-ui/src/lib/components/ReadOnlyBanner.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMXWWAMNM41ERK65RYAD46
   slugs: []
