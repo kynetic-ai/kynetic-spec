@@ -686,3 +686,18 @@ features:
             given: --non-interactive flag is passed
             when: conflicts detected
             then: driver writes conflicts as YAML comments instead of prompting
+      - _ulid: 01KFM7BG7CN59MPYWHRB9HSK9N
+        slugs:
+          - merge-file-detection
+        title: File Type Detection
+        type: requirement
+        tags: []
+        description: Merge driver must correctly identify kspec file types to apply appropriate merge
+          strategies.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-23T01:26:29.868Z
