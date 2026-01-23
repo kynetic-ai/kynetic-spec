@@ -25162,6 +25162,63 @@
         - @01KFMMTP: Global search command palette
         - @01KFMMTV: WebSocketManager with subscriptions
       supersedes: null
+    - _ulid: 01KFNND6AF1FN8SX6ZVT2ZA2W0
+      created_at: 2026-01-23T14:51:19.759Z
+      author: "@claude"
+      content: >-
+        Session 36 End State - Parent Task Tracking:
+
+
+        This is the PARENT/UMBRELLA task for Web Dashboard implementation with 8 derived subtasks.
+        It should remain in_progress until ALL subtasks are complete.
+
+
+        **Current Progress: 1/8 subtasks in review, 7/8 pending**
+
+
+        Subtask Status:
+
+        1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED (PR #197 merged)
+
+        2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198, CI running)
+
+        3. ⏸️ @01KFMMT4 - Task list/detail views - READY
+
+        4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY
+
+        5. ⏸️ @01KFMMTD - Inbox view - READY
+
+        6. ⏸️ @01KFMMTJ - Session context/observations panel - READY
+
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+
+        **Why parent task remains in_progress:**
+
+        This umbrella task coordinates all 8 subtasks. It will be completed only when all derived
+        subtasks are done and merged. Keeping it in_progress maintains visibility of the overall Web
+        Dashboard effort.
+
+
+        **Next Session Actions:**
+
+        1. Complete PR #198 review and merge (@01KFMMT0)
+
+        2. Move to next subtask @01KFMMT4 (Task list/detail views)
+
+        3. Continue iterating through remaining subtasks
+
+        4. Mark THIS parent task complete only after all 8 subtasks done
+
+
+        **Implementation Strategy:**
+
+        Each subtask is self-contained and can be PR'd independently. This allows incremental
+        progress and easier review. The parent task serves as the tracking point for overall
+        dashboard completion.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
