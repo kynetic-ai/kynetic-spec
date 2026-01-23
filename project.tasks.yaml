@@ -23312,7 +23312,7 @@
     kspec merge-driver <base> <ours> <theirs> [-L n] [-p path] [--non-interactive] [--dry-run]
   spec_ref: "@merge-driver-cli"
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@01KFM7GN"
