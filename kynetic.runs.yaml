@@ -546,7 +546,7 @@ runs:
   - _ulid: 01KFMGP59MZ2N985TX4RZ860FS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
     step_results:
@@ -641,5 +641,27 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-23T04:11:48.315Z
-        completed_at: 2026-01-23T04:11:48.315Z
+        completed_at: 2026-01-23T04:12:07.243Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. **Extend @multi-ref-batch to trait commands** (small)
+             - Add --refs support to 'kspec item trait add' and 'kspec item trait remove'
+             - Follows existing pattern from task/item commands
+             - Would have saved 5 extra CLI calls this session
+
+          2. **AC text validation/escaping guidance** (small)
+             - When AC 'then' field contains special YAML chars (< > : "), warn or auto-escape
+             - Or: document best practices in AGENTS.md for writing AC text
+             - Prevents YAML parse errors during spec authoring
+
+          3. **Smarter spec-gap detection at task completion** (medium)
+             - If task was created before a spec that now exists with matching keywords, suggest linking
+             - Or: check if task notes mention a spec ref that could be linked
+             - Reduces false positives in 'Is this a spec gap?' warning
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-23T04:12:07.243Z
+        completed_at: 2026-01-23T04:12:07.243Z
     initiated_by: "@claude"
