@@ -1834,6 +1834,8 @@ features:
           (workflow_ref). Use --confirm to override.
         implements:
           - "@meta-commands"
+        traits:
+          - "@trait-shadow-commit"
   - _ulid: 01KF1XREF00000000000000000
     slugs:
       - meta-ref
