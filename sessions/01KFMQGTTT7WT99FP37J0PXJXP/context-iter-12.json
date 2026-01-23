@@ -1,0 +1,385 @@
+{
+  "generated_at": "2026-01-23T09:11:55.779Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "server",
+        "websocket",
+        "elysia"
+      ]
+    },
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "api",
+        "rest",
+        "websocket"
+      ]
+    },
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "svelte",
+        "ui",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMJ8",
+      "title": "Implement: CLI Serve Commands",
+      "priority": 2,
+      "spec_ref": "@cli-serve-commands",
+      "tags": [
+        "cli",
+        "serve"
+      ]
+    },
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-0",
+        "foundation"
+      ]
+    },
+    {
+      "ref": "01KFMMM0",
+      "title": "Create packages/daemon structure",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMM4",
+      "title": "Implement Elysia server core",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMM9",
+      "title": "Implement file watcher and WebSocket broadcast",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMMD",
+      "title": "Implement WebSocket protocol",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMMH",
+      "title": "Implement daemon process detach",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFM7H6",
+      "title": "Merge driver: auto-configuration on init",
+      "completed_at": "2026-01-23T09:11:41.068Z",
+      "closed_reason": "PR #183 merged. Implemented AC-12: auto-configure merge driver during kspec init. Added configureMergeDriver() function that sets git config and creates .gitattributes in shadow branch. Test coverage: Added E2E test with conditional skip in CI (kspec not in PATH), updated commit count assertions to work in both environments. All 1058 tests pass."
+    },
+    {
+      "ref": "01KFK6JY",
+      "title": "Fix derive cancelled task filtering inconsistency",
+      "completed_at": "2026-01-23T08:50:38.399Z",
+      "closed_reason": "PR #182 merged. Fixed inconsistent cancelled task filtering in derive command. Added cancelled task filtering to existence check to match getParentTaskRef() behavior. Added comprehensive E2E test. All 1057 tests pass. Local review: PASS."
+    },
+    {
+      "ref": "01KFH4F3",
+      "title": "Implement @trait-retrospective for specs without task tracking",
+      "completed_at": "2026-01-23T08:38:17.097Z",
+      "closed_reason": "PR #181 merged. Implemented @trait-retrospective for legacy specs with comprehensive AC coverage (7 E2E tests, all 1056 tests pass). Addressed greptile code review feedback. Local review rated EXCELLENT with zero blocking issues."
+    },
+    {
+      "ref": "01KFM7H3",
+      "title": "Merge driver: CLI command",
+      "completed_at": "2026-01-23T07:53:19.364Z",
+      "closed_reason": "PR #180 merged. Implemented kspec merge-driver CLI command with git standard args, stderr summary output, and non-interactive conflict comments. All 3 ACs covered with 8 comprehensive E2E tests. Local review rated EXCELLENT."
+    },
+    {
+      "ref": "01KFM7GN",
+      "title": "Merge driver: file type detection",
+      "completed_at": "2026-01-23T07:36:29.070Z",
+      "closed_reason": "PR #179 merged. Implemented file type detection for semantic YAML merge driver with detectFileType() function and FileType enum. All 6 ACs covered with comprehensive tests (8 test cases). Cross-platform support. All 1041 tests pass."
+    },
+    {
+      "ref": "01KFM7GJ",
+      "title": "Merge driver: conflict resolution",
+      "completed_at": "2026-01-23T07:24:02.849Z",
+      "closed_reason": "PR #178 merged. Implemented conflict resolution for semantic YAML merge driver. Added interactive prompts for scalar and delete-modify conflicts (AC-4, AC-8) with proper automated test coverage. Added non-interactive YAML comment formatting (AC-10). Fixed blocking issue from local review by refactoring functions for testability. All 1033 tests pass."
+    },
+    {
+      "ref": "01KFM7G5",
+      "title": "Merge driver: object merge algorithms",
+      "completed_at": "2026-01-23T07:02:25.882Z",
+      "closed_reason": "PR #177 merged. Implemented object merge algorithms with field-level recursive merge for semantic YAML merge driver. All 28 tests pass with comprehensive AC coverage for ac-3 and ac-7."
+    },
+    {
+      "ref": "01KFMMJT",
+      "title": "Setup Bun monorepo workspace",
+      "completed_at": "2026-01-23T06:51:20.414Z",
+      "closed_reason": "PR #175 merged. Set up npm workspace structure with 3 packages (daemon, web-ui, shared). All 962 tests pass, TypeScript configs validated."
+    },
+    {
+      "ref": "01KFM7G2",
+      "title": "Merge driver: array merge algorithms",
+      "completed_at": "2026-01-23T06:47:47.114Z",
+      "closed_reason": "PR #176 merged. Implemented array merge algorithms (union merge for ULID arrays, set union for tags/depends_on, deletion detection). All 23 tests pass with comprehensive AC coverage."
+    },
+    {
+      "ref": "01KFM7FQ",
+      "title": "Merge driver foundation: types and parsing",
+      "completed_at": "2026-01-23T06:21:30.447Z",
+      "closed_reason": "PR #174 merged. Implemented merge driver foundation with types and parsing for semantic YAML merging."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "0473f13",
+      "full_hash": "0473f13fed61f3740358b07903a9e53dbeb0bf07",
+      "date": "2026-01-23T09:11:25.000Z",
+      "message": "Auto-configure merge driver on kspec init (#183)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f022402",
+      "full_hash": "f0224024f35c0b092affee294901eea1c15b8f3b",
+      "date": "2026-01-23T09:04:58.000Z",
+      "message": "fix: make merge driver config tests work in CI",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "083352a",
+      "full_hash": "083352a0e1529f2cc96886f59379a81a23869f23",
+      "date": "2026-01-23T08:56:44.000Z",
+      "message": "feat: auto-configure merge driver on kspec init",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "817bbf0",
+      "full_hash": "817bbf0359d2de1ca2a09546a77d5a16b3df4052",
+      "date": "2026-01-23T08:50:24.000Z",
+      "message": "Fix derive cancelled task filtering inconsistency (#182)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4f18889",
+      "full_hash": "4f18889979d910cbd8b2edfb33e67dc6c4ef0c66",
+      "date": "2026-01-23T08:44:58.000Z",
+      "message": "fix: apply cancelled task filtering consistently in derive",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d48721c",
+      "full_hash": "d48721c57c3e7b88ab48614e56fac29f1e1070e7",
+      "date": "2026-01-23T08:38:03.000Z",
+      "message": "Implement @trait-retrospective for specs without task tracking (#181)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a4c7749",
+      "full_hash": "a4c7749bd512a3649f315bff3a186a2783f5a5c5",
+      "date": "2026-01-23T08:33:34.000Z",
+      "message": "fix: remove redundant verified_at assignment",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "88fa8a5",
+      "full_hash": "88fa8a562b3f482ccffb460d7faec860a1a03602",
+      "date": "2026-01-23T08:18:54.000Z",
+      "message": "fix: add --trait option to item set command and refactor tests",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "137f7c1",
+      "full_hash": "137f7c17834d80ba9d75dfbca3536e742180be22",
+      "date": "2026-01-23T08:10:46.000Z",
+      "message": "test: add E2E tests for @trait-retrospective",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "acffd95",
+      "full_hash": "acffd9525f6f49405f307fccc642c638a5649ae4",
+      "date": "2026-01-23T08:03:40.000Z",
+      "message": "feat: implement @trait-retrospective for legacy specs",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 312,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 37,
+    "blocked": 1,
+    "completed": 263,
+    "inbox_items": 45
+  }
+}
