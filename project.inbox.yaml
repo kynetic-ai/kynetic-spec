@@ -487,3 +487,9 @@ inbox:
     created_at: 2026-01-23T16:40:08.617Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KFNVWHN6VNF7HXSNC87CQ8WS
+    text: "[bug] Ralph loop hits OOM at iteration 44/50 - memory grows unbounded across iterations, hits
+      ~4GB heap limit"
+    created_at: 2026-01-23T16:44:34.342Z
+    tags: []
+    added_by: "@claude"
