@@ -812,6 +812,14 @@ export function registerMetaCommands(program: Command): void {
           // Save to manifest
           await saveObservation(ctx, observation);
 
+          // AC: @trait-shadow-commit ac-1
+          await commitIfShadow(
+            ctx.shadow,
+            "meta-observe",
+            observation._ulid.substring(0, 8),
+            type as string,
+          );
+
           // AC-obs-1: outputs "OK Created observation: <ULID-prefix>"
           // In JSON mode, return the created observation object
           output(observation, () =>
@@ -983,6 +991,13 @@ export function registerMetaCommands(program: Command): void {
         observation.promoted_to = taskRef;
         await saveObservation(ctx, observation);
 
+        // AC: @trait-shadow-commit ac-1
+        await commitIfShadow(
+          ctx.shadow,
+          "observation-promote",
+          observation._ulid.substring(0, 8),
+        );
+
         // AC-obs-3: outputs "OK Created task: <ULID-prefix>"
         // In JSON mode, return the created task object
         output(task, () => success(`Created task: ${taskRef.substring(0, 9)}`));
@@ -1079,6 +1094,13 @@ export function registerMetaCommands(program: Command): void {
         observation.resolved_by = observation.author; // Use same author
 
         await saveObservation(ctx, observation);
+
+        // AC: @trait-shadow-commit ac-1
+        await commitIfShadow(
+          ctx.shadow,
+          "observation-resolve",
+          observation._ulid.substring(0, 8),
+        );
 
         // AC-obs-4: outputs "OK Resolved: <ULID-prefix>"
         success(`Resolved: ${observation._ulid.substring(0, 8)}`);
@@ -1210,6 +1232,14 @@ export function registerMetaCommands(program: Command): void {
           type as "agent" | "workflow" | "convention",
         );
 
+        // AC: @trait-shadow-commit ac-1
+        await commitIfShadow(
+          ctx.shadow,
+          `meta-add-${type}`,
+          itemUlid.substring(0, 8),
+          "id" in item ? item.id : "domain" in item ? item.domain : undefined,
+        );
+
         if (isJsonMode()) {
           // In JSON mode, output the item data directly
           console.log(JSON.stringify(item, null, 2));
@@ -1325,6 +1355,13 @@ export function registerMetaCommands(program: Command): void {
 
         // Save the updated item
         await saveMetaItem(ctx, found, itemType);
+
+        // AC: @trait-shadow-commit ac-1
+        await commitIfShadow(
+          ctx.shadow,
+          `meta-set-${itemType}`,
+          found._ulid.substring(0, 8),
+        );
 
         if (isJsonMode()) {
           // In JSON mode, output the item data directly
@@ -1488,6 +1525,13 @@ export function registerMetaCommands(program: Command): void {
           error(errors.operation.deleteItemFailed(itemLabel));
           process.exit(EXIT_CODES.ERROR);
         }
+
+        // AC: @trait-shadow-commit ac-1
+        await commitIfShadow(
+          ctx.shadow,
+          `meta-delete-${itemType}`,
+          itemUlid.substring(0, 8),
+        );
 
         success(`Deleted ${itemLabel}`);
       } catch (err) {
