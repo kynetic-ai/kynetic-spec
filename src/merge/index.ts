@@ -31,3 +31,5 @@ export {
   formatConflictComment,
 } from "./resolve.js";
 export type { ResolutionChoice, ConflictResolution } from "./resolve.js";
+
+export { detectFileType, FileType } from "./file-type.js";
