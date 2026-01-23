@@ -22982,6 +22982,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #177 merged. Implemented object merge algorithms with field-level recursive merge
+    for semantic YAML merge driver. All 28 tests pass with comprehensive AC coverage for ac-3 and
+    ac-7."
   depends_on:
     - "@01KFM7FQ"
   context: []
@@ -22990,6 +22993,7 @@
   vcs_refs: []
   created_at: 2026-01-23T01:29:03.205Z
   started_at: 2026-01-23T06:51:34.205Z
+  completed_at: 2026-01-23T07:02:25.882Z
   notes:
     - _ulid: 01KFMSZEM753NS0P0WVB4003P6
       created_at: 2026-01-23T06:51:57.959Z
@@ -23040,10 +23044,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T07:02:25.882Z
-  closed_reason: "PR #177 merged. Implemented object merge algorithms with field-level recursive merge
-    for semantic YAML merge driver. All 28 tests pass with comprehensive AC coverage for ac-3 and
-    ac-7."
 - _ulid: 01KFM7GJS5J3QRQWEKR600GN9N
   slugs: []
   title: "Merge driver: conflict resolution"
@@ -23065,7 +23065,7 @@
     - formatConflictComment(conflict) - YAML comment format for non-interactive
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -23077,6 +23077,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-23T07:02:46.566Z
 - _ulid: 01KFM7GNQVA1J6APAFA694V14C
   slugs: []
   title: "Merge driver: file type detection"
