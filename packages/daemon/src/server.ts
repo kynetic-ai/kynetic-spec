@@ -8,7 +8,7 @@
 import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { KspecWatcher } from './watcher';
-import { join } from 'path';
+import { join, relative } from 'path';
 
 export interface ServerOptions {
   port: number;
@@ -84,7 +84,7 @@ export async function createServer(options: ServerOptions) {
       // AC-4: Broadcast file change to all connected WebSocket clients
       const event = {
         type: 'file_change',
-        file: file.replace(kspecDir + '/', ''),
+        file: relative(kspecDir, file),
         timestamp: new Date().toISOString()
       };
 
@@ -98,7 +98,7 @@ export async function createServer(options: ServerOptions) {
       // AC-6: Broadcast error event on YAML parse errors
       const event = {
         type: 'error',
-        file: file ? file.replace(kspecDir + '/', '') : undefined,
+        file: file ? relative(kspecDir, file) : undefined,
         error: error.message,
         timestamp: new Date().toISOString()
       };

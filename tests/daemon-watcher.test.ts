@@ -152,8 +152,10 @@ describe('Daemon File Watcher', () => {
       'utf-8'
     );
 
+    // Bun watcher uses recursive mode
     expect(watcherContent).toContain('recursive: true');
-    expect(watcherContent).toContain("'*.yaml'");
+    // Chokidar fallback uses globstar pattern for recursive watching
+    expect(watcherContent).toContain("'**/*.yaml'");
     expect(watcherContent).toContain('kspecDir');
   });
 });

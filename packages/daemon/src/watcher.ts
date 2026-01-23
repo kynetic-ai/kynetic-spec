@@ -61,8 +61,6 @@ export class KspecWatcher {
    * Start Bun's native file watcher
    */
   private async startBunWatcher(): Promise<void> {
-    const pattern = join(this.options.kspecDir, '*.yaml');
-
     this.watcher = watch(
       this.options.kspecDir,
       { recursive: true },
@@ -81,7 +79,7 @@ export class KspecWatcher {
    * AC-8: Start Chokidar watcher as fallback
    */
   private async startChokidarWatcher(): Promise<void> {
-    this.watcher = chokidar.watch(join(this.options.kspecDir, '*.yaml'), {
+    this.watcher = chokidar.watch(join(this.options.kspecDir, '**/*.yaml'), {
       ignoreInitial: true,
       awaitWriteFinish: {
         stabilityThreshold: 100,
