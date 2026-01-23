@@ -31,12 +31,15 @@ export interface ConflictResolution {
  * Prompt user interactively to resolve a scalar field conflict.
  *
  * @param conflict The conflict to resolve
+ * @param createInterface Optional readline factory for testing
  * @returns The resolution choice and value
  */
 export async function promptScalarConflict(
   conflict: ConflictInfo,
+  createInterface?: typeof readline.createInterface,
 ): Promise<ConflictResolution> {
-  const rl = readline.createInterface({ input, output });
+  const factory = createInterface || readline.createInterface;
+  const rl = factory({ input, output });
 
   try {
     console.log(`\n${conflict.description}`);
@@ -77,12 +80,15 @@ export async function promptScalarConflict(
  * Prompt user to choose between deletion and keeping modified version.
  *
  * @param conflict The delete-modify conflict to resolve
+ * @param createInterface Optional readline factory for testing
  * @returns The resolution choice
  */
 export async function promptDeleteModifyConflict(
   conflict: ConflictInfo,
+  createInterface?: typeof readline.createInterface,
 ): Promise<ConflictResolution> {
-  const rl = readline.createInterface({ input, output });
+  const factory = createInterface || readline.createInterface;
+  const rl = factory({ input, output });
 
   try {
     console.log(`\n${conflict.description}`);
@@ -106,13 +112,13 @@ export async function promptDeleteModifyConflict(
       case "1":
         return {
           conflict,
-          choice: deletedInOurs ? "ours" : "ours",
+          choice: "ours",
           value: deletedInOurs ? undefined : conflict.oursValue,
         };
       case "2":
         return {
           conflict,
-          choice: deletedInOurs ? "theirs" : "theirs",
+          choice: "theirs",
           value: deletedInOurs ? conflict.theirsValue : undefined,
         };
       case "3":

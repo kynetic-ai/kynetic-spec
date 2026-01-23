@@ -7,9 +7,11 @@
  * - AC-10: Non-interactive mode with YAML comment formatting
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   formatConflictComment,
+  promptScalarConflict,
+  promptDeleteModifyConflict,
   type ConflictInfo,
 } from "../src/merge/index.js";
 
@@ -222,11 +224,17 @@ describe("formatConflictComment", () => {
   });
 });
 
-describe("Interactive resolution (manual testing)", () => {
+describe("promptScalarConflict", () => {
   // AC: @yaml-merge-driver ac-4
-  it("should provide interactive prompts for scalar conflicts - manual test only", () => {
-    // Note: Interactive prompts require manual testing with stdin/stdout
-    // This test documents the expected behavior but cannot be fully automated
+  it("should resolve conflict with user choice 'ours'", async () => {
+    // Mock readline to simulate user input
+    const mockQuestion = vi.fn().mockResolvedValue("1");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
 
     const conflict: ConflictInfo = {
       type: "scalar_field",
@@ -236,24 +244,204 @@ describe("Interactive resolution (manual testing)", () => {
       description: "Title modified in both branches",
     };
 
-    // Expected interactive flow:
-    // 1. Display conflict description
-    // 2. Show "Path: title"
-    // 3. Show "[1] Ours: "Fix bug""
-    // 4. Show "[2] Theirs: "Fix issue""
-    // 5. Show "[3] Skip (leave unresolved)"
-    // 6. Prompt "Choose [1/2/3]: "
-    // 7. Return resolution based on choice
+    const result = await promptScalarConflict(conflict, mockCreateInterface);
 
-    expect(conflict.type).toBe("scalar_field");
+    expect(result.choice).toBe("ours");
+    expect(result.value).toBe("Fix bug");
+    expect(result.conflict).toEqual(conflict);
+    expect(mockQuestion).toHaveBeenCalledWith("\nChoose [1/2/3]: ");
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  // AC: @yaml-merge-driver ac-4
+  it("should resolve conflict with user choice 'theirs'", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("2");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "scalar_field",
+      path: "tasks[0].priority",
+      oursValue: 1,
+      theirsValue: 2,
+      description: "Priority modified with different values",
+    };
+
+    const result = await promptScalarConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("theirs");
+    expect(result.value).toBe(2);
+    expect(result.conflict).toEqual(conflict);
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  // AC: @yaml-merge-driver ac-4
+  it("should skip conflict with user choice 'skip'", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("3");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "scalar_field",
+      path: "description",
+      oursValue: "Old description",
+      theirsValue: "New description",
+      description: "Description changed",
+    };
+
+    const result = await promptScalarConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("skip");
+    expect(result.value).toBeUndefined();
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  // AC: @yaml-merge-driver ac-4
+  it("should default to skip for invalid input", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("invalid");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "scalar_field",
+      path: "status",
+      oursValue: "active",
+      theirsValue: "completed",
+      description: "Status conflict",
+    };
+
+    const result = await promptScalarConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("skip");
+    expect(mockClose).toHaveBeenCalled();
+  });
+});
+
+describe("promptDeleteModifyConflict", () => {
+  // AC: @yaml-merge-driver ac-8
+  it("should handle deletion in ours - choose delete", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("1");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "delete_modify",
+      path: "tasks[0]",
+      oursValue: undefined, // Deleted in ours
+      theirsValue: { title: "Modified task" },
+      description: "Item deleted in ours but modified in theirs",
+    };
+
+    const result = await promptDeleteModifyConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("ours");
+    expect(result.value).toBeUndefined();
+    expect(result.conflict).toEqual(conflict);
+    expect(mockClose).toHaveBeenCalled();
   });
 
   // AC: @yaml-merge-driver ac-8
-  it("should provide interactive prompts for delete-modify conflicts - manual test only", () => {
-    // Note: Interactive prompts require manual testing with stdin/stdout
-    // This test documents the expected behavior but cannot be fully automated
+  it("should handle deletion in ours - keep modified", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("2");
+    const mockClose = vi.fn();
 
-    const conflictDeletedInOurs: ConflictInfo = {
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "delete_modify",
+      path: "tasks[0]",
+      oursValue: undefined, // Deleted in ours
+      theirsValue: { title: "Modified task" },
+      description: "Item deleted in ours but modified in theirs",
+    };
+
+    const result = await promptDeleteModifyConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("theirs");
+    expect(result.value).toEqual({ title: "Modified task" });
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  // AC: @yaml-merge-driver ac-8
+  it("should handle deletion in theirs - keep modified", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("1");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "delete_modify",
+      path: "tasks[0]",
+      oursValue: { title: "Modified task" },
+      theirsValue: undefined, // Deleted in theirs
+      description: "Item modified in ours but deleted in theirs",
+    };
+
+    const result = await promptDeleteModifyConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("ours");
+    expect(result.value).toEqual({ title: "Modified task" });
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  // AC: @yaml-merge-driver ac-8
+  it("should handle deletion in theirs - choose delete", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("2");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
+      type: "delete_modify",
+      path: "tasks[0]",
+      oursValue: { title: "Modified task" },
+      theirsValue: undefined, // Deleted in theirs
+      description: "Item modified in ours but deleted in theirs",
+    };
+
+    const result = await promptDeleteModifyConflict(conflict, mockCreateInterface);
+
+    expect(result.choice).toBe("theirs");
+    expect(result.value).toBeUndefined();
+    expect(mockClose).toHaveBeenCalled();
+  });
+
+  // AC: @yaml-merge-driver ac-8
+  it("should skip conflict when user chooses skip", async () => {
+    const mockQuestion = vi.fn().mockResolvedValue("3");
+    const mockClose = vi.fn();
+
+    const mockCreateInterface = vi.fn(() => ({
+      question: mockQuestion,
+      close: mockClose,
+    })) as any;
+
+    const conflict: ConflictInfo = {
       type: "delete_modify",
       path: "tasks[0]",
       oursValue: undefined,
@@ -261,27 +449,10 @@ describe("Interactive resolution (manual testing)", () => {
       description: "Item deleted in ours but modified in theirs",
     };
 
-    const conflictDeletedInTheirs: ConflictInfo = {
-      type: "delete_modify",
-      path: "tasks[0]",
-      oursValue: { title: "Modified task" },
-      theirsValue: undefined,
-      description: "Item modified in ours but deleted in theirs",
-    };
+    const result = await promptDeleteModifyConflict(conflict, mockCreateInterface);
 
-    // Expected flow for deletion in ours:
-    // 1. Display conflict description
-    // 2. Show "[1] Delete (ours deleted this)"
-    // 3. Show "[2] Keep modified version: {title}"
-    // 4. Show "[3] Skip (leave unresolved)"
-
-    // Expected flow for deletion in theirs:
-    // 1. Display conflict description
-    // 2. Show "[1] Keep modified version: {title}"
-    // 3. Show "[2] Delete (theirs deleted this)"
-    // 4. Show "[3] Skip (leave unresolved)"
-
-    expect(conflictDeletedInOurs.type).toBe("delete_modify");
-    expect(conflictDeletedInTheirs.type).toBe("delete_modify");
+    expect(result.choice).toBe("skip");
+    expect(result.value).toBeUndefined();
+    expect(mockClose).toHaveBeenCalled();
   });
 });
