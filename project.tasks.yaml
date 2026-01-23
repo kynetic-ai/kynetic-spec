@@ -23993,7 +23993,25 @@
         - Log rotation can be added later
       supersedes: null
   todos: []
-- title: API foundation and CORS middleware
+- _ulid: 01KFMMPY4DM95VNXZ278VK32H1
+  slugs: []
+  title: API foundation and CORS middleware
+  type: task
+  spec_ref: "@api-contract"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - phase-2
+    - api
+  vcs_refs: []
+  created_at: 2026-01-23T05:19:56.045Z
+  notes: []
+  todos: []
+- title: Task API endpoints
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
@@ -24002,12 +24020,12 @@
   tags:
     - phase-2
     - api
-  _ulid: 01KFMMPY4DM95VNXZ278VK32H1
+  _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:19:56.045Z
+  created_at: 2026-01-23T05:20:00.640Z
   notes: []
   todos: []
