@@ -25004,6 +25004,7 @@
         - packages/web-ui/src/lib/components/ReadOnlyBanner.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMXWWAMNM41ERK65RYAD46
   slugs: []
   title: GitHub Pages CI workflow
