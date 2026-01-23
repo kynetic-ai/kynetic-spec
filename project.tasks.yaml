@@ -31074,6 +31074,38 @@
 
         Marking task for triage/re-scoping.
       supersedes: null
+    - _ulid: 01KFP8AJDP4WMS6DZ2ZWHJY3TM
+      created_at: 2026-01-23T20:21:56.791Z
+      author: "@claude"
+      content: >-
+        ## Status Update
+
+
+        This task is effectively addressed by the new E2E Playwright test suite. The E2E tests
+        exercise the API endpoints through real user flows, providing better coverage than isolated
+        API-only tests.
+
+
+        **Coverage via E2E**:
+
+        - Task API endpoints (GET, POST /start, POST /note) - via Tasks View tests
+
+        - Item API endpoints (GET) - via Items View tests  
+
+        - Inbox API endpoints (GET, POST, DELETE) - via Inbox tests
+
+        - Meta/Session endpoints - via Observations tests
+
+        - Search endpoint - via Command Palette tests
+
+        - Error responses (400, 404, 409) - via Error Handling tests
+
+        - WebSocket protocol - via Connection Handling tests
+
+
+        **Recommendation**: Close this task as 'covered by E2E' or keep open for targeted API-only
+        integration tests if additional coverage is needed beyond UI flows.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
