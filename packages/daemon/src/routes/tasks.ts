@@ -20,6 +20,7 @@ import { Elysia, t } from 'elysia';
 import {
   initContext,
   loadAllTasks,
+  loadAllItems,
   ReferenceIndex,
   createNote,
   saveTask,
@@ -178,7 +179,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       async ({ params, error: errorResponse }) => {
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
-        const items = [];
+        const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(ctx);
 
         // Resolve ref
@@ -218,7 +219,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // Save and commit
         await saveTask(ctx, updatedTask);
-        await syncSpecImplementationStatus(ctx, tasks, items);
+        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
         await commitIfShadow(ctx, `task: start ${params.ref}`);
 
         // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
