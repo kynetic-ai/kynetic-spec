@@ -28968,6 +28968,30 @@
         - packages/web-ui/src/lib/components/ItemDetail.svelte
         - packages/web-ui/src/lib/components/AcceptanceCriteria.svelte
       supersedes: null
+    - _ulid: 01KFNPEPZ3Q0P0J8BVSDM77SEQ
+      created_at: 2026-01-23T15:09:38.147Z
+      author: "@claude"
+      content: >-
+        Implementation complete - Spec item tree and detail views.
+
+
+        Created components:
+
+        - ItemTree.svelte: Hierarchical tree view with expand/collapse (ac-11)
+
+        - ItemDetail.svelte: Sheet/slide-over detail panel with AC display (ac-12), linked tasks
+        (ac-13), trait chips (ac-14), expandable AC rows (ac-15)
+
+        - API client helpers: fetchItems, fetchItem, fetchItemTasks
+
+
+        The tree view uses Accordion for hierarchical navigation. Detail panel uses Sheet component
+        for slide-over behavior. Acceptance criteria display in expandable GWT format. Linked tasks
+        shown with status badges and note counts.
+
+
+        All 1207 tests pass. Build successful.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
