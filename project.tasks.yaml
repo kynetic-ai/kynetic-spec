@@ -31466,9 +31466,68 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T19:40:09.319Z
-  notes: []
-  todos: []
   started_at: 2026-01-23T21:12:16.406Z
+  notes:
+    - _ulid: 01KFPB74SQW6J6RPK322N8385K
+      created_at: 2026-01-23T21:12:30.263Z
+      author: "@claude"
+      content: >-
+        ## Investigation Findings
+
+
+        ### Root Cause
+
+        The path resolution in serve.ts uses fragile relative path math:
+
+        ```typescript
+
+        const packageRoot = join(__dirname, '../../..');
+
+        ```
+
+
+        This works in development (goes from dist/cli/commands to project root) but fails for npm
+        installs where the package structure is different.
+
+
+        ### Current Test Failures
+
+        The 7 failing serve tests are actually caused by a **separate bug** in test setup:
+
+        - Tests call `setupTempFixtures(tempDir)` but function takes no args
+
+        - Function ignores tempDir and creates a NEW directory
+
+        - Result: test's .kspec/ directory never created, daemon can't write PID file
+
+
+        ### Decision: Bundle Daemon
+
+        User confirmed daemon is a core feature, should be bundled into main package rather than
+        separate install.
+
+
+        **Size impact:** ~3-4% increase (daemon is 2K lines, 116KB source vs 2.7MB dist)
+
+        **Build impact:** Minimal - add to tsconfig include
+
+        **New deps:** elysia, @elysiajs/cors, chokidar
+
+
+        ## Implementation Plan
+
+
+        1. Add daemon deps to main package.json
+
+        2. Update tsconfig to include packages/daemon/src
+
+        3. Update serve.ts path resolution to use dist/daemon/index.js
+
+        4. Fix test setup (create .kspec/ dir explicitly)
+
+        5. Ensure daemon auto-creates PID directory for robustness
+      supersedes: null
+  todos: []
 - _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   slugs: []
   title: Improve PR review process enforcement
