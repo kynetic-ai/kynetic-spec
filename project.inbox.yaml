@@ -551,3 +551,13 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFPH3D5M9KG9R5ZR39ANV817
+    text: Capture daemon stderr during startup - when daemon fails to start within timeout, show the
+      actual error from stderr instead of just 'failed within 5 seconds'. Small scope, improves
+      debugging experience.
+    created_at: 2026-01-23T22:55:19.220Z
+    tags:
+      - daemon
+      - dx
+      - reflection
+    added_by: "@claude"
