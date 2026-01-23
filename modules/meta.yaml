@@ -1603,6 +1603,8 @@ features:
           kspec meta resolve @obs-123 "Added --quick flag"
         implements:
           - "@meta-commands"
+        traits:
+          - "@trait-shadow-commit"
       - _ulid: 01KF1XCMD90000000000000000
         slugs:
           - meta-focus-cmd
