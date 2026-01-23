@@ -24536,7 +24536,38 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:50.232Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMWN16QD10F3RYVGCDKSJ3
+      created_at: 2026-01-23T05:23:03.334Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement inbox list with add/delete functionality.
+
+        ### Steps
+        1. Inbox list:
+           - Ordered by created_at desc
+           - Text preview, tags, added_by
+           - Delete button with confirmation
+
+        2. Add form:
+           - Input field appears on Add click
+           - Submit on Enter
+           - Optimistic UI with rollback on error
+
+        ### ACs Covered
+        - ac-16: Inbox list ordered by created_at
+        - ac-17: Add button shows input
+        - ac-18: New item appears with animation
+        - ac-19: Delete with confirmation
+
+        ### Files to Create
+        - packages/web-ui/src/routes/inbox/+page.svelte
+        - packages/web-ui/src/lib/components/InboxList.svelte
+        - packages/web-ui/src/lib/components/InboxItem.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
   slugs: []
