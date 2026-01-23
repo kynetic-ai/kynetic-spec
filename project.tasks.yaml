@@ -24817,7 +24817,48 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:34.720Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMYY2MBT3DTFFXAVGX4Q0D
+      created_at: 2026-01-23T05:24:18.132Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Create minimal SvelteKit build for static GitHub Pages hosting.
+
+        ### Steps
+        1. Configure SvelteKit with static adapter:
+           ```javascript
+           import adapter from '@sveltejs/adapter-static';
+           export default {
+             kit: {
+               adapter: adapter({ pages: 'build', fallback: 'index.html' })
+             }
+           };
+           ```
+
+        2. Client-side routing via history API:
+           - /tasks/@ref resolves to task detail
+           - /items/@ref resolves to item detail
+
+        3. Load JSON snapshot on app init:
+           ```typescript
+           const snapshot = await fetch('/kspec-snapshot.json').then(r => r.json());
+           ```
+
+        4. Show validation summary badge if present
+
+        ### ACs Covered
+        - ac-11: Fetches JSON and renders
+        - ac-12: /tasks/@ref deep links
+        - ac-13: /items/@ref deep links
+        - ac-14: Validation badge
+
+        ### Files to Modify
+        - packages/web-ui/svelte.config.js (static adapter)
+        - packages/web-ui/src/routes/+layout.ts (load snapshot)
+      supersedes: null
   todos: []
 - _ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
   slugs: []
