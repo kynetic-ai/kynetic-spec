@@ -690,6 +690,7 @@ export function registerItemCommands(program: Command): void {
       "--verified-at <iso-timestamp>",
       "Set verified_at (defaults to now if --verified-by provided)",
     )
+    .option("--trait <trait...>", "Set traits (replaces existing)")
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();
@@ -754,6 +755,7 @@ export function registerItemCommands(program: Command): void {
         }
         if (options.priority) updates.priority = options.priority;
         if (options.tag) updates.tags = options.tag;
+        if (options.trait) updates.traits = options.trait;
         if (options.description) updates.description = options.description;
 
         // Handle status updates

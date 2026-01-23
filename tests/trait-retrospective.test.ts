@@ -114,30 +114,13 @@ describe("Trait Retrospective", () => {
       tempDir,
     );
 
-    const fs = await import("node:fs/promises");
-    const path = await import("node:path");
-    const yaml = await import("yaml");
-
-    const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
-    const coreData = yaml.parse(coreContent);
-
     // Add trait and set status to implemented without verification metadata
-    const findAndUpdate = (items: any[]): boolean => {
-      for (const item of items) {
-        if (item.slugs?.includes("retro-impl")) {
-          item.traits = ["@trait-retrospective"];
-          item.status = { maturity: "draft", implementation: "implemented" };
-          // Intentionally omit verified_at and verified_by
-          return true;
-        }
-        if (item.features && findAndUpdate(item.features)) return true;
-      }
-      return false;
-    };
-
-    findAndUpdate(coreData.modules || []);
-    await fs.writeFile(corePath, yaml.stringify(coreData));
+    await kspec(`item set @retro-impl --trait @trait-retrospective`, tempDir);
+    await kspec(
+      `item set @retro-impl --status implemented --maturity draft`,
+      tempDir,
+    );
+    // Intentionally omit verified_at and verified_by
 
     // Run validation with completeness checks
     const result = await kspec("validate --completeness", tempDir);
@@ -196,31 +179,16 @@ describe("Trait Retrospective", () => {
       tempDir,
     );
 
-    const fs = await import("node:fs/promises");
-    const path = await import("node:path");
-    const yaml = await import("yaml");
-
-    const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
-    const coreData = yaml.parse(coreContent);
-
     // Add trait, status, and verification metadata
-    const findAndUpdate = (items: any[]): boolean => {
-      for (const item of items) {
-        if (item.slugs?.includes("retro-display")) {
-          item.traits = ["@trait-retrospective"];
-          item.status = { maturity: "stable", implementation: "implemented" };
-          item.verified_at = "2026-01-15T12:00:00Z";
-          item.verified_by = "@claude";
-          return true;
-        }
-        if (item.features && findAndUpdate(item.features)) return true;
-      }
-      return false;
-    };
-
-    findAndUpdate(coreData.modules || []);
-    await fs.writeFile(corePath, yaml.stringify(coreData));
+    await kspec(`item set @retro-display --trait @trait-retrospective`, tempDir);
+    await kspec(
+      `item set @retro-display --status implemented --maturity stable`,
+      tempDir,
+    );
+    await kspec(
+      `item set @retro-display --verified-by @claude --verified-at 2026-01-15T12:00:00Z`,
+      tempDir,
+    );
 
     // Run item get
     const result = await kspec("item get @retro-display", tempDir);
@@ -241,30 +209,8 @@ describe("Trait Retrospective", () => {
       tempDir,
     );
 
-    const fs = await import("node:fs/promises");
-    const path = await import("node:path");
-    const yaml = await import("yaml");
-
-    const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
-    const coreData = yaml.parse(coreContent);
-
-    // Add trait
-    const findAndUpdate = (items: any[]): boolean => {
-      for (const item of items) {
-        if (item.slugs?.includes("flag-test")) {
-          item.traits = ["@trait-retrospective"];
-          return true;
-        }
-        if (item.features && findAndUpdate(item.features)) return true;
-      }
-      return false;
-    };
-
-    findAndUpdate(coreData.modules || []);
-    await fs.writeFile(corePath, yaml.stringify(coreData));
-
-    // Use flags to set verification metadata
+    // Add trait and verification metadata
+    await kspec(`item set @flag-test --trait @trait-retrospective`, tempDir);
     await kspec(
       `item set @flag-test --verified-by @agent --verified-at 2026-01-22T10:30:00Z`,
       tempDir,
@@ -286,28 +232,8 @@ describe("Trait Retrospective", () => {
       tempDir,
     );
 
-    const fs = await import("node:fs/promises");
-    const path = await import("node:path");
-    const yaml = await import("yaml");
-
-    const corePath = path.join(tempDir, "modules", "core.yaml");
-    const coreContent = await fs.readFile(corePath, "utf-8");
-    const coreData = yaml.parse(coreContent);
-
     // Add trait
-    const findAndUpdate = (items: any[]): boolean => {
-      for (const item of items) {
-        if (item.slugs?.includes("default-date")) {
-          item.traits = ["@trait-retrospective"];
-          return true;
-        }
-        if (item.features && findAndUpdate(item.features)) return true;
-      }
-      return false;
-    };
-
-    findAndUpdate(coreData.modules || []);
-    await fs.writeFile(corePath, yaml.stringify(coreData));
+    await kspec(`item set @default-date --trait @trait-retrospective`, tempDir);
 
     // Use only --verified-by flag (should default verified_at to now)
     const beforeTime = new Date();
@@ -320,18 +246,13 @@ describe("Trait Retrospective", () => {
     expect(result.stdout).toMatch(/Verified:/i);
     expect(result.stdout).toMatch(/@auto/);
 
-    // Verify date is recent (within test execution window)
+    // Verify date is today (display only shows date, not time)
     const dateMatch = result.stdout.match(/Verified:\s+(\d{4}-\d{2}-\d{2})/);
     expect(dateMatch).toBeTruthy();
     if (dateMatch) {
-      const verifiedDate = new Date(dateMatch[1]);
-      // Should be within a few seconds of test execution
-      expect(verifiedDate.getTime()).toBeGreaterThanOrEqual(
-        beforeTime.getTime() - 5000,
-      );
-      expect(verifiedDate.getTime()).toBeLessThanOrEqual(
-        afterTime.getTime() + 5000,
-      );
+      const verifiedDate = dateMatch[1];
+      const today = new Date().toISOString().split("T")[0];
+      expect(verifiedDate).toBe(today);
     }
   });
 });
