@@ -546,7 +546,7 @@ runs:
   - _ulid: 01KFMGP59MZ2N985TX4RZ860FS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
     step_results:
@@ -584,5 +584,35 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-23T04:09:57.946Z
-        completed_at: 2026-01-23T04:09:57.946Z
+        completed_at: 2026-01-23T04:10:19.259Z
+        notes: >-
+          Friction points this session:
+
+
+          1. **YAML quoting issues** - When adding the trait, the AC text 'message follows format
+          "<operation>: <ref-short> [detail]"' caused a YAML parse error. Had to rewrite as prose.
+          Could use better guidance or validation for AC text with special characters.
+
+
+          2. **No bulk trait assignment** - Had to run 'kspec item trait add' 6 times for 6
+          commands. A batch option like '--refs @cmd1 @cmd2 @cmd3' would be helpful (similar to
+          existing batch operations).
+
+
+          3. **Plan mode file not visible** - The plan file at /home/chapel/.claude/plans/... isn't
+          integrated with kspec. Would be nice to have 'kspec plan save' or similar to capture plan
+          as a note on the task.
+
+
+          4. **Task-spec gap warning at completion** - When completing @01KFKMF9, got 'This task has
+          no spec_ref. Is this a spec gap?' but the task was about implementing a trait - the
+          spec_ref should probably be @trait-shadow-commit but the task predated the trait creation.
+
+
+          5. **Long meta.yaml file** - At ~2000 lines, finding specific command specs required
+          multiple reads. No issue per se, but the file is getting unwieldy.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-23T04:10:19.259Z
+        completed_at: 2026-01-23T04:10:19.259Z
     initiated_by: "@claude"
