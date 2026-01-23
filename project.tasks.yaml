@@ -25023,6 +25023,45 @@
         written for parent task - it should remain in_progress as an umbrella task while subtasks
         are completed. Will be completed once all derived subtasks are done."
       supersedes: null
+    - _ulid: 01KFNMF2XGBMYEGHC9F9BJFBX2
+      created_at: 2026-01-23T14:34:53.232Z
+      author: "@claude"
+      content: >-
+        Iteration 35 Status Update - Parent Task Tracking:
+
+
+        This is the parent/umbrella task for Web Dashboard implementation. It should remain
+        in_progress while derived subtasks are being worked on.
+
+
+        Progress Summary:
+
+        ✅ Subtask @01KFMMSV (SvelteKit scaffold) - COMPLETE, in pending_review
+          - PR #197 created with full shadcn-svelte component setup
+          - Waiting for CI and manual review thread resolution
+          - Code is functional and ready to merge
+
+        ⏸️ Remaining 7 subtasks ready to start once scaffold merges:
+          1. @01KFMMT0 - Dashboard layout and navigation
+          2. @01KFMMT4 - Task list and detail views
+          3. @01KFMMT9 - Spec item tree and detail views
+          4. @01KFMMTD - Inbox view
+          5. @01KFMMTJ - Session context and observations panel
+          6. @01KFMMTP - Global search command palette
+          7. @01KFMMTV - WebSocketManager with subscriptions
+
+        Implementation Strategy:
+
+        The scaffold (subtask 1) establishes the foundation. Subsequent subtasks will implement
+        dashboard features incrementally, each with proper AC coverage and tests. Once all 8
+        subtasks are completed, this parent task can be marked complete.
+
+
+        Current Blocker:
+
+        PR #197 needs manual intervention to resolve Greptile review thread (GitHub UI only). Once
+        merged, next subtask can begin.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
