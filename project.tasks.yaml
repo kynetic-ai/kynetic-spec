@@ -24326,7 +24326,43 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:32.115Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMW32N4DY5SF83XSXB5P6H
+      created_at: 2026-01-23T05:22:44.950Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Initialize SvelteKit project with shadcn-svelte components in packages/web-ui.
+
+        ### Steps
+        1. Create SvelteKit project:
+           ```bash
+           cd packages
+           bunx create-svelte@latest web-ui
+           # Select: Skeleton, TypeScript, ESLint, Prettier
+           ```
+
+        2. Add shadcn-svelte:
+           ```bash
+           cd web-ui
+           bunx shadcn-svelte@latest init
+           ```
+
+        3. Add required components:
+           - Button, Card, Badge, Input, Sheet
+           - DataTable, Sidebar, Command (palette)
+           - Tabs, Accordion, Tooltip
+
+        4. Configure for static adapter (for embedding in daemon)
+
+        ### Files to Create
+        - packages/web-ui/package.json
+        - packages/web-ui/svelte.config.js
+        - packages/web-ui/src/app.html
+        - packages/web-ui/src/routes/+layout.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMT0BPJPM8V08QVBVKPS6V
   slugs: []
@@ -24436,20 +24472,20 @@
   created_at: 2026-01-23T05:21:59.553Z
   notes: []
   todos: []
-- title: WebSocketManager with subscriptions
+- _ulid: 01KFMMTVGX2BZQF7NBTMS4HP42
+  slugs: []
+  title: WebSocketManager with subscriptions
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - phase-3
-    - dashboard
-  _ulid: 01KFMMTVGX2BZQF7NBTMS4HP42
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - phase-3
+    - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:22:04.444Z
   notes: []
