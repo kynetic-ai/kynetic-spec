@@ -23194,6 +23194,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #179 merged. Implemented file type detection for semantic YAML merge driver with
+    detectFileType() function and FileType enum. All 6 ACs covered with comprehensive tests (8 test
+    cases). Cross-platform support. All 1041 tests pass."
   depends_on:
     - "@01KFM7G2"
     - "@01KFM7G5"
@@ -23203,6 +23206,7 @@
   vcs_refs: []
   created_at: 2026-01-23T01:29:19.355Z
   started_at: 2026-01-23T07:24:18.872Z
+  completed_at: 2026-01-23T07:36:29.070Z
   notes:
     - _ulid: 01KFMVVDAXJEVY9E678MM1CWTH
       created_at: 2026-01-23T07:24:42.717Z
@@ -23283,10 +23287,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T07:36:29.070Z
-  closed_reason: "PR #179 merged. Implemented file type detection for semantic YAML merge driver with
-    detectFileType() function and FileType enum. All 6 ACs covered with comprehensive tests (8 test
-    cases). Cross-platform support. All 1041 tests pass."
 - _ulid: 01KFM7H3MQX4ZVAGR0RSQ6QT6N
   slugs: []
   title: "Merge driver: CLI command"
@@ -23312,7 +23312,7 @@
     kspec merge-driver <base> <ours> <theirs> [-L n] [-p path] [--non-interactive] [--dry-run]
   spec_ref: "@merge-driver-cli"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFM7GN"
@@ -23325,6 +23325,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-23T07:36:53.960Z
 - _ulid: 01KFM7H6NXZCJM5955A5Q5A7P2
   slugs: []
   title: "Merge driver: auto-configuration on init"
