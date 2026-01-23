@@ -24400,7 +24400,25 @@
   created_at: 2026-01-23T05:21:50.232Z
   notes: []
   todos: []
-- title: Session context and observations panel
+- _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
+  slugs: []
+  title: Session context and observations panel
+  type: task
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - phase-3
+    - dashboard
+  vcs_refs: []
+  created_at: 2026-01-23T05:21:54.863Z
+  notes: []
+  todos: []
+- title: Global search command palette
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
@@ -24409,12 +24427,12 @@
   tags:
     - phase-3
     - dashboard
-  _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
+  _ulid: 01KFMMTPR2Y6CPKRJEJ2X25Y0S
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:21:54.863Z
+  created_at: 2026-01-23T05:21:59.553Z
   notes: []
   todos: []
