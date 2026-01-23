@@ -24477,6 +24477,30 @@
         - Daemon mode and PID management (AC-9-10)
         - Graceful shutdown (AC-12)
       supersedes: null
+    - _ulid: 01KFN2EDYEVZH4S1Q5W77JPHHJ
+      created_at: 2026-01-23T09:19:57.390Z
+      author: "@claude"
+      content: |-
+        Added comprehensive test coverage and fixed IPv6 support:
+
+        Test Coverage (10 E2E tests):
+        - AC-1: Default port 3456 and configurable --port flag
+        - AC-2: Localhost binding with dual-stack (IPv4 + IPv6) support
+        - AC-11: Health endpoint structure validation
+        - AC-15: Plugin pattern and CORS middleware
+        - AC-8: Chokidar dependency verification
+        - AC-9: --daemon flag parsing
+        - Package structure validation
+        - WebSocket endpoint placeholder
+        - createServer function signature
+
+        IPv6 Fix:
+        - Changed hostname from '127.0.0.1' to 'localhost'
+        - Allows Bun to bind to both IPv4 (127.0.0.1) and IPv6 (::1)
+        - Maintains localhost-only security constraint
+
+        All 1068 tests pass (10 new daemon tests added)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM4Z2WA3WPF7PVDCVGKBE
