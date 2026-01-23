@@ -24489,6 +24489,39 @@
 
         This parent task remains in_progress until all derived subtasks complete.
       supersedes: null
+    - _ulid: 01KFNG8WXMKZHXG78N0KWF6G4K
+      created_at: 2026-01-23T13:21:36.180Z
+      author: "@claude"
+      content: |-
+        Iteration 28 complete: @01KFMMQB merged and completed.
+
+        PROGRESS UPDATE:
+        - 27 of 33 ACs implemented and merged (ac-1 through ac-18, ac-25 through ac-33)
+        - 6 ACs remaining in ready subtasks (ac-19 through ac-24)
+
+        COMPLETED THIS ITERATION:
+        ✅ Fixed critical bug in PR #193 (meta.items → meta.agents/workflows)
+        ✅ Addressed all review feedback (Greptile redundant validation comment)
+        ✅ Resolved all review threads
+        ✅ All CI checks passed (test, claude-review, check-unresolved-comments)
+        ✅ Merged PR #193 via @pr-review-merge workflow
+        ✅ Completed @01KFMMQB task
+        ✅ All 1193 tests pass
+
+        CRITICAL BUG FIXED:
+        The initial implementation accessed meta.items.filter() which doesn't exist on MetaContext.
+        Fixed to use meta.agents and meta.workflows directly per the type definition.
+        Updated corresponding structure tests to check for correct pattern.
+
+        PENDING WORK:
+        - @01KFMMQF: Search and validation endpoints (ac-19 through ac-21)
+        - @01KFMMQM: Error handling middleware (ac-22 through ac-24)
+
+        NEXT SESSION:
+        Start @01KFMMQF to implement remaining search and validation API endpoints.
+
+        This parent task remains in_progress until all derived subtasks complete.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
@@ -26669,6 +26702,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12
+    through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items
+    instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
   depends_on: []
   context: []
   priority: 2
@@ -26678,6 +26714,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:20:09.685Z
   started_at: 2026-01-23T12:51:31.905Z
+  completed_at: 2026-01-23T13:21:17.475Z
   notes:
     - _ulid: 01KFMMS43XYN0E6QPTB3RM7RQ4
       created_at: 2026-01-23T05:21:07.709Z
@@ -26834,10 +26871,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T13:21:17.475Z
-  closed_reason: "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12
-    through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items
-    instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
   slugs: []
   title: Search and validation API endpoints
