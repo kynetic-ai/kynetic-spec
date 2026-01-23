@@ -24195,6 +24195,15 @@
         stop/status/restart commands, (3) verifying port validation. Once tests pass, remove WIP
         from PR title and merge."
       supersedes: null
+    - _ulid: 01KFN8HCPPW5J7BKTSQ283YZ9S
+      created_at: 2026-01-23T11:06:25.878Z
+      author: "@claude"
+      content: Fixed trait compliance issues and added comprehensive E2E tests. Added --json flag to all
+        serve subcommands (AC-11 of @trait-json-output). Separated human-readable and JSON output
+        modes. Fixed error hint output to stderr. Created tests/cli-serve.test.ts with 8 E2E tests
+        covering ACs 1-7 and 10. Tests conditionally skip when Bun runtime unavailable. Fixed 2
+        daemon-server.test.ts tests to match updated parseArgs implementation. All 1157 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
