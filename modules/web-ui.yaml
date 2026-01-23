@@ -162,9 +162,9 @@ features:
     created: 2026-01-22T07:00:00.000Z
     acceptance_criteria:
       - id: ac-1
-        given: daemon running on localhost:3456
-        when: request from localhost:5173 (dev server) received
-        then: CORS headers allow the request
+        given: daemon is running
+        when: request from allowed CORS origin received
+        then: CORS headers allow the request (origins configured for dev and production)
       - id: ac-2
         given: daemon is running
         when: GET /api/tasks is called
