@@ -838,9 +838,10 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFMS6B3Z82Y6K25FQ1NJABP8
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 9
     started_at: 2026-01-23T06:38:15.167Z
     step_results: []
     initiated_by: "@claude"
+    completed_at: 2026-01-23T06:43:03.882Z
