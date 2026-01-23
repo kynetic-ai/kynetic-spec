@@ -25264,6 +25264,7 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:37.290Z
+  started_at: 2026-01-23T10:38:36.162Z
   notes:
     - _ulid: 01KFMMPBB014FZFQVK77WT3HNB
       created_at: 2026-01-23T05:19:36.801Z
@@ -25301,9 +25302,30 @@
         - packages/daemon/src/daemon.ts
         - packages/daemon/src/pid.ts
       supersedes: null
+    - _ulid: 01KFN6Z1PAQVKBBNWCJHDW2CEJ
+      created_at: 2026-01-23T10:38:56.203Z
+      author: "@claude"
+      content: |-
+        Implementation plan:
+        1. Create src/cli/commands/serve.ts with Commander subcommands:
+           - 'kspec serve' (foreground mode, default port 3456)
+           - 'kspec serve --daemon' (background mode with PID file)
+           - 'kspec serve stop' (graceful shutdown)
+        2. Implement daemon/pid.ts for PID file management:
+           - writePidFile() - write PID to .kspec/.daemon.pid
+           - readPidFile() - read existing PID
+           - removePidFile() - cleanup on shutdown
+           - isProcessRunning() - check if PID is alive
+        3. Implement daemon detach logic:
+           - Use Bun's subprocess spawn with detached:true
+           - Redirect stdout/stderr to .kspec/.daemon.log
+           - Parent process exits after confirming child started
+        4. Integrate with existing server.ts shutdown handler:
+           - Call removePidFile() during graceful shutdown
+        5. Add E2E tests for daemon lifecycle
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T10:38:36.162Z
 - _ulid: 01KFMMMNDBTP9BJZGB23X8QMSD
   slugs: []
   title: Implement daemon logging
