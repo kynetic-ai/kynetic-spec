@@ -22655,7 +22655,10 @@
   created_at: 2026-01-23T01:29:03.205Z
   notes: []
   todos: []
-- title: "Merge driver: conflict resolution"
+- _ulid: 01KFM7GJS5J3QRQWEKR600GN9N
+  slugs: []
+  title: "Merge driver: conflict resolution"
+  type: task
   description: |-
     Implement conflict detection and resolution:
 
@@ -22671,18 +22674,47 @@
     - promptScalarConflict(field, oursValue, theirsValue) - Interactive choice
     - promptDeleteModifyConflict(item, modification) - Delete vs keep
     - formatConflictComment(conflict) - YAML comment format for non-interactive
-  type: task
   spec_ref: "@yaml-merge-driver"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:29:16.324Z
+  notes: []
+  todos: []
+- title: "Merge driver: file type detection"
+  description: |-
+    Implement file type detection and strategy dispatch:
+
+    **File:** src/merge/semantic.ts (partial)
+
+    **Covers ACs from @merge-file-detection:**
+    - ac-1: tasks.yaml → task-specific merge
+    - ac-2: inbox.yaml → inbox-specific merge
+    - ac-3: modules/*.yaml → recursive spec merge
+    - ac-4: kynetic.yaml → manifest merge (includes union, project prompt)
+    - ac-5: kynetic.meta.yaml → meta arrays by ULID, context field merge
+    - ac-6: unrecognized → fallback (copy ours)
+
+    **Functions:**
+    - detectFileType(path, content) - Identify kspec file type
+    - getMergeStrategy(fileType) - Return appropriate merger function
+  type: task
+  spec_ref: "@merge-file-detection"
   meta_ref: null
   priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFM7GJS5J3QRQWEKR600GN9N
+  _ulid: 01KFM7GNQVA1J6APAFA694V14C
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T01:29:16.324Z
+  created_at: 2026-01-23T01:29:19.355Z
   notes: []
   todos: []
