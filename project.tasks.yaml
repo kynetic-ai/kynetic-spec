@@ -24428,7 +24428,45 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:41.254Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMWC16ED2JNY5CYRWVMHN0
+      created_at: 2026-01-23T05:22:54.119Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement task list with filters and detail panel with actions.
+
+        ### Steps
+        1. Task list page:
+           - DataTable with columns: title, status, priority, spec_ref, notes count
+           - Filter controls: status, type, tag, assignee
+           - URL-based filter state (?status=pending)
+
+        2. Task detail panel:
+           - Opens as Sheet (slide-over)
+           - Shows: description, notes (chronological), todos, dependencies
+           - Actions: Start Task, Add Note
+
+        3. Real-time updates via WebSocket
+
+        ### ACs Covered
+        - ac-1, ac-2, ac-3: Dashboard overview with counts
+        - ac-4: Task list display
+        - ac-5: Task detail panel
+        - ac-6: Spec_ref link
+        - ac-7: Start Task action
+        - ac-8: Add Note action
+        - ac-9: Filter controls
+        - ac-10: URL-based filters
+
+        ### Files to Create
+        - packages/web-ui/src/routes/tasks/+page.svelte
+        - packages/web-ui/src/lib/components/TaskList.svelte
+        - packages/web-ui/src/lib/components/TaskDetail.svelte
+        - packages/web-ui/src/lib/components/TaskFilters.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMT99M68WVP261SJKB326F
   slugs: []
