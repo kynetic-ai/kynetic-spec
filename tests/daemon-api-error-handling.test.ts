@@ -1,13 +1,23 @@
 /**
- * E2E tests for API Error Handling
+ * Structure tests for API Error Handling
  *
- * Tests verify that error handling patterns are consistently implemented
+ * These tests verify that error handling patterns are consistently implemented
  * across all API endpoints according to @api-contract acceptance criteria.
+ *
+ * NOTE: These tests use static code analysis to verify implementation structure,
+ * consistent with all daemon-api-*.test.ts files. They verify error handling code
+ * exists but do not test runtime behavior. True E2E tests that start the daemon
+ * and make HTTP requests would provide stronger coverage.
  *
  * AC Coverage:
  * - ac-22: Invalid ref returns 404 with error, message, and suggestion
  * - ac-23: Validation errors return 400 with error and field details
  * - ac-24: State transition errors return 409 with current state and valid transitions
+ *
+ * Inherited Trait Coverage (partial):
+ * - @trait-api-endpoint ac-2: 404 error structure (via ac-22)
+ * - @trait-api-endpoint ac-3: 400 validation structure (via ac-23)
+ * Note: @trait-api-endpoint ac-1, ac-5, ac-6 tested in other daemon test files
  */
 
 import { describe, it, expect } from 'vitest';
