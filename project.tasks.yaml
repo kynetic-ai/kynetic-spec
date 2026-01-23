@@ -25256,3 +25256,4 @@
         - packages/web-ui/playwright.config.ts
       supersedes: null
   todos: []
+  automation: eligible
