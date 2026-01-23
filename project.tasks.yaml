@@ -28587,6 +28587,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #198 merged successfully. Dashboard layout with responsive navigation (sidebar
+    for desktop, bottom nav for mobile) implemented. All AC covered: ac-26 (layout), ac-27
+    (responsive navigation). Review threads resolved via gh CLI."
   depends_on: []
   context: []
   priority: 2
@@ -28596,6 +28599,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:21:36.630Z
   started_at: 2026-01-23T14:42:37.898Z
+  completed_at: 2026-01-23T15:14:08.090Z
   notes:
     - _ulid: 01KFMMW7E4ACAAW1C9C85EY81W
       created_at: 2026-01-23T05:22:49.412Z
@@ -28832,17 +28836,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T15:14:08.090Z
-  closed_reason: "PR #198 merged successfully. Dashboard layout with responsive navigation (sidebar
-    for desktop, bottom nav for mobile) implemented. All AC covered: ac-26 (layout), ac-27
-    (responsive navigation). Review threads resolved via gh CLI."
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
   slugs: []
   title: Task list and detail views
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -28997,6 +28997,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T15:14:18.080Z
+  closed_reason: "PR #198 merged successfully. Task list and detail views implemented with filters,
+    status badges, priority indicators, detail panel with notes/todos/dependencies, and task actions
+    (start, add note). All AC covered: ac-4 through ac-10."
 - _ulid: 01KFMMT99M68WVP261SJKB326F
   slugs: []
   title: Spec item tree and detail views
