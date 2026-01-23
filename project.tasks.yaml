@@ -25014,21 +25014,39 @@
   created_at: 2026-01-23T05:24:44.679Z
   notes: []
   todos: []
-- title: API integration tests
+- _ulid: 01KFMMZWDG20YQNNFWG3KDFXYY
+  slugs: []
+  title: API integration tests
   type: task
   spec_ref: "@api-contract"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - phase-5
+    - testing
+  vcs_refs: []
+  created_at: 2026-01-23T05:24:49.199Z
+  notes: []
+  todos: []
+- title: E2E integration tests with Playwright
+  type: task
+  spec_ref: "@web-ui"
   meta_ref: null
   priority: 2
   slugs: []
   tags:
     - phase-5
     - testing
-  _ulid: 01KFMMZWDG20YQNNFWG3KDFXYY
+  _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:24:49.199Z
+  created_at: 2026-01-23T05:24:54.306Z
   notes: []
   todos: []
