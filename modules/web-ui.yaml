@@ -5,14 +5,20 @@ title: Web UI System
 type: module
 status:
   maturity: draft
-  implementation: not_started
-description: |
-  Web-based interface for viewing, editing, and managing kspec state. Includes three deployment modes:
+  implementation: in_progress
+description: >
+  Web-based interface for viewing, editing, and managing kspec state. Includes three deployment
+  modes:
+
   1. Local daemon mode - Elysia.js server on Bun with WebSocket for real-time updates
+
   2. Web dashboard - SvelteKit + shadcn-svelte for full CRUD operations
+
   3. GitHub Pages export - Static JSON snapshot with read-only SPA for public sharing
 
+
   Tech stack: Elysia.js, Bun runtime, WebSocket (not SSE), SvelteKit, shadcn-svelte.
+
   Distribution via bun build --compile for portable executables.
 tags:
   - web
@@ -36,9 +42,13 @@ features:
       - server
       - websocket
       - elysia
-    description: |
-      Long-running Elysia.js server on Bun runtime that exposes kspec state via HTTP API and WebSocket
-      for real-time updates. Binds to localhost only for security. Supports foreground and background
+    description: >
+      Long-running Elysia.js server on Bun runtime that exposes kspec state via HTTP API and
+      WebSocket
+
+      for real-time updates. Binds to localhost only for security. Supports foreground and
+      background
+
       modes with PID file management. Includes heartbeat ping/pong for connection health monitoring.
     depends_on: []
     implements: []
@@ -96,7 +106,7 @@ features:
       - id: ac-11
         given: daemon is running
         when: GET /api/health is called
-        then: "returns {status, uptime, connections, version} JSON"
+        then: returns {status, uptime, connections, version} JSON
       - id: ac-12
         given: daemon receives SIGTERM or SIGINT
         when: shutdown signal received
@@ -117,7 +127,6 @@ features:
         given: daemon code is ready
         when: bun build --compile runs
         then: produces standalone executable without requiring Bun installation
-
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
@@ -145,12 +154,10 @@ features:
     notes: []
     created: 2026-01-22T07:00:00.000Z
     acceptance_criteria:
-      # CORS
       - id: ac-1
         given: daemon running on localhost:3456
         when: request from localhost:5173 (dev server) received
         then: CORS headers allow the request
-      # Task endpoints
       - id: ac-2
         given: daemon is running
         when: GET /api/tasks is called
@@ -162,7 +169,7 @@ features:
       - id: ac-4
         given: daemon is running
         when: GET /api/tasks with pagination (?limit=10&offset=20)
-        then: "returns paginated results with {items, total, offset, limit} wrapper"
+        then: returns paginated results with {items, total, offset, limit} wrapper
       - id: ac-5
         given: daemon is running
         when: GET /api/tasks/:ref is called
@@ -173,9 +180,8 @@ features:
         then: task transitions to in_progress, WebSocket broadcasts update, returns updated task
       - id: ac-7
         given: daemon is running
-        when: "POST /api/tasks/:ref/note with {content} body"
+        when: POST /api/tasks/:ref/note with {content} body
         then: note appended to task, shadow commit occurs, WebSocket broadcasts update
-      # Item endpoints
       - id: ac-8
         given: daemon is running
         when: GET /api/items is called
@@ -192,20 +198,18 @@ features:
         given: daemon is running
         when: GET /api/items/:ref/tasks is called
         then: returns tasks linked to this spec via AlignmentIndex
-      # Inbox endpoints
       - id: ac-12
         given: daemon is running
         when: GET /api/inbox is called
         then: returns all inbox items ordered by created_at desc
       - id: ac-13
         given: daemon is running
-        when: "POST /api/inbox with {text} body"
+        when: POST /api/inbox with {text} body
         then: creates inbox item, returns with generated ULID
       - id: ac-14
         given: daemon is running
         when: DELETE /api/inbox/:ref is called
         then: removes inbox item, returns success confirmation
-      # Meta endpoints
       - id: ac-15
         given: daemon is running
         when: GET /api/meta/session is called
@@ -222,7 +226,6 @@ features:
         given: daemon is running
         when: GET /api/meta/observations with filter (?resolved=false)
         then: returns observations matching filter
-      # Search and validation
       - id: ac-19
         given: daemon is running
         when: GET /api/search?q=login is called
@@ -235,28 +238,26 @@ features:
         given: daemon is running
         when: GET /api/alignment is called
         then: returns AlignmentIndex stats and warnings
-      # Error handling
       - id: ac-22
         given: API request has invalid ref
         when: any endpoint with :ref parameter
-        then: "returns {error, message, suggestion} with 404 status, suggests similar refs if available"
+        then: returns {error, message, suggestion} with 404 status, suggests similar refs if available
       - id: ac-23
         given: API request has validation error
         when: POST/PUT with invalid body
-        then: "returns {error, details:[{field, message}]} with 400 status"
+        then: returns {error, details:[{field, message}]} with 400 status
       - id: ac-24
         given: API request causes state transition error
         when: POST action violates state machine
-        then: "returns {error, current, valid_transitions} with 409 status"
-      # WebSocket protocol
+        then: returns {error, current, valid_transitions} with 409 status
       - id: ac-25
         given: client connects to /ws
         when: WebSocket connection established
-        then: "receives connected event with {session_id}"
+        then: receives connected event with {session_id}
       - id: ac-26
         given: WebSocket connection active
         when: client sends command
-        then: "command format is {action, request_id?, payload}"
+        then: command format is {action, request_id?, payload}
       - id: ac-27
         given: command received
         when: processed
@@ -284,8 +285,7 @@ features:
       - id: ac-33
         given: daemon is shutting down
         when: WebSocket connection active
-        then: "receives shutdown event with {reason}, connection closes gracefully"
-
+        then: receives shutdown event with {reason}, connection closes gracefully
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
@@ -311,11 +311,11 @@ features:
     notes: []
     created: 2026-01-22T01:18:11.366Z
     acceptance_criteria:
-      # Dashboard overview
       - id: ac-1
         given: daemon is running and browser opens localhost:3456
         when: page loads
-        then: dashboard shows task overview with ready, in_progress, pending_review, blocked, completed counts
+        then: dashboard shows task overview with ready, in_progress, pending_review, blocked, completed
+          counts
       - id: ac-2
         given: dashboard is displayed
         when: task counts update on server
@@ -324,7 +324,6 @@ features:
         given: dashboard is displayed
         when: user clicks a task count badge
         then: navigates to task list filtered by that status
-      # Task views
       - id: ac-4
         given: user is viewing task list
         when: list loads
@@ -353,7 +352,6 @@ features:
         given: user applies filter
         when: filter selection changes
         then: URL updates with query params, list updates without full reload
-      # Spec item views
       - id: ac-11
         given: user navigates to /items
         when: spec tree displays
@@ -374,7 +372,6 @@ features:
         given: user clicks acceptance criterion
         when: AC row expands
         then: shows full Given/When/Then text with test coverage indicator if available
-      # Inbox view
       - id: ac-16
         given: user navigates to /inbox
         when: inbox list displays
@@ -391,7 +388,6 @@ features:
         given: user clicks delete button on item
         when: confirmation appears
         then: on confirm, item removed from list
-      # Session context
       - id: ac-20
         given: dashboard header area
         when: session has focus set
@@ -404,7 +400,6 @@ features:
         given: user clicks observations badge
         when: observations panel opens
         then: lists unresolved observations with type icons (friction/success/question/idea)
-      # Search
       - id: ac-23
         given: user presses Cmd+K (or Ctrl+K)
         when: command palette opens
@@ -417,7 +412,6 @@ features:
         given: search results display
         when: user clicks a result
         then: navigates to detail view for that item
-      # Responsive design
       - id: ac-26
         given: browser width < 768px
         when: viewing any page
@@ -426,7 +420,6 @@ features:
         given: browser width >= 1024px
         when: viewing detail panels
         then: detail panel opens as slide-over without navigating away from list
-      # WebSocket connection management
       - id: ac-28
         given: WebSocket connection drops
         when: reconnect logic triggers
@@ -451,7 +444,6 @@ features:
         given: another client modifies task
         when: WebSocket update received
         then: task list/detail updates without refresh, subtle highlight animation on changed item
-
   - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
     slugs:
       - gh-pages-export
@@ -461,9 +453,12 @@ features:
       - static
       - export
       - github
-    description: |
+    description: >
       Static site generation from kspec state for hosting read-only views on GitHub Pages.
-      CI workflow builds JSON snapshot from shadow branch on push, SPA reads this JSON for rendering.
+
+      CI workflow builds JSON snapshot from shadow branch on push, SPA reads this JSON for
+      rendering.
+
       Enables deep linking to tasks/specs from PRs and issues with data freshness indicator.
     depends_on: []
     implements: []
@@ -475,7 +470,6 @@ features:
     notes: []
     created: 2026-01-22T01:18:13.672Z
     acceptance_criteria:
-      # Export command
       - id: ac-1
         given: kspec is installed
         when: user runs 'kspec export --format json'
@@ -487,11 +481,13 @@ features:
       - id: ac-3
         given: export runs
         when: tasks are included
-        then: each task includes resolved spec_ref title (not just ref string) for display without resolution
+        then: each task includes resolved spec_ref title (not just ref string) for display without
+          resolution
       - id: ac-4
         given: export runs
         when: items are included
-        then: hierarchical structure preserved, acceptance_criteria expanded, traits resolved to include inherited ACs
+        then: hierarchical structure preserved, acceptance_criteria expanded, traits resolved to include
+          inherited ACs
       - id: ac-5
         given: export runs with --include-validation
         when: validation is run
@@ -504,7 +500,6 @@ features:
         given: kspec is installed
         when: user runs 'kspec export --dry-run'
         then: shows what would be exported without writing files
-      # CI workflow
       - id: ac-8
         given: push to kspec-meta branch
         when: CI workflow triggers
@@ -517,7 +512,6 @@ features:
         given: rapid commits to kspec-meta
         when: multiple pushes within 30 seconds
         then: CI debounces and runs once with latest state
-      # SPA architecture
       - id: ac-11
         given: user opens gh-pages URL
         when: SPA loads
@@ -538,7 +532,6 @@ features:
         given: static export page
         when: displayed to user
         then: "shows 'Data as of: [timestamp]' indicator prominently"
-      # Read-only behavior
       - id: ac-16
         given: viewing task in SPA mode
         when: user sees Start Task button area
@@ -551,7 +544,6 @@ features:
         given: SPA mode
         when: any write action attempted
         then: graceful no-op with informative message
-
   - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
     slugs:
       - cli-serve-commands
@@ -598,7 +590,7 @@ features:
       - id: ac-6
         given: any state
         when: kspec serve status executed
-        then: "outputs JSON with {running, pid, port, uptime, connections}"
+        then: outputs JSON with {running, pid, port, uptime, connections}
       - id: ac-7
         given: daemon running
         when: kspec serve restart executed
