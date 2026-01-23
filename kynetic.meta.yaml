@@ -3221,4 +3221,14 @@ observations:
     resolution: Test resolution for shadow commit
     resolved_at: 2026-01-23T03:55:08.924Z
     resolved_by: "@claude"
+  - _ulid: 01KFMH5SZGA6WF6TB75825DV6V
+    type: success
+    content: Trait-based approach for cross-cutting concerns - creating @trait-shadow-commit made
+      implicit shadow commit behavior explicit, testable, and documented. Subagent exploration
+      before planning caught 6 additional missing commits beyond initial 4. Spec-first
+      implementation ensures AC annotations in code reference back to spec.
+    created_at: 2026-01-23T04:18:09.008Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
