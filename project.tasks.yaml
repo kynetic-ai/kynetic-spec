@@ -31361,7 +31361,10 @@
   created_at: 2026-01-23T19:39:35.755Z
   notes: []
   todos: []
-- title: Fix daemon startup race condition in serve tests
+- _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
+  slugs: []
+  title: Fix daemon startup race condition in serve tests
+  type: task
   description: |-
     7 tests in cli-serve.test.ts are failing due to daemon startup race condition.
 
@@ -31376,18 +31379,52 @@
     1. Why daemon takes longer than expected to start
     2. Whether to increase timeout or add proper ready-check
     3. Consider health endpoint polling instead of fixed delay
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T19:39:59.042Z
+  notes: []
+  todos: []
+- title: Fix daemon path resolution for npm installs
+  description: >-
+    PR #206 claude-review identified critical issue that was deferred:
+
+
+    The daemon path resolves to packages/daemon/src/index.ts which will not exist when users install
+    via npm. This will cause 'kspec serve' to fail for npm users.
+
+
+    Current code uses fragile ../../../ path math dependent on build structure.
+
+
+    Fix committed in 30c85700 but tests still failing per commit notes.
+
+
+    Needs:
+
+    1. Verify fix actually works for npm install scenario
+
+    2. Use module resolution instead of path math
+
+    3. Add integration test for npm-installed daemon path
   type: task
   spec_ref: null
   meta_ref: null
   priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
+  _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T19:39:59.042Z
+  created_at: 2026-01-23T19:40:09.319Z
   notes: []
   todos: []
