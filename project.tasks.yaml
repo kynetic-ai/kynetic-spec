@@ -22727,6 +22727,7 @@
   created_at: 2026-01-23T01:29:19.355Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFM7H3MQX4ZVAGR0RSQ6QT6N
   slugs: []
   title: "Merge driver: CLI command"
