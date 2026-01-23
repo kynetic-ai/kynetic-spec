@@ -30200,6 +30200,46 @@
         4. Use @pr-review-merge workflow to merge
         5. Complete parent task @01KFMMJ1 (all 8 subtasks done)
       supersedes: null
+    - _ulid: 01KFNTZBVPX9Z3D1D0CXWGXPF7
+      created_at: 2026-01-23T16:28:38.134Z
+      author: "@claude"
+      content: >-
+        Fixed Greptile-identified critical bugs in WebSocketManager:
+
+
+        Bug 1 (Reconnect counter timing):
+
+        - Moved reconnectAttempts++ before backoff calculation (was inside timeout)
+
+        - Adjusted backoff formula to use (reconnectAttempts - 1) for correct timing
+
+        - Fixed off-by-one error in attempt count display
+
+
+        Bug 2 (State guard blocking reconnect):
+
+        - Changed connect() guard from 'state \!== disconnected' to explicit 'connected ||
+        connecting' check
+
+        - Allows 'reconnecting' state to proceed with connection attempt
+
+        - Fixes reconnection flow when scheduleReconnect sets state to 'reconnecting' before calling
+        connect()
+
+
+        Bug 3 (connectionLost flag not updating):
+
+        - Added notifyConnectionLostChange() method to trigger state change handlers
+
+        - ConnectionLost threshold timer now explicitly notifies handlers even if state hasn't
+        changed
+
+        - Ensures UI updates when 10s threshold is crossed while still disconnected
+
+
+        All 1207 tests passing. Greptile confidence was 2/5 due to these bugs - fixes address all
+        three critical issues.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
