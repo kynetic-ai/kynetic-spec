@@ -31659,7 +31659,100 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:39.789Z
-  notes: []
+  notes:
+    - _ulid: 01KFP8671XKGS2K63MC9YWKSXH
+      created_at: 2026-01-23T20:19:34.077Z
+      author: "@claude"
+      content: >-
+        ## Objective
+
+        Write E2E tests for the dashboard view covering @web-dashboard ac-1, ac-2, ac-3, ac-20,
+        ac-21.
+
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+
+        ## File
+
+        packages/web-ui/tests/e2e/dashboard.spec.ts
+
+
+        ## Acceptance Criteria Coverage
+
+
+        | AC | Description | Test |
+
+        |----|-------------|------|
+
+        | ac-1 | Dashboard shows task counts by status | displays task summary counts by status |
+
+        | ac-2 | Counts animate via WebSocket update | updates counts in real-time via WebSocket |
+
+        | ac-3 | Click count badge navigates to filtered list | navigates to filtered tasks on count
+        click |
+
+        | ac-20 | Focus text displayed prominently when set | shows session focus text when set |
+
+        | ac-21 | Observations count badge in sidebar | shows unresolved observations badge |
+
+
+        ## Test Cases
+
+
+        ```typescript
+
+        import { test, expect } from '../fixtures/test-base';
+
+
+        test.describe('Dashboard', () => {
+          // AC: @web-dashboard ac-1
+          test('displays task summary counts by status', async ({ page, daemon }) => {
+            await page.goto('/');
+            await expect(page.getByTestId('task-count-pending')).toBeVisible();
+            await expect(page.getByTestId('task-count-in-progress')).toBeVisible();
+            await expect(page.getByTestId('task-count-completed')).toBeVisible();
+          });
+
+          // AC: @web-dashboard ac-2
+          test('updates counts in real-time via WebSocket', async ({ page, daemon }) => {
+            // Start task via API, verify count updates without refresh
+          });
+
+          // AC: @web-dashboard ac-3
+          test('navigates to filtered tasks on count click', async ({ page }) => {
+            await page.getByTestId('task-count-pending').click();
+            await expect(page).toHaveURL(/status=pending/);
+          });
+
+          // AC: @web-dashboard ac-20
+          test('shows session focus text when set', async ({ page, daemon }) => {
+            // Requires session with focus set in fixtures
+            await expect(page.getByTestId('session-focus')).toContainText('Focus text');
+          });
+
+          // AC: @web-dashboard ac-21
+          test('shows unresolved observations badge', async ({ page }) => {
+            await expect(page.getByTestId('observations-badge')).toBeVisible();
+          });
+        });
+
+        ```
+
+
+        ## Viewport Testing
+
+        Test both desktop (1280x720) and mobile (375x667) layouts.
+
+
+        ## data-testid Attributes Needed
+
+        - task-count-pending, task-count-in-progress, task-count-completed
+
+        - session-focus
+
+        - observations-badge
+      supersedes: null
   todos: []
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
@@ -31787,20 +31880,20 @@
   created_at: 2026-01-23T20:19:11.206Z
   notes: []
   todos: []
-- title: E2E Navigation and URL State Tests
+- _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
+  slugs: []
+  title: E2E Navigation and URL State Tests
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - e2e
-    - testing
-  _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - e2e
+    - testing
   vcs_refs: []
   created_at: 2026-01-23T20:19:14.646Z
   notes: []
