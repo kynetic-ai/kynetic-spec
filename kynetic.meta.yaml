@@ -3289,4 +3289,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFP9AJAJKHTZ005GYT1E017V
+    type: success
+    content: Parallel subagent research for planning - Launching multiple explore agents simultaneously
+      (one for best practices research, one for existing codebase patterns) provided comprehensive
+      context quickly. Combined with Plan agent review, caught issues early before implementation.
+    created_at: 2026-01-23T20:39:25.266Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
