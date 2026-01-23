@@ -21,7 +21,7 @@
   },
   "author": "Kynetic AI",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/cli/index.js",
     "dev": "tsx src/cli/index.ts",
     "setup:dev": "npm install && npm run build && npm link",
     "pretest": "npm run build",
