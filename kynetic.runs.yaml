@@ -1945,6 +1945,14 @@ runs:
     current_step: 0
     total_steps: 9
     started_at: 2026-01-23T14:08:11.630Z
+    completed_at: 2026-01-23T14:10:37.229Z
     step_results: []
     initiated_by: "@claude"
-    completed_at: 2026-01-23T14:10:37.229Z
+  - _ulid: 01KFNKWT1V13QKZQGEZYMF0X90
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-23T14:24:54.331Z
+    step_results: []
+    initiated_by: "@claude"
