@@ -458,3 +458,9 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFNCZRVA7JJ21WRS9NVA8KM4
+    text: Implement X-Request-Id header middleware for all API endpoints (@trait-api-endpoint ac-6).
+      Should generate ULID if not provided, echo if present in request.
+    created_at: 2026-01-23T12:24:11.370Z
+    tags: []
+    added_by: "@claude"
