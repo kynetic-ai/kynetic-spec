@@ -893,8 +893,18 @@ runs:
   - _ulid: 01KFMSR4FB3Z8A2QYSFNZSS0CF
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-23T06:47:58.188Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-23T06:47:58.188Z
+        completed_at: 2026-01-23T06:48:16.721Z
+        inputs:
+          spec_ref: "@web-ui"
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-23T06:48:16.721Z
+        completed_at: 2026-01-23T06:48:16.721Z
     initiated_by: "@claude"
