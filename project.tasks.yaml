@@ -22686,7 +22686,10 @@
   created_at: 2026-01-23T01:29:16.324Z
   notes: []
   todos: []
-- title: "Merge driver: file type detection"
+- _ulid: 01KFM7GNQVA1J6APAFA694V14C
+  slugs: []
+  title: "Merge driver: file type detection"
+  type: task
   description: |-
     Implement file type detection and strategy dispatch:
 
@@ -22703,18 +22706,50 @@
     **Functions:**
     - detectFileType(path, content) - Identify kspec file type
     - getMergeStrategy(fileType) - Return appropriate merger function
-  type: task
   spec_ref: "@merge-file-detection"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:29:19.355Z
+  notes: []
+  todos: []
+- title: "Merge driver: CLI command"
+  description: |-
+    Implement the merge-driver CLI command:
+
+    **Files:**
+    - src/cli/commands/merge-driver.ts - Command implementation
+    - src/cli/index.ts - Register command
+
+    **Covers ACs from @merge-driver-cli:**
+    - ac-1: Handle git invocation (kspec merge-driver %O %A %B %L %P)
+    - ac-2: stderr summary of merge/conflicts
+    - ac-3: --non-interactive flag for YAML comment conflicts
+
+    **Also covers from @yaml-merge-driver:**
+    - ac-9: Exit 0 on clean merge
+
+    **Trait ACs from @trait-dry-run and @trait-error-guidance**
+
+    **Command signature:**
+    kspec merge-driver <base> <ours> <theirs> [-L n] [-p path] [--non-interactive] [--dry-run]
+  type: task
+  spec_ref: "@merge-driver-cli"
   meta_ref: null
   priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFM7GNQVA1J6APAFA694V14C
+  _ulid: 01KFM7H3MQX4ZVAGR0RSQ6QT6N
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T01:29:19.355Z
+  created_at: 2026-01-23T01:29:33.590Z
   notes: []
   todos: []
