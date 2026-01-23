@@ -22405,6 +22405,15 @@
 
         - Add proper test coverage
       supersedes: null
+    - _ulid: 01KFN0C7F0XYCVGY751HN2ST0K
+      created_at: 2026-01-23T08:43:48.065Z
+      author: "@claude"
+      content: Fixed inconsistent cancelled task filtering in derive command. The getParentTaskRef()
+        function was already filtering cancelled tasks (AC-15), but the existence check at line 279
+        wasn't. This caused specs with only cancelled tasks to be unable to re-derive without
+        --force. Added filtering at line 279 to match the behavior of getParentTaskRef(). Added
+        comprehensive E2E test to prevent regression. All 1056 tests pass.
+      supersedes: null
   todos: []
 - _ulid: 01KFKMF9FBCRZ0ERNN8K9M0ZMM
   slugs: []
