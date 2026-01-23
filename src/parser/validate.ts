@@ -918,6 +918,18 @@ async function checkCompleteness(
           });
         }
       }
+
+      // Inverse validation: If verification metadata exists, status should be implemented/verified
+      if ((item.verified_at || item.verified_by) && !isImplementedOrVerified) {
+        warnings.push({
+          type: "status_inconsistency",
+          itemRef,
+          itemTitle: item.title,
+          message: `Retrospective spec ${itemRef} has verification metadata but status is not implemented/verified`,
+          details:
+            "Retrospective specs with verified_at/verified_by should have implementation status set to 'implemented' or 'verified'",
+        });
+      }
     }
   }
 

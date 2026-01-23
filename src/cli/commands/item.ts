@@ -775,11 +775,8 @@ export function registerItemCommands(program: Command): void {
         if (options.verifiedBy) {
           updates.verified_by = options.verifiedBy;
           // Default verified_at to now if not specified
-          if (!options.verifiedAt) {
-            updates.verified_at = new Date().toISOString();
-          }
-        }
-        if (options.verifiedAt) {
+          updates.verified_at = options.verifiedAt || new Date().toISOString();
+        } else if (options.verifiedAt) {
           updates.verified_at = options.verifiedAt;
         }
 
