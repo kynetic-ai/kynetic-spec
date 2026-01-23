@@ -2544,7 +2544,7 @@ runs:
   - _ulid: 01KFPF5DN5E7T2YVS1V9H2ZAES
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-23T22:21:28.101Z
     step_results:
@@ -2607,5 +2607,31 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T22:22:08.567Z
-        completed_at: 2026-01-23T22:22:08.567Z
+        completed_at: 2026-01-23T22:22:41.074Z
+        notes: >-
+          ## Coverage Check
+
+
+          1. **Daemon TypeScript compilation** - NOT TRACKED. The daemon uses Bun-specific patterns
+          and has implicit any issues. No task/spec for fixing this.
+
+
+          2. **Static analysis tests** - TRACKED in inbox @01KFND00: 'Convert daemon static analysis
+          tests to real E2E tests'. This captures the brittleness issue.
+
+
+          3. **Stale workflow runs** - NOT TRACKED. No spec/task for workflow run cleanup or
+          auto-expiration.
+
+
+          4. **Daemon startup error visibility** - PARTIALLY TRACKED. @01KFP5XQ covers the race
+          condition but not the lack of error details when startup fails.
+
+
+          5. **Incremental review feedback** - NOT TRACKED. This is more of a process observation
+          than a kspec feature gap.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T22:22:41.074Z
+        completed_at: 2026-01-23T22:22:41.074Z
     initiated_by: "@claude"
