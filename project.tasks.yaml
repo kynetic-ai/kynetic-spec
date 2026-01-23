@@ -22980,7 +22980,7 @@
     - recursiveMerge(base, ours, theirs) - Deep merge for nested objects
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -23040,6 +23040,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T07:02:25.882Z
+  closed_reason: "PR #177 merged. Implemented object merge algorithms with field-level recursive merge
+    for semantic YAML merge driver. All 28 tests pass with comprehensive AC coverage for ac-3 and
+    ac-7."
 - _ulid: 01KFM7GJS5J3QRQWEKR600GN9N
   slugs: []
   title: "Merge driver: conflict resolution"
