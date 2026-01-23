@@ -24444,6 +24444,7 @@
         - packages/web-ui/src/routes/+layout.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMT0BPJPM8V08QVBVKPS6V
   slugs: []
   title: Dashboard layout and navigation
