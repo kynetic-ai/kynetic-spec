@@ -272,6 +272,45 @@ traits:
         given: error in JSON mode
         when: --json is active
         then: guidance included in structured error object
+  - _ulid: 01KFMFAQ94G3162ZKGB2N02K3W
+    slugs:
+      - trait-shadow-commit
+    title: Shadow Branch Auto-Commit
+    type: trait
+    description: Commands that modify shadow branch state automatically commit changes with semantic messages
+    acceptance_criteria:
+      - id: ac-1
+        given: command modifies state in shadow worktree
+        when: save operation completes successfully
+        then: git commit is created in shadow branch with semantic message
+      - id: ac-2
+        given: shadow commit is created
+        when: commit message is generated
+        then: message follows pattern operation-colon-ref-short with optional detail
+      - id: ac-3
+        given: shadow commit is created
+        when: item reference is available
+        then: commit message includes ULID prefix (8 chars) or primary slug
+      - id: ac-4
+        given: shadow is not configured (no worktree)
+        when: command that would normally commit runs
+        then: command completes successfully without attempting git operations
+      - id: ac-5
+        given: save operation fails
+        when: validation or IO error occurs
+        then: no commit is attempted and error is returned
+      - id: ac-6
+        given: shadow has remote configured
+        when: commit succeeds
+        then: push is attempted in fire-and-forget mode (failure doesn't block command)
+      - id: ac-7
+        given: commit or push fails
+        when: save succeeded but git operation failed
+        then: command succeeds but outputs warning about sync state
+      - id: ac-8
+        given: command performs multiple related saves
+        when: all saves complete successfully
+        then: single atomic commit covers all changes
 includes:
   - modules/core.yaml
   - modules/schema.yaml

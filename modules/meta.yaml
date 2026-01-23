@@ -1537,6 +1537,8 @@ features:
               **Mutually exclusive:** When --from-inbox is used, the positional <type> and content
               args are ignored (content comes from inbox item).
             supersedes: null
+        traits:
+          - "@trait-shadow-commit"
       - _ulid: 01KF1XCMD60000000000000000
         slugs:
           - meta-observations-cmd
