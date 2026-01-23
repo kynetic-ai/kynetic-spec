@@ -1,0 +1,24 @@
+{
+  "name": "@kynetic-ai/daemon",
+  "version": "0.1.0",
+  "description": "Kspec daemon server with WebSocket support",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "kspec-daemon": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "bun --watch src/index.ts",
+    "start": "bun dist/index.js"
+  },
+  "dependencies": {
+    "elysia": "^1.1.31",
+    "@kynetic-ai/shared": "*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.3"
+  }
+}
