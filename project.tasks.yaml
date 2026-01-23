@@ -25557,6 +25557,17 @@
         All types match the API contract from @api-contract spec and the daemon implementation.
         Package is ready for use by both daemon and web-ui.
       supersedes: null
+    - _ulid: 01KFNJF4W8JVVA7XMZY6H8VMPE
+      created_at: 2026-01-23T13:59:58.088Z
+      author: "@claude"
+      content: |-
+        PR #196 created: https://github.com/kynetic-ai/kynetic-spec/pull/196
+
+        Branch: feat/shared-types-package
+        Status: Awaiting CI and review
+
+        Next session: Review and merge PR #196 via @pr-review-merge workflow.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM0YP97Z451KA5TEC6RX9
