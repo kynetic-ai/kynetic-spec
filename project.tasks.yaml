@@ -23065,7 +23065,7 @@
     - formatConflictComment(conflict) - YAML comment format for non-interactive
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -23165,6 +23165,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T07:24:02.849Z
+  closed_reason: "PR #178 merged. Implemented conflict resolution for semantic YAML merge driver.
+    Added interactive prompts for scalar and delete-modify conflicts (AC-4, AC-8) with proper
+    automated test coverage. Added non-interactive YAML comment formatting (AC-10). Fixed blocking
+    issue from local review by refactoring functions for testability. All 1033 tests pass."
 - _ulid: 01KFM7GNQVA1J6APAFA694V14C
   slugs: []
   title: "Merge driver: file type detection"
