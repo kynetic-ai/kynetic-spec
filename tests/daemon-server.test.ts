@@ -259,15 +259,15 @@ describe('Daemon Server', () => {
     expect(packageJson.dependencies).toHaveProperty('chokidar');
   });
 
-  it('should have WebSocket endpoint placeholder', async () => {
+  it('should have WebSocket endpoint with full protocol implementation', async () => {
     const serverContent = await readFile(
       join(process.cwd(), 'packages/daemon/src/server.ts'),
       'utf-8'
     );
 
-    // Verify WebSocket endpoint exists (placeholder for future implementation)
-    expect(serverContent).toContain('.ws(');
-    expect(serverContent).toContain('/ws');
+    // Verify WebSocket endpoint exists with protocol implementation
+    expect(serverContent).toContain('.ws<ConnectionData>');
+    expect(serverContent).toContain("'/ws'");
   });
 
   it('should parse --daemon flag in CLI', async () => {

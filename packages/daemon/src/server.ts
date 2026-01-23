@@ -7,7 +7,12 @@
 
 import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
+import { ulid } from 'ulidx';
 import { KspecWatcher } from './watcher';
+import { PubSubManager } from './websocket/pubsub';
+import { HeartbeatManager } from './websocket/heartbeat';
+import { WebSocketHandler } from './websocket/handler';
+import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { join, relative } from 'path';
 
 export interface ServerOptions {
@@ -16,8 +21,10 @@ export interface ServerOptions {
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
 }
 
-// WebSocket connection tracking
-const wsConnections = new Set<any>();
+// WebSocket pub/sub and heartbeat managers
+let pubsubManager: PubSubManager;
+let heartbeatManager: HeartbeatManager;
+let wsHandler: WebSocketHandler;
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -77,35 +84,31 @@ function localhostOnly() {
 export async function createServer(options: ServerOptions) {
   const { port, isDaemon, kspecDir = join(process.cwd(), '.kspec') } = options;
 
+  // Initialize WebSocket managers
+  pubsubManager = new PubSubManager();
+  heartbeatManager = new HeartbeatManager();
+  wsHandler = new WebSocketHandler(pubsubManager);
+
   // AC-4: Initialize file watcher
   const watcher = new KspecWatcher({
     kspecDir,
     onFileChange: (file, content) => {
-      // AC-4: Broadcast file change to all connected WebSocket clients
-      const event = {
-        type: 'file_change',
-        file: relative(kspecDir, file),
-        timestamp: new Date().toISOString()
-      };
+      // AC-4, ac-29: Broadcast file change to subscribed clients via topic
+      const relativePath = relative(kspecDir, file);
+      pubsubManager.broadcast('files:updates', 'file_changed', {
+        ref: relativePath,
+        action: 'modified'
+      });
 
-      for (const ws of wsConnections) {
-        ws.send(JSON.stringify(event));
-      }
-
-      console.log(`[daemon] Broadcast file change: ${event.file}`);
+      console.log(`[daemon] Broadcast file change: ${relativePath}`);
     },
     onError: (error, file) => {
       // AC-6: Broadcast error event on YAML parse errors
-      const event = {
-        type: 'error',
-        file: file ? relative(kspecDir, file) : undefined,
-        error: error.message,
-        timestamp: new Date().toISOString()
-      };
-
-      for (const ws of wsConnections) {
-        ws.send(JSON.stringify(event));
-      }
+      const relativePath = file ? relative(kspecDir, file) : undefined;
+      pubsubManager.broadcast('files:errors', 'file_error', {
+        ref: relativePath,
+        error: error.message
+      });
 
       console.error('[daemon] Broadcast error:', error.message);
     }
@@ -125,30 +128,46 @@ export async function createServer(options: ServerOptions) {
     .get('/api/health', () => ({
       status: 'ok',
       uptime: process.uptime(),
-      connections: wsConnections.size,
+      connections: pubsubManager.getConnectionCount(),
       version: '0.1.0'
     }))
 
     // AC-4: WebSocket endpoint for real-time updates
-    .ws('/ws', {
+    .ws<ConnectionData>('/ws', {
       open(ws) {
-        wsConnections.add(ws);
-        console.log(`[daemon] WebSocket client connected (${wsConnections.size} total)`);
+        // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
+        const sessionId = ulid();
+        ws.data = {
+          sessionId,
+          topics: new Set<string>(),
+          seq: 0,
+          lastPing: undefined,
+          lastPong: Date.now()
+        };
 
-        // Send welcome message
-        ws.send(JSON.stringify({
-          type: 'connected',
-          timestamp: new Date().toISOString(),
-          version: '0.1.0'
-        }));
+        pubsubManager.addConnection(sessionId, ws);
+        console.log(`[daemon] WebSocket client connected: ${sessionId} (${pubsubManager.getConnectionCount()} total)`);
+
+        // Send connected event with session_id
+        const connectedEvent: ConnectedEvent = {
+          event: 'connected',
+          data: {
+            session_id: sessionId
+          }
+        };
+        ws.send(JSON.stringify(connectedEvent));
       },
       message(ws, message) {
-        console.log('[daemon] WebSocket message:', message);
-        // TODO: AC-13-14 implement ping/pong and subscription protocol
+        // AC: @api-contract ac-26, ac-27
+        wsHandler.handleMessage(ws, message);
       },
-      close(ws) {
-        wsConnections.delete(ws);
-        console.log(`[daemon] WebSocket client disconnected (${wsConnections.size} remaining)`);
+      pong(ws) {
+        // AC: @trait-websocket-protocol ac-5
+        heartbeatManager.recordPong(ws);
+      },
+      close(ws, code, reason) {
+        pubsubManager.removeConnection(ws.data.sessionId);
+        console.log(`[daemon] WebSocket client disconnected: ${ws.data.sessionId} (code: ${code}, reason: ${reason})`);
       }
     })
 
@@ -169,19 +188,25 @@ export async function createServer(options: ServerOptions) {
     console.error('[daemon] Failed to start file watcher:', error);
   }
 
+  // AC: @daemon-server ac-13, ac-14 - Start heartbeat monitoring
+  heartbeatManager.start(pubsubManager.getAllConnections());
+
   // AC-12: Graceful shutdown on SIGTERM/SIGINT
   const shutdown = async (signal: string) => {
     console.log(`[daemon] Received ${signal}, shutting down gracefully...`);
 
     try {
+      // Stop heartbeat monitoring
+      heartbeatManager.stop();
+
       // Stop file watcher
       await watcher.stop();
 
-      // Close all WebSocket connections
-      for (const ws of wsConnections) {
+      // Close all WebSocket connections with code 1000 (clean close)
+      // AC: @trait-websocket-protocol ac-7
+      for (const [sessionId, ws] of pubsubManager.getAllConnections()) {
         ws.close(1000, 'Server shutting down');
       }
-      wsConnections.clear();
 
       // Stop the server
       await app.server?.stop();
@@ -198,7 +223,6 @@ export async function createServer(options: ServerOptions) {
   process.on('SIGINT', () => shutdown('SIGINT'));
 
   // TODO: AC-9, AC-10: Implement daemon mode (process detach, PID file)
-  // TODO: AC-13-14: Implement WebSocket ping/pong
 
   return app;
 }
