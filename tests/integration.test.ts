@@ -941,6 +941,28 @@ describe('Integration: derive', () => {
     // Should be the -1 variant, not the base slug
     expect(task.depends_on[0]).not.toBe('@task-test-feature');
   });
+
+  // AC: @cmd-derive ac-15 (variant: spec with only cancelled tasks should allow re-derivation)
+  it('should allow re-derivation when only cancelled tasks exist', () => {
+    // Use existing test-feature from fixtures
+    // Create task and cancel it
+    kspec('derive @test-feature --flat', tempDir);
+    kspec('task cancel @task-test-feature --reason "cancelled"', tempDir);
+
+    // Should be able to derive again without --force since only cancelled task exists
+    const output = kspec('derive @test-feature --flat', tempDir);
+    expect(output).toContain('Created 1 task(s)');
+
+    // Verify a new task was created (check that it has a different slug)
+    const cancelledOutput = kspec('task get @task-test-feature --json', tempDir);
+    const cancelledTask = JSON.parse(cancelledOutput);
+    expect(cancelledTask.status).toBe('cancelled');
+
+    // The new task should have a different slug (task-test-feature-1 or similar)
+    const allTasks = kspecJson('tasks list --status pending', tempDir);
+    const pendingForSpec = allTasks.filter((t: any) => t.slugs.some((s: string) => s.startsWith('task-test-feature')));
+    expect(pendingForSpec.length).toBe(1); // One new pending task for the spec
+  });
 });
 
 describe('Integration: session', () => {
