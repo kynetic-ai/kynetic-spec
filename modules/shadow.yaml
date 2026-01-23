@@ -603,6 +603,7 @@ features:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-dry-run"
     notes: []
     created: 2026-01-23T01:25:01.370Z
