@@ -171,8 +171,8 @@ describe('API Response Types', () => {
     expectTypeOf<ItemDetail>().toHaveProperty('acceptance_criteria');
     expectTypeOf<ItemDetail>().toHaveProperty('traits');
 
-    expectTypeOf<ItemDetail['acceptance_criteria']>().toEqualTypeOf<AcceptanceCriterion[] | undefined>();
-    expectTypeOf<ItemDetail['traits']>().toEqualTypeOf<string[] | undefined>();
+    expectTypeOf<ItemDetail['acceptance_criteria']>().toEqualTypeOf<AcceptanceCriterion[]>();
+    expectTypeOf<ItemDetail['traits']>().toEqualTypeOf<string[]>();
   });
 
   it('AcceptanceCriterion should have correct structure', () => {
@@ -205,7 +205,7 @@ describe('API Response Types', () => {
     expectTypeOf<SessionContext>().toHaveProperty('open_questions');
     expectTypeOf<SessionContext>().toHaveProperty('updated_at');
 
-    expectTypeOf<SessionContext['focus']>().toEqualTypeOf<string | null>();
+    expectTypeOf<SessionContext['focus']>().toEqualTypeOf<string | undefined>();
     expectTypeOf<SessionContext['threads']>().toEqualTypeOf<string[]>();
     expectTypeOf<SessionContext['open_questions']>().toEqualTypeOf<string[]>();
     expectTypeOf<SessionContext['updated_at']>().toEqualTypeOf<string>();
@@ -213,26 +213,29 @@ describe('API Response Types', () => {
 
   it('Agent should have correct structure', () => {
     expectTypeOf<Agent>().toHaveProperty('_ulid');
-    expectTypeOf<Agent>().toHaveProperty('id');
+    expectTypeOf<Agent>().toHaveProperty('slugs');
     expectTypeOf<Agent>().toHaveProperty('role');
     expectTypeOf<Agent>().toHaveProperty('status');
+    expectTypeOf<Agent>().toHaveProperty('capabilities');
+    expectTypeOf<Agent>().toHaveProperty('constraints');
 
     expectTypeOf<Agent['_ulid']>().toEqualTypeOf<string>();
-    expectTypeOf<Agent['id']>().toEqualTypeOf<string>();
+    expectTypeOf<Agent['slugs']>().toEqualTypeOf<string[]>();
     expectTypeOf<Agent['role']>().toEqualTypeOf<string>();
     expectTypeOf<Agent['status']>().toEqualTypeOf<string>();
+    expectTypeOf<Agent['capabilities']>().toEqualTypeOf<string[]>();
+    expectTypeOf<Agent['constraints']>().toEqualTypeOf<string[]>();
   });
 
   it('Workflow should have correct structure', () => {
     expectTypeOf<Workflow>().toHaveProperty('_ulid');
-    expectTypeOf<Workflow>().toHaveProperty('id');
+    expectTypeOf<Workflow>().toHaveProperty('slugs');
     expectTypeOf<Workflow>().toHaveProperty('name');
-    expectTypeOf<Workflow>().toHaveProperty('description');
+    expectTypeOf<Workflow>().toHaveProperty('steps');
 
     expectTypeOf<Workflow['_ulid']>().toEqualTypeOf<string>();
-    expectTypeOf<Workflow['id']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['slugs']>().toEqualTypeOf<string[]>();
     expectTypeOf<Workflow['name']>().toEqualTypeOf<string>();
-    expectTypeOf<Workflow['description']>().toEqualTypeOf<string>();
   });
 
   it('Observation should have correct structure', () => {
