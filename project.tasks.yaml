@@ -22692,6 +22692,7 @@
   created_at: 2026-01-23T01:29:16.324Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFM7GNQVA1J6APAFA694V14C
   slugs: []
   title: "Merge driver: file type detection"
