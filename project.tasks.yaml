@@ -22936,3 +22936,91 @@
   notes: []
   todos: []
   automation: eligible
+- title: "Implement: Daemon Server Mode"
+  type: task
+  spec_ref: "@daemon-server"
+  derivation: auto
+  priority: 2
+  slugs:
+    - task-daemon-server-mode
+  tags:
+    - server
+    - websocket
+    - elysia
+  depends_on: []
+  notes:
+    - _ulid: 01KFMMHSDJ085MBRXZT1SWHFVH
+      created_at: 2026-01-23T05:17:07.378Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Long-running Elysia.js server on Bun runtime that exposes kspec state via HTTP API and
+        WebSocket
+
+        for real-time updates. Binds to localhost only for security. Supports foreground and
+        background
+
+        modes with PID file management. Includes heartbeat ping/pong for connection health
+        monitoring.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given kspec is installed, when user runs 'kspec serve', then Elysia HTTP server
+        starts on configurable port (default 3456) binding to localhost only
+
+        - ac-2: Given daemon is starting, when server binds to network interface, then only accepts
+        connections from 127.0.0.1 and ::1 (IPv6 localhost)
+
+        - ac-3: Given connection attempt from non-localhost IP, when request received, then
+        connection rejected with 403 Forbidden
+
+        - ac-4: Given daemon is running, when any .kspec/*.yaml file changes, then connected
+        WebSocket clients receive update event via topic subscription
+
+        - ac-5: Given file watching is active, when rapid changes occur (< 500ms apart), then events
+        are debounced and aggregated into single notification
+
+        - ac-6: Given watched file has YAML parse error, when change detected, then error logged and
+        WebSocket broadcasts error event (daemon does not crash)
+
+        - ac-7: Given .kspec directory becomes inaccessible, when watcher encounters error, then
+        daemon logs error and attempts recovery with exponential backoff
+
+        - ac-8: Given Bun fs.watch fails or misses events, when reliability issue detected, then
+        automatically fall back to Chokidar file watcher
+
+        - ac-9: Given daemon is running, when user runs 'kspec serve --daemon', then process
+        detaches to background, writes PID to .kspec/.daemon.pid, CLI returns immediately
+
+        - ac-10: Given daemon is running in background, when user runs 'kspec serve stop', then
+        daemon shuts down gracefully, removes PID file, closes all WebSocket connections
+
+        - ac-11: Given daemon is running, when GET /api/health is called, then returns {status,
+        uptime, connections, version} JSON
+
+        - ac-12: Given daemon receives SIGTERM or SIGINT, when shutdown signal received, then
+        graceful shutdown (flush pending messages, close connections, save state)
+
+        - ac-13: Given WebSocket connection established, when 30 seconds pass without activity, then
+        server sends ping frame
+
+        - ac-14: Given ping was sent, when no pong received within 90 seconds, then connection
+        closed with code 1001
+
+        - ac-15: Given Elysia server is configured, when routes are registered, then use plugin
+        pattern for middleware (CORS, logging, validation)
+
+        - ac-16: Given daemon code is ready, when bun build --compile runs, then produces standalone
+        executable without requiring Bun installation
+      supersedes: null
+  _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:17:07.378Z
+  todos: []
