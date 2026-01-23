@@ -273,6 +273,43 @@ describe('Shadow Branch', () => {
       expect(result.success).toBe(false);
       expect(result.error).toBe('Not a git repository');
     });
+
+    // AC: @yaml-merge-driver ac-12
+    it('configures merge driver during initialization', async () => {
+      // Initialize git repo with an initial commit
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+
+      expect(result.success).toBe(true);
+
+      // Verify merge driver is configured in .git/config
+      const mergeDriverName = execSync('git config merge.kspec.name', {
+        cwd: testDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim();
+      expect(mergeDriverName).toBe('Kspec YAML semantic merge driver');
+
+      const mergeDriverCmd = execSync('git config merge.kspec.driver', {
+        cwd: testDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim();
+      expect(mergeDriverCmd).toContain('kspec merge-driver');
+      expect(mergeDriverCmd).toContain('--non-interactive');
+
+      // Verify .gitattributes exists in shadow branch
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const gitattributesPath = path.join(worktreeDir, '.gitattributes');
+      const gitattributesContent = await fs.readFile(gitattributesPath, 'utf-8');
+      expect(gitattributesContent).toContain('*.yaml merge=kspec');
+      expect(gitattributesContent).toContain('*.yml merge=kspec');
+    });
   });
 
   describe('repairShadow', () => {
@@ -1177,13 +1214,13 @@ describe('Shadow Branch', () => {
         expect(err.status).toBe(1);
       }
 
-      // Verify no commit was created (still at initial shadow commit)
+      // Verify no commit was created (still at initial shadow commits)
       const logOutput = execSync('git log --oneline', {
         cwd: worktreeDir,
         encoding: 'utf-8',
       });
       const commitCount = logOutput.trim().split('\n').length;
-      expect(commitCount).toBe(1); // Only the initial commit
+      expect(commitCount).toBe(2); // Initial + merge driver config commit
     });
 
     it('allows commits with KSPEC_SHADOW_COMMIT=1 env var', async () => {
@@ -1224,7 +1261,7 @@ describe('Shadow Branch', () => {
         encoding: 'utf-8',
       });
       const commitCount = logOutput.trim().split('\n').length;
-      expect(commitCount).toBe(2); // Initial + authorized commit
+      expect(commitCount).toBe(3); // Initial + merge driver config + authorized commit
 
       // Verify commit message
       const latestCommit = execSync('git log -1 --pretty=%B', {

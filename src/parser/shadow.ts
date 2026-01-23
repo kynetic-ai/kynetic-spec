@@ -1102,6 +1102,94 @@ function toSlug(projectName: string): string {
 }
 
 /**
+ * Configure git merge driver for kspec YAML files.
+ * AC: @yaml-merge-driver ac-12
+ *
+ * Configures the merge driver in .git/config and adds .gitattributes in the shadow branch.
+ *
+ * @param projectRoot Git repository root
+ * @param worktreeDir Path to shadow worktree directory
+ * @returns true if configuration was successful
+ */
+async function configureMergeDriver(
+  projectRoot: string,
+  worktreeDir: string,
+): Promise<boolean> {
+  try {
+    // Step 1: Configure merge driver in .git/config
+    const kspecPath = execSync("which kspec", {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+
+    // Add merge driver configuration to git config
+    try {
+      execSync(
+        `git config merge.kspec.name "Kspec YAML semantic merge driver"`,
+        {
+          cwd: projectRoot,
+          stdio: ["pipe", "pipe", "pipe"],
+        },
+      );
+      execSync(
+        `git config merge.kspec.driver "${kspecPath} merge-driver %O %A %B --non-interactive"`,
+        {
+          cwd: projectRoot,
+          stdio: ["pipe", "pipe", "pipe"],
+        },
+      );
+    } catch (error) {
+      // Config may fail if already set - check if it's set correctly
+      try {
+        const existingDriver = execSync("git config merge.kspec.driver", {
+          cwd: projectRoot,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "pipe"],
+        }).trim();
+
+        if (!existingDriver.includes("kspec merge-driver")) {
+          throw new Error("Merge driver config exists but is incorrect");
+        }
+      } catch {
+        throw error; // Re-throw original error
+      }
+    }
+
+    // Step 2: Create .gitattributes in shadow branch
+    const gitattributesPath = path.join(worktreeDir, ".gitattributes");
+
+    // Check if .gitattributes exists
+    let existingContent = "";
+    try {
+      existingContent = await fs.readFile(gitattributesPath, "utf-8");
+    } catch {
+      // File doesn't exist, that's fine
+    }
+
+    // Check if merge driver is already configured
+    if (!existingContent.includes("merge=kspec")) {
+      const attributesContent = existingContent
+        ? existingContent + "\n"
+        : "# Git attributes for kspec\n\n";
+
+      await fs.writeFile(
+        gitattributesPath,
+        attributesContent + "*.yaml merge=kspec\n*.yml merge=kspec\n",
+        "utf-8",
+      );
+
+      // Commit .gitattributes to shadow branch
+      await shadowAutoCommit(worktreeDir, "Configure kspec merge driver");
+    }
+
+    return true;
+  } catch (_error) {
+    // Silently fail - merge driver configuration is optional
+    return false;
+  }
+}
+
+/**
  * Initialize shadow branch and worktree.
  * Creates orphan branch, worktree, updates gitignore, and creates initial structure.
  *
@@ -1265,6 +1353,10 @@ export async function initializeShadow(
 
     // Step 6: Install pre-commit hook to protect shadow branch
     await installShadowHook(projectRoot);
+
+    // Step 7: Configure merge driver for semantic YAML merging
+    // AC: @yaml-merge-driver ac-12
+    await configureMergeDriver(projectRoot, worktreeDir);
 
     result.success = true;
     return result;
