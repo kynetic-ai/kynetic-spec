@@ -32216,7 +32216,95 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:19:07.647Z
-  notes: []
+  notes:
+    - _ulid: 01KFP89333VKSN3K9R156GRT52
+      created_at: 2026-01-23T20:21:08.323Z
+      author: "@claude"
+      content: >-
+        ## Objective
+
+        Write E2E tests for observations panel covering @web-dashboard ac-21, ac-22 and
+        @api-contract ac-15, ac-18.
+
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+
+        ## File
+
+        packages/web-ui/tests/e2e/observations.spec.ts
+
+
+        ## Acceptance Criteria Coverage
+
+
+        | AC | Description |
+
+        |----|-------------|
+
+        | @web-dashboard ac-21 | Observations count badge in sidebar |
+
+        | @web-dashboard ac-22 | Panel shows unresolved with type icons |
+
+        | @api-contract ac-15 | Session context (focus, threads, questions) |
+
+        | @api-contract ac-18 | Observations filter (?resolved=false) |
+
+
+        ## Test Cases
+
+
+        ```typescript
+
+        test.describe('Observations', () => {
+          test.describe('List View', () => {
+            // AC: @web-dashboard ac-22
+            test('displays observations with type icons', async ({ page }) => {
+              await page.goto('/observations');
+              await expect(page.getByTestId('observation-friction')).toBeVisible();
+              await expect(page.getByTestId('observation-success')).toBeVisible();
+            });
+            test('filters by type (friction/success/question/idea)');
+            // AC: @api-contract ac-18
+            test('filters by unresolved', async ({ page }) => {
+              await page.getByTestId('filter-unresolved').click();
+              // Verify only unresolved shown
+            });
+            test('shows empty state');
+          });
+
+          test.describe('Actions', () => {
+            test('resolves an observation', async ({ page }) => {
+              await page.getByTestId('resolve-button').first().click();
+              await page.getByTestId('resolution-input').fill('Fixed in PR #123');
+              await page.getByTestId('confirm-resolve').click();
+            });
+            test('updates list in real-time');
+          });
+
+          test.describe('Session Context', () => {
+            // AC: @api-contract ac-15
+            test('displays current focus');
+            test('displays active threads');
+            test('displays open questions');
+          });
+        });
+
+        ```
+
+
+        ## data-testid Attributes Needed
+
+        - observations-panel
+
+        - observation-friction, observation-success, observation-question, observation-idea
+
+        - filter-type, filter-unresolved
+
+        - resolve-button, resolution-input, confirm-resolve
+
+        - session-focus, session-threads, session-questions
+      supersedes: null
   todos: []
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
