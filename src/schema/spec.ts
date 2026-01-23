@@ -86,6 +86,10 @@ export const SpecItemSchema = z.object({
   deprecated_in: z.string().nullable().optional(),
   superseded_by: RefSchema.nullable().optional(),
 
+  // Verification metadata (for retrospective specs)
+  verified_at: DateTimeSchema.optional(),
+  verified_by: RefSchema.optional(),
+
   // Notes (work log / implementation context)
   notes: z.array(NoteSchema).default([]),
 });

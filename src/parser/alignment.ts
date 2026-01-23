@@ -210,7 +210,14 @@ export class AlignmentIndex {
       const expectedStatus = this.calculateExpectedStatus(specUlid);
 
       // Orphaned spec (no tasks)
-      if (taskUlids.length === 0 && currentStatus === "not_started") {
+      // AC: @trait-retrospective ac-1
+      // Skip retrospective specs from orphaned warnings
+      const isRetrospective = spec.traits?.includes("@trait-retrospective");
+      if (
+        taskUlids.length === 0 &&
+        currentStatus === "not_started" &&
+        !isRetrospective
+      ) {
         warnings.push({
           type: "orphaned_spec",
           specUlid,

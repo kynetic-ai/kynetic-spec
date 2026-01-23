@@ -430,8 +430,28 @@ export function registerItemCommands(program: Command): void {
             };
             if (s.maturity)
               console.log(`${fieldLabels.maturity}  ${s.maturity}`);
-            if (s.implementation)
-              console.log(`${fieldLabels.implementation}${s.implementation}`);
+            if (s.implementation) {
+              // AC: @trait-retrospective ac-4
+              // Show retrospective verification source
+              const isRetrospective = item.traits?.includes(
+                "@trait-retrospective",
+              );
+              const statusLabel = isRetrospective
+                ? `${s.implementation} (retrospective)`
+                : s.implementation;
+              console.log(`${fieldLabels.implementation}${statusLabel}`);
+            }
+          }
+
+          // AC: @trait-retrospective ac-4
+          // Show verification metadata for retrospective specs
+          const isRetrospective = item.traits?.includes("@trait-retrospective");
+          if (isRetrospective && (item.verified_at || item.verified_by)) {
+            const verifiedDate = item.verified_at
+              ? new Date(item.verified_at).toISOString().split("T")[0]
+              : "unknown";
+            const verifiedBy = item.verified_by || "unknown";
+            console.log(`Verified:   ${verifiedDate} by ${verifiedBy}`);
           }
 
           if (
@@ -662,6 +682,14 @@ export function registerItemCommands(program: Command): void {
       "--maturity <maturity>",
       "Set maturity (draft, proposed, stable, deferred, deprecated)",
     )
+    .option(
+      "--verified-by <agent-ref>",
+      "Set verified_by (for retrospective specs)",
+    )
+    .option(
+      "--verified-at <iso-timestamp>",
+      "Set verified_at (defaults to now if --verified-by provided)",
+    )
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();
@@ -739,6 +767,18 @@ export function registerItemCommands(program: Command): void {
             ...(options.status && { implementation: options.status }),
             ...(options.maturity && { maturity: options.maturity }),
           };
+        }
+
+        // Handle verification metadata (for retrospective specs)
+        if (options.verifiedBy) {
+          updates.verified_by = options.verifiedBy;
+          // Default verified_at to now if not specified
+          if (!options.verifiedAt) {
+            updates.verified_at = new Date().toISOString();
+          }
+        }
+        if (options.verifiedAt) {
+          updates.verified_at = options.verifiedAt;
         }
 
         if (Object.keys(updates).length === 0) {

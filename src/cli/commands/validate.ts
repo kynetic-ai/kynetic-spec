@@ -100,6 +100,11 @@ function checkStaleness(
   for (const item of items) {
     if (item.status?.implementation !== "implemented") continue;
 
+    // AC: @trait-retrospective ac-1
+    // Skip retrospective specs from staleness warnings
+    const isRetrospective = item.traits?.includes("@trait-retrospective");
+    if (isRetrospective) continue;
+
     // Find completed tasks that reference this spec
     const completedTasks = tasks.filter((task) => {
       if (task.status !== "completed" || !task.spec_ref) return false;

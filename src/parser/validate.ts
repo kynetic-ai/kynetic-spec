@@ -895,6 +895,30 @@ async function checkCompleteness(
         });
       }
     }
+
+    // AC: @trait-retrospective ac-2, ac-3
+    // Check retrospective specs have required verification metadata
+    const isRetrospective = item.traits?.includes("@trait-retrospective");
+    if (isRetrospective) {
+      const isImplementedOrVerified =
+        item.status?.implementation === "implemented" ||
+        item.status?.implementation === "verified";
+
+      // AC: @trait-retrospective ac-2
+      // Retrospective specs with implemented/verified status must have verification metadata
+      if (isImplementedOrVerified) {
+        if (!item.verified_at || !item.verified_by) {
+          warnings.push({
+            type: "status_inconsistency",
+            itemRef,
+            itemTitle: item.title,
+            message: `Retrospective spec ${itemRef} is ${item.status?.implementation} but missing verified_at/verified_by`,
+            details:
+              "Specs using @trait-retrospective must have verified_at and verified_by fields when marked as implemented or verified",
+          });
+        }
+      }
+    }
   }
 
   return warnings;
