@@ -356,6 +356,11 @@ export function registerRalphCommand(program: Command): void {
     .option("--adapter <id>", "Agent adapter to use", "claude-code-acp")
     .option("--adapter-cmd <cmd>", "Custom adapter command (for testing)")
     .option(
+      "--restart-every <n>",
+      "Restart agent every N iterations to prevent OOM (0 = never)",
+      "10",
+    )
+    .option(
       "--focus <instructions>",
       "Focus instructions included in every iteration prompt",
     )
@@ -377,6 +382,12 @@ export function registerRalphCommand(program: Command): void {
 
         if (Number.isNaN(maxFailures) || maxFailures < 1) {
           error(errors.usage.maxFailuresPositive);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const restartEvery = parseInt(options.restartEvery, 10);
+        if (Number.isNaN(restartEvery) || restartEvery < 0) {
+          error("--restart-every must be a non-negative integer");
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -410,8 +421,10 @@ export function registerRalphCommand(program: Command): void {
           adapter.args = [...adapter.args, "--dangerously-skip-permissions"];
         }
 
+        const restartInfo =
+          restartEvery > 0 ? `, restart every ${restartEvery}` : "";
         info(
-          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures)`,
+          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo})`,
         );
         if (options.focus) {
           info(`Focus: ${options.focus}`);
@@ -631,6 +644,23 @@ export function registerRalphCommand(program: Command): void {
 
               success(`Completed iteration ${iteration}`);
               consecutiveFailures = 0;
+
+              // Periodic agent restart to prevent OOM
+              // AC: @cli-ralph ac-restart-periodic
+              if (
+                restartEvery > 0 &&
+                iteration % restartEvery === 0 &&
+                iteration < maxLoops
+              ) {
+                info(
+                  `Restarting agent to prevent memory buildup (every ${restartEvery} iterations)...`,
+                );
+                if (agent) {
+                  agent.kill();
+                  agent = null;
+                  acpSessionId = null;
+                }
+              }
             } else {
               consecutiveFailures++;
               error(
