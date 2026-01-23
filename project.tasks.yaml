@@ -24009,7 +24009,39 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:19:56.045Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMRNMJCFFNY203YNDGA054
+      created_at: 2026-01-23T05:20:52.882Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Set up API routing foundation with CORS middleware for localhost dev server.
+
+        ### Steps
+        1. Configure @elysiajs/cors plugin:
+           ```typescript
+           import { cors } from '@elysiajs/cors';
+           app.use(cors({
+             origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+             credentials: true
+           }));
+           ```
+
+        2. Create API route group: /api/*
+
+        3. Add X-Request-Id header middleware for tracing
+
+        ### ACs Covered
+        - ac-1: CORS headers for localhost:5173
+
+        ### Files to Create
+        - packages/daemon/src/routes/api.ts
+        - packages/daemon/src/middleware/cors.ts
+        - packages/daemon/src/middleware/request-id.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
   slugs: []
@@ -24083,20 +24115,20 @@
   created_at: 2026-01-23T05:20:14.282Z
   notes: []
   todos: []
-- title: API error handling middleware
+- _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
+  slugs: []
+  title: API error handling middleware
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - phase-2
-    - api
-  _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - phase-2
+    - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:19.207Z
   notes: []
