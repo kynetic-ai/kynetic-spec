@@ -25228,6 +25228,7 @@
         - packages/daemon/tests/websocket/protocol.test.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   slugs: []
   title: E2E integration tests with Playwright
