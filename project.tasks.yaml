@@ -20432,7 +20432,7 @@
   slugs: []
   title: Implement @trait-retrospective for specs without task tracking
   type: task
-  spec_ref: null
+  spec_ref: "@trait-retrospective"
   meta_ref: null
   status: in_progress
   blocked_by: []
@@ -20445,6 +20445,7 @@
     - validation
   vcs_refs: []
   created_at: 2026-01-21T20:38:18.629Z
+  started_at: 2026-01-23T07:53:43.632Z
   notes:
     - _ulid: 01KFH4FF4RCGTJDJHE17MV1C4E
       created_at: 2026-01-21T20:38:30.809Z
@@ -20770,7 +20771,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-23T07:53:43.632Z
 - _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
   slugs: []
   title: Create /release skill for versioning and tagging
