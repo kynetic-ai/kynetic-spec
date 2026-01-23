@@ -32108,7 +32108,97 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:58.424Z
-  notes: []
+  notes:
+    - _ulid: 01KFP88MB082CPJ15SHBNC11QB
+      created_at: 2026-01-23T20:20:53.216Z
+      author: "@claude"
+      content: >-
+        ## Objective
+
+        Write E2E tests for WebSocket connection handling covering @web-dashboard ac-28 through
+        ac-32.
+
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+
+        ## File
+
+        packages/web-ui/tests/e2e/connection.spec.ts
+
+
+        ## Acceptance Criteria Coverage
+
+
+        | AC | Description |
+
+        |----|-------------|
+
+        | ac-28 | Exponential backoff reconnect (1s, 2s, 4s... max 30s) |
+
+        | ac-29 | Connection lost indicator after >10s disconnect |
+
+        | ac-30 | Sequence deduplication (skip if seq <= lastSeqProcessed) |
+
+        | ac-31 | Reset lastSeqProcessed = -1 on reconnect |
+
+        | ac-32 | Re-subscribe to topics on reconnect |
+
+
+        ## Disconnection Strategy
+
+        Use page.context().setOffline(true) to simulate network loss, or have the daemon fixture
+        provide a restartDaemon() helper to test real reconnection.
+
+
+        ## Test Cases
+
+
+        ```typescript
+
+        test.describe('Connection Handling', () => {
+          test('shows connected status when daemon running', async ({ page }) => {
+            await page.goto('/');
+            await expect(page.getByTestId('connection-status')).toContainText('Connected');
+          });
+
+          // AC: @web-dashboard ac-28
+          test('reconnects with exponential backoff', async ({ page, context }) => {
+            await page.goto('/');
+            await context.setOffline(true);
+            await page.waitForTimeout(1000);
+            await context.setOffline(false);
+            // Verify reconnection happens
+            await expect(page.getByTestId('connection-status')).toContainText('Connected');
+          });
+
+          // AC: @web-dashboard ac-29
+          test('shows connection lost after 10s disconnect', async ({ page, context }) => {
+            await page.goto('/');
+            await context.setOffline(true);
+            await page.waitForTimeout(11000);
+            await expect(page.getByTestId('connection-status')).toContainText('Connection lost');
+          });
+
+          // AC: @web-dashboard ac-30
+          test('skips duplicate events by sequence');
+
+          // AC: @web-dashboard ac-31, ac-32
+          test('resets sequence and re-subscribes on reconnect');
+        });
+
+        ```
+
+
+        ## data-testid Attributes Needed
+
+        - connection-status
+
+
+        ## Note
+
+        The 10-second timeout test may need increased test timeout in Playwright config.
+      supersedes: null
   todos: []
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
   slugs: []
