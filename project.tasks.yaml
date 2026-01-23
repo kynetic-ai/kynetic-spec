@@ -31643,7 +31643,25 @@
         3. No orphan processes or temp dirs after test
       supersedes: null
   todos: []
-- title: E2E Dashboard Tests
+- _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
+  slugs: []
+  title: E2E Dashboard Tests
+  type: task
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - e2e
+    - testing
+  vcs_refs: []
+  created_at: 2026-01-23T20:18:39.789Z
+  notes: []
+  todos: []
+- title: E2E Tasks View Tests
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
@@ -31652,12 +31670,12 @@
   tags:
     - e2e
     - testing
-  _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
+  _ulid: 01KFP84NR39GV1JN5P32T37XBX
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T20:18:39.789Z
+  created_at: 2026-01-23T20:18:43.587Z
   notes: []
   todos: []
