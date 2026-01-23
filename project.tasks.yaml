@@ -21164,6 +21164,64 @@
 
         - bun build --compile for distribution
       supersedes: null
+    - _ulid: 01KFMN2F99WRR332CPHQB1MVTQ
+      created_at: 2026-01-23T05:26:14.057Z
+      author: "@claude"
+      content: |-
+        ## Task Derivation Complete
+
+        Created 31 granular implementation tasks organized by phase:
+
+        ### Phase 0: Foundation (2 tasks)
+        - Setup Bun monorepo workspace
+        - Create shared types package
+
+        ### Phase 1: Core Infrastructure (6 tasks)
+        - Create packages/daemon structure
+        - Implement Elysia server core
+        - Implement file watcher and WebSocket broadcast
+        - Implement WebSocket protocol
+        - Implement daemon process detach
+        - Implement daemon logging
+
+        ### Phase 2: API Endpoints (6 tasks)
+        - API foundation and CORS middleware
+        - Task API endpoints
+        - Spec item API endpoints
+        - Inbox and meta API endpoints
+        - Search and validation API endpoints
+        - API error handling middleware
+
+        ### Phase 3: Web Dashboard (8 tasks)
+        - Create SvelteKit scaffold with shadcn-svelte
+        - Dashboard layout and navigation
+        - Task list and detail views
+        - Spec item tree and detail views
+        - Inbox view
+        - Session context and observations panel
+        - Global search command palette
+        - WebSocketManager with subscriptions
+
+        ### Phase 4: GitHub Pages Export (4 tasks)
+        - Export command implementation
+        - Static SPA for GitHub Pages
+        - Read-only mode behaviors
+        - GitHub Pages CI workflow
+
+        ### Phase 5: Integration (4 tasks)
+        - Daemon auto-start configuration
+        - Executable compilation with bun build
+        - API integration tests
+        - E2E integration tests with Playwright
+
+        Plus 5 derived base tasks linking to specs.
+
+        All tasks have detailed implementation notes with:
+        - Specific steps and code snippets
+        - AC coverage mapping
+        - Files to create/modify
+        - Dependencies
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KFHZT60CB7D2K13HP914B8YZ
