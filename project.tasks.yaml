@@ -24373,6 +24373,55 @@
 
         Next session will merge PR #192 and continue with remaining subtasks.
       supersedes: null
+    - _ulid: 01KFNEHBY0V27XCX631YHZ637C
+      created_at: 2026-01-23T12:51:16.544Z
+      author: "@claude"
+      content: >-
+        Iteration 26 complete. Successfully merged PR #192 and completed @01KFMMQ7 (Spec item API
+        endpoints).
+
+
+        PROGRESS:
+
+        - 20 of 33 ACs implemented and merged (ac-1, ac-2 through ac-11, ac-25 through ac-33)
+
+        - 13 ACs remain in ready subtasks (ac-12 through ac-24)
+
+
+        COMPLETED THIS ITERATION:
+
+        - Resolved Greptile review thread (ItemIndex fix already present in 58a657a)
+
+        - All CI checks passing (test, claude-review, check-unresolved-comments)
+
+        - Local review: APPROVED (AC coverage 100%, tests properly isolated, consistent with project
+        patterns)
+
+        - Merged PR #192 via @pr-review-merge workflow
+
+        - Completed @01KFMMQ7 task
+
+        - All 1180 tests continue to pass
+
+
+        PR MERGE:
+
+        - PR #192 merged to main (commit e3da36d)
+
+        - Merge strategy: merge commit (preserves trailers)
+
+        - Files changed: +388 lines (routes/items.ts, server.ts, daemon-api-items.test.ts)
+
+
+        NEXT SESSION:
+
+        1. Start @01KFMMQB (Inbox and meta API endpoints) to implement ac-12 through ac-18
+
+        2. Continue with remaining API endpoint tasks
+
+
+        This parent task remains in_progress until all derived subtasks complete.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
@@ -26423,6 +26472,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8
+    through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed
+    (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted
+    (code inspection test strategy is consistent with project patterns). All 4 target ACs have test
+    coverage with proper annotations."
   depends_on: []
   context: []
   priority: 2
@@ -26432,6 +26486,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:20:05.189Z
   started_at: 2026-01-23T12:30:02.487Z
+  completed_at: 2026-01-23T12:50:59.437Z
   notes:
     - _ulid: 01KFMMRZ7092524GREGAGASY11
       created_at: 2026-01-23T05:21:02.689Z
@@ -26539,12 +26594,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T12:50:59.437Z
-  closed_reason: "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8
-    through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed
-    (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted
-    (code inspection test strategy is consistent with project patterns). All 4 target ACs have test
-    coverage with proper annotations."
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
   slugs: []
   title: Inbox and meta API endpoints
