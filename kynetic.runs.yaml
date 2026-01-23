@@ -219,7 +219,7 @@ runs:
   - _ulid: 01KFM9ESBNX3V641EG2N5FB3AW
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 7
     started_at: 2026-01-23T02:03:14.678Z
     step_results:
@@ -239,5 +239,34 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T02:03:28.891Z
-        completed_at: 2026-01-23T02:03:28.891Z
+        completed_at: 2026-01-23T02:03:51.391Z
+        notes: >-
+          Designed 8 steps for pr-review-merge workflow:
+
+
+          1. [action] Create PR with implementation - kspec /pr or gh pr create
+
+          2. [check] All CI checks pass - on_fail: Wait for CI, fix failures
+
+          3. [action] Read review comments - Check automated review output
+
+          4. [check] All review issues addressed - on_fail: Fix issues, push, re-run CI
+
+          5. [action] Check for user @claude comments - Look for requests the PR agent couldn't
+          complete
+
+          6. [check] All pending actions completed - on_fail: Complete actions yourself before
+          merging
+
+          7. [check] All review threads resolved - on_fail: Click Resolve conversation on each
+          thread
+
+          8. [action] Merge PR - gh pr merge or GitHub UI
+
+
+          This follows the Gate Pattern with multiple checks between actions.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T02:03:51.391Z
+        completed_at: 2026-01-23T02:03:51.391Z
     initiated_by: "@claude"
