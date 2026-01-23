@@ -31034,6 +31034,44 @@
 
         This matches the AC intent better than code structure tests.
       supersedes: null
+    - _ulid: 01KFP0CFJ4VMZKVQXGYENX4YWE
+      created_at: 2026-01-23T18:03:10.789Z
+      author: "@claude"
+      content: >-
+        After investigation, this task requires architectural decisions:
+
+
+        **Conclusion**: Existing tests (daemon-api-*.test.ts) already provide code structure
+        validation. What's missing is TRUE E2E tests with real HTTP/WS connections.
+
+
+        **Blocker**: Cannot complete in current iteration due to:
+
+        1. Daemon package dependencies on @kynetic-ai/shared require proper monorepo build setup
+
+        2. Vitest environment doesn't support Bun's .listen() (server startup)
+
+        3. Need separate E2E test infrastructure
+
+
+        **Recommended Next Steps**:
+
+        1. Create E2E test framework using Bun test runner
+
+        2. Build test harness that starts real daemon instance
+
+        3. Use real HTTP client (fetch) and WebSocket client
+
+        4. Cover all 33 ACs from @api-contract with end-to-end scenarios
+
+
+        **Alternative**: The existing daemon-api-*.test.ts files may be sufficient if augmented with
+        manual testing procedures. Need product decision on whether code-structure tests + manual QA
+        is acceptable vs building full E2E suite.
+
+
+        Marking task for triage/re-scoping.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
