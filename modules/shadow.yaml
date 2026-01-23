@@ -673,3 +673,8 @@ features:
         traits: []
         notes: []
         created: 2026-01-23T01:26:08.251Z
+        acceptance_criteria:
+          - id: ac-1
+            given: git invokes merge driver with standard arguments
+            when: kspec merge-driver %O %A %B %L %P runs
+            then: driver reads base (%O), ours (%A), theirs (%B) files and writes merged result to %A path
