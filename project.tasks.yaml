@@ -24931,6 +24931,7 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:33.209Z
+  started_at: 2026-01-23T10:16:32.796Z
   notes:
     - _ulid: 01KFMMP76VX3DF9N0TSYRN8E8G
       created_at: 2026-01-23T05:19:32.571Z
@@ -25010,9 +25011,28 @@
 
         - packages/daemon/src/websocket/types.ts
       supersedes: null
+    - _ulid: 01KFN5PAZRKCD4N9D8SQTXCEAM
+      created_at: 2026-01-23T10:16:42.233Z
+      author: "@claude"
+      content: >-
+        Task started. Will implement WebSocket protocol with topic-based pub/sub, heartbeat
+        ping/pong, and backpressure handling. Current foundation (basic WebSocket broadcast) already
+        in place from previous PRs. Next iteration will implement:
+
+        1. Session ID and connected event (ac-1 from @trait-websocket-protocol)
+
+        2. Command handling (subscribe/unsubscribe)
+
+        3. Topic-based pub/sub system
+
+        4. Heartbeat ping/pong (ac-13, ac-14 from @daemon-server)
+
+        5. Backpressure handling
+
+        6. Request ID correlation and ack responses
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T10:16:32.796Z
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
   slugs: []
   title: Implement daemon process detach
