@@ -422,6 +422,11 @@ traits:
     traits: []
     notes: []
     created: 2026-01-23T07:55:37.105Z
+    acceptance_criteria:
+      - id: ac-1
+        given: a spec item uses @trait-retrospective
+        when: validation runs alignment checks
+        then: no 'orphaned spec' warning is generated for missing tasks
 includes:
   - modules/core.yaml
   - modules/schema.yaml
