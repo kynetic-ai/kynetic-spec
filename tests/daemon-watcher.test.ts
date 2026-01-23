@@ -45,7 +45,7 @@ describe('Daemon File Watcher', () => {
     expect(serverContent).toContain('KspecWatcher');
     expect(serverContent).toContain('watcher.start()');
     expect(serverContent).toContain('onFileChange');
-    expect(serverContent).toContain('ws.send');
+    expect(serverContent).toContain('pubsubManager.broadcast');
   });
 
   // AC: @daemon-server ac-5
@@ -81,8 +81,8 @@ describe('Daemon File Watcher', () => {
     );
 
     expect(serverContent).toContain('onError: (error, file)');
-    expect(serverContent).toContain("type: 'error'");
-    expect(serverContent).toContain('ws.send(JSON.stringify(event))');
+    expect(serverContent).toContain("'file_error'");
+    expect(serverContent).toContain('pubsubManager.broadcast');
   });
 
   // AC: @daemon-server ac-7
@@ -129,10 +129,10 @@ describe('Daemon File Watcher', () => {
       'utf-8'
     );
 
-    expect(serverContent).toContain('wsConnections');
-    expect(serverContent).toContain('wsConnections.add(ws)');
-    expect(serverContent).toContain('wsConnections.delete(ws)');
-    expect(serverContent).toContain('connections: wsConnections.size');
+    expect(serverContent).toContain('pubsubManager');
+    expect(serverContent).toContain('pubsubManager.addConnection');
+    expect(serverContent).toContain('pubsubManager.removeConnection');
+    expect(serverContent).toContain('pubsubManager.getConnectionCount()');
   });
 
   it('should close WebSocket connections on shutdown', async () => {
@@ -143,7 +143,7 @@ describe('Daemon File Watcher', () => {
 
     expect(serverContent).toContain('watcher.stop()');
     expect(serverContent).toContain('ws.close');
-    expect(serverContent).toContain('wsConnections.clear()');
+    expect(serverContent).toContain('pubsubManager.getAllConnections()');
   });
 
   it('should watch .kspec directory recursively', async () => {
