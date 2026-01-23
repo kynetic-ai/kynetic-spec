@@ -23531,5 +23531,79 @@
     - foundation
   vcs_refs: []
   created_at: 2026-01-23T05:17:45.564Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMKNP52K6QCCDPNFWPXEJ3
+      created_at: 2026-01-23T05:18:09.093Z
+      author: "@claude"
+      content: >-
+        ## Implementation Notes
+
+
+        ### Objective
+
+        Create packages/shared for API types, WebSocket message schemas, and Zod validation schemas
+        shared between daemon and web-ui.
+
+
+        ### Steps
+
+        1. Create packages/shared/package.json
+
+        2. Create packages/shared/src/index.ts exporting all types
+
+        3. Define core types:
+           - API response types (TaskResponse, ItemResponse, etc.)
+           - WebSocket message types (WsCommand, WsEvent, WsAck)
+           - Shared Zod schemas from src/schema/ that API will use
+
+        ### Key Types to Define
+
+        ```typescript
+
+        // WebSocket protocol
+
+        interface WsCommand {
+          action: string;
+          request_id?: string;
+          payload?: unknown;
+        }
+
+
+        interface WsEvent {
+          msg_id: string;
+          seq: number;
+          timestamp: string;
+          topic: string;
+          event: string;
+          data: unknown;
+        }
+
+
+        interface WsAck {
+          ack: true;
+          request_id?: string;
+          success: boolean;
+          error?: { code: string; message: string };
+        }
+
+        ```
+
+
+        ### Dependencies
+
+        - Depends on: @01KFMMJT (monorepo setup)
+
+
+        ### Files to Create
+
+        - packages/shared/package.json
+
+        - packages/shared/tsconfig.json
+
+        - packages/shared/src/index.ts
+
+        - packages/shared/src/api.ts
+
+        - packages/shared/src/websocket.ts
+      supersedes: null
   todos: []
