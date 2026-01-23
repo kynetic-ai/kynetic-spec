@@ -24679,5 +24679,62 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:22:04.444Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMX2SXS5EPWTD0THN8X6ME
+      created_at: 2026-01-23T05:23:17.437Z
+      author: "@claude"
+      content: >-
+        ## Implementation Notes
+
+
+        ### Objective
+
+        Implement WebSocketManager with connection state machine, reconnection, and sequence
+        deduplication.
+
+
+        ### Steps
+
+        1. WebSocketManager class (based on kynetic pattern):
+           - States: disconnected -> connecting -> connected -> reconnecting
+           - Exponential backoff: 1s, 2s, 4s... max 30s
+           - Max 10 reconnection attempts
+
+        2. Subscription management:
+           - Track subscribed topics
+           - Re-subscribe after reconnect
+
+        3. Sequence deduplication:
+           - Track lastSeqProcessed
+           - Reset to -1 on reconnect
+
+        4. UI indicators:
+           - Connection lost after 10s
+           - Highlight animation on updated items
+
+        ### ACs Covered
+
+        - ac-28: Exponential backoff reconnect
+
+        - ac-29: Connection lost indicator
+
+        - ac-30: Sequence deduplication
+
+        - ac-31: Reset lastSeqProcessed on reconnect
+
+        - ac-32: Re-subscribe on reconnect
+
+        - ac-33: Highlight animation on updates
+
+
+        ### Files to Create
+
+        - packages/web-ui/src/lib/websocket/manager.ts
+
+        - packages/web-ui/src/lib/websocket/types.ts
+
+        - packages/web-ui/src/lib/stores/connection.svelte.ts
+
+        - packages/web-ui/src/lib/components/ConnectionStatus.svelte
+      supersedes: null
   todos: []
