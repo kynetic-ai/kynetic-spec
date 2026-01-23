@@ -24825,6 +24825,7 @@
         - packages/web-ui/src/lib/components/ConnectionStatus.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
   slugs: []
   title: Export command implementation
