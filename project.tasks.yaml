@@ -25624,6 +25624,15 @@
         currently running (test and claude-review pending). Will complete merge in next iteration
         once CI passes."
       supersedes: null
+    - _ulid: 01KFNK3XBPXXE7MQS88Q0S7E1A
+      created_at: 2026-01-23T14:11:18.518Z
+      author: "@claude"
+      content: "Completed via @pr-review-merge workflow. All 9 workflow steps executed: (1) CI checks
+        complete ✓, (2) CI checks pass ✓, (3) Read reviews ✓, (4) Feedback addressed ✓, (5) No
+        @claude mentions ✓, (6) No outstanding actions ✓, (7) Threads resolved ✓, (8) Merge
+        decision: YES - all criteria met, (9) Merged with --merge flag. Created follow-up task
+        @01KFNK3F for test coverage."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM0YP97Z451KA5TEC6RX9
@@ -28637,22 +28646,22 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Add type validation tests to shared package
+- _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
+  slugs: []
+  title: Add type validation tests to shared package
+  type: task
   description: "Add minimal type validation tests to @kynetic-ai/shared package to ensure: (1) types
     compile correctly, (2) types match Zod schemas, (3) exports are accessible. Use vitest
     expectTypeOf for type-level tests. Estimated effort: 1-2 hours. See PR #196 local review for
     recommendations."
-  type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-01-23T14:11:04.599Z
   notes: []
