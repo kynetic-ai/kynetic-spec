@@ -32025,7 +32025,72 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:55.079Z
-  notes: []
+  notes:
+    - _ulid: 01KFP883XVCE5GZR39HVKVP5W3
+      created_at: 2026-01-23T20:20:36.411Z
+      author: "@claude"
+      content: |-
+        ## Objective
+        Write E2E tests for command palette/search covering @web-dashboard ac-23 through ac-25.
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+        ## File
+        packages/web-ui/tests/e2e/search.spec.ts
+
+        ## Acceptance Criteria Coverage
+
+        | AC | Description |
+        |----|-------------|
+        | ac-23 | Cmd+K (Ctrl+K) opens command palette |
+        | ac-24 | Debounced search (300ms) returns grouped results |
+        | ac-25 | Click result navigates to detail view |
+
+        ## Test Cases
+
+        ```typescript
+        test.describe('Command Palette', () => {
+          // AC: @web-dashboard ac-23
+          test('opens with Cmd+K', async ({ page }) => {
+            await page.goto('/');
+            await page.keyboard.press('Meta+k');
+            await expect(page.getByTestId('command-palette')).toBeVisible();
+          });
+          test('opens with Ctrl+K', async ({ page }) => {
+            await page.goto('/');
+            await page.keyboard.press('Control+k');
+            await expect(page.getByTestId('command-palette')).toBeVisible();
+          });
+          test('shows search input with placeholder');
+
+          // AC: @web-dashboard ac-24
+          test('searches after 300ms debounce', async ({ page }) => {
+            await page.keyboard.press('Meta+k');
+            await page.getByTestId('search-input').fill('test');
+            // Wait for debounce
+            await page.waitForTimeout(350);
+            await expect(page.getByTestId('search-results')).toBeVisible();
+          });
+          test('results grouped by type (tasks, items, inbox)');
+
+          // AC: @web-dashboard ac-25
+          test('click result navigates to detail', async ({ page }) => {
+            await page.keyboard.press('Meta+k');
+            await page.getByTestId('search-input').fill('task');
+            await page.waitForTimeout(350);
+            await page.getByTestId('search-result').first().click();
+            await expect(page).toHaveURL(/tasks/);
+          });
+          test('keyboard selection navigates to detail');
+          test('Escape closes palette');
+          test('shows no results message');
+        });
+        ```
+
+        ## data-testid Attributes Needed
+        - command-palette, search-input, search-results, search-result
+        - result-group-tasks, result-group-items, result-group-inbox
+      supersedes: null
   todos: []
 - _ulid: 01KFP8547RPY3R7VEXTR3F3HDH
   slugs: []
