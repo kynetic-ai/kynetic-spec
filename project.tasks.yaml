@@ -25278,6 +25278,36 @@
         progress and easier review. The parent task serves as the tracking point for overall
         dashboard completion.
       supersedes: null
+    - _ulid: 01KFNNQS2BQCVZGBV4HAHSDT0Z
+      created_at: 2026-01-23T14:57:06.636Z
+      author: "@claude"
+      content: >-
+        Iteration 38 Status:
+
+
+        PR #198 for subtask @01KFMMT0 (Dashboard layout/navigation) is blocked on manual GitHub UI
+        intervention - review threads need to be resolved by clicking 'Resolve conversation' in the
+        GitHub UI.
+
+
+        Code is complete and all automated feedback has been addressed:
+
+        - ✅ Greptile feedback fixed (commit 7a31c08)
+
+        - ✅ Claude Code Review: SUCCESS
+
+        - ✅ Tests: SUCCESS
+
+        - ❌ PR Review Resolution Check: FAILURE (requires manual thread resolution)
+
+
+        Since @01KFMMT0 is blocked on user action, moving to next subtask @01KFMMT4 (Task list and
+        detail views) to maintain progress. This follows the incremental subtask strategy - each
+        subtask can be PR'd independently.
+
+
+        Progress: 1/8 subtasks completed, 1/8 pending manual merge, starting 3rd subtask.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
