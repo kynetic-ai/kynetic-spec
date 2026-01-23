@@ -24113,7 +24113,41 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:05.189Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMRZ7092524GREGAGASY11
+      created_at: 2026-01-23T05:21:02.689Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement spec item API endpoints.
+
+        ### Endpoints
+        - GET /api/items - List with filters (type, maturity, implementation)
+        - GET /api/items/:ref - Get single item with ACs and traits
+        - GET /api/items/:ref/tasks - Get linked tasks via AlignmentIndex
+
+        ### Steps
+        1. Use ItemIndex.query() with type filter
+        2. Expand acceptance_criteria in response
+        3. Resolve trait references to include inherited ACs
+        4. Use AlignmentIndex for spec-task relationships
+
+        ### ACs Covered
+        - ac-8: GET /api/items returns array
+        - ac-9: Type filter (multi-value)
+        - ac-10: GET /api/items/:ref with full details
+        - ac-11: GET /api/items/:ref/tasks via AlignmentIndex
+
+        ### Key Library APIs
+        - ItemIndex.getByType() for filtering
+        - TraitIndex.getInheritedAC() for trait expansion
+        - AlignmentIndex.getTasksForSpec() for linked tasks
+
+        ### Files to Create
+        - packages/daemon/src/routes/items.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
   slugs: []
