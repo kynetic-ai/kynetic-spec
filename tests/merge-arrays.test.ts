@@ -167,6 +167,33 @@ describe("mergeUlidArrays", () => {
       "01THRS2000000000000000000",
     ]);
   });
+
+  it("should include item deleted in ours but kept in theirs (union merge)", () => {
+    // AC: @yaml-merge-driver ac-2, ac-8
+    // In union merge, items from theirs are included even if deleted in ours
+    // Note: ac-8 says this should prompt interactively - that will be future work
+    interface Task {
+      _ulid: string;
+      title: string;
+    }
+
+    const base: Task[] = [
+      { _ulid: "01TASK0000000000000000000", title: "Task" },
+    ];
+
+    const ours: Task[] = []; // deleted in ours
+
+    const theirs: Task[] = [
+      { _ulid: "01TASK0000000000000000000", title: "Task modified" },
+    ];
+
+    const result = mergeUlidArrays(base, ours, theirs);
+
+    // Union merge: item from theirs should be included
+    expect(result).toHaveLength(1);
+    expect(result[0]._ulid).toBe("01TASK0000000000000000000");
+    expect(result[0].title).toBe("Task modified");
+  });
 });
 
 describe("mergeSetArray", () => {
