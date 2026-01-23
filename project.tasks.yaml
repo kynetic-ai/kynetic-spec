@@ -23811,7 +23811,85 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:33.209Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMP76VX3DF9N0TSYRN8E8G
+      created_at: 2026-01-23T05:19:32.571Z
+      author: "@claude"
+      content: >-
+        ## Implementation Notes
+
+
+        ### Objective
+
+        Implement WebSocket protocol with Elysia ws(), topic-based pub/sub, heartbeat, and
+        request_id correlation.
+
+
+        ### Steps
+
+        1. Create WebSocket route with Elysia:
+           ```typescript
+           app.ws('/ws', {
+             open(ws) {
+               ws.data.sessionId = ulid();
+               ws.send({ event: 'connected', data: { session_id: ws.data.sessionId } });
+             },
+             message(ws, message) {
+               handleCommand(ws, JSON.parse(message));
+             },
+             close(ws) {
+               // Cleanup subscriptions
+             }
+           })
+           ```
+
+        2. Implement command handling:
+           - subscribe: Track topics, send ack
+           - unsubscribe: Remove topics, send ack
+           - Other commands: Process and ack
+
+        3. Implement heartbeat ping/pong (30s interval, 90s timeout)
+
+
+        4. Implement backpressure handling (pause broadcasts on slow clients)
+
+
+        ### ACs Covered (from @api-contract)
+
+        - ac-25: Connected event with session_id
+
+        - ac-26: Command format
+
+        - ac-27: Ack response
+
+        - ac-28: Subscribe to topics
+
+        - ac-29: Event format with seq
+
+        - ac-30: Malformed command error
+
+        - ac-31: Close codes
+
+        - ac-32: Backpressure handling
+
+
+        ### ACs Covered (from @daemon-server)
+
+        - ac-13: Heartbeat ping
+
+        - ac-14: Timeout close
+
+
+        ### Files to Create
+
+        - packages/daemon/src/websocket/handler.ts
+
+        - packages/daemon/src/websocket/heartbeat.ts
+
+        - packages/daemon/src/websocket/pubsub.ts
+
+        - packages/daemon/src/websocket/types.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
   slugs: []
