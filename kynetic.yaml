@@ -435,6 +435,10 @@ traits:
         given: a spec uses @trait-retrospective without verified_at/verified_by
         when: validation runs
         then: warning indicates missing verification metadata
+      - id: ac-4
+        given: a retrospective spec exists
+        when: viewing item details (kspec item get)
+        then: output indicates retrospective verification source
 includes:
   - modules/core.yaml
   - modules/schema.yaml
