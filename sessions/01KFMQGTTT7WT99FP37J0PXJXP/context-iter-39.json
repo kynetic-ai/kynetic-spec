@@ -1,0 +1,499 @@
+{
+  "generated_at": "2026-01-23T15:04:17.408Z",
+  "branch": "feat/dashboard-layout",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "started_at": "2026-01-23T14:11:34.422Z",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "note_count": 12,
+      "last_note_at": "2026-01-23T15:04:03.196Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFMMT0",
+      "title": "Dashboard layout and navigation",
+      "started_at": "2026-01-23T14:42:37.898Z",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "note_count": 8,
+      "last_note_at": "2026-01-23T14:55:29.592Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    },
+    {
+      "ref": "01KFMMT4",
+      "title": "Task list and detail views",
+      "started_at": "2026-01-23T14:57:20.113Z",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "note_count": 4,
+      "last_note_at": "2026-01-23T15:03:36.185Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNP4F",
+      "created_at": "2026-01-23T15:04:03.196Z",
+      "author": "@claude",
+      "content": "Session 38 Checkpoint - Parent Task Status:\n\nThis parent task coordinates 8 derived subtasks for Web Dashboard implementation. It remains in_progress as the umbrella tracker.\n\n**Session 38 Accomplishments:**\n- Completed subtask @01KFMMT4 (Task list and detail views)\n- Implemented comprehensive task browsing UI with filters, detail panel, and actions\n- Covers acceptance criteria ac-4 through ac-10 (7 ACs)\n- Code committed (f2d9e06) and pushed to feat/dashboard-layout branch\n\n**Overall Progress: 2.5/8 subtasks**\n1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED & MERGED (PR #197)\n2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198, awaiting manual GitHub thread resolution)\n3. ✅ @01KFMMT4 - Task list/detail views - SUBMITTED (ready for PR)\n4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY\n5. ⏸️ @01KFMMTD - Inbox view - READY\n6. ⏸️ @01KFMMTJ - Session context/observations panel - READY\n7. ⏸️ @01KFMMTP - Global search command palette - READY\n8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY\n\n**Blockers:**\n- PR #198 needs manual resolution of review threads in GitHub UI (user action required)\n\n**Next Session Plan:**\n1. Create PR for @01KFMMT4\n2. If PR #198 resolved, merge it and complete @01KFMMT0\n3. Continue with @01KFMMT9 (Spec item tree/detail views)\n\n**Technical State:**\n- All code on feat/dashboard-layout branch\n- Build: ✅ (vite build succeeds)\n- Tests: ✅ (1207 tests passing)\n- No uncommitted changes\n- No technical blockers\n\nThis task will be completed once all 8 subtasks are done and merged. Currently 1/8 merged, 1/8 in review, 1/8 submitted, 5/8 pending."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNP30",
+      "created_at": "2026-01-23T15:03:14.535Z",
+      "author": "@claude",
+      "content": "Iteration 38 Progress Update:\n\n**Subtask @01KFMMT4 (Task list and detail views) - COMPLETED ✅**\n\nImplementation includes:\n- Full task browsing with filters (status, type, tag, assignee, automation)\n- DataTable display with status badges, priority indicators, spec links\n- Sheet/slide-over detail panel with notes, todos, dependencies\n- Start Task button action (POST /api/tasks/:ref/start)\n- Add Note functionality (POST /api/tasks/:ref/note)\n- URL-based filter state persistence\n- API client helpers for all task operations\n- Real-time reloading after actions\n\nAcceptance Criteria Coverage: ac-4 through ac-10 (7 ACs)\n\n**Overall Progress: 1/8 subtasks completed + merged, 1/8 in pending review, 1/8 newly submitted**\n\nSubtask Status:\n1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED (PR #197 merged)\n2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198, blocked on manual thread resolution)\n3. ✅ @01KFMMT4 - Task list/detail views - SUBMITTED (commit f2d9e06)\n4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY\n5. ⏸️ @01KFMMTD - Inbox view - READY\n6. ⏸️ @01KFMMTJ - Session context/observations panel - READY\n7. ⏸️ @01KFMMTP - Global search command palette - READY\n8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY\n\nNext Session Actions:\n1. Create PR for @01KFMMT4 (Task list/detail views)\n2. Complete PR #198 merge when review threads are resolved\n3. Continue with next subtask @01KFMMT9 (Spec item tree/detail views)"
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNNQS",
+      "created_at": "2026-01-23T14:57:06.636Z",
+      "author": "@claude",
+      "content": "Iteration 38 Status:\n\nPR #198 for subtask @01KFMMT0 (Dashboard layout/navigation) is blocked on manual GitHub UI intervention - review threads need to be resolved by clicking 'Resolve conversation' in the GitHub UI.\n\nCode is complete and all automated feedback has been addressed:\n- ✅ Greptile feedback fixed (commit 7a31c08)\n- ✅ Claude Code Review: SUCCESS\n- ✅ Tests: SUCCESS\n- ❌ PR Review Resolution Check: FAILURE (requires manual thread resolution)\n\nSince @01KFMMT0 is blocked on user action, moving to next subtask @01KFMMT4 (Task list and detail views) to maintain progress. This follows the incremental subtask strategy - each subtask can be PR'd independently.\n\nProgress: 1/8 subtasks completed, 1/8 pending manual merge, starting 3rd subtask."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNNNV",
+      "created_at": "2026-01-23T14:56:03.773Z",
+      "author": "@claude",
+      "content": "Session 37 End State - Parent Task Tracking:\n\nThis is the PARENT/UMBRELLA task for Web Dashboard implementation with 8 derived subtasks. It should remain in_progress until ALL subtasks are complete.\n\n**Current Progress: 1/8 subtasks completed, 1/8 in review**\n\nSubtask Status:\n1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED (PR #197 merged)\n2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198)\n   - Code complete, Greptile feedback addressed (commit 7a31c08)\n   - CI: Claude review ✅, Tests in progress\n   - Blocker: Review threads need manual resolution in GitHub UI\n3. ⏸️ @01KFMMT4 - Task list/detail views - READY\n4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY\n5. ⏸️ @01KFMMTD - Inbox view - READY\n6. ⏸️ @01KFMMTJ - Session context/observations panel - READY\n7. ⏸️ @01KFMMTP - Global search command palette - READY\n8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY\n\n**Why parent task remains in_progress:**\nThis umbrella task coordinates all 8 subtasks. It will be completed only when all derived subtasks are done and merged. Keeping it in_progress maintains visibility of the overall Web Dashboard effort.\n\n**Next Session Actions:**\n1. Complete PR #198 merge for @01KFMMT0 (pending manual thread resolution)\n2. Move to next subtask @01KFMMT4 (Task list/detail views)\n3. Continue iterating through remaining subtasks\n4. Mark THIS parent task complete only after all 8 subtasks done\n\n**Implementation Strategy:**\nEach subtask is self-contained and can be PR'd independently. This allows incremental progress and easier review. The parent task serves as the tracking point for overall dashboard completion."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNND6",
+      "created_at": "2026-01-23T14:51:19.759Z",
+      "author": "@claude",
+      "content": "Session 36 End State - Parent Task Tracking:\n\nThis is the PARENT/UMBRELLA task for Web Dashboard implementation with 8 derived subtasks. It should remain in_progress until ALL subtasks are complete.\n\n**Current Progress: 1/8 subtasks in review, 7/8 pending**\n\nSubtask Status:\n1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED (PR #197 merged)\n2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198, CI running)\n3. ⏸️ @01KFMMT4 - Task list/detail views - READY\n4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY\n5. ⏸️ @01KFMMTD - Inbox view - READY\n6. ⏸️ @01KFMMTJ - Session context/observations panel - READY\n7. ⏸️ @01KFMMTP - Global search command palette - READY\n8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY\n\n**Why parent task remains in_progress:**\nThis umbrella task coordinates all 8 subtasks. It will be completed only when all derived subtasks are done and merged. Keeping it in_progress maintains visibility of the overall Web Dashboard effort.\n\n**Next Session Actions:**\n1. Complete PR #198 review and merge (@01KFMMT0)\n2. Move to next subtask @01KFMMT4 (Task list/detail views)\n3. Continue iterating through remaining subtasks\n4. Mark THIS parent task complete only after all 8 subtasks done\n\n**Implementation Strategy:**\nEach subtask is self-contained and can be PR'd independently. This allows incremental progress and easier review. The parent task serves as the tracking point for overall dashboard completion."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNNCB",
+      "created_at": "2026-01-23T14:50:52.766Z",
+      "author": "@claude",
+      "content": "Iteration 36 checkpoint:\n\nSubtask @01KFMMT0 (Dashboard layout and navigation) in pending_review state.\n\nProgress:\n✅ Implementation complete (responsive layout with sidebar/mobile nav)\n✅ PR #198 created\n⏳ CI checks running\n⏳ Awaiting review and merge\n\nParent task remains in_progress while subtask 1 of 8 is in review.\n\nNext subtasks ready after merge:\n- @01KFMMT4: Task list and detail views\n- @01KFMMT9: Spec item tree and detail views\n- @01KFMMTD: Inbox view\n- @01KFMMTJ: Session context and observations panel\n- @01KFMMTP: Global search command palette\n- @01KFMMTV: WebSocketManager with subscriptions"
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNMWF",
+      "created_at": "2026-01-23T14:42:12.368Z",
+      "author": "@claude",
+      "content": "Session checkpoint - Iteration 35 complete:\n\n**Current State:**\nParent task @01KFMMJ1 (Implement: Web Dashboard) remains in_progress as umbrella task for 8 derived subtasks.\n\n**Progress:**\n1/8 subtasks completed:\n- ✅ @01KFMMSV: SvelteKit scaffold with shadcn-svelte (merged in PR #197)\n\n**Remaining subtasks (in priority order):**\n- @01KFMMT0: Dashboard layout and navigation (ready)\n- @01KFMMT4: Task list and detail views (ready)\n- @01KFMMT9: Spec item tree and detail views (ready)\n- @01KFMMTD: Inbox view (ready)\n- @01KFMMTJ: Session context and observations panel (ready)\n- @01KFMMTP: Global search command palette (ready)\n- @01KFMMTV: WebSocketManager with subscriptions (ready)\n\n**Next Session:**\nStart with @01KFMMT0 (Dashboard layout and navigation). All foundation components are in place - ready to build actual dashboard UI.\n\n**Status:** This parent task will be completed once all 8 derived subtasks are done."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNMVS",
+      "created_at": "2026-01-23T14:41:49.477Z",
+      "author": "@claude",
+      "content": "Iteration 35: First derived subtask @01KFMMSV (SvelteKit scaffold) completed successfully!\n\n✅ Resolved blocking review thread for Greptile dependency feedback\n✅ All CI checks passed (tests, claude-review, unresolved-comments)  \n✅ PR #197 merged via @pr-review-merge workflow\n✅ Task @01KFMMSV completed\n\nThe scaffold is fully functional with:\n- SvelteKit 2.49.1 with static adapter\n- Tailwind CSS v4 properly configured\n- All shadcn-svelte components installed (Button, Card, Badge, Input, Sheet, DataTable, Sidebar, Command, Tabs, Accordion, Tooltip, Dialog, Separator, Skeleton, Table)\n- Dependencies correctly declared in web-ui package.json\n\nNext iteration should start work on the next derived subtask: @01KFMMT0 (Dashboard layout and navigation)."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNMF2",
+      "created_at": "2026-01-23T14:34:53.232Z",
+      "author": "@claude",
+      "content": "Iteration 35 Status Update - Parent Task Tracking:\n\nThis is the parent/umbrella task for Web Dashboard implementation. It should remain in_progress while derived subtasks are being worked on.\n\nProgress Summary:\n✅ Subtask @01KFMMSV (SvelteKit scaffold) - COMPLETE, in pending_review\n  - PR #197 created with full shadcn-svelte component setup\n  - Waiting for CI and manual review thread resolution\n  - Code is functional and ready to merge\n\n⏸️ Remaining 7 subtasks ready to start once scaffold merges:\n  1. @01KFMMT0 - Dashboard layout and navigation\n  2. @01KFMMT4 - Task list and detail views\n  3. @01KFMMT9 - Spec item tree and detail views\n  4. @01KFMMTD - Inbox view\n  5. @01KFMMTJ - Session context and observations panel\n  6. @01KFMMTP - Global search command palette\n  7. @01KFMMTV - WebSocketManager with subscriptions\n\nImplementation Strategy:\nThe scaffold (subtask 1) establishes the foundation. Subsequent subtasks will implement dashboard features incrementally, each with proper AC coverage and tests. Once all 8 subtasks are completed, this parent task can be marked complete.\n\nCurrent Blocker:\nPR #197 needs manual intervention to resolve Greptile review thread (GitHub UI only). Once merged, next subtask can begin."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNK6T",
+      "created_at": "2026-01-23T14:12:54.105Z",
+      "author": "@claude",
+      "content": "Iteration 33: Started parent task but immediately recognized there are 8 derived subtasks that should be worked sequentially. Switched focus to first subtask @01KFMMSV. No code written for parent task - it should remain in_progress as an umbrella task while subtasks are completed. Will be completed once all derived subtasks are done."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMT9",
+      "title": "Spec item tree and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTD",
+      "title": "Inbox view",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTJ",
+      "title": "Session context and observations panel",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTP",
+      "title": "Global search command palette",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTV",
+      "title": "WebSocketManager with subscriptions",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMZK",
+      "title": "Daemon auto-start configuration",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-5",
+        "integration"
+      ]
+    },
+    {
+      "ref": "01KFMMZR",
+      "title": "Executable compilation with bun build",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-5",
+        "integration"
+      ]
+    },
+    {
+      "ref": "01KFMMZW",
+      "title": "API integration tests",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "phase-5",
+        "testing"
+      ]
+    },
+    {
+      "ref": "01KFMN01",
+      "title": "E2E integration tests with Playwright",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-5",
+        "testing"
+      ]
+    },
+    {
+      "ref": "01KFMMJ4",
+      "title": "Implement: GitHub Pages Export",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "static",
+        "export",
+        "github"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFMMSV",
+      "title": "Create SvelteKit scaffold with shadcn-svelte",
+      "completed_at": "2026-01-23T14:41:31.589Z",
+      "closed_reason": "PR #197 merged successfully. SvelteKit scaffold complete with Tailwind CSS and shadcn-svelte components. All required components added: Button, Card, Badge, Input, Sheet, DataTable, Sidebar, Command, Tabs, Accordion, Tooltip, Dialog, Separator, Skeleton, and Table. Static adapter configured. Dependencies properly declared in web-ui package.json. All CI checks passed."
+    },
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "completed_at": "2026-01-23T14:10:53.817Z",
+      "closed_reason": "PR #196 merged successfully. Created @kynetic-ai/shared types package with comprehensive TypeScript interfaces for REST API responses (TaskSummary, PaginatedResponse, TaskDetail, ItemSummary, ItemDetail, InboxItem, SessionContext, Agent, Workflow, Observation, SearchResult, ValidationResult, AlignmentStats, ErrorResponse), WebSocket protocol (ConnectedEvent, WebSocketCommand, CommandAck, BroadcastEvent), and core schemas. All types properly annotated with AC references. Greptile review feedback addressed (Zod dependency removed). All CI checks passed. Local review noted no tests exist but acknowledged acceptable for types-only package. Follow-up task needed for test coverage."
+    },
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "completed_at": "2026-01-23T13:54:53.830Z",
+      "closed_reason": "All 33 ACs from @api-contract spec successfully implemented and merged across 6 derived subtasks. Subtasks completed: @01KFMMPY (CORS/foundation), @01KFMMQ2 (Task API), @01KFMMQ7 (Spec Item API), @01KFMMQB (Inbox/Meta API), @01KFMMQF (Search/Validation API), @01KFMMQM (Error handling tests). All 1207 tests passing. Implementation includes REST endpoints, WebSocket protocol, CORS, error handling, and comprehensive test coverage with proper AC annotations."
+    },
+    {
+      "ref": "01KFMMQM",
+      "title": "API error handling middleware",
+      "completed_at": "2026-01-23T13:53:58.095Z",
+      "closed_reason": "PR #195 merged successfully. Added comprehensive test coverage for API error handling (ac-22, ac-23, ac-24 from @api-contract spec). All CI checks passed. Greptile: 4/5 confidence. Local review: READY TO MERGE. All 1207 tests pass."
+    },
+    {
+      "ref": "01KFMMQF",
+      "title": "Search and validation API endpoints",
+      "completed_at": "2026-01-23T13:37:02.294Z",
+      "closed_reason": "PR #194 merged successfully. Implemented Search and Validation API endpoints covering ac-19 through ac-21 from @api-contract spec. All CI checks passed. Greptile review: 5/5 confidence. Local review: READY TO MERGE. All 1199 tests pass."
+    },
+    {
+      "ref": "01KFMMQB",
+      "title": "Inbox and meta API endpoints",
+      "completed_at": "2026-01-23T13:21:17.475Z",
+      "closed_reason": "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12 through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
+    },
+    {
+      "ref": "01KFMMQ7",
+      "title": "Spec item API endpoints",
+      "completed_at": "2026-01-23T12:50:59.437Z",
+      "closed_reason": "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8 through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted (code inspection test strategy is consistent with project patterns). All 4 target ACs have test coverage with proper annotations."
+    },
+    {
+      "ref": "01KFMMQ2",
+      "title": "Task API endpoints",
+      "completed_at": "2026-01-23T12:28:24.073Z",
+      "closed_reason": "PR #191 merged successfully. Implemented Task API endpoints covering ac-2 through ac-7 from @api-contract spec. All CI checks passed. Greptile review feedback addressed in commit f49ba72. Local review identified two systemic issues (X-Request-Id header, E2E test strategy) which were documented and deferred as they affect all daemon code. Follow-up items created: @01KFNCZR (X-Request-Id), @01KFND00 (E2E tests)."
+    },
+    {
+      "ref": "01KFMMPY",
+      "title": "API foundation and CORS middleware",
+      "completed_at": "2026-01-23T11:56:41.750Z",
+      "closed_reason": "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe to merge."
+    },
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "completed_at": "2026-01-23T11:43:13.394Z",
+      "closed_reason": "Daemon server mode fully implemented in packages/daemon/src with all 16 ACs covered. Complete with Elysia HTTP server, WebSocket pub/sub, file watching, heartbeat monitoring, graceful shutdown, PID management, and localhost-only security. Comprehensive test coverage with 61 AC annotations across daemon test files. All 1166 tests pass. No code changes needed - implementation was already complete from previous work."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "f2d9e06",
+      "full_hash": "f2d9e0621b989c2a44bd279378e0b8b2597db06c",
+      "date": "2026-01-23T15:03:00.000Z",
+      "message": "feat: implement task list and detail views",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7a31c08",
+      "full_hash": "7a31c085165c4b4d05e95be660efc3562aa21c81",
+      "date": "2026-01-23T14:52:08.000Z",
+      "message": "fix: address Greptile review feedback",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ddafe5a",
+      "full_hash": "ddafe5ae56fa54b69b5aa6287ee68197a2711c0d",
+      "date": "2026-01-23T14:47:21.000Z",
+      "message": "feat: implement dashboard layout and navigation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "89f0731",
+      "full_hash": "89f07311a21fdac04522f51506ca5f27ec69f5d8",
+      "date": "2026-01-23T14:41:12.000Z",
+      "message": "Complete SvelteKit scaffold with shadcn-svelte components (#197)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "cb62830",
+      "full_hash": "cb6283060e918fd30947f5abb4ddbe35cabf1d32",
+      "date": "2026-01-23T14:34:02.000Z",
+      "message": "chore: update package-lock.json after web-ui dependency changes",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8878886",
+      "full_hash": "8878886533dc27bed9905a2f90f7a673b07b7565",
+      "date": "2026-01-23T14:33:33.000Z",
+      "message": "chore: trigger CI re-run after resolving review thread",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "43a06af",
+      "full_hash": "43a06af193022c38f15105b53c9895fd82ea662e",
+      "date": "2026-01-23T14:31:06.000Z",
+      "message": "fix: add Tailwind/PostCSS dependencies to web-ui package.json",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d8ba697",
+      "full_hash": "d8ba69756b1ee91a63487e929879350ae6e56a1b",
+      "date": "2026-01-23T14:22:55.000Z",
+      "message": "feat: complete shadcn-svelte setup with all components",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a63e0a5",
+      "full_hash": "a63e0a51ae74cbc7289d055b65d825515962c985",
+      "date": "2026-01-23T14:17:01.000Z",
+      "message": "wip: initialize SvelteKit scaffold with Tailwind CSS",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a1bc2cc",
+      "full_hash": "a1bc2cc46d9cfbfc0178e6d2f8d0bb49f5bff869",
+      "date": "2026-01-23T14:10:10.000Z",
+      "message": "Create shared types package (#196)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 313,
+    "in_progress": 1,
+    "pending_review": 2,
+    "ready": 18,
+    "blocked": 1,
+    "completed": 279,
+    "inbox_items": 47
+  }
+}

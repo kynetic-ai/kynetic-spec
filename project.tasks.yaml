@@ -28585,7 +28585,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -28832,6 +28832,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T15:14:08.090Z
+  closed_reason: "PR #198 merged successfully. Dashboard layout with responsive navigation (sidebar
+    for desktop, bottom nav for mobile) implemented. All AC covered: ac-26 (layout), ac-27
+    (responsive navigation). Review threads resolved via gh CLI."
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
   slugs: []
   title: Task list and detail views
