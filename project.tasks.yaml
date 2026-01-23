@@ -24754,7 +24754,52 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:30.144Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMYSR4869CYZT7VKF9K76Y
+      created_at: 2026-01-23T05:24:13.700Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement kspec export command for JSON/HTML output.
+
+        ### CLI Usage
+        ```bash
+        kspec export --format json [-o output.json] [--include-validation] [--dry-run]
+        kspec export --format html [-o output.html]
+        ```
+
+        ### Steps
+        1. Add export command to CLI
+        2. Build comprehensive JSON snapshot:
+           - All tasks, items, inbox, meta
+           - exported_at timestamp
+           - version (kspec version)
+           - project metadata
+
+        3. Resolve references for display:
+           - spec_ref titles included (not just ref string)
+           - Traits resolved with inherited ACs
+
+        4. Optional validation inclusion
+
+        5. HTML format: embed JSON + SPA code in single file
+
+        ### ACs Covered
+        - ac-1: JSON export to stdout or file
+        - ac-2: Includes timestamp, version, metadata
+        - ac-3: Tasks include resolved spec_ref title
+        - ac-4: Items have expanded ACs and traits
+        - ac-5: --include-validation adds validation block
+        - ac-6: HTML format embeds JSON + SPA
+        - ac-7: --dry-run shows what would be exported
+
+        ### Files to Create
+        - src/cli/commands/export.ts
+        - src/export/json.ts
+        - src/export/html.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
@@ -24792,20 +24837,20 @@
   created_at: 2026-01-23T05:23:39.403Z
   notes: []
   todos: []
-- title: GitHub Pages CI workflow
+- _ulid: 01KFMMXWWAMNM41ERK65RYAD46
+  slugs: []
+  title: GitHub Pages CI workflow
   type: infra
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags:
-    - phase-4
-    - export
-  _ulid: 01KFMMXWWAMNM41ERK65RYAD46
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - phase-4
+    - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:44.138Z
   notes: []
