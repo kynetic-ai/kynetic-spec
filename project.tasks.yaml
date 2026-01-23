@@ -24225,6 +24225,7 @@
         - packages/daemon/src/routes/items.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
   slugs: []
   title: Inbox and meta API endpoints
