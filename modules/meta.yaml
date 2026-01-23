@@ -1809,6 +1809,8 @@ features:
           Preserves fields not explicitly changed.
         implements:
           - "@meta-commands"
+        traits:
+          - "@trait-shadow-commit"
       - _ulid: 01KF2XCMD00000000000000000
         slugs:
           - meta-delete-cmd
