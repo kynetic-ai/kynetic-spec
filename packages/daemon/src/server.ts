@@ -18,6 +18,7 @@ import { createTasksRoutes } from './routes/tasks';
 import { createItemsRoutes } from './routes/items';
 import { createInboxRoutes } from './routes/inbox';
 import { createMetaRoutes } from './routes/meta';
+import { createValidationRoutes } from './routes/validation';
 import { join, relative } from 'path';
 
 export interface ServerOptions {
@@ -159,6 +160,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
     .use(createMetaRoutes({ kspecDir }))
+
+    // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
+    .use(createValidationRoutes({ kspecDir }))
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
