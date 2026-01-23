@@ -23474,22 +23474,61 @@
     - foundation
   vcs_refs: []
   created_at: 2026-01-23T05:17:41.572Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMKHM22J8BAPZCJY5J8SYY
+      created_at: 2026-01-23T05:18:04.930Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Set up Bun workspaces for monorepo structure with packages/daemon and packages/web-ui.
+
+        ### Steps
+        1. Create root package.json with workspaces config:
+           ```json
+           {
+             "workspaces": ["packages/*"]
+           }
+           ```
+
+        2. Create packages/ directory structure:
+           - packages/daemon/ - Elysia server
+           - packages/web-ui/ - SvelteKit dashboard
+           - packages/shared/ - Shared types (created in next task)
+
+        3. Configure root tsconfig.json with paths for cross-package imports
+
+        4. Verify Bun workspace linking works: `bun install`
+
+        ### Files to Create
+        - packages/daemon/package.json
+        - packages/daemon/tsconfig.json
+        - packages/web-ui/package.json  
+        - packages/web-ui/tsconfig.json
+        - Root tsconfig.json updates
+
+        ### Dependencies on Other Tasks
+        - None (first task)
+
+        ### Blocked By
+        - None
+      supersedes: null
   todos: []
-- title: Create shared types package
+- _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
+  slugs: []
+  title: Create shared types package
   type: infra
   spec_ref: "@web-ui"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - phase-0
-    - foundation
-  _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - phase-0
+    - foundation
   vcs_refs: []
   created_at: 2026-01-23T05:17:45.564Z
   notes: []
