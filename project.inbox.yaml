@@ -471,3 +471,11 @@ inbox:
     created_at: 2026-01-23T12:24:19.549Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFNVB075V3D914639C6CH483
+    text: Recent notes should cover pending review notes and most recently closed task notes as well,
+      probably separated out with some more organization so it is clear what was being worked on and
+      if there is anything from prior work worth sharing forward (in case its a continuation of the
+      same type of work)
+    created_at: 2026-01-23T16:34:59.430Z
+    tags: []
+    added_by: Jacob Chapel
