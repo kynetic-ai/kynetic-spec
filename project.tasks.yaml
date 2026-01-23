@@ -23523,6 +23523,7 @@
         clear error message suggesting --port flag
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
   slugs: []
   title: Setup Bun monorepo workspace
