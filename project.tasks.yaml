@@ -24219,7 +24219,41 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:14.282Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMS8PD9P5P63NPMXH5DQQS
+      created_at: 2026-01-23T05:21:12.398Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement search and validation API endpoints.
+
+        ### Endpoints
+        - GET /api/search?q=<query> - Search across all items
+        - GET /api/validate - Run validation
+        - GET /api/alignment - Get alignment stats
+
+        ### Steps
+        1. Use ItemIndex.grepSearch() for text search
+        2. Call validateSpec() for validation endpoint
+        3. Build AlignmentIndex for alignment stats
+
+        ### ACs Covered
+        - ac-19: GET /api/search searches items
+        - ac-20: GET /api/validate returns ValidationResult
+        - ac-21: GET /api/alignment returns stats and warnings
+
+        ### Key Library APIs
+        - ItemIndex.query() with titleContains/grepSearch
+        - validateSpec() from src/parser/validation.ts
+        - AlignmentIndex.getStats() and findAlignmentWarnings()
+
+        ### Files to Create
+        - packages/daemon/src/routes/search.ts
+        - packages/daemon/src/routes/validate.ts
+        - packages/daemon/src/routes/alignment.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
   slugs: []
