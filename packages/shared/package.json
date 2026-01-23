@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests/"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
