@@ -479,3 +479,11 @@ inbox:
     created_at: 2026-01-23T16:34:59.430Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KFNVME58GDWR7XGK7V1DC3P7
+    text: Need to ensure the pr review merge workflow enforces rechecking at each step and not to just
+      use prior checks before using the workflow as proof. Just saw an agent barrel through the
+      workflow never checking CI status again because it already did and so assumed it was all good
+      even though there were new comments and just merged.
+    created_at: 2026-01-23T16:40:08.617Z
+    tags: []
+    added_by: Jacob Chapel
