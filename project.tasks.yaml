@@ -26887,6 +26887,7 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:14.282Z
+  started_at: 2026-01-23T13:21:51.012Z
   notes:
     - _ulid: 01KFMMS8PD9P5P63NPMXH5DQQS
       created_at: 2026-01-23T05:21:12.398Z
@@ -26922,9 +26923,32 @@
         - packages/daemon/src/routes/validate.ts
         - packages/daemon/src/routes/alignment.ts
       supersedes: null
+    - _ulid: 01KFNG9ZPGZ9BQV5AT5R5VFKYC
+      created_at: 2026-01-23T13:22:11.792Z
+      author: "@claude"
+      content: |-
+        Planning implementation for ac-19 through ac-21:
+
+        ENDPOINTS TO IMPLEMENT:
+        1. GET /api/search?q=query - Search across all items (ac-19)
+        2. GET /api/validate - Run full validation (ac-20)  
+        3. GET /api/alignment - Return AlignmentIndex stats (ac-21)
+
+        IMPLEMENTATION PLAN:
+        1. Create packages/daemon/src/routes/validation.ts with 3 routes
+        2. Register routes in server.ts
+        3. Create tests/daemon-api-validation.test.ts with structure tests
+        4. Follow established patterns from tasks/items/inbox/meta routes
+
+        API DESIGN:
+        - /api/search?q=query → calls parser search functionality, returns matching items
+        - /api/validate → calls validate(), returns ValidationResult
+        - /api/alignment → calls AlignmentIndex.create(), returns stats and warnings
+
+        Will use read-only operations (no WebSocket broadcasts needed).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T13:21:51.012Z
 - _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
   slugs: []
   title: API error handling middleware
