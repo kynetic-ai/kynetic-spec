@@ -24777,6 +24777,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #186 merged. Implemented file watcher with debouncing (ac-5), error handling
+    (ac-6), exponential backoff recovery (ac-7), and Chokidar fallback (ac-8). Broadcast file
+    changes and errors via WebSocket (ac-4). Addressed Greptile review feedback: fixed recursive
+    pattern and cross-platform path handling. All 1087 tests pass."
   depends_on: []
   context: []
   priority: 2
@@ -24786,6 +24790,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:18:28.875Z
   started_at: 2026-01-23T09:57:10.142Z
+  completed_at: 2026-01-23T10:16:01.067Z
   notes:
     - _ulid: 01KFMMP30D4K83N20JV3S4D8N3
       created_at: 2026-01-23T05:19:28.270Z
@@ -24910,18 +24915,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T10:16:01.067Z
-  closed_reason: "PR #186 merged. Implemented file watcher with debouncing (ac-5), error handling
-    (ac-6), exponential backoff recovery (ac-7), and Chokidar fallback (ac-8). Broadcast file
-    changes and errors via WebSocket (ac-4). Addressed Greptile review feedback: fixed recursive
-    pattern and cross-platform path handling. All 1087 tests pass."
 - _ulid: 01KFMMMD7T322JYB64V10A30MF
   slugs: []
   title: Implement WebSocket protocol
   type: task
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -25012,6 +25012,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T10:16:32.796Z
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
   slugs: []
   title: Implement daemon process detach
