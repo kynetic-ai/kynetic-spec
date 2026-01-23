@@ -84,7 +84,10 @@ gh pr list --state open
 \`\`\`
 
 If PRs exist, review and merge them before picking new tasks:
-- Run \`/local-review\` to check PR quality
+- Spawn a subagent for local review:
+  \`\`\`
+  Task tool → subagent_type: "general-purpose" → prompt: "Run /local-review for PR #N. Check AC coverage, test quality, E2E preference, and test isolation."
+  \`\`\`
 - Use \`@pr-review-merge\` workflow to review and merge
 - After merge: \`kspec task complete @task-ref --reason "Merged in PR #N"\`
 
@@ -95,7 +98,8 @@ If PRs exist, review and merge them before picking new tasks:
 If there's a \`pending_review\` task without a PR (or work not pushed to origin):
 - Push uncommitted work: \`git push\`
 - Create PR: \`/pr\`
-- Run \`/local-review\` then \`@pr-review-merge\` workflow
+- Spawn subagent for local review (see step 1)
+- Then use \`@pr-review-merge\` workflow
 
 ### 3. Pick or Continue a Task
 
@@ -142,7 +146,10 @@ Task: @task-ref"
 
 After submitting:
 - Create PR: \`/pr\`
-- Quality check: \`/local-review\`
+- Spawn subagent for quality check:
+  \`\`\`
+  Task tool → subagent_type: "general-purpose" → prompt: "Run /local-review for the PR just created. Check AC coverage, test quality, E2E preference, and test isolation."
+  \`\`\`
 - Merge workflow: \`@pr-review-merge\`
 
 ### 8. Reflect (End of Iteration)
@@ -174,7 +181,7 @@ ${
 This is the last iteration of the loop. After completing your work:
 1. Commit any remaining changes
 2. Create PR if work is ready: \`/pr\`
-3. Run \`/local-review\` and \`@pr-review-merge\` if PR created
+3. Spawn subagent for local review, then \`@pr-review-merge\` if PR created
 4. Reflect using \`/reflect\` - capture unique, high-quality insights only
 `
     : ""
