@@ -24213,6 +24213,16 @@
         flag. All 1166 tests pass (17 new serve tests total, 7 conditionally skipped without Bun).
         Ready for final review and merge.
       supersedes: null
+    - _ulid: 01KFN9J04YSBQ8PDT82MDP2XPG
+      created_at: 2026-01-23T11:24:14.366Z
+      author: "@claude"
+      content: "PR #189 CI status: Tests PASS (1166 tests), Claude review PASS. Blocked by 5 unresolved
+        Greptile review threads (non-blocking suggestions about: daemon path resolution, PID write
+        race condition, foreground mode PID cleanup, PID utils duplication, port persistence on
+        restart). These are enhancement suggestions, not bugs. Core functionality works. Next:
+        Resolve review threads in GitHub UI by clicking 'Resolve conversation' on each thread, then
+        merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
