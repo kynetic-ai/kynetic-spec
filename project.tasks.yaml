@@ -23554,7 +23554,7 @@
     - Call from initializeShadow() after worktree creation
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFM7H3"
@@ -23628,6 +23628,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T09:11:41.068Z
+  closed_reason: "PR #183 merged. Implemented AC-12: auto-configure merge driver during kspec init.
+    Added configureMergeDriver() function that sets git config and creates .gitattributes in shadow
+    branch. Test coverage: Added E2E test with conditional skip in CI (kspec not in PATH), updated
+    commit count assertions to work in both environments. All 1058 tests pass."
 - _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
   slugs:
     - task-daemon-server-mode
