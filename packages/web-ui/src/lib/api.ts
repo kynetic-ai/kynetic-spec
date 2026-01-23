@@ -5,7 +5,14 @@
  * All functions use fetch with localhost:3456 as the base URL.
  */
 
-import type { TaskSummary, TaskDetail, PaginatedResponse, ErrorResponse } from '@kynetic-ai/shared';
+import type {
+	TaskSummary,
+	TaskDetail,
+	ItemSummary,
+	ItemDetail,
+	PaginatedResponse,
+	ErrorResponse
+} from '@kynetic-ai/shared';
 
 const API_BASE = 'http://localhost:3456';
 
@@ -85,4 +92,65 @@ export async function addTaskNote(ref: string, content: string): Promise<void> {
 		const error: ErrorResponse = await response.json();
 		throw new Error(error.message || error.error);
 	}
+}
+
+/**
+ * Fetch spec items with optional filters
+ * AC: @web-dashboard ac-11
+ */
+export async function fetchItems(params?: {
+	type?: string | string[];
+	tag?: string;
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<ItemSummary>> {
+	const url = new URL(`${API_BASE}/api/items`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				if (Array.isArray(value)) {
+					value.forEach((v) => url.searchParams.append(key, String(v)));
+				} else {
+					url.searchParams.set(key, String(value));
+				}
+			}
+		});
+	}
+
+	const response = await fetch(url.toString());
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch single spec item by reference
+ * AC: @web-dashboard ac-12
+ */
+export async function fetchItem(ref: string): Promise<ItemDetail> {
+	const response = await fetch(`${API_BASE}/api/items/${ref}`);
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch tasks linked to a spec item
+ * AC: @web-dashboard ac-13
+ */
+export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<TaskSummary>> {
+	const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`);
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
 }
