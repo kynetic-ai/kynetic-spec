@@ -20912,7 +20912,7 @@
   type: spike
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -21086,6 +21086,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-01-23T04:25:53.449Z
 - _ulid: 01KFHZT60CB7D2K13HP914B8YZ
   slugs:
     - task-cli-version-display
@@ -22211,6 +22212,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #172 merged. Added @trait-shadow-commit trait with 8 AC and fixed 6 missing
+    commitIfShadow calls in meta commands."
   depends_on: []
   context: []
   priority: 2
@@ -22218,6 +22221,7 @@
   vcs_refs: []
   created_at: 2026-01-22T19:56:31.083Z
   started_at: 2026-01-23T03:01:33.508Z
+  completed_at: 2026-01-23T04:08:46.376Z
   notes:
     - _ulid: 01KFMFHGH4S4SN5CQR2MD6PEXE
       created_at: 2026-01-23T03:49:35.396Z
@@ -22275,9 +22279,6 @@
         Ready for PR.
       supersedes: null
   todos: []
-  completed_at: 2026-01-23T04:08:46.376Z
-  closed_reason: "PR #172 merged. Added @trait-shadow-commit trait with 8 AC and fixed 6 missing
-    commitIfShadow calls in meta commands."
 - _ulid: 01KFKRBN1B8GKXNV8W443XC30A
   slugs: []
   title: Add --steps flag to workflow add command
