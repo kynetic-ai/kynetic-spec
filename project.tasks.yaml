@@ -31314,3 +31314,50 @@
         process.
       supersedes: null
   todos: []
+- title: Fix AC annotations in cli-serve.test.ts
+  description: >-
+    PR #204 review feedback was ignored - AC annotations don't follow project standard.
+
+
+    Current format (incorrect):
+
+    ```typescript
+
+    // AC: Daemon config schema accepts auto_start and port
+
+    // AC: Daemon config is optional
+
+    ```
+
+
+    Required format:
+
+    ```typescript
+
+    // AC: @daemon-server ac-1
+
+    // AC: @daemon-server ac-2
+
+    ```
+
+
+    7 test cases need updating to use proper @spec-ref ac-N format.
+
+
+    Context: claude-review provided explicit guidance but it was merged without addressing this
+    standards feedback.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  _ulid: 01KFP5X0YC80184V84C3P80QCC
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T19:39:35.755Z
+  notes: []
+  todos: []
