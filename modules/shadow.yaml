@@ -724,3 +724,7 @@ features:
             when: merge driver runs
             then: arrays (agents, workflows, conventions, observations) merged by ULID, context fields merged at
               field level
+          - id: ac-6
+            given: file is not a recognized kspec file
+            when: merge driver runs
+            then: driver falls back to default behavior (copy ours)
