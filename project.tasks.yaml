@@ -23822,7 +23822,7 @@
   type: task
   spec_ref: "@api-contract"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -27435,6 +27435,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #195 merged successfully. Added comprehensive test coverage for API error
+    handling (ac-22, ac-23, ac-24 from @api-contract spec). All CI checks passed. Greptile: 4/5
+    confidence. Local review: READY TO MERGE. All 1207 tests pass."
   depends_on: []
   context: []
   priority: 2
@@ -27444,6 +27447,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:20:19.207Z
   started_at: 2026-01-23T13:37:29.419Z
+  completed_at: 2026-01-23T13:53:58.095Z
   notes:
     - _ulid: 01KFMMSD49CFAWKYTNM3BZ00YP
       created_at: 2026-01-23T05:21:16.938Z
@@ -27577,10 +27581,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T13:53:58.095Z
-  closed_reason: "PR #195 merged successfully. Added comprehensive test coverage for API error
-    handling (ac-22, ac-23, ac-24 from @api-contract spec). All CI checks passed. Greptile: 4/5
-    confidence. Local review: READY TO MERGE. All 1207 tests pass."
 - _ulid: 01KFMMSVYK9V98DVQG6KY77TMV
   slugs: []
   title: Create SvelteKit scaffold with shadcn-svelte
