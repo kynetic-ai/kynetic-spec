@@ -27807,7 +27807,7 @@
   type: infra
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -28107,6 +28107,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T14:41:31.589Z
+  closed_reason: "PR #197 merged successfully. SvelteKit scaffold complete with Tailwind CSS and
+    shadcn-svelte components. All required components added: Button, Card, Badge, Input, Sheet,
+    DataTable, Sidebar, Command, Tabs, Accordion, Tooltip, Dialog, Separator, Skeleton, and Table.
+    Static adapter configured. Dependencies properly declared in web-ui package.json. All CI checks
+    passed."
 - _ulid: 01KFMMT0BPJPM8V08QVBVKPS6V
   slugs: []
   title: Dashboard layout and navigation
