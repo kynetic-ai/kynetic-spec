@@ -27009,6 +27009,63 @@
 
         All required dependencies and patterns identified. Implementation is straightforward.
       supersedes: null
+    - _ulid: 01KFNGD5Y7P5DZKMXBFW1HJ64W
+      created_at: 2026-01-23T13:23:56.487Z
+      author: "@claude"
+      content: >-
+        SESSION CHECKPOINT - Iteration 28 end
+
+
+        TASK STATUS: IN_PROGRESS
+
+        Started this iteration, analysis and planning complete, ready for implementation.
+
+
+        TARGET ACs: ac-19, ac-20, ac-21 from @api-contract
+
+
+        ENDPOINTS TO IMPLEMENT:
+
+        1. GET /api/search?q=query - Search across all items/tasks/inbox/meta (ac-19)
+
+        2. GET /api/validate - Run full validation, return ValidationResult (ac-20)
+
+        3. GET /api/alignment - Return AlignmentIndex stats and warnings (ac-21)
+
+
+        RESEARCH COMPLETED:
+
+        ✅ Studied existing route patterns (tasks.ts, items.ts, inbox.ts, meta.ts)
+
+        ✅ Identified all required parser functions:
+           - validate() from src/parser/validate.ts
+           - AlignmentIndex class with getStats() and findAlignmentWarnings() from src/parser/alignment.ts
+           - grepItem() utility from src/utils/grep.ts (used by search command)
+           - buildIndexes() to load all data
+        ✅ Analyzed search command implementation for search logic reference
+
+        ✅ Pattern confirmed: read-only operations, no WebSocket broadcasts needed
+
+
+        IMPLEMENTATION PLAN (ready to execute):
+
+        1. Create packages/daemon/src/routes/validation.ts
+           - Import: initContext, buildIndexes, validate, loadInboxItems, loadMetaContext, grepItem
+           - Implement 3 GET routes following established patterns
+           - Add AC annotations: // AC: @api-contract ac-19/20/21
+        2. Register in server.ts: .use(createValidationRoutes({ kspecDir }))
+
+        3. Create tests/daemon-api-validation.test.ts
+           - 3 structure tests checking for route definitions and function calls
+           - Follow pattern from daemon-api-meta.test.ts
+        4. Run tests, create PR, local review, merge
+
+
+        NO BLOCKERS - all dependencies identified, pattern clear, straightforward implementation.
+
+
+        NEXT SESSION: Implement the routes file (estimated ~200 lines), integrate, test, PR.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
