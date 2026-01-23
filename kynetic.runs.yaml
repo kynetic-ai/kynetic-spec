@@ -298,6 +298,7 @@ runs:
     current_step: 6
     total_steps: 7
     started_at: 2026-01-23T02:05:01.740Z
+    completed_at: 2026-01-23T02:10:21.703Z
     step_results:
       - step_index: 0
         status: completed
@@ -359,4 +360,11 @@ runs:
         notes: Workflow auto-committed to shadow branch. No skill files to commit to main. Will batch commit
           after creating all 3 workflows.
     initiated_by: "@claude"
-    completed_at: 2026-01-23T02:10:21.703Z
+  - _ulid: 01KFM9W090EPKDA8GSTBXB2WDV
+    workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
+    status: active
+    current_step: 0
+    total_steps: 7
+    started_at: 2026-01-23T02:10:27.745Z
+    step_results: []
+    initiated_by: "@claude"
