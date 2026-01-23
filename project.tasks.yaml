@@ -23805,6 +23805,7 @@
         - packages/daemon/src/routes/health.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
   slugs: []
   title: Implement file watcher and WebSocket broadcast
