@@ -22,7 +22,7 @@
   "author": "Kynetic AI",
   "scripts": {
     "build": "tsc && chmod +x dist/cli/index.js && npm run build:daemon",
-    "build:daemon": "shx cp -r packages/daemon/src dist/daemon",
+    "build:daemon": "shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/* dist/daemon/",
     "dev": "tsx src/cli/index.ts",
     "setup:dev": "npm install && npm run build && npm link",
     "pretest": "npm run build",
