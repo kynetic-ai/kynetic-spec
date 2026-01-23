@@ -24121,6 +24121,7 @@
     - serve
   vcs_refs: []
   created_at: 2026-01-23T05:17:22.822Z
+  started_at: 2026-01-23T10:51:23.621Z
   notes:
     - _ulid: 01KFMMJ8G6FGT4WY7NBW3JTPKN
       created_at: 2026-01-23T05:17:22.822Z
@@ -24167,9 +24168,17 @@
         - ac-10: Given port already in use, when kspec serve attempts to start, then fails with
         clear error message suggesting --port flag
       supersedes: null
+    - _ulid: 01KFN7TNBRJFPVKDYD17N20HZG
+      created_at: 2026-01-23T10:54:01.080Z
+      author: "@claude"
+      content: Implemented CLI serve commands in src/cli/commands/serve.ts with support for start
+        (foreground + daemon), stop, status, and restart. Implemented ACs 1-7 (excluding AC-8 and
+        AC-9 which require log file feature that doesn't exist in spec). Created PidFileManager
+        utility in src/cli/pid-utils.ts. Commands registered in CLI. Build passing. Ready for E2E
+        tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T10:51:23.621Z
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
   slugs: []
   title: Setup Bun monorepo workspace
