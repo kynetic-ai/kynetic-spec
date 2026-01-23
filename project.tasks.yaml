@@ -25150,5 +25150,46 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:54.306Z
-  notes: []
+  notes:
+    - _ulid: 01KFMN187TDY0F668ZBXB15XP0
+      created_at: 2026-01-23T05:25:34.074Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Write E2E tests for web dashboard using Playwright.
+
+        ### Test Coverage
+        1. Dashboard:
+           - Page load shows task counts
+           - Counts update via WebSocket
+
+        2. Task flows:
+           - Navigate to tasks
+           - Filter by status
+           - Open task detail
+           - Start task action
+           - Add note action
+
+        3. Item flows:
+           - Tree view navigation
+           - Item detail with ACs
+
+        4. Search:
+           - Cmd+K opens palette
+           - Search returns results
+           - Click navigates
+
+        5. Connection resilience:
+           - Reconnect after disconnect
+           - Connection lost indicator
+
+        ### Files to Create
+        - packages/web-ui/tests/dashboard.spec.ts
+        - packages/web-ui/tests/tasks.spec.ts
+        - packages/web-ui/tests/items.spec.ts
+        - packages/web-ui/tests/search.spec.ts
+        - packages/web-ui/playwright.config.ts
+      supersedes: null
   todos: []
