@@ -22250,6 +22250,30 @@
 
         Code fix still needed: 6 missing commitIfShadow calls in src/cli/commands/meta.ts
       supersedes: null
+    - _ulid: 01KFMFWHKS51H65H582YVJHSZQ
+      created_at: 2026-01-23T03:55:36.953Z
+      author: "@claude"
+      content: |-
+        Code fix complete:
+
+        Added 6 commitIfShadow calls to src/cli/commands/meta.ts:
+
+        1. meta observe (direct creation) - line ~815
+        2. meta resolve - line ~1095
+        3. meta promote (observation update) - line ~997
+        4. meta add - line ~1240
+        5. meta set - line ~1365
+        6. meta delete - line ~1535
+
+        All annotated with '// AC: @trait-shadow-commit ac-1'
+
+        Verification:
+        - npm run build: success
+        - npm test: 962 passed, 3 skipped
+        - Manual test: meta observe and meta resolve both create commits in shadow branch
+
+        Ready for PR.
+      supersedes: null
   todos: []
 - _ulid: 01KFKRBN1B8GKXNV8W443XC30A
   slugs: []
