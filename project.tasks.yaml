@@ -25421,6 +25421,14 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #196 merged successfully. Created @kynetic-ai/shared types package with
+    comprehensive TypeScript interfaces for REST API responses (TaskSummary, PaginatedResponse,
+    TaskDetail, ItemSummary, ItemDetail, InboxItem, SessionContext, Agent, Workflow, Observation,
+    SearchResult, ValidationResult, AlignmentStats, ErrorResponse), WebSocket protocol
+    (ConnectedEvent, WebSocketCommand, CommandAck, BroadcastEvent), and core schemas. All types
+    properly annotated with AC references. Greptile review feedback addressed (Zod dependency
+    removed). All CI checks passed. Local review noted no tests exist but acknowledged acceptable
+    for types-only package. Follow-up task needed for test coverage."
   depends_on: []
   context: []
   priority: 2
@@ -25430,6 +25438,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:17:45.564Z
   started_at: 2026-01-23T13:55:34.628Z
+  completed_at: 2026-01-23T14:10:53.817Z
   notes:
     - _ulid: 01KFMMKNP52K6QCCDPNFWPXEJ3
       created_at: 2026-01-23T05:18:09.093Z
@@ -25617,15 +25626,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T14:10:53.817Z
-  closed_reason: "PR #196 merged successfully. Created @kynetic-ai/shared types package with
-    comprehensive TypeScript interfaces for REST API responses (TaskSummary, PaginatedResponse,
-    TaskDetail, ItemSummary, ItemDetail, InboxItem, SessionContext, Agent, Workflow, Observation,
-    SearchResult, ValidationResult, AlignmentStats, ErrorResponse), WebSocket protocol
-    (ConnectedEvent, WebSocketCommand, CommandAck, BroadcastEvent), and core schemas. All types
-    properly annotated with AC references. Greptile review feedback addressed (Zod dependency
-    removed). All CI checks passed. Local review noted no tests exist but acknowledged acceptable
-    for types-only package. Follow-up task needed for test coverage."
 - _ulid: 01KFMMM0YP97Z451KA5TEC6RX9
   slugs: []
   title: Create packages/daemon structure
@@ -28637,3 +28637,23 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Add type validation tests to shared package
+  description: "Add minimal type validation tests to @kynetic-ai/shared package to ensure: (1) types
+    compile correctly, (2) types match Zod schemas, (3) exports are accessible. Use vitest
+    expectTypeOf for type-level tests. Estimated effort: 1-2 hours. See PR #196 local review for
+    recommendations."
+  type: task
+  spec_ref: "@web-ui"
+  meta_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T14:11:04.599Z
+  notes: []
+  todos: []
