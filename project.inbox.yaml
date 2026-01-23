@@ -531,3 +531,13 @@ inbox:
       - testing
       - dx
     added_by: "@claude"
+  - _ulid: 01KFPH36C8DKZ23ZDV3VQNE2WZ
+    text: Fix daemon TypeScript strict mode compatibility - add proper types to route handlers, fix
+      Elysia generic issues, eliminate implicit any. Currently daemon source is copied instead of
+      compiled because of these issues. Medium scope.
+    created_at: 2026-01-23T22:55:12.264Z
+    tags:
+      - daemon
+      - typescript
+      - reflection
+    added_by: "@claude"
