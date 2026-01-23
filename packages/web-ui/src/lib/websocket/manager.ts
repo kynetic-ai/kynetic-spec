@@ -95,7 +95,7 @@ export class WebSocketManager {
 	 * AC: @web-dashboard ac-28
 	 */
 	connect(): void {
-		if (this.ws && this.state !== 'disconnected') {
+		if (this.ws && (this.state === 'connected' || this.state === 'connecting')) {
 			console.warn('[WebSocketManager] Already connected or connecting');
 			return;
 		}
@@ -321,19 +321,21 @@ export class WebSocketManager {
 
 		this.clearReconnectTimer();
 
+		// Increment attempt counter before calculating backoff
+		this.reconnectAttempts++;
+		this.stats.reconnect_count++;
+
 		// Exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s (capped)
 		const backoffMs = Math.min(
-			Math.pow(2, this.reconnectAttempts) * 1000,
+			Math.pow(2, this.reconnectAttempts - 1) * 1000,
 			MAX_BACKOFF_MS
 		);
 
 		console.log(
-			`[WebSocketManager] Reconnecting in ${backoffMs}ms (attempt ${this.reconnectAttempts + 1}/${MAX_RECONNECT_ATTEMPTS})`
+			`[WebSocketManager] Reconnecting in ${backoffMs}ms (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`
 		);
 
 		this.reconnectTimer = setTimeout(() => {
-			this.reconnectAttempts++;
-			this.stats.reconnect_count++;
 			this.setState('reconnecting');
 			this.connect();
 		}, backoffMs);
@@ -357,8 +359,9 @@ export class WebSocketManager {
 		this.clearConnectionLostTimer();
 
 		this.connectionLostTimer = setTimeout(() => {
-			// Trigger state change to notify UI
-			this.notifyStateChange();
+			// Notify UI that connection has been lost for >10s
+			// This triggers even if state hasn't changed (e.g., still 'disconnected')
+			this.notifyConnectionLostChange();
 		}, CONNECTION_LOST_THRESHOLD_MS);
 	}
 
@@ -392,6 +395,14 @@ export class WebSocketManager {
 				console.error('[WebSocketManager] State change handler error:', err);
 			}
 		}
+	}
+
+	/**
+	 * Notify state change handlers when connectionLost threshold is crossed
+	 * This ensures the UI updates even if the state hasn't changed
+	 */
+	private notifyConnectionLostChange(): void {
+		this.notifyStateChange();
 	}
 
 	/**
