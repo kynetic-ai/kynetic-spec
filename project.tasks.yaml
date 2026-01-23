@@ -24280,6 +24280,7 @@
         - packages/daemon/src/routes/meta.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
   slugs: []
   title: Search and validation API endpoints
