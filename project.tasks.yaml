@@ -22866,7 +22866,7 @@
     - mergeSetArray(base, ours, theirs) - Set union, sorted output
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -22878,6 +22878,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-23T06:32:15.755Z
 - _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
   slugs: []
   title: "Merge driver: object merge algorithms"
