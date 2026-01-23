@@ -24875,7 +24875,7 @@
   type: task
   spec_ref: "@web-dashboard"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -25010,6 +25010,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T14:11:34.422Z
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
   slugs:
     - task-github-pages-export
