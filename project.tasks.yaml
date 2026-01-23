@@ -25082,6 +25082,69 @@
 
         Task is ready for implementation in next session.
       supersedes: null
+    - _ulid: 01KFN68ZGDVSJMTG0FT1P35F9P
+      created_at: 2026-01-23T10:26:53.069Z
+      author: "@claude"
+      content: >-
+        Implemented WebSocket protocol with full spec compliance:
+
+
+        **Completed:**
+
+        1. Session ID generation and 'connected' event with session_id (ac-25,
+        @trait-websocket-protocol ac-1)
+
+        2. Command message handler (subscribe/unsubscribe/ping) with validation (ac-26, ac-27,
+        ac-30)
+
+        3. Topic-based pub/sub system with subscription tracking (ac-28, @trait-websocket-protocol
+        ac-2)
+
+        4. Heartbeat timer (30s ping, 90s timeout) (ac-13, ac-14, @trait-websocket-protocol ac-4,
+        ac-5)
+
+        5. Backpressure handling via getBufferedAmount() (ac-32, @trait-websocket-protocol ac-6)
+
+        6. Request ID correlation in ack responses (ac-27)
+
+        7. Proper close codes (1000 for clean, 1001 for timeout, 1011 for errors)
+        (@trait-websocket-protocol ac-7)
+
+        8. Per-connection sequence numbers for event ordering (ac-29, @trait-websocket-protocol
+        ac-3)
+
+        9. File change broadcasts via topic-based pub/sub (files:updates, files:errors topics)
+
+        10. Comprehensive E2E tests (51 new tests for protocol, updated 5 existing tests)
+
+
+        **Implementation structure:**
+
+        - packages/daemon/src/websocket/types.ts - Protocol type definitions
+
+        - packages/daemon/src/websocket/pubsub.ts - Topic-based pub/sub manager
+
+        - packages/daemon/src/websocket/heartbeat.ts - Ping/pong heartbeat manager
+
+        - packages/daemon/src/websocket/handler.ts - Command message handler
+
+        - packages/daemon/src/server.ts - Refactored to use new WebSocket modules
+
+
+        **Test coverage:**
+
+        - Created tests/daemon-websocket.test.ts with 51 comprehensive tests
+
+        - Updated tests/daemon-watcher.test.ts (4 tests) to reflect new pubsub architecture
+
+        - Updated tests/daemon-server.test.ts (1 test) to reflect protocol implementation
+
+        - All 1138 tests pass
+
+
+        All acceptance criteria from @api-contract (ac-25 to ac-32), @daemon-server (ac-13, ac-14),
+        and @trait-websocket-protocol (ac-1 to ac-8) are now implemented and tested.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
