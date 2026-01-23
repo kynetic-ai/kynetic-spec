@@ -2544,7 +2544,7 @@ runs:
   - _ulid: 01KFPF5DN5E7T2YVS1V9H2ZAES
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-23T22:21:28.101Z
     step_results:
@@ -2576,5 +2576,36 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-23T22:21:55.479Z
-        completed_at: 2026-01-23T22:21:55.479Z
+        completed_at: 2026-01-23T22:22:08.567Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **Daemon TypeScript compilation issues** - The daemon code has TypeScript errors when
+          compiled with strict tsc (implicit any, Elysia type issues). Had to work around by copying
+          source files instead of compiling. This is tech debt that will bite later.
+
+
+          2. **Test expectations checking source code paths** - Static analysis tests were checking
+          for specific import paths in daemon source. When I changed the imports, tests failed.
+          These tests are brittle - checking implementation details rather than behavior.
+
+
+          3. **Multiple workflow runs accumulating** - When running `kspec workflow next` there were
+          19 active workflow runs to choose from. Clutters the system and slows down workflow
+          commands.
+
+
+          4. **No visibility into daemon startup failures** - When daemon failed to start within 5s
+          timeout, no error details surfaced. Had to manually trace through to find the PID
+          directory didn't exist.
+
+
+          5. **Review feedback arrived incrementally** - Had to make 3 separate commits to address
+          Greptile feedback that came in waves. Would be nice if review completed before starting
+          fixes.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-23T22:22:08.567Z
+        completed_at: 2026-01-23T22:22:08.567Z
     initiated_by: "@claude"
