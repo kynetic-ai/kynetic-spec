@@ -24558,6 +24558,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #185 merged. Implemented Elysia server core with localhost enforcement (ac-3) and
+    graceful shutdown (ac-12). Addressed local review feedback by replacing fluff tests with proper
+    unit tests for middleware logic. Fixed IPv6 bracket parsing bug. All 1076 tests pass."
   depends_on: []
   context: []
   priority: 2
@@ -24567,6 +24570,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:18:24.737Z
   started_at: 2026-01-23T09:37:18.264Z
+  completed_at: 2026-01-23T09:56:42.763Z
   notes:
     - _ulid: 01KFMMNZ1SVS3JNYA1XGCY5XBR
       created_at: 2026-01-23T05:19:24.217Z
@@ -24765,17 +24769,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T09:56:42.763Z
-  closed_reason: "PR #185 merged. Implemented Elysia server core with localhost enforcement (ac-3) and
-    graceful shutdown (ac-12). Addressed local review feedback by replacing fluff tests with proper
-    unit tests for middleware logic. Fixed IPv6 bracket parsing bug. All 1076 tests pass."
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
   slugs: []
   title: Implement file watcher and WebSocket broadcast
   type: task
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -24829,6 +24829,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T09:57:10.142Z
 - _ulid: 01KFMMMD7T322JYB64V10A30MF
   slugs: []
   title: Implement WebSocket protocol
