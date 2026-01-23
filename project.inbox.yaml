@@ -406,3 +406,11 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFMH54H89SJ51NPQW02S7P1Z
+    text: Add @trait-multi-ref-batch to trait commands (item trait add/remove) - currently these
+      commands don't support --refs for batch operations
+    created_at: 2026-01-23T04:17:47.049Z
+    tags:
+      - reflection
+      - cli
+    added_by: "@claude"
