@@ -187,7 +187,7 @@ export async function fetchInbox(params?: {
  * Add a new inbox item
  * AC: @web-dashboard ac-18
  */
-export async function addInboxItem(text: string, tags?: string[]): Promise<void> {
+export async function addInboxItem(text: string, tags?: string[]): Promise<InboxItem> {
 	const response = await fetch(`${API_BASE}/api/inbox`, {
 		method: 'POST',
 		headers: {
@@ -199,6 +199,9 @@ export async function addInboxItem(text: string, tags?: string[]): Promise<void>
 		const error: ErrorResponse = await response.json();
 		throw new Error(error.message || error.error);
 	}
+
+	const result = await response.json();
+	return result.item;
 }
 
 /**

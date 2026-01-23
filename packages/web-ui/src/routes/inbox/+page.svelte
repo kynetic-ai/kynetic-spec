@@ -54,10 +54,10 @@
 		try {
 			addingItem = true;
 			error = '';
-			await addInboxItem(newItemText.trim());
+			const newItem = await addInboxItem(newItemText.trim());
 
-			// Reload to get the new item with proper ULID and timestamp
-			await loadInbox();
+			// Add new item to list without reloading
+			items = [newItem, ...items];
 
 			// Reset form
 			newItemText = '';
