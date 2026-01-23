@@ -435,7 +435,7 @@ runs:
   - _ulid: 01KFMBNSCD7FBQT3GX084RCB2X
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 9
     started_at: 2026-01-23T02:42:01.230Z
     step_results:
@@ -447,5 +447,10 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-23T02:42:13.842Z
-        completed_at: 2026-01-23T02:42:13.842Z
+        completed_at: 2026-01-23T02:42:20.623Z
+        notes: "All 3 checks green: check-unresolved-comments, claude-review, test"
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-23T02:42:20.623Z
+        completed_at: 2026-01-23T02:42:20.623Z
     initiated_by: "@claude"
