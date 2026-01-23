@@ -24389,6 +24389,7 @@
         - packages/daemon/src/middleware/error-handler.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMSVYK9V98DVQG6KY77TMV
   slugs: []
   title: Create SvelteKit scaffold with shadcn-svelte
