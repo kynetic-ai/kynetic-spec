@@ -27325,7 +27325,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -27375,6 +27375,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T13:37:29.419Z
 - _ulid: 01KFMMSVYK9V98DVQG6KY77TMV
   slugs: []
   title: Create SvelteKit scaffold with shadcn-svelte
