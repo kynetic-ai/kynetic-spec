@@ -26,11 +26,16 @@ export function registerServeCommands(program: Command): void {
     .option('-d, --daemon', 'Run in background (detached mode)')
     .option('-p, --port <port>', 'Server port (default: 3456)', '3456')
     .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
         await startServer(opts);
       } catch (err) {
-        error(`Failed to start server: ${err instanceof Error ? err.message : String(err)}`);
+        if (opts.json) {
+          output({ error: err instanceof Error ? err.message : String(err) });
+        } else {
+          error(`Failed to start server: ${err instanceof Error ? err.message : String(err)}`);
+        }
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -40,11 +45,16 @@ export function registerServeCommands(program: Command): void {
     .command('stop')
     .description('Stop the daemon server')
     .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
         await stopServer(opts);
       } catch (err) {
-        error(`Failed to stop server: ${err instanceof Error ? err.message : String(err)}`);
+        if (opts.json) {
+          output({ error: err instanceof Error ? err.message : String(err) });
+        } else {
+          error(`Failed to stop server: ${err instanceof Error ? err.message : String(err)}`);
+        }
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -54,11 +64,16 @@ export function registerServeCommands(program: Command): void {
     .command('status')
     .description('Check daemon server status')
     .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
         await statusServer(opts);
       } catch (err) {
-        error(`Failed to check status: ${err instanceof Error ? err.message : String(err)}`);
+        if (opts.json) {
+          output({ error: err instanceof Error ? err.message : String(err) });
+        } else {
+          error(`Failed to check status: ${err instanceof Error ? err.message : String(err)}`);
+        }
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -68,11 +83,16 @@ export function registerServeCommands(program: Command): void {
     .command('restart')
     .description('Restart the daemon server')
     .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
         await restartServer(opts);
       } catch (err) {
-        error(`Failed to restart server: ${err instanceof Error ? err.message : String(err)}`);
+        if (opts.json) {
+          output({ error: err instanceof Error ? err.message : String(err) });
+        } else {
+          error(`Failed to restart server: ${err instanceof Error ? err.message : String(err)}`);
+        }
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -86,13 +106,21 @@ async function startServer(opts: {
   daemon?: boolean;
   port: string;
   kspecDir: string;
+  json?: boolean;
 }): Promise<void> {
   const port = parseInt(opts.port, 10);
 
   // AC: @cli-serve-commands ac-10
   if (isNaN(port) || port < 1 || port > 65535) {
-    error('Invalid port number. Must be between 1 and 65535.');
-    info('Try: kspec serve --port <PORT>');
+    if (opts.json) {
+      output({
+        error: 'Invalid port number. Must be between 1 and 65535.',
+        hint: 'Try: kspec serve --port <PORT>',
+      });
+    } else {
+      error('Invalid port number. Must be between 1 and 65535.');
+      error('Try: kspec serve --port <PORT>');
+    }
     process.exit(EXIT_CODES.VALIDATION_FAILED);
   }
 
@@ -101,7 +129,11 @@ async function startServer(opts: {
   // Check if already running
   if (pidManager.isDaemonRunning()) {
     const pid = pidManager.read();
-    warn(`Daemon already running with PID ${pid}`);
+    if (opts.json) {
+      output({ running: true, pid, message: 'Daemon already running' });
+    } else {
+      warn(`Daemon already running with PID ${pid}`);
+    }
     process.exit(EXIT_CODES.SUCCESS);
   }
 
@@ -109,7 +141,11 @@ async function startServer(opts: {
   const daemonBinary = join(import.meta.dirname, '../../../packages/daemon/src/index.ts');
 
   if (!existsSync(daemonBinary)) {
-    error(`Daemon binary not found at: ${daemonBinary}`);
+    if (opts.json) {
+      output({ error: `Daemon binary not found at: ${daemonBinary}` });
+    } else {
+      error(`Daemon binary not found at: ${daemonBinary}`);
+    }
     process.exit(EXIT_CODES.ERROR);
   }
 
@@ -130,16 +166,26 @@ async function startServer(opts: {
 
     const pid = pidManager.read();
     if (pid && pidManager.isDaemonRunning()) {
-      success(`Daemon started with PID ${pid} on port ${port}`);
-      output({ running: true, pid, port });
+      if (opts.json) {
+        output({ running: true, pid, port });
+      } else {
+        success(`Daemon started with PID ${pid} on port ${port}`);
+        output({ running: true, pid, port });
+      }
     } else {
-      error('Daemon failed to start');
+      if (opts.json) {
+        output({ error: 'Daemon failed to start' });
+      } else {
+        error('Daemon failed to start');
+      }
       process.exit(EXIT_CODES.ERROR);
     }
   } else {
     // AC: @cli-serve-commands ac-1 - foreground mode
-    info(`Starting server in foreground on port ${port}...`);
-    info('Press Ctrl+C to stop');
+    if (!opts.json) {
+      info(`Starting server in foreground on port ${port}...`);
+      info('Press Ctrl+C to stop');
+    }
 
     const child = spawn('bun', [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       stdio: 'inherit',
@@ -148,7 +194,9 @@ async function startServer(opts: {
 
     // Handle Ctrl+C
     process.on('SIGINT', () => {
-      info('\nStopping server...');
+      if (!opts.json) {
+        info('\nStopping server...');
+      }
       child.kill('SIGTERM');
     });
 
@@ -163,24 +211,34 @@ async function startServer(opts: {
  * Stop the daemon server
  * AC: @cli-serve-commands ac-4 (stop), ac-5 (idempotent)
  */
-async function stopServer(opts: { kspecDir: string }): Promise<void> {
+async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
   const pidManager = new PidFileManager(opts.kspecDir);
 
   if (!pidManager.isDaemonRunning()) {
     // AC: @cli-serve-commands ac-5
-    info('Daemon not running');
-    output({ running: false });
+    if (opts.json) {
+      output({ running: false });
+    } else {
+      info('Daemon not running');
+      output({ running: false });
+    }
     process.exit(EXIT_CODES.SUCCESS);
   }
 
   const pid = pidManager.read();
   if (!pid) {
-    error('Failed to read PID file');
+    if (opts.json) {
+      output({ error: 'Failed to read PID file' });
+    } else {
+      error('Failed to read PID file');
+    }
     process.exit(EXIT_CODES.ERROR);
   }
 
   // AC: @cli-serve-commands ac-4
-  info(`Stopping daemon (PID ${pid})...`);
+  if (!opts.json) {
+    info(`Stopping daemon (PID ${pid})...`);
+  }
 
   try {
     // Send SIGTERM
@@ -197,15 +255,25 @@ async function stopServer(opts: { kspecDir: string }): Promise<void> {
     }
 
     if (pidManager.isDaemonRunning()) {
-      warn(`Daemon did not stop gracefully, forcing...`);
+      if (!opts.json) {
+        warn(`Daemon did not stop gracefully, forcing...`);
+      }
       process.kill(pid, 'SIGKILL');
       await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    success('Daemon stopped');
-    output({ stopped: true, pid });
+    if (opts.json) {
+      output({ stopped: true, pid });
+    } else {
+      success('Daemon stopped');
+      output({ stopped: true, pid });
+    }
   } catch (err) {
-    error(`Failed to stop daemon: ${err instanceof Error ? err.message : String(err)}`);
+    if (opts.json) {
+      output({ error: err instanceof Error ? err.message : String(err) });
+    } else {
+      error(`Failed to stop daemon: ${err instanceof Error ? err.message : String(err)}`);
+    }
     process.exit(EXIT_CODES.ERROR);
   }
 }
@@ -214,7 +282,7 @@ async function stopServer(opts: { kspecDir: string }): Promise<void> {
  * Check daemon server status
  * AC: @cli-serve-commands ac-6
  */
-async function statusServer(opts: { kspecDir: string }): Promise<void> {
+async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
   const pidManager = new PidFileManager(opts.kspecDir);
   const running = pidManager.isDaemonRunning();
   const pid = pidManager.read();
@@ -228,30 +296,37 @@ async function statusServer(opts: { kspecDir: string }): Promise<void> {
     connections: null, // TODO: fetch from health endpoint
   };
 
-  if (running) {
-    output(`Daemon running (PID: ${pid})`);
+  if (opts.json) {
+    output(status);
   } else {
-    output('Daemon not running');
+    if (running) {
+      output(`Daemon running (PID: ${pid})`);
+    } else {
+      output('Daemon not running');
+    }
+    output(status);
   }
-
-  output(status);
 }
 
 /**
  * Restart the daemon server
  * AC: @cli-serve-commands ac-7
  */
-async function restartServer(opts: { kspecDir: string }): Promise<void> {
+async function restartServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
   const pidManager = new PidFileManager(opts.kspecDir);
 
   // Get current port if running (TODO: implement port persistence)
   let port = '3456'; // default
 
   if (pidManager.isDaemonRunning()) {
-    info('Stopping daemon...');
+    if (!opts.json) {
+      info('Stopping daemon...');
+    }
     await stopServer(opts);
   }
 
-  info('Starting daemon...');
-  await startServer({ daemon: true, port, kspecDir: opts.kspecDir });
+  if (!opts.json) {
+    info('Starting daemon...');
+  }
+  await startServer({ daemon: true, port, kspecDir: opts.kspecDir, json: opts.json });
 }
