@@ -25749,7 +25749,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -25889,6 +25889,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T11:56:41.750Z
+  closed_reason: "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev
+    server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe
+    to merge."
 - _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
   slugs: []
   title: Task API endpoints
