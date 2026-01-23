@@ -549,6 +549,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
+    completed_at: 2026-01-23T04:18:23.523Z
     step_results:
       - step_index: 0
         status: completed
@@ -688,4 +689,11 @@ runs:
           - Observation @01KFMH5S: Success pattern - trait-based approach + subagent exploration +
           spec-first
     initiated_by: "@claude"
-    completed_at: 2026-01-23T04:18:23.523Z
+  - _ulid: 01KFMNY5TWGMZEK16NF9MK3DXC
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-23T05:41:21.886Z
+    step_results: []
+    initiated_by: "@claude"
