@@ -637,3 +637,7 @@ features:
         given: both versions modify nested objects (status, traceability)
         when: merge runs
         then: nested fields are merged recursively at field level
+      - id: ac-8
+        given: one version deletes an item while other modifies it
+        when: merge runs
+        then: user is prompted interactively to choose delete vs keep modified
