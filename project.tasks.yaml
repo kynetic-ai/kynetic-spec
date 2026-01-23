@@ -31140,6 +31140,14 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KFP82PXBCAFN5W2TVW7QP3V8
+      created_at: 2026-01-23T20:17:39.243Z
+      author: "@claude"
+      content: "This task is now the parent epic for E2E browser testing. Child tasks will be created
+        covering: infrastructure setup, dashboard, tasks view, items view, inbox, search, connection
+        handling, observations, error handling, and navigation. Each child task contains complete
+        standalone implementation details."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
@@ -31428,7 +31436,10 @@
   created_at: 2026-01-23T19:40:09.319Z
   notes: []
   todos: []
-- title: Improve PR review process enforcement
+- _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
+  slugs: []
+  title: Improve PR review process enforcement
+  type: task
   description: >-
     Ralph loop session analysis revealed gaps in review feedback handling:
 
@@ -31472,17 +31483,14 @@
 
     From analysis of PRs #193-206 during overnight Ralph loop sessions. 14 PRs merged with mixed
     review handling quality.
-  type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-01-23T19:40:24.453Z
   notes: []
