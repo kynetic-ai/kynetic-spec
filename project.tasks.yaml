@@ -23651,6 +23651,7 @@
     - elysia
   vcs_refs: []
   created_at: 2026-01-23T05:17:07.378Z
+  started_at: 2026-01-23T11:40:19.414Z
   notes:
     - _ulid: 01KFMMHSDJ085MBRXZT1SWHFVH
       created_at: 2026-01-23T05:17:07.378Z
@@ -23729,9 +23730,54 @@
         implementation status: ac-1 through ac-8, ac-11 through ac-15 are complete. Only ac-9
         (daemon mode), ac-10 (stop command), and ac-16 (standalone build) remain."
       supersedes: null
+    - _ulid: 01KFNAK3JR0CG009JF953KWD2R
+      created_at: 2026-01-23T11:42:19.224Z
+      author: "@claude"
+      content: >-
+        Reviewed existing daemon implementation. Most ACs already implemented in
+        packages/daemon/src/server.ts:
+
+
+        Covered by implementation:
+
+        - ac-1: Server starts on configurable port ✓
+
+        - ac-2: Binds to localhost only ✓
+
+        - ac-3: Rejects non-localhost with 403 ✓
+
+        - ac-4: WebSocket broadcasts file changes ✓
+
+        - ac-5: File watcher debouncing ✓ (watcher.ts)
+
+        - ac-6: Error handling without crash ✓
+
+        - ac-7: Watcher recovery with backoff ✓ (watcher.ts)
+
+        - ac-8: Chokidar fallback ✓ (watcher.ts)
+
+        - ac-9: PID file management ✓
+
+        - ac-10: Graceful shutdown removes PID ✓
+
+        - ac-11: Health endpoint ✓
+
+        - ac-12: SIGTERM/SIGINT handlers ✓
+
+        - ac-13: Heartbeat ping ✓ (heartbeat.ts)
+
+        - ac-14: Connection timeout ✓ (heartbeat.ts)
+
+        - ac-15: Plugin pattern for middleware ✓
+
+
+        Test coverage in tests/daemon-*.test.ts files (1166 tests pass).
+
+
+        Need to verify: ac-16 (standalone executable compilation). Will check build configuration.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T11:40:19.414Z
 - _ulid: 01KFMMHX91G8RSY91QANTT4FSQ
   slugs:
     - task-rest-and-websocket-api-contract
