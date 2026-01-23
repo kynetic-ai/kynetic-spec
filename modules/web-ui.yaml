@@ -127,6 +127,10 @@ features:
         given: daemon code is ready
         when: bun build --compile runs
         then: produces standalone executable without requiring Bun installation
+      - id: ac-17
+        given: daemon is running with web UI built
+        when: browser opens http://localhost:<port>/
+        then: serves the built web UI assets (SvelteKit static build) as the root route
     status:
       maturity: draft
       implementation: in_progress
