@@ -25095,7 +25095,44 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:49.199Z
-  notes: []
+  notes:
+    - _ulid: 01KFMN13HS953BN1VSQG1CDEFS
+      created_at: 2026-01-23T05:25:29.273Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Write integration tests for API endpoints using Vitest.
+
+        ### Test Coverage
+        1. Task endpoints:
+           - GET /api/tasks (list, filter, pagination)
+           - GET /api/tasks/:ref (resolve, not found)
+           - POST /api/tasks/:ref/start (state transition)
+           - POST /api/tasks/:ref/note (append note)
+
+        2. Item endpoints:
+           - GET /api/items (list, filter)
+           - GET /api/items/:ref (with ACs, traits)
+           - GET /api/items/:ref/tasks (alignment)
+
+        3. Error handling:
+           - 404 for invalid refs
+           - 400 for validation errors
+           - 409 for state transition errors
+
+        4. WebSocket:
+           - Connection and handshake
+           - Subscribe/unsubscribe
+           - Event broadcast on changes
+
+        ### Files to Create
+        - packages/daemon/tests/api/tasks.test.ts
+        - packages/daemon/tests/api/items.test.ts
+        - packages/daemon/tests/api/inbox.test.ts
+        - packages/daemon/tests/websocket/protocol.test.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   slugs: []
