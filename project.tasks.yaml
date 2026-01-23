@@ -26372,6 +26372,14 @@
 
         TESTS: All 1180 tests pass (6 daemon-api-items E2E tests)
       supersedes: null
+    - _ulid: 01KFNDRYH6GCZ9KKT24BVDFGQ5
+      created_at: 2026-01-23T12:37:56.390Z
+      author: "@claude"
+      content: |-
+        PR #192 created: https://github.com/kynetic-ai/kynetic-spec/pull/192
+
+        Ready for review. All 1180 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
