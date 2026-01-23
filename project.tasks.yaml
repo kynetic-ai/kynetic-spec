@@ -22868,6 +22868,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #176 merged. Implemented array merge algorithms (union merge for ULID arrays, set
+    union for tags/depends_on, deletion detection). All 23 tests pass with comprehensive AC
+    coverage."
   depends_on:
     - "@01KFM7FQ"
   context: []
@@ -22876,6 +22879,7 @@
   vcs_refs: []
   created_at: 2026-01-23T01:28:59.922Z
   started_at: 2026-01-23T06:32:15.755Z
+  completed_at: 2026-01-23T06:47:47.114Z
   notes:
     - _ulid: 01KFMS1FXQKVJMQP5AB7H0PF99
       created_at: 2026-01-23T06:35:36.247Z
@@ -22957,10 +22961,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T06:47:47.114Z
-  closed_reason: "PR #176 merged. Implemented array merge algorithms (union merge for ULID arrays, set
-    union for tags/depends_on, deletion detection). All 23 tests pass with comprehensive AC
-    coverage."
 - _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
   slugs: []
   title: "Merge driver: object merge algorithms"
@@ -23662,7 +23662,7 @@
   type: infra
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -23802,6 +23802,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T06:51:20.414Z
+  closed_reason: "PR #175 merged. Set up npm workspace structure with 3 packages (daemon, web-ui,
+    shared). All 962 tests pass, TypeScript configs validated."
 - _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
   slugs: []
   title: Create shared types package
