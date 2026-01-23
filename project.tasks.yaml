@@ -24231,6 +24231,16 @@
         foreground mode on Ctrl+C, (4) duplicate PID utils code creates maintenance burden, (5) port
         not preserved across restarts. Addressing these before merge."
       supersedes: null
+    - _ulid: 01KFNA0CFSAFJWQSX0D2NA0493
+      created_at: 2026-01-23T11:32:05.753Z
+      author: "@claude"
+      content: "Addressed all 5 Greptile review issues in commit bde1635: (1) Changed daemon path from
+        import.meta.dirname to process.cwd() to work in production builds, (2) Replaced 500ms fixed
+        wait with proper polling loop (5s timeout, 100ms interval), (3) Added graceful shutdown
+        timeout for foreground Ctrl+C, (4) Documented PID utils duplication as technical debt with
+        TODO for shared package, (5) Implemented port persistence via .daemon.port file so restart
+        preserves port. All tests still pass (1166 passed)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
