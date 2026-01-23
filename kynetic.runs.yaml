@@ -546,8 +546,43 @@ runs:
   - _ulid: 01KFMGP59MZ2N985TX4RZ860FS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-23T04:09:36.309Z
+        completed_at: 2026-01-23T04:09:57.946Z
+        notes: >-
+          What worked well this session:
+
+
+          1. **Trait-based approach for cross-cutting behavior** - User's insight that traits aren't
+          just for user-facing behavior but for any cross-cutting concern was key. Creating
+          @trait-shadow-commit with explicit AC now makes the implicit shadow commit behavior
+          testable and documented.
+
+
+          2. **Subagent exploration before planning** - Using Explore agents to map ALL shadow write
+          locations and a Plan agent to review for gaps caught 6 additional missing commits beyond
+          the initial 4 identified. This thorough exploration prevented incomplete fixes.
+
+
+          3. **Spec-first implementation** - Created the trait spec, added to command specs, THEN
+          fixed the code. This ensures the spec is the source of truth and AC annotations in code
+          reference back to spec.
+
+
+          4. **kspec CLI for spec changes** - Using 'kspec item trait add' to add traits was much
+          cleaner than manually editing YAML.
+
+
+          5. **Clear design decision documentation** - Explicitly documenting that session context
+          is NOT committed (transient state) prevents future confusion about why those commands
+          don't have the trait.
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-23T04:09:57.946Z
+        completed_at: 2026-01-23T04:09:57.946Z
     initiated_by: "@claude"
