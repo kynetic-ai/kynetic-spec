@@ -220,9 +220,9 @@ workflows:
   - _ulid: 01KFM9G3BR4VFNBM2G7BGE5BZY
     id: pr-review-merge
     trigger: pr-merge
-    description: Quality gate for reviewing and merging PRs. Ensures all CI passes, all reviews addressed,
-      all requests completed, and all threads resolved before merge. Do not merge unless user explicitly
-      overrides.
+    description: Quality gate for reviewing and merging PRs. Ensures all CI passes, all reviews
+      addressed, all requests completed, and all threads resolved before merge. Do not merge unless
+      user explicitly overrides.
     steps:
       - type: check
         content: All CI checks complete (none pending or running)
@@ -256,14 +256,54 @@ workflows:
       - type: decision
         content: Ready to merge?
         options:
-          - "Yes - all checks green, all reviews addressed, all threads resolved"
-          - "No - need user approval to merge with known issues"
-          - "Skip - user explicitly said to merge anyway"
+          - Yes - all checks green, all reviews addressed, all threads resolved
+          - No - need user approval to merge with known issues
+          - Skip - user explicitly said to merge anyway
       - type: action
         content: |
           Merge the PR.
           Use: gh pr merge (prefer merge commit to preserve trailers)
           Or: GitHub UI merge button
+  - _ulid: 01KFM9SNV2QRRGREJ1HMZWXCFT
+    id: task-work-session
+    trigger: manual
+    description: Core pattern for working on a task. Verifies work not done, starts task, captures notes
+      during work, completes with summary, commits changes.
+    steps:
+      - type: action
+        content: |
+          Choose task to work on.
+          Use: kspec tasks ready to see available tasks
+          Or: kspec task get @task to see task details
+        inputs:
+          - name: task_ref
+            description: Reference to the task (e.g., @task-slug)
+            type: ref
+      - type: check
+        content: |
+          Verify work is not already done.
+          Check git history: git log --oneline --grep="feature-name"
+          Read implementation code if it exists.
+        on_fail: Mark task complete with "Already implemented" reason
+      - type: action
+        content: |
+          Start the task.
+          Use: kspec task start @task
+          This marks the task in_progress.
+      - type: action
+        content: |
+          Work on the task, adding notes as you go.
+          Use: kspec task note @task "What you're doing..."
+          Add notes during work, not just at end.
+      - type: action
+        content: |
+          Complete the task with summary.
+          Use: kspec task complete @task --reason "Summary of what was done"
+      - type: check
+        content: All changes committed
+        on_fail: |
+          Commit changes with Task: @task trailer.
+          Example: git commit -m "feat: description\n\nTask: @task-slug"
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
