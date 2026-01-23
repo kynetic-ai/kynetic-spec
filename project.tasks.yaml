@@ -31679,7 +31679,25 @@
   created_at: 2026-01-23T20:18:43.587Z
   notes: []
   todos: []
-- title: E2E Items View Tests
+- _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
+  slugs: []
+  title: E2E Items View Tests
+  type: task
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - e2e
+    - testing
+  vcs_refs: []
+  created_at: 2026-01-23T20:18:47.924Z
+  notes: []
+  todos: []
+- title: E2E Inbox Tests
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
@@ -31688,12 +31706,12 @@
   tags:
     - e2e
     - testing
-  _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
+  _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T20:18:47.924Z
+  created_at: 2026-01-23T20:18:51.735Z
   notes: []
   todos: []
