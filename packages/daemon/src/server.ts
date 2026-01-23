@@ -14,11 +14,39 @@ export interface ServerOptions {
 }
 
 /**
+ * Middleware to enforce localhost-only connections.
+ * AC-3: Reject non-localhost connections with 403 Forbidden
+ */
+function localhostOnly() {
+  return (context: any) => {
+    const hostname = context.request.headers.get('host')?.split(':')[0];
+
+    // Allow localhost, 127.0.0.1, and ::1
+    const isLocalhost =
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '[::1]' ||
+      hostname === '::1';
+
+    if (!isLocalhost) {
+      return new Response(JSON.stringify({
+        error: 'Forbidden',
+        message: 'This server only accepts connections from localhost'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  };
+}
+
+/**
  * Creates and configures the Elysia server instance.
  *
  * AC Coverage:
  * - ac-1: Server starts on configurable port (default 3456)
  * - ac-2: Binds to localhost only (127.0.0.1 and ::1)
+ * - ac-3: Rejects non-localhost connections with 403
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
@@ -30,6 +58,9 @@ export async function createServer(options: ServerOptions) {
       origin: true, // Allow same-origin requests only (localhost)
       credentials: true
     }))
+
+    // AC-3: Enforce localhost-only connections
+    .onRequest(localhostOnly())
 
     // AC-11: Health check endpoint
     .get('/api/health', () => ({
@@ -65,8 +96,29 @@ export async function createServer(options: ServerOptions) {
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
 
+  // AC-12: Graceful shutdown on SIGTERM/SIGINT
+  const shutdown = async (signal: string) => {
+    console.log(`[daemon] Received ${signal}, shutting down gracefully...`);
+
+    try {
+      // Close all WebSocket connections
+      // TODO: Track connections and close them here
+
+      // Stop the server
+      await app.server?.stop();
+
+      console.log('[daemon] Server stopped successfully');
+      process.exit(0);
+    } catch (error) {
+      console.error('[daemon] Error during shutdown:', error);
+      process.exit(1);
+    }
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+
   // TODO: AC-9, AC-10: Implement daemon mode (process detach, PID file)
-  // TODO: AC-12: Implement graceful shutdown (SIGTERM, SIGINT)
   // TODO: AC-4-8: Implement file watching
   // TODO: AC-13-14: Implement WebSocket ping/pong
 

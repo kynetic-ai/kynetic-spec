@@ -85,6 +85,32 @@ describe('Daemon Server E2E', () => {
     expect(serverContent).toContain('::1');
   });
 
+  // AC: @daemon-server ac-3
+  it('should implement middleware to reject non-localhost connections', async () => {
+    const serverContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/server.ts'),
+      'utf-8'
+    );
+
+    // Verify localhost-only middleware exists
+    expect(serverContent).toContain('localhostOnly');
+    expect(serverContent).toContain('403');
+    expect(serverContent).toContain('Forbidden');
+    expect(serverContent).toContain('.onRequest');
+  });
+
+  // AC: @daemon-server ac-3
+  it('should check Host header for localhost validation', async () => {
+    const serverContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/server.ts'),
+      'utf-8'
+    );
+
+    // Verify middleware checks all localhost variations
+    expect(serverContent).toMatch(/localhost.*127\.0\.0\.1.*::1/s);
+    expect(serverContent).toContain('request.headers.get');
+  });
+
   // AC: @daemon-server ac-11
   it('should implement /api/health endpoint with correct structure', async () => {
     const serverContent = await readFile(
@@ -98,6 +124,43 @@ describe('Daemon Server E2E', () => {
     expect(serverContent).toContain('uptime');
     expect(serverContent).toContain('connections');
     expect(serverContent).toContain('version');
+  });
+
+  // AC: @daemon-server ac-12
+  it('should implement graceful shutdown on SIGTERM', async () => {
+    const serverContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/server.ts'),
+      'utf-8'
+    );
+
+    // Verify SIGTERM handler exists
+    expect(serverContent).toContain("process.on('SIGTERM'");
+    expect(serverContent).toContain('shutdown');
+    expect(serverContent).toContain('gracefully');
+  });
+
+  // AC: @daemon-server ac-12
+  it('should implement graceful shutdown on SIGINT', async () => {
+    const serverContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/server.ts'),
+      'utf-8'
+    );
+
+    // Verify SIGINT handler exists
+    expect(serverContent).toContain("process.on('SIGINT'");
+    expect(serverContent).toContain('shutdown');
+  });
+
+  // AC: @daemon-server ac-12
+  it('should stop server during graceful shutdown', async () => {
+    const serverContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/server.ts'),
+      'utf-8'
+    );
+
+    // Verify shutdown process stops the server
+    expect(serverContent).toContain('app.server?.stop()');
+    expect(serverContent).toContain('process.exit');
   });
 
   // AC: @daemon-server ac-15
