@@ -31082,7 +31082,7 @@
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -31092,7 +31092,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:54.306Z
-  started_at: 2026-01-23T18:34:37.937Z
+  started_at: null
   notes:
     - _ulid: 01KFMN187TDY0F668ZBXB15XP0
       created_at: 2026-01-23T05:25:34.074Z
@@ -31134,6 +31134,11 @@
         - packages/web-ui/tests/items.spec.ts
         - packages/web-ui/tests/search.spec.ts
         - packages/web-ui/playwright.config.ts
+      supersedes: null
+    - _ulid: 01KFP2GMXV4498RG90JJ6AAEGT
+      created_at: 2026-01-23T18:40:24.507Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: eligible
