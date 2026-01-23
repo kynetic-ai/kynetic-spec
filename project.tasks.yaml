@@ -23833,6 +23833,7 @@
     - websocket
   vcs_refs: []
   created_at: 2026-01-23T05:17:11.329Z
+  started_at: 2026-01-23T11:43:29.972Z
   notes:
     - _ulid: 01KFMMHX90THXZYDKP63XF3RCZ
       created_at: 2026-01-23T05:17:11.329Z
@@ -23951,9 +23952,37 @@
         - ac-33: Given daemon is shutting down, when WebSocket connection active, then receives
         shutdown event with {reason}, connection closes gracefully
       supersedes: null
+    - _ulid: 01KFNANXMFD62K1A0BRD190PB7
+      created_at: 2026-01-23T11:43:51.439Z
+      author: "@claude"
+      content: >-
+        Analyzed current state. WebSocket protocol (ac-25 to ac-33) is fully implemented in
+        packages/daemon/src/websocket/. REST API endpoints (ac-2 to ac-24) need implementation. Only
+        /api/health exists currently.
+
+
+        Need to implement REST endpoints:
+
+        - Tasks API (ac-2 to ac-7): list, filter, get, start, add note
+
+        - Items API (ac-8 to ac-11): list, filter, get, get tasks
+
+        - Inbox API (ac-12 to ac-14): list, create, delete
+
+        - Meta API (ac-15 to ac-18): session, agents, workflows, observations
+
+        - Search/Validate (ac-19 to ac-21): search, validate, alignment
+
+        - Error handling (ac-22 to ac-24): 404, 400, 409 responses
+
+        - CORS configuration (ac-1)
+
+
+        This is a significant implementation task. Will need to create API route handlers that
+        integrate with kspec library functions.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T11:43:29.972Z
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
   slugs:
     - task-web-dashboard
