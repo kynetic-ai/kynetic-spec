@@ -2342,7 +2342,7 @@ runs:
   - _ulid: 01KFP8R7R6GCRG9QMGVQ1ZM78R
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-23T20:29:24.615Z
     step_results:
@@ -2415,5 +2415,47 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T20:30:05.820Z
-        completed_at: 2026-01-23T20:30:05.820Z
+        completed_at: 2026-01-23T20:30:51.490Z
+        notes: |-
+          ## Coverage Check Results
+
+          ### 1. No --depends-on for task add
+          **Status: Partially covered**
+          - @spec-task-set-batch implements batch support for task set
+          - @multi-ref-batch trait exists for batch operations
+          - Inbox item 01KFC3SV proposes 'Batch command execution via JSON'
+          - Inbox item proposes 'Spec-level depends_on field with derive integration'
+          - **Gap**: No --depends-on flag on 'task add' specifically
+
+          ### 2. Plan file won't persist (session context loss)
+          **Status: Not directly tracked**
+          - No existing item about plan file persistence
+          - Related to session management but not captured
+
+          ### 3. Multiple sequential note commands (no bulk task+notes)
+          **Status: Partially covered**
+          - @spec-task-set-batch and @trait-multi-ref-batch exist
+          - Inbox 01KFC3SV: 'Batch command execution via JSON' proposes generic batch
+          - **Gap**: No specific 'task add with notes' combination command
+
+          ### 4. No formal parent-child task relationships
+          **Status: Partially covered**
+          - @task-type-epic exists for parent tasks
+          - Inbox mentions 'Umbrella/parent tasks should depend on children'
+          - **Gap**: No formal parent_task field or child enumeration
+
+          ### 5. AC coverage verification manual
+          **Status: Partially covered**
+          - Inbox mentions 'AC coverage analysis tooling'
+          - @trait-validation exists for trait AC coverage
+          - **Gap**: No 'kspec coverage @spec' command for test coverage report
+
+          ### 6. CLI syntax discovery/trial-error
+          **Status: Not tracked**
+          - CLI help exists but required iteration
+          - No IDE completion or enhanced --help
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T20:30:51.490Z
+        completed_at: 2026-01-23T20:30:51.490Z
     initiated_by: "@claude"
