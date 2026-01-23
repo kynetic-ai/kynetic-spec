@@ -376,16 +376,6 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
-  - _ulid: 01KFKVC4W4MDREK0AEESYW0YNA
-    text: "Create Local Review Subagent workflow - quality enforcement for pre-PR review: check AC
-      coverage with annotations, verify test quality (no fluff), prefer E2E over unit, verify test
-      isolation (temp dirs), list as MUST-FIX. Needs matching skill."
-    created_at: 2026-01-22T21:57:08.100Z
-    tags:
-      - workflow
-      - review
-      - quality
-    added_by: "@claude"
   - _ulid: 01KFKW1ZGTR4BZ3QB87184MTM3
     text: Add update/note capability to inbox items - allow 'inbox update @ref --content' or 'inbox note
       @ref' to modify/append to items without delete+re-add cycle
