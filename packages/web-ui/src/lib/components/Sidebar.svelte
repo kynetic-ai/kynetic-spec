@@ -16,10 +16,10 @@
 
 	// Navigation items
 	const navItems = [
-		{ href: '/', label: 'Dashboard', icon: 'LayoutDashboard' },
-		{ href: '/tasks', label: 'Tasks', icon: 'CheckSquare' },
-		{ href: '/items', label: 'Items', icon: 'FileText' },
-		{ href: '/inbox', label: 'Inbox', icon: 'Inbox' }
+		{ href: '/', label: 'Dashboard' },
+		{ href: '/tasks', label: 'Tasks' },
+		{ href: '/items', label: 'Items' },
+		{ href: '/inbox', label: 'Inbox' }
 	];
 
 	// Connection status (will be wired to WebSocket later)
