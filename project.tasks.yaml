@@ -25985,6 +25985,52 @@
 
         Covers ac-2 through ac-7 from @api-contract.
       supersedes: null
+    - _ulid: 01KFNBQTWTEBEF5842TCEY7AY2
+      created_at: 2026-01-23T12:02:22.747Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created packages/daemon/src/routes/tasks.ts with all required
+        endpoints:
+
+
+        1. GET /api/tasks - Lists tasks with filters (status, type, tag) and pagination (ac-2, ac-3,
+        ac-4)
+
+        2. GET /api/tasks/:ref - Gets single task with full details including notes, todos,
+        dependencies (ac-5)
+
+        3. POST /api/tasks/:ref/start - Starts task with state transition and WebSocket broadcast
+        (ac-6)
+
+        4. POST /api/tasks/:ref/note - Adds note with shadow commit and WebSocket broadcast (ac-7)
+
+
+        Key implementation details:
+
+        - Integrated into server.ts via createTasksRoutes() plugin
+
+        - Uses existing parser APIs: initContext, loadAllTasks, ReferenceIndex, createNote,
+        saveTask, commitIfShadow
+
+        - Proper error handling: 404 for not_found, 400 for validation_error, 409 for
+        invalid_transition
+
+        - WebSocket broadcasts on 'tasks:updates' topic for mutations
+
+        - Added ulidx dependency to daemon package.json
+
+
+        Test coverage:
+
+        - 7 E2E tests in tests/daemon-api-tasks.test.ts
+
+        - All tests verify code structure and AC annotations
+
+        - Full test suite passes: 1174 tests
+
+
+        All 6 ACs (ac-2 through ac-7) from @api-contract are now implemented and tested.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQ725ZMG11F5SZM35SQFT
