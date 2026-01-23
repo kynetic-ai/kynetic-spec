@@ -1580,6 +1580,8 @@ features:
           Marks observation with promoted_to reference.
         implements:
           - "@meta-commands"
+        traits:
+          - "@trait-shadow-commit"
       - _ulid: 01KF1XCMD80000000000000000
         slugs:
           - meta-resolve-cmd
