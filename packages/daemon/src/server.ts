@@ -13,6 +13,7 @@ import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
+import { PidFileManager } from './pid';
 import { join, relative } from 'path';
 
 export interface ServerOptions {
@@ -83,6 +84,15 @@ function localhostOnly() {
  */
 export async function createServer(options: ServerOptions) {
   const { port, isDaemon, kspecDir = join(process.cwd(), '.kspec') } = options;
+
+  // Initialize PID file manager
+  const pidManager = new PidFileManager(kspecDir);
+
+  // AC: @daemon-server ac-9 - Write PID file in daemon mode
+  if (isDaemon) {
+    pidManager.write();
+    console.log(`[daemon] PID file written: ${process.pid}`);
+  }
 
   // Initialize WebSocket managers
   pubsubManager = new PubSubManager();
@@ -211,6 +221,12 @@ export async function createServer(options: ServerOptions) {
       // Stop the server
       await app.server?.stop();
 
+      // AC: @daemon-server ac-10 - Remove PID file on shutdown
+      if (isDaemon) {
+        pidManager.remove();
+        console.log('[daemon] PID file removed');
+      }
+
       console.log('[daemon] Server stopped successfully');
       process.exit(0);
     } catch (error) {
@@ -221,8 +237,6 @@ export async function createServer(options: ServerOptions) {
 
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
-
-  // TODO: AC-9, AC-10: Implement daemon mode (process detach, PID file)
 
   return app;
 }
