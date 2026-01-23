@@ -30046,6 +30046,12 @@
 
         Submit task and create PR for final subtask.
       supersedes: null
+    - _ulid: 01KFNTPW8JV992CYE2YQZMEP1H
+      created_at: 2026-01-23T16:24:00.019Z
+      author: "@claude"
+      content: "Local review feedback: Missing test coverage for client-side WebSocketManager (ac-28 to
+        ac-33). Adding unit tests now."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
