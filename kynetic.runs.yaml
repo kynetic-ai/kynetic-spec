@@ -2345,6 +2345,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T20:29:24.615Z
+    completed_at: 2026-01-23T20:39:37.715Z
     step_results:
       - step_index: 0
         status: completed
@@ -2540,4 +2541,11 @@ runs:
           ### Skipped:
           - Batch task creation: covered by existing inbox 01KFC3SV
     initiated_by: "@claude"
-    completed_at: 2026-01-23T20:39:37.715Z
+  - _ulid: 01KFPF5DN5E7T2YVS1V9H2ZAES
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-23T22:21:28.101Z
+    step_results: []
+    initiated_by: "@claude"
