@@ -57,17 +57,18 @@ pending → in_progress → pending_review → completed
 
 ## Workflow Overview
 
-9 steps for full task lifecycle:
+10 steps for full task lifecycle:
 
-1. **Choose Task** - Select from ready tasks
-2. **Verify Not Done** - Check git history, existing code
-3. **Start Task** - Mark in_progress
-4. **Work & Note** - Add notes during work
-5. **Commit** - Ensure changes committed with trailers
-6. **Submit Task** - Mark pending_review
-7. **Create PR** - Use /pr skill
-8. **PR Merged** - Wait for review and merge
-9. **Complete Task** - Mark completed after merge
+1. **Check Existing Work** - Inherit in_progress or pending_review tasks first
+2. **Choose Task** - Select from ready tasks (if no existing work)
+3. **Verify Not Done** - Check git history, existing code
+4. **Start Task** - Mark in_progress
+5. **Work & Note** - Add notes during work
+6. **Commit** - Ensure changes committed with trailers
+7. **Submit Task** - Mark pending_review
+8. **Create PR** - Use /pr skill
+9. **PR Merged** - Wait for review and merge
+10. **Complete Task** - Mark completed after merge
 
 ## Key Commands
 
