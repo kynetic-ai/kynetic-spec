@@ -25372,6 +25372,78 @@
 
         3. Continue with next subtask @01KFMMT9 (Spec item tree/detail views)
       supersedes: null
+    - _ulid: 01KFNP4FVWKYA90J89SCT1HR40
+      created_at: 2026-01-23T15:04:03.196Z
+      author: "@claude"
+      content: >-
+        Session 38 Checkpoint - Parent Task Status:
+
+
+        This parent task coordinates 8 derived subtasks for Web Dashboard implementation. It remains
+        in_progress as the umbrella tracker.
+
+
+        **Session 38 Accomplishments:**
+
+        - Completed subtask @01KFMMT4 (Task list and detail views)
+
+        - Implemented comprehensive task browsing UI with filters, detail panel, and actions
+
+        - Covers acceptance criteria ac-4 through ac-10 (7 ACs)
+
+        - Code committed (f2d9e06) and pushed to feat/dashboard-layout branch
+
+
+        **Overall Progress: 2.5/8 subtasks**
+
+        1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED & MERGED (PR #197)
+
+        2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198, awaiting manual GitHub
+        thread resolution)
+
+        3. ✅ @01KFMMT4 - Task list/detail views - SUBMITTED (ready for PR)
+
+        4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY
+
+        5. ⏸️ @01KFMMTD - Inbox view - READY
+
+        6. ⏸️ @01KFMMTJ - Session context/observations panel - READY
+
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+
+        **Blockers:**
+
+        - PR #198 needs manual resolution of review threads in GitHub UI (user action required)
+
+
+        **Next Session Plan:**
+
+        1. Create PR for @01KFMMT4
+
+        2. If PR #198 resolved, merge it and complete @01KFMMT0
+
+        3. Continue with @01KFMMT9 (Spec item tree/detail views)
+
+
+        **Technical State:**
+
+        - All code on feat/dashboard-layout branch
+
+        - Build: ✅ (vite build succeeds)
+
+        - Tests: ✅ (1207 tests passing)
+
+        - No uncommitted changes
+
+        - No technical blockers
+
+
+        This task will be completed once all 8 subtasks are done and merged. Currently 1/8 merged,
+        1/8 in review, 1/8 submitted, 5/8 pending.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
