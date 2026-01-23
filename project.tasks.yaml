@@ -24522,6 +24522,42 @@
 
         This parent task remains in_progress until all derived subtasks complete.
       supersedes: null
+    - _ulid: 01KFNGCHJWQBT11N54NZ0M2DS5
+      created_at: 2026-01-23T13:23:35.645Z
+      author: "@claude"
+      content: |-
+        SESSION CHECKPOINT - Iteration 28 end
+
+        PARENT TASK STATUS: IN_PROGRESS (remains until all subtasks complete)
+
+        OVERALL PROGRESS: 27 of 33 ACs implemented and merged
+        - ✅ Completed: ac-1 through ac-18, ac-25 through ac-33
+        - 🔄 In Progress: @01KFMMQF (ac-19 through ac-21) - analysis complete, ready to implement
+        - ⏳ Ready: @01KFMMQM (ac-22 through ac-24) - error handling middleware
+
+        COMPLETED SUBTASKS (merged to main):
+        1. @01KFMMPY: API foundation and CORS (ac-1) - PR #190
+        2. @01KFMMQ2: Task API endpoints (ac-2 through ac-7) - PR #191
+        3. @01KFMMQ7: Spec item API endpoints (ac-8 through ac-11) - PR #192
+        4. @01KFMMQB: Inbox and meta API endpoints (ac-12 through ac-18) - PR #193 ← JUST MERGED
+
+        IN PROGRESS SUBTASKS:
+        - @01KFMMQF: Started, analysis complete, implementation ready for next session
+
+        REMAINING WORK:
+        - Complete @01KFMMQF implementation (3 endpoints: search, validate, alignment)
+        - Start and complete @01KFMMQM (error handling middleware)
+        - Then complete this parent task
+
+        ITERATION 28 HIGHLIGHTS:
+        - Fixed critical bug in PR #193 (meta.items → meta.agents/workflows)
+        - Merged PR #193 after full review workflow
+        - All 1193 tests passing
+        - No blockers
+
+        NEXT SESSION:
+        Continue @01KFMMQF - all research done, ready to implement validation.ts routes file.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
