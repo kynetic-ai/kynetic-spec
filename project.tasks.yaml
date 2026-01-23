@@ -24632,7 +24632,36 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:59.553Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMWY7Z0VXPRVM8GZZAK895
+      created_at: 2026-01-23T05:23:12.767Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement global search with Cmd+K command palette.
+
+        ### Steps
+        1. Command palette:
+           - Opens on Cmd+K / Ctrl+K
+           - shadcn Command component
+           - Debounced search (300ms)
+
+        2. Search results:
+           - Group by type (tasks, items, inbox)
+           - Click navigates to detail
+           - Keyboard navigation
+
+        ### ACs Covered
+        - ac-23: Cmd+K opens palette
+        - ac-24: Debounced search with grouped results
+        - ac-25: Click navigates to detail
+
+        ### Files to Create
+        - packages/web-ui/src/lib/components/CommandPalette.svelte
+        - packages/web-ui/src/lib/components/SearchResults.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMTVGX2BZQF7NBTMS4HP42
   slugs: []
