@@ -13,13 +13,8 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "@kynetic-ai/shared": ["./packages/shared/src"],
-      "@kynetic-ai/daemon": ["./packages/daemon/src"],
-      "@kynetic-ai/web-ui": ["./packages/web-ui/src"]
-    }
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist"]
 }

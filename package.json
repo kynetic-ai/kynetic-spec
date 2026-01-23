@@ -3,6 +3,9 @@
   "version": "0.1.2",
   "description": "Kynetic Spec - Structured specification format for human-AI collaboration",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {

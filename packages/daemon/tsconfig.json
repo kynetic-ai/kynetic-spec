@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "lib": ["ES2022"],
     "outDir": "dist",
     "rootDir": "src",
@@ -14,12 +14,8 @@
     "declarationMap": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "paths": {
-      "@kynetic-ai/shared": ["./packages/shared/src"],
-      "@kynetic-ai/daemon": ["./packages/daemon/src"],
-      "@kynetic-ai/web-ui": ["./packages/web-ui/src"]
-    }
+    "types": ["bun-types"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist"]
 }
