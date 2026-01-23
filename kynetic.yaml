@@ -427,6 +427,10 @@ traits:
         given: a spec item uses @trait-retrospective
         when: validation runs alignment checks
         then: no 'orphaned spec' warning is generated for missing tasks
+      - id: ac-2
+        given: a spec uses @trait-retrospective
+        when: status is set to implemented or verified
+        then: verified_at (ISO timestamp) and verified_by (agent ref) are required
 includes:
   - modules/core.yaml
   - modules/schema.yaml
