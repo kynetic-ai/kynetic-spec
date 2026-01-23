@@ -24701,6 +24701,7 @@
         - packages/web-ui/src/lib/components/ObservationItem.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMTPR2Y6CPKRJEJ2X25Y0S
   slugs: []
   title: Global search command palette
