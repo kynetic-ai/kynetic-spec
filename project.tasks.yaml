@@ -24051,6 +24051,13 @@
         Next session: Continue with @01KFMMPY (waiting for PR merge), then move to @01KFMMQ2 and
         subsequent API endpoint tasks.
       supersedes: null
+    - _ulid: 01KFNBDY3QT3D5120KWR0RWZMF
+      created_at: 2026-01-23T11:56:58.360Z
+      author: "@claude"
+      content: "Iteration 23: @01KFMMPY completed and merged (PR #190). ac-1 (CORS) is now fully
+        implemented. Moving to next derived task @01KFMMQ2 (Task API endpoints) to implement ac-2
+        through ac-7."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
@@ -25751,6 +25758,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev
+    server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe
+    to merge."
   depends_on: []
   context: []
   priority: 2
@@ -25760,6 +25770,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:19:56.045Z
   started_at: 2026-01-23T11:44:23.856Z
+  completed_at: 2026-01-23T11:56:41.750Z
   notes:
     - _ulid: 01KFMMRNMJCFFNY203YNDGA054
       created_at: 2026-01-23T05:20:52.882Z
@@ -25889,10 +25900,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T11:56:41.750Z
-  closed_reason: "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev
-    server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe
-    to merge."
 - _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
   slugs: []
   title: Task API endpoints
