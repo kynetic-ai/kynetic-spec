@@ -706,3 +706,7 @@ features:
             given: file is *.tasks.yaml
             when: merge driver runs
             then: tasks array is merged using task-specific strategy
+          - id: ac-2
+            given: file is *.inbox.yaml
+            when: merge driver runs
+            then: items array is merged using inbox-specific strategy
