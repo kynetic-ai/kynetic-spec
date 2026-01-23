@@ -24550,6 +24550,7 @@
         - packages/web-ui/src/lib/components/TaskFilters.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMT99M68WVP261SJKB326F
   slugs: []
   title: Spec item tree and detail views
