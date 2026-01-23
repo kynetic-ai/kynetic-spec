@@ -24949,6 +24949,7 @@
         - packages/web-ui/src/routes/+layout.ts (load snapshot)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
   slugs: []
   title: Read-only mode behaviors
