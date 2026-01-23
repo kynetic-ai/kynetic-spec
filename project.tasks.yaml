@@ -25561,6 +25561,42 @@
         **Next Session:**
         Start @01KFMMTD (Inbox view) - 4 more subtasks remaining.
       supersedes: null
+    - _ulid: 01KFNPZTK02AS2PABG61NVZC2X
+      created_at: 2026-01-23T15:18:58.913Z
+      author: "@claude"
+      content: |-
+        Iteration 40 Complete: Inbox view implementation
+
+        **Progress Update: 4/8 subtasks submitted, 4/8 merged**
+
+        Completed @01KFMMTD (Inbox view):
+        - Full inbox list with add/delete functionality
+        - Cards with text, tags, author, relative timestamps
+        - Add button toggles input field (Enter to submit)
+        - Delete with confirmation dialog
+        - Loading states and error handling
+        - AC coverage: ac-16, ac-17, ac-18, ac-19
+
+        **Subtask Status:**
+        1. ✅ @01KFMMSV - SvelteKit scaffold - MERGED (PR #197)
+        2. ✅ @01KFMMT0 - Dashboard layout/navigation - MERGED (PR #198)
+        3. ✅ @01KFMMT4 - Task list/detail views - MERGED (PR #198)
+        4. ✅ @01KFMMT9 - Spec item tree/detail views - MERGED (PR #198)
+        5. ✅ @01KFMMTD - Inbox view - SUBMITTED (commit 76f318f)
+        6. ⏸️ @01KFMMTJ - Session context/observations panel - READY
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+        **What's Working:**
+        - Complete inbox CRUD operations
+        - Proper error handling and loading states
+        - AC annotations throughout
+        - All 1207 tests passing
+        - Build successful
+
+        **Next Session:**
+        Start @01KFMMTJ (Session context/observations panel) after creating PR for inbox view.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
