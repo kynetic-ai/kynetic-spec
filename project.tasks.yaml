@@ -23322,10 +23322,66 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T01:29:33.590Z
-  notes: []
+  started_at: 2026-01-23T07:36:53.960Z
+  notes:
+    - _ulid: 01KFMX1HNHF7VY68THKAADZ9AP
+      created_at: 2026-01-23T07:45:32.337Z
+      author: "@claude"
+      content: >-
+        Implemented merge-driver CLI command with all 3 acceptance criteria:
+
+
+        AC-1: Command accepts git standard arguments (%O %A %B %L %P) and performs semantic YAML
+        merge
+
+        - Reads base, ours, theirs files
+
+        - Merges using ULID-array-aware algorithm (handles task arrays specially)
+
+        - Writes merged result back to ours path (%A)
+
+
+        AC-2: Stderr output shows merge summary
+
+        - Clean merges: 'Merged successfully (no conflicts)'
+
+        - Conflicted merges: 'Merged with N conflict(s): ...' with conflict details
+
+        - Parse failures: 'Merge failed: Parse error' with fallback message
+
+
+        AC-3: --non-interactive mode writes conflicts as YAML comments
+
+        - Conflicts formatted as multi-line YAML comments at top of file
+
+        - Shows: CONFLICT, Path, ULID (if applicable), Ours/Theirs values, Resolution
+
+        - Defaults to ours value
+
+
+        Implementation approach:
+
+        - Created mergeObjectsWithArrays() function that detects ULID arrays and merges them
+        specially
+
+        - For ULID arrays: use mergeUlidArrays() to merge array structure, then recursively merge
+        each item's fields
+
+        - For non-ULID fields: delegate to standard mergeObjects()
+
+        - Exit code: 0 for clean merge, 1 for conflicts (git standard)
+
+
+        Test coverage:
+
+        - 8 comprehensive tests covering all 3 ACs
+
+        - Tests clean merges, conflicting merges, parse failures, multi-conflict scenarios
+
+        - All 1049 project tests pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T07:36:53.960Z
 - _ulid: 01KFM7H6NXZCJM5955A5Q5A7P2
   slugs: []
   title: "Merge driver: auto-configuration on init"
