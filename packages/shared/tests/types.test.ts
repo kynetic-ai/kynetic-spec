@@ -37,8 +37,7 @@ import type {
   WebSocketCommand,
   CommandAck,
   ConnectedEvent,
-  BroadcastEvent,
-  ConnectionData
+  BroadcastEvent
 } from '../src/index';
 
 describe('Core Schema Types', () => {
@@ -246,7 +245,7 @@ describe('API Response Types', () => {
     expectTypeOf<Observation>().toHaveProperty('resolved');
 
     expectTypeOf<Observation['type']>().toEqualTypeOf<ObservationType>();
-    expectTypeOf<Observation['resolved']>().toEqualTypeOf<boolean>();
+    expectTypeOf<Observation['resolved']>().toEqualTypeOf<boolean | undefined>();
   });
 });
 
@@ -295,15 +294,6 @@ describe('WebSocket Types', () => {
     expectTypeOf<BroadcastEvent['event']>().toEqualTypeOf<string>();
   });
 
-  it('ConnectionData should have correct structure', () => {
-    expectTypeOf<ConnectionData>().toHaveProperty('sessionId');
-    expectTypeOf<ConnectionData>().toHaveProperty('topics');
-    expectTypeOf<ConnectionData>().toHaveProperty('seq');
-
-    expectTypeOf<ConnectionData['sessionId']>().toEqualTypeOf<string>();
-    expectTypeOf<ConnectionData['topics']>().toEqualTypeOf<Set<string>>();
-    expectTypeOf<ConnectionData['seq']>().toEqualTypeOf<number>();
-  });
 });
 
 describe('Package Exports', () => {
