@@ -23865,6 +23865,7 @@
         - packages/daemon/src/watcher/fallback.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMMD7T322JYB64V10A30MF
   slugs: []
   title: Implement WebSocket protocol
