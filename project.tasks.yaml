@@ -25804,6 +25804,40 @@
 
         Status: Investigation complete, implementation verification needed.
       supersedes: null
+    - _ulid: 01KFNB151ZZ2K0WB3QZVHJSX5A
+      created_at: 2026-01-23T11:49:59.487Z
+      author: "@claude"
+      content: >-
+        Implemented ac-1: CORS configuration for localhost:5173 dev server.
+
+
+        Changes made:
+
+        1. Updated CORS config in packages/daemon/src/server.ts:
+           - Changed from 'origin: true' (same-origin only) to explicit origins
+           - Added 'http://localhost:5173' and 'http://127.0.0.1:5173' to allowed origins
+           - Added explicit methods array (GET, POST, PUT, DELETE, OPTIONS)
+           - Maintained credentials: true for cross-origin cookies/auth
+
+        2. Added E2E test in tests/daemon-server.test.ts:
+           - Test verifies CORS config includes both localhost:5173 and 127.0.0.1:5173
+           - Checks credentials flag is enabled
+           - Annotated with AC: @api-contract ac-1
+
+        Rationale:
+
+        - Dev server on localhost:5173 needs CORS headers to make requests to daemon on
+        localhost:3456
+
+        - Different ports = different origins, so same-origin policy would block
+
+        - Supporting both localhost and 127.0.0.1 handles IPv4/IPv6 variations
+
+        - Explicit origins more secure than wildcard
+
+
+        All 1167 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
