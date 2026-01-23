@@ -23147,6 +23147,22 @@
         real tests. Need to implement automated tests with mocked stdin/stdout for
         promptScalarConflict() and promptDeleteModifyConflict() before merge."
       supersedes: null
+    - _ulid: 01KFMVGF496C1DF7X0F0A9CS73
+      created_at: 2026-01-23T07:18:44.105Z
+      author: "@claude"
+      content: >-
+        Fixed AC-4 and AC-8 test coverage by:
+
+        1. Refactored promptScalarConflict() and promptDeleteModifyConflict() to accept optional
+        createInterface parameter for dependency injection
+
+        2. Replaced fluff tests with 9 real automated tests that mock readline interface
+
+        3. Also simplified confusing ternary logic in promptDeleteModifyConflict() (choice field is
+        always 'ours' or 'theirs', never conditional)
+
+        All 1033 tests pass. Ready for merge.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFM7GNQVA1J6APAFA694V14C
