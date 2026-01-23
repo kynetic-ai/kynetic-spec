@@ -175,6 +175,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T01:39:44.041Z
+    completed_at: 2026-01-23T01:47:28.923Z
     step_results:
       - step_index: 0
         status: completed
@@ -215,4 +216,11 @@ runs:
           @01KFM8HF, (3) Plan+review success pattern - observation @01KFM8HP. Skipped bulk AC (user:
           existing plan for bulk cmd mode)."
     initiated_by: "@claude"
-    completed_at: 2026-01-23T01:47:28.923Z
+  - _ulid: 01KFM9ESBNX3V641EG2N5FB3AW
+    workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
+    status: active
+    current_step: 0
+    total_steps: 7
+    started_at: 2026-01-23T02:03:14.678Z
+    step_results: []
+    initiated_by: "@claude"
