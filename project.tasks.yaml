@@ -31861,7 +31861,74 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:47.924Z
-  notes: []
+  notes:
+    - _ulid: 01KFP8775DN1W0RZ0FZNRN14Q6
+      created_at: 2026-01-23T20:20:06.957Z
+      author: "@claude"
+      content: |-
+        ## Objective
+        Write E2E tests for the items/spec view covering @web-dashboard ac-11 through ac-15.
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+        ## File
+        packages/web-ui/tests/e2e/items.spec.ts
+
+        ## Acceptance Criteria Coverage
+
+        | AC | Description |
+        |----|-------------|
+        | ac-11 | Hierarchical tree with modules > features > requirements |
+        | ac-12 | Item detail shows title, description, ACs (GWT), traits, status |
+        | ac-13 | Implementation section shows linked tasks |
+        | ac-14 | Traits shown as clickable chips |
+        | ac-15 | AC row expands to show full GWT |
+
+        ## Test Cases
+
+        ```typescript
+        test.describe('Items View', () => {
+          test.describe('Item Tree', () => {
+            // AC: @web-dashboard ac-11
+            test('displays hierarchical tree structure', async ({ page }) => {
+              await page.goto('/items');
+              await expect(page.getByTestId('item-tree')).toBeVisible();
+              // Verify module > feature > requirement hierarchy
+            });
+            test('expands and collapses tree nodes', async ({ page }) => {
+              const node = page.getByTestId('tree-node-module');
+              await node.click();
+              await expect(page.getByTestId('tree-node-feature')).toBeVisible();
+            });
+          });
+
+          test.describe('Item Detail', () => {
+            // AC: @web-dashboard ac-12
+            test('shows title, description, implementation status');
+            test('displays acceptance criteria in GWT format');
+            // AC: @web-dashboard ac-13
+            test('shows linked tasks in Implementation section');
+            // AC: @web-dashboard ac-14
+            test('shows traits as clickable chips');
+            // AC: @web-dashboard ac-15
+            test('AC row expands to full Given/When/Then', async ({ page }) => {
+              await page.getByTestId('ac-row').first().click();
+              await expect(page.getByText('Given')).toBeVisible();
+              await expect(page.getByText('When')).toBeVisible();
+              await expect(page.getByText('Then')).toBeVisible();
+            });
+          });
+        });
+        ```
+
+        ## data-testid Attributes Needed
+        - item-tree, tree-node-*
+        - item-detail-panel
+        - item-title, item-description, item-status
+        - acceptance-criteria, ac-row
+        - implementation-tasks
+        - trait-chip
+      supersedes: null
   todos: []
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   slugs: []
