@@ -464,3 +464,10 @@ inbox:
     created_at: 2026-01-23T12:24:11.370Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFND00TXHH8MZ2XP0FBZ44KA
+    text: "Convert daemon static analysis tests to real E2E tests that start daemon and make HTTP
+      requests. Current tests verify code structure exists but don't test runtime behavior. Affects:
+      daemon-server.test.ts, daemon-api-tasks.test.ts, future endpoint tests."
+    created_at: 2026-01-23T12:24:19.549Z
+    tags: []
+    added_by: "@claude"
