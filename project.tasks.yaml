@@ -24066,6 +24066,7 @@
         - Log rotation can be added later
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMPY4DM95VNXZ278VK32H1
   slugs: []
   title: API foundation and CORS middleware
