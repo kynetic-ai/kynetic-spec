@@ -32434,5 +32434,92 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:19:14.646Z
-  notes: []
+  notes:
+    - _ulid: 01KFP8A4Z8SPPD9Z4SYNS1EZN5
+      created_at: 2026-01-23T20:21:43.016Z
+      author: "@claude"
+      content: |-
+        ## Objective
+        Write E2E tests for navigation and URL state covering @web-dashboard ac-10, ac-26, ac-27.
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+        ## File
+        packages/web-ui/tests/e2e/navigation.spec.ts
+
+        ## Acceptance Criteria Coverage
+
+        | AC | Description |
+        |----|-------------|
+        | ac-10 | URL updates with filter query params |
+        | ac-26 | Responsive: < 768px single column, bottom nav |
+        | ac-27 | Responsive: >= 1024px detail as slide-over |
+
+        ## Test Cases
+
+        ```typescript
+        test.describe('Navigation', () => {
+          test.describe('Deep Linking', () => {
+            test('navigates directly to task by URL', async ({ page }) => {
+              await page.goto('/tasks/@task-setup');
+              await expect(page.getByTestId('task-detail-panel')).toBeVisible();
+            });
+            test('navigates directly to item by URL', async ({ page }) => {
+              await page.goto('/items/@web-dashboard');
+              await expect(page.getByTestId('item-detail-panel')).toBeVisible();
+            });
+            // AC: @web-dashboard ac-10
+            test('preserves filter state in URL', async ({ page }) => {
+              await page.goto('/tasks');
+              await page.getByTestId('filter-status').selectOption('pending');
+              await expect(page).toHaveURL(/status=pending/);
+              // Reload and verify filter persists
+              await page.reload();
+              await expect(page.getByTestId('filter-status')).toHaveValue('pending');
+            });
+          });
+
+          test.describe('Browser Navigation', () => {
+            test('back button returns to previous view', async ({ page }) => {
+              await page.goto('/tasks');
+              await page.getByTestId('task-row').first().click();
+              await page.goBack();
+              await expect(page.getByTestId('task-detail-panel')).not.toBeVisible();
+            });
+            test('forward button works after back');
+          });
+
+          test.describe('Keyboard Navigation', () => {
+            test('tab navigates through task list');
+            test('enter selects focused item');
+            test('escape closes detail panel');
+          });
+
+          test.describe('Responsive Layout', () => {
+            // AC: @web-dashboard ac-26
+            test('mobile: single column with bottom nav', async ({ page }) => {
+              await page.setViewportSize({ width: 375, height: 667 });
+              await page.goto('/');
+              await expect(page.getByTestId('sidebar')).not.toBeVisible();
+              await expect(page.getByTestId('bottom-nav')).toBeVisible();
+            });
+            // AC: @web-dashboard ac-27
+            test('desktop: detail opens as slide-over', async ({ page }) => {
+              await page.setViewportSize({ width: 1280, height: 720 });
+              await page.goto('/tasks');
+              await page.getByTestId('task-row').first().click();
+              // Detail should be slide-over, list still visible
+              await expect(page.getByTestId('task-list')).toBeVisible();
+              await expect(page.getByTestId('task-detail-panel')).toBeVisible();
+            });
+          });
+        });
+        ```
+
+        ## data-testid Attributes Needed
+        - sidebar, bottom-nav
+        - task-list, task-row
+        - task-detail-panel, item-detail-panel
+        - filter-status
+      supersedes: null
   todos: []
