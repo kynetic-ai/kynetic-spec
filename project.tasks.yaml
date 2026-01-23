@@ -25838,6 +25838,25 @@
 
         All 1167 tests pass.
       supersedes: null
+    - _ulid: 01KFNB55TJYKWMCT4V91T8GQWA
+      created_at: 2026-01-23T11:52:11.346Z
+      author: "@claude"
+      content: |-
+        Iteration 22: Created PR #190 for CORS configuration.
+
+        PR: https://github.com/kynetic-ai/kynetic-spec/pull/190
+        Branch: feat/api-cors-config
+
+        Current status:
+        - Code changes committed and pushed
+        - Task submitted for review
+        - PR created with test plan and context
+        - Started @pr-review-merge workflow (@01KFNB4A)
+        - Waiting for CI checks to complete (Greptile Review, claude-review, test are pending)
+        - check-unresolved-comments already passed
+
+        Next session: Continue workflow once CI completes, then merge and complete task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
