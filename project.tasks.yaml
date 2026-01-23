@@ -20784,6 +20784,23 @@
         alignment.ts to skip retrospective specs from orphaned spec warnings (findAlignmentWarnings
         method, line 213-220). Need to check for @trait-retrospective in spec.traits array.
       supersedes: null
+    - _ulid: 01KFMY2B5SJDJY4CQAN415HN5C
+      created_at: 2026-01-23T08:03:27.033Z
+      author: "@claude"
+      content: >-
+        Implementation complete! All 4 ACs implemented:
+
+        - AC-1: alignment.ts skips retrospective specs from orphaned warnings
+
+        - AC-2: validate.ts requires verified_at/verified_by for implemented/verified retrospective
+        specs
+
+        - AC-3: validate.ts warns about missing verification metadata
+
+        - AC-4: item.ts get command shows retrospective status and verification info
+
+        Added --verified-by/--verified-at flags to item set. All 1049 tests pass.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
