@@ -28698,6 +28698,55 @@
         - packages/web-ui/src/lib/components/TaskFilters.svelte (create)
         - packages/web-ui/src/lib/api.ts (create - API client helpers)
       supersedes: null
+    - _ulid: 01KFNP1W523WGWZJK70VH4X40D
+      created_at: 2026-01-23T15:02:37.475Z
+      author: "@claude"
+      content: |-
+        Implementation complete!
+
+        Created components:
+        ✅ packages/web-ui/src/lib/api.ts - API client helpers
+        ✅ packages/web-ui/src/lib/components/TaskFilters.svelte - Filter controls
+        ✅ packages/web-ui/src/lib/components/TaskList.svelte - Task table display
+        ✅ packages/web-ui/src/lib/components/TaskDetail.svelte - Task detail Sheet
+        ✅ Updated packages/web-ui/src/routes/tasks/+page.svelte - Main tasks page
+
+        Installed shadcn-svelte components:
+        ✅ Textarea
+        ✅ Select
+
+        Acceptance Criteria Coverage:
+        ✅ ac-4: Task list displays title, status, priority, spec_ref, notes count
+        ✅ ac-5: Task detail panel shows notes (chronological), todos, dependencies
+        ✅ ac-6: Spec_ref is clickable link to /items?ref=...
+        ✅ ac-7: Start Task button POSTs to /api/tasks/:ref/start
+        ✅ ac-8: Add Note textarea POSTs to /api/tasks/:ref/note
+        ✅ ac-9: Filter controls for status, type, tag, assignee, automation
+        ✅ ac-10: URL-based filter state with query params
+
+        Features:
+        - Responsive table layout
+        - Real-time reloading after actions
+        - Error handling and loading states
+        - Task status badges with color coding
+        - Priority display with visual hierarchy
+        - Sheet/slide-over pattern for detail view
+        - Filter state persists in URL
+        - Clear Filters button
+
+        Build Status:
+        ✅ vite build succeeds
+        ✅ All 1207 tests pass
+
+        Next Steps:
+        This completes the Task list and detail views. Subsequent subtasks will implement:
+        - Dashboard homepage (ac-1, ac-2, ac-3)
+        - Spec item tree/detail views
+        - Inbox functionality
+        - Session context/observations panel
+        - Search command palette
+        - WebSocket integration for real-time updates
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMT99M68WVP261SJKB326F
