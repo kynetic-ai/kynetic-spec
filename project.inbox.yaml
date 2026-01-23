@@ -508,3 +508,15 @@ inbox:
       - cli
       - testing
     added_by: "@claude"
+  - _ulid: 01KFP9A9PMZWJM61MAJM33BGK6
+    text: First-party plan support with shadow branch storage - Store plan documents in kspec shadow
+      branch (e.g., .kspec/plans/) and link them to derived tasks. Plans persist across sessions,
+      provide implementation context without embedding in notes. Could integrate with Claude Code
+      plan mode workflow. Medium scope. Surfaced when plan file at ~/.claude/plans/ wouldn't persist
+      for future sessions.
+    created_at: 2026-01-23T20:39:16.436Z
+    tags:
+      - reflection
+      - planning
+      - shadow
+    added_by: "@claude"
