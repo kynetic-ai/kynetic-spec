@@ -473,14 +473,6 @@ inbox:
     created_at: 2026-01-22T04:35:06.468Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KFHZR6CHCHEHSN9Q7DRJGCTC
-    text: "Programmatic YAML merge strategy for shadow conflicts. Current approach uses git text merge
-      (--ff-only then --rebase) which can fail on YAML. Proposal: (1) Parse both versions in JS, (2)
-      Merge semantically (items arrays, task state, etc), (3) Register kspec as custom git merge
-      driver. Need to spec this feature and configure git to use it."
-    created_at: 2026-01-22T04:35:08.305Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFKMWB9ASPMYGVCDMANYNBJA
     text: "[bug] 'kspec help workflow' shows unrelated 'Typical Workflow' content because
       helpContent['workflow'] key collides with workflow CLI command name. The task workflow guide
