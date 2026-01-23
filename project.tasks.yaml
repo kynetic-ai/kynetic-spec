@@ -31146,7 +31146,7 @@
     recommendations."
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -31262,6 +31262,10 @@
         3. Then merge type validation work
       supersedes: null
   todos: []
+  completed_at: 2026-01-23T18:34:15.937Z
+  closed_reason: "PR #206 merged successfully. Type validation tests added to shared package with 25
+    tests covering core schemas, API types, and WebSocket types. All review feedback addressed
+    (claude-review and Greptile). All CI checks passed."
 - _ulid: 01KFNW2K10FKNKASXKYH1EBYC5
   slugs: []
   title: Fix ralph OOM by periodic agent restart
