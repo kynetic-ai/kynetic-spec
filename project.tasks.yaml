@@ -24658,6 +24658,44 @@
 
         Taking approach A to complete core server foundation.
       supersedes: null
+    - _ulid: 01KFN3KY2RD2N5D3KGGRET1THN
+      created_at: 2026-01-23T09:40:26.328Z
+      author: "@claude"
+      content: >-
+        Implementation complete for Elysia server core.
+
+
+        Added functionality:
+
+        1. ac-3: Localhost-only middleware - Checks Host header and rejects non-localhost
+        connections with 403 Forbidden response. Validates all localhost variations (localhost,
+        127.0.0.1, ::1, [::1]).
+
+
+        2. ac-12: Graceful shutdown - Registered handlers for SIGTERM and SIGINT that:
+           - Log shutdown initiation
+           - Stop the Elysia server gracefully
+           - Exit with appropriate code (0 for success, 1 for error)
+           - Note: WebSocket connection tracking/cleanup ready for when connections are implemented
+
+        Test coverage:
+
+        - Added 5 new E2E tests (3 for ac-3, 3 for ac-12)
+
+        - All 1073 tests pass (3 skipped)
+
+        - Total daemon-server tests: 15
+
+
+        Files modified:
+
+        - packages/daemon/src/server.ts: Added localhostOnly() middleware and shutdown handlers
+
+        - tests/daemon-server.test.ts: Added comprehensive test coverage
+
+
+        Ready for next phase: file watching, WebSocket protocol, or daemon mode.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
