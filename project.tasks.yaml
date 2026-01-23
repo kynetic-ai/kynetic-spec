@@ -24333,6 +24333,7 @@
         - packages/daemon/src/routes/alignment.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
   slugs: []
   title: API error handling middleware
