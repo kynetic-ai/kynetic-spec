@@ -38,8 +38,9 @@ describe('Daemon Server', () => {
       'utf-8'
     );
 
-    expect(indexContent).toContain('--port=');
-    expect(indexContent).toContain('3456');
+    // Check that port parsing exists with default value
+    expect(indexContent).toContain("port: { type: 'string', default: '3456' }");
+    expect(indexContent).toContain('const port = parseInt(values.port as string, 10)');
   });
 
   // AC: @daemon-server ac-2
@@ -270,15 +271,14 @@ describe('Daemon Server', () => {
     expect(serverContent).toContain("'/ws'");
   });
 
-  it('should parse --daemon flag in CLI', async () => {
+  it('should set isDaemon true for standalone daemon', async () => {
     const indexContent = await readFile(
       join(process.cwd(), 'packages/daemon/src/index.ts'),
       'utf-8'
     );
 
-    // AC-9: daemon mode support
-    expect(indexContent).toContain('--daemon');
-    expect(indexContent).toContain('isDaemon');
+    // AC-9: daemon mode support - daemon entry point always runs in daemon mode
+    expect(indexContent).toContain('isDaemon: true');
   });
 
   it('should export createServer function with correct signature', async () => {
