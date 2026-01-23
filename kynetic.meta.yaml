@@ -220,40 +220,50 @@ workflows:
   - _ulid: 01KFM9G3BR4VFNBM2G7BGE5BZY
     id: pr-review-merge
     trigger: pr-merge
-    description: Quality gate for PR review and merge. Ensures CI passes, review comments are addressed,
-      user requests completed, and threads resolved before merging.
+    description: Quality gate for reviewing and merging PRs. Ensures all CI passes, all reviews addressed,
+      all requests completed, and all threads resolved before merge. Do not merge unless user explicitly
+      overrides.
     steps:
+      - type: check
+        content: All CI checks complete (none pending or running)
+        on_fail: Wait for CI to finish. Do not merge while checks are running.
+      - type: check
+        content: All CI checks pass (green)
+        on_fail: Fix failures, push changes, wait for CI to re-run and pass.
       - type: action
         content: |
-          Create PR with implementation.
-          Use: kspec /pr or gh pr create
+          Read ALL review comments on the PR.
+          Use: gh pr view --comments or GitHub UI
+          Check for: automated reviews, human reviews, inline comments.
       - type: check
-        content: All CI checks pass
-        on_fail: Wait for CI to complete, fix any failures, push fixes
+        content: All review feedback addressed
+        on_fail: |
+          Fix each issue raised by reviewers.
+          Push changes and wait for re-review if needed.
       - type: action
         content: |
-          Read review comments.
-          Check automated review output for identified issues.
-          Look for structured comments like "Issue N: file.ts line X"
+          Check for @claude mentions or other requests in comments.
+          Look for actions the PR agent couldn't complete (limited permissions).
+          Examples: add inbox items, run kspec commands, update tasks.
       - type: check
-        content: All review issues addressed
-        on_fail: Fix each identified issue, push changes, re-run CI
-      - type: action
-        content: |
-          Check for user @claude comments.
-          Look for requests the PR agent couldn't complete.
-          PR agent has limited capabilities (can't run kspec, npm, etc.)
-      - type: check
-        content: All pending user requests completed
-        on_fail: Complete actions yourself before merging (e.g., add inbox items, run commands)
+        content: All requested actions completed
+        on_fail: Complete the actions yourself before proceeding.
       - type: check
         content: All review threads resolved in GitHub UI
-        on_fail: Click "Resolve conversation" on each thread after addressing feedback
+        on_fail: |
+          Click "Resolve conversation" on each thread after addressing.
+          The pr-review-resolution-check CI will block merge if threads remain.
+      - type: decision
+        content: Ready to merge?
+        options:
+          - "Yes - all checks green, all reviews addressed, all threads resolved"
+          - "No - need user approval to merge with known issues"
+          - "Skip - user explicitly said to merge anyway"
       - type: action
         content: |
           Merge the PR.
-          Use: gh pr merge or GitHub UI
-          Only merge when CI green AND all comments/requests addressed
+          Use: gh pr merge (prefer merge commit to preserve trailers)
+          Or: GitHub UI merge button
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits

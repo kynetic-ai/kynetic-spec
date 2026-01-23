@@ -295,8 +295,18 @@ runs:
   - _ulid: 01KFM9J1XB8DTT4W07JEYVX2F6
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 7
     started_at: 2026-01-23T02:05:01.740Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-23T02:05:01.740Z
+        completed_at: 2026-01-23T02:08:46.885Z
+        inputs:
+          pattern_source: AGENTS.md:263-271 (Task Workflow section)
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-23T02:08:46.885Z
+        completed_at: 2026-01-23T02:08:46.885Z
     initiated_by: "@claude"
