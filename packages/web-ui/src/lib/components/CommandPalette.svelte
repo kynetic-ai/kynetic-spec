@@ -51,6 +51,12 @@
 				loading = false;
 			}
 		}, 300);
+
+		return () => {
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+			}
+		};
 	});
 
 	// AC: @web-dashboard ac-24 - Group results by type
@@ -77,11 +83,11 @@
 		const routes: Record<string, (ulid: string) => string> = {
 			task: (ulid) => `/tasks?selected=${ulid}`,
 			item: (ulid) => `/items?selected=${ulid}`,
-			inbox: () => '/inbox',
-			observation: () => '/observations',
-			agent: () => '/meta',
-			workflow: () => '/meta',
-			convention: () => '/meta'
+			inbox: (ulid) => `/inbox?selected=${ulid}`,
+			observation: (ulid) => `/observations?selected=${ulid}`,
+			agent: (ulid) => `/meta?selected=${ulid}`,
+			workflow: (ulid) => `/meta?selected=${ulid}`,
+			convention: (ulid) => `/meta?selected=${ulid}`
 		};
 
 		const route = routes[result.type]?.(result.ulid);
