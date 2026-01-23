@@ -25419,7 +25419,7 @@
   type: infra
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -25617,6 +25617,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T14:10:53.817Z
+  closed_reason: "PR #196 merged successfully. Created @kynetic-ai/shared types package with
+    comprehensive TypeScript interfaces for REST API responses (TaskSummary, PaginatedResponse,
+    TaskDetail, ItemSummary, ItemDetail, InboxItem, SessionContext, Agent, Workflow, Observation,
+    SearchResult, ValidationResult, AlignmentStats, ErrorResponse), WebSocket protocol
+    (ConnectedEvent, WebSocketCommand, CommandAck, BroadcastEvent), and core schemas. All types
+    properly annotated with AC references. Greptile review feedback addressed (Zod dependency
+    removed). All CI checks passed. Local review noted no tests exist but acknowledged acceptable
+    for types-only package. Follow-up task needed for test coverage."
 - _ulid: 01KFMMM0YP97Z451KA5TEC6RX9
   slugs: []
   title: Create packages/daemon structure
