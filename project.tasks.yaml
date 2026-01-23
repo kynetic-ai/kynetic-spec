@@ -31458,7 +31458,7 @@
     3. Add integration test for npm-installed daemon path
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -31468,6 +31468,7 @@
   created_at: 2026-01-23T19:40:09.319Z
   notes: []
   todos: []
+  started_at: 2026-01-23T21:12:16.406Z
 - _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   slugs: []
   title: Improve PR review process enforcement
