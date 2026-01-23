@@ -30909,8 +30909,10 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Needs architectural decision: E2E test framework approach (Bun test runner vs vitest with
+      real server vs manual QA). See notes for analysis."
   depends_on: []
   context: []
   priority: 2
