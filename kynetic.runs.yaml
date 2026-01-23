@@ -219,7 +219,7 @@ runs:
   - _ulid: 01KFM9ESBNX3V641EG2N5FB3AW
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 7
     started_at: 2026-01-23T02:03:14.678Z
     step_results:
@@ -232,5 +232,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-23T02:03:21.469Z
-        completed_at: 2026-01-23T02:03:21.469Z
+        completed_at: 2026-01-23T02:03:28.891Z
+        inputs:
+          trigger: pr-merge
+          workflow_id: pr-review-merge
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-23T02:03:28.891Z
+        completed_at: 2026-01-23T02:03:28.891Z
     initiated_by: "@claude"
