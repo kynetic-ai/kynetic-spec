@@ -11,6 +11,8 @@ import type {
 	ItemSummary,
 	ItemDetail,
 	InboxItem,
+	SessionContext,
+	Observation,
 	PaginatedResponse,
 	ErrorResponse
 } from '@kynetic-ai/shared';
@@ -216,4 +218,45 @@ export async function deleteInboxItem(ref: string): Promise<void> {
 		const error: ErrorResponse = await response.json();
 		throw new Error(error.message || error.error);
 	}
+}
+
+/**
+ * Fetch session context
+ * AC: @web-dashboard ac-20
+ */
+export async function fetchSessionContext(): Promise<SessionContext> {
+	const response = await fetch(`${API_BASE}/api/meta/session`);
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch observations
+ * AC: @web-dashboard ac-21, ac-22
+ */
+export async function fetchObservations(params?: {
+	type?: 'friction' | 'success' | 'question' | 'idea';
+	resolved?: boolean;
+}): Promise<PaginatedResponse<Observation>> {
+	const url = new URL(`${API_BASE}/api/meta/observations`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				url.searchParams.set(key, String(value));
+			}
+		});
+	}
+
+	const response = await fetch(url.toString());
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
 }
