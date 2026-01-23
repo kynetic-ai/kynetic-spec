@@ -31635,7 +31635,8 @@
   meta_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - 01KFPJD8
   context: []
   priority: 2
   tags:
@@ -32655,7 +32656,10 @@
         - filter-status
       supersedes: null
   todos: []
-- title: Daemon serves built web UI on root route
+- _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
+  slugs: []
+  title: Daemon serves built web UI on root route
+  type: task
   description: >-
     The daemon currently only serves API endpoints. To enable E2E testing and match the spec (ac-17,
     web-dashboard ac-1), the daemon must serve the built SvelteKit static assets on the root route.
@@ -32675,17 +32679,14 @@
 
 
     This unblocks all E2E testing tasks.
-  type: task
   spec_ref: "@daemon-server"
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-23T23:18:10.609Z
   notes: []
