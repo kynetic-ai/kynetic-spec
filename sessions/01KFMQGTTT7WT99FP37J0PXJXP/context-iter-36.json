@@ -1,0 +1,443 @@
+{
+  "generated_at": "2026-01-23T14:42:23.482Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "started_at": "2026-01-23T14:11:34.422Z",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "note_count": 6,
+      "last_note_at": "2026-01-23T14:42:12.368Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "pending_review_tasks": [],
+  "recent_notes": [
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNMWF",
+      "created_at": "2026-01-23T14:42:12.368Z",
+      "author": "@claude",
+      "content": "Session checkpoint - Iteration 35 complete:\n\n**Current State:**\nParent task @01KFMMJ1 (Implement: Web Dashboard) remains in_progress as umbrella task for 8 derived subtasks.\n\n**Progress:**\n1/8 subtasks completed:\n- ✅ @01KFMMSV: SvelteKit scaffold with shadcn-svelte (merged in PR #197)\n\n**Remaining subtasks (in priority order):**\n- @01KFMMT0: Dashboard layout and navigation (ready)\n- @01KFMMT4: Task list and detail views (ready)\n- @01KFMMT9: Spec item tree and detail views (ready)\n- @01KFMMTD: Inbox view (ready)\n- @01KFMMTJ: Session context and observations panel (ready)\n- @01KFMMTP: Global search command palette (ready)\n- @01KFMMTV: WebSocketManager with subscriptions (ready)\n\n**Next Session:**\nStart with @01KFMMT0 (Dashboard layout and navigation). All foundation components are in place - ready to build actual dashboard UI.\n\n**Status:** This parent task will be completed once all 8 derived subtasks are done."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNMVS",
+      "created_at": "2026-01-23T14:41:49.477Z",
+      "author": "@claude",
+      "content": "Iteration 35: First derived subtask @01KFMMSV (SvelteKit scaffold) completed successfully!\n\n✅ Resolved blocking review thread for Greptile dependency feedback\n✅ All CI checks passed (tests, claude-review, unresolved-comments)  \n✅ PR #197 merged via @pr-review-merge workflow\n✅ Task @01KFMMSV completed\n\nThe scaffold is fully functional with:\n- SvelteKit 2.49.1 with static adapter\n- Tailwind CSS v4 properly configured\n- All shadcn-svelte components installed (Button, Card, Badge, Input, Sheet, DataTable, Sidebar, Command, Tabs, Accordion, Tooltip, Dialog, Separator, Skeleton, Table)\n- Dependencies correctly declared in web-ui package.json\n\nNext iteration should start work on the next derived subtask: @01KFMMT0 (Dashboard layout and navigation)."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNMF2",
+      "created_at": "2026-01-23T14:34:53.232Z",
+      "author": "@claude",
+      "content": "Iteration 35 Status Update - Parent Task Tracking:\n\nThis is the parent/umbrella task for Web Dashboard implementation. It should remain in_progress while derived subtasks are being worked on.\n\nProgress Summary:\n✅ Subtask @01KFMMSV (SvelteKit scaffold) - COMPLETE, in pending_review\n  - PR #197 created with full shadcn-svelte component setup\n  - Waiting for CI and manual review thread resolution\n  - Code is functional and ready to merge\n\n⏸️ Remaining 7 subtasks ready to start once scaffold merges:\n  1. @01KFMMT0 - Dashboard layout and navigation\n  2. @01KFMMT4 - Task list and detail views\n  3. @01KFMMT9 - Spec item tree and detail views\n  4. @01KFMMTD - Inbox view\n  5. @01KFMMTJ - Session context and observations panel\n  6. @01KFMMTP - Global search command palette\n  7. @01KFMMTV - WebSocketManager with subscriptions\n\nImplementation Strategy:\nThe scaffold (subtask 1) establishes the foundation. Subsequent subtasks will implement dashboard features incrementally, each with proper AC coverage and tests. Once all 8 subtasks are completed, this parent task can be marked complete.\n\nCurrent Blocker:\nPR #197 needs manual intervention to resolve Greptile review thread (GitHub UI only). Once merged, next subtask can begin."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNK6T",
+      "created_at": "2026-01-23T14:12:54.105Z",
+      "author": "@claude",
+      "content": "Iteration 33: Started parent task but immediately recognized there are 8 derived subtasks that should be worked sequentially. Switched focus to first subtask @01KFMMSV. No code written for parent task - it should remain in_progress as an umbrella task while subtasks are completed. Will be completed once all derived subtasks are done."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFNK59",
+      "created_at": "2026-01-23T14:12:03.844Z",
+      "author": "@claude",
+      "content": "Parent task started but realizing there are 8 derived subtasks. Switching to work on subtasks in order, starting with @01KFMMSV (scaffold)."
+    },
+    {
+      "task_ref": "01KFMMJ1",
+      "task_title": "Implement: Web Dashboard",
+      "note_ulid": "01KFMMJ1",
+      "created_at": "2026-01-23T05:17:15.372Z",
+      "author": "@claude",
+      "content": "Implementation notes (auto-generated from spec):\n\nSvelteKit-based web interface for viewing and editing specs, tasks, inbox, and session state.\nUses shadcn-svelte components for accessible UI. Connects to daemon via REST API and WebSocket\nfor real-time updates. Includes WebSocketManager for connection resilience with exponential\nbackoff reconnection and sequence deduplication.\n\n\nAcceptance Criteria:\n- ac-1: Given daemon is running and browser opens localhost:3456, when page loads, then dashboard shows task overview with ready, in_progress, pending_review, blocked, completed counts\n- ac-2: Given dashboard is displayed, when task counts update on server, then counts animate to new values without page refresh (WebSocket-driven)\n- ac-3: Given dashboard is displayed, when user clicks a task count badge, then navigates to task list filtered by that status\n- ac-4: Given user is viewing task list, when list loads, then shows task title, status badge, priority indicator, spec_ref link, notes count\n- ac-5: Given user is viewing task list, when clicking a task row, then task detail panel opens showing description, notes (chronological), todos, dependencies\n- ac-6: Given user is viewing task detail, when task has spec_ref, then spec reference is clickable link to spec item detail\n- ac-7: Given user is viewing task detail, when user clicks Start Task button, then POST to /api/tasks/:ref/start, task status updates, UI reflects change\n- ac-8: Given user is viewing task detail, when user types in note textarea and clicks Add Note, then POST to /api/tasks/:ref/note, note appears in list\n- ac-9: Given user is viewing task list, when filter controls are visible, then can filter by status, type, tag, assignee, automation status\n- ac-10: Given user applies filter, when filter selection changes, then URL updates with query params, list updates without full reload\n- ac-11: Given user navigates to /items, when spec tree displays, then shows hierarchical tree with modules > features > requirements, expand/collapse\n- ac-12: Given user clicks spec item in tree, when item detail panel opens, then shows title, description, acceptance criteria (GWT format), traits, implementation status\n- ac-13: Given spec item has linked tasks, when viewing item detail, then Implementation section shows linked tasks with their status\n- ac-14: Given spec item has traits, when viewing item detail, then Traits section shows trait titles as chips, clickable to trait detail\n- ac-15: Given user clicks acceptance criterion, when AC row expands, then shows full Given/When/Then text with test coverage indicator if available\n- ac-16: Given user navigates to /inbox, when inbox list displays, then shows items ordered by created_at desc with text preview, tags, added_by\n- ac-17: Given user clicks Add button, when input field appears, then user can type text, press Enter to submit\n- ac-18: Given new inbox item submitted, when POST succeeds, then item appears at top of list with animation\n- ac-19: Given user clicks delete button on item, when confirmation appears, then on confirm, item removed from list\n- ac-20: Given dashboard header area, when session has focus set, then displays current focus text prominently\n- ac-21: Given dashboard sidebar, when observations exist, then shows unresolved observations count badge\n- ac-22: Given user clicks observations badge, when observations panel opens, then lists unresolved observations with type icons (friction/success/question/idea)\n- ac-23: Given user presses Cmd+K (or Ctrl+K), when command palette opens, then shows search input with placeholder\n- ac-24: Given user types in search box, when debounced search fires (300ms), then results show tasks, items, inbox matching query grouped by type\n- ac-25: Given search results display, when user clicks a result, then navigates to detail view for that item\n- ac-26: Given browser width < 768px, when viewing any page, then layout adapts to single column, sidebar becomes bottom nav\n- ac-27: Given browser width >= 1024px, when viewing detail panels, then detail panel opens as slide-over without navigating away from list\n- ac-28: Given WebSocket connection drops, when reconnect logic triggers, then automatic reconnect with exponential backoff (1s, 2s, 4s... max 30s)\n- ac-29: Given WebSocket disconnected for >10s, when viewing dashboard, then Connection lost indicator shown\n- ac-30: Given events received via WebSocket, when seq <= lastSeqProcessed, then skip duplicate events (sequence deduplication)\n- ac-31: Given WebSocket reconnects, when connection established, then client resets lastSeqProcessed = -1 (server generates new sequence)\n- ac-32: Given WebSocket reconnects, when connection established, then client re-subscribes to all previous topics\n- ac-33: Given another client modifies task, when WebSocket update received, then task list/detail updates without refresh, subtle highlight animation on changed item"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMT0",
+      "title": "Dashboard layout and navigation",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT4",
+      "title": "Task list and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT9",
+      "title": "Spec item tree and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTD",
+      "title": "Inbox view",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTJ",
+      "title": "Session context and observations panel",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTP",
+      "title": "Global search command palette",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTV",
+      "title": "WebSocketManager with subscriptions",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMZK",
+      "title": "Daemon auto-start configuration",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-5",
+        "integration"
+      ]
+    },
+    {
+      "ref": "01KFMMZR",
+      "title": "Executable compilation with bun build",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-5",
+        "integration"
+      ]
+    },
+    {
+      "ref": "01KFMMZW",
+      "title": "API integration tests",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "phase-5",
+        "testing"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFMMSV",
+      "title": "Create SvelteKit scaffold with shadcn-svelte",
+      "completed_at": "2026-01-23T14:41:31.589Z",
+      "closed_reason": "PR #197 merged successfully. SvelteKit scaffold complete with Tailwind CSS and shadcn-svelte components. All required components added: Button, Card, Badge, Input, Sheet, DataTable, Sidebar, Command, Tabs, Accordion, Tooltip, Dialog, Separator, Skeleton, and Table. Static adapter configured. Dependencies properly declared in web-ui package.json. All CI checks passed."
+    },
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "completed_at": "2026-01-23T14:10:53.817Z",
+      "closed_reason": "PR #196 merged successfully. Created @kynetic-ai/shared types package with comprehensive TypeScript interfaces for REST API responses (TaskSummary, PaginatedResponse, TaskDetail, ItemSummary, ItemDetail, InboxItem, SessionContext, Agent, Workflow, Observation, SearchResult, ValidationResult, AlignmentStats, ErrorResponse), WebSocket protocol (ConnectedEvent, WebSocketCommand, CommandAck, BroadcastEvent), and core schemas. All types properly annotated with AC references. Greptile review feedback addressed (Zod dependency removed). All CI checks passed. Local review noted no tests exist but acknowledged acceptable for types-only package. Follow-up task needed for test coverage."
+    },
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "completed_at": "2026-01-23T13:54:53.830Z",
+      "closed_reason": "All 33 ACs from @api-contract spec successfully implemented and merged across 6 derived subtasks. Subtasks completed: @01KFMMPY (CORS/foundation), @01KFMMQ2 (Task API), @01KFMMQ7 (Spec Item API), @01KFMMQB (Inbox/Meta API), @01KFMMQF (Search/Validation API), @01KFMMQM (Error handling tests). All 1207 tests passing. Implementation includes REST endpoints, WebSocket protocol, CORS, error handling, and comprehensive test coverage with proper AC annotations."
+    },
+    {
+      "ref": "01KFMMQM",
+      "title": "API error handling middleware",
+      "completed_at": "2026-01-23T13:53:58.095Z",
+      "closed_reason": "PR #195 merged successfully. Added comprehensive test coverage for API error handling (ac-22, ac-23, ac-24 from @api-contract spec). All CI checks passed. Greptile: 4/5 confidence. Local review: READY TO MERGE. All 1207 tests pass."
+    },
+    {
+      "ref": "01KFMMQF",
+      "title": "Search and validation API endpoints",
+      "completed_at": "2026-01-23T13:37:02.294Z",
+      "closed_reason": "PR #194 merged successfully. Implemented Search and Validation API endpoints covering ac-19 through ac-21 from @api-contract spec. All CI checks passed. Greptile review: 5/5 confidence. Local review: READY TO MERGE. All 1199 tests pass."
+    },
+    {
+      "ref": "01KFMMQB",
+      "title": "Inbox and meta API endpoints",
+      "completed_at": "2026-01-23T13:21:17.475Z",
+      "closed_reason": "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12 through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
+    },
+    {
+      "ref": "01KFMMQ7",
+      "title": "Spec item API endpoints",
+      "completed_at": "2026-01-23T12:50:59.437Z",
+      "closed_reason": "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8 through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted (code inspection test strategy is consistent with project patterns). All 4 target ACs have test coverage with proper annotations."
+    },
+    {
+      "ref": "01KFMMQ2",
+      "title": "Task API endpoints",
+      "completed_at": "2026-01-23T12:28:24.073Z",
+      "closed_reason": "PR #191 merged successfully. Implemented Task API endpoints covering ac-2 through ac-7 from @api-contract spec. All CI checks passed. Greptile review feedback addressed in commit f49ba72. Local review identified two systemic issues (X-Request-Id header, E2E test strategy) which were documented and deferred as they affect all daemon code. Follow-up items created: @01KFNCZR (X-Request-Id), @01KFND00 (E2E tests)."
+    },
+    {
+      "ref": "01KFMMPY",
+      "title": "API foundation and CORS middleware",
+      "completed_at": "2026-01-23T11:56:41.750Z",
+      "closed_reason": "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe to merge."
+    },
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "completed_at": "2026-01-23T11:43:13.394Z",
+      "closed_reason": "Daemon server mode fully implemented in packages/daemon/src with all 16 ACs covered. Complete with Elysia HTTP server, WebSocket pub/sub, file watching, heartbeat monitoring, graceful shutdown, PID management, and localhost-only security. Comprehensive test coverage with 61 AC annotations across daemon test files. All 1166 tests pass. No code changes needed - implementation was already complete from previous work."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "89f0731",
+      "full_hash": "89f07311a21fdac04522f51506ca5f27ec69f5d8",
+      "date": "2026-01-23T14:41:12.000Z",
+      "message": "Complete SvelteKit scaffold with shadcn-svelte components (#197)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "cb62830",
+      "full_hash": "cb6283060e918fd30947f5abb4ddbe35cabf1d32",
+      "date": "2026-01-23T14:34:02.000Z",
+      "message": "chore: update package-lock.json after web-ui dependency changes",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8878886",
+      "full_hash": "8878886533dc27bed9905a2f90f7a673b07b7565",
+      "date": "2026-01-23T14:33:33.000Z",
+      "message": "chore: trigger CI re-run after resolving review thread",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "43a06af",
+      "full_hash": "43a06af193022c38f15105b53c9895fd82ea662e",
+      "date": "2026-01-23T14:31:06.000Z",
+      "message": "fix: add Tailwind/PostCSS dependencies to web-ui package.json",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d8ba697",
+      "full_hash": "d8ba69756b1ee91a63487e929879350ae6e56a1b",
+      "date": "2026-01-23T14:22:55.000Z",
+      "message": "feat: complete shadcn-svelte setup with all components",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a63e0a5",
+      "full_hash": "a63e0a51ae74cbc7289d055b65d825515962c985",
+      "date": "2026-01-23T14:17:01.000Z",
+      "message": "wip: initialize SvelteKit scaffold with Tailwind CSS",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a1bc2cc",
+      "full_hash": "a1bc2cc46d9cfbfc0178e6d2f8d0bb49f5bff869",
+      "date": "2026-01-23T14:10:10.000Z",
+      "message": "Create shared types package (#196)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6c5e622",
+      "full_hash": "6c5e6225a3d0071bcb231232d092688141538aaf",
+      "date": "2026-01-23T14:03:55.000Z",
+      "message": "fix: remove unused Zod dependency from shared package",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9e79c23",
+      "full_hash": "9e79c23a9fa96d63667d3b80f363702ef2912497",
+      "date": "2026-01-23T13:59:01.000Z",
+      "message": "feat: create shared types package",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "50d856a",
+      "full_hash": "50d856aeec09a4768e2e6f5b8ed7a851838cc943",
+      "date": "2026-01-23T13:53:41.000Z",
+      "message": "API error handling test coverage (#195)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 313,
+    "in_progress": 1,
+    "pending_review": 0,
+    "ready": 20,
+    "blocked": 1,
+    "completed": 279,
+    "inbox_items": 47
+  }
+}
