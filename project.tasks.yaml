@@ -27019,7 +27019,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -27258,6 +27258,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T13:37:02.294Z
+  closed_reason: "PR #194 merged successfully. Implemented Search and Validation API endpoints
+    covering ac-19 through ac-21 from @api-contract spec. All CI checks passed. Greptile review: 5/5
+    confidence. Local review: READY TO MERGE. All 1199 tests pass."
 - _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
   slugs: []
   title: API error handling middleware
