@@ -91,14 +91,13 @@
 		// Mark task as updated for highlight animation
 		if (event.data?.ulid) {
 			updatedTaskIds.add(event.data.ulid);
+			updatedTaskIds = new Set(updatedTaskIds);
 
 			// Remove highlight after 3s
 			setTimeout(() => {
 				updatedTaskIds.delete(event.data.ulid);
 				updatedTaskIds = new Set(updatedTaskIds);
 			}, 3000);
-
-			updatedTaskIds = new Set(updatedTaskIds);
 		}
 
 		// Reload tasks list
