@@ -24978,3 +24978,21 @@
         - .github/workflows/gh-pages.yml
       supersedes: null
   todos: []
+- title: Daemon auto-start configuration
+  type: task
+  spec_ref: "@daemon-server"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - phase-5
+    - integration
+  _ulid: 01KFMMZKBXWB014BCCJ11K5HNT
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:24:39.933Z
+  notes: []
+  todos: []
