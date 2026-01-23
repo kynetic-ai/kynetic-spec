@@ -168,16 +168,26 @@ async function startServer(opts: {
     process.exit(EXIT_CODES.SUCCESS);
   }
 
-  // Get path to daemon entry point - resolve relative to this package
-  // This works in both dev (src/) and built (dist/) scenarios, and from any cwd
-  const packageRoot = join(__dirname, '../../..');  // From dist/cli/commands or src/cli/commands to project root
-  const daemonBinary = join(packageRoot, 'packages/daemon/src/index.ts');
+  // Get path to daemon entry point
+  // In development (monorepo): packages/daemon/src/index.ts
+  // In production (npm install): node_modules/@kynetic-ai/daemon/dist/index.js
+  const packageRoot = join(__dirname, '../../..');  // From dist/cli/commands to project root
+
+  // Try production path first (npm install scenario)
+  let daemonBinary = join(packageRoot, 'node_modules/@kynetic-ai/daemon/dist/index.js');
+
+  // Fall back to development path (monorepo scenario)
+  if (!existsSync(daemonBinary)) {
+    daemonBinary = join(packageRoot, 'packages/daemon/src/index.ts');
+  }
 
   if (!existsSync(daemonBinary)) {
     if (isJsonMode()) {
-      output({ error: `Daemon binary not found at: ${daemonBinary}`, hint: 'Ensure the kspec package is properly installed' });
+      output({ error: `Daemon binary not found`, hint: 'Ensure the kspec package is properly installed' });
     } else {
-      error(`Daemon binary not found at: ${daemonBinary}`);
+      error(`Daemon binary not found at expected locations:`);
+      error(`  Production: ${join(packageRoot, 'node_modules/@kynetic-ai/daemon/dist/index.js')}`);
+      error(`  Development: ${join(packageRoot, 'packages/daemon/src/index.ts')}`);
       error('Ensure the kspec package is properly installed');
     }
     process.exit(EXIT_CODES.ERROR);
@@ -188,8 +198,12 @@ async function startServer(opts: {
     // Write port config for restart persistence (AC: @cli-serve-commands ac-7)
     writeDaemonPort(opts.kspecDir, opts.port);
 
+    // Determine runtime based on file extension
+    // .ts files need bun, .js files can use node
+    const runtime = daemonBinary.endsWith('.ts') ? 'bun' : 'node';
+
     // Spawn detached process
-    const child = spawn('bun', [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
+    const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       detached: true,
       stdio: 'ignore', // TODO: redirect to log file when logging implemented
       cwd: process.cwd(),
@@ -233,7 +247,10 @@ async function startServer(opts: {
       info('Press Ctrl+C to stop');
     }
 
-    const child = spawn('bun', [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
+    // Determine runtime based on file extension
+    const runtime = daemonBinary.endsWith('.ts') ? 'bun' : 'node';
+
+    const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       stdio: 'inherit',
       cwd: process.cwd(),
     });
