@@ -64,13 +64,13 @@ async function maybeAutoStartDaemon(): Promise<void> {
     const context = await initContext();
     const daemonConfig = context.manifest?.daemon;
 
-    // Check if auto_start is enabled (default true)
-    const autoStart = daemonConfig?.auto_start ?? true;
-    if (!autoStart) {
+    // If daemon section missing entirely, auto_start defaults to true via schema
+    // Only skip if explicitly disabled
+    if (daemonConfig && daemonConfig.auto_start === false) {
       return;
     }
 
-    // Get port from config (default 3456)
+    // Get port from config (schema defaults to 3456 if daemon section exists)
     const port = daemonConfig?.port ?? 3456;
 
     // Check if daemon is already running
@@ -82,15 +82,16 @@ async function maybeAutoStartDaemon(): Promise<void> {
       return;
     }
 
-    // Get path to daemon entry point
-    const daemonBinary = join(process.cwd(), 'packages/daemon/src/index.ts');
+    // Get path to daemon entry point - resolve relative to installed package
+    const packageRoot = join(import.meta.dirname, '../../');
+    const daemonBinary = join(packageRoot, 'dist/daemon/index.js');
     if (!existsSync(daemonBinary)) {
       // Daemon not available, skip silently
       return;
     }
 
-    // Start daemon in background
-    const child = spawn('bun', [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
+    // Start daemon in background using current runtime
+    const child = spawn(process.execPath, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
       detached: true,
       stdio: 'ignore',
       cwd: process.cwd(),
