@@ -27,7 +27,7 @@ export async function createServer(options: ServerOptions) {
   const app = new Elysia()
     // AC-15: Plugin pattern for middleware
     .use(cors({
-      origin: 'localhost',
+      origin: true, // Allow same-origin requests only (localhost)
       credentials: true
     }))
 
