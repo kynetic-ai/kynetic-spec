@@ -678,3 +678,7 @@ features:
             given: git invokes merge driver with standard arguments
             when: kspec merge-driver %O %A %B %L %P runs
             then: driver reads base (%O), ours (%A), theirs (%B) files and writes merged result to %A path
+          - id: ac-2
+            given: driver runs successfully
+            when: processing completes
+            then: stderr shows summary of what was merged/conflicted for user visibility
