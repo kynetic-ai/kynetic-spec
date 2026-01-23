@@ -50,9 +50,9 @@ describe('Meta API Endpoints', () => {
     expect(routesContent).toContain(".get(");
     expect(routesContent).toContain("'/agents'");
 
-    // AC: @api-contract ac-16 - Load meta context and filter agents
+    // AC: @api-contract ac-16 - Load meta context and use agents array
     expect(routesContent).toContain('loadMetaContext');
-    expect(routesContent).toContain("item.type === 'agent'");
+    expect(routesContent).toContain('meta.agents');
 
     // Return format
     expect(routesContent).toContain('items:');
@@ -70,9 +70,9 @@ describe('Meta API Endpoints', () => {
     expect(routesContent).toContain(".get(");
     expect(routesContent).toContain("'/workflows'");
 
-    // AC: @api-contract ac-17 - Load meta context and filter workflows
+    // AC: @api-contract ac-17 - Load meta context and use workflows array
     expect(routesContent).toContain('loadMetaContext');
-    expect(routesContent).toContain("item.type === 'workflow'");
+    expect(routesContent).toContain('meta.workflows');
 
     // Return format
     expect(routesContent).toContain('items:');

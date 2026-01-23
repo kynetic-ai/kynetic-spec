@@ -49,7 +49,7 @@ export function createMetaRoutes(options: MetaRouteOptions) {
       const meta = await loadMetaContext(ctx);
 
       // AC: @api-contract ac-16 - Return all defined agents
-      const agents = meta.items.filter((item) => item.type === 'agent');
+      const agents = meta.agents;
 
       return {
         items: agents,
@@ -63,7 +63,7 @@ export function createMetaRoutes(options: MetaRouteOptions) {
       const meta = await loadMetaContext(ctx);
 
       // AC: @api-contract ac-17 - Return all defined workflows
-      const workflows = meta.items.filter((item) => item.type === 'workflow');
+      const workflows = meta.workflows;
 
       return {
         items: workflows,
