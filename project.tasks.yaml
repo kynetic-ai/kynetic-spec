@@ -22786,7 +22786,7 @@
     - Implement graceful fallback when parsing fails
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -22797,6 +22797,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-23T06:09:32.788Z
 - _ulid: 01KFM7G2RK4YZFT8PJR1W43JNX
   slugs: []
   title: "Merge driver: array merge algorithms"
