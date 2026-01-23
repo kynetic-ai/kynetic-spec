@@ -23394,17 +23394,23 @@
         informative message
       supersedes: null
   todos: []
-- title: "Implement: CLI Serve Commands"
+- _ulid: 01KFMMJ8G6W8QGAGP599P4T7E8
+  slugs:
+    - task-cli-serve-commands
+  title: "Implement: CLI Serve Commands"
   type: task
   spec_ref: "@cli-serve-commands"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - task-cli-serve-commands
   tags:
     - cli
     - serve
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:17:22.822Z
   notes:
     - _ulid: 01KFMMJ8G6FGT4WY7NBW3JTPKN
       created_at: 2026-01-23T05:17:22.822Z
@@ -23451,10 +23457,22 @@
         - ac-10: Given port already in use, when kspec serve attempts to start, then fails with
         clear error message suggesting --port flag
       supersedes: null
-  _ulid: 01KFMMJ8G6W8QGAGP599P4T7E8
+  todos: []
+- title: Setup Bun monorepo workspace
+  type: infra
+  spec_ref: "@web-ui"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - phase-0
+    - foundation
+  _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:17:22.822Z
+  created_at: 2026-01-23T05:17:41.572Z
+  notes: []
   todos: []
