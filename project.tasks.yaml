@@ -25031,6 +25031,57 @@
 
         6. Request ID correlation and ack responses
       supersedes: null
+    - _ulid: 01KFN5PZP0C7TBKE2YQSS53KF6
+      created_at: 2026-01-23T10:17:03.424Z
+      author: "@claude"
+      content: >-
+        Session checkpoint: Task started but no implementation done yet. Previous iteration
+        completed PR #186 (file watcher + WebSocket broadcast foundation). Next session should
+        implement:
+
+
+        **Not yet started:**
+
+        1. Session ID generation and 'connected' event with session_id
+
+        2. Command message handler (subscribe/unsubscribe/ping)
+
+        3. Topic-based pub/sub system with subscription tracking
+
+        4. Heartbeat timer (30s ping, 90s timeout)
+
+        5. Backpressure handling (pause on slow clients)
+
+        6. Request ID correlation in ack responses
+
+        7. Proper close codes (1000/1001/1011)
+
+        8. Integration tests for protocol compliance
+
+
+        **Current foundation (already exists):**
+
+        - Basic WebSocket endpoint at /ws
+
+        - Connection tracking in wsConnections Set
+
+        - File change broadcast (not topic-based yet)
+
+        - Graceful shutdown on SIGTERM/SIGINT
+
+
+        **Implementation plan from task notes:**
+
+        - Create packages/daemon/src/websocket/ directory with handler.ts, heartbeat.ts, pubsub.ts,
+        types.ts
+
+        - Refactor server.ts to use new WebSocket handler
+
+        - Add comprehensive E2E tests for protocol
+
+
+        Task is ready for implementation in next session.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
