@@ -322,8 +322,8 @@ features:
     created: 2026-01-22T01:18:11.366Z
     acceptance_criteria:
       - id: ac-1
-        given: daemon is running and browser opens localhost:3456
-        when: page loads
+        given: daemon is running on configured port (default 3456)
+        when: browser opens the daemon URL
         then: dashboard shows task overview with ready, in_progress, pending_review, blocked, completed
           counts
       - id: ac-2
