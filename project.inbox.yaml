@@ -414,3 +414,11 @@ inbox:
       - reflection
       - cli
     added_by: "@claude"
+  - _ulid: 01KFMH5A4GJJ43XX51VM1G9ZDS
+    text: "AC text validation - warn or auto-escape when AC fields contain special YAML chars (< > :
+      quotes) that cause parse errors during spec authoring"
+    created_at: 2026-01-23T04:17:52.785Z
+    tags:
+      - reflection
+      - validation
+    added_by: "@claude"
