@@ -28618,7 +28618,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -28669,6 +28669,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T14:57:20.113Z
 - _ulid: 01KFMMT99M68WVP261SJKB326F
   slugs: []
   title: Spec item tree and detail views
