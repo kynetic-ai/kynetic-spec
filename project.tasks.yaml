@@ -24886,6 +24886,7 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:17:15.372Z
+  started_at: 2026-01-23T14:11:34.422Z
   notes:
     - _ulid: 01KFMMJ17BNGTK0S70NEGFVZZH
       created_at: 2026-01-23T05:17:15.372Z
@@ -25008,9 +25009,14 @@
         - ac-33: Given another client modifies task, when WebSocket update received, then task
         list/detail updates without refresh, subtle highlight animation on changed item
       supersedes: null
+    - _ulid: 01KFNK59M4Q5CX9WN4XMMZD14B
+      created_at: 2026-01-23T14:12:03.844Z
+      author: "@claude"
+      content: Parent task started but realizing there are 8 derived subtasks. Switching to work on
+        subtasks in order, starting with @01KFMMSV (scaffold).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T14:11:34.422Z
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
   slugs:
     - task-github-pages-export
