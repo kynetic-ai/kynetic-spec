@@ -25308,6 +25308,70 @@
 
         Progress: 1/8 subtasks completed, 1/8 pending manual merge, starting 3rd subtask.
       supersedes: null
+    - _ulid: 01KFNP30B76W24QKJ145PF85TY
+      created_at: 2026-01-23T15:03:14.535Z
+      author: "@claude"
+      content: >-
+        Iteration 38 Progress Update:
+
+
+        **Subtask @01KFMMT4 (Task list and detail views) - COMPLETED ✅**
+
+
+        Implementation includes:
+
+        - Full task browsing with filters (status, type, tag, assignee, automation)
+
+        - DataTable display with status badges, priority indicators, spec links
+
+        - Sheet/slide-over detail panel with notes, todos, dependencies
+
+        - Start Task button action (POST /api/tasks/:ref/start)
+
+        - Add Note functionality (POST /api/tasks/:ref/note)
+
+        - URL-based filter state persistence
+
+        - API client helpers for all task operations
+
+        - Real-time reloading after actions
+
+
+        Acceptance Criteria Coverage: ac-4 through ac-10 (7 ACs)
+
+
+        **Overall Progress: 1/8 subtasks completed + merged, 1/8 in pending review, 1/8 newly
+        submitted**
+
+
+        Subtask Status:
+
+        1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED (PR #197 merged)
+
+        2. ⏳ @01KFMMT0 - Dashboard layout/navigation - IN REVIEW (PR #198, blocked on manual thread
+        resolution)
+
+        3. ✅ @01KFMMT4 - Task list/detail views - SUBMITTED (commit f2d9e06)
+
+        4. ⏸️ @01KFMMT9 - Spec item tree/detail views - READY
+
+        5. ⏸️ @01KFMMTD - Inbox view - READY
+
+        6. ⏸️ @01KFMMTJ - Session context/observations panel - READY
+
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+
+        Next Session Actions:
+
+        1. Create PR for @01KFMMT4 (Task list/detail views)
+
+        2. Complete PR #198 merge when review threads are resolved
+
+        3. Continue with next subtask @01KFMMT9 (Spec item tree/detail views)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
