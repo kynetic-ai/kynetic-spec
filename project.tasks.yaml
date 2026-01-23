@@ -21100,6 +21100,70 @@
 
         Tech stack: Elysia.js + Bun + WebSocket (per kynetic patterns)
       supersedes: null
+    - _ulid: 01KFMMB94NXCY3ZKVXRR0PK9SZ
+      created_at: 2026-01-23T05:13:34.102Z
+      author: "@claude"
+      content: >-
+        ## Spec Creation Complete
+
+
+        Created comprehensive Web UI feature spec with:
+
+
+        ### New Traits (3)
+
+        - @trait-websocket-protocol (8 ACs) - connection lifecycle, pub/sub, heartbeat, sequence
+        tracking
+
+        - @trait-api-endpoint (6 ACs) - REST patterns, errors, pagination  
+
+        - @trait-localhost-security (3 ACs) - localhost-only binding
+
+
+        ### Features Updated/Created (5)
+
+        1. @daemon-server - expanded from 6 to 16 ACs
+           - Elysia.js on Bun runtime
+           - Localhost-only security
+           - File watching with fallback
+           - WebSocket real-time
+           - Heartbeat ping/pong
+           - Executable compilation
+
+        2. @api-contract (NEW) - 33 ACs
+           - REST endpoints for tasks, items, inbox, meta
+           - WebSocket protocol (pub/sub, request_id, sequence)
+           - CORS, error handling, backpressure
+
+        3. @web-dashboard - expanded from 2 to 33 ACs
+           - Dashboard overview
+           - Task/item/inbox views
+           - WebSocketManager with reconnect
+           - Sequence deduplication
+           - Global search (Cmd+K)
+
+        4. @gh-pages-export - expanded from 0 to 18 ACs
+           - Export command (JSON/HTML)
+           - CI workflow
+           - SPA deep linking
+           - Read-only mode
+
+        5. @cli-serve-commands (NEW) - 10 ACs
+           - serve, stop, status, restart, logs
+
+        ### Total ACs: ~110 direct + ~50 inherited from traits
+
+
+        Tech stack decisions documented:
+
+        - Elysia.js + Bun (not Hono + Node)
+
+        - WebSocket (not SSE)
+
+        - JSON snapshot for GitHub Pages
+
+        - bun build --compile for distribution
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KFHZT60CB7D2K13HP914B8YZ

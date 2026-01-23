@@ -311,6 +311,95 @@ traits:
         given: command performs multiple related saves
         when: all saves complete successfully
         then: single atomic commit covers all changes
+  - _ulid: 01KFMKZFTXSK4QFH74GQ461G9A
+    slugs:
+      - trait-websocket-protocol
+    title: WebSocket Protocol Patterns
+    type: trait
+    description: WebSocket connection patterns including lifecycle management, topic-based pub/sub, heartbeat ping/pong, sequence tracking for deduplication, and backpressure handling. Based on proven patterns from kynetic project.
+    acceptance_criteria:
+      - id: ac-1
+        given: WebSocket connection is established
+        when: client connects
+        then: server assigns unique connection ID and sends connected event with session_id
+      - id: ac-2
+        given: client wants notifications
+        when: subscribe command sent with topics array
+        then: server tracks subscription and sends ack with request_id
+      - id: ac-3
+        given: client is subscribed to topic
+        when: relevant change occurs
+        then: server broadcasts event with format {msg_id, seq, timestamp, topic, event, data}
+      - id: ac-4
+        given: WebSocket connection is active
+        when: 30 seconds pass without activity
+        then: server sends ping frame
+      - id: ac-5
+        given: ping was sent
+        when: no pong received within 90 seconds
+        then: connection is closed with code 1001
+      - id: ac-6
+        given: server sends events
+        when: client cannot keep up (backpressure)
+        then: server pauses non-critical broadcasts until drain event
+      - id: ac-7
+        given: connection is closing
+        when: close initiated
+        then: use code 1000 for clean close, 1001 for timeout, 1011 for error
+      - id: ac-8
+        given: client reconnects after disconnect
+        when: new connection established
+        then: client resets sequence tracking (lastSeqProcessed = -1) since server generates new sequence
+  - _ulid: 01KFMKZFTYTRK4ENHFKWGR5RF6
+    slugs:
+      - trait-api-endpoint
+    title: REST API Endpoint Patterns
+    type: trait
+    description: Consistent patterns for REST API endpoints including response format, error handling, pagination, and request validation
+    acceptance_criteria:
+      - id: ac-1
+        given: API endpoint receives valid request
+        when: processing succeeds
+        then: returns 2xx status with JSON body
+      - id: ac-2
+        given: API endpoint receives invalid ref
+        when: ref not found
+        then: returns 404 with {error, message, suggestion} including similar refs if available
+      - id: ac-3
+        given: API endpoint receives invalid body
+        when: validation fails
+        then: returns 400 with {error, details:[{field, message}]} array
+      - id: ac-4
+        given: list endpoint is called
+        when: pagination supported
+        then: accepts limit and offset query params, returns {items, total, offset, limit} wrapper
+      - id: ac-5
+        given: API endpoint mutates state
+        when: change persists
+        then: shadow commit occurs with semantic message
+      - id: ac-6
+        given: API request is processed
+        when: response generated
+        then: includes X-Request-Id header for tracing
+  - _ulid: 01KFMKZFTYKPEXCHSAK9MTZX5Z
+    slugs:
+      - trait-localhost-security
+    title: Localhost-Only Security
+    type: trait
+    description: Security pattern for services that bind only to localhost, providing authentication through network isolation
+    acceptance_criteria:
+      - id: ac-1
+        given: server is starting
+        when: binding to network interface
+        then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
+      - id: ac-2
+        given: connection attempt from non-localhost
+        when: request received
+        then: connection rejected with 403 Forbidden
+      - id: ac-3
+        given: server is configured
+        when: configuration allows external binding
+        then: warning displayed about security implications
 includes:
   - modules/core.yaml
   - modules/schema.yaml

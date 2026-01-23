@@ -6,12 +6,20 @@ type: module
 status:
   maturity: draft
   implementation: not_started
-description: Web-based interface for viewing, editing, and managing kspec state. Includes local
-  daemon mode with real-time updates and static GitHub Pages export for read-only sharing.
+description: |
+  Web-based interface for viewing, editing, and managing kspec state. Includes three deployment modes:
+  1. Local daemon mode - Elysia.js server on Bun with WebSocket for real-time updates
+  2. Web dashboard - SvelteKit + shadcn-svelte for full CRUD operations
+  3. GitHub Pages export - Static JSON snapshot with read-only SPA for public sharing
+
+  Tech stack: Elysia.js, Bun runtime, WebSocket (not SSE), SvelteKit, shadcn-svelte.
+  Distribution via bun build --compile for portable executables.
 tags:
   - web
   - ui
   - daemon
+  - elysia
+  - bun
 depends_on: []
 implements: []
 relates_to: []
@@ -24,77 +32,586 @@ features:
       - daemon-server
     title: Daemon Server Mode
     type: feature
-    tags: []
-    description: Long-running server mode that exposes kspec state via HTTP API and SSE for real-time
-      updates. Enables CLI-to-daemon IPC for faster operations.
+    tags:
+      - server
+      - websocket
+      - elysia
+    description: |
+      Long-running Elysia.js server on Bun runtime that exposes kspec state via HTTP API and WebSocket
+      for real-time updates. Binds to localhost only for security. Supports foreground and background
+      modes with PID file management. Includes heartbeat ping/pong for connection health monitoring.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-error-guidance"
+      - "@trait-shadow-commit"
+      - "@trait-localhost-security"
+      - "@trait-websocket-protocol"
     notes: []
     created: 2026-01-22T01:18:09.314Z
     acceptance_criteria:
       - id: ac-1
         given: kspec is installed
         when: user runs 'kspec serve'
-        then: HTTP server starts on configurable port (default 3456) and serves API endpoints
+        then: Elysia HTTP server starts on configurable port (default 3456) binding to localhost only
       - id: ac-2
+        given: daemon is starting
+        when: server binds to network interface
+        then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
+      - id: ac-3
+        given: connection attempt from non-localhost IP
+        when: request received
+        then: connection rejected with 403 Forbidden
+      - id: ac-4
         given: daemon is running
         when: any .kspec/*.yaml file changes
-        then: connected clients receive SSE update within 200ms
-      - id: ac-3
+        then: connected WebSocket clients receive update event via topic subscription
+      - id: ac-5
+        given: file watching is active
+        when: rapid changes occur (< 500ms apart)
+        then: events are debounced and aggregated into single notification
+      - id: ac-6
+        given: watched file has YAML parse error
+        when: change detected
+        then: error logged and WebSocket broadcasts error event (daemon does not crash)
+      - id: ac-7
+        given: .kspec directory becomes inaccessible
+        when: watcher encounters error
+        then: daemon logs error and attempts recovery with exponential backoff
+      - id: ac-8
+        given: Bun fs.watch fails or misses events
+        when: reliability issue detected
+        then: automatically fall back to Chokidar file watcher
+      - id: ac-9
         given: daemon is running
         when: user runs 'kspec serve --daemon'
-        then: process detaches to background, writes PID file, and CLI returns immediately
-      - id: ac-4
+        then: process detaches to background, writes PID to .kspec/.daemon.pid, CLI returns immediately
+      - id: ac-10
         given: daemon is running in background
         when: user runs 'kspec serve stop'
-        then: daemon shuts down gracefully, removes PID file, and closes all connections
-      - id: ac-5
+        then: daemon shuts down gracefully, removes PID file, closes all WebSocket connections
+      - id: ac-11
+        given: daemon is running
+        when: GET /api/health is called
+        then: "returns {status, uptime, connections, version} JSON"
+      - id: ac-12
+        given: daemon receives SIGTERM or SIGINT
+        when: shutdown signal received
+        then: graceful shutdown (flush pending messages, close connections, save state)
+      - id: ac-13
+        given: WebSocket connection established
+        when: 30 seconds pass without activity
+        then: server sends ping frame
+      - id: ac-14
+        given: ping was sent
+        when: no pong received within 90 seconds
+        then: connection closed with code 1001
+      - id: ac-15
+        given: Elysia server is configured
+        when: routes are registered
+        then: use plugin pattern for middleware (CORS, logging, validation)
+      - id: ac-16
+        given: daemon code is ready
+        when: bun build --compile runs
+        then: produces standalone executable without requiring Bun installation
+
+  - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
+    slugs:
+      - api-contract
+    title: REST and WebSocket API Contract
+    type: feature
+    tags:
+      - api
+      - rest
+      - websocket
+    description: |
+      REST API contract for HTTP endpoints and WebSocket protocol for real-time communication.
+      All REST endpoints return JSON with consistent patterns. WebSocket uses topic-based pub/sub
+      with request_id correlation for command acknowledgment.
+    depends_on:
+      - "@daemon-server"
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-filterable-list"
+      - "@trait-error-guidance"
+      - "@trait-api-endpoint"
+      - "@trait-websocket-protocol"
+    notes: []
+    created: 2026-01-22T07:00:00.000Z
+    acceptance_criteria:
+      # CORS
+      - id: ac-1
+        given: daemon running on localhost:3456
+        when: request from localhost:5173 (dev server) received
+        then: CORS headers allow the request
+      # Task endpoints
+      - id: ac-2
         given: daemon is running
         when: GET /api/tasks is called
-        then: returns JSON array of all tasks with status, notes, and dependencies
+        then: returns JSON array of all tasks with status, priority, spec_ref, notes count
+      - id: ac-3
+        given: daemon is running
+        when: GET /api/tasks with status filter (e.g., ?status=pending&status=in_progress)
+        then: returns only tasks matching filter (supports multi-value)
+      - id: ac-4
+        given: daemon is running
+        when: GET /api/tasks with pagination (?limit=10&offset=20)
+        then: "returns paginated results with {items, total, offset, limit} wrapper"
+      - id: ac-5
+        given: daemon is running
+        when: GET /api/tasks/:ref is called
+        then: resolves ref via ReferenceIndex, returns full task with notes, todos, dependencies
       - id: ac-6
         given: daemon is running
         when: POST /api/tasks/:ref/start is called
-        then: task transitions to in_progress and SSE broadcasts update
+        then: task transitions to in_progress, WebSocket broadcasts update, returns updated task
+      - id: ac-7
+        given: daemon is running
+        when: "POST /api/tasks/:ref/note with {content} body"
+        then: note appended to task, shadow commit occurs, WebSocket broadcasts update
+      # Item endpoints
+      - id: ac-8
+        given: daemon is running
+        when: GET /api/items is called
+        then: returns JSON array of all spec items (modules, features, requirements)
+      - id: ac-9
+        given: daemon is running
+        when: GET /api/items with type filter (?type=feature&type=requirement)
+        then: returns only items matching type filter
+      - id: ac-10
+        given: daemon is running
+        when: GET /api/items/:ref is called
+        then: resolves ref, returns full item with acceptance_criteria, traits, relationships
+      - id: ac-11
+        given: daemon is running
+        when: GET /api/items/:ref/tasks is called
+        then: returns tasks linked to this spec via AlignmentIndex
+      # Inbox endpoints
+      - id: ac-12
+        given: daemon is running
+        when: GET /api/inbox is called
+        then: returns all inbox items ordered by created_at desc
+      - id: ac-13
+        given: daemon is running
+        when: "POST /api/inbox with {text} body"
+        then: creates inbox item, returns with generated ULID
+      - id: ac-14
+        given: daemon is running
+        when: DELETE /api/inbox/:ref is called
+        then: removes inbox item, returns success confirmation
+      # Meta endpoints
+      - id: ac-15
+        given: daemon is running
+        when: GET /api/meta/session is called
+        then: returns current session context (focus, threads, questions)
+      - id: ac-16
+        given: daemon is running
+        when: GET /api/meta/agents is called
+        then: returns all defined agents
+      - id: ac-17
+        given: daemon is running
+        when: GET /api/meta/workflows is called
+        then: returns all defined workflows
+      - id: ac-18
+        given: daemon is running
+        when: GET /api/meta/observations with filter (?resolved=false)
+        then: returns observations matching filter
+      # Search and validation
+      - id: ac-19
+        given: daemon is running
+        when: GET /api/search?q=login is called
+        then: searches across all items using grep/title matching
+      - id: ac-20
+        given: daemon is running
+        when: GET /api/validate is called
+        then: runs full validation, returns ValidationResult
+      - id: ac-21
+        given: daemon is running
+        when: GET /api/alignment is called
+        then: returns AlignmentIndex stats and warnings
+      # Error handling
+      - id: ac-22
+        given: API request has invalid ref
+        when: any endpoint with :ref parameter
+        then: "returns {error, message, suggestion} with 404 status, suggests similar refs if available"
+      - id: ac-23
+        given: API request has validation error
+        when: POST/PUT with invalid body
+        then: "returns {error, details:[{field, message}]} with 400 status"
+      - id: ac-24
+        given: API request causes state transition error
+        when: POST action violates state machine
+        then: "returns {error, current, valid_transitions} with 409 status"
+      # WebSocket protocol
+      - id: ac-25
+        given: client connects to /ws
+        when: WebSocket connection established
+        then: "receives connected event with {session_id}"
+      - id: ac-26
+        given: WebSocket connection active
+        when: client sends command
+        then: "command format is {action, request_id?, payload}"
+      - id: ac-27
+        given: command received
+        when: processed
+        then: "server sends {ack: true, request_id, success, error?}"
+      - id: ac-28
+        given: WebSocket connection
+        when: "client sends {action: 'subscribe', topics: ['files:updates']}"
+        then: server tracks subscription and sends events for that topic
+      - id: ac-29
+        given: file changes in .kspec/
+        when: WebSocket client subscribed to files:updates
+        then: "receives event with format {msg_id, seq, timestamp, topic, event, data: {ref, action}}"
+      - id: ac-30
+        given: malformed command received
+        when: parsed
+        then: "return {ack: false, error: 'validation_error', details: ...}"
+      - id: ac-31
+        given: connection closing
+        when: close initiated
+        then: use code 1000 for clean, 1001 for timeout, 1011 for error
+      - id: ac-32
+        given: server sends to slow client
+        when: backpressure limit reached
+        then: pause non-critical broadcasts until drain event
+      - id: ac-33
+        given: daemon is shutting down
+        when: WebSocket connection active
+        then: "receives shutdown event with {reason}, connection closes gracefully"
+
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
     title: Web Dashboard
     type: feature
-    tags: []
-    description: SvelteKit-based web interface for viewing and editing specs, tasks, inbox, and session
-      state. Uses shadcn-svelte components for accessible UI.
-    depends_on: []
+    tags:
+      - svelte
+      - ui
+      - dashboard
+    description: |
+      SvelteKit-based web interface for viewing and editing specs, tasks, inbox, and session state.
+      Uses shadcn-svelte components for accessible UI. Connects to daemon via REST API and WebSocket
+      for real-time updates. Includes WebSocketManager for connection resilience with exponential
+      backoff reconnection and sequence deduplication.
+    depends_on:
+      - "@api-contract"
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-filterable-list"
+      - "@trait-websocket-protocol"
     notes: []
     created: 2026-01-22T01:18:11.366Z
     acceptance_criteria:
+      # Dashboard overview
       - id: ac-1
         given: daemon is running and browser opens localhost:3456
         when: page loads
-        then: dashboard shows task overview with ready, in_progress, blocked, and completed counts
+        then: dashboard shows task overview with ready, in_progress, pending_review, blocked, completed counts
       - id: ac-2
+        given: dashboard is displayed
+        when: task counts update on server
+        then: counts animate to new values without page refresh (WebSocket-driven)
+      - id: ac-3
+        given: dashboard is displayed
+        when: user clicks a task count badge
+        then: navigates to task list filtered by that status
+      # Task views
+      - id: ac-4
+        given: user is viewing task list
+        when: list loads
+        then: shows task title, status badge, priority indicator, spec_ref link, notes count
+      - id: ac-5
         given: user is viewing task list
         when: clicking a task row
-        then: task detail panel opens showing description, notes, todos, and dependencies
+        then: task detail panel opens showing description, notes (chronological), todos, dependencies
+      - id: ac-6
+        given: user is viewing task detail
+        when: task has spec_ref
+        then: spec reference is clickable link to spec item detail
+      - id: ac-7
+        given: user is viewing task detail
+        when: user clicks Start Task button
+        then: POST to /api/tasks/:ref/start, task status updates, UI reflects change
+      - id: ac-8
+        given: user is viewing task detail
+        when: user types in note textarea and clicks Add Note
+        then: POST to /api/tasks/:ref/note, note appears in list
+      - id: ac-9
+        given: user is viewing task list
+        when: filter controls are visible
+        then: can filter by status, type, tag, assignee, automation status
+      - id: ac-10
+        given: user applies filter
+        when: filter selection changes
+        then: URL updates with query params, list updates without full reload
+      # Spec item views
+      - id: ac-11
+        given: user navigates to /items
+        when: spec tree displays
+        then: shows hierarchical tree with modules > features > requirements, expand/collapse
+      - id: ac-12
+        given: user clicks spec item in tree
+        when: item detail panel opens
+        then: shows title, description, acceptance criteria (GWT format), traits, implementation status
+      - id: ac-13
+        given: spec item has linked tasks
+        when: viewing item detail
+        then: Implementation section shows linked tasks with their status
+      - id: ac-14
+        given: spec item has traits
+        when: viewing item detail
+        then: Traits section shows trait titles as chips, clickable to trait detail
+      - id: ac-15
+        given: user clicks acceptance criterion
+        when: AC row expands
+        then: shows full Given/When/Then text with test coverage indicator if available
+      # Inbox view
+      - id: ac-16
+        given: user navigates to /inbox
+        when: inbox list displays
+        then: shows items ordered by created_at desc with text preview, tags, added_by
+      - id: ac-17
+        given: user clicks Add button
+        when: input field appears
+        then: user can type text, press Enter to submit
+      - id: ac-18
+        given: new inbox item submitted
+        when: POST succeeds
+        then: item appears at top of list with animation
+      - id: ac-19
+        given: user clicks delete button on item
+        when: confirmation appears
+        then: on confirm, item removed from list
+      # Session context
+      - id: ac-20
+        given: dashboard header area
+        when: session has focus set
+        then: displays current focus text prominently
+      - id: ac-21
+        given: dashboard sidebar
+        when: observations exist
+        then: shows unresolved observations count badge
+      - id: ac-22
+        given: user clicks observations badge
+        when: observations panel opens
+        then: lists unresolved observations with type icons (friction/success/question/idea)
+      # Search
+      - id: ac-23
+        given: user presses Cmd+K (or Ctrl+K)
+        when: command palette opens
+        then: shows search input with placeholder
+      - id: ac-24
+        given: user types in search box
+        when: debounced search fires (300ms)
+        then: results show tasks, items, inbox matching query grouped by type
+      - id: ac-25
+        given: search results display
+        when: user clicks a result
+        then: navigates to detail view for that item
+      # Responsive design
+      - id: ac-26
+        given: browser width < 768px
+        when: viewing any page
+        then: layout adapts to single column, sidebar becomes bottom nav
+      - id: ac-27
+        given: browser width >= 1024px
+        when: viewing detail panels
+        then: detail panel opens as slide-over without navigating away from list
+      # WebSocket connection management
+      - id: ac-28
+        given: WebSocket connection drops
+        when: reconnect logic triggers
+        then: automatic reconnect with exponential backoff (1s, 2s, 4s... max 30s)
+      - id: ac-29
+        given: WebSocket disconnected for >10s
+        when: viewing dashboard
+        then: Connection lost indicator shown
+      - id: ac-30
+        given: events received via WebSocket
+        when: seq <= lastSeqProcessed
+        then: skip duplicate events (sequence deduplication)
+      - id: ac-31
+        given: WebSocket reconnects
+        when: connection established
+        then: client resets lastSeqProcessed = -1 (server generates new sequence)
+      - id: ac-32
+        given: WebSocket reconnects
+        when: connection established
+        then: client re-subscribes to all previous topics
+      - id: ac-33
+        given: another client modifies task
+        when: WebSocket update received
+        then: task list/detail updates without refresh, subtle highlight animation on changed item
+
   - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
     slugs:
       - gh-pages-export
     title: GitHub Pages Export
     type: feature
-    tags: []
-    description: Static site generation from kspec state for hosting read-only views on GitHub Pages.
-      Enables deep linking to tasks/specs from PRs and issues.
+    tags:
+      - static
+      - export
+      - github
+    description: |
+      Static site generation from kspec state for hosting read-only views on GitHub Pages.
+      CI workflow builds JSON snapshot from shadow branch on push, SPA reads this JSON for rendering.
+      Enables deep linking to tasks/specs from PRs and issues with data freshness indicator.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-dry-run"
     notes: []
     created: 2026-01-22T01:18:13.672Z
+    acceptance_criteria:
+      # Export command
+      - id: ac-1
+        given: kspec is installed
+        when: user runs 'kspec export --format json'
+        then: writes kspec-snapshot.json containing all tasks, items, inbox, meta to stdout or --output path
+      - id: ac-2
+        given: export runs
+        when: output is generated
+        then: JSON includes exported_at timestamp, version (kspec version), project metadata
+      - id: ac-3
+        given: export runs
+        when: tasks are included
+        then: each task includes resolved spec_ref title (not just ref string) for display without resolution
+      - id: ac-4
+        given: export runs
+        when: items are included
+        then: hierarchical structure preserved, acceptance_criteria expanded, traits resolved to include inherited ACs
+      - id: ac-5
+        given: export runs with --include-validation
+        when: validation is run
+        then: JSON includes validation block with error/warning counts and details
+      - id: ac-6
+        given: kspec is installed
+        when: user runs 'kspec export --format html'
+        then: generates self-contained HTML file with embedded JSON and SPA code
+      - id: ac-7
+        given: kspec is installed
+        when: user runs 'kspec export --dry-run'
+        then: shows what would be exported without writing files
+      # CI workflow
+      - id: ac-8
+        given: push to kspec-meta branch
+        when: CI workflow triggers
+        then: runs kspec export, commits to gh-pages branch
+      - id: ac-9
+        given: CI workflow runs
+        when: SPA assets don't exist
+        then: copies SPA static assets (HTML, JS, CSS) to docs/ alongside JSON
+      - id: ac-10
+        given: rapid commits to kspec-meta
+        when: multiple pushes within 30 seconds
+        then: CI debounces and runs once with latest state
+      # SPA architecture
+      - id: ac-11
+        given: user opens gh-pages URL
+        when: SPA loads
+        then: fetches kspec-snapshot.json from same origin, renders dashboard
+      - id: ac-12
+        given: user navigates to /tasks/@task-slug
+        when: deep link resolves
+        then: SPA parses path (history API), shows task detail for that ref
+      - id: ac-13
+        given: user navigates to /items/@spec-slug
+        when: deep link resolves
+        then: SPA shows spec item detail for that ref
+      - id: ac-14
+        given: SPA renders
+        when: validation data present in snapshot
+        then: shows validation summary badge (green check or red X with count)
+      - id: ac-15
+        given: static export page
+        when: displayed to user
+        then: "shows 'Data as of: [timestamp]' indicator prominently"
+      # Read-only behavior
+      - id: ac-16
+        given: viewing task in SPA mode
+        when: user sees Start Task button area
+        then: button is disabled with tooltip explaining read-only mode
+      - id: ac-17
+        given: viewing inbox in SPA mode
+        when: Add button area visible
+        then: button is disabled/hidden
+      - id: ac-18
+        given: SPA mode
+        when: any write action attempted
+        then: graceful no-op with informative message
+
+  - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
+    slugs:
+      - cli-serve-commands
+    title: CLI Serve Commands
+    type: feature
+    tags:
+      - cli
+      - serve
+    description: |
+      CLI commands for managing the daemon server lifecycle. Provides human and script-friendly
+      interfaces to start, stop, and monitor the daemon.
+    depends_on:
+      - "@daemon-server"
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-semantic-exit-codes"
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-01-22T07:00:00.000Z
+    acceptance_criteria:
+      - id: ac-1
+        given: daemon not running
+        when: kspec serve executed
+        then: starts server in foreground, logs to stdout, Ctrl+C stops
+      - id: ac-2
+        given: daemon not running
+        when: kspec serve --daemon executed
+        then: starts in background, writes PID file, returns immediately with status message
+      - id: ac-3
+        given: daemon not running
+        when: kspec serve --port 8080 executed
+        then: starts on specified port
+      - id: ac-4
+        given: daemon running
+        when: kspec serve stop executed
+        then: sends SIGTERM to daemon PID, waits for clean shutdown, removes PID file
+      - id: ac-5
+        given: daemon not running
+        when: kspec serve stop executed
+        then: outputs 'Daemon not running' with exit code 0 (idempotent)
+      - id: ac-6
+        given: any state
+        when: kspec serve status executed
+        then: "outputs JSON with {running, pid, port, uptime, connections}"
+      - id: ac-7
+        given: daemon running
+        when: kspec serve restart executed
+        then: stops existing daemon, starts new one, preserves port setting
+      - id: ac-8
+        given: any state
+        when: kspec serve logs executed
+        then: tails daemon log file (.kspec/.daemon.log)
+      - id: ac-9
+        given: daemon running
+        when: kspec serve logs --follow executed
+        then: streams log output continuously until Ctrl+C
+      - id: ac-10
+        given: port already in use
+        when: kspec serve attempts to start
+        then: fails with clear error message suggesting --port flag
