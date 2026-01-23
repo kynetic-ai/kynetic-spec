@@ -584,3 +584,25 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFM78SSTQR07F36DKWJS85ZY
+    slugs:
+      - yaml-merge-driver
+    title: Semantic YAML Merge Driver
+    type: feature
+    tags: []
+    description: >-
+      A custom git merge driver that parses both versions of kspec YAML files and merges them
+      semantically, understanding the structure of tasks, items, and other kspec entities. This
+      prevents git from creating conflict markers that would corrupt YAML files.
+
+
+      Note on exit codes: This command intentionally does NOT use @trait-semantic-exit-codes because
+      git merge drivers have special requirements - they must exit 0 to prevent git from falling
+      back to its text merge, which would corrupt YAML.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-23T01:25:01.370Z
