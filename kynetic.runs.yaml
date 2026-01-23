@@ -295,7 +295,7 @@ runs:
   - _ulid: 01KFM9J1XB8DTT4W07JEYVX2F6
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 7
     started_at: 2026-01-23T02:05:01.740Z
     step_results:
@@ -315,5 +315,28 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T02:08:54.499Z
-        completed_at: 2026-01-23T02:08:54.499Z
+        completed_at: 2026-01-23T02:09:05.548Z
+        notes: >-
+          Designed 6 steps for task-work-session workflow:
+
+
+          1. [action] Choose task to work on - input: task_ref
+
+          2. [check] Verify work not already done - on_fail: mark complete with 'Already
+          implemented'
+
+          3. [action] Start task - kspec task start @task
+
+          4. [action] Work and add notes - Add notes as you work, not just at end
+
+          5. [action] Complete task - kspec task complete @task --reason 'summary'
+
+          6. [check] Changes committed - on_fail: Commit changes with Task: trailer
+
+
+          Uses Gate + Capture patterns. Input captures task ref for audit trail.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T02:09:05.548Z
+        completed_at: 2026-01-23T02:09:05.548Z
     initiated_by: "@claude"
