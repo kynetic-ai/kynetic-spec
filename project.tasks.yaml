@@ -26600,7 +26600,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -26649,6 +26649,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T12:51:31.905Z
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
   slugs: []
   title: Search and validation API endpoints
