@@ -24186,6 +24186,15 @@
         port-in-use error (AC-10). Skip AC-8, AC-9 (logs) as noted in prior commit. Test file should
         be tests/cli-serve.test.ts following existing patterns."
       supersedes: null
+    - _ulid: 01KFN7WZ1XJBGPY3WDM6WX88D4
+      created_at: 2026-01-23T10:55:16.542Z
+      author: "@claude"
+      content: "PR #189 created with WIP status. Core implementation complete (ACs 1-7, 10), but E2E tests
+        still needed. Next iteration should focus on: (1) creating tests/cli-serve.test.ts following
+        patterns from tests/daemon-*.test.ts, (2) testing foreground/daemon modes,
+        stop/status/restart commands, (3) verifying port validation. Once tests pass, remove WIP
+        from PR title and merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
