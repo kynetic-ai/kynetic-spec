@@ -30882,7 +30882,7 @@
   description: "[bug] Ralph loop hits OOM at iteration 44/50 - memory grows unbounded across
     iterations, hits ~4GB heap limit"
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -30912,3 +30912,5 @@
         process.
       supersedes: null
   todos: []
+  completed_at: 2026-01-23T16:55:46.078Z
+  closed_reason: "Merged in PR #203"
