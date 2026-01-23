@@ -25172,6 +25172,7 @@
         - scripts/build-executables.sh
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMZWDG20YQNNFWG3KDFXYY
   slugs: []
   title: API integration tests
