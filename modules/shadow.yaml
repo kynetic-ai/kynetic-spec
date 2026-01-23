@@ -625,3 +625,7 @@ features:
         given: both versions modify the same scalar field (title, description, priority) of the same item
         when: merge runs
         then: user is prompted interactively to choose which value to keep
+      - id: ac-5
+        given: both versions modify append-only arrays (notes, todos)
+        when: merge runs
+        then: arrays are union merged by ULID (notes never conflict)
