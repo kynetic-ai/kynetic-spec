@@ -31092,6 +31092,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:54.306Z
+  started_at: 2026-01-23T18:34:37.937Z
   notes:
     - _ulid: 01KFMN187TDY0F668ZBXB15XP0
       created_at: 2026-01-23T05:25:34.074Z
@@ -31136,7 +31137,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T18:34:37.937Z
 - _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
   slugs: []
   title: Add type validation tests to shared package
@@ -31147,19 +31147,17 @@
     recommendations."
   spec_ref: "@web-ui"
   meta_ref: null
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: "PR #206 merged successfully. Type validation tests added to shared package with 25
-    tests covering core schemas, API types, and WebSocket types. All review feedback addressed
-    (claude-review and Greptile). All CI checks passed."
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T14:11:04.599Z
-  started_at: 2026-01-23T18:03:42.131Z
-  completed_at: 2026-01-23T18:34:15.937Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KFP0MACQ168492WVGJCM0AKP
       created_at: 2026-01-23T18:07:27.640Z
@@ -31265,6 +31263,11 @@
         2. Or revert daemon path changes to unblock PR #206
 
         3. Then merge type validation work
+      supersedes: null
+    - _ulid: 01KFP2DDWFA1B9XQ4ZTVJ08C42
+      created_at: 2026-01-23T18:38:38.991Z
+      author: "@claude"
+      content: Reset from completed to pending
       supersedes: null
   todos: []
 - _ulid: 01KFNW2K10FKNKASXKYH1EBYC5
