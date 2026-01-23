@@ -24289,6 +24289,59 @@
 
         This parent task will remain in_progress until all derived subtasks are completed.
       supersedes: null
+    - _ulid: 01KFNDYND131F74N44ZT3JS30X
+      created_at: 2026-01-23T12:41:03.650Z
+      author: "@claude"
+      content: >-
+        Iteration 25 complete. Successfully implemented and submitted @01KFMMQ7 (Spec item API
+        endpoints).
+
+
+        PROGRESS:
+
+        - 16 of 33 ACs implemented and merged (ac-1, ac-2 through ac-7, ac-25 through ac-33) - from
+        previous iterations  
+
+        - 4 ACs implemented and awaiting review (ac-8 through ac-11) - this iteration
+
+        - 13 ACs remain in ready subtasks (ac-12 through ac-24)
+
+
+        COMPLETED THIS ITERATION:
+
+        - Implemented packages/daemon/src/routes/items.ts with 3 REST endpoints
+
+        - Added 6 E2E structure tests in tests/daemon-api-items.test.ts
+
+        - Local review: PASS (AC coverage, test quality, isolation all good)
+
+        - Created PR #192 and submitted for review
+
+        - All 1180 tests pass
+
+
+        PR STATUS:
+
+        - PR #192 created: Spec item API endpoints
+
+        - CI checks running (test, claude-review pending)
+
+        - Awaiting CI completion and automated review
+
+
+        NEXT SESSION:
+
+        1. Wait for CI checks to complete on PR #192
+
+        2. Review and merge PR #192 via @pr-review-merge workflow
+
+        3. Complete @01KFMMQ7 task
+
+        4. Start @01KFMMQB (Inbox and meta API endpoints) to implement ac-12 through ac-18
+
+
+        This parent task remains in_progress until all derived subtasks complete.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
