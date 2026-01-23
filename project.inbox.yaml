@@ -556,3 +556,14 @@ inbox:
       - inbox
       - dx
     added_by: "@claude"
+  - _ulid: 01KFM8HDR0JSSEJMABYP3RT1VK
+    text: "Trait applicability guidance in /spec skill - Add section reminding agents to check available
+      traits (kspec trait list) before adding ACs. Prompt: 'Does this spec need common behaviors
+      like JSON output, dry-run, confirmation?' Surfaced during yaml-merge-driver spec creation
+      where user had to remind about traits."
+    created_at: 2026-01-23T01:47:12.512Z
+    tags:
+      - reflection
+      - spec
+      - skill
+    added_by: "@claude"
