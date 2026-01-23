@@ -23988,6 +23988,13 @@
         through @01KFMMQM) that break down the implementation. Will work on those smaller tasks
         first. Stopping work on this parent task to focus on the foundation task @01KFMMPY.
       supersedes: null
+    - _ulid: 01KFNAQQVJY7GZYDZKE9AGYFHZ
+      created_at: 2026-01-23T11:44:51.058Z
+      author: "@claude"
+      content: Iteration ended. This task has 33 ACs and should be broken down into smaller tasks (which
+        already exist as @01KFMMPY through @01KFMMQM). Recommend working on those smaller tasks
+        instead of this parent task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
