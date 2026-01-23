@@ -363,7 +363,7 @@ runs:
   - _ulid: 01KFM9W090EPKDA8GSTBXB2WDV
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 7
     started_at: 2026-01-23T02:10:27.745Z
     step_results:
@@ -383,5 +383,31 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T02:10:42.899Z
-        completed_at: 2026-01-23T02:10:42.899Z
+        completed_at: 2026-01-23T02:10:57.256Z
+        notes: >-
+          Designed 6 steps for local-review workflow:
+
+
+          1. [action] Get spec reference and read ACs - input: spec_ref
+
+          2. [check] Every AC has test coverage with // AC: annotation - on_fail: MUST-FIX, list
+          missing ACs
+
+          3. [check] All tests validate real behavior (no fluff tests) - on_fail: MUST-FIX, reject
+          tests that always pass
+
+          4. [check] Test strategy prefers E2E over unit tests - on_fail: Consider adding E2E tests
+          for CLI functionality
+
+          5. [check] Tests run in temp directories (not kspec repo) - on_fail: MUST-FIX, prevents
+          nested worktree issues
+
+          6. [action] Report findings - list all MUST-FIX issues
+
+
+          Uses Gate pattern with strict checks. Input captures spec for traceability.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T02:10:57.256Z
+        completed_at: 2026-01-23T02:10:57.256Z
     initiated_by: "@claude"
