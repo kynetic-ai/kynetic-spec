@@ -30804,7 +30804,7 @@
   type: task
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -30849,6 +30849,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T17:26:00.417Z
 - _ulid: 01KFMMZWDG20YQNNFWG3KDFXYY
   slugs: []
   title: API integration tests
