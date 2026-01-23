@@ -24856,6 +24856,41 @@
 
         Will build on existing server.ts from @01KFMMM4.
       supersedes: null
+    - _ulid: 01KFN4THFMCBYWD29ZMWPD4BAC
+      created_at: 2026-01-23T10:01:31.380Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created KspecWatcher class with:
+
+
+        ✅ AC-4: File watching with WebSocket broadcast for .kspec/*.yaml changes
+
+        ✅ AC-5: 500ms debouncing to aggregate rapid changes
+
+        ✅ AC-6: YAML parse error handling with error event broadcasting
+
+        ✅ AC-7: Exponential backoff recovery (1s -> 32s over 5 retries)
+
+        ✅ AC-8: Automatic fallback to Chokidar if Bun fs.watch fails
+
+
+        Architecture:
+
+        - Separate watcher.ts module for clean separation of concerns
+
+        - WebSocket connection tracking in server.ts
+
+        - Integrated with graceful shutdown (stops watcher, closes connections)
+
+        - Event format: {type, file, timestamp, content/error}
+
+
+        Test approach: Structure tests (verifying implementation exists and has expected features).
+        Full E2E would require Bun runtime and actual file watching, which isn't available in CI.
+
+
+        All 1087 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMMD7T322JYB64V10A30MF
