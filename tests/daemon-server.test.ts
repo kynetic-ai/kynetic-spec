@@ -251,6 +251,19 @@ describe('Daemon Server', () => {
     expect(packageJson.dependencies).toHaveProperty('@elysiajs/cors');
   });
 
+  // AC: @api-contract ac-1
+  it('should configure CORS to allow localhost:5173 dev server', async () => {
+    const serverContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/server.ts'),
+      'utf-8'
+    );
+
+    // Verify CORS allows localhost:5173 (dev server)
+    expect(serverContent).toContain('http://localhost:5173');
+    expect(serverContent).toContain('http://127.0.0.1:5173');
+    expect(serverContent).toContain('credentials: true');
+  });
+
   it('should have chokidar dependency for file watching fallback', async () => {
     const packageJson = JSON.parse(
       await readFile(join(process.cwd(), 'packages/daemon/package.json'), 'utf-8')
