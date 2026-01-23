@@ -24017,6 +24017,7 @@
         - packages/daemon/src/pid.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMMNDBTP9BJZGB23X8QMSD
   slugs: []
   title: Implement daemon logging
