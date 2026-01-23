@@ -25419,7 +25419,7 @@
   type: infra
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -25506,6 +25506,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T13:55:34.628Z
 - _ulid: 01KFMMM0YP97Z451KA5TEC6RX9
   slugs: []
   title: Create packages/daemon structure
