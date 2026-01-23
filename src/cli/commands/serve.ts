@@ -6,10 +6,14 @@
 import type { Command } from 'commander';
 import { spawn, spawnSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { error, info, output, success, warn, isJsonMode } from '../output.js';
 import { EXIT_CODES } from '../exit-codes.js';
 import { PidFileManager } from '../pid-utils.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Reads the daemon port from config file
@@ -164,15 +168,17 @@ async function startServer(opts: {
     process.exit(EXIT_CODES.SUCCESS);
   }
 
-  // Get path to daemon entry point - resolve from cwd to handle both dev and built scenarios
-  const daemonBinary = join(process.cwd(), 'packages/daemon/src/index.ts');
+  // Get path to daemon entry point - resolve relative to this package
+  // This works in both dev (src/) and built (dist/) scenarios, and from any cwd
+  const packageRoot = join(__dirname, '../../..');  // From dist/cli/commands or src/cli/commands to project root
+  const daemonBinary = join(packageRoot, 'packages/daemon/src/index.ts');
 
   if (!existsSync(daemonBinary)) {
     if (isJsonMode()) {
-      output({ error: `Daemon binary not found at: ${daemonBinary}`, hint: 'Ensure you are running from the project root' });
+      output({ error: `Daemon binary not found at: ${daemonBinary}`, hint: 'Ensure the kspec package is properly installed' });
     } else {
       error(`Daemon binary not found at: ${daemonBinary}`);
-      error('Ensure you are running from the project root');
+      error('Ensure the kspec package is properly installed');
     }
     process.exit(EXIT_CODES.ERROR);
   }
