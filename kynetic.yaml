@@ -431,6 +431,10 @@ traits:
         given: a spec uses @trait-retrospective
         when: status is set to implemented or verified
         then: verified_at (ISO timestamp) and verified_by (agent ref) are required
+      - id: ac-3
+        given: a spec uses @trait-retrospective without verified_at/verified_by
+        when: validation runs
+        then: warning indicates missing verification metadata
 includes:
   - modules/core.yaml
   - modules/schema.yaml
