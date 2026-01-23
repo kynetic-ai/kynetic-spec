@@ -492,7 +492,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFMGETKWYDE2XANQWBDQ3VG2
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
+    status: completed
     current_step: 8
     total_steps: 9
     started_at: 2026-01-23T04:05:35.997Z
@@ -539,5 +539,7 @@ runs:
       - step_index: 8
         status: completed
         started_at: 2026-01-23T04:08:05.701Z
-        completed_at: 2026-01-23T04:08:05.701Z
+        completed_at: 2026-01-23T04:08:33.396Z
+        notes: Merged via gh pr merge --merge --delete-branch
     initiated_by: "@claude"
+    completed_at: 2026-01-23T04:08:33.396Z
