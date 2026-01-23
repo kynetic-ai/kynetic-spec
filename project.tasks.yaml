@@ -22936,18 +22936,24 @@
   notes: []
   todos: []
   automation: eligible
-- title: "Implement: Daemon Server Mode"
+- _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
+  slugs:
+    - task-daemon-server-mode
+  title: "Implement: Daemon Server Mode"
   type: task
   spec_ref: "@daemon-server"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - task-daemon-server-mode
   tags:
     - server
     - websocket
     - elysia
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:17:07.378Z
   notes:
     - _ulid: 01KFMMHSDJ085MBRXZT1SWHFVH
       created_at: 2026-01-23T05:17:07.378Z
@@ -23017,10 +23023,141 @@
         - ac-16: Given daemon code is ready, when bun build --compile runs, then produces standalone
         executable without requiring Bun installation
       supersedes: null
-  _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
+  todos: []
+- title: "Implement: REST and WebSocket API Contract"
+  type: task
+  spec_ref: "@api-contract"
+  derivation: auto
+  priority: 2
+  slugs:
+    - task-rest-and-websocket-api-contract
+  tags:
+    - api
+    - rest
+    - websocket
+  depends_on: []
+  notes:
+    - _ulid: 01KFMMHX90THXZYDKP63XF3RCZ
+      created_at: 2026-01-23T05:17:11.329Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        REST API contract for HTTP endpoints and WebSocket protocol for real-time communication.
+
+        All REST endpoints return JSON with consistent patterns. WebSocket uses topic-based pub/sub
+
+        with request_id correlation for command acknowledgment.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given daemon running on localhost:3456, when request from localhost:5173 (dev
+        server) received, then CORS headers allow the request
+
+        - ac-2: Given daemon is running, when GET /api/tasks is called, then returns JSON array of
+        all tasks with status, priority, spec_ref, notes count
+
+        - ac-3: Given daemon is running, when GET /api/tasks with status filter (e.g.,
+        ?status=pending&status=in_progress), then returns only tasks matching filter (supports
+        multi-value)
+
+        - ac-4: Given daemon is running, when GET /api/tasks with pagination (?limit=10&offset=20),
+        then returns paginated results with {items, total, offset, limit} wrapper
+
+        - ac-5: Given daemon is running, when GET /api/tasks/:ref is called, then resolves ref via
+        ReferenceIndex, returns full task with notes, todos, dependencies
+
+        - ac-6: Given daemon is running, when POST /api/tasks/:ref/start is called, then task
+        transitions to in_progress, WebSocket broadcasts update, returns updated task
+
+        - ac-7: Given daemon is running, when POST /api/tasks/:ref/note with {content} body, then
+        note appended to task, shadow commit occurs, WebSocket broadcasts update
+
+        - ac-8: Given daemon is running, when GET /api/items is called, then returns JSON array of
+        all spec items (modules, features, requirements)
+
+        - ac-9: Given daemon is running, when GET /api/items with type filter
+        (?type=feature&type=requirement), then returns only items matching type filter
+
+        - ac-10: Given daemon is running, when GET /api/items/:ref is called, then resolves ref,
+        returns full item with acceptance_criteria, traits, relationships
+
+        - ac-11: Given daemon is running, when GET /api/items/:ref/tasks is called, then returns
+        tasks linked to this spec via AlignmentIndex
+
+        - ac-12: Given daemon is running, when GET /api/inbox is called, then returns all inbox
+        items ordered by created_at desc
+
+        - ac-13: Given daemon is running, when POST /api/inbox with {text} body, then creates inbox
+        item, returns with generated ULID
+
+        - ac-14: Given daemon is running, when DELETE /api/inbox/:ref is called, then removes inbox
+        item, returns success confirmation
+
+        - ac-15: Given daemon is running, when GET /api/meta/session is called, then returns current
+        session context (focus, threads, questions)
+
+        - ac-16: Given daemon is running, when GET /api/meta/agents is called, then returns all
+        defined agents
+
+        - ac-17: Given daemon is running, when GET /api/meta/workflows is called, then returns all
+        defined workflows
+
+        - ac-18: Given daemon is running, when GET /api/meta/observations with filter
+        (?resolved=false), then returns observations matching filter
+
+        - ac-19: Given daemon is running, when GET /api/search?q=login is called, then searches
+        across all items using grep/title matching
+
+        - ac-20: Given daemon is running, when GET /api/validate is called, then runs full
+        validation, returns ValidationResult
+
+        - ac-21: Given daemon is running, when GET /api/alignment is called, then returns
+        AlignmentIndex stats and warnings
+
+        - ac-22: Given API request has invalid ref, when any endpoint with :ref parameter, then
+        returns {error, message, suggestion} with 404 status, suggests similar refs if available
+
+        - ac-23: Given API request has validation error, when POST/PUT with invalid body, then
+        returns {error, details:[{field, message}]} with 400 status
+
+        - ac-24: Given API request causes state transition error, when POST action violates state
+        machine, then returns {error, current, valid_transitions} with 409 status
+
+        - ac-25: Given client connects to /ws, when WebSocket connection established, then receives
+        connected event with {session_id}
+
+        - ac-26: Given WebSocket connection active, when client sends command, then command format
+        is {action, request_id?, payload}
+
+        - ac-27: Given command received, when processed, then server sends {ack: true, request_id,
+        success, error?}
+
+        - ac-28: Given WebSocket connection, when client sends {action: 'subscribe', topics:
+        ['files:updates']}, then server tracks subscription and sends events for that topic
+
+        - ac-29: Given file changes in .kspec/, when WebSocket client subscribed to files:updates,
+        then receives event with format {msg_id, seq, timestamp, topic, event, data: {ref, action}}
+
+        - ac-30: Given malformed command received, when parsed, then return {ack: false, error:
+        'validation_error', details: ...}
+
+        - ac-31: Given connection closing, when close initiated, then use code 1000 for clean, 1001
+        for timeout, 1011 for error
+
+        - ac-32: Given server sends to slow client, when backpressure limit reached, then pause
+        non-critical broadcasts until drain event
+
+        - ac-33: Given daemon is shutting down, when WebSocket connection active, then receives
+        shutdown event with {reason}, connection closes gracefully
+      supersedes: null
+  _ulid: 01KFMMHX91G8RSY91QANTT4FSQ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:17:07.378Z
+  created_at: 2026-01-23T05:17:11.329Z
   todos: []
