@@ -28261,6 +28261,71 @@
         Components to update:
         - packages/web-ui/src/routes/+layout.svelte
       supersedes: null
+    - _ulid: 01KFNN5APM169W2YHKZS2Y7CM0
+      created_at: 2026-01-23T14:47:02.101Z
+      author: "@claude"
+      content: >-
+        Implementation complete!
+
+
+        Created components:
+
+        ✅ packages/web-ui/src/lib/components/Sidebar.svelte
+          - Uses shadcn-svelte Sidebar component
+          - Logo/title, nav links (Dashboard, Tasks, Items, Inbox)
+          - Connection status badge in footer (placeholder, will wire to WebSocket later)
+
+        ✅ packages/web-ui/src/lib/components/MobileNav.svelte
+          - Bottom navigation for mobile (< 768px)
+          - Matches desktop nav items with emoji icons
+          - Active state highlighting
+
+        ✅ Updated packages/web-ui/src/routes/+layout.svelte
+          - SidebarProvider wrapper
+          - Desktop sidebar (hidden on mobile via md:block)
+          - SidebarInset for main content area
+          - Mobile nav shown only on mobile
+          - Responsive padding (pb-20 on mobile for bottom nav, pb-4 on desktop)
+
+        ✅ Created placeholder routes:
+          - /tasks → packages/web-ui/src/routes/tasks/+page.svelte
+          - /items → packages/web-ui/src/routes/items/+page.svelte
+          - /inbox → packages/web-ui/src/routes/inbox/+page.svelte
+
+        ✅ Updated homepage (/) with placeholder heading
+
+
+        Acceptance Criteria Coverage:
+
+        ✅ ac-26: Responsive layout - bottom nav appears < 768px (md breakpoint)
+
+        ✅ ac-27: Desktop layout ready for slide-over panels >= 1024px (lg breakpoint via
+        SidebarInset)
+
+
+        Build Status:
+
+        ✅ vite build succeeds (packages/web-ui)
+
+        ✅ All 1207 tests pass
+
+
+        Next Steps:
+
+        The layout foundation is complete. Subsequent subtasks will implement:
+
+        - Dashboard content (task counts, session context)
+
+        - Task list/detail views
+
+        - Spec item tree/detail views
+
+        - Inbox functionality
+
+        - Search command palette
+
+        - WebSocket integration for real-time updates
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
