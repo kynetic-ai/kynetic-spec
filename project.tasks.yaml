@@ -24738,7 +24738,25 @@
         - packages/web-ui/src/lib/components/ConnectionStatus.svelte
       supersedes: null
   todos: []
-- title: Export command implementation
+- _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
+  slugs: []
+  title: Export command implementation
+  type: task
+  spec_ref: "@gh-pages-export"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - phase-4
+    - export
+  vcs_refs: []
+  created_at: 2026-01-23T05:23:30.144Z
+  notes: []
+  todos: []
+- title: Static SPA for GitHub Pages
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
@@ -24747,12 +24765,12 @@
   tags:
     - phase-4
     - export
-  _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
+  _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:23:30.144Z
+  created_at: 2026-01-23T05:23:34.720Z
   notes: []
   todos: []
