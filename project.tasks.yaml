@@ -22875,10 +22875,49 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T01:28:59.922Z
-  notes: []
+  started_at: 2026-01-23T06:32:15.755Z
+  notes:
+    - _ulid: 01KFMS1FXQKVJMQP5AB7H0PF99
+      created_at: 2026-01-23T06:35:36.247Z
+      author: "@claude"
+      content: >-
+        Implemented array merge algorithms for semantic YAML merging:
+
+
+        **Implemented:**
+
+        - mergeUlidArrays() - Union merge for entity arrays (tasks, notes, inbox) by ULID
+
+        - mergeSetArray() - Set union for tags, depends_on with deduplication
+
+        - detectDeletion() - Helper to detect delete/modify conflicts
+
+
+        **Test coverage:**
+
+        - Added 16 comprehensive tests in merge-arrays.test.ts
+
+        - Tests cover AC-2 (union merge), AC-5 (append-only), AC-6 (set union), AC-8 (deletion
+        detection)
+
+        - All 984 tests pass (up from 962)
+
+
+        **Key features:**
+
+        - ULID-based union merge preserves order (ours first, then theirs additions)
+
+        - Handles undefined/empty arrays gracefully
+
+        - Set union automatically deduplicates
+
+        - Deletion detection identifies delete-modify conflicts for future interactive resolution
+
+
+        Ready for object merge and conflict resolution in follow-up tasks.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T06:32:15.755Z
 - _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
   slugs: []
   title: "Merge driver: object merge algorithms"
