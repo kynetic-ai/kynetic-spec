@@ -25638,6 +25638,96 @@
 
         Progress: 5/8 subtasks submitted (4 merged, 1 in review)
       supersedes: null
+    - _ulid: 01KFNQ8AFW1MRSWR9WCR1ZK8ZY
+      created_at: 2026-01-23T15:23:37.341Z
+      author: "@claude"
+      content: >-
+        Session 40 End State - Parent Task Progress Tracker
+
+
+        **Purpose:** This is the parent/umbrella task coordinating 8 derived subtasks for Web
+        Dashboard implementation. It remains in_progress until ALL subtasks are complete.
+
+
+        **Current Progress: 5/8 subtasks (62.5% complete)**
+
+
+        **MERGED (4/8):**
+
+        1. ✅ @01KFMMSV - SvelteKit scaffold - COMPLETED & MERGED (PR #197)
+
+        2. ✅ @01KFMMT0 - Dashboard layout/navigation - COMPLETED & MERGED (PR #198)
+
+        3. ✅ @01KFMMT4 - Task list/detail views - COMPLETED & MERGED (PR #198)
+
+        4. ✅ @01KFMMT9 - Spec item tree/detail views - COMPLETED & MERGED (PR #198)
+
+
+        **IN REVIEW (1/8):**
+
+        5. ⏳ @01KFMMTD - Inbox view - SUBMITTED, PR #199 created, CI running
+           - Implementation complete with add/delete functionality
+           - Local review: READY FOR MERGE
+           - Awaiting CI checks and automated reviews
+
+        **PENDING (3/8):**
+
+        6. ⏸️ @01KFMMTJ - Session context/observations panel - READY
+
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+
+        **What's Been Delivered:**
+
+        - Complete SvelteKit scaffold with Tailwind CSS v4 and shadcn-svelte
+
+        - Responsive layout with sidebar (desktop) and bottom nav (mobile)
+
+        - Full task browsing with filters, detail panels, and actions
+
+        - Spec item hierarchical tree with detail views
+
+        - Inbox list with add/delete functionality
+
+
+        **Acceptance Criteria Progress:**
+
+        - Total in spec: 33 ACs
+
+        - Implemented: ~15 ACs (ac-1 through ac-19, partial coverage)
+
+        - Remaining: ~18 ACs (session context, search, WebSocket features)
+
+
+        **Next Session Actions:**
+
+        1. Merge PR #199 (inbox view) when CI passes
+
+        2. Complete @01KFMMTD task
+
+        3. Start @01KFMMTJ (Session context/observations panel)
+
+        4. Continue through remaining 3 subtasks
+
+        5. Mark THIS parent task complete only after all 8 subtasks done
+
+
+        **Technical Health:**
+
+        - All 1207 tests passing
+
+        - Build successful
+
+        - No blockers
+
+        - Clean working tree
+
+
+        This parent task will transition to completed state once all 8 derived subtasks are merged.
+        Estimated: 3 more sessions at current pace.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
