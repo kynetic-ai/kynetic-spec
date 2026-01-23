@@ -617,3 +617,7 @@ features:
         given: both versions add different items to an array (tasks, inbox, specs)
         when: merge runs
         then: both additions are included in result (union merge by ULID)
+      - id: ac-3
+        given: both versions modify different fields of the same item
+        when: merge runs
+        then: fields are merged (non-conflicting field changes combined)
