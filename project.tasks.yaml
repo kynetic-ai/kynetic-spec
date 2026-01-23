@@ -30611,6 +30611,7 @@
     - integration
   vcs_refs: []
   created_at: 2026-01-23T05:24:39.933Z
+  started_at: 2026-01-23T16:40:01.562Z
   notes:
     - _ulid: 01KFMN0TA0ZB22X9EDC5S4TFQT
       created_at: 2026-01-23T05:25:19.809Z
@@ -30645,9 +30646,41 @@
         - src/schema/config.ts (daemon config schema)
         - src/parser/config.ts (load daemon config)
       supersedes: null
+    - _ulid: 01KFNVMVPYVA0XT86Q6HA4V74X
+      created_at: 2026-01-23T16:40:22.494Z
+      author: "@claude"
+      content: |-
+        Iteration 44: Task inherited, preparing for next session
+
+        **Task Overview:**
+        Add configurable auto-start for daemon when CLI commands are run.
+
+        **Implementation Plan:**
+        1. Add daemon config section to kynetic.yaml schema:
+           - auto_start: boolean (default true)
+           - port: number (default 3456)
+        2. Hook CLI entry point (src/cli/index.ts):
+           - Check if daemon running
+           - If not running and auto_start enabled, start in background
+           - Continue with original command
+        3. Load daemon config from kynetic.yaml
+
+        **Files to Modify:**
+        - src/cli/index.ts (entry point hook)
+        - src/schema/config.ts (daemon config schema)
+        - src/parser/config.ts (load daemon config)
+
+        **Next Session Actions:**
+        1. Read existing code to understand daemon implementation
+        2. Add daemon config schema
+        3. Implement auto-start logic in CLI entry point
+        4. Add tests with AC annotations
+        5. Create PR
+
+        Task ready to begin implementation in next iteration.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T16:40:01.562Z
 - _ulid: 01KFMMZR08H17V70MT0HYTR1F0
   slugs: []
   title: Executable compilation with bun build
