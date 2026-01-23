@@ -23563,10 +23563,42 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T01:29:36.701Z
-  notes: []
+  started_at: 2026-01-23T08:51:12.160Z
+  notes:
+    - _ulid: 01KFN13EET482KTCQJYW7BM84W
+      created_at: 2026-01-23T08:56:28.891Z
+      author: "@claude"
+      content: >-
+        Implemented AC-12: Auto-configuration of merge driver on init
+
+
+        Implementation:
+
+        - Added configureMergeDriver() function in shadow.ts that:
+          1. Configures merge.kspec.name and merge.kspec.driver in .git/config
+          2. Creates/updates .gitattributes in shadow branch with *.yaml and *.yml patterns
+          3. Auto-commits .gitattributes to shadow branch
+        - Called from initializeShadow() as step 7 after hook installation
+
+        - Function silently fails if kspec binary not found or git config fails (optional feature)
+
+
+        Testing:
+
+        - Added E2E test 'configures merge driver during initialization' covering AC-12
+
+        - Test verifies git config settings and .gitattributes content in shadow branch
+
+        - Updated 2 existing tests that counted commits (now account for merge driver config commit)
+
+        - All 1058 tests pass
+
+
+        The merge driver is now automatically configured when running kspec init, making semantic
+        YAML merging work out of the box.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T08:51:12.160Z
 - _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
   slugs:
     - task-daemon-server-mode
