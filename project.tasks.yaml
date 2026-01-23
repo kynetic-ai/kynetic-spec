@@ -25412,6 +25412,7 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:41.578Z
+  started_at: 2026-01-23T10:50:27.539Z
   notes:
     - _ulid: 01KFMMPFG77ABC04CKRWSBREKH
       created_at: 2026-01-23T05:19:41.064Z
@@ -25443,9 +25444,19 @@
         - Keep simple for MVP
         - Log rotation can be added later
       supersedes: null
+    - _ulid: 01KFN7MTAJEXD4QTVYZ6D508MS
+      created_at: 2026-01-23T10:50:49.555Z
+      author: "@claude"
+      content: "Checking scope: The existing implementation already has console.log/error throughout the
+        daemon code (AC-6, AC-7 mention 'error logged' and 'daemon logs error'). The task
+        description suggests redirecting stdout/stderr to .kspec/.daemon.log in daemon mode and
+        implementing 'kspec serve logs' command. However, there's no AC in @daemon-server that
+        explicitly requires logging to file or a logs command. Before implementing, need to clarify:
+        (1) Should this be a spec addition? (2) Is this infrastructure for future features? (3) Or
+        is this already covered by the existing console logging that satisfies AC-6/AC-7?"
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T10:50:27.539Z
 - _ulid: 01KFMMPY4DM95VNXZ278VK32H1
   slugs: []
   title: API foundation and CORS middleware
