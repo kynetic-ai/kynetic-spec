@@ -649,3 +649,7 @@ features:
         given: merge has unresolvable conflicts and --non-interactive flag set
         when: driver exits
         then: conflict markers written as YAML comments, exit code 0 (prevents git fallback)
+      - id: ac-11
+        given: YAML parsing fails on any input file
+        when: driver runs
+        then: "falls back gracefully: copies ours verbatim, creates .kspec-merge-failed marker, exits 0"
