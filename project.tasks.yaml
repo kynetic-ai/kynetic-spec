@@ -23625,7 +23625,25 @@
   created_at: 2026-01-23T05:18:20.630Z
   notes: []
   todos: []
-- title: Implement Elysia server core
+- _ulid: 01KFMMM4Z2WA3WPF7PVDCVGKBE
+  slugs: []
+  title: Implement Elysia server core
+  type: task
+  spec_ref: "@daemon-server"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - phase-1
+    - daemon
+  vcs_refs: []
+  created_at: 2026-01-23T05:18:24.737Z
+  notes: []
+  todos: []
+- title: Implement file watcher and WebSocket broadcast
   type: task
   spec_ref: "@daemon-server"
   meta_ref: null
@@ -23634,12 +23652,12 @@
   tags:
     - phase-1
     - daemon
-  _ulid: 01KFMMM4Z2WA3WPF7PVDCVGKBE
+  _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:18:24.737Z
+  created_at: 2026-01-23T05:18:28.875Z
   notes: []
   todos: []
