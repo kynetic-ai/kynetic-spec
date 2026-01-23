@@ -24484,7 +24484,41 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:45.780Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMWGD3DZZWV5VQYD5EPHTV
+      created_at: 2026-01-23T05:22:58.596Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement spec item tree view and detail panel.
+
+        ### Steps
+        1. Tree view:
+           - Hierarchical: modules > features > requirements
+           - Expand/collapse nodes
+           - Click to select
+
+        2. Detail panel:
+           - Title, description
+           - Acceptance criteria (GWT format, expandable rows)
+           - Traits as chips (clickable)
+           - Linked tasks with status
+
+        ### ACs Covered
+        - ac-11: Tree view with expand/collapse
+        - ac-12: Detail panel with ACs
+        - ac-13: Linked tasks section
+        - ac-14: Traits as chips
+        - ac-15: Expandable AC rows
+
+        ### Files to Create
+        - packages/web-ui/src/routes/items/+page.svelte
+        - packages/web-ui/src/lib/components/ItemTree.svelte
+        - packages/web-ui/src/lib/components/ItemDetail.svelte
+        - packages/web-ui/src/lib/components/AcceptanceCriteria.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
   slugs: []
