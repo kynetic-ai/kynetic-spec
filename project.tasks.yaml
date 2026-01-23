@@ -24653,6 +24653,7 @@
         - packages/web-ui/src/lib/components/InboxItem.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
   slugs: []
   title: Session context and observations panel
