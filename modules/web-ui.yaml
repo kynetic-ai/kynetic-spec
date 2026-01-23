@@ -127,6 +127,9 @@ features:
         given: daemon code is ready
         when: bun build --compile runs
         then: produces standalone executable without requiring Bun installation
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
