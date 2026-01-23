@@ -621,3 +621,7 @@ features:
         given: both versions modify different fields of the same item
         when: merge runs
         then: fields are merged (non-conflicting field changes combined)
+      - id: ac-4
+        given: both versions modify the same scalar field (title, description, priority) of the same item
+        when: merge runs
+        then: user is prompted interactively to choose which value to keep
