@@ -24785,6 +24785,7 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:28.875Z
+  started_at: 2026-01-23T09:57:10.142Z
   notes:
     - _ulid: 01KFMMP30D4K83N20JV3S4D8N3
       created_at: 2026-01-23T05:19:28.270Z
@@ -24827,9 +24828,36 @@
         - packages/daemon/src/watcher/debounce.ts
         - packages/daemon/src/watcher/fallback.ts
       supersedes: null
+    - _ulid: 01KFN4JWVPVRNANB0ZMECE8MH6
+      created_at: 2026-01-23T09:57:20.887Z
+      author: "@claude"
+      content: >-
+        Starting implementation of file watcher and WebSocket broadcast.
+
+
+        Scope: ac-4, ac-5, ac-6, ac-7, ac-8 (file watching with debouncing, error handling, and
+        fallback)
+
+
+        Implementation plan:
+
+        1. Implement Bun fs.watch for .kspec/*.yaml files
+
+        2. Add debouncing (500ms) for rapid changes
+
+        3. Add YAML parse error handling (log + broadcast error event)
+
+        4. Add recovery logic with exponential backoff for inaccessible directory
+
+        5. Add fallback to Chokidar if Bun fs.watch fails
+
+        6. Broadcast file change events to subscribed WebSocket clients
+
+
+        Will build on existing server.ts from @01KFMMM4.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T09:57:10.142Z
 - _ulid: 01KFMMMD7T322JYB64V10A30MF
   slugs: []
   title: Implement WebSocket protocol
