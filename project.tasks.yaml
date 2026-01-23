@@ -26239,7 +26239,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -26286,6 +26286,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T12:30:02.487Z
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
   slugs: []
   title: Inbox and meta API endpoints
