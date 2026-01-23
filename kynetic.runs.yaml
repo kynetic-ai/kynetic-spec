@@ -545,7 +545,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFMGP59MZ2N985TX4RZ860FS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
@@ -677,5 +677,15 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-23T04:17:34.035Z
-        completed_at: 2026-01-23T04:17:34.035Z
+        completed_at: 2026-01-23T04:18:23.523Z
+        notes: >-
+          Captured:
+
+          - Inbox @01KFMH54: Batch trait assignment (add @trait-multi-ref-batch to trait commands)
+
+          - Inbox @01KFMH5A: AC text validation for YAML special chars
+
+          - Observation @01KFMH5S: Success pattern - trait-based approach + subagent exploration +
+          spec-first
     initiated_by: "@claude"
+    completed_at: 2026-01-23T04:18:23.523Z
