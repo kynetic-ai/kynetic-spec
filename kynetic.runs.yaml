@@ -219,8 +219,18 @@ runs:
   - _ulid: 01KFM9ESBNX3V641EG2N5FB3AW
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 7
     started_at: 2026-01-23T02:03:14.678Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-23T02:03:14.678Z
+        completed_at: 2026-01-23T02:03:21.469Z
+        inputs:
+          pattern_source: AGENTS.md:547-607 (PR Merge Requirements section)
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-23T02:03:21.469Z
+        completed_at: 2026-01-23T02:03:21.469Z
     initiated_by: "@claude"
