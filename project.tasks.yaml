@@ -22628,6 +22628,7 @@
   created_at: 2026-01-23T01:28:59.922Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
   slugs: []
   title: "Merge driver: object merge algorithms"
