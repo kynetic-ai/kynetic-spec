@@ -23161,18 +23161,24 @@
         shutdown event with {reason}, connection closes gracefully
       supersedes: null
   todos: []
-- title: "Implement: Web Dashboard"
+- _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
+  slugs:
+    - task-web-dashboard
+  title: "Implement: Web Dashboard"
   type: task
   spec_ref: "@web-dashboard"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - task-web-dashboard
   tags:
     - svelte
     - ui
     - dashboard
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:17:15.372Z
   notes:
     - _ulid: 01KFMMJ17BNGTK0S70NEGFVZZH
       created_at: 2026-01-23T05:17:15.372Z
@@ -23295,10 +23301,96 @@
         - ac-33: Given another client modifies task, when WebSocket update received, then task
         list/detail updates without refresh, subtle highlight animation on changed item
       supersedes: null
-  _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
+  todos: []
+- title: "Implement: GitHub Pages Export"
+  type: task
+  spec_ref: "@gh-pages-export"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-github-pages-export
+  tags:
+    - static
+    - export
+    - github
+  depends_on: []
+  notes:
+    - _ulid: 01KFMMJ4J1T09TTDMA5SAW6DFM
+      created_at: 2026-01-23T05:17:18.785Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Static site generation from kspec state for hosting read-only views on GitHub Pages.
+
+        CI workflow builds JSON snapshot from shadow branch on push, SPA reads this JSON for
+        rendering.
+
+        Enables deep linking to tasks/specs from PRs and issues with data freshness indicator.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given kspec is installed, when user runs 'kspec export --format json', then writes
+        kspec-snapshot.json containing all tasks, items, inbox, meta to stdout or --output path
+
+        - ac-2: Given export runs, when output is generated, then JSON includes exported_at
+        timestamp, version (kspec version), project metadata
+
+        - ac-3: Given export runs, when tasks are included, then each task includes resolved
+        spec_ref title (not just ref string) for display without resolution
+
+        - ac-4: Given export runs, when items are included, then hierarchical structure preserved,
+        acceptance_criteria expanded, traits resolved to include inherited ACs
+
+        - ac-5: Given export runs with --include-validation, when validation is run, then JSON
+        includes validation block with error/warning counts and details
+
+        - ac-6: Given kspec is installed, when user runs 'kspec export --format html', then
+        generates self-contained HTML file with embedded JSON and SPA code
+
+        - ac-7: Given kspec is installed, when user runs 'kspec export --dry-run', then shows what
+        would be exported without writing files
+
+        - ac-8: Given push to kspec-meta branch, when CI workflow triggers, then runs kspec export,
+        commits to gh-pages branch
+
+        - ac-9: Given CI workflow runs, when SPA assets don't exist, then copies SPA static assets
+        (HTML, JS, CSS) to docs/ alongside JSON
+
+        - ac-10: Given rapid commits to kspec-meta, when multiple pushes within 30 seconds, then CI
+        debounces and runs once with latest state
+
+        - ac-11: Given user opens gh-pages URL, when SPA loads, then fetches kspec-snapshot.json
+        from same origin, renders dashboard
+
+        - ac-12: Given user navigates to /tasks/@task-slug, when deep link resolves, then SPA parses
+        path (history API), shows task detail for that ref
+
+        - ac-13: Given user navigates to /items/@spec-slug, when deep link resolves, then SPA shows
+        spec item detail for that ref
+
+        - ac-14: Given SPA renders, when validation data present in snapshot, then shows validation
+        summary badge (green check or red X with count)
+
+        - ac-15: Given static export page, when displayed to user, then shows 'Data as of:
+        [timestamp]' indicator prominently
+
+        - ac-16: Given viewing task in SPA mode, when user sees Start Task button area, then button
+        is disabled with tooltip explaining read-only mode
+
+        - ac-17: Given viewing inbox in SPA mode, when Add button area visible, then button is
+        disabled/hidden
+
+        - ac-18: Given SPA mode, when any write action attempted, then graceful no-op with
+        informative message
+      supersedes: null
+  _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:17:15.372Z
+  created_at: 2026-01-23T05:17:18.785Z
   todos: []
