@@ -125,7 +125,7 @@ describe('Spec Item API Endpoints', () => {
     );
 
     // Check imports from parser
-    expect(routesContent).toContain("from '../../../src/parser/index.js'");
+    expect(routesContent).toContain("from '../../parser/index.js'");
     expect(routesContent).toContain('initContext');
     expect(routesContent).toContain('loadAllItems');
     expect(routesContent).toContain('loadAllTasks');

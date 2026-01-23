@@ -130,7 +130,7 @@ describe('Inbox API Endpoints', () => {
     );
 
     // Check imports from parser
-    expect(routesContent).toContain("from '../../../src/parser/index.js'");
+    expect(routesContent).toContain("from '../../parser/index.js'");
     expect(routesContent).toContain('initContext');
     expect(routesContent).toContain('loadInboxItems');
     expect(routesContent).toContain('createInboxItem');
