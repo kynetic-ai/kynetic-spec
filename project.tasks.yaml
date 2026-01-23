@@ -23676,7 +23676,65 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:24.737Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMNZ1SVS3JNYA1XGCY5XBR
+      created_at: 2026-01-23T05:19:24.217Z
+      author: "@claude"
+      content: >-
+        ## Implementation Notes
+
+
+        ### Objective
+
+        Implement core Elysia HTTP server with health endpoint, localhost binding, and graceful
+        shutdown.
+
+
+        ### Steps
+
+        1. Create Elysia app with localhost-only binding:
+           ```typescript
+           const app = new Elysia()
+             .get('/api/health', () => ({
+               status: 'ok',
+               uptime: process.uptime(),
+               connections: wsConnections.size,
+               version: pkg.version
+             }))
+             .listen({ hostname: '127.0.0.1', port: config.port })
+           ```
+
+        2. Implement graceful shutdown on SIGTERM/SIGINT:
+           - Close all WebSocket connections
+           - Flush pending messages
+           - Exit cleanly
+
+        3. Add port conflict detection with clear error message
+
+
+        ### ACs Covered
+
+        - ac-1: Server starts on configurable port
+
+        - ac-2: Localhost-only binding
+
+        - ac-3: Reject non-localhost (403)
+
+        - ac-11: Health endpoint
+
+        - ac-12: Graceful shutdown
+
+        - ac-15: Plugin pattern for middleware
+
+
+        ### Files to Create/Modify
+
+        - packages/daemon/src/server.ts
+
+        - packages/daemon/src/middleware/localhost.ts
+
+        - packages/daemon/src/routes/health.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
   slugs: []
