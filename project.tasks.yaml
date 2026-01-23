@@ -31458,7 +31458,7 @@
     3. Add integration test for npm-installed daemon path
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -31565,6 +31565,9 @@
         - Full suite: 1242 passed, 3 skipped
       supersedes: null
   todos: []
+  completed_at: 2026-01-23T21:57:52.856Z
+  closed_reason: "PR #207 merged - daemon bundled with package, path resolution fixed for npm
+    installs, cross-platform compatibility (bun --version, shx cp)"
 - _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   slugs: []
   title: Improve PR review process enforcement
