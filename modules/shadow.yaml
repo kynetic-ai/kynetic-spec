@@ -701,3 +701,8 @@ features:
         traits: []
         notes: []
         created: 2026-01-23T01:26:29.868Z
+        acceptance_criteria:
+          - id: ac-1
+            given: file is *.tasks.yaml
+            when: merge driver runs
+            then: tasks array is merged using task-specific strategy
