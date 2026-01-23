@@ -171,7 +171,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFM83QS8A9AGKV6106ZBT6VB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T01:39:44.041Z
@@ -210,5 +210,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-23T01:41:00.382Z
-        completed_at: 2026-01-23T01:41:00.382Z
+        completed_at: 2026-01-23T01:47:28.922Z
+        notes: "Captured: (1) Trait guidance in /spec skill - inbox @01KFM8HD, (2) CLI help examples - inbox
+          @01KFM8HF, (3) Plan+review success pattern - observation @01KFM8HP. Skipped bulk AC (user:
+          existing plan for bulk cmd mode)."
     initiated_by: "@claude"
+    completed_at: 2026-01-23T01:47:28.923Z

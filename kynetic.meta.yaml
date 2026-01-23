@@ -207,8 +207,8 @@ workflows:
       - type: decision
         content: Does this workflow need a matching skill for additional context?
         options:
-          - "Yes - create/update skill in .claude/skills/<name>/SKILL.md"
-          - "No - workflow is self-contained or context exists elsewhere"
+          - Yes - create/update skill in .claude/skills/<name>/SKILL.md
+          - No - workflow is self-contained or context exists elsewhere
       - type: action
         content: |
           Test the workflow:
@@ -3041,6 +3041,15 @@ observations:
       actual file contents. Should always run git diff <branch>:<file> <main>:<file> before
       concluding content is merged."
     created_at: 2026-01-22T16:56:01.009Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFM8HP1XACBQW6BK85EBXRNW
+    type: success
+    content: Plan mode + subagent review workflow - Having a Plan agent review the plan before
+      presenting to user caught several issues (exit code semantics, missing AC coverage, CLI
+      signature mismatch) that would have caused rework. Worth replicating for complex specs.
+    created_at: 2026-01-23T01:47:21.022Z
     author: "@claude"
     resolved: false
     resolution: null
