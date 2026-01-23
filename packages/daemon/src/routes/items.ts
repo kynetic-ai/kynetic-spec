@@ -20,7 +20,6 @@ import {
   loadAllTasks,
   ReferenceIndex,
   AlignmentIndex,
-  ItemIndex,
   type LoadedSpecItem,
 } from '../../../src/parser/index.js';
 
@@ -38,8 +37,6 @@ export function createItemsRoutes(options: ItemsRouteOptions) {
       async ({ query }) => {
         const ctx = await initContext(kspecDir);
         const items = await loadAllItems(ctx);
-        const tasks = await loadAllTasks(ctx);
-        const index = new ItemIndex(tasks, items);
 
         // Apply filters
         let filtered = items;
@@ -184,7 +181,8 @@ export function createItemsRoutes(options: ItemsRouteOptions) {
         const items = await loadAllItems(ctx);
         const tasks = await loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(ctx);
-        const alignIndex = new AlignmentIndex(tasks, items, refIndex);
+        const alignIndex = new AlignmentIndex(tasks, items);
+        alignIndex.buildLinks(refIndex);
 
         // Resolve ref
         const result = refIndex.resolve(params.ref);
