@@ -2329,6 +2329,10 @@ features:
         given: ralph loop is running with --restart-every N (N > 0)
         when: iteration completes and iteration number is divisible by N
         then: agent process is killed and respawned to prevent memory buildup
+      - id: ac-18
+        given: --restart-every 0 is specified
+        when: iterations complete
+        then: agent process is never restarted (maintains single agent instance)
     status:
       maturity: draft
       implementation: implemented
