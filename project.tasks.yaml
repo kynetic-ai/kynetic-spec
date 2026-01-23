@@ -20809,6 +20809,39 @@
         Need to investigate trait detection logic or test setup. Core implementation is solid and
         ready for review.
       supersedes: null
+    - _ulid: 01KFMYYBA9XVR9B990XVEFGR2W
+      created_at: 2026-01-23T08:18:44.681Z
+      author: "@claude"
+      content: >-
+        Fixed failing E2E tests for @trait-retrospective feature.
+
+
+        **Root cause**: Tests were manually editing YAML to add traits field, but there was no CLI
+        command to add traits to items. This caused the trait check to fail and verification
+        metadata not to display.
+
+
+        **Solution**:
+
+        1. Added --trait option to 'kspec item set' command (line 692 in item.ts)
+
+        2. Updated handler to process traits (line 758 in item.ts)
+
+        3. Refactored all 4 tests to use CLI commands instead of manual YAML editing
+
+        4. Fixed date comparison test to compare dates (not timestamps) since display truncates to
+        date-only
+
+
+        **Changes**:
+
+        - src/cli/commands/item.ts: Added --trait option and handling
+
+        - tests/trait-retrospective.test.ts: Replaced YAML manipulation with CLI commands
+
+
+        **Result**: All 7 E2E tests now passing. All 1056 tests in suite pass.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
