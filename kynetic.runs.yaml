@@ -2544,7 +2544,7 @@ runs:
   - _ulid: 01KFPF5DN5E7T2YVS1V9H2ZAES
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-23T22:21:28.101Z
     step_results:
@@ -2633,5 +2633,27 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-23T22:22:41.074Z
-        completed_at: 2026-01-23T22:22:41.074Z
+        completed_at: 2026-01-23T22:22:52.243Z
+        notes: >-
+          ## Proposed Improvements
+
+
+          1. **Fix daemon TypeScript strict mode compatibility** (medium)
+             - What: Fix implicit any types, Elysia type issues in daemon code
+             - How it helps: Enables proper compilation, catches type errors at build time
+             - Scope: Medium - need to add types to route handlers, fix Elysia generics
+
+          2. **Workflow run auto-cleanup or expiration** (small)
+             - What: Auto-cancel workflow runs older than N days, or add 'workflow prune' command
+             - How it helps: Prevents accumulation of stale runs that clutter workflow commands
+             - Scope: Small - add prune command or TTL check
+
+          3. **Daemon startup error capture** (small)
+             - What: Capture daemon stderr during startup, show in error message if startup fails
+             - How it helps: When daemon fails to start, user sees why instead of just 'failed within 5 seconds'
+             - Scope: Small - pipe stderr to buffer, include in error output
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-23T22:22:52.243Z
+        completed_at: 2026-01-23T22:22:52.243Z
     initiated_by: "@claude"
