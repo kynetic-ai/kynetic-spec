@@ -31769,21 +31769,39 @@
   created_at: 2026-01-23T20:19:07.647Z
   notes: []
   todos: []
-- title: E2E Error Handling Tests
+- _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
+  slugs: []
+  title: E2E Error Handling Tests
   type: task
   spec_ref: "@api-contract"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - e2e
+    - testing
+  vcs_refs: []
+  created_at: 2026-01-23T20:19:11.206Z
+  notes: []
+  todos: []
+- title: E2E Navigation and URL State Tests
+  type: task
+  spec_ref: "@web-dashboard"
   meta_ref: null
   priority: 2
   slugs: []
   tags:
     - e2e
     - testing
-  _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
+  _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T20:19:11.206Z
+  created_at: 2026-01-23T20:19:14.646Z
   notes: []
   todos: []
