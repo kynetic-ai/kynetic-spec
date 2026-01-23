@@ -26671,6 +26671,31 @@
 
         Following existing patterns from tasks.ts and items.ts routes.
       supersedes: null
+    - _ulid: 01KFNEKFXHMEQ1NSWXV5DF9Q82
+      created_at: 2026-01-23T12:52:26.162Z
+      author: "@claude"
+      content: |-
+        Iteration 26 end - task started but implementation not complete.
+
+        STATUS: IN PROGRESS (not code complete)
+
+        PROGRESS:
+        - Task started and plan documented
+        - Researched parser functions available:
+          - Inbox: loadInboxItems, createInboxItem, saveInboxItem, deleteInboxItem
+          - Meta: loadMetaContext, loadSessionContext, saveSessionContext, findMetaItemByRef
+        - Reviewed existing route patterns (tasks.ts, items.ts)
+
+        NEXT ITERATION SHOULD:
+        1. Create packages/daemon/src/routes/inbox.ts
+        2. Create packages/daemon/src/routes/meta.ts  
+        3. Register routes in server.ts
+        4. Create tests following code inspection pattern
+        5. Test locally
+        6. Create PR when complete
+
+        DO NOT submit this task yet - implementation not done.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
