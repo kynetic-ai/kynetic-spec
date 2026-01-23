@@ -3279,4 +3279,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFP01QSX0DB7EQBWW7S7ZFR0
+    type: friction
+    content: Daemon serve tests failing in both main and feature branches with 'Daemon failed to start
+      within 5 seconds'. Manual daemon start works fine, suggesting test environment issue. Path
+      resolution fix committed (7dd2106) but underlying timeout issue remains. May need to increase
+      timeout or add stdio logging for test debugging.
+    created_at: 2026-01-23T17:57:18.782Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
