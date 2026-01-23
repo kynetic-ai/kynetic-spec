@@ -22367,15 +22367,21 @@
         - Manual testing confirms workflow steps persist correctly
       supersedes: null
   todos: []
-- title: "Implement: Semantic YAML Merge Driver"
+- _ulid: 01KFM7CQNZ98F3W0JB8DQ1XCNE
+  slugs:
+    - task-semantic-yaml-merge-driver
+  title: "Implement: Semantic YAML Merge Driver"
   type: task
   spec_ref: "@yaml-merge-driver"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-semantic-yaml-merge-driver
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:27:10.271Z
   notes:
     - _ulid: 01KFM7CQNYMAG85G3HSN2JGDNN
       created_at: 2026-01-23T01:27:10.270Z
@@ -22435,10 +22441,46 @@
         - ac-12: Given kspec init runs in a new repo, when initialization completes, then merge
         driver is configured in .git/config and .gitattributes updated in shadow branch
       supersedes: null
-  _ulid: 01KFM7CQNZ98F3W0JB8DQ1XCNE
+  todos: []
+- title: "Implement: Merge Driver CLI"
+  type: task
+  spec_ref: "@merge-driver-cli"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-merge-driver-cli
+  tags: []
+  depends_on:
+    - "@task-semantic-yaml-merge-driver"
+  notes:
+    - _ulid: 01KFM7CR21W791HD49EF6KGBGT
+      created_at: 2026-01-23T01:27:10.658Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        CLI subcommand that git invokes as the custom merge driver. Inherits @trait-dry-run and
+        @trait-error-guidance from parent.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given git invokes merge driver with standard arguments, when kspec merge-driver %O
+        %A %B %L %P runs, then driver reads base (%O), ours (%A), theirs (%B) files and writes
+        merged result to %A path
+
+        - ac-2: Given driver runs successfully, when processing completes, then stderr shows summary
+        of what was merged/conflicted for user visibility
+
+        - ac-3: Given --non-interactive flag is passed, when conflicts detected, then driver writes
+        conflicts as YAML comments instead of prompting
+      supersedes: null
+  _ulid: 01KFM7CR223GC9FK2Y2RE4SF7A
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T01:27:10.271Z
+  created_at: 2026-01-23T01:27:10.658Z
   todos: []
