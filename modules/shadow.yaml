@@ -714,3 +714,8 @@ features:
             given: file is modules/*.yaml
             when: merge driver runs
             then: spec items are merged recursively with nested children
+          - id: ac-4
+            given: file is kynetic.yaml
+            when: merge driver runs
+            then: "manifest fields merged: includes as set-union, project fields prompt on conflict, config
+              merged recursively"
