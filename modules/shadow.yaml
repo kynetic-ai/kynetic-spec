@@ -710,3 +710,7 @@ features:
             given: file is *.inbox.yaml
             when: merge driver runs
             then: items array is merged using inbox-specific strategy
+          - id: ac-3
+            given: file is modules/*.yaml
+            when: merge driver runs
+            then: spec items are merged recursively with nested children
