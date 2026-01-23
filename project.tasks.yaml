@@ -27335,6 +27335,7 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:19.207Z
+  started_at: 2026-01-23T13:37:29.419Z
   notes:
     - _ulid: 01KFMMSD49CFAWKYTNM3BZ00YP
       created_at: 2026-01-23T05:21:16.938Z
@@ -27373,9 +27374,66 @@
         - packages/daemon/src/errors.ts
         - packages/daemon/src/middleware/error-handler.ts
       supersedes: null
+    - _ulid: 01KFNHBV7HMPPGF8EMKY2FXKDH
+      created_at: 2026-01-23T13:40:41.329Z
+      author: "@claude"
+      content: >-
+        Implementation analysis complete.
+
+
+        DISCOVERY:
+
+        Error handling for ac-22, ac-23, and ac-24 is ALREADY IMPLEMENTED inline in all route
+        handlers:
+
+
+        ac-22 (404 with suggestion):
+
+        - tasks.ts: lines 130-134, 188-192, 254-258, 262-266
+
+        - items.ts: lines 135-145, 191-200
+
+        - inbox.ts: lines 118-121, 128-131
+
+        - Pattern: errorResponse(404, {error: 'not_found', message, suggestion})
+
+
+        ac-23 (400 with field details):
+
+        - tasks.ts: lines 270-277 (POST /tasks/:ref/note validation)
+
+        - inbox.ts: lines 62-68 (POST /inbox body validation)
+
+        - Pattern: errorResponse(400, {error: 'validation_error', details: [{field, message}]})
+
+
+        ac-24 (409 with state info):
+
+        - tasks.ts: lines 205-210 (POST /tasks/:ref/start transition check)
+
+        - Pattern: errorResponse(409, {error: 'invalid_transition', message, current,
+        valid_transitions})
+
+
+        TEST COVERAGE:
+
+        Created comprehensive test file: tests/daemon-api-error-handling.test.ts
+
+        - 8 tests explicitly covering ac-22, ac-23, ac-24
+
+        - Tests verify error patterns across all route files
+
+        - Tests check for AC annotations and consistent error handling
+
+        - All 1207 tests pass (8 new tests added)
+
+
+        NO CODE CHANGES NEEDED - implementation was complete from previous work.
+
+        Task can be marked as complete after this note is added.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T13:37:29.419Z
 - _ulid: 01KFMMSVYK9V98DVQG6KY77TMV
   slugs: []
   title: Create SvelteKit scaffold with shadcn-svelte
