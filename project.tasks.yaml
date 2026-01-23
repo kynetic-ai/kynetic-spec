@@ -24603,6 +24603,7 @@
         - packages/web-ui/src/lib/components/AcceptanceCriteria.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
   slugs: []
   title: Inbox view
