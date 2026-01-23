@@ -26347,6 +26347,31 @@
 
         All 1180 tests pass (6 new tests for items API).
       supersedes: null
+    - _ulid: 01KFNDPED02QP7JAMKXBH06ZXE
+      created_at: 2026-01-23T12:36:34.336Z
+      author: "@claude"
+      content: |-
+        Completed implementation of spec item API endpoints.
+
+        WORK DONE:
+        - Fixed AlignmentIndex constructor (was passing 3 params, should be 2)
+        - Fixed buildLinks call (must be separate after construction)
+        - Removed unused ItemIndex import
+        - Updated tests to match implementation (changed ItemIndex to ReferenceIndex check)
+
+        ENDPOINTS:
+        - GET /api/items - list with type/maturity/implementation filters and pagination
+        - GET /api/items/:ref - get single spec item with full details
+        - GET /api/items/:ref/tasks - get linked tasks via AlignmentIndex
+
+        ACs COVERED:
+        - ac-8: GET /api/items returns array of all spec items
+        - ac-9: Type filter with multi-value support  
+        - ac-10: GET /api/items/:ref with acceptance_criteria, traits, relationships
+        - ac-11: GET /api/items/:ref/tasks via AlignmentIndex.getTasksForSpec
+
+        TESTS: All 1180 tests pass (6 daemon-api-items E2E tests)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
