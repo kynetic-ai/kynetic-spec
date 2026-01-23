@@ -22929,6 +22929,20 @@
 
         PR #176 ready for automated review and merge.
       supersedes: null
+    - _ulid: 01KFMSCYAPXF1ZQNJF95AXZ3FZ
+      created_at: 2026-01-23T06:41:51.447Z
+      author: "@claude"
+      content: >-
+        Addressed review feedback:
+
+
+        Greptile review raised question about deletion handling in union merge. Added test case
+        confirming behavior is correct - items deleted in ours but kept in theirs are properly
+        included via lines 54-56.
+
+
+        Commit 1f929d5 adds test coverage for this scenario. All 985 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
