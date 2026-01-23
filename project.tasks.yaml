@@ -24721,6 +24721,12 @@
         The middleware logic is straightforward and risk is low, but proper E2E tests would provide
         better confidence. Will address based on user feedback.
       supersedes: null
+    - _ulid: 01KFN3XYVZFXJ1CBTXEV9E014N
+      created_at: 2026-01-23T09:45:54.816Z
+      author: "@claude"
+      content: "Addressing local review feedback: replacing fluff tests with proper unit tests for
+        middleware logic. Don't need full Bun server - can test middleware functions directly."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
