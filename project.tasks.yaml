@@ -23576,7 +23576,7 @@
   type: infra
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -23628,6 +23628,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T06:14:31.715Z
 - _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
   slugs: []
   title: Create shared types package
