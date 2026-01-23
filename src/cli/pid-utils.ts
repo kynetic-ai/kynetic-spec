@@ -2,7 +2,11 @@
  * PID File Management for CLI
  *
  * Manages daemon process PID file for lifecycle control from the CLI.
- * Copied from packages/daemon/src/pid.ts to avoid cross-package imports.
+ *
+ * NOTE: This is a duplicate of packages/daemon/src/pid.ts to avoid cross-package imports.
+ * TODO: Consider extracting to a shared @kynetic-ai/shared package when monorepo structure is established.
+ * For now, both files must be kept in sync manually.
+ *
  * AC: @cli-serve-commands ac-4, ac-5, ac-6
  */
 

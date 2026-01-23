@@ -5,11 +5,38 @@
 
 import type { Command } from 'commander';
 import { spawn, spawnSync } from 'child_process';
-import { readFileSync, existsSync, unlinkSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { error, info, output, success, warn, isJsonMode } from '../output.js';
 import { EXIT_CODES } from '../exit-codes.js';
 import { PidFileManager } from '../pid-utils.js';
+
+/**
+ * Reads the daemon port from config file
+ */
+function readDaemonPort(kspecDir: string): string | null {
+  const portFile = join(kspecDir, '.daemon.port');
+  try {
+    if (existsSync(portFile)) {
+      return readFileSync(portFile, 'utf-8').trim();
+    }
+  } catch {
+    // Ignore read errors
+  }
+  return null;
+}
+
+/**
+ * Writes the daemon port to config file
+ */
+function writeDaemonPort(kspecDir: string, port: string): void {
+  const portFile = join(kspecDir, '.daemon.port');
+  try {
+    writeFileSync(portFile, port, 'utf-8');
+  } catch {
+    // Ignore write errors - not critical
+  }
+}
 
 /**
  * Register serve commands
@@ -137,20 +164,24 @@ async function startServer(opts: {
     process.exit(EXIT_CODES.SUCCESS);
   }
 
-  // Get path to daemon entry point
-  const daemonBinary = join(import.meta.dirname, '../../../packages/daemon/src/index.ts');
+  // Get path to daemon entry point - resolve from cwd to handle both dev and built scenarios
+  const daemonBinary = join(process.cwd(), 'packages/daemon/src/index.ts');
 
   if (!existsSync(daemonBinary)) {
     if (isJsonMode()) {
-      output({ error: `Daemon binary not found at: ${daemonBinary}` });
+      output({ error: `Daemon binary not found at: ${daemonBinary}`, hint: 'Ensure you are running from the project root' });
     } else {
       error(`Daemon binary not found at: ${daemonBinary}`);
+      error('Ensure you are running from the project root');
     }
     process.exit(EXIT_CODES.ERROR);
   }
 
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.daemon) {
+    // Write port config for restart persistence (AC: @cli-serve-commands ac-7)
+    writeDaemonPort(opts.kspecDir, opts.port);
+
     // Spawn detached process
     const child = spawn('bun', [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       detached: true,
@@ -161,10 +192,19 @@ async function startServer(opts: {
     // Detach from parent
     child.unref();
 
-    // Give it a moment to start and write PID
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Poll for PID file with timeout (max 5 seconds)
+    const maxWait = 5000;
+    const startTime = Date.now();
+    let pid: number | null = null;
 
-    const pid = pidManager.read();
+    while (Date.now() - startTime < maxWait) {
+      pid = pidManager.read();
+      if (pid && pidManager.isDaemonRunning()) {
+        break;
+      }
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     if (pid && pidManager.isDaemonRunning()) {
       if (isJsonMode()) {
         output({ running: true, pid, port });
@@ -174,9 +214,9 @@ async function startServer(opts: {
       }
     } else {
       if (isJsonMode()) {
-        output({ error: 'Daemon failed to start' });
+        output({ error: 'Daemon failed to start within 5 seconds' });
       } else {
-        error('Daemon failed to start');
+        error('Daemon failed to start within 5 seconds');
       }
       process.exit(EXIT_CODES.ERROR);
     }
@@ -192,12 +232,21 @@ async function startServer(opts: {
       cwd: process.cwd(),
     });
 
-    // Handle Ctrl+C
+    // Handle Ctrl+C - forward SIGTERM to child for graceful shutdown
     process.on('SIGINT', () => {
       if (!isJsonMode()) {
         info('\nStopping server...');
       }
       child.kill('SIGTERM');
+
+      // Wait for graceful shutdown (max 5 seconds)
+      const shutdownTimeout = setTimeout(() => {
+        child.kill('SIGKILL'); // Force kill if not stopped
+      }, 5000);
+
+      child.on('exit', () => {
+        clearTimeout(shutdownTimeout);
+      });
     });
 
     // Wait for process to exit
@@ -293,11 +342,14 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
   const running = pidManager.isDaemonRunning();
   const pid = pidManager.read();
 
-  // TODO: Fetch uptime, connections, port from health endpoint when implemented
+  // Read port from config (AC: @cli-serve-commands ac-6)
+  const port = readDaemonPort(opts.kspecDir);
+
+  // TODO: Fetch uptime, connections from health endpoint when implemented
   const status = {
     running,
     pid: pid ?? null,
-    port: null, // TODO: read from config or health endpoint
+    port: port ? parseInt(port, 10) : null,
     uptime: null, // TODO: fetch from health endpoint
     connections: null, // TODO: fetch from health endpoint
   };
@@ -324,8 +376,8 @@ async function restartServer(opts: { kspecDir: string; json?: boolean }): Promis
 
   const pidManager = new PidFileManager(opts.kspecDir);
 
-  // Get current port if running (TODO: implement port persistence)
-  let port = '3456'; // default
+  // AC: @cli-serve-commands ac-7 - preserve port across restarts
+  let port = readDaemonPort(opts.kspecDir) || '3456'; // use saved port or default
 
   if (pidManager.isDaemonRunning()) {
     if (!isJsonMode()) {
