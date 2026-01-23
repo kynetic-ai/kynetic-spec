@@ -25187,6 +25187,48 @@
 
         PR #187 is NOT ready to merge until E2E tests are added.
       supersedes: null
+    - _ulid: 01KFN6J2JZYTH825ZR9G1AE1ZA
+      created_at: 2026-01-23T10:31:51.136Z
+      author: "@claude"
+      content: >-
+        Session 17 checkpoint: Implementation complete but tests need rework before merge.
+
+
+        **What was done:**
+
+        - Implemented full WebSocket protocol (types, pubsub, heartbeat, handler)
+
+        - Refactored server.ts to use new modules
+
+        - Created 51 new tests + updated 5 existing tests
+
+        - All 1138 tests pass
+
+        - Created PR #187
+
+
+        **Critical blocker identified:**
+
+        Local review (/local-review) identified that all daemon tests are source code inspection
+        tests (checking for string patterns in TypeScript files) rather than behavioral E2E tests.
+        These tests don't actually validate that the WebSocket protocol works - they just check that
+        code patterns exist.
+
+
+        **Next session must:**
+
+        1. Add E2E tests that actually run createServer() and connect WebSocket clients
+
+        2. Verify real behavior (connected event, subscribe/ack, broadcast, heartbeat timing, close
+        codes)
+
+        3. Follow patterns from tests/cli-*.test.ts for proper E2E with temp directories
+
+        4. Only then can PR #187 be merged
+
+
+        **PR status:** Open at #187, DO NOT MERGE until E2E tests added
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
