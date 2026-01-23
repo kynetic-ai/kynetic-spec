@@ -546,7 +546,7 @@ runs:
   - _ulid: 01KFMGP59MZ2N985TX4RZ860FS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
     step_results:
@@ -614,5 +614,32 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T04:10:19.259Z
-        completed_at: 2026-01-23T04:10:19.259Z
+        completed_at: 2026-01-23T04:11:48.315Z
+        notes: >-
+          Coverage check results:
+
+
+          1. **Batch trait assignment** - NOT directly covered. @multi-ref-batch exists but only for
+          task/item/inbox operations, not 'item trait add'. Could be extended or trait commands
+          could adopt the trait.
+
+
+          2. **YAML quoting/validation** - NOT tracked. No existing coverage for better AC text
+          validation or quoting guidance.
+
+
+          3. **Plan mode integration** - PARTIALLY covered. Found observation @01KFC3BM about plan
+          mode cycles. But specific integration with kspec (saving plans to task notes) not tracked.
+
+
+          4. **Task-spec gap at completion** - NOT tracked. The warning is helpful but could be
+          smarter about newly-created specs.
+
+
+          5. **Large meta.yaml** - NOT tracked. Could consider splitting into sub-modules
+          (meta/commands.yaml, meta/observations.yaml, etc.) but not currently tracked.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T04:11:48.315Z
+        completed_at: 2026-01-23T04:11:48.315Z
     initiated_by: "@claude"
