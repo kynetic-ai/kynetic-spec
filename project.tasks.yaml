@@ -23752,7 +23752,48 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:28.875Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMP30D4K83N20JV3S4D8N3
+      created_at: 2026-01-23T05:19:28.270Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement file watcher for .kspec/ directory with debouncing and WebSocket broadcast.
+
+        ### Steps
+        1. Create file watcher using Bun fs.watch (primary) with Chokidar fallback:
+           ```typescript
+           import { watch } from 'fs';
+           function watchKspec(callback: (files: string[]) => void) {
+             const watcher = watch('.kspec', { recursive: true }, (event, filename) => {
+               // Debounce and aggregate
+               debouncedNotify(filename);
+             });
+           }
+           ```
+
+        2. Implement 500ms debounce for rapid changes
+
+        3. Handle YAML parse errors gracefully (log, broadcast error event, don't crash)
+
+        4. Handle directory inaccessible errors with exponential backoff recovery
+
+        5. Broadcast changes to subscribed WebSocket clients via topic 'files:updates'
+
+        ### ACs Covered
+        - ac-4: File changes trigger WS update
+        - ac-5: Debounce rapid changes
+        - ac-6: Handle YAML parse errors
+        - ac-7: Handle directory inaccessible
+        - ac-8: Chokidar fallback
+
+        ### Files to Create
+        - packages/daemon/src/watcher.ts
+        - packages/daemon/src/watcher/debounce.ts
+        - packages/daemon/src/watcher/fallback.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMMD7T322JYB64V10A30MF
   slugs: []
