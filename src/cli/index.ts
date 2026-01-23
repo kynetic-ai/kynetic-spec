@@ -21,6 +21,7 @@ import {
   registerItemTraitCommands,
   registerLinkCommands,
   registerLogCommand,
+  registerMergeDriverCommand,
   registerMetaCommands,
   registerModuleCommands,
   registerRalphCommand,
@@ -92,6 +93,7 @@ registerLinkCommands(program);
 registerModuleCommands(program);
 registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
+registerMergeDriverCommand(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {

@@ -8,6 +8,7 @@ export { registerInitCommand } from "./init.js";
 export { registerItemCommands } from "./item.js";
 export { registerLinkCommands } from "./link.js";
 export { registerLogCommand } from "./log.js";
+export { registerMergeDriverCommand } from "./merge-driver.js";
 export { registerMetaCommands } from "./meta.js";
 export { registerModuleCommands } from "./module.js";
 export { registerRalphCommand } from "./ralph.js";
