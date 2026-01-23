@@ -26310,6 +26310,43 @@
         ### Files to Create
         - packages/daemon/src/routes/items.ts
       supersedes: null
+    - _ulid: 01KFNDGVWEA6KZEPK83N3K1KAA
+      created_at: 2026-01-23T12:33:31.535Z
+      author: "@claude"
+      content: >-
+        Implemented spec item API endpoints covering ac-8 through ac-11.
+
+
+        Created packages/daemon/src/routes/items.ts with 3 REST endpoints:
+
+        - GET /api/items: List with type filter, pagination, optional maturity/implementation/tag
+        filters
+
+        - GET /api/items/:ref: Get single item with full details (acceptance_criteria, traits,
+        relationships)
+
+        - GET /api/items/:ref/tasks: Get linked tasks via AlignmentIndex
+
+
+        Integration:
+
+        - Updated server.ts to register items routes
+
+        - Added E2E test file tests/daemon-api-items.test.ts with 6 tests
+
+
+        Implementation approach:
+
+        - Followed same pattern as tasks.ts (error handling, pagination wrapper, ReferenceIndex
+        resolution)
+
+        - Used ItemIndex for filtering, AlignmentIndex for task relationships
+
+        - AC annotations in code comments for traceability
+
+
+        All 1180 tests pass (6 new tests for items API).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
