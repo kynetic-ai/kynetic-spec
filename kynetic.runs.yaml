@@ -363,8 +363,18 @@ runs:
   - _ulid: 01KFM9W090EPKDA8GSTBXB2WDV
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 7
     started_at: 2026-01-23T02:10:27.745Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-23T02:10:27.745Z
+        completed_at: 2026-01-23T02:10:35.515Z
+        inputs:
+          pattern_source: AGENTS.md:608-650 (Local Review Subagents section)
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-23T02:10:35.515Z
+        completed_at: 2026-01-23T02:10:35.515Z
     initiated_by: "@claude"
