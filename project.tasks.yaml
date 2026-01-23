@@ -23074,10 +23074,40 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T01:29:16.324Z
-  notes: []
+  started_at: 2026-01-23T07:02:46.566Z
+  notes:
+    - _ulid: 01KFMTKQ8TZC3VEBXQPZPKCDEY
+      created_at: 2026-01-23T07:03:02.170Z
+      author: "@claude"
+      content: >-
+        Implementing conflict detection and resolution for semantic YAML merge driver.
+
+
+        Focus areas (from spec ACs):
+
+        - AC-4: Interactive prompts for scalar field conflicts
+
+        - AC-8: Interactive prompts for delete vs modify conflicts  
+
+        - AC-10: Non-interactive mode with conflicts as YAML comments
+
+
+        Strategy:
+
+        1. Review existing conflict detection in mergeObjects/mergeArrays
+
+        2. Create conflict resolution module with interactive prompts
+
+        3. Implement YAML comment formatting for non-interactive mode
+
+        4. Add comprehensive test coverage for both modes
+
+
+        The array and object merge algorithms already detect conflicts - this task focuses on
+        resolution (prompting user or formatting as comments).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T07:02:46.566Z
 - _ulid: 01KFM7GNQVA1J6APAFA694V14C
   slugs: []
   title: "Merge driver: file type detection"
