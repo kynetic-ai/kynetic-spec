@@ -450,6 +450,9 @@ features:
         given: another client modifies task
         when: WebSocket update received
         then: task list/detail updates without refresh, subtle highlight animation on changed item
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
     slugs:
       - gh-pages-export
