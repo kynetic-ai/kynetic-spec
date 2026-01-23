@@ -22441,6 +22441,35 @@
         - ac-12: Given kspec init runs in a new repo, when initialization completes, then merge
         driver is configured in .git/config and .gitattributes updated in shadow branch
       supersedes: null
+    - _ulid: 01KFM7D5D85H6K3E7JZARFE5CZ
+      created_at: 2026-01-23T01:27:24.329Z
+      author: "@claude"
+      content: |-
+        Implementation approach from plan:
+
+        **Files to create:**
+        - src/merge/index.ts - Public API exports
+        - src/merge/driver.ts - Git driver entry point  
+        - src/merge/semantic.ts - Merge algorithms by entity type
+        - src/merge/conflicts.ts - Conflict detection, prompting, comment format
+        - src/merge/types.ts - MergeResult, ConflictInfo types
+
+        **Files to modify:**
+        - src/cli/index.ts - Register merge-driver command
+        - src/parser/shadow.ts - Add configureMergeDriver() to init
+
+        **Key merge strategies by field type:**
+        - ULID-keyed arrays: Union by ULID, merge matching items (tasks, items, agents, workflows)
+        - Append-only arrays: Union by ULID, never conflict (notes, todos)
+        - Set-like arrays: Set union (tags, depends_on, implements)
+        - Scalar fields: Prompt on conflict (title, description, priority)
+        - Nested objects: Recursive field merge (status, traceability, project)
+
+        **Critical git behavior:**
+        - Always exit 0 to prevent git from falling back to text merge
+        - On conflict in non-interactive mode: write conflicts as YAML comments
+        - On parse failure: copy ours verbatim, create .kspec-merge-failed marker
+      supersedes: null
   todos: []
 - _ulid: 01KFM7CR223GC9FK2Y2RE4SF7A
   slugs:
@@ -22484,16 +22513,22 @@
         conflicts as YAML comments instead of prompting
       supersedes: null
   todos: []
-- title: "Implement: File Type Detection"
+- _ulid: 01KFM7CRF0Z5XDYVV0ZH1YPNJT
+  slugs:
+    - task-file-type-detection
+  title: "Implement: File Type Detection"
   type: task
   spec_ref: "@merge-file-detection"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-file-type-detection
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-semantic-yaml-merge-driver"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:27:11.072Z
   notes:
     - _ulid: 01KFM7CRF02EFFWJSESRY7J1MW
       created_at: 2026-01-23T01:27:11.072Z
@@ -22526,10 +22561,4 @@
         - ac-6: Given file is not a recognized kspec file, when merge driver runs, then driver falls
         back to default behavior (copy ours)
       supersedes: null
-  _ulid: 01KFM7CRF0Z5XDYVV0ZH1YPNJT
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-23T01:27:11.072Z
   todos: []
