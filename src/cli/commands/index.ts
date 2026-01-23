@@ -13,6 +13,7 @@ export { registerMetaCommands } from "./meta.js";
 export { registerModuleCommands } from "./module.js";
 export { registerRalphCommand } from "./ralph.js";
 export { registerSearchCommand } from "./search.js";
+export { registerServeCommands } from "./serve.js";
 export { registerSessionCommands } from "./session.js";
 export { registerSetupCommand } from "./setup.js";
 export { registerShadowCommands } from "./shadow.js";
