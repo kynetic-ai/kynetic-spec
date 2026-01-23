@@ -520,3 +520,14 @@ inbox:
       - planning
       - shadow
     added_by: "@claude"
+  - _ulid: 01KFPDCY6FN46DHZ13E7FMK051
+    text: "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and
+      Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR
+      review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where
+      needed, focus on CLI commands and daemon lifecycle."
+    created_at: 2026-01-23T21:50:37.263Z
+    tags:
+      - ci
+      - testing
+      - dx
+    added_by: "@claude"
