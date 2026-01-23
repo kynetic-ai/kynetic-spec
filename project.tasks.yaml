@@ -23669,6 +23669,7 @@
         - packages/shared/src/websocket.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMM0YP97Z451KA5TEC6RX9
   slugs: []
   title: Create packages/daemon structure
