@@ -29926,6 +29926,56 @@
 
         - packages/web-ui/src/lib/components/ConnectionStatus.svelte
       supersedes: null
+    - _ulid: 01KFNT633HWT6GWTHJ2BVNFM07
+      created_at: 2026-01-23T16:14:49.970Z
+      author: "@claude"
+      content: >-
+        Session 42: Task inherited as in_progress but no work performed this session.
+
+
+        This is the final subtask of @01KFMMJ1 (Web Dashboard parent task).
+
+
+        **Status:** Ready to start in next session
+
+        **What needs to be done:** Implement WebSocketManager component with:
+
+        - Connection state machine (connecting/connected/disconnected)
+
+        - Exponential backoff reconnection (1s, 2s, 4s... max 30s)
+
+        - Sequence deduplication (skip events with seq <= lastSeqProcessed)
+
+        - Re-subscription on reconnect
+
+        - Connection lost indicator after 10s disconnect
+
+
+        **Acceptance Criteria to cover:**
+
+        - ac-28: Automatic reconnect with exponential backoff
+
+        - ac-29: Connection lost indicator after >10s
+
+        - ac-30: Sequence deduplication
+
+        - ac-31: Reset lastSeqProcessed on reconnect
+
+        - ac-32: Re-subscribe to topics on reconnect
+
+        - ac-33: Real-time updates with highlight animation
+
+
+        **Files to create/modify:**
+
+        - packages/web-ui/src/lib/websocket/manager.ts (or .svelte)
+
+        - Integration with existing pages for real-time updates
+
+
+        **Next Session:** Start implementing WebSocketManager - this will complete the Web Dashboard
+        feature!
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
