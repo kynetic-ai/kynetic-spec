@@ -24875,7 +24875,7 @@
   type: task
   spec_ref: "@web-dashboard"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -26164,6 +26164,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T16:39:42.682Z
+  closed_reason: "All 8 derived subtasks completed and merged. Web Dashboard fully implemented with
+    33/33 ACs covered across: SvelteKit scaffold, responsive layout, task management, spec item
+    browsing, inbox, session context, global search, and WebSocket real-time updates. All PRs
+    (#197-202) merged successfully. All 1207 tests passing. Implementation complete."
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
   slugs:
     - task-github-pages-export
