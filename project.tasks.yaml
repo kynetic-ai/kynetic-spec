@@ -25121,6 +25121,7 @@
         - src/parser/config.ts (load daemon config)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMZR08H17V70MT0HYTR1F0
   slugs: []
   title: Executable compilation with bun build
