@@ -440,3 +440,12 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFMP5R3B8Q3YSTE5FAX91TGH
+    text: "Apply @trait-multi-ref-batch to task set --automation. Enable: kspec task set --refs @a @b @c
+      --automation eligible. Currently must run one command per task."
+    created_at: 2026-01-23T05:45:29.964Z
+    tags:
+      - reflection
+      - cli
+      - batch
+    added_by: "@claude"
