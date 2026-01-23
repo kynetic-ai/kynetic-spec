@@ -3306,4 +3306,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFPH3X3Z8YK2GVVKATAEKVHF
+    type: success
+    content: Investigation-first approach for bug fixes - reading task context, exploring code to
+      understand root cause before proposing solutions. Found test failures were separate bug from
+      the actual task issue.
+    created_at: 2026-01-23T22:55:35.551Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
