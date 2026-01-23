@@ -4,6 +4,7 @@
 	import { SidebarProvider, SidebarInset } from '$lib/components/ui/sidebar';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import MobileNav from '$lib/components/MobileNav.svelte';
+	import CommandPalette from '$lib/components/CommandPalette.svelte';
 
 	let { children } = $props();
 </script>
@@ -11,6 +12,9 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
+
+<!-- AC: @web-dashboard ac-23 - Global command palette -->
+<CommandPalette />
 
 <!-- AC: @web-dashboard ac-26, ac-27 -->
 <SidebarProvider>
