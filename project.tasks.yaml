@@ -30806,6 +30806,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #205 merged successfully. Executable compilation implemented with build:compile
+    script and cross-platform build-executables.sh script. Added E2E test coverage for AC-16 that
+    gracefully skips if Bun not available. All CI checks passed (tests, claude-review, Greptile 5/5
+    confidence). Implementation complete."
   depends_on: []
   context: []
   priority: 2
@@ -30815,6 +30819,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:24:44.679Z
   started_at: 2026-01-23T17:26:00.417Z
+  completed_at: 2026-01-23T17:50:06.219Z
   notes:
     - _ulid: 01KFMN0YZ5W5G4SGCDPMS49G3B
       created_at: 2026-01-23T05:25:24.581Z
@@ -30898,18 +30903,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T17:50:06.219Z
-  closed_reason: "PR #205 merged successfully. Executable compilation implemented with build:compile
-    script and cross-platform build-executables.sh script. Added E2E test coverage for AC-16 that
-    gracefully skips if Bun not available. All CI checks passed (tests, claude-review, Greptile 5/5
-    confidence). Implementation complete."
 - _ulid: 01KFMMZWDG20YQNNFWG3KDFXYY
   slugs: []
   title: API integration tests
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -30959,6 +30959,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T17:58:03.850Z
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   slugs: []
   title: E2E integration tests with Playwright
