@@ -30909,7 +30909,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -30919,7 +30919,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:49.199Z
-  started_at: 2026-01-23T17:58:03.850Z
+  started_at: null
   notes:
     - _ulid: 01KFMN13HS953BN1VSQG1CDEFS
       created_at: 2026-01-23T05:25:29.273Z
@@ -30965,6 +30965,11 @@
         session completed @01KFMMZR (executable compilation). Discovered and fixed daemon path
         resolution issue (commit 7dd2106) but did not work on API integration tests. Task remains
         ready for next session."
+      supersedes: null
+    - _ulid: 01KFP04827NZYXW7JZQM65DCBC
+      created_at: 2026-01-23T17:58:40.968Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: eligible
