@@ -3026,4 +3026,22 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFKA4RTKVTQ54AQF7Z2NTKDQ
+    type: success
+    content: "Ralph loop analysis: 5 parallel subagents (iterations, PR compliance, reflections,
+      commits, review feedback) provided comprehensive audit coverage efficiently. Pattern: split
+      analysis by concern, run in parallel, synthesize results."
+    created_at: 2026-01-22T16:56:00.595Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFKA4S7HXXSY0PNQY1ZCKJB9
+    type: friction
+    content: "Branch deletion without content verification: compared commit messages but didn't diff
+      actual file contents. Should always run git diff <branch>:<file> <main>:<file> before
+      concluding content is merged."
+    created_at: 2026-01-22T16:56:01.009Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
