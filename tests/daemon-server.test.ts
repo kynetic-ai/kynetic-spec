@@ -58,7 +58,7 @@ describe('Daemon Server', () => {
     // We recreate the middleware logic to test it directly
 
     function localhostOnly() {
-      return (context: any) => {
+      return (context: { request: Request }) => {
         const host = context.request.headers.get('host');
         if (!host) {
           return new Response(JSON.stringify({

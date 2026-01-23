@@ -18,7 +18,7 @@ export interface ServerOptions {
  * AC-3: Reject non-localhost connections with 403 Forbidden
  */
 function localhostOnly() {
-  return (context: any) => {
+  return (context: { request: Request }) => {
     const host = context.request.headers.get('host');
     if (!host) {
       return new Response(JSON.stringify({
