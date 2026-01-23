@@ -31527,6 +31527,43 @@
 
         5. Ensure daemon auto-creates PID directory for robustness
       supersedes: null
+    - _ulid: 01KFPBJ4S3NSSXQRYWG95YKC0Q
+      created_at: 2026-01-23T21:18:30.692Z
+      author: "@claude"
+      content: |-
+        ## Implementation Complete
+
+        ### Changes Made
+
+        1. **package.json**:
+           - Added daemon dependencies: elysia, @elysiajs/cors, chokidar
+           - Added build:daemon script to copy daemon source to dist/daemon/
+
+        2. **serve.ts** - Updated daemon path resolution:
+           - Now resolves to dist/daemon/index.ts (bundled with package)
+           - Simplified from fragile '../../../' math to '../../daemon/index.ts'
+           - Added Bun runtime check (required for TypeScript execution)
+           - Improved error messages for missing Bun
+
+        3. **pid-utils.ts** (both CLI and daemon):
+           - Added auto-creation of PID directory if missing
+           - Improves robustness when kspec-dir doesn't exist
+
+        4. **Test fixes** (cli-serve.test.ts, daemon-server.test.ts):
+           - Fixed setupTempFixtures() misuse - was passing param to no-param function
+           - Now explicitly creates .kspec directory
+           - Fixed JSON status test to properly use --json flag
+
+        ### Architecture Decision
+        Daemon source is bundled as TypeScript (not compiled) because:
+        - Daemon requires Bun runtime for best performance (Elysia optimized for Bun)
+        - Bun runs TypeScript directly
+        - Avoids TypeScript strict mode issues in daemon code
+
+        ### Test Results
+        - All 17 serve tests pass (was 7 failing)
+        - Full suite: 1242 passed, 3 skipped
+      supersedes: null
   todos: []
 - _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   slugs: []
