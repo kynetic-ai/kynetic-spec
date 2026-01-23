@@ -24930,5 +24930,51 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:44.138Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMZ7ERXA4B0E6CNG6EKSQ0
+      created_at: 2026-01-23T05:24:27.736Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Create GitHub Actions workflow to build and deploy to GitHub Pages.
+
+        ### Steps
+        1. Create .github/workflows/gh-pages.yml:
+           - Trigger on push to kspec-meta branch
+           - Debounce rapid commits (30s)
+           - Run kspec export
+           - Build SPA
+           - Deploy to gh-pages branch
+
+        2. Workflow steps:
+           ```yaml
+           on:
+             push:
+               branches: [kspec-meta]
+           jobs:
+             deploy:
+               runs-on: ubuntu-latest
+               steps:
+                 - uses: actions/checkout@v4
+                   with:
+                     ref: kspec-meta
+                 - uses: oven-sh/setup-bun@v1
+                 - run: bun install
+                 - run: bun run kspec export --format json -o docs/kspec-snapshot.json
+                 - run: bun run build:web-ui
+                 - uses: peaceiris/actions-gh-pages@v3
+           ```
+
+        3. Copy SPA assets alongside JSON
+
+        ### ACs Covered
+        - ac-8: Trigger on kspec-meta push
+        - ac-9: Copy SPA assets
+        - ac-10: Debounce rapid commits
+
+        ### Files to Create
+        - .github/workflows/gh-pages.yml
+      supersedes: null
   todos: []
