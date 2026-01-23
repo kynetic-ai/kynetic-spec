@@ -24139,6 +24139,27 @@
 
         This parent task should remain in_progress until all derived tasks are complete.
       supersedes: null
+    - _ulid: 01KFND7W9A9S1R25239X4369SC
+      created_at: 2026-01-23T12:28:37.034Z
+      author: "@claude"
+      content: |-
+        Iteration 24 complete. Merged PR #191 and completed @01KFMMQ2 (Task API endpoints).
+
+        PROGRESS:
+        - 10 of 33 ACs implemented (ac-1, ac-25 through ac-33) - from previous iterations
+        - 6 ACs implemented and merged (ac-2 through ac-7) - this iteration
+        - 17 ACs remain in ready subtasks (ac-8 through ac-24)
+
+        COMPLETED THIS ITERATION:
+        - Resolved 3 Greptile review threads (issues already fixed in f49ba72)
+        - Ran local review - identified 2 systemic issues (X-Request-Id, E2E tests)
+        - Created follow-up inbox items (@01KFNCZR, @01KFND00)
+        - Merged PR #191 via @pr-review-merge workflow
+        - Completed @01KFMMQ2 task
+
+        NEXT SESSION:
+        Start @01KFMMQ7 (Spec item API endpoints) to implement ac-8 through ac-11.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
@@ -25989,6 +26010,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #191 merged successfully. Implemented Task API endpoints covering ac-2 through
+    ac-7 from @api-contract spec. All CI checks passed. Greptile review feedback addressed in commit
+    f49ba72. Local review identified two systemic issues (X-Request-Id header, E2E test strategy)
+    which were documented and deferred as they affect all daemon code. Follow-up items created:
+    @01KFNCZR (X-Request-Id), @01KFND00 (E2E tests)."
   depends_on: []
   context: []
   priority: 2
@@ -25998,6 +26024,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:20:00.640Z
   started_at: 2026-01-23T11:57:05.939Z
+  completed_at: 2026-01-23T12:28:24.073Z
   notes:
     - _ulid: 01KFMMRTEYSRP4MJT5YBHWFJAZ
       created_at: 2026-01-23T05:20:57.822Z
@@ -26175,12 +26202,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T12:28:24.073Z
-  closed_reason: "PR #191 merged successfully. Implemented Task API endpoints covering ac-2 through
-    ac-7 from @api-contract spec. All CI checks passed. Greptile review feedback addressed in commit
-    f49ba72. Local review identified two systemic issues (X-Request-Id header, E2E test strategy)
-    which were documented and deferred as they affect all daemon code. Follow-up items created:
-    @01KFNCZR (X-Request-Id), @01KFND00 (E2E tests)."
 - _ulid: 01KFMMQ725ZMG11F5SZM35SQFT
   slugs: []
   title: Spec item API endpoints
