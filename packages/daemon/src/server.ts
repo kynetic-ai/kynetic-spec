@@ -7,11 +7,17 @@
 
 import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
+import { KspecWatcher } from './watcher';
+import { join } from 'path';
 
 export interface ServerOptions {
   port: number;
   isDaemon: boolean;
+  kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
 }
+
+// WebSocket connection tracking
+const wsConnections = new Set<any>();
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -69,7 +75,41 @@ function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon } = options;
+  const { port, isDaemon, kspecDir = join(process.cwd(), '.kspec') } = options;
+
+  // AC-4: Initialize file watcher
+  const watcher = new KspecWatcher({
+    kspecDir,
+    onFileChange: (file, content) => {
+      // AC-4: Broadcast file change to all connected WebSocket clients
+      const event = {
+        type: 'file_change',
+        file: file.replace(kspecDir + '/', ''),
+        timestamp: new Date().toISOString()
+      };
+
+      for (const ws of wsConnections) {
+        ws.send(JSON.stringify(event));
+      }
+
+      console.log(`[daemon] Broadcast file change: ${event.file}`);
+    },
+    onError: (error, file) => {
+      // AC-6: Broadcast error event on YAML parse errors
+      const event = {
+        type: 'error',
+        file: file ? file.replace(kspecDir + '/', '') : undefined,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      };
+
+      for (const ws of wsConnections) {
+        ws.send(JSON.stringify(event));
+      }
+
+      console.error('[daemon] Broadcast error:', error.message);
+    }
+  });
 
   const app = new Elysia()
     // AC-15: Plugin pattern for middleware
@@ -85,23 +125,30 @@ export async function createServer(options: ServerOptions) {
     .get('/api/health', () => ({
       status: 'ok',
       uptime: process.uptime(),
-      connections: 0, // TODO: implement connection tracking
+      connections: wsConnections.size,
       version: '0.1.0'
     }))
 
-    // Placeholder for WebSocket endpoint
+    // AC-4: WebSocket endpoint for real-time updates
     .ws('/ws', {
       open(ws) {
-        console.log('[daemon] WebSocket client connected');
-        // TODO: implement WebSocket protocol
+        wsConnections.add(ws);
+        console.log(`[daemon] WebSocket client connected (${wsConnections.size} total)`);
+
+        // Send welcome message
+        ws.send(JSON.stringify({
+          type: 'connected',
+          timestamp: new Date().toISOString(),
+          version: '0.1.0'
+        }));
       },
       message(ws, message) {
         console.log('[daemon] WebSocket message:', message);
-        // TODO: implement message handling
+        // TODO: AC-13-14 implement ping/pong and subscription protocol
       },
       close(ws) {
-        console.log('[daemon] WebSocket client disconnected');
-        // TODO: cleanup connection state
+        wsConnections.delete(ws);
+        console.log(`[daemon] WebSocket client disconnected (${wsConnections.size} remaining)`);
       }
     })
 
@@ -115,13 +162,26 @@ export async function createServer(options: ServerOptions) {
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
 
+  // AC-4: Start file watcher
+  try {
+    await watcher.start();
+  } catch (error) {
+    console.error('[daemon] Failed to start file watcher:', error);
+  }
+
   // AC-12: Graceful shutdown on SIGTERM/SIGINT
   const shutdown = async (signal: string) => {
     console.log(`[daemon] Received ${signal}, shutting down gracefully...`);
 
     try {
+      // Stop file watcher
+      await watcher.stop();
+
       // Close all WebSocket connections
-      // TODO: Track connections and close them here
+      for (const ws of wsConnections) {
+        ws.close(1000, 'Server shutting down');
+      }
+      wsConnections.clear();
 
       // Stop the server
       await app.server?.stop();
@@ -138,7 +198,6 @@ export async function createServer(options: ServerOptions) {
   process.on('SIGINT', () => shutdown('SIGINT'));
 
   // TODO: AC-9, AC-10: Implement daemon mode (process detach, PID file)
-  // TODO: AC-4-8: Implement file watching
   // TODO: AC-13-14: Implement WebSocket ping/pong
 
   return app;
