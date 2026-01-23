@@ -316,7 +316,9 @@ traits:
       - trait-websocket-protocol
     title: WebSocket Protocol Patterns
     type: trait
-    description: WebSocket connection patterns including lifecycle management, topic-based pub/sub, heartbeat ping/pong, sequence tracking for deduplication, and backpressure handling. Based on proven patterns from kynetic project.
+    description: WebSocket connection patterns including lifecycle management, topic-based pub/sub,
+      heartbeat ping/pong, sequence tracking for deduplication, and backpressure handling. Based on
+      proven patterns from kynetic project.
     acceptance_criteria:
       - id: ac-1
         given: WebSocket connection is established
@@ -355,7 +357,8 @@ traits:
       - trait-api-endpoint
     title: REST API Endpoint Patterns
     type: trait
-    description: Consistent patterns for REST API endpoints including response format, error handling, pagination, and request validation
+    description: Consistent patterns for REST API endpoints including response format, error handling,
+      pagination, and request validation
     acceptance_criteria:
       - id: ac-1
         given: API endpoint receives valid request
@@ -386,7 +389,8 @@ traits:
       - trait-localhost-security
     title: Localhost-Only Security
     type: trait
-    description: Security pattern for services that bind only to localhost, providing authentication through network isolation
+    description: Security pattern for services that bind only to localhost, providing authentication
+      through network isolation
     acceptance_criteria:
       - id: ac-1
         given: server is starting
@@ -400,6 +404,24 @@ traits:
         given: server is configured
         when: configuration allows external binding
         then: warning displayed about security implications
+  - _ulid: 01KFMXM08H4GK6328W515RBQAJ
+    slugs:
+      - trait-retrospective
+    title: Retrospective Verification
+    type: trait
+    tags: []
+    description: "Applied to specs describing already-implemented functionality where implementation
+      predates formal task tracking. Common scenarios: bootstrap specs, legacy adoption,
+      reverse-engineered specs from existing code. Specs with this trait: do not require linked
+      implementation tasks, must have verified_at and verified_by fields, status is manually set
+      rather than derived from task completion."
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-23T07:55:37.105Z
 includes:
   - modules/core.yaml
   - modules/schema.yaml
