@@ -28195,7 +28195,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -28238,6 +28238,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T14:42:37.898Z
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
   slugs: []
   title: Task list and detail views
