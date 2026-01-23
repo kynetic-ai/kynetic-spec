@@ -274,16 +274,18 @@ async function deriveTaskFromSpec(
   },
 ): Promise<DeriveResult> {
   // Check if a task already exists for this spec
+  // AC: @cmd-derive ac-15 - skip cancelled tasks
   const linkedTasks = alignmentIndex.getTasksForSpec(specItem._ulid);
+  const activeTasks = linkedTasks.filter((task) => task.status !== "cancelled");
 
-  if (linkedTasks.length > 0 && !options.force) {
-    const taskRef = linkedTasks[0].slugs[0]
-      ? `@${linkedTasks[0].slugs[0]}`
-      : `@${index.shortUlid(linkedTasks[0]._ulid)}`;
+  if (activeTasks.length > 0 && !options.force) {
+    const taskRef = activeTasks[0].slugs[0]
+      ? `@${activeTasks[0].slugs[0]}`
+      : `@${index.shortUlid(activeTasks[0]._ulid)}`;
     return {
       specItem,
       action: "skipped",
-      task: linkedTasks[0],
+      task: activeTasks[0],
       reason: `task exists: ${taskRef}`,
     };
   }
