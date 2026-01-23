@@ -691,7 +691,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFMNY5TWGMZEK16NF9MK3DXC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T05:41:21.886Z
@@ -746,5 +746,11 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-23T05:43:22.801Z
-        completed_at: 2026-01-23T05:43:22.801Z
+        completed_at: 2026-01-23T05:46:24.907Z
+        notes: |-
+          Captured:
+          - 4 inbox items (auto-quote, ulid helper, batch automation, task list alias)
+          - 2 success observations (plan mode exploration, detailed task notes)
+          - Skipped bulk AC import (already tracked)
     initiated_by: "@claude"
+    completed_at: 2026-01-23T05:46:24.908Z
