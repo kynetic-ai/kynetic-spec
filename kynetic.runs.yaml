@@ -546,7 +546,7 @@ runs:
   - _ulid: 01KFMGP59MZ2N985TX4RZ860FS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-23T04:09:36.309Z
     step_results:
@@ -663,5 +663,19 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-23T04:12:07.243Z
-        completed_at: 2026-01-23T04:12:07.243Z
+        completed_at: 2026-01-23T04:17:34.035Z
+        notes: >-
+          User decisions:
+
+          1. Batch trait assignment - User noted @trait-multi-ref-batch is already a trait, so the
+          improvement is having trait commands adopt it. Will capture.
+
+          2. AC text validation - Yes, capture to inbox
+
+          3. Spec-gap detection - Skip. User says explicit linking is the point of the warning - if
+          not linked, that's intentional friction to prompt action.
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-23T04:17:34.035Z
+        completed_at: 2026-01-23T04:17:34.035Z
     initiated_by: "@claude"
