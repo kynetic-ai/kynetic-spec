@@ -23642,6 +23642,11 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Daemon server mode fully implemented in packages/daemon/src with all 16 ACs covered.
+    Complete with Elysia HTTP server, WebSocket pub/sub, file watching, heartbeat monitoring,
+    graceful shutdown, PID management, and localhost-only security. Comprehensive test coverage with
+    61 AC annotations across daemon test files. All 1166 tests pass. No code changes needed -
+    implementation was already complete from previous work.
   depends_on: []
   context: []
   priority: 2
@@ -23652,6 +23657,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:17:07.378Z
   started_at: 2026-01-23T11:40:19.414Z
+  completed_at: 2026-01-23T11:43:13.394Z
   notes:
     - _ulid: 01KFMMHSDJ085MBRXZT1SWHFVH
       created_at: 2026-01-23T05:17:07.378Z
@@ -23809,12 +23815,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T11:43:13.394Z
-  closed_reason: Daemon server mode fully implemented in packages/daemon/src with all 16 ACs covered.
-    Complete with Elysia HTTP server, WebSocket pub/sub, file watching, heartbeat monitoring,
-    graceful shutdown, PID management, and localhost-only security. Comprehensive test coverage with
-    61 AC annotations across daemon test files. All 1166 tests pass. No code changes needed -
-    implementation was already complete from previous work.
 - _ulid: 01KFMMHX91G8RSY91QANTT4FSQ
   slugs:
     - task-rest-and-websocket-api-contract
@@ -23822,7 +23822,7 @@
   type: task
   spec_ref: "@api-contract"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -23953,6 +23953,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T11:43:29.972Z
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
   slugs:
     - task-web-dashboard
