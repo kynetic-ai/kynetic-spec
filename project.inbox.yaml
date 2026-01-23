@@ -422,3 +422,12 @@ inbox:
       - reflection
       - validation
     added_by: "@claude"
+  - _ulid: 01KFMP2WPMN0XYTSQ10CBBQY8J
+    text: Auto-quote YAML AC fields containing braces/colons to prevent parse errors. When kspec item ac
+      add receives given/when/then with { [ or :, automatically wrap in quotes before writing YAML.
+    created_at: 2026-01-23T05:43:56.372Z
+    tags:
+      - reflection
+      - cli
+      - dx
+    added_by: "@claude"
