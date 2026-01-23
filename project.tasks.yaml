@@ -24696,6 +24696,31 @@
 
         Ready for next phase: file watching, WebSocket protocol, or daemon mode.
       supersedes: null
+    - _ulid: 01KFN3RVW2VR3X0918RHY6J2D0
+      created_at: 2026-01-23T09:43:07.906Z
+      author: "@claude"
+      content: >-
+        Local review feedback: Tests currently verify code structure (fluff tests) rather than
+        actual behavior.
+
+
+        Constraint: Bun runtime may not be available in CI environment, making true E2E server tests
+        challenging.
+
+
+        Options:
+
+        1. Accept structure tests as valid given infrastructure constraints (matches pattern from
+        #184)
+
+        2. Add runtime tests with conditional skip if Bun unavailable  
+
+        3. Mock server behavior for unit tests
+
+
+        The middleware logic is straightforward and risk is low, but proper E2E tests would provide
+        better confidence. Will address based on user feedback.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
