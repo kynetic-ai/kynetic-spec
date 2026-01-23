@@ -20,3 +20,6 @@ export {
   mergeSetArray,
   detectDeletion,
 } from "./arrays.js";
+
+export { mergeObjects } from "./objects.js";
+export type { ObjectMergeResult } from "./objects.js";
