@@ -23256,6 +23256,31 @@
 
         All dependencies complete. Ready to implement.
       supersedes: null
+    - _ulid: 01KFMW3KHSHT8P1QM3QJ9JXZQX
+      created_at: 2026-01-23T07:29:11.226Z
+      author: "@claude"
+      content: |-
+        Implemented file type detection for merge driver. Created:
+
+        1. src/merge/file-type.ts - FileType enum and detectFileType() function
+           - Detects 6 file types: Tasks, Inbox, SpecModules, Manifest, Meta, Unknown
+           - Pattern matching based on filename and path conventions
+           - Cross-platform path normalization (handles Windows backslashes)
+
+        2. tests/merge-file-type.test.ts - Comprehensive test coverage
+           - All 6 ACs covered with explicit AC annotations
+           - 8 test cases including edge cases and cross-platform paths
+           - Tests verify correct detection and fallback to Unknown
+
+        3. Exported from src/merge/index.ts for public API
+
+        All 1041 tests pass. This completes the file type detection spec (@merge-file-detection).
+
+        Next steps (for future tasks):
+        - Implement per-type merge strategy functions (tasks, inbox, spec modules, manifest, meta)
+        - Create main driver entry point that dispatches based on file type
+        - Wire up to git merge driver configuration
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFM7H3MQX4ZVAGR0RSQ6QT6N
