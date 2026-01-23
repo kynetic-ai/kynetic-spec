@@ -23202,10 +23202,39 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T01:29:19.355Z
-  notes: []
+  started_at: 2026-01-23T07:24:18.872Z
+  notes:
+    - _ulid: 01KFMVVDAXJEVY9E678MM1CWTH
+      created_at: 2026-01-23T07:24:42.717Z
+      author: "@claude"
+      content: >-
+        Analyzed spec and existing code. Need to implement:
+
+
+        1. File type detection logic based on filename patterns
+
+        2. Different merge strategies per file type:
+           - *.tasks.yaml → task-specific merge (ULID-based array merge, field-level for objects)
+           - *.inbox.yaml → inbox-specific merge (ULID-based array merge)
+           - modules/*.yaml → spec item recursive merge with children
+           - kynetic.yaml → manifest merge (includes as set-union, fields with prompts, config recursive)
+           - kynetic.meta.yaml → meta merge (ULID arrays, context fields)
+           - Unknown files → fallback to copying ours
+
+        This will likely need:
+
+        - FileType enum/type
+
+        - detectFileType(path: string) function
+
+        - Per-type merge strategy functions
+
+        - Main driver entry point that orchestrates based on file type
+
+        - Comprehensive tests for each AC
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T07:24:18.872Z
 - _ulid: 01KFM7H3MQX4ZVAGR0RSQ6QT6N
   slugs: []
   title: "Merge driver: CLI command"
