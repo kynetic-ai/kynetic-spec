@@ -24117,6 +24117,7 @@
         - packages/daemon/src/middleware/request-id.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMQ2M0ZWYX7HMR5KNRAD9E
   slugs: []
   title: Task API endpoints
