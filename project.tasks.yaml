@@ -22372,9 +22372,40 @@
     - derive
   vcs_refs: []
   created_at: 2026-01-22T15:53:51.224Z
-  notes: []
-  todos: []
   started_at: 2026-01-23T08:38:30.827Z
+  notes:
+    - _ulid: 01KFN07HP5GT1GY8XK1YK6N4QP
+      created_at: 2026-01-23T08:41:14.693Z
+      author: "@claude"
+      content: >-
+        WIP: Implemented cancelled task filtering in derive command (AC-15).
+
+
+        **Changes made**:
+
+        - src/cli/commands/derive.ts: Filter out cancelled tasks before checking if spec has linked
+        tasks
+
+        - tests/integration.test.ts: Started E2E test but incomplete
+
+
+        **Issue**: Test failing because 'kspec tasks' command doesn't support --spec-ref filter
+        option. The test needs to be rewritten to either:
+
+        1. Use a different approach to verify task creation (e.g., check slugs individually)
+
+        2. Wait for tasks command to support --spec-ref filtering
+
+
+        **Next steps**:
+
+        - Fix or remove the incomplete test
+
+        - Verify the filtering logic works with manual testing
+
+        - Add proper test coverage
+      supersedes: null
+  todos: []
 - _ulid: 01KFKMF9FBCRZ0ERNN8K9M0ZMM
   slugs: []
   title: Meta resolve and promote commands missing commitIfShadow calls
