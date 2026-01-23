@@ -439,6 +439,9 @@ traits:
         given: a retrospective spec exists
         when: viewing item details (kspec item get)
         then: output indicates retrospective verification source
+    status:
+      maturity: draft
+      implementation: implemented
 includes:
   - modules/core.yaml
   - modules/schema.yaml
