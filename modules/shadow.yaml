@@ -645,3 +645,7 @@ features:
         given: merge completes with no true conflicts
         when: driver exits
         then: exit code 0, merged YAML written to output path
+      - id: ac-10
+        given: merge has unresolvable conflicts and --non-interactive flag set
+        when: driver exits
+        then: conflict markers written as YAML comments, exit code 0 (prevents git fallback)
