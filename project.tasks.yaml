@@ -31946,7 +31946,68 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:51.735Z
-  notes: []
+  notes:
+    - _ulid: 01KFP87NDZHY4SFCCN3XJ3J77T
+      created_at: 2026-01-23T20:20:21.567Z
+      author: "@claude"
+      content: |-
+        ## Objective
+        Write E2E tests for inbox covering @web-dashboard ac-16 through ac-19.
+
+        **Depends on**: @01KFP834 (Infrastructure Setup)
+
+        ## File
+        packages/web-ui/tests/e2e/inbox.spec.ts
+
+        ## Acceptance Criteria Coverage
+
+        | AC | Description |
+        |----|-------------|
+        | ac-16 | List shows items ordered by created_at desc |
+        | ac-17 | Add button shows input, Enter submits |
+        | ac-18 | New item appears at top with animation |
+        | ac-19 | Delete with confirmation removes item |
+
+        ## Test Cases
+
+        ```typescript
+        test.describe('Inbox', () => {
+          // AC: @web-dashboard ac-16
+          test('displays inbox items ordered by date', async ({ page }) => {
+            await page.goto('/inbox');
+            const items = await page.getByTestId('inbox-item').all();
+            // Verify descending order by created_at
+          });
+          test('shows text preview, tags, added_by');
+
+          // AC: @web-dashboard ac-17
+          test('Add button shows input field', async ({ page }) => {
+            await page.getByTestId('add-inbox-button').click();
+            await expect(page.getByTestId('inbox-input')).toBeVisible();
+          });
+          test('Enter key submits new item', async ({ page }) => {
+            await page.getByTestId('inbox-input').fill('New idea');
+            await page.keyboard.press('Enter');
+            await expect(page.getByText('New idea')).toBeVisible();
+          });
+
+          // AC: @web-dashboard ac-18
+          test('new item appears at top with animation');
+
+          // AC: @web-dashboard ac-19
+          test('delete shows confirmation', async ({ page }) => {
+            await page.getByTestId('delete-inbox-button').first().click();
+            await expect(page.getByRole('dialog')).toBeVisible();
+          });
+          test('confirmed delete removes item');
+        });
+        ```
+
+        ## data-testid Attributes Needed
+        - inbox-item, inbox-item-text, inbox-item-tags, inbox-item-author
+        - add-inbox-button, inbox-input
+        - delete-inbox-button
+      supersedes: null
   todos: []
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
   slugs: []
