@@ -3,9 +3,22 @@ name: pr
 description: Create a pull request from current work. Handles branch creation, commits, push, and PR creation. Detects branch protection and guides through the PR workflow.
 ---
 
+Base directory for this skill: /home/chapel/Projects/kynetic-spec/.claude/skills/pr
+
 # PR Skill
 
-Create a pull request from current work. Handles branch creation, commits, push, and PR creation.
+Create and merge pull requests. This skill handles PR creation; for the review-to-merge cycle, use `@pr-review-merge` workflow.
+
+## Quick Start
+
+```bash
+# Create PR from current work
+/pr
+
+# After PR created, start review workflow
+kspec workflow start @pr-review-merge
+kspec workflow next  # Work through each gate
+```
 
 ## When to Use
 
@@ -102,6 +115,23 @@ Display:
 - PR URL
 - Branch name
 - Summary of what was included
+
+## Review & Merge Workflow
+
+After creating a PR, use the `@pr-review-merge` workflow for the review-to-merge cycle:
+
+```bash
+kspec workflow start @pr-review-merge
+```
+
+This enforces quality gates:
+1. All CI checks complete and passing
+2. All review comments addressed (automated AND human)
+3. All @claude requests completed
+4. All review threads resolved
+5. Explicit merge decision
+
+**Do not merge while CI is running or blocking.** Wait for all checks to complete. Only skip gates if user explicitly says to merge anyway.
 
 ## Merge Strategy
 
