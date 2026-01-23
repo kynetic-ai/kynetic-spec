@@ -692,7 +692,7 @@ runs:
   - _ulid: 01KFMNY5TWGMZEK16NF9MK3DXC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-23T05:41:21.886Z
     step_results:
@@ -735,5 +735,16 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-23T05:43:07.702Z
-        completed_at: 2026-01-23T05:43:07.702Z
+        completed_at: 2026-01-23T05:43:22.801Z
+        notes: |-
+          Proposed improvements:
+          1. Auto-quote YAML AC fields (medium) - prevent parse errors
+          2. CLI ULID helper (small) - kspec util ulid
+          3. Bulk AC import (medium) - simplified format file
+          4. Apply multi-ref to task automation (small) - already have trait
+          5. Add task list alias (small) - CLI consistency
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-23T05:43:22.801Z
+        completed_at: 2026-01-23T05:43:22.801Z
     initiated_by: "@claude"
