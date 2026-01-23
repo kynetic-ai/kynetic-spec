@@ -2342,7 +2342,7 @@ runs:
   - _ulid: 01KFP8R7R6GCRG9QMGVQ1ZM78R
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-23T20:29:24.615Z
     step_results:
@@ -2380,5 +2380,40 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-23T20:29:50.124Z
-        completed_at: 2026-01-23T20:29:50.124Z
+        completed_at: 2026-01-23T20:30:05.820Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **No --depends-on for task add** - Had to create tasks without dependencies, then would
+          need manual YAML edits or separate commands to set up dependency chains. The 10 E2E tasks
+          all depend on infrastructure setup but this relationship isn't captured in the system.
+
+
+          2. **Plan file won't persist** - User had to clarify that tasks need standalone
+          implementation details because the plan file at ~/.claude/plans/ won't be available to
+          future sessions. This caused rework embedding all context into task notes.
+
+
+          3. **Multiple kspec task note calls** - Creating 10 tasks each with detailed notes
+          required 10+ sequential note commands. No bulk/batch operation for adding tasks with notes
+          in one command.
+
+
+          4. **No task grouping/parent-child** - The E2E tasks form a logical group under the parent
+          @01KFMN01 epic, but there's no formal parent-child relationship in kspec. Had to note
+          'Depends on @01KFP834' in prose rather than structured data.
+
+
+          5. **AC coverage verification manual** - After creating all tasks, verifying 33/33
+          @web-dashboard ACs are covered required manual cross-referencing. No automated 'kspec
+          coverage' report.
+
+
+          6. **Workflow syntax discovery** - Had to try --tags vs --tag, discover --depends-on
+          doesn't exist. CLI help is available but workflow involved trial/error.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-23T20:30:05.820Z
+        completed_at: 2026-01-23T20:30:05.820Z
     initiated_by: "@claude"
