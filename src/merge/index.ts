@@ -14,3 +14,9 @@ export type {
 } from "./types.js";
 
 export { parseYamlVersions } from "./parse.js";
+
+export {
+  mergeUlidArrays,
+  mergeSetArray,
+  detectDeletion,
+} from "./arrays.js";
