@@ -304,6 +304,56 @@ workflows:
         on_fail: |
           Commit changes with Task: @task trailer.
           Example: git commit -m "feat: description\n\nTask: @task-slug"
+  - _ulid: 01KFM9X3C64AHJAD6J2YJZ3YA6
+    id: local-review
+    trigger: manual
+    description: Quality enforcement for pre-PR review. Verifies AC coverage with annotations, test
+      quality (no fluff), E2E preference, and test isolation. Issues are flagged as MUST-FIX.
+    steps:
+      - type: action
+        content: |
+          Get spec reference and read acceptance criteria.
+          Use: kspec item get @spec to see ACs
+          Each AC needs test coverage.
+        inputs:
+          - name: spec_ref
+            description: Reference to the spec item (e.g., @spec-slug)
+            type: ref
+      - type: check
+        content: |
+          Every AC has test coverage with // AC: annotation.
+          Search tests for: // AC: @spec-ref ac-N
+          Each acceptance criterion must have at least one test.
+        on_fail: |
+          MUST-FIX: Missing AC coverage is a blocking issue.
+          List each AC without test coverage.
+      - type: check
+        content: |
+          All tests validate real behavior (no fluff tests).
+          Tests should fail if the feature breaks.
+          Reject tests that always pass or only test implementation details.
+        on_fail: |
+          MUST-FIX: Identify and flag fluff tests.
+          A test that doesn't validate behavior is not valid.
+      - type: check
+        content: |
+          Test strategy prefers E2E over unit tests.
+          Test the CLI as a user would invoke it.
+          Unit tests are okay for complex logic, but E2E proves it works.
+        on_fail: Consider adding E2E tests for CLI functionality.
+      - type: check
+        content: |
+          Tests run in temp directories (not kspec repo).
+          All tests must use system temp or /tmp.
+          This prevents nested worktree issues and data corruption.
+        on_fail: |
+          MUST-FIX: Tests must run in temp directories.
+          Test fixtures should create isolated test repos.
+      - type: action
+        content: |
+          Report findings.
+          List all MUST-FIX issues that block PR creation.
+          Non-blocking suggestions can be noted separately.
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits

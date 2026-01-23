@@ -363,7 +363,7 @@ runs:
   - _ulid: 01KFM9W090EPKDA8GSTBXB2WDV
     workflow_ref: "@01KFKVCT4EAWJ1EEGDVE6X66R4"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 7
     started_at: 2026-01-23T02:10:27.745Z
     step_results:
@@ -409,5 +409,10 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-23T02:10:57.256Z
-        completed_at: 2026-01-23T02:10:57.256Z
+        completed_at: 2026-01-23T02:11:40.769Z
+        notes: Created local-review workflow with 6 steps. Added steps to .kspec/kynetic.meta.yaml.
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-23T02:11:40.769Z
+        completed_at: 2026-01-23T02:11:40.769Z
     initiated_by: "@claude"
