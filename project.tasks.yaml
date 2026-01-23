@@ -22626,7 +22626,10 @@
   created_at: 2026-01-23T01:28:59.922Z
   notes: []
   todos: []
-- title: "Merge driver: object merge algorithms"
+- _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
+  slugs: []
+  title: "Merge driver: object merge algorithms"
+  type: task
   description: |-
     Implement object/field merging strategies:
 
@@ -22640,18 +22643,46 @@
     - mergeObject(base, ours, theirs, schema) - Field-level merge
     - detectFieldConflict(base, ours, theirs, field) - Check for true conflicts
     - recursiveMerge(base, ours, theirs) - Deep merge for nested objects
+  spec_ref: "@yaml-merge-driver"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:29:03.205Z
+  notes: []
+  todos: []
+- title: "Merge driver: conflict resolution"
+  description: |-
+    Implement conflict detection and resolution:
+
+    **File:** src/merge/conflicts.ts
+
+    **Covers ACs:**
+    - ac-4: Interactive prompt for scalar field conflicts
+    - ac-8: Interactive prompt for delete vs modify conflicts
+    - ac-10: Non-interactive mode - write conflicts as YAML comments
+
+    **Functions:**
+    - detectConflict(base, ours, theirs, path) - Identify true conflicts
+    - promptScalarConflict(field, oursValue, theirsValue) - Interactive choice
+    - promptDeleteModifyConflict(item, modification) - Delete vs keep
+    - formatConflictComment(conflict) - YAML comment format for non-interactive
   type: task
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
   priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
+  _ulid: 01KFM7GJS5J3QRQWEKR600GN9N
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T01:29:03.205Z
+  created_at: 2026-01-23T01:29:16.324Z
   notes: []
   todos: []
