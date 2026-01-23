@@ -24085,6 +24085,60 @@
 
         3. Move to next derived task (@01KFMMQ7 - Spec item API endpoints)
       supersedes: null
+    - _ulid: 01KFNBTJGPAVXVWMSAF2WPBE88
+      created_at: 2026-01-23T12:03:52.471Z
+      author: "@claude"
+      content: >-
+        Iteration 23 session end checkpoint:
+
+
+        This is a parent task with 33 ACs. Work is progressing via derived subtasks:
+
+
+        COMPLETED:
+
+        - @01KFMMPY: API foundation and CORS (merged in PR #190) - covers ac-1
+
+        - ac-25 through ac-33: WebSocket protocol (completed in previous iterations)
+
+
+        IN PROGRESS:
+
+        - @01KFMMQ2: Task API endpoints (PR #191 created, awaiting review) - covers ac-2 through
+        ac-7
+
+
+        READY TO START:
+
+        - @01KFMMQ7: Spec item API endpoints - covers ac-8 through ac-11
+
+        - @01KFMMQB: Inbox and meta API endpoints - covers ac-12 through ac-18
+
+        - @01KFMMQF: Search and validation API endpoints - covers ac-19 through ac-21
+
+        - @01KFMMQM: API error handling middleware - covers ac-22 through ac-24
+
+
+        CURRENT STATE:
+
+        - 10 of 33 ACs implemented (ac-1, ac-25 through ac-33)
+
+        - 6 ACs pending review in PR #191 (ac-2 through ac-7)
+
+        - 17 ACs remain in ready subtasks (ac-8 through ac-24)
+
+
+        NEXT SESSION:
+
+        1. Review and merge PR #191
+
+        2. Complete @01KFMMQ2
+
+        3. Start @01KFMMQ7 (Spec item API endpoints)
+
+
+        This parent task should remain in_progress until all derived tasks are complete.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
