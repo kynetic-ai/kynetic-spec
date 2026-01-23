@@ -29790,7 +29790,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -29860,6 +29860,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T16:14:00.113Z
 - _ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
   slugs: []
   title: Export command implementation
