@@ -26112,6 +26112,17 @@
 
         All 6 ACs (ac-2 through ac-7) from @api-contract are now implemented and tested.
       supersedes: null
+    - _ulid: 01KFNC4MB1YXPA4ERGDQ8WTSDM
+      created_at: 2026-01-23T12:09:22.017Z
+      author: "@claude"
+      content: |-
+        Fixed 3 critical bugs identified by Greptile review:
+        1. Added missing loadAllItems import
+        2. Changed items from empty array to loaded spec items
+        3. Fixed syncSpecImplementationStatus call signature (was 3 params, now 5)
+
+        Commit f49ba72 pushed. Waiting for CI to re-run.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQ725ZMG11F5SZM35SQFT
