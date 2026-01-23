@@ -193,13 +193,24 @@ export interface Observation {
 /**
  * Search result
  * AC: @api-contract ac-19
+ * AC: @web-dashboard ac-24
  */
 export interface SearchResult {
-  ref: string;
-  type: 'task' | 'item' | 'inbox';
+  type: 'item' | 'task' | 'inbox' | 'observation' | 'agent' | 'workflow' | 'convention';
+  ulid: string;
   title: string;
-  match: string;
-  score: number;
+  matchedFields: string[];
+}
+
+/**
+ * Search response
+ * AC: @api-contract ac-19
+ * AC: @web-dashboard ac-24
+ */
+export interface SearchResponse {
+  results: SearchResult[];
+  total: number;
+  showing: number;
 }
 
 /**

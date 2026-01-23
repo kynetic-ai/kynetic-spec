@@ -14,7 +14,8 @@ import type {
 	SessionContext,
 	Observation,
 	PaginatedResponse,
-	ErrorResponse
+	ErrorResponse,
+	SearchResponse
 } from '@kynetic-ai/shared';
 
 const API_BASE = 'http://localhost:3456';
@@ -251,6 +252,23 @@ export async function fetchObservations(params?: {
 			}
 		});
 	}
+
+	const response = await fetch(url.toString());
+	if (!response.ok) {
+		const error: ErrorResponse = await response.json();
+		throw new Error(error.message || error.error);
+	}
+
+	return response.json();
+}
+
+/**
+ * Search across all entities
+ * AC: @web-dashboard ac-24
+ */
+export async function search(query: string): Promise<SearchResponse> {
+	const url = new URL(`${API_BASE}/api/search`);
+	url.searchParams.set('q', query);
 
 	const response = await fetch(url.toString());
 	if (!response.ok) {
