@@ -7,7 +7,7 @@ import type { Command } from 'commander';
 import { spawn, spawnSync } from 'child_process';
 import { readFileSync, existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
-import { error, info, output, success, warn } from '../output.js';
+import { error, info, output, success, warn, isJsonMode } from '../output.js';
 import { EXIT_CODES } from '../exit-codes.js';
 import { PidFileManager } from '../pid-utils.js';
 
@@ -31,7 +31,7 @@ export function registerServeCommands(program: Command): void {
       try {
         await startServer(opts);
       } catch (err) {
-        if (opts.json) {
+        if (isJsonMode()) {
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
           error(`Failed to start server: ${err instanceof Error ? err.message : String(err)}`);
@@ -50,7 +50,7 @@ export function registerServeCommands(program: Command): void {
       try {
         await stopServer(opts);
       } catch (err) {
-        if (opts.json) {
+        if (isJsonMode()) {
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
           error(`Failed to stop server: ${err instanceof Error ? err.message : String(err)}`);
@@ -69,7 +69,7 @@ export function registerServeCommands(program: Command): void {
       try {
         await statusServer(opts);
       } catch (err) {
-        if (opts.json) {
+        if (isJsonMode()) {
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
           error(`Failed to check status: ${err instanceof Error ? err.message : String(err)}`);
@@ -88,7 +88,7 @@ export function registerServeCommands(program: Command): void {
       try {
         await restartServer(opts);
       } catch (err) {
-        if (opts.json) {
+        if (isJsonMode()) {
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
           error(`Failed to restart server: ${err instanceof Error ? err.message : String(err)}`);
@@ -106,13 +106,13 @@ async function startServer(opts: {
   daemon?: boolean;
   port: string;
   kspecDir: string;
-  json?: boolean;
 }): Promise<void> {
   const port = parseInt(opts.port, 10);
+  const jsonMode = isJsonMode();
 
   // AC: @cli-serve-commands ac-10
   if (isNaN(port) || port < 1 || port > 65535) {
-    if (opts.json) {
+    if (jsonMode) {
       output({
         error: 'Invalid port number. Must be between 1 and 65535.',
         hint: 'Try: kspec serve --port <PORT>',
@@ -129,7 +129,7 @@ async function startServer(opts: {
   // Check if already running
   if (pidManager.isDaemonRunning()) {
     const pid = pidManager.read();
-    if (opts.json) {
+    if (isJsonMode()) {
       output({ running: true, pid, message: 'Daemon already running' });
     } else {
       warn(`Daemon already running with PID ${pid}`);
@@ -141,7 +141,7 @@ async function startServer(opts: {
   const daemonBinary = join(import.meta.dirname, '../../../packages/daemon/src/index.ts');
 
   if (!existsSync(daemonBinary)) {
-    if (opts.json) {
+    if (isJsonMode()) {
       output({ error: `Daemon binary not found at: ${daemonBinary}` });
     } else {
       error(`Daemon binary not found at: ${daemonBinary}`);
@@ -166,14 +166,14 @@ async function startServer(opts: {
 
     const pid = pidManager.read();
     if (pid && pidManager.isDaemonRunning()) {
-      if (opts.json) {
+      if (isJsonMode()) {
         output({ running: true, pid, port });
       } else {
         success(`Daemon started with PID ${pid} on port ${port}`);
         output({ running: true, pid, port });
       }
     } else {
-      if (opts.json) {
+      if (isJsonMode()) {
         output({ error: 'Daemon failed to start' });
       } else {
         error('Daemon failed to start');
@@ -182,7 +182,7 @@ async function startServer(opts: {
     }
   } else {
     // AC: @cli-serve-commands ac-1 - foreground mode
-    if (!opts.json) {
+    if (!isJsonMode()) {
       info(`Starting server in foreground on port ${port}...`);
       info('Press Ctrl+C to stop');
     }
@@ -194,7 +194,7 @@ async function startServer(opts: {
 
     // Handle Ctrl+C
     process.on('SIGINT', () => {
-      if (!opts.json) {
+      if (!isJsonMode()) {
         info('\nStopping server...');
       }
       child.kill('SIGTERM');
@@ -212,11 +212,14 @@ async function startServer(opts: {
  * AC: @cli-serve-commands ac-4 (stop), ac-5 (idempotent)
  */
 async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+  if (isJsonMode()) {
+  }
+
   const pidManager = new PidFileManager(opts.kspecDir);
 
   if (!pidManager.isDaemonRunning()) {
     // AC: @cli-serve-commands ac-5
-    if (opts.json) {
+    if (isJsonMode()) {
       output({ running: false });
     } else {
       info('Daemon not running');
@@ -227,7 +230,7 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
 
   const pid = pidManager.read();
   if (!pid) {
-    if (opts.json) {
+    if (isJsonMode()) {
       output({ error: 'Failed to read PID file' });
     } else {
       error('Failed to read PID file');
@@ -236,7 +239,7 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
   }
 
   // AC: @cli-serve-commands ac-4
-  if (!opts.json) {
+  if (!isJsonMode()) {
     info(`Stopping daemon (PID ${pid})...`);
   }
 
@@ -255,21 +258,21 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
     }
 
     if (pidManager.isDaemonRunning()) {
-      if (!opts.json) {
+      if (!isJsonMode()) {
         warn(`Daemon did not stop gracefully, forcing...`);
       }
       process.kill(pid, 'SIGKILL');
       await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    if (opts.json) {
+    if (isJsonMode()) {
       output({ stopped: true, pid });
     } else {
       success('Daemon stopped');
       output({ stopped: true, pid });
     }
   } catch (err) {
-    if (opts.json) {
+    if (isJsonMode()) {
       output({ error: err instanceof Error ? err.message : String(err) });
     } else {
       error(`Failed to stop daemon: ${err instanceof Error ? err.message : String(err)}`);
@@ -283,6 +286,9 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
  * AC: @cli-serve-commands ac-6
  */
 async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+  if (isJsonMode()) {
+  }
+
   const pidManager = new PidFileManager(opts.kspecDir);
   const running = pidManager.isDaemonRunning();
   const pid = pidManager.read();
@@ -296,7 +302,7 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
     connections: null, // TODO: fetch from health endpoint
   };
 
-  if (opts.json) {
+  if (isJsonMode()) {
     output(status);
   } else {
     if (running) {
@@ -313,20 +319,23 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
  * AC: @cli-serve-commands ac-7
  */
 async function restartServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+  if (isJsonMode()) {
+  }
+
   const pidManager = new PidFileManager(opts.kspecDir);
 
   // Get current port if running (TODO: implement port persistence)
   let port = '3456'; // default
 
   if (pidManager.isDaemonRunning()) {
-    if (!opts.json) {
+    if (!isJsonMode()) {
       info('Stopping daemon...');
     }
     await stopServer(opts);
   }
 
-  if (!opts.json) {
+  if (!isJsonMode()) {
     info('Starting daemon...');
   }
-  await startServer({ daemon: true, port, kspecDir: opts.kspecDir, json: opts.json });
+  await startServer({ daemon: true, port, kspecDir: opts.kspecDir });
 }
