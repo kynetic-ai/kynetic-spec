@@ -23683,6 +23683,33 @@
         Both changes ensure TypeScript can correctly resolve cross-package imports. Build and all
         962 tests pass.
       supersedes: null
+    - _ulid: 01KFMRRE59R6Y16KHW5AFAYR5D
+      created_at: 2026-01-23T06:30:39.529Z
+      author: "@claude"
+      content: >-
+        PR #175 CI status:
+
+        ✓ All tests pass (962 tests)
+
+        ✓ Claude review passed
+
+        ✓ Build succeeds
+
+        ✗ Unresolved comment threads - need manual resolution in GitHub UI
+
+
+        Fixed all technical issues. Review comments need to be marked as resolved in GitHub
+        interface:
+
+        1. tsconfig.json path mapping issue - FIXED
+
+        2. web-ui tsconfig.json SvelteKit extend - FIXED  
+
+        3. Bun usage documentation - ADDRESSED (intentional design choice)
+
+
+        Ready to resolve threads and merge once manually marked as resolved.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
