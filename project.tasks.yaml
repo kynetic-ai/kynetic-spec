@@ -27900,6 +27900,63 @@
         Current scaffold is functional for development but lacks UI components needed for dashboard
         implementation.
       supersedes: null
+    - _ulid: 01KFNKRKR6ZJE066V4EGK3NWA7
+      created_at: 2026-01-23T14:22:36.806Z
+      author: "@claude"
+      content: >-
+        Iteration 35 - Completed shadcn-svelte setup:
+
+
+        ✅ Ran shadcn-svelte init non-interactively with CLI flags (--base-color slate --css
+        src/app.css --components-alias '$lib/components' etc.)
+
+        ✅ Added all required components: button, card, badge, input, sheet, command, tabs,
+        accordion, tooltip, sidebar, table, data-table
+
+        ✅ Fixed Tailwind v4 PostCSS configuration (changed from 'tailwindcss' to
+        '@tailwindcss/postcss')
+
+        ✅ Installed @tailwindcss/postcss package in workspace root
+
+        ✅ Verified build succeeds - static output generated to build/ directory
+
+
+        Scaffold is now fully functional and ready for dashboard implementation. Next tasks can
+        begin building actual dashboard views using installed components.
+
+
+        Components installed:
+
+        - UI primitives: button, badge, input, tooltip, skeleton, separator
+
+        - Layout: card, sheet, dialog, sidebar
+
+        - Data: table, data-table (with @tanstack/table-core)
+
+        - Navigation: command (palette), tabs, accordion
+
+        - Hooks: is-mobile
+
+        - Utils: cn() utility with tailwind-merge
+
+
+        Dependencies added:
+
+        - @tanstack/table-core: ^8.21.3
+
+        - bits-ui: ^2.15.4
+
+        - @lucide/svelte: ^0.561.0
+
+        - @internationalized/date: ^3.10.1
+
+        - tw-animate-css: ^1.4.0
+
+        - @tailwindcss/postcss (workspace root)
+
+
+        Task can now be marked as complete - scaffold setup is done.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMT0BPJPM8V08QVBVKPS6V
