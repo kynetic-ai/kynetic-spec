@@ -25801,6 +25801,91 @@
         **Next Session:**
         Start @01KFMMTP (Global search command palette) - 2 subtasks remaining.
       supersedes: null
+    - _ulid: 01KFNRT4ZVC8VSS6F303DWQ424
+      created_at: 2026-01-23T15:50:50.107Z
+      author: "@claude"
+      content: >-
+        Session 41 End - Parent Task Checkpoint
+
+
+        **Purpose:** This parent task coordinates 8 derived subtasks for Web Dashboard
+        implementation. It remains in_progress until ALL subtasks are complete.
+
+
+        **Current Progress: 6/8 subtasks completed (75% done)**
+
+
+        **COMPLETED & MERGED (6/8):**
+
+        1. ✅ @01KFMMSV - SvelteKit scaffold - PR #197
+
+        2. ✅ @01KFMMT0 - Dashboard layout/navigation - PR #198
+
+        3. ✅ @01KFMMT4 - Task list/detail views - PR #198
+
+        4. ✅ @01KFMMT9 - Spec item tree/detail views - PR #198
+
+        5. ✅ @01KFMMTD - Inbox view - PR #199
+
+        6. ✅ @01KFMMTJ - Session context/observations panel - PR #200
+
+
+        **READY TO START (2/8):**
+
+        7. ⏸️ @01KFMMTP - Global search command palette (ac-23 to ac-25)
+
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions (ac-28 to ac-33)
+
+
+        **Acceptance Criteria Coverage: 22/33 (67%)**
+
+        ✅ Implemented:
+
+        - ac-1 to ac-3: SvelteKit scaffold, shadcn-svelte, static adapter
+
+        - ac-4 to ac-10: Task list, filters, detail panel, actions
+
+        - ac-11 to ac-15: Spec item tree, detail panel, ACs, linked tasks, traits
+
+        - ac-16 to ac-19: Inbox list, add, delete functionality
+
+        - ac-20 to ac-22: Session focus, observations badge, observations panel
+
+        - ac-26 to ac-27: Responsive layout (already in PR #198)
+
+
+        ⏸️ Remaining:
+
+        - ac-23 to ac-25: Search command palette (Cmd+K)
+
+        - ac-28 to ac-33: WebSocket connection, reconnect, deduplication
+
+
+        **Technical Health:**
+
+        - All 1207 tests passing
+
+        - Build successful
+
+        - No blockers
+
+        - Clean working tree
+
+        - All PRs merged cleanly
+
+
+        **Next Session Priority:**
+
+        1. Start @01KFMMTP (Global search command palette)
+
+        2. Complete @01KFMMTV (WebSocketManager)
+
+        3. Mark THIS parent task complete when all 8 subtasks done
+
+
+        **Estimated Remaining Effort:** 2 more sessions at current pace to complete final 2
+        subtasks.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
