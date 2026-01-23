@@ -22364,6 +22364,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #182 merged. Fixed inconsistent cancelled task filtering in derive command. Added
+    cancelled task filtering to existence check to match getParentTaskRef() behavior. Added
+    comprehensive E2E test. All 1057 tests pass. Local review: PASS."
   depends_on: []
   context: []
   priority: 2
@@ -22373,6 +22376,7 @@
   vcs_refs: []
   created_at: 2026-01-22T15:53:51.224Z
   started_at: 2026-01-23T08:38:30.827Z
+  completed_at: 2026-01-23T08:50:38.399Z
   notes:
     - _ulid: 01KFN07HP5GT1GY8XK1YK6N4QP
       created_at: 2026-01-23T08:41:14.693Z
@@ -22415,10 +22419,6 @@
         comprehensive E2E test to prevent regression. All 1056 tests pass.
       supersedes: null
   todos: []
-  completed_at: 2026-01-23T08:50:38.399Z
-  closed_reason: "PR #182 merged. Fixed inconsistent cancelled task filtering in derive command. Added
-    cancelled task filtering to existence check to match getParentTaskRef() behavior. Added
-    comprehensive E2E test. All 1057 tests pass. Local review: PASS."
 - _ulid: 01KFKMF9FBCRZ0ERNN8K9M0ZMM
   slugs: []
   title: Meta resolve and promote commands missing commitIfShadow calls
@@ -23554,7 +23554,7 @@
     - Call from initializeShadow() after worktree creation
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFM7H3"
@@ -23566,6 +23566,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-23T08:51:12.160Z
 - _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
   slugs:
     - task-daemon-server-mode
