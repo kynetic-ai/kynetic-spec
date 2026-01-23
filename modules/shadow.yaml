@@ -657,3 +657,19 @@ features:
         given: kspec init runs in a new repo
         when: initialization completes
         then: merge driver is configured in .git/config and .gitattributes updated in shadow branch
+    requirements:
+      - _ulid: 01KFM7AV3TV8XSTRGZDNV5PQ9N
+        slugs:
+          - merge-driver-cli
+        title: Merge Driver CLI
+        type: requirement
+        tags: []
+        description: CLI subcommand that git invokes as the custom merge driver. Inherits @trait-dry-run and
+          @trait-error-guidance from parent.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-23T01:26:08.251Z
