@@ -32540,6 +32540,45 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T23:18:10.609Z
-  notes: []
-  todos: []
   started_at: 2026-01-23T23:31:40.211Z
+  notes:
+    - _ulid: 01KFPMCHN593ZV88PT3C8S4M3A
+      created_at: 2026-01-23T23:52:44.453Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        1. Added @elysiajs/static plugin to daemon dependencies
+
+        2. Added resolveWebUiPath() function to find web UI build directory:
+           - Checks explicit option first
+           - Then WEB_UI_DIR env var
+           - Then packages/web-ui/build in monorepo
+           - Then web-ui/build fallback
+        3. Added staticPlugin configuration to serve static files from web UI build
+
+        4. Added explicit SPA routes for /tasks, /items, /inbox, /observations with wildcards
+
+        5. Fixed build:daemon script to properly clean and copy daemon source
+
+        6. Cleaned up stale .js files from packages/daemon/src that were interfering
+
+
+        Verified working:
+
+        - Root (/) serves index.html
+
+        - SPA routes (/tasks, /items, etc.) serve index.html for client-side routing  
+
+        - Static assets (/_app/*) are served correctly
+
+        - API endpoints (/api/*) still work
+
+        - WebSocket (/ws) still works
+
+
+        Note: The daemon-executable.test.ts failure is pre-existing - daemon compilation fails
+        because routes import from parent package.
+      supersedes: null
+  todos: []
