@@ -289,6 +289,9 @@ features:
         given: daemon is shutting down
         when: WebSocket connection active
         then: receives shutdown event with {reason}, connection closes gracefully
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
     slugs:
       - web-dashboard
