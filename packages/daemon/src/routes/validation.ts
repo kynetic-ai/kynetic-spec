@@ -23,14 +23,14 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
   type LoadedInboxItem,
-} from '../../../src/parser/index.js';
+} from '../../parser/index.js';
 import type {
   LoadedAgent,
   LoadedWorkflow,
   LoadedObservation,
   LoadedConvention,
-} from '../../../src/parser/meta.js';
-import { grepItem } from '../../../src/utils/grep.js';
+} from '../../parser/meta.js';
+import { grepItem } from '../../utils/grep.js';
 
 interface ValidationRouteOptions {
   kspecDir: string;

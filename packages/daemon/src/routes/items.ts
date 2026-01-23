@@ -21,7 +21,7 @@ import {
   ReferenceIndex,
   AlignmentIndex,
   type LoadedSpecItem,
-} from '../../../src/parser/index.js';
+} from '../../parser/index.js';
 
 interface ItemsRouteOptions {
   kspecDir: string;

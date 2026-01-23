@@ -18,7 +18,7 @@ import { PidFileManager } from '../pid-utils.js';
  */
 function isBunAvailable(): boolean {
   try {
-    execSync('which bun', { stdio: 'pipe' });
+    execSync('bun --version', { stdio: 'pipe' });
     return true;
   } catch {
     return false;
