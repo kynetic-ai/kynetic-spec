@@ -719,3 +719,8 @@ features:
             when: merge driver runs
             then: "manifest fields merged: includes as set-union, project fields prompt on conflict, config
               merged recursively"
+          - id: ac-5
+            given: file is kynetic.meta.yaml
+            when: merge driver runs
+            then: arrays (agents, workflows, conventions, observations) merged by ULID, context fields merged at
+              field level
