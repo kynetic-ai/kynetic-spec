@@ -24342,6 +24342,37 @@
 
         This parent task remains in_progress until all derived subtasks complete.
       supersedes: null
+    - _ulid: 01KFNE0ZJ9D8564EX8W2FQHSHM
+      created_at: 2026-01-23T12:42:19.593Z
+      author: "@claude"
+      content: >-
+        End of iteration 25 session checkpoint.
+
+
+        This is a PARENT TASK that coordinates multiple derived subtasks. It should remain
+        in_progress until ALL derived subtasks are complete.
+
+
+        Current derived subtasks status:
+
+        - ✅ @01KFMMPY: API foundation and CORS - COMPLETED (merged PR #190)
+
+        - ✅ @01KFMMQ2: Task API endpoints - COMPLETED (merged PR #191)
+
+        - 🔄 @01KFMMQ7: Spec item API endpoints - PENDING_REVIEW (PR #192 awaiting CI)
+
+        - ⏳ @01KFMMQB: Inbox and meta API endpoints - READY
+
+        - ⏳ @01KFMMQF: Search and validation API endpoints - READY
+
+        - ⏳ @01KFMMQM: API error handling middleware - READY
+
+
+        Overall progress: 16 of 33 ACs complete, 4 in review, 13 remaining.
+
+
+        Next session will merge PR #192 and continue with remaining subtasks.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
