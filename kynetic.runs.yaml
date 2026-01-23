@@ -695,6 +695,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-23T05:41:21.886Z
+    completed_at: 2026-01-23T05:46:24.908Z
     step_results:
       - step_index: 0
         status: completed
@@ -753,4 +754,11 @@ runs:
           - 2 success observations (plan mode exploration, detailed task notes)
           - Skipped bulk AC import (already tracked)
     initiated_by: "@claude"
-    completed_at: 2026-01-23T05:46:24.908Z
+  - _ulid: 01KFMR5C7NFPFKMC5A6WY93HGZ
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-23T06:20:14.965Z
+    step_results: []
+    initiated_by: "@claude"
