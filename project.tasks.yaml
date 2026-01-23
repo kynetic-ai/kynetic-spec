@@ -25916,6 +25916,7 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:00.640Z
+  started_at: 2026-01-23T11:57:05.939Z
   notes:
     - _ulid: 01KFMMRTEYSRP4MJT5YBHWFJAZ
       created_at: 2026-01-23T05:20:57.822Z
@@ -25953,9 +25954,39 @@
         ### Files to Create
         - packages/daemon/src/routes/tasks.ts
       supersedes: null
+    - _ulid: 01KFNBFP04MXFTQKXQJCF5B59G
+      created_at: 2026-01-23T11:57:55.588Z
+      author: "@claude"
+      content: >-
+        Starting implementation. Will create packages/daemon/src/routes/tasks.ts with the following
+        endpoints:
+
+        - GET /api/tasks - list with filters (status, type, tag) and pagination
+
+        - GET /api/tasks/:ref - get single task  
+
+        - POST /api/tasks/:ref/start - start task
+
+        - POST /api/tasks/:ref/note - add note
+
+
+        Will reuse existing parser functions:
+
+        - initContext() to load kspec state
+
+        - loadAllTasks() for task data
+
+        - ReferenceIndex for ref resolution
+
+        - createNote() and saveTask() for mutations
+
+        - commitIfShadow() for auto-commit
+
+
+        Covers ac-2 through ac-7 from @api-contract.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T11:57:05.939Z
 - _ulid: 01KFMMQ725ZMG11F5SZM35SQFT
   slugs: []
   title: Spec item API endpoints
