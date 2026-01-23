@@ -129,7 +129,7 @@ describe('Spec Item API Endpoints', () => {
     expect(routesContent).toContain('initContext');
     expect(routesContent).toContain('loadAllItems');
     expect(routesContent).toContain('loadAllTasks');
-    expect(routesContent).toContain('ItemIndex');
+    expect(routesContent).toContain('ReferenceIndex');
     expect(routesContent).toContain('AlignmentIndex');
     expect(routesContent).toContain('LoadedSpecItem');
   });
