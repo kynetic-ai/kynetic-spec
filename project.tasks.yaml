@@ -23302,18 +23302,24 @@
         list/detail updates without refresh, subtle highlight animation on changed item
       supersedes: null
   todos: []
-- title: "Implement: GitHub Pages Export"
+- _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
+  slugs:
+    - task-github-pages-export
+  title: "Implement: GitHub Pages Export"
   type: task
   spec_ref: "@gh-pages-export"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-github-pages-export
   tags:
     - static
     - export
     - github
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:17:18.785Z
   notes:
     - _ulid: 01KFMMJ4J1T09TTDMA5SAW6DFM
       created_at: 2026-01-23T05:17:18.785Z
@@ -23387,10 +23393,68 @@
         - ac-18: Given SPA mode, when any write action attempted, then graceful no-op with
         informative message
       supersedes: null
-  _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
+  todos: []
+- title: "Implement: CLI Serve Commands"
+  type: task
+  spec_ref: "@cli-serve-commands"
+  derivation: auto
+  priority: 2
+  slugs:
+    - task-cli-serve-commands
+  tags:
+    - cli
+    - serve
+  depends_on: []
+  notes:
+    - _ulid: 01KFMMJ8G6FGT4WY7NBW3JTPKN
+      created_at: 2026-01-23T05:17:22.822Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        CLI commands for managing the daemon server lifecycle. Provides human and script-friendly
+
+        interfaces to start, stop, and monitor the daemon.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given daemon not running, when kspec serve executed, then starts server in
+        foreground, logs to stdout, Ctrl+C stops
+
+        - ac-2: Given daemon not running, when kspec serve --daemon executed, then starts in
+        background, writes PID file, returns immediately with status message
+
+        - ac-3: Given daemon not running, when kspec serve --port 8080 executed, then starts on
+        specified port
+
+        - ac-4: Given daemon running, when kspec serve stop executed, then sends SIGTERM to daemon
+        PID, waits for clean shutdown, removes PID file
+
+        - ac-5: Given daemon not running, when kspec serve stop executed, then outputs 'Daemon not
+        running' with exit code 0 (idempotent)
+
+        - ac-6: Given any state, when kspec serve status executed, then outputs JSON with {running,
+        pid, port, uptime, connections}
+
+        - ac-7: Given daemon running, when kspec serve restart executed, then stops existing daemon,
+        starts new one, preserves port setting
+
+        - ac-8: Given any state, when kspec serve logs executed, then tails daemon log file
+        (.kspec/.daemon.log)
+
+        - ac-9: Given daemon running, when kspec serve logs --follow executed, then streams log
+        output continuously until Ctrl+C
+
+        - ac-10: Given port already in use, when kspec serve attempts to start, then fails with
+        clear error message suggesting --port flag
+      supersedes: null
+  _ulid: 01KFMMJ8G6W8QGAGP599P4T7E8
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:17:18.785Z
+  created_at: 2026-01-23T05:17:22.822Z
   todos: []
