@@ -25138,6 +25138,30 @@
 
         **Status:** This parent task will be completed once all 8 derived subtasks are done.
       supersedes: null
+    - _ulid: 01KFNNCBYYP327C7BZZXHG42WE
+      created_at: 2026-01-23T14:50:52.766Z
+      author: "@claude"
+      content: |-
+        Iteration 36 checkpoint:
+
+        Subtask @01KFMMT0 (Dashboard layout and navigation) in pending_review state.
+
+        Progress:
+        ✅ Implementation complete (responsive layout with sidebar/mobile nav)
+        ✅ PR #198 created
+        ⏳ CI checks running
+        ⏳ Awaiting review and merge
+
+        Parent task remains in_progress while subtask 1 of 8 is in review.
+
+        Next subtasks ready after merge:
+        - @01KFMMT4: Task list and detail views
+        - @01KFMMT9: Spec item tree and detail views
+        - @01KFMMTD: Inbox view
+        - @01KFMMTJ: Session context and observations panel
+        - @01KFMMTP: Global search command palette
+        - @01KFMMTV: WebSocketManager with subscriptions
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
