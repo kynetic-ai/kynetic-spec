@@ -22209,7 +22209,7 @@
     ```
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -22275,6 +22275,9 @@
         Ready for PR.
       supersedes: null
   todos: []
+  completed_at: 2026-01-23T04:08:46.376Z
+  closed_reason: "PR #172 merged. Added @trait-shadow-commit trait with 8 AC and fixed 6 missing
+    commitIfShadow calls in meta commands."
 - _ulid: 01KFKRBN1B8GKXNV8W443XC30A
   slugs: []
   title: Add --steps flag to workflow add command
