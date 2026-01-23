@@ -1269,7 +1269,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFN2YCTD3MBR8M583P2P0SC2
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
+    status: aborted
     current_step: 1
     total_steps: 9
     started_at: 2026-01-23T09:28:40.526Z
@@ -1283,3 +1283,4 @@ runs:
         started_at: 2026-01-23T09:28:56.704Z
         completed_at: 2026-01-23T09:28:56.704Z
     initiated_by: "@claude"
+    completed_at: 2026-01-23T09:30:12.698Z
