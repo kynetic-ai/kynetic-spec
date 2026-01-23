@@ -14,6 +14,7 @@ import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { PidFileManager } from './pid';
+import { createTasksRoutes } from './routes/tasks';
 import { join, relative } from 'path';
 
 export interface ServerOptions {
@@ -143,6 +144,9 @@ export async function createServer(options: ServerOptions) {
       connections: pubsubManager.getConnectionCount(),
       version: '0.1.0'
     }))
+
+    // AC: @api-contract ac-2 through ac-7 - Task API endpoints
+    .use(createTasksRoutes({ kspecDir, pubsub: pubsubManager }))
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
