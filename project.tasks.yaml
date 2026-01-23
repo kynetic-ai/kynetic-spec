@@ -25145,6 +25145,48 @@
         All acceptance criteria from @api-contract (ac-25 to ac-32), @daemon-server (ac-13, ac-14),
         and @trait-websocket-protocol (ac-1 to ac-8) are now implemented and tested.
       supersedes: null
+    - _ulid: 01KFN6H9CA6J1DB44GMG6RFD8N
+      created_at: 2026-01-23T10:31:25.322Z
+      author: "@claude"
+      content: >-
+        Local review feedback: Tests are source inspection rather than behavioral E2E tests. This is
+        a MUST-FIX blocking issue before merge.
+
+
+        **Issue:** All 80 daemon tests read TypeScript source files and check for string patterns
+        (e.g., `toContain('ws.close(1001')`) rather than actually running the server and validating
+        behavior. These tests would pass even if the WebSocket protocol is completely broken.
+
+
+        **Required action:** Add E2E tests that:
+
+        1. Start test server with createServer()
+
+        2. Connect WebSocket client
+
+        3. Verify connected event with session_id (ac-25)
+
+        4. Send subscribe command, verify ack (ac-28, ac-27)
+
+        5. Trigger file change, verify broadcast event (ac-29)
+
+        6. Verify heartbeat ping/pong timing (ac-13, ac-14)
+
+        7. Test close codes (ac-31)
+
+        8. Test backpressure handling (ac-32)
+
+
+        **Why this matters:** Current tests are fluff - they create false confidence. Need tests
+        that would actually fail if implementation breaks.
+
+
+        **Pattern to follow:** Look at tests/cli-*.test.ts for proper E2E patterns with temp
+        directories and actual behavior validation.
+
+
+        PR #187 is NOT ready to merge until E2E tests are added.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
