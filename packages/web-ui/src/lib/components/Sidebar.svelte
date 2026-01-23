@@ -16,6 +16,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { fetchSessionContext, fetchObservations } from '$lib/api';
 	import type { SessionContext } from '@kynetic-ai/shared';
+	import ConnectionStatus from '$lib/components/ConnectionStatus.svelte';
 
 	// Navigation items
 	const navItems = [
@@ -24,9 +25,6 @@
 		{ href: '/items', label: 'Items' },
 		{ href: '/inbox', label: 'Inbox' }
 	];
-
-	// Connection status (will be wired to WebSocket later)
-	let connected = $state(false);
 
 	// AC: @web-dashboard ac-20, ac-21
 	let sessionContext = $state<SessionContext | null>(null);
@@ -118,9 +116,8 @@
 
 	<SidebarFooter>
 		<div class="flex items-center gap-2 px-4 py-2">
-			<Badge variant={connected ? 'default' : 'destructive'}>
-				{connected ? 'Connected' : 'Disconnected'}
-			</Badge>
+			<!-- AC: @web-dashboard ac-29 -->
+			<ConnectionStatus />
 		</div>
 	</SidebarFooter>
 </Sidebar>
