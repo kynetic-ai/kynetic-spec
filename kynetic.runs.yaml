@@ -172,7 +172,7 @@ runs:
   - _ulid: 01KFM83QS8A9AGKV6106ZBT6VB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-23T01:39:44.041Z
     step_results:
@@ -190,5 +190,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-23T01:40:12.104Z
-        completed_at: 2026-01-23T01:40:12.104Z
+        completed_at: 2026-01-23T01:40:24.574Z
+        notes: "Friction: (1) Repetitive AC entry - 12 separate commands, no bulk option, (2) Task
+          dependency syntax - trial/error for space-separated refs, (3) Plan review → update not
+          structured, (4) Trait applicability check was manual, user had to remind"
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-23T01:40:24.574Z
+        completed_at: 2026-01-23T01:40:24.574Z
     initiated_by: "@claude"
