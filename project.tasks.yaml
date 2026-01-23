@@ -22248,6 +22248,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Implemented --steps flag for kspec meta add workflow. PR #170 merged."
   depends_on: []
   context: []
   priority: 2
@@ -22255,6 +22256,7 @@
   vcs_refs: []
   created_at: 2026-01-22T23:35:06.730Z
   started_at: 2026-01-22T23:40:54.287Z
+  completed_at: 2026-01-22T23:55:46.588Z
   notes:
     - _ulid: 01KFM108PCTQYH5ZBQQXMRZ7TF
       created_at: 2026-01-22T23:35:30.253Z
@@ -22365,5 +22367,78 @@
         - Manual testing confirms workflow steps persist correctly
       supersedes: null
   todos: []
-  completed_at: 2026-01-22T23:55:46.588Z
-  closed_reason: "Implemented --steps flag for kspec meta add workflow. PR #170 merged."
+- title: "Implement: Semantic YAML Merge Driver"
+  type: task
+  spec_ref: "@yaml-merge-driver"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-semantic-yaml-merge-driver
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KFM7CQNYMAG85G3HSN2JGDNN
+      created_at: 2026-01-23T01:27:10.270Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        A custom git merge driver that parses both versions of kspec YAML files and merges them
+        semantically, understanding the structure of tasks, items, and other kspec entities. This
+        prevents git from creating conflict markers that would corrupt YAML files.
+
+
+        Note on exit codes: This command intentionally does NOT use @trait-semantic-exit-codes
+        because git merge drivers have special requirements - they must exit 0 to prevent git from
+        falling back to its text merge, which would corrupt YAML.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given git attempts to merge two versions of a kspec YAML file, when the merge driver
+        is configured, then kspec parses all three versions (base, ours, theirs) as structured data
+        instead of text
+
+        - ac-2: Given both versions add different items to an array (tasks, inbox, specs), when
+        merge runs, then both additions are included in result (union merge by ULID)
+
+        - ac-3: Given both versions modify different fields of the same item, when merge runs, then
+        fields are merged (non-conflicting field changes combined)
+
+        - ac-4: Given both versions modify the same scalar field (title, description, priority) of
+        the same item, when merge runs, then user is prompted interactively to choose which value to
+        keep
+
+        - ac-5: Given both versions modify append-only arrays (notes, todos), when merge runs, then
+        arrays are union merged by ULID (notes never conflict)
+
+        - ac-6: Given both versions modify set-like arrays (tags, depends_on), when merge runs, then
+        arrays are set-unioned (duplicates removed)
+
+        - ac-7: Given both versions modify nested objects (status, traceability), when merge runs,
+        then nested fields are merged recursively at field level
+
+        - ac-8: Given one version deletes an item while other modifies it, when merge runs, then
+        user is prompted interactively to choose delete vs keep modified
+
+        - ac-9: Given merge completes with no true conflicts, when driver exits, then exit code 0,
+        merged YAML written to output path
+
+        - ac-10: Given merge has unresolvable conflicts and --non-interactive flag set, when driver
+        exits, then conflict markers written as YAML comments, exit code 0 (prevents git fallback)
+
+        - ac-11: Given YAML parsing fails on any input file, when driver runs, then falls back
+        gracefully: copies ours verbatim, creates .kspec-merge-failed marker, exits 0
+
+        - ac-12: Given kspec init runs in a new repo, when initialization completes, then merge
+        driver is configured in .git/config and .gitattributes updated in shadow branch
+      supersedes: null
+  _ulid: 01KFM7CQNZ98F3W0JB8DQ1XCNE
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:27:10.271Z
+  todos: []
