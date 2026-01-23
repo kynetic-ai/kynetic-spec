@@ -1941,9 +1941,10 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFNJY6VERDP97CFTR1GSHZD2
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 9
     started_at: 2026-01-23T14:08:11.630Z
     step_results: []
     initiated_by: "@claude"
+    completed_at: 2026-01-23T14:10:37.229Z
