@@ -31460,6 +31460,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #207 merged - daemon bundled with package, path resolution fixed for npm
+    installs, cross-platform compatibility (bun --version, shx cp)"
   depends_on: []
   context: []
   priority: 2
@@ -31467,6 +31469,7 @@
   vcs_refs: []
   created_at: 2026-01-23T19:40:09.319Z
   started_at: 2026-01-23T21:12:16.406Z
+  completed_at: 2026-01-23T21:57:52.856Z
   notes:
     - _ulid: 01KFPB74SQW6J6RPK322N8385K
       created_at: 2026-01-23T21:12:30.263Z
@@ -31565,9 +31568,6 @@
         - Full suite: 1242 passed, 3 skipped
       supersedes: null
   todos: []
-  completed_at: 2026-01-23T21:57:52.856Z
-  closed_reason: "PR #207 merged - daemon bundled with package, path resolution fixed for npm
-    installs, cross-platform compatibility (bun --version, shx cp)"
 - _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   slugs: []
   title: Improve PR review process enforcement
@@ -32654,4 +32654,39 @@
         - task-detail-panel, item-detail-panel
         - filter-status
       supersedes: null
+  todos: []
+- title: Daemon serves built web UI on root route
+  description: >-
+    The daemon currently only serves API endpoints. To enable E2E testing and match the spec (ac-17,
+    web-dashboard ac-1), the daemon must serve the built SvelteKit static assets on the root route.
+
+
+    Implementation approach:
+
+    1. Add Elysia static file serving plugin for packages/web-ui/build/
+
+    2. Ensure web UI is built before daemon can serve it (build step or check)
+
+    3. Root route (/) serves index.html, other static assets served from /assets/
+
+    4. API routes continue to work at /api/*
+
+    5. WebSocket continues to work at /ws
+
+
+    This unblocks all E2E testing tasks.
+  type: task
+  spec_ref: "@daemon-server"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T23:18:10.609Z
+  notes: []
   todos: []
