@@ -25402,7 +25402,7 @@
   type: task
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: in_progress
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -25457,6 +25457,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  closed_reason: Task is out of scope with current spec. The @daemon-server spec ACs (ac-6, ac-7) only
+    require 'error logged' and 'daemon logs error', which are already satisfied by existing
+    console.log/console.error calls throughout the daemon code. The task notes suggest implementing
+    file logging (.kspec/.daemon.log) and 'kspec serve logs' command, but these aren't part of the
+    spec. If file logging is actually needed for daemon mode, it should be added as new ACs to
+    @daemon-server first, then this task can be revived with proper spec coverage.
 - _ulid: 01KFMMPY4DM95VNXZ278VK32H1
   slugs: []
   title: API foundation and CORS middleware
