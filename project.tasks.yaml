@@ -28628,6 +28628,7 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:41.254Z
+  started_at: 2026-01-23T14:57:20.113Z
   notes:
     - _ulid: 01KFMMWC16ED2JNY5CYRWVMHN0
       created_at: 2026-01-23T05:22:54.119Z
@@ -28667,9 +28668,38 @@
         - packages/web-ui/src/lib/components/TaskDetail.svelte
         - packages/web-ui/src/lib/components/TaskFilters.svelte
       supersedes: null
+    - _ulid: 01KFNNS1C43FZD1QH2GPV476QW
+      created_at: 2026-01-23T14:57:47.908Z
+      author: "@claude"
+      content: |-
+        Starting implementation of Task list and detail views.
+
+        Scope (ACs 4-10 from @web-dashboard):
+        - ac-4: Task list display (title, status, priority, spec_ref, notes count)
+        - ac-5: Task detail panel (notes, todos, dependencies)
+        - ac-6: Spec_ref as clickable link
+        - ac-7: Start Task button action (POST /api/tasks/:ref/start)
+        - ac-8: Add Note action (POST /api/tasks/:ref/note)
+        - ac-9: Filter controls (status, type, tag, assignee, automation)
+        - ac-10: URL-based filter state with query params
+
+        Implementation plan:
+        1. Update tasks/+page.svelte to fetch task list from API
+        2. Create TaskList component with DataTable
+        3. Create TaskDetail Sheet component with actions
+        4. Create TaskFilters component for filter controls
+        5. Wire up URL-based filter state with SvelteKit's page store
+        6. Add API client helpers for task operations
+
+        Files to create/update:
+        - packages/web-ui/src/routes/tasks/+page.svelte (update)
+        - packages/web-ui/src/lib/components/TaskList.svelte (create)
+        - packages/web-ui/src/lib/components/TaskDetail.svelte (create)
+        - packages/web-ui/src/lib/components/TaskFilters.svelte (create)
+        - packages/web-ui/src/lib/api.ts (create - API client helpers)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T14:57:20.113Z
 - _ulid: 01KFMMT99M68WVP261SJKB326F
   slugs: []
   title: Spec item tree and detail views
