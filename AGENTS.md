@@ -771,13 +771,15 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 |-------|---------|
 | `/audit` | Comprehensive codebase audit for release readiness |
 | `/kspec` | Task and spec management workflows |
+| `/local-review` | Pre-PR quality review - AC coverage, test quality, isolation |
 | `/meta` | Session context (focus, threads, questions, observations) |
-| `/spec` | Spec authoring guide - item types, acceptance criteria, traits |
-| `/triage` | Systematic inbox and observation processing |
-| `/spec-plan` | Translate approved plans to specs |
-| `/reflect` | Session reflection and learning capture |
 | `/pr` | Create pull requests from current work |
+| `/reflect` | Session reflection and learning capture |
 | `/release` | Create versioned releases with git tags and GitHub releases |
+| `/spec` | Spec authoring guide - item types, acceptance criteria, traits |
+| `/spec-plan` | Translate approved plans to specs |
+| `/task-work` | Work on a task with proper lifecycle - verify, start, note, complete |
+| `/triage` | Systematic inbox and observation processing |
 
 ## Design Decisions
 
