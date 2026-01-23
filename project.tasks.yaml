@@ -28915,7 +28915,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -28962,6 +28962,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T15:04:57.554Z
 - _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
   slugs: []
   title: Inbox view
