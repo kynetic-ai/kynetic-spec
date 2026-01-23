@@ -25728,6 +25728,39 @@
         This parent task will transition to completed state once all 8 derived subtasks are merged.
         Estimated: 3 more sessions at current pace.
       supersedes: null
+    - _ulid: 01KFNQR5WE9TSZ2F22E0137HH7
+      created_at: 2026-01-23T15:32:16.910Z
+      author: "@claude"
+      content: |-
+        Iteration 41: PR #199 merged successfully
+
+        **Subtask @01KFMMTD (Inbox view) - COMPLETED ✅**
+
+        PR #199 merged after addressing Greptile review feedback:
+        - Optimized addInboxItem to return created item (avoids full reload)
+        - Review thread resolved via gh CLI GraphQL API
+        - All CI checks passed: tests, claude-review, unresolved-comments
+
+        **Overall Progress: 5/8 subtasks completed and merged**
+        1. ✅ @01KFMMSV - SvelteKit scaffold - MERGED (PR #197)
+        2. ✅ @01KFMMT0 - Dashboard layout/navigation - MERGED (PR #198)
+        3. ✅ @01KFMMT4 - Task list/detail views - MERGED (PR #198)
+        4. ✅ @01KFMMT9 - Spec item tree/detail views - MERGED (PR #198)
+        5. ✅ @01KFMMTD - Inbox view - MERGED (PR #199)
+        6. ⏸️ @01KFMMTJ - Session context/observations panel - READY
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+        **ACs Covered So Far:**
+        - ac-1 through ac-3 (scaffold, component library, static adapter)
+        - ac-26, ac-27 (layout, responsive navigation)
+        - ac-4 through ac-10 (task list, filters, detail panel, actions)
+        - ac-11 through ac-15 (spec tree, detail panel, ACs, linked tasks, traits)
+        - ac-16 through ac-19 (inbox list, add input, item creation, delete)
+
+        **Next Session:**
+        Start @01KFMMTJ (Session context/observations panel) - 3 remaining subtasks.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
@@ -29291,6 +29324,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #199 merged successfully. Inbox view implemented with add/delete functionality,
+    Greptile feedback addressed (optimized addInboxItem to return created item). All AC covered:
+    ac-16 through ac-19."
   depends_on: []
   context: []
   priority: 2
@@ -29300,6 +29336,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:21:50.232Z
   started_at: 2026-01-23T15:15:01.362Z
+  completed_at: 2026-01-23T15:31:50.021Z
   notes:
     - _ulid: 01KFMMWN16QD10F3RYVGCDKSJ3
       created_at: 2026-01-23T05:23:03.334Z
@@ -29377,10 +29414,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T15:31:50.021Z
-  closed_reason: "PR #199 merged successfully. Inbox view implemented with add/delete functionality,
-    Greptile feedback addressed (optimized addInboxItem to return created item). All AC covered:
-    ac-16 through ac-19."
 - _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
   slugs: []
   title: Session context and observations panel
