@@ -24059,7 +24059,43 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:00.640Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMRTEYSRP4MJT5YBHWFJAZ
+      created_at: 2026-01-23T05:20:57.822Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement task API endpoints using existing kspec library APIs.
+
+        ### Endpoints
+        - GET /api/tasks - List with filters (status, type, tag, limit, offset)
+        - GET /api/tasks/:ref - Get single task
+        - POST /api/tasks/:ref/start - Start task
+        - POST /api/tasks/:ref/note - Add note
+
+        ### Steps
+        1. Use ItemIndex from src/parser/items.ts for querying
+        2. Use ReferenceIndex from src/parser/refs.ts for resolving refs
+        3. Broadcast changes via WebSocket after mutations
+
+        ### ACs Covered
+        - ac-2: GET /api/tasks returns array
+        - ac-3: Status filter (multi-value)
+        - ac-4: Pagination wrapper
+        - ac-5: GET /api/tasks/:ref resolves ref
+        - ac-6: POST start transitions state
+        - ac-7: POST note appends and broadcasts
+
+        ### Key Library APIs
+        - loadYamlItems() for data loading
+        - ItemIndex.query() for filtering
+        - ReferenceIndex.resolve() for ref lookup
+
+        ### Files to Create
+        - packages/daemon/src/routes/tasks.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMQ725ZMG11F5SZM35SQFT
   slugs: []
