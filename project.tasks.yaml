@@ -23822,7 +23822,7 @@
   type: task
   spec_ref: "@api-contract"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -24831,6 +24831,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T13:54:53.830Z
+  closed_reason: "All 33 ACs from @api-contract spec successfully implemented and merged across 6
+    derived subtasks. Subtasks completed: @01KFMMPY (CORS/foundation), @01KFMMQ2 (Task API),
+    @01KFMMQ7 (Spec Item API), @01KFMMQB (Inbox/Meta API), @01KFMMQF (Search/Validation API),
+    @01KFMMQM (Error handling tests). All 1207 tests passing. Implementation includes REST
+    endpoints, WebSocket protocol, CORS, error handling, and comprehensive test coverage with proper
+    AC annotations."
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
   slugs:
     - task-web-dashboard
