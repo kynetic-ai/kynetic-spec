@@ -17,6 +17,7 @@
     "elysia": "^1.1.31",
     "@elysiajs/cors": "^1.1.3",
     "chokidar": "^4.0.3",
+    "yaml": "^2.7.0",
     "@kynetic-ai/shared": "*"
   },
   "devDependencies": {
