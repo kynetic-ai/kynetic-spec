@@ -608,3 +608,8 @@ features:
       - "@trait-error-guidance"
     notes: []
     created: 2026-01-23T01:25:01.370Z
+    acceptance_criteria:
+      - id: ac-1
+        given: git attempts to merge two versions of a kspec YAML file
+        when: the merge driver is configured
+        then: kspec parses all three versions (base, ours, theirs) as structured data instead of text
