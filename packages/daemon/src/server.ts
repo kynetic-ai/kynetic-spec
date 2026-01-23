@@ -56,13 +56,14 @@ export async function createServer(options: ServerOptions) {
     })
 
     // AC-1, AC-2: Start server on localhost only
+    // Using 'localhost' hostname allows Bun/OS to bind to both 127.0.0.1 and ::1
     .listen({
       port,
-      hostname: '127.0.0.1', // Localhost only
+      hostname: 'localhost', // Resolves to both IPv4 and IPv6 loopback
     });
 
-  console.log(`[daemon] Server listening on http://127.0.0.1:${port}`);
-  console.log(`[daemon] WebSocket available at ws://127.0.0.1:${port}/ws`);
+  console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
+  console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
 
   // TODO: AC-9, AC-10: Implement daemon mode (process detach, PID file)
   // TODO: AC-12: Implement graceful shutdown (SIGTERM, SIGINT)
