@@ -22481,6 +22481,7 @@
   derivation: auto
   status: cancelled
   blocked_by: []
+  closed_reason: Restructuring task breakdown
   depends_on:
     - "@task-semantic-yaml-merge-driver"
   context: []
@@ -22514,7 +22515,6 @@
         conflicts as YAML comments instead of prompting
       supersedes: null
   todos: []
-  closed_reason: Restructuring task breakdown
 - _ulid: 01KFM7CRF0Z5XDYVV0ZH1YPNJT
   slugs:
     - task-file-type-detection
@@ -22522,7 +22522,7 @@
   type: task
   spec_ref: "@merge-file-detection"
   derivation: auto
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on:
     - "@task-semantic-yaml-merge-driver"
@@ -22564,3 +22564,4 @@
         back to default behavior (copy ours)
       supersedes: null
   todos: []
+  closed_reason: Restructuring task breakdown
