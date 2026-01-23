@@ -23962,6 +23962,7 @@
         - packages/daemon/src/websocket/types.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
   slugs: []
   title: Implement daemon process detach
