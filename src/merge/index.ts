@@ -23,3 +23,11 @@ export {
 
 export { mergeObjects } from "./objects.js";
 export type { ObjectMergeResult } from "./objects.js";
+
+export {
+  promptScalarConflict,
+  promptDeleteModifyConflict,
+  resolveConflictsInteractive,
+  formatConflictComment,
+} from "./resolve.js";
+export type { ResolutionChoice, ConflictResolution } from "./resolve.js";
