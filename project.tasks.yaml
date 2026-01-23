@@ -23024,18 +23024,24 @@
         executable without requiring Bun installation
       supersedes: null
   todos: []
-- title: "Implement: REST and WebSocket API Contract"
+- _ulid: 01KFMMHX91G8RSY91QANTT4FSQ
+  slugs:
+    - task-rest-and-websocket-api-contract
+  title: "Implement: REST and WebSocket API Contract"
   type: task
   spec_ref: "@api-contract"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - task-rest-and-websocket-api-contract
   tags:
     - api
     - rest
     - websocket
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:17:11.329Z
   notes:
     - _ulid: 01KFMMHX90THXZYDKP63XF3RCZ
       created_at: 2026-01-23T05:17:11.329Z
@@ -23154,10 +23160,145 @@
         - ac-33: Given daemon is shutting down, when WebSocket connection active, then receives
         shutdown event with {reason}, connection closes gracefully
       supersedes: null
-  _ulid: 01KFMMHX91G8RSY91QANTT4FSQ
+  todos: []
+- title: "Implement: Web Dashboard"
+  type: task
+  spec_ref: "@web-dashboard"
+  derivation: auto
+  priority: 2
+  slugs:
+    - task-web-dashboard
+  tags:
+    - svelte
+    - ui
+    - dashboard
+  depends_on: []
+  notes:
+    - _ulid: 01KFMMJ17BNGTK0S70NEGFVZZH
+      created_at: 2026-01-23T05:17:15.372Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        SvelteKit-based web interface for viewing and editing specs, tasks, inbox, and session
+        state.
+
+        Uses shadcn-svelte components for accessible UI. Connects to daemon via REST API and
+        WebSocket
+
+        for real-time updates. Includes WebSocketManager for connection resilience with exponential
+
+        backoff reconnection and sequence deduplication.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given daemon is running and browser opens localhost:3456, when page loads, then
+        dashboard shows task overview with ready, in_progress, pending_review, blocked, completed
+        counts
+
+        - ac-2: Given dashboard is displayed, when task counts update on server, then counts animate
+        to new values without page refresh (WebSocket-driven)
+
+        - ac-3: Given dashboard is displayed, when user clicks a task count badge, then navigates to
+        task list filtered by that status
+
+        - ac-4: Given user is viewing task list, when list loads, then shows task title, status
+        badge, priority indicator, spec_ref link, notes count
+
+        - ac-5: Given user is viewing task list, when clicking a task row, then task detail panel
+        opens showing description, notes (chronological), todos, dependencies
+
+        - ac-6: Given user is viewing task detail, when task has spec_ref, then spec reference is
+        clickable link to spec item detail
+
+        - ac-7: Given user is viewing task detail, when user clicks Start Task button, then POST to
+        /api/tasks/:ref/start, task status updates, UI reflects change
+
+        - ac-8: Given user is viewing task detail, when user types in note textarea and clicks Add
+        Note, then POST to /api/tasks/:ref/note, note appears in list
+
+        - ac-9: Given user is viewing task list, when filter controls are visible, then can filter
+        by status, type, tag, assignee, automation status
+
+        - ac-10: Given user applies filter, when filter selection changes, then URL updates with
+        query params, list updates without full reload
+
+        - ac-11: Given user navigates to /items, when spec tree displays, then shows hierarchical
+        tree with modules > features > requirements, expand/collapse
+
+        - ac-12: Given user clicks spec item in tree, when item detail panel opens, then shows
+        title, description, acceptance criteria (GWT format), traits, implementation status
+
+        - ac-13: Given spec item has linked tasks, when viewing item detail, then Implementation
+        section shows linked tasks with their status
+
+        - ac-14: Given spec item has traits, when viewing item detail, then Traits section shows
+        trait titles as chips, clickable to trait detail
+
+        - ac-15: Given user clicks acceptance criterion, when AC row expands, then shows full
+        Given/When/Then text with test coverage indicator if available
+
+        - ac-16: Given user navigates to /inbox, when inbox list displays, then shows items ordered
+        by created_at desc with text preview, tags, added_by
+
+        - ac-17: Given user clicks Add button, when input field appears, then user can type text,
+        press Enter to submit
+
+        - ac-18: Given new inbox item submitted, when POST succeeds, then item appears at top of
+        list with animation
+
+        - ac-19: Given user clicks delete button on item, when confirmation appears, then on
+        confirm, item removed from list
+
+        - ac-20: Given dashboard header area, when session has focus set, then displays current
+        focus text prominently
+
+        - ac-21: Given dashboard sidebar, when observations exist, then shows unresolved
+        observations count badge
+
+        - ac-22: Given user clicks observations badge, when observations panel opens, then lists
+        unresolved observations with type icons (friction/success/question/idea)
+
+        - ac-23: Given user presses Cmd+K (or Ctrl+K), when command palette opens, then shows search
+        input with placeholder
+
+        - ac-24: Given user types in search box, when debounced search fires (300ms), then results
+        show tasks, items, inbox matching query grouped by type
+
+        - ac-25: Given search results display, when user clicks a result, then navigates to detail
+        view for that item
+
+        - ac-26: Given browser width < 768px, when viewing any page, then layout adapts to single
+        column, sidebar becomes bottom nav
+
+        - ac-27: Given browser width >= 1024px, when viewing detail panels, then detail panel opens
+        as slide-over without navigating away from list
+
+        - ac-28: Given WebSocket connection drops, when reconnect logic triggers, then automatic
+        reconnect with exponential backoff (1s, 2s, 4s... max 30s)
+
+        - ac-29: Given WebSocket disconnected for >10s, when viewing dashboard, then Connection lost
+        indicator shown
+
+        - ac-30: Given events received via WebSocket, when seq <= lastSeqProcessed, then skip
+        duplicate events (sequence deduplication)
+
+        - ac-31: Given WebSocket reconnects, when connection established, then client resets
+        lastSeqProcessed = -1 (server generates new sequence)
+
+        - ac-32: Given WebSocket reconnects, when connection established, then client re-subscribes
+        to all previous topics
+
+        - ac-33: Given another client modifies task, when WebSocket update received, then task
+        list/detail updates without refresh, subtle highlight animation on changed item
+      supersedes: null
+  _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T05:17:11.329Z
+  created_at: 2026-01-23T05:17:15.372Z
   todos: []
