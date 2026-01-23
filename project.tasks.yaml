@@ -24889,6 +24889,7 @@
         - src/export/html.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
   title: Static SPA for GitHub Pages
