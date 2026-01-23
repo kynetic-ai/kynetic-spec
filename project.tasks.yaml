@@ -22659,6 +22659,7 @@
   created_at: 2026-01-23T01:29:03.205Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFM7GJS5J3QRQWEKR600GN9N
   slugs: []
   title: "Merge driver: conflict resolution"
