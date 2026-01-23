@@ -24223,6 +24223,14 @@
         Resolve review threads in GitHub UI by clicking 'Resolve conversation' on each thread, then
         merge."
       supersedes: null
+    - _ulid: 01KFN9T0SXMAZM4CC39NZ29YPH
+      created_at: 2026-01-23T11:28:37.181Z
+      author: "@claude"
+      content: "Greptile review found 5 issues to address: (1) import.meta.dirname breaks in production
+        builds, (2) 500ms race condition for daemon startup, (3) PID file not cleaned up in
+        foreground mode on Ctrl+C, (4) duplicate PID utils code creates maintenance burden, (5) port
+        not preserved across restarts. Addressing these before merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
