@@ -15,6 +15,7 @@ import { WebSocketHandler } from './websocket/handler';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { PidFileManager } from './pid';
 import { createTasksRoutes } from './routes/tasks';
+import { createItemsRoutes } from './routes/items';
 import { join, relative } from 'path';
 
 export interface ServerOptions {
@@ -147,6 +148,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     .use(createTasksRoutes({ kspecDir, pubsub: pubsubManager }))
+
+    // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
+    .use(createItemsRoutes({ kspecDir }))
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
