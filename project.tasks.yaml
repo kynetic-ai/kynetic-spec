@@ -23710,6 +23710,13 @@
 
         Ready to resolve threads and merge once manually marked as resolved.
       supersedes: null
+    - _ulid: 01KFMRTQ3CDENBK5AF75R20BP5
+      created_at: 2026-01-23T06:31:54.220Z
+      author: "@claude"
+      content: "Automation limitation: Cannot resolve GitHub review threads via CLI. All technical issues
+        are fixed, but manual click of 'Resolve conversation' in GitHub UI is required before merge.
+        This is a limitation of the GitHub API/CLI - thread resolution requires web UI interaction."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
