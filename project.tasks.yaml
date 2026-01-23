@@ -23085,6 +23085,7 @@
         executable without requiring Bun installation
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMHX91G8RSY91QANTT4FSQ
   slugs:
     - task-rest-and-websocket-api-contract
