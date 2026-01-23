@@ -24310,3 +24310,21 @@
         - packages/daemon/src/middleware/error-handler.ts
       supersedes: null
   todos: []
+- title: Create SvelteKit scaffold with shadcn-svelte
+  type: infra
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - phase-3
+    - dashboard
+  _ulid: 01KFMMSVYK9V98DVQG6KY77TMV
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T05:21:32.115Z
+  notes: []
+  todos: []
