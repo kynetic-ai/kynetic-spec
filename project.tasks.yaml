@@ -24177,6 +24177,15 @@
         utility in src/cli/pid-utils.ts. Commands registered in CLI. Build passing. Ready for E2E
         tests.
       supersedes: null
+    - _ulid: 01KFN7VJ4XMSZ78X770Z4HKPPG
+      created_at: 2026-01-23T10:54:30.557Z
+      author: "@claude"
+      content: "WIP: Core implementation complete and committed. Still needed: E2E tests for all ACs
+        (1-7). Tests should verify: foreground mode (AC-1), daemon mode detach (AC-2), port config
+        (AC-3), stop command (AC-4, AC-5), status JSON output (AC-6), restart flow (AC-7), and
+        port-in-use error (AC-10). Skip AC-8, AC-9 (logs) as noted in prior commit. Test file should
+        be tests/cli-serve.test.ts following existing patterns."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJTT49ATBWDDRHY58C8WS
