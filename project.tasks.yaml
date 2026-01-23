@@ -31194,6 +31194,18 @@
         MetaAgent/MetaWorkflow instead of Agent/Workflow. Corrected imports and test names to match
         actual exported types from api.ts. All 26 type tests now passing."
       supersedes: null
+    - _ulid: 01KFP14QBNGJGMSEVRNJZB0E29
+      created_at: 2026-01-23T18:16:25.205Z
+      author: "@claude"
+      content: |-
+        Addressed all remaining Greptile review feedback:
+        1. Fixed SessionContext.focus type (string | undefined not null)
+        2. Fixed ItemDetail arrays (not optional per actual type defs)
+        3. Fixed Agent type structure (slugs, capabilities, constraints)
+        4. Fixed Workflow type structure (slugs, steps)
+
+        All 26 type tests passing after fixes.
+      supersedes: null
   todos: []
 - _ulid: 01KFNW2K10FKNKASXKYH1EBYC5
   slugs: []
