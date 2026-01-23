@@ -1589,7 +1589,7 @@ runs:
   - _ulid: 01KFNAR29YQP27ASMMEPFG89XZ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-23T11:45:01.759Z
     step_results:
@@ -1611,7 +1611,12 @@ runs:
         completed_at: 2026-01-23T11:45:53.554Z
         notes: Automation loop - no user available for discussion
       - step_index: 4
-        status: completed
+        status: skipped
         started_at: 2026-01-23T11:45:53.554Z
-        completed_at: 2026-01-23T11:45:53.554Z
+        completed_at: 2026-01-23T11:46:00.579Z
+        notes: Automation loop - no user for discussion
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-23T11:46:00.579Z
+        completed_at: 2026-01-23T11:46:00.579Z
     initiated_by: "@claude"
