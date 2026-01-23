@@ -131,6 +131,12 @@ export const ManifestSchema = z.object({
 
   // Hooks configuration
   hooks: z.record(z.string()).optional(),
+
+  // Daemon configuration
+  daemon: z.object({
+    auto_start: z.boolean().default(true),
+    port: z.number().int().min(1).max(65535).default(3456),
+  }).optional(),
 });
 
 export type Status = z.infer<typeof StatusSchema>;
