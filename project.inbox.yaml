@@ -431,3 +431,12 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFMP3K6ZPG0SJ0Q1HDD8DNMY
+    text: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML editing.
+      Useful when creating new spec items or features directly in YAML."
+    created_at: 2026-01-23T05:44:19.423Z
+    tags:
+      - reflection
+      - cli
+      - dx
+    added_by: "@claude"
