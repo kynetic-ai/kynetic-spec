@@ -29132,6 +29132,7 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:50.232Z
+  started_at: 2026-01-23T15:15:01.362Z
   notes:
     - _ulid: 01KFMMWN16QD10F3RYVGCDKSJ3
       created_at: 2026-01-23T05:23:03.334Z
@@ -29164,9 +29165,51 @@
         - packages/web-ui/src/lib/components/InboxList.svelte
         - packages/web-ui/src/lib/components/InboxItem.svelte
       supersedes: null
+    - _ulid: 01KFNPZ1BGCJQ4TA5K9GJR8YV7
+      created_at: 2026-01-23T15:18:33.072Z
+      author: "@claude"
+      content: |-
+        Iteration 40: Inbox view implementation complete!
+
+        **Implementation:**
+        - Created inbox page with full CRUD functionality
+        - List view displays items ordered by created_at desc
+        - Cards show text, tags, author, and relative timestamps
+        - Add functionality with toggle button and input field
+        - Enter key submits, button for manual submission
+        - Delete with confirmation dialog (using shadcn Dialog)
+        - Loading states and error handling
+        - Hover animations on cards for better UX
+
+        **API Integration:**
+        - Extended api.ts with inbox endpoints
+        - fetchInbox() - GET /api/inbox with pagination
+        - addInboxItem() - POST /api/inbox
+        - deleteInboxItem() - DELETE /api/inbox/:ref
+        - Proper error handling and TypeScript types
+
+        **Code Quality:**
+        - AC annotations on all functions and markup
+        - Clean component structure
+        - Consistent with existing task/item pages
+        - Uses shadcn-svelte components (Card, Button, Input, Dialog, Badge)
+
+        **Acceptance Criteria Covered:**
+        - ac-16: List ordered by created_at desc with preview, tags, added_by ✅
+        - ac-17: Add button reveals input field ✅
+        - ac-18: New item appears at top (via reload) ✅
+        - ac-19: Delete with confirmation dialog ✅
+
+        **Technical Details:**
+        - Commit: 76f318f
+        - All 1207 tests passing
+        - Build successful
+        - No regressions
+
+        Ready for PR.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T15:15:01.362Z
 - _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
   slugs: []
   title: Session context and observations panel
