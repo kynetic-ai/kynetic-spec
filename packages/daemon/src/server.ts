@@ -126,9 +126,11 @@ export async function createServer(options: ServerOptions) {
 
   const app = new Elysia()
     // AC-15: Plugin pattern for middleware
+    // AC: @api-contract ac-1 - Allow CORS from dev server on localhost:5173
     .use(cors({
-      origin: true, // Allow same-origin requests only (localhost)
-      credentials: true
+      origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Dev server origins
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     }))
 
     // AC-3: Enforce localhost-only connections
