@@ -22442,16 +22442,22 @@
         driver is configured in .git/config and .gitattributes updated in shadow branch
       supersedes: null
   todos: []
-- title: "Implement: Merge Driver CLI"
+- _ulid: 01KFM7CR223GC9FK2Y2RE4SF7A
+  slugs:
+    - task-merge-driver-cli
+  title: "Implement: Merge Driver CLI"
   type: task
   spec_ref: "@merge-driver-cli"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-merge-driver-cli
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-semantic-yaml-merge-driver"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:27:10.658Z
   notes:
     - _ulid: 01KFM7CR21W791HD49EF6KGBGT
       created_at: 2026-01-23T01:27:10.658Z
@@ -22477,10 +22483,53 @@
         - ac-3: Given --non-interactive flag is passed, when conflicts detected, then driver writes
         conflicts as YAML comments instead of prompting
       supersedes: null
-  _ulid: 01KFM7CR223GC9FK2Y2RE4SF7A
+  todos: []
+- title: "Implement: File Type Detection"
+  type: task
+  spec_ref: "@merge-file-detection"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-file-type-detection
+  tags: []
+  depends_on:
+    - "@task-semantic-yaml-merge-driver"
+  notes:
+    - _ulid: 01KFM7CRF02EFFWJSESRY7J1MW
+      created_at: 2026-01-23T01:27:11.072Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Merge driver must correctly identify kspec file types to apply appropriate merge strategies.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given file is *.tasks.yaml, when merge driver runs, then tasks array is merged using
+        task-specific strategy
+
+        - ac-2: Given file is *.inbox.yaml, when merge driver runs, then items array is merged using
+        inbox-specific strategy
+
+        - ac-3: Given file is modules/*.yaml, when merge driver runs, then spec items are merged
+        recursively with nested children
+
+        - ac-4: Given file is kynetic.yaml, when merge driver runs, then manifest fields merged:
+        includes as set-union, project fields prompt on conflict, config merged recursively
+
+        - ac-5: Given file is kynetic.meta.yaml, when merge driver runs, then arrays (agents,
+        workflows, conventions, observations) merged by ULID, context fields merged at field level
+
+        - ac-6: Given file is not a recognized kspec file, when merge driver runs, then driver falls
+        back to default behavior (copy ours)
+      supersedes: null
+  _ulid: 01KFM7CRF0Z5XDYVV0ZH1YPNJT
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T01:27:10.658Z
+  created_at: 2026-01-23T01:27:11.072Z
   todos: []
