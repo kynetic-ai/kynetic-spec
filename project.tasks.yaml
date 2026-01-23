@@ -24749,6 +24749,7 @@
         - packages/web-ui/src/lib/components/SearchResults.svelte
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMTVGX2BZQF7NBTMS4HP42
   slugs: []
   title: WebSocketManager with subscriptions
