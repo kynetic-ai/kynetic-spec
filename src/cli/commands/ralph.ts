@@ -75,69 +75,114 @@ ${JSON.stringify(sessionCtx, null, 2)}
 
 ## Working Procedure
 
-1. **Pick a task**: Review ready_tasks above. Pick the highest priority task (lowest number = higher priority). If there's an active (in_progress) task, continue that instead.
+Follow this order each iteration:
 
-2. **Start the task** (if not already in_progress):
-   \`\`\`bash
-   kspec task start @task-ref
-   \`\`\`
+### 1. Check for Open PRs First
 
-3. **Do the work**:
-   - Read relevant files to understand the task
-   - Make changes as needed
-   - Run tests if applicable
-   - Document as you go with task notes
+\`\`\`bash
+gh pr list --state open
+\`\`\`
 
-4. **Document progress**:
-   \`\`\`bash
-   kspec task note @task-ref "What you did, decisions made, etc."
-   \`\`\`
+If PRs exist, review and merge them before picking new tasks:
+- Spawn a subagent for local review:
+  \`\`\`
+  Task tool → subagent_type: "general-purpose" → prompt: "Run /local-review for PR #N. Check AC coverage, test quality, E2E preference, and test isolation."
+  \`\`\`
+- Use \`@pr-review-merge\` workflow to review and merge
+- After merge: \`kspec task complete @task-ref --reason "Merged in PR #N"\`
 
-5. **Submit or checkpoint**:
-   - If code is DONE (ready for PR):
-     \`\`\`bash
-     kspec task submit @task-ref
-     \`\`\`
-   - If task is NOT done (WIP):
-     \`\`\`bash
-     kspec task note @task-ref "WIP: What's done, what remains..."
-     \`\`\`
+**Merge strategy**: Use \`--merge\` (not \`--squash\`) to preserve kspec trailers in commit messages.
 
-6. **Commit your work**:
-   \`\`\`bash
-   git add -A && git commit -m "feat/fix/chore: description
+### 2. Check for Pending Review Tasks
 
-   Task: @task-ref"
-   \`\`\`
+If there's a \`pending_review\` task without a PR (or work not pushed to origin):
+- Push uncommitted work: \`git push\`
+- Create PR: \`/pr\`
+- Spawn subagent for local review (see step 1)
+- Then use \`@pr-review-merge\` workflow
 
-7. **Reflect on this iteration**:
-   Think about what you learned, any friction points, or patterns worth remembering.
+### 3. Pick or Continue a Task
 
-   For **systemic patterns** (friction or success worth documenting):
-   \`\`\`bash
-   kspec meta observe friction "Description of systemic issue..."
-   kspec meta observe success "Pattern worth replicating..."
-   \`\`\`
+Use the \`/task-work\` skill for the full task lifecycle:
+- If \`active_tasks\` has an \`in_progress\` task, continue it
+- Otherwise pick highest priority from \`ready_tasks\` (lowest number = higher priority)
 
-   For **actionable improvements** (specific ideas that could become tasks):
-   \`\`\`bash
-   kspec inbox add "Improvement idea..." --tag reflection
-   \`\`\`
+\`\`\`bash
+kspec task start @task-ref  # if not already in_progress
+\`\`\`
+
+### 4. Do the Work
+
+- Read relevant files to understand the task
+- Make changes as needed
+- Run tests if applicable
+- Document as you go with task notes
+
+\`\`\`bash
+kspec task note @task-ref "What you did, decisions made, etc."
+\`\`\`
+
+### 5. Submit When Done
+
+If code is DONE (ready for PR):
+\`\`\`bash
+kspec task submit @task-ref
+\`\`\`
+
+If task is NOT done (WIP):
+\`\`\`bash
+kspec task note @task-ref "WIP: What's done, what remains..."
+\`\`\`
+
+### 6. Commit Your Work
+
+\`\`\`bash
+git add -A && git commit -m "feat/fix/chore: description
+
+Task: @task-ref"
+\`\`\`
+
+### 7. Create PR and Review
+
+After submitting:
+- Create PR: \`/pr\`
+- Spawn subagent for quality check:
+  \`\`\`
+  Task tool → subagent_type: "general-purpose" → prompt: "Run /local-review for the PR just created. Check AC coverage, test quality, E2E preference, and test isolation."
+  \`\`\`
+- Merge workflow: \`@pr-review-merge\`
+
+### 8. Reflect (End of Iteration)
+
+Use \`/reflect\` skill. **Be selective** (no human in the loop):
+
+**Before adding anything**, search first:
+\`\`\`bash
+kspec meta observations list
+kspec inbox list
+kspec tasks list
+\`\`\`
+
+Only add if not already captured:
+- **Systemic friction only** - skip one-off issues
+- **High quality successes** - unique patterns worth replicating
+- **Concrete only** - skip vague ideas
 
 ## Important Notes
 - Stay focused on ONE task per iteration
 - The loop continues automatically - don't worry about picking the next task
 - kspec tracks state across iterations via task status and notes
 - Always commit before the iteration ends
-- Always reflect and capture at least one observation
+- Merge PRs before starting new work
 ${
   isFinal
     ? `
 ## FINAL ITERATION
 This is the last iteration of the loop. After completing your work:
 1. Commit any remaining changes
-2. Reflect on the overall session
-3. Capture any final insights as observations
+2. Create PR if work is ready: \`/pr\`
+3. Spawn subagent for local review, then \`@pr-review-merge\` if PR created
+4. Reflect using \`/reflect\` - capture unique, high-quality insights only
 `
     : ""
 }`;
