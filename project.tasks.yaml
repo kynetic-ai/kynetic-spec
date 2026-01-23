@@ -24585,7 +24585,36 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:54.863Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMWSRXD9PBSWK77WWFRPBS
+      created_at: 2026-01-23T05:23:08.189Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Display session context (focus) and observations panel.
+
+        ### Steps
+        1. Header area:
+           - Show current focus prominently
+           - Update via WebSocket
+
+        2. Observations panel:
+           - Badge with unresolved count in sidebar
+           - Click opens Sheet with list
+           - Type icons: friction, success, question, idea
+
+        ### ACs Covered
+        - ac-20: Focus displayed in header
+        - ac-21: Observations count badge
+        - ac-22: Observations panel with types
+
+        ### Files to Create
+        - packages/web-ui/src/lib/components/FocusDisplay.svelte
+        - packages/web-ui/src/lib/components/ObservationsPanel.svelte
+        - packages/web-ui/src/lib/components/ObservationItem.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMTPR2Y6CPKRJEJ2X25Y0S
   slugs: []
