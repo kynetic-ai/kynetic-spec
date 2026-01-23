@@ -24727,6 +24727,42 @@
       content: "Addressing local review feedback: replacing fluff tests with proper unit tests for
         middleware logic. Don't need full Bun server - can test middleware functions directly."
       supersedes: null
+    - _ulid: 01KFN44SW3T4T0K3GMVFYN3BJQ
+      created_at: 2026-01-23T09:49:39.075Z
+      author: "@claude"
+      content: >-
+        Fixed critical test quality issue identified in local review:
+
+
+        **Problem:** All 15 original tests were 'fluff tests' - they only checked if strings existed
+        in source code, not actual behavior. Tests would pass even if the middleware was completely
+        broken.
+
+
+        **Solution:** Replaced fluff tests with proper unit tests for localhost-only middleware.
+        Since Bun runtime isn't available in CI, we test the middleware logic directly with mock
+        request contexts instead of full E2E server startup.
+
+
+        **Added:** 7 unit tests for ac-3 (localhost middleware):
+
+        - 4 tests for allowed hosts (localhost, 127.0.0.1, [::1]:port)
+
+        - 2 tests for rejected hosts (evil.com, external IP)
+
+        - All tests verify actual Response objects and status codes
+
+
+        **Bug fixed:** IPv6 bracket handling in middleware was broken. Original code did:
+
+        `hostname = host.split(':')[0]` which turned `[::1]:3456` into `[` instead of `::1`.
+
+
+        Fixed to properly extract hostname from bracketed IPv6 addresses.
+
+
+        Test count: 18 tests (was 15), all pass. Full suite: 1076 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
