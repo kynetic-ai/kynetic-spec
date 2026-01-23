@@ -3217,6 +3217,8 @@ observations:
     content: Test shadow commit fix
     created_at: 2026-01-23T03:54:43.211Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Test resolution for shadow commit
+    resolved_at: 2026-01-23T03:55:08.924Z
+    resolved_by: "@claude"
 includes: []
