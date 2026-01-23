@@ -29122,7 +29122,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -29166,6 +29166,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T15:15:01.362Z
 - _ulid: 01KFMMTJ5G9V87M4YXR7MMJQJC
   slugs: []
   title: Session context and observations panel
