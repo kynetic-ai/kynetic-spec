@@ -31391,7 +31391,10 @@
   created_at: 2026-01-23T19:39:59.042Z
   notes: []
   todos: []
-- title: Fix daemon path resolution for npm installs
+- _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
+  slugs: []
+  title: Fix daemon path resolution for npm installs
+  type: task
   description: >-
     PR #206 claude-review identified critical issue that was deferred:
 
@@ -31413,18 +31416,74 @@
     2. Use module resolution instead of path math
 
     3. Add integration test for npm-installed daemon path
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T19:40:09.319Z
+  notes: []
+  todos: []
+- title: Improve PR review process enforcement
+  description: >-
+    Ralph loop session analysis revealed gaps in review feedback handling:
+
+
+    ## Issues Found
+
+
+    1. **Confidence scores not acting as gates**
+       - PR #204 merged with 2/5 Greptile confidence ('Critical implementation bugs')
+       - Should require 4/5+ or explicit issue resolution tracking
+
+    2. **Deferred feedback not tracked**
+       - PR #206 daemon path issue deferred with 'will track separately' but no task created
+       - ~40% of deferred items had proper tracking
+       - Pattern: 'will fix later' without task system integration
+
+    3. **Standards feedback ignored**
+       - ~95% of correctness bugs addressed
+       - ~60% of standards/compliance feedback addressed
+       - AC annotation feedback in PR #204 completely ignored
+
+    ## Proposed Improvements
+
+
+    1. **Confidence score gates**: Document that PRs with <4/5 confidence require explicit
+    resolution tracking before merge
+
+
+    2. **Deferred feedback workflow**: When deferring PR feedback, MUST create task with:
+       - Reference to PR and comment
+       - Clear scope of what needs fixing
+       - Link in commit message (e.g., 'Deferred: @task-ref')
+
+    3. **Mandatory /local-review**: Make pre-PR review non-optional:
+       - Check AC coverage
+       - Verify test quality
+       - Confirm standards compliance
+
+    ## Context
+
+
+    From analysis of PRs #193-206 during overnight Ralph loop sessions. 14 PRs merged with mixed
+    review handling quality.
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
+  priority: 3
   slugs: []
   tags: []
-  _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
+  _ulid: 01KFP5YGG5GNMYV76TMV18WJK2
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T19:40:09.319Z
+  created_at: 2026-01-23T19:40:24.453Z
   notes: []
   todos: []
