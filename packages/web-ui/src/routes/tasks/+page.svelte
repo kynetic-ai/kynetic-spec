@@ -1,24 +1,26 @@
 <script lang="ts">
-	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10
+	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	import type { TaskSummary, TaskDetail as TaskDetailType } from '@kynetic-ai/shared';
+	import { onMount, onDestroy } from 'svelte';
+	import type { TaskSummary, TaskDetail as TaskDetailType, BroadcastEvent } from '@kynetic-ai/shared';
 	import TaskFilters from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import TaskDetail from '$lib/components/TaskDetail.svelte';
 	import { fetchTasks, fetchTask } from '$lib/api';
+	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 
-	let tasks: TaskSummary[] = [];
-	let total = 0;
-	let loading = true;
-	let error = '';
+	let tasks = $state<TaskSummary[]>([]);
+	let total = $state(0);
+	let loading = $state(true);
+	let error = $state('');
+	let updatedTaskIds = $state<Set<string>>(new Set());
 
-	let selectedTaskId: string | null = null;
-	let selectedTask: TaskDetailType | null = null;
-	let detailOpen = false;
+	let selectedTaskId: string | null = $state(null);
+	let selectedTask: TaskDetailType | null = $state(null);
+	let detailOpen = $state(false);
 
 	// Reactive: re-fetch when URL params change
-	$: filterParams = {
+	let filterParams = $derived({
 		status: $page.url.searchParams.get('status') || undefined,
 		type: $page.url.searchParams.get('type') || undefined,
 		tag: $page.url.searchParams.get('tag') || undefined,
@@ -26,11 +28,13 @@
 		automation: $page.url.searchParams.get('automation') || undefined,
 		limit: 50,
 		offset: 0
-	};
+	});
 
-	$: if (filterParams) {
+	$effect(() => {
+		// Re-fetch when filterParams changes
+		filterParams;
 		loadTasks();
-	}
+	});
 
 	async function loadTasks() {
 		loading = true;
@@ -80,8 +84,50 @@
 		}
 	}
 
+	// AC: @web-dashboard ac-33 - Handle WebSocket task updates
+	function handleTaskUpdate(event: BroadcastEvent) {
+		console.log('[TasksPage] Task update received:', event);
+
+		// Mark task as updated for highlight animation
+		if (event.data?.ulid) {
+			updatedTaskIds.add(event.data.ulid);
+
+			// Remove highlight after 3s
+			setTimeout(() => {
+				updatedTaskIds.delete(event.data.ulid);
+				updatedTaskIds = new Set(updatedTaskIds);
+			}, 3000);
+
+			updatedTaskIds = new Set(updatedTaskIds);
+		}
+
+		// Reload tasks list
+		loadTasks();
+
+		// Reload selected task if it's the one that updated
+		if (selectedTaskId && event.data?.ulid === selectedTaskId) {
+			fetchTask(selectedTaskId)
+				.then((task) => {
+					selectedTask = task;
+				})
+				.catch((err) => {
+					console.error('Error reloading task:', err);
+				});
+		}
+	}
+
 	onMount(() => {
 		loadTasks();
+
+		// AC: @web-dashboard ac-32, ac-33 - Subscribe to task updates
+		subscribe(['tasks']);
+		on('tasks', handleTaskUpdate);
+	});
+
+	onDestroy(() => {
+		// Clean up subscription
+		off('tasks', handleTaskUpdate);
+		unsubscribe(['tasks']);
 	});
 </script>
 
@@ -108,7 +154,8 @@
 			<p class="text-muted-foreground">Loading tasks...</p>
 		</div>
 	{:else}
-		<TaskList {tasks} on:select={handleSelectTask} />
+		<!-- AC: @web-dashboard ac-33 -->
+		<TaskList {tasks} {updatedTaskIds} on:select={handleSelectTask} />
 	{/if}
 </div>
 

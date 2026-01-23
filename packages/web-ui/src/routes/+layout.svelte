@@ -1,12 +1,19 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import favicon from '$lib/assets/favicon.svg';
 	import '../app.css';
 	import { SidebarProvider, SidebarInset } from '$lib/components/ui/sidebar';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
+	import { initConnection } from '$lib/stores/connection.svelte';
 
 	let { children } = $props();
+
+	// AC: @web-dashboard ac-28 - Initialize WebSocket connection
+	onMount(() => {
+		initConnection();
+	});
 </script>
 
 <svelte:head>

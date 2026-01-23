@@ -1,5 +1,5 @@
 <script lang="ts">
-	// AC: @web-dashboard ac-4, ac-5
+	// AC: @web-dashboard ac-4, ac-5, ac-33
 	import type { TaskSummary } from '@kynetic-ai/shared';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
@@ -13,6 +13,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let tasks: TaskSummary[];
+	export let updatedTaskIds: Set<string> = new Set();
 
 	const dispatch = createEventDispatcher<{
 		select: string;
@@ -63,7 +64,12 @@
 				</TableRow>
 			{:else}
 				{#each tasks as task}
-					<TableRow class="cursor-pointer hover:bg-muted/50" on:click={() => selectTask(task)}>
+					<!-- AC: @web-dashboard ac-33 - Highlight animation on update -->
+					{@const isUpdated = updatedTaskIds.has(task._ulid)}
+					<TableRow
+						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
+						on:click={() => selectTask(task)}
+					>
 						<TableCell class="font-medium">
 							{task.title}
 							{#if task.type !== 'task'}
