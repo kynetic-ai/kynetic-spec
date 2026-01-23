@@ -24380,7 +24380,37 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:36.630Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMW7E4ACAAW1C9C85EY81W
+      created_at: 2026-01-23T05:22:49.412Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Create app layout with sidebar navigation and responsive design.
+
+        ### Steps
+        1. Create app shell with sidebar:
+           - Logo/title
+           - Navigation links: Dashboard, Tasks, Items, Inbox
+           - Footer with connection status
+
+        2. Implement responsive breakpoints:
+           - < 768px: Bottom nav instead of sidebar
+           - >= 1024px: Detail panels as slide-overs
+
+        3. Add keyboard navigation throughout
+
+        ### ACs Covered
+        - ac-26: Responsive single column < 768px
+        - ac-27: Slide-over panels >= 1024px
+
+        ### Files to Create
+        - packages/web-ui/src/routes/+layout.svelte
+        - packages/web-ui/src/lib/components/Sidebar.svelte
+        - packages/web-ui/src/lib/components/MobileNav.svelte
+      supersedes: null
   todos: []
 - _ulid: 01KFMMT4W6CE585Z2S07Q03FNB
   slugs: []
