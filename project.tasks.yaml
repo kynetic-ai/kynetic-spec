@@ -25069,6 +25069,7 @@
         - .github/workflows/gh-pages.yml
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMZKBXWB014BCCJ11K5HNT
   slugs: []
   title: Daemon auto-start configuration
