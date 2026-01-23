@@ -546,108 +546,43 @@ Spec: @spec-ref
 
 ## PR Merge Requirements
 
-**Before merging ANY PR, verify:**
+**Use the `@pr-review-merge` workflow for all PR merges:**
 
-1. **All CI checks pass** - Do not merge with failing checks
-2. **All review comments addressed** - PRs have automated Claude review that posts comments identifying issues. These MUST be fixed before merge.
-3. **User requests completed** - If the user asks for something via `@claude` in PR comments and the PR agent couldn't complete it (limited permissions), YOU must complete it before merging
+```bash
+kspec workflow start @pr-review-merge
+```
+
+This workflow enforces quality gates:
+1. All CI checks complete and passing
+2. All review comments addressed (automated AND human)
+3. All @claude requests completed
+4. All review threads resolved
+5. Explicit merge decision
+
+**Do not merge while CI is running or failing.** Only skip gates if user explicitly approves.
 
 ### Automated Review Resolution Check
 
-The repository includes a CI workflow (`pr-review-resolution-check.yml`) that automatically blocks merging if there are unresolved review threads. This check:
+The `pr-review-resolution-check.yml` CI workflow blocks merging if unresolved review threads exist. To resolve: click "Resolve conversation" on each thread in GitHub UI after addressing feedback.
 
-- Runs on PR open, sync, reopen, and review events
-- Uses GitHub's GraphQL API to query review thread resolution status
-- Fails the check if any non-outdated review threads remain unresolved
-- Lists unresolved threads in the CI output for easy triage
+### PR Agent Limitations
 
-**To resolve:** Click "Resolve conversation" on each review thread in the GitHub UI after addressing the feedback. The CI check will automatically re-run and pass once all threads are resolved.
+The automated `@claude` PR agent:
+- Reviews code automatically on PR creation
+- Responds to `@claude` mentions
+- Has **limited capabilities** (can't run kspec, npm, etc.)
 
-### How PR Review Works
+When the PR agent can't complete a request, **you must complete it yourself** before merging.
 
-PRs have an automated `@claude` agent that:
-- Runs automatically on PR creation to review code
-- Responds to `@claude` mentions from users
-- Has **limited capabilities** (may not be able to run kspec, npm, etc.)
+### Pre-PR Local Review
 
-When the PR agent can't complete a user request (e.g., "add an inbox item"), it will say so. **You must complete those actions before merging.**
+Before creating a PR, use `/local-review` for quality checks:
 
-### PR Review Workflow
-
-1. **Create PR** with implementation
-2. **Wait for CI** - Automated review runs and posts findings
-3. **Read review comments** - Check for identified issues
-4. **Fix ALL issues** - Don't merge with known problems
-5. **Re-run CI** if you pushed fixes
-6. **Check for user comments** - User may have asked @claude to do something
-7. **Complete pending actions** - If PR agent couldn't do something, do it yourself
-8. **Merge** only when CI green AND all comments/requests addressed
-
-### What Review Comments Look Like
-
-The automated review posts structured comments like:
-```
-## Code Review
-Found N issues...
-
-### Issue 1: file.ts line X
-**Current:** [problematic code]
-**Should be:** [correct code]
-**Reason:** [explanation]
+```bash
+kspec workflow start @local-review
 ```
 
-**Each identified issue must be fixed before merge.**
-
-### If You Can't Fix an Issue
-
-If an issue can't be fixed in the current PR:
-1. Add a comment explaining why
-2. Create a task or inbox item to track it
-3. Get explicit user approval to merge with known issues
-
-### Local Review Subagents
-
-When spawning a subagent to review your work before creating a PR, instruct it to be **strict** about:
-
-1. **AC Coverage** - Every acceptance criterion MUST have at least one test that validates it
-   - Missing AC coverage is a **blocking issue**, not a suggestion
-   - Use `// AC: @spec-item ac-N` annotations to link tests to criteria
-
-2. **Test Quality** - All tests must properly validate their intended purpose
-   - AC-specific tests validate acceptance criteria
-   - Non-AC tests are fine if they test something important (edge cases, integrations, etc.)
-   - Reject "fluff tests" - tests that don't meaningfully verify anything
-   - A test that always passes or only tests implementation details is not valid
-   - Tests should fail if the feature breaks
-
-3. **Test Strategy** - Prioritize E2E over unit tests
-   - **Prefer end-to-end tests** that validate actual user functionality
-   - Test the CLI as a user would invoke it, not just internal functions
-   - Unit tests are okay for complex logic, but E2E proves the feature works
-
-4. **Test Isolation** - NEVER test kspec within the kspec repo
-   - All tests MUST run in temp directories (system temp, `/tmp`, etc.)
-   - Manual testing and validation MUST also use temp directories
-   - This prevents nested worktree issues and data corruption
-   - Test fixtures should create isolated test repos, not use the real `.kspec/`
-
-5. **What to Check**
-   - Read the linked spec and its acceptance criteria
-   - Verify each AC has corresponding test(s)
-   - Verify tests would catch regressions
-   - Verify tests run in temp directories, not kspec repo
-   - Flag any ACs without proper coverage as MUST-FIX
-
-Example prompt for review subagent:
-```
-Review this implementation against the spec @spec-ref. Be strict:
-- Every AC must have test coverage with // AC: annotation
-- Missing tests are blocking issues, not suggestions
-- Prioritize E2E tests over unit tests
-- Verify tests run in temp dirs, not kspec repo
-- Reject fluff tests that don't validate real behavior
-- List any issues as MUST-FIX
-```
+This checks AC coverage, test quality, E2E preference, and test isolation. See the `/local-review` skill for details.
 
 ## Code Annotations
 
@@ -756,12 +691,17 @@ After significant work, use `/reflect` to identify learnings, friction points, a
 
 The goal is for kspec to be fully self-describing:
 
-1. `kspec session start` to get context
-2. Pick a task from ready list
-3. `kspec task start @task` to begin
+1. `kspec session start` - get context, check for existing work
+2. **Inherit existing work** - pending_review or in_progress tasks take priority
+3. `kspec task start @task` - mark in_progress (or continue existing)
 4. Implement it, add notes as you go
-5. `kspec task complete @task` when done
-6. New tasks unblock, repeat
+5. `kspec task submit @task` - mark pending_review when code done
+6. `/pr` - create pull request
+7. `@pr-review-merge` workflow - review and merge PR
+8. `kspec task complete @task` - only after PR merged
+9. New tasks unblock, repeat
+
+**For the full task lifecycle, use `/task-work`.**
 
 When working on this project, you ARE using kspec to build kspec. Track your work in the task system.
 
@@ -770,15 +710,16 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 | Skill | Purpose |
 |-------|---------|
 | `/audit` | Comprehensive codebase audit for release readiness |
+| `/create-workflow` | Create new workflows with consistent structure and matching skills |
 | `/kspec` | Task and spec management workflows |
-| `/local-review` | Pre-PR quality review - AC coverage, test quality, isolation |
+| `/local-review` | Pre-PR quality review - AC coverage, test quality, isolation (`@local-review` workflow) |
 | `/meta` | Session context (focus, threads, questions, observations) |
-| `/pr` | Create pull requests from current work |
+| `/pr` | Create pull requests, then use `@pr-review-merge` workflow for merge |
 | `/reflect` | Session reflection and learning capture |
 | `/release` | Create versioned releases with git tags and GitHub releases |
 | `/spec` | Spec authoring guide - item types, acceptance criteria, traits |
 | `/spec-plan` | Translate approved plans to specs |
-| `/task-work` | Work on a task with proper lifecycle - verify, start, note, complete |
+| `/task-work` | Full task lifecycle - inherit, verify, start, note, submit, PR, complete (`@task-work-session` workflow) |
 | `/triage` | Systematic inbox and observation processing |
 
 ## Design Decisions
