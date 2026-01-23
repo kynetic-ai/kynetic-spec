@@ -629,3 +629,7 @@ features:
         given: both versions modify append-only arrays (notes, todos)
         when: merge runs
         then: arrays are union merged by ULID (notes never conflict)
+      - id: ac-6
+        given: both versions modify set-like arrays (tags, depends_on)
+        when: merge runs
+        then: arrays are set-unioned (duplicates removed)
