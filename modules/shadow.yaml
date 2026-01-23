@@ -686,6 +686,9 @@ features:
             given: --non-interactive flag is passed
             when: conflicts detected
             then: driver writes conflicts as YAML comments instead of prompting
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFM7BG7CN59MPYWHRB9HSK9N
         slugs:
           - merge-file-detection
