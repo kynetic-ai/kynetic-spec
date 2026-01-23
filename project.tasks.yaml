@@ -24566,6 +24566,7 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:24.737Z
+  started_at: 2026-01-23T09:37:18.264Z
   notes:
     - _ulid: 01KFMMNZ1SVS3JNYA1XGCY5XBR
       created_at: 2026-01-23T05:19:24.217Z
@@ -24625,9 +24626,40 @@
 
         - packages/daemon/src/routes/health.ts
       supersedes: null
+    - _ulid: 01KFN3EM8QWMCXBDG9WTDGEREY
+      created_at: 2026-01-23T09:37:32.439Z
+      author: "@claude"
+      content: >-
+        Verified current implementation. Most core server features already implemented in @01KFMMM0:
+
+        ✅ ac-1: Configurable port with default 3456
+
+        ✅ ac-2: Localhost-only binding via hostname: 'localhost'
+
+        ✅ ac-11: /api/health endpoint with status, uptime, connections, version
+
+        ✅ ac-15: Plugin pattern (CORS middleware)
+
+
+        Remaining work for true 'core' completion:
+
+        ❌ ac-3: Middleware to reject non-localhost connections with 403
+
+        ❌ ac-12: Graceful shutdown handlers for SIGTERM/SIGINT
+
+
+        Decision: This task appears to have significant overlap with @01KFMMM0. Recommend either:
+
+        A) Complete the 2 remaining ACs here as they are 'core' functionality
+
+        B) Mark this task complete and let remaining ACs be handled by specific follow-up tasks
+        (@01KFMMM9, @01KFMMMD, @01KFMMMH)
+
+
+        Taking approach A to complete core server foundation.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T09:37:18.264Z
 - _ulid: 01KFMMM90B9F2WKBS6A6T52EA3
   slugs: []
   title: Implement file watcher and WebSocket broadcast
