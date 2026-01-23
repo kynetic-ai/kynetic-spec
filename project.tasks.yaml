@@ -24994,7 +24994,40 @@
     - integration
   vcs_refs: []
   created_at: 2026-01-23T05:24:39.933Z
-  notes: []
+  notes:
+    - _ulid: 01KFMN0TA0ZB22X9EDC5S4TFQT
+      created_at: 2026-01-23T05:25:19.809Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement configurable auto-start for daemon when CLI commands are run.
+
+        ### Steps
+        1. Add config section to kynetic.yaml:
+           ```yaml
+           daemon:
+             auto_start: true  # default
+             port: 3456
+           ```
+
+        2. Hook into CLI entry point:
+           - Check if daemon running
+           - If not running and auto_start enabled, start in background
+           - Continue with original command
+
+        3. Provide setting to disable auto-start
+
+        ### ACs Covered (implicit behavior)
+        - Daemon starts automatically when needed
+        - Can be disabled via config
+
+        ### Files to Modify
+        - src/cli/index.ts (entry point hook)
+        - src/schema/config.ts (daemon config schema)
+        - src/parser/config.ts (load daemon config)
+      supersedes: null
   todos: []
 - _ulid: 01KFMMZR08H17V70MT0HYTR1F0
   slugs: []
@@ -25032,20 +25065,20 @@
   created_at: 2026-01-23T05:24:49.199Z
   notes: []
   todos: []
-- title: E2E integration tests with Playwright
+- _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
+  slugs: []
+  title: E2E integration tests with Playwright
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - phase-5
-    - testing
-  _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - phase-5
+    - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:54.306Z
   notes: []
