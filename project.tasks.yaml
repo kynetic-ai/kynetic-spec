@@ -24172,6 +24172,7 @@
         - packages/daemon/src/routes/tasks.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMQ725ZMG11F5SZM35SQFT
   slugs: []
   title: Spec item API endpoints
