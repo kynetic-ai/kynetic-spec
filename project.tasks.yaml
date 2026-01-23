@@ -25761,6 +25761,46 @@
         **Next Session:**
         Start @01KFMMTJ (Session context/observations panel) - 3 remaining subtasks.
       supersedes: null
+    - _ulid: 01KFNRRX5JX43RZK7EV9DTC0PY
+      created_at: 2026-01-23T15:50:09.330Z
+      author: "@claude"
+      content: |-
+        Iteration 41: PR #200 merged successfully
+
+        **Subtask @01KFMMTJ (Session context/observations panel) - COMPLETED ✅**
+
+        PR #200 merged with all CI checks passing:
+        - Session focus display in sidebar (ac-20)
+        - Observations count badge (ac-21)
+        - Observations page with type icons (ac-22)
+        - Greptile review passed with no comments
+        - Local review noted same testing gap as previous PRs (acknowledged architectural gap)
+
+        **Overall Progress: 6/8 subtasks completed and merged**
+        1. ✅ @01KFMMSV - SvelteKit scaffold - MERGED (PR #197)
+        2. ✅ @01KFMMT0 - Dashboard layout/navigation - MERGED (PR #198)
+        3. ✅ @01KFMMT4 - Task list/detail views - MERGED (PR #198)
+        4. ✅ @01KFMMT9 - Spec item tree/detail views - MERGED (PR #198)
+        5. ✅ @01KFMMTD - Inbox view - MERGED (PR #199)
+        6. ✅ @01KFMMTJ - Session context/observations panel - MERGED (PR #200)
+        7. ⏸️ @01KFMMTP - Global search command palette - READY
+        8. ⏸️ @01KFMMTV - WebSocketManager with subscriptions - READY
+
+        **ACs Covered (22/33):**
+        - ac-1 through ac-3 (scaffold, components, adapter)
+        - ac-4 through ac-10 (tasks)
+        - ac-11 through ac-15 (spec items)
+        - ac-16 through ac-19 (inbox)
+        - ac-20 through ac-22 (session/observations)
+
+        **Remaining ACs (11):**
+        - ac-23 through ac-25 (search command palette - @01KFMMTP)
+        - ac-26 through ac-27 (responsive layout - already implemented)
+        - ac-28 through ac-33 (WebSocket - @01KFMMTV)
+
+        **Next Session:**
+        Start @01KFMMTP (Global search command palette) - 2 subtasks remaining.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
@@ -29422,6 +29462,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #200 merged successfully. Session context and observations panel implemented with
+    focus display, observations badge, and type-specific icons. All AC covered: ac-20, ac-21,
+    ac-22."
   depends_on: []
   context: []
   priority: 2
@@ -29431,6 +29474,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:21:54.863Z
   started_at: 2026-01-23T15:32:43.004Z
+  completed_at: 2026-01-23T15:49:46.991Z
   notes:
     - _ulid: 01KFMMWSRXD9PBSWK77WWFRPBS
       created_at: 2026-01-23T05:23:08.189Z
@@ -29522,10 +29566,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T15:49:46.991Z
-  closed_reason: "PR #200 merged successfully. Session context and observations panel implemented with
-    focus display, observations badge, and type-specific icons. All AC covered: ac-20, ac-21,
-    ac-22."
 - _ulid: 01KFMMTPR2Y6CPKRJEJ2X25Y0S
   slugs: []
   title: Global search command palette
