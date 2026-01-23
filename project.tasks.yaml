@@ -22596,7 +22596,10 @@
   created_at: 2026-01-23T01:28:48.411Z
   notes: []
   todos: []
-- title: "Merge driver: array merge algorithms"
+- _ulid: 01KFM7G2RK4YZFT8PJR1W43JNX
+  slugs: []
+  title: "Merge driver: array merge algorithms"
+  type: task
   description: |-
     Implement array merging strategies:
 
@@ -22611,18 +22614,44 @@
     - mergeUlidArray(base, ours, theirs) - Union by ULID key
     - mergeAppendOnlyArray(base, ours, theirs) - Union, preserve order by timestamp
     - mergeSetArray(base, ours, theirs) - Set union, sorted output
+  spec_ref: "@yaml-merge-driver"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-23T01:28:59.922Z
+  notes: []
+  todos: []
+- title: "Merge driver: object merge algorithms"
+  description: |-
+    Implement object/field merging strategies:
+
+    **File:** src/merge/semantic.ts (partial)
+
+    **Covers ACs:**
+    - ac-3: Merge different fields of same item (non-conflicting)
+    - ac-7: Recursive merge for nested objects (status, traceability)
+
+    **Functions:**
+    - mergeObject(base, ours, theirs, schema) - Field-level merge
+    - detectFieldConflict(base, ours, theirs, field) - Check for true conflicts
+    - recursiveMerge(base, ours, theirs) - Deep merge for nested objects
   type: task
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
   priority: 2
   slugs: []
   tags: []
-  _ulid: 01KFM7G2RK4YZFT8PJR1W43JNX
+  _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-23T01:28:59.922Z
+  created_at: 2026-01-23T01:29:03.205Z
   notes: []
   todos: []
