@@ -23728,6 +23728,7 @@
         - Sets up foundation for ac-1 (server start)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMM4Z2WA3WPF7PVDCVGKBE
   slugs: []
   title: Implement Elysia server core
