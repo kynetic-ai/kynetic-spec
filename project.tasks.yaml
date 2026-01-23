@@ -23556,6 +23556,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #183 merged. Implemented AC-12: auto-configure merge driver during kspec init.
+    Added configureMergeDriver() function that sets git config and creates .gitattributes in shadow
+    branch. Test coverage: Added E2E test with conditional skip in CI (kspec not in PATH), updated
+    commit count assertions to work in both environments. All 1058 tests pass."
   depends_on:
     - "@01KFM7H3"
   context: []
@@ -23564,6 +23568,7 @@
   vcs_refs: []
   created_at: 2026-01-23T01:29:36.701Z
   started_at: 2026-01-23T08:51:12.160Z
+  completed_at: 2026-01-23T09:11:41.068Z
   notes:
     - _ulid: 01KFN13EET482KTCQJYW7BM84W
       created_at: 2026-01-23T08:56:28.891Z
@@ -23628,11 +23633,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-23T09:11:41.068Z
-  closed_reason: "PR #183 merged. Implemented AC-12: auto-configure merge driver during kspec init.
-    Added configureMergeDriver() function that sets git config and creates .gitattributes in shadow
-    branch. Test coverage: Added E2E test with conditional skip in CI (kspec not in PATH), updated
-    commit count assertions to work in both environments. All 1058 tests pass."
 - _ulid: 01KFMMHSDJGWASPX30BE3FSWXV
   slugs:
     - task-daemon-server-mode
@@ -24408,7 +24408,7 @@
   type: infra
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -24456,6 +24456,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T09:12:46.002Z
 - _ulid: 01KFMMM4Z2WA3WPF7PVDCVGKBE
   slugs: []
   title: Implement Elysia server core
