@@ -22866,7 +22866,7 @@
     - mergeSetArray(base, ours, theirs) - Set union, sorted output
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -22957,6 +22957,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T06:47:47.114Z
+  closed_reason: "PR #176 merged. Implemented array merge algorithms (union merge for ULID arrays, set
+    union for tags/depends_on, deletion detection). All 23 tests pass with comprehensive AC
+    coverage."
 - _ulid: 01KFM7G5Z5P32RGDNSZBYDGKQZ
   slugs: []
   title: "Merge driver: object merge algorithms"
