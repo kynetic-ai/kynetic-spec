@@ -497,3 +497,14 @@ inbox:
       - cli
       - tasks
     added_by: "@claude"
+  - _ulid: 01KFP9A66QC28CY8R3JWNBKD3F
+    text: "Test coverage report command: 'kspec coverage @spec-ref' - Scan codebase for '// AC: @spec
+      ac-N' annotations and report which ACs have test coverage vs gaps. Helps verify all acceptance
+      criteria are tested. Medium scope. Surfaced when manually cross-referencing 33 @web-dashboard
+      ACs against test tasks."
+    created_at: 2026-01-23T20:39:12.855Z
+    tags:
+      - reflection
+      - cli
+      - testing
+    added_by: "@claude"
