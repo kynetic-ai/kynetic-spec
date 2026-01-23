@@ -22765,6 +22765,7 @@
   created_at: 2026-01-23T01:29:33.590Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFM7H6NXZCJM5955A5Q5A7P2
   slugs: []
   title: "Merge driver: auto-configuration on init"
