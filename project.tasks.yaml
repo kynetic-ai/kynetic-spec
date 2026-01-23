@@ -26723,6 +26723,49 @@
 
         DO NOT submit this task yet - implementation not done.
       supersedes: null
+    - _ulid: 01KFNEXMQ8TS8AA0BYE8MATKKW
+      created_at: 2026-01-23T12:57:58.760Z
+      author: "@claude"
+      content: |-
+        Implementation complete for all 7 ACs.
+
+        CREATED FILES:
+        1. packages/daemon/src/routes/inbox.ts - Inbox API endpoints
+           - GET /api/inbox - list items ordered by created_at desc (ac-12)
+           - POST /api/inbox - create item with ULID generation (ac-13)
+           - DELETE /api/inbox/:ref - delete item with ref resolution (ac-14)
+
+        2. packages/daemon/src/routes/meta.ts - Meta API endpoints
+           - GET /api/meta/session - session context (focus, threads, questions) (ac-15)
+           - GET /api/meta/agents - list all agents (ac-16)
+           - GET /api/meta/workflows - list all workflows (ac-17)
+           - GET /api/meta/observations - list with resolved filter (ac-18)
+
+        3. tests/daemon-api-inbox.test.ts - 6 E2E structure tests
+        4. tests/daemon-api-meta.test.ts - 7 E2E structure tests
+
+        INTEGRATION:
+        - Registered routes in packages/daemon/src/server.ts
+        - Added imports for createInboxRoutes and createMetaRoutes
+        - Connected to pubsub for WebSocket broadcasts (inbox only)
+
+        PATTERNS FOLLOWED:
+        - ReferenceIndex for ref resolution (ac-14)
+        - Shadow commits with semantic messages (ac-13, ac-14)
+        - WebSocket broadcasts for state changes (ac-13, ac-14)
+        - Elysia schema validation for body/query params
+        - Consistent error responses (404 not_found, 400 validation_error)
+        - AC annotations in comments linking to spec
+        - Code inspection test strategy (consistent with project)
+
+        TEST RESULTS:
+        - All 1193 existing tests continue to pass
+        - 13 new tests added (6 inbox + 7 meta)
+        - No build errors
+        - No TypeScript errors
+
+        All 7 target ACs (ac-12 through ac-18) now implemented with test coverage.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMQFYB51SJ8J9F998X731G
