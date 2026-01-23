@@ -2325,6 +2325,10 @@ features:
         when: checking for available tasks
         then: "only considers tasks with automation: eligible, ignoring manual_only, needs_review, and
           unassessed tasks"
+      - id: ac-17
+        given: ralph loop is running with --restart-every N (N > 0)
+        when: iteration completes and iteration number is divisible by N
+        then: agent process is killed and respawned to prevent memory buildup
     status:
       maturity: draft
       implementation: implemented
