@@ -1,0 +1,382 @@
+{
+  "generated_at": "2026-01-23T07:36:41.314Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFM7H3",
+      "title": "Merge driver: CLI command",
+      "priority": 2,
+      "spec_ref": "@merge-driver-cli",
+      "tags": []
+    },
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "server",
+        "websocket",
+        "elysia"
+      ]
+    },
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "api",
+        "rest",
+        "websocket"
+      ]
+    },
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "svelte",
+        "ui",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMJ8",
+      "title": "Implement: CLI Serve Commands",
+      "priority": 2,
+      "spec_ref": "@cli-serve-commands",
+      "tags": [
+        "cli",
+        "serve"
+      ]
+    },
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-0",
+        "foundation"
+      ]
+    },
+    {
+      "ref": "01KFMMM0",
+      "title": "Create packages/daemon structure",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMM4",
+      "title": "Implement Elysia server core",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMM9",
+      "title": "Implement file watcher and WebSocket broadcast",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMMD",
+      "title": "Implement WebSocket protocol",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFM7GN",
+      "title": "Merge driver: file type detection",
+      "completed_at": "2026-01-23T07:36:29.070Z",
+      "closed_reason": "PR #179 merged. Implemented file type detection for semantic YAML merge driver with detectFileType() function and FileType enum. All 6 ACs covered with comprehensive tests (8 test cases). Cross-platform support. All 1041 tests pass."
+    },
+    {
+      "ref": "01KFM7GJ",
+      "title": "Merge driver: conflict resolution",
+      "completed_at": "2026-01-23T07:24:02.849Z",
+      "closed_reason": "PR #178 merged. Implemented conflict resolution for semantic YAML merge driver. Added interactive prompts for scalar and delete-modify conflicts (AC-4, AC-8) with proper automated test coverage. Added non-interactive YAML comment formatting (AC-10). Fixed blocking issue from local review by refactoring functions for testability. All 1033 tests pass."
+    },
+    {
+      "ref": "01KFM7G5",
+      "title": "Merge driver: object merge algorithms",
+      "completed_at": "2026-01-23T07:02:25.882Z",
+      "closed_reason": "PR #177 merged. Implemented object merge algorithms with field-level recursive merge for semantic YAML merge driver. All 28 tests pass with comprehensive AC coverage for ac-3 and ac-7."
+    },
+    {
+      "ref": "01KFMMJT",
+      "title": "Setup Bun monorepo workspace",
+      "completed_at": "2026-01-23T06:51:20.414Z",
+      "closed_reason": "PR #175 merged. Set up npm workspace structure with 3 packages (daemon, web-ui, shared). All 962 tests pass, TypeScript configs validated."
+    },
+    {
+      "ref": "01KFM7G2",
+      "title": "Merge driver: array merge algorithms",
+      "completed_at": "2026-01-23T06:47:47.114Z",
+      "closed_reason": "PR #176 merged. Implemented array merge algorithms (union merge for ULID arrays, set union for tags/depends_on, deletion detection). All 23 tests pass with comprehensive AC coverage."
+    },
+    {
+      "ref": "01KFM7FQ",
+      "title": "Merge driver foundation: types and parsing",
+      "completed_at": "2026-01-23T06:21:30.447Z",
+      "closed_reason": "PR #174 merged. Implemented merge driver foundation with types and parsing for semantic YAML merging."
+    },
+    {
+      "ref": "01KFHMK8",
+      "title": "Spec out Web UI and Daemon Mode feature",
+      "completed_at": "2026-01-23T05:26:24.655Z",
+      "closed_reason": "Spec created with ~110 ACs across 5 features. 3 new traits added. 31 granular implementation tasks derived with detailed notes."
+    },
+    {
+      "ref": "01KFKMF9",
+      "title": "Meta resolve and promote commands missing commitIfShadow calls",
+      "completed_at": "2026-01-23T04:08:46.376Z",
+      "closed_reason": "PR #172 merged. Added @trait-shadow-commit trait with 8 AC and fixed 6 missing commitIfShadow calls in meta commands."
+    },
+    {
+      "ref": "01KFM0ZH",
+      "title": "Add --steps flag to kspec meta add workflow",
+      "completed_at": "2026-01-22T23:55:46.588Z",
+      "closed_reason": "Implemented --steps flag for kspec meta add workflow. PR #170 merged."
+    },
+    {
+      "ref": "01KFJ578",
+      "title": "Add skill file linting/validation",
+      "completed_at": "2026-01-22T16:42:52.676Z",
+      "closed_reason": "Merged PR #167. Added skill file validation with frontmatter and table pipe checks."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "2ef30e7",
+      "full_hash": "2ef30e76569a885fdd05a45efdd8cb089c2e1afc",
+      "date": "2026-01-23T07:36:13.000Z",
+      "message": "Merge driver: file type detection (#179)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0f1caa1",
+      "full_hash": "0f1caa15a39c021589951a1a686ca1a5e46b62bc",
+      "date": "2026-01-23T07:29:28.000Z",
+      "message": "feat: implement file type detection for merge driver",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4f35cdd",
+      "full_hash": "4f35cdd4de9307bacbff8c299a4b69a2e309e20a",
+      "date": "2026-01-23T07:23:54.000Z",
+      "message": "Merge driver: conflict resolution for semantic YAML merge (#178)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9d8c2e4",
+      "full_hash": "9d8c2e441afa2b6355ffe0af5703c494c6cf5fc4",
+      "date": "2026-01-23T07:18:52.000Z",
+      "message": "test: add automated tests for interactive prompts (AC-4, AC-8)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "14dd753",
+      "full_hash": "14dd753820caf387f9c47a829ae3f5c9e8b7e106",
+      "date": "2026-01-23T07:08:46.000Z",
+      "message": "feat: implement conflict resolution for semantic YAML merge",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6e3003a",
+      "full_hash": "6e3003acdded18383bb69fb777053f27ce626f1e",
+      "date": "2026-01-23T07:02:08.000Z",
+      "message": "feat: implement object merge algorithms for semantic YAML merge (#177)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "dd3976b",
+      "full_hash": "dd3976bdb86ca8e515d6c2f8e637eec019c5999a",
+      "date": "2026-01-23T06:55:03.000Z",
+      "message": "feat: implement object merge algorithms for semantic YAML merge",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4e72710",
+      "full_hash": "4e727104de23c28ff372f95717c8ae8d15c23ce1",
+      "date": "2026-01-23T06:51:05.000Z",
+      "message": "feat: setup Bun monorepo workspace structure (#175)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2c5ab7b",
+      "full_hash": "2c5ab7bb383bcdbccc3b2a8a3f41e6d7d6502d3a",
+      "date": "2026-01-23T06:47:30.000Z",
+      "message": "feat: implement array merge algorithms for semantic YAML merge (#176)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1f929d5",
+      "full_hash": "1f929d5f0b4f76e6bef61a21e40aa12672d91d31",
+      "date": "2026-01-23T06:41:32.000Z",
+      "message": "test: add test for deletion scenario in array merge",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 312,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 40,
+    "blocked": 1,
+    "completed": 259,
+    "inbox_items": 45
+  }
+}
