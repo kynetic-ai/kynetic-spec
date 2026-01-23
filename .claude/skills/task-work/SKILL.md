@@ -23,6 +23,28 @@ kspec workflow next --input task_ref="@task-slug"
 - Ensuring consistent task lifecycle
 - When you need to track progress with notes
 
+## Inherit Existing Work First
+
+**Before starting new work, check for existing in-progress or pending_review tasks.**
+
+```bash
+kspec session start  # Shows active work at the top
+```
+
+Priority order:
+1. **pending_review** - PR awaiting merge, highest priority
+2. **in_progress** - Work already started, continue it
+3. **ready (pending)** - New work to start
+
+**Always inherit existing work** unless user explicitly says otherwise. If there's an in_progress task, pick it up and continue. If there's a pending_review task, check the PR status and push it to completion.
+
+Only start new work when:
+- No in_progress or pending_review tasks exist
+- User explicitly tells you to work on something else
+- User says to ignore the existing work
+
+This prevents orphaned work and ensures tasks get completed.
+
 ## Task States
 
 ```
