@@ -31495,3 +31495,22 @@
   created_at: 2026-01-23T19:40:24.453Z
   notes: []
   todos: []
+- title: E2E Test Infrastructure Setup
+  type: task
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - e2e
+    - testing
+    - infrastructure
+  _ulid: 01KFP834QWVEY09XBDS4V6E4KH
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-23T20:17:53.404Z
+  notes: []
+  todos: []
