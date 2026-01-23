@@ -23312,7 +23312,7 @@
     kspec merge-driver <base> <ours> <theirs> [-L n] [-p path] [--non-interactive] [--dry-run]
   spec_ref: "@merge-driver-cli"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFM7GN"
@@ -23395,6 +23395,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T07:53:19.364Z
+  closed_reason: "PR #180 merged. Implemented kspec merge-driver CLI command with git standard args,
+    stderr summary output, and non-interactive conflict comments. All 3 ACs covered with 8
+    comprehensive E2E tests. Local review rated EXCELLENT."
 - _ulid: 01KFM7H6NXZCJM5955A5Q5A7P2
   slugs: []
   title: "Merge driver: auto-configuration on init"
