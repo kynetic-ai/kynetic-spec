@@ -27760,7 +27760,7 @@
   type: infra
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -27809,6 +27809,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T14:12:18.393Z
 - _ulid: 01KFMMT0BPJPM8V08QVBVKPS6V
   slugs: []
   title: Dashboard layout and navigation
