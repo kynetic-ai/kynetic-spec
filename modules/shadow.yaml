@@ -633,3 +633,7 @@ features:
         given: both versions modify set-like arrays (tags, depends_on)
         when: merge runs
         then: arrays are set-unioned (duplicates removed)
+      - id: ac-7
+        given: both versions modify nested objects (status, traceability)
+        when: merge runs
+        then: nested fields are merged recursively at field level
