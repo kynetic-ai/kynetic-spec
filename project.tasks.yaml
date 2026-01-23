@@ -24921,7 +24921,7 @@
   type: task
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -25231,6 +25231,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-23T10:37:48.554Z
+  closed_reason: "PR #187 merged. Implemented complete WebSocket protocol with session IDs (ac-1,
+    ac-25), command/ack format (ac-26, ac-27), topic subscription (ac-28), broadcast events with
+    msg_id/seq/timestamp (ac-29), malformed command errors (ac-30), proper close codes (ac-31,
+    ac-7), backpressure handling (ac-32, ac-6), heartbeat ping/timeout (ac-13, ac-14, ac-4, ac-5),
+    and sequence reset on reconnect (ac-8). All 18 ACs from @api-contract, @daemon-server, and
+    @trait-websocket-protocol fully implemented with comprehensive test coverage (51 tests). Local
+    review: PASS (100% AC coverage, excellent test quality). All 1138 tests pass."
 - _ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
   slugs: []
   title: Implement daemon process detach
