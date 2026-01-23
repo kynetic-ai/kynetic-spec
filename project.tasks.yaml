@@ -31495,22 +31495,151 @@
   created_at: 2026-01-23T19:40:24.453Z
   notes: []
   todos: []
-- title: E2E Test Infrastructure Setup
+- _ulid: 01KFP834QWVEY09XBDS4V6E4KH
+  slugs: []
+  title: E2E Test Infrastructure Setup
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - e2e
-    - testing
-    - infrastructure
-  _ulid: 01KFP834QWVEY09XBDS4V6E4KH
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - e2e
+    - testing
+    - infrastructure
   vcs_refs: []
   created_at: 2026-01-23T20:17:53.404Z
-  notes: []
+  notes:
+    - _ulid: 01KFP83V90WHHPN4PHDARJ0Y5S
+      created_at: 2026-01-23T20:18:16.480Z
+      author: "@claude"
+      content: >-
+        ## Objective
+
+        Set up Playwright E2E testing infrastructure for packages/web-ui that runs against real
+        kspec-daemon.
+
+
+        ## Files to Create
+
+
+        ### 1. packages/web-ui/playwright.config.ts
+
+        - testDir: './tests/e2e'
+
+        - fullyParallel: true
+
+        - forbidOnly: !!process.env.CI
+
+        - retries: CI ? 2 : 0
+
+        - workers: CI ? 2 : undefined
+
+        - reporter: 'html'
+
+        - trace: 'on-first-retry'
+
+        - screenshot: 'only-on-failure'
+
+        - webServer: { command: 'npm run dev', port: 5173 }
+
+        - projects: [chromium only]
+
+
+        ### 2. packages/web-ui/tests/e2e/fixtures/port-utils.ts
+
+        Ephemeral port allocation (49152-65535) with availability checking:
+
+        - findAvailablePort(startPort = 49152): Promise<number>
+
+        - isPortAvailable(port): Promise<boolean>
+
+        Uses net.createServer to test port availability, retries up to 100 ports.
+
+
+        ### 3. packages/web-ui/tests/e2e/fixtures/daemon.fixture.ts
+
+        Worker-scoped fixture:
+
+        - Creates temp dir with kspec fixtures (mkdtemp)
+
+        - Starts daemon on unique port (49152 + workerIndex offset)
+
+        - Polls /api/health until ready
+
+        - Provides { port, kspecDir, apiBaseURL } to tests
+
+        - Cleans up on worker teardown (SIGTERM, rm temp dir)
+
+
+        ### 4. packages/web-ui/tests/e2e/fixtures/test-base.ts
+
+        - Extended test with daemon fixture
+
+        - Exports test and expect for all spec files
+
+        - Configures page context with correct API URL
+
+
+        ### 5. packages/web-ui/tests/e2e/fixtures/kspec-data.ts
+
+        Factory functions:
+
+        - createTask(overrides): Task - with valid ULID (Crockford base32, no I/L/O/U)
+
+        - createItem(overrides): Item
+
+        - createInboxItem(overrides): InboxItem
+
+        - Sample collections for fixture YAML
+
+
+        ### 6. packages/web-ui/tests/e2e/fixtures/kspec/ directory
+
+        Static YAML fixtures copied per-worker:
+
+        - kynetic.yaml (manifest)
+
+        - project.tasks.yaml (sample tasks)
+
+        - modules/core.yaml (sample items)
+
+        Reuse patterns from tests/fixtures/
+
+
+        ### 7. packages/web-ui/package.json additions
+
+        Scripts: test:e2e, test:e2e:ui
+
+        DevDeps: @playwright/test ^1.50.0
+
+
+        ### 8. .github/workflows/test.yml update
+
+        New browser-tests job:
+
+        - needs: [test]
+
+        - Setup Bun (oven-sh/setup-bun@v1)
+
+        - npm ci && npm run build
+
+        - npx playwright install --with-deps chromium
+
+        - npm run -w @kynetic-ai/web-ui test:e2e
+
+        - Upload playwright-report on failure
+
+
+        ## Verification
+
+        1. npm run -w @kynetic-ai/web-ui test:e2e (should start daemon, run smoke test)
+
+        2. CI workflow runs successfully
+
+        3. No orphan processes or temp dirs after test
+      supersedes: null
   todos: []
