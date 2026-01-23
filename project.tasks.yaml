@@ -29430,6 +29430,7 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:54.863Z
+  started_at: 2026-01-23T15:32:43.004Z
   notes:
     - _ulid: 01KFMMWSRXD9PBSWK77WWFRPBS
       created_at: 2026-01-23T05:23:08.189Z
@@ -29460,9 +29461,35 @@
         - packages/web-ui/src/lib/components/ObservationsPanel.svelte
         - packages/web-ui/src/lib/components/ObservationItem.svelte
       supersedes: null
+    - _ulid: 01KFNQXRHW9FKPXQQZJ2P89Q5K
+      created_at: 2026-01-23T15:35:19.868Z
+      author: "@claude"
+      content: |-
+        Implemented session context and observations panel
+
+        **Completed Features:**
+        - AC ac-20: Session focus displayed in sidebar header when set
+        - AC ac-21: Observations count badge in sidebar (unresolved only)
+        - AC ac-22: Observations page with type icons (friction/success/question/idea)
+
+        **Implementation Details:**
+        - Added fetchSessionContext() and fetchObservations() to API client
+        - Updated Sidebar component with:
+          - Current Focus section (conditional, shows when focus is set)
+          - Observations badge with count (conditional, shows when count > 0)
+          - Auto-refresh every 30s (will be replaced with WebSocket later)
+        - Created /observations page with:
+          - Type-specific icons (AlertTriangle, Zap, HelpCircle, Lightbulb)
+          - Color-coded by type (red, green, blue, yellow)
+          - Relative timestamps ("5m ago", "2h ago", etc.)
+          - Optional context display
+          - Unresolved filter
+
+        **Next Steps:**
+        Session context panel complete. All 3 ACs covered.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T15:32:43.004Z
 - _ulid: 01KFMMTPR2Y6CPKRJEJ2X25Y0S
   slugs: []
   title: Global search command palette
