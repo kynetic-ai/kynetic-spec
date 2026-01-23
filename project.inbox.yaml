@@ -541,3 +541,13 @@ inbox:
       - typescript
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFPH3968Z8MY1WSN2ZZ0BJ3Y
+    text: Add workflow run auto-cleanup - either 'workflow prune' command to remove stale runs, or
+      auto-expire runs older than N days. Prevents accumulation that clutters workflow commands (had
+      19 active runs). Small scope.
+    created_at: 2026-01-23T22:55:15.144Z
+    tags:
+      - workflow
+      - dx
+      - reflection
+    added_by: "@claude"
