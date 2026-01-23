@@ -23223,6 +23223,7 @@
         shutdown event with {reason}, connection closes gracefully
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
   slugs:
     - task-web-dashboard
