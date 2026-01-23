@@ -20777,6 +20777,13 @@
         validation logic, add CLI support for --verified-by/--verified-at flags, and update item get
         display."
       supersedes: null
+    - _ulid: 01KFMXSJ1Y14RTNG0YJWFV2RFZ
+      created_at: 2026-01-23T07:58:39.166Z
+      author: "@claude"
+      content: Schema updated with verified_at/verified_by fields. All 1049 tests pass. Now working on
+        alignment.ts to skip retrospective specs from orphaned spec warnings (findAlignmentWarnings
+        method, line 213-220). Need to check for @trait-retrospective in spec.traits array.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
