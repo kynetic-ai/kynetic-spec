@@ -23907,7 +23907,43 @@
     - daemon
   vcs_refs: []
   created_at: 2026-01-23T05:18:37.290Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMPBB014FZFQVK77WT3HNB
+      created_at: 2026-01-23T05:19:36.801Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement daemon background mode with process detach, PID file management.
+
+        ### Steps
+        1. Implement --daemon flag handling:
+           ```typescript
+           if (args.daemon) {
+             const child = Bun.spawn(['bun', 'run', 'serve'], {
+               detached: true,
+               stdio: ['ignore', 'pipe', 'pipe']
+             });
+             writePidFile(child.pid);
+             process.exit(0);
+           }
+           ```
+
+        2. Write PID to .kspec/.daemon.pid on daemon start
+
+        3. Implement stop command: read PID, send SIGTERM, wait, remove PID file
+
+        4. Handle orphaned PID files (process not running)
+
+        ### ACs Covered
+        - ac-9: --daemon detaches, writes PID
+        - ac-10: stop shuts down, removes PID
+
+        ### Files to Create/Modify
+        - packages/daemon/src/daemon.ts
+        - packages/daemon/src/pid.ts
+      supersedes: null
   todos: []
 - _ulid: 01KFMMMNDBTP9BJZGB23X8QMSD
   slugs: []
