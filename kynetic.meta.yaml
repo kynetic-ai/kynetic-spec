@@ -267,9 +267,17 @@ workflows:
   - _ulid: 01KFM9SNV2QRRGREJ1HMZWXCFT
     id: task-work-session
     trigger: manual
-    description: Core pattern for working on a task. Verifies work not done, starts task, captures notes
-      during work, completes with summary, commits changes.
+    description: Core pattern for working on a task. Full lifecycle from start through PR merge.
     steps:
+      - type: check
+        content: |
+          Check for existing in_progress or pending_review tasks.
+          Use: kspec session start (shows active work first)
+          Priority: pending_review > in_progress > ready
+        on_fail: |
+          Inherit existing work instead of starting new.
+          Pick up in_progress task and continue, or check PR status for pending_review.
+          Only start new work if user explicitly says to ignore existing work.
       - type: action
         content: |
           Choose task to work on.
@@ -295,15 +303,29 @@ workflows:
           Work on the task, adding notes as you go.
           Use: kspec task note @task "What you're doing..."
           Add notes during work, not just at end.
-      - type: action
-        content: |
-          Complete the task with summary.
-          Use: kspec task complete @task --reason "Summary of what was done"
       - type: check
         content: All changes committed
         on_fail: |
           Commit changes with Task: @task trailer.
           Example: git commit -m "feat: description\n\nTask: @task-slug"
+      - type: action
+        content: |
+          Submit task for review.
+          Use: kspec task submit @task
+          This marks the task pending_review (code done, awaiting merge).
+      - type: action
+        content: |
+          Create PR.
+          Use: /pr skill or gh pr create
+          Then follow @pr-review-merge workflow for merge.
+      - type: check
+        content: PR merged to main
+        on_fail: Wait for PR review and merge before completing task.
+      - type: action
+        content: |
+          Complete task after PR merged.
+          Use: kspec task complete @task --reason "Summary of what was done"
+          This marks the task completed.
   - _ulid: 01KFM9X3C64AHJAD6J2YJZ3YA6
     id: local-review
     trigger: manual
