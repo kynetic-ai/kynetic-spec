@@ -25444,6 +25444,13 @@
         This task will be completed once all 8 subtasks are done and merged. Currently 1/8 merged,
         1/8 in review, 1/8 submitted, 5/8 pending.
       supersedes: null
+    - _ulid: 01KFNPAVFN85MFN4554CJWX7EG
+      created_at: 2026-01-23T15:07:31.701Z
+      author: Jacob Chapel
+      content: This is from chapel (the user), prior notes around needing the UI to resolve threads is
+        incorrect, you know you can resolve github threads using the gh cli, I've seen you do it
+        before. So you should be able to unblock any PRs with threads.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ4J1BDXSXMF8J8S20DP4
@@ -28925,6 +28932,7 @@
     - dashboard
   vcs_refs: []
   created_at: 2026-01-23T05:21:45.780Z
+  started_at: 2026-01-23T15:04:57.554Z
   notes:
     - _ulid: 01KFMMWGD3DZZWV5VQYD5EPHTV
       created_at: 2026-01-23T05:22:58.596Z
@@ -28962,7 +28970,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-23T15:04:57.554Z
 - _ulid: 01KFMMTDMRM2ZZ3NGMAR53GPKX
   slugs: []
   title: Inbox view
