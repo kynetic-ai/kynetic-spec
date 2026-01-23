@@ -30,8 +30,8 @@ import type {
   AcceptanceCriterion,
   InboxItem,
   SessionContext,
-  MetaAgent,
-  MetaWorkflow,
+  Agent,
+  Workflow,
   Observation,
   // WebSocket types
   WebSocketCommand,
@@ -211,28 +211,28 @@ describe('API Response Types', () => {
     expectTypeOf<SessionContext['updated_at']>().toEqualTypeOf<string>();
   });
 
-  it('MetaAgent should have correct structure', () => {
-    expectTypeOf<MetaAgent>().toHaveProperty('_ulid');
-    expectTypeOf<MetaAgent>().toHaveProperty('id');
-    expectTypeOf<MetaAgent>().toHaveProperty('role');
-    expectTypeOf<MetaAgent>().toHaveProperty('status');
+  it('Agent should have correct structure', () => {
+    expectTypeOf<Agent>().toHaveProperty('_ulid');
+    expectTypeOf<Agent>().toHaveProperty('id');
+    expectTypeOf<Agent>().toHaveProperty('role');
+    expectTypeOf<Agent>().toHaveProperty('status');
 
-    expectTypeOf<MetaAgent['_ulid']>().toEqualTypeOf<string>();
-    expectTypeOf<MetaAgent['id']>().toEqualTypeOf<string>();
-    expectTypeOf<MetaAgent['role']>().toEqualTypeOf<string>();
-    expectTypeOf<MetaAgent['status']>().toEqualTypeOf<string>();
+    expectTypeOf<Agent['_ulid']>().toEqualTypeOf<string>();
+    expectTypeOf<Agent['id']>().toEqualTypeOf<string>();
+    expectTypeOf<Agent['role']>().toEqualTypeOf<string>();
+    expectTypeOf<Agent['status']>().toEqualTypeOf<string>();
   });
 
-  it('MetaWorkflow should have correct structure', () => {
-    expectTypeOf<MetaWorkflow>().toHaveProperty('_ulid');
-    expectTypeOf<MetaWorkflow>().toHaveProperty('id');
-    expectTypeOf<MetaWorkflow>().toHaveProperty('name');
-    expectTypeOf<MetaWorkflow>().toHaveProperty('description');
+  it('Workflow should have correct structure', () => {
+    expectTypeOf<Workflow>().toHaveProperty('_ulid');
+    expectTypeOf<Workflow>().toHaveProperty('id');
+    expectTypeOf<Workflow>().toHaveProperty('name');
+    expectTypeOf<Workflow>().toHaveProperty('description');
 
-    expectTypeOf<MetaWorkflow['_ulid']>().toEqualTypeOf<string>();
-    expectTypeOf<MetaWorkflow['id']>().toEqualTypeOf<string>();
-    expectTypeOf<MetaWorkflow['name']>().toEqualTypeOf<string>();
-    expectTypeOf<MetaWorkflow['description']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['_ulid']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['id']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['name']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['description']>().toEqualTypeOf<string>();
   });
 
   it('Observation should have correct structure', () => {
