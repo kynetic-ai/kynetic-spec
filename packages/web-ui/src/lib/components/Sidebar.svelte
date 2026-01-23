@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import {
 		Sidebar,
 		SidebarContent,
@@ -13,6 +14,8 @@
 		SidebarMenuItem
 	} from '$lib/components/ui/sidebar';
 	import { Badge } from '$lib/components/ui/badge';
+	import { fetchSessionContext, fetchObservations } from '$lib/api';
+	import type { SessionContext } from '@kynetic-ai/shared';
 
 	// Navigation items
 	const navItems = [
@@ -24,6 +27,36 @@
 
 	// Connection status (will be wired to WebSocket later)
 	let connected = $state(false);
+
+	// AC: @web-dashboard ac-20, ac-21
+	let sessionContext = $state<SessionContext | null>(null);
+	let unresolvedObservationsCount = $state(0);
+
+	onMount(async () => {
+		await loadSessionData();
+		// Refresh every 30s (will be replaced with WebSocket updates later)
+		const interval = setInterval(loadSessionData, 30000);
+		return () => clearInterval(interval);
+	});
+
+	async function loadSessionData() {
+		try {
+			// Load session context
+			sessionContext = await fetchSessionContext();
+
+			// Load unresolved observations count
+			const obsResponse = await fetchObservations({ resolved: false });
+			unresolvedObservationsCount = obsResponse.total;
+		} catch (err) {
+			console.error('Failed to load session data:', err);
+		}
+	}
+
+	// Open observations panel
+	function openObservations() {
+		// Navigate to observations view (will implement panel in next step)
+		window.location.href = '/observations';
+	}
 </script>
 
 <Sidebar>
@@ -34,6 +67,18 @@
 	</SidebarHeader>
 
 	<SidebarContent>
+		<!-- AC: @web-dashboard ac-20 - Display session focus -->
+		{#if sessionContext?.focus}
+			<SidebarGroup>
+				<SidebarGroupLabel>Current Focus</SidebarGroupLabel>
+				<SidebarGroupContent>
+					<div class="px-4 py-2 text-sm italic text-muted-foreground">
+						{sessionContext.focus}
+					</div>
+				</SidebarGroupContent>
+			</SidebarGroup>
+		{/if}
+
 		<SidebarGroup>
 			<SidebarGroupLabel>Navigation</SidebarGroupLabel>
 			<SidebarGroupContent>
@@ -51,6 +96,24 @@
 				</SidebarMenu>
 			</SidebarGroupContent>
 		</SidebarGroup>
+
+		<!-- AC: @web-dashboard ac-21 - Observations count badge -->
+		{#if unresolvedObservationsCount > 0}
+			<SidebarGroup>
+				<SidebarGroupContent>
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton onclick={openObservations}>
+								<span>Observations</span>
+								<Badge variant="secondary" class="ml-auto">
+									{unresolvedObservationsCount}
+								</Badge>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+				</SidebarGroupContent>
+			</SidebarGroup>
+		{/if}
 	</SidebarContent>
 
 	<SidebarFooter>
