@@ -24271,5 +24271,42 @@
     - api
   vcs_refs: []
   created_at: 2026-01-23T05:20:19.207Z
-  notes: []
+  notes:
+    - _ulid: 01KFMMSD49CFAWKYTNM3BZ00YP
+      created_at: 2026-01-23T05:21:16.938Z
+      author: "@claude"
+      content: |-
+        ## Implementation Notes
+
+        ### Objective
+        Implement API error handling middleware with consistent error responses.
+
+        ### Steps
+        1. Create Elysia error handler:
+           ```typescript
+           app.onError(({ error, code, set }) => {
+             if (error instanceof RefNotFoundError) {
+               set.status = 404;
+               return { error: 'not_found', message: error.message, suggestion: error.suggestion };
+             }
+             // ... other error types
+           });
+           ```
+
+        2. Define error types:
+           - RefNotFoundError (404)
+           - ValidationError (400)
+           - StateTransitionError (409)
+
+        3. Include suggestions for ref errors (similar refs)
+
+        ### ACs Covered
+        - ac-22: 404 for invalid ref with suggestion
+        - ac-23: 400 for validation errors with field details
+        - ac-24: 409 for state transition errors
+
+        ### Files to Create
+        - packages/daemon/src/errors.ts
+        - packages/daemon/src/middleware/error-handler.ts
+      supersedes: null
   todos: []
