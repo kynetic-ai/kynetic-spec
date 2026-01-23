@@ -30971,6 +30971,41 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KFP04PZCPEVRV7R3AZX5NXM3
+      created_at: 2026-01-23T17:58:56.236Z
+      author: "@claude"
+      content: >-
+        Found existing tests are code structure tests that read source files and verify patterns
+        exist. Need to write true integration tests that:
+
+        1. Start daemon server in test environment
+
+        2. Make actual HTTP requests to REST endpoints
+
+        3. Connect real WebSocket clients and verify protocol
+
+        4. Test end-to-end behavior, not just code structure
+
+
+        Current coverage:
+
+        - daemon-api-tasks.test.ts: Code structure only (ac-2 to ac-7)
+
+        - daemon-api-items.test.ts: Code structure only (ac-8 to ac-11)
+
+        - daemon-api-inbox.test.ts: Code structure only (ac-12 to ac-14)
+
+        - daemon-api-meta.test.ts: Code structure only (ac-15 to ac-18)
+
+        - daemon-api-validation.test.ts: Code structure only (ac-19 to ac-21)
+
+        - daemon-api-error-handling.test.ts: Error patterns (ac-22 to ac-24)
+
+        - daemon-websocket.test.ts: Code structure only (ac-25 to ac-33)
+
+
+        Need: Real E2E integration tests using actual HTTP/WS connections
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
