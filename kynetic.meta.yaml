@@ -217,6 +217,43 @@ workflows:
           Verify inputs/notes are captured correctly
       - type: check
         content: Commit changes to both main (skill) and shadow (workflow) branches
+  - _ulid: 01KFM9G3BR4VFNBM2G7BGE5BZY
+    id: pr-review-merge
+    trigger: pr-merge
+    description: Quality gate for PR review and merge. Ensures CI passes, review comments are addressed,
+      user requests completed, and threads resolved before merging.
+    steps:
+      - type: action
+        content: |
+          Create PR with implementation.
+          Use: kspec /pr or gh pr create
+      - type: check
+        content: All CI checks pass
+        on_fail: Wait for CI to complete, fix any failures, push fixes
+      - type: action
+        content: |
+          Read review comments.
+          Check automated review output for identified issues.
+          Look for structured comments like "Issue N: file.ts line X"
+      - type: check
+        content: All review issues addressed
+        on_fail: Fix each identified issue, push changes, re-run CI
+      - type: action
+        content: |
+          Check for user @claude comments.
+          Look for requests the PR agent couldn't complete.
+          PR agent has limited capabilities (can't run kspec, npm, etc.)
+      - type: check
+        content: All pending user requests completed
+        on_fail: Complete actions yourself before merging (e.g., add inbox items, run commands)
+      - type: check
+        content: All review threads resolved in GitHub UI
+        on_fail: Click "Resolve conversation" on each thread after addressing feedback
+      - type: action
+        content: |
+          Merge the PR.
+          Use: gh pr merge or GitHub UI
+          Only merge when CI green AND all comments/requests addressed
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
