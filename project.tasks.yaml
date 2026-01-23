@@ -24449,6 +24449,46 @@
 
         Parent task remains in_progress until all derived subtasks complete.
       supersedes: null
+    - _ulid: 01KFNF3WZ4AM689H4G5WDD51PF
+      created_at: 2026-01-23T13:01:23.812Z
+      author: "@claude"
+      content: |-
+        Iteration 27 complete: @01KFMMQB submitted for review.
+
+        PROGRESS UPDATE:
+        - 20 of 33 ACs implemented and merged (ac-1 through ac-11, ac-25 through ac-33)
+        - 7 ACs in pending_review (ac-12 through ac-18) - PR #193
+        - 6 ACs remaining in ready subtasks (ac-19 through ac-24)
+
+        COMPLETED THIS ITERATION:
+        ✅ Implemented inbox API endpoints (ac-12, ac-13, ac-14):
+           - GET /api/inbox - list ordered by created_at desc
+           - POST /api/inbox - create with ULID generation
+           - DELETE /api/inbox/:ref - delete with ref resolution
+
+        ✅ Implemented meta API endpoints (ac-15, ac-16, ac-17, ac-18):
+           - GET /api/meta/session - session context
+           - GET /api/meta/agents - list agents
+           - GET /api/meta/workflows - list workflows
+           - GET /api/meta/observations - list with resolved filter
+
+        ✅ Created 13 E2E structure tests (6 inbox + 7 meta)
+        ✅ All 1193 tests pass
+        ✅ PR #193 created and local review APPROVED
+
+        PENDING REVIEW:
+        - PR #193: Inbox and meta API endpoints
+        - CI checks: test, claude-review, check-unresolved-comments
+        - Awaiting automated review feedback
+
+        NEXT SESSION:
+        1. Review and address any CI/review feedback on PR #193
+        2. Merge PR #193 via @pr-review-merge workflow
+        3. Complete @01KFMMQB task
+        4. Start @01KFMMQF (Search and validation endpoints) for ac-19 through ac-21
+
+        This parent task remains in_progress until all derived subtasks complete.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
