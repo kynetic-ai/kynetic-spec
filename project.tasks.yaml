@@ -26877,7 +26877,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -26924,6 +26924,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-23T13:21:51.012Z
 - _ulid: 01KFMMQMR7B17M8Q752CDFQ5H8
   slugs: []
   title: API error handling middleware
