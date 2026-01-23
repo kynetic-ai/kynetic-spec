@@ -1544,7 +1544,7 @@ runs:
   - _ulid: 01KFNAAN3RRE3YNHRRJ5A16R7G
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 9
     started_at: 2026-01-23T11:37:42.264Z
     step_results:
@@ -1555,5 +1555,9 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-23T11:37:52.620Z
-        completed_at: 2026-01-23T11:37:52.620Z
+        completed_at: 2026-01-23T11:38:04.919Z
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-23T11:38:04.919Z
+        completed_at: 2026-01-23T11:38:04.919Z
     initiated_by: "@claude"
