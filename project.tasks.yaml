@@ -24021,6 +24021,36 @@
 
         Next session should pick up @01KFMMPY (API foundation) or one of the other derived tasks.
       supersedes: null
+    - _ulid: 01KFNB5VT3HB2QMK21J8DRADRN
+      created_at: 2026-01-23T11:52:33.860Z
+      author: "@claude"
+      content: >-
+        Iteration 22: This parent task has 33 ACs and was started in a previous iteration. Analysis
+        shows:
+
+
+        Current state:
+
+        - WebSocket protocol (ac-25 to ac-33) is fully implemented
+
+        - Only /api/health endpoint exists for REST API
+
+        - Multiple derived tasks exist that break down the REST API work:
+          - @01KFMMPY: API foundation and CORS (in progress, PR #190 created)
+          - @01KFMMQ2: Task API endpoints (ready)
+          - @01KFMMQ7: Spec item API endpoints (ready)
+          - @01KFMMQB: Inbox and meta API endpoints (ready)
+          - @01KFMMQF: Search and validation API endpoints (ready)
+          - @01KFMMQM: API error handling middleware (ready)
+
+        Recommendation: This parent task should not be worked on directly. Instead, work on the
+        smaller derived tasks. Once all derived tasks are complete, this parent task can be
+        completed as well.
+
+
+        Next session: Continue with @01KFMMPY (waiting for PR merge), then move to @01KFMMQ2 and
+        subsequent API endpoint tasks.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMJ17CDHZTENGRQQ7ZE6D4
