@@ -613,3 +613,7 @@ features:
         given: git attempts to merge two versions of a kspec YAML file
         when: the merge driver is configured
         then: kspec parses all three versions (base, ours, theirs) as structured data instead of text
+      - id: ac-2
+        given: both versions add different items to an array (tasks, inbox, specs)
+        when: merge runs
+        then: both additions are included in result (union merge by ULID)
