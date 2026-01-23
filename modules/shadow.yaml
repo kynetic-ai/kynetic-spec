@@ -728,6 +728,9 @@ features:
             given: file is not a recognized kspec file
             when: merge driver runs
             then: driver falls back to default behavior (copy ours)
+        status:
+          maturity: draft
+          implementation: in_progress
     status:
       maturity: draft
       implementation: in_progress
