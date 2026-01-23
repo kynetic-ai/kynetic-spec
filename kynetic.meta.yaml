@@ -3298,4 +3298,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFP9ANG7QFQNWC7WNPEDGRES
+    type: success
+    content: AC-driven test design - Reading spec file directly and mapping tests to acceptance criteria
+      ensured 100% coverage. Table format (AC | Test) made gaps immediately visible.
+    created_at: 2026-01-23T20:39:28.519Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
