@@ -31006,6 +31006,34 @@
 
         Need: Real E2E integration tests using actual HTTP/WS connections
       supersedes: null
+    - _ulid: 01KFP0BFVGY2WWX44XM4A9DVXG
+      created_at: 2026-01-23T18:02:38.321Z
+      author: "@claude"
+      content: |-
+        Attempted integration tests but encountered complexity:
+
+        1. Daemon package imports from parent (@kynetic-ai/shared) which needs proper build
+        2. Elysia .listen() doesn't work in vitest environment (needs real Bun runtime)
+        3. Elysia .handle() approach requires all dependencies to be properly compiled
+
+        Current test coverage:
+        - Existing daemon-api-*.test.ts files verify CODE STRUCTURE (routes exist, patterns present)
+        - Missing: TRUE INTEGRATION TESTS that start real daemon and make HTTP/WS requests
+
+        Options forward:
+        A. Use Bun test runner instead of vitest (supports .listen())
+        B. Create separate E2E test suite that runs against real daemon instance
+        C. Mock dependencies in unit-style integration tests
+        D. Use supertest-style approach with custom test server
+
+        Recommendation: Option B - separate E2E suite
+        - tests/e2e/ directory with dedicated script
+        - Start daemon with `bun packages/daemon/src/index.ts`
+        - Make real HTTP/WebSocket requests
+        - Verify end-to-end behavior
+
+        This matches the AC intent better than code structure tests.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
