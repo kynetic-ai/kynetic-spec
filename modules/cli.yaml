@@ -2859,6 +2859,10 @@ features:
             given: skill invoked without task ref
             when: skill validates
             then: errors with task reference required
+          - id: ac-3
+            given: task ref provided but no PR exists
+            when: skill validates
+            then: errors with no PR found for task
       - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
         slugs:
           - loop-mode-error-handling
