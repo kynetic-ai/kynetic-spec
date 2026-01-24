@@ -34684,16 +34684,22 @@
         changes per mode
       supersedes: null
   todos: []
-- title: "Implement: Skill Loop Mode"
+- _ulid: 01KFR82F6P8Q8RXRX7YVJXZ9KF
+  slugs:
+    - task-skill-loop-mode
+  title: "Implement: Skill Loop Mode"
   type: task
   spec_ref: "@skill-loop-mode"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-skill-loop-mode
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-skill-commands"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:56:00.214Z
   notes:
     - _ulid: 01KFR82F6PA05Z8KBWX3PNGHVY
       created_at: 2026-01-24T14:56:00.214Z
@@ -34719,10 +34725,44 @@
         - ac-4: Given loop mode encounters error, when error caught, then note added, workflow
         continues
       supersedes: null
-  _ulid: 01KFR82F6P8Q8RXRX7YVJXZ9KF
+  todos: []
+- title: "Implement: Task Work Loop Skill"
+  type: task
+  spec_ref: "@task-work-loop-skill"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-task-work-loop-skill
+  tags: []
+  depends_on:
+    - "@task-skill-commands"
+  notes:
+    - _ulid: 01KFR82FG29FAQ8AYEQJFDVP7P
+      created_at: 2026-01-24T14:56:00.514Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Skill definition for /task-work loop. Invokes @task-work-loop-workflow for loop mode
+        behavior.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given ralph iteration starts, when agent acts, then /task-work loop invoked
+
+        - ac-2: Given loop mode active, when skill executes, then uses @task-work-loop workflow
+
+        - ac-3: Given ready tasks exist, when skill filters, then only automation: eligible shown
+
+        - ac-4: Given multiple eligible tasks, when skill selects, then follows loop selection order
+      supersedes: null
+  _ulid: 01KFR82FG2XFBM16C80VHV40BK
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:56:00.214Z
+  created_at: 2026-01-24T14:56:00.514Z
   todos: []
