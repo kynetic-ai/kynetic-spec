@@ -33640,7 +33640,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -33712,6 +33712,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T18:31:14.421Z
+  closed_reason: "Merged in PR #214. Created 30 comprehensive tests for global PID/port management
+    (ACs 9, 9b, 9c, 10, 10b, 11, 13). Addressed Greptile review feedback: fixed return type, removed
+    inline require, corrected test name. All CI checks passed."
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
   slugs:
     - task-context-manager-tests
