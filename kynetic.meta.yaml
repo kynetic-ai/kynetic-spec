@@ -3374,4 +3374,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFR0M0HQEPB9ZJ80HSF1H4R9
+    type: success
+    content: Iterative question-based design with AskUserQuestion tool - asking one design question at a
+      time during spec work (X-Kspec-Dir header choice, PID location, etc.) kept decisions focused
+      and got clear answers. Better than presenting all options at once.
+    created_at: 2026-01-24T12:45:46.424Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
