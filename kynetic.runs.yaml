@@ -3171,7 +3171,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFR09KPKP129WTSYYM24M94E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T12:40:05.588Z
@@ -3311,5 +3311,12 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-24T12:45:23.382Z
-        completed_at: 2026-01-24T12:45:23.382Z
+        completed_at: 2026-01-24T12:46:18.843Z
+        notes: |-
+          Captured:
+          - Inbox @01KFR0KN: Dependency flag design for task set
+          - Success @01KFR0M0: Iterative question-based design
+          - Success @01KFR0MB: Subagent plan review before spec finalization  
+          - Friction @01KFR0MN: Didn't know about existing CLI features (item ac add, --refs batch)
     initiated_by: "@claude"
+    completed_at: 2026-01-24T12:46:18.843Z
