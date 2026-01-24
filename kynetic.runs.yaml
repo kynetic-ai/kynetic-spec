@@ -3326,6 +3326,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T15:32:24.710Z
+    completed_at: 2026-01-24T15:40:40.997Z
     step_results:
       - step_index: 0
         status: completed
@@ -3376,4 +3377,11 @@ runs:
           @01KFRAKC for Plan-Review-Revise cycle. (3) Success observation @01KFRAKV for incremental
           question-based requirements."
     initiated_by: "@claude"
-    completed_at: 2026-01-24T15:40:40.997Z
+  - _ulid: 01KFRCBDE6KQMEND1RMZMVWZF1
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-24T16:10:47.623Z
+    step_results: []
+    initiated_by: "@claude"
