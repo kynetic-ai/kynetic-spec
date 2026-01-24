@@ -35664,7 +35664,7 @@
     Task: /api/projects endpoints implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -35700,6 +35700,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T22:49:33.985Z
+  closed_reason: "Merged in PR #228. Added AC-12 functionality to kspec serve status showing
+    registered projects list. Modified statusServer() to fetch from /api/projects endpoint and
+    display in both human-readable and JSON modes. Added 3 comprehensive tests covering all
+    scenarios. All 20 cli-serve tests passing."
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
