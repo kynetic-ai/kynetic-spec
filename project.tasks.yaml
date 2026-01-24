@@ -36520,6 +36520,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:55:59.862Z
+  started_at: 2026-01-24T23:09:05.654Z
   notes:
     - _ulid: 01KFR82EVN6J530W43EZA4DEKC
       created_at: 2026-01-24T14:55:59.861Z
@@ -36548,8 +36549,67 @@
         basic invocation, mode argument support. Note: Skills are Claude Code concepts; this specs
         BEHAVIOR when skills invoke kspec commands."
       supersedes: null
+    - _ulid: 01KFS4AHQPGWC0EHTK61D3NX1C
+      created_at: 2026-01-24T23:09:45.078Z
+      author: "@claude"
+      content: >-
+        ## Issue: Spec Too Vague to Implement
+
+
+        ### Problem
+
+        The @skill-commands spec is a 'container for skill-related behavior specs' with extremely
+        generic ACs:
+
+        - ac-1: skill exists → /skill-name invoked → executes with default behavior
+
+        - ac-2: skill supports modes → /skill-name mode invoked → behavior changes per mode
+
+
+        These ACs describe Claude Code's skill mechanism in general, not specific kspec
+        functionality.
+
+
+        ### Analysis
+
+        1. Skills are Claude Code concepts (.claude/skills/) - they are NOT part of kspec CLI
+
+        2. The spec has no child items defining what actual behavior to implement
+
+        3. No CLI commands, API endpoints, or code changes are specified
+
+        4. Previous note says: 'Skills are Claude Code concepts; this specs BEHAVIOR when skills
+        invoke kspec commands'
+
+
+        But there's no spec for WHAT behavior when skills invoke kspec commands!
+
+
+        ### Questions
+
+        1. What specific kspec functionality should skills invoke?
+
+        2. Are there supposed to be kspec commands that support skill workflows?
+
+        3. Is this a spec for future kspec commands that don't exist yet?
+
+        4. Should this be child specs under a different parent?
+
+
+        ### Recommendation
+
+        This task needs:
+
+        - Either: Clearer ACs defining specific kspec CLI behavior
+
+        - Or: Child specs defining what functionality to build
+
+        - Or: Clarification that this is just a placeholder/container with no implementation
+
+
+        Blocking until spec is clarified.
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T23:09:05.654Z
 - _ulid: 01KFR82F6P8Q8RXRX7YVJXZ9KF
   slugs:
     - task-skill-loop-mode
