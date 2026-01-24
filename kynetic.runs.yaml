@@ -4393,7 +4393,7 @@ runs:
   - _ulid: 01KFS5AF3TT84REMGMC43HA1CE
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T23:27:10.970Z
     step_results:
@@ -4418,5 +4418,20 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T23:27:24.031Z
-        completed_at: 2026-01-24T23:27:24.031Z
+        completed_at: 2026-01-24T23:27:34.209Z
+        notes: >-
+          Friction points:
+
+          1. Multiple active workflow runs - Got error about 34 active runs when trying to use
+          workflow next without specifying ID. No easy way to list/complete/cancel stale runs.
+
+          2. CI waiting pattern - After PR creation, had to manually wait for CI. No command to
+          block until CI completes or get notified.
+
+          3. buildPrompt signature change - Adding sessionId parameter required finding all call
+          sites. TypeScript caught it, but no automated test failed initially.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T23:27:34.209Z
+        completed_at: 2026-01-24T23:27:34.209Z
     initiated_by: "@claude"
