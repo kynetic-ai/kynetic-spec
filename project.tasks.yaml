@@ -32596,7 +32596,7 @@
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -33063,3 +33063,4 @@
         - @01KFP85M (Navigation/URL State Tests)
       supersedes: null
   todos: []
+  started_at: 2026-01-24T02:22:56.999Z
