@@ -34600,6 +34600,14 @@
         - ac-6: Given workflow completes, when user interaction, then user NOT asked to confirm
         captures
       supersedes: null
+    - _ulid: 01KFR84GPXMN15976ZS02D3SM4
+      created_at: 2026-01-24T14:57:07.293Z
+      author: "@claude"
+      content: "Implementation notes: 6 ACs covering search-first, high-conf, unique, novel, skip-user,
+        no-prompt. Key behavior: MUST search existing observations/inbox/tasks before capturing
+        anything. High confidence means agent-judged certainty, not quantitative threshold.
+        based_on: @session-reflect"
+      supersedes: null
   todos: []
 - _ulid: 01KFR82AVZY06AVHRRYSKNHPCD
   slugs:
