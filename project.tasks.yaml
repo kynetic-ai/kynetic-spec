@@ -31575,6 +31575,47 @@
         Need to verify which ACs should be covered by cli-serve.test.ts and check if all are
         present.
       supersedes: null
+    - _ulid: 01KFS4DZTG9KB4G19ZAZKFJWJR
+      created_at: 2026-01-24T23:11:37.808Z
+      author: "@claude"
+      content: >-
+        ## Issue Found
+
+
+        PR #204 review by Claude identified AC annotation issues in **daemon-auto-start.test.ts**,
+        not cli-serve.test.ts as the task title suggests.
+
+
+        ### daemon-auto-start.test.ts (INCORRECT FORMAT)
+
+        All 7 AC annotations use wrong format:
+
+        - Line 26: `// AC: Daemon config schema accepts auto_start and port`
+
+        - Line 49: `// AC: Daemon config is optional`
+
+        - etc.
+
+
+        Should be: `// AC: @spec-item ac-N`
+
+
+        ### cli-serve.test.ts (CORRECT FORMAT)
+
+        All 19 AC annotations are already correct:
+
+        - `// AC: @cli-serve-commands ac-1`
+
+        - `// AC: @multi-directory-daemon ac-12`
+
+        - `// AC: @trait-json-output ac-1, ac-2`
+
+
+        ### Decision
+
+        Will fix daemon-auto-start.test.ts. Task title seems incorrect but the actual issue is clear
+        from PR #204 context.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
