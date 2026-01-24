@@ -37,6 +37,8 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
 
   return (app: Elysia) =>
     app
+      // Store manager in app state for WebSocket access
+      .state('projectManager', manager)
       .derive(async ({ request, set }) => {
         try {
           // AC: @multi-directory-daemon ac-1 - Extract X-Kspec-Dir header

@@ -89,9 +89,10 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         await commitIfShadow(ctx, `inbox: add item ${item._ulid}`);
 
         // Broadcast update
+        // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('inbox:updates', 'inbox_item_created', {
           ulid: item._ulid,
-        });
+        }, projectContext.path);
 
         // AC: @api-contract ac-13 - Return item with generated ULID
         return {
@@ -142,10 +143,11 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         await commitIfShadow(ctx, `inbox: delete ${params.ref}`);
 
         // Broadcast update
+        // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('inbox:updates', 'inbox_item_deleted', {
           ref: params.ref,
           ulid: result.ulid,
-        });
+        }, projectContext.path);
 
         // AC: @api-contract ac-14 - Return success confirmation
         return {

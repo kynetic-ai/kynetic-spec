@@ -57,6 +57,7 @@ export interface ConnectionData {
   lastPing?: number;
   lastPong?: number;
   seq: number; // Per-connection sequence number
+  projectPath: string; // AC: @multi-directory-daemon ac-21 - bound project path
 }
 
 export interface WebSocketContext {

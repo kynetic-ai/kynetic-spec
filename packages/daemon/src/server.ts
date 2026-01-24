@@ -71,6 +71,7 @@ function resolveWebUiPath(webUiDir?: string): string | null {
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
+let projectManager: any; // ProjectContextManager instance
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -136,6 +137,9 @@ export async function createServer(options: ServerOptions) {
     ? kspecDir.slice(0, -('.kspec'.length + 1)) // Remove '/.kspec'
     : kspecDir;
 
+  // Import ProjectContextManager (needed for WebSocket binding)
+  const { ProjectContextManager } = await import('./project-context');
+
   // AC: @daemon-server ac-17 - Resolve web UI path for static file serving
   const resolvedWebUiPath = resolveWebUiPath(webUiDir);
   if (resolvedWebUiPath) {
@@ -161,26 +165,31 @@ export async function createServer(options: ServerOptions) {
   heartbeatManager = new HeartbeatManager();
   wsHandler = new WebSocketHandler(pubsubManager);
 
+  // WeakMap to store project path during WebSocket upgrade
+  const wsProjectPaths = new Map<string, string>();
+
   // AC-4: Initialize file watcher
   const watcher = new KspecWatcher({
     kspecDir,
     onFileChange: (file, content) => {
       // AC-4, ac-29: Broadcast file change to subscribed clients via topic
+      // AC: @multi-directory-daemon ac-18 - Broadcast scoped to startup project
       const relativePath = relative(kspecDir, file);
       pubsubManager.broadcast('files:updates', 'file_changed', {
         ref: relativePath,
         action: 'modified'
-      });
+      }, startupProjectPath);
 
       console.log(`[daemon] Broadcast file change: ${relativePath}`);
     },
     onError: (error, file) => {
       // AC-6: Broadcast error event on YAML parse errors
+      // AC: @multi-directory-daemon ac-18 - Broadcast scoped to startup project
       const relativePath = file ? relative(kspecDir, file) : undefined;
       pubsubManager.broadcast('files:errors', 'file_error', {
         ref: relativePath,
         error: error.message
-      });
+      }, startupProjectPath);
 
       console.error('[daemon] Broadcast error:', error.message);
     }
@@ -227,19 +236,74 @@ export async function createServer(options: ServerOptions) {
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
+      beforeHandle({ request, store }) {
+        // AC: @multi-directory-daemon ac-21, ac-22, ac-23 - Extract and validate project binding
+        const projectPath = request.headers.get('X-Kspec-Dir') || undefined;
+        const requestId = ulid(); // Temporary ID to correlate upgrade with open
+
+        try {
+          const manager = (store as any).projectManager;
+          if (!manager) {
+            // Fallback: project manager not initialized yet
+            wsProjectPaths.set(requestId, startupProjectPath);
+            return { wsRequestId: requestId };
+          }
+
+          let projectContext;
+          if (projectPath) {
+            // Explicit project specified
+            try {
+              projectContext = manager.getProject(projectPath);
+            } catch {
+              // AC: @multi-directory-daemon ac-4 - auto-register
+              projectContext = manager.registerProject(projectPath);
+            }
+          } else {
+            // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject
+            try {
+              projectContext = manager.getProject();
+            } catch (err: any) {
+              // AC: @multi-directory-daemon ac-23 - Reject when no default
+              if (err.message.includes('No default project configured')) {
+                throw new Error('No project specified');
+              }
+              throw err;
+            }
+          }
+
+          // Store resolved path for open() handler
+          wsProjectPaths.set(requestId, projectContext.path);
+          return { wsRequestId: requestId };
+        } catch (err: any) {
+          console.error(`[daemon] WebSocket connection rejected: ${err.message}`);
+          throw err;
+        }
+      },
       open(ws) {
         // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
         const sessionId = ulid();
+
+        // AC: @multi-directory-daemon ac-21 - Get bound project path
+        // Fallback to startup project if not found (shouldn't happen)
+        const requestId = (ws.data as any).wsRequestId;
+        const projectPath = requestId ? wsProjectPaths.get(requestId) || startupProjectPath : startupProjectPath;
+
+        // Clean up temporary mapping
+        if (requestId) {
+          wsProjectPaths.delete(requestId);
+        }
+
         ws.data = {
           sessionId,
           topics: new Set<string>(),
           seq: 0,
           lastPing: undefined,
-          lastPong: Date.now()
+          lastPong: Date.now(),
+          projectPath // AC: @multi-directory-daemon ac-21 - immutable binding
         };
 
         pubsubManager.addConnection(sessionId, ws);
-        console.log(`[daemon] WebSocket client connected: ${sessionId} (${pubsubManager.getConnectionCount()} total)`);
+        console.log(`[daemon] WebSocket client connected: ${sessionId} bound to ${projectPath} (${pubsubManager.getConnectionCount()} total)`);
 
         // Send connected event with session_id
         const connectedEvent: ConnectedEvent = {
