@@ -946,7 +946,7 @@ features:
             depends_on: []
             implements: []
             relates_to:
-              - "@01KFM9SNV2QRRGREJ1HMZWXCFT"  # @task-work-session workflow
+              - "@01KFM9SNV2QRRGREJ1HMZWXCFT"
             tests: []
             traits: []
             notes: []
@@ -1005,7 +1005,7 @@ features:
             depends_on: []
             implements: []
             relates_to:
-              - "@01KFKS5NT2T98M70QQ4FZB2VTW"  # @session-reflect workflow
+              - "@01KFKS5NT2T98M70QQ4FZB2VTW"
             tests: []
             traits: []
             notes: []
@@ -1047,8 +1047,8 @@ features:
             depends_on: []
             implements: []
             relates_to:
-              - "@01KFM9X3C64AHJAD6J2YJZ3YA6"  # @local-review workflow
-              - "@01KFM9G3BR4VFNBM2G7BGE5BZY"  # @pr-review-merge workflow
+              - "@01KFM9X3C64AHJAD6J2YJZ3YA6"
+              - "@01KFM9G3BR4VFNBM2G7BGE5BZY"
             tests: []
             traits: []
             notes: []
@@ -1097,7 +1097,11 @@ features:
               - id: ac-11
                 given: subagent encounters friction during PR review
                 when: friction is significant (not one-off)
-                then: searches existing observations first, only captures if unique, uses kspec meta observe with [REVIEW SUBAGENT] prefix
+                then: searches existing observations first, only captures if unique, uses kspec meta observe with
+                  [REVIEW SUBAGENT] prefix
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
