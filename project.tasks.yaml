@@ -34001,7 +34001,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
-  slugs: []
+  slugs:
+    - task-broadcast-filter-impl
   title: Per-project broadcast filtering implementation
   type: task
   description: >-
