@@ -34188,7 +34188,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
-  slugs: []
+  slugs:
+    - task-projects-api-impl
   title: /api/projects endpoints implementation
   type: task
   description: |-
