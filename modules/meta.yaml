@@ -1101,7 +1101,7 @@ features:
                   [REVIEW SUBAGENT] prefix
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
