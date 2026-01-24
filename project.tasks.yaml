@@ -35420,6 +35420,45 @@
 
         Estimated effort: 1-2 hours for implementation + testing.
       supersedes: null
+    - _ulid: 01KFS14WJ5XDA09HZC113KAHAX
+      created_at: 2026-01-24T22:14:13.829Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Per-project file watcher functionality implemented with the
+        following changes:
+
+
+        1. **ProjectContextManager watcher management** (packages/daemon/src/project-context.ts):
+           - Added watcher storage: Map<string, KspecWatcher>
+           - Added startWatcher(projectPath) method to create per-project watchers
+           - Added stopWatcher(projectPath) to stop individual project watchers
+           - Added stopAllWatchers() for shutdown (AC-11b)
+           - Modified registerProject() to remain synchronous (watchers started separately)
+           - Watchers broadcast file changes scoped to project path (AC-17, AC-18)
+           - Handles OS resource limits (EMFILE/ENFILE) with proper error (AC-19)
+
+        2. **Middleware integration** (packages/daemon/src/middleware/project-context.ts):
+           - Added pubsub parameter to projectContextMiddleware
+           - Auto-starts watchers on project registration in middleware
+           - Added AC-19 error handling (503 response for resource limits)
+
+        3. **Server.ts updates** (packages/daemon/src/server.ts):
+           - Removed single global watcher
+           - Integrated ProjectContextManager for watcher lifecycle
+           - Startup project watcher started after initialization
+           - Shutdown calls stopAllWatchers() (AC-11b)
+
+        4. **Test updates**:
+           - Updated static analysis tests to check project-context.ts instead of server.ts
+           - Updated daemon-context-manager test to expect watcherActive=false after registration
+           - All 17 per-project watcher tests passing
+           - All 1379 tests passing (1 pre-existing failure in daemon-executable.test.ts)
+
+        Covers AC-16, AC-17, AC-18, AC-19, AC-20, AC-11b from @multi-directory-daemon spec.
+
+
+        Ready for commit and PR.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
