@@ -34987,6 +34987,14 @@
       content: "PR #223 created and awaiting CI checks. Branch: test/projects-api-tests. Workflow
         @pr-review-merge started (run 01KFRW1M) but waiting for CI to complete."
       supersedes: null
+    - _ulid: 01KFRWCAWXMF2H1A8JGYQ3HJC1
+      created_at: 2026-01-24T20:50:55.006Z
+      author: "@claude"
+      content: "Fixed method name mismatches identified in Greptile review:
+        getRegisteredProjects→listProjects, register→registerProject, unregister→unregisterProject.
+        Also corrected import path from '../context/manager' to '../project-context'. All tests pass
+        locally. Waiting for CI to complete on updated PR."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
