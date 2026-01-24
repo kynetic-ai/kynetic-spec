@@ -32228,6 +32228,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:43.587Z
+  started_at: 2026-01-24T23:36:31.383Z
   notes:
     - _ulid: 01KFP86RBE8RZP4CWZV5SMKHFJ
       created_at: 2026-01-23T20:19:51.791Z
@@ -32302,9 +32303,43 @@
         ## Viewport Testing
         Test filter behavior on mobile (may collapse to dropdown).
       supersedes: null
+    - _ulid: 01KFS5Y3656RD823Q4C1935RMF
+      created_at: 2026-01-24T23:37:54.117Z
+      author: "@claude"
+      content: >-
+        Created comprehensive E2E tests for tasks view in packages/web-ui/tests/e2e/tasks.spec.ts
+
+
+        Test coverage:
+
+        - AC-4: Task list display with all required fields (title, status, priority, spec_ref, notes
+        count)
+
+        - AC-5: Task detail panel with notes, todos, dependencies
+
+        - AC-6: Spec reference as clickable link
+
+        - AC-7: Start Task button triggers state change
+
+        - AC-8: Add Note form appends note
+
+        - AC-9: Filter controls for status, type, tag, assignee, automation (5 separate tests)
+
+        - AC-10: URL updates with filter params + filter restoration from URL
+
+        - AC-33: WebSocket updates highlight changed items
+
+        - AC-26: Mobile responsive layout
+
+        - AC-27: Desktop slide-over detail panel
+
+
+        Total: 20 test cases covering all required ACs. All tests use test.skip() as documentary
+        tests pending UI component implementation. Tests follow existing E2E patterns from
+        project-selector.spec.ts.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T23:36:31.383Z
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
   slugs: []
   title: E2E Items View Tests
