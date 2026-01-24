@@ -34527,6 +34527,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:55:55.150Z
+  started_at: 2026-01-24T16:43:17.430Z
   notes:
     - _ulid: 01KFR82A8E9S3J6ZHJFNJTBMQC
       created_at: 2026-01-24T14:55:55.150Z
@@ -34581,8 +34582,24 @@
         (no-eligible, all-blocked, multi-pending). based_on: @task-work-session. Key: pending_review
         triggers sequential subagent spawn."
       supersedes: null
+    - _ulid: 01KFREC39B76RSX8CF5TCDP0FB
+      created_at: 2026-01-24T16:46:07.148Z
+      author: "@claude"
+      content: >-
+        Implemented task-work-loop workflow:
+
+        - Created @task-work-loop workflow with mode: loop, based_on: @task-work-session
+
+        - 7 steps covering: filter eligible, task selection (in_progress > pending_review >
+        unblocking > priority), start, work, commit, submit, PR
+
+        - execution.mode: silent on most steps for auto-resolve
+
+        - Updated /task-work skill documentation with Loop Mode section
+
+        - Verified workflow appears in 'kspec meta workflows --tag loop'
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T16:43:17.430Z
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
     - task-session-reflect-loop-workflow
