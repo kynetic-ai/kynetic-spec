@@ -34170,6 +34170,7 @@
   created_at: 2026-01-24T06:18:43.336Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
   slugs: []
   title: /api/projects endpoints implementation
