@@ -31633,8 +31633,10 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Blocked on @01KFQ6GT - need multi-directory daemon architecture spec before E2E tests can work
+      reliably
   depends_on:
     - "@01KFPRX9"
   context: []
