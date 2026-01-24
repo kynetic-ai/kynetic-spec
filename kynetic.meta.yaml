@@ -3348,4 +3348,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFQ59KETY6PT8FA6YKZT332Q
+    type: success
+    content: "Same-origin architecture: daemon serving both web UI and API on single port simplifies
+      CORS, WebSocket setup, and eliminates cross-origin complexity"
+    created_at: 2026-01-24T04:48:13.787Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
