@@ -33935,7 +33935,7 @@
     Task: Global PID/port management tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAAM"
@@ -33949,6 +33949,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T18:52:49.102Z
 - _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
   slugs:
     - task-context-manager-impl
@@ -34035,6 +34036,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #216. Created 16 comprehensive path validation middleware tests
+    covering ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c, ac-20b. Tests validate
+    X-Kspec-Dir header handling, project registration, path normalization, permission errors, and
+    default project handling. All CI checks passed."
   depends_on:
     - "@01KFQAAA"
   context: []
@@ -34045,6 +34050,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:16:56.435Z
   started_at: 2026-01-24T18:42:17.255Z
+  completed_at: 2026-01-24T18:52:22.868Z
   notes:
     - _ulid: 01KFRN6VHHRFS6HVZWW5D8S0J5
       created_at: 2026-01-24T18:45:35.409Z
@@ -34080,11 +34086,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T18:52:22.868Z
-  closed_reason: "Merged in PR #216. Created 16 comprehensive path validation middleware tests
-    covering ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c, ac-20b. Tests validate
-    X-Kspec-Dir header handling, project registration, path normalization, permission errors, and
-    default project handling. All CI checks passed."
 - _ulid: 01KFQACE936G0SDG0F3DQD8V89
   slugs:
     - task-middleware-impl
