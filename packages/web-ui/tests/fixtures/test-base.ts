@@ -19,26 +19,44 @@ interface DaemonFixture {
 async function cleanupExistingDaemon(): Promise<void> {
   // Kill any daemon that might be running on port 3456
   try {
-    const result = spawnSync('lsof', ['-ti', ':' + DAEMON_PORT], { encoding: 'utf-8' });
-    if (result.stdout.trim()) {
-      const pids = result.stdout.trim().split('\n');
-      for (const pid of pids) {
-        try {
-          process.kill(parseInt(pid, 10), 'SIGTERM');
-        } catch {
-          // Process may already be gone
+    if (process.platform === 'win32') {
+      // Windows: use netstat to find PID, then taskkill
+      const result = spawnSync('netstat', ['-ano'], { encoding: 'utf-8' });
+      const lines = result.stdout.split('\n');
+      for (const line of lines) {
+        if (line.includes(':' + DAEMON_PORT) && line.includes('LISTENING')) {
+          const parts = line.trim().split(/\s+/);
+          const pid = parts[parts.length - 1];
+          if (pid && /^\d+$/.test(pid)) {
+            spawnSync('taskkill', ['/F', '/PID', pid], { stdio: 'ignore' });
+          }
         }
       }
-      await new Promise((r) => setTimeout(r, 1000));
+    } else {
+      // Unix: use lsof
+      const result = spawnSync('lsof', ['-ti', ':' + DAEMON_PORT], { encoding: 'utf-8' });
+      if (result.stdout.trim()) {
+        const pids = result.stdout.trim().split('\n');
+        for (const pid of pids) {
+          try {
+            process.kill(parseInt(pid, 10), 'SIGTERM');
+          } catch {
+            // Process may already be gone
+          }
+        }
+      }
     }
+    await new Promise((r) => setTimeout(r, 1000));
   } catch {
-    // lsof may not be available on all systems
+    // Command may not be available on all systems
   }
 }
 
 async function checkBunAvailable(): Promise<boolean> {
   try {
-    execSync('which bun', { stdio: 'ignore' });
+    // Use 'where' on Windows, 'which' on Unix
+    const cmd = process.platform === 'win32' ? 'where' : 'which';
+    execSync(`${cmd} bun`, { stdio: 'ignore' });
     return true;
   } catch {
     return false;
