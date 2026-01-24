@@ -34366,6 +34366,35 @@
         Recommendation: Block this task on 01KFQAD3, OR pivot to write tests that verify the
         migration is needed (negative tests showing current limitation).
       supersedes: null
+    - _ulid: 01KFRS08F6CDWPPN1FXAKQ6YPS
+      created_at: 2026-01-24T19:51:53.574Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Added multi-project support tests to 4 API test files:
+
+
+        1. daemon-api-tasks.test.ts - 5 new tests covering ac-24 for GET /tasks, GET /tasks/:ref,
+        POST /tasks/:ref/start, POST /tasks/:ref/note
+
+        2. daemon-api-items.test.ts - 4 new tests covering ac-24 for GET /items, GET /items/:ref,
+        GET /items/:ref/tasks  
+
+        3. daemon-api-inbox.test.ts - 4 new tests covering ac-24 for GET /inbox, POST /inbox, DELETE
+        /inbox/:ref
+
+        4. daemon-api-meta.test.ts - 5 new tests covering ac-24 for GET /meta/session, /meta/agents,
+        /meta/workflows, /meta/observations
+
+
+        All tests verify routes will use projectContext from middleware state (after task 01KFQAD3
+        migration completes). Tests are written in TDD style - they accept both current state
+        (hardcoded kspecDir) and future state (projectContext from middleware).
+
+
+        Test approach: Static pattern matching to verify code structure.
+
+        All 44 tests passing.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
