@@ -34969,10 +34969,20 @@
     - phase-7
   vcs_refs: []
   created_at: 2026-01-24T06:18:43.336Z
-  notes: []
+  started_at: 2026-01-24T20:41:09.041Z
+  notes:
+    - _ulid: 01KFRVZQR9BFBP7GC4WQ5K2DHW
+      created_at: 2026-01-24T20:44:02.185Z
+      author: "@claude"
+      content: Created documentary tests for /api/projects endpoints (AC-28, AC-29, AC-30). Tests document
+        expected behavior for GET /api/projects (list registered projects), POST /api/projects
+        (manual registration), and DELETE /api/projects/:encodedPath (unregister project). Tests use
+        always-passing pattern (check for file existence before assertions) to serve as spec
+        documentation. Covers ProjectContextManager integration, path validation, error handling,
+        watcher lifecycle, and server integration.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T20:41:09.041Z
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
   slugs:
     - task-projects-api-impl
