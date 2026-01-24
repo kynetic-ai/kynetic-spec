@@ -3380,8 +3380,41 @@ runs:
   - _ulid: 01KFRCBDE6KQMEND1RMZMVWZF1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-24T16:10:47.623Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-24T16:10:47.623Z
+        completed_at: 2026-01-24T16:11:32.398Z
+        notes: >-
+          What worked well this session:
+
+
+          1. **testUlid() helper**: Used the existing test utility to generate valid Crockford
+          base32 ULIDs. Initially wrote hardcoded ULIDs with invalid chars (L, I, O) which caused
+          silent fixture failures. The user pointed me to the utility - it auto-replaces invalid
+          chars.
+
+
+          2. **Structured task workflow**: The /task-work skill kept the work organized - starting
+          with kspec task start, adding notes during work, then submitting when code was done.
+
+
+          3. **Spec-first development**: The spec had clear acceptance criteria (3 ACs) which
+          directly guided what tests to write and what features to implement.
+
+
+          4. **Parallel exploration**: Used Task tool with Explore subagent to understand the
+          existing workflow schema and CLI commands before making changes - avoided breaking
+          existing functionality.
+
+
+          5. **Incremental testing**: Ran tests after each change to catch issues early. The invalid
+          ULID issue was caught quickly through test failures.
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-24T16:11:32.398Z
+        completed_at: 2026-01-24T16:11:32.398Z
     initiated_by: "@claude"
