@@ -35542,6 +35542,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:55:55.775Z
+  started_at: 2026-01-24T21:01:27.469Z
   notes:
     - _ulid: 01KFR82AVZ2SW79N0X4ZH4RTTX
       created_at: 2026-01-24T14:55:55.775Z
@@ -35595,8 +35596,36 @@
         subagent (separate process) but SEQUENTIAL (ralph waits). Key quality gates: AC coverage +
         spec alignment. Handles subagent crash/timeout."
       supersedes: null
+    - _ulid: 01KFRX5BP97Q8KTDQ0TJ4MR2WS
+      created_at: 2026-01-24T21:04:35.018Z
+      author: "@claude"
+      content: >-
+        Created pr-review-loop workflow with 10 steps covering all 11 ACs. Workflow implements
+        sequential PR review process for loop mode:
+
+        1. Run @local-review workflow (ac-1)
+
+        2. Verify AC coverage (ac-2)
+
+        3. Verify spec alignment (ac-3)
+
+        4. Fix MUST-FIX issues or mark needs_review (ac-4, ac-8)
+
+        5. Push changes and wait for CI (ac-5)
+
+        6. Follow @pr-review-merge gates (ac-6)
+
+        7. Verify merge succeeded
+
+        8. Complete task with PR reference (ac-7)
+
+        9. Capture friction with search-first pattern (ac-11)
+
+
+        ac-9 (subagent failure handling) and ac-10 (sequential execution) are ralph behaviors, not
+        workflow steps. Workflow validated successfully with kspec validate.
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T21:01:27.469Z
 - _ulid: 01KFR82EVPE409RGQ29A73FP9P
   slugs:
     - task-skill-commands

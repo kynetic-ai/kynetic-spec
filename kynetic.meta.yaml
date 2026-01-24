@@ -516,7 +516,137 @@ workflows:
     description: PR review subagent workflow for loop mode. Runs local review, verifies AC coverage and
       spec alignment, fixes issues, waits for CI, and merges with quality gates. Sequential
       execution (ralph waits).
-    steps: []
+    steps:
+      - type: action
+        content: |
+          Run local review workflow first (ac-1).
+          Use: /local-review skill or kspec workflow start @local-review
+
+          This checks:
+          - AC coverage (all spec ACs have test annotations)
+          - Test quality (no fluff tests, proper isolation)
+          - E2E preference (integration tests over unit tests where appropriate)
+          - Test isolation (temp directories, cleanup)
+      - type: check
+        content: |
+          Verify all spec ACs linked to task have test coverage (ac-2).
+
+          Check test files for AC annotations: // AC: @spec-ref ac-N
+          Cross-reference with spec ACs from task.spec_ref
+
+          MUST-FIX if:
+          - Spec has ACs but no tests reference them
+          - Tests exist but don't cover all ACs
+        on_fail: |
+          Add missing test coverage before continuing.
+          Tests must validate AC behavior, not just implementation.
+      - type: check
+        content: |
+          Verify implementation matches spec requirements (ac-3).
+
+          This is NOT just "do tests pass" - verify:
+          - Implementation aligns with spec description
+          - All AC conditions are actually implemented
+          - No deviation from spec without justification
+
+          Read spec, read implementation, compare.
+        on_fail: |
+          Fix misalignment between spec and implementation.
+          Update code to match spec, or note why deviation is necessary.
+      - type: decision
+        content: |
+          Evaluate local-review findings (ac-4).
+
+          If MUST-FIX issues found:
+          - Attempt to fix them in-place
+          - Run tests after fixes
+          - Push changes
+
+          If issues cannot be resolved:
+          - Mark task automation: needs_review with explanation (ac-8)
+          - EXIT workflow
+
+          Decision matrix:
+          - MUST-FIX issues, can fix -> Fix and continue
+          - MUST-FIX issues, cannot fix -> Mark needs_review, EXIT
+          - Only advisory issues -> Continue with merge
+          - No issues -> Continue with merge
+      - type: action
+        content: |
+          Push changes (if any fixes were made).
+          Use: git push
+
+          This triggers CI to run on latest code.
+
+          NOTE: Only push if changes were actually made during issue fixing.
+      - type: check
+        content: |
+          Wait for CI to complete and pass (ac-5).
+
+          Poll CI status until all checks complete.
+          Use: gh pr view --json statusCheckRollup
+
+          Do NOT merge while checks are running or failing.
+        on_fail: |
+          If CI fails:
+          - Investigate failure
+          - Fix if possible
+          - Push changes
+          - Wait for CI again
+
+          If cannot fix:
+          - Mark task automation: needs_review with CI failure details (ac-8)
+          - EXIT workflow
+      - type: action
+        content: |
+          Follow PR review merge gates (ac-6).
+          Use: kspec workflow start @pr-review-merge
+
+          This ensures:
+          - All CI checks pass
+          - All review feedback addressed
+          - All @claude requests completed
+          - All review threads resolved
+
+          Only merge when all gates pass.
+      - type: check
+        content: |
+          Verify PR was successfully merged.
+          Use: gh pr view --json state,mergedAt
+
+          Confirm state is MERGED.
+        on_fail: |
+          If merge failed:
+          - Check for conflicts or protection rules
+          - Attempt resolution
+          - If cannot resolve: mark automation: needs_review (ac-8)
+          - EXIT workflow
+      - type: action
+        content: |
+          Mark task completed with PR reference (ac-7).
+          Use: kspec task complete @task --reason "Merged in PR #N. <summary>"
+
+          Include in reason:
+          - PR number
+          - Summary of what was implemented
+          - Any notable changes or deviations
+          - AC coverage confirmation
+      - type: action
+        content: |
+          Check for friction during PR review (ac-11).
+
+          If significant friction encountered (not one-off):
+          1. Search existing observations first:
+             kspec meta observations list --type friction
+          2. Only capture if unique:
+             kspec meta observe friction "[REVIEW SUBAGENT] <description>"
+
+          Be selective - systemic patterns only, not one-off issues.
+          This step is optional - only capture if friction was encountered.
+    mode: loop
+    tags:
+      - loop
+      - pr-review
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
