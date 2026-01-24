@@ -178,58 +178,63 @@ After completing a task:
 
 ## Loop Mode
 
-For autonomous agents running in ralph's automation loop, invoke with the `loop` argument:
+You are running in autonomous loop mode. Start the workflow:
 
 ```bash
-/task-work loop
-```
-
-This starts the `@task-work-loop` workflow designed for no-human-in-loop execution.
-
-### Starting the Workflow
-
-```bash
-# Get eligible tasks (automation: eligible only)
-kspec tasks ready --eligible
-
-# Start the loop workflow
 kspec workflow start @task-work-loop
 ```
 
-### Key Differences from Interactive Mode
+Then follow the workflow steps below.
 
-| Aspect | Interactive | Loop |
-|--------|-------------|------|
-| Task filtering | All tasks | `automation: eligible` only |
-| Verification | Check git history | Still verify (prevent duplicate work) |
-| Confirmations | User confirms | Auto-resolve without prompts |
-| Task selection | User chooses | Priority order (see below) |
-| pending_review | User handles PR | Handled externally by ralph |
+### Workflow Steps
 
-**Note:** PR review for `pending_review` tasks is handled by ralph spawning a separate subagent. The task-work loop agent focuses only on task implementation work.
+1. **Get eligible tasks**
+   ```bash
+   kspec tasks ready --eligible
+   ```
 
-### Loop Task Selection Order
+2. **Select task** (priority order):
+   - First: any `in_progress` task (continue existing work)
+   - Then: tasks that unblock others (high impact)
+   - Finally: highest priority ready task (lowest number)
 
-1. **in_progress** - Continue existing work first
-2. **Unblocking** - Tasks that unblock others preferred
-3. **Priority** - Highest priority (lowest number)
+3. **Verify work is needed**
+   - Check git history for related commits
+   - Read existing implementation if files exist
+   - If already done: `kspec task complete @task --reason "Already implemented"` and EXIT
+
+4. **Start and implement**
+   ```bash
+   kspec task start @task
+   # Do the work
+   kspec task note @task "What you did..."
+   ```
+
+5. **Commit and submit**
+   ```bash
+   git add <files> && git commit -m "feat/fix: description
+
+   Task: @task-slug"
+   kspec task submit @task
+   ```
+
+6. **Create PR and exit**
+   ```bash
+   /pr
+   ```
+   After PR created, EXIT. Ralph handles PR review via separate subagent.
 
 ### Exit Conditions
 
-Exit the workflow when any of these apply:
+Exit when any of these apply:
+- **Task work complete** - PR created (normal exit)
+- **No eligible tasks** - `kspec tasks ready --eligible` returns empty
+- **All blocked** - All eligible tasks have unmet dependencies
+- **Already implemented** - Verification found work already done
 
-- **Task work complete** - You completed work on a task (normal exit)
-- **No eligible tasks** - No `automation: eligible` tasks available
-- **All blocked** - All eligible tasks are blocked by dependencies
+### Key Behaviors
 
-On exit, ralph handles iteration cycling and reflection.
-
-### Loop Workflow Steps
-
-1. Filter to `automation: eligible` tasks only
-2. Select task by priority order (in_progress > unblocking > priority)
-3. Verify work is needed (check git, existing code)
-4. Start task and implement
-5. Add notes documenting work
-6. Commit with task trailers
-7. Submit task and create PR
+- Only `automation: eligible` tasks are considered
+- Verification still performed (prevent duplicate work)
+- Decisions auto-resolve without prompts
+- PR review handled externally by ralph (not this workflow)
