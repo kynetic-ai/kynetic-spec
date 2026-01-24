@@ -655,3 +655,15 @@ inbox:
       - cli
       - design
     added_by: "@claude"
+  - _ulid: 01KFR0SJMJD9SPP35TDFSCPSN0
+    text: "Improve CLI feature discoverability documentation - Key features are not well-known: (1)
+      'kspec item ac add' for adding ACs via CLI instead of editing YAML, (2) 'kspec task set
+      --refs' for batch operations on multiple tasks. Consider: adding examples to AGENTS.md quick
+      reference, improving --help output with common use cases, or adding a 'kspec cheatsheet'
+      command. Agent didn't know these existed and did manual work instead."
+    created_at: 2026-01-24T12:48:48.787Z
+    tags:
+      - documentation
+      - cli
+      - dx
+    added_by: "@claude"
