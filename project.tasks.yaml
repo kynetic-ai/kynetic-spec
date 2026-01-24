@@ -37007,7 +37007,7 @@
   type: task
   spec_ref: "@ralph-skill-delegation"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
