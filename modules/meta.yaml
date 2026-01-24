@@ -950,6 +950,23 @@ features:
             traits: []
             notes: []
             created: 2026-01-24T14:48:12.871Z
+          - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
+            slugs:
+              - session-reflect-loop-workflow
+            title: Session Reflect Loop Workflow
+            type: requirement
+            tags: []
+            description: "Workflow for /reflect loop. Key differences from @session-reflect: high confidence
+              capture only, MUST search existing before capturing, skip user decision step, lower
+              volume higher quality. High confidence means agent-judged certainty, not quantitative
+              threshold."
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-01-24T14:48:16.858Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
