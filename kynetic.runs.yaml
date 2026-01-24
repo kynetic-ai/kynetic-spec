@@ -3172,7 +3172,7 @@ runs:
   - _ulid: 01KFR09KPKP129WTSYYM24M94E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T12:40:05.588Z
     step_results:
@@ -3270,5 +3270,30 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T12:42:38.364Z
-        completed_at: 2026-01-24T12:42:38.364Z
+        completed_at: 2026-01-24T12:42:52.299Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. **task add --depends-on support** (Small)
+             - What: Add --depends-on flag to 'kspec task add' command
+             - How it helps: Set dependencies at creation time instead of requiring follow-up 'task set'
+             - Scope: Small - add option parsing and pass to task creation
+
+          2. **--add-depends-on flag for appending** (Small)
+             - What: Add --add-depends-on to 'task set' that appends to existing deps (vs --depends-on which replaces)
+             - How it helps: Easier to add one dependency without needing to re-specify all existing ones
+             - Scope: Small - new flag, array concat instead of replace
+
+          Already well-covered (no proposal needed):
+
+          - Bulk AC add: use 'kspec item ac add' 
+
+          - Bulk automation: use 'kspec task set --refs ... --automation'
+
+          - Plan file location: Claude Code UI issue, not kspec
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T12:42:52.299Z
+        completed_at: 2026-01-24T12:42:52.299Z
     initiated_by: "@claude"
