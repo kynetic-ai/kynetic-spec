@@ -33782,6 +33782,7 @@
   created_at: 2026-01-24T06:17:09.667Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQACQ7MWQ9XAGC8FRP7GRTK
   slugs: []
   title: API routes multi-project tests
