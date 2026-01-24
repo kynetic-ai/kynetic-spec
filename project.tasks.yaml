@@ -33484,7 +33484,10 @@
   created_at: 2026-01-24T06:15:59.745Z
   notes: []
   todos: []
-- title: Global PID/port management tests
+- _ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
+  slugs: []
+  title: Global PID/port management tests
+  type: task
   description: |-
     Write tests for global PID/port file management.
 
@@ -33501,6 +33504,36 @@
 
     ## Dependencies
     Task: Multi-directory daemon test fixtures
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - testing
+    - phase-1
+  vcs_refs: []
+  created_at: 2026-01-24T06:16:10.627Z
+  notes: []
+  todos: []
+- title: ProjectContextManager unit tests
+  description: |-
+    Write unit tests for ProjectContextManager.
+
+    ## Test Cases
+    - Test context caching by normalized path
+    - Test concurrent registration (race condition handling)
+    - Test stale project detection
+    - Test auto-registration on first request
+    - Test no persistence across restarts
+
+    ## AC Coverage
+    ac-4, ac-14, ac-15, ac-16, ac-20
+
+    ## Dependencies
+    Task: Multi-directory daemon test fixtures
   type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
@@ -33509,12 +33542,12 @@
   tags:
     - testing
     - phase-1
-  _ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
+  _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:16:10.627Z
+  created_at: 2026-01-24T06:16:20.121Z
   notes: []
   todos: []
