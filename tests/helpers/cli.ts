@@ -157,11 +157,50 @@ export const kspecWithStatus = (args: string, cwd: string): KspecResult => {
 /**
  * Copy fixtures to a temp directory for isolated testing
  *
+ * Excludes the 'multi-dir' subdirectory (use setupMultiDirFixtures() for that).
+ *
  * @returns Path to the temp directory
  */
 export async function setupTempFixtures(): Promise<string> {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-test-'));
-  await fs.cp(FIXTURES_DIR, tempDir, { recursive: true });
+
+  // Copy all fixtures except multi-dir
+  const entries = await fs.readdir(FIXTURES_DIR, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.name === 'multi-dir') continue; // Skip multi-dir fixtures
+    const source = path.join(FIXTURES_DIR, entry.name);
+    const dest = path.join(tempDir, entry.name);
+    if (entry.isDirectory()) {
+      await fs.cp(source, dest, { recursive: true });
+    } else {
+      await fs.copyFile(source, dest);
+    }
+  }
+
+  return tempDir;
+}
+
+/**
+ * Copy multi-directory daemon fixtures to a temp directory
+ *
+ * Creates isolated copies of multiple kspec projects for testing
+ * multi-directory daemon functionality.
+ *
+ * @returns Path to the temp directory containing project subdirectories
+ *
+ * @example
+ * const fixturesRoot = await setupMultiDirFixtures();
+ * const projectA = path.join(fixturesRoot, 'project-a');
+ * const projectB = path.join(fixturesRoot, 'project-b');
+ * const projectInvalid = path.join(fixturesRoot, 'project-invalid');
+ *
+ * // Clean up when done
+ * await cleanupTempDir(fixturesRoot);
+ */
+export async function setupMultiDirFixtures(): Promise<string> {
+  const multiDirSource = path.join(FIXTURES_DIR, 'multi-dir');
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-multi-'));
+  await fs.cp(multiDirSource, tempDir, { recursive: true });
   return tempDir;
 }
 

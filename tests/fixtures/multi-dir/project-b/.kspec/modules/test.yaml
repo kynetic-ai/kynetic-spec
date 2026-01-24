@@ -1,0 +1,12 @@
+items:
+  - _ulid: 01SPECB0000000000000000000
+    slugs:
+      - spec-b-sample
+    title: Sample Spec B
+    type: feature
+    description: Test spec item for project B
+    acceptance_criteria:
+      - _ulid: 01SPECB0000000000000000001
+        given: project B is loaded
+        when: spec is queried
+        then: returns valid spec data
