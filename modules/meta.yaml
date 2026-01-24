@@ -975,6 +975,10 @@ features:
                 given: task is selected
                 when: workflow begins
                 then: verification step skipped
+              - id: ac-7
+                given: workflow reaches decision step
+                when: workflow continues
+                then: decision auto-resolves without human input
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
