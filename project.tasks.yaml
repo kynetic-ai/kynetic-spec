@@ -34755,10 +34755,41 @@
     - phase-5
   vcs_refs: []
   created_at: 2026-01-24T06:17:52.139Z
-  notes: []
+  started_at: 2026-01-24T21:23:44.972Z
+  notes:
+    - _ulid: 01KFRYAHH3BPFGAVKG20YF817B
+      created_at: 2026-01-24T21:24:53.412Z
+      author: "@claude"
+      content: >-
+        Implementation analysis:
+
+
+        WebSocket project binding requires:
+
+        1. Add projectPath field to ConnectionData interface (types.ts)
+
+        2. Extract X-Kspec-Dir from upgrade request headers in server.ts ws.open()
+
+        3. Use ProjectContextManager.getProject() to validate/register project
+
+        4. Handle default project fallback (ac-22) and rejection (ac-23) 
+
+        5. Store projectPath in ws.data for connection lifetime
+
+        6. Update pubsub.broadcast() to filter by projectPath
+
+        7. Update PubSubManager to track project→connections mapping
+
+
+        Tests already exist in daemon-websocket.test.ts (ac-21, ac-21b, ac-22, ac-23, ac-18).
+
+
+        Key challenge: Elysia WebSocket upgrade doesn't expose headers in open() hook - need to
+        extract from underlying request during handshake. May need to use beforeHandle or headers
+        property.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T21:23:44.972Z
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
   slugs:
     - task-broadcast-filter-tests
