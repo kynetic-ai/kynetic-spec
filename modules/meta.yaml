@@ -992,6 +992,9 @@ features:
                 given: multiple pending_review tasks exist
                 when: agent handles pending_review
                 then: processes one at a time, oldest (by started_at) first
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
