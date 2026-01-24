@@ -35666,6 +35666,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #228. Added AC-12 functionality to kspec serve status showing
+    registered projects list. Modified statusServer() to fetch from /api/projects endpoint and
+    display in both human-readable and JSON modes. Added 3 comprehensive tests covering all
+    scenarios. All 20 cli-serve tests passing."
   depends_on:
     - "@01KFQAFM"
   context: []
@@ -35677,6 +35681,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:19:03.995Z
   started_at: 2026-01-24T22:40:29.793Z
+  completed_at: 2026-01-24T22:49:33.985Z
   notes:
     - _ulid: 01KFS2SEW8XFMMFGNTJM3JADKK
       created_at: 2026-01-24T22:42:56.520Z
@@ -35700,11 +35705,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T22:49:33.985Z
-  closed_reason: "Merged in PR #228. Added AC-12 functionality to kspec serve status showing
-    registered projects list. Modified statusServer() to fetch from /api/projects endpoint and
-    display in both human-readable and JSON modes. Added 3 comprehensive tests covering all
-    scenarios. All 20 cli-serve tests passing."
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
@@ -35782,7 +35782,7 @@
     Task: /api/projects endpoints implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -35797,6 +35797,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T22:50:09.082Z
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
   slugs:
     - task-ui-selector-impl
