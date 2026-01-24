@@ -2790,6 +2790,10 @@ features:
             given: loop mode active
             when: skill executes
             then: uses @task-work-loop workflow
+          - id: ac-3
+            given: ready tasks exist
+            when: skill filters
+            then: "only automation: eligible shown"
       - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
         slugs:
           - reflect-loop-skill
