@@ -34033,7 +34033,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34080,6 +34080,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T18:52:22.868Z
+  closed_reason: "Merged in PR #216. Created 16 comprehensive path validation middleware tests
+    covering ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c, ac-20b. Tests validate
+    X-Kspec-Dir header handling, project registration, path normalization, permission errors, and
+    default project handling. All CI checks passed."
 - _ulid: 01KFQACE936G0SDG0F3DQD8V89
   slugs:
     - task-middleware-impl
