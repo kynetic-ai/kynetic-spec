@@ -32639,6 +32639,7 @@
         - validation-error, field-error
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
   slugs: []
   title: E2E Navigation and URL State Tests
