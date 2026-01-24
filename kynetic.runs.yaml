@@ -2681,7 +2681,7 @@ runs:
   - _ulid: 01KFQ30WGX454H0D544G4RS876
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T04:08:31.006Z
     step_results:
@@ -2771,5 +2771,28 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T04:09:52.559Z
-        completed_at: 2026-01-24T04:09:52.559Z
+        completed_at: 2026-01-24T04:10:04.456Z
+        notes: |-
+          ## Proposed Improvements
+
+          1. **Document E2E test exclusion requirement** (Small)
+             - Add note to test fixture patterns in AGENTS.md about vitest.config.ts exclusion
+             - Prevents future E2E tests from breaking CI
+             - Could also add a check in PR workflow
+
+          2. **Add fixture ULID generation examples** (Small)
+             - Document testUlid() usage in test fixture patterns section
+             - Show examples for common prefixes
+             - Saves debugging time when creating test fixtures
+
+          3. **SSR compatibility checklist for web-ui** (Medium)
+             - Document patterns that work in SSR (no-op when manager not initialized)
+             - Add to web-ui development guide
+             - Consider adding ESLint rule or build check
+
+          Note: Working directory issue is already documented in AGENTS.md - just needs awareness.
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T04:10:04.456Z
+        completed_at: 2026-01-24T04:10:04.456Z
     initiated_by: "@claude"
