@@ -33986,6 +33986,28 @@
 
         Covered ACs: ac-9, ac-9b, ac-9c, ac-10, ac-11, ac-13
       supersedes: null
+    - _ulid: 01KFRPCZF0DV5Q1QVXD6WR7X2H
+      created_at: 2026-01-24T19:06:24.608Z
+      author: "@claude"
+      content: >-
+        PR #217 created: https://github.com/kynetic-ai/kynetic-spec/pull/217
+
+
+        Branch: feat/global-pid-port-management
+
+
+        Status: Waiting for CI to complete. All tests passed locally (1325/1329 passing, only 1
+        pre-existing failure in daemon-executable.test.ts).
+
+
+        Next steps:
+
+        - Wait for CI to complete
+
+        - Address any review feedback  
+
+        - Use workflow to merge when ready: kspec workflow next @01KFRP8A
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
