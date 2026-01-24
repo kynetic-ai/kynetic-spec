@@ -2867,6 +2867,10 @@ features:
             given: skill documentation
             when: content examined
             then: emphasizes AC coverage AND spec alignment as quality gates
+          - id: ac-5
+            given: skill starts
+            when: execution
+            then: delegates all behavior to @pr-review-loop-workflow
       - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
         slugs:
           - loop-mode-error-handling
