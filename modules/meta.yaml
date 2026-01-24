@@ -928,6 +928,10 @@ features:
             given: "a workflow has mode: loop field"
             when: kspec validate runs
             then: workflow validates as loop variant
+          - id: ac-3
+            given: loop workflow has based_on field
+            when: kspec meta get @workflow-loop runs
+            then: shows base workflow reference
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
