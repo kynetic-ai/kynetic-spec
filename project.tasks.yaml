@@ -34302,6 +34302,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #220. Added 44 static analysis tests across 4 API test files (inbox,
+    items, meta, tasks) verifying routes will use projectContext from middleware state. Tests
+    document expected changes for route migration (task @01KFQAD3). All CI checks passed. Local
+    review flagged test quality/isolation concerns - acknowledged as intentional preparatory tests.
+    Proper E2E tests blocked on @01KFQAD3."
   depends_on:
     - "@01KFQACE"
   context: []
@@ -34312,6 +34317,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:17:18.836Z
   started_at: 2026-01-24T19:46:58.241Z
+  completed_at: 2026-01-24T20:04:30.397Z
   notes:
     - _ulid: 01KFRRR7T0DJR4JTK9ZXM3DTA3
       created_at: 2026-01-24T19:47:30.752Z
@@ -34427,12 +34433,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T20:04:30.397Z
-  closed_reason: "Merged in PR #220. Added 44 static analysis tests across 4 API test files (inbox,
-    items, meta, tasks) verifying routes will use projectContext from middleware state. Tests
-    document expected changes for route migration (task @01KFQAD3). All CI checks passed. Local
-    review flagged test quality/isolation concerns - acknowledged as intentional preparatory tests.
-    Proper E2E tests blocked on @01KFQAD3."
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
   slugs:
     - task-routes-migration
@@ -34516,7 +34516,7 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -34531,6 +34531,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T20:04:50.881Z
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
   slugs:
     - task-ws-binding-impl
