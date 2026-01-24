@@ -31854,6 +31854,68 @@
 
         Previous note has full details on work done and files changed.
       supersedes: null
+    - _ulid: 01KFQ6ARCMWDSFP8S8SASGN6YJ
+      created_at: 2026-01-24T05:06:20.180Z
+      author: "@claude"
+      content: >-
+        ## Session Progress - Architecture Research
+
+
+        ### Issue Identified
+
+        The immediate E2E test failures stemmed from:
+
+        1. **BUN_ENV not set to production** - Bun's dev mode was transforming HTML at runtime,
+        causing asset hash mismatches
+
+        2. **Asset path resolution** - daemon wasn't finding web UI relative to package install
+        location
+
+
+        ### Root Cause: Architectural Limitation
+
+        Current daemon architecture has fundamental issues for the desired use case:
+
+        - One daemon per project directory (not scalable)
+
+        - Web UI assets resolved from cwd, not package install location
+
+        - No support for npm global/local install scenarios
+
+
+        ### Research Findings (via subagent)
+
+        Recommended multi-directory daemon pattern (like eslint_d):
+
+        1. **Single daemon process** with LRU cache of project contexts
+
+        2. **Asset resolution chain**: Bun.embeddedFiles → import.meta.dirname/../web-ui/build → cwd
+        dev fallback
+
+        3. **API design**: X-Kspec-Dir header to specify project context per request
+
+        4. **Memory management**: Max ~10 project contexts, auto-evict LRU
+
+
+        ### Immediate Fixes Applied
+
+        - Discovered BUN_ENV=production fixes HTML hash mismatch
+
+        - Daemon API returning '{} is not iterable' error needs debugging (separate issue from
+        assets)
+
+
+        ### Blocking Decision Needed
+
+        This E2E task is blocked on architectural decision:
+
+        - **Option A**: Minimal fix for current architecture (just fix asset paths, single project)
+
+        - **Option B**: Implement multi-directory daemon architecture first
+
+
+        Task remains in_progress pending user decision on approach.
+      supersedes: null
   todos: []
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
