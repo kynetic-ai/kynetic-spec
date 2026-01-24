@@ -35856,6 +35856,44 @@
 
         This follows the documentary test pattern seen elsewhere in the codebase.
       supersedes: null
+    - _ulid: 01KFS3BS32E2SQ9FA92RBE61RX
+      created_at: 2026-01-24T22:52:56.803Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        Created packages/web-ui/tests/e2e/project-selector.spec.ts with 10 comprehensive documentary
+        E2E tests covering AC-25, AC-26, and AC-27.
+
+
+        Test coverage:
+
+        - AC-25 (Project selector visibility):
+          * Shows selector when multiple projects registered
+          * Hides selector when only one project
+          * Preserves selection across navigation
+          * Defaults to first project if no selection
+
+        - AC-26 (X-Kspec-Dir header):
+          * Sets header when project selected
+          * Includes header in all API requests (tasks, items, inbox, session)
+          * Defaults to first registered project
+
+        - AC-27 (Data reload on project change):
+          * Reloads task data
+          * Reloads spec items
+          * Reloads inbox items
+          * Shows loading state during reload
+
+        All tests use test.skip() and will be enabled when ProjectSelector component is implemented.
+        Tests follow existing E2E patterns from smoke.spec.ts.
+
+
+        Test run: 10 skipped (as expected - component not yet implemented)
+
+        Build status: Web UI builds successfully
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
