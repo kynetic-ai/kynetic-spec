@@ -667,3 +667,12 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KFRAJGB5027D4HR4EM9ENRWN
+    text: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
+      relationship fields require manual YAML editing.
+    created_at: 2026-01-24T15:39:42.822Z
+    tags:
+      - cli
+      - dx
+      - reflection
+    added_by: "@claude"
