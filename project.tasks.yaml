@@ -34265,7 +34265,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
-  slugs: []
+  slugs:
+    - task-cli-status-impl
   title: CLI serve status with projects list
   type: task
   description: >-
