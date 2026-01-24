@@ -33481,7 +33481,8 @@
       supersedes: null
   todos: []
 - _ulid: 01KFQAAA01HPYC87TBGBVBKW3G
-  slugs: []
+  slugs:
+    - task-multi-dir-fixtures
   title: Multi-directory daemon test fixtures
   type: task
   description: |-
