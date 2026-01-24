@@ -986,7 +986,7 @@ features:
                 then: workflow exits cleanly with All eligible tasks blocked message
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
