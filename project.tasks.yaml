@@ -31654,10 +31654,8 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: blocked
-  blocked_by:
-    - Blocked on @01KFQ6GT - need multi-directory daemon architecture spec before E2E tests can work
-      reliably
+  status: pending
+  blocked_by: []
   depends_on:
     - "@01KFQAD3"
     - "@01KFQAF0"
@@ -33449,6 +33447,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Spec written with 39 ACs covering multi-directory daemon architecture. 21
+    implementation tasks created with slugs, dependencies, and automation eligibility. Post-review
+    fixes applied for edge cases (symlinks, shutdown cleanup, default project deletion).
   depends_on: []
   context: []
   priority: 1
@@ -33459,6 +33460,7 @@
   vcs_refs: []
   created_at: 2026-01-24T05:09:38.668Z
   started_at: 2026-01-24T05:59:32.553Z
+  completed_at: 2026-01-24T13:06:16.977Z
   notes:
     - _ulid: 01KFQA9N9AF4BJ48HSDR3R2AK1
       created_at: 2026-01-24T06:15:38.538Z
@@ -33502,10 +33504,6 @@
         Spec now has 39 acceptance criteria. All review issues addressed.
       supersedes: null
   todos: []
-  completed_at: 2026-01-24T13:06:16.977Z
-  closed_reason: Spec written with 39 ACs covering multi-directory daemon architecture. 21
-    implementation tasks created with slugs, dependencies, and automation eligibility. Post-review
-    fixes applied for edge cases (symlinks, shutdown cleanup, default project deletion).
 - _ulid: 01KFQAAA01HPYC87TBGBVBKW3G
   slugs:
     - task-multi-dir-fixtures
