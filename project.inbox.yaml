@@ -635,3 +635,12 @@ inbox:
       - cli
       - trait
     added_by: "@claude"
+  - _ulid: 01KFQ8VS2KQT6JPGHM5H7WD34B
+    text: "Document Bun production mode requirement: Add note to AGENTS.md about BUN_ENV=production
+      being required for daemon to prevent dev mode HTML transformations"
+    created_at: 2026-01-24T05:50:35.092Z
+    tags:
+      - reflection
+      - docs
+      - small
+    added_by: "@claude"
