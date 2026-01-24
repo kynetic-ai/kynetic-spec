@@ -22,19 +22,20 @@ import {
   AlignmentIndex,
   type LoadedSpecItem,
 } from '../../parser/index.js';
+import { join } from 'path';
 
-interface ItemsRouteOptions {
-  kspecDir: string;
-}
+interface ItemsRouteOptions {}
 
-export function createItemsRoutes(options: ItemsRouteOptions) {
-  const { kspecDir } = options;
+export function createItemsRoutes(options: ItemsRouteOptions = {}) {
+  // No closure-scoped kspecDir needed - comes from middleware
 
   return new Elysia({ prefix: '/api/items' })
     // AC: @api-contract ac-8, ac-9 - List items with type filter
     .get(
       '/',
-      async ({ query }) => {
+      async ({ query, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const items = await loadAllItems(ctx);
 
@@ -122,7 +123,9 @@ export function createItemsRoutes(options: ItemsRouteOptions) {
     // AC: @api-contract ac-10 - Get single item by ref
     .get(
       '/:ref',
-      async ({ params, error: errorResponse }) => {
+      async ({ params, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(ctx);
@@ -176,7 +179,9 @@ export function createItemsRoutes(options: ItemsRouteOptions) {
     // AC: @api-contract ac-11 - Get tasks linked to spec item
     .get(
       '/:ref/tasks',
-      async ({ params, error: errorResponse }) => {
+      async ({ params, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const items = await loadAllItems(ctx);
         const tasks = await loadAllTasks(ctx);

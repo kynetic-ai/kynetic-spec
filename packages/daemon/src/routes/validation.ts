@@ -31,19 +31,20 @@ import type {
   LoadedConvention,
 } from '../../parser/meta.js';
 import { grepItem } from '../../utils/grep.js';
+import { join } from 'path';
 
-interface ValidationRouteOptions {
-  kspecDir: string;
-}
+interface ValidationRouteOptions {}
 
-export function createValidationRoutes(options: ValidationRouteOptions) {
-  const { kspecDir } = options;
+export function createValidationRoutes(options: ValidationRouteOptions = {}) {
+  // No closure-scoped kspecDir needed - comes from middleware
 
   return new Elysia({ prefix: '/api' })
     // AC: @api-contract ac-19 - Search across all entities
     .get(
       '/search',
-      async ({ query }) => {
+      async ({ query, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const { tasks, items } = await buildIndexes(ctx);
 
@@ -205,7 +206,9 @@ export function createValidationRoutes(options: ValidationRouteOptions) {
     )
 
     // AC: @api-contract ac-20 - Run full validation
-    .get('/validate', async () => {
+    .get('/validate', async ({ projectContext }) => {
+      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+      const kspecDir = join(projectContext.path, '.kspec');
       const ctx = await initContext(kspecDir);
 
       // AC: @api-contract ac-20 - Run validation and return ValidationResult
@@ -223,7 +226,9 @@ export function createValidationRoutes(options: ValidationRouteOptions) {
     })
 
     // AC: @api-contract ac-21 - Get alignment stats and warnings
-    .get('/alignment', async () => {
+    .get('/alignment', async ({ projectContext }) => {
+      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+      const kspecDir = join(projectContext.path, '.kspec');
       const ctx = await initContext(kspecDir);
       const { tasks, items, refIndex } = await buildIndexes(ctx);
 

@@ -20,17 +20,18 @@ import {
   loadMetaContext,
   loadSessionContext,
 } from '../../parser/index.js';
+import { join } from 'path';
 
-interface MetaRouteOptions {
-  kspecDir: string;
-}
+interface MetaRouteOptions {}
 
-export function createMetaRoutes(options: MetaRouteOptions) {
-  const { kspecDir } = options;
+export function createMetaRoutes(options: MetaRouteOptions = {}) {
+  // No closure-scoped kspecDir needed - comes from middleware
 
   return new Elysia({ prefix: '/api/meta' })
     // AC: @api-contract ac-15 - Get session context
-    .get('/session', async () => {
+    .get('/session', async ({ projectContext }) => {
+      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+      const kspecDir = join(projectContext.path, '.kspec');
       const ctx = await initContext(kspecDir);
       const session = await loadSessionContext(ctx);
 
@@ -44,7 +45,9 @@ export function createMetaRoutes(options: MetaRouteOptions) {
     })
 
     // AC: @api-contract ac-16 - List agents
-    .get('/agents', async () => {
+    .get('/agents', async ({ projectContext }) => {
+      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+      const kspecDir = join(projectContext.path, '.kspec');
       const ctx = await initContext(kspecDir);
       const meta = await loadMetaContext(ctx);
 
@@ -58,7 +61,9 @@ export function createMetaRoutes(options: MetaRouteOptions) {
     })
 
     // AC: @api-contract ac-17 - List workflows
-    .get('/workflows', async () => {
+    .get('/workflows', async ({ projectContext }) => {
+      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+      const kspecDir = join(projectContext.path, '.kspec');
       const ctx = await initContext(kspecDir);
       const meta = await loadMetaContext(ctx);
 
@@ -74,7 +79,9 @@ export function createMetaRoutes(options: MetaRouteOptions) {
     // AC: @api-contract ac-18 - List observations with filter
     .get(
       '/observations',
-      async ({ query }) => {
+      async ({ query, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const meta = await loadMetaContext(ctx);
 
