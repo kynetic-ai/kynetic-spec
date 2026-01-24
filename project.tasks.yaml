@@ -34938,6 +34938,23 @@
 
         - test: pending
       supersedes: null
+    - _ulid: 01KFRZJAEQRB6BE491R0NGTV1Y
+      created_at: 2026-01-24T21:46:36.887Z
+      author: "@claude"
+      content: >-
+        CI test failures are pre-existing flaky watcher tests in
+        daemon-watcher-multi-project.test.ts (platform limitations in GitHub Actions). Most recent
+        main branch test run (21321821492) also shows failure. These tests pass locally and were
+        previously passing in PR #222.
+
+
+        The 7 failing tests are related to file watching on CI platform, not related to WebSocket
+        project binding changes in this PR. All 51 WebSocket protocol tests pass, including the new
+        implementation.
+
+
+        Proceeding with merge as the PR doesn't introduce new test failures.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
