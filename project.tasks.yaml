@@ -31116,6 +31116,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Parent epic complete. E2E infrastructure verified working (Playwright configured,
+    test fixtures exist, 5 smoke tests passing, npm scripts configured). Child tasks created for
+    specific test areas: tasks view (@01KFP84N), items view (@01KFP84S), inbox (@01KFP84X), search
+    (@01KFP850), connection handling (@01KFP854), observations (@01KFP85D), error handling
+    (@01KFP85G), navigation (@01KFP85M). Implementation work proceeds in child tasks."
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -31126,6 +31131,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:24:54.306Z
   started_at: 2026-01-24T23:06:38.226Z
+  completed_at: 2026-01-24T23:08:48.566Z
   notes:
     - _ulid: 01KFMN187TDY0F668ZBXB15XP0
       created_at: 2026-01-23T05:25:34.074Z
@@ -31304,12 +31310,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T23:08:48.566Z
-  closed_reason: "Parent epic complete. E2E infrastructure verified working (Playwright configured,
-    test fixtures exist, 5 smoke tests passing, npm scripts configured). Child tasks created for
-    specific test areas: tasks view (@01KFP84N), items view (@01KFP84S), inbox (@01KFP84X), search
-    (@01KFP850), connection handling (@01KFP854), observations (@01KFP85D), error handling
-    (@01KFP85G), navigation (@01KFP85M). Implementation work proceeds in child tasks."
 - _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
   slugs: []
   title: Add type validation tests to shared package
@@ -36511,7 +36511,7 @@
   type: task
   spec_ref: "@skill-commands"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -36549,6 +36549,7 @@
         BEHAVIOR when skills invoke kspec commands."
       supersedes: null
   todos: []
+  started_at: 2026-01-24T23:09:05.654Z
 - _ulid: 01KFR82F6P8Q8RXRX7YVJXZ9KF
   slugs:
     - task-skill-loop-mode
