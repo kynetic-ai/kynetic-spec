@@ -2820,7 +2820,7 @@ runs:
   - _ulid: 01KFQ4T733PG9GVX2V2YNC9X07
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T04:39:49.603Z
     step_results:
@@ -2891,5 +2891,32 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T04:40:20.951Z
-        completed_at: 2026-01-24T04:40:20.951Z
+        completed_at: 2026-01-24T04:40:43.438Z
+        notes: >-
+          ## Coverage Check Results
+
+
+          1. **Stale daemon cleanup** - NOT TRACKED - No automatic cleanup mechanism
+
+          2. **Environment variable propagation** - NOT TRACKED  
+
+          3. **build:daemon manual step** - NOT TRACKED - Could be automated with watch mode or
+          integrated into main build
+
+          4. **Stale workflow runs** - PARTIALLY TRACKED - Found '01KFPH39 [inbox] Add workflow run
+          auto-cleanup'
+
+          5. **Static asset debugging** - NOT TRACKED - No visibility into staticPlugin behavior
+
+          6. **initContext path mismatch** - FIXED in this session - daemon now derives projectRoot
+          from kspecDir
+
+          7. **CORS port hardcoding** - FIXED in this session - now uses dynamic localhost matching
+
+          8. **No daemon logs** - PARTIALLY TRACKED - Found '01KFMMMN [cancelled] Implement daemon
+          logging' - was cancelled but need is still there
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T04:40:43.438Z
+        completed_at: 2026-01-24T04:40:43.438Z
     initiated_by: "@claude"
