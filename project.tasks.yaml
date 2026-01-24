@@ -34528,10 +34528,40 @@
     - phase-5
   vcs_refs: []
   created_at: 2026-01-24T06:17:41.274Z
-  notes: []
+  started_at: 2026-01-24T20:04:50.881Z
+  notes:
+    - _ulid: 01KFRSSP9ESVWKE16HSK20F1X2
+      created_at: 2026-01-24T20:05:46.926Z
+      author: "@claude"
+      content: >-
+        Task analysis: WebSocket connection binding to projects (ac-21, ac-21b, ac-22, ac-23) is NOT
+        yet implemented in the daemon.
+
+
+        Current state:
+
+        - ConnectionData interface lacks projectPath field
+
+        - WebSocket open() handler doesn't extract X-Kspec-Dir from headers  
+
+        - No project binding logic exists
+
+
+        Approach: Write preparatory/TDD-style tests (same as task @01KFQACQ) that verify:
+
+        1. ConnectionData will have projectPath field
+
+        2. WebSocket upgrade will extract X-Kspec-Dir header
+
+        3. Project binding will be immutable after connection
+
+        4. Default project handling logic exists
+
+
+        These tests will guide implementation of WebSocket project binding feature.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T20:04:50.881Z
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
   slugs:
     - task-ws-binding-impl
