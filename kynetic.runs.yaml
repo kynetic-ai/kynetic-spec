@@ -4530,7 +4530,7 @@ runs:
   - _ulid: 01KFS6MJ42V8Q5K56T8FDQHTWR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T23:50:10.306Z
     step_results:
@@ -4551,5 +4551,11 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T23:50:26.758Z
-        completed_at: 2026-01-24T23:50:26.758Z
+        completed_at: 2026-01-24T23:50:40.581Z
+        notes: Workflow lifecycle management not tracked. No existing specs/tasks/inbox items about cleaning
+          up stale workflow runs or completing old runs.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T23:50:40.581Z
+        completed_at: 2026-01-24T23:50:40.581Z
     initiated_by: "@claude"
