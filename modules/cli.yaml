@@ -2886,6 +2886,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:14.898Z
+        acceptance_criteria:
+          - id: ac-1
+            given: error during task work
+            when: error caught
+            then: note added with [LOOP-FAIL:N] prefix and error description
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
