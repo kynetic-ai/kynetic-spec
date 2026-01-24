@@ -34152,7 +34152,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
-  slugs: []
+  slugs:
+    - task-projects-api-tests
   title: /api/projects endpoint tests
   type: task
   description: |-
