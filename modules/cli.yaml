@@ -2507,6 +2507,10 @@ features:
             given: subagent running
             when: ralph behavior
             then: ralph waits for subagent completion before continuing
+          - id: ac-4
+            given: subagent runs
+            when: display
+            then: subagent output rendered same as main agent (single stream)
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
