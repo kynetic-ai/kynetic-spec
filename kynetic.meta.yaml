@@ -3410,4 +3410,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFRAKVW1Q6E5FY9PTRFHXGA6
+    type: success
+    content: "Incremental question-based requirements via AskUserQuestion: Asking one focused question
+      at a time (task selection order, subagent model, skill invocation, error tracking) kept
+      decisions clear and avoided ambiguity in spec design."
+    created_at: 2026-01-24T15:40:27.393Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
