@@ -3380,7 +3380,7 @@ runs:
   - _ulid: 01KFRCBDE6KQMEND1RMZMVWZF1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T16:10:47.623Z
     step_results:
@@ -3457,5 +3457,24 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T16:12:55.963Z
-        completed_at: 2026-01-24T16:12:55.963Z
+        completed_at: 2026-01-24T16:13:09.740Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. **Document testUlid() prominently for test fixtures**
+             - What: Add a section to AGENTS.md or a test writing guide about using testUlid() for any ULID in test fixtures
+             - How it helps: Prevents silent failures from invalid Crockford chars (L, I, O, U)
+             - Scope: Small (documentation update)
+
+          2. **Validation error for invalid ULIDs should be clearer**
+             - What: When kspec validate fails on ULID format, the error message could suggest checking for invalid Crockford chars
+             - How it helps: Faster debugging when fixtures have invalid ULIDs
+             - Scope: Small (error message enhancement)
+
+          Note: The workflow run cleanup is already captured in inbox.
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T16:13:09.740Z
+        completed_at: 2026-01-24T16:13:09.740Z
     initiated_by: "@claude"
