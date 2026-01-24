@@ -2681,7 +2681,7 @@ runs:
   - _ulid: 01KFQ30WGX454H0D544G4RS876
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T04:08:31.006Z
     step_results:
@@ -2715,5 +2715,34 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T04:08:53.399Z
-        completed_at: 2026-01-24T04:08:53.399Z
+        completed_at: 2026-01-24T04:09:06.036Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **ULID format debugging** - Manually crafting test ULIDs was error-prone (wrong length,
+          invalid characters). Had to iterate multiple times to get valid 26-character Crockford
+          base32 ULIDs. The testUlid() helper exists but isn't easily accessible outside test files.
+
+
+          2. **Shared test fixtures interference** - Adding inbox items to tests/fixtures/ broke
+          existing unit tests that expected to be first in the list. Had to understand test
+          isolation assumptions before modifying shared fixtures.
+
+
+          3. **E2E tests picked up by vitest** - Playwright tests use incompatible test.describe()
+          API. Had to add explicit vitest exclusion. This wasn't documented anywhere as a
+          requirement.
+
+
+          4. **Working directory confusion** - Initially ran commands from packages/web-ui/ which
+          caused issues with kspec commands. Had to remember to cd back to project root.
+
+
+          5. **SSR compatibility not obvious** - The connection store throwing during SSR wasn't
+          apparent until E2E tests ran against the built app. No linting or type checking caught it.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T04:09:06.036Z
+        completed_at: 2026-01-24T04:09:06.036Z
     initiated_by: "@claude"
