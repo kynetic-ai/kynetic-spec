@@ -688,12 +688,12 @@ When manually creating YAML fixture files (not TypeScript tests), generate valid
 ```bash
 node -e "
 const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-function testUlid(prefix = '', seq = 0) {
+function testUlid(prefix = '', sequence = 0) {
   const safe = prefix.toUpperCase().replace(/I/g,'J').replace(/L/g,'K').replace(/O/g,'0').replace(/U/g,'V');
   const base = '01' + safe;
   const padLen = 24 - base.length;
-  const seqStr = seq.toString().padStart(Math.min(padLen, 8), '0').slice(0, padLen);
-  return (base + seqStr).padEnd(25, '0') + CROCKFORD_BASE32[seq % 32];
+  const sequenceStr = sequence.toString().padStart(Math.min(padLen, 8), '0').slice(0, padLen);
+  return (base + sequenceStr).padEnd(25, '0') + CROCKFORD_BASE32[sequence % 32];
 }
 // Generate ULIDs for your fixture
 console.log(testUlid('0BS', 0));  // observations
