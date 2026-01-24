@@ -33664,7 +33664,10 @@
   created_at: 2026-01-24T06:16:46.793Z
   notes: []
   todos: []
-- title: Path validation middleware tests
+- _ulid: 01KFQAC1BKNR7V6WJDVQMEDD15
+  slugs: []
+  title: Path validation middleware tests
+  type: task
   description: |-
     Write tests for X-Kspec-Dir path validation middleware.
 
@@ -33679,20 +33682,59 @@
 
     ## Dependencies
     Task: Multi-directory daemon test fixtures
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - phase-3
-  _ulid: 01KFQAC1BKNR7V6WJDVQMEDD15
+  vcs_refs: []
+  created_at: 2026-01-24T06:16:56.435Z
+  notes: []
+  todos: []
+- title: X-Kspec-Dir middleware implementation
+  description: |-
+    Implement X-Kspec-Dir header middleware for project context resolution.
+
+    ## Implementation Notes
+    - Extract X-Kspec-Dir header from request
+    - Validate: must be absolute, no "..", readable
+    - Normalize path (resolve `.`, remove trailing slashes)
+    - Resolve to context via ProjectContextManager (auto-register if unknown)
+    - Handle default project case: if no header AND daemon has startup project, use that
+    - Handle no-default case: if no header AND no startup project, return 400
+    - Pass context to route handlers via Elysia's `derive()` method
+
+    ## Files
+    - New middleware in packages/daemon/src/middleware/project-context.ts
+    - Server needs to store optional "startupProject" from daemon's cwd at boot
+    - Middleware adds `projectContext: ProjectContext` to request state
+
+    ## AC Coverage
+    ac-1, ac-2, ac-3, ac-5, ac-6, ac-7, ac-8, ac-8b
+
+    ## Dependencies
+    - Task: ProjectContextManager implementation
+    - Task: Path validation middleware tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - daemon
+    - middleware
+    - phase-3
+  _ulid: 01KFQACE936G0SDG0F3DQD8V89
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:16:56.435Z
+  created_at: 2026-01-24T06:17:09.667Z
   notes: []
   todos: []
