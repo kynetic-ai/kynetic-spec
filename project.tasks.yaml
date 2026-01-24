@@ -34981,6 +34981,12 @@
         documentation. Covers ProjectContextManager integration, path validation, error handling,
         watcher lifecycle, and server integration.
       supersedes: null
+    - _ulid: 01KFRW5C71KB9Q9RA1M3GR86ZF
+      created_at: 2026-01-24T20:47:06.977Z
+      author: "@claude"
+      content: "PR #223 created and awaiting CI checks. Branch: test/projects-api-tests. Workflow
+        @pr-review-merge started (run 01KFRW1M) but waiting for CI to complete."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
