@@ -33447,7 +33447,7 @@
     - LSP workspaceFolders pattern
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -33502,6 +33502,10 @@
         Spec now has 39 acceptance criteria. All review issues addressed.
       supersedes: null
   todos: []
+  completed_at: 2026-01-24T13:06:16.977Z
+  closed_reason: Spec written with 39 ACs covering multi-directory daemon architecture. 21
+    implementation tasks created with slugs, dependencies, and automation eligibility. Post-review
+    fixes applied for edge cases (symlinks, shutdown cleanup, default project deletion).
 - _ulid: 01KFQAAA01HPYC87TBGBVBKW3G
   slugs:
     - task-multi-dir-fixtures
