@@ -306,13 +306,13 @@ describe('Per-Project File Watchers', () => {
 
       const watcherA = new KspecWatcher({
         kspecDir: join(projectA, '.kspec'),
-        onFileChange: (path) => eventsA.push(path),
+        onFileChange: (file, content) => eventsA.push(file),
         onError: vi.fn(),
       });
 
       const watcherB = new KspecWatcher({
         kspecDir: join(projectB, '.kspec'),
-        onFileChange: (path) => eventsB.push(path),
+        onFileChange: (file, content) => eventsB.push(file),
         onError: vi.fn(),
       });
 
