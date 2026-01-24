@@ -2681,7 +2681,7 @@ runs:
   - _ulid: 01KFQ30WGX454H0D544G4RS876
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T04:08:31.006Z
     step_results:
@@ -2744,5 +2744,32 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T04:09:06.036Z
-        completed_at: 2026-01-24T04:09:06.036Z
+        completed_at: 2026-01-24T04:09:52.559Z
+        notes: >-
+          ## Coverage Check
+
+
+          1. **ULID format debugging** - Partially covered. @ulid-format spec exists for validation,
+          and testUlid() helper exists in tests/helpers/cli.ts. But no documentation on using
+          helpers for fixture creation. **Untracked gap: fixture ULID generation guidance**
+
+
+          2. **Shared test fixtures interference** - Not tracked. No guidance on test fixture
+          isolation patterns or when to add vs not add to shared fixtures.
+
+
+          3. **E2E tests picked up by vitest** - Not tracked. Now fixed in vitest.config.ts but not
+          documented. Future E2E additions would hit same issue.
+
+
+          4. **Working directory confusion** - Partially covered. AGENTS.md mentions running from
+          project root, but easy to forget mid-session.
+
+
+          5. **SSR compatibility** - Not tracked. Web UI SSR issues aren't covered by existing
+          specs. The fix was ad-hoc.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T04:09:52.559Z
+        completed_at: 2026-01-24T04:09:52.559Z
     initiated_by: "@claude"
