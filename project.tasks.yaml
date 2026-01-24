@@ -32534,7 +32534,8 @@
   meta_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-watcher-impl"
   context: []
   priority: 2
   tags:
