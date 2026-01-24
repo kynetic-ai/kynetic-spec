@@ -2702,6 +2702,22 @@ features:
         given: skill supports modes
         when: /skill-name mode invoked
         then: skill behavior changes per mode
+    requirements:
+      - _ulid: 01KFR7SA4EX8D3THW5RX714C5B
+        slugs:
+          - skill-loop-mode
+        title: Skill Loop Mode
+        type: requirement
+        tags: []
+        description: Generic loop mode argument handling for skills. When a skill receives the loop
+          argument, it modifies behavior for automation context.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:00.111Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
