@@ -34252,6 +34252,27 @@
       content: "Starting implementation. Tests from PR #216 provide clear interface. Will create
         packages/daemon/src/middleware/project-context.ts for Elysia and integrate into server.ts."
       supersedes: null
+    - _ulid: 01KFRR912Q888QB4RSE823M9F6
+      created_at: 2026-01-24T19:39:12.343Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created packages/daemon/src/middleware/project-context.ts with
+        Elysia middleware that:
+
+        - Extracts X-Kspec-Dir header (ac-1)
+
+        - Auto-registers projects (ac-4)
+
+        - Validates paths (ac-5, ac-6, ac-7, ac-8, ac-8c)
+
+        - Handles permissions (ac-8b)
+
+        - Manages default project (ac-2, ac-3, ac-20b)
+
+
+        Tests already exist in tests/daemon-path-validation-middleware.test.ts from PR #216. Ready
+        for integration into server.ts (separate task or follow-up).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQACQ7MWQ9XAGC8FRP7GRTK
