@@ -33985,7 +33985,9 @@
   meta_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KFQADQ"
+    - "@01KFQAE0"
   context: []
   priority: 2
   tags:
