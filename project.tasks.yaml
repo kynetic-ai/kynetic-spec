@@ -35068,7 +35068,8 @@
     - "@task-ralph-command-automated-task-loop"
   context: []
   priority: 1
-  tags: []
+  tags:
+    - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:56:22.230Z
   notes:
