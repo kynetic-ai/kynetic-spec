@@ -4144,7 +4144,7 @@ runs:
   - _ulid: 01KFRY2A994TFFH75P9D7XGEWD
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: active
-    current_step: 6
+    current_step: 7
     total_steps: 9
     started_at: 2026-01-24T21:20:23.849Z
     step_results:
@@ -4183,5 +4183,11 @@ runs:
       - step_index: 6
         status: completed
         started_at: 2026-01-24T21:21:52.938Z
-        completed_at: 2026-01-24T21:21:52.938Z
+        completed_at: 2026-01-24T21:22:08.140Z
+        notes: No review threads to resolve - reviewDecision is empty and review_count is 0 (only automated
+          bot reviews exist, which don't create threads).
+      - step_index: 7
+        status: completed
+        started_at: 2026-01-24T21:22:08.140Z
+        completed_at: 2026-01-24T21:22:08.140Z
     initiated_by: "@claude"
