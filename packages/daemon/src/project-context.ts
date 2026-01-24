@@ -8,7 +8,7 @@
  */
 
 import { existsSync } from 'fs';
-import { join, normalize } from 'path';
+import { isAbsolute, join, normalize } from 'path';
 
 export interface ProjectContext {
   path: string;
@@ -217,7 +217,6 @@ export class ProjectContextManager {
    * @returns True if path is absolute
    */
   private isAbsolutePath(projectPath: string): boolean {
-    // Check for absolute path (Unix: starts with /, Windows: matches /^[A-Z]:\\/i)
-    return projectPath.startsWith('/') || /^[A-Z]:\\/i.test(projectPath);
+    return isAbsolute(projectPath);
   }
 }
