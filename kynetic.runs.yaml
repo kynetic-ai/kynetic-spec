@@ -2978,7 +2978,7 @@ runs:
   - _ulid: 01KFQ8H939CAXFP3FGSRSEPSJH
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T05:44:51.049Z
     step_results:
@@ -3014,5 +3014,46 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T05:45:09.243Z
-        completed_at: 2026-01-24T05:45:09.243Z
+        completed_at: 2026-01-24T05:45:23.779Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **E2E test fixture environment propagation** - The test fixture sets WEB_UI_DIR env var
+          when calling 'kspec serve start', but serve.ts spawns daemon without explicitly passing
+          env. Had to trace through multiple spawn layers to understand why env wasn't reaching
+          daemon.
+
+
+          2. **No daemon logging visible** - When daemon fails or has errors, there's no way to see
+          logs. Running in daemon mode with stdio:'ignore' means errors are lost. Had to manually
+          run bun daemon.ts to see errors.
+
+
+          3. **BUN_ENV not documented** - Discovered that BUN_ENV=production is required to prevent
+          Bun from doing runtime HTML transformation. This is not documented anywhere and took
+          significant debugging to discover.
+
+
+          4. **Asset resolution relies on cwd** - Current resolveWebUiPath() uses process.cwd()
+          which doesn't work when daemon is installed via npm in a different location than where
+          it's run.
+
+
+          5. **kspec --kspec-dir inconsistency** - serve command accepts --kspec-dir, but other
+          commands (task, tasks) don't have this option. Makes it hard to test with isolated
+          fixtures.
+
+
+          6. **Test fixture doesn't verify daemon started correctly** - Fixture waits 1.5s then
+          assumes success, but doesn't verify the daemon actually loaded kspec context correctly.
+          API errors like '{} is not iterable' only discovered later in tests.
+
+
+          7. **Shell cwd keeps resetting** - When running commands from /tmp directories, shell kept
+          resetting to project root, making it hard to debug from test fixture locations.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T05:45:23.779Z
+        completed_at: 2026-01-24T05:45:23.779Z
     initiated_by: "@claude"
