@@ -979,6 +979,10 @@ features:
                 given: workflow reaches decision step
                 when: workflow continues
                 then: decision auto-resolves without human input
+              - id: ac-8
+                given: no eligible tasks exist in any state
+                when: agent attempts selection
+                then: workflow exits cleanly with No eligible tasks message
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
