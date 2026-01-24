@@ -1066,6 +1066,10 @@ features:
                 given: quality check finds MUST-FIX issues
                 when: subagent evaluates
                 then: attempts to fix issues in-place
+              - id: ac-5
+                given: changes are pushed
+                when: subagent proceeds
+                then: waits for CI to pass before merge
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
