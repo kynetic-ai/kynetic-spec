@@ -4393,7 +4393,7 @@ runs:
   - _ulid: 01KFS5AF3TT84REMGMC43HA1CE
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T23:27:10.970Z
     step_results:
@@ -4433,5 +4433,19 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T23:27:34.209Z
-        completed_at: 2026-01-24T23:27:34.209Z
+        completed_at: 2026-01-24T23:27:51.778Z
+        notes: >-
+          Coverage check results:
+
+          1. Multiple active workflow runs - Already tracked in inbox: @01KFPH39 'workflow run
+          auto-cleanup'
+
+          2. CI waiting pattern - Already tracked as observation: @01KFFMS3 'PR CI waiting pattern'
+
+          3. buildPrompt signature change - Not tracked. Minor friction, TypeScript caught it. Not
+          worth capturing.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T23:27:51.778Z
+        completed_at: 2026-01-24T23:27:51.778Z
     initiated_by: "@claude"
