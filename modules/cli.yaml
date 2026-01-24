@@ -2503,6 +2503,10 @@ features:
             given: subagent spawned
             when: prompt provided
             then: prompt includes task ref, skill to invoke (/pr-review @task), and context
+          - id: ac-3
+            given: subagent running
+            when: ralph behavior
+            then: ralph waits for subagent completion before continuing
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
