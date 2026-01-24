@@ -35579,6 +35579,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #227. Implemented /api/projects endpoints: GET (list all), POST
+    (register new project), DELETE (unregister project). Endpoints integrate with
+    ProjectContextManager for lifecycle management. Covers AC-28, AC-29, AC-30 from
+    @multi-directory-daemon spec."
   depends_on:
     - "@01KFQABQ"
     - "@01KFQAF9"
@@ -35591,6 +35595,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:18:54.200Z
   started_at: 2026-01-24T22:17:57.744Z
+  completed_at: 2026-01-24T22:39:49.685Z
   notes:
     - _ulid: 01KFS1KARJ8HG89YJFG98Q45JN
       created_at: 2026-01-24T22:22:07.122Z
@@ -35638,11 +35643,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T22:39:49.685Z
-  closed_reason: "Merged in PR #227. Implemented /api/projects endpoints: GET (list all), POST
-    (register new project), DELETE (unregister project). Endpoints integrate with
-    ProjectContextManager for lifecycle management. Covers AC-28, AC-29, AC-30 from
-    @multi-directory-daemon spec."
 - _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
   slugs:
     - task-cli-status-tests
@@ -35664,7 +35664,7 @@
     Task: /api/projects endpoints implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -35679,6 +35679,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T22:40:29.793Z
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
