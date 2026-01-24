@@ -31638,7 +31638,8 @@
     - Blocked on @01KFQ6GT - need multi-directory daemon architecture spec before E2E tests can work
       reliably
   depends_on:
-    - "@01KFPRX9"
+    - "@01KFQAD3"
+    - "@01KFQAF0"
   context: []
   priority: 2
   tags:
