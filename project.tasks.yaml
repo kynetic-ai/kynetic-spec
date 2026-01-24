@@ -32526,6 +32526,7 @@
         - session-focus, session-threads, session-questions
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
   title: E2E Error Handling Tests
