@@ -644,3 +644,14 @@ inbox:
       - docs
       - small
     added_by: "@claude"
+  - _ulid: 01KFR0KNAEK3J2YYFG075FEAF7
+    text: "Dependency flag design for task set - Current --depends-on replaces all deps. Consider: (1)
+      support multiple --depends-on flags in same call to append, (2) add --add-depends-on variant
+      for explicit append semantics, or (3) both. Needs design to decide approach. Related to
+      existing inbox item @01KFP9A2 for task add."
+    created_at: 2026-01-24T12:45:34.927Z
+    tags:
+      - reflection
+      - cli
+      - design
+    added_by: "@claude"
