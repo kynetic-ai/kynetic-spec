@@ -1029,6 +1029,10 @@ features:
                 given: workflow reaches decision step
                 when: workflow continues
                 then: decision step skipped
+              - id: ac-6
+                given: workflow completes
+                when: user interaction
+                then: user NOT asked to confirm captures
           - _ulid: 01KFR7MEGS6K4AXRJD6JAN7GQH
             slugs:
               - pr-review-loop-workflow
