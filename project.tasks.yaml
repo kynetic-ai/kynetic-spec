@@ -32745,6 +32745,7 @@
         - filter-status
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
   slugs: []
   title: Daemon serves built web UI on root route
