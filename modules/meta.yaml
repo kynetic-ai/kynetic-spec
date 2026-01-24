@@ -1082,6 +1082,10 @@ features:
                 given: issues cannot be resolved
                 when: subagent evaluates
                 then: "marks task automation: needs_review with explanation"
+              - id: ac-9
+                given: subagent crashes or times out
+                when: ralph detects failure
+                then: "task marked automation: needs_review with subagent failure note"
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
