@@ -932,6 +932,24 @@ features:
             given: loop workflow has based_on field
             when: kspec meta get @workflow-loop runs
             then: shows base workflow reference
+        requirements:
+          - _ulid: 01KFR7M6T62WRQ7VHK9JQQETQK
+            slugs:
+              - task-work-loop-workflow
+            title: Task Work Loop Workflow
+            type: requirement
+            tags: []
+            description: "Workflow for /task-work loop. Key differences from @task-work-session: auto-filter to
+              automation-eligible tasks only, skip verification step, no interactive confirmations,
+              loop-specific task selection order (in_progress > pending_review > unblocking >
+              priority)."
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-01-24T14:48:12.871Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
