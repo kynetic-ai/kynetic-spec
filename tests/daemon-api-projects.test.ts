@@ -196,13 +196,14 @@ describe('Projects API Endpoints', () => {
 
   it('should integrate with server middleware for project context', async () => {
     const serverPath = join(process.cwd(), 'packages/daemon/src/server.ts');
-    const serverContent = await readFile(serverPath, 'utf-8');
 
     if (!existsSync(projectsRoutePath)) {
       // Documentary: when implementation exists, server should import it
       expect(true).toBe(true);
       return;
     }
+
+    const serverContent = await readFile(serverPath, 'utf-8');
 
     // Server should import projects routes
     expect(serverContent).toContain("createProjectsRoutes");
