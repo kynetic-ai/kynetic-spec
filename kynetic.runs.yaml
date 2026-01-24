@@ -3323,7 +3323,7 @@ runs:
   - _ulid: 01KFRA54G6APCBZZPR7436PBJR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T15:32:24.710Z
     step_results:
@@ -3348,5 +3348,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T15:33:21.727Z
-        completed_at: 2026-01-24T15:33:21.727Z
+        completed_at: 2026-01-24T15:34:35.447Z
+        notes: "Coverage check: (1) relates_to CLI - NOT tracked, @rel-relates-to is the relationship type
+          spec but no CLI flag support spec. (2) Bulk AC add - @task-bulk-import was cancelled, no
+          current tracking for bulk AC creation. (3) Workflow bulk abort - @workflow-run-foundation
+          has single abort, no bulk abort tracked. (4) Subagent context passing - not tracked."
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T15:34:35.447Z
+        completed_at: 2026-01-24T15:34:35.447Z
     initiated_by: "@claude"
