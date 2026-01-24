@@ -3365,4 +3365,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFQ8W7Q3TWT541VNMTYNQ38M
+    type: success
+    content: "Capturing scope expansion immediately: When debugging revealed architectural issues beyond
+      task scope, captured to inbox then promoted to proper task with full research context.
+      Prevented context loss."
+    created_at: 2026-01-24T05:50:50.083Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
