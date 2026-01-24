@@ -2911,6 +2911,10 @@ features:
             given: task completes successfully
             when: workflow finishes
             then: no reset needed; count is per-task in notes
+          - id: ac-7
+            given: workflow encounters error
+            when: error evaluated
+            then: failure = tests fail, PR blocked, exception, or agent reports cannot complete
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
