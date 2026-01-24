@@ -1017,6 +1017,10 @@ features:
                 given: friction is vague or uncertain
                 when: agent evaluates
                 then: item NOT captured
+              - id: ac-3
+                given: friction matches existing observation
+                when: agent evaluates
+                then: item NOT captured, existing reference noted
           - _ulid: 01KFR7MEGS6K4AXRJD6JAN7GQH
             slugs:
               - pr-review-loop-workflow
