@@ -33508,7 +33508,8 @@
   meta_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KFQAAA"
   context: []
   priority: 1
   tags:
@@ -34256,7 +34257,10 @@
   created_at: 2026-01-24T06:19:24.917Z
   notes: []
   todos: []
-- title: Web UI project selector implementation
+- _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
+  slugs: []
+  title: Web UI project selector implementation
+  type: task
   description: |-
     Implement Web UI project selector component.
 
@@ -34281,19 +34285,16 @@
 
     ## Note
     This task can be deferred - not blocking for E2E tests or basic multi-project support.
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - web-ui
-    - phase-9
-  _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - web-ui
+    - phase-9
   vcs_refs: []
   created_at: 2026-01-24T06:19:36.971Z
   notes: []
