@@ -33641,6 +33641,7 @@
   created_at: 2026-01-24T06:16:32.621Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
   slugs: []
   title: ProjectContextManager implementation
