@@ -37017,6 +37017,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:56:18.151Z
+  started_at: 2026-01-24T23:20:36.735Z
   notes:
     - _ulid: 01KFR830Q77F54SJRQF9Z2D638
       created_at: 2026-01-24T14:56:18.151Z
@@ -37060,8 +37061,24 @@
         via text). Ralph does NOT parse or detect skill invocation from agent output - skills are
         agent-side only. Prompt does NOT include step-by-step instructions."
       supersedes: null
+    - _ulid: 01KFS4Z5JNEGMCQVTH9N15EMP3
+      created_at: 2026-01-24T23:21:00.758Z
+      author: "@claude"
+      content: |-
+        Analyzing current implementation. Current state:
+        - ✅ ac-1 partial: Includes iteration N/M
+        - ❌ ac-1: Missing session ID and no-human flag
+        - ❌ ac-2: Contains step-by-step instructions (lines 78-176)
+        - ❌ ac-3: Does NOT contain literal /task-work or /reflect invocations
+        - ✅ ac-4: Already true - no parsing logic exists
+
+        Implementation plan:
+        1. Modify buildPrompt() to add session ID and no-human flag header
+        2. Replace step-by-step instructions with skill-based workflow
+        3. Add tests for prompt structure validation (ac-1, ac-2, ac-3)
+        4. Note: ac-5, ac-6, ac-7 test agent behavior (not directly testable in unit tests)
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T23:20:36.735Z
 - _ulid: 01KFR834PPNNABA5RCSC4A34QT
   slugs:
     - task-ralph-subagent-spawning
