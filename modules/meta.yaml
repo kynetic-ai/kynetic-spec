@@ -1062,6 +1062,10 @@ features:
                 given: tests pass
                 when: subagent verifies
                 then: implementation matches spec requirements (not just tests)
+              - id: ac-4
+                given: quality check finds MUST-FIX issues
+                when: subagent evaluates
+                then: attempts to fix issues in-place
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
