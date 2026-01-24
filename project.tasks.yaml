@@ -33450,7 +33450,10 @@
         Spec validated successfully. Now creating implementation tasks.
       supersedes: null
   todos: []
-- title: Multi-directory daemon test fixtures
+- _ulid: 01KFQAAA01HPYC87TBGBVBKW3G
+  slugs: []
+  title: Multi-directory daemon test fixtures
+  type: task
   description: |-
     Create test helpers for multi-project E2E and integration tests.
 
@@ -33466,6 +33469,38 @@
 
     ## Dependencies
     None (foundational)
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - testing
+    - infrastructure
+    - phase-1
+  vcs_refs: []
+  created_at: 2026-01-24T06:15:59.745Z
+  notes: []
+  todos: []
+- title: Global PID/port management tests
+  description: |-
+    Write tests for global PID/port file management.
+
+    ## Test Cases
+    - Test PID file at ~/.config/kspec/daemon.pid
+    - Test port file at ~/.config/kspec/daemon.port
+    - Test directory creation when missing
+    - Test CLI port discovery
+    - Test port file validation (reject invalid content)
+    - Test file lock for concurrent daemon starts
+
+    ## AC Coverage
+    ac-9, ac-9b, ac-9c, ac-10b, ac-11, ac-13
+
+    ## Dependencies
+    Task: Multi-directory daemon test fixtures
   type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
@@ -33473,14 +33508,13 @@
   slugs: []
   tags:
     - testing
-    - infrastructure
     - phase-1
-  _ulid: 01KFQAAA01HPYC87TBGBVBKW3G
+  _ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:15:59.745Z
+  created_at: 2026-01-24T06:16:10.627Z
   notes: []
   todos: []
