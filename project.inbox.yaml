@@ -570,3 +570,13 @@ inbox:
       - skill
       - dx
     added_by: "@claude"
+  - _ulid: 01KFQ5175HK1E74Y2DNQK9RXHY
+    text: "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach
+      conflicts with existing daemons. Should use high ephemeral port range and improve cleanup
+      mechanism."
+    created_at: 2026-01-24T04:43:39.058Z
+    tags:
+      - e2e
+      - testing
+      - reflection
+    added_by: "@claude"
