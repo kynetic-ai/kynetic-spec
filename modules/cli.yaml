@@ -2434,6 +2434,21 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KFR7T4FV90ZS4RCBF8WCTRHB
+        slugs:
+          - ralph-skill-delegation
+        title: Ralph Skill Delegation
+        type: requirement
+        tags: []
+        description: Ralph prompt refactoring to delegate to skills. Ralph includes skill invocation as
+          literal text in prompt; it does NOT detect or parse skill invocation from agent output.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:27.100Z
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
