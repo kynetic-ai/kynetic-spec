@@ -33514,6 +33514,7 @@
   created_at: 2026-01-24T06:15:59.745Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
   slugs: []
   title: Global PID/port management tests
