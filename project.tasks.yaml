@@ -31114,7 +31114,7 @@
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -31125,7 +31125,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T05:24:54.306Z
-  started_at: null
+  started_at: 2026-01-24T23:06:38.226Z
   notes:
     - _ulid: 01KFMN187TDY0F668ZBXB15XP0
       created_at: 2026-01-23T05:25:34.074Z
@@ -35784,6 +35784,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #229. Created 10 comprehensive documentary E2E tests for web UI project
+    selector covering AC-25 (selector visibility), AC-26 (X-Kspec-Dir header), and AC-27 (data
+    reload). All tests use test.skip() pending ProjectSelector component implementation. Fixed race
+    conditions and flaky assertions identified in Greptile review. All CI checks passing."
   depends_on:
     - "@01KFQAFM"
   context: []
@@ -35795,6 +35799,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:19:24.917Z
   started_at: 2026-01-24T22:50:09.082Z
+  completed_at: 2026-01-24T23:06:09.731Z
   notes:
     - _ulid: 01KFS38DP7C1MRCE9T689SE3WZ
       created_at: 2026-01-24T22:51:06.823Z
@@ -35913,11 +35918,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T23:06:09.731Z
-  closed_reason: "Merged in PR #229. Created 10 comprehensive documentary E2E tests for web UI project
-    selector covering AC-25 (selector visibility), AC-26 (X-Kspec-Dir header), and AC-27 (data
-    reload). All tests use test.skip() pending ProjectSelector component implementation. Fixed race
-    conditions and flaky assertions identified in Greptile review. All CI checks passing."
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
   slugs:
     - task-ui-selector-impl
