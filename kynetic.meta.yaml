@@ -3340,4 +3340,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFQ59D0DBN8A654QA0Q2MG6Y
+    type: success
+    content: "E2E debugging: Playwright error-context.md files with page snapshots are invaluable for
+      understanding what browser actually sees vs what code expects"
+    created_at: 2026-01-24T04:48:07.181Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
