@@ -34395,6 +34395,13 @@
 
         All 44 tests passing.
       supersedes: null
+    - _ulid: 01KFRS7GRJ8NP71JPHWD0EEH5K
+      created_at: 2026-01-24T19:55:51.442Z
+      author: "@claude"
+      content: "PR #220 created and updated with clear limitations acknowledgment. Tests are intentionally
+        preparatory (static code analysis) to document expected changes for route migration. CI
+        running. Waiting for checks to complete before merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
