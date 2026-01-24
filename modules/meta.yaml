@@ -983,6 +983,10 @@ features:
                 given: no eligible tasks exist in any state
                 when: agent attempts selection
                 then: workflow exits cleanly with No eligible tasks message
+              - id: ac-9
+                given: all eligible tasks are blocked by dependencies
+                when: agent attempts selection
+                then: workflow exits cleanly with All eligible tasks blocked message
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
