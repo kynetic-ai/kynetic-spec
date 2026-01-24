@@ -2903,6 +2903,10 @@ features:
             given: task has prior [LOOP-FAIL:N] notes
             when: new failure occurs
             then: N is parsed from latest note and incremented
+          - id: ac-5
+            given: task fails with N reaching 3
+            when: threshold reached
+            then: "task marked automation: needs_review with summary"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
