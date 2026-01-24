@@ -34764,6 +34764,12 @@
         - ac-4: Given loop mode encounters error, when error caught, then note added, workflow
         continues
       supersedes: null
+    - _ulid: 01KFR856P2N2ZRRR8SG97C2MBT
+      created_at: 2026-01-24T14:57:29.795Z
+      author: "@claude"
+      content: "Implementation notes: 4 ACs covering arg-parse, workflow-select, no-confirm,
+        error-continue. Generic loop mode behavior applicable to all loop-capable skills."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82FG2XFBM16C80VHV40BK
   slugs:
