@@ -1074,6 +1074,10 @@ features:
                 given: all checks pass
                 when: subagent merges
                 then: follows @pr-review-merge gates
+              - id: ac-7
+                given: PR is merged
+                when: subagent finishes
+                then: marks task completed with PR reference in note
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
