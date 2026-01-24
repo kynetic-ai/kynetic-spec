@@ -35097,4 +35097,13 @@
         - ac-7: Given subagent runs, when resource management, then respects ralph's --max-retries
         and failure limits
       supersedes: null
+    - _ulid: 01KFR86FVWNH9072WQMETHJKXC
+      created_at: 2026-01-24T14:58:11.964Z
+      author: "@claude"
+      content: "Implementation notes: 7 ACs covering spawn, prompt, sequential, output, task-signal,
+        one-at-a-time, resource. True ACP subagent (separate Claude Code process). SEQUENTIAL
+        execution - ralph WAITS for subagent completion before continuing. Output rendered in same
+        stream as main agent (single display). Prompt includes /pr-review @task-ref to trigger skill
+        invocation."
+      supersedes: null
   todos: []
