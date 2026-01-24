@@ -33887,7 +33887,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
-  slugs: []
+  slugs:
+    - task-ws-binding-tests
   title: WebSocket connection binding tests
   type: task
   description: |-
