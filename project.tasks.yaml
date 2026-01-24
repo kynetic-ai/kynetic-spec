@@ -33450,3 +33450,37 @@
         Spec validated successfully. Now creating implementation tasks.
       supersedes: null
   todos: []
+- title: Multi-directory daemon test fixtures
+  description: |-
+    Create test helpers for multi-project E2E and integration tests.
+
+    ## Implementation Notes
+    - Extend existing helpers (tests/helpers/cli.ts) with HTTP client support
+    - Add `createTestProject(name)` - creates temp dir with valid .kspec/ structure
+    - Add `spawnDaemon(options)` - starts daemon process, returns port and cleanup fn
+    - Add `daemonRequest(port, method, path, headers)` - HTTP client with X-Kspec-Dir support
+    - Use existing `createTempDir`/`cleanupTempDir` patterns
+
+    ## AC Coverage
+    Enables testing of ac-1 through ac-8b, ac-24
+
+    ## Dependencies
+    None (foundational)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - infrastructure
+    - phase-1
+  _ulid: 01KFQAAA01HPYC87TBGBVBKW3G
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-24T06:15:59.745Z
+  notes: []
+  todos: []
