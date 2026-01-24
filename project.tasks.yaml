@@ -34766,16 +34766,22 @@
         - ac-4: Given multiple eligible tasks, when skill selects, then follows loop selection order
       supersedes: null
   todos: []
-- title: "Implement: Reflect Loop Skill"
+- _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
+  slugs:
+    - task-reflect-loop-skill
+  title: "Implement: Reflect Loop Skill"
   type: task
   spec_ref: "@reflect-loop-skill"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-reflect-loop-skill
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-skill-commands"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:56:00.823Z
   notes:
     - _ulid: 01KFR82FSP6PNQ2GZ43QK1E8R2
       created_at: 2026-01-24T14:56:00.823Z
@@ -34803,10 +34809,52 @@
 
         - ac-5: Given captures complete, when skill finishes, then user not prompted
       supersedes: null
-  _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
+  todos: []
+- title: "Implement: PR Review Skill"
+  type: task
+  spec_ref: "@pr-review-skill"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-pr-review-skill
+  tags: []
+  depends_on:
+    - "@task-skill-commands"
+  notes:
+    - _ulid: 01KFR82G309EHNT6S3ZSVSETEB
+      created_at: 2026-01-24T14:56:01.120Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Skill definition for /pr-review - invoked in ACP subagent context. Key focus: AC coverage
+        verification + spec alignment (not just tests passing). Delegates to
+        @pr-review-loop-workflow.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given /pr-review @task-ref invoked, when skill executes, then starts
+        @pr-review-loop-workflow
+
+        - ac-2: Given skill invoked without task ref, when skill validates, then errors with task
+        reference required
+
+        - ac-3: Given task ref provided but no PR exists, when skill validates, then errors with no
+        PR found for task
+
+        - ac-4: Given skill documentation, when content examined, then emphasizes AC coverage AND
+        spec alignment as quality gates
+
+        - ac-5: Given skill starts, when execution, then delegates all behavior to
+        @pr-review-loop-workflow
+      supersedes: null
+  _ulid: 01KFR82G303PDT36DCA1RZ9Z45
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:56:00.823Z
+  created_at: 2026-01-24T14:56:01.120Z
   todos: []
