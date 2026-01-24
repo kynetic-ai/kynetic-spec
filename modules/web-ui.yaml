@@ -818,6 +818,10 @@ features:
         given: X-Kspec-Dir header contains symlinked path
         when: path resolves to same directory as another registered project via symlink
         then: paths are treated as separate projects (symlinks are NOT resolved during normalization)
+      - id: ac-20b
+        given: daemon started from directory with .kspec/ which is later deleted
+        when: request without X-Kspec-Dir arrives after default project .kspec/ deleted
+        then: return 400 with error 'Default project no longer valid. Specify X-Kspec-Dir header.'
     status:
       maturity: draft
       implementation: not_started
