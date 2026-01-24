@@ -2515,6 +2515,10 @@ features:
             given: subagent completes
             when: signaling
             then: task status change (completed/needs_review) indicates outcome
+          - id: ac-6
+            given: multiple pending_review tasks
+            when: spawning
+            then: processes one at a time sequentially
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
