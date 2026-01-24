@@ -33642,6 +33642,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #214. Created 30 comprehensive tests for global PID/port management
+    (ACs 9, 9b, 9c, 10, 10b, 11, 13). Addressed Greptile review feedback: fixed return type, removed
+    inline require, corrected test name. All CI checks passed."
   depends_on:
     - "@01KFQAAA"
   context: []
@@ -33652,6 +33655,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:16:10.627Z
   started_at: 2026-01-24T18:15:07.959Z
+  completed_at: 2026-01-24T18:31:14.421Z
   notes:
     - _ulid: 01KFRKJV5NED3DW9AQZGTAVBBA
       created_at: 2026-01-24T18:17:11.094Z
@@ -33712,10 +33716,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T18:31:14.421Z
-  closed_reason: "Merged in PR #214. Created 30 comprehensive tests for global PID/port management
-    (ACs 9, 9b, 9c, 10, 10b, 11, 13). Addressed Greptile review feedback: fixed return type, removed
-    inline require, corrected test name. All CI checks passed."
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
   slugs:
     - task-context-manager-tests
@@ -33738,7 +33738,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -33752,6 +33752,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T18:31:34.593Z
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
   slugs:
     - task-pid-port-impl
