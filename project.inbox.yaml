@@ -580,3 +580,12 @@ inbox:
       - testing
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFQ53EADP985EPD0KYZFKYYF
+    text: "Daemon dev workflow: Either add watch mode (npm run dev:daemon) that auto-copies to dist/, or
+      change to run directly from packages/daemon/src. Currently easy to forget build:daemon step."
+    created_at: 2026-01-24T04:44:51.917Z
+    tags:
+      - dx
+      - daemon
+      - reflection
+    added_by: "@claude"
