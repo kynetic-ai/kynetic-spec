@@ -37007,7 +37007,7 @@
   type: task
   spec_ref: "@ralph-skill-delegation"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -37123,6 +37123,11 @@
         tool, not detected by Ralph. All 40 ralph tests passing.
       supersedes: null
   todos: []
+  completed_at: 2026-01-24T23:35:54.390Z
+  closed_reason: "Merged in PR #231. Refactored Ralph's automation prompt to delegate to /task-work
+    and /reflect skills instead of embedding step-by-step instructions. Added session ID and
+    no-human flag. All 40 ralph tests passing, including new AC-4 test added per local review
+    feedback. Greptile and automated reviews approved."
 - _ulid: 01KFR834PPNNABA5RCSC4A34QT
   slugs:
     - task-ralph-subagent-spawning
