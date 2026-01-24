@@ -30,20 +30,22 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
+import { join } from 'path';
 
 interface TasksRouteOptions {
-  kspecDir: string;
   pubsub: PubSubManager;
 }
 
 export function createTasksRoutes(options: TasksRouteOptions) {
-  const { kspecDir, pubsub } = options;
+  const { pubsub } = options;
 
   return new Elysia({ prefix: '/api/tasks' })
     // AC: @api-contract ac-2, ac-3, ac-4 - List tasks with filters and pagination
     .get(
       '/',
-      async ({ query }) => {
+      async ({ query, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
         const index = new ReferenceIndex(ctx);
@@ -117,7 +119,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     // AC: @api-contract ac-5 - Get single task by ref
     .get(
       '/:ref',
-      async ({ params, error: errorResponse }) => {
+      async ({ params, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
         const index = new ReferenceIndex(ctx);
@@ -176,7 +180,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     // AC: @api-contract ac-6 - Start task
     .post(
       '/:ref/start',
-      async ({ params, error: errorResponse }) => {
+      async ({ params, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
@@ -243,7 +249,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
     // AC: @api-contract ac-7 - Add note to task
     .post(
       '/:ref/note',
-      async ({ params, body, error: errorResponse }) => {
+      async ({ params, body, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
         const index = new ReferenceIndex(ctx);

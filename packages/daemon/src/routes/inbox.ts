@@ -25,18 +25,20 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
+import { join } from 'path';
 
 interface InboxRouteOptions {
-  kspecDir: string;
   pubsub: PubSubManager;
 }
 
 export function createInboxRoutes(options: InboxRouteOptions) {
-  const { kspecDir, pubsub } = options;
+  const { pubsub } = options;
 
   return new Elysia({ prefix: '/api/inbox' })
     // AC: @api-contract ac-12 - List inbox items ordered by created_at desc
-    .get('/', async () => {
+    .get('/', async ({ projectContext }) => {
+      // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+      const kspecDir = join(projectContext.path, '.kspec');
       const ctx = await initContext(kspecDir);
       const items = await loadInboxItems(ctx);
 
@@ -54,7 +56,9 @@ export function createInboxRoutes(options: InboxRouteOptions) {
     // AC: @api-contract ac-13 - Create inbox item
     .post(
       '/',
-      async ({ body, error: errorResponse }) => {
+      async ({ body, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
 
         // AC: @trait-api-endpoint ac-3 - Validate body
@@ -107,7 +111,9 @@ export function createInboxRoutes(options: InboxRouteOptions) {
     // AC: @api-contract ac-14 - Delete inbox item
     .delete(
       '/:ref',
-      async ({ params, error: errorResponse }) => {
+      async ({ params, error: errorResponse, projectContext }) => {
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const items = await loadInboxItems(ctx);
         const index = new ReferenceIndex(ctx);

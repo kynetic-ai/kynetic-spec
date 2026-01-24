@@ -16,6 +16,7 @@ import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { PidFileManager } from './pid';
+import { projectContextMiddleware } from './middleware/project-context';
 import { createTasksRoutes } from './routes/tasks';
 import { createItemsRoutes } from './routes/items';
 import { createInboxRoutes } from './routes/inbox';
@@ -129,6 +130,12 @@ function localhostOnly() {
 export async function createServer(options: ServerOptions) {
   const { port, isDaemon, kspecDir = join(process.cwd(), '.kspec'), webUiDir } = options;
 
+  // Determine startup project path (project root, not .kspec/)
+  // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
+  const startupProjectPath = kspecDir.endsWith('.kspec')
+    ? kspecDir.slice(0, -('.kspec'.length + 1)) // Remove '/.kspec'
+    : kspecDir;
+
   // AC: @daemon-server ac-17 - Resolve web UI path for static file serving
   const resolvedWebUiPath = resolveWebUiPath(webUiDir);
   if (resolvedWebUiPath) {
@@ -191,6 +198,9 @@ export async function createServer(options: ServerOptions) {
     // AC-3: Enforce localhost-only connections
     .onRequest(localhostOnly())
 
+    // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
+    .use(projectContextMiddleware({ startupProject: startupProjectPath }))
+
     // AC-11: Health check endpoint
     .get('/api/health', () => ({
       status: 'ok',
@@ -200,19 +210,20 @@ export async function createServer(options: ServerOptions) {
     }))
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
-    .use(createTasksRoutes({ kspecDir, pubsub: pubsubManager }))
+    // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
+    .use(createTasksRoutes({ pubsub: pubsubManager }))
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
-    .use(createItemsRoutes({ kspecDir }))
+    .use(createItemsRoutes())
 
     // AC: @api-contract ac-12 through ac-14 - Inbox API endpoints
-    .use(createInboxRoutes({ kspecDir, pubsub: pubsubManager }))
+    .use(createInboxRoutes({ pubsub: pubsubManager }))
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
-    .use(createMetaRoutes({ kspecDir }))
+    .use(createMetaRoutes())
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
-    .use(createValidationRoutes({ kspecDir }))
+    .use(createValidationRoutes())
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
