@@ -2978,8 +2978,41 @@ runs:
   - _ulid: 01KFQ8H939CAXFP3FGSRSEPSJH
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-24T05:44:51.049Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-24T05:44:51.049Z
+        completed_at: 2026-01-24T05:45:09.243Z
+        notes: >-
+          ## What Worked Well
+
+
+          1. **Subagent research pattern** - Delegated architecture research to a subagent which
+          produced comprehensive findings with code examples, references, and concrete
+          recommendations. This was more efficient than doing the research inline.
+
+
+          2. **Systematic debugging** - When E2E tests failed with blank page, methodically traced:
+          screenshot → asset hashes → HTML diff → discovered BUN_ENV issue. Each step narrowed the
+          problem.
+
+
+          3. **Session start habit** - Running 'kspec session start' immediately surfaced the
+          in_progress task from previous session, preventing duplicate work.
+
+
+          4. **Capturing scope expansion** - When debugging revealed architectural issues beyond the
+          E2E task scope, immediately captured as inbox item, then promoted to proper task with full
+          context from research.
+
+
+          5. **BUN_ENV=production discovery** - Identified that Bun's dev mode was transforming HTML
+          at runtime, causing asset hash mismatches. This was a non-obvious root cause.
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-24T05:45:09.243Z
+        completed_at: 2026-01-24T05:45:09.243Z
     initiated_by: "@claude"
