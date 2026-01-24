@@ -34014,7 +34014,10 @@
   created_at: 2026-01-24T06:18:21.894Z
   notes: []
   todos: []
-- title: Per-project file watcher implementation
+- _ulid: 01KFQAF08VSFJQ2D6EERRH890E
+  slugs: []
+  title: Per-project file watcher implementation
+  type: task
   description: >-
     Implement per-project file watchers with event scoping.
 
@@ -34052,21 +34055,51 @@
     - Task: Per-project broadcast filtering implementation (for event routing)
 
     - Task: Per-project file watcher tests (tests first)
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - watcher
     - phase-6
-  _ulid: 01KFQAF08VSFJQ2D6EERRH890E
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:33.627Z
+  notes: []
+  todos: []
+- title: /api/projects endpoint tests
+  description: |-
+    Write tests for /api/projects endpoints.
+
+    ## Test Cases
+    - Test GET returns list with paths, registration time, watcher status
+    - Test POST registers project with path validation
+    - Test DELETE unregisters and stops watcher
+    - Test error cases (invalid paths, non-existent projects)
+
+    ## AC Coverage
+    ac-28, ac-29, ac-30
+
+    ## Dependencies
+    Task: ProjectContextManager implementation
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - api
+    - phase-7
+  _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:18:33.627Z
+  created_at: 2026-01-24T06:18:43.336Z
   notes: []
   todos: []
