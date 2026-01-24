@@ -33554,7 +33554,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
-  slugs: []
+  slugs:
+    - task-context-manager-tests
   title: ProjectContextManager unit tests
   type: task
   description: |-
