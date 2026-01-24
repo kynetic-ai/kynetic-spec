@@ -2764,6 +2764,21 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:11.006Z
+      - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
+        slugs:
+          - loop-mode-error-handling
+        title: Loop Mode Error Handling
+        type: requirement
+        tags: []
+        description: "Error handling specific to loop mode. Failures tracked via task notes with
+          [LOOP-FAIL:N] prefix. N=3 triggers automation: needs_review."
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:14.898Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
