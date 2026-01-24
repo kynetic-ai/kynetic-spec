@@ -2820,7 +2820,7 @@ runs:
   - _ulid: 01KFQ4T733PG9GVX2V2YNC9X07
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T04:39:49.603Z
     step_results:
@@ -2918,5 +2918,33 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T04:40:43.438Z
-        completed_at: 2026-01-24T04:40:43.438Z
+        completed_at: 2026-01-24T04:40:57.257Z
+        notes: >-
+          ## Proposed Improvements (Untracked Friction)
+
+
+          1. **Daemon auto-cleanup in E2E tests** (Small)
+             - What: Test fixture should kill any daemon on target port before starting
+             - Currently using lsof which isn't available on all systems
+             - Better: Use fuser -k or cross-platform node-based port check
+             - Helps: Prevents stale daemon failures, improves test reliability
+
+          2. **Daemon watch mode for development** (Medium)
+             - What: npm run dev:daemon that watches packages/daemon/src and auto-copies to dist/daemon
+             - Or: Change daemon to run directly from packages/daemon/src instead of dist copy
+             - Helps: Eliminates forgotten build:daemon step
+
+          3. **Daemon startup logging option** (Small)
+             - What: --log-file option for 'kspec serve start' that captures stdout/stderr
+             - Or: --verbose flag that logs to console in foreground mode
+             - Helps: Debug daemon issues without guessing
+
+          4. **Static asset path logging** (Small)
+             - What: Log which web UI path daemon resolved to on startup
+             - Currently only logs 'Web UI assets found at: ...' in some cases
+             - Helps: Debug asset serving issues like today's hash mismatch
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T04:40:57.257Z
+        completed_at: 2026-01-24T04:40:57.257Z
     initiated_by: "@claude"
