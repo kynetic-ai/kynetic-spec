@@ -34135,6 +34135,7 @@
   created_at: 2026-01-24T06:18:33.627Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   slugs: []
   title: /api/projects endpoint tests
