@@ -2693,6 +2693,11 @@ features:
     traits: []
     notes: []
     created: 2026-01-24T14:47:40.656Z
+    acceptance_criteria:
+      - id: ac-1
+        given: skill exists
+        when: /skill-name invoked
+        then: skill executes with default behavior
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
