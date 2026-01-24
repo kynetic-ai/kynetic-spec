@@ -608,3 +608,12 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFQ8V8SBWP3FA6M5GZAW91Y8
+    text: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode HTML
+      transformation causing asset hash mismatches
+    created_at: 2026-01-24T05:50:18.411Z
+    tags:
+      - reflection
+      - daemon
+      - small
+    added_by: "@claude"
