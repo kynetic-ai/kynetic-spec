@@ -3383,4 +3383,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFR0MBH2Z9GKP96DPTW9J5HN
+    type: success
+    content: Subagent plan review before spec finalization - having a Plan subagent review the spec plan
+      caught gaps (missing error cases, race conditions, path validation) that would have been
+      harder to fix after writing the spec. Worth making standard practice for architecture specs.
+    created_at: 2026-01-24T12:45:57.667Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
