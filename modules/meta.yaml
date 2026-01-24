@@ -1070,6 +1070,10 @@ features:
                 given: changes are pushed
                 when: subagent proceeds
                 then: waits for CI to pass before merge
+              - id: ac-6
+                given: all checks pass
+                when: subagent merges
+                then: follows @pr-review-merge gates
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
