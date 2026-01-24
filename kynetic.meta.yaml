@@ -376,6 +376,73 @@ workflows:
           Report findings.
           List all MUST-FIX issues that block PR creation.
           Non-blocking suggestions can be noted separately.
+  - _ulid: 01KFRE9YT85Y16QNMSAGNQ230A
+    id: task-work-loop
+    trigger: manual
+    description: "Loop variant of task-work-session. Auto-filters to automation-eligible tasks only,
+      skips verification, auto-resolves decisions. Task selection: in_progress > pending_review
+      (spawn subagent) > unblocking > priority."
+    steps:
+      - type: action
+        content: |
+          Filter to automation-eligible tasks only.
+          Use: kspec tasks ready --eligible --json
+          This ensures only tasks marked automation: eligible are considered.
+        execution:
+          mode: silent
+      - type: decision
+        content: |
+          Select task by priority order.
+          Check in order:
+          1. in_progress tasks (continue existing work)
+          2. pending_review tasks (spawn subagent for PR review)
+          3. Ready tasks that unblock others (high impact)
+          4. Highest priority ready task (lowest number = higher priority)
+        options:
+          - in_progress task exists -> continue that task
+          - pending_review task exists -> spawn PR review subagent with /pr-review @task
+          - Ready task unblocks others -> select that task
+          - Only isolated ready tasks -> select highest priority (lowest number)
+          - No eligible tasks -> exit with No eligible tasks message
+          - All eligible blocked -> exit with All eligible tasks blocked message
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Start selected task (if not already in_progress).
+          Use: kspec task start @task
+          Skip verification step - in loop mode we trust task state.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Work on the task, adding notes as you go.
+          Use: kspec task note @task "What you're doing..."
+          Add notes during work, not just at end.
+      - type: action
+        content: |
+          Commit changes with Task: @task trailer.
+          All changes must be committed before submitting.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Submit task for review.
+          Use: kspec task submit @task
+          This marks the task pending_review.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Create PR.
+          Use: /pr skill
+          After PR created, loop will detect pending_review on next iteration.
+        execution:
+          mode: silent
+    mode: loop
+    based_on: "@task-work-session"
+    tags:
+      - loop
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
