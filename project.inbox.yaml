@@ -617,3 +617,12 @@ inbox:
       - daemon
       - small
     added_by: "@claude"
+  - _ulid: 01KFQ8VE5TGYP33H6CVHXBKAQE
+    text: "E2E test fixture health check: After starting daemon, verify /api/health returns expected
+      response before running tests. Fail fast with clear error if daemon startup failed."
+    created_at: 2026-01-24T05:50:23.930Z
+    tags:
+      - reflection
+      - e2e
+      - testing
+    added_by: "@claude"
