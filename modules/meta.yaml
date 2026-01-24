@@ -919,6 +919,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:47:11.281Z
+        acceptance_criteria:
+          - id: ac-1
+            given: loop mode workflows exist
+            when: kspec meta workflows --tag loop runs
+            then: lists all loop-specific workflows
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
