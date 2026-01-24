@@ -35894,6 +35894,23 @@
 
         Build status: Web UI builds successfully
       supersedes: null
+    - _ulid: 01KFS3XBBQGJ8GRQY7Q016Q7FS
+      created_at: 2026-01-24T23:02:32.568Z
+      author: "@claude"
+      content: |-
+        Review feedback addressed in commit da587c1a:
+
+        Fixed all 6 Greptile code review issues:
+        1. Race condition in X-Kspec-Dir header test - moved interception after click
+        2. Race condition in multi-endpoint loop - restructured to intercept before navigation
+        3. Flaky content assertion in task reload - validate API request instead
+        4. Flaky content assertion in items reload - validate API request instead
+        5. Flaky content assertion in inbox reload - validate API request instead
+        6. Race condition in default project test - use specific /api/tasks matcher
+
+        Manual intervention needed: Greptile review threads must be resolved via GitHub UI.
+        check-unresolved-comments CI check is currently failing but will pass once threads resolved.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
