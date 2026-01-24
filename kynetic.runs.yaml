@@ -3323,7 +3323,7 @@ runs:
   - _ulid: 01KFRA54G6APCBZZPR7436PBJR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T15:32:24.710Z
     step_results:
@@ -3339,5 +3339,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T15:33:06.013Z
-        completed_at: 2026-01-24T15:33:06.013Z
+        completed_at: 2026-01-24T15:33:21.727Z
+        notes: "Friction: (1) No --relates-to flag on kspec item set - had to manually edit YAML for
+          relationship fields. (2) Bulk AC creation verbose - 10 ACs = 10 separate commands, would
+          benefit from bulk add from file. (3) Review subagent lacked context - had to re-explain
+          user constraints in prompt manually. (4) Orphaned workflow runs accumulating - ~19 stale
+          active runs, no bulk abort."
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T15:33:21.727Z
+        completed_at: 2026-01-24T15:33:21.727Z
     initiated_by: "@claude"
