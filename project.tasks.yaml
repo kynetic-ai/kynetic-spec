@@ -33860,7 +33860,10 @@
   created_at: 2026-01-24T06:17:41.274Z
   notes: []
   todos: []
-- title: WebSocket connection binding implementation
+- _ulid: 01KFQADQRBPDTV79TARVHW0YMF
+  slugs: []
+  title: WebSocket connection binding implementation
+  type: task
   description: |-
     Implement WebSocket project binding during connection handshake.
 
@@ -33881,21 +33884,50 @@
     ## Dependencies
     - Task: ProjectContextManager implementation
     - Task: WebSocket connection binding tests (tests first)
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - websocket
     - phase-5
-  _ulid: 01KFQADQRBPDTV79TARVHW0YMF
+  vcs_refs: []
+  created_at: 2026-01-24T06:17:52.139Z
+  notes: []
+  todos: []
+- title: Per-project broadcast filtering tests
+  description: |-
+    Write tests for per-project WebSocket broadcast filtering.
+
+    ## Test Cases
+    - Test events only sent to connections for matching project
+    - Test multi-project scenario: project A event doesn't reach project B connections
+    - Test subscription scoping
+
+    ## AC Coverage
+    ac-18
+
+    ## Dependencies
+    Task: WebSocket connection binding implementation
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - websocket
+    - phase-5
+  _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:17:52.139Z
+  created_at: 2026-01-24T06:18:01.549Z
   notes: []
   todos: []
