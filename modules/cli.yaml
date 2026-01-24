@@ -2813,6 +2813,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:07.322Z
+        acceptance_criteria:
+          - id: ac-1
+            given: ralph iteration ends
+            when: agent acts
+            then: /reflect loop invoked
       - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
         slugs:
           - pr-review-skill
