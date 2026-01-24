@@ -147,6 +147,55 @@ describe('ralph command', () => {
     expect(result.stdout).not.toContain('Completed iteration');
   });
 
+  // AC: @ralph-skill-delegation ac-1
+  it('includes iteration N/M, session ID, and no-human flag in prompt', async () => {
+    const result = runRalph('--dry-run --max-loops 5', tempDir);
+
+    expect(result.stdout).toContain('Iteration:** 1 of 5');
+    expect(result.stdout).toMatch(/Session ID:\*\* `[A-Z0-9]{26}`/);
+    expect(result.stdout).toContain('Mode:** Automated (no human in the loop)');
+  });
+
+  // AC: @ralph-skill-delegation ac-2
+  it('does NOT contain step-by-step task work instructions', async () => {
+    const result = runRalph('--dry-run', tempDir);
+
+    // Old-style instructions should be gone
+    expect(result.stdout).not.toContain('### 1. Check for Open PRs First');
+    expect(result.stdout).not.toContain('### 3. Pick or Continue a Task');
+    expect(result.stdout).not.toContain('### 4. Do the Work');
+    expect(result.stdout).not.toContain('kspec task start @task-ref');
+    expect(result.stdout).not.toContain('kspec task note @task-ref');
+  });
+
+  // AC: @ralph-skill-delegation ac-3
+  it('contains literal /task-work and /reflect skill invocations', async () => {
+    const result = runRalph('--dry-run', tempDir);
+
+    expect(result.stdout).toContain('/task-work');
+    expect(result.stdout).toContain('/reflect');
+  });
+
+  // AC: @ralph-skill-delegation ac-4
+  it('does NOT parse or detect skill invocations from agent output', async () => {
+    const result = runRalph('--max-loops 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+      MOCK_ACP_RESPONSE_TEXT: 'I will now run /task-work to complete the task, then use /reflect to document learnings.',
+    });
+
+    // Should complete normally without attempting to parse/invoke skills
+    expect(result.stdout).toContain('Completed iteration 1');
+
+    // Should NOT show any skill invocation behavior
+    expect(result.output).not.toContain('Invoking skill');
+    expect(result.output).not.toContain('Detected skill command');
+    expect(result.output).not.toContain('Running /task-work');
+    expect(result.output).not.toContain('Running /reflect');
+
+    // The text should appear in the output (proving Ralph doesn't filter it)
+    expect(result.stdout).toContain('I will now run /task-work to complete the task');
+  });
+
   // AC: @cli-ralph ac-7 - Retry on error
   it('retries iteration on failure', async () => {
     // Fail twice then succeed
