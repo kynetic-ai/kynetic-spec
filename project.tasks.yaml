@@ -34599,6 +34599,17 @@
 
         - Verified workflow appears in 'kspec meta workflows --tag loop'
       supersedes: null
+    - _ulid: 01KFRG8R84ARHAX8JA7V04RHEG
+      created_at: 2026-01-24T17:19:14.693Z
+      author: "@claude"
+      content: |-
+        Corrected workflow based on feedback:
+        - Verification step KEPT (still check git history/existing code)
+        - pending_review handling removed (ralph spawns PR review subagent externally)
+        - Task selection: in_progress > unblocking > priority (no pending_review)
+        - Clearer exit conditions: task done, no eligible tasks, all blocked
+        - Added instructions for starting workflow (kspec workflow start @task-work-loop)
+      supersedes: null
   todos: []
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
