@@ -34356,7 +34356,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
-  slugs: []
+  slugs:
+    - task-ui-selector-impl
   title: Web UI project selector implementation
   type: task
   description: |-
