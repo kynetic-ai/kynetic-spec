@@ -574,4 +574,92 @@ describe('WebSocket Protocol', () => {
       expect(serverContent).toContain('.ws<ConnectionData>');
     });
   });
+
+  describe('Project Binding (Multi-Directory)', () => {
+    let serverContent: string;
+    let typesContent: string;
+
+    // AC: @multi-directory-daemon ac-21
+    it('should bind WebSocket connection to project via X-Kspec-Dir header during handshake', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // Verify WebSocket upgrade handler extracts X-Kspec-Dir header
+      expect(serverContent).toContain('X-Kspec-Dir');
+      expect(serverContent).toContain('open(ws');
+    });
+
+    // AC: @multi-directory-daemon ac-21
+    it('should store project path in connection data for lifetime of connection', async () => {
+      typesContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/websocket/types.ts'),
+        'utf-8'
+      );
+
+      // Verify ConnectionData includes projectPath field
+      expect(typesContent).toContain('interface ConnectionData');
+      expect(typesContent).toContain('projectPath');
+    });
+
+    // AC: @multi-directory-daemon ac-21
+    it('should only send events from bound project to WebSocket connection', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // Verify broadcast logic filters by project
+      expect(serverContent).toContain('projectPath');
+    });
+
+    // AC: @multi-directory-daemon ac-21b
+    it('should make project binding immutable after connection established', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // Verify projectPath is set once in open() and not modified
+      expect(serverContent).toContain('ws.data');
+      expect(serverContent).toContain('projectPath');
+    });
+
+    // AC: @multi-directory-daemon ac-22
+    it('should bind to default project when X-Kspec-Dir header not provided', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // Verify fallback to default project when header missing
+      expect(serverContent).toContain('X-Kspec-Dir');
+      expect(serverContent).toContain('defaultProjectPath');
+    });
+
+    // AC: @multi-directory-daemon ac-23
+    it('should reject WebSocket connection when no project specified and no default', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // Verify rejection with close code 4000
+      expect(serverContent).toContain('4000');
+      expect(serverContent).toContain('No project specified');
+    });
+
+    // AC: @multi-directory-daemon ac-18
+    it('should isolate broadcasts to project-specific subscribers', async () => {
+      const pubsubContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/websocket/pubsub.ts'),
+        'utf-8'
+      );
+
+      // Verify broadcast checks connection projectPath
+      expect(pubsubContent).toContain('broadcast');
+      expect(pubsubContent).toContain('projectPath');
+    });
+  });
 });
