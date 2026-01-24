@@ -2532,6 +2532,11 @@ features:
             given: subagent is running
             when: subagent exceeds timeout (default 10 minutes)
             then: "ralph terminates subagent and marks task automation: needs_review with timeout note"
+          - id: ac-10
+            given: subagent prompt is built
+            when: context is assembled
+            then: "includes: full task details (kspec task get), linked spec with ACs if spec_ref exists,
+              current git branch"
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
