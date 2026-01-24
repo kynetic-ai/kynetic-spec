@@ -34826,6 +34826,46 @@
         See previous note for detailed implementation approach and challenges (Elysia header access
         during upgrade).
       supersedes: null
+    - _ulid: 01KFRYQSSJWTEVBVZQYG7Z61SE
+      created_at: 2026-01-24T21:32:07.858Z
+      author: "@claude"
+      content: >-
+        Implemented WebSocket connection binding to projects:
+
+
+        Implementation details:
+
+        1. Added projectPath field to ConnectionData interface (types.ts)
+
+        2. Stored ProjectContextManager in Elysia app state via middleware 
+
+        3. Used beforeHandle hook in WebSocket config to extract X-Kspec-Dir header
+
+        4. Validated project path and auto-registered if needed (ac-4)
+
+        5. Implemented default project fallback (ac-22)
+
+        6. Handled connection rejection when no default (ac-23)
+
+        7. Stored projectPath in ws.data during open() - immutable binding (ac-21, ac-21b)
+
+        8. Updated PubSubManager.broadcast() to accept optional projectPath parameter
+
+        9. Added project filtering in broadcast loop (ac-18)
+
+        10. Updated all broadcast calls to pass projectContext.path from routes
+
+
+        Note: Used temporary Map (wsProjectPaths) to pass resolved project path from beforeHandle to
+        open() handler since Elysia doesn't expose beforeHandle context in open().
+
+
+        Covers ACs: ac-18, ac-21, ac-21b, ac-22, ac-23 from @multi-directory-daemon spec.
+
+
+        All 58 WebSocket tests passing. Documentary tests for project binding now reflect actual
+        implementation.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
