@@ -656,7 +656,7 @@ features:
       - "@trait-websocket-protocol"
     notes:
       - _ulid: 01KFQ84FVZB2CWH7Y4GPQR8M9N
-        created_at: "2026-01-24T06:00:00.000Z"
+        created_at: 2026-01-24T06:00:00.000Z
         author: "@claude"
         content: |
           Design decisions:
@@ -669,7 +669,6 @@ features:
           - Backwards compatible (no header = startup cwd project if valid)
     created: 2026-01-24T06:00:00.000Z
     acceptance_criteria:
-      # Project Context Management
       - id: ac-1
         given: daemon is running
         when: request includes X-Kspec-Dir header with valid absolute path
@@ -690,7 +689,6 @@ features:
         given: request specifies invalid path (no .kspec/)
         when: request processed
         then: return 400 with error "Invalid kspec project - .kspec/ not found at <path>"
-      # Path Validation & Security
       - id: ac-6
         given: X-Kspec-Dir header value
         when: path is relative
@@ -702,16 +700,17 @@ features:
       - id: ac-8
         given: X-Kspec-Dir header value
         when: normalized path differs from provided path
-        then: use normalized path for registration (resolve "." segments, remove trailing slashes, do NOT resolve symlinks)
+        then: use normalized path for registration (resolve "." segments, remove trailing slashes, do NOT
+          resolve symlinks)
       - id: ac-8b
         given: X-Kspec-Dir points to path with insufficient read permissions
         when: request processed
         then: return 403 with error "Permission denied - cannot read <path>"
-      # Global Daemon Lifecycle
       - id: ac-9
         given: no daemon running
         when: kspec serve start runs from any directory
-        then: daemon starts and writes PID to ~/.config/kspec/daemon.pid and port to ~/.config/kspec/daemon.port
+        then: daemon starts and writes PID to ~/.config/kspec/daemon.pid and port to
+          ~/.config/kspec/daemon.port
       - id: ac-9b
         given: ~/.config/kspec/ does not exist
         when: daemon starts
@@ -723,7 +722,8 @@ features:
       - id: ac-10
         given: daemon running on port 3456
         when: kspec serve start runs from different directory
-        then: command exits with success and outputs "Daemon already running on port 3456" (no second instance started)
+        then: command exits with success and outputs "Daemon already running on port 3456" (no second
+          instance started)
       - id: ac-10b
         given: two kspec serve start commands run concurrently (neither has written PID yet)
         when: both check for running daemon
@@ -740,7 +740,6 @@ features:
         given: CLI needs to connect to daemon
         when: daemon is running
         then: CLI reads port from ~/.config/kspec/daemon.port
-      # Daemon Restart Behavior
       - id: ac-14
         given: daemon restarts
         when: first request for a project arrives
@@ -749,12 +748,10 @@ features:
         given: daemon running with registered projects
         when: daemon restarts
         then: registered project list is empty (no persistence across restarts)
-      # Concurrent Registration
       - id: ac-16
         given: two concurrent requests for unregistered project with same path
         when: processed
         then: both succeed and share the same registered project context (no duplicate watchers)
-      # Per-Project File Watching
       - id: ac-17
         given: project is registered
         when: files change in project's .kspec/
@@ -766,17 +763,17 @@ features:
       - id: ac-19
         given: project watcher creation fails due to OS limits (ulimit)
         when: error occurs
-        then: project registration fails with 503 and error "Unable to watch project - resource limit reached"
-      # Stale Project Handling
+        then: project registration fails with 503 and error "Unable to watch project - resource limit
+          reached"
       - id: ac-20
         given: registered project's .kspec/ directory is deleted
         when: next request arrives for that project
         then: return 404 and unregister project automatically
-      # WebSocket Project Binding
       - id: ac-21
         given: WebSocket client connects with X-Kspec-Dir header during handshake
         when: connection established
-        then: connection is bound to that project for its lifetime and only receives events from that project
+        then: connection is bound to that project for its lifetime and only receives events from that
+          project
       - id: ac-21b
         given: WebSocket connection is established and bound to project
         when: client attempts to change project
@@ -789,12 +786,10 @@ features:
         given: WebSocket client connects without X-Kspec-Dir header
         when: no default project
         then: connection is rejected with close code 4000 and reason "No project specified"
-      # Cross-Project Isolation
       - id: ac-24
         given: multi-project mode
         when: any API endpoint is called
         then: response data is scoped to the request's project (no cross-project data leakage)
-      # Web UI Integration
       - id: ac-25
         given: web UI loads
         when: more than one project registered
@@ -807,7 +802,6 @@ features:
         given: UI is showing project data
         when: different project selected
         then: UI reloads data from newly selected project
-      # API Contract Extension
       - id: ac-28
         given: GET /api/projects
         when: called
@@ -820,6 +814,10 @@ features:
         given: DELETE /api/projects/:encodedPath
         when: called
         then: unregisters project and stops its file watcher
+      - id: ac-8c
+        given: X-Kspec-Dir header contains symlinked path
+        when: path resolves to same directory as another registered project via symlink
+        then: paths are treated as separate projects (symlinks are NOT resolved during normalization)
     status:
       maturity: draft
       implementation: not_started
