@@ -34300,7 +34300,7 @@
     Task: X-Kspec-Dir middleware implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQACE"
@@ -34427,6 +34427,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T20:04:30.397Z
+  closed_reason: "Merged in PR #220. Added 44 static analysis tests across 4 API test files (inbox,
+    items, meta, tasks) verifying routes will use projectContext from middleware state. Tests
+    document expected changes for route migration (task @01KFQAD3). All CI checks passed. Local
+    review flagged test quality/isolation concerns - acknowledged as intentional preparatory tests.
+    Proper E2E tests blocked on @01KFQAD3."
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
   slugs:
     - task-routes-migration
