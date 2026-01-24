@@ -2818,6 +2818,10 @@ features:
             given: ralph iteration ends
             when: agent acts
             then: /reflect loop invoked
+          - id: ac-2
+            given: loop mode active
+            when: skill executes
+            then: uses @session-reflect-loop workflow
       - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
         slugs:
           - pr-review-skill
