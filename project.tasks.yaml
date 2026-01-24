@@ -35118,7 +35118,7 @@
     - Task: Per-project broadcast filtering tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQADQ"
@@ -35149,6 +35149,24 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T21:59:37.793Z
+  closed_reason: >-
+    Already implemented. Per-project broadcast filtering is complete - implemented in prior PRs #225
+    (WebSocket binding) and #226 (broadcast filtering tests).
+
+
+    Implementation details:
+
+    1. PubSubManager.broadcast() has projectPath parameter and filters by ws.data.projectPath
+
+    2. All API route handlers pass projectContext.path to broadcasts
+
+    3. File watcher broadcasts pass startupProjectPath
+
+    4. 9 comprehensive tests passing (tests/daemon-pubsub.test.ts)
+
+
+    Covers AC-17 and AC-18. No code changes needed.
 - _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
   slugs:
     - task-watcher-tests
