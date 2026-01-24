@@ -975,7 +975,7 @@ features:
               - id: ac-6
                 given: task is selected
                 when: workflow begins
-                then: verification step skipped
+                then: verification step still performed to prevent duplicate work
               - id: ac-7
                 given: workflow reaches decision step
                 when: workflow continues
