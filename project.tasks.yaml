@@ -35563,7 +35563,7 @@
     - Task: /api/projects endpoint tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -35579,6 +35579,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T22:17:57.744Z
 - _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
   slugs:
     - task-cli-status-tests
