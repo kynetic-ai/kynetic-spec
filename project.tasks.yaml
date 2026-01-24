@@ -34726,16 +34726,22 @@
         continues
       supersedes: null
   todos: []
-- title: "Implement: Task Work Loop Skill"
+- _ulid: 01KFR82FG2XFBM16C80VHV40BK
+  slugs:
+    - task-task-work-loop-skill
+  title: "Implement: Task Work Loop Skill"
   type: task
   spec_ref: "@task-work-loop-skill"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-task-work-loop-skill
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-skill-commands"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:56:00.514Z
   notes:
     - _ulid: 01KFR82FG29FAQ8AYEQJFDVP7P
       created_at: 2026-01-24T14:56:00.514Z
@@ -34759,10 +34765,48 @@
 
         - ac-4: Given multiple eligible tasks, when skill selects, then follows loop selection order
       supersedes: null
-  _ulid: 01KFR82FG2XFBM16C80VHV40BK
+  todos: []
+- title: "Implement: Reflect Loop Skill"
+  type: task
+  spec_ref: "@reflect-loop-skill"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-reflect-loop-skill
+  tags: []
+  depends_on:
+    - "@task-skill-commands"
+  notes:
+    - _ulid: 01KFR82FSP6PNQ2GZ43QK1E8R2
+      created_at: 2026-01-24T14:56:00.823Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Skill definition for /reflect loop. Invokes @session-reflect-loop-workflow for loop mode
+        behavior.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given ralph iteration ends, when agent acts, then /reflect loop invoked
+
+        - ac-2: Given loop mode active, when skill executes, then uses @session-reflect-loop
+        workflow
+
+        - ac-3: Given potential capture identified, when skill evaluates, then MUST search existing
+        first
+
+        - ac-4: Given uncertain friction found, when skill evaluates, then item NOT captured
+
+        - ac-5: Given captures complete, when skill finishes, then user not prompted
+      supersedes: null
+  _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:56:00.514Z
+  created_at: 2026-01-24T14:56:00.823Z
   todos: []
