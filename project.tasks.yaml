@@ -33530,7 +33530,7 @@
     None (foundational)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -33544,6 +33544,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T17:52:07.682Z
 - _ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
   slugs:
     - task-pid-port-tests
@@ -34519,6 +34520,8 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #212. Created @task-work-loop workflow with 8 steps for autonomous
+    agents. Updated spec to remove ralph-specific ACs (ac-2, ac-10) and keep verification (ac-6)."
   depends_on:
     - "@task-loop-mode-workflows"
   context: []
@@ -34528,6 +34531,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:55:55.150Z
   started_at: 2026-01-24T16:43:17.430Z
+  completed_at: 2026-01-24T17:51:08.537Z
   notes:
     - _ulid: 01KFR82A8E9S3J6ZHJFNJTBMQC
       created_at: 2026-01-24T14:55:55.150Z
@@ -34637,9 +34641,6 @@
         - Removed confusing invocation instructions
       supersedes: null
   todos: []
-  completed_at: 2026-01-24T17:51:08.537Z
-  closed_reason: "Merged in PR #212. Created @task-work-loop workflow with 8 steps for autonomous
-    agents. Updated spec to remove ralph-specific ACs (ac-2, ac-10) and keep verification (ac-6)."
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
     - task-session-reflect-loop-workflow
