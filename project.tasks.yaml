@@ -34040,6 +34040,7 @@
   created_at: 2026-01-24T06:18:11.831Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
   slugs: []
   title: Per-project file watcher tests
