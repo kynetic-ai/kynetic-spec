@@ -4529,7 +4529,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFS6MJ42V8Q5K56T8FDQHTWR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T23:50:10.306Z
@@ -4573,5 +4573,7 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-24T23:50:58.902Z
-        completed_at: 2026-01-24T23:50:58.902Z
+        completed_at: 2026-01-24T23:51:14.178Z
+        notes: Captured observation @01KFS6P9 for workflow lifecycle management friction.
     initiated_by: "@claude"
+    completed_at: 2026-01-24T23:51:14.178Z
