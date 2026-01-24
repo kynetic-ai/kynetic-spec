@@ -2733,6 +2733,21 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:04.063Z
+      - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
+        slugs:
+          - reflect-loop-skill
+        title: Reflect Loop Skill
+        type: requirement
+        tags: []
+        description: Skill definition for /reflect loop. Invokes @session-reflect-loop-workflow for loop
+          mode behavior.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:07.322Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
