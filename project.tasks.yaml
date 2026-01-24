@@ -34479,7 +34479,7 @@
     - Task: API routes multi-project tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQACE"
@@ -34579,6 +34579,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T21:22:47.028Z
+  closed_reason: "Merged in PR #224. Successfully migrated all API routes (tasks, items, inbox, meta,
+    validation) to use request-scoped projectContext from middleware instead of closure-scoped
+    kspecDir. All 17 route handlers now derive kspecDir from projectContext.path. Covers AC-1, AC-2,
+    AC-3, AC-24 from @multi-directory-daemon spec. All route migration tests passing (watcher test
+    failures are pre-existing CI environment issues)."
 - _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
   slugs:
     - task-ws-binding-tests
