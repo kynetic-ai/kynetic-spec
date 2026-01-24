@@ -31519,7 +31519,7 @@
     standards feedback.
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -31536,6 +31536,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-24T23:10:23.012Z
 - _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
   slugs: []
   title: Fix daemon startup race condition in serve tests
