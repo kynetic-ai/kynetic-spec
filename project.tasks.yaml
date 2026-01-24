@@ -34245,6 +34245,7 @@
   created_at: 2026-01-24T06:19:03.995Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs: []
   title: CLI serve status with projects list
