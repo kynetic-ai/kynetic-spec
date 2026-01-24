@@ -21,6 +21,7 @@ import { createItemsRoutes } from './routes/items';
 import { createInboxRoutes } from './routes/inbox';
 import { createMetaRoutes } from './routes/meta';
 import { createValidationRoutes } from './routes/validation';
+import { createProjectsRoutes } from './routes/projects';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -213,6 +214,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
     .use(createValidationRoutes())
+
+    // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
+    .use(createProjectsRoutes({ projectManager: projectContextManager }))
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
