@@ -2995,6 +2995,10 @@ features:
             given: agent iteration completes
             when: task remains in_progress with no progress note added
             then: counts as implicit failure (agent could not complete)
+          - id: ac-9
+            given: both task-work and reflect encounter errors in same iteration
+            when: iteration ends
+            then: each error noted separately, iteration counts as single failure toward consecutive limit
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
