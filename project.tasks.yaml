@@ -34140,7 +34140,10 @@
   created_at: 2026-01-24T06:18:54.200Z
   notes: []
   todos: []
-- title: CLI serve status tests
+- _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
+  slugs: []
+  title: CLI serve status tests
+  type: task
   description: |-
     Write tests for updated CLI serve status command.
 
@@ -34155,21 +34158,67 @@
 
     ## Dependencies
     Task: /api/projects endpoints implementation
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - cli
     - phase-8
-  _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
+  vcs_refs: []
+  created_at: 2026-01-24T06:19:03.995Z
+  notes: []
+  todos: []
+- title: CLI serve status with projects list
+  description: >-
+    Update CLI serve status to show registered projects.
+
+
+    ## Implementation Notes
+
+    - Current statusServer function (src/cli/commands/serve.ts lines 372-404) checks PID and basic
+    status
+
+    - Needs to read port from global location (requires global PID/port task complete)
+
+    - Call GET /api/projects and display project list
+
+
+    ## Files to Modify
+
+    - src/cli/commands/serve.ts
+
+
+    ## AC Coverage
+
+    ac-12
+
+
+    ## Dependencies
+
+    - Task: Global PID/port file management (for port discovery)
+
+    - Task: /api/projects endpoints implementation
+
+    - Task: CLI serve status tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - cli
+    - phase-8
+  _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:19:03.995Z
+  created_at: 2026-01-24T06:19:14.921Z
   notes: []
   todos: []
