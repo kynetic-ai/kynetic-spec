@@ -178,41 +178,58 @@ After completing a task:
 
 ## Loop Mode
 
-For autonomous agents (e.g., ralph), use `/task-work loop`:
+For autonomous agents running in ralph's automation loop, invoke with the `loop` argument:
 
 ```bash
-# Invoked by ralph prompt - agent executes this
 /task-work loop
+```
+
+This starts the `@task-work-loop` workflow designed for no-human-in-loop execution.
+
+### Starting the Workflow
+
+```bash
+# Get eligible tasks (automation: eligible only)
+kspec tasks ready --eligible
+
+# Start the loop workflow
+kspec workflow start @task-work-loop
 ```
 
 ### Key Differences from Interactive Mode
 
 | Aspect | Interactive | Loop |
 |--------|-------------|------|
-| Task filtering | All tasks | automation: eligible only |
-| Verification | Check git history | Skipped (trust task state) |
-| Confirmations | User confirms | Auto-resolve |
+| Task filtering | All tasks | `automation: eligible` only |
+| Verification | Check git history | Still verify (prevent duplicate work) |
+| Confirmations | User confirms | Auto-resolve without prompts |
 | Task selection | User chooses | Priority order (see below) |
-| pending_review | User handles PR | Spawn subagent |
+| pending_review | User handles PR | Handled externally by ralph |
+
+**Note:** PR review for `pending_review` tasks is handled by ralph spawning a separate subagent. The task-work loop agent focuses only on task implementation work.
 
 ### Loop Task Selection Order
 
 1. **in_progress** - Continue existing work first
-2. **pending_review** - Spawn `/pr-review` subagent
-3. **Unblocking** - Tasks that unblock others preferred
-4. **Priority** - Highest priority (lowest number)
+2. **Unblocking** - Tasks that unblock others preferred
+3. **Priority** - Highest priority (lowest number)
 
 ### Exit Conditions
 
-- **No eligible tasks**: Exits with "No eligible tasks" message
-- **All blocked**: Exits with "All eligible tasks blocked" message
+Exit the workflow when any of these apply:
 
-### Workflow Reference
+- **Task work complete** - You completed work on a task (normal exit)
+- **No eligible tasks** - No `automation: eligible` tasks available
+- **All blocked** - All eligible tasks are blocked by dependencies
 
-```bash
-# Check loop workflow details
-kspec meta get @task-work-loop
+On exit, ralph handles iteration cycling and reflection.
 
-# List all loop workflows
-kspec meta workflows --tag loop
-```
+### Loop Workflow Steps
+
+1. Filter to `automation: eligible` tasks only
+2. Select task by priority order (in_progress > unblocking > priority)
+3. Verify work is needed (check git, existing code)
+4. Start task and implement
+5. Add notes documenting work
+6. Commit with task trailers
+7. Submit task and create PR
