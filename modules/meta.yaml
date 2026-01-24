@@ -984,10 +984,6 @@ features:
                 given: all eligible tasks are blocked by dependencies
                 when: agent attempts selection
                 then: workflow exits cleanly with All eligible tasks blocked message
-              - id: ac-10
-                given: multiple pending_review tasks exist
-                when: agent handles pending_review
-                then: processes one at a time, oldest (by started_at) first
             status:
               maturity: draft
               implementation: in_progress
