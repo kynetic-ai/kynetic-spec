@@ -9,7 +9,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createTempDir, cleanupTempDir } from './helpers/cli';
-import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -59,7 +59,7 @@ class GlobalPidFileManager {
   }
 
   // AC: @multi-directory-daemon ac-9c, ac-13
-  readPort(): number | null {
+  readPort(): number {
     if (!existsSync(this.portFilePath)) {
       throw new Error('Invalid daemon port file');
     }
@@ -81,12 +81,11 @@ class GlobalPidFileManager {
 
   // AC: @multi-directory-daemon ac-11
   remove(): void {
-    const fs = require('fs');
     if (existsSync(this.pidFilePath)) {
-      fs.unlinkSync(this.pidFilePath);
+      unlinkSync(this.pidFilePath);
     }
     if (existsSync(this.portFilePath)) {
-      fs.unlinkSync(this.portFilePath);
+      unlinkSync(this.portFilePath);
     }
   }
 
@@ -183,7 +182,7 @@ describe('Global PID/Port Management', () => {
     });
 
     // AC: @multi-directory-daemon ac-13
-    it('should return null when port file does not exist', () => {
+    it('should throw error when port file does not exist', () => {
       expect(() => pidManager.readPort()).toThrow('Invalid daemon port file');
     });
 
