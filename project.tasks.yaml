@@ -33953,6 +33953,7 @@
   created_at: 2026-01-24T06:17:52.139Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
   slugs: []
   title: Per-project broadcast filtering tests
