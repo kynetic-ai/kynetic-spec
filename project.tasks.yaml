@@ -34210,6 +34210,7 @@
   created_at: 2026-01-24T06:18:54.200Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
   slugs: []
   title: CLI serve status tests
