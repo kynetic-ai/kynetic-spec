@@ -2458,6 +2458,10 @@ features:
             given: prompt built
             when: content examined
             then: does NOT contain step-by-step task work instructions
+          - id: ac-3
+            given: prompt built
+            when: content examined
+            then: contains literal strings /task-work loop and /reflect loop
       - _ulid: 01KFR7T8HYW22JJQ1KNPZ17Q51
         slugs:
           - ralph-subagent-spawning
