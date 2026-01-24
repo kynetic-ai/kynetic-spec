@@ -1,7 +1,10 @@
 /**
  * Tests for daemon auto-start configuration
  * Task: @01KFMMZK
- * Spec: @daemon-server (implicit auto-start behavior)
+ * Spec: @daemon-server (daemon.auto_start and daemon.port manifest schema)
+ *
+ * Note: These tests validate manifest schema parsing for daemon configuration.
+ * The daemon config doesn't have dedicated ACs - these are schema validation tests.
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -23,7 +26,7 @@ describe('Daemon Auto-Start Configuration', () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: Daemon config schema accepts auto_start and port
+  // Schema validation: Daemon config accepts auto_start and port
   it('should parse daemon config from kynetic.yaml with defaults', async () => {
     const kyneticYaml = stringify({
       kynetic: '1.0',
@@ -46,7 +49,7 @@ describe('Daemon Auto-Start Configuration', () => {
     });
   });
 
-  // AC: Daemon config is optional
+  // Schema validation: Daemon config is optional
   it('should handle missing daemon config gracefully', async () => {
     const kyneticYaml = stringify({
       kynetic: '1.0',
@@ -62,7 +65,7 @@ describe('Daemon Auto-Start Configuration', () => {
     expect(context.manifest?.daemon).toBeUndefined();
   });
 
-  // AC: auto_start defaults to true when daemon section exists but auto_start is not specified
+  // Schema validation: auto_start defaults to true when not specified
   it('should use default auto_start=true when not specified', async () => {
     const kyneticYaml = stringify({
       kynetic: '1.0',
@@ -80,7 +83,7 @@ describe('Daemon Auto-Start Configuration', () => {
     expect(context.manifest?.daemon?.auto_start).toBe(true);
   });
 
-  // AC: port defaults to 3456 when not specified
+  // Schema validation: port defaults to 3456 when not specified
   it('should use default port=3456 when not specified', async () => {
     const kyneticYaml = stringify({
       kynetic: '1.0',
@@ -98,7 +101,7 @@ describe('Daemon Auto-Start Configuration', () => {
     expect(context.manifest?.daemon?.port).toBe(3456);
   });
 
-  // AC: auto_start can be disabled
+  // Schema validation: auto_start can be disabled
   it('should allow disabling auto_start', async () => {
     const kyneticYaml = stringify({
       kynetic: '1.0',
@@ -117,7 +120,7 @@ describe('Daemon Auto-Start Configuration', () => {
     expect(context.manifest?.daemon?.auto_start).toBe(false);
   });
 
-  // AC: port validation rejects invalid values
+  // Schema validation: port rejects invalid values
   it('should reject invalid port numbers', async () => {
     const invalidPorts = [0, -1, 65536, 100000];
 
@@ -143,7 +146,7 @@ describe('Daemon Auto-Start Configuration', () => {
     }
   });
 
-  // AC: port accepts valid range (1-65535)
+  // Schema validation: port accepts valid range (1-65535)
   it('should accept valid port numbers in range 1-65535', async () => {
     const validPorts = [1, 80, 3456, 8080, 65535];
 
