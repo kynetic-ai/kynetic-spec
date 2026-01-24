@@ -34585,16 +34585,22 @@
         captures
       supersedes: null
   todos: []
-- title: "Implement: PR Review Loop Workflow"
+- _ulid: 01KFR82AVZY06AVHRRYSKNHPCD
+  slugs:
+    - task-pr-review-loop-workflow
+  title: "Implement: PR Review Loop Workflow"
   type: task
   spec_ref: "@pr-review-loop-workflow"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-pr-review-loop-workflow
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-loop-mode-workflows"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:55:55.775Z
   notes:
     - _ulid: 01KFR82AVZ2SW79N0X4ZH4RTTX
       created_at: 2026-01-24T14:55:55.775Z
@@ -34640,10 +34646,41 @@
         - ac-10: Given subagent spawned, when ralph behavior, then ralph waits for subagent
         completion before continuing
       supersedes: null
-  _ulid: 01KFR82AVZY06AVHRRYSKNHPCD
+  todos: []
+- title: "Implement: Skill Commands"
+  type: task
+  spec_ref: "@skill-commands"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-skill-commands
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KFR82EVN6J530W43EZA4DEKC
+      created_at: 2026-01-24T14:55:59.861Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Container for skill-related behavior specs. Skills are structured agents invoked via Claude
+        Code's /skill mechanism with optional mode arguments.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given skill exists, when /skill-name invoked, then skill executes with default
+        behavior
+
+        - ac-2: Given skill supports modes, when /skill-name mode invoked, then skill behavior
+        changes per mode
+      supersedes: null
+  _ulid: 01KFR82EVPE409RGQ29A73FP9P
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:55:55.775Z
+  created_at: 2026-01-24T14:55:59.862Z
   todos: []
