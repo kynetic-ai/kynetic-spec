@@ -2754,6 +2754,10 @@ features:
             given: skill supports loop mode
             when: /skill-name loop invoked
             then: skill recognizes argument, modifies behavior
+          - id: ac-2
+            given: skill has loop mode
+            when: loop invoked
+            then: skill uses @workflow-loop variant
       - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
         slugs:
           - task-work-loop-skill
