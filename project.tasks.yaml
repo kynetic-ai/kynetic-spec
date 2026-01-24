@@ -36511,8 +36511,11 @@
   type: task
   spec_ref: "@skill-commands"
   derivation: auto
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Spec @skill-commands is too vague to implement. ACs describe generic skill behavior but don't
+      specify what kspec functionality to build. Needs clearer requirements or child specs defining
+      actual implementation work.
   depends_on: []
   context: []
   priority: 1
