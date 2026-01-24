@@ -32532,7 +32532,7 @@
     This unblocks all E2E testing tasks.
   spec_ref: "@daemon-server"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -32582,3 +32582,5 @@
         because routes import from parent package.
       supersedes: null
   todos: []
+  completed_at: 2026-01-24T00:31:51.352Z
+  closed_reason: "Merged PR #208. Daemon now serves web UI on same port, enabling E2E testing."
