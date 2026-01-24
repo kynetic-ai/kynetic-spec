@@ -2891,6 +2891,10 @@ features:
             given: error during task work
             when: error caught
             then: note added with [LOOP-FAIL:N] prefix and error description
+          - id: ac-2
+            given: non-fatal error occurs
+            when: error handled
+            then: workflow continues to next task
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
