@@ -2820,7 +2820,7 @@ runs:
   - _ulid: 01KFQ4T733PG9GVX2V2YNC9X07
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T04:39:49.603Z
     step_results:
@@ -2853,5 +2853,43 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T04:40:07.018Z
-        completed_at: 2026-01-24T04:40:07.018Z
+        completed_at: 2026-01-24T04:40:20.951Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **Stale daemon from previous sessions** - Had to manually kill daemon on port 3456 that
+          was running from a previous test run. No automatic cleanup or detection.
+
+
+          2. **Environment variable propagation unclear** - Setting WEB_UI_DIR in spawn env, but
+          uncertain if it propagates through kspec -> daemon spawn chain. No easy way to verify.
+
+
+          3. **build:daemon manual step** - After editing packages/daemon/src/*.ts, had to remember
+          to run npm run build:daemon to copy to dist/. Easy to forget.
+
+
+          4. **Many stale workflow runs** - Multiple active workflow runs accumulated (18 shown). No
+          cleanup/timeout mechanism.
+
+
+          5. **Static asset hash mismatch debugging** - No visibility into what path staticPlugin is
+          using or what index.html it serves. Had to infer from error messages.
+
+
+          6. **initContext path expectation mismatch** - initContext expects project root but daemon
+          passes .kspec/ path. This architectural mismatch wasn't obvious until runtime error.
+
+
+          7. **CORS port hardcoding** - CORS was hardcoded to specific ports (5173, 4173) instead of
+          dynamic localhost matching. Had to trace through code to find.
+
+
+          8. **No daemon logs in test** - Daemon spawns with stdio: ignore so errors are silent.
+          Hard to debug what daemon is actually doing.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T04:40:20.951Z
+        completed_at: 2026-01-24T04:40:20.951Z
     initiated_by: "@claude"
