@@ -33551,7 +33551,10 @@
   created_at: 2026-01-24T06:16:20.121Z
   notes: []
   todos: []
-- title: Global PID/port file management
+- _ulid: 01KFQABA3D59R47QJ8R20ZYG43
+  slugs: []
+  title: Global PID/port file management
+  type: task
   description: >-
     Move PID/port files to global location and implement file locking.
 
@@ -33588,6 +33591,62 @@
     ## Dependencies
 
     Task: Global PID/port management tests (tests first)
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - phase-2
+  vcs_refs: []
+  created_at: 2026-01-24T06:16:32.621Z
+  notes: []
+  todos: []
+- title: ProjectContextManager implementation
+  description: >-
+    Implement ProjectContextManager for multi-project context caching.
+
+
+    ## Implementation Notes
+
+    - New class in packages/daemon/src/context-manager.ts
+
+    - Define ProjectContext type: `{path: string, kspecContext: KspecContext, watcher: KspecWatcher,
+    registeredAt: Date}`
+
+    - Cache Map<normalizedPath, ProjectContext>
+
+    - Thread-safe registration with Promise-based lock (prevent duplicate watchers on concurrent
+    requests)
+
+    - Stale detection: check if .kspec/ still exists before returning context
+
+
+    ## Key Details
+
+    - Use normalized paths as map keys (see ac-8 for normalization rules: resolve `.` segments,
+    remove trailing slashes, do NOT resolve symlinks)
+
+    - KspecWatcher takes kspecDir in constructor (see packages/daemon/src/watcher.ts line 43)
+
+    - Each project needs its own watcher instance
+
+    - On stale detection, remove from cache and close watcher
+
+
+    ## AC Coverage
+
+    ac-4, ac-14, ac-15, ac-16, ac-20
+
+
+    ## Dependencies
+
+    - Task: ProjectContextManager unit tests (tests first)
+
+    - Task: Global PID/port file management
   type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
@@ -33596,12 +33655,12 @@
   tags:
     - daemon
     - phase-2
-  _ulid: 01KFQABA3D59R47QJ8R20ZYG43
+  _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:16:32.621Z
+  created_at: 2026-01-24T06:16:46.793Z
   notes: []
   todos: []
