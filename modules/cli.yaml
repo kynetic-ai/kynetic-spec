@@ -2523,6 +2523,11 @@ features:
             given: subagent runs
             when: resource management
             then: respects ralph's --max-retries and failure limits
+          - id: ac-8
+            given: ralph iteration begins
+            when: ralph checks task statuses
+            then: pending_review tasks detected trigger subagent spawn by ralph (host) before main agent
+              iteration continues
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
