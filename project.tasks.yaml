@@ -33935,7 +33935,7 @@
     Task: Global PID/port management tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAAM"
@@ -34010,6 +34010,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T19:12:25.119Z
+  closed_reason: "Merged in PR #217. Implemented global PID/port file management - moved
+    daemon.{pid,port} files from project-local .kspec/ to global ~/.config/kspec/. Covers ac-9,
+    ac-9b, ac-9c, ac-10, ac-11, ac-13. 30 comprehensive tests added. All CI checks passed."
 - _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
   slugs:
     - task-context-manager-impl
