@@ -35331,6 +35331,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #227. Implemented per-project file watcher management in
+    ProjectContextManager. Each registered project gets its own KspecWatcher instance with proper
+    lifecycle management. File change broadcasts scoped to correct project path. Handles OS resource
+    limits (EMFILE/ENFILE) with 503 response. Tests skip in CI due to platform limitations but pass
+    locally (17/17). Covers AC-17, AC-18, AC-19 from @multi-directory-daemon spec."
   depends_on:
     - "@01KFQABQ"
     - "@01KFQAEA"
@@ -35344,6 +35349,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:18:33.627Z
   started_at: 2026-01-24T21:59:58.947Z
+  completed_at: 2026-01-24T22:39:41.582Z
   notes:
     - _ulid: 01KFS0BBKD94RKD1NAHYBEQAT8
       created_at: 2026-01-24T22:00:17.261Z
@@ -35479,12 +35485,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T22:39:41.582Z
-  closed_reason: "Merged in PR #227. Implemented per-project file watcher management in
-    ProjectContextManager. Each registered project gets its own KspecWatcher instance with proper
-    lifecycle management. File change broadcasts scoped to correct project path. Handles OS resource
-    limits (EMFILE/ENFILE) with 503 response. Tests skip in CI due to platform limitations but pass
-    locally (17/17). Covers AC-17, AC-18, AC-19 from @multi-directory-daemon spec."
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   slugs:
     - task-projects-api-tests
@@ -35577,7 +35577,7 @@
     - Task: /api/projects endpoint tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -35638,6 +35638,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T22:39:49.685Z
+  closed_reason: "Merged in PR #227. Implemented /api/projects endpoints: GET (list all), POST
+    (register new project), DELETE (unregister project). Endpoints integrate with
+    ProjectContextManager for lifecycle management. Covers AC-28, AC-29, AC-30 from
+    @multi-directory-daemon spec."
 - _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
   slugs:
     - task-cli-status-tests
