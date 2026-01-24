@@ -456,6 +456,10 @@ workflows:
     trigger: loop-iteration-end
     description: Autonomous reflection for loop mode. High-confidence captures only. MUST search
       existing before capturing. No user interaction.
+    mode: loop
+    based_on: "@session-reflect"
+    tags:
+      - loop
     steps:
       - type: action
         content: |
