@@ -2895,6 +2895,10 @@ features:
             given: non-fatal error occurs
             when: error handled
             then: workflow continues to next task
+          - id: ac-3
+            given: task fails
+            when: note added
+            then: note includes [LOOP-FAIL:N] where N = previous count + 1
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
