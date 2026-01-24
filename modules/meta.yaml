@@ -1097,6 +1097,9 @@ features:
                 when: friction is significant (not one-off)
                 then: searches existing observations first, only captures if unique, uses kspec meta observe with
                   [REVIEW SUBAGENT] prefix
+            status:
+              maturity: draft
+              implementation: in_progress
         status:
           maturity: draft
           implementation: implemented
