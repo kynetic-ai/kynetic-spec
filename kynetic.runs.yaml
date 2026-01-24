@@ -3379,7 +3379,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFRCBDE6KQMEND1RMZMVWZF1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T16:10:47.623Z
@@ -3494,5 +3494,13 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-24T16:17:11.768Z
-        completed_at: 2026-01-24T16:17:11.768Z
+        completed_at: 2026-01-24T16:17:41.109Z
+        notes: |-
+          Captured:
+          - Success pattern about testUlid() helper (@01KFRCQH)
+
+          No inbox items needed - proposed improvements were already addressed:
+          - testUlid docs: PR #210
+          - ULID validation clarity: already clear
     initiated_by: "@claude"
+    completed_at: 2026-01-24T16:17:41.110Z
