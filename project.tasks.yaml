@@ -35042,6 +35042,36 @@
 
         Checking existing test coverage for PubSubManager...
       supersedes: null
+    - _ulid: 01KFRZR9XX8GFWT04F6GWRWJ7Z
+      created_at: 2026-01-24T21:49:52.957Z
+      author: "@claude"
+      content: >-
+        Created comprehensive unit tests for PubSubManager.broadcast() filtering logic. Added 9
+        tests in tests/daemon-pubsub.test.ts:
+
+
+        Coverage:
+
+        - ac-18: Multiple tests for project-scoped broadcast filtering
+
+        - Verifies only connections with matching projectPath receive events
+
+        - Tests multi-project scenarios (project A events don't reach project B)
+
+        - Tests subscription + project filtering combination
+
+        - Tests legacy connections (no projectPath) don't receive scoped broadcasts
+
+        - Tests broadcast without projectPath reaches all (legacy behavior)
+
+        - Verifies message structure (seq, msg_id, timestamp, topic)
+
+        - Tests sequence incrementing per connection
+
+
+        All tests passing. These unit tests validate the core filtering logic without requiring
+        WebSocket E2E infrastructure.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
