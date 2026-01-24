@@ -34975,6 +34975,14 @@
         - ac-7: Given workflow encounters error, when error evaluated, then failure = tests fail, PR
         blocked, exception, or agent reports cannot complete
       supersedes: null
+    - _ulid: 01KFR866NCVVC4319003VWZG7M
+      created_at: 2026-01-24T14:58:02.541Z
+      author: "@claude"
+      content: "Implementation notes: 7 ACs covering note-on-error, continue, track-failures, parse-count,
+        escalate, reset, failure-definition. Failure tracking via task notes with [LOOP-FAIL:N]
+        prefix. N=3 triggers automation: needs_review. Failure = tests fail, PR blocked, exception,
+        or agent reports cannot complete."
+      supersedes: null
   todos: []
 - _ulid: 01KFR830Q7FH07WJJGDX7KGB01
   slugs:
