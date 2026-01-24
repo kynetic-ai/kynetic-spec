@@ -34810,16 +34810,22 @@
         - ac-5: Given captures complete, when skill finishes, then user not prompted
       supersedes: null
   todos: []
-- title: "Implement: PR Review Skill"
+- _ulid: 01KFR82G303PDT36DCA1RZ9Z45
+  slugs:
+    - task-pr-review-skill
+  title: "Implement: PR Review Skill"
   type: task
   spec_ref: "@pr-review-skill"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-pr-review-skill
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-skill-commands"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:56:01.120Z
   notes:
     - _ulid: 01KFR82G309EHNT6S3ZSVSETEB
       created_at: 2026-01-24T14:56:01.120Z
@@ -34851,10 +34857,57 @@
         - ac-5: Given skill starts, when execution, then delegates all behavior to
         @pr-review-loop-workflow
       supersedes: null
-  _ulid: 01KFR82G303PDT36DCA1RZ9Z45
+  todos: []
+- title: "Implement: Loop Mode Error Handling"
+  type: task
+  spec_ref: "@loop-mode-error-handling"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-loop-mode-error-handling
+  tags: []
+  depends_on:
+    - "@task-skill-commands"
+  notes:
+    - _ulid: 01KFR82GCHGVHHD2HV6V35QBDZ
+      created_at: 2026-01-24T14:56:01.425Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Error handling specific to loop mode. Failures tracked via task notes with [LOOP-FAIL:N]
+        prefix. N=3 triggers automation: needs_review.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given error during task work, when error caught, then note added with [LOOP-FAIL:N]
+        prefix and error description
+
+        - ac-2: Given non-fatal error occurs, when error handled, then workflow continues to next
+        task
+
+        - ac-3: Given task fails, when note added, then note includes [LOOP-FAIL:N] where N =
+        previous count + 1
+
+        - ac-4: Given task has prior [LOOP-FAIL:N] notes, when new failure occurs, then N is parsed
+        from latest note and incremented
+
+        - ac-5: Given task fails with N reaching 3, when threshold reached, then task marked
+        automation: needs_review with summary
+
+        - ac-6: Given task completes successfully, when workflow finishes, then no reset needed;
+        count is per-task in notes
+
+        - ac-7: Given workflow encounters error, when error evaluated, then failure = tests fail, PR
+        blocked, exception, or agent reports cannot complete
+      supersedes: null
+  _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:56:01.120Z
+  created_at: 2026-01-24T14:56:01.425Z
   todos: []
