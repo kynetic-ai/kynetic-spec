@@ -33966,7 +33966,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
-  slugs: []
+  slugs:
+    - task-broadcast-filter-tests
   title: Per-project broadcast filtering tests
   type: task
   description: |-
