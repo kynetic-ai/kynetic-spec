@@ -35034,6 +35034,15 @@
 
         - ac-7: Given iteration ends, when agent follows prompt, then invokes /reflect loop
       supersedes: null
+    - _ulid: 01KFR86BN0N4GEKEPPJBAVH2XD
+      created_at: 2026-01-24T14:58:07.648Z
+      author: "@claude"
+      content: "Implementation notes: 7 ACs covering context, no-inline, literal-skill, no-detection,
+        task-work, pr-review, reflect. Prompt includes iteration N/M, session ID, no-human-in-loop
+        flag. Prompt includes LITERAL strings /task-work loop and /reflect loop (skill invocation
+        via text). Ralph does NOT parse or detect skill invocation from agent output - skills are
+        agent-side only. Prompt does NOT include step-by-step instructions."
+      supersedes: null
   todos: []
 - _ulid: 01KFR834PPNNABA5RCSC4A34QT
   slugs:
