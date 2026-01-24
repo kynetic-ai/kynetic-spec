@@ -33827,7 +33827,10 @@
   created_at: 2026-01-24T06:17:31.376Z
   notes: []
   todos: []
-- title: WebSocket connection binding tests
+- _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
+  slugs: []
+  title: WebSocket connection binding tests
+  type: task
   description: |-
     Write tests for WebSocket project binding behavior.
 
@@ -33842,21 +33845,57 @@
 
     ## Dependencies
     Task: ProjectContextManager implementation
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - websocket
     - phase-5
-  _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
+  vcs_refs: []
+  created_at: 2026-01-24T06:17:41.274Z
+  notes: []
+  todos: []
+- title: WebSocket connection binding implementation
+  description: |-
+    Implement WebSocket project binding during connection handshake.
+
+    ## Implementation Notes
+    - Read X-Kspec-Dir header during upgrade handshake
+    - Store project path in connection state (PubSubManager session data)
+    - Handle default project fallback
+    - Reject connections without project when no default (close code 4000)
+
+    ## Files to Modify
+    - packages/daemon/src/websocket/handler.ts: Extract header during connection
+    - packages/daemon/src/websocket/pubsub.ts: Add projectPath field to session state
+    - WebSocket upgrade in Elysia provides access to request headers
+
+    ## AC Coverage
+    ac-21, ac-21b, ac-22, ac-23
+
+    ## Dependencies
+    - Task: ProjectContextManager implementation
+    - Task: WebSocket connection binding tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - daemon
+    - websocket
+    - phase-5
+  _ulid: 01KFQADQRBPDTV79TARVHW0YMF
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:17:41.274Z
+  created_at: 2026-01-24T06:17:52.139Z
   notes: []
   todos: []
