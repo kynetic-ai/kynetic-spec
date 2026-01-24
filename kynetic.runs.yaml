@@ -2820,8 +2820,38 @@ runs:
   - _ulid: 01KFQ4T733PG9GVX2V2YNC9X07
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-24T04:39:49.603Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-24T04:39:49.603Z
+        completed_at: 2026-01-24T04:40:07.018Z
+        notes: >-
+          ## What Worked Well
+
+
+          1. **Task tracking kept context** - Using kspec task start/note kept the work organized
+          and provided clear documentation when wrapping up
+
+
+          2. **Systematic debugging approach** - Following the error trail (CORS -> initContext path
+          -> static assets) helped identify the actual root cause vs symptoms
+
+
+          3. **Incremental testing** - Running single test with --grep after each fix quickly showed
+          what changed
+
+
+          4. **Architecture simplification** - Recognizing that daemon should serve both UI and API
+          (single origin) simplified the design vs maintaining separate servers
+
+
+          5. **Error context from Playwright** - The error-context.md files with page snapshots were
+          invaluable for understanding what the browser actually saw
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-24T04:40:07.018Z
+        completed_at: 2026-01-24T04:40:07.018Z
     initiated_by: "@claude"
