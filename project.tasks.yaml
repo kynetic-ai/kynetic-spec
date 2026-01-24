@@ -35012,10 +35012,38 @@
     - phase-5
   vcs_refs: []
   created_at: 2026-01-24T06:18:01.549Z
-  notes: []
+  started_at: 2026-01-24T21:48:30.496Z
+  notes:
+    - _ulid: 01KFRZPMH3CQZ42Z4Y304QG8BJ
+      created_at: 2026-01-24T21:48:58.275Z
+      author: "@claude"
+      content: >-
+        Reviewing task requirements. This task asks for WebSocket broadcast filtering tests covering
+        ac-18.
+
+
+        Current situation:
+
+        - Just removed fluff documentary tests from PR #225
+
+        - ac-18 has partial coverage via daemon-watcher-multi-project.test.ts (watcher isolation)
+
+        - Proper WebSocket E2E tests blocked on infrastructure (@01KFMMZW)
+
+
+        Options:
+
+        1. Add unit tests for PubSubManager.broadcast() filtering logic
+
+        2. Wait for E2E test infrastructure decision
+
+        3. Mark task as blocked by @01KFMMZW
+
+
+        Checking existing test coverage for PubSubManager...
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T21:48:30.496Z
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   slugs:
     - task-broadcast-filter-impl
