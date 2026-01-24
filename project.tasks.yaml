@@ -32056,6 +32056,7 @@
         Test filter behavior on mobile (may collapse to dropdown).
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
   slugs: []
   title: E2E Items View Tests
