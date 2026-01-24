@@ -1099,7 +1099,7 @@ features:
                   [REVIEW SUBAGENT] prefix
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
         status:
           maturity: draft
           implementation: implemented
