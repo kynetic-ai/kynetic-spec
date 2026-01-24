@@ -32364,6 +32364,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:47.924Z
+  started_at: 2026-01-24T23:45:20.845Z
   notes:
     - _ulid: 01KFP8775DN1W0RZ0FZNRN14Q6
       created_at: 2026-01-23T20:20:06.957Z
@@ -32432,9 +32433,31 @@
         - implementation-tasks
         - trait-chip
       supersedes: null
+    - _ulid: 01KFS6E31EWJ888Y9GMG85JQKM
+      created_at: 2026-01-24T23:46:38.254Z
+      author: "@claude"
+      content: >-
+        Created 16 comprehensive documentary E2E tests for web dashboard items view covering AC-11
+        through AC-15. Tests include:
+
+
+        Test organization:
+
+        - Spec Tree group (4 tests): hierarchical display, expand/collapse, nested
+        features/requirements, click to open detail
+
+        - Spec Item Detail group (10 tests): title/description, GWT acceptance criteria, traits
+        section, implementation status, linked tasks with status, task linking navigation, trait
+        chips, trait chip navigation, AC expansion with full GWT text, test coverage indicators
+
+        - Responsive Layout group (2 tests): mobile adaptation, desktop slide-over
+
+
+        All tests use test.skip() pending UI component implementation. All 16 tests passing
+        (skipped). Tests follow same pattern as tasks.spec.ts for consistency.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T23:45:20.845Z
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   slugs: []
   title: E2E Inbox Tests
