@@ -3323,4 +3323,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFQ38Z76KSABGCHE44P4662G
+    type: friction
+    content: Test fixture ULID creation was error-prone - manually crafted ULIDs had wrong length or
+      invalid Crockford chars. testUlid() helper exists but isn't mentioned in fixture
+      documentation.
+    created_at: 2026-01-24T04:12:55.911Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
