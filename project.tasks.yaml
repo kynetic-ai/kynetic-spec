@@ -34959,6 +34959,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #223. Added documentary tests for /api/projects endpoints covering
+    AC-28, AC-29, AC-30. Fixed review feedback from Greptile (method name mismatches) and Claude
+    (file read order). Tests document expected behavior for GET /api/projects (list), POST
+    /api/projects (register), and DELETE /api/projects/:encodedPath (unregister). All review
+    feedback addressed. Pre-existing watcher test failures are unrelated to this PR."
   depends_on:
     - "@01KFQABQ"
   context: []
@@ -34970,6 +34975,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:18:43.336Z
   started_at: 2026-01-24T20:41:09.041Z
+  completed_at: 2026-01-24T21:01:02.333Z
   notes:
     - _ulid: 01KFRVZQR9BFBP7GC4WQ5K2DHW
       created_at: 2026-01-24T20:44:02.185Z
@@ -34997,12 +35003,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T21:01:02.333Z
-  closed_reason: "Merged in PR #223. Added documentary tests for /api/projects endpoints covering
-    AC-28, AC-29, AC-30. Fixed review feedback from Greptile (method name mismatches) and Claude
-    (file read order). Tests document expected behavior for GET /api/projects (list), POST
-    /api/projects (register), and DELETE /api/projects/:encodedPath (unregister). All review
-    feedback addressed. Pre-existing watcher test failures are unrelated to this PR."
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
   slugs:
     - task-projects-api-impl
@@ -35532,7 +35532,7 @@
   type: task
   spec_ref: "@pr-review-loop-workflow"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-loop-mode-workflows"
@@ -35596,6 +35596,7 @@
         spec alignment. Handles subagent crash/timeout."
       supersedes: null
   todos: []
+  started_at: 2026-01-24T21:01:27.469Z
 - _ulid: 01KFR82EVPE409RGQ29A73FP9P
   slugs:
     - task-skill-commands
