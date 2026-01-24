@@ -34070,7 +34070,10 @@
   created_at: 2026-01-24T06:18:33.627Z
   notes: []
   todos: []
-- title: /api/projects endpoint tests
+- _ulid: 01KFQAF9R883H31D67YX8MHXJ2
+  slugs: []
+  title: /api/projects endpoint tests
+  type: task
   description: |-
     Write tests for /api/projects endpoints.
 
@@ -34085,21 +34088,55 @@
 
     ## Dependencies
     Task: ProjectContextManager implementation
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - api
     - phase-7
-  _ulid: 01KFQAF9R883H31D67YX8MHXJ2
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:43.336Z
+  notes: []
+  todos: []
+- title: /api/projects endpoints implementation
+  description: |-
+    Implement /api/projects endpoints for project management.
+
+    ## Endpoints
+    - GET /api/projects - list registered projects with paths, registration time, watcher status
+    - POST /api/projects - explicit registration with {path: string} body
+    - DELETE /api/projects/:encodedPath - unregister and stop watcher
+
+    ## Files
+    - New file: packages/daemon/src/routes/projects.ts
+    - Register in server.ts
+
+    ## AC Coverage
+    ac-28, ac-29, ac-30
+
+    ## Dependencies
+    - Task: ProjectContextManager implementation
+    - Task: /api/projects endpoint tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - daemon
+    - api
+    - phase-7
+  _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:18:43.336Z
+  created_at: 2026-01-24T06:18:54.200Z
   notes: []
   todos: []
