@@ -2781,6 +2781,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:04.063Z
+        acceptance_criteria:
+          - id: ac-1
+            given: ralph iteration starts
+            when: agent acts
+            then: /task-work loop invoked
       - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
         slugs:
           - reflect-loop-skill
