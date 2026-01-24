@@ -32143,6 +32143,7 @@
         - trait-chip
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   slugs: []
   title: E2E Inbox Tests
