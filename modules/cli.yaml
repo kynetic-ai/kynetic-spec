@@ -2822,6 +2822,10 @@ features:
             given: loop mode active
             when: skill executes
             then: uses @session-reflect-loop workflow
+          - id: ac-3
+            given: potential capture identified
+            when: skill evaluates
+            then: MUST search existing first
       - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
         slugs:
           - pr-review-skill
