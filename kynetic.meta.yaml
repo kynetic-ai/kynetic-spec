@@ -456,10 +456,6 @@ workflows:
     trigger: loop-iteration-end
     description: Autonomous reflection for loop mode. High-confidence captures only. MUST search
       existing before capturing. No user interaction.
-    mode: loop
-    based_on: "@session-reflect"
-    tags:
-      - loop
     steps:
       - type: action
         content: |
@@ -499,7 +495,6 @@ workflows:
           - Duplicate of existing item -> skip, note reference
           - Unique + high confidence -> capture
           - Vague/uncertain -> skip silently
-        skip_user_prompt: true
       - type: action
         content: |
           Capture approved items automatically (no user prompt - ac-5, ac-6):
@@ -511,6 +506,17 @@ workflows:
 
           Only capture items that passed the evaluation in step 3.
           Be selective - lower volume, higher quality.
+    mode: loop
+    based_on: "@session-reflect"
+    tags:
+      - loop
+  - _ulid: 01KFRX0S3VBZGV72A17E21AB9E
+    id: pr-review-loop
+    trigger: loop-pr-review
+    description: PR review subagent workflow for loop mode. Runs local review, verifies AC coverage and
+      spec alignment, fixes issues, waits for CI, and merges with quality gates. Sequential
+      execution (ralph waits).
+    steps: []
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
