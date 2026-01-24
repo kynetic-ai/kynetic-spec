@@ -34670,6 +34670,14 @@
         - ac-10: Given subagent spawned, when ralph behavior, then ralph waits for subagent
         completion before continuing
       supersedes: null
+    - _ulid: 01KFR84N00K80ZF7Z9V6VRVNNT
+      created_at: 2026-01-24T14:57:11.680Z
+      author: "@claude"
+      content: "Implementation notes: 10 ACs covering local-first, ac-coverage, spec-align, fix-issues,
+        ci-wait, merge-gate, complete-task, report-block, subagent-fail, sequential. Runs in ACP
+        subagent (separate process) but SEQUENTIAL (ralph waits). Key quality gates: AC coverage +
+        spec alignment. Handles subagent crash/timeout."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82EVPE409RGQ29A73FP9P
   slugs:
