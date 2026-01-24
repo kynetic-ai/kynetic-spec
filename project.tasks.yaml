@@ -32607,6 +32607,7 @@
     - infrastructure
   vcs_refs: []
   created_at: 2026-01-24T01:11:46.984Z
+  started_at: 2026-01-24T02:22:56.999Z
   notes:
     - _ulid: 01KFPRYHG6KFA60RTH023T9TN0
       created_at: 2026-01-24T01:12:28.422Z
@@ -33062,5 +33063,48 @@
 
         - @01KFP85M (Navigation/URL State Tests)
       supersedes: null
+    - _ulid: 01KFPYYG8G8VRFYAWGHRV9WDV2
+      created_at: 2026-01-24T02:57:18.609Z
+      author: "@claude"
+      content: >-
+        E2E Testing Infrastructure Setup complete:
+
+
+        ## Implemented
+
+        1. Added @playwright/test to packages/web-ui/package.json with scripts (test:e2e,
+        test:e2e:ui, test:e2e:headed)
+
+        2. Created playwright.config.ts with workers:1 (required for fixed port 3456)
+
+        3. Created test fixtures at packages/web-ui/tests/fixtures/test-base.ts with daemon
+        management
+
+        4. Added data-testid attributes to key components:
+           - ConnectionStatus.svelte: connection-status
+           - Sidebar.svelte: sidebar-nav, nav-link-*, session-focus
+           - TaskList.svelte: task-list, task-row
+        5. Created smoke tests at packages/web-ui/tests/e2e/smoke.spec.ts
+
+        6. Added Playwright gitignore entries
+
+
+        ## SSR Fix
+
+        Fixed connection.svelte.ts to gracefully handle SSR - subscribe/unsubscribe/on/off functions
+        now no-op when manager is not initialized instead of throwing.
+
+
+        ## Test Fixtures
+
+        Added observations to tests/fixtures/kynetic.meta.yaml with valid ULIDs (generated via
+        testUlid helper pattern).
+
+
+        ## Verified
+
+        - All 5 E2E smoke tests pass
+
+        - Unit tests pass (excluding pre-existing failures in daemon-executable and task-clear-deps)
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T02:22:56.999Z
