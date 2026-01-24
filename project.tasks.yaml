@@ -34788,6 +34788,44 @@
         extract from underlying request during handshake. May need to use beforeHandle or headers
         property.
       supersedes: null
+    - _ulid: 01KFRYB9G2M8EAC9FQ5TDDGXPQ
+      created_at: 2026-01-24T21:25:17.955Z
+      author: "@claude"
+      content: >-
+        Session 17 progress:
+
+
+        Task started but not completed. Performed analysis only:
+
+        - Read existing WebSocket implementation in server.ts
+
+        - Reviewed ConnectionData type in websocket/types.ts  
+
+        - Found existing tests in daemon-websocket.test.ts (7 tests for ac-21, ac-21b, ac-22, ac-23,
+        ac-18)
+
+        - Tests are documentary style (always pass) waiting for implementation
+
+
+        No code changes made this session. Task remains pending implementation.
+
+
+        Next session should:
+
+        1. Add projectPath field to ConnectionData interface
+
+        2. Extract X-Kspec-Dir from WebSocket upgrade request headers
+
+        3. Integrate with ProjectContextManager for validation/registration
+
+        4. Implement default project fallback and connection rejection logic
+
+        5. Update PubSubManager to filter broadcasts by project binding
+
+
+        See previous note for detailed implementation approach and challenges (Elysia header access
+        during upgrade).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
