@@ -35343,10 +35343,61 @@
     - phase-6
   vcs_refs: []
   created_at: 2026-01-24T06:18:33.627Z
-  notes: []
+  started_at: 2026-01-24T21:59:58.947Z
+  notes:
+    - _ulid: 01KFS0BBKD94RKD1NAHYBEQAT8
+      created_at: 2026-01-24T22:00:17.261Z
+      author: "@claude"
+      content: >-
+        Analysis of implementation requirements:
+
+
+        Current state:
+
+        - Only ONE watcher exists for startup project (server.ts:172-196)
+
+        - ProjectContextManager has watcherActive boolean but no actual watcher storage
+
+        - Need to create per-project watchers on registration
+
+
+        Required changes:
+
+        1. Add watcher storage to ProjectContextManager
+           - Map<string, KspecWatcher> to track watchers by project path
+           - startWatcher(projectPath) method
+           - stopWatcher(projectPath) method
+
+        2. Modify registerProject() to create watcher on registration
+           - Handle AC-16: concurrent registration should share watcher
+           - Handle AC-19: OS limits (EMFILE/ENFILE) with try/catch
+
+        3. Modify unregisterProject() to stop watcher
+           - Call watcher.stop() for the project
+           - Handle AC-11b: shutdown stops all watchers
+
+        4. Update server.ts to use ProjectContextManager for watchers
+           - Remove single watcher initialization
+           - Use manager.startWatcher() for each project
+
+        AC Coverage:
+
+        - AC-16: Concurrent requests share watcher (already handled by
+        ProjectContextManager.hasProject check)
+
+        - AC-17: File changes trigger events scoped to project (watcher broadcasts with projectPath)
+
+        - AC-19: Handle OS limits when creating watchers
+
+        - AC-20: Unregister stops watcher
+
+        - AC-11b: Shutdown stops all watchers
+
+
+        Next steps: Implement the changes listed above.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T21:59:58.947Z
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   slugs:
     - task-projects-api-tests
