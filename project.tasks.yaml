@@ -31399,8 +31399,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T19:39:35.755Z
-  notes: []
+  notes:
+    - _ulid: 01KFQAYW0SBK6NZX0J7HVAN8AP
+      created_at: 2026-01-24T06:27:13.561Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Missing spec_ref - test quality fix task needs spec
+        coverage"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
   slugs: []
   title: Fix daemon startup race condition in serve tests
