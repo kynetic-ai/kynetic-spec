@@ -34901,6 +34901,27 @@
 
         5. Complete task with kspec task complete @01KFQADQ
       supersedes: null
+    - _ulid: 01KFRZ47MTXGGPVDGZ3BB6ZG2Y
+      created_at: 2026-01-24T21:38:55.258Z
+      author: "@claude"
+      content: >-
+        Local review identified critical issue: The WebSocket project binding tests in
+        daemon-websocket.test.ts (lines 582-686) are 'fluff' documentary tests that always pass.
+        They use patterns like 'expect(X || \!X).toBe(true)' which provide zero validation.
+
+
+        Two options:
+
+        1. Add proper E2E tests that start daemon, connect real WebSocket clients, and verify
+        filtering
+
+        2. Remove fluff tests and merge with manual testing coverage only
+
+
+        Reviewing implementation to determine if it's safe to merge with just the existing
+        multi-project watcher E2E tests (daemon-watcher-multi-project.test.ts ac-18 test already
+        validates broadcast filtering at the watcher level).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
