@@ -176,6 +176,26 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('/reflect');
   });
 
+  // AC: @ralph-skill-delegation ac-4
+  it('does NOT parse or detect skill invocations from agent output', async () => {
+    const result = runRalph('--max-loops 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+      MOCK_ACP_RESPONSE_TEXT: 'I will now run /task-work to complete the task, then use /reflect to document learnings.',
+    });
+
+    // Should complete normally without attempting to parse/invoke skills
+    expect(result.stdout).toContain('Completed iteration 1');
+
+    // Should NOT show any skill invocation behavior
+    expect(result.output).not.toContain('Invoking skill');
+    expect(result.output).not.toContain('Detected skill command');
+    expect(result.output).not.toContain('Running /task-work');
+    expect(result.output).not.toContain('Running /reflect');
+
+    // The text should appear in the output (proving Ralph doesn't filter it)
+    expect(result.stdout).toContain('I will now run /task-work to complete the task');
+  });
+
   // AC: @cli-ralph ac-7 - Retry on error
   it('retries iteration on failure', async () => {
     // Fail twice then succeed
