@@ -28,3 +28,4 @@ coverage/
 
 # Session context
 .kspec-session
+bun.lock
