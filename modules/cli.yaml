@@ -2826,6 +2826,10 @@ features:
             given: potential capture identified
             when: skill evaluates
             then: MUST search existing first
+          - id: ac-4
+            given: uncertain friction found
+            when: skill evaluates
+            then: item NOT captured
       - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
         slugs:
           - pr-review-skill
