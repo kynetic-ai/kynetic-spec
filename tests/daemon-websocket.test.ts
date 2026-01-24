@@ -535,25 +535,27 @@ describe('WebSocket Protocol', () => {
     });
 
     // AC: @api-contract ac-4, ac-29
+    // Broadcasts moved to ProjectContextManager.startWatcher()
     it('should broadcast file changes via pubsub to files:updates topic', async () => {
-      serverContent = await readFile(
-        join(process.cwd(), 'packages/daemon/src/server.ts'),
+      const projectContextContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/project-context.ts'),
         'utf-8'
       );
 
-      expect(serverContent).toContain("pubsubManager.broadcast('files:updates'");
-      expect(serverContent).toContain('file_changed');
+      expect(projectContextContent).toContain("pubsub.broadcast('files:updates'");
+      expect(projectContextContent).toContain('file_changed');
     });
 
     // AC: @daemon-server ac-6
+    // Broadcasts moved to ProjectContextManager.startWatcher()
     it('should broadcast file errors via pubsub to files:errors topic', async () => {
-      serverContent = await readFile(
-        join(process.cwd(), 'packages/daemon/src/server.ts'),
+      const projectContextContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/project-context.ts'),
         'utf-8'
       );
 
-      expect(serverContent).toContain("pubsubManager.broadcast('files:errors'");
-      expect(serverContent).toContain('file_error');
+      expect(projectContextContent).toContain("pubsub.broadcast('files:errors'");
+      expect(projectContextContent).toContain('file_error');
     });
 
     it('should use pubsub connection count in health endpoint', async () => {

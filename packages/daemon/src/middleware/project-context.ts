@@ -9,12 +9,17 @@
 
 import type { Elysia } from 'elysia';
 import { ProjectContextManager, type ProjectContext } from '../project-context';
+import type { PubSubManager } from '../websocket/pubsub';
 
 export interface ProjectContextMiddlewareOptions {
   /**
    * Optional startup project path (daemon's cwd at boot if it has .kspec/)
    */
   startupProject?: string;
+  /**
+   * PubSubManager for broadcasting file changes
+   */
+  pubsub?: PubSubManager;
 }
 
 /**
@@ -22,11 +27,14 @@ export interface ProjectContextMiddlewareOptions {
  *
  * Extracts X-Kspec-Dir header, validates path, registers/retrieves project,
  * and attaches ProjectContext to request state.
+ *
+ * Returns both the manager (for external access) and the middleware function.
  */
 export function projectContextMiddleware(options: ProjectContextMiddlewareOptions = {}) {
-  const manager = new ProjectContextManager(options.startupProject);
+  const manager = new ProjectContextManager(options.startupProject, options.pubsub);
 
   // Register startup project if provided
+  // Note: Watcher will be started later after full initialization
   if (options.startupProject) {
     try {
       manager.registerProject(options.startupProject, true);
@@ -35,7 +43,7 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
     }
   }
 
-  return (app: Elysia) =>
+  const middleware = (app: Elysia) =>
     app
       // Store manager in app state for WebSocket access
       .state('projectManager', manager)
@@ -54,6 +62,10 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
             } catch (err) {
               // Not registered - try to register (ac-4: auto-register)
               projectContext = manager.registerProject(projectPath);
+              // Start watcher asynchronously (don't block request)
+              void manager.startWatcher(projectPath).catch((watcherError) => {
+                console.error(`[daemon] Failed to start watcher for ${projectPath}:`, watcherError);
+              });
             }
           } else {
             // AC: @multi-directory-daemon ac-2, ac-3, ac-20b
@@ -98,9 +110,17 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
             return { error: message };
           }
 
+          // AC: @multi-directory-daemon ac-19 - OS resource limits
+          if (message.includes('Unable to watch project - resource limit reached')) {
+            set.status = 503;
+            return { error: message };
+          }
+
           // Other errors
           set.status = 500;
           return { error: 'Internal server error' };
         }
       });
+
+  return { manager, middleware };
 }

@@ -36,16 +36,17 @@ describe('Daemon File Watcher', () => {
   });
 
   // AC: @daemon-server ac-4
+  // Watcher integration moved to ProjectContextManager
   it('should integrate watcher into server with file change broadcasting', async () => {
-    const serverContent = await readFile(
-      join(process.cwd(), 'packages/daemon/src/server.ts'),
+    const projectContextContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/project-context.ts'),
       'utf-8'
     );
 
-    expect(serverContent).toContain('KspecWatcher');
-    expect(serverContent).toContain('watcher.start()');
-    expect(serverContent).toContain('onFileChange');
-    expect(serverContent).toContain('pubsubManager.broadcast');
+    expect(projectContextContent).toContain('KspecWatcher');
+    expect(projectContextContent).toContain('watcher.start()');
+    expect(projectContextContent).toContain('onFileChange');
+    expect(projectContextContent).toContain('pubsub.broadcast');
   });
 
   // AC: @daemon-server ac-5
@@ -74,15 +75,16 @@ describe('Daemon File Watcher', () => {
   });
 
   // AC: @daemon-server ac-6
+  // Error event broadcasting moved to ProjectContextManager
   it('should broadcast error events on YAML parse errors', async () => {
-    const serverContent = await readFile(
-      join(process.cwd(), 'packages/daemon/src/server.ts'),
+    const projectContextContent = await readFile(
+      join(process.cwd(), 'packages/daemon/src/project-context.ts'),
       'utf-8'
     );
 
-    expect(serverContent).toContain('onError: (error, file)');
-    expect(serverContent).toContain("'file_error'");
-    expect(serverContent).toContain('pubsubManager.broadcast');
+    expect(projectContextContent).toContain('onError: (error, file)');
+    expect(projectContextContent).toContain("'file_error'");
+    expect(projectContextContent).toContain('pubsub.broadcast');
   });
 
   // AC: @daemon-server ac-7
@@ -141,7 +143,7 @@ describe('Daemon File Watcher', () => {
       'utf-8'
     );
 
-    expect(serverContent).toContain('watcher.stop()');
+    expect(serverContent).toContain('stopAllWatchers()'); // Changed: watchers managed by ProjectContextManager
     expect(serverContent).toContain('ws.close');
     expect(serverContent).toContain('pubsubManager.getAllConnections()');
   });

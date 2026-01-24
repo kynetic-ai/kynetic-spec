@@ -8,7 +8,9 @@
  */
 
 import { existsSync } from 'fs';
-import { isAbsolute, join, normalize } from 'path';
+import { isAbsolute, join, normalize, relative } from 'path';
+import { KspecWatcher } from './watcher';
+import type { PubSubManager } from './websocket/pubsub';
 
 export interface ProjectContext {
   path: string;
@@ -24,21 +26,135 @@ export interface ProjectContext {
  * - Path validation and normalization
  * - Default project handling
  * - Project lifecycle management
+ * - Per-project file watcher management
  */
 export class ProjectContextManager {
   private projects: Map<string, ProjectContext> = new Map();
+  private watchers: Map<string, KspecWatcher> = new Map();
   private defaultProjectPath: string | null = null;
+  private pubsub: PubSubManager | null = null;
 
-  constructor(defaultProjectPath?: string) {
+  constructor(defaultProjectPath?: string, pubsub?: PubSubManager) {
     if (defaultProjectPath) {
       this.defaultProjectPath = defaultProjectPath;
     }
+    if (pubsub) {
+      this.pubsub = pubsub;
+    }
+  }
+
+  /**
+   * Set the PubSubManager for broadcasting file changes.
+   * Must be called before starting watchers.
+   *
+   * @param pubsub - PubSubManager instance
+   */
+  setPubSub(pubsub: PubSubManager): void {
+    this.pubsub = pubsub;
+  }
+
+  /**
+   * Start a file watcher for a project.
+   *
+   * AC: @multi-directory-daemon ac-17, ac-19
+   *
+   * @param projectPath - Absolute path to project root
+   * @throws Error if watcher creation fails (e.g., OS resource limits)
+   */
+  async startWatcher(projectPath: string): Promise<void> {
+    const normalizedPath = this.normalizePath(projectPath);
+
+    // AC: @multi-directory-daemon ac-16 - Don't create duplicate watchers
+    if (this.watchers.has(normalizedPath)) {
+      return; // Watcher already running
+    }
+
+    const kspecDir = join(normalizedPath, '.kspec');
+
+    try {
+      // AC: @multi-directory-daemon ac-17, ac-18 - Create watcher with project-scoped broadcasts
+      const watcher = new KspecWatcher({
+        kspecDir,
+        onFileChange: (file, content) => {
+          // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
+          if (this.pubsub) {
+            const relativePath = relative(kspecDir, file);
+            this.pubsub.broadcast('files:updates', 'file_changed', {
+              ref: relativePath,
+              action: 'modified'
+            }, normalizedPath);
+          }
+        },
+        onError: (error, file) => {
+          // Broadcast error event scoped to project
+          if (this.pubsub) {
+            const relativePath = file ? relative(kspecDir, file) : undefined;
+            this.pubsub.broadcast('files:errors', 'file_error', {
+              ref: relativePath,
+              error: error.message
+            }, normalizedPath);
+          }
+        }
+      });
+
+      await watcher.start();
+      this.watchers.set(normalizedPath, watcher);
+
+      // Update context
+      const context = this.projects.get(normalizedPath);
+      if (context) {
+        context.watcherActive = true;
+      }
+    } catch (error: any) {
+      // AC: @multi-directory-daemon ac-19 - Handle OS limits (EMFILE/ENFILE)
+      if (error.code === 'EMFILE' || error.code === 'ENFILE') {
+        throw new Error('Unable to watch project - resource limit reached');
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Stop a file watcher for a project.
+   *
+   * AC: @multi-directory-daemon ac-20, ac-11b
+   *
+   * @param projectPath - Absolute path to project root
+   */
+  async stopWatcher(projectPath: string): Promise<void> {
+    const normalizedPath = this.normalizePath(projectPath);
+    const watcher = this.watchers.get(normalizedPath);
+
+    if (watcher) {
+      await watcher.stop();
+      this.watchers.delete(normalizedPath);
+
+      // Update context
+      const context = this.projects.get(normalizedPath);
+      if (context) {
+        context.watcherActive = false;
+      }
+    }
+  }
+
+  /**
+   * Stop all file watchers.
+   *
+   * AC: @multi-directory-daemon ac-11b - Shutdown stops all watchers
+   */
+  async stopAllWatchers(): Promise<void> {
+    const stopPromises = Array.from(this.watchers.keys()).map(path =>
+      this.stopWatcher(path)
+    );
+    await Promise.all(stopPromises);
   }
 
   /**
    * Register a project for multi-directory daemon support.
    *
    * AC: @multi-directory-daemon ac-4, ac-5, ac-6, ac-7, ac-8, ac-8c
+   *
+   * Note: This method is synchronous. Start watchers separately via startWatcher().
    *
    * @param projectPath - Absolute path to project root directory
    * @param isDefault - Whether this project should be the default
@@ -78,7 +194,7 @@ export class ProjectContextManager {
     const context: ProjectContext = {
       path: normalizedPath,
       registeredAt: new Date(),
-      watcherActive: true,
+      watcherActive: false, // Set to true when watcher is started
     };
 
     this.projects.set(normalizedPath, context);
@@ -165,6 +281,10 @@ export class ProjectContextManager {
    */
   unregisterProject(projectPath: string): void {
     const normalizedPath = this.normalizePath(projectPath);
+
+    // AC: @multi-directory-daemon ac-20 - Stop watcher when unregistering (async, fire-and-forget)
+    void this.stopWatcher(normalizedPath);
+
     this.projects.delete(normalizedPath);
 
     if (this.defaultProjectPath === normalizedPath) {
