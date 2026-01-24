@@ -451,6 +451,12 @@ workflows:
     based_on: "@task-work-session"
     tags:
       - loop
+  - _ulid: 01KFRPSFFH357GG0EP0JJZ2NA7
+    id: session-reflect-loop
+    trigger: loop-iteration-end
+    description: Autonomous reflection for loop mode. High-confidence captures only. MUST search
+      existing before capturing. No user interaction.
+    steps: []
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
