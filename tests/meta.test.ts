@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { kspec as kspecRun, kspecOutput as kspec, kspecJson, setupTempFixtures, cleanupTempDir } from './helpers/cli';
+import { kspec as kspecRun, kspecOutput as kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid } from './helpers/cli';
 
 describe('Integration: meta agents', () => {
   let tempDir: string;
@@ -362,6 +362,227 @@ describe('Integration: meta workflows', () => {
     expect(output).toContain('✗ Validation failed');
     expect(output).toContain('not found');
     expect(output).toContain('meta_ref');
+  });
+});
+
+describe('Integration: loop mode workflows', () => {
+  let tempDir: string;
+  let testSeq = 0;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    testSeq = 0;
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // Helper to add a workflow to the meta manifest
+  async function addWorkflow(
+    id: string,
+    options: {
+      trigger?: string;
+      description?: string;
+      mode?: string;
+      based_on?: string;
+      tags?: string[];
+      steps?: Array<{ type: string; content: string }>;
+    } = {},
+  ): Promise<void> {
+    const ulid = testUlid('WFTEST', testSeq++);
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+
+    const lines: string[] = [
+      `  - _ulid: ${ulid}`,
+      `    id: ${id}`,
+      `    trigger: ${options.trigger || 'manual'}`,
+    ];
+
+    if (options.description) {
+      lines.push(`    description: ${options.description}`);
+    }
+    if (options.mode) {
+      lines.push(`    mode: ${options.mode}`);
+    }
+    if (options.based_on) {
+      lines.push(`    based_on: "${options.based_on}"`);
+    }
+    if (options.tags && options.tags.length > 0) {
+      lines.push('    tags:');
+      for (const tag of options.tags) {
+        lines.push(`      - ${tag}`);
+      }
+    }
+    if (options.steps && options.steps.length > 0) {
+      lines.push('    steps:');
+      for (const step of options.steps) {
+        lines.push(`      - type: ${step.type}`);
+        lines.push(`        content: ${step.content}`);
+      }
+    } else {
+      lines.push('    steps: []');
+    }
+
+    const workflowYaml = lines.join('\n');
+    metaContent = metaContent.replace(
+      /^workflows:\n/m,
+      `workflows:\n${workflowYaml}\n`,
+    );
+    await fs.writeFile(metaPath, metaContent);
+  }
+
+  // AC: @loop-mode-workflows ac-1
+  it('should filter workflows by --tag loop', async () => {
+    await addWorkflow('task-work-loop', {
+      trigger: 'ralph-iteration',
+      description: 'Loop variant of task-work workflow',
+      mode: 'loop',
+      based_on: '@task-start',
+      tags: ['loop', 'ralph'],
+      steps: [{ type: 'action', content: 'Pick highest priority ready task' }],
+    });
+
+    // Without tag filter, should show all workflows
+    const allOutput = kspec('meta workflows', tempDir);
+    expect(allOutput).toContain('task-start');
+    expect(allOutput).toContain('task-work-loop');
+
+    // With --tag loop, should only show loop workflows
+    const loopOutput = kspec('meta workflows --tag loop', tempDir);
+    expect(loopOutput).toContain('task-work-loop');
+    expect(loopOutput).not.toContain('task-start');
+    expect(loopOutput).toContain('loop'); // Mode column shows 'loop'
+  });
+
+  // AC: @loop-mode-workflows ac-2
+  it('should validate workflow with mode: loop field', async () => {
+    await addWorkflow('reflect-loop', {
+      trigger: 'ralph-end',
+      description: 'Loop variant of reflect workflow',
+      mode: 'loop',
+    });
+
+    // Validation should pass
+    const output = kspec('validate', tempDir);
+    expect(output).toContain('Schema: OK');
+  });
+
+  // AC: @loop-mode-workflows ac-2 (invalid mode)
+  it('should reject invalid mode values in workflow', async () => {
+    // Manually add a workflow with invalid mode (bypass helper validation)
+    const ulid = testUlid('WFBAD', 0);
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    let metaContent = await fs.readFile(metaPath, 'utf-8');
+    const invalidWorkflow = `  - _ulid: ${ulid}
+    id: bad-mode-workflow
+    trigger: manual
+    mode: invalid_mode
+    steps: []`;
+    metaContent = metaContent.replace(/^workflows:\n/m, `workflows:\n${invalidWorkflow}\n`);
+    await fs.writeFile(metaPath, metaContent);
+
+    // Validation should fail
+    const output = kspec('validate', tempDir);
+    expect(output).toContain('✗ Validation failed');
+  });
+
+  // AC: @loop-mode-workflows ac-3
+  it('should show based_on field in meta get output', async () => {
+    await addWorkflow('task-work-loop', {
+      trigger: 'ralph-iteration',
+      description: 'Loop variant derived from interactive workflow',
+      mode: 'loop',
+      based_on: '@task-start',
+    });
+
+    // Get the workflow
+    const output = kspec('meta get task-work-loop', tempDir);
+    expect(output).toContain('based_on');
+    expect(output).toContain('@task-start');
+  });
+
+  // AC: @loop-mode-workflows ac-3 (verbose output)
+  it('should show based_on in verbose workflow listing', async () => {
+    await addWorkflow('reflect-loop', {
+      trigger: 'ralph-end',
+      description: 'Loop variant of reflect',
+      mode: 'loop',
+      based_on: '@commit',
+    });
+
+    // Verbose output should show based_on
+    const output = kspec('meta workflows --verbose', tempDir);
+    expect(output).toContain('reflect-loop');
+    expect(output).toContain('Based on: @commit');
+    expect(output).toContain('Mode: loop');
+  });
+
+  it('should include mode and based_on in JSON output', async () => {
+    await addWorkflow('task-loop', {
+      trigger: 'ralph-iteration',
+      mode: 'loop',
+      based_on: '@task-start',
+      tags: ['loop'],
+    });
+
+    interface WorkflowJson {
+      id: string;
+      mode: string;
+      based_on?: string;
+      tags: string[];
+    }
+
+    const workflows = kspecJson<WorkflowJson[]>('meta workflows', tempDir);
+    const loopWf = workflows.find(w => w.id === 'task-loop');
+
+    expect(loopWf).toBeDefined();
+    expect(loopWf?.mode).toBe('loop');
+    expect(loopWf?.based_on).toBe('@task-start');
+    expect(loopWf?.tags).toContain('loop');
+  });
+
+  it('should create workflow with --mode and --based-on options', () => {
+    const output = kspec(
+      'meta add workflow --id test-loop --trigger manual --mode loop --based-on "@task-start" --tag loop --tag test',
+      tempDir,
+    );
+    expect(output).toContain('Created workflow: test-loop');
+
+    // Verify it was created correctly
+    interface WorkflowJson {
+      id: string;
+      mode: string;
+      based_on?: string;
+      tags: string[];
+    }
+
+    const workflows = kspecJson<WorkflowJson[]>('meta workflows', tempDir);
+    const created = workflows.find(w => w.id === 'test-loop');
+
+    expect(created).toBeDefined();
+    expect(created?.mode).toBe('loop');
+    expect(created?.based_on).toBe('@task-start');
+    expect(created?.tags).toContain('loop');
+    expect(created?.tags).toContain('test');
+  });
+
+  it('should reject invalid mode in meta add workflow', () => {
+    const result = kspecRun('meta add workflow --id bad-mode --trigger manual --mode bad', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid mode');
+  });
+
+  it('should filter by mode: loop even without explicit loop tag', async () => {
+    await addWorkflow('untagged-loop', {
+      trigger: 'ralph',
+      mode: 'loop',
+    });
+
+    // --tag loop should still find it via mode field
+    const output = kspec('meta workflows --tag loop', tempDir);
+    expect(output).toContain('untagged-loop');
   });
 });
 
