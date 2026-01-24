@@ -955,6 +955,10 @@ features:
                 given: eligible tasks with in_progress status exist
                 when: agent selects next task
                 then: in_progress tasks selected first regardless of priority
+              - id: ac-2
+                given: no in_progress tasks AND eligible tasks with pending_review exist
+                when: agent selects next task
+                then: pending_review task triggers sequential subagent spawn before ready tasks
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
