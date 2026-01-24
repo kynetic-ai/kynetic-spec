@@ -34690,7 +34690,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-01-24T14:55:59.862Z
