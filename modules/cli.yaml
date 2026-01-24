@@ -2830,6 +2830,10 @@ features:
             given: uncertain friction found
             when: skill evaluates
             then: item NOT captured
+          - id: ac-5
+            given: captures complete
+            when: skill finishes
+            then: user not prompted
       - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
         slugs:
           - pr-review-skill
