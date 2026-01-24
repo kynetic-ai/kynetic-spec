@@ -2850,6 +2850,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:11.006Z
+        acceptance_criteria:
+          - id: ac-1
+            given: /pr-review @task-ref invoked
+            when: skill executes
+            then: starts @pr-review-loop-workflow
       - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
         slugs:
           - loop-mode-error-handling
