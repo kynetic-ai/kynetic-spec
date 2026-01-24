@@ -57,17 +57,19 @@ test.describe('Project Selector', () => {
 
     await page.goto('/');
 
-    // Intercept API requests to verify header
+    // Select second project
+    const projectSelector = page.getByTestId('project-selector');
+    await projectSelector.click();
+
+    // Set up request interception AFTER clicking selector to avoid race condition
     const requestPromise = page.waitForRequest((request) => {
       return request.url().includes('/api/tasks');
     });
 
-    // Select second project
-    const projectSelector = page.getByTestId('project-selector');
-    await projectSelector.click();
+    // Click the option to trigger project change
     await page.getByRole('option', { name: secondProjectPath }).click();
 
-    // Wait for API request
+    // Wait for API request triggered by selection
     const request = await requestPromise;
 
     // Verify X-Kspec-Dir header is set correctly
@@ -95,18 +97,21 @@ test.describe('Project Selector', () => {
     await page.getByRole('option', { name: secondProjectPath }).click();
 
     // Test multiple API endpoints
-    const endpoints = ['/api/tasks', '/api/items', '/api/inbox', '/api/meta/session'];
+    const endpoints = [
+      { path: '/tasks', apiUrl: '/api/tasks' },
+      { path: '/items', apiUrl: '/api/items' },
+      { path: '/inbox', apiUrl: '/api/inbox' },
+      { path: '/', apiUrl: '/api/meta/session' },
+    ];
 
-    for (const endpoint of endpoints) {
+    for (const { path, apiUrl } of endpoints) {
+      // Set up request interception before navigation
       const requestPromise = page.waitForRequest((request) => {
-        return request.url().includes(endpoint);
+        return request.url().includes(apiUrl);
       });
 
       // Navigate to trigger API call
-      if (endpoint === '/api/tasks') await page.goto('/tasks');
-      if (endpoint === '/api/items') await page.goto('/items');
-      if (endpoint === '/api/inbox') await page.goto('/inbox');
-      if (endpoint === '/api/meta/session') await page.goto('/');
+      await page.goto(path);
 
       const request = await requestPromise;
       expect(request.headers()['x-kspec-dir']).toBe(secondProjectPath);
@@ -125,17 +130,23 @@ test.describe('Project Selector', () => {
 
     await page.goto('/tasks');
 
-    // Get initial task list content
+    // Wait for initial load
     const taskList = page.getByTestId('task-list');
-    const initialContent = await taskList.textContent();
+    await expect(taskList).toBeVisible();
+
+    // Set up request interception before selecting project
+    const reloadPromise = page.waitForRequest((request) => {
+      return request.url().includes('/api/tasks') &&
+             request.headers()['x-kspec-dir'] === secondProjectPath;
+    });
 
     // Select second project
     const projectSelector = page.getByTestId('project-selector');
     await projectSelector.click();
     await page.getByRole('option', { name: secondProjectPath }).click();
 
-    // Wait for task list to reload
-    await expect(taskList).not.toHaveText(initialContent || '');
+    // Wait for API request to confirm data reload happened
+    await reloadPromise;
 
     // Verify we're seeing different data (or empty state)
     // This validates that the UI reloaded data from the new project
@@ -153,17 +164,23 @@ test.describe('Project Selector', () => {
 
     await page.goto('/items');
 
-    // Get initial items content
+    // Wait for initial load
     const itemsContainer = page.getByTestId('items-tree');
-    const initialContent = await itemsContainer.textContent();
+    await expect(itemsContainer).toBeVisible();
+
+    // Set up request interception before selecting project
+    const reloadPromise = page.waitForRequest((request) => {
+      return request.url().includes('/api/items') &&
+             request.headers()['x-kspec-dir'] === secondProjectPath;
+    });
 
     // Select second project
     const projectSelector = page.getByTestId('project-selector');
     await projectSelector.click();
     await page.getByRole('option', { name: secondProjectPath }).click();
 
-    // Wait for items to reload
-    await expect(itemsContainer).not.toHaveText(initialContent || '');
+    // Wait for API request to confirm data reload happened
+    await reloadPromise;
   });
 
   // AC: @multi-directory-daemon ac-27
@@ -178,17 +195,23 @@ test.describe('Project Selector', () => {
 
     await page.goto('/inbox');
 
-    // Get initial inbox content
+    // Wait for initial load
     const inboxContainer = page.getByTestId('inbox-list');
-    const initialContent = await inboxContainer.textContent();
+    await expect(inboxContainer).toBeVisible();
+
+    // Set up request interception before selecting project
+    const reloadPromise = page.waitForRequest((request) => {
+      return request.url().includes('/api/inbox') &&
+             request.headers()['x-kspec-dir'] === secondProjectPath;
+    });
 
     // Select second project
     const projectSelector = page.getByTestId('project-selector');
     await projectSelector.click();
     await page.getByRole('option', { name: secondProjectPath }).click();
 
-    // Wait for inbox to reload
-    await expect(inboxContainer).not.toHaveText(initialContent || '');
+    // Wait for API request to confirm data reload happened
+    await reloadPromise;
   });
 
   // AC: @multi-directory-daemon ac-25
@@ -260,17 +283,16 @@ test.describe('Project Selector', () => {
       body: JSON.stringify({ path: secondProjectPath }),
     });
 
-    await page.goto('/');
-
-    // Intercept first API request
+    // Set up request interception before navigation
     const requestPromise = page.waitForRequest((request) => {
-      return request.url().includes('/api/');
+      return request.url().includes('/api/tasks');
     });
 
+    // Navigate to /tasks - should trigger API call with default project
     await page.goto('/tasks');
     const request = await requestPromise;
 
-    // Should use first registered project (daemon.tempDir)
+    // Should use first registered project (daemon.tempDir) as default
     expect(request.headers()['x-kspec-dir']).toBe(daemon.tempDir);
   });
 });
