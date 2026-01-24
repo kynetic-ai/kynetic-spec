@@ -34472,16 +34472,22 @@
         then shows base workflow reference
       supersedes: null
   todos: []
-- title: "Implement: Task Work Loop Workflow"
+- _ulid: 01KFR82A8E7QV8DQZX74FXF16E
+  slugs:
+    - task-task-work-loop-workflow
+  title: "Implement: Task Work Loop Workflow"
   type: task
   spec_ref: "@task-work-loop-workflow"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-task-work-loop-workflow
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-loop-mode-workflows"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:55:55.150Z
   notes:
     - _ulid: 01KFR82A8E9S3J6ZHJFNJTBMQC
       created_at: 2026-01-24T14:55:55.150Z
@@ -34528,10 +34534,54 @@
         - ac-10: Given multiple pending_review tasks exist, when agent handles pending_review, then
         processes one at a time, oldest (by started_at) first
       supersedes: null
-  _ulid: 01KFR82A8E7QV8DQZX74FXF16E
+  todos: []
+- title: "Implement: Session Reflect Loop Workflow"
+  type: task
+  spec_ref: "@session-reflect-loop-workflow"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-session-reflect-loop-workflow
+  tags: []
+  depends_on:
+    - "@task-loop-mode-workflows"
+  notes:
+    - _ulid: 01KFR82AK21EPGCX8FJF092G9X
+      created_at: 2026-01-24T14:55:55.490Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Workflow for /reflect loop. Key differences from @session-reflect: high confidence capture
+        only, MUST search existing before capturing, skip user decision step, lower volume higher
+        quality. High confidence means agent-judged certainty, not quantitative threshold.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given agent identifies friction point, when before capturing, then agent MUST search
+        observations, inbox, tasks for duplicates
+
+        - ac-2: Given friction is vague or uncertain, when agent evaluates, then item NOT captured
+
+        - ac-3: Given friction matches existing observation, when agent evaluates, then item NOT
+        captured, existing reference noted
+
+        - ac-4: Given friction is unique and high-confidence, when agent evaluates, then item IS
+        captured
+
+        - ac-5: Given workflow reaches decision step, when workflow continues, then decision step
+        skipped
+
+        - ac-6: Given workflow completes, when user interaction, then user NOT asked to confirm
+        captures
+      supersedes: null
+  _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:55:55.150Z
+  created_at: 2026-01-24T14:55:55.490Z
   todos: []
