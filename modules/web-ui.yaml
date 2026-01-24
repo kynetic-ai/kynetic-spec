@@ -822,6 +822,10 @@ features:
         given: daemon started from directory with .kspec/ which is later deleted
         when: request without X-Kspec-Dir arrives after default project .kspec/ deleted
         then: return 400 with error 'Default project no longer valid. Specify X-Kspec-Dir header.'
+      - id: ac-11b
+        given: daemon is shutting down
+        when: shutdown signal received
+        then: all project watchers are stopped and all WebSocket connections are closed before process exits
     status:
       maturity: draft
       implementation: not_started
