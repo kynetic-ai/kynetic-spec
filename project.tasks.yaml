@@ -33899,7 +33899,10 @@
   created_at: 2026-01-24T06:17:52.139Z
   notes: []
   todos: []
-- title: Per-project broadcast filtering tests
+- _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
+  slugs: []
+  title: Per-project broadcast filtering tests
+  type: task
   description: |-
     Write tests for per-project WebSocket broadcast filtering.
 
@@ -33913,21 +33916,68 @@
 
     ## Dependencies
     Task: WebSocket connection binding implementation
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - websocket
     - phase-5
-  _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:01.549Z
+  notes: []
+  todos: []
+- title: Per-project broadcast filtering implementation
+  description: >-
+    Implement per-project broadcast filtering in PubSubManager.
+
+
+    ## Implementation Notes
+
+    - Modify PubSubManager.broadcast() to filter by project
+
+    - Current broadcast (packages/daemon/src/websocket/pubsub.ts lines 72-103) sends to all
+    subscribed connections
+
+    - Add projectPath parameter to broadcast method
+
+    - Filter connections by stored projectPath before sending
+
+
+    ## Files to Modify
+
+    - packages/daemon/src/websocket/pubsub.ts
+
+
+    ## AC Coverage
+
+    ac-17, ac-18
+
+
+    ## Dependencies
+
+    - Task: WebSocket connection binding implementation
+
+    - Task: Per-project broadcast filtering tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - daemon
+    - websocket
+    - phase-5
+  _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:18:01.549Z
+  created_at: 2026-01-24T06:18:11.831Z
   notes: []
   todos: []
