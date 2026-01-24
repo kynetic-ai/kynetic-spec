@@ -34075,6 +34075,7 @@
   created_at: 2026-01-24T06:18:21.894Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAF08VSFJQ2D6EERRH890E
   slugs: []
   title: Per-project file watcher implementation
