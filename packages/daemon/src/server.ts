@@ -7,7 +7,9 @@
 
 import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
+import { staticPlugin } from '@elysiajs/static';
 import { ulid } from 'ulidx';
+import { existsSync } from 'fs';
 import { KspecWatcher } from './watcher';
 import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
@@ -25,6 +27,43 @@ export interface ServerOptions {
   port: number;
   isDaemon: boolean;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
+  webUiDir?: string; // Path to web UI build directory (default: auto-detect)
+}
+
+/**
+ * Resolves the path to the web UI build directory.
+ * Tries multiple locations in order:
+ * 1. Explicit webUiDir option
+ * 2. WEB_UI_DIR environment variable
+ * 3. packages/web-ui/build in current working directory (monorepo dev)
+ * 4. web-ui/build in current working directory
+ */
+function resolveWebUiPath(webUiDir?: string): string | null {
+  // 1. Explicit option
+  if (webUiDir && existsSync(webUiDir)) {
+    return webUiDir;
+  }
+
+  // 2. Environment variable
+  const envPath = process.env.WEB_UI_DIR;
+  if (envPath && existsSync(envPath)) {
+    return envPath;
+  }
+
+  // 3. Monorepo development: packages/web-ui/build from cwd
+  // The daemon is spawned with cwd set to project root
+  const monorepoPath = join(process.cwd(), 'packages', 'web-ui', 'build');
+  if (existsSync(monorepoPath)) {
+    return monorepoPath;
+  }
+
+  // 4. Alternate location: web-ui/build in cwd
+  const altPath = join(process.cwd(), 'web-ui', 'build');
+  if (existsSync(altPath)) {
+    return altPath;
+  }
+
+  return null;
 }
 
 // WebSocket pub/sub and heartbeat managers
@@ -88,7 +127,16 @@ function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon, kspecDir = join(process.cwd(), '.kspec') } = options;
+  const { port, isDaemon, kspecDir = join(process.cwd(), '.kspec'), webUiDir } = options;
+
+  // AC: @daemon-server ac-17 - Resolve web UI path for static file serving
+  const resolvedWebUiPath = resolveWebUiPath(webUiDir);
+  if (resolvedWebUiPath) {
+    console.log(`[daemon] Web UI assets found at: ${resolvedWebUiPath}`);
+  } else {
+    console.log('[daemon] Web UI assets not found - UI will not be served');
+    console.log('[daemon] Build the web UI with: cd packages/web-ui && npm run build');
+  }
 
   // Initialize PID file manager
   const pidManager = new PidFileManager(kspecDir);
@@ -201,14 +249,36 @@ export async function createServer(options: ServerOptions) {
         pubsubManager.removeConnection(ws.data.sessionId);
         console.log(`[daemon] WebSocket client disconnected: ${ws.data.sessionId} (code: ${code}, reason: ${reason})`);
       }
-    })
-
-    // AC-1, AC-2: Start server on localhost only
-    // Using 'localhost' hostname allows Bun/OS to bind to both 127.0.0.1 and ::1
-    .listen({
-      port,
-      hostname: 'localhost', // Resolves to both IPv4 and IPv6 loopback
     });
+
+  // AC: @daemon-server ac-17 - Serve web UI static assets
+  // Added after API routes so API routes take precedence
+  if (resolvedWebUiPath) {
+    const indexHtmlPath = join(resolvedWebUiPath, 'index.html');
+
+    // Serve static files from web UI build directory
+    app.use(await staticPlugin({
+      assets: resolvedWebUiPath,
+      prefix: '/',
+      noCache: process.env.NODE_ENV === 'development', // Disable cache in dev
+    }));
+
+    // SPA fallback routes for client-side routing
+    // These catch paths like /tasks, /items, /inbox that don't have static files
+    const spaRoutes = ['/tasks', '/tasks/*', '/items', '/items/*', '/inbox', '/observations'];
+    for (const route of spaRoutes) {
+      app.get(route, () => Bun.file(indexHtmlPath));
+    }
+
+    console.log('[daemon] Web UI static file serving enabled');
+  }
+
+  // AC-1, AC-2: Start server on localhost only
+  // Using 'localhost' hostname allows Bun/OS to bind to both 127.0.0.1 and ::1
+  app.listen({
+    port,
+    hostname: 'localhost', // Resolves to both IPv4 and IPv6 loopback
+  });
 
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
