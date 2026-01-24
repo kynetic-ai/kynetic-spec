@@ -35329,7 +35329,7 @@
     - Task: Per-project file watcher tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -35479,6 +35479,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T22:39:41.582Z
+  closed_reason: "Merged in PR #227. Implemented per-project file watcher management in
+    ProjectContextManager. Each registered project gets its own KspecWatcher instance with proper
+    lifecycle management. File change broadcasts scoped to correct project path. Handles OS resource
+    limits (EMFILE/ENFILE) with 503 response. Tests skip in CI due to platform limitations but pass
+    locally (17/17). Covers AC-17, AC-18, AC-19 from @multi-directory-daemon spec."
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   slugs:
     - task-projects-api-tests
