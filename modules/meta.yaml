@@ -967,6 +967,10 @@ features:
                 given: only isolated eligible ready tasks exist
                 when: agent selects next task
                 then: highest priority (lowest number) selected
+              - id: ac-5
+                given: tasks with various automation statuses
+                when: workflow filters tasks
+                then: "only automation: eligible tasks considered"
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
