@@ -31616,6 +31616,40 @@
         Will fix daemon-auto-start.test.ts. Task title seems incorrect but the actual issue is clear
         from PR #204 context.
       supersedes: null
+    - _ulid: 01KFS4H1FJHD138S0KRD4Q2BHX
+      created_at: 2026-01-24T23:13:17.810Z
+      author: "@claude"
+      content: >-
+        ## Fix Applied
+
+
+        Updated daemon-auto-start.test.ts to address PR #204 review feedback:
+
+
+        ### Changes
+
+        1. Updated file header to clarify these are schema validation tests
+
+        2. Changed all 7 AC annotations from incorrect format to standard format:
+           - OLD: `// AC: Daemon config schema accepts auto_start and port`
+           - NEW: `// Schema validation: Daemon config accepts auto_start and port`
+
+        ### Rationale
+
+        - The daemon config doesn't have dedicated spec ACs (it's manifest schema)
+
+        - Using 'Schema validation:' prefix clarifies these are schema tests, not behavior tests
+
+        - Descriptive text retained for clarity
+
+        - Tests all pass (7/7)
+
+
+        ### Note on cli-serve.test.ts
+
+        Task title mentions cli-serve.test.ts, but that file already has correct AC annotations. PR
+        #204 review specifically flagged daemon-auto-start.test.ts, which is what was fixed.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
