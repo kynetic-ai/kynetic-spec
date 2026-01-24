@@ -35676,10 +35676,30 @@
     - phase-8
   vcs_refs: []
   created_at: 2026-01-24T06:19:03.995Z
-  notes: []
+  started_at: 2026-01-24T22:40:29.793Z
+  notes:
+    - _ulid: 01KFS2SEW8XFMMFGNTJM3JADKK
+      created_at: 2026-01-24T22:42:56.520Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Added AC-12 functionality to kspec serve status command:
+
+
+        1. Modified statusServer() in src/cli/commands/serve.ts:
+           - Fetches registered projects from /api/projects endpoint
+           - Displays projects list in both human-readable and JSON modes
+           - Handles case when daemon not responding gracefully
+
+        2. Added 3 comprehensive tests in tests/cli-serve.test.ts:
+           - Test showing registered projects in human-readable output
+           - Test including projects in JSON output with full project details
+           - Test showing 'No projects registered' when daemon has no projects
+
+        All 20 tests passing. Covers AC-12 requirement: 'shows daemon status with port, uptime, and
+        list of registered projects with their paths'.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T22:40:29.793Z
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
