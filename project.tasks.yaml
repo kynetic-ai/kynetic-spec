@@ -34055,7 +34055,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
-  slugs: []
+  slugs:
+    - task-watcher-tests
   title: Per-project file watcher tests
   type: task
   description: |-
