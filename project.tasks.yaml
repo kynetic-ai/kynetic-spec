@@ -33288,3 +33288,120 @@
         - Unit tests pass (excluding pre-existing failures in daemon-executable and task-clear-deps)
       supersedes: null
   todos: []
+- title: Spec multi-directory daemon architecture
+  description: >-
+    ## Objective
+
+    Design and spec the multi-directory daemon architecture. This task produces specs and derived
+    implementation tasks, not code.
+
+
+    ## Background
+
+    Current daemon architecture has limitations:
+
+    - One daemon instance per project directory
+
+    - Web UI assets resolved from cwd, not package install location
+
+    - No support for npm global/local install scenarios
+
+    - E2E tests blocked by these architectural issues
+
+
+    ## Research Findings (from @01KFP84J session)
+
+
+    ### 1. Asset Resolution Pattern
+
+    Use `import.meta.dirname` to find assets relative to npm package installation:
+
+    ```typescript
+
+    const packageRoot = import.meta.dirname;
+
+    const webUiPath = join(packageRoot, '../web-ui/build');
+
+    ```
+
+
+    Resolution chain (in priority order):
+
+    1. `Bun.embeddedFiles` - for single-file executables via `bun build --compile`
+
+    2. `import.meta.dirname/../web-ui/build` - for npm installed package
+
+    3. `cwd/packages/web-ui/build` - for monorepo development
+
+
+    ### 2. Multi-Directory Pattern (eslint_d style)
+
+    Single daemon process with LRU cache of project contexts:
+
+    - Max ~10 project contexts in memory
+
+    - Each context has: kspecDir, watcher, lastAccess timestamp
+
+    - Auto-evict least recently used when at capacity
+
+
+    ### 3. API Design
+
+    - Add `X-Kspec-Dir` header to all API requests to specify project context
+
+    - New endpoints:
+      - `POST /api/projects/register` - add project directory
+      - `GET /api/projects` - list registered projects
+      - `DELETE /api/projects/:id` - unregister project
+    - WebSocket subscriptions scoped to project context
+
+
+    ### 4. Bun Single-File Executable
+
+    Can embed web UI into daemon binary:
+
+    ```bash
+
+    bun build --compile ./server.ts ./web-ui/build/**/* --outfile kspec-daemon
+
+    ```
+
+
+    ## Deliverables
+
+    1. [ ] Create/update spec item for daemon server with new ACs
+
+    2. [ ] Create spec item for multi-project support
+
+    3. [ ] Create spec item for asset resolution
+
+    4. [ ] Derive implementation tasks from specs
+
+    5. [ ] Update E2E test infrastructure task dependencies
+
+
+    ## References
+
+    - eslint_d architecture: https://github.com/mantoni/eslint_d.js
+
+    - Bun embeddedFiles: https://bun.com/docs/bundler/executables
+
+    - LSP workspaceFolders pattern
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - architecture
+    - daemon
+    - spec-work
+  _ulid: 01KFQ6GT7D3WCAGB39NPY7CQCG
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-24T05:09:38.668Z
+  notes: []
+  todos: []
