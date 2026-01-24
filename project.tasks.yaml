@@ -34778,7 +34778,7 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -34869,6 +34869,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T20:40:39.083Z
+  closed_reason: "Merged in PR #222. Added 17 comprehensive tests for per-project file watcher
+    isolation covering AC-17, AC-18, and AC-19. Tests validate: watcher lifecycle, event scoping
+    between projects, cleanup behavior, OS resource limits (EMFILE/ENFILE), debounce timer cleanup,
+    and error handling. All watcher tests pass. Pre-existing daemon-executable test failure is
+    unrelated to this PR."
 - _ulid: 01KFQAF08VSFJQ2D6EERRH890E
   slugs:
     - task-watcher-impl
