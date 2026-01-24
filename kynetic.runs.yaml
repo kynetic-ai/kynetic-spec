@@ -3380,7 +3380,7 @@ runs:
   - _ulid: 01KFRCBDE6KQMEND1RMZMVWZF1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T16:10:47.623Z
     step_results:
@@ -3416,5 +3416,26 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T16:11:32.398Z
-        completed_at: 2026-01-24T16:11:32.398Z
+        completed_at: 2026-01-24T16:11:49.132Z
+        notes: >-
+          Friction points this session:
+
+
+          1. **Invalid ULID silent failures**: Wrote test fixture ULIDs with invalid Crockford chars
+          (L, I, O, U). Tests appeared to pass but fixtures weren't loading properly. No clear error
+          message indicated the ULID format issue - had to debug manually. The testUlid() helper
+          exists but wasn't obvious to use for fixture YAML.
+
+
+          2. **Many stale active workflow runs**: When running 'kspec workflow next' without a ref,
+          got error listing 19 active runs. These accumulated over time and create noise.
+
+
+          3. **YAML fixture indentation debugging**: When adding workflows to kynetic.meta.yaml in
+          tests, spent time debugging indentation issues. The helper function I eventually wrote
+          (addWorkflow) with proper structure would be useful as a reusable test utility.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T16:11:49.132Z
+        completed_at: 2026-01-24T16:11:49.132Z
     initiated_by: "@claude"
