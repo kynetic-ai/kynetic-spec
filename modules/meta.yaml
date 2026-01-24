@@ -1086,6 +1086,10 @@ features:
                 given: subagent crashes or times out
                 when: ralph detects failure
                 then: "task marked automation: needs_review with subagent failure note"
+              - id: ac-10
+                given: subagent spawned
+                when: ralph behavior
+                then: ralph waits for subagent completion before continuing
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
