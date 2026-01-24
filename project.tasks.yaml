@@ -33737,6 +33737,7 @@
   created_at: 2026-01-24T06:16:56.435Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQACE936G0SDG0F3DQD8V89
   slugs: []
   title: X-Kspec-Dir middleware implementation
