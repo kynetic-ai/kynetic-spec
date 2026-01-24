@@ -4015,6 +4015,7 @@ runs:
     current_step: 8
     total_steps: 9
     started_at: 2026-01-24T20:38:33.700Z
+    completed_at: 2026-01-24T20:40:20.803Z
     step_results:
       - step_index: 0
         status: completed
@@ -4063,4 +4064,11 @@ runs:
         completed_at: 2026-01-24T20:40:20.802Z
         notes: "PR #222 merged successfully"
     initiated_by: "@claude"
-    completed_at: 2026-01-24T20:40:20.803Z
+  - _ulid: 01KFRW1MBF3FJ1RC7GXNF09RPV
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-24T20:45:04.239Z
+    step_results: []
+    initiated_by: "@claude"
