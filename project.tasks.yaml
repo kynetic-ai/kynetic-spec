@@ -32584,22 +32584,476 @@
         because routes import from parent package.
       supersedes: null
   todos: []
-- title: E2E Testing Infrastructure Setup
+- _ulid: 01KFPRX918VN1W6F47RYDFECHS
+  slugs: []
+  title: E2E Testing Infrastructure Setup
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - phase-5
-    - testing
-    - infrastructure
-  _ulid: 01KFPRX918VN1W6F47RYDFECHS
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - phase-5
+    - testing
+    - infrastructure
   vcs_refs: []
   created_at: 2026-01-24T01:11:46.984Z
-  notes: []
+  notes:
+    - _ulid: 01KFPRYHG6KFA60RTH023T9TN0
+      created_at: 2026-01-24T01:12:28.422Z
+      author: "@claude"
+      content: >-
+        ## Objective
+
+
+        Set up Playwright E2E testing infrastructure for the web UI at `packages/web-ui/`. All other
+        E2E test tasks depend on this setup.
+
+
+        ## Critical Constraint: Port 3456
+
+
+        The web UI has `API_BASE = 'http://localhost:3456'` hardcoded in `src/lib/api.ts`. The
+        daemon fixture MUST use port 3456, not random ports. Tests run sequentially with `workers:
+        1`.
+
+
+        ## Step 1: Install Playwright
+
+
+        Edit `packages/web-ui/package.json`:
+
+
+        ```json
+
+        {
+          "devDependencies": {
+            "@playwright/test": "^1.50.0"
+          },
+          "scripts": {
+            "test:e2e": "playwright test",
+            "test:e2e:ui": "playwright test --ui",
+            "test:e2e:headed": "playwright test --headed"
+          }
+        }
+
+        ```
+
+
+        Run:
+
+        ```bash
+
+        cd packages/web-ui
+
+        npm install
+
+        npx playwright install chromium
+
+        ```
+
+
+        ## Step 2: Create playwright.config.ts
+
+
+        Create `packages/web-ui/playwright.config.ts`:
+
+
+        ```typescript
+
+        import { defineConfig, devices } from '@playwright/test';
+
+
+        export default defineConfig({
+          testDir: './tests/e2e',
+          fullyParallel: false,
+          forbidOnly: !!process.env.CI,
+          retries: process.env.CI ? 2 : 0,
+          workers: 1, // Required: daemon uses fixed port 3456
+          reporter: process.env.CI ? 'github' : 'html',
+          timeout: 30_000,
+
+          expect: {
+            timeout: 10_000,
+          },
+
+          use: {
+            baseURL: 'http://localhost:4173',
+            trace: 'on-first-retry',
+            screenshot: 'only-on-failure',
+            video: 'retain-on-failure',
+            actionTimeout: 10_000,
+          },
+
+          webServer: {
+            command: 'npm run preview',
+            url: 'http://localhost:4173',
+            reuseExistingServer: !process.env.CI,
+            timeout: 60_000,
+          },
+
+          projects: [
+            {
+              name: 'chromium',
+              use: { ...devices['Desktop Chrome'] },
+            },
+          ],
+
+          outputDir: 'test-results',
+        });
+
+        ```
+
+
+        ## Step 3: Create Test Fixtures
+
+
+        Create `packages/web-ui/tests/fixtures/test-base.ts`:
+
+
+        ```typescript
+
+        import { test as base, expect } from '@playwright/test';
+
+        import { execSync, spawnSync } from 'child_process';
+
+        import { mkdirSync, cpSync, existsSync, readFileSync, rmSync } from 'fs';
+
+        import { join } from 'path';
+
+        import { tmpdir } from 'os';
+
+
+        const DAEMON_PORT = 3456;
+
+        const ROOT_FIXTURES = join(__dirname, '../../../../tests/fixtures');
+
+
+        interface DaemonFixture {
+          tempDir: string;
+          kspecDir: string;
+        }
+
+
+        async function cleanupExistingDaemon(): Promise<void> {
+          // Kill any daemon that might be running on port 3456
+          try {
+            const result = spawnSync('lsof', ['-ti', ':' + DAEMON_PORT], { encoding: 'utf-8' });
+            if (result.stdout.trim()) {
+              const pids = result.stdout.trim().split('\n');
+              for (const pid of pids) {
+                try { process.kill(parseInt(pid, 10), 'SIGTERM'); } catch { }
+              }
+              await new Promise(r => setTimeout(r, 1000));
+            }
+          } catch { }
+        }
+
+
+        async function checkBunAvailable(): Promise<boolean> {
+          try {
+            execSync('which bun', { stdio: 'ignore' });
+            return true;
+          } catch {
+            return false;
+          }
+        }
+
+
+        export const test = base.extend<{ daemon: DaemonFixture }>({
+          daemon: async ({}, use) => {
+            // Check Bun is available (daemon requires it)
+            if (!await checkBunAvailable()) {
+              throw new Error('Bun runtime required for daemon. Install: curl -fsSL https://bun.sh/install | bash');
+            }
+
+            // Clean up any existing daemon
+            await cleanupExistingDaemon();
+
+            // Create temp directory
+            const tempDir = join(tmpdir(), 'kspec-e2e-' + Date.now());
+            const kspecDir = join(tempDir, '.kspec');
+            mkdirSync(kspecDir, { recursive: true });
+
+            // Copy test fixtures
+            cpSync(ROOT_FIXTURES, kspecDir, { recursive: true });
+
+            // Initialize git repo (required for kspec)
+            execSync('git init', { cwd: tempDir, stdio: 'ignore' });
+            execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
+            execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
+
+            // Start daemon
+            const startResult = spawnSync('kspec', [
+              'serve', 'start', '--daemon',
+              '--port', String(DAEMON_PORT),
+              '--kspec-dir', kspecDir
+            ], { cwd: tempDir, encoding: 'utf-8' });
+
+            if (startResult.status !== 0) {
+              throw new Error('Failed to start daemon: ' + startResult.stderr);
+            }
+
+            // Wait for daemon to be ready
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Provide fixture to test
+            await use({ tempDir, kspecDir });
+
+            // Cleanup: stop daemon
+            spawnSync('kspec', ['serve', 'stop', '--kspec-dir', kspecDir], {
+              cwd: tempDir,
+              encoding: 'utf-8'
+            });
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Remove temp directory
+            try {
+              rmSync(tempDir, { recursive: true, force: true });
+            } catch { }
+          },
+        });
+
+
+        export { expect };
+
+        ```
+
+
+        ## Step 4: Create Test Data Fixtures
+
+
+        Create `tests/fixtures/project.inbox.yaml`:
+
+
+        ```yaml
+
+        inbox:
+          - _ulid: 01KTEST0JNBX00000000000001
+            created_at: "2026-01-23T10:00:00Z"
+            author: "@test"
+            text: "Test inbox item 1"
+            tags: [test]
+
+          - _ulid: 01KTEST0JNBX00000000000002
+            created_at: "2026-01-23T11:00:00Z"
+            author: "@test"
+            text: "Test inbox item 2 with different timestamp"
+            tags: [test, priority]
+        ```
+
+
+        Add to `tests/fixtures/kynetic.meta.yaml` (or create if missing):
+
+
+        ```yaml
+
+        session:
+          focus: "Working on E2E test infrastructure"
+          threads:
+            - "Setting up Playwright"
+          questions:
+            - "Should we add mobile viewport tests?"
+
+        observations:
+          - _ulid: 01KTEST0BS00000000000000001
+            created_at: "2026-01-23T09:00:00Z"
+            type: friction
+            content: "Test friction observation"
+            context: "During test setup"
+            resolved: false
+
+          - _ulid: 01KTEST0BS00000000000000002
+            created_at: "2026-01-23T09:30:00Z"
+            type: success
+            content: "Test success observation"
+            context: "Pattern that worked"
+            resolved: false
+
+          - _ulid: 01KTEST0BS00000000000000003
+            created_at: "2026-01-23T10:00:00Z"
+            type: question
+            content: "Test question observation"
+            context: "Open question"
+            resolved: false
+
+          - _ulid: 01KTEST0BS00000000000000004
+            created_at: "2026-01-23T10:30:00Z"
+            type: idea
+            content: "Test idea observation"
+            context: "Future consideration"
+            resolved: false
+        ```
+
+
+        ## Step 5: Add data-testid Attributes
+
+
+        Edit `packages/web-ui/src/lib/components/ConnectionStatus.svelte`:
+
+        - Add `data-testid="connection-status"` to root element
+
+
+        Edit `packages/web-ui/src/lib/components/Sidebar.svelte`:
+
+        - Add `data-testid="sidebar-nav"` to nav container
+
+        - Add `data-testid="nav-link-dashboard"`, `nav-link-tasks`, etc. to nav links
+
+        - Add `data-testid="session-focus"` to focus display
+
+
+        Edit `packages/web-ui/src/lib/components/TaskList.svelte`:
+
+        - Add `data-testid="task-list"` to table container
+
+        - Add `data-testid="task-row"` to each task row
+
+
+        ## Step 6: Create .gitignore
+
+
+        Create `packages/web-ui/.gitignore`:
+
+
+        ```
+
+        # Playwright
+
+        test-results/
+
+        playwright-report/
+
+        playwright/.cache/
+
+        ```
+
+
+        ## Step 7: Create Smoke Test
+
+
+        Create `packages/web-ui/tests/e2e/smoke.spec.ts`:
+
+
+        ```typescript
+
+        import { test, expect } from '../fixtures/test-base';
+
+
+        test.describe('Smoke Tests', () => {
+          test('page loads and connects to daemon', async ({ page, daemon }) => {
+            await page.goto('/');
+
+            // Sidebar is visible
+            await expect(page.getByTestId('sidebar-nav')).toBeVisible();
+
+            // Connection status shows connected
+            const connectionStatus = page.getByTestId('connection-status');
+            await expect(connectionStatus).toBeVisible();
+            await expect(connectionStatus).toContainText(/connected/i);
+          });
+
+          test('can navigate to tasks page', async ({ page, daemon }) => {
+            await page.goto('/');
+
+            // Click tasks nav link
+            await page.getByTestId('nav-link-tasks').click();
+
+            // URL changed
+            await expect(page).toHaveURL(/\/tasks/);
+
+            // Task list is visible
+            await expect(page.getByTestId('task-list')).toBeVisible();
+          });
+
+          test('task list shows test data', async ({ page, daemon }) => {
+            await page.goto('/tasks');
+
+            // Wait for task list to load
+            const taskList = page.getByTestId('task-list');
+            await expect(taskList).toBeVisible();
+
+            // Should have task rows from test fixtures
+            const taskRows = page.getByTestId('task-row');
+            await expect(taskRows.first()).toBeVisible();
+          });
+        });
+
+        ```
+
+
+        ## Step 8: Update Root package.json (optional)
+
+
+        Add to root `package.json` scripts:
+
+
+        ```json
+
+        {
+          "scripts": {
+            "test:e2e": "npm run test:e2e -w packages/web-ui"
+          }
+        }
+
+        ```
+
+
+        ## Verification Checklist
+
+
+        1. [ ] `cd packages/web-ui && npm install` succeeds
+
+        2. [ ] `npx playwright install chromium` succeeds
+
+        3. [ ] `npm run build` succeeds (needed before preview)
+
+        4. [ ] `npm run test:e2e` runs and passes:
+           - Daemon starts on port 3456
+           - Web UI loads at localhost:4173
+           - Connection status shows connected
+           - Navigation works
+           - Task list displays test data
+           - Daemon cleans up after tests
+
+        ## CI Requirements (for documentation)
+
+
+        CI workflow will need:
+
+        1. Bun runtime: `curl -fsSL https://bun.sh/install | bash`
+
+        2. Build before test: `npm run build -w packages/web-ui`
+
+        3. Playwright browsers: `npx playwright install --with-deps chromium`
+
+        4. Run tests: `npm run test:e2e -w packages/web-ui`
+
+
+        ## Child Task Dependencies
+
+
+        After this task completes, update these tasks to depend on it:
+
+        - @01KFP84J (Dashboard Tests)
+
+        - @01KFP84N (Tasks View Tests)
+
+        - @01KFP84S (Items View Tests)
+
+        - @01KFP84X (Inbox Tests)
+
+        - @01KFP850 (Search Command Palette Tests)
+
+        - @01KFP854 (Connection Handling Tests)
+
+        - @01KFP85D (Observations Panel Tests)
+
+        - @01KFP85G (Error Handling Tests)
+
+        - @01KFP85M (Navigation/URL State Tests)
+      supersedes: null
   todos: []
