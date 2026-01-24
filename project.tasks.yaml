@@ -34810,6 +34810,12 @@
 
         - ac-4: Given multiple eligible tasks, when skill selects, then follows loop selection order
       supersedes: null
+    - _ulid: 01KFR85AZW6H65M14RHDPSMEF8
+      created_at: 2026-01-24T14:57:34.205Z
+      author: "@claude"
+      content: "Implementation notes: 4 ACs covering invoke, workflow, eligible-only, order. Skill
+        invocation spec only; workflow behavior is in @task-work-loop-workflow."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
   slugs:
