@@ -34914,6 +34914,14 @@
         - ac-5: Given skill starts, when execution, then delegates all behavior to
         @pr-review-loop-workflow
       supersedes: null
+    - _ulid: 01KFR862SM939QW3PJ4XNJMVT7
+      created_at: 2026-01-24T14:57:58.581Z
+      author: "@claude"
+      content: "Implementation notes: 5 ACs covering invoke, task-ref required, pr-exists check,
+        quality-focus, workflow-delegate. Skill dispatch + quality emphasis; actual behavior in
+        @pr-review-loop-workflow. Key quality gates: AC coverage + spec alignment (not just tests
+        passing). Runs in subagent context (invoked via /pr-review @task-ref in prompt)."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
   slugs:
