@@ -589,3 +589,13 @@ inbox:
       - daemon
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFQ586MD6ZP1E356VH4439RE
+    text: "Daemon logging: Add --log-file or --verbose option to 'kspec serve start'. Currently stdio is
+      ignored making debugging silent failures difficult. Previous task was cancelled but need
+      remains."
+    created_at: 2026-01-24T04:47:27.886Z
+    tags:
+      - daemon
+      - dx
+      - reflection
+    added_by: "@claude"
