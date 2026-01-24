@@ -34345,6 +34345,27 @@
 
         Approach: Add static tests that verify routes use projectContext from middleware state.
       supersedes: null
+    - _ulid: 01KFRRT09SY7WNBSGB9JMAZYVN
+      created_at: 2026-01-24T19:48:28.601Z
+      author: "@claude"
+      content: >-
+        BLOCKER FOUND: This task requires 01KFQAD3 (Migrate API routes to use request context) to be
+        completed first. 
+
+
+        Current state:
+
+        - Middleware is implemented (01KFQACE ✓)
+
+        - Routes still use hardcoded kspecDir parameter
+
+        - Cannot write meaningful multi-project tests until routes use projectContext from
+        middleware
+
+
+        Recommendation: Block this task on 01KFQAD3, OR pivot to write tests that verify the
+        migration is needed (negative tests showing current limitation).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
