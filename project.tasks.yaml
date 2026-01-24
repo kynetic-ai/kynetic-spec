@@ -34430,3 +34430,45 @@
   notes: []
   todos: []
   automation: eligible
+- title: "Implement: Loop Mode Workflows"
+  type: task
+  spec_ref: "@loop-mode-workflows"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-loop-mode-workflows
+  tags: []
+  depends_on:
+    - "@task-workflow-definitions"
+  notes:
+    - _ulid: 01KFR829X500Q1X37MDZ6FBSVZ
+      created_at: 2026-01-24T14:55:54.789Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Container feature for loop-specific workflow definitions. Loop workflows differ from
+        interactive workflows: no human confirmation steps, higher confidence thresholds for
+        captures, deduplication checks before creating items, error handling with continuation.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given loop mode workflows exist, when kspec meta workflows --tag loop runs, then
+        lists all loop-specific workflows
+
+        - ac-2: Given a workflow has mode: loop field, when kspec validate runs, then workflow
+        validates as loop variant
+
+        - ac-3: Given loop workflow has based_on field, when kspec meta get @workflow-loop runs,
+        then shows base workflow reference
+      supersedes: null
+  _ulid: 01KFR829X5CKEQJA9XQ4711WT1
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:55:54.789Z
+  todos: []
