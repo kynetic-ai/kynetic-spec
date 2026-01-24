@@ -34647,15 +34647,21 @@
         completion before continuing
       supersedes: null
   todos: []
-- title: "Implement: Skill Commands"
+- _ulid: 01KFR82EVPE409RGQ29A73FP9P
+  slugs:
+    - task-skill-commands
+  title: "Implement: Skill Commands"
   type: task
   spec_ref: "@skill-commands"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-skill-commands
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:55:59.862Z
   notes:
     - _ulid: 01KFR82EVN6J530W43EZA4DEKC
       created_at: 2026-01-24T14:55:59.861Z
@@ -34677,10 +34683,46 @@
         - ac-2: Given skill supports modes, when /skill-name mode invoked, then skill behavior
         changes per mode
       supersedes: null
-  _ulid: 01KFR82EVPE409RGQ29A73FP9P
+  todos: []
+- title: "Implement: Skill Loop Mode"
+  type: task
+  spec_ref: "@skill-loop-mode"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-skill-loop-mode
+  tags: []
+  depends_on:
+    - "@task-skill-commands"
+  notes:
+    - _ulid: 01KFR82F6PA05Z8KBWX3PNGHVY
+      created_at: 2026-01-24T14:56:00.214Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Generic loop mode argument handling for skills. When a skill receives the loop argument, it
+        modifies behavior for automation context.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given skill supports loop mode, when /skill-name loop invoked, then skill recognizes
+        argument, modifies behavior
+
+        - ac-2: Given skill has loop mode, when loop invoked, then skill uses @workflow-loop variant
+
+        - ac-3: Given loop mode active, when confirmation point reached, then confirmation skipped
+
+        - ac-4: Given loop mode encounters error, when error caught, then note added, workflow
+        continues
+      supersedes: null
+  _ulid: 01KFR82F6P8Q8RXRX7YVJXZ9KF
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:55:59.862Z
+  created_at: 2026-01-24T14:56:00.214Z
   todos: []
