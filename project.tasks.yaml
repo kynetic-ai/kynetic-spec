@@ -34430,16 +34430,22 @@
   notes: []
   todos: []
   automation: eligible
-- title: "Implement: Loop Mode Workflows"
+- _ulid: 01KFR829X5CKEQJA9XQ4711WT1
+  slugs:
+    - task-loop-mode-workflows
+  title: "Implement: Loop Mode Workflows"
   type: task
   spec_ref: "@loop-mode-workflows"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-loop-mode-workflows
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-workflow-definitions"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:55:54.789Z
   notes:
     - _ulid: 01KFR829X500Q1X37MDZ6FBSVZ
       created_at: 2026-01-24T14:55:54.789Z
@@ -34465,10 +34471,67 @@
         - ac-3: Given loop workflow has based_on field, when kspec meta get @workflow-loop runs,
         then shows base workflow reference
       supersedes: null
-  _ulid: 01KFR829X5CKEQJA9XQ4711WT1
+  todos: []
+- title: "Implement: Task Work Loop Workflow"
+  type: task
+  spec_ref: "@task-work-loop-workflow"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-task-work-loop-workflow
+  tags: []
+  depends_on:
+    - "@task-loop-mode-workflows"
+  notes:
+    - _ulid: 01KFR82A8E9S3J6ZHJFNJTBMQC
+      created_at: 2026-01-24T14:55:55.150Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Workflow for /task-work loop. Key differences from @task-work-session: auto-filter to
+        automation-eligible tasks only, skip verification step, no interactive confirmations,
+        loop-specific task selection order (in_progress > pending_review > unblocking > priority).
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given eligible tasks with in_progress status exist, when agent selects next task,
+        then in_progress tasks selected first regardless of priority
+
+        - ac-2: Given no in_progress tasks AND eligible tasks with pending_review exist, when agent
+        selects next task, then pending_review task triggers sequential subagent spawn before ready
+        tasks
+
+        - ac-3: Given eligible ready tasks where some unblock others, when agent selects next task,
+        then tasks that unblock others preferred over isolated high-priority
+
+        - ac-4: Given only isolated eligible ready tasks exist, when agent selects next task, then
+        highest priority (lowest number) selected
+
+        - ac-5: Given tasks with various automation statuses, when workflow filters tasks, then only
+        automation: eligible tasks considered
+
+        - ac-6: Given task is selected, when workflow begins, then verification step skipped
+
+        - ac-7: Given workflow reaches decision step, when workflow continues, then decision
+        auto-resolves without human input
+
+        - ac-8: Given no eligible tasks exist in any state, when agent attempts selection, then
+        workflow exits cleanly with No eligible tasks message
+
+        - ac-9: Given all eligible tasks are blocked by dependencies, when agent attempts selection,
+        then workflow exits cleanly with All eligible tasks blocked message
+
+        - ac-10: Given multiple pending_review tasks exist, when agent handles pending_review, then
+        processes one at a time, oldest (by started_at) first
+      supersedes: null
+  _ulid: 01KFR82A8E7QV8DQZX74FXF16E
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:55:54.789Z
+  created_at: 2026-01-24T14:55:55.150Z
   todos: []
