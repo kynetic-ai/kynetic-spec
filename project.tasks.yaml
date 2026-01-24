@@ -34492,10 +34492,55 @@
     - phase-4
   vcs_refs: []
   created_at: 2026-01-24T06:17:31.376Z
-  notes: []
+  started_at: 2026-01-24T21:06:05.617Z
+  notes:
+    - _ulid: 01KFRXE8FFHZ0HQTRC7DNYPXKJ
+      created_at: 2026-01-24T21:09:26.639Z
+      author: "@claude"
+      content: >-
+        Route migration completed:
+
+
+        Applied project context middleware to server and updated all 5 route files to use
+        request-scoped projectContext instead of closure-scoped kspecDir.
+
+
+        Changes:
+
+        - server.ts: Applied projectContextMiddleware, removed kspecDir from route factory calls
+
+        - tasks.ts: Added projectContext param to all 4 handlers, derive kspecDir from
+        projectContext.path
+
+        - items.ts: Added projectContext param to all 3 handlers
+
+        - inbox.ts: Added projectContext param to all 3 handlers  
+
+        - meta.ts: Added projectContext param to all 4 handlers
+
+        - validation.ts: Added projectContext param to all 3 handlers
+
+
+        All route handlers now follow the pattern:
+
+        ```typescript
+
+        async ({ projectContext, ...otherParams }) => {
+          const kspecDir = join(projectContext.path, '.kspec');
+          const ctx = await initContext(kspecDir);
+          // ... rest of handler
+        }
+
+        ```
+
+
+        Tests passing (232 total daemon tests, 1 pre-existing failure unrelated to this work).
+
+
+        Covers AC-1, AC-2, AC-3, AC-24 from @multi-directory-daemon spec.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T21:06:05.617Z
 - _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
   slugs:
     - task-ws-binding-tests
