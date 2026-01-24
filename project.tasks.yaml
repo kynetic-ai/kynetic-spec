@@ -33791,6 +33791,33 @@
 
         WIP - next iteration should implement test file.
       supersedes: null
+    - _ulid: 01KFRMFC0NA90E15T5JCD9FM7G
+      created_at: 2026-01-24T18:32:45.845Z
+      author: "@claude"
+      content: |-
+        Session end checkpoint: Task not completed, leaving in_progress.
+
+        CURRENT STATE:
+        - Analysis complete, no implementation yet
+        - Multi-dir fixtures already exist (from @01KFQAAA)
+        - ProjectContextManager class doesn't exist yet (test-first approach)
+
+        NEXT SESSION TODO:
+        1. Create tests/daemon-context-manager.test.ts
+        2. Implement mock ProjectContextManager class with API:
+           - registerProject(path, isDefault?): validates + caches
+           - getProject(path): retrieves cached context
+           - setDefaultProject(path): sets fallback
+           - hasProject(path): check registration
+           - unregisterProject(path): remove from cache
+           - listProjects(): return all registered
+        3. Write ~30 tests covering ACs: 1-8, 8b, 8c, 14-16, 20, 20b
+        4. Use setupMultiDirFixtures() helper for isolation
+        5. Follow same pattern as daemon-global-pid-port.test.ts
+
+        BLOCKED ON: Nothing - ready to implement
+        ESTIMATE: 1-2 iterations to complete all tests
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
