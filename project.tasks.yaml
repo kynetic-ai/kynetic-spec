@@ -33585,6 +33585,7 @@
   created_at: 2026-01-24T06:16:20.121Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
   slugs: []
   title: Global PID/port file management
