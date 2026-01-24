@@ -1,3 +1,5 @@
 kynetic: "1.0"
 project: Test Project B
 description: Multi-directory daemon test fixture - Project B
+modules:
+  - modules/test.yaml
