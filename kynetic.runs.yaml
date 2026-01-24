@@ -3323,7 +3323,7 @@ runs:
   - _ulid: 01KFRA54G6APCBZZPR7436PBJR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-24T15:32:24.710Z
     step_results:
@@ -3364,5 +3364,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-24T15:34:51.901Z
-        completed_at: 2026-01-24T15:34:51.901Z
+        completed_at: 2026-01-24T15:39:55.598Z
+        notes: "User decisions: (1) item set --relates-to - YES, captured to inbox @01KFRAJG. (2) bulk AC
+          add - covered by existing bulk cmd idea, skip. (3) workflow abort --stale - already
+          tracked in workflow cleanup item, skip."
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-24T15:39:55.598Z
+        completed_at: 2026-01-24T15:39:55.598Z
     initiated_by: "@claude"
