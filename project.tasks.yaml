@@ -35396,6 +35396,30 @@
 
         Next steps: Implement the changes listed above.
       supersedes: null
+    - _ulid: 01KFS0BZY30DZAJS1FHVRB10S2
+      created_at: 2026-01-24T22:00:38.083Z
+      author: "@claude"
+      content: >-
+        Session end state: Analysis complete, ready for implementation.
+
+
+        Task left in_progress for next iteration due to complexity. Previous note contains full
+        implementation plan.
+
+
+        Quick context for next session:
+
+        - Tests already exist (task @01KFQAEM completed)
+
+        - PubSubManager filtering already works (task @01KFQAEA completed)
+
+        - Need to add watcher storage to ProjectContextManager
+
+        - Need to integrate with server.ts
+
+
+        Estimated effort: 1-2 hours for implementation + testing.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
