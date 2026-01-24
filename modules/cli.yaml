@@ -2474,6 +2474,10 @@ features:
             given: pending_review exists
             when: agent follows prompt
             then: spawns subagent with /pr-review @task-ref
+          - id: ac-7
+            given: iteration ends
+            when: agent follows prompt
+            then: invokes /reflect loop
       - _ulid: 01KFR7T8HYW22JJQ1KNPZ17Q51
         slugs:
           - ralph-subagent-spawning
