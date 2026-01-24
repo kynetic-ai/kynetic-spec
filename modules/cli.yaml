@@ -2999,6 +2999,9 @@ features:
             given: both task-work and reflect encounter errors in same iteration
             when: iteration ends
             then: each error noted separately, iteration counts as single failure toward consecutive limit
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
