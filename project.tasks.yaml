@@ -34229,7 +34229,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
-  slugs: []
+  slugs:
+    - task-cli-status-tests
   title: CLI serve status tests
   type: task
   description: |-
