@@ -32309,6 +32309,7 @@
         - result-group-tasks, result-group-items, result-group-inbox
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP8547RPY3R7VEXTR3F3HDH
   slugs: []
   title: E2E Connection Handling Tests
