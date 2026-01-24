@@ -3419,4 +3419,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFRCQHCS2Z9Y0XCKFYKT1K8Z
+    type: success
+    content: "Using testUlid() helper for test fixtures prevents silent failures from invalid Crockford
+      base32 chars (L, I, O, U). The helper auto-replaces these with valid chars. PR #210 adds
+      documentation for this pattern."
+    created_at: 2026-01-24T16:17:24.889Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
