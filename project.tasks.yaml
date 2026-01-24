@@ -34233,6 +34233,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #219. Implemented X-Kspec-Dir middleware with 11 ACs: header extraction
+    (ac-1), default fallback (ac-2, ac-3), auto-registration (ac-4), path validation (ac-5, ac-6,
+    ac-7), normalization (ac-8, ac-8b, ac-8c), and default validity check (ac-20b). 16 comprehensive
+    tests added. All CI checks passed."
   depends_on:
     - "@01KFQABQ"
     - "@01KFQAC1"
@@ -34245,6 +34249,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:17:09.667Z
   started_at: 2026-01-24T19:38:13.394Z
+  completed_at: 2026-01-24T19:46:41.443Z
   notes:
     - _ulid: 01KFRR7YQDRMJEBBYY1SY4W7F9
       created_at: 2026-01-24T19:38:37.165Z
@@ -34275,11 +34280,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T19:46:41.443Z
-  closed_reason: "Merged in PR #219. Implemented X-Kspec-Dir middleware with 11 ACs: header extraction
-    (ac-1), default fallback (ac-2, ac-3), auto-registration (ac-4), path validation (ac-5, ac-6,
-    ac-7), normalization (ac-8, ac-8b, ac-8c), and default validity check (ac-20b). 16 comprehensive
-    tests added. All CI checks passed."
 - _ulid: 01KFQACQ7MWQ9XAGC8FRP7GRTK
   slugs:
     - task-routes-multi-project-tests
@@ -34300,7 +34300,7 @@
     Task: X-Kspec-Dir middleware implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQACE"
@@ -34314,6 +34314,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T19:46:58.241Z
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
   slugs:
     - task-routes-migration
