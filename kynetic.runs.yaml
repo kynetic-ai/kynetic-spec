@@ -3383,6 +3383,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T16:10:47.623Z
+    completed_at: 2026-01-24T16:17:41.110Z
     step_results:
       - step_index: 0
         status: completed
@@ -3503,4 +3504,11 @@ runs:
           - testUlid docs: PR #210
           - ULID validation clarity: already clear
     initiated_by: "@claude"
-    completed_at: 2026-01-24T16:17:41.110Z
+  - _ulid: 01KFRJHPV2D8SNE2YPZPW604PD
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-24T17:59:05.315Z
+    step_results: []
+    initiated_by: "@claude"
