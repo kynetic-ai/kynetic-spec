@@ -2698,6 +2698,10 @@ features:
         given: skill exists
         when: /skill-name invoked
         then: skill executes with default behavior
+      - id: ac-2
+        given: skill supports modes
+        when: /skill-name mode invoked
+        then: skill behavior changes per mode
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
