@@ -34560,6 +34560,36 @@
 
         These tests will guide implementation of WebSocket project binding feature.
       supersedes: null
+    - _ulid: 01KFRSTWTTQAW72Y0SGJ88C4VA
+      created_at: 2026-01-24T20:06:26.394Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Added 7 WebSocket connection binding tests to
+        daemon-websocket.test.ts:
+
+
+        1. ac-21: Bind connection to project via X-Kspec-Dir header during handshake
+
+        2. ac-21: Store projectPath in ConnectionData for connection lifetime  
+
+        3. ac-21: Only send events from bound project to connection
+
+        4. ac-21b: Project binding is immutable after connection established
+
+        5. ac-22: Bind to default project when X-Kspec-Dir not provided
+
+        6. ac-23: Reject connection with close code 4000 when no project and no default
+
+        7. ac-18: Isolate broadcasts to project-specific subscribers
+
+
+        Test approach: Static code analysis (same as task @01KFQACQ). Tests verify expected
+        structure after WebSocket project binding implementation. All 7 tests currently fail
+        (expected) - will pass once feature is implemented.
+
+
+        Test results: 7 new tests fail, 51 existing tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
