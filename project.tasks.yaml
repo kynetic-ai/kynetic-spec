@@ -34471,6 +34471,14 @@
         - ac-3: Given loop workflow has based_on field, when kspec meta get @workflow-loop runs,
         then shows base workflow reference
       supersedes: null
+    - _ulid: 01KFR848444MV0YT510AHCG16R
+      created_at: 2026-01-24T14:56:58.501Z
+      author: "@claude"
+      content: "Implementation notes: Container feature for loop-specific workflow definitions. Add under
+        @workflow-definitions in meta.yaml. Ensure 3 ACs: workflow listing with loop tag, mode:loop
+        field validation, based_on field reference. Description captures: no human confirmations,
+        higher thresholds, deduplication, error continuation."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82A8E7QV8DQZX74FXF16E
   slugs:
@@ -34962,16 +34970,22 @@
         - ac-7: Given iteration ends, when agent follows prompt, then invokes /reflect loop
       supersedes: null
   todos: []
-- title: "Implement: Ralph Subagent Spawning"
+- _ulid: 01KFR834PPNNABA5RCSC4A34QT
+  slugs:
+    - task-ralph-subagent-spawning
+  title: "Implement: Ralph Subagent Spawning"
   type: task
   spec_ref: "@ralph-subagent-spawning"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-ralph-subagent-spawning
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:56:22.230Z
   notes:
     - _ulid: 01KFR834PN2051ERSW65X2443X
       created_at: 2026-01-24T14:56:22.230Z
@@ -35009,10 +35023,4 @@
         - ac-7: Given subagent runs, when resource management, then respects ralph's --max-retries
         and failure limits
       supersedes: null
-  _ulid: 01KFR834PPNNABA5RCSC4A34QT
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-24T14:56:22.230Z
   todos: []
