@@ -45,10 +45,12 @@ import { gatherSessionContext, type SessionContext } from "./session.js";
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
+// AC: @ralph-skill-delegation ac-1, ac-2, ac-3
 function buildPrompt(
   sessionCtx: SessionContext,
   iteration: number,
   maxLoops: number,
+  sessionId: string,
   focus?: string,
 ): string {
   const isFinal = iteration === maxLoops;
@@ -65,7 +67,9 @@ Keep this focus in mind throughout your work. It takes priority over default tas
 
   return `# Kspec Automation Session
 
-You are running as part of a kspec automation loop. This is iteration ${iteration} of ${maxLoops}.
+**Session ID:** \`${sessionId}\`
+**Iteration:** ${iteration} of ${maxLoops}
+**Mode:** Automated (no human in the loop)
 ${focusSection}
 
 ## Current State
@@ -75,114 +79,32 @@ ${JSON.stringify(sessionCtx, null, 2)}
 
 ## Working Procedure
 
-Follow this order each iteration:
+This session uses the \`/task-work\` skill for the full task lifecycle. The skill handles:
+- Checking for open PRs and pending review tasks
+- Picking or continuing a task
+- Doing the work and documenting progress
+- Submitting, committing, creating PRs, and reviewing
+- Completing tasks after merge
 
-### 1. Check for Open PRs First
+Simply invoke the skill to begin:
 
-\`\`\`bash
-gh pr list --state open
+\`\`\`
+/task-work
 \`\`\`
 
-If PRs exist, review and merge them before picking new tasks:
-- Spawn a subagent for local review:
-  \`\`\`
-  Task tool → subagent_type: "general-purpose" → prompt: "Run /local-review for PR #N. Check AC coverage, test quality, E2E preference, and test isolation."
-  \`\`\`
-- Use \`@pr-review-merge\` workflow to review and merge
-- After merge: \`kspec task complete @task-ref --reason "Merged in PR #N"\`
+At the end of each iteration, reflect on what you learned:
 
-**Merge strategy**: Use \`--merge\` (not \`--squash\`) to preserve kspec trailers in commit messages.
-
-### 2. Check for Pending Review Tasks
-
-If there's a \`pending_review\` task without a PR (or work not pushed to origin):
-- Push uncommitted work: \`git push\`
-- Create PR: \`/pr\`
-- Spawn subagent for local review (see step 1)
-- Then use \`@pr-review-merge\` workflow
-
-### 3. Pick or Continue a Task
-
-Use the \`/task-work\` skill for the full task lifecycle:
-- If \`active_tasks\` has an \`in_progress\` task, continue it
-- Otherwise pick highest priority from \`ready_tasks\` (lowest number = higher priority)
-
-\`\`\`bash
-kspec task start @task-ref  # if not already in_progress
+\`\`\`
+/reflect
 \`\`\`
 
-### 4. Do the Work
-
-- Read relevant files to understand the task
-- Make changes as needed
-- Run tests if applicable
-- Document as you go with task notes
-
-\`\`\`bash
-kspec task note @task-ref "What you did, decisions made, etc."
-\`\`\`
-
-### 5. Submit When Done
-
-If code is DONE (ready for PR):
-\`\`\`bash
-kspec task submit @task-ref
-\`\`\`
-
-If task is NOT done (WIP):
-\`\`\`bash
-kspec task note @task-ref "WIP: What's done, what remains..."
-\`\`\`
-
-### 6. Commit Your Work
-
-\`\`\`bash
-git add -A && git commit -m "feat/fix/chore: description
-
-Task: @task-ref"
-\`\`\`
-
-### 7. Create PR and Review
-
-After submitting:
-- Create PR: \`/pr\`
-- Spawn subagent for quality check:
-  \`\`\`
-  Task tool → subagent_type: "general-purpose" → prompt: "Run /local-review for the PR just created. Check AC coverage, test quality, E2E preference, and test isolation."
-  \`\`\`
-- Merge workflow: \`@pr-review-merge\`
-
-### 8. Reflect (End of Iteration)
-
-Use \`/reflect\` skill. **Be selective** (no human in the loop):
-
-**Before adding anything**, search first:
-\`\`\`bash
-kspec meta observations list
-kspec inbox list
-kspec tasks list
-\`\`\`
-
-Only add if not already captured:
-- **Systemic friction only** - skip one-off issues
-- **High quality successes** - unique patterns worth replicating
-- **Concrete only** - skip vague ideas
-
-## Important Notes
-- Stay focused on ONE task per iteration
-- The loop continues automatically - don't worry about picking the next task
-- kspec tracks state across iterations via task status and notes
-- Always commit before the iteration ends
-- Merge PRs before starting new work
+The \`/reflect\` skill helps capture systemic friction, high-quality successes, and concrete observations worth preserving across sessions.
 ${
   isFinal
     ? `
+
 ## FINAL ITERATION
-This is the last iteration of the loop. After completing your work:
-1. Commit any remaining changes
-2. Create PR if work is ready: \`/pr\`
-3. Spawn subagent for local review, then \`@pr-review-merge\` if PR created
-4. Reflect using \`/reflect\` - capture unique, high-quality insights only
+This is the last iteration. After \`/task-work\` completes, run \`/reflect\` to capture unique insights from this session.
 `
     : ""
 }`;
@@ -489,6 +411,7 @@ export function registerRalphCommand(program: Command): void {
               sessionCtx,
               iteration,
               maxLoops,
+              sessionId,
               options.focus,
             );
 
