@@ -2511,6 +2511,10 @@ features:
             given: subagent runs
             when: display
             then: subagent output rendered same as main agent (single stream)
+          - id: ac-5
+            given: subagent completes
+            when: signaling
+            then: task status change (completed/needs_review) indicates outcome
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
