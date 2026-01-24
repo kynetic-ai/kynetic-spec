@@ -4530,7 +4530,7 @@ runs:
   - _ulid: 01KFS6MJ42V8Q5K56T8FDQHTWR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T23:50:10.306Z
     step_results:
@@ -4557,5 +4557,16 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T23:50:40.581Z
-        completed_at: 2026-01-24T23:50:40.581Z
+        completed_at: 2026-01-24T23:50:50.286Z
+        notes: |-
+          Workflow lifecycle management commands:
+          - kspec workflow complete @run-ref - mark run completed, archive it
+          - kspec workflow cancel @run-ref - cancel abandoned run
+          - kspec workflow cleanup - auto-cancel runs older than N days with no activity
+          Scope: Small - add lifecycle commands to workflow system
+          Helps: Prevent accumulation of stale runs, clear session state
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T23:50:50.286Z
+        completed_at: 2026-01-24T23:50:50.286Z
     initiated_by: "@claude"
