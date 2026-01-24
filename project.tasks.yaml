@@ -35000,7 +35000,7 @@
     Task: WebSocket connection binding implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQADQ"
@@ -35074,6 +35074,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T21:55:50.636Z
+  closed_reason: "Merged in PR #226. Added 9 comprehensive unit tests for PubSubManager.broadcast()
+    filtering logic covering ac-18. Tests validate project-scoped broadcast filtering, multi-project
+    isolation, subscription + project filtering, legacy connection handling, message structure, and
+    sequence incrementing. All new tests passing. CI failures are pre-existing watcher test issues
+    unrelated to this PR."
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   slugs:
     - task-broadcast-filter-impl
