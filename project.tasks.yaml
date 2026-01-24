@@ -35576,10 +35576,48 @@
     - phase-7
   vcs_refs: []
   created_at: 2026-01-24T06:18:54.200Z
-  notes: []
+  started_at: 2026-01-24T22:17:57.744Z
+  notes:
+    - _ulid: 01KFS1KARJ8HG89YJFG98Q45JN
+      created_at: 2026-01-24T22:22:07.122Z
+      author: "@claude"
+      content: >-
+        Implemented /api/projects endpoints (AC-28, AC-29, AC-30).
+
+
+        Created packages/daemon/src/routes/projects.ts with three endpoints:
+
+        - GET /api/projects - returns list of registered projects with paths, registration time, and
+        watcher status
+
+        - POST /api/projects - manually registers a project with path validation and watcher startup
+
+        - DELETE /api/projects/:encodedPath - unregisters project and stops its watcher
+
+
+        Updated packages/daemon/src/server.ts to import and register the new routes.
+
+
+        Key implementation details:
+
+        - Uses ProjectContextManager for all project lifecycle operations
+
+        - Validates paths (absolute, no parent traversal, .kspec/ exists)
+
+        - Handles OS resource limits (EMFILE/ENFILE) with 503 response
+
+        - Auto-starts watchers on registration
+
+        - Stops watchers on unregistration
+
+        - Returns appropriate HTTP status codes (400, 403, 404, 500, 503)
+
+
+        All 10 documentary tests passing. Full test suite: 1379 tests passing (1 pre-existing
+        failure unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T22:17:57.744Z
 - _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
   slugs:
     - task-cli-status-tests
