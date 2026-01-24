@@ -68,6 +68,11 @@ export const WorkflowStepSchema = z.object({
 });
 
 /**
+ * Workflow mode - interactive (default) for human-in-loop, loop for autonomous agents
+ */
+export const WorkflowModeSchema = z.enum(["interactive", "loop"]);
+
+/**
  * Workflow definition - structured process definition
  */
 export const WorkflowSchema = z.object({
@@ -77,6 +82,9 @@ export const WorkflowSchema = z.object({
   description: z.string().optional(),
   steps: z.array(WorkflowStepSchema).default([]),
   enforcement: z.enum(["advisory", "strict"]).default("advisory").optional(),
+  mode: WorkflowModeSchema.default("interactive").optional(),
+  based_on: RefSchema.optional(),
+  tags: z.array(z.string()).default([]).optional(),
 });
 
 /**
@@ -229,6 +237,7 @@ export type WorkflowStepType = z.infer<typeof WorkflowStepTypeSchema>;
 export type StepExecution = z.infer<typeof StepExecutionSchema>;
 export type StepInput = z.infer<typeof StepInputSchema>;
 export type WorkflowStep = z.infer<typeof WorkflowStepSchema>;
+export type WorkflowMode = z.infer<typeof WorkflowModeSchema>;
 export type Workflow = z.infer<typeof WorkflowSchema>;
 export type ConventionExample = z.infer<typeof ConventionExampleSchema>;
 export type ConventionValidation = z.infer<typeof ConventionValidationSchema>;

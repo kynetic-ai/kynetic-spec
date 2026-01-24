@@ -141,7 +141,7 @@ function formatAgents(agents: Agent[]): void {
 
 /**
  * Format workflows table output
- * AC-workflow-1: outputs table with columns: ID, Trigger, Steps (count)
+ * AC-workflow-1: outputs table with columns: ID, Trigger, Steps (count), Mode
  */
 function formatWorkflows(workflows: Workflow[]): void {
   if (workflows.length === 0) {
@@ -150,7 +150,12 @@ function formatWorkflows(workflows: Workflow[]): void {
   }
 
   const table = new Table({
-    head: [chalk.bold("ID"), chalk.bold("Trigger"), chalk.bold("Steps")],
+    head: [
+      chalk.bold("ID"),
+      chalk.bold("Trigger"),
+      chalk.bold("Steps"),
+      chalk.bold("Mode"),
+    ],
     style: {
       head: [],
       border: [],
@@ -162,6 +167,7 @@ function formatWorkflows(workflows: Workflow[]): void {
       workflow.id,
       workflow.trigger,
       workflow.steps.length.toString(),
+      workflow.mode || "interactive",
     ]);
   }
 
@@ -171,6 +177,7 @@ function formatWorkflows(workflows: Workflow[]): void {
 /**
  * Format workflows verbose output
  * AC-workflow-2: outputs each workflow with full step list
+ * AC: @loop-mode-workflows ac-3 (shows based_on field)
  */
 function formatWorkflowsVerbose(workflows: Workflow[]): void {
   if (workflows.length === 0) {
@@ -180,6 +187,14 @@ function formatWorkflowsVerbose(workflows: Workflow[]): void {
 
   for (const workflow of workflows) {
     console.log(chalk.bold(`${workflow.id} - ${workflow.trigger}`));
+    // Show mode if it's loop (skip for interactive as it's default)
+    if (workflow.mode === "loop") {
+      console.log(chalk.cyan(`Mode: ${workflow.mode}`));
+    }
+    // AC: @loop-mode-workflows ac-3 - Show based_on reference
+    if (workflow.based_on) {
+      console.log(chalk.cyan(`Based on: ${workflow.based_on}`));
+    }
     if (workflow.description) {
       console.log(chalk.gray(workflow.description));
     }
@@ -401,10 +416,12 @@ export function registerMetaCommands(program: Command): void {
     });
 
   // AC-workflow-1, AC-workflow-2, AC-workflow-4: kspec meta workflows
+  // AC: @loop-mode-workflows ac-1 (--tag loop filtering)
   meta
     .command("workflows")
     .description("List workflows defined in meta-spec")
     .option("--verbose", "Show full workflow details with all steps")
+    .option("--tag <tag>", "Filter workflows by tag (e.g., --tag loop)")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -415,7 +432,19 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const workflows = metaCtx.workflows || [];
+        let workflows = metaCtx.workflows || [];
+
+        // AC: @loop-mode-workflows ac-1 - Filter by tag
+        if (options.tag) {
+          workflows = workflows.filter((w) => {
+            // Match by explicit tags array or by mode field (for "loop" tag)
+            const tags = w.tags || [];
+            if (tags.includes(options.tag)) return true;
+            // Special case: --tag loop also matches mode: loop
+            if (options.tag === "loop" && w.mode === "loop") return true;
+            return false;
+          });
+        }
 
         // AC-workflow-4: JSON output includes full workflow details
         output(
@@ -424,6 +453,9 @@ export function registerMetaCommands(program: Command): void {
             trigger: workflow.trigger,
             description: workflow.description,
             steps: workflow.steps,
+            mode: workflow.mode || "interactive",
+            based_on: workflow.based_on,
+            tags: workflow.tags || [],
           })),
           // AC-workflow-1 (table) or AC-workflow-2 (verbose)
           () => {
@@ -1124,6 +1156,12 @@ export function registerMetaCommands(program: Command): void {
     .option("--convention <conv...>", "Convention references (for agents)")
     .option("--rule <rule...>", "Rules (for conventions)")
     .option("--steps <json>", "Workflow steps as JSON array (for workflows)")
+    .option(
+      "--mode <mode>",
+      "Workflow mode: interactive (default) or loop (for workflows)",
+    )
+    .option("--based-on <ref>", "Base workflow reference (for loop workflows)")
+    .option("--tag <tag...>", "Tags for the workflow (for workflows)")
     .action(async (type: string, options) => {
       try {
         const ctx = await initContext();
@@ -1203,12 +1241,24 @@ export function registerMetaCommands(program: Command): void {
             steps = result.data;
           }
 
+          // Validate mode if provided
+          const validModes = ["interactive", "loop"];
+          if (options.mode && !validModes.includes(options.mode)) {
+            error(
+              `Invalid mode: ${options.mode}. Valid modes: ${validModes.join(", ")}`,
+            );
+            process.exit(EXIT_CODES.ERROR);
+          }
+
           item = {
             _ulid: itemUlid,
             id: options.id,
             trigger: options.trigger,
             description: options.description || "",
             steps,
+            ...(options.mode && { mode: options.mode }),
+            ...(options.basedOn && { based_on: options.basedOn }),
+            ...(options.tag && options.tag.length > 0 && { tags: options.tag }),
           };
         } else {
           // convention
