@@ -3172,7 +3172,7 @@ runs:
   - _ulid: 01KFR09KPKP129WTSYYM24M94E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-24T12:40:05.588Z
     step_results:
@@ -3208,5 +3208,35 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-24T12:40:36.035Z
-        completed_at: 2026-01-24T12:40:36.035Z
+        completed_at: 2026-01-24T12:40:52.675Z
+        notes: >-
+          Friction points this session:
+
+
+          1. **No bulk AC add command** - Had to write all 36 acceptance criteria inline in YAML.
+          Would be faster with: kspec item ac add @ref --given '...' --when '...' --then '...'
+          (repeat for each AC). Currently must edit YAML directly.
+
+
+          2. **Task dependency setup is verbose** - After creating 21 tasks, had to run 'kspec task
+          set' separately for each dependency relationship. No way to specify depends_on during task
+          add, and no bulk dependency setup.
+
+
+          3. **Automation eligibility assessment requires manual iteration** - Had to run 'kspec
+          task set --automation eligible' for each of 29 tasks individually. Would benefit from bulk
+          mode: kspec task set --refs @a @b @c --automation eligible
+
+
+          4. **Plan file location not obvious** - The plan mode system reminder tells you the path
+          but it's easy to miss. Had to scroll to find
+          /home/chapel/.claude/plans/graceful-zooming-fern.md.
+
+
+          5. **AC numbering with sub-ACs awkward** - Used ac-8b, ac-9b, ac-9c, ac-10b, ac-21b
+          pattern for added ACs. Schema may not support this well or expect sequential numbering.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T12:40:52.675Z
+        completed_at: 2026-01-24T12:40:52.675Z
     initiated_by: "@claude"
