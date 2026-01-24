@@ -1090,6 +1090,10 @@ features:
                 given: subagent spawned
                 when: ralph behavior
                 then: ralph waits for subagent completion before continuing
+              - id: ac-11
+                given: subagent encounters friction or learning during PR review
+                when: subagent reflects
+                then: captures observation via kspec meta observe with [SUBAGENT] prefix in content
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
