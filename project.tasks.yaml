@@ -32596,7 +32596,7 @@
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -33108,3 +33108,5 @@
         - Unit tests pass (excluding pre-existing failures in daemon-executable and task-clear-deps)
       supersedes: null
   todos: []
+  completed_at: 2026-01-24T04:01:48.882Z
+  closed_reason: "PR #209 merged. E2E testing infrastructure with Playwright is now set up."
