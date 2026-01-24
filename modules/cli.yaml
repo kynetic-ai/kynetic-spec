@@ -2462,6 +2462,10 @@ features:
             given: prompt built
             when: content examined
             then: contains literal strings /task-work loop and /reflect loop
+          - id: ac-4
+            given: agent output received
+            when: ralph processes output
+            then: ralph does NOT parse or detect skill invocation patterns
       - _ulid: 01KFR7T8HYW22JJQ1KNPZ17Q51
         slugs:
           - ralph-subagent-spawning
