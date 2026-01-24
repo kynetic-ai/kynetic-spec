@@ -166,6 +166,30 @@ export async function setupTempFixtures(): Promise<string> {
 }
 
 /**
+ * Copy multi-directory daemon fixtures to a temp directory
+ *
+ * Creates isolated copies of multiple kspec projects for testing
+ * multi-directory daemon functionality.
+ *
+ * @returns Path to the temp directory containing project subdirectories
+ *
+ * @example
+ * const fixturesRoot = await setupMultiDirFixtures();
+ * const projectA = path.join(fixturesRoot, 'project-a');
+ * const projectB = path.join(fixturesRoot, 'project-b');
+ * const projectInvalid = path.join(fixturesRoot, 'project-invalid');
+ *
+ * // Clean up when done
+ * await cleanupTempDir(fixturesRoot);
+ */
+export async function setupMultiDirFixtures(): Promise<string> {
+  const multiDirSource = path.join(FIXTURES_DIR, 'multi-dir');
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-multi-'));
+  await fs.cp(multiDirSource, tempDir, { recursive: true });
+  return tempDir;
+}
+
+/**
  * Clean up a temp directory
  *
  * @param dir - Directory to remove

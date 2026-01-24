@@ -25,6 +25,7 @@ coverage/
 .env
 .env.local
 .kspec/
+!tests/fixtures/**/.kspec/
 
 # Session context
 .kspec-session
