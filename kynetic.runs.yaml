@@ -3380,7 +3380,7 @@ runs:
   - _ulid: 01KFRCBDE6KQMEND1RMZMVWZF1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T16:10:47.623Z
     step_results:
@@ -3437,5 +3437,25 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T16:11:49.132Z
-        completed_at: 2026-01-24T16:11:49.132Z
+        completed_at: 2026-01-24T16:12:55.963Z
+        notes: >-
+          Searched specs, tasks, and inbox for existing coverage:
+
+
+          1. **Invalid ULID silent failures**: NOT TRACKED. The testUlid() helper exists but there's
+          no documentation or warning about using it for test fixtures. The AGENTS.md does mention
+          ULID format requirements and the helper, but it's easy to miss.
+
+
+          2. **Many stale active workflow runs**: ALREADY TRACKED. Found inbox item @01KFPH39 'Add
+          workflow run auto-cleanup'. Exact match for this friction.
+
+
+          3. **YAML fixture indentation debugging**: NOT TRACKED (partially). Test helpers exist
+          (setupTempFixtures) but no helper specifically for adding items to YAML fixtures mid-test.
+          This is a one-off friction that may not warrant a separate improvement.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T16:12:55.963Z
+        completed_at: 2026-01-24T16:12:55.963Z
     initiated_by: "@claude"
