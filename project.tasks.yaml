@@ -35035,6 +35035,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:55:55.490Z
+  started_at: 2026-01-24T19:12:45.214Z
   notes:
     - _ulid: 01KFR82AK21EPGCX8FJF092G9X
       created_at: 2026-01-24T14:55:55.490Z
@@ -35076,8 +35077,29 @@
         anything. High confidence means agent-judged certainty, not quantitative threshold.
         based_on: @session-reflect"
       supersedes: null
+    - _ulid: 01KFRPVY6SSSV6001WN2V2379Y
+      created_at: 2026-01-24T19:14:34.842Z
+      author: "@claude"
+      content: >-
+        Created @session-reflect-loop workflow with 4 steps implementing all 6 ACs:
+
+        - Step 1: MUST search observations/inbox/tasks BEFORE identifying (ac-1)
+
+        - Step 2: Identify only high-confidence items (ac-2, ac-4 - concrete, systemic, clear
+        cause/effect)
+
+        - Step 3: Decision step evaluates against existing state - skips duplicates (ac-3), skips
+        vague items (ac-2), captures unique high-confidence (ac-4). Added skip_user_prompt: true to
+        skip user interaction (ac-5, ac-6)
+
+        - Step 4: Automatic capture without user prompts (ac-5, ac-6)
+
+
+        Workflow trigger: loop-iteration-end (for autonomous reflection in ralph loops)
+
+        Based on: @session-reflect (interactive version)
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T19:12:45.214Z
 - _ulid: 01KFR82AVZY06AVHRRYSKNHPCD
   slugs:
     - task-pr-review-loop-workflow

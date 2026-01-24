@@ -456,7 +456,57 @@ workflows:
     trigger: loop-iteration-end
     description: Autonomous reflection for loop mode. High-confidence captures only. MUST search
       existing before capturing. No user interaction.
-    steps: []
+    steps:
+      - type: action
+        content: |
+          MANDATORY FIRST STEP: Search existing state before identifying anything.
+          Run these searches in parallel:
+          - kspec meta observations list
+          - kspec inbox list
+          - kspec tasks list
+
+          This establishes baseline to prevent duplicates (ac-1, ac-3).
+      - type: action
+        content: |
+          Identify high-confidence friction points and successes.
+
+          HIGH CONFIDENCE criteria (ac-2, ac-4):
+          - Concrete and specific (not vague)
+          - Systemic/repeatable (not one-off)
+          - Clear cause and effect
+          - Agent has certainty about the pattern
+
+          LOW CONFIDENCE (DO NOT capture):
+          - Vague observations
+          - Uncertain patterns
+          - One-off issues
+          - Hypothetical problems
+
+          For each item identified, check against search results from step 1.
+      - type: decision
+        content: |
+          For each potential item, evaluate against existing state:
+
+          AC-3: If matches existing observation/inbox/task -> SKIP IT, note existing ref
+          AC-4: If unique AND high-confidence -> CAPTURE IT
+          AC-2: If vague/uncertain -> SKIP IT
+
+          Decision matrix:
+          - Duplicate of existing item -> skip, note reference
+          - Unique + high confidence -> capture
+          - Vague/uncertain -> skip silently
+        skip_user_prompt: true
+      - type: action
+        content: |
+          Capture approved items automatically (no user prompt - ac-5, ac-6):
+
+          - Systemic friction: kspec meta observe friction "..."
+          - Successful patterns: kspec meta observe success "..."
+          - Open questions: kspec meta question add "..."
+          - Actionable improvements with scope: kspec inbox add "..." --tag reflection
+
+          Only capture items that passed the evaluation in step 3.
+          Be selective - lower volume, higher quality.
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
