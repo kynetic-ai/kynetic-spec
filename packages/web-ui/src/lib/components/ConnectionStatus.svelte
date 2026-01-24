@@ -32,6 +32,8 @@
 </script>
 
 <!-- AC: @web-dashboard ac-29 -->
-<Badge {variant}>
-	{label}
-</Badge>
+<span data-testid="connection-status">
+	<Badge {variant}>
+		{label}
+	</Badge>
+</span>

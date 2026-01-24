@@ -73,7 +73,8 @@ export function isConnected(): boolean {
  */
 export function subscribe(topics: string[]): void {
 	if (!manager) {
-		throw new Error('Connection not initialized');
+		// No-op during SSR or before initialization
+		return;
 	}
 	manager.subscribe(topics);
 }
@@ -83,7 +84,8 @@ export function subscribe(topics: string[]): void {
  */
 export function unsubscribe(topics: string[]): void {
 	if (!manager) {
-		throw new Error('Connection not initialized');
+		// No-op during SSR or before initialization
+		return;
 	}
 	manager.unsubscribe(topics);
 }
@@ -94,7 +96,8 @@ export function unsubscribe(topics: string[]): void {
  */
 export function on(topic: string, handler: (event: any) => void): void {
 	if (!manager) {
-		throw new Error('Connection not initialized');
+		// No-op during SSR or before initialization
+		return;
 	}
 	manager.on(topic, handler);
 }
@@ -104,7 +107,8 @@ export function on(topic: string, handler: (event: any) => void): void {
  */
 export function off(topic: string, handler: (event: any) => void): void {
 	if (!manager) {
-		throw new Error('Connection not initialized');
+		// No-op during SSR or before initialization
+		return;
 	}
 	manager.off(topic, handler);
 }

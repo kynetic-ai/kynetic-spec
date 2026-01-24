@@ -70,7 +70,7 @@
 			<SidebarGroup>
 				<SidebarGroupLabel>Current Focus</SidebarGroupLabel>
 				<SidebarGroupContent>
-					<div class="px-4 py-2 text-sm italic text-muted-foreground">
+					<div class="px-4 py-2 text-sm italic text-muted-foreground" data-testid="session-focus">
 						{sessionContext.focus}
 					</div>
 				</SidebarGroupContent>
@@ -80,12 +80,13 @@
 		<SidebarGroup>
 			<SidebarGroupLabel>Navigation</SidebarGroupLabel>
 			<SidebarGroupContent>
-				<SidebarMenu>
+				<SidebarMenu data-testid="sidebar-nav">
 					{#each navItems as item}
 						<SidebarMenuItem>
 							<SidebarMenuButton
 								href={item.href}
 								isActive={$page.url.pathname === item.href}
+								data-testid="nav-link-{item.label.toLowerCase()}"
 							>
 								<span>{item.label}</span>
 							</SidebarMenuButton>

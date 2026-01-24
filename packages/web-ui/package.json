@@ -9,13 +9,17 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:headed": "playwright test --headed"
 	},
 	"dependencies": {
 		"@kynetic-ai/shared": "*",
 		"lucide-svelte": "^0.563.0"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.50.0",
 		"@internationalized/date": "^3.10.1",
 		"@lucide/svelte": "^0.561.0",
 		"@sveltejs/adapter-static": "^3.0.0",

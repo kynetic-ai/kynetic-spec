@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="rounded-md border">
+<div class="rounded-md border" data-testid="task-list">
 	<Table>
 		<TableHeader>
 			<TableRow>
@@ -68,6 +68,7 @@
 					{@const isUpdated = updatedTaskIds.has(task._ulid)}
 					<TableRow
 						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
+						data-testid="task-row"
 						on:click={() => selectTask(task)}
 					>
 						<TableCell class="font-medium">
