@@ -903,6 +903,22 @@ features:
             status:
               maturity: draft
               implementation: in_progress
+      - _ulid: 01KFR7JANHFZ3Y3QQMAS9H8XYE
+        slugs:
+          - loop-mode-workflows
+        title: Loop Mode Workflows
+        type: feature
+        tags: []
+        description: "Container feature for loop-specific workflow definitions. Loop workflows differ from
+          interactive workflows: no human confirmation steps, higher confidence thresholds for
+          captures, deduplication checks before creating items, error handling with continuation."
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:47:11.281Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
