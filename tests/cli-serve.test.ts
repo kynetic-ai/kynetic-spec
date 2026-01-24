@@ -7,7 +7,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createTempDir, cleanupTempDir, initGitRepo, kspec, kspecJson } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
 import { join } from 'path';
-import { readFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, unlinkSync } from 'fs';
+import { homedir } from 'os';
 
 // Check if Bun runtime is available
 let bunAvailable = false;
@@ -20,21 +21,26 @@ try {
 
 describe('kspec serve commands', () => {
   let tempDir: string;
-  let pidFilePath: string;
+  let globalPidFilePath: string;
+  let globalPortFilePath: string;
 
   beforeEach(async () => {
     tempDir = await createTempDir();
     await initGitRepo(tempDir);
-    // Create .kspec directory for daemon PID file
+    // Create .kspec directory
     mkdirSync(join(tempDir, '.kspec'), { recursive: true });
-    pidFilePath = join(tempDir, '.kspec', '.daemon.pid');
+
+    // Global PID/port files are at ~/.config/kspec/ (AC: @multi-directory-daemon ac-9)
+    const configDir = join(homedir(), '.config', 'kspec');
+    globalPidFilePath = join(configDir, 'daemon.pid');
+    globalPortFilePath = join(configDir, 'daemon.port');
   });
 
   afterEach(async () => {
     // Kill any daemon that might still be running
     try {
-      if (existsSync(pidFilePath)) {
-        const pid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
+      if (existsSync(globalPidFilePath)) {
+        const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
         if (!isNaN(pid)) {
           process.kill(pid, 'SIGTERM');
           // Give it a moment to stop
@@ -43,6 +49,14 @@ describe('kspec serve commands', () => {
       }
     } catch {
       // Ignore if process doesn't exist
+    }
+
+    // Clean up global PID/port files
+    try {
+      if (existsSync(globalPidFilePath)) unlinkSync(globalPidFilePath);
+      if (existsSync(globalPortFilePath)) unlinkSync(globalPortFilePath);
+    } catch {
+      // Ignore cleanup errors
     }
 
     await cleanupTempDir(tempDir);
@@ -118,9 +132,9 @@ describe('kspec serve commands', () => {
     expect(result.stdout).toContain(`port ${port}`);
 
     // PID file should exist
-    expect(existsSync(pidFilePath)).toBe(true);
+    expect(existsSync(globalPidFilePath)).toBe(true);
 
-    const pid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
+    const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
     expect(pid).toBeGreaterThan(0);
 
     // Process should be running
@@ -172,7 +186,7 @@ describe('kspec serve commands', () => {
       tempDir
     );
 
-    const pid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
+    const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
 
     // Stop daemon
     const result = kspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
@@ -215,7 +229,7 @@ describe('kspec serve commands', () => {
       tempDir
     );
 
-    const pid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
+    const pid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
 
     // Check status with --json flag
     const result = kspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
@@ -246,7 +260,7 @@ describe('kspec serve commands', () => {
       tempDir
     );
 
-    const originalPid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
+    const originalPid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
 
     // Restart
     const result = kspec(`serve restart --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
@@ -255,7 +269,7 @@ describe('kspec serve commands', () => {
     expect(result.stdout).toContain('Starting daemon');
 
     // Should have new PID
-    const newPid = parseInt(readFileSync(pidFilePath, 'utf-8').trim(), 10);
+    const newPid = parseInt(readFileSync(globalPidFilePath, 'utf-8').trim(), 10);
     expect(newPid).not.toBe(originalPid);
 
     // New process should be running

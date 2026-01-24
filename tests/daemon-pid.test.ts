@@ -1,90 +1,91 @@
 /**
  * Tests for PID File Management
  *
- * AC: @daemon-server ac-9, ac-10
+ * AC: @multi-directory-daemon ac-9, ac-10, ac-11
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { PidFileManager } from '../packages/daemon/src/pid';
 import { createTempDir, cleanupTempDir } from './helpers/cli';
-import { writeFileSync, existsSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 describe('PID File Management', () => {
-  let tempDir: string;
+  let tempConfigDir: string;
 
   beforeEach(async () => {
-    tempDir = await createTempDir();
+    tempConfigDir = await createTempDir();
   });
 
   afterEach(async () => {
-    await cleanupTempDir(tempDir);
+    await cleanupTempDir(tempConfigDir);
   });
 
-  // AC: @daemon-server ac-9
+  // AC: @multi-directory-daemon ac-9
   it('should write current process PID to file', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
-    pidManager.write();
+    pidManager.writePid();
 
-    const pidFilePath = join(tempDir, '.daemon.pid');
+    const pidFilePath = join(tempConfigDir, 'daemon.pid');
     expect(existsSync(pidFilePath)).toBe(true);
 
     const content = require('fs').readFileSync(pidFilePath, 'utf-8').trim();
     expect(content).toBe(process.pid.toString());
   });
 
-  // AC: @daemon-server ac-9
+  // AC: @multi-directory-daemon ac-9
   it('should read PID from file', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
-    pidManager.write();
-    const pid = pidManager.read();
+    pidManager.writePid();
+    const pid = pidManager.readPid();
 
     expect(pid).toBe(process.pid);
   });
 
-  // AC: @daemon-server ac-9
+  // AC: @multi-directory-daemon ac-9
   it('should return null when PID file does not exist', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
-    const pid = pidManager.read();
+    const pid = pidManager.readPid();
 
     expect(pid).toBeNull();
   });
 
-  // AC: @daemon-server ac-9
+  // AC: @multi-directory-daemon ac-9
   it('should return null when PID file contains invalid content', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
-    writeFileSync(join(tempDir, '.daemon.pid'), 'not-a-number', 'utf-8');
+    mkdirSync(tempConfigDir, { recursive: true });
+    writeFileSync(join(tempConfigDir, 'daemon.pid'), 'not-a-number', 'utf-8');
 
-    const pid = pidManager.read();
+    const pid = pidManager.readPid();
 
     expect(pid).toBeNull();
   });
 
-  // AC: @daemon-server ac-10
+  // AC: @multi-directory-daemon ac-11
   it('should remove PID file', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
-    pidManager.write();
-    expect(existsSync(join(tempDir, '.daemon.pid'))).toBe(true);
+    pidManager.writePid();
+    expect(existsSync(join(tempConfigDir, 'daemon.pid'))).toBe(true);
 
     pidManager.remove();
-    expect(existsSync(join(tempDir, '.daemon.pid'))).toBe(false);
+    expect(existsSync(join(tempConfigDir, 'daemon.pid'))).toBe(false);
   });
 
-  // AC: @daemon-server ac-10
+  // AC: @multi-directory-daemon ac-11
   it('should not throw when removing non-existent PID file', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
     expect(() => pidManager.remove()).not.toThrow();
   });
 
-  // AC: @daemon-server ac-9
+  // AC: @multi-directory-daemon ac-10
   it('should detect running process', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
     // Current process should be running
     const isRunning = pidManager.isProcessRunning(process.pid);
@@ -92,9 +93,9 @@ describe('PID File Management', () => {
     expect(isRunning).toBe(true);
   });
 
-  // AC: @daemon-server ac-10
+  // AC: @multi-directory-daemon ac-10
   it('should detect non-running process', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
     // Use a PID that's unlikely to exist (very high number)
     const isRunning = pidManager.isProcessRunning(999999);
@@ -102,27 +103,28 @@ describe('PID File Management', () => {
     expect(isRunning).toBe(false);
   });
 
-  // AC: @daemon-server ac-9
+  // AC: @multi-directory-daemon ac-10
   it('should detect daemon running based on PID file', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
-    pidManager.write();
+    pidManager.writePid();
     expect(pidManager.isDaemonRunning()).toBe(true);
   });
 
-  // AC: @daemon-server ac-10
+  // AC: @multi-directory-daemon ac-10
   it('should detect daemon not running when PID file absent', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
     expect(pidManager.isDaemonRunning()).toBe(false);
   });
 
-  // AC: @daemon-server ac-10
+  // AC: @multi-directory-daemon ac-10
   it('should detect daemon not running when PID file stale', () => {
-    const pidManager = new PidFileManager(tempDir);
+    const pidManager = new PidFileManager(tempConfigDir);
 
+    mkdirSync(tempConfigDir, { recursive: true });
     // Write a PID that doesn't exist
-    writeFileSync(join(tempDir, '.daemon.pid'), '999999', 'utf-8');
+    writeFileSync(join(tempConfigDir, 'daemon.pid'), '999999', 'utf-8');
 
     expect(pidManager.isDaemonRunning()).toBe(false);
   });

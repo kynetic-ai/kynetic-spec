@@ -4,8 +4,8 @@
  */
 
 import type { Command } from 'commander';
-import { spawn, spawnSync, execSync } from 'child_process';
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
+import { spawn, execSync } from 'child_process';
+import { existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { error, info, output, success, warn, isJsonMode } from '../output.js';
@@ -28,32 +28,6 @@ function isBunAvailable(): boolean {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-/**
- * Reads the daemon port from config file
- */
-function readDaemonPort(kspecDir: string): string | null {
-  const portFile = join(kspecDir, '.daemon.port');
-  try {
-    if (existsSync(portFile)) {
-      return readFileSync(portFile, 'utf-8').trim();
-    }
-  } catch {
-    // Ignore read errors
-  }
-  return null;
-}
-
-/**
- * Writes the daemon port to config file
- */
-function writeDaemonPort(kspecDir: string, port: string): void {
-  const portFile = join(kspecDir, '.daemon.port');
-  try {
-    writeFileSync(portFile, port, 'utf-8');
-  } catch {
-    // Ignore write errors - not critical
-  }
-}
 
 /**
  * Register serve commands
@@ -168,15 +142,16 @@ async function startServer(opts: {
     process.exit(EXIT_CODES.VALIDATION_FAILED);
   }
 
-  const pidManager = new PidFileManager(opts.kspecDir);
+  const pidManager = new PidFileManager();
 
   // Check if already running
   if (pidManager.isDaemonRunning()) {
-    const pid = pidManager.read();
+    const pid = pidManager.readPid();
+    const existingPort = pidManager.readPort();
     if (isJsonMode()) {
-      output({ running: true, pid, message: 'Daemon already running' });
+      output({ running: true, pid, port: existingPort, message: 'Daemon already running' });
     } else {
-      warn(`Daemon already running with PID ${pid}`);
+      warn(`Daemon already running on port ${existingPort}`);
     }
     process.exit(EXIT_CODES.SUCCESS);
   }
@@ -210,9 +185,6 @@ async function startServer(opts: {
 
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.daemon) {
-    // Write port config for restart persistence (AC: @cli-serve-commands ac-7)
-    writeDaemonPort(opts.kspecDir, opts.port);
-
     const runtime = 'bun';
 
     // Spawn detached process
@@ -231,7 +203,7 @@ async function startServer(opts: {
     let pid: number | null = null;
 
     while (Date.now() - startTime < maxWait) {
-      pid = pidManager.read();
+      pid = pidManager.readPid();
       if (pid && pidManager.isDaemonRunning()) {
         break;
       }
@@ -299,7 +271,7 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
   if (isJsonMode()) {
   }
 
-  const pidManager = new PidFileManager(opts.kspecDir);
+  const pidManager = new PidFileManager();
 
   if (!pidManager.isDaemonRunning()) {
     // AC: @cli-serve-commands ac-5
@@ -312,7 +284,7 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
     process.exit(EXIT_CODES.SUCCESS);
   }
 
-  const pid = pidManager.read();
+  const pid = pidManager.readPid();
   if (!pid) {
     if (isJsonMode()) {
       output({ error: 'Failed to read PID file' });
@@ -373,18 +345,26 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
   if (isJsonMode()) {
   }
 
-  const pidManager = new PidFileManager(opts.kspecDir);
+  const pidManager = new PidFileManager();
   const running = pidManager.isDaemonRunning();
-  const pid = pidManager.read();
+  const pid = pidManager.readPid();
 
-  // Read port from config (AC: @cli-serve-commands ac-6)
-  const port = readDaemonPort(opts.kspecDir);
+  // Read port from global config (AC: @multi-directory-daemon ac-13)
+  let port: number | null = null;
+  if (running) {
+    try {
+      port = pidManager.readPort();
+    } catch {
+      // Port file might not exist or be invalid
+      port = null;
+    }
+  }
 
   // TODO: Fetch uptime, connections from health endpoint when implemented
   const status = {
     running,
     pid: pid ?? null,
-    port: port ? parseInt(port, 10) : null,
+    port,
     uptime: null, // TODO: fetch from health endpoint
     connections: null, // TODO: fetch from health endpoint
   };
@@ -411,10 +391,15 @@ async function restartServer(opts: { kspecDir: string; json?: boolean }): Promis
   if (isJsonMode()) {
   }
 
-  const pidManager = new PidFileManager(opts.kspecDir);
+  const pidManager = new PidFileManager();
 
   // AC: @cli-serve-commands ac-7 - preserve port across restarts
-  let port = readDaemonPort(opts.kspecDir) || '3456'; // use saved port or default
+  let port = '3456'; // default port
+  try {
+    port = pidManager.readPort().toString();
+  } catch {
+    // Port file doesn't exist or is invalid, use default
+  }
 
   if (pidManager.isDaemonRunning()) {
     if (!isJsonMode()) {

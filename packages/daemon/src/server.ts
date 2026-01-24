@@ -138,13 +138,15 @@ export async function createServer(options: ServerOptions) {
     console.log('[daemon] Build the web UI with: cd packages/web-ui && npm run build');
   }
 
-  // Initialize PID file manager
-  const pidManager = new PidFileManager(kspecDir);
+  // Initialize PID file manager (uses global ~/.config/kspec/)
+  const pidManager = new PidFileManager();
 
-  // AC: @daemon-server ac-9 - Write PID file in daemon mode
+  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode
   if (isDaemon) {
-    pidManager.write();
+    pidManager.writePid();
+    pidManager.writePort(port);
     console.log(`[daemon] PID file written: ${process.pid}`);
+    console.log(`[daemon] Port file written: ${port}`);
   }
 
   // Initialize WebSocket managers
