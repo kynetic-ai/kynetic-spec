@@ -950,6 +950,11 @@ features:
             traits: []
             notes: []
             created: 2026-01-24T14:48:12.871Z
+            acceptance_criteria:
+              - id: ac-1
+                given: eligible tasks with in_progress status exist
+                when: agent selects next task
+                then: in_progress tasks selected first regardless of priority
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
