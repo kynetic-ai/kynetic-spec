@@ -32419,6 +32419,7 @@
         The 10-second timeout test may need increased test timeout in Playwright config.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
   slugs: []
   title: E2E Observations Panel Tests
