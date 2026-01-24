@@ -33647,7 +33647,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
-  slugs: []
+  slugs:
+    - task-context-manager-impl
   title: ProjectContextManager implementation
   type: task
   description: >-
