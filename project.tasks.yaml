@@ -34439,6 +34439,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #211"
   depends_on:
     - "@task-workflow-definitions"
   context: []
@@ -34448,6 +34449,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:55:54.789Z
   started_at: 2026-01-24T15:46:38.912Z
+  completed_at: 2026-01-24T16:20:51.204Z
   notes:
     - _ulid: 01KFR829X500Q1X37MDZ6FBSVZ
       created_at: 2026-01-24T14:55:54.789Z
@@ -34508,8 +34510,6 @@
            - Uses testUlid() helper for valid ULIDs
       supersedes: null
   todos: []
-  completed_at: 2026-01-24T16:20:51.204Z
-  closed_reason: "Merged in PR #211"
 - _ulid: 01KFR82A8E7QV8DQZX74FXF16E
   slugs:
     - task-task-work-loop-workflow
@@ -34517,7 +34517,7 @@
   type: task
   spec_ref: "@task-work-loop-workflow"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-loop-mode-workflows"
@@ -34582,6 +34582,7 @@
         triggers sequential subagent spawn."
       supersedes: null
   todos: []
+  started_at: 2026-01-24T16:43:17.430Z
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
     - task-session-reflect-loop-workflow
