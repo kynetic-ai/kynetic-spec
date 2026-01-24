@@ -37115,6 +37115,13 @@
 
         Next iteration should continue the @pr-review-merge workflow once CI completes.
       supersedes: null
+    - _ulid: 01KFS5HRZ6YZ4FK8R6P1WNR709
+      created_at: 2026-01-24T23:31:10.439Z
+      author: "@claude"
+      content: Added AC-4 test coverage per local review feedback. Test validates that Ralph does NOT
+        parse skill invocations from agent output - skills are invoked by the agent itself via Skill
+        tool, not detected by Ralph. All 40 ralph tests passing.
+      supersedes: null
   todos: []
 - _ulid: 01KFR834PPNNABA5RCSC4A34QT
   slugs:
