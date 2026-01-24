@@ -34535,16 +34535,22 @@
         processes one at a time, oldest (by started_at) first
       supersedes: null
   todos: []
-- title: "Implement: Session Reflect Loop Workflow"
+- _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
+  slugs:
+    - task-session-reflect-loop-workflow
+  title: "Implement: Session Reflect Loop Workflow"
   type: task
   spec_ref: "@session-reflect-loop-workflow"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-session-reflect-loop-workflow
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-loop-mode-workflows"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:55:55.490Z
   notes:
     - _ulid: 01KFR82AK21EPGCX8FJF092G9X
       created_at: 2026-01-24T14:55:55.490Z
@@ -34578,10 +34584,66 @@
         - ac-6: Given workflow completes, when user interaction, then user NOT asked to confirm
         captures
       supersedes: null
-  _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
+  todos: []
+- title: "Implement: PR Review Loop Workflow"
+  type: task
+  spec_ref: "@pr-review-loop-workflow"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-pr-review-loop-workflow
+  tags: []
+  depends_on:
+    - "@task-loop-mode-workflows"
+  notes:
+    - _ulid: 01KFR82AVZ2SW79N0X4ZH4RTTX
+      created_at: 2026-01-24T14:55:55.775Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Workflow for PR review subagent (ACP subprocess). Single purpose: get PR merged with quality
+        gates (AC coverage + spec alignment). Runs sequentially (ralph waits) because: clear log
+        output, main workflow consistency, dependent tasks must wait for PR merge.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given PR exists for pending_review task, when subagent starts, then runs
+        @local-review workflow first
+
+        - ac-2: Given local-review runs, when subagent verifies, then all spec ACs linked to task
+        have test coverage
+
+        - ac-3: Given tests pass, when subagent verifies, then implementation matches spec
+        requirements (not just tests)
+
+        - ac-4: Given quality check finds MUST-FIX issues, when subagent evaluates, then attempts to
+        fix issues in-place
+
+        - ac-5: Given changes are pushed, when subagent proceeds, then waits for CI to pass before
+        merge
+
+        - ac-6: Given all checks pass, when subagent merges, then follows @pr-review-merge gates
+
+        - ac-7: Given PR is merged, when subagent finishes, then marks task completed with PR
+        reference in note
+
+        - ac-8: Given issues cannot be resolved, when subagent evaluates, then marks task
+        automation: needs_review with explanation
+
+        - ac-9: Given subagent crashes or times out, when ralph detects failure, then task marked
+        automation: needs_review with subagent failure note
+
+        - ac-10: Given subagent spawned, when ralph behavior, then ralph waits for subagent
+        completion before continuing
+      supersedes: null
+  _ulid: 01KFR82AVZY06AVHRRYSKNHPCD
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:55:55.490Z
+  created_at: 2026-01-24T14:55:55.775Z
   todos: []
