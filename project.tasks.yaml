@@ -34103,7 +34103,10 @@
   created_at: 2026-01-24T06:18:43.336Z
   notes: []
   todos: []
-- title: /api/projects endpoints implementation
+- _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
+  slugs: []
+  title: /api/projects endpoints implementation
+  type: task
   description: |-
     Implement /api/projects endpoints for project management.
 
@@ -34122,21 +34125,51 @@
     ## Dependencies
     - Task: ProjectContextManager implementation
     - Task: /api/projects endpoint tests (tests first)
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - api
     - phase-7
-  _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:54.200Z
+  notes: []
+  todos: []
+- title: CLI serve status tests
+  description: |-
+    Write tests for updated CLI serve status command.
+
+    ## Test Cases
+    - Test status shows registered projects list
+    - Test status shows port and uptime
+    - Test status with no daemon running
+    - Test status when daemon has multiple projects
+
+    ## AC Coverage
+    ac-12
+
+    ## Dependencies
+    Task: /api/projects endpoints implementation
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - cli
+    - phase-8
+  _ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:18:54.200Z
+  created_at: 2026-01-24T06:19:03.995Z
   notes: []
   todos: []
