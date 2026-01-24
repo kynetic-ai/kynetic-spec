@@ -35826,6 +35826,36 @@
         2. Whether I should implement the component + tests together, or just document expected
         behavior tests
       supersedes: null
+    - _ulid: 01KFS395AKQWYAQDG8SW1AAJNH
+      created_at: 2026-01-24T22:51:31.028Z
+      author: "@claude"
+      content: >-
+        Decision: Writing documentary E2E tests for project selector
+
+
+        The web UI project selector component hasn't been implemented yet, so I'll write Playwright
+        E2E tests that:
+
+        1. Document expected behavior per AC-25, AC-26, AC-27
+
+        2. Skip/mark as pending until component is implemented
+
+        3. Provide clear test structure for future implementation
+
+
+        Test approach:
+
+        - Create project-selector.spec.ts with Playwright tests
+
+        - Use test.skip() to mark as pending implementation
+
+        - Add comprehensive test coverage for all 3 ACs
+
+        - Follow existing E2E test patterns from smoke.spec.ts
+
+
+        This follows the documentary test pattern seen elsewhere in the codebase.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
