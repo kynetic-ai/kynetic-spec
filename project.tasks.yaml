@@ -35782,7 +35782,7 @@
     Task: /api/projects endpoints implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -35913,6 +35913,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T23:06:09.731Z
+  closed_reason: "Merged in PR #229. Created 10 comprehensive documentary E2E tests for web UI project
+    selector covering AC-25 (selector visibility), AC-26 (X-Kspec-Dir header), and AC-27 (data
+    reload). All tests use test.skip() pending ProjectSelector component implementation. Fixed race
+    conditions and flaky assertions identified in Greptile review. All CI checks passing."
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
   slugs:
     - task-ui-selector-impl
