@@ -34542,6 +34542,14 @@
         - ac-10: Given multiple pending_review tasks exist, when agent handles pending_review, then
         processes one at a time, oldest (by started_at) first
       supersedes: null
+    - _ulid: 01KFR84CBHR52KZSE8ZAJ4F1BD
+      created_at: 2026-01-24T14:57:02.833Z
+      author: "@claude"
+      content: "Implementation notes: 10 ACs covering task selection order (in_progress > pending_review >
+        unblocking > priority), eligible-only filter, skip-verify, no-confirm, edge cases
+        (no-eligible, all-blocked, multi-pending). based_on: @task-work-session. Key: pending_review
+        triggers sequential subagent spawn."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
