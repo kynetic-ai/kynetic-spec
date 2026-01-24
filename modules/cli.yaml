@@ -2466,6 +2466,10 @@ features:
             given: agent output received
             when: ralph processes output
             then: ralph does NOT parse or detect skill invocation patterns
+          - id: ac-5
+            given: iteration begins
+            when: agent follows prompt
+            then: invokes /task-work loop
       - _ulid: 01KFR7T8HYW22JJQ1KNPZ17Q51
         slugs:
           - ralph-subagent-spawning
