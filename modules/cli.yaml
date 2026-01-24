@@ -2519,6 +2519,10 @@ features:
             given: multiple pending_review tasks
             when: spawning
             then: processes one at a time sequentially
+          - id: ac-7
+            given: subagent runs
+            when: resource management
+            then: respects ralph's --max-retries and failure limits
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
