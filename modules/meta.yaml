@@ -1013,6 +1013,10 @@ features:
                 given: agent identifies friction point
                 when: before capturing
                 then: agent MUST search observations, inbox, tasks for duplicates
+              - id: ac-2
+                given: friction is vague or uncertain
+                when: agent evaluates
+                then: item NOT captured
           - _ulid: 01KFR7MEGS6K4AXRJD6JAN7GQH
             slugs:
               - pr-review-loop-workflow
