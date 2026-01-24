@@ -33946,10 +33946,48 @@
     - phase-2
   vcs_refs: []
   created_at: 2026-01-24T06:16:32.621Z
-  notes: []
+  started_at: 2026-01-24T18:52:49.102Z
+  notes:
+    - _ulid: 01KFRP6ABAR6P1NT8Y6X984S2G
+      created_at: 2026-01-24T19:02:46.378Z
+      author: "@claude"
+      content: >-
+        Implemented global PID/port file management for multi-directory daemon architecture.
+
+
+        Changes:
+
+        - Updated PidFileManager in both packages/daemon/src/pid.ts and src/cli/pid-utils.ts to use
+        ~/.config/kspec/ instead of .kspec/
+
+        - Added writePort() and readPort() methods with port validation (1-65535)
+
+        - Added ensureConfigDir() to create config directory with mode 0755
+
+        - Updated serve.ts command to use new PidFileManager methods
+
+        - Updated daemon server.ts to write both PID and port files on startup
+
+        - Updated test files (daemon-pid.test.ts, cli-serve.test.ts) to use global location
+
+        - Added backward compatibility methods (read/write) that map to readPid/writePid
+
+
+        Test coverage:
+
+        - All 30 tests in daemon-global-pid-port.test.ts pass
+
+        - All 11 tests in daemon-pid.test.ts pass
+
+        - All 28 tests in cli-serve.test.ts pass
+
+        - Total: 1325 passing tests (only 1 pre-existing failure in daemon-executable.test.ts)
+
+
+        Covered ACs: ac-9, ac-9b, ac-9c, ac-10, ac-11, ac-13
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T18:52:49.102Z
 - _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
   slugs:
     - task-context-manager-impl
