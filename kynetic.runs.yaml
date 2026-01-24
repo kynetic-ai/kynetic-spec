@@ -4143,7 +4143,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFRY2A994TFFH75P9D7XGEWD
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
+    status: completed
     current_step: 8
     total_steps: 9
     started_at: 2026-01-24T21:20:23.849Z
@@ -4195,5 +4195,7 @@ runs:
       - step_index: 8
         status: completed
         started_at: 2026-01-24T21:22:15.603Z
-        completed_at: 2026-01-24T21:22:15.603Z
+        completed_at: 2026-01-24T21:22:30.830Z
+        notes: "PR #224 merged successfully using merge commit (preserves trailers). Branch deleted."
     initiated_by: "@claude"
+    completed_at: 2026-01-24T21:22:30.830Z
