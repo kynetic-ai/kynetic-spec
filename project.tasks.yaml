@@ -33541,10 +33541,31 @@
     - phase-1
   vcs_refs: []
   created_at: 2026-01-24T06:15:59.745Z
-  notes: []
+  started_at: 2026-01-24T17:52:07.682Z
+  notes:
+    - _ulid: 01KFRJAGPXGJH2Y9GK0JNTANS0
+      created_at: 2026-01-24T17:55:09.661Z
+      author: "@claude"
+      content: |-
+        Created multi-directory daemon test fixtures:
+        - tests/fixtures/multi-dir/ directory structure
+        - project-a: Valid kspec project with sample task (pending, P1) and spec (requirement)
+        - project-b: Valid kspec project with sample task (in_progress, P2) and spec (feature)
+        - project-invalid: Directory without .kspec/ for error handling tests (AC-5)
+        - README.md: Comprehensive documentation of fixture structure and usage
+        - Added setupMultiDirFixtures() helper to tests/helpers/cli.ts
+
+        Fixtures support testing all 38 ACs from @multi-directory-daemon including:
+        - Multi-project daemon operation (AC-1, AC-2, AC-4)
+        - Path validation (AC-5, AC-6, AC-7, AC-8, AC-8c)
+        - Project isolation (AC-17, AC-18, AC-24)
+        - WebSocket scoping (AC-21, AC-22, AC-23)
+        - API endpoints (AC-28, AC-29, AC-30)
+
+        Next: Implementation tasks can use these fixtures for E2E/integration tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T17:52:07.682Z
 - _ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
   slugs:
     - task-pid-port-tests
