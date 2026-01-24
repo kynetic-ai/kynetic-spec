@@ -34481,6 +34481,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #224. Successfully migrated all API routes (tasks, items, inbox, meta,
+    validation) to use request-scoped projectContext from middleware instead of closure-scoped
+    kspecDir. All 17 route handlers now derive kspecDir from projectContext.path. Covers AC-1, AC-2,
+    AC-3, AC-24 from @multi-directory-daemon spec. All route migration tests passing (watcher test
+    failures are pre-existing CI environment issues)."
   depends_on:
     - "@01KFQACE"
     - "@01KFQACQ"
@@ -34493,6 +34498,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:17:31.376Z
   started_at: 2026-01-24T21:06:05.617Z
+  completed_at: 2026-01-24T21:22:47.028Z
   notes:
     - _ulid: 01KFRXE8FFHZ0HQTRC7DNYPXKJ
       created_at: 2026-01-24T21:09:26.639Z
@@ -34579,12 +34585,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T21:22:47.028Z
-  closed_reason: "Merged in PR #224. Successfully migrated all API routes (tasks, items, inbox, meta,
-    validation) to use request-scoped projectContext from middleware instead of closure-scoped
-    kspecDir. All 17 route handlers now derive kspecDir from projectContext.path. Covers AC-1, AC-2,
-    AC-3, AC-24 from @multi-directory-daemon spec. All route migration tests passing (watcher test
-    failures are pre-existing CI environment issues)."
 - _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
   slugs:
     - task-ws-binding-tests
@@ -34742,7 +34742,7 @@
     - Task: WebSocket connection binding tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -34758,6 +34758,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T21:23:44.972Z
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
   slugs:
     - task-broadcast-filter-tests
