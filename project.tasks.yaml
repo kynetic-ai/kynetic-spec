@@ -34911,16 +34911,22 @@
         blocked, exception, or agent reports cannot complete
       supersedes: null
   todos: []
-- title: "Implement: Ralph Skill Delegation"
+- _ulid: 01KFR830Q7FH07WJJGDX7KGB01
+  slugs:
+    - task-ralph-skill-delegation
+  title: "Implement: Ralph Skill Delegation"
   type: task
   spec_ref: "@ralph-skill-delegation"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-ralph-skill-delegation
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-24T14:56:18.151Z
   notes:
     - _ulid: 01KFR830Q77F54SJRQF9Z2D638
       created_at: 2026-01-24T14:56:18.151Z
@@ -34955,10 +34961,58 @@
 
         - ac-7: Given iteration ends, when agent follows prompt, then invokes /reflect loop
       supersedes: null
-  _ulid: 01KFR830Q7FH07WJJGDX7KGB01
+  todos: []
+- title: "Implement: Ralph Subagent Spawning"
+  type: task
+  spec_ref: "@ralph-subagent-spawning"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-ralph-subagent-spawning
+  tags: []
+  depends_on:
+    - "@task-ralph-command-automated-task-loop"
+  notes:
+    - _ulid: 01KFR834PN2051ERSW65X2443X
+      created_at: 2026-01-24T14:56:22.230Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Ralph can spawn ACP subagents for dedicated tasks (e.g., PR review). Subagents are separate
+        Claude Code processes with focused prompts. Subagents run sequentially (ralph waits for
+        completion).
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given ralph needs subagent, when spawn initiated, then new ACP process started with
+        dedicated prompt
+
+        - ac-2: Given subagent spawned, when prompt provided, then prompt includes task ref, skill
+        to invoke (/pr-review @task), and context
+
+        - ac-3: Given subagent running, when ralph behavior, then ralph waits for subagent
+        completion before continuing
+
+        - ac-4: Given subagent runs, when display, then subagent output rendered same as main agent
+        (single stream)
+
+        - ac-5: Given subagent completes, when signaling, then task status change
+        (completed/needs_review) indicates outcome
+
+        - ac-6: Given multiple pending_review tasks, when spawning, then processes one at a time
+        sequentially
+
+        - ac-7: Given subagent runs, when resource management, then respects ralph's --max-retries
+        and failure limits
+      supersedes: null
+  _ulid: 01KFR834PPNNABA5RCSC4A34QT
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T14:56:18.151Z
+  created_at: 2026-01-24T14:56:22.230Z
   todos: []
