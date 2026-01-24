@@ -2899,6 +2899,10 @@ features:
             given: task fails
             when: note added
             then: note includes [LOOP-FAIL:N] where N = previous count + 1
+          - id: ac-4
+            given: task has prior [LOOP-FAIL:N] notes
+            when: new failure occurs
+            then: N is parsed from latest note and incremented
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
