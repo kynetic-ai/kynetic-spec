@@ -33696,7 +33696,10 @@
   created_at: 2026-01-24T06:16:56.435Z
   notes: []
   todos: []
-- title: X-Kspec-Dir middleware implementation
+- _ulid: 01KFQACE936G0SDG0F3DQD8V89
+  slugs: []
+  title: X-Kspec-Dir middleware implementation
+  type: task
   description: |-
     Implement X-Kspec-Dir header middleware for project context resolution.
 
@@ -33720,21 +33723,49 @@
     ## Dependencies
     - Task: ProjectContextManager implementation
     - Task: Path validation middleware tests (tests first)
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - middleware
     - phase-3
-  _ulid: 01KFQACE936G0SDG0F3DQD8V89
+  vcs_refs: []
+  created_at: 2026-01-24T06:17:09.667Z
+  notes: []
+  todos: []
+- title: API routes multi-project tests
+  description: |-
+    Write tests for multi-project API route behavior.
+
+    ## Test Cases
+    - Test each endpoint respects X-Kspec-Dir header
+    - Test cross-project isolation (no data leakage between projects)
+    - Test default project fallback when no header provided
+
+    ## AC Coverage
+    ac-24
+
+    ## Dependencies
+    Task: X-Kspec-Dir middleware implementation
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - phase-4
+  _ulid: 01KFQACQ7MWQ9XAGC8FRP7GRTK
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:17:09.667Z
+  created_at: 2026-01-24T06:17:18.836Z
   notes: []
   todos: []
