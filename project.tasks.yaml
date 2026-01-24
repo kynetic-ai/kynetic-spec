@@ -35002,6 +35002,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #226. Added 9 comprehensive unit tests for PubSubManager.broadcast()
+    filtering logic covering ac-18. Tests validate project-scoped broadcast filtering, multi-project
+    isolation, subscription + project filtering, legacy connection handling, message structure, and
+    sequence incrementing. All new tests passing. CI failures are pre-existing watcher test issues
+    unrelated to this PR."
   depends_on:
     - "@01KFQADQ"
   context: []
@@ -35013,6 +35018,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:18:01.549Z
   started_at: 2026-01-24T21:48:30.496Z
+  completed_at: 2026-01-24T21:55:50.636Z
   notes:
     - _ulid: 01KFRZPMH3CQZ42Z4Y304QG8BJ
       created_at: 2026-01-24T21:48:58.275Z
@@ -35074,12 +35080,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-24T21:55:50.636Z
-  closed_reason: "Merged in PR #226. Added 9 comprehensive unit tests for PubSubManager.broadcast()
-    filtering logic covering ac-18. Tests validate project-scoped broadcast filtering, multi-project
-    isolation, subscription + project filtering, legacy connection handling, message structure, and
-    sequence incrementing. All new tests passing. CI failures are pre-existing watcher test issues
-    unrelated to this PR."
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   slugs:
     - task-broadcast-filter-impl
@@ -35118,7 +35118,7 @@
     - Task: Per-project broadcast filtering tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQADQ"
@@ -35134,6 +35134,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T21:59:11.032Z
 - _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
   slugs:
     - task-watcher-tests
