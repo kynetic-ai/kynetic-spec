@@ -2855,6 +2855,10 @@ features:
             given: /pr-review @task-ref invoked
             when: skill executes
             then: starts @pr-review-loop-workflow
+          - id: ac-2
+            given: skill invoked without task ref
+            when: skill validates
+            then: errors with task reference required
       - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
         slugs:
           - loop-mode-error-handling
