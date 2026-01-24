@@ -2499,6 +2499,10 @@ features:
             given: ralph needs subagent
             when: spawn initiated
             then: new ACP process started with dedicated prompt
+          - id: ac-2
+            given: subagent spawned
+            when: prompt provided
+            then: prompt includes task ref, skill to invoke (/pr-review @task), and context
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
