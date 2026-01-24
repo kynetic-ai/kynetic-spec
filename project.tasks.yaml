@@ -34311,10 +34311,42 @@
     - phase-4
   vcs_refs: []
   created_at: 2026-01-24T06:17:18.836Z
-  notes: []
+  started_at: 2026-01-24T19:46:58.241Z
+  notes:
+    - _ulid: 01KFRRR7T0DJR4JTK9ZXM3DTA3
+      created_at: 2026-01-24T19:47:30.752Z
+      author: "@claude"
+      content: >-
+        Task scope: Add multi-project tests to existing daemon API test files. Current tests are
+        static (grep-style) - need to add multi-project scenarios verifying ac-24 (data scoping). 
+
+
+        Key ACs to cover:
+
+        - ac-24: Response data scoped to request's project (no cross-project leakage)
+
+        - Test with X-Kspec-Dir header for different projects
+
+        - Verify each API route respects project context
+
+
+        Existing test files to extend:
+
+        - tests/daemon-api-tasks.test.ts
+
+        - tests/daemon-api-items.test.ts  
+
+        - tests/daemon-api-inbox.test.ts
+
+        - tests/daemon-api-meta.test.ts
+
+        - tests/daemon-api-validation.test.ts
+
+
+        Approach: Add static tests that verify routes use projectContext from middleware state.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T19:46:58.241Z
 - _ulid: 01KFQAD3FG4A0VWX0R063G3FWX
   slugs:
     - task-routes-migration
