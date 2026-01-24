@@ -2718,6 +2718,21 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:00.111Z
+      - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
+        slugs:
+          - task-work-loop-skill
+        title: Task Work Loop Skill
+        type: requirement
+        tags: []
+        description: Skill definition for /task-work loop. Invokes @task-work-loop-workflow for loop mode
+          behavior.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:04.063Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
