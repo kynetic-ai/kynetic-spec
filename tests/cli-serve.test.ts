@@ -245,6 +245,122 @@ describe('kspec serve commands', () => {
     kspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
   });
 
+  // AC: @multi-directory-daemon ac-12
+  it('should show registered projects with paths in status output', async () => {
+    if (!bunAvailable) {
+      console.log('  ⊘ Skipping test - Bun runtime required');
+      return;
+    }
+
+    const port = 3500 + Math.floor(Math.random() * 100);
+
+    // Start daemon
+    kspec(
+      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir
+    );
+
+    // Wait for daemon to fully start
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Register a project via API
+    const testProjectPath = tempDir;
+    await fetch(`http://localhost:${port}/api/projects`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: testProjectPath }),
+    });
+
+    // Check status - should list registered projects
+    const result = kspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+
+    // Human-readable output should mention projects
+    expect(result.stdout).toContain('Registered projects');
+    expect(result.stdout).toContain(testProjectPath);
+    expect(result.stdout).toContain('watcher:');
+
+    // Cleanup
+    kspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+  });
+
+  // AC: @multi-directory-daemon ac-12
+  it('should include projects list in JSON status output', async () => {
+    if (!bunAvailable) {
+      console.log('  ⊘ Skipping test - Bun runtime required');
+      return;
+    }
+
+    const port = 3500 + Math.floor(Math.random() * 100);
+
+    // Start daemon
+    kspec(
+      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir
+    );
+
+    // Wait for daemon to fully start
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Register a project via API
+    const testProjectPath = tempDir;
+    await fetch(`http://localhost:${port}/api/projects`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: testProjectPath }),
+    });
+
+    // Check status with --json
+    const result = kspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+
+    const status = JSON.parse(result.stdout);
+    expect(status).toHaveProperty('projects');
+    expect(status.projects).toBeInstanceOf(Array);
+    expect(status.projects.length).toBeGreaterThan(0);
+
+    // Verify project details
+    const project = status.projects.find((p: any) => p.path === testProjectPath);
+    expect(project).toBeDefined();
+    expect(project).toHaveProperty('path', testProjectPath);
+    expect(project).toHaveProperty('registeredAt');
+    expect(project).toHaveProperty('watcherStatus');
+
+    // Cleanup
+    kspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+  });
+
+  // AC: @multi-directory-daemon ac-12
+  it('should show "No projects registered" when no projects exist', async () => {
+    if (!bunAvailable) {
+      console.log('  ⊘ Skipping test - Bun runtime required');
+      return;
+    }
+
+    // Create temp directory WITHOUT .kspec/ to avoid auto-registration
+    const emptyTempDir = await createTempDir();
+    await initGitRepo(emptyTempDir);
+
+    const port = 3500 + Math.floor(Math.random() * 100);
+
+    // Start daemon from directory without .kspec/ (AC: @multi-directory-daemon ac-3)
+    // This ensures no default project is registered
+    kspec(
+      `serve start --daemon --port ${port}`,
+      emptyTempDir
+    );
+
+    // Wait for daemon to fully start
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Check status - should indicate no projects
+    const result = kspec(`serve status`, emptyTempDir);
+
+    expect(result.stdout).toContain('No projects registered');
+
+    // Cleanup
+    kspec(`serve stop`, emptyTempDir);
+    await cleanupTempDir(emptyTempDir);
+  });
+
   // AC: @cli-serve-commands ac-7
   it('should stop then start on restart', async () => {
     if (!bunAvailable) {

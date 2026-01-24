@@ -339,7 +339,7 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
 
 /**
  * Check daemon server status
- * AC: @cli-serve-commands ac-6
+ * AC: @cli-serve-commands ac-6, @multi-directory-daemon ac-12
  */
 async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
   if (isJsonMode()) {
@@ -360,13 +360,28 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
     }
   }
 
-  // TODO: Fetch uptime, connections from health endpoint when implemented
+  // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects
+  let projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> = [];
+  if (running && port) {
+    try {
+      const response = await fetch(`http://localhost:${port}/api/projects`);
+      if (response.ok) {
+        const data = await response.json() as { projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> };
+        projects = data.projects || [];
+      }
+    } catch {
+      // If daemon is not responding, continue without projects list
+      // This can happen if daemon is still starting up or network issues
+    }
+  }
+
+  // TODO: Fetch uptime from health endpoint when implemented
   const status = {
     running,
     pid: pid ?? null,
     port,
     uptime: null, // TODO: fetch from health endpoint
-    connections: null, // TODO: fetch from health endpoint
+    projects,
   };
 
   if (isJsonMode()) {
@@ -376,6 +391,15 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
       output(`Daemon running (PID: ${pid})`);
       if (port) {
         output(`  Port: ${port}`);
+      }
+      // AC: @multi-directory-daemon ac-12 - Show registered projects
+      if (projects.length > 0) {
+        output(`\nRegistered projects (${projects.length}):`);
+        for (const project of projects) {
+          output(`  ${project.path} (watcher: ${project.watcherStatus})`);
+        }
+      } else {
+        output(`\nNo projects registered`);
       }
     } else {
       output('Daemon not running');
