@@ -2786,6 +2786,10 @@ features:
             given: ralph iteration starts
             when: agent acts
             then: /task-work loop invoked
+          - id: ac-2
+            given: loop mode active
+            when: skill executes
+            then: uses @task-work-loop workflow
       - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
         slugs:
           - reflect-loop-skill
