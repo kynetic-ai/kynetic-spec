@@ -2978,7 +2978,7 @@ runs:
   - _ulid: 01KFQ8H939CAXFP3FGSRSEPSJH
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-24T05:44:51.049Z
     step_results:
@@ -3142,5 +3142,17 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-24T05:46:11.482Z
-        completed_at: 2026-01-24T05:46:11.482Z
+        completed_at: 2026-01-24T05:50:11.983Z
+        notes: |-
+          ## User Decisions
+
+          All 4 improvements approved for capture:
+          1. BUN_ENV=production automation - Yes, inbox
+          2. E2E test fixture health check - Yes, inbox  
+          3. CLI-wide --kspec-dir option - Yes, inbox (note: should be a trait since cross-cutting)
+          4. Document Bun production mode - Yes, inbox
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-24T05:50:11.983Z
+        completed_at: 2026-01-24T05:50:11.983Z
     initiated_by: "@claude"
