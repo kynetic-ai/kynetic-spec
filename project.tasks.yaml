@@ -34820,6 +34820,53 @@
         All 17 tests passing. Used real file system operations and timing (600ms debounce wait) to
         test actual watcher behavior.
       supersedes: null
+    - _ulid: 01KFRVFC3BB9FYAM119D2G6T7C
+      created_at: 2026-01-24T20:35:05.963Z
+      author: "@claude"
+      content: >-
+        Tests pass locally (all 17) but fail in CI due to file watcher timing issues.
+
+
+        The issue: Tests that write files and expect watcher callbacks are failing in CI. The file
+        watcher (Bun fs.watch + Chokidar fallback) may not detect changes in CI environment, or the
+        timing is different.
+
+
+        Failed tests in CI (7):
+
+        - should trigger events scoped to correct project when file changes
+
+        - should only notify watchers for the project that changed  
+
+        - should receive file path scoped to project directory
+
+        - should isolate file events between projects when both are watching
+
+        - should handle rapid changes in multiple projects independently
+
+        - should allow restarting watcher after stop
+
+        - should handle errors per project without affecting other watchers
+
+
+        All failures are: 'expected vi.fn() to be called at least once' - the onFileChange callback
+        is not being invoked.
+
+
+        Options:
+
+        1. Mock the file watcher entirely (lose integration testing value)
+
+        2. Use polling-based watcher in tests
+
+        3. Accept flakiness and skip in CI
+
+        4. Investigate CI-specific watcher configuration
+
+
+        This is a common issue with file watcher tests. The watcher isolation logic and cleanup
+        logic are still tested and working.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAF08VSFJQ2D6EERRH890E
