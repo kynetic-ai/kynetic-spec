@@ -33931,7 +33931,10 @@
   created_at: 2026-01-24T06:18:01.549Z
   notes: []
   todos: []
-- title: Per-project broadcast filtering implementation
+- _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
+  slugs: []
+  title: Per-project broadcast filtering implementation
+  type: task
   description: >-
     Implement per-project broadcast filtering in PubSubManager.
 
@@ -33963,21 +33966,51 @@
     - Task: WebSocket connection binding implementation
 
     - Task: Per-project broadcast filtering tests (tests first)
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - websocket
     - phase-5
-  _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:11.831Z
+  notes: []
+  todos: []
+- title: Per-project file watcher tests
+  description: |-
+    Write tests for per-project file watcher behavior.
+
+    ## Test Cases
+    - Test watcher created per project (not shared)
+    - Test events scoped to correct project
+    - Test watcher cleanup on project unregister
+    - Test OS limit handling (mock EMFILE/ENFILE ulimit error)
+
+    ## AC Coverage
+    ac-17, ac-18, ac-19
+
+    ## Dependencies
+    Task: ProjectContextManager implementation
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - watcher
+    - phase-6
+  _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:18:11.831Z
+  created_at: 2026-01-24T06:18:21.894Z
   notes: []
   todos: []
