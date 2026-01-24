@@ -2907,6 +2907,10 @@ features:
             given: task fails with N reaching 3
             when: threshold reached
             then: "task marked automation: needs_review with summary"
+          - id: ac-6
+            given: task completes successfully
+            when: workflow finishes
+            then: no reset needed; count is per-task in notes
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
