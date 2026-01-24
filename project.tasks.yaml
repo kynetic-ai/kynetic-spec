@@ -34715,6 +34715,13 @@
         - ac-2: Given skill supports modes, when /skill-name mode invoked, then skill behavior
         changes per mode
       supersedes: null
+    - _ulid: 01KFR852V348RKD8BDTJJVAJ5W
+      created_at: 2026-01-24T14:57:25.859Z
+      author: "@claude"
+      content: "Implementation notes: Container for skill-related behavior specs under @cli-module. 2 ACs:
+        basic invocation, mode argument support. Note: Skills are Claude Code concepts; this specs
+        BEHAVIOR when skills invoke kspec commands."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82F6P8Q8RXRX7YVJXZ9KF
   slugs:
