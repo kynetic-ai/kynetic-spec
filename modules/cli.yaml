@@ -2748,6 +2748,22 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:07.322Z
+      - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
+        slugs:
+          - pr-review-skill
+        title: PR Review Skill
+        type: requirement
+        tags: []
+        description: "Skill definition for /pr-review - invoked in ACP subagent context. Key focus: AC
+          coverage verification + spec alignment (not just tests passing). Delegates to
+          @pr-review-loop-workflow."
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:11.006Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
