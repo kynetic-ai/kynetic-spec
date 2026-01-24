@@ -34437,7 +34437,7 @@
   type: task
   spec_ref: "@loop-mode-workflows"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-workflow-definitions"
@@ -34508,6 +34508,8 @@
            - Uses testUlid() helper for valid ULIDs
       supersedes: null
   todos: []
+  completed_at: 2026-01-24T16:20:51.204Z
+  closed_reason: "Merged in PR #211"
 - _ulid: 01KFR82A8E7QV8DQZX74FXF16E
   slugs:
     - task-task-work-loop-workflow
