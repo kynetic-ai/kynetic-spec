@@ -34447,6 +34447,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:55:54.789Z
+  started_at: 2026-01-24T15:46:38.912Z
   notes:
     - _ulid: 01KFR829X500Q1X37MDZ6FBSVZ
       created_at: 2026-01-24T14:55:54.789Z
@@ -34480,8 +34481,33 @@
         field validation, based_on field reference. Description captures: no human confirmations,
         higher thresholds, deduplication, error continuation."
       supersedes: null
+    - _ulid: 01KFRBVNA5D3Z9SQ1BN72AX69D
+      created_at: 2026-01-24T16:02:11.399Z
+      author: "@claude"
+      content: |-
+        Implementation complete:
+
+        1. Schema changes (src/schema/meta.ts):
+           - Added WorkflowModeSchema enum: 'interactive' | 'loop'
+           - Added mode field (optional, defaults to 'interactive')
+           - Added based_on field (optional RefSchema)
+           - Added tags field (optional string array)
+
+        2. CLI changes (src/cli/commands/meta.ts):
+           - Added --tag filter to 'kspec meta workflows' command
+           - Updated formatWorkflows() to show Mode column
+           - Updated formatWorkflowsVerbose() to show mode and based_on
+           - Added --mode, --based-on, --tag options to 'kspec meta add workflow'
+           - JSON output includes new fields
+
+        3. Tests (tests/meta.test.ts):
+           - 9 new tests covering all 3 ACs:
+             - AC-1: --tag loop filtering (includes mode: loop fallback)
+             - AC-2: mode: loop validation, invalid mode rejection
+             - AC-3: based_on in meta get and verbose output
+           - Uses testUlid() helper for valid ULIDs
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T15:46:38.912Z
 - _ulid: 01KFR82A8E7QV8DQZX74FXF16E
   slugs:
     - task-task-work-loop-workflow
