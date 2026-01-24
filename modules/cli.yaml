@@ -2494,6 +2494,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:31.263Z
+        acceptance_criteria:
+          - id: ac-1
+            given: ralph needs subagent
+            when: spawn initiated
+            then: new ACP process started with dedicated prompt
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
