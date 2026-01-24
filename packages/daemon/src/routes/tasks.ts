@@ -229,12 +229,13 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await commitIfShadow(ctx, `task: start ${params.ref}`);
 
         // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
+        // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'start',
           status: 'in_progress',
-        });
+        }, projectContext.path);
 
         // AC: @api-contract ac-6 - Return updated task
         return updatedTask;
@@ -300,12 +301,13 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await commitIfShadow(ctx, `task: add note to ${params.ref}`);
 
         // AC: @api-contract ac-7 - WebSocket broadcast
+        // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'note_added',
           note_ulid: note._ulid,
-        });
+        }, projectContext.path);
 
         return {
           success: true,

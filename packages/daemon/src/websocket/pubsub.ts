@@ -68,9 +68,15 @@ export class PubSubManager {
   /**
    * Broadcast event to all connections subscribed to a topic
    * AC: @api-contract ac-29, @trait-websocket-protocol ac-3, ac-6
+   * AC: @multi-directory-daemon ac-18, ac-21 - Filter by project binding
    */
-  broadcast(topic: string, event: string, data: any) {
+  broadcast(topic: string, event: string, data: any, projectPath?: string) {
     for (const [sessionId, ws] of this.connections) {
+      // AC: @multi-directory-daemon ac-18 - Only send to connections bound to same project
+      if (projectPath && ws.data.projectPath !== projectPath) {
+        continue;
+      }
+
       // Only send to connections subscribed to this topic
       if (!ws.data.topics.has(topic)) {
         continue;
