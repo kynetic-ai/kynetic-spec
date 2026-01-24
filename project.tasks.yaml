@@ -33768,6 +33768,29 @@
 
         - Invalid project detection
       supersedes: null
+    - _ulid: 01KFRMES98MJP5ETV0M9DBKHYR
+      created_at: 2026-01-24T18:32:26.665Z
+      author: "@claude"
+      content: |-
+        Analysis complete. ProjectContextManager unit tests require:
+
+        1. Mock class implementing core manager API:
+           - registerProject(path): validates, normalizes, caches project context
+           - getProject(path): retrieves cached context
+           - setDefaultProject(path): sets fallback for requests without X-Kspec-Dir
+           - hasProject(path): checks registration status
+           - unregisterProject(path): removes from cache
+           - listProjects(): returns all registered projects
+        2. Test coverage areas (30+ tests needed):
+           - Path validation (AC-5, AC-6, AC-7, AC-8, AC-8b, AC-8c)
+           - Registration/caching (AC-1, AC-4, AC-14, AC-16)
+           - Default project (AC-2, AC-3, AC-20b)
+           - Auto-unregister on deletion (AC-20)
+           - Concurrent registration race (AC-16)
+        3. Uses setupMultiDirFixtures() for test isolation
+
+        WIP - next iteration should implement test file.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
