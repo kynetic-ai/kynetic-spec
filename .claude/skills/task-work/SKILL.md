@@ -175,3 +175,44 @@ After completing a task:
 - **After submit**: Use `/pr` to create PR
 - **For merge**: Use `@pr-review-merge` workflow
 - **After merge**: Complete the task
+
+## Loop Mode
+
+For autonomous agents (e.g., ralph), use `/task-work loop`:
+
+```bash
+# Invoked by ralph prompt - agent executes this
+/task-work loop
+```
+
+### Key Differences from Interactive Mode
+
+| Aspect | Interactive | Loop |
+|--------|-------------|------|
+| Task filtering | All tasks | automation: eligible only |
+| Verification | Check git history | Skipped (trust task state) |
+| Confirmations | User confirms | Auto-resolve |
+| Task selection | User chooses | Priority order (see below) |
+| pending_review | User handles PR | Spawn subagent |
+
+### Loop Task Selection Order
+
+1. **in_progress** - Continue existing work first
+2. **pending_review** - Spawn `/pr-review` subagent
+3. **Unblocking** - Tasks that unblock others preferred
+4. **Priority** - Highest priority (lowest number)
+
+### Exit Conditions
+
+- **No eligible tasks**: Exits with "No eligible tasks" message
+- **All blocked**: Exits with "All eligible tasks blocked" message
+
+### Workflow Reference
+
+```bash
+# Check loop workflow details
+kspec meta get @task-work-loop
+
+# List all loop workflows
+kspec meta workflows --tag loop
+```
