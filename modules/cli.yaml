@@ -2762,6 +2762,10 @@ features:
             given: loop mode active
             when: confirmation point reached
             then: confirmation skipped
+          - id: ac-4
+            given: loop mode encounters error
+            when: error caught
+            then: note added, workflow continues
       - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
         slugs:
           - task-work-loop-skill
