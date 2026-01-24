@@ -32534,6 +32534,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #208. Daemon now serves web UI on same port, enabling E2E testing."
   depends_on: []
   context: []
   priority: 1
@@ -32541,6 +32542,7 @@
   vcs_refs: []
   created_at: 2026-01-23T23:18:10.609Z
   started_at: 2026-01-23T23:31:40.211Z
+  completed_at: 2026-01-24T00:31:51.352Z
   notes:
     - _ulid: 01KFPMCHN593ZV88PT3C8S4M3A
       created_at: 2026-01-23T23:52:44.453Z
@@ -32582,5 +32584,22 @@
         because routes import from parent package.
       supersedes: null
   todos: []
-  completed_at: 2026-01-24T00:31:51.352Z
-  closed_reason: "Merged PR #208. Daemon now serves web UI on same port, enabling E2E testing."
+- title: E2E Testing Infrastructure Setup
+  type: task
+  spec_ref: "@web-ui"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - phase-5
+    - testing
+    - infrastructure
+  _ulid: 01KFPRX918VN1W6F47RYDFECHS
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-24T01:11:46.984Z
+  notes: []
+  todos: []
