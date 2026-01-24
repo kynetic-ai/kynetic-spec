@@ -33428,6 +33428,25 @@
     - spec-work
   vcs_refs: []
   created_at: 2026-01-24T05:09:38.668Z
-  notes: []
-  todos: []
   started_at: 2026-01-24T05:59:32.553Z
+  notes:
+    - _ulid: 01KFQA9N9AF4BJ48HSDR3R2AK1
+      created_at: 2026-01-24T06:15:38.538Z
+      author: "@claude"
+      content: |-
+        Spec written to .kspec/modules/web-ui.yaml with 36 acceptance criteria covering:
+        - Project context management (ac-1 to ac-5)
+        - Path validation & security (ac-6 to ac-8b)
+        - Global daemon lifecycle (ac-9 to ac-13, including 9b, 9c, 10b)
+        - Daemon restart behavior (ac-14, ac-15)
+        - Concurrent registration (ac-16)
+        - Per-project file watching (ac-17 to ac-19)
+        - Stale project handling (ac-20)
+        - WebSocket project binding (ac-21 to ac-23, including 21b)
+        - Cross-project isolation (ac-24)
+        - Web UI integration (ac-25 to ac-27)
+        - API contract extension (ac-28 to ac-30)
+
+        Spec validated successfully. Now creating implementation tasks.
+      supersedes: null
+  todos: []

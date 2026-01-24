@@ -623,3 +623,203 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFQ84FVYMN3Z0HXWZ5AK7CQD
+    slugs:
+      - multi-directory-daemon
+    title: Multi-Directory Daemon Architecture
+    type: feature
+    tags:
+      - daemon
+      - architecture
+      - multi-project
+    description: |
+      Extends the daemon server to support multiple kspec projects simultaneously from a single
+      daemon process. Projects are identified via X-Kspec-Dir HTTP header. Enables E2E testing
+      with isolated fixtures and multi-project development workflows.
+
+      Key architectural changes:
+      - Global daemon with PID/port files at ~/.config/kspec/
+      - Project context caching with on-demand registration
+      - Per-project file watchers
+      - WebSocket connections bound to specific projects
+
+      BREAKING CHANGE: PID/port files move from .kspec/.daemon.pid to ~/.config/kspec/daemon.pid
+    depends_on:
+      - "@daemon-server"
+      - "@api-contract"
+    implements: []
+    relates_to:
+      - "@cli-serve-commands"
+    tests: []
+    traits:
+      - "@trait-localhost-security"
+      - "@trait-websocket-protocol"
+    notes:
+      - _ulid: 01KFQ84FVZB2CWH7Y4GPQR8M9N
+        created_at: "2026-01-24T06:00:00.000Z"
+        author: "@claude"
+        content: |
+          Design decisions:
+          - X-Kspec-Dir header for project selection (clean URLs, easy for clients)
+          - Single bundled web UI (consistent version across projects)
+          - On-demand project registration (auto-register on first request)
+          - No memory limit on cached projects (keep until restart)
+          - Global PID at ~/.config/kspec/daemon.pid
+          - Per-project file watchers
+          - Backwards compatible (no header = startup cwd project if valid)
+    created: 2026-01-24T06:00:00.000Z
+    acceptance_criteria:
+      # Project Context Management
+      - id: ac-1
+        given: daemon is running
+        when: request includes X-Kspec-Dir header with valid absolute path
+        then: daemon uses that project's context for the request
+      - id: ac-2
+        given: daemon started from directory with .kspec/
+        when: request has no X-Kspec-Dir header
+        then: daemon uses startup directory's project as default
+      - id: ac-3
+        given: daemon started from directory without .kspec/
+        when: request without X-Kspec-Dir arrives
+        then: return 400 with error "No default project configured. Specify X-Kspec-Dir header."
+      - id: ac-4
+        given: request specifies unknown project path
+        when: path is valid kspec project
+        then: daemon auto-registers and caches project context
+      - id: ac-5
+        given: request specifies invalid path (no .kspec/)
+        when: request processed
+        then: return 400 with error "Invalid kspec project - .kspec/ not found at <path>"
+      # Path Validation & Security
+      - id: ac-6
+        given: X-Kspec-Dir header value
+        when: path is relative
+        then: reject with 400 and error "Path must be absolute"
+      - id: ac-7
+        given: X-Kspec-Dir header value
+        when: path contains ".." segments
+        then: reject with 400 and error "Path must not contain parent traversal"
+      - id: ac-8
+        given: X-Kspec-Dir header value
+        when: normalized path differs from provided path
+        then: use normalized path for registration (resolve "." segments, remove trailing slashes, do NOT resolve symlinks)
+      - id: ac-8b
+        given: X-Kspec-Dir points to path with insufficient read permissions
+        when: request processed
+        then: return 403 with error "Permission denied - cannot read <path>"
+      # Global Daemon Lifecycle
+      - id: ac-9
+        given: no daemon running
+        when: kspec serve start runs from any directory
+        then: daemon starts and writes PID to ~/.config/kspec/daemon.pid and port to ~/.config/kspec/daemon.port
+      - id: ac-9b
+        given: ~/.config/kspec/ does not exist
+        when: daemon starts
+        then: create directory with mode 0755 before writing PID/port files
+      - id: ac-9c
+        given: ~/.config/kspec/daemon.port exists but contains invalid content
+        when: CLI reads port
+        then: return error "Invalid daemon port file" and suggest "kspec serve stop && kspec serve start"
+      - id: ac-10
+        given: daemon running on port 3456
+        when: kspec serve start runs from different directory
+        then: command exits with success and outputs "Daemon already running on port 3456" (no second instance started)
+      - id: ac-10b
+        given: two kspec serve start commands run concurrently (neither has written PID yet)
+        when: both check for running daemon
+        then: only one daemon starts (use file lock on PID file)
+      - id: ac-11
+        given: daemon running
+        when: kspec serve stop runs from any directory
+        then: daemon stops and removes global PID and port files
+      - id: ac-12
+        given: daemon running
+        when: kspec serve status runs
+        then: shows daemon status with port, uptime, and list of registered projects with their paths
+      - id: ac-13
+        given: CLI needs to connect to daemon
+        when: daemon is running
+        then: CLI reads port from ~/.config/kspec/daemon.port
+      # Daemon Restart Behavior
+      - id: ac-14
+        given: daemon restarts
+        when: first request for a project arrives
+        then: project is re-registered automatically (same as initial registration)
+      - id: ac-15
+        given: daemon running with registered projects
+        when: daemon restarts
+        then: registered project list is empty (no persistence across restarts)
+      # Concurrent Registration
+      - id: ac-16
+        given: two concurrent requests for unregistered project with same path
+        when: processed
+        then: both succeed and share the same registered project context (no duplicate watchers)
+      # Per-Project File Watching
+      - id: ac-17
+        given: project is registered
+        when: files change in project's .kspec/
+        then: file watcher triggers events scoped to that project
+      - id: ac-18
+        given: multiple projects registered
+        when: Project A changes
+        then: only Project A's WebSocket subscribers receive updates
+      - id: ac-19
+        given: project watcher creation fails due to OS limits (ulimit)
+        when: error occurs
+        then: project registration fails with 503 and error "Unable to watch project - resource limit reached"
+      # Stale Project Handling
+      - id: ac-20
+        given: registered project's .kspec/ directory is deleted
+        when: next request arrives for that project
+        then: return 404 and unregister project automatically
+      # WebSocket Project Binding
+      - id: ac-21
+        given: WebSocket client connects with X-Kspec-Dir header during handshake
+        when: connection established
+        then: connection is bound to that project for its lifetime and only receives events from that project
+      - id: ac-21b
+        given: WebSocket connection is established and bound to project
+        when: client attempts to change project
+        then: project binding is immutable - client must disconnect and reconnect with new header
+      - id: ac-22
+        given: WebSocket client connects without X-Kspec-Dir header
+        when: default project exists
+        then: connection is bound to default project
+      - id: ac-23
+        given: WebSocket client connects without X-Kspec-Dir header
+        when: no default project
+        then: connection is rejected with close code 4000 and reason "No project specified"
+      # Cross-Project Isolation
+      - id: ac-24
+        given: multi-project mode
+        when: any API endpoint is called
+        then: response data is scoped to the request's project (no cross-project data leakage)
+      # Web UI Integration
+      - id: ac-25
+        given: web UI loads
+        when: more than one project registered
+        then: project selector is shown listing all registered projects
+      - id: ac-26
+        given: user selects project in UI
+        when: selection changes
+        then: all subsequent API requests include that project's path in X-Kspec-Dir header
+      - id: ac-27
+        given: UI is showing project data
+        when: different project selected
+        then: UI reloads data from newly selected project
+      # API Contract Extension
+      - id: ac-28
+        given: GET /api/projects
+        when: called
+        then: returns list of registered projects with paths, registration time, and watcher status
+      - id: ac-29
+        given: POST /api/projects
+        when: called with {path string} body
+        then: manually registers a project (for explicit registration use cases)
+      - id: ac-30
+        given: DELETE /api/projects/:encodedPath
+        when: called
+        then: unregisters project and stops its file watcher
+    status:
+      maturity: draft
+      implementation: not_started
