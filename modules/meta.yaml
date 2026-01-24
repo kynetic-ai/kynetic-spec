@@ -940,9 +940,9 @@ features:
             type: requirement
             tags: []
             description: "Workflow for /task-work loop. Key differences from @task-work-session: auto-filter to
-              automation-eligible tasks only, skip verification step, no interactive confirmations,
-              loop-specific task selection order (in_progress > pending_review > unblocking >
-              priority)."
+              automation-eligible tasks only, no interactive confirmations, loop-specific task
+              selection order (in_progress > unblocking > priority). Verification still performed.
+              PR review handled externally by ralph."
             depends_on: []
             implements: []
             relates_to:
