@@ -33923,7 +33923,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
-  slugs: []
+  slugs:
+    - task-ws-binding-impl
   title: WebSocket connection binding implementation
   type: task
   description: |-
