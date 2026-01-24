@@ -1021,6 +1021,10 @@ features:
                 given: friction matches existing observation
                 when: agent evaluates
                 then: item NOT captured, existing reference noted
+              - id: ac-4
+                given: friction is unique and high-confidence
+                when: agent evaluates
+                then: item IS captured
           - _ulid: 01KFR7MEGS6K4AXRJD6JAN7GQH
             slugs:
               - pr-review-loop-workflow
