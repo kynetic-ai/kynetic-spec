@@ -32224,6 +32224,7 @@
         - delete-inbox-button
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
   slugs: []
   title: E2E Search Command Palette Tests
