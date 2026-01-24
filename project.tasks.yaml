@@ -34922,6 +34922,22 @@
         multi-project watcher E2E tests (daemon-watcher-multi-project.test.ts ac-18 test already
         validates broadcast filtering at the watcher level).
       supersedes: null
+    - _ulid: 01KFRZ8Y3D7FZ4NK1N8Y0EKJV6
+      created_at: 2026-01-24T21:41:29.326Z
+      author: "@claude"
+      content: >-
+        Pushed fix to remove fluff tests (commit 835a79a6). Waiting for CI to complete before
+        merging PR #225.
+
+
+        CI status:
+
+        - claude-review: pending
+
+        - check-unresolved-comments: pass
+
+        - test: pending
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
