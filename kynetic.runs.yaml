@@ -2978,7 +2978,7 @@ runs:
   - _ulid: 01KFQ8H939CAXFP3FGSRSEPSJH
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-24T05:44:51.049Z
     step_results:
@@ -3055,5 +3055,45 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-24T05:45:23.779Z
-        completed_at: 2026-01-24T05:45:23.779Z
+        completed_at: 2026-01-24T05:46:00.345Z
+        notes: >-
+          ## Coverage Check Results
+
+
+          | Friction Point | Status | Reference |
+
+          |----------------|--------|-----------|
+
+          | 1. Env propagation in test fixture | **Partially covered** | @01KFQ6GT (multi-dir
+          architecture) includes API design but not test fixture specifics |
+
+          | 2. No daemon logging visible | **Already tracked** | @01KFQ586 (inbox) - 'Daemon
+          logging: Add --log-file or --verbose option' |
+
+          | 3. BUN_ENV not documented | **Not tracked** | Only mentioned in task notes on @01KFP84J,
+          no spec/task for documentation |
+
+          | 4. Asset resolution from cwd | **Covered** | @01KFQ6GT spec task includes asset
+          resolution chain |
+
+          | 5. kspec --kspec-dir inconsistency | **Partially covered** | @01KFQ6GT mentions
+          X-Kspec-Dir header for API, but not CLI-wide --kspec-dir option |
+
+          | 6. Test fixture doesn't verify daemon | **Not tracked** | No spec/task for E2E fixture
+          improvements |
+
+          | 7. Shell cwd resetting | **N/A** | This is Claude Code behavior, not kspec |
+
+
+          ### Untracked Items Needing Capture:
+
+          - BUN_ENV documentation/automation
+
+          - E2E test fixture robustness improvements
+
+          - CLI-wide --kspec-dir option (not just serve command)
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-24T05:46:00.345Z
+        completed_at: 2026-01-24T05:46:00.345Z
     initiated_by: "@claude"
