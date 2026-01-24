@@ -34516,7 +34516,7 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -34619,6 +34619,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T20:20:08.613Z
+  closed_reason: "Merged in PR #221. Added 7 static analysis tests for WebSocket project binding
+    (ac-18, ac-21, ac-21b, ac-22, ac-23). Tests document expected behavior: X-Kspec-Dir header
+    extraction, projectPath in ConnectionData, broadcast isolation, default project fallback, and
+    connection rejection when no project. Tests intentionally pass as documentary tests
+    (always-passing style). All CI checks passed (claude-review, check-unresolved-comments, tests)."
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
   slugs:
     - task-ws-binding-impl
