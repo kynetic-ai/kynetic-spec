@@ -31916,6 +31916,29 @@
 
         Task remains in_progress pending user decision on approach.
       supersedes: null
+    - _ulid: 01KFQ6HK1MHRPYJS08HBJKNCP4
+      created_at: 2026-01-24T05:10:04.084Z
+      author: "@claude"
+      content: >-
+        ## Blocker Created
+
+
+        Created **@01KFQ6GT** (P1) to spec out multi-directory daemon architecture. 
+
+
+        This E2E task should wait for that spec work to complete before resuming, as the
+        architectural changes will affect:
+
+        - How daemon is started in test fixtures
+
+        - How web UI assets are resolved
+
+        - How API requests specify project context
+
+
+        The spec task will produce implementation tasks that should be completed before returning to
+        E2E tests.
+      supersedes: null
   todos: []
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
@@ -33288,7 +33311,10 @@
         - Unit tests pass (excluding pre-existing failures in daemon-executable and task-clear-deps)
       supersedes: null
   todos: []
-- title: Spec multi-directory daemon architecture
+- _ulid: 01KFQ6GT7D3WCAGB39NPY7CQCG
+  slugs: []
+  title: Spec multi-directory daemon architecture
+  type: task
   description: >-
     ## Objective
 
@@ -33387,20 +33413,17 @@
     - Bun embeddedFiles: https://bun.com/docs/bundler/executables
 
     - LSP workspaceFolders pattern
-  type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags:
-    - architecture
-    - daemon
-    - spec-work
-  _ulid: 01KFQ6GT7D3WCAGB39NPY7CQCG
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - architecture
+    - daemon
+    - spec-work
   vcs_refs: []
   created_at: 2026-01-24T05:09:38.668Z
   notes: []
