@@ -34860,6 +34860,12 @@
 
         - ac-5: Given captures complete, when skill finishes, then user not prompted
       supersedes: null
+    - _ulid: 01KFR85EXGXK1CSH27PRB3FGZ4
+      created_at: 2026-01-24T14:57:38.225Z
+      author: "@claude"
+      content: "Implementation notes: 5 ACs covering invoke, workflow, search, high-conf, no-user. Skill
+        invocation spec only; workflow behavior is in @session-reflect-loop-workflow."
+      supersedes: null
   todos: []
 - _ulid: 01KFR82G303PDT36DCA1RZ9Z45
   slugs:
