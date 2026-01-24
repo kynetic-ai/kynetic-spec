@@ -2758,6 +2758,10 @@ features:
             given: skill has loop mode
             when: loop invoked
             then: skill uses @workflow-loop variant
+          - id: ac-3
+            given: loop mode active
+            when: confirmation point reached
+            then: confirmation skipped
       - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
         slugs:
           - task-work-loop-skill
