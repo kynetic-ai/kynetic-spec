@@ -626,3 +626,12 @@ inbox:
       - e2e
       - testing
     added_by: "@claude"
+  - _ulid: 01KFQ8VKPZ494MW7RN0XGFSJNE
+    text: "CLI-wide --kspec-dir option: Add as a trait (cross-cutting) to all CLI commands enabling
+      testing with isolated fixtures and running kspec for different project directories"
+    created_at: 2026-01-24T05:50:29.599Z
+    tags:
+      - reflection
+      - cli
+      - trait
+    added_by: "@claude"
