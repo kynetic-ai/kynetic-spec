@@ -31826,6 +31826,34 @@
         and API. No need for separate Vite preview server. This simplifies CORS and is how
         production works.
       supersedes: null
+    - _ulid: 01KFQ5ANAC3J958039PM4SG7ZZ
+      created_at: 2026-01-24T04:48:48.460Z
+      author: "@claude"
+      content: >-
+        ## Session End Status
+
+
+        Task remains in_progress - tests not yet passing.
+
+
+        **Immediate blocker:** Static asset hash mismatch - daemon serves HTML with old asset
+        references.
+
+
+        **Branch:** feat/e2e-dashboard-tests (committed)
+
+
+        **Next session should:**
+
+        1. Debug resolveWebUiPath() - add logging to trace which path is used
+
+        2. Verify WEB_UI_DIR env var propagates to daemon subprocess
+
+        3. Consider: E2E tests should use isolated port range (not 3456) per user feedback
+
+
+        Previous note has full details on work done and files changed.
+      supersedes: null
   todos: []
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
