@@ -33710,7 +33710,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAC1BKNR7V6WJDVQMEDD15
-  slugs: []
+  slugs:
+    - task-path-validation-tests
   title: Path validation middleware tests
   type: task
   description: |-
