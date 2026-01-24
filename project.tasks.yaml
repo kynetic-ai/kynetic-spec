@@ -34173,7 +34173,10 @@
   created_at: 2026-01-24T06:19:03.995Z
   notes: []
   todos: []
-- title: CLI serve status with projects list
+- _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
+  slugs: []
+  title: CLI serve status with projects list
+  type: task
   description: >-
     Update CLI serve status to show registered projects.
 
@@ -34205,20 +34208,51 @@
     - Task: /api/projects endpoints implementation
 
     - Task: CLI serve status tests (tests first)
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - phase-8
-  _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
+  vcs_refs: []
+  created_at: 2026-01-24T06:19:14.921Z
+  notes: []
+  todos: []
+- title: Web UI project selector tests
+  description: |-
+    Write tests for Web UI project selector component.
+
+    ## Test Cases
+    - Test selector shown when >1 project registered
+    - Test selector hidden when single project
+    - Test header injection on all API calls
+    - Test data reload on project change
+    - Test WebSocket reconnection on project change
+
+    ## AC Coverage
+    ac-25, ac-26, ac-27
+
+    ## Dependencies
+    Task: /api/projects endpoints implementation
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - web-ui
+    - phase-9
+  _ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:19:14.921Z
+  created_at: 2026-01-24T06:19:24.917Z
   notes: []
   todos: []
