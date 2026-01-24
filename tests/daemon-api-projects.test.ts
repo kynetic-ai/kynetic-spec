@@ -38,7 +38,7 @@ describe('Projects API Endpoints', () => {
     expect(routesContent).toContain("'/api/projects'");
 
     // AC: @multi-directory-daemon ac-28 - Return list of registered projects
-    expect(routesContent).toContain('getRegisteredProjects');
+    expect(routesContent).toContain('listProjects');
 
     // AC: @multi-directory-daemon ac-28 - Include paths, registration time, watcher status
     expect(routesContent).toContain('path:');
@@ -81,8 +81,8 @@ describe('Projects API Endpoints', () => {
     // AC: @multi-directory-daemon ac-29 - Accept {path: string} body
     expect(routesContent).toContain('body.path');
 
-    // Should use ProjectContextManager.register()
-    expect(routesContent).toContain('register(');
+    // Should use ProjectContextManager.registerProject()
+    expect(routesContent).toContain('registerProject(');
 
     // AC: @multi-directory-daemon ac-29 - Path validation
     expect(routesContent).toMatch(/(isAbsolute|path\.isAbsolute)/);
@@ -130,7 +130,7 @@ describe('Projects API Endpoints', () => {
     expect(routesContent).toMatch(/(decodeURIComponent|decode)/);
 
     // AC: @multi-directory-daemon ac-30 - Unregister project
-    expect(routesContent).toContain('unregister(');
+    expect(routesContent).toContain('unregisterProject(');
 
     // AC: @multi-directory-daemon ac-30 - Stop file watcher
     expect(routesContent).toMatch(/(stop|stopWatcher)/);
@@ -161,13 +161,13 @@ describe('Projects API Endpoints', () => {
     const routesContent = await readFile(projectsRoutePath, 'utf-8');
 
     // Import ProjectContextManager
-    expect(routesContent).toContain("from '../context/manager'");
+    expect(routesContent).toContain("from '../project-context'");
 
     // Use manager instance
     expect(routesContent).toMatch(/(contextManager|projectManager)/);
 
-    // Key methods: register, unregister, getRegisteredProjects
-    expect(routesContent).toMatch(/(register|unregister|getRegisteredProjects)/);
+    // Key methods: registerProject, unregisterProject, listProjects
+    expect(routesContent).toMatch(/(registerProject|unregisterProject|listProjects)/);
   });
 
   it('should handle errors gracefully with appropriate HTTP status codes', async () => {
