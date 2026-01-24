@@ -175,3 +175,66 @@ After completing a task:
 - **After submit**: Use `/pr` to create PR
 - **For merge**: Use `@pr-review-merge` workflow
 - **After merge**: Complete the task
+
+## Loop Mode
+
+You are running in autonomous loop mode. Start the workflow:
+
+```bash
+kspec workflow start @task-work-loop
+```
+
+Then follow the workflow steps below.
+
+### Workflow Steps
+
+1. **Get eligible tasks**
+   ```bash
+   kspec tasks ready --eligible
+   ```
+
+2. **Select task** (priority order):
+   - First: any `in_progress` task (continue existing work)
+   - Then: tasks that unblock others (high impact)
+   - Finally: highest priority ready task (lowest number)
+
+3. **Verify work is needed**
+   - Check git history for related commits
+   - Read existing implementation if files exist
+   - If already done: `kspec task complete @task --reason "Already implemented"` and EXIT
+
+4. **Start and implement**
+   ```bash
+   kspec task start @task
+   # Do the work
+   kspec task note @task "What you did..."
+   ```
+
+5. **Commit and submit**
+   ```bash
+   git add <files> && git commit -m "feat/fix: description
+
+   Task: @task-slug"
+   kspec task submit @task
+   ```
+
+6. **Create PR and exit**
+   ```bash
+   /pr
+   ```
+   After PR created, EXIT. Ralph handles PR review via separate subagent.
+
+### Exit Conditions
+
+Exit when any of these apply:
+- **Task work complete** - PR created (normal exit)
+- **No eligible tasks** - `kspec tasks ready --eligible` returns empty
+- **All blocked** - All eligible tasks have unmet dependencies
+- **Already implemented** - Verification found work already done
+
+### Key Behaviors
+
+- Only `automation: eligible` tasks are considered
+- Verification still performed (prevent duplicate work)
+- Decisions auto-resolve without prompts
+- PR review handled externally by ralph (not this workflow)
