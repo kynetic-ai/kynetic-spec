@@ -33605,7 +33605,10 @@
   created_at: 2026-01-24T06:16:32.621Z
   notes: []
   todos: []
-- title: ProjectContextManager implementation
+- _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
+  slugs: []
+  title: ProjectContextManager implementation
+  type: task
   description: >-
     Implement ProjectContextManager for multi-project context caching.
 
@@ -33647,20 +33650,49 @@
     - Task: ProjectContextManager unit tests (tests first)
 
     - Task: Global PID/port file management
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - phase-2
-  _ulid: 01KFQABQYAHHS7B7N5N0AJ7KEK
+  vcs_refs: []
+  created_at: 2026-01-24T06:16:46.793Z
+  notes: []
+  todos: []
+- title: Path validation middleware tests
+  description: |-
+    Write tests for X-Kspec-Dir path validation middleware.
+
+    ## Test Cases
+    - Test absolute path requirement
+    - Test parent traversal rejection (paths containing ..)
+    - Test path normalization (resolve ., remove trailing slashes)
+    - Test permission denied handling (403 for unreadable paths)
+
+    ## AC Coverage
+    ac-6, ac-7, ac-8, ac-8b
+
+    ## Dependencies
+    Task: Multi-directory daemon test fixtures
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - phase-3
+  _ulid: 01KFQAC1BKNR7V6WJDVQMEDD15
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:16:46.793Z
+  created_at: 2026-01-24T06:16:56.435Z
   notes: []
   todos: []
