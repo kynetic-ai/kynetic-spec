@@ -1008,6 +1008,11 @@ features:
             traits: []
             notes: []
             created: 2026-01-24T14:48:16.858Z
+            acceptance_criteria:
+              - id: ac-1
+                given: agent identifies friction point
+                when: before capturing
+                then: agent MUST search observations, inbox, tasks for duplicates
           - _ulid: 01KFR7MEGS6K4AXRJD6JAN7GQH
             slugs:
               - pr-review-loop-workflow
