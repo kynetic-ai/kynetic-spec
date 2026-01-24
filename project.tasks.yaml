@@ -31181,6 +31181,62 @@
         handling, observations, error handling, and navigation. Each child task contains complete
         standalone implementation details."
       supersedes: null
+    - _ulid: 01KFS46E6S8QHRZ8JSNZHPRSPR
+      created_at: 2026-01-24T23:07:30.393Z
+      author: "@claude"
+      content: >-
+        ## Current State Assessment
+
+
+        ### Infrastructure Status
+
+        - ✅ Playwright configured (playwright.config.ts exists)
+
+        - ✅ Test fixture framework exists (test-base.ts with daemon setup)
+
+        - ✅ Smoke tests exist (smoke.spec.ts) with 5 basic tests
+
+        - ✅ Documentary project-selector tests created (all skipped, pending component
+        implementation)
+
+
+        ### Task Analysis
+
+        This is a **parent epic** task. Child tasks have been created for specific test areas:
+
+        - @01KFP84N - E2E Tasks View Tests
+
+        - @01KFP84S - E2E Items View Tests
+
+        - @01KFP84X - E2E Inbox Tests
+
+        - @01KFP850 - E2E Search Command Palette Tests
+
+        - @01KFP854 - E2E Connection Handling Tests
+
+        - @01KFP85D - E2E Observations Panel Tests
+
+        - @01KFP85G - E2E Error Handling Tests
+
+        - @01KFP85M - E2E Navigation and URL State Tests
+
+
+        ### Decision
+
+        This parent task should be completed once:
+
+        1. All child tasks are complete
+
+        2. Basic E2E infrastructure is verified working
+
+
+        Since the infrastructure already exists and is working (smoke tests pass), this parent epic
+        can be submitted as complete once we verify the overall E2E setup is functional and child
+        tasks are progressing.
+
+
+        The actual test implementation work should happen in the child tasks, not this parent.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
