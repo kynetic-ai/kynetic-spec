@@ -4012,7 +4012,7 @@ runs:
   - _ulid: 01KFRVNPZ4Z3Q8VBDNFD9T7JHF
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 9
     started_at: 2026-01-24T20:38:33.700Z
     step_results:
@@ -4021,7 +4021,13 @@ runs:
         started_at: 2026-01-24T20:38:33.700Z
         completed_at: 2026-01-24T20:38:57.878Z
       - step_index: 1
-        status: completed
+        status: skipped
         started_at: 2026-01-24T20:38:57.878Z
-        completed_at: 2026-01-24T20:38:57.878Z
+        completed_at: 2026-01-24T20:39:06.787Z
+        notes: Test failure in daemon-executable.test.ts is pre-existing (also fails on main branch). PR
+          only adds watcher tests which all pass.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-24T20:39:06.787Z
+        completed_at: 2026-01-24T20:39:06.787Z
     initiated_by: "@claude"
