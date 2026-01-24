@@ -33981,7 +33981,10 @@
   created_at: 2026-01-24T06:18:11.831Z
   notes: []
   todos: []
-- title: Per-project file watcher tests
+- _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
+  slugs: []
+  title: Per-project file watcher tests
+  type: task
   description: |-
     Write tests for per-project file watcher behavior.
 
@@ -33996,21 +33999,74 @@
 
     ## Dependencies
     Task: ProjectContextManager implementation
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - watcher
     - phase-6
-  _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:21.894Z
+  notes: []
+  todos: []
+- title: Per-project file watcher implementation
+  description: >-
+    Implement per-project file watchers with event scoping.
+
+
+    ## Implementation Notes
+
+    - Each registered project gets own KspecWatcher instance
+
+    - Events tagged with project path when emitted
+
+    - Cleanup watcher on project unregister
+
+    - Handle EMFILE/ENFILE errors gracefully (return 503)
+
+
+    ## Files to Modify
+
+    - Extend ProjectContextManager to create watcher per project
+
+    - Modify file change broadcast (packages/daemon/src/server.ts lines 163-168) to include project
+    path
+
+    - Broadcast to topic `files:updates` needs to use per-project filtering from Task 11c
+
+
+    ## AC Coverage
+
+    ac-17, ac-18, ac-19
+
+
+    ## Dependencies
+
+    - Task: ProjectContextManager implementation
+
+    - Task: Per-project broadcast filtering implementation (for event routing)
+
+    - Task: Per-project file watcher tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - daemon
+    - watcher
+    - phase-6
+  _ulid: 01KFQAF08VSFJQ2D6EERRH890E
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:18:21.894Z
+  created_at: 2026-01-24T06:18:33.627Z
   notes: []
   todos: []
