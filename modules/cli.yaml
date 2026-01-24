@@ -2449,6 +2449,22 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:27.100Z
+      - _ulid: 01KFR7T8HYW22JJQ1KNPZ17Q51
+        slugs:
+          - ralph-subagent-spawning
+        title: Ralph Subagent Spawning
+        type: requirement
+        tags: []
+        description: Ralph can spawn ACP subagents for dedicated tasks (e.g., PR review). Subagents are
+          separate Claude Code processes with focused prompts. Subagents run sequentially (ralph
+          waits for completion).
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-24T14:51:31.263Z
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
