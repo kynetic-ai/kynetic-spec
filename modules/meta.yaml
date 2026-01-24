@@ -1054,6 +1054,10 @@ features:
                 given: PR exists for pending_review task
                 when: subagent starts
                 then: runs @local-review workflow first
+              - id: ac-2
+                given: local-review runs
+                when: subagent verifies
+                then: all spec ACs linked to task have test coverage
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
