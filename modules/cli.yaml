@@ -2794,6 +2794,10 @@ features:
             given: ready tasks exist
             when: skill filters
             then: "only automation: eligible shown"
+          - id: ac-4
+            given: multiple eligible tasks
+            when: skill selects
+            then: follows loop selection order
       - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
         slugs:
           - reflect-loop-skill
