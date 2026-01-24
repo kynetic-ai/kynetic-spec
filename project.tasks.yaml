@@ -33987,6 +33987,7 @@
   created_at: 2026-01-24T06:18:01.549Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   slugs: []
   title: Per-project broadcast filtering implementation
