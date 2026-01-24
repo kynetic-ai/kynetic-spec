@@ -34610,6 +34610,17 @@
         - Clearer exit conditions: task done, no eligible tasks, all blocked
         - Added instructions for starting workflow (kspec workflow start @task-work-loop)
       supersedes: null
+    - _ulid: 01KFRGJRG7C0P2NYER3990AB4D
+      created_at: 2026-01-24T17:24:42.631Z
+      author: "@claude"
+      content: |-
+        Updated spec @task-work-loop-workflow:
+        - Removed ac-2 (pending_review subagent spawn - ralph's responsibility)
+        - Removed ac-10 (pending_review handling - ralph's responsibility)
+        - Reworked ac-6: verification still performed (was 'skipped')
+        - Updated description to reflect correct behavior
+        Spec now has 8 ACs aligned with implementation.
+      supersedes: null
   todos: []
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
