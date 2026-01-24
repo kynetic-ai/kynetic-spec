@@ -561,3 +561,12 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFQ38PXQTTY3SXAN0E04QHGK
+    text: Create a skill for adding E2E tests - should guide through creating test file, remind about
+      vitest exclusion, and suggest data-testid patterns
+    created_at: 2026-01-24T04:12:47.415Z
+    tags:
+      - e2e
+      - skill
+      - dx
+    added_by: "@claude"
