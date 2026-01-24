@@ -3323,7 +3323,7 @@ runs:
   - _ulid: 01KFRA54G6APCBZZPR7436PBJR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T15:32:24.710Z
     step_results:
@@ -3356,5 +3356,13 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T15:34:35.447Z
-        completed_at: 2026-01-24T15:34:35.447Z
+        completed_at: 2026-01-24T15:34:51.901Z
+        notes: "Proposed improvements: (1) kspec item set --relates-to - CLI support for relationship
+          fields, scope: small. (2) kspec item ac add --file - bulk AC add from YAML, scope: medium.
+          (3) kspec workflow abort --stale - bulk abort old runs, scope: small. (4) Subagent context
+          - not kspec actionable, agent pattern issue."
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T15:34:51.901Z
+        completed_at: 2026-01-24T15:34:51.901Z
     initiated_by: "@claude"
