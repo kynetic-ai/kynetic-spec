@@ -376,6 +376,81 @@ workflows:
           Report findings.
           List all MUST-FIX issues that block PR creation.
           Non-blocking suggestions can be noted separately.
+  - _ulid: 01KFRG7TY446JN3M1XFHAFB981
+    id: task-work-loop
+    trigger: manual
+    description: "Loop variant of task-work-session for autonomous agents. Auto-filters to
+      automation-eligible tasks, auto-resolves decisions. Task selection: in_progress > unblocking >
+      priority. Still verifies work needed. PR review handled externally by ralph."
+    steps:
+      - type: action
+        content: |
+          Filter to automation-eligible tasks only.
+          Use: kspec tasks ready --eligible
+          This ensures only tasks marked automation: eligible are considered.
+        execution:
+          mode: silent
+      - type: decision
+        content: |
+          Select task by priority order.
+          Check in order:
+          1. in_progress tasks (continue existing work)
+          2. Ready tasks that unblock others (high impact)
+          3. Highest priority ready task (lowest number = higher priority)
+
+          Note: pending_review tasks are handled externally by ralph spawning PR review subagents.
+        options:
+          - in_progress task exists -> continue that task
+          - Ready task unblocks others -> select that task
+          - Only isolated ready tasks -> select highest priority (lowest number)
+          - "No eligible tasks -> EXIT with message: No eligible tasks"
+          - "All eligible blocked -> EXIT with message: All eligible tasks blocked"
+        execution:
+          mode: silent
+      - type: check
+        content: |
+          Verify work is needed.
+          Check git history: git log --oneline --grep="feature-name"
+          Read existing implementation if files exist.
+          This prevents duplicate work.
+        on_fail: Mark task complete with "Already implemented" reason and EXIT
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Start selected task (if not already in_progress).
+          Use: kspec task start @task
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Work on the task, adding notes as you go.
+          Use: kspec task note @task "What you're doing..."
+          Add notes during work, not just at end.
+      - type: action
+        content: |
+          Commit changes with Task: @task trailer.
+          All changes must be committed before submitting.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Submit task for review.
+          Use: kspec task submit @task
+          This marks the task pending_review.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Create PR.
+          Use: /pr skill
+          After PR created, EXIT - ralph handles PR review via separate subagent.
+        execution:
+          mode: silent
+    mode: loop
+    based_on: "@task-work-session"
+    tags:
+      - loop
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
