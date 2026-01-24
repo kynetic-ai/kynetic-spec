@@ -35131,10 +35131,24 @@
     - phase-5
   vcs_refs: []
   created_at: 2026-01-24T06:18:11.831Z
-  notes: []
+  started_at: 2026-01-24T21:59:11.032Z
+  notes:
+    - _ulid: 01KFS09EJQBM2P85M6T9NGP830
+      created_at: 2026-01-24T21:59:14.775Z
+      author: "@claude"
+      content: |-
+        Verified implementation is already complete. 
+
+        Checked:
+        1. PubSubManager.broadcast() has projectPath filtering (pubsub.ts:73-78)
+        2. All route handlers pass projectContext.path to broadcasts
+        3. File watcher broadcasts pass startupProjectPath  
+        4. 9 comprehensive tests passing at tests/daemon-pubsub.test.ts
+
+        Implementation fully covers AC-17 and AC-18. No code changes needed.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-24T21:59:11.032Z
 - _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
   slugs:
     - task-watcher-tests
