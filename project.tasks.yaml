@@ -31114,7 +31114,7 @@
   type: task
   spec_ref: "@web-ui"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -31304,6 +31304,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-24T23:08:48.566Z
+  closed_reason: "Parent epic complete. E2E infrastructure verified working (Playwright configured,
+    test fixtures exist, 5 smoke tests passing, npm scripts configured). Child tasks created for
+    specific test areas: tasks view (@01KFP84N), items view (@01KFP84S), inbox (@01KFP84X), search
+    (@01KFP850), connection handling (@01KFP854), observations (@01KFP85D), error handling
+    (@01KFP85G), navigation (@01KFP85M). Implementation work proceeds in child tasks."
 - _ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
   slugs: []
   title: Add type validation tests to shared package
