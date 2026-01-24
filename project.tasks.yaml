@@ -34062,7 +34062,7 @@
     - Task: Global PID/port file management
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAAX"
@@ -34077,6 +34077,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T19:17:33.458Z
 - _ulid: 01KFQAC1BKNR7V6WJDVQMEDD15
   slugs:
     - task-path-validation-tests
