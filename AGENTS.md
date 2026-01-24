@@ -681,6 +681,42 @@ await fs.writeFile('kynetic.yaml', stringify({ kynetic: '1.0' }));
 
 See `tests/helpers/cli.ts` for full documentation.
 
+### Generating ULIDs for YAML Fixtures
+
+When manually creating YAML fixture files (not TypeScript tests), generate valid ULIDs using the same pattern as `testUlid()`:
+
+```bash
+node -e "
+const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+function testUlid(prefix = '', sequence = 0) {
+  const safe = prefix.toUpperCase().replace(/I/g,'J').replace(/L/g,'K').replace(/O/g,'0').replace(/U/g,'V');
+  const base = '01' + safe;
+  const padLen = 24 - base.length;
+  const sequenceStr = sequence.toString().padStart(Math.min(padLen, 8), '0').slice(0, padLen);
+  return (base + sequenceStr).padEnd(25, '0') + CROCKFORD_BASE32[sequence % 32];
+}
+// Generate ULIDs for your fixture
+console.log(testUlid('0BS', 0));  // observations
+console.log(testUlid('JNBX', 0)); // inbox
+"
+```
+
+### E2E Tests (Playwright)
+
+E2E tests live in `packages/web-ui/tests/e2e/` and use Playwright, not vitest.
+
+**Important:** Playwright tests must be excluded from vitest. This is configured in `vitest.config.ts`:
+
+```typescript
+exclude: [
+  '**/node_modules/**',
+  '**/dist/**',
+  '**/packages/web-ui/tests/e2e/**',  // Playwright uses different API
+],
+```
+
+Run E2E tests separately: `npm run test:e2e -w packages/web-ui`
+
 ## Session Reflection
 
 After significant work, use `/reflect` to identify learnings, friction points, and improvements.
