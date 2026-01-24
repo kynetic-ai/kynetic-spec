@@ -1049,6 +1049,11 @@ features:
             traits: []
             notes: []
             created: 2026-01-24T14:48:20.762Z
+            acceptance_criteria:
+              - id: ac-1
+                given: PR exists for pending_review task
+                when: subagent starts
+                then: runs @local-review workflow first
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
