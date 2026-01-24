@@ -33518,7 +33518,10 @@
   created_at: 2026-01-24T06:16:10.627Z
   notes: []
   todos: []
-- title: ProjectContextManager unit tests
+- _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
+  slugs: []
+  title: ProjectContextManager unit tests
+  type: task
   description: |-
     Write unit tests for ProjectContextManager.
 
@@ -33534,20 +33537,71 @@
 
     ## Dependencies
     Task: Multi-directory daemon test fixtures
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - phase-1
-  _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
+  vcs_refs: []
+  created_at: 2026-01-24T06:16:20.121Z
+  notes: []
+  todos: []
+- title: Global PID/port file management
+  description: >-
+    Move PID/port files to global location and implement file locking.
+
+
+    ## Implementation Notes
+
+    - Move PID from .kspec/.daemon.pid to ~/.config/kspec/daemon.pid
+
+    - Move port from .kspec/.daemon.port to ~/.config/kspec/daemon.port
+
+    - Create ~/.config/kspec/ directory if missing (mode 0755)
+
+    - Add file lock on PID file to prevent concurrent daemon starts
+
+    - Validate port file content on read (reject non-numeric)
+
+
+    ## Files to Modify
+
+    - `packages/daemon/src/pid.ts`: Change PidFileManager constructor (line 15) to use global path,
+    add dir creation, add file lock
+
+    - `src/cli/commands/serve.ts`: Update readPortFile() (lines 34-56) to use global location, add
+    validation
+
+    - Both packages need changes (daemon AND CLI)
+
+
+    ## AC Coverage
+
+    ac-9, ac-9b, ac-9c, ac-10, ac-10b, ac-11, ac-13
+
+
+    ## Dependencies
+
+    Task: Global PID/port management tests (tests first)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - daemon
+    - phase-2
+  _ulid: 01KFQABA3D59R47QJ8R20ZYG43
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-24T06:16:20.121Z
+  created_at: 2026-01-24T06:16:32.621Z
   notes: []
   todos: []
