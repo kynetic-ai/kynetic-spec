@@ -608,13 +608,3 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
-  - _ulid: 01KFQ6B44RFD1V206AW1389Q14
-    text: "Multi-directory daemon architecture: Single daemon serving multiple projects with LRU cache,
-      asset resolution via import.meta.dirname for npm installs, X-Kspec-Dir header for API routing.
-      Blocks E2E testing infrastructure. See task note on @01KFP84J for research details."
-    created_at: 2026-01-24T05:06:32.216Z
-    tags:
-      - architecture
-      - daemon
-      - blocking
-    added_by: "@claude"
