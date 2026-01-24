@@ -599,3 +599,12 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFQ5950G4K4FMYWNATWV4H8A
+    text: "Daemon: Log resolved web UI path and static serving details on startup. Currently logs 'Web
+      UI assets found' but not enough detail to debug hash mismatches like today's issue."
+    created_at: 2026-01-24T04:47:58.993Z
+    tags:
+      - daemon
+      - dx
+      - reflection
+    added_by: "@claude"
