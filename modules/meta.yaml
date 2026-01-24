@@ -959,6 +959,10 @@ features:
                 given: no in_progress tasks AND eligible tasks with pending_review exist
                 when: agent selects next task
                 then: pending_review task triggers sequential subagent spawn before ready tasks
+              - id: ac-3
+                given: eligible ready tasks where some unblock others
+                when: agent selects next task
+                then: tasks that unblock others preferred over isolated high-priority
           - _ulid: 01KFR7MAPT1BSPB7Y76TBW3TKV
             slugs:
               - session-reflect-loop-workflow
