@@ -2978,7 +2978,7 @@ runs:
   - _ulid: 01KFQ8H939CAXFP3FGSRSEPSJH
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-24T05:44:51.049Z
     step_results:
@@ -3095,5 +3095,52 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-24T05:46:00.345Z
-        completed_at: 2026-01-24T05:46:00.345Z
+        completed_at: 2026-01-24T05:46:11.482Z
+        notes: >-
+          ## Proposed Improvements
+
+
+          ### 1. BUN_ENV=production automation (Small)
+
+          **What:** Automatically set BUN_ENV=production when spawning daemon in serve.ts
+
+          **How it helps:** Prevents Bun's dev mode HTML transformation that causes asset hash
+          mismatches
+
+          **Scope:** Small - single line change in spawn() call in serve.ts
+
+
+          ### 2. E2E test fixture health check (Medium)
+
+          **What:** After starting daemon in test fixture, verify it's healthy by:
+            - Calling /api/health endpoint
+            - Checking response includes expected fields
+            - Failing fast with clear error if daemon didn't start correctly
+          **How it helps:** Catches daemon startup failures immediately instead of cryptic test
+          failures later
+
+          **Scope:** Medium - modify test-base.ts fixture, add retry logic
+
+
+          ### 3. CLI-wide --kspec-dir option (Medium)
+
+          **What:** Add --kspec-dir (or KSPEC_DIR env var) to all CLI commands, not just serve
+
+          **How it helps:** Enables testing with isolated fixtures, running kspec for different
+          projects without cd
+
+          **Scope:** Medium - need to thread option through all commands, update initContext calls
+
+
+          ### 4. Document Bun production mode requirement (Small)
+
+          **What:** Add note to AGENTS.md or README about BUN_ENV=production for daemon
+
+          **How it helps:** Prevents others from hitting same debugging session
+
+          **Scope:** Small - documentation only
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-24T05:46:11.482Z
+        completed_at: 2026-01-24T05:46:11.482Z
     initiated_by: "@claude"
