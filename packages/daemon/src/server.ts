@@ -10,7 +10,6 @@ import { cors } from '@elysiajs/cors';
 import { staticPlugin } from '@elysiajs/static';
 import { ulid } from 'ulidx';
 import { existsSync } from 'fs';
-import { KspecWatcher } from './watcher';
 import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
@@ -22,7 +21,7 @@ import { createItemsRoutes } from './routes/items';
 import { createInboxRoutes } from './routes/inbox';
 import { createMetaRoutes } from './routes/meta';
 import { createValidationRoutes } from './routes/validation';
-import { join, relative } from 'path';
+import { join } from 'path';
 
 export interface ServerOptions {
   port: number;
@@ -168,33 +167,6 @@ export async function createServer(options: ServerOptions) {
   // WeakMap to store project path during WebSocket upgrade
   const wsProjectPaths = new Map<string, string>();
 
-  // AC-4: Initialize file watcher
-  const watcher = new KspecWatcher({
-    kspecDir,
-    onFileChange: (file, content) => {
-      // AC-4, ac-29: Broadcast file change to subscribed clients via topic
-      // AC: @multi-directory-daemon ac-18 - Broadcast scoped to startup project
-      const relativePath = relative(kspecDir, file);
-      pubsubManager.broadcast('files:updates', 'file_changed', {
-        ref: relativePath,
-        action: 'modified'
-      }, startupProjectPath);
-
-      console.log(`[daemon] Broadcast file change: ${relativePath}`);
-    },
-    onError: (error, file) => {
-      // AC-6: Broadcast error event on YAML parse errors
-      // AC: @multi-directory-daemon ac-18 - Broadcast scoped to startup project
-      const relativePath = file ? relative(kspecDir, file) : undefined;
-      pubsubManager.broadcast('files:errors', 'file_error', {
-        ref: relativePath,
-        error: error.message
-      }, startupProjectPath);
-
-      console.error('[daemon] Broadcast error:', error.message);
-    }
-  });
-
   const app = new Elysia()
     // AC-15: Plugin pattern for middleware
     // AC: @api-contract ac-1 - Allow CORS from dev server on localhost:5173
@@ -205,10 +177,18 @@ export async function createServer(options: ServerOptions) {
     }))
 
     // AC-3: Enforce localhost-only connections
-    .onRequest(localhostOnly())
+    .onRequest(localhostOnly());
 
-    // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
-    .use(projectContextMiddleware({ startupProject: startupProjectPath }))
+  // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
+  const { manager: projectContextManager, middleware: projectMiddleware } = projectContextMiddleware({
+    startupProject: startupProjectPath,
+    pubsub: pubsubManager
+  });
+
+  // Store manager globally for shutdown
+  projectManager = projectContextManager;
+
+  app.use(projectMiddleware)
 
     // AC-11: Health check endpoint
     .get('/api/health', () => ({
@@ -360,11 +340,14 @@ export async function createServer(options: ServerOptions) {
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
 
-  // AC-4: Start file watcher
-  try {
-    await watcher.start();
-  } catch (error) {
-    console.error('[daemon] Failed to start file watcher:', error);
+  // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
+  if (startupProjectPath) {
+    try {
+      await projectContextManager.startWatcher(startupProjectPath);
+      console.log(`[daemon] File watcher started for startup project: ${startupProjectPath}`);
+    } catch (error) {
+      console.error('[daemon] Failed to start file watcher for startup project:', error);
+    }
   }
 
   // AC: @daemon-server ac-13, ac-14 - Start heartbeat monitoring
@@ -378,8 +361,9 @@ export async function createServer(options: ServerOptions) {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
 
-      // Stop file watcher
-      await watcher.stop();
+      // AC: @multi-directory-daemon ac-11b - Stop all file watchers
+      await projectContextManager.stopAllWatchers();
+      console.log('[daemon] All file watchers stopped');
 
       // Close all WebSocket connections with code 1000 (clean close)
       // AC: @trait-websocket-protocol ac-7

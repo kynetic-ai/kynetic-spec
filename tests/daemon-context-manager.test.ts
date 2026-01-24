@@ -42,7 +42,7 @@ describe('ProjectContextManager', () => {
 
       expect(manager.hasProject(projectA)).toBe(true);
       expect(context.path).toBe(projectA);
-      expect(context.watcherActive).toBe(true);
+      expect(context.watcherActive).toBe(false); // Watcher started separately via startWatcher()
       expect(context.registeredAt).toBeInstanceOf(Date);
     });
 
