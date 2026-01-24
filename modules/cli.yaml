@@ -2449,6 +2449,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:27.100Z
+        acceptance_criteria:
+          - id: ac-1
+            given: ralph iteration starts
+            when: prompt built
+            then: includes iteration N/M, session ID, no-human flag
       - _ulid: 01KFR7T8HYW22JJQ1KNPZ17Q51
         slugs:
           - ralph-subagent-spawning
