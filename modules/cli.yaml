@@ -2863,6 +2863,10 @@ features:
             given: task ref provided but no PR exists
             when: skill validates
             then: errors with no PR found for task
+          - id: ac-4
+            given: skill documentation
+            when: content examined
+            then: emphasizes AC coverage AND spec alignment as quality gates
       - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
         slugs:
           - loop-mode-error-handling
