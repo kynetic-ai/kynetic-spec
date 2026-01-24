@@ -34621,6 +34621,21 @@
         - Updated description to reflect correct behavior
         Spec now has 8 ACs aligned with implementation.
       supersedes: null
+    - _ulid: 01KFRHVYYDMTBNE7KCF2Q724AS
+      created_at: 2026-01-24T17:47:12.717Z
+      author: "@claude"
+      content: >-
+        Addressed PR review feedback: Rewrote Loop Mode section to be agent-focused. Agent reading
+        this has already been invoked via /task-work loop, so now it:
+
+        - Starts with 'kspec workflow start @task-work-loop'
+
+        - Guides through each step with commands to run
+
+        - Clear exit conditions
+
+        - Removed confusing invocation instructions
+      supersedes: null
   todos: []
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
