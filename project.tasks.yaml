@@ -35120,36 +35120,6 @@
   meta_ref: null
   status: completed
   blocked_by: []
-  depends_on:
-    - "@01KFQADQ"
-    - "@01KFQAE0"
-  context: []
-  priority: 2
-  tags:
-    - daemon
-    - websocket
-    - phase-5
-  vcs_refs: []
-  created_at: 2026-01-24T06:18:11.831Z
-  started_at: 2026-01-24T21:59:11.032Z
-  notes:
-    - _ulid: 01KFS09EJQBM2P85M6T9NGP830
-      created_at: 2026-01-24T21:59:14.775Z
-      author: "@claude"
-      content: |-
-        Verified implementation is already complete. 
-
-        Checked:
-        1. PubSubManager.broadcast() has projectPath filtering (pubsub.ts:73-78)
-        2. All route handlers pass projectContext.path to broadcasts
-        3. File watcher broadcasts pass startupProjectPath  
-        4. 9 comprehensive tests passing at tests/daemon-pubsub.test.ts
-
-        Implementation fully covers AC-17 and AC-18. No code changes needed.
-      supersedes: null
-  todos: []
-  automation: eligible
-  completed_at: 2026-01-24T21:59:37.793Z
   closed_reason: >-
     Already implemented. Per-project broadcast filtering is complete - implemented in prior PRs #225
     (WebSocket binding) and #226 (broadcast filtering tests).
@@ -35167,6 +35137,36 @@
 
 
     Covers AC-17 and AC-18. No code changes needed.
+  depends_on:
+    - "@01KFQADQ"
+    - "@01KFQAE0"
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - websocket
+    - phase-5
+  vcs_refs: []
+  created_at: 2026-01-24T06:18:11.831Z
+  started_at: 2026-01-24T21:59:11.032Z
+  completed_at: 2026-01-24T21:59:37.793Z
+  notes:
+    - _ulid: 01KFS09EJQBM2P85M6T9NGP830
+      created_at: 2026-01-24T21:59:14.775Z
+      author: "@claude"
+      content: |-
+        Verified implementation is already complete. 
+
+        Checked:
+        1. PubSubManager.broadcast() has projectPath filtering (pubsub.ts:73-78)
+        2. All route handlers pass projectContext.path to broadcasts
+        3. File watcher broadcasts pass startupProjectPath  
+        4. 9 comprehensive tests passing at tests/daemon-pubsub.test.ts
+
+        Implementation fully covers AC-17 and AC-18. No code changes needed.
+      supersedes: null
+  todos: []
+  automation: eligible
 - _ulid: 01KFQAEMT634A5B7TZ9KQ690QK
   slugs:
     - task-watcher-tests
@@ -35329,7 +35329,7 @@
     - Task: Per-project file watcher tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -35346,6 +35346,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-24T21:59:58.947Z
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   slugs:
     - task-projects-api-tests
