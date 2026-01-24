@@ -34319,7 +34319,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
-  slugs: []
+  slugs:
+    - task-ui-selector-tests
   title: Web UI project selector tests
   type: task
   description: |-
