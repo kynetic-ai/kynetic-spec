@@ -3709,4 +3709,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFS6P9Q1GDVYAXF1E3ZGJTPZ
+    type: friction
+    content: "Workflow runs accumulate without lifecycle management. 34+ active runs exist with no clear
+      way to complete/cancel old runs. Need: kspec workflow complete/cancel/cleanup commands to
+      manage run lifecycle and prevent stale run accumulation."
+    created_at: 2026-01-24T23:51:07.233Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
