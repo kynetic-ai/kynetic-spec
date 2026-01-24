@@ -35469,6 +35469,14 @@
 
         Ready for review and merge.
       supersedes: null
+    - _ulid: 01KFS1YF7GKGXG42Z9XN4QPA35
+      created_at: 2026-01-24T22:28:12.144Z
+      author: "@claude"
+      content: "CI tests failing due to platform limitation: GitHub Actions runner doesn't support
+        recursive fs.watch, falls back to Chokidar which has different timing characteristics. Tests
+        pass locally (17/17). Need to either: (1) increase timeout in tests for CI, (2) skip watcher
+        tests in CI, or (3) mock the file watcher in tests. Documented in workflow run @01KFS1XJ."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
