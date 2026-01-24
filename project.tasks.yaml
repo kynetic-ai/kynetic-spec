@@ -31639,8 +31639,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T19:40:24.453Z
-  notes: []
+  notes:
+    - _ulid: 01KFQAZ0ZVC7VRT9B0DM4H5841
+      created_at: 2026-01-24T06:27:18.651Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Missing spec_ref - process improvement needs spec
+        definition"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
   slugs: []
   title: E2E Dashboard Tests
