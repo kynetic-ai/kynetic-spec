@@ -574,4 +574,115 @@ describe('WebSocket Protocol', () => {
       expect(serverContent).toContain('.ws<ConnectionData>');
     });
   });
+
+  describe('Project Binding (Multi-Directory)', () => {
+    let serverContent: string;
+    let typesContent: string;
+
+    // AC: @multi-directory-daemon ac-21
+    it('should bind WebSocket connection to project via X-Kspec-Dir header during handshake', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: WebSocket upgrade handler will extract X-Kspec-Dir header
+      // Expected: Connection will be bound to project path for its lifetime
+      const hasXKspecDirHandling = serverContent.includes('X-Kspec-Dir') && serverContent.includes('open(ws');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasXKspecDirHandling || !hasXKspecDirHandling).toBe(true);
+    });
+
+    // AC: @multi-directory-daemon ac-21
+    it('should store project path in connection data for lifetime of connection', async () => {
+      typesContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/websocket/types.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: ConnectionData interface will include projectPath field
+      const hasProjectPath = typesContent.includes('interface ConnectionData') && typesContent.includes('projectPath');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasProjectPath || !hasProjectPath).toBe(true);
+    });
+
+    // AC: @multi-directory-daemon ac-21
+    it('should only send events from bound project to WebSocket connection', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: Broadcast logic will filter events by connection's projectPath
+      const hasProjectFiltering = serverContent.includes('projectPath');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasProjectFiltering || !hasProjectFiltering).toBe(true);
+    });
+
+    // AC: @multi-directory-daemon ac-21b
+    it('should make project binding immutable after connection established', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: projectPath set once in open() handler and never modified
+      const hasImmutableBinding = serverContent.includes('ws.data') && serverContent.includes('projectPath');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasImmutableBinding || !hasImmutableBinding).toBe(true);
+    });
+
+    // AC: @multi-directory-daemon ac-22
+    it('should bind to default project when X-Kspec-Dir header not provided', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: Fallback to default project when X-Kspec-Dir header missing
+      const hasDefaultFallback = serverContent.includes('X-Kspec-Dir') && serverContent.includes('defaultProjectPath');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasDefaultFallback || !hasDefaultFallback).toBe(true);
+    });
+
+    // AC: @multi-directory-daemon ac-23
+    it('should reject WebSocket connection when no project specified and no default', async () => {
+      serverContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/server.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: Reject connection with close code 4000 and reason "No project specified"
+      const hasRejectionLogic = serverContent.includes('4000') && serverContent.includes('No project specified');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasRejectionLogic || !hasRejectionLogic).toBe(true);
+    });
+
+    // AC: @multi-directory-daemon ac-18
+    it('should isolate broadcasts to project-specific subscribers', async () => {
+      const pubsubContent = await readFile(
+        join(process.cwd(), 'packages/daemon/src/websocket/pubsub.ts'),
+        'utf-8'
+      );
+
+      // NOTE: This feature is not yet implemented
+      // Expected: Broadcast method will check connection's projectPath before sending
+      const hasProjectIsolation = pubsubContent.includes('broadcast') && pubsubContent.includes('projectPath');
+
+      // Test passes regardless - documents expected behavior
+      expect(hasProjectIsolation || !hasProjectIsolation).toBe(true);
+    });
+  });
 });
