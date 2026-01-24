@@ -35459,6 +35459,16 @@
 
         Ready for commit and PR.
       supersedes: null
+    - _ulid: 01KFS16Z7JB6E16G17FKK4A0PS
+      created_at: 2026-01-24T22:15:22.098Z
+      author: "@claude"
+      content: |-
+        PR created: #227 (https://github.com/kynetic-ai/kynetic-spec/pull/227)
+
+        Branch: feat/watcher-impl
+
+        Ready for review and merge.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
