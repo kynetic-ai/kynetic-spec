@@ -2540,7 +2540,7 @@ features:
           - id: ac-11
             given: subagent output is displayed
             when: rendering to terminal
-            then: output includes [SUBAGENT] prefix to distinguish from main agent
+            then: output includes [REVIEW SUBAGENT] prefix to distinguish from main agent
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client

@@ -3175,6 +3175,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T12:40:05.588Z
+    completed_at: 2026-01-24T12:46:18.843Z
     step_results:
       - step_index: 0
         status: completed
@@ -3319,4 +3320,11 @@ runs:
           - Success @01KFR0MB: Subagent plan review before spec finalization  
           - Friction @01KFR0MN: Didn't know about existing CLI features (item ac add, --refs batch)
     initiated_by: "@claude"
-    completed_at: 2026-01-24T12:46:18.843Z
+  - _ulid: 01KFRA54G6APCBZZPR7436PBJR
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-24T15:32:24.710Z
+    step_results: []
+    initiated_by: "@claude"

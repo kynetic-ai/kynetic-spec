@@ -945,7 +945,8 @@ features:
               priority)."
             depends_on: []
             implements: []
-            relates_to: []
+            relates_to:
+              - "@01KFM9SNV2QRRGREJ1HMZWXCFT"  # @task-work-session workflow
             tests: []
             traits: []
             notes: []
@@ -1003,7 +1004,8 @@ features:
               threshold."
             depends_on: []
             implements: []
-            relates_to: []
+            relates_to:
+              - "@01KFKS5NT2T98M70QQ4FZB2VTW"  # @session-reflect workflow
             tests: []
             traits: []
             notes: []
@@ -1044,7 +1046,9 @@ features:
               clear log output, main workflow consistency, dependent tasks must wait for PR merge."
             depends_on: []
             implements: []
-            relates_to: []
+            relates_to:
+              - "@01KFM9X3C64AHJAD6J2YJZ3YA6"  # @local-review workflow
+              - "@01KFM9G3BR4VFNBM2G7BGE5BZY"  # @pr-review-merge workflow
             tests: []
             traits: []
             notes: []
@@ -1091,9 +1095,9 @@ features:
                 when: ralph behavior
                 then: ralph waits for subagent completion before continuing
               - id: ac-11
-                given: subagent encounters friction or learning during PR review
-                when: subagent reflects
-                then: captures observation via kspec meta observe with [SUBAGENT] prefix in content
+                given: subagent encounters friction during PR review
+                when: friction is significant (not one-off)
+                then: searches existing observations first, only captures if unique, uses kspec meta observe with [REVIEW SUBAGENT] prefix
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
