@@ -2749,6 +2749,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-24T14:51:00.111Z
+        acceptance_criteria:
+          - id: ac-1
+            given: skill supports loop mode
+            when: /skill-name loop invoked
+            then: skill recognizes argument, modifies behavior
       - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
         slugs:
           - task-work-loop-skill
