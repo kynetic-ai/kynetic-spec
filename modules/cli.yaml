@@ -2678,6 +2678,21 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KFR7K7BF3XK8TWVAP191TDH1
+    slugs:
+      - skill-commands
+    title: Skill Commands
+    type: feature
+    tags: []
+    description: Container for skill-related behavior specs. Skills are structured agents invoked via
+      Claude Code's /skill mechanism with optional mode arguments.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-24T14:47:40.656Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
