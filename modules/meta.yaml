@@ -1025,6 +1025,10 @@ features:
                 given: friction is unique and high-confidence
                 when: agent evaluates
                 then: item IS captured
+              - id: ac-5
+                given: workflow reaches decision step
+                when: workflow continues
+                then: decision step skipped
           - _ulid: 01KFR7MEGS6K4AXRJD6JAN7GQH
             slugs:
               - pr-review-loop-workflow
