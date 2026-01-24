@@ -31644,6 +31644,7 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:39.789Z
+  started_at: 2026-01-24T04:16:18.509Z
   notes:
     - _ulid: 01KFP8671XKGS2K63MC9YWKSXH
       created_at: 2026-01-23T20:19:34.077Z
@@ -31738,8 +31739,94 @@
 
         - observations-badge
       supersedes: null
+    - _ulid: 01KFQ4Q8W1VCFF325HC9ZNXMCE
+      created_at: 2026-01-24T04:38:13.122Z
+      author: "@claude"
+      content: >-
+        ## E2E Dashboard Tests - Progress Report
+
+
+        ### Work Done
+
+        1. **Created dashboard UI** (packages/web-ui/src/routes/+page.svelte):
+           - Added TaskCounts interface and fetchTaskCounts() API function
+           - Dashboard displays task summary cards by status (pending, in_progress, pending_review, blocked, completed)
+           - Cards are clickable and navigate to filtered task list
+           - Uses WebSocket subscription for real-time updates
+
+        2. **Created E2E test file** (packages/web-ui/tests/e2e/dashboard.spec.ts):
+           - Tests for ac-1 (task counts display)
+           - Tests for ac-2 (real-time WebSocket updates)
+           - Tests for ac-3 (click navigation to filtered list)
+           - Tests for ac-20 (session focus display)
+           - Tests for ac-21 (observations badge)
+           - Viewport tests for mobile/desktop layouts
+
+        3. **Fixed CORS configuration** (packages/daemon/src/server.ts):
+           - Changed from hardcoded port list to dynamic localhost origin matching
+
+        4. **Fixed same-origin API architecture**:
+           - Updated api.ts to use getApiBase() that returns current window.location.origin
+           - Updated WebSocket manager to derive URL from window.location
+           - Updated Playwright config to use daemon port 3456 (not separate preview server)
+           - Test fixture now passes WEB_UI_DIR env var to daemon
+
+        5. **Fixed daemon project root issue** (packages/daemon/src/server.ts):
+           - Daemon was passing .kspec/ path to initContext() which triggered 'running from shadow' error
+           - Fixed by deriving projectRoot = join(kspecDir, '..')
+
+        ### Blockers Encountered
+
+        1. **Static asset serving mismatch**: 
+           - Error: 'Failed to fetch dynamically imported module: start.DimW3LEi.js'
+           - Actual file: start.DMRz5srh.js (different hash)
+           - The daemon is serving HTML that references old asset hashes
+           - Root cause: uncertain - possibly caching issue or multiple web UI builds
+
+        2. **Environment variable propagation**:
+           - WEB_UI_DIR is set in test fixture when spawning kspec CLI
+           - Not verified if it propagates through kspec -> daemon spawn chain
+
+        ### Files Modified
+
+        - packages/web-ui/src/routes/+page.svelte (dashboard UI)
+
+        - packages/web-ui/src/lib/api.ts (TaskCounts, fetchTaskCounts, getApiBase)
+
+        - packages/web-ui/src/lib/websocket/manager.ts (dynamic WS URL)
+
+        - packages/web-ui/src/lib/components/Sidebar.svelte (observations-badge testid)
+
+        - packages/web-ui/tests/e2e/dashboard.spec.ts (new test file)
+
+        - packages/web-ui/tests/fixtures/test-base.ts (WEB_UI_DIR env var)
+
+        - packages/web-ui/playwright.config.ts (use daemon port 3456, no webServer)
+
+        - packages/daemon/src/server.ts (CORS fix, projectRoot derivation)
+
+
+        ### Next Steps for Resolution
+
+        1. Debug why daemon serves stale HTML with old asset hashes:
+           - Check if staticPlugin caches index.html
+           - Verify WEB_UI_DIR is being read correctly by daemon
+           - Try adding console.log in resolveWebUiPath() to trace what path is used
+
+        2. Consider alternative approach:
+           - Have test fixture copy web UI build to temp directory
+           - Or symlink the build directory
+
+        3. Once static serving works, tests should pass - the logic is correct
+
+
+        ### Key Insight
+
+        The E2E test architecture should be: single daemon on port 3456 serving both static assets
+        and API. No need for separate Vite preview server. This simplifies CORS and is how
+        production works.
+      supersedes: null
   todos: []
-  started_at: 2026-01-24T04:16:18.509Z
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
   title: E2E Tasks View Tests
