@@ -31519,7 +31519,7 @@
     standards feedback.
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -31652,6 +31652,11 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-24T23:19:43.887Z
+  closed_reason: "Merged in PR #230. Fixed AC annotation format in daemon-auto-start.test.ts
+    addressing PR #204 review feedback. Changed all 7 test annotations from descriptive format to
+    'Schema validation:' prefix since these tests validate manifest schema, not specific acceptance
+    criteria. All tests passing."
 - _ulid: 01KFP5XQP36W1PQDYFTVQC7Q03
   slugs: []
   title: Fix daemon startup race condition in serve tests
