@@ -33876,6 +33876,7 @@
   created_at: 2026-01-24T06:17:31.376Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
   slugs: []
   title: WebSocket connection binding tests
