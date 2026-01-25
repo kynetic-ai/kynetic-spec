@@ -5,7 +5,11 @@
  */
 
 // CLI renderer
-export { createCliRenderer, type RalphRenderer } from "./cli-renderer.js";
+export {
+  createCliRenderer,
+  createPrefixedRenderer,
+  type RalphRenderer,
+} from "./cli-renderer.js";
 // Event types and translator
 export {
   type AgentMessageData,
@@ -20,3 +24,14 @@ export {
   type ToolStartData,
   type ToolUpdateData,
 } from "./events.js";
+// Subagent spawning
+export {
+  buildSubagentPrompt,
+  DEFAULT_SUBAGENT_PREFIX,
+  DEFAULT_SUBAGENT_TIMEOUT,
+  runSubagent,
+  type SubagentConfig,
+  type SubagentContext,
+  type SubagentOptions,
+  type SubagentResult,
+} from "./subagent.js";

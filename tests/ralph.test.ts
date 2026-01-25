@@ -790,3 +790,136 @@ describe('ralph event translator', () => {
     });
   });
 });
+
+// ─── Subagent Module Tests ────────────────────────────────────────────────────
+
+import {
+  buildSubagentPrompt,
+  DEFAULT_SUBAGENT_PREFIX,
+  DEFAULT_SUBAGENT_TIMEOUT,
+  type SubagentContext,
+} from '../src/ralph/subagent.js';
+import { createPrefixedRenderer } from '../src/ralph/cli-renderer.js';
+
+describe('subagent module', () => {
+  // AC: @ralph-subagent-spawning ac-2, ac-10
+  describe('buildSubagentPrompt', () => {
+    it('includes task reference in prompt', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-example',
+        taskDetails: { title: 'Example Task', status: 'pending_review' },
+        specWithACs: null,
+        gitBranch: 'feat/example',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('@task-example');
+      expect(prompt).toContain('/pr-review @task-example');
+    });
+
+    it('includes git branch in prompt', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-example',
+        taskDetails: { title: 'Example Task' },
+        specWithACs: null,
+        gitBranch: 'feat/my-branch',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('feat/my-branch');
+    });
+
+    it('includes task details as JSON', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-example',
+        taskDetails: { title: 'Test Task', priority: 1 },
+        specWithACs: null,
+        gitBranch: 'main',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('"title": "Test Task"');
+      expect(prompt).toContain('"priority": 1');
+    });
+
+    it('includes spec with ACs when provided', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-example',
+        taskDetails: { title: 'Test Task' },
+        specWithACs: {
+          title: 'Example Spec',
+          acceptance_criteria: [
+            { id: 'ac-1', given: 'condition', when: 'action', then: 'result' },
+          ],
+        },
+        gitBranch: 'main',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('Example Spec');
+      expect(prompt).toContain('acceptance_criteria');
+      expect(prompt).toContain('Verify all ACs have test coverage');
+    });
+
+    it('omits spec section when specWithACs is null', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-example',
+        taskDetails: { title: 'Test Task' },
+        specWithACs: null,
+        gitBranch: 'main',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).not.toContain('Linked Spec with Acceptance Criteria');
+    });
+
+    it('instructs subagent to run /pr-review skill', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-my-feature',
+        taskDetails: {},
+        specWithACs: null,
+        gitBranch: 'main',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('/pr-review @task-my-feature');
+    });
+  });
+
+  describe('constants', () => {
+    // AC: @ralph-subagent-spawning ac-9
+    it('DEFAULT_SUBAGENT_TIMEOUT is 10 minutes', () => {
+      expect(DEFAULT_SUBAGENT_TIMEOUT).toBe(10 * 60 * 1000);
+    });
+
+    // AC: @ralph-subagent-spawning ac-11
+    it('DEFAULT_SUBAGENT_PREFIX is [REVIEW SUBAGENT]', () => {
+      expect(DEFAULT_SUBAGENT_PREFIX).toBe('[REVIEW SUBAGENT]');
+    });
+  });
+
+  // AC: @ralph-subagent-spawning ac-11
+  describe('createPrefixedRenderer', () => {
+    it('creates renderer with prefix in newSection', () => {
+      const renderer = createPrefixedRenderer('[TEST]');
+
+      expect(renderer.newSection).toBeDefined();
+      // newSection should include the prefix - we can't easily test console output
+      // but we verify the function exists and can be called
+      expect(typeof renderer.newSection).toBe('function');
+    });
+
+    it('creates renderer with render function', () => {
+      const renderer = createPrefixedRenderer('[TEST]');
+
+      expect(renderer.render).toBeDefined();
+      expect(typeof renderer.render).toBe('function');
+    });
+  });
+});
