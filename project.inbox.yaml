@@ -735,3 +735,9 @@ inbox:
     created_at: 2026-01-25T10:22:49.595Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFTDA7QFFRGXDHK4EF29XMZX
+    text: Need to have better auto shadow resolve on issues, like git pull --rebase so it uses the new
+      merge driver properly
+    created_at: 2026-01-25T11:06:06.448Z
+    tags: []
+    added_by: Jacob Chapel
