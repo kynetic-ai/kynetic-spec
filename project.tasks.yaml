@@ -37900,7 +37900,7 @@
         continue."
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
   slugs:
     - task-loop-mode-workflows
