@@ -707,3 +707,13 @@ inbox:
       - automation
       - ralph
     added_by: "@claude"
+  - _ulid: 01KFST4K35P91SXSFDPTZC7KCP
+    text: "PR-Task Linkage Audit - When PR merges with 'Task: @ref' trailer, check if task is still
+      pending and prompt action. Could be CI check or post-merge hook. Catches orphaned tasks after
+      PR merge."
+    created_at: 2026-01-25T05:30:58.534Z
+    tags:
+      - reflection
+      - ci
+      - workflow
+    added_by: "@claude"
