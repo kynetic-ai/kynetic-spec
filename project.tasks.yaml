@@ -37852,6 +37852,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:56:22.230Z
+  started_at: 2026-01-25T09:07:13.183Z
   notes:
     - _ulid: 01KFR834PN2051ERSW65X2443X
       created_at: 2026-01-24T14:56:22.230Z
@@ -37898,5 +37899,26 @@
         stream as main agent (single display). Prompt includes /pr-review @task-ref to trigger skill
         invocation."
       supersedes: null
+    - _ulid: 01KFT6V2XK59SZ7W37HFX9AFB0
+      created_at: 2026-01-25T09:12:58.548Z
+      author: "@claude"
+      content: |-
+        Implemented subagent spawning for ralph:
+
+        1. Created src/ralph/subagent.ts with:
+           - SubagentContext type (ac-10)
+           - buildSubagentPrompt() - includes task ref, skill invoke, context
+           - runSubagent() - spawns ACP process, handles timeout, waits for completion
+
+        2. Added createPrefixedRenderer() to cli-renderer.ts (ac-11)
+
+        3. Modified ralph.ts:
+           - processPendingReviewTasks() - processes pending_review before main iteration (ac-8)
+           - buildSubagentContext() - loads task/spec details
+           - markTaskNeedsReview() - handles timeout case (ac-9)
+
+        4. Added 10 unit tests for subagent module
+
+        All 11 ACs covered by implementation.
+      supersedes: null
   todos: []
-  started_at: 2026-01-25T09:07:13.183Z
