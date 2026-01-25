@@ -35840,8 +35840,7 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on:
-    - "@task-skill-commands"
+  depends_on: []
   context: []
   priority: 1
   tags:
@@ -35876,6 +35875,11 @@
       author: "@claude"
       content: "Implementation notes: 4 ACs covering invoke, workflow, eligible-only, order. Skill
         invocation spec only; workflow behavior is in @task-work-loop-workflow."
+      supersedes: null
+    - _ulid: 01KFSWH5HJ832DV4BQC0ZHEVAF
+      created_at: 2026-01-25T06:12:47.795Z
+      author: "@claude"
+      content: "Dependencies cleared (was: @task-skill-commands)"
       supersedes: null
   todos: []
 - _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
