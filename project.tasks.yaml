@@ -31962,6 +31962,72 @@
         The spec task will produce implementation tasks that should be completed before returning to
         E2E tests.
       supersedes: null
+    - _ulid: 01KFSM5N0ZD09ND33BC2ECPY6D
+      created_at: 2026-01-25T03:46:41.823Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Goal
+
+        Implement the Dashboard view to meet AC-1, AC-2, AC-3 from @web-dashboard spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-1: Dashboard shows task overview with ready, in_progress, pending_review, blocked,
+        completed counts
+
+        - AC-2: Counts animate on WebSocket updates (no page refresh)
+
+        - AC-3: Click task count badge → navigates to filtered task list
+
+
+        ### Implementation Steps
+
+        1. Review existing Dashboard page: packages/web-ui/src/routes/+page.svelte
+
+        2. Create TaskCountCard component showing count per status
+
+        3. Fetch task counts from API on load
+
+        4. Subscribe to WebSocket for real-time count updates
+
+        5. Add click handlers that navigate to /tasks?status=X
+
+        6. Add data-testid attributes for each element
+
+
+        ### Required data-testid Attributes
+
+        Add these to components as you build them:
+
+        - dashboard-counts, task-count-ready, task-count-in_progress, task-count-pending_review,
+        task-count-blocked, task-count-completed
+
+
+        ### Validation
+
+        Write E2E tests in packages/web-ui/tests/e2e/dashboard.spec.ts that verify each AC.
+
+        - Tests MUST run and pass (no test.skip)
+
+        - Remove any existing skipped tests and replace with working ones
+
+
+        ### Definition of Done
+
+        - [ ] Dashboard displays task counts by status
+
+        - [ ] Counts update via WebSocket without refresh
+
+        - [ ] Clicking count navigates to filtered task list
+
+        - [ ] E2E tests pass for all 3 ACs
+
+        - [ ] No test.skip() in test file
+      supersedes: null
   todos: []
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
@@ -34519,6 +34585,8 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #212. Created @task-work-loop workflow with 8 steps for autonomous
+    agents. Updated spec to remove ralph-specific ACs (ac-2, ac-10) and keep verification (ac-6)."
   depends_on:
     - "@task-loop-mode-workflows"
   context: []
@@ -34528,6 +34596,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:55:55.150Z
   started_at: 2026-01-24T16:43:17.430Z
+  completed_at: 2026-01-24T17:51:08.537Z
   notes:
     - _ulid: 01KFR82A8E9S3J6ZHJFNJTBMQC
       created_at: 2026-01-24T14:55:55.150Z
@@ -34637,9 +34706,6 @@
         - Removed confusing invocation instructions
       supersedes: null
   todos: []
-  completed_at: 2026-01-24T17:51:08.537Z
-  closed_reason: "Merged in PR #212. Created @task-work-loop workflow with 8 steps for autonomous
-    agents. Updated spec to remove ralph-specific ACs (ac-2, ac-10) and keep verification (ac-6)."
 - _ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
   slugs:
     - task-session-reflect-loop-workflow
