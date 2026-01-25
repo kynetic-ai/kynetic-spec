@@ -32712,6 +32712,35 @@
         Definition of Done. Need to implement actual UI components, add data-testid attributes, then
         remove test.skip() calls so tests actually run and verify behavior."
       supersedes: null
+    - _ulid: 01KFTG1FJ9TS1AD1MXGSAZASCN
+      created_at: 2026-01-25T11:53:45.289Z
+      author: "@claude"
+      content: >-
+        Started task in loop mode iteration 5. Found existing implementation:
+
+        - ItemTree.svelte and ItemDetail.svelte components exist
+
+        - E2E tests exist in packages/web-ui/tests/e2e/items.spec.ts (16 tests)
+
+        - All tests use test.skip() - not meeting DoD
+
+
+        Gap: Components missing required data-testid attributes. Same pattern as task @01KFP84N.
+
+
+        Required test IDs to add:
+
+        ItemTree: spec-tree, tree-node-{type}, node-title, expand-toggle, tree-node-child,
+        spec-tree-container
+
+        ItemDetail: spec-detail-panel, spec-title, spec-description, acceptance-criteria, ac-item,
+        ac-given/when/then, ac-expand-toggle, ac-{given/when/then}-full, test-coverage-indicator,
+        traits-section, trait-chip, trait-title, implementation-section, implementation-status,
+        linked-task, task-status-badge, task-title
+
+
+        Plan: Add test IDs to both components, then remove test.skip() from tests.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
