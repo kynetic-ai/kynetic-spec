@@ -38251,8 +38251,16 @@
         selector component, layout integration, WebSocket handling). Escalating to
         automation:needs_review after 3 consecutive failures."
       supersedes: null
+    - _ulid: 01KFVRJP1W7V044EJ7BC733Z99
+      created_at: 2026-01-25T23:42:12.029Z
+      author: "@claude"
+      content: "Automation status set to needs_review: 3 consecutive loop failures. No implementation work
+        started - task requires multi-hour greenfield development: state management, API client
+        architecture changes, component design, WebSocket reconnection logic. Needs dedicated human
+        session for architectural decisions."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
   slugs:
     - task-loop-mode-workflows
