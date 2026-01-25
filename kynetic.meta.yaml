@@ -4191,4 +4191,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVQKD22NWCRJFJWRBKPNDR0
+    type: success
+    content: "E2E tests via Playwright for daemon API endpoints: Using
+      packages/web-ui/tests/e2e/*.spec.ts for real HTTP integration tests (not vitest mocks) aligns
+      with project architecture documented in AGENTS.md. This session: created api-projects.spec.ts
+      with 5 passing tests making real fetch() calls to running daemon. Pattern: Start daemon via
+      test fixture, make HTTP requests, verify responses. More reliable than mocking and tests
+      actual behavior."
+    created_at: 2026-01-25T23:25:07.010Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
