@@ -37916,6 +37916,13 @@
         ProjectSelector component, integrate into layout. Reset automation status when ready to
         continue."
       supersedes: null
+    - _ulid: 01KFVNHAHSCF0XAP3MVW7RBH88
+      created_at: 2026-01-25T22:49:01.753Z
+      author: "@claude"
+      content: "Loop iteration 1: Starting implementation. Will create project store, modify API client
+        for X-Kspec-Dir header, build ProjectSelector component, and integrate into layout to meet
+        AC-25, AC-26, AC-27."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
