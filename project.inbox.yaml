@@ -741,3 +741,11 @@ inbox:
     created_at: 2026-01-25T11:06:06.448Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KFVMA6ZAWVVA3QDW6ZEE5ET0
+    text: Note supersession should filter display - when a note has been superseded, hide it by default
+      in task notes output. Show only 'active' notes (those not superseded). Add --all flag to show
+      full history including superseded notes. This matters because notes are used as instructions
+      for agents, and superseded notes should be ignored in favor of newer ones.
+    created_at: 2026-01-25T22:27:40.138Z
+    tags: []
+    added_by: "@claude"
