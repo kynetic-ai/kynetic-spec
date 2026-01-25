@@ -727,3 +727,11 @@ inbox:
       - dx
       - merge
     added_by: "@claude"
+  - _ulid: 01KFTATZQVJ0PPM0A2DGKVASGD
+    text: "Improve ralph log separation between review subagent and main iteration loops. Currently
+      output blends together making it hard to distinguish which context you're reading. Consider:
+      clearer section headers, different colors, or visual dividers when transitioning between
+      subagent completion and next iteration start."
+    created_at: 2026-01-25T10:22:49.595Z
+    tags: []
+    added_by: "@claude"
