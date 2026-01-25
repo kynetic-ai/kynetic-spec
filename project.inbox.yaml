@@ -727,3 +727,13 @@ inbox:
       - shadow
       - merge
     added_by: "@claude"
+  - _ulid: 01KFT2J3Z7AJ8VPKF1N7H15WGH
+    text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during
+      init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful
+      for repos initialized before PR #183 or where config was lost."
+    created_at: 2026-01-25T07:58:10.407Z
+    tags:
+      - cli
+      - dx
+      - merge
+    added_by: "@claude"
