@@ -30613,8 +30613,15 @@
         - packages/web-ui/svelte.config.js (static adapter)
         - packages/web-ui/src/routes/+layout.ts (load snapshot)
       supersedes: null
+    - _ulid: 01KFTQHC75SPWM3NN757QH6DQZ
+      created_at: 2026-01-25T14:04:46.182Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Depends on @01KFMMJ4 export functionality (requires
+        kspec-snapshot.json). SPA static adapter configuration + client-side routing implementation.
+        Part of coordinated GitHub Pages feature."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
   slugs: []
   title: Read-only mode behaviors
