@@ -4159,4 +4159,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVPXSZXJE3FNK50A1M0MYN8
+    type: friction
+    content: E2E tests in packages/web-ui timeout after 2+ minutes with no progress indication or
+      diagnostic output. Makes debugging test failures extremely difficult - cannot iterate rapidly.
+      Tests may be waiting on daemon startup that never completes, or Playwright fixtures have
+      configuration issues. Blocked work on @01KFP84N and @01KFP84S in loop iteration 2.
+    created_at: 2026-01-25T23:13:19.358Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
