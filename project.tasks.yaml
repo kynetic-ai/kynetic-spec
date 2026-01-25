@@ -35587,7 +35587,7 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -35599,7 +35599,7 @@
     - phase-6
   vcs_refs: []
   created_at: 2026-01-24T06:18:21.894Z
-  started_at: 2026-01-24T20:20:31.368Z
+  started_at: null
   notes:
     - _ulid: 01KFRTSGKPDPBGHRAKDD4NZ9X8
       created_at: 2026-01-24T20:23:09.686Z
@@ -35686,6 +35686,11 @@
         locally but fail in CI). Tests that actually verify file watcher behavior are not running in
         CI, only tests for static structure. Task reopened to fix CI flakiness or add mocking to
         enable proper verification.
+      supersedes: null
+    - _ulid: 01KFSYSEYAESPP5V0CFBYN17SF
+      created_at: 2026-01-25T06:52:16.714Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: eligible
