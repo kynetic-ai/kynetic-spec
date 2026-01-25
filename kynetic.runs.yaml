@@ -6676,7 +6676,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFTNT6E50VZVDPBPC0ZDKD8V
     workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
+    status: aborted
     current_step: 3
     total_steps: 9
     started_at: 2026-01-25T13:34:38.021Z
@@ -6698,3 +6698,6 @@ runs:
         started_at: 2026-01-25T13:35:34.554Z
         completed_at: 2026-01-25T13:35:34.554Z
     initiated_by: "@claude"
+    abort_reason: No eligible tasks suitable for automation loop. All eligible tasks are P3 with large
+      scope. All P2 tasks marked automation:needs_review.
+    completed_at: 2026-01-25T13:35:57.592Z
