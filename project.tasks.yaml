@@ -33928,6 +33928,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #245 merged. Implemented E2E tests for WebSocket connection handling covering
+    AC-28 through AC-32: exponential backoff reconnect, connection lost indicator, sequence
+    deduplication, and topic re-subscription."
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -33940,6 +33943,7 @@
   vcs_refs: []
   created_at: 2026-01-23T20:18:58.424Z
   started_at: 2026-01-25T12:47:04.286Z
+  completed_at: 2026-01-25T13:04:01.471Z
   notes:
     - _ulid: 01KFP88MB082CPJ15SHBNC11QB
       created_at: 2026-01-23T20:20:53.216Z
@@ -34133,17 +34137,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T13:04:01.471Z
-  closed_reason: "PR #245 merged. Implemented E2E tests for WebSocket connection handling covering
-    AC-28 through AC-32: exponential backoff reconnect, connection lost indicator, sequence
-    deduplication, and topic re-subscription."
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
   slugs: []
   title: Implement Observations Panel (AC-21, AC-22)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -34303,6 +34303,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T13:04:13.549Z
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
   title: Implement Error Handling (@api-contract AC-22 to AC-24)
