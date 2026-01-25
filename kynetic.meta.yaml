@@ -4203,4 +4203,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVQKFHX5SX08ZQZDX25MKJS
+    type: friction
+    content: "Task DoD conflict with project conventions: Task @01KFQAF9 DoD said 'write real HTTP
+      tests' and 'no documentary/stub tests remain' but AGENTS.md documents that daemon API routes
+      use documentary tests (static analysis). Had to resolve conflict by checking existing patterns
+      in daemon-api-*.test.ts files. Resolution: Created E2E tests in packages/web-ui/tests/e2e/ and
+      updated documentary test to reference them. Friction point: When DoD contradicts documented
+      patterns, unclear which is authoritative."
+    created_at: 2026-01-25T23:25:09.566Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
