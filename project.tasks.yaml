@@ -32922,7 +32922,7 @@
   automation: eligible
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
-  title: E2E Error Handling Tests
+  title: Implement Error Handling (@api-contract AC-22 to AC-24)
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
