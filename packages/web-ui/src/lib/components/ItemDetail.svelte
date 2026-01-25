@@ -121,11 +121,11 @@
 												<span class="font-medium text-muted-foreground">Given:</span>
 												{ac.given}
 											</div>
-											<div data-testid="ac-when ac-when-full">
+											<div data-testid="ac-when-full">
 												<span class="font-medium text-muted-foreground">When:</span>
 												{ac.when}
 											</div>
-											<div data-testid="ac-then ac-then-full">
+											<div data-testid="ac-then-full">
 												<span class="font-medium text-muted-foreground">Then:</span>
 												{ac.then}
 											</div>
