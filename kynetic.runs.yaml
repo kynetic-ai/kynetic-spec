@@ -6628,7 +6628,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFTNETZN42AZP87ZSAPX4NX0
     workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
+    status: aborted
     current_step: 2
     total_steps: 9
     started_at: 2026-01-25T13:28:25.846Z
@@ -6646,3 +6646,6 @@ runs:
         started_at: 2026-01-25T13:29:47.921Z
         completed_at: 2026-01-25T13:29:47.921Z
     initiated_by: "@claude"
+    abort_reason: No automation-suitable tasks. All in_progress tasks need human review, all ready tasks
+      exceed automation capacity.
+    completed_at: 2026-01-25T13:30:09.093Z
