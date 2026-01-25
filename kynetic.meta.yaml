@@ -4215,4 +4215,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVQYR778DPEYXP93M0JKW0V
+    type: friction
+    content: "Loop mode error handling AC-5 not working: Tasks @01KFP84N, @01KFP84S, @01KFQAGY all have
+      [LOOP-FAIL:3] notes but remain automation:eligible instead of being auto-escalated to
+      automation:needs_review as specified in @loop-mode-error-handling AC-5. Implementation in PR
+      #243 claims to handle this but actual behavior shows automation status not being updated after
+      3 failures. Verified in session 01KFVN3DDTKEQF1DAF8V3KV48V iteration 4."
+    created_at: 2026-01-25T23:31:18.887Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
