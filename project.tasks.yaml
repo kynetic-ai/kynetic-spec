@@ -35455,7 +35455,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -35684,6 +35684,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T14:15:14.029Z
+  closed_reason: "E2E tests for navigation and URL state implemented and merged to main (commit
+    4f9a5f5d). All 3 ACs covered: AC-10 (URL filter params persistence - 4 tests), AC-26 (mobile
+    responsive layout - 5 tests), AC-27 (desktop slide-over panels - 3 tests). 24 comprehensive E2E
+    tests in packages/web-ui/tests/e2e/navigation.spec.ts covering URL state, browser navigation,
+    responsive layouts, keyboard navigation, and deep linking."
 - _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
   slugs: []
   title: Daemon serves built web UI on root route
