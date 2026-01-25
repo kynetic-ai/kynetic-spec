@@ -3889,4 +3889,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTGRPJXF2K3EW6RRR2WY3WD
+    type: friction
+    content: "Loop mode failure tracking not queryable: [LOOP-FAIL:N] notes exist but no CLI command to
+      check task failure count. Had to manually grep task notes to determine if @01KFP84N and
+      @01KFP84S hit 3-failure threshold (both at count 2). Needed for automation decision: should
+      loop retry task or escalate to automation:needs_review? Suggest: kspec task get @ref
+      --loop-failures or similar to return failure count."
+    created_at: 2026-01-25T12:06:26.141Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
