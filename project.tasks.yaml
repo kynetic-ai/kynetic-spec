@@ -33369,7 +33369,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -33594,6 +33594,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T12:41:12.622Z
+  closed_reason: "Merged in PR #244. Implemented Inbox View E2E tests covering AC-16 to AC-19 with
+    comprehensive test coverage. Added data-testid attributes across inbox page and created 13 E2E
+    tests validating list display, add functionality, animations, and delete confirmation. Fixed
+    duplicate data-testid attributes in ItemDetail.svelte. All quality gates passed: AC coverage
+    verified, tests validate real behavior, proper isolation in temp directories."
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
   slugs: []
   title: Implement Search/Command Palette (AC-23 to AC-25)
