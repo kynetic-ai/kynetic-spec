@@ -38556,6 +38556,69 @@
         All remaining eligible tasks are P3 (GitHub Pages export feature). Exiting loop - highest
         priority eligible work requires human session.
       supersedes: null
+    - _ulid: 01KFTN692TTCN2NNZS0VVAHX0X
+      created_at: 2026-01-25T13:23:45.371Z
+      author: "@claude"
+      content: >-
+        ## Loop Iteration 12 - Session End Checkpoint
+
+
+        **Status:** Started in iteration 12, marked automation:needs_review
+
+
+        **Analysis Performed:**
+
+        - ✅ Verified dependencies completed (@01KFQAFM, @01KFQAGJ)
+
+        - ✅ Reviewed E2E test requirements (10 tests in project-selector.spec.ts)
+
+        - ✅ Confirmed /api/projects endpoints exist (GET, POST, DELETE)
+
+        - ✅ Identified implementation requirements:
+          1. Create project store (Svelte 5 runes) to manage selected project
+          2. Modify API client to include X-Kspec-Dir header in all requests
+          3. Add fetchProjects() function to API client
+          4. Create ProjectSelector.svelte component with dropdown UI
+          5. Integrate component into +layout.svelte
+          6. Implement data reload logic across all views (tasks, items, inbox)
+          7. Add localStorage persistence for selected project
+
+        **Why Marked needs_review:**
+
+        Multi-file coordinated implementation exceeds automation loop single-iteration capacity.
+        Requires:
+
+        - Creating 2 new files (store, component)
+
+        - Modifying 2 existing files (api.ts, +layout.svelte)
+
+        - Testing with daemon running
+
+        - Verifying E2E tests pass
+
+        - Estimated 60-90 minutes of work
+
+
+        **Next Session Plan:**
+
+        1. Create packages/web-ui/src/lib/stores/project.svelte.ts with project selection state
+
+        2. Update packages/web-ui/src/lib/api.ts to add X-Kspec-Dir header and fetchProjects()
+
+        3. Create packages/web-ui/src/lib/components/ProjectSelector.svelte
+
+        4. Integrate into packages/web-ui/src/routes/+layout.svelte
+
+        5. Start daemon and run E2E tests: npm run test:e2e -w packages/web-ui --
+        project-selector.spec.ts
+
+        6. Debug failures and iterate until all 10 tests pass
+
+        7. Submit task when complete
+
+
+        **Progress:** 0% (analysis complete, no code written)
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
