@@ -4136,4 +4136,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTSWYG75X3E38BWWRK8HBWQ
+    type: friction
+    content: "Ralph loop ran 28 iterations with identical outcome (no eligible tasks, same 3 tasks
+      documented each time). After 2-3 consecutive iterations returning no eligible tasks, the loop
+      should recognize the pattern and exit early. Current behavior wastes API calls and adds
+      redundant notes. Need early termination logic: if last N iterations (N=2 or 3) all exited with
+      'no eligible tasks' and same task set, stop the loop."
+    created_at: 2026-01-25T14:46:02.504Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
