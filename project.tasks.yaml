@@ -34345,7 +34345,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -34488,6 +34488,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T13:07:26.473Z
 - _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
   slugs: []
   title: Implement Navigation/URL State (AC-10, AC-26, AC-27)
