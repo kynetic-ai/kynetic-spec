@@ -35021,7 +35021,115 @@
     - phase-7
   vcs_refs: []
   created_at: 2026-01-24T06:18:43.336Z
-  notes: []
+  notes:
+    - _ulid: 01KFSQ8ABPCHCK78NFXXHTWFDE
+      created_at: 2026-01-25T04:40:34.934Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Problem
+
+        Current tests in daemon-api-projects.test.ts are documentary only - they pass even when
+        implementation doesn't exist:
+
+        ```typescript
+
+        if (!existsSync(projectsRoutePath)) {
+          expect(true).toBe(true); // Documentary: implementation pending
+          return;
+        }
+
+        ```
+
+        This means 0/3 ACs are actually verified.
+
+
+        ### Goal  
+
+        Implement and verify /api/projects endpoints per @multi-directory-daemon spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - **AC-28**: GET /api/projects returns list of registered projects with paths, registration
+        time, and watcher status
+
+        - **AC-29**: POST /api/projects with {path: string} body manually registers a project
+
+        - **AC-30**: DELETE /api/projects/:encodedPath unregisters project and stops its file
+        watcher
+
+
+        ### Implementation Status
+
+        Check packages/daemon/src/routes/projects.ts - if implementation exists (it should based on
+        earlier audit), write real tests. If not, implement it.
+
+
+        ### Required Tests
+
+        ```typescript
+
+        // AC-28: List projects
+
+        it('GET /api/projects returns registered projects', async () => {
+          // Register two projects via requests
+          const res = await fetch('/api/projects');
+          const data = await res.json();
+          expect(data.projects).toHaveLength(2);
+          expect(data.projects[0]).toHaveProperty('path');
+          expect(data.projects[0]).toHaveProperty('registeredAt');
+          expect(data.projects[0]).toHaveProperty('watcherStatus');
+        });
+
+
+        // AC-29: Register project
+
+        it('POST /api/projects registers new project', async () => {
+          const res = await fetch('/api/projects', {
+            method: 'POST',
+            body: JSON.stringify({ path: '/path/to/project' })
+          });
+          expect(res.status).toBe(201);
+          // Verify project now in list
+        });
+
+
+        // AC-30: Unregister project
+
+        it('DELETE /api/projects/:path unregisters and stops watcher', async () => {
+          // Register project
+          // Delete it
+          const res = await fetch('/api/projects/' + encodeURIComponent(path), {
+            method: 'DELETE'
+          });
+          expect(res.status).toBe(200);
+          // Verify project no longer in list
+          // Verify watcher stopped (no events after file change)
+        });
+
+        ```
+
+
+        ### Test Location
+
+        Update: tests/daemon-api-projects.test.ts (replace documentary tests with real HTTP tests)
+
+
+        ### Definition of Done
+
+        - [ ] /api/projects routes implemented (GET, POST, DELETE)
+
+        - [ ] All 3 ACs have passing tests  
+
+        - [ ] Tests make real HTTP requests to running daemon
+
+        - [ ] No documentary/stub tests remain
+
+        - [ ] Watcher cleanup verified on DELETE
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
