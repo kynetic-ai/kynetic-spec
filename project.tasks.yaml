@@ -37471,6 +37471,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Already implemented in SKILL.md
   depends_on: []
   context: []
   priority: 1
@@ -37479,6 +37480,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:56:00.514Z
   started_at: 2026-01-25T08:14:55.272Z
+  completed_at: 2026-01-25T08:15:02.542Z
   notes:
     - _ulid: 01KFR82FG29FAQ8AYEQJFDVP7P
       created_at: 2026-01-24T14:56:00.514Z
@@ -37515,8 +37517,6 @@
         @task-work-loop workflow, filters to eligible tasks, follows loop selection order."
       supersedes: null
   todos: []
-  completed_at: 2026-01-25T08:15:02.542Z
-  closed_reason: Already implemented in SKILL.md
 - _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
   slugs:
     - task-reflect-loop-skill
@@ -37524,7 +37524,7 @@
   type: task
   spec_ref: "@reflect-loop-skill"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -37567,6 +37567,7 @@
         invocation spec only; workflow behavior is in @session-reflect-loop-workflow."
       supersedes: null
   todos: []
+  started_at: 2026-01-25T08:15:09.435Z
 - _ulid: 01KFR82G303PDT36DCA1RZ9Z45
   slugs:
     - task-pr-review-skill
