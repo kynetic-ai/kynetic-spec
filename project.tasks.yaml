@@ -32695,7 +32695,7 @@
         verify all ACs pass. Reset automation status when ready to continue."
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
   slugs: []
   title: Implement Items View (AC-11 to AC-15)
