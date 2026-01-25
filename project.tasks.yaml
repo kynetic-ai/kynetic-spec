@@ -32625,7 +32625,7 @@
   automation: eligible
 - _ulid: 01KFP8547RPY3R7VEXTR3F3HDH
   slugs: []
-  title: E2E Connection Handling Tests
+  title: Implement WebSocket Connection Handling (AC-28 to AC-32)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
