@@ -38408,10 +38408,20 @@
     - phase-9
   vcs_refs: []
   created_at: 2026-01-24T06:19:36.971Z
-  notes: []
+  started_at: 2026-01-25T13:21:39.399Z
+  notes:
+    - _ulid: 01KFTN2QW0KHK9RTHKZAVKTQDW
+      created_at: 2026-01-25T13:21:49.441Z
+      author: "@claude"
+      content: Starting implementation of ProjectSelector component for web UI. This task covers AC-25
+        (show selector when multiple projects), AC-26 (set X-Kspec-Dir header), and AC-27 (reload
+        data on project change). E2E tests already exist in
+        packages/web-ui/tests/e2e/project-selector.spec.ts. Will create Svelte component with
+        dropdown selector, integrate with API client to fetch projects and set header, and implement
+        data reload logic.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-25T13:21:39.399Z
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
   slugs:
     - task-loop-mode-workflows
