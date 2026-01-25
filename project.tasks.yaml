@@ -32120,6 +32120,89 @@
         ## Viewport Testing
         Test filter behavior on mobile (may collapse to dropdown).
       supersedes: null
+    - _ulid: 01KFSM6HXXRA8K26DN35X1805A
+      created_at: 2026-01-25T03:47:11.421Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Goal
+
+        Implement the Tasks View to meet AC-4 through AC-10 and AC-33 from @web-dashboard spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-4: Task list shows title, status badge, priority, spec_ref link, notes count
+
+        - AC-5: Click task row → detail panel with description, notes, todos, dependencies
+
+        - AC-6: Spec reference is clickable link to spec item detail
+
+        - AC-7: Start Task button triggers state change via API
+
+        - AC-8: Add Note form appends note via API
+
+        - AC-9: Filter controls for status, type, tag, assignee, automation
+
+        - AC-10: URL updates with filter query params
+
+        - AC-33: WebSocket updates highlight changed items
+
+
+        ### Implementation Steps
+
+        1. Review existing components: TaskList.svelte, TaskDetail.svelte, TaskFilters.svelte
+
+        2. Add missing UI elements to satisfy each AC
+
+        3. Wire up API calls (startTask, addNote) 
+
+        4. Implement filter state with URL sync
+
+        5. Add WebSocket subscription for real-time updates with highlight animation
+
+        6. Add data-testid attributes to all interactive elements
+
+
+        ### Required data-testid Attributes
+
+        - task-list, task-list-item, task-title, task-status-badge, task-priority, task-spec-ref,
+        task-notes-count
+
+        - task-detail-panel, task-description, task-notes, task-todos, task-dependencies
+
+        - start-task-button, add-note-form, note-textarea, add-note-button
+
+        - filter-status, filter-type, filter-tag, filter-assignee, filter-automation
+
+
+        ### Validation
+
+        Update packages/web-ui/tests/e2e/tasks.spec.ts:
+
+        - Remove all test.skip() calls
+
+        - Tests MUST run and pass
+
+        - Each AC should have at least one passing test
+
+
+        ### Definition of Done
+
+        - [ ] Task list displays all required fields (AC-4)
+
+        - [ ] Task detail panel works (AC-5, AC-6)
+
+        - [ ] Start Task and Add Note work (AC-7, AC-8)
+
+        - [ ] Filters work with URL sync (AC-9, AC-10)
+
+        - [ ] WebSocket highlights work (AC-33)
+
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
