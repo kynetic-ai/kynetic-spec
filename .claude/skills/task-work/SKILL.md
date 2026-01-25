@@ -107,6 +107,38 @@ git log --oneline -- path/to/relevant/files
 
 This prevents duplicate work and wasted effort.
 
+## Scope Expansion During Work
+
+Tasks describe expected outcomes, not rigid boundaries. During work, you may discover:
+
+- **Tests need implementation**: A "testing" task may reveal missing functionality. **Implementing that functionality is in scope** - the goal is verified behavior, not just test files.
+
+- **Implementation needs tests**: An "implementation" task includes proving it works. Add tests.
+
+- **DoD constraints are hard requirements**: If the task notes include Definition of Done criteria, those are not suggestions. Never produce deliverables that violate DoD.
+
+### When to Expand vs Escalate
+
+**Expand scope** (do it yourself) when:
+- The additional work is clearly implied by the goal
+- It's proportional to the original task (not 10x larger)
+- You have the context to do it correctly
+
+**Escalate** (ask user) when:
+- Scope expansion is major (testing task becomes architecture redesign)
+- You're uncertain about the right approach
+- DoD is ambiguous and requires judgment calls
+
+### Anti-patterns to Avoid
+
+- **`test.skip()` as a deliverable**: Never use `test.skip()` to document missing functionality unless explicitly approved by user. Skipped tests give false coverage and fail the goal of verification.
+
+- **Literal task title interpretation**: "Add tests for X" means "ensure X is verified." If X doesn't exist, implement it first.
+
+- **Checkbox completion**: Completing *something* is not the goal. Completing the *right thing* is. If you can't achieve the actual goal, ask for guidance rather than delivering a hollow artifact.
+
+- **Automation mode shortcuts**: Automation mode means "make good decisions autonomously" - the same decisions a skilled human would make. It does NOT mean take shortcuts, skip hard problems, or produce placeholder deliverables.
+
 ## Notes Best Practices
 
 Add notes **during** work, not just at the end:
