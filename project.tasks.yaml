@@ -34119,7 +34119,59 @@
     - phase-1
   vcs_refs: []
   created_at: 2026-01-24T06:16:10.627Z
-  notes: []
+  notes:
+    - _ulid: 01KFSQ6VPAZ007PQMYYB52ATKR
+      created_at: 2026-01-25T04:39:47.146Z
+      author: "@claude"
+      content: >-
+        ## COVERAGE GAP IDENTIFIED
+
+
+        ### Current Status
+
+        6/7 ACs covered with passing tests in daemon-global-pid-port.test.ts
+
+
+        ### Missing: ac-10b (Concurrent Daemon Start)
+
+        **AC-10b**: Given two kspec serve start commands run concurrently (neither has written PID
+        yet), when both check for running daemon, then only one daemon starts (use file lock on PID
+        file)
+
+
+        ### What's Needed
+
+        Add a test that:
+
+        1. Spawns two daemon start processes concurrently
+
+        2. Verifies only one succeeds in writing PID
+
+        3. Verifies file locking prevents race condition
+
+        4. Second process should detect first and exit gracefully
+
+
+        ### Test Location
+
+        Add to: tests/daemon-global-pid-port.test.ts
+
+
+        ### Example Test Structure
+
+        ```typescript
+
+        it('should use file lock to prevent concurrent daemon starts (ac-10b)', async () => {
+          // Spawn two processes simultaneously
+          const p1 = spawn('kspec', ['serve', 'start', '--port', '3456']);
+          const p2 = spawn('kspec', ['serve', 'start', '--port', '3457']);
+          // Wait for both to complete
+          // Verify only one PID file exists
+          // Verify one process detected the other
+        });
+
+        ```
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
@@ -34826,6 +34878,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
   depends_on:
     - "@01KFQAFM"
   context: []
@@ -34837,11 +34890,10 @@
   vcs_refs: []
   created_at: 2026-01-24T06:19:03.995Z
   started_at: 2026-01-25T04:39:14.340Z
+  completed_at: 2026-01-25T04:39:18.750Z
   notes: []
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T04:39:18.750Z
-  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
