@@ -149,3 +149,45 @@ kspec workflow resume
 After reflection, observations can be:
 - Promoted to tasks: `kspec meta promote @ref --title "..."`
 - Resolved when addressed: `kspec meta resolve @ref`
+
+## Loop Mode
+
+You are running in autonomous loop mode. Start the workflow:
+
+```bash
+kspec workflow start @session-reflect-loop
+```
+
+### Key Differences from Interactive Mode
+
+1. **High confidence only** - Only capture friction/successes you're certain about
+2. **Search first** - MUST search existing specs/tasks/inbox before capturing anything
+3. **No user prompts** - Skip discussion step, auto-resolve decisions
+4. **Lower volume** - Better to capture nothing than capture noise
+
+### Workflow Steps
+
+1. **Review session** - What worked well, what caused friction
+2. **Search existing** - For each potential capture:
+   ```bash
+   kspec search "<keyword>"
+   ```
+   If already tracked, skip it.
+3. **Capture high-confidence items only**
+   - Clear friction pattern you encountered multiple times? Capture it
+   - Uncertain or one-off issue? Skip it
+   - Success pattern worth replicating? Capture it
+4. **Exit** - Don't wait for user confirmation
+
+### Exit Conditions
+
+- **Session reviewed** - Reflection complete (normal exit)
+- **Nothing to capture** - No high-confidence items identified
+- **All already tracked** - Search found existing coverage
+
+### What NOT to Capture
+
+- Vague observations ("could be better")
+- One-time issues that won't recur
+- Things you're unsure about
+- Anything already tracked in specs/tasks/inbox
