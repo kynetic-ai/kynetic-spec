@@ -2993,7 +2993,7 @@ features:
         then: each error noted separately, iteration counts as single failure toward consecutive limit
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
