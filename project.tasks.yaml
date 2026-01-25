@@ -32902,6 +32902,12 @@
 
         5. Create PR or add to existing PR #244
       supersedes: null
+    - _ulid: 01KFTM3D0JV66CGXYP9XNSCSVA
+      created_at: 2026-01-25T13:04:42.515Z
+      author: "@claude"
+      content: "Subagent context: Spawned to review PR #245 for task @01KFP854 (Connection Handling). Did
+        not work on this task. Task remains pending."
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
@@ -34156,6 +34162,7 @@
     - implementation
   vcs_refs: []
   created_at: 2026-01-23T20:19:07.647Z
+  started_at: 2026-01-25T13:04:13.549Z
   notes:
     - _ulid: 01KFP89333VKSN3K9R156GRT52
       created_at: 2026-01-23T20:21:08.323Z
@@ -34303,7 +34310,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-25T13:04:13.549Z
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
   title: Implement Error Handling (@api-contract AC-22 to AC-24)
