@@ -34586,7 +34586,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34800,6 +34800,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T11:09:06.902Z
+  closed_reason: "Already implemented in PR #240. All 32 tests passing with comprehensive coverage of
+    ac-4, ac-14, ac-15, ac-16, ac-20. Daemon restart behavior tests added addressing identified
+    coverage gaps."
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
   slugs:
     - task-pid-port-impl
