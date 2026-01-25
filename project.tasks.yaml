@@ -30422,6 +30422,17 @@
         src/export/html.ts. Will assess if can be completed in single iteration or needs human
         continuation."
       supersedes: null
+    - _ulid: 01KFTGHRJKY0EZHZ9WDD4ACR8P
+      created_at: 2026-01-25T12:02:38.803Z
+      author: "@claude"
+      content: "[LOOP-FAIL:1] Task scope exceeds single iteration capacity. Export command requires: (1)
+        CLI command handler with --format json/html, --output, --dry-run, --include-validation
+        flags; (2) Comprehensive JSON snapshot builder gathering all tasks/items/inbox/meta with
+        reference resolution; (3) HTML wrapper embedding JSON + SPA code; (4) Integration with
+        existing validation system; (5) Test coverage for 7 ACs. Estimated 300-500 lines of
+        implementation + tests. Recommend: human-driven session or multi-iteration approach with
+        incremental commits."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
