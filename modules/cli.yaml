@@ -2546,7 +2546,7 @@ features:
             then: output includes [REVIEW SUBAGENT] prefix to distinguish from main agent
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
