@@ -94,18 +94,38 @@ kspec task complete @task-slug --reason "Summary of what was done"
 
 ## Verification Step
 
-Before starting, always check if work is already done:
+Before starting, check if work might already be done - but **always validate yourself**:
 
 ```bash
-# Check git history
+# Check git history for related work
 git log --oneline --grep="feature-name"
 git log --oneline -- path/to/relevant/files
 
-# Read existing implementation
-# If code exists and works, mark complete with "Already implemented"
+# If code/tests exist, VERIFY they actually work:
+npm test -- --grep "relevant-tests"
+# Review code against acceptance criteria
+# Check coverage is real, not just test.skip()
 ```
 
-This prevents duplicate work and wasted effort.
+### Notes Are Context, Not Proof
+
+Task notes provide historical context, but **never trust notes as proof of completion**. If a task is in the queue, there's a reason - validate independently:
+
+- **"Already implemented"** → Run the tests yourself. Do they pass? Do they cover the ACs?
+- **"Tests exist but skip in CI"** → That's a gap to fix, not a reason to mark complete
+- **"Work done in PR #X"** → Verify the PR was merged AND the work is correct
+
+Treat verification like a code review: check the actual code and tests against the acceptance criteria. Don't rubber-stamp based on notes.
+
+### What "Already Implemented" Actually Requires
+
+To mark a task complete as "Already implemented", you must:
+
+1. **Run the tests** and see them pass (not skip)
+2. **Verify AC coverage** - each acceptance criterion has a corresponding test
+3. **Check the implementation** matches what the spec requires
+
+If tests are skipped, broken, or missing coverage - the task is NOT done. Fix the gaps.
 
 ## Scope Expansion During Work
 
@@ -136,6 +156,10 @@ Tasks describe expected outcomes, not rigid boundaries. During work, you may dis
 - **Literal task title interpretation**: "Add tests for X" means "ensure X is verified." If X doesn't exist, implement it first.
 
 - **Checkbox completion**: Completing *something* is not the goal. Completing the *right thing* is. If you can't achieve the actual goal, ask for guidance rather than delivering a hollow artifact.
+
+- **Trusting notes without validation**: Notes saying "already done" or "tests exist" are not proof. Run the tests. Check the code. Verify against ACs. If a task is in the ready queue, assume there's unfinished work until you prove otherwise.
+
+- **"Skipped in CI" as acceptable**: Tests that skip in CI are gaps, not completed work. Either fix the CI issue or document why it's acceptable (with user approval).
 
 - **Automation mode shortcuts**: Automation mode means "make good decisions autonomously" - the same decisions a skilled human would make. It does NOT mean take shortcuts, skip hard problems, or produce placeholder deliverables.
 
