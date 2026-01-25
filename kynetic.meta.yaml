@@ -3875,4 +3875,18 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTGKVRXEEV5MBV1XH1XQ39T
+    type: friction
+    content: "Loop iteration 6 encountered systematic blockers: All eligible P2 tasks are web UI E2E
+      tests requiring daemon startup + test verification, exceeding single iteration capacity. Both
+      in-progress tasks (@01KFP84N, @01KFP84S) hit same blocker (daemon requirement) and now at
+      failure count 2. Attempted @01KFMMXF (export command) but ~300-500 line implementation scope
+      also exceeds capacity. Pattern suggests: (1) Web UI E2E tasks incorrectly marked
+      automation:eligible - should be automation:needs_review until daemon automation exists, OR (2)
+      Tasks should be split: 'Add test IDs' (automatable) + 'Verify E2E tests pass' (manual), OR (3)
+      DoD should be relaxed to 'Tests enabled, pending verification'."
+    created_at: 2026-01-25T12:03:47.613Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
