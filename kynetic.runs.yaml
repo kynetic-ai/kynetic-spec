@@ -7808,7 +7808,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFTT4K8AGT7DS8V5WZ8QN59S
     workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
+    status: aborted
     current_step: 1
     total_steps: 9
     started_at: 2026-01-25T14:50:13.130Z
@@ -7822,3 +7822,7 @@ runs:
         started_at: 2026-01-25T14:50:22.262Z
         completed_at: 2026-01-25T14:50:22.262Z
     initiated_by: "@claude"
+    abort_reason: "No automation-eligible tasks available. All 3 active tasks require human
+      intervention: @01KFP84N and @01KFP84S need E2E daemon testing, @01KFQAGY needs multi-file
+      implementation."
+    completed_at: 2026-01-25T14:51:10.945Z
