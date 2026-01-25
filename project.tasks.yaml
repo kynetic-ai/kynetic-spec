@@ -35946,8 +35946,7 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on:
-    - "@task-skill-commands"
+  depends_on: []
   context: []
   priority: 1
   tags:
@@ -35992,6 +35991,11 @@
         quality-focus, workflow-delegate. Skill dispatch + quality emphasis; actual behavior in
         @pr-review-loop-workflow. Key quality gates: AC coverage + spec alignment (not just tests
         passing). Runs in subagent context (invoked via /pr-review @task-ref in prompt)."
+      supersedes: null
+    - _ulid: 01KFSWH9HQXYMSBJA0RF35VPM4
+      created_at: 2026-01-25T06:12:51.895Z
+      author: "@claude"
+      content: "Dependencies cleared (was: @task-skill-commands)"
       supersedes: null
   todos: []
 - _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
