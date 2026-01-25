@@ -4079,4 +4079,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTR8ZK3WJV841Y8F7C3KN9P
+    type: success
+    content: "Loop iteration 21 efficiently completed pending_review task @01KFP85M in first action by
+      checking task status, validating work was already merged, and immediately completing it.
+      Demonstrates value of prioritizing pending_review tasks over in_progress tasks - they're
+      usually closest to done and just need verification/completion. Pattern: pending_review >
+      in_progress > ready."
+    created_at: 2026-01-25T14:17:39.684Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
