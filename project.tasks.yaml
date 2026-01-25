@@ -34512,6 +34512,34 @@
         update (workflow DoD check). Task still needs actual implementation of ac-10b file locking +
         tests. Next session should retry with updated skill/workflow."
       supersedes: null
+    - _ulid: 01KFTA498DKSFQEQYK2806637S
+      created_at: 2026-01-25T10:10:25.677Z
+      author: "@claude"
+      content: >-
+        Implemented AC-10b file locking functionality:
+
+
+        1. Added file locking to PidFileManager.writePid() using O_CREAT | O_EXCL flags for atomic
+        file creation
+
+        2. Prevents race conditions between concurrent daemon starts
+
+        3. Handles stale PID files by detecting dead processes, removing stale file, and retrying
+
+        4. Throws 'Daemon already running' error when attempting to start second instance
+
+
+        Tests added:
+
+        - Verifies exclusive file creation prevents concurrent starts
+
+        - Verifies stale PID file handling and cleanup
+
+        - Verifies atomic creation with O_EXCL flag
+
+
+        All 33 tests passing. No test.skip() calls remaining.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
