@@ -717,3 +717,13 @@ inbox:
       - ci
       - workflow
     added_by: "@claude"
+  - _ulid: 01KFT1PX74WEMPZV9ZPW91K2JY
+    text: Revive YAML merge driver implementation - @yaml-merge-driver spec exists with 12 ACs but task
+      was cancelled. Today's 22-conflict merge could have been automatic. Would prevent loss of task
+      titles/notes during shadow branch merges.
+    created_at: 2026-01-25T07:43:18.756Z
+    tags:
+      - reflection
+      - shadow
+      - merge
+    added_by: "@claude"
