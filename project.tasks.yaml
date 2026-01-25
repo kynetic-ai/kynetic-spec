@@ -33926,7 +33926,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -34133,6 +34133,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T13:04:01.471Z
+  closed_reason: "PR #245 merged. Implemented E2E tests for WebSocket connection handling covering
+    AC-28 through AC-32: exponential backoff reconnect, connection lost indicator, sequence
+    deduplication, and topic re-subscription."
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
   slugs: []
   title: Implement Observations Panel (AC-21, AC-22)
