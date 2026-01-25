@@ -32797,6 +32797,40 @@
         - command-palette, search-input, search-results, search-result
         - result-group-tasks, result-group-items, result-group-inbox
       supersedes: null
+    - _ulid: 01KFSZTGFYME2VM2M06JCNXF0H
+      created_at: 2026-01-25T07:10:19.647Z
+      author: "@claude"
+      content: |-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+        ### Goal
+        Implement the Command Palette/Search to meet AC-23 through AC-25 from @web-dashboard spec.
+
+        ### Acceptance Criteria to Implement
+        - AC-23: Cmd+K (or Ctrl+K) opens command palette with search input
+        - AC-24: Debounced search (300ms) shows tasks, items, inbox grouped by type
+        - AC-25: Click result navigates to detail view for that item
+
+        ### Implementation Steps
+        1. Review existing CommandPalette.svelte component
+        2. Implement keyboard shortcut listener (Cmd/Ctrl+K)
+        3. Build search input with debounce
+        4. Create search API endpoint or client-side search
+        5. Display grouped results (tasks, items, inbox sections)
+        6. Implement click-to-navigate for each result type
+        7. Add data-testid attributes throughout
+
+        ### Required data-testid Attributes
+        - command-palette, command-palette-input, command-palette-results
+        - search-group-tasks, search-group-items, search-group-inbox
+        - search-result-item
+
+        ### Definition of Done
+        - [ ] Cmd/Ctrl+K opens palette (AC-23)
+        - [ ] Search with debounce shows grouped results (AC-24)
+        - [ ] Click result navigates correctly (AC-25)
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP8547RPY3R7VEXTR3F3HDH
