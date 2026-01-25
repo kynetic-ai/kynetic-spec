@@ -33186,6 +33186,7 @@
     - implementation
   vcs_refs: []
   created_at: 2026-01-23T20:18:51.735Z
+  started_at: 2026-01-25T12:15:01.776Z
   notes:
     - _ulid: 01KFP87NDZHY4SFCCN3XJ3J77T
       created_at: 2026-01-23T20:20:21.567Z
@@ -33284,9 +33285,40 @@
         - [ ] Delete with confirmation works (AC-19)
         - [ ] All E2E tests pass - no skips
       supersedes: null
+    - _ulid: 01KFTHAR7M5GM9X57RP7G213TY
+      created_at: 2026-01-25T12:16:17.652Z
+      author: "@claude"
+      content: >-
+        Loop iteration 8: Added data-testid attributes to inbox page and created comprehensive E2E
+        tests.
+
+
+        **Data-testid attributes added:**
+
+        - add-inbox-button, inbox-add-form, inbox-input, inbox-submit
+
+        - inbox-list, inbox-item, inbox-text, inbox-created-at, inbox-added-by, inbox-tags
+
+        - delete-inbox-button, confirm-delete-dialog, confirm-delete-yes, confirm-delete-no
+
+
+        **E2E tests created (13 tests covering AC-16 to AC-19):**
+
+        - AC-16: List ordering, text preview, tags, added_by display
+
+        - AC-17: Add button reveals input, Enter submits, button toggle behavior
+
+        - AC-18: New items appear at top with animation
+
+        - AC-19: Delete confirmation dialog, confirmed delete removes item
+
+        - Additional: Empty state, disabled submit when empty
+
+
+        All tests follow existing E2E patterns. Ready to verify by running daemon and tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-25T12:15:01.776Z
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
   slugs: []
   title: Implement Search/Command Palette (AC-23 to AC-25)
