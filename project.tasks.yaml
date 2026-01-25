@@ -32290,6 +32290,89 @@
         - implementation-tasks
         - trait-chip
       supersedes: null
+    - _ulid: 01KFSM6MFB247VHE9XTRZ8Y7T1
+      created_at: 2026-01-25T03:47:14.028Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Goal
+
+        Implement the Items/Spec View to meet AC-11 through AC-15 from @web-dashboard spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-11: Hierarchical tree with modules > features > requirements, expand/collapse
+
+        - AC-12: Item detail shows title, description, ACs (GWT format), traits, implementation
+        status
+
+        - AC-13: Implementation section shows linked tasks with status
+
+        - AC-14: Traits shown as clickable chips linking to trait detail
+
+        - AC-15: AC row expands to show full Given/When/Then text
+
+
+        ### Implementation Steps
+
+        1. Review existing components: ItemTree.svelte, ItemDetail.svelte
+
+        2. Implement tree hierarchy with expand/collapse toggle
+
+        3. Build item detail panel with all required sections
+
+        4. Fetch and display linked tasks from API
+
+        5. Create trait chips with click-to-navigate
+
+        6. Implement AC row expansion for full GWT text
+
+        7. Add data-testid attributes throughout
+
+
+        ### Required data-testid Attributes
+
+        - spec-tree, tree-node, tree-node-module, tree-node-feature, tree-node-requirement,
+        expand-toggle
+
+        - spec-detail-panel, spec-title, spec-description, implementation-status
+
+        - acceptance-criteria, ac-item, ac-expand-toggle, ac-given, ac-when, ac-then, ac-given-full,
+        ac-when-full, ac-then-full
+
+        - implementation-section, linked-task
+
+        - traits-section, trait-chip, trait-title
+
+
+        ### Validation
+
+        Update packages/web-ui/tests/e2e/items.spec.ts:
+
+        - Remove all test.skip() calls
+
+        - Tests MUST run and pass
+
+        - Each AC should have at least one passing test
+
+
+        ### Definition of Done
+
+        - [ ] Hierarchical tree displays and expands/collapses (AC-11)
+
+        - [ ] Item detail shows all required info (AC-12)
+
+        - [ ] Linked tasks display with status (AC-13)
+
+        - [ ] Trait chips are clickable (AC-14)
+
+        - [ ] AC rows expand to full GWT (AC-15)
+
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
