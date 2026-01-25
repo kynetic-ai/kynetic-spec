@@ -3924,4 +3924,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTHKCY5R1K8N136P1HH3Y3J
+    type: friction
+    content: "Session checkpoint hook blocks exit when in_progress tasks have automation:needs_review
+      status. Hook expects all in_progress tasks to either complete or have handoff notes. However,
+      tasks marked automation:needs_review are intentionally paused for human review. Workaround:
+      manually add comprehensive handoff notes before exit. Pattern suggests automation:needs_review
+      should either auto-add handoff notes or be recognized as valid exit state."
+    created_at: 2026-01-25T12:21:00.997Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
