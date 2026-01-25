@@ -38396,7 +38396,7 @@
     This task can be deferred - not blocking for E2E tests or basic multi-project support.
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -38411,6 +38411,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-25T13:21:39.399Z
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
   slugs:
     - task-loop-mode-workflows
