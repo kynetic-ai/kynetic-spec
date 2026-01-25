@@ -30367,6 +30367,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:30.144Z
+  started_at: 2026-01-25T12:01:54.084Z
   notes:
     - _ulid: 01KFMMYSR4869CYZT7VKF9K76Y
       created_at: 2026-01-23T05:24:13.700Z
@@ -30413,9 +30414,16 @@
         - src/export/json.ts
         - src/export/html.ts
       supersedes: null
+    - _ulid: 01KFTGH1AZ1H9NT4YZ3VMZQKTJ
+      created_at: 2026-01-25T12:02:15.007Z
+      author: "@claude"
+      content: "Starting in loop iteration 6. Task scope: implement kspec export command for JSON/HTML
+        output (AC-1 to AC-7). Files to create: src/cli/commands/export.ts, src/export/json.ts,
+        src/export/html.ts. Will assess if can be completed in single iteration or needs human
+        continuation."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-25T12:01:54.084Z
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
   title: Static SPA for GitHub Pages
