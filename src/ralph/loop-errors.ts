@@ -5,7 +5,7 @@
  * Escalates to automation:needs_review after 3 failures.
  */
 
-import type { Note, Task } from "../schema/task.js";
+import type { Task } from "../schema/task.js";
 
 /**
  * Parse the failure count from a [LOOP-FAIL:N] prefixed note.
