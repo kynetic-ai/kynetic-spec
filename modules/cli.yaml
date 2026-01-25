@@ -2826,8 +2826,7 @@ features:
     title: Task Work Loop Skill
     type: feature
     tags: []
-    description: Skill definition for /task-work loop. Invokes @task-work-loop-workflow for loop mode
-      behavior.
+    description: Skill definition for /task-work loop. Invokes @task-work-loop-workflow for loop mode behavior.
     depends_on: []
     implements: []
     relates_to: []

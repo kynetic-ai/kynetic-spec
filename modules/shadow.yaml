@@ -688,7 +688,7 @@ features:
             then: driver writes conflicts as YAML comments instead of prompting
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KFM7BG7CN59MPYWHRB9HSK9N
         slugs:
           - merge-file-detection
@@ -733,7 +733,7 @@ features:
             then: driver falls back to default behavior (copy ours)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     status:
       maturity: draft
       implementation: implemented
