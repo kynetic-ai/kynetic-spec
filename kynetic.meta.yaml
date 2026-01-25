@@ -3511,4 +3511,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFST50NYXR9Q7TB9A3JC92F8
+    type: success
+    content: "Task reframing pattern: Change 'Write tests for X' to 'Implement X (AC-N to AC-M)' with
+      implementation steps, required testIds, and 'No test.skip()' in Definition of Done. Prevents
+      documentary test anti-pattern."
+    created_at: 2026-01-25T05:31:12.447Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
