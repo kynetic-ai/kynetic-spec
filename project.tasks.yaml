@@ -32840,6 +32840,37 @@
         relative URLs) but daemon returns empty data. Requires debugging daemon context manager's
         handling of absolute --kspec-dir paths."
       supersedes: null
+    - _ulid: 01KFVRM157J5HM4TBJ4B30576M
+      created_at: 2026-01-25T23:42:56.167Z
+      author: "@claude"
+      content: |-
+        Session end state (loop iteration 5):
+
+        **Status:** Blocked on daemon fixture loading bug, marked automation:needs_review
+
+        **Work completed:**
+        - Fixed E2E infrastructure: Vite proxy config + relative API URLs (commit c24fd694)
+        - Tests now connect to daemon successfully (no more 'Failed to fetch')
+        - Identified root cause: daemon returns 0 tasks when using --kspec-dir flag
+
+        **Current blocker:**
+        - Daemon error: '{} is not iterable' when loading fixture data
+        - Test fixture exists at tests/fixtures/project.tasks.yaml with 3 tasks
+        - Issue: daemon's ContextManager doesn't load data correctly with absolute --kspec-dir path
+
+        **Next session should:**
+        1. Debug daemon's fixture loading with --kspec-dir parameter
+        2. Check ContextManager initialization in daemon code
+        3. Verify test-base.ts passes correct paths
+        4. May need to adjust daemon to handle absolute kspec-dir paths
+
+        **Files to investigate:**
+        - src/cli/commands/serve.ts (daemon startup)
+        - Daemon's ContextManager implementation
+        - packages/web-ui/tests/fixtures/test-base.ts
+
+        UI components ARE complete - this is purely a test infrastructure issue.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
