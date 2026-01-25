@@ -34118,7 +34118,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34129,7 +34129,7 @@
     - phase-1
   vcs_refs: []
   created_at: 2026-01-24T06:16:20.121Z
-  started_at: 2026-01-24T18:31:34.593Z
+  started_at: null
   notes:
     - _ulid: 01KFRMECP1BWZAM77TQNNZ3HK3
       created_at: 2026-01-24T18:32:13.762Z
@@ -34274,6 +34274,11 @@
         AC-14 (multiple project registration) has only 1 test. AC-15 (list projects) has only 1
         test. These represent weak coverage for core multi-project functionality. Task reopened for
         additional test coverage of these acceptance criteria.
+      supersedes: null
+    - _ulid: 01KFSYSACEX0FCGTN5CAS8JVJQ
+      created_at: 2026-01-25T06:52:12.046Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: eligible
