@@ -30,8 +30,21 @@ import {
   resolveAdapter,
 } from "../../agents/index.js";
 import { type SpawnedAgent, spawnAndInitialize } from "../../agents/spawner.js";
-import { initContext } from "../../parser/index.js";
-import { createCliRenderer, createTranslator } from "../../ralph/index.js";
+import {
+  initContext,
+  type KspecContext,
+  loadAllItems,
+  loadAllTasks,
+  ReferenceIndex,
+} from "../../parser/index.js";
+import {
+  createCliRenderer,
+  createTranslator,
+  DEFAULT_SUBAGENT_PREFIX,
+  DEFAULT_SUBAGENT_TIMEOUT,
+  runSubagent,
+  type SubagentContext,
+} from "../../ralph/index.js";
 import {
   appendEvent,
   createSession,
@@ -39,9 +52,14 @@ import {
   updateSessionStatus,
 } from "../../sessions/index.js";
 import { errors } from "../../strings/index.js";
+import { getCurrentBranch } from "../../utils/git.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, success } from "../output.js";
-import { gatherSessionContext, type SessionContext } from "./session.js";
+import { error, info, success, warn } from "../output.js";
+import {
+  gatherSessionContext,
+  type ActiveTaskSummary,
+  type SessionContext,
+} from "./session.js";
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
@@ -259,6 +277,187 @@ async function handleRequest(
   }
 }
 
+// ─── Subagent Support ─────────────────────────────────────────────────────────
+
+/**
+ * Build context for a PR review subagent.
+ * AC: @ralph-subagent-spawning ac-10
+ */
+async function buildSubagentContext(
+  ctx: KspecContext,
+  taskRef: string,
+): Promise<SubagentContext> {
+  // Load all tasks and items
+  const tasks = await loadAllTasks(ctx);
+  const items = await loadAllItems(ctx);
+  const index = new ReferenceIndex(tasks, items);
+
+  // Resolve task reference
+  const taskResult = index.resolve(taskRef);
+  if (!taskResult.ok) {
+    throw new Error(`Task not found: ${taskRef}`);
+  }
+
+  const task = tasks.find((t) => t._ulid === taskResult.ulid);
+  if (!task) {
+    throw new Error(`Task not found by ULID: ${taskResult.ulid}`);
+  }
+
+  // Get linked spec with ACs if spec_ref exists
+  let specWithACs: Record<string, unknown> | null = null;
+  if (task.spec_ref) {
+    const specResult = index.resolve(task.spec_ref);
+    if (specResult.ok) {
+      const item = items.find((i) => i._ulid === specResult.ulid);
+      if (item) {
+        specWithACs = item as unknown as Record<string, unknown>;
+      }
+    }
+  }
+
+  // Get git branch
+  const gitBranch = getCurrentBranch(ctx.rootDir) || "unknown";
+
+  return {
+    taskRef,
+    taskDetails: task as unknown as Record<string, unknown>,
+    specWithACs,
+    gitBranch,
+  };
+}
+
+/**
+ * Mark a task as needing review due to subagent timeout.
+ * AC: @ralph-subagent-spawning ac-9
+ */
+async function markTaskNeedsReview(
+  taskRef: string,
+  reason: string,
+): Promise<void> {
+  const { spawnSync } = await import("node:child_process");
+
+  // Use kspec CLI to set automation status
+  const result = spawnSync(
+    "kspec",
+    ["task", "set-automation", taskRef, "needs_review"],
+    {
+      encoding: "utf-8",
+      stdio: "pipe",
+    },
+  );
+
+  if (result.status !== 0) {
+    warn(`Failed to mark task ${taskRef} as needs_review: ${result.stderr}`);
+  }
+
+  // Add a note explaining the timeout
+  const noteResult = spawnSync(
+    "kspec",
+    ["task", "note", taskRef, `[RALPH SUBAGENT] ${reason}`],
+    {
+      encoding: "utf-8",
+      stdio: "pipe",
+    },
+  );
+
+  if (noteResult.status !== 0) {
+    warn(`Failed to add timeout note to task ${taskRef}: ${noteResult.stderr}`);
+  }
+}
+
+/**
+ * Process pending_review tasks by spawning subagents.
+ * AC: @ralph-subagent-spawning ac-6, ac-8
+ */
+async function processPendingReviewTasks(
+  ctx: KspecContext,
+  adapter: AgentAdapter,
+  pendingReviewTasks: ActiveTaskSummary[],
+  options: {
+    yolo: boolean;
+    maxRetries: number;
+    maxFailures: number;
+    cwd: string;
+  },
+  consecutiveFailures: { count: number },
+): Promise<boolean> {
+  if (pendingReviewTasks.length === 0) {
+    return true;
+  }
+
+  info(
+    `${DEFAULT_SUBAGENT_PREFIX} Found ${pendingReviewTasks.length} pending_review task(s)`,
+  );
+
+  // AC: @ralph-subagent-spawning ac-6 - Process one at a time
+  for (const task of pendingReviewTasks) {
+    info(`${DEFAULT_SUBAGENT_PREFIX} Processing: ${task.ref} - ${task.title}`);
+
+    try {
+      // Build context for this task
+      const subagentCtx = await buildSubagentContext(ctx, task.ref);
+
+      // AC: @ralph-subagent-spawning ac-1, ac-3 - Spawn and wait
+      const result = await runSubagent(
+        adapter,
+        subagentCtx,
+        {
+          timeout: DEFAULT_SUBAGENT_TIMEOUT,
+          outputPrefix: DEFAULT_SUBAGENT_PREFIX,
+        },
+        {
+          yolo: options.yolo,
+          cwd: options.cwd,
+          handleRequest: (client, reqId, method, params) =>
+            handleRequest(client, reqId, method, params, options.yolo),
+        },
+      );
+
+      if (result.timedOut) {
+        // AC: @ralph-subagent-spawning ac-9
+        warn(
+          `${DEFAULT_SUBAGENT_PREFIX} Subagent timed out for ${task.ref}`,
+        );
+        await markTaskNeedsReview(
+          task.ref,
+          "Subagent timed out after 10 minutes",
+        );
+        consecutiveFailures.count++;
+      } else if (!result.success) {
+        // AC: @ralph-subagent-spawning ac-7
+        error(
+          `${DEFAULT_SUBAGENT_PREFIX} Subagent failed for ${task.ref}: ${result.error}`,
+        );
+        consecutiveFailures.count++;
+      } else {
+        success(`${DEFAULT_SUBAGENT_PREFIX} Completed: ${task.ref}`);
+        consecutiveFailures.count = 0;
+      }
+
+      // Check if we've hit max failures
+      if (consecutiveFailures.count >= options.maxFailures) {
+        error(
+          `${DEFAULT_SUBAGENT_PREFIX} Reached max failures (${options.maxFailures})`,
+        );
+        return false;
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      error(`${DEFAULT_SUBAGENT_PREFIX} Error processing ${task.ref}: ${message}`);
+      consecutiveFailures.count++;
+
+      if (consecutiveFailures.count >= options.maxFailures) {
+        error(
+          `${DEFAULT_SUBAGENT_PREFIX} Reached max failures (${options.maxFailures})`,
+        );
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 // ─── Command Registration ────────────────────────────────────────────────────
 
 export function registerRalphCommand(program: Command): void {
@@ -396,6 +595,27 @@ export function registerRalphCommand(program: Command): void {
               limit: "10",
               eligible: true,
             });
+
+            // AC: @ralph-subagent-spawning ac-8 - Process pending_review tasks BEFORE main iteration
+            // This wraps consecutiveFailures in an object so it can be mutated by the helper
+            const failureTracker = { count: consecutiveFailures };
+            const continueLoop = await processPendingReviewTasks(
+              ctx,
+              adapter,
+              sessionCtx.pending_review_tasks,
+              {
+                yolo: options.yolo,
+                maxRetries,
+                maxFailures,
+                cwd: process.cwd(),
+              },
+              failureTracker,
+            );
+            consecutiveFailures = failureTracker.count;
+
+            if (!continueLoop) {
+              break;
+            }
 
             // Check for ready tasks or active tasks
             const hasActiveTasks = sessionCtx.active_tasks.length > 0;

@@ -260,3 +260,46 @@ function renderStatus(ts: string, data: StatusData): void {
 
   console.log(`${ts} ${statusColor(`[${statusText}]`)}`);
 }
+
+// ============================================================================
+// Prefixed Renderer (for subagents)
+// ============================================================================
+
+/**
+ * Create a renderer that prefixes all output with a label.
+ * Used to distinguish subagent output from main agent output.
+ *
+ * AC: @ralph-subagent-spawning ac-11
+ */
+export function createPrefixedRenderer(prefix: string): RalphRenderer {
+  const inner = createCliRenderer();
+  const prefixStr = chalk.cyan(`${prefix} `);
+
+  return {
+    render(event) {
+      // For streaming content, we need to handle it specially
+      // to avoid prefixing every chunk
+      const data = event.data;
+
+      if (data.kind === "agent_message" || data.kind === "agent_thought") {
+        // These are streamed - prefix handled in section headers
+        inner.render(event);
+      } else {
+        // For non-streaming events, we can prefix the output
+        // by temporarily replacing console.log
+        const originalLog = console.log;
+        console.log = (...args: unknown[]) => {
+          originalLog(prefixStr, ...args);
+        };
+        try {
+          inner.render(event);
+        } finally {
+          console.log = originalLog;
+        }
+      }
+    },
+    newSection(label) {
+      inner.newSection?.(`${prefix} ${label}`);
+    },
+  };
+}
