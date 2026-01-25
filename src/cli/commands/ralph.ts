@@ -64,15 +64,13 @@ import {
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
 // AC: @ralph-skill-delegation ac-1, ac-2, ac-3
-function buildPrompt(
+function buildTaskWorkPrompt(
   sessionCtx: SessionContext,
   iteration: number,
   maxLoops: number,
   sessionId: string,
   focus?: string,
 ): string {
-  const isFinal = iteration === maxLoops;
-
   const focusSection = focus
     ? `
 ## Session Focus (applies to ALL iterations)
@@ -83,7 +81,7 @@ Keep this focus in mind throughout your work. It takes priority over default tas
 `
     : "";
 
-  return `# Kspec Automation Session
+  return `# Kspec Automation Session - Task Work
 
 **Session ID:** \`${sessionId}\`
 **Iteration:** ${iteration} of ${maxLoops}
@@ -95,37 +93,55 @@ ${focusSection}
 ${JSON.stringify(sessionCtx, null, 2)}
 \`\`\`
 
-## Working Procedure
+## Instructions
 
-This session uses the \`/task-work\` skill for the full task lifecycle. The skill handles:
-- Checking for open PRs and pending review tasks
-- Picking or continuing a task
-- Doing the work and documenting progress
-- Submitting, committing, creating PRs, and reviewing
-- Completing tasks after merge
-
-Simply invoke the skill to begin:
+Run the task-work skill in loop mode:
 
 \`\`\`
-/task-work
+/task-work loop
 \`\`\`
 
-At the end of each iteration, reflect on what you learned:
+Loop mode means: no confirmations, auto-resolve decisions, automation-eligible tasks only.
+
+Exit when task work is complete or no eligible tasks remain.
+`;
+}
+
+/**
+ * Build the reflect prompt sent after task-work completes.
+ * Ralph sends this as a separate prompt to ensure reflection always happens.
+ */
+function buildReflectPrompt(
+  iteration: number,
+  maxLoops: number,
+  sessionId: string,
+): string {
+  const isFinal = iteration === maxLoops;
+
+  return `# Kspec Automation Session - Reflection
+
+**Session ID:** \`${sessionId}\`
+**Iteration:** ${iteration} of ${maxLoops}
+**Phase:** Post-task reflection
+
+## Instructions
+
+Run the reflect skill in loop mode:
 
 \`\`\`
-/reflect
+/reflect loop
 \`\`\`
 
-The \`/reflect\` skill helps capture systemic friction, high-quality successes, and concrete observations worth preserving across sessions.
+Loop mode means: high-confidence captures only, must search existing before capturing, no user prompts.
 ${
   isFinal
     ? `
-
-## FINAL ITERATION
-This is the last iteration. After \`/task-work\` completes, run \`/reflect\` to capture unique insights from this session.
+**FINAL ITERATION** - This is the last chance to capture insights from this session.
 `
     : ""
-}`;
+}
+Exit when reflection is complete.
+`;
 }
 
 // ─── Streaming Output ────────────────────────────────────────────────────────
@@ -626,31 +642,39 @@ export function registerRalphCommand(program: Command): void {
               break;
             }
 
-            // Build prompt
-            const prompt = buildPrompt(
+            // Build prompts - task-work first, then reflect
+            const taskWorkPrompt = buildTaskWorkPrompt(
               sessionCtx,
               iteration,
               maxLoops,
               sessionId,
               options.focus,
             );
+            const reflectPrompt = buildReflectPrompt(
+              iteration,
+              maxLoops,
+              sessionId,
+            );
 
             if (options.dryRun) {
               console.log(
-                chalk.yellow("=== DRY RUN - Prompt that would be sent ===\n"),
+                chalk.yellow("=== DRY RUN - Task Work Prompt ===\n"),
               );
-              console.log(prompt);
+              console.log(taskWorkPrompt);
+              console.log(chalk.yellow("\n=== Reflect Prompt ===\n"));
+              console.log(reflectPrompt);
               console.log(chalk.yellow("\n=== END DRY RUN ==="));
               break;
             }
 
-            // Log prompt
+            // Log task-work prompt
             await appendEvent(specDir, {
               session_id: sessionId,
               type: "prompt.sent",
               data: {
                 iteration,
-                prompt,
+                phase: "task-work",
+                prompt: taskWorkPrompt,
                 tasks: {
                   active: sessionCtx.active_tasks.map((t) => t.ref),
                   ready: sessionCtx.ready_tasks.map((t) => t.ref),
@@ -735,27 +759,59 @@ export function registerRalphCommand(program: Command): void {
                   mcpServers: [], // No MCP servers for now
                 });
 
-                info("Sending prompt to agent...");
-
-                // Send prompt and wait for completion
-                const response = await agent.client.prompt({
+                // Phase 1: Task Work
+                info("Sending task-work prompt to agent...");
+                const taskWorkResponse = await agent.client.prompt({
                   sessionId: acpSessionId!,
-                  prompt: [{ type: "text", text: prompt }],
+                  prompt: [{ type: "text", text: taskWorkPrompt }],
                 });
 
-                // Log completion
+                // Log task-work completion
                 await appendEvent(specDir, {
                   session_id: sessionId,
                   type: "session.update",
                   data: {
                     iteration,
-                    stopReason: response.stopReason,
+                    phase: "task-work",
+                    stopReason: taskWorkResponse.stopReason,
                     completed: true,
                   },
                 });
 
-                // Check stop reason
-                if (response.stopReason === "cancelled") {
+                if (taskWorkResponse.stopReason === "cancelled") {
+                  throw new Error(errors.usage.agentPromptCancelled);
+                }
+
+                // Phase 2: Reflect (always sent after task-work completes)
+                info("Sending reflect prompt to agent...");
+                await appendEvent(specDir, {
+                  session_id: sessionId,
+                  type: "prompt.sent",
+                  data: {
+                    iteration,
+                    phase: "reflect",
+                    prompt: reflectPrompt,
+                  },
+                });
+
+                const reflectResponse = await agent.client.prompt({
+                  sessionId: acpSessionId!,
+                  prompt: [{ type: "text", text: reflectPrompt }],
+                });
+
+                // Log reflect completion
+                await appendEvent(specDir, {
+                  session_id: sessionId,
+                  type: "session.update",
+                  data: {
+                    iteration,
+                    phase: "reflect",
+                    stopReason: reflectResponse.stopReason,
+                    completed: true,
+                  },
+                });
+
+                if (reflectResponse.stopReason === "cancelled") {
                   throw new Error(errors.usage.agentPromptCancelled);
                 }
 

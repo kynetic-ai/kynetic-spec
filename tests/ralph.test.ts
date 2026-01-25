@@ -142,7 +142,8 @@ describe('ralph command', () => {
 
     expect(result.stdout).toContain('DRY RUN');
     expect(result.stdout).toContain('Kspec Automation Session');
-    expect(result.stdout).toContain('Working Procedure');
+    expect(result.stdout).toContain('Task Work Prompt');
+    expect(result.stdout).toContain('Reflect Prompt');
     // Should not show completion
     expect(result.stdout).not.toContain('Completed iteration');
   });
@@ -169,11 +170,11 @@ describe('ralph command', () => {
   });
 
   // AC: @ralph-skill-delegation ac-3
-  it('contains literal /task-work and /reflect skill invocations', async () => {
+  it('contains literal /task-work loop and /reflect loop skill invocations', async () => {
     const result = runRalph('--dry-run', tempDir);
 
-    expect(result.stdout).toContain('/task-work');
-    expect(result.stdout).toContain('/reflect');
+    expect(result.stdout).toContain('/task-work loop');
+    expect(result.stdout).toContain('/reflect loop');
   });
 
   // AC: @ralph-skill-delegation ac-4
