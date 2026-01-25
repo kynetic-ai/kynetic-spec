@@ -479,5 +479,40 @@ describe("Loop Mode Error Handling", () => {
       expect(results).toHaveLength(1);
       expect(results[0].taskRef).toBe("01TASK1");
     });
+
+    // AC: @loop-mode-error-handling ac-9
+    it("should count iteration as single failure regardless of phase", () => {
+      // AC-9 states "each error noted separately, iteration counts as single failure"
+      // Implementation note: phases run sequentially (task-work then reflect)
+      // If task-work fails, reflect doesn't run
+      // If reflect fails, only reflect error captured
+      // Either way, iteration fails once → consecutiveFailures += 1
+
+      const tasksInProgress: Task[] = [
+        {
+          _ulid: "01TASK1",
+          slugs: [],
+          title: "Task 1",
+          type: "task",
+          status: "in_progress",
+        },
+      ];
+
+      const currentTasks: Task[] = [{ ...tasksInProgress[0] }];
+      const iterationStart = new Date("2024-01-10T12:00:00Z");
+
+      // Single call to processFailedIteration per iteration
+      const results = processFailedIteration(
+        tasksInProgress,
+        currentTasks,
+        iterationStart,
+        "Iteration failed (task-work or reflect phase)",
+      );
+
+      // One failure note per task without progress
+      expect(results).toHaveLength(1);
+      expect(results[0].failureCount).toBe(1);
+      expect(results[0].noteAdded).toBe(true);
+    });
   });
 });
