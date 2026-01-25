@@ -34504,6 +34504,14 @@
 
         Checking if file locking is actually implemented elsewhere or if AC-10b spec needs revision.
       supersedes: null
+    - _ulid: 01KFT9XMGMTRXJMCGQ6KN8Y3PZ
+      created_at: 2026-01-25T10:06:47.828Z
+      author: "@claude"
+      content: "Session analyzed why agent used test.skip() instead of implementing. Root cause: task-work
+        skill lacked scope expansion guidance. Fixed via PR #238 (skill changes) and shadow branch
+        update (workflow DoD check). Task still needs actual implementation of ac-10b file locking +
+        tests. Next session should retry with updated skill/workflow."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
