@@ -37806,6 +37806,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:56:01.425Z
+  started_at: 2026-01-25T11:24:30.953Z
   notes:
     - _ulid: 01KFR82GCHGVHHD2HV6V35QBDZ
       created_at: 2026-01-24T14:56:01.425Z
@@ -37850,8 +37851,52 @@
         prefix. N=3 triggers automation: needs_review. Failure = tests fail, PR blocked, exception,
         or agent reports cannot complete."
       supersedes: null
+    - _ulid: 01KFTEPNNHPKT6RNY26NAM6FNG
+      created_at: 2026-01-25T11:30:22.513Z
+      author: "@claude"
+      content: |-
+        ## Implementation Complete
+
+        Implemented loop mode error handling with per-task failure tracking.
+
+        ### What was implemented:
+        1. **Error tracking utilities** (src/ralph/loop-errors.ts):
+           - parseFailureCount() - Parse [LOOP-FAIL:N] prefix from notes (AC-4)
+           - getTaskFailureCount() - Get highest failure count from task notes (AC-4)
+           - createFailureNote() - Create failure note with incremented count (AC-1, AC-3)
+           - shouldEscalate() - Check if threshold reached (AC-5)
+           - isIterationFailure() - Determine if iteration result is a failure (AC-7)
+           - hasTaskProgress() - Check for progress via new notes (AC-8)
+           - processFailedIteration() - Main orchestration function (AC-2, AC-6, AC-8)
+
+        2. **Ralph integration** (src/cli/commands/ralph.ts):
+           - handleIterationFailure() - Called after iteration fails
+           - Tracks tasks in_progress at iteration start
+           - Re-loads tasks after failure to check progress
+           - Adds [LOOP-FAIL:N] notes to tasks without progress
+           - Escalates to automation:needs_review at 3 failures (AC-5)
+
+        3. **Test coverage** (tests/ralph-loop-errors.test.ts):
+           - 23 tests covering all 9 acceptance criteria
+           - All tests passing
+
+        ### How it works:
+        - At iteration start: capture active_tasks and timestamp
+        - After iteration fails: handleIterationFailure() is called
+        - For each task that was in_progress:
+          - Check if it made progress (new non-LOOP-FAIL notes)
+          - If no progress: add [LOOP-FAIL:N] note
+          - If N reaches 3: set automation:needs_review
+
+        ### Files modified:
+        - src/ralph/loop-errors.ts (new)
+        - src/ralph/index.ts (exports)
+        - src/cli/commands/ralph.ts (integration)
+        - tests/ralph-loop-errors.test.ts (new)
+
+        All 9 ACs implemented and tested.
+      supersedes: null
   todos: []
-  started_at: 2026-01-25T11:24:30.953Z
 - _ulid: 01KFR830Q7FH07WJJGDX7KGB01
   slugs:
     - task-ralph-skill-delegation
