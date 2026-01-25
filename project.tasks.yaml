@@ -37428,7 +37428,7 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -37586,6 +37586,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T23:27:14.011Z
+  closed_reason: E2E tests implemented and passing. All 3 ACs covered (ac-28, ac-29, ac-30). Committed
+    directly to main (07cb23df).
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
   slugs:
     - task-projects-api-impl
