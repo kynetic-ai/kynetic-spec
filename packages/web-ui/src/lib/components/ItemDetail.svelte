@@ -65,7 +65,7 @@
 </script>
 
 <Sheet bind:open>
-	<SheetContent class="sm:max-w-2xl overflow-y-auto">
+	<SheetContent class="sm:max-w-2xl overflow-y-auto" data-testid="spec-detail-panel">
 		{#if loading}
 			<div class="space-y-4">
 				<Skeleton class="h-8 w-3/4" />
@@ -85,11 +85,11 @@
 				<SheetHeader>
 					<div class="flex items-center gap-2">
 						<!-- AC: @web-dashboard ac-12 - Title and type -->
-						<Badge>{item.type}</Badge>
-						<SheetTitle>{item.title}</SheetTitle>
+						<Badge data-testid="implementation-status">{item.type}</Badge>
+						<SheetTitle data-testid="spec-title">{item.title}</SheetTitle>
 					</div>
 					{#if item.description}
-						<SheetDescription>{item.description}</SheetDescription>
+						<SheetDescription data-testid="spec-description">{item.description}</SheetDescription>
 					{/if}
 				</SheetHeader>
 
@@ -107,27 +107,32 @@
 
 				<!-- AC: @web-dashboard ac-12, ac-15 - Acceptance Criteria (GWT format) -->
 				{#if item.acceptance_criteria && item.acceptance_criteria.length > 0}
-					<div>
+					<div data-testid="acceptance-criteria">
 						<h3 class="text-sm font-semibold mb-2">Acceptance Criteria</h3>
 						<Accordion type="multiple" class="w-full">
 							{#each item.acceptance_criteria as ac, i}
-								<AccordionItem value={ac._ulid}>
-									<AccordionTrigger>
-										<span class="text-sm">AC-{i + 1}: {ac.given}</span>
+								<AccordionItem value={ac._ulid} data-testid="ac-item">
+									<AccordionTrigger data-testid="ac-expand-toggle">
+										<span class="text-sm" data-testid="ac-given">AC-{i + 1}: {ac.given}</span>
 									</AccordionTrigger>
 									<AccordionContent>
 										<div class="space-y-2 text-sm pl-4">
-											<div>
+											<div data-testid="ac-given-full">
 												<span class="font-medium text-muted-foreground">Given:</span>
 												{ac.given}
 											</div>
-											<div>
+											<div data-testid="ac-when ac-when-full">
 												<span class="font-medium text-muted-foreground">When:</span>
 												{ac.when}
 											</div>
-											<div>
+											<div data-testid="ac-then ac-then-full">
 												<span class="font-medium text-muted-foreground">Then:</span>
 												{ac.then}
+											</div>
+											<!-- Test coverage indicator placeholder -->
+											<div data-testid="test-coverage-indicator" class="text-xs text-muted-foreground mt-2 uncovered">
+												<!-- TODO: Integrate test coverage data -->
+												Coverage: Unknown
 											</div>
 										</div>
 									</AccordionContent>
@@ -139,19 +144,20 @@
 
 				<!-- AC: @web-dashboard ac-14 - Traits as chips -->
 				{#if item.traits && item.traits.length > 0}
-					<div>
+					<div data-testid="traits-section">
 						<h3 class="text-sm font-semibold mb-2">Traits</h3>
 						<div class="flex flex-wrap gap-2">
 							{#each item.traits as trait}
 								<Button
 									variant="outline"
 									size="sm"
+									data-testid="trait-chip"
 									on:click={() => {
 										// TODO: Navigate to trait detail or show trait info
 										console.log('Trait clicked:', trait);
 									}}
 								>
-									{trait}
+									<span data-testid="trait-title">{trait}</span>
 								</Button>
 							{/each}
 						</div>
@@ -160,16 +166,19 @@
 
 				<!-- AC: @web-dashboard ac-13 - Linked tasks with status -->
 				{#if linkedTasks.length > 0}
-					<div>
+					<div data-testid="implementation-section">
 						<h3 class="text-sm font-semibold mb-2">Implementation</h3>
 						<div class="space-y-2">
 							{#each linkedTasks as task}
 								<a
 									href="/tasks?ref={encodeURIComponent(task._ulid)}"
 									class="flex items-center gap-2 p-2 rounded border hover:bg-muted/50 transition-colors"
+									data-testid="linked-task"
 								>
-									<Badge class={getStatusColor(task.status)}>{task.status}</Badge>
-									<span class="text-sm flex-1">{task.title}</span>
+									<Badge class={getStatusColor(task.status)} data-testid="task-status-badge"
+										>{task.status}</Badge
+									>
+									<span class="text-sm flex-1" data-testid="task-title">{task.title}</span>
 									{#if task.notes_count > 0}
 										<Badge variant="secondary" class="text-xs">{task.notes_count} notes</Badge>
 									{/if}
@@ -178,7 +187,7 @@
 						</div>
 					</div>
 				{:else}
-					<div>
+					<div data-testid="implementation-section">
 						<h3 class="text-sm font-semibold mb-2">Implementation</h3>
 						<p class="text-sm text-muted-foreground">No tasks linked to this spec item yet.</p>
 					</div>
