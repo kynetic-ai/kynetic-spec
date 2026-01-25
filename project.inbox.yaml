@@ -749,3 +749,13 @@ inbox:
     created_at: 2026-01-25T22:27:40.138Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KFVPYJDZWES6G3V1TZ6KA8EK
+    text: "Add E2E test progress/timeout diagnostics - Add logging to test-base.ts daemon lifecycle:
+      startup time, health check attempts, port binding status. Add Playwright config for better
+      timeout diagnostics. Would help debug why E2E tests timeout >2min."
+    created_at: 2026-01-25T23:13:44.384Z
+    tags:
+      - reflection
+      - testing
+      - e2e
+    added_by: "@claude"
