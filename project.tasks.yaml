@@ -34670,6 +34670,56 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KFT06V8G32WAZCT7VQ0QFQAK
+      created_at: 2026-01-25T07:17:03.889Z
+      author: "@claude"
+      content: >-
+        ## COVERAGE GAPS IDENTIFIED
+
+
+        ### Current Status
+
+        3/5 ACs properly covered in daemon-context-manager.test.ts
+
+
+        ### Weak Coverage: ac-14 (Re-registration After Restart)
+
+        AC-14: Given daemon restarts, when first request for a project arrives, then project is
+        re-registered automatically
+
+
+        Issue: Current test checks independent registration but doesn't test the restart scenario.
+
+
+        ### Weak Coverage: ac-15 (Empty Project List After Restart)
+
+        AC-15: Given daemon running with registered projects, when daemon restarts, then registered
+        project list is empty
+
+
+        Issue: Tests listing but not persistence across restarts.
+
+
+        ### What's Needed
+
+        - ac-14: Test that simulates daemon restart, then verifies re-registration on first request
+
+        - ac-15: Test that registers projects, simulates restart, verifies list is empty
+
+
+        ### Test Location
+
+        Add to: tests/daemon-context-manager.test.ts
+
+
+        ### Definition of Done
+
+        - [ ] ac-14 restart re-registration test added
+
+        - [ ] ac-15 empty list after restart test added
+
+        - [ ] No test.skip() calls
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
