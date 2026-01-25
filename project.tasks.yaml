@@ -34174,7 +34174,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -34358,6 +34358,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T13:17:06.114Z
+  closed_reason: "Merged in PR #246. Added data-testid attributes to Sidebar and observations page,
+    then created 12 comprehensive E2E tests covering AC-20 (focus display), AC-21 (observations
+    badge), and AC-22 (observations panel with type icons). All ACs have full test coverage.
+    Implementation matches spec requirements exactly."
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
   title: Implement Error Handling (@api-contract AC-22 to AC-24)
