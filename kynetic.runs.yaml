@@ -4824,7 +4824,7 @@ runs:
   - _ulid: 01KFT1DH0XZBYFB1QPBRTC3622
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-25T07:38:11.357Z
     step_results:
@@ -4852,5 +4852,23 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-25T07:38:49.809Z
-        completed_at: 2026-01-25T07:38:49.809Z
+        completed_at: 2026-01-25T07:39:35.998Z
+        notes: >-
+          Coverage check:
+
+          1. Shadow sync issues - PARTIALLY TRACKED: inbox @01KFHZR4 covers guidance/warnings but
+          not divergence resolution
+
+          2. Workflow cleanup - NOT TRACKED: no spec/task/inbox for cleaning stale runs
+
+          3. Pre-commit hook blocking - PARTIALLY TRACKED: @01KF9Q39 added hook but no allowance for
+          legitimate manual edits
+
+          4. Task merge strategy - NOT TRACKED: no spec for smart merging of tasks.yaml
+
+          5. Note bulk restore - NOT TRACKED: no command to restore notes from git history
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-25T07:39:35.998Z
+        completed_at: 2026-01-25T07:39:35.998Z
     initiated_by: "@claude"
