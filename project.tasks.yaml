@@ -32207,7 +32207,7 @@
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
   slugs: []
-  title: E2E Items View Tests
+  title: Implement Items View (AC-11 to AC-15)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
