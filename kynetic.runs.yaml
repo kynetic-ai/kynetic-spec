@@ -5079,8 +5079,18 @@ runs:
   - _ulid: 01KFTAAKRBNDQ4439FP5TH13CY
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-25T10:13:53.036Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T10:13:53.036Z
+        completed_at: 2026-01-25T10:14:05.991Z
+        inputs:
+          spec_ref: "@multi-directory-daemon"
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T10:14:05.991Z
+        completed_at: 2026-01-25T10:14:05.991Z
     initiated_by: "@claude"
