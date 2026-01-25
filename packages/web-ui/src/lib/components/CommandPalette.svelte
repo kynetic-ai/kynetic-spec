@@ -109,14 +109,14 @@
 </script>
 
 <!-- AC: @web-dashboard ac-23 -->
-<Command.Dialog bind:open bind:value={query} title="Search" description="Search across all entities">
+<Command.Dialog data-testid="command-palette" bind:open bind:value={query} title="Search" description="Search across all entities">
 	{@render children()}
 </Command.Dialog>
 
 {#snippet children()}
 	<!-- AC: @web-dashboard ac-23, ac-24 -->
-	<Command.Input placeholder="Search tasks, items, inbox..." />
-	<Command.List>
+	<Command.Input data-testid="command-palette-input" placeholder="Search tasks, items, inbox..." />
+	<Command.List data-testid="command-palette-results">
 		{#if loading}
 			<Command.Loading>Searching...</Command.Loading>
 		{:else if query.trim() && results.length === 0}
@@ -124,10 +124,10 @@
 		{:else}
 			<!-- AC: @web-dashboard ac-24 - Group results by type -->
 			{#each Object.entries(groupedResults) as [type, items]}
-				<Command.Group heading={typeLabels[type] || type}>
+				<Command.Group data-testid="search-group-{type}" heading={typeLabels[type] || type}>
 					{#each items as result}
 						<!-- AC: @web-dashboard ac-25 - Navigate on click -->
-						<Command.Item onSelect={() => handleSelect(result)}>
+						<Command.Item data-testid="search-result-item" onSelect={() => handleSelect(result)}>
 							<div class="flex flex-col">
 								<span class="font-medium">{result.title}</span>
 								{#if result.matchedFields.length > 0}

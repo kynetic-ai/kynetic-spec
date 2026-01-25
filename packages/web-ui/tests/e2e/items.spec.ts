@@ -18,7 +18,7 @@ import { test, expect } from '../fixtures/test-base';
 test.describe('Items View', () => {
   test.describe('Spec Tree', () => {
     // AC: @web-dashboard ac-11
-    test.skip('displays hierarchical spec tree', async ({ page, daemon }) => {
+    test('displays hierarchical spec tree', async ({ page, daemon }) => {
       await page.goto('/items');
 
       // Wait for spec tree to load
@@ -34,7 +34,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-11
-    test.skip('expands and collapses tree nodes', async ({ page, daemon }) => {
+    test('expands and collapses tree nodes', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -62,7 +62,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-11
-    test.skip('displays nested features and requirements', async ({ page, daemon }) => {
+    test('displays nested features and requirements', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -92,7 +92,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-11
-    test.skip('clicking spec item opens detail panel', async ({ page, daemon }) => {
+    test('clicking spec item opens detail panel', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -107,7 +107,7 @@ test.describe('Items View', () => {
 
   test.describe('Spec Item Detail', () => {
     // AC: @web-dashboard ac-12
-    test.skip('displays item title and description', async ({ page, daemon }) => {
+    test('displays item title and description', async ({ page, daemon }) => {
       await page.goto('/items');
 
       // Click first spec item in tree
@@ -124,7 +124,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-12
-    test.skip('displays acceptance criteria in GWT format', async ({ page, daemon }) => {
+    test('displays acceptance criteria in GWT format', async ({ page, daemon }) => {
       await page.goto('/items');
 
       // Find and click spec item with ACs
@@ -152,7 +152,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-12
-    test.skip('displays traits section', async ({ page, daemon }) => {
+    test('displays traits section', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -165,7 +165,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-12
-    test.skip('displays implementation status', async ({ page, daemon }) => {
+    test('displays implementation status', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -178,7 +178,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-13
-    test.skip('shows linked tasks with status', async ({ page, daemon }) => {
+    test('shows linked tasks with status', async ({ page, daemon }) => {
       await page.goto('/items');
 
       // Find spec item with linked tasks
@@ -205,7 +205,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-13
-    test.skip('linked tasks are clickable to task detail', async ({ page, daemon }) => {
+    test('linked tasks are clickable to task detail', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -229,7 +229,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-14
-    test.skip('displays traits as chips', async ({ page, daemon }) => {
+    test('displays traits as chips', async ({ page, daemon }) => {
       await page.goto('/items');
 
       // Find spec item with traits
@@ -253,7 +253,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-14
-    test.skip('trait chips are clickable to trait detail', async ({ page, daemon }) => {
+    test('trait chips are clickable to trait detail', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -274,7 +274,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-15
-    test.skip('expands acceptance criterion to show full GWT text', async ({ page, daemon }) => {
+    test('expands acceptance criterion to show full GWT text', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -301,7 +301,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-15
-    test.skip('shows test coverage indicator for ACs', async ({ page, daemon }) => {
+    test('shows test coverage indicator for ACs', async ({ page, daemon }) => {
       await page.goto('/items');
 
       const specTree = page.getByTestId('spec-tree');
@@ -332,7 +332,7 @@ test.describe('Items View', () => {
 
   test.describe('Responsive Layout', () => {
     // AC: @web-dashboard ac-26
-    test.skip('adapts to mobile viewport', async ({ page, daemon }) => {
+    test('adapts to mobile viewport', async ({ page, daemon }) => {
       // Set mobile viewport
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/items');
@@ -347,7 +347,7 @@ test.describe('Items View', () => {
     });
 
     // AC: @web-dashboard ac-27
-    test.skip('shows detail panel as slide-over on desktop', async ({ page, daemon }) => {
+    test('shows detail panel as slide-over on desktop', async ({ page, daemon }) => {
       // Set desktop viewport
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/items');

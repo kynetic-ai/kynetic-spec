@@ -68,24 +68,25 @@
 					{@const isUpdated = updatedTaskIds.has(task._ulid)}
 					<TableRow
 						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
-						data-testid="task-row"
+						data-testid="task-list-item"
 						on:click={() => selectTask(task)}
 					>
 						<TableCell class="font-medium">
-							{task.title}
+							<span data-testid="task-title">{task.title}</span>
 							{#if task.type !== 'task'}
 								<Badge variant="outline" class="ml-2">{task.type}</Badge>
 							{/if}
 						</TableCell>
 						<TableCell>
-							<Badge class={getStatusColor(task.status)}>{task.status}</Badge>
+							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{task.status}</Badge>
 						</TableCell>
 						<TableCell class={getPriorityColor(task.priority)}>
-							P{task.priority}
+							<span data-testid="task-priority">P{task.priority}</span>
 						</TableCell>
 						<TableCell>
 							{#if task.spec_ref}
 								<a
+									data-testid="task-spec-ref"
 									href="/items?ref={encodeURIComponent(task.spec_ref)}"
 									class="text-primary hover:underline text-sm"
 									on:click|stopPropagation
@@ -93,11 +94,11 @@
 									{task.spec_ref}
 								</a>
 							{:else}
-								<span class="text-muted-foreground text-sm">—</span>
+								<span data-testid="task-spec-ref" class="text-muted-foreground text-sm">—</span>
 							{/if}
 						</TableCell>
 						<TableCell>
-							<Badge variant="secondary">{task.notes_count}</Badge>
+							<Badge data-testid="task-notes-count" variant="secondary">{task.notes_count}</Badge>
 						</TableCell>
 						<TableCell>
 							<div class="flex flex-wrap gap-1">
