@@ -36469,6 +36469,15 @@
         requires: (1) Run tests and verify they pass, (2) Verify AC coverage, (3) Fix any gaps in
         WebSocket binding tests."
       supersedes: null
+    - _ulid: 01KFVNR1FPEF8MC0MM21Z93M7W
+      created_at: 2026-01-25T22:52:41.846Z
+      author: "@claude"
+      content: Created daemon-websocket-binding.test.ts with 9 tests covering AC-21, AC-21b, AC-22, AC-23.
+        Tests verify WebSocket upgrade handler reads X-Kspec-Dir header, binds connection to
+        project, makes binding immutable, and falls back to default project. AC-23 (close code 4000
+        rejection) test skipped as implementation pending. All 8 active tests pass. Committed as
+        811150c3.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
