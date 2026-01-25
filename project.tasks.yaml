@@ -37526,6 +37526,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Added Loop Mode section to SKILL.md - committed in 74fd539f
   depends_on: []
   context: []
   priority: 1
@@ -37534,6 +37535,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:56:00.823Z
   started_at: 2026-01-25T08:15:09.435Z
+  completed_at: 2026-01-25T08:15:53.345Z
   notes:
     - _ulid: 01KFR82FSP6PNQ2GZ43QK1E8R2
       created_at: 2026-01-24T14:56:00.823Z
@@ -37575,8 +37577,6 @@
         user prompts."
       supersedes: null
   todos: []
-  completed_at: 2026-01-25T08:15:53.345Z
-  closed_reason: Added Loop Mode section to SKILL.md - committed in 74fd539f
 - _ulid: 01KFR82G303PDT36DCA1RZ9Z45
   slugs:
     - task-pr-review-skill
@@ -37584,7 +37584,7 @@
   type: task
   spec_ref: "@pr-review-skill"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -37633,6 +37633,7 @@
         passing). Runs in subagent context (invoked via /pr-review @task-ref in prompt)."
       supersedes: null
   todos: []
+  started_at: 2026-01-25T08:39:05.008Z
 - _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
   slugs:
     - task-loop-mode-error-handling
