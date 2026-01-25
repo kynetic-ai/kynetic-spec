@@ -32457,6 +32457,38 @@
 
         This is tractable - add test IDs, remove .skip(), run tests.
       supersedes: null
+    - _ulid: 01KFTFPEDFRN5Z6SV80EMPZHQ4
+      created_at: 2026-01-25T11:47:43.663Z
+      author: "@claude"
+      content: >-
+        Added all required data-testid attributes to task components:
+
+
+        TaskList.svelte:
+
+        - task-list-item (was task-row)
+
+        - task-title, task-status-badge, task-priority, task-spec-ref, task-notes-count
+
+
+        TaskFilters.svelte:
+
+        - filter-status, filter-type, filter-tag, filter-assignee, filter-automation
+
+
+        TaskDetail.svelte:
+
+        - task-detail-panel, task-description
+
+        - task-dependencies, task-todos, task-notes
+
+        - start-task-button, add-note-form
+
+
+        Next step: Remove test.skip() from E2E tests and verify they pass. This requires daemon
+        running and may reveal API endpoint gaps. Recommend manual verification before completing
+        task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
