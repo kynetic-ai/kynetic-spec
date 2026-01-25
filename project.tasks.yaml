@@ -32917,6 +32917,13 @@
         (npm run test:e2e -w packages/web-ui -- tasks.spec.ts), verify all 17 tests pass, then
         submit task. Task is 70-80% complete - only E2E verification remains."
       supersedes: null
+    - _ulid: 01KFTMV78MHEG6ZD3MZFMCBDY0
+      created_at: 2026-01-25T13:17:43.060Z
+      author: "@claude"
+      content: "[PR Review Subagent Session] This task was already in_progress when PR review subagent
+        started. PR #246 for @01KFP85D has been reviewed and merged. This task was not worked on
+        during this session."
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
@@ -34176,6 +34183,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #246. Added data-testid attributes to Sidebar and observations page,
+    then created 12 comprehensive E2E tests covering AC-20 (focus display), AC-21 (observations
+    badge), and AC-22 (observations panel with type icons). All ACs have full test coverage.
+    Implementation matches spec requirements exactly."
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -34188,6 +34199,7 @@
   vcs_refs: []
   created_at: 2026-01-23T20:19:07.647Z
   started_at: 2026-01-25T13:04:13.549Z
+  completed_at: 2026-01-25T13:17:06.114Z
   notes:
     - _ulid: 01KFP89333VKSN3K9R156GRT52
       created_at: 2026-01-23T20:21:08.323Z
@@ -34358,11 +34370,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T13:17:06.114Z
-  closed_reason: "Merged in PR #246. Added data-testid attributes to Sidebar and observations page,
-    then created 12 comprehensive E2E tests covering AC-20 (focus display), AC-21 (observations
-    badge), and AC-22 (observations panel with type icons). All ACs have full test coverage.
-    Implementation matches spec requirements exactly."
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
   slugs: []
   title: Implement Error Handling (@api-contract AC-22 to AC-24)
