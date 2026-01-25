@@ -7995,7 +7995,7 @@ runs:
   - _ulid: 01KFVRTYFYPP04RMSZDVCZPSPR
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-25T23:46:42.815Z
     step_results:
@@ -8038,5 +8038,22 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-25T23:47:47.859Z
-        completed_at: 2026-01-25T23:47:47.859Z
+        completed_at: 2026-01-25T23:47:58.145Z
+        notes: >-
+          Searches already completed in previous interaction.
+
+
+          HIGH CONFIDENCE friction point:
+
+          1. Daemon ContextManager doesn't load fixture data when --kspec-dir is absolute path
+             - Specific: '{} is not iterable' error when E2E tests use test-base.ts fixtures
+             - Systemic: Blocks all E2E tests for web UI (@01KFP84N, @01KFP84S)
+             - Clear cause: Daemon's data loading logic doesn't handle absolute paths correctly
+             - Not already captured: Task notes document symptom but no discrete task/observation exists
+
+          This is high confidence - encountered repeatedly across multiple tasks in this session.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-25T23:47:58.145Z
+        completed_at: 2026-01-25T23:47:58.145Z
     initiated_by: "@claude"
