@@ -5848,6 +5848,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T12:11:35.514Z
+    completed_at: 2026-01-25T12:13:33.243Z
     step_results:
       - step_index: 0
         status: completed
@@ -5879,4 +5880,11 @@ runs:
         notes: "Captured 1 success observation (@01KFTH5G): Loop error handling protocol worked correctly
           with [LOOP-FAIL:N] tracking and auto-escalation. Reflection complete."
     initiated_by: "@claude"
-    completed_at: 2026-01-25T12:13:33.243Z
+  - _ulid: 01KFTH6XYZ8CTKRXQ4HBRDSSFT
+    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-25T12:14:12.447Z
+    step_results: []
+    initiated_by: "@claude"
