@@ -34308,6 +34308,14 @@
 
         - [ ] All E2E tests pass - no skips
       supersedes: null
+    - _ulid: 01KFTM3EDX33HX4ZFD046WCMAM
+      created_at: 2026-01-25T13:04:43.966Z
+      author: "@claude"
+      content: "Started implementation. Found existing AC-20 (focus display) and AC-21 (observations
+        badge) already in Sidebar.svelte. API endpoints exist. Need to: 1) Create ObservationsPanel
+        component, 2) Create /observations page route, 3) Add data-testid attributes, 4) Create E2E
+        tests for AC-20, AC-21, AC-22"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
