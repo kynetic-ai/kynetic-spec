@@ -36573,8 +36573,11 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Documentary tests exist but don't verify actual HTTP behavior. Requires E2E/integration test
+      framework blocked on @01KFMMZW to test AC-28 (GET /api/projects), AC-29 (POST register), AC-30
+      (DELETE unregister). Implementation exists but needs real HTTP tests.
   depends_on:
     - "@01KFQABQ"
   context: []
