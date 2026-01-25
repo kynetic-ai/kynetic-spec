@@ -4090,4 +4090,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTRRAAF4852S6F5H249P78G
+    type: friction
+    content: "Automation loop iterations consumed even when zero eligible tasks exist. Pattern observed
+      in iteration 23: loop checked 3 in_progress tasks (all automation:needs_review), found 0
+      eligible ready tasks, added checkpoint notes, then exited. No actual work possible but
+      iteration budget still used for status quo documentation. Systemic issue - will recur whenever
+      queue is fully blocked on manual work. Potential improvement: early exit detection before
+      iteration starts, or iteration budget exemption for no-op sessions."
+    created_at: 2026-01-25T14:26:02.191Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
