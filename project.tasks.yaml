@@ -32374,9 +32374,9 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: "Merged in PR #233. 16 E2E tests for items view covering AC-11 through AC-15."
+  closed_reason: null
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -32386,8 +32386,8 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:47.924Z
-  started_at: 2026-01-24T23:45:20.845Z
-  completed_at: 2026-01-25T06:54:10.040Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KFP8775DN1W0RZ0FZNRN14Q6
       created_at: 2026-01-23T20:20:06.957Z
@@ -32510,6 +32510,11 @@
         displays all fields (AC-12) - [ ] Linked tasks shown with status (AC-13) - [ ] Trait chips
         are clickable (AC-14) - [ ] AC expansion shows full GWT text (AC-15) - [ ] All E2E tests
         pass - no skips
+      supersedes: null
+    - _ulid: 01KFSZAG1JHYD1TVAX5SXC7PZ8
+      created_at: 2026-01-25T07:01:34.898Z
+      author: "@claude"
+      content: Reset from completed to pending
       supersedes: null
   todos: []
   automation: eligible
