@@ -105,6 +105,65 @@ describe('ProjectContextManager', () => {
     });
   });
 
+  describe('Daemon restart behavior', () => {
+    // AC: @multi-directory-daemon ac-14
+    it('should re-register project automatically after daemon restart', () => {
+      // Initial registration before restart
+      manager.registerProject(projectA);
+      manager.registerProject(projectB);
+      expect(manager.listProjects()).toHaveLength(2);
+
+      // Simulate daemon restart (new instance)
+      const managerAfterRestart = new ProjectContextManager();
+
+      // Verify list is empty after restart
+      expect(managerAfterRestart.listProjects()).toHaveLength(0);
+
+      // Simulate first request - auto-registers project
+      const context = managerAfterRestart.registerProject(projectA);
+      expect(context.path).toBe(projectA);
+      expect(managerAfterRestart.hasProject(projectA)).toBe(true);
+
+      // Project B is not re-registered yet
+      expect(managerAfterRestart.hasProject(projectB)).toBe(false);
+    });
+
+    // AC: @multi-directory-daemon ac-15
+    it('should have empty project list after daemon restart', () => {
+      // Register projects before restart
+      manager.registerProject(projectA);
+      manager.registerProject(projectB);
+      expect(manager.listProjects()).toHaveLength(2);
+
+      // Simulate daemon restart (new instance = fresh state)
+      const managerAfterRestart = new ProjectContextManager();
+
+      // AC-15: No persistence across restarts
+      expect(managerAfterRestart.listProjects()).toHaveLength(0);
+      expect(managerAfterRestart.hasProject(projectA)).toBe(false);
+      expect(managerAfterRestart.hasProject(projectB)).toBe(false);
+    });
+
+    // AC: @multi-directory-daemon ac-15
+    it('should require re-registration of all projects after restart', () => {
+      // Register with default before restart
+      manager.registerProject(projectA, true);
+      manager.registerProject(projectB);
+
+      // Simulate daemon restart
+      const managerAfterRestart = new ProjectContextManager();
+
+      // All projects must be re-registered
+      expect(() => managerAfterRestart.getProject(projectA)).toThrow('Project not registered');
+      expect(() => managerAfterRestart.getProject(projectB)).toThrow('Project not registered');
+      expect(() => managerAfterRestart.getProject()).toThrow('No default project configured');
+
+      // Re-register on first request after restart
+      managerAfterRestart.registerProject(projectA, true);
+      expect(managerAfterRestart.getProject()).toBeDefined();
+    });
+  });
+
   describe('Path validation', () => {
     // AC: @multi-directory-daemon ac-5
     it('should reject path without .kspec/ directory', () => {
