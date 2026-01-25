@@ -44,7 +44,7 @@
 	<div class="flex-1 min-w-[200px]">
 		<label for="status-filter" class="text-sm font-medium mb-2 block">Status</label>
 		<Select value={status || 'all'} onValueChange={(v) => updateFilter('status', v || 'all')}>
-			<SelectTrigger id="status-filter">
+			<SelectTrigger id="status-filter" data-testid="filter-status">
 				{status || 'All Statuses'}
 			</SelectTrigger>
 			<SelectContent>
@@ -62,7 +62,7 @@
 	<div class="flex-1 min-w-[200px]">
 		<label for="type-filter" class="text-sm font-medium mb-2 block">Type</label>
 		<Select value={type || 'all'} onValueChange={(v) => updateFilter('type', v || 'all')}>
-			<SelectTrigger id="type-filter">
+			<SelectTrigger id="type-filter" data-testid="filter-type">
 				{type || 'All Types'}
 			</SelectTrigger>
 			<SelectContent>
@@ -79,7 +79,7 @@
 			value={automation || 'all'}
 			onValueChange={(v) => updateFilter('automation', v || 'all')}
 		>
-			<SelectTrigger id="automation-filter">
+			<SelectTrigger id="automation-filter" data-testid="filter-automation">
 				{automation || 'All'}
 			</SelectTrigger>
 			<SelectContent>
@@ -94,6 +94,7 @@
 		<label for="tag-filter" class="text-sm font-medium mb-2 block">Tag</label>
 		<Input
 			id="tag-filter"
+			data-testid="filter-tag"
 			type="text"
 			placeholder="Filter by tag..."
 			value={tag}
@@ -105,6 +106,7 @@
 		<label for="assignee-filter" class="text-sm font-medium mb-2 block">Assignee</label>
 		<Input
 			id="assignee-filter"
+			data-testid="filter-assignee"
 			type="text"
 			placeholder="Filter by assignee..."
 			value={assignee}

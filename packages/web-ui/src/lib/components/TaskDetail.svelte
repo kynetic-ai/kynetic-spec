@@ -84,10 +84,10 @@
 </script>
 
 <Sheet bind:open onOpenChange={(o) => !o && close()}>
-	<SheetContent class="overflow-y-auto sm:max-w-lg">
+	<SheetContent class="overflow-y-auto sm:max-w-lg" data-testid="task-detail-panel">
 		{#if task}
 			<SheetHeader>
-				<SheetTitle>{task.title}</SheetTitle>
+				<SheetTitle data-testid="task-description">{task.title}</SheetTitle>
 			</SheetHeader>
 
 			<div class="flex flex-col gap-4 mt-4">
@@ -128,7 +128,7 @@
 
 				<!-- Dependencies -->
 				{#if task.depends_on.length > 0}
-					<div>
+					<div data-testid="task-dependencies">
 						<p class="text-sm font-medium mb-1">Dependencies:</p>
 						<ul class="text-sm space-y-1">
 							{#each task.depends_on as dep}
@@ -160,7 +160,7 @@
 				<!-- AC: @web-dashboard ac-7 -->
 				{#if task.status === 'pending'}
 					<div>
-						<Button on:click={handleStartTask} disabled={isSubmitting} class="w-full">
+						<Button data-testid="start-task-button" on:click={handleStartTask} disabled={isSubmitting} class="w-full">
 							{isSubmitting ? 'Starting...' : 'Start Task'}
 						</Button>
 					</div>
@@ -174,7 +174,7 @@
 
 				<!-- Todos -->
 				{#if task.todos && task.todos.length > 0}
-					<div>
+					<div data-testid="task-todos">
 						<p class="text-sm font-medium mb-2">Todos:</p>
 						<ul class="space-y-2">
 							{#each task.todos as todo}
@@ -205,7 +205,7 @@
 
 					<!-- Add Note Form -->
 					<!-- AC: @web-dashboard ac-8 -->
-					<div class="mb-4 space-y-2">
+					<div class="mb-4 space-y-2" data-testid="add-note-form">
 						<Textarea
 							placeholder="Add a note..."
 							bind:value={noteContent}
@@ -222,7 +222,7 @@
 					</div>
 
 					<!-- Notes List -->
-					<div class="space-y-4">
+					<div class="space-y-4" data-testid="task-notes">
 						{#each task.notes as note}
 							<div class="border rounded-lg p-3">
 								<div class="flex justify-between items-start mb-2">
