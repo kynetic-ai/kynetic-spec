@@ -32731,6 +32731,83 @@
 
         The 10-second timeout test may need increased test timeout in Playwright config.
       supersedes: null
+    - _ulid: 01KFSM7JN6XFDATJ9YS2HY13BY
+      created_at: 2026-01-25T03:47:44.935Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Goal
+
+        Implement WebSocket connection handling to meet AC-28 through AC-32 from @web-dashboard
+        spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-28: Auto reconnect with exponential backoff (1s, 2s, 4s... max 30s)
+
+        - AC-29: Connection lost indicator shown after 10s disconnect
+
+        - AC-30: Skip duplicate events by sequence number
+
+        - AC-31: Reset sequence tracking on reconnect
+
+        - AC-32: Re-subscribe to previous topics on reconnect
+
+
+        ### Implementation Steps
+
+        1. Review existing WebSocket manager: packages/web-ui/src/lib/websocket/manager.ts
+
+        2. Implement exponential backoff reconnection logic
+
+        3. Add connection status tracking with 10s threshold
+
+        4. Create ConnectionLost indicator component
+
+        5. Implement sequence deduplication (lastSeqProcessed)
+
+        6. Add topic re-subscription on reconnect
+
+        7. Add data-testid attributes for status indicators
+
+
+        ### Required data-testid Attributes
+
+        - connection-status, connection-lost-indicator
+
+        - (internal: test via behavior, not just UI elements)
+
+
+        ### Validation
+
+        Create packages/web-ui/tests/e2e/connection.spec.ts:
+
+        - Test reconnection behavior (may need to mock/intercept WebSocket)
+
+        - Test connection lost indicator appears after delay
+
+        - Test deduplication by sending duplicate seq events
+
+        - Tests MUST run and pass (no test.skip)
+
+
+        ### Definition of Done
+
+        - [ ] Reconnect with exponential backoff works (AC-28)
+
+        - [ ] Connection lost indicator shows after 10s (AC-29)
+
+        - [ ] Duplicate events are skipped (AC-30)
+
+        - [ ] Sequence resets on reconnect (AC-31)
+
+        - [ ] Topics re-subscribed on reconnect (AC-32)
+
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
