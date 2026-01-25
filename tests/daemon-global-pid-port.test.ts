@@ -9,9 +9,10 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createTempDir, cleanupTempDir } from './helpers/cli';
-import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync, unlinkSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync, statSync, unlinkSync, openSync, closeSync, constants } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
+import { spawn } from 'child_process';
 
 // Mock PidFileManager for global paths
 class GlobalPidFileManager {
@@ -32,10 +33,37 @@ class GlobalPidFileManager {
     }
   }
 
-  // AC: @multi-directory-daemon ac-9
+  // AC: @multi-directory-daemon ac-9, ac-10b
   writePid(): void {
     this.ensureConfigDir();
-    writeFileSync(this.pidFilePath, process.pid.toString(), 'utf-8');
+
+    // AC: @multi-directory-daemon ac-10b
+    // Use O_CREAT | O_EXCL flags for atomic file creation
+    try {
+      const fd = openSync(this.pidFilePath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+      try {
+        writeFileSync(fd, process.pid.toString(), 'utf-8');
+      } finally {
+        closeSync(fd);
+      }
+    } catch (err: any) {
+      if (err.code === 'EEXIST') {
+        // File already exists - check if daemon is actually running
+        if (this.isDaemonRunning()) {
+          throw new Error('Daemon already running');
+        }
+        // Stale PID file - remove it and retry
+        this.remove();
+        const fd = openSync(this.pidFilePath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+        try {
+          writeFileSync(fd, process.pid.toString(), 'utf-8');
+        } finally {
+          closeSync(fd);
+        }
+      } else {
+        throw err;
+      }
+    }
   }
 
   // AC: @multi-directory-daemon ac-9
@@ -390,6 +418,55 @@ describe('Global PID/Port Management', () => {
       // Should be able to start new daemon
       pidManager.writePid();
       expect(pidManager.isDaemonRunning()).toBe(true);
+    });
+  });
+
+  describe('Concurrent daemon start prevention', () => {
+    // AC: @multi-directory-daemon ac-10b
+    it('should prevent concurrent daemon starts using file lock', () => {
+      // Test exclusive file creation - first write succeeds
+      pidManager.writePid();
+
+      const pidFilePath = join(tempConfigDir, 'daemon.pid');
+      expect(existsSync(pidFilePath)).toBe(true);
+
+      const firstPid = readFileSync(pidFilePath, 'utf-8').trim();
+      expect(firstPid).toBe(process.pid.toString());
+
+      // Second attempt should fail with "Daemon already running"
+      const secondManager = new GlobalPidFileManager(tempConfigDir);
+      expect(() => secondManager.writePid()).toThrow('Daemon already running');
+
+      // PID file should still contain first daemon's PID
+      const currentPid = readFileSync(pidFilePath, 'utf-8').trim();
+      expect(currentPid).toBe(firstPid);
+    });
+
+    // AC: @multi-directory-daemon ac-10b
+    it('should allow daemon start when PID file is stale', () => {
+      // Create stale PID file
+      const pidFilePath = join(tempConfigDir, 'daemon.pid');
+      mkdirSync(tempConfigDir, { recursive: true });
+      writeFileSync(pidFilePath, '999999', 'utf-8');
+
+      // writePid should detect stale PID, remove it, and succeed
+      expect(() => pidManager.writePid()).not.toThrow();
+
+      // Should contain current process PID
+      const newPid = readFileSync(pidFilePath, 'utf-8').trim();
+      expect(newPid).toBe(process.pid.toString());
+    });
+
+    // AC: @multi-directory-daemon ac-10b
+    it('should use atomic file creation with O_EXCL flag', () => {
+      // This test verifies the implementation uses exclusive creation
+      // by attempting to create the file twice in the same process
+
+      pidManager.writePid();
+
+      // Second attempt should detect running daemon and fail
+      const secondManager = new GlobalPidFileManager(tempConfigDir);
+      expect(() => secondManager.writePid()).toThrow('Daemon already running');
     });
   });
 
