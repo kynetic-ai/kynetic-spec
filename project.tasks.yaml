@@ -34559,6 +34559,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
   depends_on:
     - "@01KFQADQ"
   context: []
@@ -34570,11 +34571,10 @@
   vcs_refs: []
   created_at: 2026-01-24T06:18:01.549Z
   started_at: 2026-01-25T04:39:08.373Z
+  completed_at: 2026-01-25T04:39:12.347Z
   notes: []
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T04:39:12.347Z
-  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   slugs:
     - task-broadcast-filter-impl
@@ -34824,7 +34824,7 @@
     Task: /api/projects endpoints implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -34839,6 +34839,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-25T04:39:14.340Z
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
