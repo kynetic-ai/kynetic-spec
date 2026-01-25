@@ -2822,7 +2822,7 @@ features:
         then: note added, workflow continues
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
     slugs:
       - task-work-loop-skill
