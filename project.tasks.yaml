@@ -38420,6 +38420,16 @@
         dropdown selector, integrate with API client to fetch projects and set header, and implement
         data reload logic.
       supersedes: null
+    - _ulid: 01KFTN3Z8VK7697WRKSN3TAGJH
+      created_at: 2026-01-25T13:22:29.787Z
+      author: "@claude"
+      content: "[LOOP EXIT] Task requires implementing multiple interconnected pieces: project store
+        (Svelte runes), API client modifications for X-Kspec-Dir header, ProjectSelector component
+        with dropdown UI, layout integration, and data reload logic across all views. This
+        multi-file implementation + daemon testing exceeds automation loop single-iteration
+        capacity. Recommend human-driven session for implementation. Estimate: 60-90 min including
+        testing. Task is automation:eligible but implementation complexity requires manual session."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
