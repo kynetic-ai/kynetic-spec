@@ -3945,4 +3945,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTJNAK1HV8NJKQCSB767QS5
+    type: friction
+    content: "Automation loop cannot verify E2E tests that require daemon running. Pattern: Tasks add
+      data-testid attributes and create E2E tests, but verification requires manual session to start
+      daemon (npm run serve -w packages/web-ui) and run tests. Repeated across @01KFP84N (tasks
+      view), @01KFP84S (items view), @01KFP84X (inbox view) in session 01KFTDBQB3Z0PA5Y0GQD8T1RW3.
+      Tasks marked automation:needs_review and stall at ~70-80% complete. Potential solutions:
+      headless daemon fixture for E2E tests, mock API layer, or split tasks (implementation +
+      verification)."
+    created_at: 2026-01-25T12:39:32.705Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
