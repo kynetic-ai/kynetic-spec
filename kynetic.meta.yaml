@@ -3811,4 +3811,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTFWFZ6370BPQ1GMZRVMTN3
+    type: friction
+    content: "Automation-eligible tasks lack time/scope estimates. All eligible tasks in iteration 4
+      were large-scope (10+ ACs, 30-60+ min work). Automation loops work best with 10-15 min tasks
+      but selection mechanism doesn't filter by estimated effort. Existing eligibility system
+      addresses complexity/clarity but not time dimension. Result: loops start work that can't
+      complete in single iteration. Suggest: add estimated_effort field (small/medium/large) to
+      tasks, --max-effort flag for automation."
+    created_at: 2026-01-25T11:51:01.863Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
