@@ -717,16 +717,6 @@ inbox:
       - ci
       - workflow
     added_by: "@claude"
-  - _ulid: 01KFT1PX74WEMPZV9ZPW91K2JY
-    text: Revive YAML merge driver implementation - @yaml-merge-driver spec exists with 12 ACs but task
-      was cancelled. Today's 22-conflict merge could have been automatic. Would prevent loss of task
-      titles/notes during shadow branch merges.
-    created_at: 2026-01-25T07:43:18.756Z
-    tags:
-      - reflection
-      - shadow
-      - merge
-    added_by: "@claude"
   - _ulid: 01KFT2J3Z7AJ8VPKF1N7H15WGH
     text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during
       init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful
