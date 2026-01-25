@@ -2322,9 +2322,9 @@ features:
           iterations
       - id: ac-16
         given: ralph loop is running
-        when: checking for available tasks
-        then: "only considers tasks with automation: eligible, ignoring manual_only, needs_review, and
-          unassessed tasks"
+        when: checking for available tasks (ready or in_progress)
+        then: "only considers tasks with automation: eligible status; both ready tasks and in_progress tasks
+          are filtered by automation eligibility"
       - id: ac-17
         given: ralph loop is running with --restart-every N (N > 0)
         when: iteration completes and iteration number is divisible by N
