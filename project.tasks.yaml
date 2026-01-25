@@ -37593,6 +37593,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:56:01.120Z
+  started_at: 2026-01-25T08:39:05.008Z
   notes:
     - _ulid: 01KFR82G309EHNT6S3ZSVSETEB
       created_at: 2026-01-24T14:56:01.120Z
@@ -37632,8 +37633,17 @@
         @pr-review-loop-workflow. Key quality gates: AC coverage + spec alignment (not just tests
         passing). Runs in subagent context (invoked via /pr-review @task-ref in prompt)."
       supersedes: null
+    - _ulid: 01KFT4ZB8Q9RJP02FQCT2T2YDN
+      created_at: 2026-01-25T08:40:21.017Z
+      author: "@claude"
+      content: |-
+        Created pr-review skill:
+        - SKILL.md with validation (task-ref required, PR must exist)
+        - Delegates to @pr-review-loop workflow
+        - Emphasizes AC coverage + spec alignment as quality gates
+        - Updated AGENTS.md skills table
+      supersedes: null
   todos: []
-  started_at: 2026-01-25T08:39:05.008Z
 - _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
   slugs:
     - task-loop-mode-error-handling
