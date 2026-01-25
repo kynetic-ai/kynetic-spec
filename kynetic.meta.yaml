@@ -3744,4 +3744,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFT1Q5Y5RNBFXXCB7DA8RGDF
+    type: success
+    content: "Subagent delegation for git history recovery: Pattern of spawn agent → search git log -p
+      -S → extract lost content → report structured findings worked well for recovering 12+ lost
+      notes from merge. Effective when content exists in history but was overwritten."
+    created_at: 2026-01-25T07:43:27.686Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
