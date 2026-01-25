@@ -34354,7 +34354,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34559,6 +34559,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T10:16:56.429Z
+  closed_reason: "Merged in PR #239. Implemented comprehensive test coverage for global PID/port
+    management with file locking. All 7 ACs covered: ac-9 (global paths), ac-9b (dir creation),
+    ac-9c (port validation), ac-10b (file locking), ac-11 (cleanup), ac-13 (CLI port reading). 33
+    tests passing with proper isolation."
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
   slugs:
     - task-context-manager-tests
