@@ -5369,8 +5369,44 @@ runs:
   - _ulid: 01KFTEREYB4RP0AP4D3H26FTDK
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-25T11:31:21.164Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T11:31:21.164Z
+        completed_at: 2026-01-25T11:32:18.658Z
+        notes: >-
+          Session review complete. 
+
+
+          What worked:
+
+          - Test-first approach with 23 comprehensive tests (captured as success observation
+          @01KFTESK)
+
+          - Following existing ralph patterns for CLI commands via spawnSync
+
+          - Clear spec with 9 ACs made implementation straightforward
+
+
+          Friction encountered:
+
+          - TypeScript union type handling (already tracked in observation
+          @01KF93Q9S85XSBT1JVV1S1F9F3)
+
+          - Minor: ActiveTaskSummary ref→ulid resolution (project-specific, not systemic)
+
+
+          High-confidence capture:
+
+          - @01KFTESK: Test-first development success pattern
+
+
+          No additional items to capture - friction already tracked, session successful.
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T11:32:18.658Z
+        completed_at: 2026-01-25T11:32:18.658Z
     initiated_by: "@claude"
