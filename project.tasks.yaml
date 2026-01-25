@@ -32498,6 +32498,14 @@
         endpoint gaps. Recommend continuing in next iteration or human-driven session for test
         debugging."
       supersedes: null
+    - _ulid: 01KFTFRBHK890TB4ZYSM9Z9K73
+      created_at: 2026-01-25T11:48:46.259Z
+      author: "@claude"
+      content: "[LOOP EXIT] Cannot meet DoD in single iteration. Test IDs added (fd70b86d) but enabling 17
+        E2E tests + debugging exceeds automation loop scope. Requires: daemon setup, API endpoint
+        verification, test execution, failure debugging. Estimate: 30-60 min of iterative work.
+        Recommend: human session or multi-iteration approach. Task remains in_progress."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
