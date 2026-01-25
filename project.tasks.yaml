@@ -32812,7 +32812,7 @@
   automation: eligible
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
   slugs: []
-  title: E2E Observations Panel Tests
+  title: Implement Observations Panel (AC-20 to AC-22)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
