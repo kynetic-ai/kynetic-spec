@@ -33173,7 +33173,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -33286,6 +33286,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T12:15:01.776Z
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
   slugs: []
   title: Implement Search/Command Palette (AC-23 to AC-25)
