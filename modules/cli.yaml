@@ -2933,6 +2933,9 @@ features:
         given: skill starts
         when: execution
         then: delegates all behavior to @pr-review-loop-workflow
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFR7SRJHP46DWKDWQZEEQMJR
     slugs:
       - loop-mode-error-handling
