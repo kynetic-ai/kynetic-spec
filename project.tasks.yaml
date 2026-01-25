@@ -33349,6 +33349,13 @@
         **Blocker:** Same daemon requirement as tasks (@01KFP84N) and items (@01KFP84S). This is a
         systematic E2E testing pattern that requires human-driven verification session.
       supersedes: null
+    - _ulid: 01KFTHC0M0ZZYSWZS7E161588X
+      created_at: 2026-01-25T12:16:59.008Z
+      author: "@claude"
+      content: "[LOOP-FAIL:1] Daemon requirement blocker: Cannot complete E2E test verification within
+        automation loop. Task requires human-driven session to start daemon and run tests.
+        Implementation is code-complete but unverified."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
