@@ -732,12 +732,13 @@ export function registerRalphCommand(program: Command): void {
               break;
             }
 
-            // Check for ready tasks or active tasks
+            // Check for automation-eligible tasks (ready or in_progress)
+            // AC: @cli-ralph ac-19
             const hasActiveTasks = sessionCtx.active_tasks.length > 0;
             const hasReadyTasks = sessionCtx.ready_tasks.length > 0;
 
             if (!hasActiveTasks && !hasReadyTasks) {
-              info("No active or eligible ready tasks. Exiting loop.");
+              info("No automation-eligible tasks (ready or in_progress). Exiting loop.");
               break;
             }
 

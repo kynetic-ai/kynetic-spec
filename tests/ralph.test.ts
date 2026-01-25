@@ -94,7 +94,7 @@ describe('ralph command', () => {
       MOCK_ACP_EXIT_CODE: '0',
     });
 
-    expect(result.output).toContain('No active or eligible ready tasks');
+    expect(result.output).toContain('No automation-eligible tasks (ready or in_progress)');
     // Should not attempt multiple iterations
     expect(result.output).not.toContain('Iteration 2/5');
   });
@@ -118,7 +118,7 @@ describe('ralph command', () => {
     });
 
     // Should exit with no eligible tasks message (after starting iteration 1)
-    expect(result.output).toContain('No active or eligible ready tasks');
+    expect(result.output).toContain('No automation-eligible tasks (ready or in_progress)');
     // Should not continue to iteration 2 (exits early)
     expect(result.output).not.toContain('Iteration 2/5');
     // Should not show "Completed iteration" since no work was done
@@ -134,6 +134,30 @@ describe('ralph command', () => {
     // Should process the eligible task
     expect(result.output).toContain('Iteration 1/1');
     expect(result.output).toContain('Completed iteration 1');
+  });
+
+  // AC: @cli-ralph ac-16, ac-19
+  it('exits when in_progress tasks are automation:needs_review', async () => {
+    // Create an in_progress task with automation:needs_review
+    // This simulates the scenario where all active tasks are marked as needing human review
+    const tasksPath = path.join(tempDir, 'project.tasks.yaml');
+    const content = await fs.readFile(tasksPath, 'utf-8');
+
+    // Modify the pending task to be in_progress with needs_review
+    // Note: fixture has priority between status and automation
+    const modified = content
+      .replace(/status: pending/, 'status: in_progress')
+      .replace(/automation: eligible/, 'automation: needs_review');
+    await fs.writeFile(tasksPath, modified);
+
+    const result = runRalph('--max-loops 5', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    // Should exit immediately since in_progress task is needs_review (not eligible)
+    expect(result.output).toContain('No automation-eligible tasks (ready or in_progress)');
+    // Should not continue to iteration 2
+    expect(result.output).not.toContain('Iteration 2/5');
   });
 
   // AC: @cli-ralph ac-6 - Dry run mode
