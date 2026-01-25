@@ -751,6 +751,7 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 | `/local-review` | Pre-PR quality review - AC coverage, test quality, isolation (`@local-review` workflow) |
 | `/meta` | Session context (focus, threads, questions, observations) |
 | `/pr` | Create pull requests, then use `@pr-review-merge` workflow for merge |
+| `/pr-review` | Review and merge a PR with quality gates. Verifies AC coverage and spec alignment before merge. Used in subagent context. |
 | `/reflect` | Session reflection and learning capture |
 | `/release` | Create versioned releases with git tags and GitHub releases |
 | `/spec` | Spec authoring guide - item types, acceptance criteria, traits |
