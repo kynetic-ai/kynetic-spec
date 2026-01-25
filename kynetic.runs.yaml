@@ -3507,7 +3507,7 @@ runs:
   - _ulid: 01KFSSED216SB32K9845KKTE1E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-25T05:18:51.458Z
     step_results:
@@ -3625,5 +3625,53 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-25T05:19:31.236Z
-        completed_at: 2026-01-25T05:19:31.236Z
+        completed_at: 2026-01-25T05:19:56.289Z
+        notes: >-
+          ## Coverage Check
+
+
+          ### Friction 1: Documentary Test Anti-Pattern
+
+          - **Partially tracked**: The specific tasks (@01KFQADD, @01KFQAF9) were reframed today
+
+          - **Not tracked**: No systemic prevention mechanism (task template, validation, etc.)
+
+
+          ### Friction 2: Tasks Left Pending After PR Merge
+
+          - **Not tracked**: No spec or task for enforcing task completion on PR merge
+
+
+          ### Friction 3: Wrong ULIDs in Task References
+
+          - **Not tracked**: Appears to be a search/resolution issue, not documented
+
+
+          ### Friction 4: Task Lifecycle Ceremony
+
+          - **Partially tracked**: @task-type-task and @task-commands exist but don't address
+          shortcut for verified-complete work
+
+          - **Inbox item**: @01KF8TQ5 mentions transaction/batch but not this specific issue
+
+
+          ### Friction 5: No Bulk Task Operations
+
+          - **Tracked**: @spec-task-set-batch (implemented), @multi-ref-batch (implemented)
+
+          - **Inbox**: @01KFMP5R specifically about applying multi-ref-batch to task set
+          --automation
+
+          - **May already be implemented** - need to verify
+
+
+          ### Friction 6: Automation Eligibility Defaults
+
+          - **Tracked**: @task-automation-eligibility spec exists
+
+          - **Partially addressed**: System exists but default behavior may need review
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-25T05:19:56.289Z
+        completed_at: 2026-01-25T05:19:56.289Z
     initiated_by: "@claude"
