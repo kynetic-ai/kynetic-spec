@@ -32274,7 +32274,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   closed_reason: null
   depends_on:
@@ -32288,7 +32288,7 @@
     - implementation
   vcs_refs: []
   created_at: 2026-01-23T20:18:43.587Z
-  started_at: null
+  started_at: 2026-01-25T11:45:09.995Z
   completed_at: null
   notes:
     - _ulid: 01KFP86RBE8RZP4CWZV5SMKHFJ
