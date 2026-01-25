@@ -6265,8 +6265,18 @@ runs:
   - _ulid: 01KFTKG6Y3QQNDCFNB3CES3SFJ
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-25T12:54:13.699Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T12:54:13.699Z
+        completed_at: 2026-01-25T12:54:19.488Z
+        inputs:
+          spec_ref: "@web-dashboard"
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T12:54:19.488Z
+        completed_at: 2026-01-25T12:54:19.488Z
     initiated_by: "@claude"
