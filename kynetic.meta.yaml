@@ -4010,4 +4010,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTPN91A5V1A3NBC088WA5QE
+    type: friction
+    content: Task-work-loop workflow lacks exit condition for 'eligible but unsuitable' scenario. When
+      eligible tasks exist but all exceed single-iteration capacity (e.g., 5 P3 tasks requiring
+      300-500 lines each), workflow continues to step 4 (start task) with no clean exit path. Had to
+      manually cancel workflow in iteration 16. Exit conditions defined (no eligible tasks, already
+      done, work complete) but not 'all eligible tasks too complex'. Affects ralph when only complex
+      work remains in eligible pool.
+    created_at: 2026-01-25T13:49:25.418Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
