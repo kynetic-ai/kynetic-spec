@@ -33036,7 +33036,7 @@
   automation: eligible
 - _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
   slugs: []
-  title: E2E Navigation and URL State Tests
+  title: Implement Navigation/URL State (AC-10, AC-26, AC-27)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
