@@ -32774,6 +32774,55 @@
         Requires human debugging of test infrastructure. Task should be marked
         automation:needs_review."
       supersedes: null
+    - _ulid: 01KFVRG61WJHE2Q24W8MS9N71R
+      created_at: 2026-01-25T23:40:50.109Z
+      author: "@claude"
+      content: >-
+        Loop iteration 5: Fixed E2E test infrastructure issues blocking AC verification.
+
+
+        **Root causes identified and fixed:**
+
+        1. Vite preview proxy not configured - added proxy config to vite.config.ts for /api and /ws
+        routes
+
+        2. API client using hardcoded localhost:3456 - refactored to use relative URLs with
+        buildURL() helper
+
+
+        **Progress:**
+
+        - Tests now connect to daemon successfully (no more 'Failed to fetch' error)
+
+        - Vite proxy routes requests from preview server (port 4173) to daemon (port 3456)
+
+        - API client works in both dev and production contexts
+
+
+        **Remaining issue:**
+
+        - Daemon returns 0 tasks instead of loading fixture data
+
+        - Error message in API response: '{} is not iterable'
+
+        - Suggests daemon context manager not loading fixtures properly when using --kspec-dir flag
+
+
+        **Next steps:**
+
+        - Debug daemon fixture loading with --kspec-dir parameter
+
+        - Verify test-base.ts passes correct paths to daemon
+
+        - May need to adjust how daemon loads data when kspec-dir is absolute path vs relative
+
+
+        Files modified:
+
+        - packages/web-ui/vite.config.ts (added preview.proxy)
+
+        - packages/web-ui/src/lib/api.ts (refactored to use relative URLs)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
