@@ -409,11 +409,24 @@ workflows:
           mode: silent
       - type: check
         content: |
-          Verify work is needed.
-          Check git history: git log --oneline --grep="feature-name"
-          Read existing implementation if files exist.
-          This prevents duplicate work.
-        on_fail: Mark task complete with "Already implemented" reason and EXIT
+          Verify work is needed - but VALIDATE, don't trust notes.
+
+          Notes are context, not proof. If a task is in the queue, there's a reason.
+
+          To mark "Already implemented" you MUST:
+          1. RUN the tests (npm test) - they must PASS, not skip
+          2. VERIFY AC coverage - each AC has a corresponding test
+          3. CHECK implementation matches spec requirements
+
+          DO NOT mark complete just because:
+          - Notes say "already done" (verify yourself)
+          - Tests exist but skip in CI (that's a gap to fix)
+          - Someone said it was implemented (run the tests)
+
+          Treat this like a code review - validate the actual work.
+        on_fail: |
+          Only if tests PASS and ACs are COVERED:
+          Mark task complete with "Already implemented" reason and EXIT
         execution:
           mode: silent
       - type: action
