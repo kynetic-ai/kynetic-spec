@@ -2854,6 +2854,9 @@ features:
         given: multiple eligible tasks
         when: skill selects
         then: follows loop selection order
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
     slugs:
       - reflect-loop-skill
