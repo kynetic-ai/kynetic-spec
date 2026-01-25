@@ -7998,6 +7998,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T23:46:42.815Z
+    completed_at: 2026-01-25T23:48:43.143Z
     step_results:
       - step_index: 0
         status: completed
@@ -8095,4 +8096,11 @@ runs:
 
           Total captured: 1 task (high confidence, actionable, blocks existing work)
     initiated_by: "@claude"
-    completed_at: 2026-01-25T23:48:43.143Z
+  - _ulid: 01KFVS2TMPD8NMNRSGPGHV42FC
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T23:51:01.015Z
+    step_results: []
+    initiated_by: "@claude"
