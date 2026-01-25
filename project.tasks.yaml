@@ -41974,7 +41974,7 @@
     - Existing tests should still pass
   spec_ref: "@cli-ralph"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42015,3 +42015,6 @@
         - Full suite: 1428 passed, 1 unrelated failure (daemon-executable build test)
       supersedes: null
   todos: []
+  completed_at: 2026-01-25T19:12:07.694Z
+  closed_reason: "PR #247 merged. Ralph loop now correctly exits when all in_progress tasks are
+    automation:needs_review."
