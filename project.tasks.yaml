@@ -34576,7 +34576,7 @@
 - _ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
   slugs:
     - task-ws-binding-tests
-  title: WebSocket connection binding tests
+  title: Implement WebSocket Project Binding (AC-21 to AC-23)
   type: task
   description: |-
     Write tests for WebSocket project binding behavior.
