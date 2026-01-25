@@ -2333,6 +2333,11 @@ features:
         given: --restart-every 0 is specified
         when: iterations complete
         then: agent process is never restarted (maintains single agent instance)
+      - id: ac-19
+        given: ralph loop iteration completes
+        when: determining whether to continue looping
+        then: loop continues if automation:eligible ready tasks OR automation:eligible in_progress tasks
+          exist; exits with message when neither remain
     status:
       maturity: draft
       implementation: implemented
