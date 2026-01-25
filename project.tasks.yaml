@@ -34606,7 +34606,104 @@
     - phase-5
   vcs_refs: []
   created_at: 2026-01-24T06:17:41.274Z
-  notes: []
+  notes:
+    - _ulid: 01KFSQ7RCDEGFXVVEERNVZ0JB6
+      created_at: 2026-01-25T04:40:16.526Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Problem
+
+        Current tests in daemon-websocket.test.ts are documentary only - they check TypeScript type
+        definitions exist but don't test actual WebSocket binding behavior. 0/4 ACs are actually
+        verified.
+
+
+        ### Goal
+
+        Implement and verify WebSocket project binding per @multi-directory-daemon spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - **AC-21**: WebSocket client connects with X-Kspec-Dir header → connection bound to that
+        project for lifetime, only receives that project's events
+
+        - **AC-21b**: Project binding is immutable - client must disconnect and reconnect to change
+        project
+
+        - **AC-22**: WebSocket without header + default project exists → bound to default project
+
+        - **AC-23**: WebSocket without header + no default project → rejected with close code 4000
+
+
+        ### Implementation Status
+
+        Check packages/daemon/src/websocket/ for existing implementation. If binding logic exists,
+        write tests. If not, implement it.
+
+
+        ### Required Tests
+
+        ```typescript
+
+        // AC-21: Binding via header
+
+        it('should bind connection to project from X-Kspec-Dir header', async () => {
+          const ws = new WebSocket(url, { headers: { 'X-Kspec-Dir': '/project/a' } });
+          // Trigger event on project A
+          // Verify client receives it
+          // Trigger event on project B  
+          // Verify client does NOT receive it
+        });
+
+
+        // AC-21b: Immutable binding
+
+        it('should not allow changing project after connection', async () => {
+          // Connect to project A
+          // Attempt to change to project B via message
+          // Verify rejection or no effect
+        });
+
+
+        // AC-22: Default project fallback
+
+        it('should bind to default project when no header provided', async () => {
+          // Start daemon from kspec project dir
+          // Connect without header
+          // Verify bound to default project
+        });
+
+
+        // AC-23: Reject when no project
+
+        it('should reject connection with code 4000 when no project', async () => {
+          // Start daemon without default project
+          // Connect without header
+          // Verify close code 4000, reason 'No project specified'
+        });
+
+        ```
+
+
+        ### Test Location
+
+        Update: tests/daemon-websocket.test.ts (replace documentary tests with real ones)
+
+
+        ### Definition of Done
+
+        - [ ] WebSocket binding implementation verified or added
+
+        - [ ] All 4 ACs have passing tests
+
+        - [ ] No documentary/stub tests remain
+
+        - [ ] Tests verify actual behavior, not just type existence
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
