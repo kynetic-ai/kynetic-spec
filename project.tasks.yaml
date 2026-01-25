@@ -35787,8 +35787,7 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on:
-    - "@task-skill-commands"
+  depends_on: []
   context: []
   priority: 1
   tags:
@@ -35825,6 +35824,11 @@
       author: "@claude"
       content: "Implementation notes: 4 ACs covering arg-parse, workflow-select, no-confirm,
         error-continue. Generic loop mode behavior applicable to all loop-capable skills."
+      supersedes: null
+    - _ulid: 01KFSWH32T2PEW77VP773AQPWZ
+      created_at: 2026-01-25T06:12:45.274Z
+      author: "@claude"
+      content: "Dependencies cleared (was: @task-skill-commands)"
       supersedes: null
   todos: []
 - _ulid: 01KFR82FG2XFBM16C80VHV40BK
