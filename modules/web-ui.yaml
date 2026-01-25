@@ -557,6 +557,9 @@ features:
         given: SPA mode
         when: any write action attempted
         then: graceful no-op with informative message
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
     slugs:
       - cli-serve-commands
