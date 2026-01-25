@@ -4113,4 +4113,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTSQQSAEJ0HXNEQJ209YCRZ
+    type: friction
+    content: Workflow system lacks early exit mechanism. When workflow determines no work is possible
+      (e.g., no eligible tasks), must still step through all remaining workflow steps providing skip
+      reasons. Attempted 'kspec workflow complete @ref' which does not exist. Would benefit from
+      'workflow exit' or 'workflow skip-remaining' command to cleanly terminate when continuation is
+      impossible.
+    created_at: 2026-01-25T14:43:11.786Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
