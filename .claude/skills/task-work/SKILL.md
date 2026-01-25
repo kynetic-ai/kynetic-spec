@@ -234,13 +234,21 @@ After completing a task:
 
 ## Loop Mode
 
-You are running in autonomous loop mode. Start the workflow:
+You are running in autonomous loop mode. **Every action is logged and audited.** Work quality matters - automation mode means making the same decisions a skilled human would make, not taking shortcuts.
 
 ```bash
 kspec workflow start @task-work-loop
 ```
 
-Then follow the workflow steps below.
+### Accountability
+
+Loop mode is NOT a free pass to:
+- Skip hard problems because "they require human interaction"
+- Mark tasks as needs_review without actually attempting the work
+- Estimate time and bail before writing code
+- Assume something won't work without trying it
+
+**You are accountable for real progress.** All notes, commands, and decisions are recorded. A human will review this session. Do the work properly.
 
 ### Workflow Steps
 
@@ -280,13 +288,44 @@ Then follow the workflow steps below.
    ```
    After PR created, EXIT. Ralph handles PR review via separate subagent.
 
+### Tasks Requiring Services
+
+Many tasks require running services (daemons, servers, databases). **You can and must handle these.** See AGENTS.md for project-specific commands.
+
+The pattern is always:
+1. Start the service
+2. Wait for it to be ready
+3. Do the work
+4. Clean up
+
+**Do NOT mark tasks as needs_review just because they require a running service.** Start it. Run the tests. Fix failures. That's the job.
+
+### When Tests Fail
+
+Test failures are part of the work, not a reason to stop.
+
+1. **Read the full error** - not just the assertion, the whole output
+2. **Check logs** - server logs, daemon logs, build output
+3. **Isolate** - run just the failing test to iterate faster
+4. **Fix and retry** - make changes, run again
+5. **Repeat** until tests pass
+
+After 3 genuine attempts with different fixes, add a note documenting what you tried and what you learned. Then continue to the next task.
+
 ### Exit Conditions
 
-Exit when any of these apply:
+Exit when:
 - **Task work complete** - PR created (normal exit)
 - **No eligible tasks** - `kspec tasks ready --eligible` returns empty
-- **All blocked** - All eligible tasks have unmet dependencies
-- **Already implemented** - Verification found work already done
+
+### What Is NOT an Exit Condition
+
+These are NOT reasons to exit or mark needs_review:
+- "Task seems complex" - do it anyway
+- "Might take multiple iterations" - that's fine, iterate
+- "Requires daemon" - start the daemon
+- "E2E tests need running" - run them
+- "Estimated time exceeds iteration" - estimates are not work, do the work
 
 ### Key Behaviors
 
@@ -294,3 +333,4 @@ Exit when any of these apply:
 - Verification still performed (prevent duplicate work)
 - Decisions auto-resolve without prompts
 - PR review handled externally by ralph (not this workflow)
+- **All actions are logged** - work as if being watched

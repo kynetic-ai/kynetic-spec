@@ -607,6 +607,138 @@ it('should validate input', () => {
 
 This pattern is already used in this project's tests.
 
+## Running Services
+
+### Daemon
+
+The daemon provides the API for the web UI. Start it for E2E tests or local development:
+
+```bash
+# Start daemon (foreground)
+npm run daemon
+
+# Start daemon in background with logs
+npm run daemon > /tmp/daemon.log 2>&1 &
+DAEMON_PID=$!
+
+# Wait for ready
+for i in {1..30}; do
+  curl -s http://localhost:3000/health > /dev/null 2>&1 && break
+  sleep 1
+done
+
+# Clean up when done
+kill $DAEMON_PID 2>/dev/null
+```
+
+Default port is 3000. Health endpoint: `GET /health`
+
+### E2E Tests
+
+E2E tests **manage their own daemon instance** - do not start one manually.
+
+```bash
+# Just run E2E tests - daemon starts/stops automatically
+npm run test:e2e -w packages/web-ui
+
+# Or run specific test file
+npm run test:e2e -w packages/web-ui -- tests/e2e/tasks.spec.ts
+```
+
+**How it works:** The `test-base.ts` fixture handles everything:
+- Creates isolated temp directory with fixtures
+- Starts daemon on port 3456 (not 3000) with `--kspec-dir <temp>`
+- Cleans up daemon and temp dir after tests
+
+**Writing new E2E tests:** Import from `test-base.ts`:
+```typescript
+import { test, expect } from '../fixtures/test-base';
+
+test('my test', async ({ daemon, page }) => {
+  // daemon.tempDir - isolated project directory
+  // daemon.kspecDir - the .kspec directory
+  await page.goto('http://localhost:3456');
+});
+```
+
+**Do NOT** start a global daemon for E2E tests - each test run needs isolation.
+
+### Web UI Development
+
+```bash
+# Start daemon + web UI together
+npm run dev -w packages/web-ui
+
+# Or separately:
+npm run daemon &
+npm run dev:ui -w packages/web-ui
+```
+
+## Daemon Test Architecture
+
+Daemon testing uses three distinct approaches:
+
+### 1. Static Analysis Tests (vitest)
+
+Verify code structure without running actual daemons:
+- `daemon-server.test.ts` - Server setup, middleware, port configuration
+- `daemon-api-*.test.ts` - API route structure and validation
+- `daemon-websocket.test.ts` - WebSocket protocol definitions
+
+These tests read source files and verify expected patterns exist. Fast, no runtime requirements.
+
+### 2. Unit Tests with Isolation (vitest)
+
+Test components in isolation using temp directories:
+- `daemon-pid.test.ts` - PID file management
+- `daemon-context-manager.test.ts` - Multi-project registration and caching
+- `daemon-pubsub.test.ts` - WebSocket broadcast filtering (with mocks)
+
+Uses `createTempDir()` and `setupMultiDirFixtures()` for isolation.
+
+### 3. E2E Tests (Playwright)
+
+Full integration via browser - see [Running Services > E2E Tests](#e2e-tests) above.
+
+**Why no live daemon integration tests in vitest?**
+
+E2E tests via Playwright provide sufficient integration coverage. Adding live daemon tests to vitest would:
+- Require Bun runtime in CI
+- Add complexity without testing different code paths
+- Duplicate what Playwright already covers
+
+### Multi-Project Test Fixtures
+
+Tests needing multiple projects use `setupMultiDirFixtures()`:
+
+```typescript
+const fixturesRoot = await setupMultiDirFixtures();
+const projectA = join(fixturesRoot, 'project-a');  // Valid project
+const projectB = join(fixturesRoot, 'project-b');  // Valid project
+const invalid = join(fixturesRoot, 'project-invalid');  // No .kspec/
+```
+
+## CI Limitations
+
+### File Watcher Tests Skip in CI
+
+`daemon-watcher-multi-project.test.ts` skips in GitHub Actions:
+
+```typescript
+const describeOrSkip = process.env.CI ? describe.skip : describe;
+describeOrSkip('Per-Project File Watchers', () => { ... });
+```
+
+**Reason:** GitHub Actions containers don't support recursive `fs.watch`. Chokidar fallback doesn't emit events reliably.
+
+**Impact:** Run file watcher tests locally before committing watcher changes.
+
+### E2E Port Hardcoding
+
+E2E tests use hardcoded port 3456. Tests cannot run in parallel on the same machine.
+
+**Mitigation:** `test-base.ts` kills any existing daemon on port 3456 before each test run.
+
 ## Test Fixture Patterns
 
 When writing tests, follow these patterns to avoid common friction points.
