@@ -34777,7 +34777,57 @@
     - phase-6
   vcs_refs: []
   created_at: 2026-01-24T06:18:21.894Z
-  notes: []
+  notes:
+    - _ulid: 01KFSQ70M4Y844NN60WKD64ND5
+      created_at: 2026-01-25T04:39:52.197Z
+      author: "@claude"
+      content: >-
+        ## COVERAGE GAPS IDENTIFIED
+
+
+        ### Current Status
+
+        2.5/3 ACs covered in daemon-watcher-multi-project.test.ts
+
+
+        ### Issue: Tests SKIPPED in CI
+
+        Line 25: `describeOrSkip = process.env.CI ? describe.skip : describe`
+
+
+        All file watcher tests are skipped in GitHub Actions due to timing sensitivity. This means
+        CI doesn't validate these ACs.
+
+
+        ### Partial Coverage: ac-19 (OS Resource Limits)
+
+        **AC-19**: Given project watcher creation fails due to OS limits (ulimit), when error
+        occurs, then project registration fails with 503 and error 'Unable to watch project -
+        resource limit reached'
+
+
+        **What's Needed**:
+
+        - Test exists but may be incomplete (file truncated in review)
+
+        - Verify test actually triggers EMFILE/ENFILE errors
+
+        - Verify 503 response with correct error message
+
+
+        ### Recommendations
+
+        1. Review if CI skip is still necessary or if tests can be made more robust
+
+        2. Consider mocking file system to enable CI testing
+
+        3. Ensure ac-19 test is complete with proper assertions
+
+
+        ### Test Location
+
+        File: tests/daemon-watcher-multi-project.test.ts
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAF08VSFJQ2D6EERRH890E
