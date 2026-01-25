@@ -33496,7 +33496,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -33611,6 +33611,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T12:33:29.326Z
 - _ulid: 01KFP8547RPY3R7VEXTR3F3HDH
   slugs: []
   title: Implement Connection Handling (AC-28 to AC-32)
