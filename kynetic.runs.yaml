@@ -6466,8 +6466,16 @@ runs:
   - _ulid: 01KFTMNP8PBCD92SQSTMVQ4886
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 10
     started_at: 2026-01-25T13:14:41.814Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T13:14:41.814Z
+        completed_at: 2026-01-25T13:15:03.466Z
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T13:15:03.466Z
+        completed_at: 2026-01-25T13:15:03.466Z
     initiated_by: "@claude"
