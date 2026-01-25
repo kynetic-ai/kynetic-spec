@@ -7307,6 +7307,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T14:21:13.422Z
+    completed_at: 2026-01-25T14:22:31.876Z
     step_results:
       - step_index: 0
         status: completed
@@ -7332,4 +7333,11 @@ runs:
         notes: No items to capture. Reflection complete - session was administrative only (task eligibility
           check, checkpoint notes).
     initiated_by: "@claude"
-    completed_at: 2026-01-25T14:22:31.876Z
+  - _ulid: 01KFTRPCXF4AR7DDGX22D27TQH
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T14:24:59.312Z
+    step_results: []
+    initiated_by: "@claude"
