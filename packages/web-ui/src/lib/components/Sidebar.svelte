@@ -102,9 +102,9 @@
 				<SidebarGroupContent>
 					<SidebarMenu>
 						<SidebarMenuItem>
-							<SidebarMenuButton onclick={openObservations}>
+							<SidebarMenuButton onclick={openObservations} data-testid="observations-badge">
 								<span>Observations</span>
-								<Badge variant="secondary" class="ml-auto">
+								<Badge variant="secondary" class="ml-auto" data-testid="observations-count">
 									{unresolvedObservationsCount}
 								</Badge>
 							</SidebarMenuButton>

@@ -74,24 +74,24 @@
 </script>
 
 <!-- AC: @web-dashboard ac-22 - Observations panel with type icons -->
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4" data-testid="observations-panel">
 	<div class="flex items-center justify-between">
 		<h1 class="text-3xl font-bold">Observations</h1>
-		<Badge variant="secondary">
+		<Badge variant="secondary" data-testid="observations-count">
 			{observations.length} unresolved
 		</Badge>
 	</div>
 
 	{#if error}
-		<div class="rounded-md bg-red-50 p-4 text-sm text-red-800">
+		<div class="rounded-md bg-red-50 p-4 text-sm text-red-800" data-testid="error">
 			{error}
 		</div>
 	{/if}
 
 	{#if loading}
-		<div class="text-center text-muted-foreground">Loading observations...</div>
+		<div class="text-center text-muted-foreground" data-testid="loading">Loading observations...</div>
 	{:else if observations.length === 0}
-		<div class="text-center text-muted-foreground">
+		<div class="text-center text-muted-foreground" data-testid="observations-empty">
 			<p>No unresolved observations.</p>
 			<p class="text-sm">Observations are captured during work sessions.</p>
 		</div>
@@ -99,18 +99,18 @@
 		<div class="flex flex-col gap-3">
 			{#each observations as obs (obs._ulid)}
 				<!-- AC: @web-dashboard ac-22 - Show type icons -->
-				<Card>
+				<Card data-testid="observation-item">
 					<CardHeader class="pb-3">
 						<div class="flex items-start gap-3">
-							<div class={`mt-0.5 ${typeColors[obs.type]}`}>
+							<div class={`mt-0.5 ${typeColors[obs.type]}`} data-testid="observation-type-icon">
 								<svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
 							</div>
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
-									<Badge variant="outline">{typeLabels[obs.type]}</Badge>
+									<Badge variant="outline" data-testid="observation-type">{typeLabels[obs.type]}</Badge>
 									<span class="text-xs text-muted-foreground">{formatDate(obs.created_at)}</span>
 								</div>
-								<p class="text-sm leading-relaxed">{obs.content}</p>
+								<p class="text-sm leading-relaxed" data-testid="observation-content">{obs.content}</p>
 								{#if obs.context}
 									<p class="mt-2 text-xs text-muted-foreground border-l-2 border-muted pl-3">
 										{obs.context}
