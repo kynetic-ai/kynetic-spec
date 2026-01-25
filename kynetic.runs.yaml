@@ -7176,6 +7176,7 @@ runs:
     current_step: 3
     total_steps: 9
     started_at: 2026-01-25T14:09:41.522Z
+    completed_at: 2026-01-25T14:10:33.228Z
     step_results:
       - step_index: 0
         status: completed
@@ -7195,4 +7196,11 @@ runs:
         completed_at: 2026-01-25T14:10:19.699Z
     initiated_by: "@claude"
     abort_reason: "Exit condition met: No automation-eligible tasks available"
-    completed_at: 2026-01-25T14:10:33.228Z
+  - _ulid: 01KFTQY1BQKPH53Q7D90SY9JQP
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T14:11:41.048Z
+    step_results: []
+    initiated_by: "@claude"
