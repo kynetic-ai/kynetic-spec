@@ -32832,8 +32832,16 @@
         daemon --kspec-dir behavior to resolve fixture loading. Escalating to
         automation:needs_review after 3 consecutive failures per error handling spec."
       supersedes: null
+    - _ulid: 01KFVRHNQZW5TKPPYH7009PGGZ
+      created_at: 2026-01-25T23:41:38.943Z
+      author: "@claude"
+      content: "Automation status set to needs_review: 3 consecutive loop failures. E2E tests fail due to
+        daemon fixture loading issue when using --kspec-dir flag. Fixed infrastructure (Vite proxy,
+        relative URLs) but daemon returns empty data. Requires debugging daemon context manager's
+        handling of absolute --kspec-dir paths."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
   slugs: []
   title: Implement Items View (AC-11 to AC-15)
