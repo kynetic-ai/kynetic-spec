@@ -32523,6 +32523,13 @@
       author: "@claude"
       content: Reset from completed to pending
       supersedes: null
+    - _ulid: 01KFSZBG4P78BBTH5DPQAKTX6A
+      created_at: 2026-01-25T07:02:07.766Z
+      author: "@claude"
+      content: "Task reset: Previous completion was premature - tests use test.skip() which doesn't meet
+        Definition of Done. Need to implement actual UI components, add data-testid attributes, then
+        remove test.skip() calls so tests actually run and verify behavior."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
