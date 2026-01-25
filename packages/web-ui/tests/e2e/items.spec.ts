@@ -213,9 +213,10 @@ test.describe('Items View', () => {
       await itemWithTasks.click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
-      const linkedTask = detailPanel.getByTestId('linked-task').first();
+      const linkedTaskCount = await detailPanel.getByTestId('linked-task').count();
 
-      if ((await linkedTask.count()) > 0) {
+      if (linkedTaskCount > 0) {
+        const linkedTask = detailPanel.getByTestId('linked-task').first();
         await linkedTask.click();
 
         // Should navigate to tasks view with task detail open
@@ -260,9 +261,10 @@ test.describe('Items View', () => {
       await itemWithTraits.click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
-      const traitChip = detailPanel.getByTestId('trait-chip').first();
+      const traitChipCount = await detailPanel.getByTestId('trait-chip').count();
 
-      if ((await traitChip.count()) > 0) {
+      if (traitChipCount > 0) {
+        const traitChip = detailPanel.getByTestId('trait-chip').first();
         await traitChip.click();
 
         // Trait detail should open
@@ -280,9 +282,10 @@ test.describe('Items View', () => {
       await itemWithAcs.click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
-      const firstAc = detailPanel.getByTestId('ac-item').first();
+      const acCount = await detailPanel.getByTestId('ac-item').count();
 
-      if ((await firstAc.count()) > 0) {
+      if (acCount > 0) {
+        const firstAc = detailPanel.getByTestId('ac-item').first();
         // AC should be initially collapsed or showing preview
         const expandButton = firstAc.getByTestId('ac-expand-toggle');
         await expect(expandButton).toBeVisible();
@@ -306,9 +309,10 @@ test.describe('Items View', () => {
       await itemWithAcs.click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
-      const acItem = detailPanel.getByTestId('ac-item').first();
+      const acItemCount = await detailPanel.getByTestId('ac-item').count();
 
-      if ((await acItem.count()) > 0) {
+      if (acItemCount > 0) {
+        const acItem = detailPanel.getByTestId('ac-item').first();
         // Expand AC row
         await acItem.getByTestId('ac-expand-toggle').click();
 
