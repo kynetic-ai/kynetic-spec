@@ -37842,7 +37842,7 @@
   type: task
   spec_ref: "@ralph-subagent-spawning"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
