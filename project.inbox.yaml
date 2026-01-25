@@ -676,3 +676,14 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KFST4D5STSZCZRZCRTVH1RJH
+    text: E2E/UI Task Template with anti-skip guardrails - Frame tasks as 'Implement X validated by
+      tests' not 'Write tests for X'. Include prerequisite checklist (verify testIds exist first),
+      'No test.skip()' in Definition of Done, example test structure. Prevents documentary test
+      anti-pattern.
+    created_at: 2026-01-25T05:30:52.473Z
+    tags:
+      - reflection
+      - templates
+      - testing
+    added_by: "@claude"
