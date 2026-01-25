@@ -7224,7 +7224,7 @@ runs:
   - _ulid: 01KFTR6V7KEYSN296HTDRJ3HMG
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-25T14:16:29.683Z
     step_results:
@@ -7238,5 +7238,20 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-25T14:17:48.602Z
-        completed_at: 2026-01-25T14:17:48.602Z
+        completed_at: 2026-01-25T14:17:56.853Z
+        notes: >-
+          High-confidence items identified and already captured:
+
+          - Friction @01KFTR8F: Repetitive checkpoint notes across automation loops (concrete,
+          systemic, clear cause)
+
+          - Success @01KFTR8Z: Efficient pending_review task prioritization (concrete, repeatable
+          pattern)
+
+          Searched existing state before capturing. One additional friction point (zero-completion
+          loops) already tracked in @01KFTPYV, so did not duplicate.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-25T14:17:56.853Z
+        completed_at: 2026-01-25T14:17:56.853Z
     initiated_by: "@claude"
