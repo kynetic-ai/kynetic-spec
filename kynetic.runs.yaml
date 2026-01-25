@@ -4824,7 +4824,7 @@ runs:
   - _ulid: 01KFT1DH0XZBYFB1QPBRTC3622
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-25T07:38:11.357Z
     step_results:
@@ -4870,5 +4870,20 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-25T07:39:35.998Z
-        completed_at: 2026-01-25T07:39:35.998Z
+        completed_at: 2026-01-25T07:39:49.572Z
+        notes: >-
+          Proposed improvements:
+
+          1. Shadow divergence resolution - kspec shadow resolve with guided merge/rebase options
+          (Medium)
+
+          2. Workflow cleanup - kspec workflow cleanup --older-than 7d (Small)
+
+          3. Note bulk restore - kspec task note-restore @task --from-commit sha (Medium)
+
+          4. Smart task YAML merge - custom git merge driver for tasks.yaml (Large)
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-25T07:39:49.572Z
+        completed_at: 2026-01-25T07:39:49.572Z
     initiated_by: "@claude"
