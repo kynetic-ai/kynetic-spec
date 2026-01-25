@@ -34510,7 +34510,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -34644,6 +34644,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T13:09:47.398Z
 - _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
   slugs: []
   title: Daemon serves built web UI on root route
