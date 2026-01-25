@@ -8102,6 +8102,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T23:51:01.015Z
+    completed_at: 2026-01-25T23:52:23.493Z
     step_results:
       - step_index: 0
         status: completed
@@ -8171,4 +8172,11 @@ runs:
 
           Session iteration 7 reflection complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T23:52:23.493Z
+  - _ulid: 01KFVS99YZN93JQ0KKEBKBP5S2
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T23:54:33.311Z
+    step_results: []
+    initiated_by: "@claude"
