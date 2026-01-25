@@ -7734,9 +7734,11 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFTSS94FEW1ACNEK03R7SKTQ
     workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 9
     started_at: 2026-01-25T14:44:02.320Z
     step_results: []
     initiated_by: "@claude"
+    abort_reason: No automation-eligible tasks available
+    completed_at: 2026-01-25T14:44:59.009Z
