@@ -39630,22 +39630,71 @@
         - Full suite: 1428 passed, 1 unrelated failure (daemon-executable build test)
       supersedes: null
   todos: []
-- title: Fix daemon fixture loading with absolute --kspec-dir paths
+- _ulid: 01KFVRXRER8NHHSXQRCGJNWJD5
+  slugs: []
+  title: Fix daemon fixture loading with absolute --kspec-dir paths
   type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags:
-    - daemon
-    - e2e
-    - bug
-  _ulid: 01KFVRXRER8NHHSXQRCGJNWJD5
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - daemon
+    - e2e
+    - bug
   vcs_refs: []
   created_at: 2026-01-25T23:48:14.936Z
-  notes: []
+  notes:
+    - _ulid: 01KFVRY8GHTGV0PDSDH7PQYNMD
+      created_at: 2026-01-25T23:48:31.377Z
+      author: "@claude"
+      content: >-
+        Issue discovered during loop iteration 5 of session 01KFVN3DDTKEQF1DAF8V3KV48V.
+
+
+        **Symptom:**
+
+        E2E tests fail with daemon error '{} is not iterable' when trying to load fixture data.
+        Daemon returns 0 tasks instead of loading data from tests/fixtures/project.tasks.yaml.
+
+
+        **Root Cause:**
+
+        Daemon's ContextManager doesn't load fixture data correctly when --kspec-dir flag is passed
+        with absolute path (e.g., /tmp/test-fixtures/.kspec).
+
+
+        **Impact:**
+
+        Blocks AC verification for all web UI E2E tests:
+
+        - @01KFP84N (Tasks View)
+
+        - @01KFP84S (Items View)
+
+        - Other views pending E2E test implementation
+
+
+        **Investigation Points:**
+
+        1. src/cli/commands/serve.ts - daemon startup with --kspec-dir
+
+        2. Daemon ContextManager.loadContext() - how it handles absolute vs relative paths
+
+        3. packages/web-ui/tests/fixtures/test-base.ts - verify paths passed to daemon
+
+        4. May need to normalize paths or adjust fixture loading logic
+
+
+        **Context:**
+
+        - E2E infrastructure fixed in iteration 5 (Vite proxy + relative URLs - commit c24fd694)
+
+        - Tests now connect successfully but daemon serves empty data
+
+        - Fixture files exist and are valid YAML
+      supersedes: null
   todos: []
