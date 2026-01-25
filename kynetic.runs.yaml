@@ -8178,6 +8178,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T23:54:33.311Z
+    completed_at: 2026-01-25T23:56:08.374Z
     step_results:
       - step_index: 0
         status: completed
@@ -8252,4 +8253,11 @@ runs:
           Session reflection complete. All friction points already tracked in existing
           tasks/observations.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T23:56:08.374Z
+  - _ulid: 01KFVSJ1P0G9DTCFCZEKDDXCWN
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T23:59:19.745Z
+    step_results: []
+    initiated_by: "@claude"
