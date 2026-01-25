@@ -38430,8 +38430,15 @@
         capacity. Recommend human-driven session for implementation. Estimate: 60-90 min including
         testing. Task is automation:eligible but implementation complexity requires manual session."
       supersedes: null
+    - _ulid: 01KFTN491B3SWY7QZC3RT6VC38
+      created_at: 2026-01-25T13:22:39.787Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Multi-file implementation (store, API client,
+        component, layout integration) + daemon testing exceeds automation loop capacity. Requires
+        human-driven session for coordinated implementation and E2E verification."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
   slugs:
     - task-loop-mode-workflows
