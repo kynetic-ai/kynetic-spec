@@ -7876,7 +7876,7 @@ runs:
   - _ulid: 01KFVNWTSYV1ZZ5MTEQBJ766V9
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-25T22:55:18.846Z
     step_results:
@@ -7889,5 +7889,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-25T22:56:03.565Z
-        completed_at: 2026-01-25T22:56:03.565Z
+        completed_at: 2026-01-25T22:56:12.086Z
+        notes: "High-confidence friction: Task scope ambiguity in E2E test tasks - appeared to be testing
+          work but was actually blocked on UI implementation. Wasted iteration attempting work.
+          However, this is session-specific and already covered by existing scope-related
+          observations. No new captures warranted."
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-25T22:56:12.086Z
+        completed_at: 2026-01-25T22:56:12.086Z
     initiated_by: "@claude"
