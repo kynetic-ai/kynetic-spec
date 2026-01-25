@@ -37533,6 +37533,7 @@
     - enhance-ralph
   vcs_refs: []
   created_at: 2026-01-24T14:56:00.823Z
+  started_at: 2026-01-25T08:15:09.435Z
   notes:
     - _ulid: 01KFR82FSP6PNQ2GZ43QK1E8R2
       created_at: 2026-01-24T14:56:00.823Z
@@ -37566,8 +37567,14 @@
       content: "Implementation notes: 5 ACs covering invoke, workflow, search, high-conf, no-user. Skill
         invocation spec only; workflow behavior is in @session-reflect-loop-workflow."
       supersedes: null
+    - _ulid: 01KFT3HX7XRVYK1VRM98929G5H
+      created_at: 2026-01-25T08:15:32.093Z
+      author: "@claude"
+      content: "Added Loop Mode section to reflect/SKILL.md covering all 5 ACs: uses @session-reflect-loop
+        workflow, MUST search existing first, high-confidence captures only (uncertain = skip), no
+        user prompts."
+      supersedes: null
   todos: []
-  started_at: 2026-01-25T08:15:09.435Z
 - _ulid: 01KFR82G303PDT36DCA1RZ9Z45
   slugs:
     - task-pr-review-skill
