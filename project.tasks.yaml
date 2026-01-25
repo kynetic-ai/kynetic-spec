@@ -32741,6 +32741,28 @@
 
         Plan: Add test IDs to both components, then remove test.skip() from tests.
       supersedes: null
+    - _ulid: 01KFTG3T4RWBW7C3KJG9WT7FFQ
+      created_at: 2026-01-25T11:55:01.657Z
+      author: "@claude"
+      content: |-
+        Added all required data-testid attributes to components:
+
+        ItemTree.svelte:
+        - spec-tree-container, spec-tree (main container)
+        - tree-node, tree-node-{type} (module/feature/requirement)
+        - node-title, expand-toggle, tree-node-child
+
+        ItemDetail.svelte:
+        - spec-detail-panel (main sheet)
+        - spec-title, spec-description, implementation-status
+        - acceptance-criteria, ac-item, ac-given, ac-when, ac-then
+        - ac-expand-toggle, ac-{given/when/then}-full
+        - test-coverage-indicator (placeholder)
+        - traits-section, trait-chip, trait-title
+        - implementation-section, linked-task, task-status-badge, task-title
+
+        Next: Remove test.skip() from E2E tests.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
