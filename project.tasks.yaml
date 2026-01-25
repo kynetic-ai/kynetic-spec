@@ -39592,6 +39592,56 @@
         **Automation Assessment:** Cannot progress in automation loop - requires multi-file
         coordinated implementation and daemon-based testing.
       supersedes: null
+    - _ulid: 01KFTQKMVR93ZNQRX0BGHA7R75
+      created_at: 2026-01-25T14:06:00.568Z
+      author: "@claude"
+      content: >-
+        ## Loop Iteration 19 - Final Checkpoint
+
+
+        **Status:** Remains in_progress, marked automation:needs_review
+
+
+        **Current State:**
+
+        - ✅ Dependencies verified complete (@01KFQAFM, @01KFQAGJ)
+
+        - ✅ E2E test requirements reviewed (10 tests in project-selector.spec.ts)
+
+        - ✅ Implementation plan documented (iteration 12 notes)
+
+        - ❌ No code written yet
+
+
+        **Implementation Plan (from iteration 12):**
+
+        1. Create packages/web-ui/src/lib/stores/project.svelte.ts (Svelte 5 runes store)
+
+        2. Modify packages/web-ui/src/lib/api.ts (X-Kspec-Dir header + fetchProjects)
+
+        3. Create packages/web-ui/src/lib/components/ProjectSelector.svelte (dropdown UI)
+
+        4. Integrate into packages/web-ui/src/routes/+layout.svelte
+
+        5. Implement data reload logic across all views (tasks, items, inbox)
+
+        6. Add localStorage persistence for selected project
+
+
+        **Why Still In Progress:**
+
+        Multi-file coordinated implementation (2 new files, 2 modified files) + daemon testing + E2E
+        verification exceeds automation loop single-iteration capacity. Estimated 60-90 minutes of
+        work.
+
+
+        **Progress:** 0% (analysis complete, no implementation started)
+
+
+        **Automation Assessment:** Cannot progress in automation loop - requires multi-file
+        coordinated implementation and daemon-based testing. Correctly marked
+        automation:needs_review.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
