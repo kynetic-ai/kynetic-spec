@@ -32432,6 +32432,31 @@
         Definition of Done. Need to implement actual UI components, add data-testid attributes, then
         remove test.skip() calls so tests actually run and verify behavior."
       supersedes: null
+    - _ulid: 01KFTFK7Z1RNJA4EQYMSY4HEAX
+      created_at: 2026-01-25T11:45:58.753Z
+      author: "@claude"
+      content: >-
+        Started task. Found existing implementation with components (TaskList, TaskFilters,
+        TaskDetail) and E2E tests. Gap: Components missing required data-testid attributes. Tests
+        use test.skip() because test IDs don't match. Need to add test IDs to components and enable
+        tests.
+
+
+        Required test IDs per E2E tests:
+
+        - task-list-item (currently task-row)
+
+        - task-title, task-status-badge, task-priority, task-spec-ref, task-notes-count
+
+        - filter-status, filter-type, filter-tag, filter-assignee, filter-automation
+
+        - task-detail-panel, task-description, task-notes, task-todos, task-dependencies
+
+        - start-task-button, add-note-form
+
+
+        This is tractable - add test IDs, remove .skip(), run tests.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
