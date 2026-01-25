@@ -427,6 +427,28 @@ workflows:
           Work on the task, adding notes as you go.
           Use: kspec task note @task "What you're doing..."
           Add notes during work, not just at end.
+
+          SCOPE EXPANSION: If you discover missing implementation while testing,
+          implementing it IS in scope. The goal is verified behavior, not just test files.
+          "Add tests for X" means "ensure X is verified" - if X doesn't exist, implement it.
+      - type: check
+        content: |
+          Verify Definition of Done before committing.
+
+          Read task notes for any DoD criteria. Common constraints:
+          - "No test.skip() calls" - verify no skipped tests in changes
+          - "All ACs covered" - verify each AC has corresponding test
+          - "No TODO/FIXME" - no placeholder comments
+
+          CRITICAL: Never use test.skip() to document missing functionality.
+          If functionality is missing, implement it - that's in scope.
+
+          If DoD criteria exist and are not met, fix the gaps first.
+        on_fail: |
+          Do not proceed with DoD violations.
+          Either fix the gaps or escalate to user if scope is unclear.
+        execution:
+          mode: silent
       - type: action
         content: |
           Commit changes with Task: @task trailer.
