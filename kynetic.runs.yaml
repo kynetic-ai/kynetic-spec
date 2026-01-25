@@ -3507,7 +3507,7 @@ runs:
   - _ulid: 01KFSSED216SB32K9845KKTE1E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-25T05:18:51.458Z
     step_results:
@@ -3673,5 +3673,47 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-25T05:19:56.289Z
-        completed_at: 2026-01-25T05:19:56.289Z
+        completed_at: 2026-01-25T05:20:10.394Z
+        notes: |-
+          ## Proposed Improvements (Untracked Friction)
+
+          ### 1. E2E Test Task Template with Anti-Skip Guardrails
+          **What**: Create a task template for UI implementation tasks that:
+          - Frames as 'Implement X validated by tests' not 'Write tests for X'
+          - Includes prerequisite checklist (verify testIds exist, add if missing)
+          - Has Definition of Done with 'No test.skip()' explicitly stated
+          - Provides example test structure
+
+          **How it helps**: Prevents agents from producing documentary tests
+          **Scope**: Small - documentation/template change
+
+          ### 2. Task Completion Validation
+          **What**: Add validation when marking task complete:
+          - If task has test-related tags, verify tests actually pass
+          - Warn if PR merged but task has no completion note
+          - Consider: 'kspec task complete --verify' flag
+
+          **How it helps**: Catches tasks being closed without actual completion
+          **Scope**: Medium - CLI enhancement
+
+          ### 3. Automation Eligibility Assessment Requirement
+          **What**: Tasks should not default to 'eligible'. Options:
+          - Default to 'unassessed' (current behavior is inconsistent)
+          - Require assessment before ralph can pick up task
+          - Add 'kspec task assess' command with guided questions
+
+          **How it helps**: Prevents ralph from picking up complex tasks without review
+          **Scope**: Medium - behavior change + possible new command
+
+          ### 4. PR-Task Linkage Audit
+          **What**: When a PR is merged with 'Task: @ref' trailer:
+          - Check if task is still pending
+          - Prompt to complete or flag discrepancy
+
+          **How it helps**: Catches orphaned tasks after PR merge
+          **Scope**: Medium - requires PR/CI integration
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-25T05:20:10.394Z
+        completed_at: 2026-01-25T05:20:10.394Z
     initiated_by: "@claude"
