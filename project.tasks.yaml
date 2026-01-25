@@ -34991,7 +34991,7 @@
 - _ulid: 01KFQAF9R883H31D67YX8MHXJ2
   slugs:
     - task-projects-api-tests
-  title: /api/projects endpoint tests
+  title: Implement /api/projects Endpoints (AC-28 to AC-30)
   type: task
   description: |-
     Write tests for /api/projects endpoints.
