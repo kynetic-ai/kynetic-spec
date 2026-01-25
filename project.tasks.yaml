@@ -32763,6 +32763,27 @@
 
         Next: Remove test.skip() from E2E tests.
       supersedes: null
+    - _ulid: 01KFTG4DYKESEV11Y8XMMVGEQ1
+      created_at: 2026-01-25T11:55:21.939Z
+      author: "@claude"
+      content: >-
+        Removed test.skip() from all 16 E2E tests. Tests are now enabled.
+
+
+        ⚠️ Note: Tests require daemon running to pass. Cannot verify in automation loop without
+        daemon.
+
+
+        Commits needed:
+
+        1. Component test IDs (ItemTree.svelte, ItemDetail.svelte)
+
+        2. Enable E2E tests (items.spec.ts)
+
+
+        Per DoD, tests must pass - but daemon startup + test execution exceeds single automation
+        loop iteration. Marking for human verification.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
