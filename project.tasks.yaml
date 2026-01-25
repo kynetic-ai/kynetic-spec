@@ -33483,6 +33483,11 @@
 
         After resolving conversations, CI will pass and PR can be merged.
       supersedes: null
+    - _ulid: 01KFTJ759C2JD1YWD9GAAW9QG0
+      created_at: 2026-01-25T12:31:48.525Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
