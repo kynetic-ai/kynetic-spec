@@ -36877,7 +36877,7 @@
     - Task: CLI serve status tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQABA"
@@ -36928,6 +36928,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T11:23:14.878Z
+  closed_reason: "Merged in PR #242. Implemented AC-12: CLI serve status now displays daemon uptime in
+    human-readable format (Xh Ym Zs) fetched from /api/health endpoint. Includes uptime in both
+    human-readable and JSON output. All 21 tests passing including new uptime test coverage."
 - _ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
   slugs:
     - task-ui-selector-tests
