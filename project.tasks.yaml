@@ -32377,7 +32377,7 @@
   automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   slugs: []
-  title: E2E Inbox Tests
+  title: Implement Inbox View (AC-16 to AC-19)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
