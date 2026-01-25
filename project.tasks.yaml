@@ -34824,7 +34824,7 @@
     Task: /api/projects endpoints implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -34840,6 +34840,8 @@
   notes: []
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T04:39:18.750Z
+  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
 - _ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
   slugs:
     - task-cli-status-impl
