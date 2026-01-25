@@ -7738,7 +7738,15 @@ runs:
     current_step: 0
     total_steps: 9
     started_at: 2026-01-25T14:44:02.320Z
+    completed_at: 2026-01-25T14:44:59.009Z
     step_results: []
     initiated_by: "@claude"
     abort_reason: No automation-eligible tasks available
-    completed_at: 2026-01-25T14:44:59.009Z
+  - _ulid: 01KFTSW4A2FWWQ2EFM0VM6A6NJ
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T14:45:35.682Z
+    step_results: []
+    initiated_by: "@claude"
