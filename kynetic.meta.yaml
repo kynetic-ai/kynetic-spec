@@ -4124,4 +4124,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTSR2MBYJQ6GAS3Y8Z4DBV4
+    type: friction
+    content: "Automation loop adds repetitive status notes to stalled tasks. After 27 iterations of
+      ralph automation, same 3 in-progress tasks (@01KFP84N, @01KFP84S, @01KFQAGY) accumulated 27+
+      nearly-identical notes documenting 'Loop Iteration N - No Eligible Tasks'. While notes provide
+      audit trail, they create significant noise obscuring substantive progress notes. Consider:
+      batch note update mechanism, dedicated status/stall-reason field, or suppress iteration notes
+      when status unchanged."
+    created_at: 2026-01-25T14:43:22.891Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
