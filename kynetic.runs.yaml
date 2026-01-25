@@ -5600,6 +5600,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T11:49:37.207Z
+    completed_at: 2026-01-25T11:51:37.420Z
     step_results:
       - step_index: 0
         status: completed
@@ -5648,4 +5649,11 @@ runs:
 
           All items captured automatically per loop mode (ac-5, ac-6). Reflection complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T11:51:37.420Z
+  - _ulid: 01KFTFYDYMNHB8RENX6HYBW1CD
+    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-25T11:52:05.333Z
+    step_results: []
+    initiated_by: "@claude"
