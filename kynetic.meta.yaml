@@ -4237,4 +4237,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVSBZ9AKZY33E0SAYB9KJEK
+    type: success
+    content: "E2E test infrastructure debugging pattern: When E2E tests fail, work backward through the
+      stack systematically. Session 01KFVN3D example: test timeout → Vite proxy missing → API client
+      hardcoded URLs → daemon fixture loading issue. At each layer, verify the fix (tests connect
+      successfully) before moving to next layer. This methodical approach identified root cause
+      (daemon ContextManager path handling) after fixing intermediate issues (Vite proxy + relative
+      URLs in commit c24fd694)."
+    created_at: 2026-01-25T23:56:00.682Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
