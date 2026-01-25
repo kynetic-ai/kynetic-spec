@@ -37414,6 +37414,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: Convention already works - no implementation needed
   depends_on: []
   context: []
   priority: 1
@@ -37422,6 +37423,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:56:00.214Z
   started_at: 2026-01-25T08:14:45.460Z
+  completed_at: 2026-01-25T08:14:52.561Z
   notes:
     - _ulid: 01KFR82F6PA05Z8KBWX3PNGHVY
       created_at: 2026-01-24T14:56:00.214Z
@@ -37460,8 +37462,6 @@
         SKILL.md. No additional infrastructure needed - convention already works."
       supersedes: null
   todos: []
-  completed_at: 2026-01-25T08:14:52.561Z
-  closed_reason: Convention already works - no implementation needed
 - _ulid: 01KFR82FG2XFBM16C80VHV40BK
   slugs:
     - task-task-work-loop-skill
@@ -37469,7 +37469,7 @@
   type: task
   spec_ref: "@task-work-loop-skill"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -37508,6 +37508,7 @@
         invocation spec only; workflow behavior is in @task-work-loop-workflow."
       supersedes: null
   todos: []
+  started_at: 2026-01-25T08:14:55.272Z
 - _ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
   slugs:
     - task-reflect-loop-skill
