@@ -34920,7 +34920,87 @@
     - phase-9
   vcs_refs: []
   created_at: 2026-01-24T06:19:24.917Z
-  notes: []
+  notes:
+    - _ulid: 01KFSM8HXVP9393HTF0V1RYFWJ
+      created_at: 2026-01-25T03:48:16.956Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Goal
+
+        Implement the Project Selector component to meet AC-25 through AC-27 from
+        @multi-directory-daemon spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-25: Project selector shown when more than one project registered
+
+        - AC-26: Selecting project sets X-Kspec-Dir header on all API requests
+
+        - AC-27: Changing project reloads data from newly selected project
+
+
+        ### Implementation Steps
+
+        1. Create ProjectSelector.svelte component
+
+        2. Fetch projects from GET /api/projects
+
+        3. Store selected project in Svelte store (persisted to localStorage)
+
+        4. Modify API client to inject X-Kspec-Dir header based on selection
+
+        5. Trigger data reload when project changes
+
+        6. Reconnect WebSocket with new project header
+
+        7. Hide selector when only 1 project registered
+
+        8. Add data-testid attributes throughout
+
+
+        ### Required data-testid Attributes
+
+        - project-selector, project-selector-dropdown, project-option
+
+
+        ### Files to Create/Modify
+
+        - NEW: packages/web-ui/src/lib/components/ProjectSelector.svelte
+
+        - MODIFY: packages/web-ui/src/lib/api.ts (header injection)
+
+        - MODIFY: packages/web-ui/src/lib/websocket/manager.ts (reconnect on change)
+
+        - MODIFY: packages/web-ui/src/lib/components/Sidebar.svelte (add selector)
+
+
+        ### Validation
+
+        Update packages/web-ui/tests/e2e/project-selector.spec.ts:
+
+        - Remove all test.skip() calls
+
+        - Tests MUST run and pass
+
+        - Verify header is sent on API requests
+
+        - Verify data reloads on project change
+
+
+        ### Definition of Done
+
+        - [ ] Selector shows when multiple projects (AC-25)
+
+        - [ ] X-Kspec-Dir header sent on all requests (AC-26)
+
+        - [ ] Data reloads on project change (AC-27)
+
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAGY4B2HFVD1NEZ3904D1A
