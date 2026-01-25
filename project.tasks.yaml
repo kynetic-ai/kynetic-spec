@@ -34440,6 +34440,50 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KFT06C62YQMEW160KEE1GVP0
+      created_at: 2026-01-25T07:16:48.450Z
+      author: "@claude"
+      content: >-
+        ## COVERAGE GAP IDENTIFIED
+
+
+        ### Current Status
+
+        6/7 ACs covered with passing tests in daemon-global-pid-port.test.ts
+
+
+        ### Missing: ac-10b (Concurrent Daemon Start)
+
+        AC-10b: Given two kspec serve start commands run concurrently (neither has written PID yet),
+        when both check for running daemon, then only one daemon starts (use file lock on PID file)
+
+
+        ### What's Needed
+
+        Add a test that:
+
+        1. Spawns two daemon start processes concurrently
+
+        2. Verifies only one succeeds in writing PID
+
+        3. Verifies file locking prevents race condition
+
+        4. Second process should detect first and exit gracefully
+
+
+        ### Test Location
+
+        Add to: tests/daemon-global-pid-port.test.ts
+
+
+        ### Definition of Done
+
+        - [ ] Test for ac-10b concurrent daemon start added
+
+        - [ ] File locking behavior verified
+
+        - [ ] No test.skip() calls
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
