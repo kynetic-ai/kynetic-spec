@@ -5372,6 +5372,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T11:31:21.164Z
+    completed_at: 2026-01-25T11:32:51.955Z
     step_results:
       - step_index: 0
         status: completed
@@ -5477,4 +5478,11 @@ runs:
 
           Reflection complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T11:32:51.955Z
+  - _ulid: 01KFTEVT1Z75QRRY3NP8G0BQ0K
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-01-25T11:33:10.848Z
+    step_results: []
+    initiated_by: "@claude"
