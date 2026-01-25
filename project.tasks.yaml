@@ -34513,7 +34513,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -34689,6 +34689,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T13:26:40.071Z
+  closed_reason: Implementation already merged to main (commit f3a2ae37). E2E tests cover AC-22,
+    AC-23, AC-24 with data-testid attributes. No PR workflow was used.
 - _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
   slugs: []
   title: Implement Navigation/URL State (AC-10, AC-26, AC-27)
