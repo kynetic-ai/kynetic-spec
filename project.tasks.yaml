@@ -35458,6 +35458,64 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KFT05JXR4HEFT36VZCGXXQ4X
+      created_at: 2026-01-25T07:16:22.584Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Problem
+
+        Current tests in daemon-websocket.test.ts are documentary only - they check TypeScript type
+        definitions exist but don't test actual WebSocket binding behavior. 0/4 ACs are actually
+        verified.
+
+
+        ### Goal
+
+        Implement and verify WebSocket project binding per @multi-directory-daemon spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-21: WebSocket client connects with X-Kspec-Dir header → connection bound to that
+        project for lifetime
+
+        - AC-21b: Project binding is immutable - client must disconnect and reconnect to change
+        project
+
+        - AC-22: WebSocket without header + default project exists → bound to default project
+
+        - AC-23: WebSocket without header + no default project → rejected with close code 4000
+
+
+        ### Required Tests
+
+        - AC-21: Binding via header - verify client only receives events for bound project
+
+        - AC-21b: Immutable binding - verify changing project is rejected
+
+        - AC-22: Default project fallback - verify binding when no header
+
+        - AC-23: Reject when no project - verify close code 4000
+
+
+        ### Test Location
+
+        Update: tests/daemon-websocket.test.ts (replace documentary tests with real ones)
+
+
+        ### Definition of Done
+
+        - [ ] WebSocket binding implementation verified or added
+
+        - [ ] All 4 ACs have passing tests
+
+        - [ ] No documentary/stub tests remain
+
+        - [ ] Tests verify actual behavior, not just type existence
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQADQRBPDTV79TARVHW0YMF
