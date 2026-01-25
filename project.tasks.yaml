@@ -34588,6 +34588,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Already implemented in PR #240. All 32 tests passing with comprehensive coverage of
+    ac-4, ac-14, ac-15, ac-16, ac-20. Daemon restart behavior tests added addressing identified
+    coverage gaps."
   depends_on:
     - "@01KFQAAA"
   context: []
@@ -34598,6 +34601,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:16:20.121Z
   started_at: 2026-01-25T11:09:02.168Z
+  completed_at: 2026-01-25T11:09:06.902Z
   notes:
     - _ulid: 01KFRMECP1BWZAM77TQNNZ3HK3
       created_at: 2026-01-24T18:32:13.762Z
@@ -34800,10 +34804,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T11:09:06.902Z
-  closed_reason: "Already implemented in PR #240. All 32 tests passing with comprehensive coverage of
-    ac-4, ac-14, ac-15, ac-16, ac-20. Daemon restart behavior tests added addressing identified
-    coverage gaps."
 - _ulid: 01KFQABA3D59R47QJ8R20ZYG43
   slugs:
     - task-pid-port-impl
@@ -35518,8 +35518,12 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - WebSocket binding implementation complete but proper E2E tests blocked on @01KFMMZW (API
+      integration test framework decision). Documentary tests exist but don't verify runtime
+      behavior. Requires WebSocket client infrastructure to test ac-21, ac-21b, ac-22, ac-23
+      properly.
   depends_on:
     - "@01KFQABQ"
   context: []
