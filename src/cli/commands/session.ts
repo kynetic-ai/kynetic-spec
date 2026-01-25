@@ -361,9 +361,11 @@ export async function gatherSessionContext(
     inbox_items: inboxItems.length,
   };
 
-  // Get active tasks
+  // Get active tasks (optionally filtered to automation-eligible only)
+  // AC: @cli-ralph ac-16
   const activeTasks = allTasks
     .filter((t) => t.status === "in_progress")
+    .filter((t) => !options.eligible || t.automation === "eligible")
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
