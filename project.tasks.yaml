@@ -41892,7 +41892,10 @@
         All 11 ACs covered by implementation.
       supersedes: null
   todos: []
-- title: Fix ralph loop exit condition to filter active tasks by automation eligibility
+- _ulid: 01KFV6CZGVQWJQN0B7BDEY3EVZ
+  slugs: []
+  title: Fix ralph loop exit condition to filter active tasks by automation eligibility
+  type: task
   description: >-
     ## Problem
 
@@ -41969,18 +41972,16 @@
     - Verify loop continues when eligible in_progress tasks exist
 
     - Existing tests should still pass
-  type: task
   spec_ref: "@cli-ralph"
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KFV6CZGVQWJQN0B7BDEY3EVZ
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-25T18:24:30.747Z
   notes: []
   todos: []
+  started_at: 2026-01-25T18:51:36.026Z
