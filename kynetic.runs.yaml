@@ -4987,6 +4987,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T10:12:05.050Z
+    completed_at: 2026-01-25T10:13:02.750Z
     step_results:
       - step_index: 0
         status: completed
@@ -5059,4 +5060,11 @@ runs:
           Session was successful with good workflow adherence.
           Reflection complete with zero captures (appropriate outcome).
     initiated_by: "@claude"
-    completed_at: 2026-01-25T10:13:02.750Z
+  - _ulid: 01KFTA9VY65RBRYH20PSQSY45G
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-01-25T10:13:28.646Z
+    step_results: []
+    initiated_by: "@claude"
