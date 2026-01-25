@@ -36877,7 +36877,7 @@
     - Task: CLI serve status tests (tests first)
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQABA"
@@ -36894,6 +36894,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-25T11:15:51.311Z
 - _ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
   slugs:
     - task-ui-selector-tests
