@@ -4169,4 +4169,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVPY36ARRRWYKQZTRXC8CAX
+    type: friction
+    content: "Loop mode task verification gap: Multiple iterations accepted task notes claiming 'already
+      implemented' or 'tests exist' without independent verification (running tests, checking code).
+      Iteration 1 concluded UI was incomplete based on test failures; iteration 2 found UI
+      components actually exist with proper test IDs. Real issue was E2E infrastructure, not missing
+      implementation. Task notes are context, not proof of completion."
+    created_at: 2026-01-25T23:13:28.778Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
