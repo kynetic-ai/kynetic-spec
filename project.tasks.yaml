@@ -34354,7 +34354,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34365,7 +34365,7 @@
     - phase-1
   vcs_refs: []
   created_at: 2026-01-24T06:16:10.627Z
-  started_at: null
+  started_at: 2026-01-25T09:41:09.744Z
   notes:
     - _ulid: 01KFRKJV5NED3DW9AQZGTAVBBA
       created_at: 2026-01-24T18:17:11.094Z
@@ -37844,6 +37844,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "PR #236 merged"
   depends_on:
     - "@task-ralph-command-automated-task-loop"
   context: []
@@ -37853,6 +37854,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:56:22.230Z
   started_at: 2026-01-25T09:07:13.183Z
+  completed_at: 2026-01-25T09:24:03.841Z
   notes:
     - _ulid: 01KFR834PN2051ERSW65X2443X
       created_at: 2026-01-24T14:56:22.230Z
@@ -37922,5 +37924,3 @@
         All 11 ACs covered by implementation.
       supersedes: null
   todos: []
-  completed_at: 2026-01-25T09:24:03.841Z
-  closed_reason: "PR #236 merged"
