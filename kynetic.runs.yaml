@@ -4533,6 +4533,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-24T23:50:10.306Z
+    completed_at: 2026-01-24T23:51:14.178Z
     step_results:
       - step_index: 0
         status: completed
@@ -4576,7 +4577,6 @@ runs:
         completed_at: 2026-01-24T23:51:14.178Z
         notes: Captured observation @01KFS6P9 for workflow lifecycle management friction.
     initiated_by: "@claude"
-    completed_at: 2026-01-24T23:51:14.178Z
   - _ulid: 01KFSSED216SB32K9845KKTE1E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: completed
@@ -4820,4 +4820,12 @@ runs:
           - @01KFST4Y: Success - Subagent audit pattern
           - @01KFST50: Success - Task reframing pattern
           - @01KFST52: Friction - Documentary test anti-pattern
+    initiated_by: "@claude"
+  - _ulid: 01KFT1DH0XZBYFB1QPBRTC3622
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-25T07:38:11.357Z
+    step_results: []
     initiated_by: "@claude"
