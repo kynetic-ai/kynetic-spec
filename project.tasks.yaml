@@ -32351,26 +32351,20 @@
       content: >-
         ## UPDATED INSTRUCTIONS - Supersedes previous notes
 
-        ### Goal
-        Implement the Tasks View to meet AC-4 through AC-10 and AC-33 from @web-dashboard spec.
+        ### Goal Implement the Tasks View to meet AC-4 through AC-10 and AC-33 from @web-dashboard
+        spec.
 
-        ### Acceptance Criteria to Implement
-        - AC-4: Task list shows title, status badge, priority, spec_ref link, notes count
-        - AC-5: Click task row → detail panel with description, notes, todos, dependencies
-        - AC-6: Spec reference is clickable link to spec item detail
-        - AC-7: Start Task button triggers state change via API
-        - AC-8: Add Note form appends note via API
-        - AC-9: Filter controls for status, type, tag, assignee, automation
-        - AC-10: URL updates with filter query params
-        - AC-33: WebSocket updates highlight changed items
+        ### Acceptance Criteria to Implement - AC-4: Task list shows title, status badge, priority,
+        spec_ref link, notes count - AC-5: Click task row → detail panel with description, notes,
+        todos, dependencies - AC-6: Spec reference is clickable link to spec item detail - AC-7:
+        Start Task button triggers state change via API - AC-8: Add Note form appends note via API -
+        AC-9: Filter controls for status, type, tag, assignee, automation - AC-10: URL updates with
+        filter query params - AC-33: WebSocket updates highlight changed items
 
-        ### Definition of Done
-        - [ ] Task list displays all required fields (AC-4)
-        - [ ] Task detail panel works (AC-5, AC-6)
-        - [ ] Start Task and Add Note work (AC-7, AC-8)
-        - [ ] Filters work with URL sync (AC-9, AC-10)
-        - [ ] WebSocket highlights work (AC-33)
-        - [ ] All E2E tests pass - no skips
+        ### Definition of Done - [ ] Task list displays all required fields (AC-4) - [ ] Task detail
+        panel works (AC-5, AC-6) - [ ] Start Task and Add Note work (AC-7, AC-8) - [ ] Filters work
+        with URL sync (AC-9, AC-10) - [ ] WebSocket highlights work (AC-33) - [ ] All E2E tests pass
+        - no skips
       supersedes: null
   todos: []
   automation: eligible
@@ -32503,23 +32497,17 @@
       content: >-
         ## UPDATED INSTRUCTIONS - Supersedes previous notes
 
-        ### Goal
-        Implement the Items View to meet AC-11 through AC-15 from @web-dashboard spec.
+        ### Goal Implement the Items View to meet AC-11 through AC-15 from @web-dashboard spec.
 
-        ### Acceptance Criteria to Implement
-        - AC-11: Hierarchical tree with modules > features > requirements
-        - AC-12: Item detail shows title, description, ACs (GWT), traits, status
-        - AC-13: Implementation section shows linked tasks
-        - AC-14: Traits shown as clickable chips
-        - AC-15: AC row expands to show full GWT
+        ### Acceptance Criteria to Implement - AC-11: Hierarchical tree with modules > features >
+        requirements - AC-12: Item detail shows title, description, ACs (GWT), traits, status -
+        AC-13: Implementation section shows linked tasks - AC-14: Traits shown as clickable chips -
+        AC-15: AC row expands to show full GWT
 
-        ### Definition of Done
-        - [ ] Hierarchical tree structure works (AC-11)
-        - [ ] Item detail displays all fields (AC-12)
-        - [ ] Linked tasks shown with status (AC-13)
-        - [ ] Trait chips are clickable (AC-14)
-        - [ ] AC expansion shows full GWT text (AC-15)
-        - [ ] All E2E tests pass - no skips
+        ### Definition of Done - [ ] Hierarchical tree structure works (AC-11) - [ ] Item detail
+        displays all fields (AC-12) - [ ] Linked tasks shown with status (AC-13) - [ ] Trait chips
+        are clickable (AC-14) - [ ] AC expansion shows full GWT text (AC-15) - [ ] All E2E tests
+        pass - no skips
       supersedes: null
   todos: []
   automation: eligible
@@ -34020,7 +34008,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34031,7 +34019,7 @@
     - phase-1
   vcs_refs: []
   created_at: 2026-01-24T06:16:10.627Z
-  started_at: 2026-01-24T18:15:07.959Z
+  started_at: null
   notes:
     - _ulid: 01KFRKJV5NED3DW9AQZGTAVBBA
       created_at: 2026-01-24T18:17:11.094Z
@@ -34100,6 +34088,11 @@
         filesystem locking implementation that would be tested at integration level" but no actual
         tests verify this behavior. Tests validate detection logic only, not actual concurrent start
         prevention. Task reopened for gap coverage.
+      supersedes: null
+    - _ulid: 01KFSYS7T6F38HP4Y21E1B487S
+      created_at: 2026-01-25T06:52:09.414Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: eligible
@@ -34278,8 +34271,8 @@
       content: >-
         ## Gap Identified
 
-        AC-14 (multiple project registration) has only 1 test. AC-15 (list projects) has only 1 test.
-        These represent weak coverage for core multi-project functionality. Task reopened for
+        AC-14 (multiple project registration) has only 1 test. AC-15 (list projects) has only 1
+        test. These represent weak coverage for core multi-project functionality. Task reopened for
         additional test coverage of these acceptance criteria.
       supersedes: null
   todos: []
@@ -35680,9 +35673,9 @@
         ## Gap Identified
 
         7 of 17 watcher tests are skipped in CI due to file watcher timing issues (tests pass
-        locally but fail in CI). Tests that actually verify file watcher behavior are not running
-        in CI, only tests for static structure. Task reopened to fix CI flakiness or add mocking
-        to enable proper verification.
+        locally but fail in CI). Tests that actually verify file watcher behavior are not running in
+        CI, only tests for static structure. Task reopened to fix CI flakiness or add mocking to
+        enable proper verification.
       supersedes: null
   todos: []
   automation: eligible
@@ -35951,10 +35944,10 @@
       content: >-
         ## Gap Identified
 
-        Tests are documentary/always-passing style using "check for file existence before assertions"
-        pattern. Tests don't actually verify that the /api/projects endpoints work correctly - they
-        just document expected behavior without real assertions. Task reopened to add proper
-        integration tests that verify endpoint behavior.
+        Tests are documentary/always-passing style using "check for file existence before
+        assertions" pattern. Tests don't actually verify that the /api/projects endpoints work
+        correctly - they just document expected behavior without real assertions. Task reopened to
+        add proper integration tests that verify endpoint behavior.
       supersedes: null
   todos: []
   automation: eligible
