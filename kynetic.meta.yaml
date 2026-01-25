@@ -3861,4 +3861,18 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTGC48BJC0A13Q7NW8SVJKX
+    type: friction
+    content: "E2E test verification blocked by daemon requirement in automation loops. Pattern
+      encountered in @01KFP84N and @01KFP84S: (1) Adding data-testid attributes to components is
+      automatable, (2) Removing test.skip() is automatable, (3) Verifying tests actually pass
+      requires daemon running + test execution + debugging failures which exceeds single loop
+      iteration scope (est 30-60+ min). This creates a 3-phase workflow where phase 3 blocks
+      automation. Tasks remain in_progress at ~70% completion awaiting human verification.
+      Solutions: daemon auto-start infrastructure, task splitting (separate test ID addition from
+      verification), or DoD adjustment for automation eligibility."
+    created_at: 2026-01-25T11:59:34.155Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
