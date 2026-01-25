@@ -4066,4 +4066,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTR8FDCNMBT7P0VNN8SDBSW
+    type: friction
+    content: "Repetitive checkpoint notes across automation loops: Tasks stuck in
+      automation:needs_review state get identical checkpoint notes added every iteration. Example:
+      @01KFP84N received 36 notes, with notes 27-36 being nearly identical 'Loop Iteration N -
+      Session End Checkpoint' messages. Creates noise without adding value. Possible solutions: (1)
+      Skip checkpoint notes if last note is recent and task state unchanged, (2) Update most recent
+      checkpoint note instead of appending, (3) Add checkpoint command that manages session-end
+      state separately from progress notes."
+    created_at: 2026-01-25T14:17:23.116Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
