@@ -36916,6 +36916,16 @@
 
         AC-12 fully implemented and tested.
       supersedes: null
+    - _ulid: 01KFTE0KDJBQ1ZRC2AETHGYQWD
+      created_at: 2026-01-25T11:18:19.314Z
+      author: "@claude"
+      content: |-
+        PR #242 created: https://github.com/kynetic-ai/kynetic-spec/pull/242
+
+        Branch: feat/cli-status-uptime
+
+        Ready for review and merge.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
