@@ -35,6 +35,7 @@ import {
   type KspecContext,
   loadAllItems,
   loadAllTasks,
+  type LoadedTask,
   ReferenceIndex,
 } from "../../parser/index.js";
 import {
@@ -382,6 +383,104 @@ async function markTaskNeedsReview(
 }
 
 /**
+ * Handle failed iteration by tracking per-task failures and escalating at threshold.
+ * AC: @loop-mode-error-handling ac-1, ac-2, ac-3, ac-4, ac-5, ac-8
+ */
+async function handleIterationFailure(
+  ctx: KspecContext,
+  tasksInProgressAtStart: ActiveTaskSummary[],
+  iterationStartTime: Date,
+  errorDescription: string,
+): Promise<void> {
+  if (tasksInProgressAtStart.length === 0) {
+    return;
+  }
+
+  // Re-load current tasks to check progress
+  const currentTasks = await loadAllTasks(ctx);
+  const index = new ReferenceIndex(currentTasks, await loadAllItems(ctx));
+
+  // Convert ActiveTaskSummary to Task-like objects for processing
+  const tasksInProgressFull = tasksInProgressAtStart
+    .map((summary) => {
+      const resolved = index.resolve(summary.ref);
+      if (!resolved.ok) return undefined;
+      // Check if the resolved item is a task (not a spec item or meta item)
+      const item = resolved.item;
+      if (!("status" in item)) return undefined; // Spec items don't have status
+      return currentTasks.find((t) => t._ulid === resolved.ulid);
+    })
+    .filter((t): t is LoadedTask => t !== undefined && t.status === "in_progress");
+
+  if (tasksInProgressFull.length === 0) {
+    return;
+  }
+
+  // Process failures
+  const { processFailedIteration, createFailureNote, getTaskFailureCount } = await import("../../ralph/index.js");
+
+  const results = processFailedIteration(
+    tasksInProgressFull,
+    currentTasks,
+    iterationStartTime,
+    errorDescription,
+  );
+
+  // Add notes and escalate tasks
+  for (const result of results) {
+    const taskRef = result.taskRef;
+    const task = currentTasks.find((t) => t._ulid === taskRef);
+    if (!task) continue;
+
+    const priorCount = result.failureCount - 1;
+    const noteContent = createFailureNote(taskRef, errorDescription, priorCount);
+
+    // Add LOOP-FAIL note
+    const noteResult = spawnSync(
+      "kspec",
+      ["task", "note", `@${taskRef}`, noteContent],
+      {
+        encoding: "utf-8",
+        stdio: "pipe",
+        cwd: process.cwd(),
+      },
+    );
+
+    if (noteResult.status !== 0) {
+      warn(`Failed to add failure note to task ${taskRef}: ${noteResult.stderr}`);
+      continue;
+    }
+
+    // AC: @loop-mode-error-handling ac-5 - Escalate at threshold
+    if (result.escalated) {
+      const escalateResult = spawnSync(
+        "kspec",
+        [
+          "task",
+          "set",
+          `@${taskRef}`,
+          "--automation",
+          "needs_review",
+          "--reason",
+          `Loop mode: 3 consecutive failures without progress`,
+        ],
+        {
+          encoding: "utf-8",
+          stdio: "pipe",
+          cwd: process.cwd(),
+        },
+      );
+
+      if (escalateResult.status !== 0) {
+        warn(`Failed to escalate task ${taskRef}: ${escalateResult.stderr}`);
+      } else {
+        info(`Escalated task ${taskRef} to automation:needs_review after 3 failures`);
+      }
+    }
+  }
+}
+
+/**
  * Process pending_review tasks by spawning subagents.
  * AC: @ralph-subagent-spawning ac-6, ac-8
  */
@@ -642,6 +741,10 @@ export function registerRalphCommand(program: Command): void {
               break;
             }
 
+            // AC: @loop-mode-error-handling - Track tasks in progress for failure handling
+            const tasksInProgressAtStart = sessionCtx.active_tasks;
+            const iterationStartTime = new Date();
+
             // Build prompts - task-work first, then reflect
             const taskWorkPrompt = buildTaskWorkPrompt(
               sessionCtx,
@@ -873,6 +976,15 @@ export function registerRalphCommand(program: Command): void {
               if (lastError) {
                 error(errors.failures.lastError(lastError.message));
               }
+
+              // AC: @loop-mode-error-handling - Track per-task failures
+              const errorDesc = lastError?.message || "Iteration failed after retries";
+              await handleIterationFailure(
+                ctx,
+                tasksInProgressAtStart,
+                iterationStartTime,
+                errorDesc,
+              );
 
               if (consecutiveFailures >= maxFailures) {
                 error(errors.failures.reachedMaxFailures(maxFailures));

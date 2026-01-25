@@ -35,3 +35,14 @@ export {
   type SubagentOptions,
   type SubagentResult,
 } from "./subagent.js";
+// Loop error handling
+export {
+  createFailureNote,
+  getTaskFailureCount,
+  hasTaskProgress,
+  isIterationFailure,
+  parseFailureCount,
+  processFailedIteration,
+  shouldEscalate,
+  type TaskFailureResult,
+} from "./loop-errors.js";
