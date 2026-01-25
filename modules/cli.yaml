@@ -2820,6 +2820,9 @@ features:
         given: loop mode encounters error
         when: error caught
         then: note added, workflow continues
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFR7SDZZ26BK0SEWRYYEGRAD
     slugs:
       - task-work-loop-skill
