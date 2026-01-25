@@ -32031,7 +32031,7 @@
   todos: []
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
-  title: E2E Tasks View Tests
+  title: Implement Tasks View (AC-4 to AC-10, AC-33)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
