@@ -37584,7 +37584,7 @@
   type: task
   spec_ref: "@pr-review-skill"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -37644,6 +37644,8 @@
         - Updated AGENTS.md skills table
       supersedes: null
   todos: []
+  completed_at: 2026-01-25T08:49:17.402Z
+  closed_reason: "PR #235 merged"
 - _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
   slugs:
     - task-loop-mode-error-handling
