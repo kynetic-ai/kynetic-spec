@@ -4045,4 +4045,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTPYVEK0ZQTH006HH1H5F1M
+    type: friction
+    content: "Zero-completion automation sessions: Loop iteration 17 completed with 0 tasks finished,
+      all 3 in_progress tasks escalated to automation:needs_review. Distinct from prior successful
+      Ralph loops. Root cause: Tasks marked automation:eligible but require daemon E2E testing (2
+      tasks) or multi-file coordinated implementation (1 task). Gap between 'eligible' tag and
+      actual automation feasibility in single iteration. Affects task selection heuristics."
+    created_at: 2026-01-25T13:54:39.187Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
