@@ -143,7 +143,7 @@
 	<TaskFilters />
 
 	{#if error}
-		<div class="bg-destructive/10 text-destructive p-4 rounded-lg">
+		<div class="bg-destructive/10 text-destructive p-4 rounded-lg" data-testid="error-message" role="alert">
 			{error}
 		</div>
 	{/if}

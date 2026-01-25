@@ -73,7 +73,7 @@
 			<Skeleton class="h-12 w-full" />
 		</div>
 	{:else if error}
-		<div class="rounded-md border border-destructive bg-destructive/10 p-4">
+		<div class="rounded-md border border-destructive bg-destructive/10 p-4" data-testid="error-message" role="alert">
 			<p class="text-destructive font-medium">Error loading spec items</p>
 			<p class="text-sm text-destructive/80">{error}</p>
 		</div>
