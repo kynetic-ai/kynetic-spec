@@ -5223,6 +5223,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T11:18:35.178Z
+    completed_at: 2026-01-25T11:20:13.994Z
     step_results:
       - step_index: 0
         status: completed
@@ -5332,4 +5333,12 @@ runs:
 
           Session reflection complete with zero new captures (all duplicates).
     initiated_by: "@claude"
-    completed_at: 2026-01-25T11:20:13.994Z
+  - _ulid: 01KFTE5FAE38C5XV9CC4SGWR8E
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-01-25T11:20:58.958Z
+    step_results: []
+    initiated_by: "@claude"
+    task_ref: "@01KFQAG8K9ZZ767XDK21KJRHJ6"
