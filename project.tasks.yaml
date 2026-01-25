@@ -33317,6 +33317,38 @@
 
         All tests follow existing E2E patterns. Ready to verify by running daemon and tests.
       supersedes: null
+    - _ulid: 01KFTHBNVGE28ECPDKWYPRASC1
+      created_at: 2026-01-25T12:16:47.984Z
+      author: "@claude"
+      content: >-
+        Loop iteration 8 status: Implementation ~80% complete. 
+
+
+        **Completed:**
+
+        - ✅ All data-testid attributes added to inbox page
+
+        - ✅ 13 comprehensive E2E tests created covering AC-16 through AC-19
+
+        - ✅ Tests follow existing E2E patterns (tasks.spec.ts, items.spec.ts)
+
+        - ✅ Code committed (55baf197)
+
+
+        **Remaining:**
+
+        1. Start daemon: npm run serve -w packages/web-ui
+
+        2. Run E2E tests: npm run test:e2e -w packages/web-ui -- inbox.spec.ts
+
+        3. Debug any failures
+
+        4. Verify all 4 ACs (ac-16 through ac-19) pass
+
+
+        **Blocker:** Same daemon requirement as tasks (@01KFP84N) and items (@01KFP84S). This is a
+        systematic E2E testing pattern that requires human-driven verification session.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
