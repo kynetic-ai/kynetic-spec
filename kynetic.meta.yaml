@@ -3970,4 +3970,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTKCK1P5GTM073CM64X5WTM
+    type: success
+    content: "Task verification pattern: Before starting test-only task (01KFP854 - E2E tests), verified
+      WebSocketManager implementation existed. Read manager.ts to confirm AC coverage (ac-28 to
+      ac-32) before committing to E2E test creation. This prevented wasting iteration on tests for
+      non-existent features. Pattern: For tasks scoped as 'write tests for X', verify X
+      implementation exists first. Especially valuable in automation loops with limited iteration
+      budget."
+    created_at: 2026-01-25T12:52:15.031Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
