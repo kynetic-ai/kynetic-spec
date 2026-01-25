@@ -828,4 +828,4 @@ features:
         then: all project watchers are stopped and all WebSocket connections are closed before process exits
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
