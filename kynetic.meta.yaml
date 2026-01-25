@@ -3848,4 +3848,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTFX9SDQQ7ZP5BC7E8SB821
+    type: success
+    content: "Comprehensive session-end notes enable clean task handoffs. Final note on @01KFP84N
+      documented: what's done, what remains, estimated effort, specific next steps, blockers,
+      recommendations. This level of detail makes continuing work in next iteration frictionless -
+      no context rebuilding needed. Pattern: when leaving task in_progress, include (1) completed
+      work summary, (2) remaining work list, (3) effort estimate, (4) next concrete steps, (5)
+      blockers/considerations. Especially valuable in automation loops where next iteration may be
+      hours/days later."
+    created_at: 2026-01-25T11:51:28.301Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
