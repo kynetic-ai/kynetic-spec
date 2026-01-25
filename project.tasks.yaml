@@ -41982,6 +41982,36 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-25T18:24:30.747Z
-  notes: []
-  todos: []
   started_at: 2026-01-25T18:51:36.026Z
+  notes:
+    - _ulid: 01KFV8AP16BY4360ZQCVJJ7F9C
+      created_at: 2026-01-25T18:58:12.647Z
+      author: "@claude"
+      content: >-
+        ## Implementation Complete
+
+
+        ### Changes Made
+
+
+        1. **src/cli/commands/session.ts** (line 364-370):
+           - Added automation eligibility filter to `activeTasks` query
+           - Now filters by `automation === 'eligible'` when `options.eligible` is true
+           - Added AC annotation: `// AC: @cli-ralph ac-16`
+
+        2. **src/cli/commands/ralph.ts** (line 735-742):
+           - Updated exit message to be more descriptive
+           - Added AC annotation: `// AC: @cli-ralph ac-19`
+           - Message now: 'No automation-eligible tasks (ready or in_progress). Exiting loop.'
+
+        3. **tests/ralph.test.ts**:
+           - Updated existing tests to expect new message
+           - Added new test for AC-16/AC-19: 'exits when in_progress tasks are automation:needs_review'
+
+        ### Test Results
+
+        - All 75 ralph tests pass
+
+        - Full suite: 1428 passed, 1 unrelated failure (daemon-executable build test)
+      supersedes: null
+  todos: []
