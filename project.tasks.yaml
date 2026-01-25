@@ -30357,7 +30357,7 @@
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -30415,6 +30415,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T12:01:54.084Z
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
   title: Static SPA for GitHub Pages
