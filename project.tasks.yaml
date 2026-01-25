@@ -34494,6 +34494,14 @@
         (AC-22: 404 with suggestion, AC-23: 400 validation error, AC-24: 409 state transition
         error). Using page.route() to mock error responses. No existing error tests found."
       supersedes: null
+    - _ulid: 01KFTMBRTQTJKHM0FE0CF6EF6W
+      created_at: 2026-01-25T13:09:16.759Z
+      author: "@claude"
+      content: Completed implementation. Created 14 comprehensive E2E tests for error handling covering
+        AC-22 (404 with suggestion), AC-23 (400 validation errors), AC-24 (409 state transition
+        errors). Added data-testid='error-message' and role='alert' to error displays across inbox,
+        items, and tasks pages. Tests use page.route() to mock error responses. Committed f3a2ae37.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP85M2QCG5RQQBGPYTX4REQ
