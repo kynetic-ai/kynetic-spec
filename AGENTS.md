@@ -607,6 +607,58 @@ it('should validate input', () => {
 
 This pattern is already used in this project's tests.
 
+## Running Services
+
+### Daemon
+
+The daemon provides the API for the web UI. Start it for E2E tests or local development:
+
+```bash
+# Start daemon (foreground)
+npm run daemon
+
+# Start daemon in background with logs
+npm run daemon > /tmp/daemon.log 2>&1 &
+DAEMON_PID=$!
+
+# Wait for ready
+for i in {1..30}; do
+  curl -s http://localhost:3000/health > /dev/null 2>&1 && break
+  sleep 1
+done
+
+# Clean up when done
+kill $DAEMON_PID 2>/dev/null
+```
+
+Default port is 3000. Health endpoint: `GET /health`
+
+### E2E Tests
+
+E2E tests require the daemon running:
+
+```bash
+# Terminal 1: Start daemon
+npm run daemon
+
+# Terminal 2: Run E2E tests
+npm run test:e2e -w packages/web-ui
+
+# Or run specific test file
+npm run test:e2e -w packages/web-ui -- tests/e2e/tasks.spec.ts
+```
+
+### Web UI Development
+
+```bash
+# Start daemon + web UI together
+npm run dev -w packages/web-ui
+
+# Or separately:
+npm run daemon &
+npm run dev:ui -w packages/web-ui
+```
+
 ## Test Fixture Patterns
 
 When writing tests, follow these patterns to avoid common friction points.
