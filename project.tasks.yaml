@@ -32489,6 +32489,15 @@
         running and may reveal API endpoint gaps. Recommend manual verification before completing
         task.
       supersedes: null
+    - _ulid: 01KFTFQ9BHH9E28XRW0QJMK5HD
+      created_at: 2026-01-25T11:48:11.250Z
+      author: "@claude"
+      content: "Partial progress committed. Test IDs added to all components (fd70b86d). Task still
+        in_progress because E2E tests remain skipped. Remaining work: remove test.skip(), start
+        daemon, run tests, debug failures. This requires manual verification and may reveal API
+        endpoint gaps. Recommend continuing in next iteration or human-driven session for test
+        debugging."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
