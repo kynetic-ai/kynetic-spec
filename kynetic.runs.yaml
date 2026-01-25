@@ -5190,6 +5190,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T11:12:45.785Z
+    completed_at: 2026-01-25T11:14:46.199Z
     step_results:
       - step_index: 0
         status: completed
@@ -5216,4 +5217,11 @@ runs:
         notes: No items to capture - all identified patterns were either already tracked or determined to be
           one-off issues rather than systemic friction.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T11:14:46.199Z
+  - _ulid: 01KFTE12XAXYG92X01QKQ1B200
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T11:18:35.178Z
+    step_results: []
+    initiated_by: "@claude"
