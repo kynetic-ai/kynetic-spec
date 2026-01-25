@@ -4824,8 +4824,22 @@ runs:
   - _ulid: 01KFT1DH0XZBYFB1QPBRTC3622
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-25T07:38:11.357Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T07:38:11.357Z
+        completed_at: 2026-01-25T07:38:33.964Z
+        notes: |-
+          What worked well:
+          1. Subagent delegation - spawn agent to explore/analyze, get findings, act on findings
+          2. Incremental merge resolution - easy conflicts first, batch similar decisions
+          3. Git history recovery - git log -p -S to find lost content
+          4. User-guided decisions via AskUserQuestion with batching
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T07:38:33.964Z
+        completed_at: 2026-01-25T07:38:33.964Z
     initiated_by: "@claude"
