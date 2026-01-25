@@ -2895,7 +2895,7 @@ features:
         then: user not prompted
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFR7SMRYBM0QWYKJDPJ9BA5J
     slugs:
       - pr-review-skill
