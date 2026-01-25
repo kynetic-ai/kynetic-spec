@@ -37524,7 +37524,7 @@
   type: task
   spec_ref: "@reflect-loop-skill"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -37575,6 +37575,8 @@
         user prompts."
       supersedes: null
   todos: []
+  completed_at: 2026-01-25T08:15:53.345Z
+  closed_reason: Added Loop Mode section to SKILL.md - committed in 74fd539f
 - _ulid: 01KFR82G303PDT36DCA1RZ9Z45
   slugs:
     - task-pr-review-skill
