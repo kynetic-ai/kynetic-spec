@@ -3507,7 +3507,7 @@ runs:
   - _ulid: 01KFSSED216SB32K9845KKTE1E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-25T05:18:51.458Z
     step_results:
@@ -3562,5 +3562,68 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-25T05:19:15.558Z
-        completed_at: 2026-01-25T05:19:15.558Z
+        completed_at: 2026-01-25T05:19:31.236Z
+        notes: >-
+          ## Friction Points
+
+
+          ### 1. Documentary Test Anti-Pattern Not Prevented
+
+          Agents wrote 'documentary' tests with test.skip() that passed CI but didn't verify
+          anything. The task instructions allowed this interpretation. No guardrail prevented it.
+
+
+          **Systemic issue**: Task framing as 'write tests' vs 'implement feature validated by
+          tests' leads to this outcome.
+
+
+          ### 2. Tasks Left Pending After PR Merge
+
+          PRs #229, #232, #233 merged with skipped tests, but tasks stayed pending. The agent knew
+          tests didn't work but didn't close or flag the tasks appropriately.
+
+
+          **Systemic issue**: No enforcement that 'task complete' requires actually completing the
+          work.
+
+
+          ### 3. Wrong ULIDs in Task References
+
+          When searching for tasks, got wrong ULIDs (e.g., @01KFQACV vs @01KFQACQ). Had to do
+          multiple searches to find actual tasks.
+
+
+          **Systemic issue**: Task reference resolution can be ambiguous with partial ULIDs.
+
+
+          ### 4. Task Lifecycle Ceremony for Closing Complete Work
+
+          To close tasks that were already done, had to: start → submit → complete. Three commands
+          for work that was already verified complete.
+
+
+          **Possible improvement**: Allow completing from pending if work is done (with
+          verification).
+
+
+          ### 5. No Bulk Task Operations
+
+          Had to update 10+ tasks one at a time. Each note/title update was a separate command.
+
+
+          **Systemic issue**: No bulk operations for task management.
+
+
+          ### 6. Automation Eligibility Defaulting to Eligible
+
+          Most tasks were 'automation: eligible' without assessment. This allowed ralph to pick them
+          up and produce documentary tests.
+
+
+          **Systemic issue**: Should default to 'unassessed' and require explicit eligibility
+          assessment.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-25T05:19:31.236Z
+        completed_at: 2026-01-25T05:19:31.236Z
     initiated_by: "@claude"
