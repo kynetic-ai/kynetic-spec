@@ -4102,4 +4102,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTRY6ASB4AHM7D0ZTP2HX68
+    type: friction
+    content: "Loop mode runs redundant iterations when no progress possible. Iterations 22-24 added
+      identical checkpoint notes with no state changes. All 3 in_progress tasks marked
+      automation:needs_review, no eligible tasks available, but loop continued for 3 iterations
+      adding duplicate 'no progress possible' notes. Suggest: early exit condition 'if no state
+      change in last N iterations AND no eligible tasks, exit immediately' to avoid redundant work."
+    created_at: 2026-01-25T14:29:14.713Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
