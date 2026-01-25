@@ -30675,8 +30675,15 @@
         - packages/web-ui/src/lib/stores/mode.svelte.ts
         - packages/web-ui/src/lib/components/ReadOnlyBanner.svelte
       supersedes: null
+    - _ulid: 01KFTQHKWWM6GX3FTHAA87BCTQ
+      created_at: 2026-01-25T14:04:54.044Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Depends on @01KFMMXK SPA infrastructure. Read-only
+        mode detection + UI state management across multiple components. Part of coordinated GitHub
+        Pages feature."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFMMXWWAMNM41ERK65RYAD46
   slugs: []
   title: GitHub Pages CI workflow
