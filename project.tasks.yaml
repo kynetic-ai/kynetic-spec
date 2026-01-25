@@ -33820,7 +33820,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -33988,6 +33988,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-25T12:47:04.286Z
 - _ulid: 01KFP85D7ZMX2A214K8P44K1KV
   slugs: []
   title: Implement Observations Panel (AC-21, AC-22)
