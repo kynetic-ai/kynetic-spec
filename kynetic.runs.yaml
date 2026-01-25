@@ -3507,7 +3507,7 @@ runs:
   - _ulid: 01KFSSED216SB32K9845KKTE1E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-25T05:18:51.458Z
     step_results:
@@ -3715,5 +3715,23 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-25T05:20:10.394Z
-        completed_at: 2026-01-25T05:20:10.394Z
+        completed_at: 2026-01-25T05:31:26.184Z
+        notes: >-
+          User approved all 4 improvements for inbox capture:
+
+          1. E2E/UI Task Template (@01KFST4D)
+
+          2. Task Completion Validation (@01KFST4F)
+
+          3. Automation Eligibility Default Fix (@01KFST4H)
+
+          4. PR-Task Linkage Audit (@01KFST4K)
+
+
+          User clarified #3: Ralph should only pick up eligible ones - the issue is tasks defaulting
+          to eligible without assessment.
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-25T05:31:26.184Z
+        completed_at: 2026-01-25T05:31:26.184Z
     initiated_by: "@claude"
