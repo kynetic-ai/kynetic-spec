@@ -37958,6 +37958,15 @@
         for X-Kspec-Dir header, build ProjectSelector component, and integrate into layout to meet
         AC-25, AC-26, AC-27."
       supersedes: null
+    - _ulid: 01KFVNTXAMWXTF9YNPAAHPXNBH
+      created_at: 2026-01-25T22:54:15.892Z
+      author: "@claude"
+      content: "Session end (loop iteration 1): Only planning done, no implementation started. Task
+        requires building complete feature: project store, API client modifications, ProjectSelector
+        component, and layout integration. This is substantial implementation work suitable for
+        dedicated focus session. E2E tests exist in
+        packages/web-ui/tests/e2e/project-selector.spec.ts as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
