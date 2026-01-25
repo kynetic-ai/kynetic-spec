@@ -30357,8 +30357,9 @@
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: cancelled
+  status: pending
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
@@ -30367,7 +30368,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:30.144Z
-  started_at: 2026-01-25T12:01:54.084Z
+  started_at: null
   notes:
     - _ulid: 01KFMMYSR4869CYZT7VKF9K76Y
       created_at: 2026-01-23T05:24:13.700Z
@@ -30448,10 +30449,14 @@
         resolution, HTML wrapper, validation integration, and tests for 7 ACs. Scope exceeds
         automation loop capacity. Resetting to pending for future work."
       supersedes: null
+    - _ulid: 01KFTGN19TK1N47VDBZNPEC6SJ
+      created_at: 2026-01-25T12:04:26.042Z
+      author: "@claude"
+      content: "Reset from cancelled to pending (was cancelled: Loop iteration 6: No progress made, task
+        scope exceeds automation capacity. Resetting to pending for human-driven session.)"
+      supersedes: null
   todos: []
   automation: eligible
-  closed_reason: "Loop iteration 6: No progress made, task scope exceeds automation capacity.
-    Resetting to pending for human-driven session."
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
   title: Static SPA for GitHub Pages
