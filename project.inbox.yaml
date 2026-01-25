@@ -687,3 +687,13 @@ inbox:
       - templates
       - testing
     added_by: "@claude"
+  - _ulid: 01KFST4FC88SF28V7FZ6R1T0QW
+    text: "Task Completion Validation - Add validation when marking task complete: if task has test
+      tags, verify tests pass; warn if PR merged but task not completed. Catches 'PR merged but task
+      pending' pattern."
+    created_at: 2026-01-25T05:30:54.728Z
+    tags:
+      - reflection
+      - cli
+      - validation
+    added_by: "@claude"
