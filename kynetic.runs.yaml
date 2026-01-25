@@ -7744,9 +7744,13 @@ runs:
     abort_reason: No automation-eligible tasks available
   - _ulid: 01KFTSW4A2FWWQ2EFM0VM6A6NJ
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 4
     started_at: 2026-01-25T14:45:35.682Z
     step_results: []
     initiated_by: "@claude"
+    abort_reason: Loop mode reflection complete. Captured 1 high-confidence friction observation.
+      Session had clear exit pattern (no eligible tasks) but ran too many iterations - documented
+      for future improvement.
+    completed_at: 2026-01-25T14:46:09.275Z
