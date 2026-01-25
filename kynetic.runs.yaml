@@ -7879,6 +7879,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T22:55:18.846Z
+    completed_at: 2026-01-25T22:56:25.518Z
     step_results:
       - step_index: 0
         status: completed
@@ -7908,4 +7909,11 @@ runs:
         notes: No items to capture. All friction points either already tracked or session-specific.
           Reflection complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T22:56:25.518Z
+  - _ulid: 01KFVPV1GXH8QZC6NXTTA91ZCT
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T23:11:48.766Z
+    step_results: []
+    initiated_by: "@claude"
