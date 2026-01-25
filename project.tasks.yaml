@@ -32553,6 +32553,60 @@
 
         Continue in human-driven session for test enablement + debugging. Task is 60% complete.
       supersedes: null
+    - _ulid: 01KFTG8HGJ1SYE5CKRTN1XTWBD
+      created_at: 2026-01-25T11:57:36.658Z
+      author: "@claude"
+      content: >-
+        ## Pattern Update - Iteration 5
+
+
+        Related task @01KFP84S encountered identical blocker:
+
+        - Component test IDs added ✅
+
+        - test.skip() removed ✅  
+
+        - Daemon required for E2E verification ❌
+
+
+        **Common Pattern Identified:**
+
+        Both @01KFP84N and @01KFP84S are web UI E2E testing tasks that require:
+
+        1. Adding data-testid attributes to Svelte components (automatable)
+
+        2. Removing test.skip() calls (automatable)
+
+        3. Starting daemon + running tests + debugging failures (NOT automatable in single loop
+        iteration)
+
+
+        **Blocker Analysis:**
+
+        Step 3 exceeds automation loop scope because:
+
+        - Daemon startup requires manual verification
+
+        - E2E test failures are unpredictable
+
+        - Debugging may reveal API endpoint gaps requiring additional implementation
+
+        - Estimated 30-60+ minutes of iterative work per task
+
+
+        **Recommendation for Future Automation:**
+
+        These tasks should either:
+
+        1. Be marked automation:needs_review (not eligible) until daemon infra automated
+
+        2. Be split into 2 tasks: 'Add test IDs' (automatable) + 'Verify E2E tests' (manual)
+
+        3. Have DoD relaxed to 'Tests enabled, pending manual verification'
+
+
+        Current status: Both tasks ~70% complete, awaiting human verification session.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
