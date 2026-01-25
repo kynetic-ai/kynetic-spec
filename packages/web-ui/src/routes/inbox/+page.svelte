@@ -125,6 +125,7 @@
 	<div class="flex items-center justify-between">
 		<h1 class="text-3xl font-bold">Inbox</h1>
 		<Button
+			data-testid="add-inbox-button"
 			on:click={() => (showAddInput = !showAddInput)}
 			variant={showAddInput ? 'secondary' : 'default'}
 		>
@@ -140,17 +141,18 @@
 
 	<!-- AC: @web-dashboard ac-17 - Add input field -->
 	{#if showAddInput}
-		<Card>
+		<Card data-testid="inbox-add-form">
 			<CardContent class="pt-6">
 				<div class="flex gap-2">
 					<Input
+						data-testid="inbox-input"
 						bind:value={newItemText}
 						placeholder="Enter inbox item text (press Enter to submit)"
 						on:keydown={handleKeydown}
 						disabled={addingItem}
 						class="flex-1"
 					/>
-					<Button on:click={handleAddItem} disabled={addingItem || !newItemText.trim()}>
+					<Button data-testid="inbox-submit" on:click={handleAddItem} disabled={addingItem || !newItemText.trim()}>
 						{addingItem ? 'Adding...' : 'Add'}
 					</Button>
 				</div>
@@ -167,16 +169,17 @@
 			<p class="text-sm">Click "Add Item" to capture ideas and thoughts.</p>
 		</div>
 	{:else}
-		<div class="flex flex-col gap-3">
+		<div class="flex flex-col gap-3" data-testid="inbox-list">
 			{#each items as item (item._ulid)}
 				<!-- AC: @web-dashboard ac-18 - Item appears with animation -->
-				<Card class="transition-all duration-200 hover:shadow-md">
+				<Card class="transition-all duration-200 hover:shadow-md" data-testid="inbox-item">
 					<CardHeader class="pb-3">
 						<div class="flex items-start justify-between gap-4">
 							<div class="flex-1">
-								<p class="text-sm leading-relaxed">{item.text}</p>
+								<p class="text-sm leading-relaxed" data-testid="inbox-text">{item.text}</p>
 							</div>
 							<Button
+								data-testid="delete-inbox-button"
 								variant="ghost"
 								size="sm"
 								on:click={() => confirmDelete(item)}
@@ -188,12 +191,12 @@
 					</CardHeader>
 					<CardContent class="pt-0">
 						<div class="flex items-center gap-2 text-xs text-muted-foreground">
-							<span>{formatDate(item.created_at)}</span>
+							<span data-testid="inbox-created-at">{formatDate(item.created_at)}</span>
 							<span>•</span>
-							<span>{item.added_by}</span>
+							<span data-testid="inbox-added-by">{item.added_by}</span>
 							{#if item.tags.length > 0}
 								<span>•</span>
-								<div class="flex gap-1">
+								<div class="flex gap-1" data-testid="inbox-tags">
 									{#each item.tags as tag}
 										<Badge variant="secondary" class="text-xs">{tag}</Badge>
 									{/each}
@@ -209,7 +212,7 @@
 
 <!-- AC: @web-dashboard ac-19 - Delete confirmation dialog -->
 <Dialog bind:open={deleteConfirmOpen}>
-	<DialogContent>
+	<DialogContent data-testid="confirm-delete-dialog">
 		<DialogHeader>
 			<DialogTitle>Delete Inbox Item?</DialogTitle>
 			<DialogDescription>
@@ -222,10 +225,10 @@
 			</div>
 		{/if}
 		<DialogFooter>
-			<Button variant="outline" on:click={() => (deleteConfirmOpen = false)} disabled={deletingItem}>
+			<Button data-testid="confirm-delete-no" variant="outline" on:click={() => (deleteConfirmOpen = false)} disabled={deletingItem}>
 				Cancel
 			</Button>
-			<Button variant="destructive" on:click={handleDelete} disabled={deletingItem}>
+			<Button data-testid="confirm-delete-yes" variant="destructive" on:click={handleDelete} disabled={deletingItem}>
 				{deletingItem ? 'Deleting...' : 'Delete'}
 			</Button>
 		</DialogFooter>
