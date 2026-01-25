@@ -34484,6 +34484,26 @@
 
         - [ ] No test.skip() calls
       supersedes: null
+    - _ulid: 01KFT8FZ0DKJQRSN2HA7A1NGWN
+      created_at: 2026-01-25T09:41:51.245Z
+      author: "@claude"
+      content: >-
+        Analysis: AC-10b requires file locking to prevent concurrent daemon starts. However, the
+        actual PidFileManager implementation (packages/daemon/src/pid.ts) does NOT implement file
+        locking. The class uses simple readFileSync/writeFileSync without any locking mechanism.
+
+
+        This task asks for tests, but the functionality doesn't exist. Options:
+
+        1. Write a documentary test with test.skip() showing what SHOULD work
+
+        2. Block this task until AC-10b is implemented in the PidFileManager
+
+        3. Implement both the file locking AND the test (scope expansion)
+
+
+        Checking if file locking is actually implemented elsewhere or if AC-10b spec needs revision.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
