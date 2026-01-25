@@ -4022,4 +4022,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTPNH9WXC0G77CB9JDSM5C8
+    type: friction
+    content: "Task automation eligibility assessment happens too late in workflow. Tasks get marked
+      automation:eligible without scope assessment. Automation loops then waste iterations doing
+      [LOOP-FAIL:1], [LOOP-FAIL:2], [LOOP-FAIL:3] assessments before marking
+      automation:needs_review. Example: task @01KFMMXF assessed in iterations 6, 7, 14 as too
+      complex (~300-500 lines) but stayed in eligible pool causing repeated evaluation. Assessment
+      should occur BEFORE tasks marked eligible, not after automation attempts them. Related to
+      @task-automation-eligibility but focuses on pre-eligibility workflow gap."
+    created_at: 2026-01-25T13:49:33.884Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
