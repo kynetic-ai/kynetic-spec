@@ -30481,8 +30481,15 @@
         Escalating to automation:needs_review per 3-failure threshold. Requires human-driven session
         or decomposition into smaller incremental tasks."
       supersedes: null
+    - _ulid: 01KFTQ52Q0RP2NK94K8A9NVYQ0
+      created_at: 2026-01-25T13:58:03.232Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Failed 3 times in automation loop - scope exceeds
+        single iteration capacity (~300-500 lines). Requires human-driven session or task
+        decomposition."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
   title: Static SPA for GitHub Pages
