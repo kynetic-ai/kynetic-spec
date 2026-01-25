@@ -3753,4 +3753,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFT1QE8X64CFNDSJ9ATEEB1Y
+    type: friction
+    content: Shadow branch divergence lacks guided resolution. When local and remote kspec-meta diverge
+      significantly (61 vs 362 commits), kspec shadow sync just fails with no guidance. Manual git
+      merge-tree diagnosis and conflict-by-conflict resolution required. @yaml-merge-driver would
+      help but was cancelled.
+    created_at: 2026-01-25T07:43:36.221Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
