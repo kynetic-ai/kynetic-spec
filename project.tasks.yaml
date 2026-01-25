@@ -34299,7 +34299,7 @@
     Task: Multi-directory daemon test fixtures
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQAAA"
@@ -34313,6 +34313,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-25T04:39:02.293Z
 - _ulid: 01KFQACE936G0SDG0F3DQD8V89
   slugs:
     - task-middleware-impl
