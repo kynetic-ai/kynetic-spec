@@ -432,7 +432,7 @@ async function handleIterationFailure(
     const task = currentTasks.find((t) => t._ulid === taskRef);
     if (!task) continue;
 
-    const priorCount = getTaskFailureCount(task);
+    const priorCount = result.failureCount - 1;
     const noteContent = createFailureNote(taskRef, errorDescription, priorCount);
 
     // Add LOOP-FAIL note
