@@ -361,6 +361,40 @@ describe('kspec serve commands', () => {
     await cleanupTempDir(emptyTempDir);
   });
 
+  // AC: @multi-directory-daemon ac-12
+  it('should show uptime in status output', async () => {
+    if (!bunAvailable) {
+      console.log('  ⊘ Skipping test - Bun runtime required');
+      return;
+    }
+
+    const port = 3500 + Math.floor(Math.random() * 100);
+
+    // Start daemon
+    kspec(
+      `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir
+    );
+
+    // Wait for daemon to fully start and accumulate uptime
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Check status - should show uptime
+    const result = kspec(`serve status --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+
+    expect(result.stdout).toContain('Uptime:');
+
+    // Check JSON output includes uptime
+    const jsonResult = kspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    const status = JSON.parse(jsonResult.stdout);
+    expect(status).toHaveProperty('uptime');
+    expect(typeof status.uptime).toBe('number');
+    expect(status.uptime).toBeGreaterThan(0);
+
+    // Cleanup
+    kspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+  });
+
   // AC: @cli-serve-commands ac-7
   it('should stop then start on restart', async () => {
     if (!bunAvailable) {
