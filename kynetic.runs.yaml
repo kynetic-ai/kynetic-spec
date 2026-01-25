@@ -7912,7 +7912,7 @@ runs:
   - _ulid: 01KFVPV1GXH8QZC6NXTTA91ZCT
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-25T23:11:48.766Z
     step_results:
@@ -7928,5 +7928,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-25T23:12:42.957Z
-        completed_at: 2026-01-25T23:12:42.957Z
+        completed_at: 2026-01-25T23:12:59.023Z
+        notes: "High-confidence friction: (1) E2E test timeouts make debugging impossible - tests take >2min
+          with no progress indication. (2) Task verification gap in loop mode - accepts notes as
+          proof without running tests/checking code. High-confidence success: Reading source
+          components directly to verify claims proved more reliable than trusting task notes."
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-25T23:12:59.023Z
+        completed_at: 2026-01-25T23:12:59.023Z
     initiated_by: "@claude"
