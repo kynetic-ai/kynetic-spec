@@ -5,7 +5,7 @@ title: Web UI System
 type: module
 status:
   maturity: draft
-  implementation: in_progress
+  implementation: implemented
 description: >
   Web-based interface for viewing, editing, and managing kspec state. Includes three deployment
   modes:

@@ -1,0 +1,353 @@
+{
+  "generated_at": "2026-01-24T19:06:38.376Z",
+  "branch": "feat/global-pid-port-management",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFQABA",
+      "title": "Global PID/port file management",
+      "started_at": "2026-01-24T18:52:49.102Z",
+      "priority": 2,
+      "spec_ref": "@multi-directory-daemon",
+      "note_count": 2,
+      "last_note_at": "2026-01-24T19:06:24.608Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMJ4",
+      "title": "Implement: GitHub Pages Export",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "static",
+        "export",
+        "github"
+      ]
+    },
+    {
+      "ref": "01KFMMXF",
+      "title": "Export command implementation",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    },
+    {
+      "ref": "01KFMMXK",
+      "title": "Static SPA for GitHub Pages",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    },
+    {
+      "ref": "01KFMMXR",
+      "title": "Read-only mode behaviors",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    },
+    {
+      "ref": "01KFMMXW",
+      "title": "GitHub Pages CI workflow",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    },
+    {
+      "ref": "01KFMMZW",
+      "title": "API integration tests",
+      "blocked_by": [
+        "Needs architectural decision: E2E test framework approach (Bun test runner vs vitest with real server vs manual QA). See notes for analysis."
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFQAC1",
+      "title": "Path validation middleware tests",
+      "completed_at": "2026-01-24T18:52:22.868Z",
+      "closed_reason": "Merged in PR #216. Created 16 comprehensive path validation middleware tests covering ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c, ac-20b. Tests validate X-Kspec-Dir header handling, project registration, path normalization, permission errors, and default project handling. All CI checks passed."
+    },
+    {
+      "ref": "01KFQAAX",
+      "title": "ProjectContextManager unit tests",
+      "completed_at": "2026-01-24T18:42:00.722Z",
+      "closed_reason": "Merged in PR #215. Added 29 comprehensive unit tests for ProjectContextManager covering 14 acceptance criteria (AC-1 through AC-8c, AC-14, AC-15, AC-16, AC-20, AC-20b). Tests validate project registration, caching, path validation/normalization, default project handling, and multi-project isolation. All CI checks passed."
+    },
+    {
+      "ref": "01KFQAAM",
+      "title": "Global PID/port management tests",
+      "completed_at": "2026-01-24T18:31:14.421Z",
+      "closed_reason": "Merged in PR #214. Created 30 comprehensive tests for global PID/port management (ACs 9, 9b, 9c, 10, 10b, 11, 13). Addressed Greptile review feedback: fixed return type, removed inline require, corrected test name. All CI checks passed."
+    },
+    {
+      "ref": "01KFQAAA",
+      "title": "Multi-directory daemon test fixtures",
+      "completed_at": "2026-01-24T18:14:16.964Z",
+      "closed_reason": "Merged in PR #213. Created multi-directory daemon test fixtures with helper function, comprehensive documentation, and proper module declarations. Fixed validation conflicts by excluding multi-dir from default setupTempFixtures()."
+    },
+    {
+      "ref": "01KFR82A8",
+      "title": "Implement: Task Work Loop Workflow",
+      "completed_at": "2026-01-24T17:51:08.537Z",
+      "closed_reason": "Merged in PR #212. Created @task-work-loop workflow with 8 steps for autonomous agents. Updated spec to remove ralph-specific ACs (ac-2, ac-10) and keep verification (ac-6)."
+    },
+    {
+      "ref": "01KFR829",
+      "title": "Implement: Loop Mode Workflows",
+      "completed_at": "2026-01-24T16:20:51.204Z",
+      "closed_reason": "Merged in PR #211"
+    },
+    {
+      "ref": "01KFQ6GT",
+      "title": "Spec multi-directory daemon architecture",
+      "completed_at": "2026-01-24T13:06:16.977Z",
+      "closed_reason": "Spec written with 39 ACs covering multi-directory daemon architecture. 21 implementation tasks created with slugs, dependencies, and automation eligibility. Post-review fixes applied for edge cases (symlinks, shutdown cleanup, default project deletion)."
+    },
+    {
+      "ref": "01KFPRX9",
+      "title": "E2E Testing Infrastructure Setup",
+      "completed_at": "2026-01-24T04:01:48.882Z",
+      "closed_reason": "PR #209 merged. E2E testing infrastructure with Playwright is now set up."
+    },
+    {
+      "ref": "01KFPJD8",
+      "title": "Daemon serves built web UI on root route",
+      "completed_at": "2026-01-24T00:31:51.352Z",
+      "closed_reason": "Merged PR #208. Daemon now serves web UI on same port, enabling E2E testing."
+    },
+    {
+      "ref": "01KFP5Y1",
+      "title": "Fix daemon path resolution for npm installs",
+      "completed_at": "2026-01-23T21:57:52.856Z",
+      "closed_reason": "PR #207 merged - daemon bundled with package, path resolution fixed for npm installs, cross-platform compatibility (bun --version, shx cp)"
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "05a648c",
+      "full_hash": "05a648c9ff6171eb236783ae8de827a832043a01",
+      "date": "2026-01-24T19:02:56.000Z",
+      "message": "feat: Implement global PID/port file management",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d095ecd",
+      "full_hash": "d095ecda2d8558e4480e4bfbdc6e6a020cce059d",
+      "date": "2026-01-24T18:52:08.000Z",
+      "message": "test: Add path validation middleware tests (#216)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f8092b9",
+      "full_hash": "f8092b965759853492720dc463c0ee313e2556e9",
+      "date": "2026-01-24T18:45:51.000Z",
+      "message": "test: Add path validation middleware tests",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "262a0cc",
+      "full_hash": "262a0ccf7bae9d13cfde0959c1c7a30a11b61f59",
+      "date": "2026-01-24T18:41:46.000Z",
+      "message": "test: Add ProjectContextManager unit tests (#215)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fe7a6b5",
+      "full_hash": "fe7a6b5b79a3115e34f38a1b525ada5414038134",
+      "date": "2026-01-24T18:35:16.000Z",
+      "message": "test: Add ProjectContextManager unit tests",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "30c8d3e",
+      "full_hash": "30c8d3e1257d0557368280023acfe903b190cbab",
+      "date": "2026-01-24T18:30:57.000Z",
+      "message": "test: Add global PID/port management tests (#214)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "76b701e",
+      "full_hash": "76b701e6b32919e9d41389152e8771ac90723f6a",
+      "date": "2026-01-24T18:24:48.000Z",
+      "message": "fix: address Greptile review comments",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3606d27",
+      "full_hash": "3606d27f264ee5556b5bdd890e5ab97bd18d94d4",
+      "date": "2026-01-24T18:19:11.000Z",
+      "message": "test: Add global PID/port management tests",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "640527d",
+      "full_hash": "640527db0cef276565bc09a1ce384d6d8f5e995a",
+      "date": "2026-01-24T18:13:57.000Z",
+      "message": "feat: Add multi-directory daemon test fixtures (#213)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2549f8f",
+      "full_hash": "2549f8f02403f337ead11b3674bdde1b7402186f",
+      "date": "2026-01-24T18:08:22.000Z",
+      "message": "fix: exclude multi-dir fixtures from default setupTempFixtures",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 363,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 16,
+    "blocked": 2,
+    "completed": 301,
+    "inbox_items": 68
+  }
+}
