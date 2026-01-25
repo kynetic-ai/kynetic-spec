@@ -32921,6 +32921,78 @@
 
         This is a test infrastructure issue, not missing UI implementation.
       supersedes: null
+    - _ulid: 01KFVS18XN69TPFYNQSE9KAZNZ
+      created_at: 2026-01-25T23:50:10.101Z
+      author: "@claude"
+      content: >-
+        Loop iteration 7 - Session checkpoint:
+
+
+        **Exit Reason:** No automation-eligible tasks remain
+
+
+        **Current Status:**
+
+        - Task marked automation:needs_review after 3 consecutive loop failures
+
+        - Blocked on daemon fixture loading issue with --kspec-dir flag
+
+        - UI components fully implemented with all data-testid attributes
+
+        - E2E infrastructure partially fixed (Vite proxy + relative URLs working)
+
+
+        **Root Cause:**
+
+        Daemon returns 0 tasks instead of loading fixture data from
+        tests/fixtures/project.tasks.yaml
+
+        Error: '{} is not iterable' suggests ContextManager initialization problem with absolute
+        --kspec-dir paths
+
+
+        **What Works:**
+
+        - Tests connect to daemon successfully (no more 'Failed to fetch' errors)
+
+        - Vite proxy correctly routes /api and /ws requests
+
+        - API client uses relative URLs
+
+
+        **What Doesn't Work:**
+
+        - Daemon doesn't load fixture YAML files when started with --kspec-dir flag
+
+        - ContextManager.loadContext() appears to fail with absolute paths
+
+        - Cannot verify AC coverage until daemon serves test data
+
+
+        **Next Human Session:**
+
+        1. Debug src/cli/commands/serve.ts daemon startup with --kspec-dir parameter
+
+        2. Check ContextManager.loadContext() implementation for absolute path handling
+
+        3. Verify test-base.ts passes correct directory structure to daemon
+
+        4. May need daemon code changes to handle absolute kspec-dir paths correctly
+
+        5. Run E2E tests locally with verbose daemon logging enabled
+
+
+        **Files to Investigate:**
+
+        - src/cli/commands/serve.ts (daemon entry point)
+
+        - Daemon ContextManager implementation
+
+        - packages/web-ui/tests/fixtures/test-base.ts (E2E test harness)
+
+
+        This is a test infrastructure/daemon bug, not missing UI implementation.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
