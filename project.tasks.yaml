@@ -37412,7 +37412,7 @@
   type: task
   spec_ref: "@skill-loop-mode"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -37453,6 +37453,7 @@
         error-continue. Generic loop mode behavior applicable to all loop-capable skills."
       supersedes: null
   todos: []
+  started_at: 2026-01-25T08:14:45.460Z
 - _ulid: 01KFR82FG2XFBM16C80VHV40BK
   slugs:
     - task-task-work-loop-skill
