@@ -7958,6 +7958,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T23:29:54.661Z
+    completed_at: 2026-01-25T23:32:05.824Z
     step_results:
       - step_index: 0
         status: completed
@@ -7991,4 +7992,11 @@ runs:
           [LOOP-FAIL:3] notes but remain automation:eligible instead of being auto-escalated to
           automation:needs_review.' No additional items to capture. Reflection complete."
     initiated_by: "@claude"
-    completed_at: 2026-01-25T23:32:05.824Z
+  - _ulid: 01KFVRTYFYPP04RMSZDVCZPSPR
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T23:46:42.815Z
+    step_results: []
+    initiated_by: "@claude"
