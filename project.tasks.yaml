@@ -37498,6 +37498,14 @@
         requires either: (a) E2E via Playwright, (b) Bun test runner with real server, or (c) vitest
         with actual daemon. Cannot proceed without resolving testing strategy."
       supersedes: null
+    - _ulid: 01KFVPPJEGZQKNKNAM2FVT1W8T
+      created_at: 2026-01-25T23:09:22.256Z
+      author: "@claude"
+      content: "[LOOP-FAIL:2] Task verification shows: (1) No test file exists (2) No /api/projects
+        endpoints implemented. Task description says 'write tests' but DoD includes implementing
+        endpoints. This is dual implementation+testing work. Previous notes about 'documentary
+        tests' appear to reference work that was not committed or was reverted."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
