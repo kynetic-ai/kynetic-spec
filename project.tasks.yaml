@@ -36007,8 +36007,7 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on:
-    - "@task-skill-commands"
+  depends_on: []
   context: []
   priority: 1
   tags:
@@ -36058,6 +36057,11 @@
         escalate, reset, failure-definition. Failure tracking via task notes with [LOOP-FAIL:N]
         prefix. N=3 triggers automation: needs_review. Failure = tests fail, PR blocked, exception,
         or agent reports cannot complete."
+      supersedes: null
+    - _ulid: 01KFSWHBFATV4PX8J77DTV15NW
+      created_at: 2026-01-25T06:12:53.866Z
+      author: "@claude"
+      content: "Dependencies cleared (was: @task-skill-commands)"
       supersedes: null
   todos: []
 - _ulid: 01KFR830Q7FH07WJJGDX7KGB01
