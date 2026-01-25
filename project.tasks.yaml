@@ -35915,7 +35915,7 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - "@01KFQABQ"
@@ -35927,7 +35927,7 @@
     - phase-7
   vcs_refs: []
   created_at: 2026-01-24T06:18:43.336Z
-  started_at: 2026-01-24T20:41:09.041Z
+  started_at: null
   notes:
     - _ulid: 01KFRVZQR9BFBP7GC4WQ5K2DHW
       created_at: 2026-01-24T20:44:02.185Z
@@ -35963,6 +35963,11 @@
         assertions" pattern. Tests don't actually verify that the /api/projects endpoints work
         correctly - they just document expected behavior without real assertions. Task reopened to
         add proper integration tests that verify endpoint behavior.
+      supersedes: null
+    - _ulid: 01KFSYSHF0PPB4C0SEM2BDS7RW
+      created_at: 2026-01-25T06:52:19.296Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: eligible
