@@ -32619,7 +32619,7 @@
   automation: eligible
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
   slugs: []
-  title: E2E Search Command Palette Tests
+  title: Implement Search/Command Palette (AC-23 to AC-25)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
