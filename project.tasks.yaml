@@ -34301,6 +34301,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
   depends_on:
     - "@01KFQAAA"
   context: []
@@ -34311,11 +34312,10 @@
   vcs_refs: []
   created_at: 2026-01-24T06:16:56.435Z
   started_at: 2026-01-25T04:39:02.293Z
+  completed_at: 2026-01-25T04:39:06.396Z
   notes: []
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T04:39:06.396Z
-  closed_reason: Work verified complete - tests pass and cover all claimed ACs.
 - _ulid: 01KFQACE936G0SDG0F3DQD8V89
   slugs:
     - task-middleware-impl
@@ -34557,7 +34557,7 @@
     Task: WebSocket connection binding implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFQADQ"
@@ -34572,6 +34572,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-25T04:39:08.373Z
 - _ulid: 01KFQAEAZQ7EM3D05C251NZ88R
   slugs:
     - task-broadcast-filter-impl
