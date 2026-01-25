@@ -36264,12 +36264,8 @@
     Task: ProjectContextManager implementation
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: blocked
-  blocked_by:
-    - WebSocket binding implementation complete but proper E2E tests blocked on @01KFMMZW (API
-      integration test framework decision). Documentary tests exist but don't verify runtime
-      behavior. Requires WebSocket client infrastructure to test ac-21, ac-21b, ac-22, ac-23
-      properly.
+  status: pending
+  blocked_by: []
   depends_on:
     - "@01KFQABQ"
   context: []
