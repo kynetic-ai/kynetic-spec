@@ -338,8 +338,8 @@ async function markTaskNeedsReview(
 
   // Use kspec CLI to set automation status
   const result = spawnSync(
-    "npm",
-    ["run", "dev", "--", "task", "set-automation", taskRef, "needs_review"],
+    "kspec",
+    ["task", "set-automation", taskRef, "needs_review"],
     {
       encoding: "utf-8",
       stdio: "pipe",
@@ -352,8 +352,8 @@ async function markTaskNeedsReview(
 
   // Add a note explaining the timeout
   const noteResult = spawnSync(
-    "npm",
-    ["run", "dev", "--", "task", "note", taskRef, `[RALPH SUBAGENT] ${reason}`],
+    "kspec",
+    ["task", "note", taskRef, `[RALPH SUBAGENT] ${reason}`],
     {
       encoding: "utf-8",
       stdio: "pipe",
