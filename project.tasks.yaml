@@ -37842,7 +37842,7 @@
   type: task
   spec_ref: "@ralph-subagent-spawning"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -37922,3 +37922,5 @@
         All 11 ACs covered by implementation.
       supersedes: null
   todos: []
+  completed_at: 2026-01-25T09:24:03.841Z
+  closed_reason: "PR #236 merged"
