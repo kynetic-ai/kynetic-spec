@@ -36373,6 +36373,60 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KFT05YEGF3XHFM7B19VBW1Y3
+      created_at: 2026-01-25T07:16:34.384Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Problem
+
+        Current tests in daemon-api-projects.test.ts are documentary only - they pass even when
+        implementation doesn't exist. 0/3 ACs are actually verified.
+
+
+        ### Goal  
+
+        Implement and verify /api/projects endpoints per @multi-directory-daemon spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-28: GET /api/projects returns list of registered projects with paths, registration
+        time, and watcher status
+
+        - AC-29: POST /api/projects with {path: string} body manually registers a project
+
+        - AC-30: DELETE /api/projects/:encodedPath unregisters project and stops its file watcher
+
+
+        ### Required Tests
+
+        - AC-28: GET /api/projects returns projects with path, registeredAt, watcherStatus
+
+        - AC-29: POST /api/projects registers new project (201 response)
+
+        - AC-30: DELETE /api/projects/:path unregisters and stops watcher
+
+
+        ### Test Location
+
+        Update: tests/daemon-api-projects.test.ts (replace documentary tests with real HTTP tests)
+
+
+        ### Definition of Done
+
+        - [ ] /api/projects routes implemented (GET, POST, DELETE)
+
+        - [ ] All 3 ACs have passing tests  
+
+        - [ ] Tests make real HTTP requests to running daemon
+
+        - [ ] No documentary/stub tests remain
+
+        - [ ] Watcher cleanup verified on DELETE
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
