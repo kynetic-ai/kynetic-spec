@@ -635,18 +635,33 @@ Default port is 3000. Health endpoint: `GET /health`
 
 ### E2E Tests
 
-E2E tests require the daemon running:
+E2E tests **manage their own daemon instance** - do not start one manually.
 
 ```bash
-# Terminal 1: Start daemon
-npm run daemon
-
-# Terminal 2: Run E2E tests
+# Just run E2E tests - daemon starts/stops automatically
 npm run test:e2e -w packages/web-ui
 
 # Or run specific test file
 npm run test:e2e -w packages/web-ui -- tests/e2e/tasks.spec.ts
 ```
+
+**How it works:** The `test-base.ts` fixture handles everything:
+- Creates isolated temp directory with fixtures
+- Starts daemon on port 3456 (not 3000) with `--kspec-dir <temp>`
+- Cleans up daemon and temp dir after tests
+
+**Writing new E2E tests:** Import from `test-base.ts`:
+```typescript
+import { test, expect } from '../fixtures/test-base';
+
+test('my test', async ({ daemon, page }) => {
+  // daemon.tempDir - isolated project directory
+  // daemon.kspecDir - the .kspec directory
+  await page.goto('http://localhost:3456');
+});
+```
+
+**Do NOT** start a global daemon for E2E tests - each test run needs isolation.
 
 ### Web UI Development
 
