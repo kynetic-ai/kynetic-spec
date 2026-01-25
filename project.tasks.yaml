@@ -37586,6 +37586,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "PR #235 merged"
   depends_on: []
   context: []
   priority: 1
@@ -37594,6 +37595,7 @@
   vcs_refs: []
   created_at: 2026-01-24T14:56:01.120Z
   started_at: 2026-01-25T08:39:05.008Z
+  completed_at: 2026-01-25T08:49:17.402Z
   notes:
     - _ulid: 01KFR82G309EHNT6S3ZSVSETEB
       created_at: 2026-01-24T14:56:01.120Z
@@ -37644,8 +37646,6 @@
         - Updated AGENTS.md skills table
       supersedes: null
   todos: []
-  completed_at: 2026-01-25T08:49:17.402Z
-  closed_reason: "PR #235 merged"
 - _ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
   slugs:
     - task-loop-mode-error-handling
@@ -37842,7 +37842,7 @@
   type: task
   spec_ref: "@ralph-subagent-spawning"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -37899,3 +37899,4 @@
         invocation."
       supersedes: null
   todos: []
+  started_at: 2026-01-25T09:07:13.183Z
