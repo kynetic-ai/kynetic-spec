@@ -32674,6 +32674,42 @@
         - add-inbox-button, inbox-input
         - delete-inbox-button
       supersedes: null
+    - _ulid: 01KFSZT3S9EG7ZG5RV4JFN0Y6B
+      created_at: 2026-01-25T07:10:06.633Z
+      author: "@claude"
+      content: |-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+        ### Goal
+        Implement the Inbox View to meet AC-16 through AC-19 from @web-dashboard spec.
+
+        ### Acceptance Criteria to Implement
+        - AC-16: Inbox list shows items ordered by created_at desc with text preview, tags, added_by
+        - AC-17: Add button reveals input field, Enter submits
+        - AC-18: New item appears at top with animation after POST succeeds
+        - AC-19: Delete button with confirmation removes item
+
+        ### Implementation Steps
+        1. Create or update Inbox page: packages/web-ui/src/routes/inbox/+page.svelte
+        2. Build InboxList component with item cards
+        3. Implement Add form with input reveal pattern
+        4. Wire up POST /api/inbox for adding items
+        5. Wire up DELETE /api/inbox/:ref with confirmation dialog
+        6. Add animation for new items appearing
+        7. Add data-testid attributes throughout
+
+        ### Required data-testid Attributes
+        - inbox-list, inbox-item, inbox-text, inbox-tags, inbox-added-by, inbox-created-at
+        - add-inbox-button, inbox-input, inbox-submit
+        - delete-inbox-button, confirm-delete-dialog, confirm-delete-yes, confirm-delete-no
+
+        ### Definition of Done
+        - [ ] Inbox list displays items correctly (AC-16)
+        - [ ] Add flow works with input reveal (AC-17)
+        - [ ] New items animate in at top (AC-18)
+        - [ ] Delete with confirmation works (AC-19)
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP850Z771V8XJ92JP8060TD
