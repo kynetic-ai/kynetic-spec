@@ -3823,4 +3823,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTFWS69M8GSAXS7TJZBKMEA
+    type: friction
+    content: "Task Definition of Done (DoD) not visible during task selection. Task @01KFP84N had DoD
+      requirement 'All E2E tests pass - no skips' in notes but wasn't surfaced during ready task
+      selection. Workflow enforced DoD strictly at completion but constraint wasn't visible upfront.
+      Created situation where task appeared eligible but became non-completable mid-work. DoD
+      criteria are critical constraints that should influence task selection, not just exit
+      validation. Suggest: extract DoD to structured field, show in task list, filter tasks by DoD
+      compatibility."
+    created_at: 2026-01-25T11:51:11.305Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
