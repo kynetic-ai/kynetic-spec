@@ -6027,6 +6027,7 @@ runs:
     current_step: 8
     total_steps: 9
     started_at: 2026-01-25T12:32:02.249Z
+    completed_at: 2026-01-25T12:36:54.248Z
     step_results:
       - step_index: 0
         status: completed
@@ -6065,4 +6066,11 @@ runs:
         started_at: 2026-01-25T12:36:14.788Z
         completed_at: 2026-01-25T12:36:54.248Z
     initiated_by: "@claude"
-    completed_at: 2026-01-25T12:36:54.248Z
+  - _ulid: 01KFTJJV72TPCCVBZQM53G4R6J
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-25T12:38:11.426Z
+    step_results: []
+    initiated_by: "@claude"
