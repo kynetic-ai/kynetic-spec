@@ -38312,6 +38312,40 @@
         architecture changes, component design, WebSocket reconnection logic. Needs dedicated human
         session for architectural decisions."
       supersedes: null
+    - _ulid: 01KFVRMSRKSG4X11W01P2ETH9G
+      created_at: 2026-01-25T23:43:21.364Z
+      author: "@claude"
+      content: |-
+        Session end state (loop iteration 5):
+
+        **Status:** Greenfield implementation required, marked automation:needs_review
+
+        **What this task requires:**
+        1. Create project store (Svelte context or writable store)
+        2. Modify API client (lib/api.ts) to inject X-Kspec-Dir header based on selected project
+        3. Build ProjectSelector.svelte component with dropdown UI
+        4. Integrate component into layout
+        5. Handle WebSocket reconnection when project changes
+
+        **Current state:**
+        - Zero implementation work started across all loop iterations
+        - E2E tests exist in tests/e2e/project-selector.spec.ts as reference
+        - Tests have NOT been validated
+
+        **Why this isn't automation-eligible:**
+        - Multi-hour greenfield work requiring architectural decisions:
+          * State management pattern choice (context vs store)
+          * API client header injection architecture
+          * Component design and layout integration
+          * WebSocket lifecycle management
+        - Needs dedicated human session for design review and implementation
+        - Not suitable for autonomous loop - too many decision points
+
+        **Next session:**
+        - Human developer should implement this feature with focused attention
+        - Use E2E tests as acceptance criteria guide
+        - Consider breaking into smaller tasks if too large
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
