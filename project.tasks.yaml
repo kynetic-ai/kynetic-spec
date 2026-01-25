@@ -30747,8 +30747,15 @@
         ### Files to Create
         - .github/workflows/gh-pages.yml
       supersedes: null
+    - _ulid: 01KFTQHTMKQDCJVRA517T066JV
+      created_at: 2026-01-25T14:05:00.947Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Depends on @01KFMMJ4 export command and @01KFMMXK
+        SPA build. CI workflow creation + debounce logic + GitHub Actions configuration. Part of
+        coordinated GitHub Pages feature."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KFMMZKBXWB014BCCJ11K5HNT
   slugs: []
   title: Daemon auto-start configuration
