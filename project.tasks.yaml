@@ -32951,7 +32951,7 @@
         verify all ACs pass. Reset automation status when ready to continue."
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   slugs: []
   title: Implement Inbox View (AC-16 to AC-19)
