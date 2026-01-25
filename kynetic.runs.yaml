@@ -4824,7 +4824,7 @@ runs:
   - _ulid: 01KFT1DH0XZBYFB1QPBRTC3622
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-25T07:38:11.357Z
     step_results:
@@ -4885,5 +4885,20 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-25T07:39:49.572Z
-        completed_at: 2026-01-25T07:39:49.572Z
+        completed_at: 2026-01-25T07:43:09.822Z
+        notes: >-
+          Discussion results:
+
+          1. Shadow/merge driver - YES: Revive @yaml-merge-driver work (task was cancelled but spec
+          exists)
+
+          2. Workflow cleanup - ALREADY TRACKED (user confirmed)
+
+          3. Note bulk restore - NO: Edge case
+
+          4. Smart task merge - Covered by merge driver
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-25T07:43:09.822Z
+        completed_at: 2026-01-25T07:43:09.822Z
     initiated_by: "@claude"
