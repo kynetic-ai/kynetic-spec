@@ -7335,7 +7335,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFTRPCXF4AR7DDGX22D27TQH
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
-    status: active
+    status: completed
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T14:24:59.312Z
@@ -7367,5 +7367,9 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-25T14:25:54.400Z
-        completed_at: 2026-01-25T14:25:54.400Z
+        completed_at: 2026-01-25T14:26:09.174Z
+        notes: "Captured 1 friction observation (@01KFTRRA): Automation loop consuming iterations when no
+          eligible work exists. No successes to capture - session was exit-only. Reflection
+          complete."
     initiated_by: "@claude"
+    completed_at: 2026-01-25T14:26:09.174Z
