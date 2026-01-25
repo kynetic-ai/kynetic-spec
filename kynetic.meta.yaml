@@ -3995,4 +3995,19 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTP0GJKNPDMH60GSPXD95P0
+    type: friction
+    content: "Automation loop cannot handle daemon-dependent E2E test verification. Pattern: Tasks get
+      to ~80-85% complete (implementation done, test IDs added, tests enabled) but then block on
+      daemon startup + iterative test debugging. Three tasks hit this in session
+      01KFTDBQB3Z0PA5Y0GQD8T1RW3 (iteration 14): @01KFP84N, @01KFP84S, @01KFQAGY. Root cause: Daemon
+      requires manual 'npm run serve', E2E failures unpredictable, debugging cycle exceeds
+      single-iteration capacity. Workaround: Mark automation:needs_review and exit loop. Impact: Web
+      UI E2E testing tasks systematically blocked from automation completion. Potential solutions:
+      (1) Automate daemon lifecycle in loop, (2) Split tasks into 'implementation' + 'E2E
+      verification' phases, (3) Add automation:daemon-required tag for better categorization."
+    created_at: 2026-01-25T13:38:05.012Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
