@@ -33115,6 +33115,62 @@
 
         - session-focus, session-threads, session-questions
       supersedes: null
+    - _ulid: 01KFSZV7YDT46KJ56CFTVSD67H
+      created_at: 2026-01-25T07:10:43.662Z
+      author: "@claude"
+      content: >-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+        ### Goal
+
+        Implement the Observations Panel to meet AC-20 through AC-22 from @web-dashboard spec.
+
+
+        ### Acceptance Criteria to Implement
+
+        - AC-20: Dashboard header shows current focus text prominently when set
+
+        - AC-21: Sidebar shows unresolved observations count badge
+
+        - AC-22: Click badge opens panel listing observations with type icons
+        (friction/success/question/idea)
+
+
+        ### Implementation Steps
+
+        1. Add focus display to dashboard header area
+
+        2. Add observations count badge to Sidebar.svelte
+
+        3. Create ObservationsPanel component
+
+        4. Fetch observations from API and filter to unresolved
+
+        5. Display with type-specific icons
+
+        6. Add data-testid attributes throughout
+
+
+        ### Required data-testid Attributes
+
+        - session-focus, session-focus-text
+
+        - observations-badge, observations-count
+
+        - observations-panel, observation-item, observation-type-icon
+
+
+        ### Definition of Done
+
+        - [ ] Focus text displays in header (AC-20)
+
+        - [ ] Observations badge shows count (AC-21)
+
+        - [ ] Panel lists observations with type icons (AC-22)
+
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
