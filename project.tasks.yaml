@@ -33246,6 +33246,45 @@
         - task-detail-panel, item-detail-panel
         - filter-status
       supersedes: null
+    - _ulid: 01KFSM8FJ1MY01CBJ3559EPKPX
+      created_at: 2026-01-25T03:48:14.529Z
+      author: "@claude"
+      content: |-
+        ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+        ### Goal
+        Implement navigation and URL state to meet AC-26, AC-27 from @web-dashboard spec.
+
+        ### Acceptance Criteria to Implement
+        - AC-26: Mobile (< 768px) adapts to single column, sidebar becomes bottom nav
+        - AC-27: Desktop (>= 1024px) detail panels open as slide-over without navigating away
+
+        ### Implementation Steps
+        1. Review existing Sidebar.svelte and MobileNav.svelte
+        2. Implement responsive breakpoint detection
+        3. Convert sidebar to bottom nav on mobile
+        4. Create slide-over panel component for desktop detail views
+        5. Ensure URL state syncs with panel open/close
+        6. Add data-testid attributes for responsive elements
+
+        ### Required data-testid Attributes
+        - sidebar-nav, bottom-nav, mobile-nav-item
+        - detail-panel-slideover, detail-panel-close
+
+        ### Validation
+        Create packages/web-ui/tests/e2e/navigation.spec.ts:
+        - Test mobile viewport shows bottom nav
+        - Test desktop viewport shows sidebar
+        - Test detail panel opens as slide-over on desktop
+        - Test URL updates when panels open
+        - Tests MUST run and pass (no test.skip)
+
+        ### Definition of Done
+        - [ ] Mobile shows bottom nav (AC-26)
+        - [ ] Desktop shows slide-over panels (AC-27)
+        - [ ] URL state syncs correctly
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
