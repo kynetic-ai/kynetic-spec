@@ -360,8 +360,9 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
     }
   }
 
-  // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects
+  // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects and uptime
   let projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> = [];
+  let uptime: number | null = null;
   if (running && port) {
     try {
       const response = await fetch(`http://localhost:${port}/api/projects`);
@@ -373,14 +374,24 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
       // If daemon is not responding, continue without projects list
       // This can happen if daemon is still starting up or network issues
     }
+
+    // Fetch uptime from health endpoint
+    try {
+      const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+      if (healthResponse.ok) {
+        const healthData = await healthResponse.json() as { status: string; uptime: number };
+        uptime = healthData.uptime;
+      }
+    } catch {
+      // If health endpoint fails, continue without uptime
+    }
   }
 
-  // TODO: Fetch uptime from health endpoint when implemented
   const status = {
     running,
     pid: pid ?? null,
     port,
-    uptime: null, // TODO: fetch from health endpoint
+    uptime,
     projects,
   };
 
@@ -391,6 +402,19 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
       output(`Daemon running (PID: ${pid})`);
       if (port) {
         output(`  Port: ${port}`);
+      }
+      // AC: @multi-directory-daemon ac-12 - Show uptime
+      if (uptime !== null) {
+        const hours = Math.floor(uptime / 3600);
+        const minutes = Math.floor((uptime % 3600) / 60);
+        const seconds = Math.floor(uptime % 60);
+        if (hours > 0) {
+          output(`  Uptime: ${hours}h ${minutes}m ${seconds}s`);
+        } else if (minutes > 0) {
+          output(`  Uptime: ${minutes}m ${seconds}s`);
+        } else {
+          output(`  Uptime: ${seconds}s`);
+        }
       }
       // AC: @multi-directory-daemon ac-12 - Show registered projects
       if (projects.length > 0) {
