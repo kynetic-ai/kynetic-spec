@@ -4147,4 +4147,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTTA3TFQ6MBC3CZ2Z1V740J
+    type: success
+    content: "Structured loop iteration note template pattern: Used consistently across 30 automation
+      iterations to document why progress wasn't possible. Template format: '## Loop Iteration N -
+      [Status]' followed by Exit Reason, Task Status (with ✅/❌ checkboxes for completed/incomplete
+      work), specific blockers, and clear next actions. Creates audit trail showing automation
+      decision-making and prevents false 'why is nothing happening' concerns. Makes it obvious when
+      automation is correctly identifying blockers vs stuck in broken logic."
+    created_at: 2026-01-25T14:53:13.935Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
