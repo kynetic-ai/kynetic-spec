@@ -5489,8 +5489,18 @@ runs:
   - _ulid: 01KFTEX8Q0QGCNK5Y0WPSP1W2M
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-25T11:33:58.624Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T11:33:58.624Z
+        completed_at: 2026-01-25T11:34:03.865Z
+        inputs:
+          spec_ref: "@loop-mode-error-handling"
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T11:34:03.865Z
+        completed_at: 2026-01-25T11:34:03.865Z
     initiated_by: "@claude"
