@@ -3982,4 +3982,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFTMKWW95BXAHA9TF79XT9MR
+    type: success
+    content: "Batching related E2E test tasks into a single PR branch: Completed 3 tasks (@01KFP85D
+      observations panel, @01KFP85G error handling, @01KFP85M navigation) on feature branch
+      feat/observations-panel-e2e-tests. All tasks involved E2E tests and data-testid attributes for
+      web UI. Benefits: (1) Avoided multiple PR context switches and branch overhead, (2) Shared
+      commits across tasks (e.g., error-message testid used by all 3), (3) Coherent scope for
+      review. Pattern works when tasks are tightly related, share common files, and can be reviewed
+      together. Session completed 4 tasks total efficiently using this approach."
+    created_at: 2026-01-25T13:13:43.049Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
