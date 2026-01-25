@@ -7756,9 +7756,10 @@ runs:
       for future improvement.
   - _ulid: 01KFTSYPJ38MVKV62GF17AP3Z4
     workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 9
     started_at: 2026-01-25T14:46:59.907Z
     step_results: []
     initiated_by: "@claude"
+    completed_at: 2026-01-25T14:48:01.195Z
