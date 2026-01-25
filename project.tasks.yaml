@@ -33622,7 +33622,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-watcher-impl"
@@ -33791,6 +33791,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-25T12:45:02.897Z
+  closed_reason: "Merged in PR #244. Implemented command palette/search covering ac-23 (Cmd+K/Ctrl+K
+    keyboard shortcuts), ac-24 (300ms debounced search with grouped results), and ac-25
+    (click-to-navigate). Added data-testid attributes to CommandPalette.svelte. Created 17
+    comprehensive E2E tests in search.spec.ts covering keyboard shortcuts, search functionality,
+    navigation, and accessibility. All ACs have test coverage."
 - _ulid: 01KFP8547RPY3R7VEXTR3F3HDH
   slugs: []
   title: Implement Connection Handling (AC-28 to AC-32)
