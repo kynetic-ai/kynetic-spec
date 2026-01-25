@@ -41892,3 +41892,95 @@
         All 11 ACs covered by implementation.
       supersedes: null
   todos: []
+- title: Fix ralph loop exit condition to filter active tasks by automation eligibility
+  description: >-
+    ## Problem
+
+
+    The ralph loop does not exit when all in_progress tasks are marked automation:needs_review. This
+    caused an overnight session to run 30 iterations with no progress because:
+
+
+    1. Tasks were picked up and marked in_progress
+
+    2. Agent correctly marked them automation:needs_review (needing daemon/E2E testing)
+
+    3. But the exit condition checks `\!hasActiveTasks && \!hasReadyTasks`
+
+    4. active_tasks includes ALL in_progress tasks regardless of automation status
+
+    5. Loop kept running, adding redundant notes each iteration
+
+
+    ## Root Cause
+
+
+    In `src/cli/commands/session.ts`, `gatherSessionContext()`:
+
+    - `ready_tasks` correctly filters by `automation === 'eligible'` when `options.eligible` is true
+    (line 394)
+
+    - `active_tasks` has NO automation filter - includes all in_progress tasks (lines 365-369)
+
+
+    In `src/cli/commands/ralph.ts` (lines 736-742):
+
+    ```typescript
+
+    const hasActiveTasks = sessionCtx.active_tasks.length > 0;
+
+    const hasReadyTasks = sessionCtx.ready_tasks.length > 0;
+
+    if (\!hasActiveTasks && \!hasReadyTasks) {
+      info('No active or eligible ready tasks. Exiting loop.');
+      break;
+    }
+
+    ```
+
+
+    ## Fix Required
+
+
+    When `options.eligible` is true, filter `activeTasks` the same way as `readyTasks`:
+
+    ```typescript
+
+    const activeTasks = allTasks
+      .filter((t) => t.status === 'in_progress')
+      .filter((t) => \!options.eligible || t.automation === 'eligible')  // Add this
+      ...
+    ```
+
+
+    ## Acceptance Criteria
+
+
+    - AC-16: Both ready and in_progress tasks filtered by automation eligibility
+
+    - AC-19: Loop exits when no eligible tasks remain (ready OR in_progress)
+
+
+    ## Testing
+
+
+    - Verify loop exits when all in_progress tasks are needs_review
+
+    - Verify loop continues when eligible in_progress tasks exist
+
+    - Existing tests should still pass
+  type: task
+  spec_ref: "@cli-ralph"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  _ulid: 01KFV6CZGVQWJQN0B7BDEY3EVZ
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-25T18:24:30.747Z
+  notes: []
+  todos: []
