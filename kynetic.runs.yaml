@@ -7710,8 +7710,16 @@ runs:
   - _ulid: 01KFTSNJ6NQQKG8B01ZDV5W6F3
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-25T14:42:00.534Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T14:42:00.534Z
+        completed_at: 2026-01-25T14:42:31.279Z
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-25T14:42:31.279Z
+        completed_at: 2026-01-25T14:42:31.279Z
     initiated_by: "@claude"
