@@ -4180,4 +4180,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVPYB4RSBEGW5GF5Z7W1WY8
+    type: success
+    content: "Reading actual source code to verify task claims proved more reliable than trusting notes.
+      When @01KFP84N notes said 'UI incomplete', reading TaskList.svelte revealed all required test
+      IDs were present. Verification approach: Read components -> check test IDs -> run tests (if
+      possible) -> only then accept completion claims. This prevented false conclusions about
+      missing implementation."
+    created_at: 2026-01-25T23:13:36.921Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
