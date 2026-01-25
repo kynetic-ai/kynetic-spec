@@ -34889,7 +34889,7 @@
 - _ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
   slugs:
     - task-ui-selector-tests
-  title: Web UI project selector tests
+  title: Implement Project Selector (AC-25 to AC-27)
   type: task
   description: |-
     Write tests for Web UI project selector component.
