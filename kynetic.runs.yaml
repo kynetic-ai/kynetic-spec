@@ -5734,6 +5734,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T12:04:58.064Z
+    completed_at: 2026-01-25T12:06:33.365Z
     step_results:
       - step_index: 0
         status: completed
@@ -5833,4 +5834,11 @@ runs:
           Total captured: 1 observation
           Quality over quantity: Only captured high-confidence systemic friction.
     initiated_by: "@claude"
-    completed_at: 2026-01-25T12:06:33.365Z
+  - _ulid: 01KFTGT3RCYDWQEBRP7JPJZP4S
+    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-25T12:07:12.396Z
+    step_results: []
+    initiated_by: "@claude"
