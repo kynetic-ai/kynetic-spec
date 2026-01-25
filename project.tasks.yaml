@@ -32217,14 +32217,9 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: "Merged in PR #232. Created 17 comprehensive documentary E2E tests for web dashboard
-    tasks view covering AC-4 through AC-10, AC-26, AC-27, and AC-33. Tests include: task list
-    display with all fields, 5 filter types with URL params, task detail panel with
-    notes/todos/dependencies, spec reference linking, Start Task button, Add Note form, WebSocket
-    update highlights, and responsive layouts. All tests use test.skip() pending UI component
-    implementation. Both automated reviews (Greptile, Claude) approved. All CI checks passing."
+  closed_reason: null
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -32234,8 +32229,8 @@
     - testing
   vcs_refs: []
   created_at: 2026-01-23T20:18:43.587Z
-  started_at: 2026-01-24T23:36:31.383Z
-  completed_at: 2026-01-24T23:44:43.296Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KFP86RBE8RZP4CWZV5SMKHFJ
       created_at: 2026-01-23T20:19:51.791Z
@@ -32366,6 +32361,11 @@
         with URL sync (AC-9, AC-10) - [ ] WebSocket highlights work (AC-33) - [ ] All E2E tests pass
         - no skips
       supersedes: null
+    - _ulid: 01KFSZADHSGP1350D5Q8W719JB
+      created_at: 2026-01-25T07:01:32.345Z
+      author: "@claude"
+      content: Reset from completed to pending
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
@@ -32376,6 +32376,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #233. 16 E2E tests for items view covering AC-11 through AC-15."
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -32386,6 +32387,7 @@
   vcs_refs: []
   created_at: 2026-01-23T20:18:47.924Z
   started_at: 2026-01-24T23:45:20.845Z
+  completed_at: 2026-01-25T06:54:10.040Z
   notes:
     - _ulid: 01KFP8775DN1W0RZ0FZNRN14Q6
       created_at: 2026-01-23T20:20:06.957Z
@@ -32511,8 +32513,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T06:54:10.040Z
-  closed_reason: "Merged in PR #233. 16 E2E tests for items view covering AC-11 through AC-15."
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
   slugs: []
   title: E2E Inbox Tests
