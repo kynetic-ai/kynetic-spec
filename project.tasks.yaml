@@ -31899,7 +31899,7 @@
   automation: needs_review
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
   slugs: []
-  title: E2E Dashboard Tests
+  title: Implement Dashboard View (AC-1 to AC-3, AC-20, AC-21)
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
