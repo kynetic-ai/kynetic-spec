@@ -6,7 +6,7 @@
  * AC: @multi-directory-daemon ac-9, ac-9b, ac-9c, ac-10, ac-11, ac-13
  */
 
-import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync, openSync, closeSync, constants } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -32,13 +32,42 @@ export class PidFileManager {
   }
 
   /**
-   * AC: @multi-directory-daemon ac-9
+   * AC: @multi-directory-daemon ac-9, ac-10b
    * Writes current process PID to ~/.config/kspec/daemon.pid
    * Creates parent directory if it doesn't exist.
+   * Uses exclusive file creation flag to prevent concurrent daemon starts.
    */
   writePid(): void {
     this.ensureConfigDir();
-    writeFileSync(this.pidFilePath, process.pid.toString(), 'utf-8');
+
+    // AC: @multi-directory-daemon ac-10b
+    // Use O_CREAT | O_EXCL flags for atomic file creation
+    // This prevents race conditions between concurrent daemon starts
+    try {
+      const fd = openSync(this.pidFilePath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+      try {
+        writeFileSync(fd, process.pid.toString(), 'utf-8');
+      } finally {
+        closeSync(fd);
+      }
+    } catch (err: any) {
+      if (err.code === 'EEXIST') {
+        // File already exists - check if daemon is actually running
+        if (this.isDaemonRunning()) {
+          throw new Error('Daemon already running');
+        }
+        // Stale PID file - remove it and retry
+        this.remove();
+        const fd = openSync(this.pidFilePath, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+        try {
+          writeFileSync(fd, process.pid.toString(), 'utf-8');
+        } finally {
+          closeSync(fd);
+        }
+      } else {
+        throw err;
+      }
+    }
   }
 
   /**
