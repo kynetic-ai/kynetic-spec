@@ -2856,7 +2856,7 @@ features:
         then: follows loop selection order
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFR7SH5S00QS3J3P3NJ1A48Q
     slugs:
       - reflect-loop-skill
