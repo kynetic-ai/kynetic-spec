@@ -34356,6 +34356,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #239. Implemented comprehensive test coverage for global PID/port
+    management with file locking. All 7 ACs covered: ac-9 (global paths), ac-9b (dir creation),
+    ac-9c (port validation), ac-10b (file locking), ac-11 (cleanup), ac-13 (CLI port reading). 33
+    tests passing with proper isolation."
   depends_on:
     - "@01KFQAAA"
   context: []
@@ -34366,6 +34370,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:16:10.627Z
   started_at: 2026-01-25T09:41:09.744Z
+  completed_at: 2026-01-25T10:16:56.429Z
   notes:
     - _ulid: 01KFRKJV5NED3DW9AQZGTAVBBA
       created_at: 2026-01-24T18:17:11.094Z
@@ -34559,11 +34564,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-25T10:16:56.429Z
-  closed_reason: "Merged in PR #239. Implemented comprehensive test coverage for global PID/port
-    management with file locking. All 7 ACs covered: ac-9 (global paths), ac-9b (dir creation),
-    ac-9c (port validation), ac-10b (file locking), ac-11 (cleanup), ac-13 (CLI port reading). 33
-    tests passing with proper isolation."
 - _ulid: 01KFQAAXWS1F3V3X3PBTQ89BW2
   slugs:
     - task-context-manager-tests
@@ -35687,6 +35687,13 @@
         - [ ] No documentary/stub tests remain
 
         - [ ] Tests verify actual behavior, not just type existence
+      supersedes: null
+    - _ulid: 01KFTCW67DRC856HV9E36V0VH9
+      created_at: 2026-01-25T10:58:26.158Z
+      author: "@claude"
+      content: "CLARIFICATION: Previous completion was incorrect - notes are context, not proof. This task
+        requires: (1) Run tests and verify they pass, (2) Verify AC coverage, (3) Fix any gaps in
+        WebSocket binding tests."
       supersedes: null
   todos: []
   automation: eligible
