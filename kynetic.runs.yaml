@@ -5484,6 +5484,7 @@ runs:
     current_step: 9
     total_steps: 10
     started_at: 2026-01-25T11:33:10.848Z
+    completed_at: 2026-01-25T11:49:44.082Z
     step_results:
       - step_index: 0
         status: completed
@@ -5526,7 +5527,6 @@ runs:
         started_at: 2026-01-25T11:49:37.867Z
         completed_at: 2026-01-25T11:49:44.081Z
     initiated_by: "@claude"
-    completed_at: 2026-01-25T11:49:44.082Z
   - _ulid: 01KFTEX8Q0QGCNK5Y0WPSP1W2M
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: completed
@@ -5597,7 +5597,7 @@ runs:
   - _ulid: 01KFTFSX9QXTMNCFJ3G46YJB3G
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-25T11:49:37.207Z
     step_results:
@@ -5608,5 +5608,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-25T11:49:43.160Z
-        completed_at: 2026-01-25T11:49:43.160Z
+        completed_at: 2026-01-25T11:50:36.861Z
+        notes: Identified 2 friction points and 2 successes. Searched existing coverage - task automation
+          eligibility system exists but doesn't address scope mismatch issue. DoD visibility issue
+          not tracked. Partial progress pattern is new success to capture.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-25T11:50:36.861Z
+        completed_at: 2026-01-25T11:50:36.861Z
     initiated_by: "@claude"
