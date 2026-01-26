@@ -9856,6 +9856,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T00:56:02.641Z
+    completed_at: 2026-01-26T00:57:19.197Z
     step_results:
       - step_index: 0
         status: completed
@@ -9945,4 +9946,11 @@ runs:
           automation:needs_review, documented final state, exited cleanly. Reflection complete with
           no captures needed.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T00:57:19.197Z
+  - _ulid: 01KFVX0MR35Q3HY0NZHV28HJ6B
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T00:59:43.747Z
+    step_results: []
+    initiated_by: "@claude"
