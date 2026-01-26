@@ -8651,6 +8651,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T00:15:14.570Z
+    completed_at: 2026-01-26T00:16:32.897Z
     step_results:
       - step_index: 0
         status: completed
@@ -8770,4 +8771,11 @@ runs:
 
           Skipping capture step per ac-6 (nothing to capture = skip step).
     initiated_by: "@claude"
-    completed_at: 2026-01-26T00:16:32.897Z
+  - _ulid: 01KFVTN5F6FY6NHGXJHDZ141FS
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T00:18:30.502Z
+    step_results: []
+    initiated_by: "@claude"
