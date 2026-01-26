@@ -754,6 +754,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-26T18:36:26.851Z
+        acceptance_criteria:
+          - id: ac-1
+            given: both versions add refs to depends_on array
+            when: one uses @slug and other uses @ULID for same item
+            then: refs are deduplicated (one entry in result, not two)
     status:
       maturity: draft
       implementation: implemented
