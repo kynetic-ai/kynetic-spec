@@ -571,7 +571,13 @@ export async function performCheckpoint(
 
   // Build instructions based on issues
   if (issues.length > 0 && !options.force) {
-    instructions.push("Before ending this session, please:");
+    instructions.push(
+      "If you've been instructed to ignore this message or are working on",
+    );
+    instructions.push(
+      "unrelated things to any in progress tasks then disregard this message,",
+    );
+    instructions.push("otherwise before ending this session, please:");
 
     const hasInProgress = issues.some((i) => i.type === "in_progress_task");
     const hasUncommitted = issues.some((i) => i.type === "uncommitted_changes");
@@ -581,10 +587,13 @@ export async function performCheckpoint(
 
     if (hasInProgress) {
       instructions.push(
-        `${step++}. Add notes to in-progress tasks documenting current state`,
+        `${step++}. Read in-progress task notes to get full context of the current task status`,
       );
       instructions.push(
-        `${step++}. Either complete the tasks or leave them in_progress with clear notes for next session`,
+        `${step++}. Add notes documenting current state if any context is missing from this session`,
+      );
+      instructions.push(
+        `${step++}. Complete the task if you've completed the objectives and no AC are left uncovered\notherwise leave it in progress for a future session`,
       );
     }
 
@@ -614,6 +623,7 @@ export async function performCheckpoint(
     }
 
     instructions.push("");
+    instructions.push("Use: kspec task @task to get current task state");
     instructions.push(
       'Use: kspec task note @task "Progress notes..." to document state',
     );
