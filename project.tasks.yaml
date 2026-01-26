@@ -34649,6 +34649,44 @@
 
         4. Validate all ACs covered
       supersedes: null
+    - _ulid: 01KFXDZ3BERTBRC3K84QD0CP73
+      created_at: 2026-01-26T15:15:13.391Z
+      author: "@claude"
+      content: >-
+        Session progress - Phase 1 complete, blocked on infrastructure:
+
+
+        **Completed:**
+
+        - Added all required data-testid attributes to TaskList.svelte (8 IDs)
+
+        - Added all required data-testid attributes to TaskFilters.svelte (6 IDs)
+
+        - Added all required data-testid attributes to TaskDetail.svelte (12 IDs)
+
+        - Fixed test-base.ts to pass project root instead of .kspec path to daemon
+
+        - Enabled all 15 E2E tests (removed test.skip)
+
+
+        **Blocked on:**
+
+        1. Daemon fixture loading returns '{} is not iterable' - context init fails with temp
+        fixtures
+
+        2. E2E tests use Vite preview (port 4173) but should use daemon-served UI (port 3456)
+
+
+        **Next steps:**
+
+        1. Fix playwright.config.ts to use daemon on port 3456 instead of Vite preview
+
+        2. Ensure web UI is built before E2E tests run
+
+        3. Debug daemon context initialization with fixture directories
+
+        4. Run E2E tests and verify all pass
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
