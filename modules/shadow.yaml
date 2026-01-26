@@ -738,6 +738,22 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KFXSFHV34AN5G6TD88NK41K7
+        slugs:
+          - merge-ref-normalization
+        title: Reference Normalization in Merges
+        type: requirement
+        tags: []
+        description: When merging set-like arrays containing kspec references (depends_on, blocked_by,
+          spec_ref), references should be normalized to canonical form before comparison to prevent
+          false conflicts.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-26T18:36:26.851Z
     status:
       maturity: draft
       implementation: implemented
