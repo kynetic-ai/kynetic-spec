@@ -48,7 +48,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
-        const index = new ReferenceIndex(ctx);
+        const specItems = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, specItems);
 
         // Apply filters
         let filtered = tasks;
@@ -124,7 +125,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
-        const index = new ReferenceIndex(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // AC: @api-contract ac-5, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
         const result = index.resolve(params.ref);
@@ -186,7 +188,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // Resolve ref
         const result = index.resolve(params.ref);
@@ -255,7 +257,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const tasks = await loadAllTasks(ctx);
-        const index = new ReferenceIndex(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // Resolve ref
         const result = index.resolve(params.ref);

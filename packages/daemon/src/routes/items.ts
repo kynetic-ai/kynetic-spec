@@ -128,7 +128,8 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // AC: @api-contract ac-10, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
         const result = index.resolve(params.ref);
@@ -185,7 +186,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         const ctx = await initContext(kspecDir);
         const items = await loadAllItems(ctx);
         const tasks = await loadAllTasks(ctx);
-        const refIndex = new ReferenceIndex(ctx);
+        const refIndex = new ReferenceIndex(tasks, items);
         const alignIndex = new AlignmentIndex(tasks, items);
         alignIndex.buildLinks(refIndex);
 

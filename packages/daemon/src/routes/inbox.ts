@@ -21,6 +21,8 @@ import {
   deleteInboxItem,
   findInboxItemByRef,
   ReferenceIndex,
+  loadAllTasks,
+  loadAllItems,
   type InboxItemInput,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
@@ -116,8 +118,10 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const kspecDir = join(projectContext.path, '.kspec');
         const ctx = await initContext(kspecDir);
-        const items = await loadInboxItems(ctx);
-        const index = new ReferenceIndex(ctx);
+        const inboxItems = await loadInboxItems(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const specItems = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, specItems);
 
         // Resolve ref
         const result = index.resolve(params.ref);
@@ -130,7 +134,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         }
 
         // Verify it's an inbox item
-        const item = findInboxItemByRef(items, result.ulid);
+        const item = findInboxItemByRef(inboxItems, result.ulid);
         if (!item) {
           return errorResponse(404, {
             error: 'not_found',
