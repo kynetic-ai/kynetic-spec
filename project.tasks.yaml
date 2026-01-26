@@ -34809,6 +34809,58 @@
 
         - Update fixtures to include in_progress task OR update tests to match fixtures
       supersedes: null
+    - _ulid: 01KFXVFBY6B5ZC4282WR440JRA
+      created_at: 2026-01-26T19:11:17.959Z
+      author: "@claude"
+      content: >-
+        Session progress - Root cause found and fixed:
+
+
+        **Root Cause:** dist/daemon/ was out of date (Jan 23) while packages/daemon/src had updates.
+        Old code passed wrong args to ReferenceIndex causing '{} is not iterable' error.
+
+
+        **Fix Applied:** npm run build - copies packages/daemon/src/* to dist/daemon/
+
+
+        **Current Test Status:** 3/17 passing
+
+        - PASSING: displays task with title/status/priority/spec_ref/notes_count
+
+        - PASSING: adapts to mobile viewport  
+
+        - PASSING: filters by automation status
+
+
+        **Remaining Failures (14):**
+
+        1. Filter interactions (6 tests) - Select component clicks not working
+
+        2. Detail panel (4 tests) - Click on task row doesn't open detail panel
+
+        3. Task actions (3 tests) - Start task, add note, WebSocket highlight
+
+        4. Desktop slide-over (1 test) - Detail panel as slide-over
+
+
+        **Root Issue for Remaining Failures:**
+
+        Click events on task rows don't trigger detail panel. The TableRow onclick handler isn't
+        being called. Need to investigate if Svelte 5's event handling with shadcn-svelte Table
+        components works correctly.
+
+
+        **Branch:** feature/tasks-view-e2e-fixes (no new commits this session, just rebuilt)
+
+
+        **Next Steps:**
+
+        1. Debug click handler on TableRow - check if onclick spreads correctly to <tr>
+
+        2. May need to use native <tr> instead of shadcn TableRow component
+
+        3. Fix filter tests after click issue resolved
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
