@@ -44984,6 +44984,31 @@
 
         This question should be answered before starting implementation.
       supersedes: null
+    - _ulid: 01KFXSTHH9K21G8XZQWZB1GK3E
+      created_at: 2026-01-26T18:42:26.985Z
+      author: "@claude"
+      content: >-
+        **Design decision resolved:** Use Option 1 (lazy load index).
+
+
+        During merge, load the kspec context to resolve refs to canonical ULIDs before comparison.
+        The merge driver already does file I/O, so loading the index is acceptable overhead for
+        correct behavior.
+
+
+        Implementation:
+
+        1. In `mergeSetArray` (or a wrapper), detect if array contains @ refs
+
+        2. If refs detected, call `loadKspecContext()` or similar to get ref resolver
+
+        3. Normalize all refs to ULIDs before Set comparison
+
+        4. Output uses 'ours' format preference
+
+
+        This removes the open question - task is now fully actionable.
+      supersedes: null
   todos: []
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
