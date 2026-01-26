@@ -4115,8 +4115,12 @@ observations:
       change in last N iterations AND no eligible tasks, exit immediately' to avoid redundant work."
     created_at: 2026-01-25T14:29:14.713Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Resolved by @01KFV6CZ (PR #247). Exit condition now checks automation eligibility for
+      both ready and in_progress tasks. Session 28 exited immediately when finding no eligible
+      work."
+    resolved_at: 2026-01-26T01:13:09.905Z
+    resolved_by: "@claude"
   - _ulid: 01KFTSQQSAEJ0HXNEQJ209YCRZ
     type: friction
     content: Workflow system lacks early exit mechanism. When workflow determines no work is possible
