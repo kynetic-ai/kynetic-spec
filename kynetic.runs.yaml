@@ -10586,6 +10586,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T18:50:04.130Z
+    completed_at: 2026-01-26T18:51:42.908Z
     step_results:
       - step_index: 0
         status: completed
@@ -10619,4 +10620,11 @@ runs:
           note structure) and @01KFXTAK (success - subagent plan review). No additional items to
           capture."
     initiated_by: "@claude"
-    completed_at: 2026-01-26T18:51:42.908Z
+  - _ulid: 01KFXVJD05WM6P0WRRB0JMG3CE
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T19:12:57.349Z
+    step_results: []
+    initiated_by: "@claude"
