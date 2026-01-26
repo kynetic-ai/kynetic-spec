@@ -34657,7 +34657,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   closed_reason: null
   depends_on:
@@ -34671,7 +34671,7 @@
     - implementation
   vcs_refs: []
   created_at: 2026-01-23T20:18:47.924Z
-  started_at: 2026-01-25T11:53:30.734Z
+  started_at: null
   completed_at: null
   notes:
     - _ulid: 01KFP8775DN1W0RZ0FZNRN14Q6
@@ -36441,6 +36441,11 @@
         4. Remove test.skip() and verify tests pass
 
         5. Validate ACs 11-15 covered
+      supersedes: null
+    - _ulid: 01KFXCRXY2HGXZ74YWE63H1HR6
+      created_at: 2026-01-26T14:54:22.658Z
+      author: "@claude"
+      content: Reset from in_progress to pending
       supersedes: null
   todos: []
   automation: needs_review
