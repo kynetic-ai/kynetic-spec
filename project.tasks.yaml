@@ -44873,6 +44873,34 @@
         - ac-2: Given merge encounters ref that cannot be resolved, when normalization runs, then
         ref is kept as-is (no error, graceful degradation)
       supersedes: null
+    - _ulid: 01KFXSHG8E4EX358CMTPP1FXMD
+      created_at: 2026-01-26T18:37:30.766Z
+      author: "@claude"
+      content: |-
+        Implementation approach:
+
+        **Files to modify:**
+        - `src/merge/arrays.ts` - modify `mergeSetArray` to normalize refs
+        - May need to integrate with `src/parser/references.ts` for resolution
+
+        **Approach:**
+        1. Detect if array contains kspec references (strings starting with @)
+        2. For ref arrays, resolve each ref to canonical ULID before set comparison
+        3. Keep the original format from 'ours' side in output
+        4. If resolution fails, keep ref as-is (graceful degradation per ac-2)
+
+        **Complexity note:**
+        Ref normalization requires access to the kspec context (loaded specs/tasks) during merge.
+        The merge driver currently operates without full context loading.
+        May need to:
+        - Load minimal index for ref resolution, OR
+        - Accept that this is best-effort (works when merge happens in project context)
+
+        **Verification:**
+        - Test with depends_on containing @slug and @ULID for same task
+        - Verify deduplication
+        - Test with invalid ref to verify graceful degradation
+      supersedes: null
   todos: []
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
