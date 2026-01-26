@@ -44835,16 +44835,22 @@
         - Fixture files exist and are valid YAML
       supersedes: null
   todos: []
-- title: "Implement: Reference Normalization in Merges"
+- _ulid: 01KFXSGACX5DSA6ACKG95H8593
+  slugs:
+    - task-reference-normalization-in-merges
+  title: "Implement: Reference Normalization in Merges"
   type: task
   spec_ref: "@merge-ref-normalization"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-reference-normalization-in-merges
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@01KFM7FQ"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-26T18:36:51.997Z
   notes:
     - _ulid: 01KFXSGACWPEA08Q7VS0FDB6A7
       created_at: 2026-01-26T18:36:51.996Z
@@ -44867,10 +44873,22 @@
         - ac-2: Given merge encounters ref that cannot be resolved, when normalization runs, then
         ref is kept as-is (no error, graceful degradation)
       supersedes: null
-  _ulid: 01KFXSGACX5DSA6ACKG95H8593
+  todos: []
+- title: Fix merge driver root-level array handling
+  type: task
+  spec_ref: "@merge-file-detection"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - merge-driver
+    - bug-fix
+  _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-26T18:36:51.997Z
+  created_at: 2026-01-26T18:37:08.166Z
+  notes: []
   todos: []
