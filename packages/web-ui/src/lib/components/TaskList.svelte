@@ -14,12 +14,17 @@
 
 	export let tasks: TaskSummary[];
 	export let updatedTaskIds: Set<string> = new Set();
+	export let onSelectTask: ((taskId: string) => void) | undefined = undefined;
 
 	const dispatch = createEventDispatcher<{
 		select: string;
 	}>();
 
 	function selectTask(task: TaskSummary) {
+		// Try callback first (Svelte 5 pattern), then dispatch (Svelte 4 pattern)
+		if (onSelectTask) {
+			onSelectTask(task._ulid);
+		}
 		dispatch('select', task._ulid);
 	}
 
@@ -70,7 +75,7 @@
 						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
 						data-testid="task-list-item"
 						data-task-ref={task.slugs?.[0] || task._ulid}
-						on:click={() => selectTask(task)}
+						onclick={() => selectTask(task)}
 					>
 						<TableCell class="font-medium">
 							<span data-testid="task-title">{task.title}</span>

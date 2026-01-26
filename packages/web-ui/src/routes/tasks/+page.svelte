@@ -52,8 +52,8 @@
 		}
 	}
 
-	async function handleSelectTask(event: CustomEvent<string>) {
-		selectedTaskId = event.detail;
+	async function handleSelectTask(taskId: string) {
+		selectedTaskId = taskId;
 		try {
 			selectedTask = await fetchTask(selectedTaskId);
 			detailOpen = true;
@@ -61,6 +61,11 @@
 			error = err instanceof Error ? err.message : 'Failed to load task details';
 			console.error('Error loading task:', err);
 		}
+	}
+
+	// Legacy event handler for backwards compatibility
+	function handleSelectTaskEvent(event: CustomEvent<string>) {
+		handleSelectTask(event.detail);
 	}
 
 	function handleCloseDetail() {
@@ -154,7 +159,7 @@
 		</div>
 	{:else}
 		<!-- AC: @web-dashboard ac-33 -->
-		<TaskList {tasks} {updatedTaskIds} on:select={handleSelectTask} />
+		<TaskList {tasks} {updatedTaskIds} onSelectTask={handleSelectTask} on:select={handleSelectTaskEvent} />
 	{/if}
 </div>
 

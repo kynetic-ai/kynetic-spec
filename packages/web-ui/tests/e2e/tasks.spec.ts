@@ -181,13 +181,23 @@ test.describe('Tasks View', () => {
     test('opens detail panel when task clicked', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
-      // Wait for task list and click first task
+      // Wait for task list to load
+      const taskList = page.getByTestId('task-list');
+      await expect(taskList).toBeVisible();
+
+      // Wait for tasks to appear
       const taskItem = page.getByTestId('task-list-item').first();
+      await expect(taskItem).toBeVisible();
+
+      // Click the first task
       await taskItem.click();
+
+      // Wait briefly for API call and sheet animation
+      await page.waitForTimeout(500);
 
       // Detail panel should open
       const detailPanel = page.getByTestId('task-detail-panel');
-      await expect(detailPanel).toBeVisible();
+      await expect(detailPanel).toBeVisible({ timeout: 5000 });
 
       // Verify panel contains expected sections
       await expect(detailPanel.getByTestId('task-description')).toBeVisible();
