@@ -9952,6 +9952,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T00:59:43.747Z
+    completed_at: 2026-01-26T01:01:01.854Z
     step_results:
       - step_index: 0
         status: completed
@@ -10060,4 +10061,11 @@ runs:
           Session 25 was a clean exit iteration with proper state documentation. The system's
           existing observability captured the relevant patterns in previous sessions.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T01:01:01.854Z
+  - _ulid: 01KFVX900W0JEZTZJGJAV27KT0
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T01:04:17.436Z
+    step_results: []
+    initiated_by: "@claude"
