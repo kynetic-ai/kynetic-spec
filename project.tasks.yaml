@@ -44959,4 +44959,60 @@
 
         - Verify ULID-based deduplication still works
       supersedes: null
+    - _ulid: 01KFXSKWMA8W9VJ9ZW4RC24EBH
+      created_at: 2026-01-26T18:38:48.970Z
+      author: "@claude"
+      content: >-
+        **Background - Why this matters:**
+
+
+        When merging kspec-meta branches (e.g., during git merge/rebase of shadow branches), the
+        merge driver corrupts *.tasks.yaml files.
+
+
+        **How to reproduce:**
+
+        1. Have two branches with different task changes
+
+        2. Attempt merge: `git merge other-branch`
+
+        3. Observe: Output YAML has object keys instead of array items
+
+
+        **Example of corruption:**
+
+
+        Input (correct):
+
+        ```yaml
+
+        - _ulid: 01KEZFXCM3...
+          title: Task A
+        - _ulid: 01KEZG58FJ...
+          title: Task B
+        ```
+
+
+        Output (corrupted):
+
+        ```yaml
+
+        "0":
+          _ulid: 01KEZFXCM3...
+          title: Task A
+        "1":
+          _ulid: 01KEZG58FJ...
+          title: Task B
+        ```
+
+
+        The file is no longer valid kspec YAML - arrays become objects with numeric string keys.
+
+
+        **Root cause:**
+
+        `src/cli/commands/merge-driver.ts:183-187` casts `versions.base/ours/theirs` as
+        `Record<string, unknown>`. When JavaScript iterates an array as an object, you get numeric
+        keys ("0", "1", etc).
+      supersedes: null
   todos: []
