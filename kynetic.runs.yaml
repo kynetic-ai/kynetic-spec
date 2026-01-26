@@ -10626,6 +10626,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T19:12:57.349Z
+    completed_at: 2026-01-26T19:14:06.489Z
     step_results:
       - step_index: 0
         status: completed
@@ -10653,4 +10654,11 @@ runs:
         notes: "Capture complete. Items already captured in earlier steps: friction @01KFXVK5, inbox
           @01KFXVKC, success @01KFXVKJ. Reflection workflow done."
     initiated_by: "@claude"
-    completed_at: 2026-01-26T19:14:06.489Z
+  - _ulid: 01KFYAEBGN5J7JSB3BV7C5SA5A
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-26T23:32:53.397Z
+    step_results: []
+    initiated_by: "@claude"
