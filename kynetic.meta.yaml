@@ -4374,4 +4374,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFXTAKKXZ27TMK4SA7TQMAFG
+    type: success
+    content: Subagent plan review caught CLI command syntax issues (missing --as and --id flags) before
+      execution. Using a reviewer subagent after writing a plan prevents wasted iterations.
+    created_at: 2026-01-26T18:51:13.405Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
