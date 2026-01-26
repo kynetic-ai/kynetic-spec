@@ -8256,8 +8256,23 @@ runs:
   - _ulid: 01KFVSJ1P0G9DTCFCZEKDDXCWN
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-25T23:59:19.745Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-25T23:59:19.745Z
+        completed_at: 2026-01-26T00:00:20.311Z
+        notes: |-
+          Session review complete. Identified 3 friction points:
+          1. Automation tag application gap (CAPTURED as observation @01KFVSKK)
+          2. Working directory confusion (ALREADY TRACKED in observations @01KFE13R, @01KFE1BK)
+          3. No automation eligibility explanation command (LOW CONFIDENCE - skipped)
+
+          Captured 1 high-confidence friction observation for future improvement.
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-26T00:00:20.311Z
+        completed_at: 2026-01-26T00:00:20.311Z
     initiated_by: "@claude"
