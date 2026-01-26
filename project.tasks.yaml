@@ -44874,21 +44874,61 @@
         ref is kept as-is (no error, graceful degradation)
       supersedes: null
   todos: []
-- title: Fix merge driver root-level array handling
+- _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
+  slugs: []
+  title: Fix merge driver root-level array handling
   type: task
   spec_ref: "@merge-file-detection"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - merge-driver
-    - bug-fix
-  _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - merge-driver
+    - bug-fix
   vcs_refs: []
   created_at: 2026-01-26T18:37:08.166Z
-  notes: []
+  notes:
+    - _ulid: 01KFXSH5097E9GCNTCSRD4W0D8
+      created_at: 2026-01-26T18:37:19.242Z
+      author: "@claude"
+      content: >-
+        Implementation approach for ac-7 (root-level array handling):
+
+
+        **Problem:**
+
+        `merge-driver.ts` casts all parsed content as `Record<string, unknown>` (line 183-187), but
+        *.tasks.yaml and *.inbox.yaml files are root-level arrays, not objects. This corrupts the
+        output structure.
+
+
+        **Files to modify:**
+
+        - `src/cli/commands/merge-driver.ts` - detect if root is array vs object
+
+        - `src/merge/arrays.ts` - ensure `mergeUlidArrays` works at root level
+
+
+        **Approach:**
+
+        1. Before calling `mergeObjectsWithArrays`, check if all three versions are arrays
+
+        2. If arrays with ULID items, call `mergeUlidArrays` directly
+
+        3. If arrays without ULIDs, apply appropriate strategy based on file type
+
+        4. Only fall through to object merge for actual object roots
+
+
+        **Verification:**
+
+        - Test with actual *.tasks.yaml merge scenario (base, ours, theirs all arrays)
+
+        - Verify output preserves array structure
+
+        - Verify ULID-based deduplication still works
+      supersedes: null
   todos: []
