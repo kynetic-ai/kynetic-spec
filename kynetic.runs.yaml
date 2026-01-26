@@ -8924,6 +8924,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T00:22:11.197Z
+    completed_at: 2026-01-26T00:23:59.083Z
     step_results:
       - step_index: 0
         status: completed
@@ -9076,4 +9077,11 @@ runs:
           Both observations meet high-confidence criteria (concrete, systemic, clear cause/effect).
           No low-confidence or duplicate items attempted.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T00:23:59.083Z
+  - _ulid: 01KFVV2VYW5QXQMK7KDSGH8JJM
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T00:25:59.517Z
+    step_results: []
+    initiated_by: "@claude"
