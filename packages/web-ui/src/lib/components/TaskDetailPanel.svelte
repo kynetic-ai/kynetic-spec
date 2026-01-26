@@ -1,13 +1,14 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-5, ac-6, ac-7, ac-8
+	// Custom sheet implementation that bypasses bits-ui Portal reactivity issues
 	import type { TaskDetail as TaskDetailType } from '@kynetic-ai/shared';
-	import { Sheet, SheetContent, SheetHeader, SheetTitle } from '$lib/components/ui/sheet';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Separator } from '$lib/components/ui/separator';
 	import { startTask, addTaskNote } from '$lib/api';
 	import { taskDetailStore } from '$lib/stores/taskDetail.svelte';
+	import XIcon from '@lucide/svelte/icons/x';
 
 	// Callbacks for parent notification
 	let {
@@ -16,20 +17,28 @@
 	} = $props();
 
 	let noteContent = $state('');
-	let isSubmitting = $state('');
+	let isSubmitting = $state(false);
 	let error = $state('');
 
-	// Access task from store (bypasses Portal reactivity issues)
+	// Access task from store
 	let task = $derived(taskDetailStore.task);
+	let isOpen = $derived(taskDetailStore.open);
 
 	function close() {
 		taskDetailStore.close();
 		onclose?.();
 	}
 
-	// Handle Sheet open state change from user interaction (clicking X or outside)
-	function handleOpenChange(newOpen: boolean) {
-		if (!newOpen) {
+	// Handle clicking outside the panel
+	function handleOverlayClick(e: MouseEvent) {
+		if (e.target === e.currentTarget) {
+			close();
+		}
+	}
+
+	// Handle escape key
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
 			close();
 		}
 	}
@@ -92,15 +101,37 @@
 	}
 </script>
 
-<!-- Use store's open state directly - bypasses Portal reactivity issues -->
-<Sheet open={taskDetailStore.open} onOpenChange={handleOpenChange}>
-	<SheetContent class="overflow-y-auto sm:max-w-lg" data-testid="task-detail-panel">
-		{#if task}
-			<SheetHeader>
-				<SheetTitle data-testid="task-description">{task.title}</SheetTitle>
-			</SheetHeader>
+<svelte:window onkeydown={handleKeydown} />
 
-			<div class="flex flex-col gap-4 mt-4">
+{#if isOpen && task}
+	<!-- Overlay -->
+	<div
+		class="fixed inset-0 z-50 bg-black/50"
+		onclick={handleOverlayClick}
+		role="button"
+		tabindex="-1"
+	>
+		<!-- Panel -->
+		<div
+			class="fixed inset-y-0 right-0 z-50 w-3/4 max-w-lg bg-background shadow-lg border-l overflow-y-auto animate-in slide-in-from-right duration-300"
+			data-testid="task-detail-panel"
+			role="dialog"
+			aria-modal="true"
+		>
+			<!-- Header -->
+			<div class="flex items-center justify-between p-6 border-b">
+				<h2 class="text-lg font-semibold" data-testid="task-description">{task.title}</h2>
+				<button
+					onclick={close}
+					class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+				>
+					<XIcon class="size-4" />
+					<span class="sr-only">Close</span>
+				</button>
+			</div>
+
+			<!-- Content -->
+			<div class="flex flex-col gap-4 p-6">
 				<!-- Status and Priority -->
 				<div class="flex gap-2 items-center">
 					<Badge class={getStatusColor(task.status)}>{task.status}</Badge>
@@ -252,6 +283,6 @@
 					</div>
 				</div>
 			</div>
-		{/if}
-	</SheetContent>
-</Sheet>
+		</div>
+	</div>
+{/if}

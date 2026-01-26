@@ -179,6 +179,12 @@ test.describe('Tasks View', () => {
   test.describe('Task Detail', () => {
     // AC: @web-dashboard ac-5
     test('opens detail panel when task clicked', async ({ page, daemon }) => {
+      // Capture console logs
+      const consoleLogs: string[] = [];
+      page.on('console', (msg) => {
+        consoleLogs.push(`${msg.type()}: ${msg.text()}`);
+      });
+
       await page.goto('/tasks');
 
       // Wait for task list to load
@@ -189,11 +195,13 @@ test.describe('Tasks View', () => {
       const taskItem = page.getByTestId('task-list-item').first();
       await expect(taskItem).toBeVisible();
 
+
       // Click the first task
       await taskItem.click();
 
       // Wait briefly for API call and sheet animation
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(1000);
+
 
       // Detail panel should open
       const detailPanel = page.getByTestId('task-detail-panel');

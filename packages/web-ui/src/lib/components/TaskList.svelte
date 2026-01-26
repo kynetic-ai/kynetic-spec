@@ -21,8 +21,10 @@
 	}>();
 
 	function selectTask(task: TaskSummary) {
+		console.log('[TaskList] selectTask called for:', task._ulid, task.title);
 		// Try callback first (Svelte 5 pattern), then dispatch (Svelte 4 pattern)
 		if (onSelectTask) {
+			console.log('[TaskList] Calling onSelectTask callback');
 			onSelectTask(task._ulid);
 		}
 		dispatch('select', task._ulid);
@@ -71,11 +73,15 @@
 				{#each tasks as task}
 					<!-- AC: @web-dashboard ac-33 - Highlight animation on update -->
 					{@const isUpdated = updatedTaskIds.has(task._ulid)}
-					<TableRow
-						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
+					<!-- Use native tr for reliable click handling -->
+					<tr
+						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 border-b {isUpdated ? 'bg-primary/10 animate-pulse' : ''}"
 						data-testid="task-list-item"
 						data-task-ref={task.slugs?.[0] || task._ulid}
 						onclick={() => selectTask(task)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && selectTask(task)}
 					>
 						<TableCell class="font-medium">
 							<span data-testid="task-title">{task.title}</span>
@@ -94,7 +100,7 @@
 								<a
 									href="/items?ref={encodeURIComponent(task.spec_ref)}"
 									class="text-primary hover:underline text-sm"
-									on:click|stopPropagation
+									onclick={(e) => e.stopPropagation()}
 								>
 									{task.spec_ref}
 								</a>
@@ -115,7 +121,7 @@
 								{/if}
 							</div>
 						</TableCell>
-					</TableRow>
+					</tr>
 				{/each}
 			{/if}
 		</TableBody>
