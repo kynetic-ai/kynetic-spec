@@ -4298,4 +4298,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVTYW9TT5NNV7JNR0PHRM0R
+    type: success
+    content: "Task escalation with comprehensive rationale prevents false automation work. Pattern
+      observed: when tasks blocked or require human decisions, automation loop adds multi-paragraph
+      notes documenting: (1) WHAT blocks the work, (2) WHY it's not automatable, (3) WHAT human
+      needs to do next. Tags task automation:needs_review. Result: zero false work attempts across
+      15 iterations, clear handoff context for human sessions. Quality over speed: better to
+      escalate with context than attempt inappropriate work."
+    created_at: 2026-01-26T00:23:48.795Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
