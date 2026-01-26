@@ -82,9 +82,12 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     const kspecDir = join(tempDir, '.kspec');
     mkdirSync(kspecDir, { recursive: true });
 
-    // Copy test fixtures
+    // Copy test fixtures (excluding multi-dir which has nested .kspec directories)
     if (existsSync(ROOT_FIXTURES)) {
-      cpSync(ROOT_FIXTURES, kspecDir, { recursive: true });
+      cpSync(ROOT_FIXTURES, kspecDir, {
+        recursive: true,
+        filter: (src) => !src.includes('multi-dir')
+      });
     } else {
       throw new Error(`Test fixtures not found at ${ROOT_FIXTURES}`);
     }

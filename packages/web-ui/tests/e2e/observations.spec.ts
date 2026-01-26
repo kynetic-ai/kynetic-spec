@@ -7,9 +7,14 @@
  * - AC-22: Panel lists observations with type icons
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 
 test.describe('Observations', () => {
+	// Start daemon for all tests
+	test.beforeEach(async ({ daemon }) => {
+		// Daemon fixture ensures daemon is running
+	});
+
 	test.describe('Session Focus Display', () => {
 		// AC: @web-dashboard ac-20
 		test('displays current focus in sidebar when set', async ({ page }) => {
