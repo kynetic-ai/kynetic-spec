@@ -4285,4 +4285,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVTYSJECRND016ZATZ25N3A
+    type: friction
+    content: "Ralph loop continues iterating when all active tasks are automation:needs_review. Observed
+      across 15 consecutive iterations: each iteration runs 'kspec tasks ready --eligible', finds 0
+      tasks, then adds repetitive status notes to all escalated tasks. Exit condition correctly
+      identifies no eligible work but doesn't trigger early exit before status documentation.
+      Result: unnecessary API calls, note bloat (45+ notes across 3 tasks), slower session
+      completion. Ideal: exit immediately when no eligible tasks remain without adding iteration
+      notes to needs_review tasks."
+    created_at: 2026-01-26T00:23:45.998Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
