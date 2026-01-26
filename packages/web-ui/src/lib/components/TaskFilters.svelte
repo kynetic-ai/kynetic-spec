@@ -40,7 +40,7 @@
 	$: hasFilters = status || type || tag || assignee || automation;
 </script>
 
-<div class="flex flex-wrap gap-4 p-4 bg-muted/50 rounded-lg">
+<div class="flex flex-wrap gap-4 p-4 bg-muted/50 rounded-lg" data-testid="filter-controls">
 	<div class="flex-1 min-w-[200px]">
 		<label for="status-filter" class="text-sm font-medium mb-2 block">Status</label>
 		<Select value={status || 'all'} onValueChange={(v) => updateFilter('status', v || 'all')}>

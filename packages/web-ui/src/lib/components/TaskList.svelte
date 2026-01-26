@@ -69,6 +69,7 @@
 					<TableRow
 						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
 						data-testid="task-list-item"
+						data-task-ref={task.slugs?.[0] || task._ulid}
 						on:click={() => selectTask(task)}
 					>
 						<TableCell class="font-medium">
@@ -83,10 +84,9 @@
 						<TableCell class={getPriorityColor(task.priority)}>
 							<span data-testid="task-priority">P{task.priority}</span>
 						</TableCell>
-						<TableCell>
+						<TableCell data-testid="task-spec-ref">
 							{#if task.spec_ref}
 								<a
-									data-testid="task-spec-ref"
 									href="/items?ref={encodeURIComponent(task.spec_ref)}"
 									class="text-primary hover:underline text-sm"
 									on:click|stopPropagation
@@ -94,13 +94,13 @@
 									{task.spec_ref}
 								</a>
 							{:else}
-								<span data-testid="task-spec-ref" class="text-muted-foreground text-sm">—</span>
+								<span class="text-muted-foreground text-sm">—</span>
 							{/if}
 						</TableCell>
 						<TableCell>
 							<Badge data-testid="task-notes-count" variant="secondary">{task.notes_count}</Badge>
 						</TableCell>
-						<TableCell>
+						<TableCell data-testid="task-tags">
 							<div class="flex flex-wrap gap-1">
 								{#each task.tags.slice(0, 3) as tag}
 									<Badge variant="outline" class="text-xs">{tag}</Badge>

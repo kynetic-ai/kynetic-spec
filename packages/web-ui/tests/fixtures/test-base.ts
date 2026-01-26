@@ -92,10 +92,10 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
 
-    // Start daemon
+    // Start daemon - pass project root (tempDir), daemon derives .kspec internally
     const startResult = spawnSync(
       'kspec',
-      ['serve', 'start', '--daemon', '--port', String(DAEMON_PORT), '--kspec-dir', kspecDir],
+      ['serve', 'start', '--daemon', '--port', String(DAEMON_PORT), '--kspec-dir', tempDir],
       { cwd: tempDir, encoding: 'utf-8' }
     );
 
@@ -109,8 +109,8 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     // Provide fixture to test
     await use({ tempDir, kspecDir });
 
-    // Cleanup: stop daemon
-    spawnSync('kspec', ['serve', 'stop', '--kspec-dir', kspecDir], {
+    // Cleanup: stop daemon - pass project root to match start
+    spawnSync('kspec', ['serve', 'stop', '--kspec-dir', tempDir], {
       cwd: tempDir,
       encoding: 'utf-8',
     });

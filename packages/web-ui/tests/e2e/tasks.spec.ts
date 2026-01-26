@@ -21,7 +21,7 @@ import { test, expect } from '../fixtures/test-base';
 test.describe('Tasks View', () => {
   test.describe('Task List', () => {
     // AC: @web-dashboard ac-4
-    test.skip('displays task with title, status badge, priority, spec_ref, notes count', async ({
+    test('displays task with title, status badge, priority, spec_ref, notes count', async ({
       page,
       daemon,
     }) => {
@@ -44,7 +44,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test.skip('filters tasks by status', async ({ page, daemon }) => {
+    test('filters tasks by status', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Wait for filter controls
@@ -68,7 +68,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test.skip('filters tasks by type', async ({ page, daemon }) => {
+    test('filters tasks by type', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       const filterType = page.getByTestId('filter-type');
@@ -84,7 +84,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test.skip('filters tasks by tag', async ({ page, daemon }) => {
+    test('filters tasks by tag', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       const filterTag = page.getByTestId('filter-tag');
@@ -103,7 +103,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test.skip('filters tasks by assignee', async ({ page, daemon }) => {
+    test('filters tasks by assignee', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       const filterAssignee = page.getByTestId('filter-assignee');
@@ -119,7 +119,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test.skip('filters tasks by automation status', async ({ page, daemon }) => {
+    test('filters tasks by automation status', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       const filterAutomation = page.getByTestId('filter-automation');
@@ -135,7 +135,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-10
-    test.skip('URL updates with filter query params', async ({ page, daemon }) => {
+    test('URL updates with filter query params', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Apply status filter
@@ -159,7 +159,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-10
-    test.skip('restores filters from URL query params on page load', async ({ page, daemon }) => {
+    test('restores filters from URL query params on page load', async ({ page, daemon }) => {
       // Navigate directly with query params
       await page.goto('/tasks?status=in_progress&tag=e2e');
 
@@ -178,7 +178,7 @@ test.describe('Tasks View', () => {
 
   test.describe('Task Detail', () => {
     // AC: @web-dashboard ac-5
-    test.skip('opens detail panel when task clicked', async ({ page, daemon }) => {
+    test('opens detail panel when task clicked', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Wait for task list and click first task
@@ -195,7 +195,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-5
-    test.skip('displays notes in chronological order', async ({ page, daemon }) => {
+    test('displays notes in chronological order', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Click task to open detail
@@ -221,7 +221,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-5
-    test.skip('displays todos and dependencies', async ({ page, daemon }) => {
+    test('displays todos and dependencies', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Click task to open detail
@@ -241,7 +241,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-6
-    test.skip('spec reference links to spec item detail', async ({ page, daemon }) => {
+    test('spec reference links to spec item detail', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Click task with spec_ref
@@ -267,7 +267,7 @@ test.describe('Tasks View', () => {
 
   test.describe('Task Actions', () => {
     // AC: @web-dashboard ac-7
-    test.skip('starts a pending task', async ({ page, daemon }) => {
+    test('starts a pending task', async ({ page, daemon }) => {
       await page.goto('/tasks?status=pending');
 
       // Click pending task to open detail
@@ -296,7 +296,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-8
-    test.skip('adds note to task', async ({ page, daemon }) => {
+    test('adds note to task', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Open task detail
@@ -334,7 +334,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-33
-    test.skip('highlights task on WebSocket update', async ({ page, daemon }) => {
+    test('highlights task on WebSocket update', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
       // Wait for WebSocket connection
@@ -376,7 +376,7 @@ test.describe('Tasks View', () => {
 
   test.describe('Responsive Layout', () => {
     // AC: @web-dashboard ac-26
-    test.skip('adapts to mobile viewport', async ({ page, daemon }) => {
+    test('adapts to mobile viewport', async ({ page, daemon }) => {
       // Set mobile viewport
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/tasks');
@@ -391,7 +391,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-27
-    test.skip('shows detail panel as slide-over on desktop', async ({ page, daemon }) => {
+    test('shows detail panel as slide-over on desktop', async ({ page, daemon }) => {
       // Set desktop viewport
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/tasks');

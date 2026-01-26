@@ -103,7 +103,7 @@
 				<!-- Spec Reference -->
 				<!-- AC: @web-dashboard ac-6 -->
 				{#if task.spec_ref}
-					<div>
+					<div data-testid="task-spec-ref-link">
 						<p class="text-sm font-medium mb-1">Spec Reference:</p>
 						<a
 							href="/items?ref={encodeURIComponent(task.spec_ref)}"
@@ -200,7 +200,7 @@
 
 				<!-- Notes -->
 				<!-- AC: @web-dashboard ac-5 -->
-				<div>
+				<div data-testid="task-notes">
 					<p class="text-sm font-medium mb-2">Notes ({task.notes.length}):</p>
 
 					<!-- Add Note Form -->
@@ -211,11 +211,13 @@
 							bind:value={noteContent}
 							disabled={isSubmitting}
 							rows={3}
+							data-testid="note-textarea"
 						/>
 						<Button
 							on:click={handleAddNote}
 							disabled={isSubmitting || !noteContent.trim()}
 							size="sm"
+							data-testid="add-note-button"
 						>
 							{isSubmitting ? 'Adding...' : 'Add Note'}
 						</Button>
@@ -224,10 +226,10 @@
 					<!-- Notes List -->
 					<div class="space-y-4" data-testid="task-notes">
 						{#each task.notes as note}
-							<div class="border rounded-lg p-3">
+							<div class="border rounded-lg p-3" data-testid="note-item">
 								<div class="flex justify-between items-start mb-2">
 									<span class="text-xs text-muted-foreground">{note.author}</span>
-									<span class="text-xs text-muted-foreground">{formatDate(note.created_at)}</span>
+									<span class="text-xs text-muted-foreground" data-testid="note-timestamp">{formatDate(note.created_at)}</span>
 								</div>
 								<p class="text-sm whitespace-pre-wrap">{note.content}</p>
 							</div>
