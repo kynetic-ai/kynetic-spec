@@ -10656,7 +10656,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KFYAEBGN5J7JSB3BV7C5SA5A
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-26T23:32:53.397Z
@@ -10784,5 +10784,7 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-26T23:34:42.576Z
-        completed_at: 2026-01-26T23:34:42.576Z
+        completed_at: 2026-01-26T23:34:48.643Z
+        notes: All items captured in step 5. Workflow complete.
     initiated_by: "@claude"
+    completed_at: 2026-01-26T23:34:48.643Z
