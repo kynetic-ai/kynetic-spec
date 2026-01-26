@@ -34926,6 +34926,58 @@
 
         **Branch:** feature/tasks-view-e2e-fixes (uncommitted changes)
       supersedes: null
+    - _ulid: 01KFY0CVR0JCQSJB1HMV3CDWDX
+      created_at: 2026-01-26T20:37:18.720Z
+      author: "@claude"
+      content: >-
+        Session end checkpoint - bits-ui reactivity investigation:
+
+
+        **Branch:** feature/tasks-view-e2e-fixes (c5b73f70)
+
+
+        **Changes Committed:**
+
+        - TaskList.svelte: Native `<tr>` for click handling (fixes onclick)
+
+        - TaskDetailPanel.svelte: Custom sheet without bits-ui (new)
+
+        - taskDetailStore.svelte.ts: Store for panel state (new)
+
+        - tasks/+page.svelte: Uses store + custom panel
+
+
+        **Root Issue Identified:**
+
+        bits-ui Sheet/Dialog PresenceManager doesn't receive prop updates through Portal in Svelte
+        5. State shows `open=true` but content never renders.
+
+
+        **Test Status:** 3/17 passing
+
+        - Click handlers work (verified via console logs)
+
+        - State updates work (debug elements show correct values)
+
+        - Panel rendering fails (both bits-ui Sheet and custom panel)
+
+
+        **Next Session:**
+
+        1. Debug custom TaskDetailPanel - may be SSR/hydration issue with $derived from module
+        $state
+
+        2. Try traditional writable() store instead of .svelte.ts file
+
+        3. Test with dev server instead of adapter-static build
+
+
+        **Files to focus on:**
+
+        - src/lib/stores/taskDetail.svelte.ts
+
+        - src/lib/components/TaskDetailPanel.svelte
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
