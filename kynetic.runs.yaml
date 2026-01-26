@@ -9083,6 +9083,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T00:25:59.517Z
+    completed_at: 2026-01-26T00:27:32.080Z
     step_results:
       - step_index: 0
         status: completed
@@ -9223,4 +9224,11 @@ runs:
 
           No captures performed.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T00:27:32.080Z
+  - _ulid: 01KFVV9NJ95QETRQP12Z1CT281
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T00:29:42.345Z
+    step_results: []
+    initiated_by: "@claude"
