@@ -39405,6 +39405,94 @@
 
         **No changes made this iteration.**
       supersedes: null
+    - _ulid: 01KFVT0A31P5Y1T4HM45DRSC4P
+      created_at: 2026-01-26T00:07:07.106Z
+      author: "@claude"
+      content: >-
+        Loop iteration 11 - Session checkpoint:
+
+
+        **Exit Reason:** No automation-eligible tasks remain (kspec tasks ready --eligible returned
+        0 tasks)
+
+
+        **Task Status:**
+
+        - Status: in_progress
+
+        - Automation: needs_review (correctly tagged in iteration 8)
+
+        - Zero implementation work across all 11 loop iterations
+
+        - Requires substantial greenfield implementation
+
+
+        **Why Not Automation-Eligible:**
+
+        This is a multi-hour greenfield implementation requiring:
+
+        1. **State Management**: Architectural decision on project store pattern (Svelte context vs
+        writable store)
+
+        2. **API Client Refactoring**: Modify lib/api.ts to inject X-Kspec-Dir header based on
+        selected project
+
+        3. **Component Design**: Build ProjectSelector.svelte with dropdown UI and UX considerations
+
+        4. **Layout Integration**: Determine placement in application layout (Header vs Sidebar)
+
+        5. **WebSocket Lifecycle**: Handle reconnection on project change, ensure clean state
+        transitions
+
+
+        **What Needs to Be Built:**
+
+        - Project store/context for tracking selected project state
+
+        - API client middleware to inject X-Kspec-Dir header on all requests
+
+        - ProjectSelector.svelte component with dropdown UI
+
+        - Integration into main application layout
+
+        - WebSocket reconnection handler triggered on project selection change
+
+        - Persistence layer (localStorage or URL state)
+
+
+        **Estimated Scope:**
+
+        Multi-hour focused implementation requiring:
+
+        - Architectural design review and decision making
+
+        - Multiple implementation iterations with testing
+
+        - Careful integration with existing API/WebSocket infrastructure
+
+        - UI/UX considerations for project switching experience
+
+
+        **Next Human Session:**
+
+        This task needs dedicated human development session OR should be broken into smaller
+        subtasks:
+
+        1. Task: Project store and state management
+
+        2. Task: API client header injection
+
+        3. Task: ProjectSelector component and layout integration
+
+        4. Task: WebSocket reconnection handling
+
+
+        Alternatively, allocate dedicated focused development time (estimate 2-4 hours) for full
+        implementation.
+
+
+        This task is correctly tagged automation:needs_review.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
