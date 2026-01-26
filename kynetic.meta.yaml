@@ -4382,4 +4382,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFXVK5QBFCN3A3BTXME0G86C
+    type: friction
+    content: dist/daemon/ can become stale without warning - packages/daemon/src changes aren't
+      reflected until root 'npm run build' is run. E2E tests can pass web-ui build but fail because
+      daemon code is outdated. Wasted debugging time on what appeared to be runtime error but was
+      actually stale build.
+    created_at: 2026-01-26T19:13:22.667Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
