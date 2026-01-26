@@ -10623,8 +10623,18 @@ runs:
   - _ulid: 01KFXVJD05WM6P0WRRB0JMG3CE
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-26T19:12:57.349Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-26T19:12:57.349Z
+        completed_at: 2026-01-26T19:13:47.142Z
+        notes: "Session reviewed. Captured: 1 friction (stale dist/daemon), 1 inbox item (build hook), 1
+          success (comparing dist vs source)."
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-26T19:13:47.142Z
+        completed_at: 2026-01-26T19:13:47.142Z
     initiated_by: "@claude"
