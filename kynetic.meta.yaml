@@ -4260,4 +4260,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVTBAYZ7S0403M97E2XG31T
+    type: friction
+    content: "Ralph loop iteration without progress: Loop ran 12 consecutive iterations with zero code
+      changes or git commits. All iterations exited with 'no automation-eligible tasks' message.
+      Tasks remained in_progress state throughout despite being marked automation:needs_review. Each
+      iteration added near-identical checkpoint notes documenting 'no work attempted'. Pattern
+      indicates need for circuit breaker that detects repeated no-progress iterations and either
+      auto-escalates tasks or stops the loop. Related to @01KF554T circuit breaker concept but
+      captures actual observed behavior rather than theoretical design."
+    created_at: 2026-01-26T00:13:08.448Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
