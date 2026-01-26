@@ -4304,8 +4304,11 @@ observations:
       notes to needs_review tasks."
     created_at: 2026-01-26T00:23:45.998Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Resolved by @01KFV6CZ (PR #247). Ralph loop now correctly exits when all in_progress
+      tasks are automation:needs_review. Verified in session 28."
+    resolved_at: 2026-01-26T01:13:16.392Z
+    resolved_by: "@claude"
   - _ulid: 01KFVTYW9TT5NNV7JNR0PHRM0R
     type: success
     content: "Task escalation with comprehensive rationale prevents false automation work. Pattern
