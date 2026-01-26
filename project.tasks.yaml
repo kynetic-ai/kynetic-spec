@@ -44901,6 +44901,58 @@
         - Verify deduplication
         - Test with invalid ref to verify graceful degradation
       supersedes: null
+    - _ulid: 01KFXSM8GTC0NDB508ZGGAYZ9B
+      created_at: 2026-01-26T18:39:01.146Z
+      author: "@claude"
+      content: >-
+        **Background - Why this matters:**
+
+
+        When two branches modify `depends_on` arrays using different reference formats for the same
+        item, the merge driver treats them as different values, creating false conflicts or
+        duplicate entries.
+
+
+        **How to reproduce:**
+
+        1. Branch A adds: `depends_on: ["@task-watcher-impl"]` (slug format)
+
+        2. Branch B adds: `depends_on: ["@01KFPRX9"]` (ULID format)
+
+        3. Both reference the SAME task
+
+        4. Merge results in: `depends_on: ["@task-watcher-impl", "@01KFPRX9"]` (duplicate!)
+
+
+        **Example conflict seen in real merge:**
+
+        ```
+
+        Ours:   ["@task-watcher-impl"]
+
+        Theirs: ["@01KFPRX9"]
+
+        ```
+
+
+        These are the same ref - merge driver should recognize equivalence and deduplicate.
+
+
+        **Expected behavior:**
+
+        After merge, `depends_on` should have ONE entry (either format is acceptable, preferring
+        ours).
+
+
+        **Key insight:**
+
+        The merge driver runs during git operations. It may not have full kspec context loaded.
+        Implementation needs to either:
+
+        1. Load a minimal ref index during merge, or
+
+        2. Document that ref normalization is best-effort (works in project context)
+      supersedes: null
   todos: []
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
