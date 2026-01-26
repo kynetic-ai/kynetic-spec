@@ -8921,7 +8921,7 @@ runs:
   - _ulid: 01KFVTVWZXY0TN41CC24A0ZNWG
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-26T00:22:11.197Z
     step_results:
@@ -8967,5 +8967,63 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-26T00:23:01.890Z
-        completed_at: 2026-01-26T00:23:01.890Z
+        completed_at: 2026-01-26T00:23:17.613Z
+        notes: >-
+          ## High-Confidence Friction Point
+
+
+          **Pattern:** Loop continues iterating when all active tasks are automation:needs_review
+
+
+          **Specifics:**
+
+          - 15 consecutive iterations (iteration 1-15)
+
+          - Each iteration: runs 'kspec tasks ready --eligible', finds 0 tasks, adds note to all 3
+          tasks
+
+          - Pattern is systemic: happens every time all tasks escalated
+
+          - Cost: unnecessary API calls, note bloat, slower exit
+
+
+          **Root Cause:** Exit condition checks 'kspec tasks ready --eligible' but continues
+          documenting status on needs_review tasks
+
+
+          **Ideal Behavior:** Exit immediately when no eligible tasks remain, without additional
+          status notes
+
+
+          **Confidence Level:** HIGH - directly observed across 15 iterations this session
+
+
+          **Check Against Search:**
+
+          - Not covered by existing observation @01KFMMZW (different issue - tag disconnect)
+
+          - Not covered by completed task about exit conditions (that fixed filtering, not early
+          exit)
+
+
+          ## High-Confidence Success
+
+
+          **Pattern:** Task escalation with comprehensive rationale prevents false work
+
+
+          **Specifics:**
+
+          - All 3 tasks tagged needs_review with multi-paragraph explanation
+
+          - Zero attempted implementations when work wasn't eligible
+
+          - Notes document WHAT blocks, WHY it's not automatable, WHAT human needs to do
+
+
+          **Confidence Level:** HIGH - clear evidence in task notes, zero false work attempts
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-26T00:23:17.613Z
+        completed_at: 2026-01-26T00:23:17.613Z
     initiated_by: "@claude"
