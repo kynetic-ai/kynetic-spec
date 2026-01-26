@@ -34861,6 +34861,71 @@
 
         3. Fix filter tests after click issue resolved
       supersedes: null
+    - _ulid: 01KFXZMX7T89VE6KGT8RPFE3KF
+      created_at: 2026-01-26T20:24:13.819Z
+      author: "@claude"
+      content: >-
+        Session progress - bits-ui Portal reactivity issue identified:
+
+
+        **Root Cause Found:**
+
+        bits-ui Sheet/Dialog components have a reactivity issue with Svelte 5 where the Portal's
+        PresenceManager doesn't properly receive prop updates, even when the parent's state is
+        confirmed true.
+
+
+        **Investigation Results:**
+
+        1. Click handlers work correctly - verified via console logs
+
+        2. State updates correctly - debug elements show `open=true` and task data
+
+        3. bits-ui Dialog's internal PresenceManager.shouldRender returns false even when open=true
+
+        4. This is a known issue category with bits-ui and Svelte 5 portal rendering
+
+
+        **Attempted Solutions:**
+
+        1. Native `<tr>` instead of TableRow - FIXED click events
+
+        2. Converting to Svelte 5 runes ($props, $bindable) - didn't fix
+
+        3. Using a store (taskDetailStore.svelte.ts) - didn't fix
+
+        4. Custom TaskDetailPanel without bits-ui - still failing (may be SSR issue)
+
+
+        **Files Created/Modified:**
+
+        - packages/web-ui/src/lib/stores/taskDetail.svelte.ts (new store)
+
+        - packages/web-ui/src/lib/components/TaskDetailPanel.svelte (custom sheet)
+
+        - packages/web-ui/src/lib/components/TaskList.svelte (native tr, onclick handlers)
+
+        - packages/web-ui/src/routes/tasks/+page.svelte (updated for store)
+
+        - packages/web-ui/tests/e2e/tasks.spec.ts (debug logging)
+
+
+        **Next Steps to Try:**
+
+        1. Debug why custom TaskDetailPanel isn't rendering (may be SSR/hydration issue)
+
+        2. Try passing store via context instead of direct import
+
+        3. Consider using a traditional Svelte writable store instead of $state in .svelte.ts file
+
+        4. Check if SvelteKit's adapter-static affects client-side reactivity
+
+
+        **Test Status:** 3/17 passing (basic display tests work, all panel-related tests fail)
+
+
+        **Branch:** feature/tasks-view-e2e-fixes (uncommitted changes)
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
