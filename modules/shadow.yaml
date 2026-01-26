@@ -317,6 +317,10 @@ features:
         given: .gitignore has uncommitted changes
         when: kspec init runs
         then: it fails with error explaining the issue
+      - id: ac-shadow-init-6
+        given: kspec init runs
+        when: merge driver configuration fails (kspec not in PATH, permission error)
+        then: warning is shown but init continues (merge driver is optional)
     implements:
       - "@cmd-init"
     requirements:
