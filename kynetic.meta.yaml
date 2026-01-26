@@ -482,10 +482,6 @@ workflows:
           After PR created, EXIT - ralph handles PR review via separate subagent.
         execution:
           mode: silent
-    mode: loop
-    based_on: "@task-work-session"
-    tags:
-      - loop
   - _ulid: 01KFRPSFFH357GG0EP0JJZ2NA7
     id: session-reflect-loop
     trigger: loop-iteration-end
@@ -541,10 +537,6 @@ workflows:
 
           Only capture items that passed the evaluation in step 3.
           Be selective - lower volume, higher quality.
-    mode: loop
-    based_on: "@session-reflect"
-    tags:
-      - loop
   - _ulid: 01KFRX0S3VBZGV72A17E21AB9E
     id: pr-review-loop
     trigger: loop-pr-review
@@ -678,10 +670,6 @@ workflows:
 
           Be selective - systemic patterns only, not one-off issues.
           This step is optional - only capture if friction was encountered.
-    mode: loop
-    tags:
-      - loop
-      - pr-review
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
@@ -4373,6 +4361,16 @@ observations:
       progress. Exit condition now filters both ready AND in_progress tasks by automation:eligible
       status."
     created_at: 2026-01-26T01:13:25.730Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KFXTADHRF0ZBX4E0HR7H11AS
+    type: friction
+    content: "Tasks created via 'kspec derive' have auto-generated notes that just copy spec content.
+      For standalone tasks, needed to manually add structured sections: Background (why this
+      matters), Reproduction steps, Concrete examples, Open design questions. This structure makes
+      tasks actionable without conversation context."
+    created_at: 2026-01-26T18:51:07.192Z
     author: "@claude"
     resolved: false
     resolution: null
