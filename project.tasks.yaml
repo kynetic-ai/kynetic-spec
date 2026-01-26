@@ -43450,6 +43450,37 @@
         Session 30 complete. Task correctly remains in_progress pending human implementation
         session.
       supersedes: null
+    - _ulid: 01KFXCERV1NHADN1A9ZKR55F7D
+      created_at: 2026-01-26T14:48:49.761Z
+      author: "@claude"
+      content: |-
+        Investigation found ralph loop accomplished ZERO implementation work:
+
+        **What exists:**
+        - E2E test skeleton with 11 test cases (all test.skip())
+        - That's it. No actual implementation.
+
+        **What's missing (100% of implementation):**
+        - ProjectSelector.svelte component (not created)
+        - Project store (not created)
+        - API client X-Kspec-Dir header injection (not implemented)
+        - Layout integration (not done)
+        - WebSocket reconnection on project change (not implemented)
+
+        **Loop behavior:**
+        - 30 iterations of noting 'task not automation-eligible'
+        - Correctly escalated to needs_review
+        - Then kept cycling instead of exiting, adding redundant checkpoint notes
+
+        **To complete this task:**
+        1. Create project store (Svelte writable or context)
+        2. Modify lib/api.ts to inject X-Kspec-Dir header
+        3. Build ProjectSelector.svelte with dropdown UI
+        4. Integrate into +layout.svelte
+        5. Handle WebSocket reconnection on project change
+        6. Add persistence (localStorage or URL state)
+        7. Remove test.skip() and verify E2E tests pass
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
