@@ -771,3 +771,12 @@ inbox:
       - cli
       - automation
     added_by: "@claude"
+  - _ulid: 01KFXVKCFHNA343QRNFNYR44XC
+    text: Add pre-test hook or watcher to ensure dist/daemon/ is rebuilt when packages/daemon/src
+      changes - prevents stale daemon code causing mysterious E2E failures
+    created_at: 2026-01-26T19:13:29.585Z
+    tags:
+      - build
+      - dx
+      - daemon
+    added_by: "@claude"
