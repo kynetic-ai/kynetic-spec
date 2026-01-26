@@ -10304,7 +10304,7 @@ runs:
   - _ulid: 01KFVXQ5KRV7B66CVFKP17K1K0
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-26T01:12:01.913Z
     step_results:
@@ -10318,5 +10318,24 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-26T01:13:34.106Z
-        completed_at: 2026-01-26T01:13:34.106Z
+        completed_at: 2026-01-26T01:13:43.362Z
+        notes: |-
+          HIGH CONFIDENCE ITEMS IDENTIFIED:
+
+          1. SUCCESS: Exit condition fix from @01KFV6CZ working correctly
+             - Session 28 exited immediately when no eligible tasks found
+             - Zero redundant iterations (previous sessions had 30+ wasted iterations)
+             - Verified against existing friction observations @01KFTRRA, @01KFTRY6, @01KFVTYS
+
+          ALREADY CAPTURED:
+          - Success observation created: @01KFVXSQ
+          - Resolved 3 related friction observations
+
+          NO OTHER HIGH-CONFIDENCE ITEMS:
+          - Session 28 performed zero work, minimal surface area for new patterns
+          - Checkpoint hook behavior already tracked in existing observations
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-26T01:13:43.362Z
+        completed_at: 2026-01-26T01:13:43.362Z
     initiated_by: "@claude"
