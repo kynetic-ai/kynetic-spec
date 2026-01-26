@@ -4100,8 +4100,12 @@ observations:
       iteration starts, or iteration budget exemption for no-op sessions."
     created_at: 2026-01-25T14:26:02.191Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Resolved by @01KFV6CZ (PR #247). Ralph loop now filters both ready AND in_progress
+      tasks by automation:eligible. Session 28 demonstrates clean exit when no eligible tasks remain
+      - zero redundant iterations."
+    resolved_at: 2026-01-26T01:13:03.331Z
+    resolved_by: "@claude"
   - _ulid: 01KFTRY6ASB4AHM7D0ZTP2HX68
     type: friction
     content: "Loop mode runs redundant iterations when no progress possible. Iterations 22-24 added
