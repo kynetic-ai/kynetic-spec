@@ -4249,4 +4249,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVSKKCZVQ2K2BRJMT0A86WP
+    type: friction
+    content: "Loop mode automation tag disconnect: Across 8 consecutive loop iterations, task notes
+      documented 'marked automation:needs_review' but the actual command 'kspec task set @ref
+      --automation needs_review' was never executed. This suggests a pattern in autonomous loops
+      where intent is documented in notes but the corresponding state change command is not run.
+      Root cause: loop documenting WHAT should happen without executing HOW to make it happen."
+    created_at: 2026-01-26T00:00:10.655Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
