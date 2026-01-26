@@ -3,7 +3,7 @@ import Portal from "./sheet-portal.svelte";
 import Trigger from "./sheet-trigger.svelte";
 import Close from "./sheet-close.svelte";
 import Overlay from "./sheet-overlay.svelte";
-import Content from "./sheet-content.svelte";
+import Content, { sheetVariants } from "./sheet-content.svelte";
 import Header from "./sheet-header.svelte";
 import Footer from "./sheet-footer.svelte";
 import Title from "./sheet-title.svelte";
@@ -20,6 +20,7 @@ export {
 	Footer,
 	Title,
 	Description,
+	sheetVariants,
 	//
 	Root as Sheet,
 	Close as SheetClose,
