@@ -34687,6 +34687,49 @@
 
         4. Run E2E tests and verify all pass
       supersedes: null
+    - _ulid: 01KFXF30E2E6ZSDY8VVG8SC3ME
+      created_at: 2026-01-26T15:34:50.051Z
+      author: "@claude"
+      content: >-
+        E2E test infrastructure fixed:
+
+
+        **Completed:**
+
+        1. Fixed daemon ReferenceIndex bug (`{} is not iterable`) - was passing ctx instead of
+        (tasks, items)
+
+        2. Updated playwright.config.ts to use daemon on port 3456 instead of Vite preview
+
+        3. Updated test-base.ts to check for web UI build and set WEB_UI_DIR env var
+
+        4. Added 'npm run build' to test:e2e scripts to ensure UI is always rebuilt
+
+        5. Added data-testid attributes to components (via subagents)
+
+
+        **Current test results:** 3/17 passing
+
+        - Passing: basic task list display, mobile viewport, automation filter
+
+        - Failing: filter interactions, detail panel, task actions
+
+
+        **Root causes of remaining failures:**
+
+        1. Filter test IDs may not match Select component implementation (shadcn/bits-ui)
+
+        2. Task detail panel test ID not being found when clicking task rows
+
+        3. Some test assumptions about component behavior may be incorrect
+
+
+        **Next steps:**
+
+        - Verify test IDs match actual component structure (especially for Select/dropdown)
+
+        - Debug detail panel click behavior - may need to check if click handler works
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
