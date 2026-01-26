@@ -4364,4 +4364,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVXSQF1YH0J7X5HPQHJDR8D
+    type: success
+    content: "Ralph loop exit condition working correctly: Session 28 demonstrated clean exit behavior
+      after @01KFV6CZ fix. Loop checked 'kspec tasks ready --eligible', found empty array (all 3
+      in_progress tasks were automation:needs_review), and exited immediately with zero redundant
+      iterations. This resolves the overnight session issue where loops ran 30+ iterations with no
+      progress. Exit condition now filters both ready AND in_progress tasks by automation:eligible
+      status."
+    created_at: 2026-01-26T01:13:25.730Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
