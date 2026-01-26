@@ -34730,6 +34730,85 @@
 
         - Debug detail panel click behavior - may need to check if click handler works
       supersedes: null
+    - _ulid: 01KFXP1RD8MEW5VGYXCZKEGJDA
+      created_at: 2026-01-26T17:36:29.096Z
+      author: "@claude"
+      content: >-
+        Session progress - E2E test infrastructure fixed, blocked on UI click events
+
+
+        **Branch:** feature/tasks-view-e2e-fixes (pushed)
+
+
+        **Completed:**
+
+        1. Fixed import statements in errors.spec.ts, navigation.spec.ts, observations.spec.ts to
+        use test-base fixture
+
+        2. Added daemon fixture to beforeEach hooks in all test files that were missing it
+
+        3. Fixed test-base.ts to exclude multi-dir fixtures (has nested .kspec dirs that confused
+        task loading)
+
+        4. Updated TaskList.svelte to use onclick (Svelte 5) instead of on:click (Svelte 4)
+
+        5. Added callback prop pattern (onSelectTask) to TaskList for explicit event handling
+
+        6. Verified daemon API works correctly - returns 3 tasks from fixtures
+
+        7. Verified tasks display in UI - "Showing 3 of 3 tasks" visible in test screenshots
+
+
+        **Current Test Status:** 3/17 tasks.spec.ts tests passing
+
+        - PASSING: displays task with title/status/priority/spec_ref/notes_count
+
+        - PASSING: adapts to mobile viewport
+
+        - PASSING: basic task list display
+
+
+        **Root Blocker:** Click events on task rows don't trigger detail panel
+
+        - onclick handler on TableRow should spread to <tr> via {...restProps}
+
+        - Test clicks task row but detail panel never appears
+
+        - Both callback prop and event dispatch patterns attempted, neither works
+
+        - API endpoint /api/tasks/:ref works correctly when tested directly
+
+
+        **Files Modified:**
+
+        - packages/web-ui/tests/e2e/*.spec.ts - fixture imports and beforeEach
+
+        - packages/web-ui/tests/fixtures/test-base.ts - exclude multi-dir
+
+        - packages/web-ui/src/lib/components/TaskList.svelte - onclick + callback pattern
+
+        - packages/web-ui/src/routes/tasks/+page.svelte - callback handler
+
+
+        **Next Steps:**
+
+        1. Check Playwright test video to see if click is visually happening
+
+        2. Add console.log in browser to verify click handler fires
+
+        3. Check if TableRow's {...restProps} actually includes onclick
+
+        4. May need to modify table-row.svelte to explicitly forward click events
+
+        5. Alternatively, use native <tr> element directly with onclick instead of TableRow
+
+
+        **Secondary Issues (to fix after click works):**
+
+        - Filter tests expect "In Progress" status but fixtures only have pending/completed
+
+        - Update fixtures to include in_progress task OR update tests to match fixtures
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
