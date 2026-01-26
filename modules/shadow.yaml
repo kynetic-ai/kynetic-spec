@@ -731,6 +731,10 @@ features:
             given: file is not a recognized kspec file
             when: merge driver runs
             then: driver falls back to default behavior (copy ours)
+          - id: ac-7
+            given: file has root-level array (e.g., *.tasks.yaml, *.inbox.yaml)
+            when: merge driver processes
+            then: root is identified as array and ULID-based array merge applied to root
         status:
           maturity: draft
           implementation: implemented
