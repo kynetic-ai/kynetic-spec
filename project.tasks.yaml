@@ -44835,3 +44835,42 @@
         - Fixture files exist and are valid YAML
       supersedes: null
   todos: []
+- title: "Implement: Reference Normalization in Merges"
+  type: task
+  spec_ref: "@merge-ref-normalization"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-reference-normalization-in-merges
+  tags: []
+  depends_on:
+    - "@01KFM7FQ"
+  notes:
+    - _ulid: 01KFXSGACWPEA08Q7VS0FDB6A7
+      created_at: 2026-01-26T18:36:51.996Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        When merging set-like arrays containing kspec references (depends_on, blocked_by, spec_ref),
+        references should be normalized to canonical form before comparison to prevent false
+        conflicts.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given both versions add refs to depends_on array, when one uses @slug and other uses
+        @ULID for same item, then refs are deduplicated (one entry in result, not two)
+
+        - ac-2: Given merge encounters ref that cannot be resolved, when normalization runs, then
+        ref is kept as-is (no error, graceful degradation)
+      supersedes: null
+  _ulid: 01KFXSGACX5DSA6ACKG95H8593
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-26T18:36:51.997Z
+  todos: []
