@@ -4392,4 +4392,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFXVKJJE3JWG67VFYNM64ZC8
+    type: success
+    content: Comparing dist/ vs source when debugging daemon issues - immediately revealed the stale
+      build problem when runtime debugging was going in circles
+    created_at: 2026-01-26T19:13:35.823Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
