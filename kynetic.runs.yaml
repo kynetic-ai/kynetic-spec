@@ -10064,7 +10064,7 @@ runs:
   - _ulid: 01KFVX900W0JEZTZJGJAV27KT0
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-26T01:04:17.436Z
     step_results:
@@ -10121,5 +10121,30 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-26T01:05:13.022Z
-        completed_at: 2026-01-26T01:05:13.022Z
+        completed_at: 2026-01-26T01:05:25.627Z
+        notes: |-
+          ## High-Confidence Friction
+
+          **Bulk note operations for loop iteration tracking**
+          - Concrete: Need to add same 'Loop iteration N - exit' note to 3 tasks every iteration
+          - Systemic: Repeated across 26 iterations, will continue in future loop sessions
+          - Cause/effect: No bulk operation → manual repetition of identical commands
+          - Certainty: 100% - personally experienced 78 times this session (3 tasks × 26 iterations)
+
+          **Search coverage:** Partially tracked
+          - @01KF8TQ5 covers bulk operations generally (transaction/batch mechanics)
+          - Does not mention specific use case: bulk notes for loop iteration tracking
+          - Gap: Practical need for 'kspec task note @ref1 @ref2 ... "shared content"'
+
+          ## High-Confidence Success
+
+          None that rise to capture level - patterns already well-established.
+
+          ## Proposed Capture
+
+          Refine @01KF8TQ5 or add new inbox item specifically for bulk note operations
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-26T01:05:25.627Z
+        completed_at: 2026-01-26T01:05:25.627Z
     initiated_by: "@claude"
