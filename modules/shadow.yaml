@@ -759,6 +759,10 @@ features:
             given: both versions add refs to depends_on array
             when: one uses @slug and other uses @ULID for same item
             then: refs are deduplicated (one entry in result, not two)
+          - id: ac-2
+            given: merge encounters ref that cannot be resolved
+            when: normalization runs
+            then: ref is kept as-is (no error, graceful degradation)
     status:
       maturity: draft
       implementation: implemented
