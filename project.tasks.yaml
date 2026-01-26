@@ -44953,6 +44953,37 @@
 
         2. Document that ref normalization is best-effort (works in project context)
       supersedes: null
+    - _ulid: 01KFXSN1A5VT79A53JHAK2V7GC
+      created_at: 2026-01-26T18:39:26.534Z
+      author: "@claude"
+      content: >-
+        **Open design question (resolve before implementation):**
+
+
+        The merge driver is invoked by git with just file paths - it doesn't have the full kspec
+        context loaded. To normalize refs, we need to resolve @slug → @ULID.
+
+
+        **Options:**
+
+        1. **Lazy load index**: During merge, call `loadKspecContext()` to get ref resolution. Adds
+        latency but works everywhere.
+
+
+        2. **Best-effort**: Only normalize if running in a kspec project context. Document that
+        normalization may not work in bare repos or outside project.
+
+
+        3. **ULID-only comparison**: Skip slug resolution entirely. Only deduplicate exact string
+        matches. Simpler but doesn't solve the original problem.
+
+
+        **Recommendation:** Option 1 (lazy load) - the merge driver already reads YAML files,
+        loading the index is similar overhead and provides correct behavior.
+
+
+        This question should be answered before starting implementation.
+      supersedes: null
   todos: []
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
