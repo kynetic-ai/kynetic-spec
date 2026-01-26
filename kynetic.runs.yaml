@@ -8256,7 +8256,7 @@ runs:
   - _ulid: 01KFVSJ1P0G9DTCFCZEKDDXCWN
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 4
     started_at: 2026-01-25T23:59:19.745Z
     step_results:
@@ -8289,5 +8289,21 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-26T00:00:29.607Z
-        completed_at: 2026-01-26T00:00:29.607Z
+        completed_at: 2026-01-26T00:00:37.585Z
+        notes: >-
+          Evaluation complete:
+
+          - Friction #1 (automation tag gap): UNIQUE + HIGH CONFIDENCE -> CAPTURED as @01KFVSKK
+
+          - Friction #2 (working directory): DUPLICATE -> SKIPPED (refs: @01KFE13R, @01KFE1BK,
+          @01KFDQ92)
+
+          - Friction #3 (eligibility explanation): LOW CONFIDENCE -> SKIPPED
+
+
+          Final capture count: 1 observation
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-26T00:00:37.585Z
+        completed_at: 2026-01-26T00:00:37.585Z
     initiated_by: "@claude"
