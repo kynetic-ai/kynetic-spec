@@ -10657,7 +10657,7 @@ runs:
   - _ulid: 01KFYAEBGN5J7JSB3BV7C5SA5A
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-26T23:32:53.397Z
     step_results:
@@ -10753,5 +10753,27 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-26T23:33:55.239Z
-        completed_at: 2026-01-26T23:33:55.239Z
+        completed_at: 2026-01-26T23:34:06.312Z
+        notes: >-
+          **Proposed Improvements:**
+
+
+          1. **Document bits-ui Svelte 5 workaround pattern**
+             - What: Add to AGENTS.md a section on bits-ui Portal issues with Svelte 5 and the workaround (use native elements or custom components for clickable items that need to trigger dialogs)
+             - How it helps: Saves future sessions from rediscovering this issue
+             - Scope: Small - documentation only
+
+          2. **E2E test dev server mode**
+             - What: Configure Playwright to work with vite dev server instead of requiring full build, or add a watch mode for faster iteration
+             - How it helps: Reduces test iteration from 12+ seconds to 1-2 seconds
+             - Scope: Medium - config changes + potential test fixture updates
+
+          3. **Capture success pattern: Debug element technique**
+             - What: Add observation about using conditional debug elements (`{#if state}<div data-testid>`) to verify runtime state
+             - How it helps: Documents a useful debugging pattern for Svelte reactivity issues
+             - Scope: Small - single observation
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-26T23:34:06.312Z
+        completed_at: 2026-01-26T23:34:06.312Z
     initiated_by: "@claude"
