@@ -4310,4 +4310,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVVATF0YA11E7EB88TAHP3X
+    type: friction
+    content: "Ralph automation loop ran 10+ iterations (7-17) with zero implementation work after all
+      tasks marked needs_review. Loop exit logic only checks task existence, not progress
+      stagnation. Should detect: N consecutive iterations with no file changes, commits, or task
+      status transitions → early exit with diagnostic."
+    created_at: 2026-01-26T00:30:20.128Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
