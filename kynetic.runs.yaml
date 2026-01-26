@@ -10067,6 +10067,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-26T01:04:17.436Z
+    completed_at: 2026-01-26T01:05:53.397Z
     step_results:
       - step_index: 0
         status: completed
@@ -10192,4 +10193,11 @@ runs:
           Successes (clean exit detection, escalation tracking) are already established patterns,
           not new discoveries.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T01:05:53.397Z
+  - _ulid: 01KFVXGJ1N7GA4PNBMF3RF2VSD
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T01:08:25.269Z
+    step_results: []
+    initiated_by: "@claude"
