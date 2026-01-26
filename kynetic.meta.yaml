@@ -4273,4 +4273,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFVTBKBKDNJ0HJ6VMJ9AXQMH
+    type: success
+    content: "Session checkpoint hook enforcement prevented task abandonment: Stop hook detected 3
+      in_progress tasks without recent meaningful progress and blocked session exit until checkpoint
+      notes were added. All tasks received documentation of current state, blockers, and next steps.
+      This pattern ensures tasks don't silently stall - they either get documented or completed.
+      Hook runs automatically on session end with no manual intervention needed. Particularly
+      valuable for automation loops where task state must be explicit for next iteration."
+    created_at: 2026-01-26T00:13:17.043Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
