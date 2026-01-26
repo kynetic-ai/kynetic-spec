@@ -759,3 +759,15 @@ inbox:
       - testing
       - e2e
     added_by: "@claude"
+  - _ulid: 01KFVXBMH4J80Z83NPPA1SFTSJ
+    text: "Bulk note operation for loop iteration tracking - Add command syntax to write same note to
+      multiple tasks: kspec task note @ref1 @ref2 @ref3 'shared content'. Use case: loop mode
+      iterations need to document exit state across all active tasks without repetitive commands.
+      Experienced 78 repetitions in session 01KFVX900W (3 tasks × 26 iterations). Simpler than full
+      transaction mechanics (@01KF8TQ5) - just multi-target note operation."
+    created_at: 2026-01-26T01:05:43.972Z
+    tags:
+      - reflection
+      - cli
+      - automation
+    added_by: "@claude"
