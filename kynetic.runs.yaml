@@ -8259,6 +8259,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-25T23:59:19.745Z
+    completed_at: 2026-01-26T00:00:45.007Z
     step_results:
       - step_index: 0
         status: completed
@@ -8313,4 +8314,11 @@ runs:
 
           Session reflection finished. 1 high-confidence friction observation captured.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T00:00:45.007Z
+  - _ulid: 01KFVSSGFNAC64VP4CFFPWD40W
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-26T00:03:24.278Z
+    step_results: []
+    initiated_by: "@claude"
