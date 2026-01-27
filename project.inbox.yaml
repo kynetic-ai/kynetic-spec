@@ -788,3 +788,14 @@ inbox:
       - e2e
       - dx
     added_by: "@claude"
+  - _ulid: 01KG0HGTJVHDETGG955S962QZQ
+    text: "Fixture validation script (standalone): Create a script (e.g., scripts/validate-fixtures.ts)
+      that validates test fixture YAML files against expected schemas. Should check kynetic.yaml
+      manifest, tasks files, module files for structural issues like invalid ULIDs, missing required
+      fields, wrong types. Run as part of CI or pre-commit, not built into kspec CLI."
+    created_at: 2026-01-27T20:15:03.259Z
+    tags:
+      - reflection
+      - testing
+      - tooling
+    added_by: "@claude"
