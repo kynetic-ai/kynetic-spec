@@ -22,7 +22,6 @@ import {
   AlignmentIndex,
   type LoadedSpecItem,
 } from '../../parser/index.js';
-import { join } from 'path';
 
 interface ItemsRouteOptions {}
 
@@ -35,8 +34,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
       '/',
       async ({ query, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
 
         // Apply filters
@@ -125,8 +123,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
       '/:ref',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
         const tasks = await loadAllTasks(ctx);
         const index = new ReferenceIndex(tasks, items);
@@ -182,8 +179,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
       '/:ref/tasks',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
         const tasks = await loadAllTasks(ctx);
         const refIndex = new ReferenceIndex(tasks, items);

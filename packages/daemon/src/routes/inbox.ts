@@ -27,7 +27,6 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
-import { join } from 'path';
 
 interface InboxRouteOptions {
   pubsub: PubSubManager;
@@ -40,8 +39,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
     // AC: @api-contract ac-12 - List inbox items ordered by created_at desc
     .get('/', async ({ projectContext }) => {
       // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const kspecDir = join(projectContext.path, '.kspec');
-      const ctx = await initContext(kspecDir);
+      const ctx = await initContext(projectContext.path);
       const items = await loadInboxItems(ctx);
 
       // AC: @api-contract ac-12 - Sort by created_at descending (newest first)
@@ -60,8 +58,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
       '/',
       async ({ body, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
 
         // AC: @trait-api-endpoint ac-3 - Validate body
         if (!body.text || typeof body.text !== 'string' || body.text.trim().length === 0) {
@@ -88,7 +85,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
 
         // Save and commit
         await saveInboxItem(ctx, item);
-        await commitIfShadow(ctx, `inbox: add item ${item._ulid}`);
+        await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
 
         // Broadcast update
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
@@ -116,8 +113,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
       '/:ref',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const inboxItems = await loadInboxItems(ctx);
         const tasks = await loadAllTasks(ctx);
         const specItems = await loadAllItems(ctx);
@@ -144,7 +140,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
 
         // AC: @api-contract ac-14 - Delete item
         await deleteInboxItem(ctx, result.ulid);
-        await commitIfShadow(ctx, `inbox: delete ${params.ref}`);
+        await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
 
         // Broadcast update
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project

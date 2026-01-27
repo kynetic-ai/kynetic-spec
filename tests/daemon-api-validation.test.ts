@@ -134,7 +134,6 @@ describe('Validation API Endpoints', () => {
 
     // Check usage
     expect(serverContent).toContain('createValidationRoutes');
-    expect(serverContent).toContain('kspecDir');
   });
 
   // Type safety check
