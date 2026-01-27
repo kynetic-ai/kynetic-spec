@@ -11232,7 +11232,7 @@ runs:
   - _ulid: 01KG0N24B4HXS3Z9WNY0Z6MQZY
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-27T21:16:56.036Z
     step_results:
@@ -11276,5 +11276,50 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-27T21:17:21.347Z
-        completed_at: 2026-01-27T21:17:21.347Z
+        completed_at: 2026-01-27T21:18:03.211Z
+        notes: >-
+          ## High-Confidence Items
+
+
+          ### Friction: Silent safeParse failures in item extraction
+
+          **Confidence: HIGH** - Encountered multiple times, systemic issue
+
+          **Pattern:** When SpecItemSchema.safeParse() fails, extractItemsFromRaw() silently
+          continues. Items just don't appear in results with no error/warning. Caused significant
+          debugging time for trait (wrong enum values) and module (nested items in traits field).
+
+          **Search result:** No existing tracking found for this specific silent failure pattern.
+
+
+          ### Success: Quick Node.js debugging scripts
+
+          **Confidence: HIGH** - Used effectively this session
+
+          **Pattern:** Writing inline Node.js scripts to test schema parsing in isolation: `node -e
+          'const result = Schema.safeParse(data); console.log(result.success, result.error)'`
+
+          **Search result:** Similar to 01KFCS35 'Test-first debugging workflow' but more specific.
+
+
+          ### Friction: Test fixture schema drift
+
+          **Confidence: MEDIUM** - One-off but indicates systemic gap
+
+          **Pattern:** Fixtures used '_ulid' for AC but schema expects 'id'. Status enums also
+          mismatched. Fixtures should be validated against schema.
+
+          **Search result:** 01KFBDQE 'Add spec-schema drift detection' is blocked - related but not
+          same (that's for spec files, not test fixtures).
+
+
+          ### Not Capturing (low confidence/one-off):
+
+          - Parser vs daemon layer guidance (was my mistake, user corrected appropriately)
+
+          - Playwright nested selector issues (standard Playwright usage, not kspec-specific)
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-27T21:18:03.211Z
+        completed_at: 2026-01-27T21:18:03.211Z
     initiated_by: "@claude"
