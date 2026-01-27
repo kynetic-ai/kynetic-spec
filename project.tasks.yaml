@@ -40101,3 +40101,21 @@
         keys ("0", "1", etc).
       supersedes: null
   todos: []
+- title: Implement AC test coverage indicator in Items View
+  type: task
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - web-ui
+    - implementation
+  _ulid: 01KG0G9PVZRNSCK547VHH478JV
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-27T19:53:41.503Z
+  notes: []
+  todos: []
