@@ -939,7 +939,26 @@ export function extractItemsFromRaw(
     "_ulid" in raw &&
     typeof (raw as Record<string, unknown>)._ulid === "string"
   ) {
-    const result = SpecItemSchema.safeParse(raw);
+    // Strip nested item arrays before validation since they're processed separately
+    // and the SpecItemSchema expects refs (strings), not nested objects
+    const rawObj = raw as Record<string, unknown>;
+    const cleanedForValidation: Record<string, unknown> = { ...rawObj };
+    for (const field of NESTED_ITEM_FIELDS) {
+      if (field in cleanedForValidation && Array.isArray(cleanedForValidation[field])) {
+        const arr = cleanedForValidation[field] as unknown[];
+        // Check if array contains nested items (objects with _ulid) vs refs (strings)
+        const hasNestedItems = arr.some(
+          (item) =>
+            item && typeof item === "object" && "_ulid" in (item as Record<string, unknown>)
+        );
+        if (hasNestedItems) {
+          // Strip nested items - they'll be extracted recursively
+          delete cleanedForValidation[field];
+        }
+      }
+    }
+
+    const result = SpecItemSchema.safeParse(cleanedForValidation);
     if (result.success) {
       items.push({
         ...result.data,
@@ -949,7 +968,6 @@ export function extractItemsFromRaw(
     }
 
     // Even if the item itself was added, also extract nested items
-    const rawObj = raw as Record<string, unknown>;
     for (const field of NESTED_ITEM_FIELDS) {
       if (field in rawObj && Array.isArray(rawObj[field])) {
         const arr = rawObj[field] as unknown[];

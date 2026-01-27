@@ -15,8 +15,8 @@ traits:
     title: Test Trait
     type: trait
     status:
-      maturity: approved
-      implementation: complete
+      maturity: stable
+      implementation: verified
     description: A reusable test trait for verifying trait chip navigation
 
 features:
@@ -35,11 +35,11 @@ features:
     traits:
       - "@test-trait"
     acceptance_criteria:
-      - _ulid: 01KF1645CBAC00010000000001
+      - id: ac-1
         given: a user is viewing the feature
         when: they check the status
         then: the feature shows as in progress
-      - _ulid: 01KF1645CBAC00020000000002
+      - id: ac-2
         given: a user wants to understand the feature
         when: they read the description
         then: they see clear documentation of what the feature does
