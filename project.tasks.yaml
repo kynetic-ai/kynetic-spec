@@ -33604,6 +33604,14 @@
         - packages/web-ui/tests/fixtures/test-base.ts
         - packages/web-ui/tests/e2e/items.spec.ts
       supersedes: null
+    - _ulid: 01KG0G98DCZ078M0GQ7XV7E0H4
+      created_at: 2026-01-27T19:53:26.701Z
+      author: "@claude"
+      content: |-
+        WIP branch pushed: items-view-e2e-rewrite
+
+        Continue work from this branch in next session.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
