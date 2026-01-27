@@ -33082,6 +33082,53 @@
 
         3. May need to report Svelte 5 SSR reactivity bug
       supersedes: null
+    - _ulid: 01KFYPK37SCF8PTG0BR2RBC8FD
+      created_at: 2026-01-27T03:05:11.673Z
+      author: "@claude"
+      content: >-
+        Investigation session - root cause analysis of E2E test failures:
+
+
+        **Two distinct issues identified:**
+
+
+        1. **Daemon routes calling initContext incorrectly (bug since day 1)**
+           - Routes call `initContext(kspecDir)` where `kspecDir = join(projectContext.path, '.kspec')`
+           - But `initContext` expects PROJECT ROOT, not `.kspec` path
+           - Works for E2E tests (no real worktree) but fails on real shadow worktree projects
+           - Fix: Change to `initContext(projectContext.path)` in all route files
+           - Files affected: tasks.ts, items.ts, inbox.ts, meta.ts, validation.ts
+
+        2. **E2E test fixture data gaps**
+           - Filter tests fail because fixtures have NO `in_progress` tasks
+           - Tests filter for in_progress and expect results, but get 0
+           - Fix: Add an in_progress task to tests/fixtures/project.tasks.yaml
+
+        3. **Detail panel reactivity issue (original blocker)**
+           - Panel still not opening when task clicked
+           - Current implementation uses Svelte writable stores
+           - May still have SSR/hydration issues with the inline panel approach
+
+        **Git history traced:**
+
+        - 8512ecc5: Original daemon implementation - always passed .kspec path (incorrect)
+
+        - 3320e6fe: Added detectRunningFromShadowWorktree check (Jan 20)
+
+        - 24298d47: Migrated routes to project context (Jan 24) - kept incorrect pattern
+
+
+        **Test status:** 3/17 passing (basic display, mobile viewport, automation filter)
+
+
+        **Next steps:**
+
+        1. Fix daemon routes to use projectContext.path
+
+        2. Add in_progress task to fixtures
+
+        3. Debug detail panel reactivity (may need browser-only rendering or different approach)
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
