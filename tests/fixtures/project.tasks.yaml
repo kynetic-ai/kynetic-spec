@@ -10,7 +10,6 @@ tasks:
     tags:
       - test
     description: A task that is pending and ready to work on
-    spec_ref: "@test-feature"
     depends_on: []
     notes: []
     todos: []

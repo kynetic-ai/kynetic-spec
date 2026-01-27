@@ -1,0 +1,62 @@
+_ulid: 01KF1645CB2FQ3F2XTPYVZGCFS
+slugs:
+  - test-core
+title: Core Module
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: Core functionality for E2E testing
+
+features:
+  - _ulid: 01KF1645CBTRATXW2T6HJMVA00
+    slugs:
+      - test-trait
+    title: Test Trait
+    type: trait
+    status:
+      maturity: stable
+      implementation: verified
+    description: A reusable test trait for verifying trait chip navigation
+    acceptance_criteria:
+      - id: ac-1
+        given: a spec implements this trait
+        when: viewing the spec
+        then: trait-related behavior is visible
+
+  - _ulid: 01KF1645CBDJYHWBPYWRN3HYPJ
+    slugs:
+      - test-feature
+    title: Test Feature
+    type: feature
+    status:
+      maturity: draft
+      implementation: in_progress
+    priority: high
+    tags:
+      - test
+    description: A test feature for integration testing
+    traits:
+      - "@test-trait"
+    acceptance_criteria:
+      - id: ac-1
+        given: a user is viewing the feature
+        when: they check the status
+        then: the feature shows as in progress
+      - id: ac-2
+        given: a user wants to understand the feature
+        when: they read the description
+        then: they see clear documentation of what the feature does
+    requirements:
+      - _ulid: 01KF1645CBKJNPWH1E02WN4MMX
+        slugs:
+          - test-requirement
+        title: Test Requirement
+        type: requirement
+        status:
+          maturity: draft
+          implementation: not_started
+        priority: medium
+        description: A test requirement nested under the feature
+        implements:
+          - "@test-feature"

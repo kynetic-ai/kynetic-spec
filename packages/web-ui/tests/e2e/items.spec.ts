@@ -215,7 +215,7 @@ test.describe('Items View', () => {
 
       // Task should show title and status
       const taskTitle = linkedTask.getByTestId('task-title');
-      await expect(taskTitle).toContainText('Test pending task');
+      await expect(taskTitle).toContainText('Ready task');
 
       const taskStatus = linkedTask.getByTestId('task-status-badge');
       await expect(taskStatus).toContainText('Pending');

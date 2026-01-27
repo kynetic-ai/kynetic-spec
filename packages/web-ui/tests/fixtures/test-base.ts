@@ -9,7 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const DAEMON_PORT = 3456;
-const ROOT_FIXTURES = join(__dirname, '../../../../tests/fixtures');
+// E2E tests use dedicated fixtures to avoid breaking unit tests
+const E2E_FIXTURES = join(__dirname, '../fixtures');
 // Path to built web UI (daemon serves this for E2E tests)
 const WEB_UI_BUILD = join(__dirname, '../../build');
 
@@ -82,14 +83,14 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     const kspecDir = join(tempDir, '.kspec');
     mkdirSync(kspecDir, { recursive: true });
 
-    // Copy test fixtures to .kspec subdirectory (simulating shadow worktree mode)
-    if (existsSync(ROOT_FIXTURES)) {
-      cpSync(ROOT_FIXTURES, kspecDir, {
+    // Copy E2E test fixtures to .kspec subdirectory (simulating shadow worktree mode)
+    if (existsSync(E2E_FIXTURES)) {
+      cpSync(E2E_FIXTURES, kspecDir, {
         recursive: true,
-        filter: (src) => !src.includes('multi-dir')
+        filter: (src) => !src.includes('test-base')
       });
     } else {
-      throw new Error(`Test fixtures not found at ${ROOT_FIXTURES}`);
+      throw new Error(`E2E test fixtures not found at ${E2E_FIXTURES}`);
     }
 
     // Initialize git repo in project root (required for kspec)

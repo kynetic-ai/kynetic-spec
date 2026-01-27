@@ -1,0 +1,25 @@
+kynetic_meta: "1.0"
+
+session:
+  focus: "E2E testing"
+  threads: []
+  questions: []
+
+observations:
+  - _ulid: 01KF0BS0CA45ZT43W2T6HJMVA1
+    created_at: "2026-01-23T09:00:00Z"
+    type: friction
+    content: "Test friction observation"
+    context: "During test setup"
+    resolved: false
+
+  - _ulid: 01KF0BS1CC9N4YGP991WD7XS8S
+    created_at: "2026-01-23T09:30:00Z"
+    type: success
+    content: "Test success observation"
+    context: "Pattern that worked"
+    resolved: false
+
+agents: []
+workflows: []
+conventions: []

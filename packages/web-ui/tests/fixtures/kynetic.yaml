@@ -1,0 +1,14 @@
+kynetic: "1.0"
+
+project:
+  name: "E2E Test Project"
+  version: "0.1.0"
+  status: draft
+  description: A test project for E2E testing
+
+includes:
+  - modules/core.yaml
+
+tasks_file: project.tasks.yaml
+inbox_file: project.inbox.yaml
+meta_file: kynetic.meta.yaml
