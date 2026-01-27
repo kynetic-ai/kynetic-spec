@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { execSync, spawnSync } from 'child_process';
-import { mkdirSync, cpSync, rmSync, existsSync } from 'fs';
+import { mkdirSync, cpSync, rmSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { tmpdir } from 'os';
 import { fileURLToPath } from 'url';
@@ -96,6 +96,17 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     execSync('git init', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
+
+    // Set up shadow worktree simulation for kspec to detect .kspec/ as spec directory
+    // The shadow detection checks if .kspec/.git is a file starting with "gitdir:"
+    // We create a fake .git file that satisfies this check
+    const gitWorktreesDir = join(tempDir, '.git', 'worktrees', '-kspec');
+    mkdirSync(gitWorktreesDir, { recursive: true });
+    // Create the .git file in .kspec pointing to the worktree location
+    writeFileSync(join(kspecDir, '.git'), `gitdir: ${gitWorktreesDir}\n`);
+    // Create minimal worktree metadata so git doesn't complain
+    writeFileSync(join(gitWorktreesDir, 'gitdir'), `${join(tempDir, '.git')}\n`);
+    writeFileSync(join(gitWorktreesDir, 'HEAD'), 'ref: refs/heads/kspec-meta\n');
 
     // Verify web UI is built (daemon serves it for E2E tests)
     if (!existsSync(WEB_UI_BUILD)) {

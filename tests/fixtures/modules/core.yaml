@@ -8,6 +8,17 @@ status:
   implementation: not_started
 description: Core functionality for testing
 
+traits:
+  - _ulid: 01KF1645CBTRATT00000000000
+    slugs:
+      - test-trait
+    title: Test Trait
+    type: trait
+    status:
+      maturity: approved
+      implementation: complete
+    description: A reusable test trait for verifying trait chip navigation
+
 features:
   - _ulid: 01KF1645CBDJYHWBPYWRN3HYPJ
     slugs:
@@ -16,11 +27,22 @@ features:
     type: feature
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
     priority: high
     tags:
       - test
     description: A test feature for integration testing
+    traits:
+      - "@test-trait"
+    acceptance_criteria:
+      - _ulid: 01KF1645CBAC00010000000001
+        given: a user is viewing the feature
+        when: they check the status
+        then: the feature shows as in progress
+      - _ulid: 01KF1645CBAC00020000000002
+        given: a user wants to understand the feature
+        when: they read the description
+        then: they see clear documentation of what the feature does
     requirements:
       - _ulid: 01KF1645CBKJNPWH1E02WN4MMX
         slugs:
