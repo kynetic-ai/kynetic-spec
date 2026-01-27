@@ -4479,4 +4479,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG0J4XRDKQ7Z6Y7FBP2TX1K8
+    type: success
+    content: Documenting blocking issues with specific symptoms, likely causes ranked by probability,
+      and debug commands - makes next session pickup much faster
+    created_at: 2026-01-27T20:26:01.869Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
