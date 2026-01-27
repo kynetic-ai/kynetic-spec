@@ -40101,21 +40101,37 @@
         keys ("0", "1", etc).
       supersedes: null
   todos: []
-- title: Implement AC test coverage indicator in Items View
+- _ulid: 01KG0G9PVZRNSCK547VHH478JV
+  slugs: []
+  title: Implement AC test coverage indicator in Items View
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags:
-    - web-ui
-    - implementation
-  _ulid: 01KG0G9PVZRNSCK547VHH478JV
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - web-ui
+    - implementation
   vcs_refs: []
   created_at: 2026-01-27T19:53:41.503Z
-  notes: []
+  notes:
+    - _ulid: 01KG0GA702KM4R9ZR8ZF3Y635N
+      created_at: 2026-01-27T19:53:58.018Z
+      author: "@claude"
+      content: |-
+        Wire up real test coverage data to the coverage indicator in ItemDetail.
+
+        Currently shows 'Coverage: Unknown' - placeholder for future implementation.
+
+        Requirements:
+        - Export scanTestCoverage() from validate.ts
+        - Add coverage data to Items API response  
+        - Update shared types for coverage info
+        - Update ItemDetail.svelte to display actual coverage status
+
+        Related to AC-15 (partial): AC row expansion shows full GWT with test coverage indicator.
+      supersedes: null
   todos: []
