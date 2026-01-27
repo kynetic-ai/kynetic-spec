@@ -11014,7 +11014,7 @@ runs:
   - _ulid: 01KG030366TGC3MZYSFMGSFZMF
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-27T16:01:14.951Z
     step_results:
@@ -11029,5 +11029,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-27T16:02:25.320Z
-        completed_at: 2026-01-27T16:02:25.320Z
+        completed_at: 2026-01-27T16:02:34.914Z
+        notes: "Already captured two high-confidence items: (1) bits-ui Select array quirk - concrete
+          workaround documented, (2) console log debugging pattern - specific technique that worked.
+          No additional items needed - other friction (fixture references, WebSocket) were one-off
+          fixes or already tracked in specs."
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-27T16:02:34.914Z
+        completed_at: 2026-01-27T16:02:34.914Z
     initiated_by: "@claude"
