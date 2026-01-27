@@ -33676,6 +33676,50 @@
 
         - tests/fixtures/modules/core.yaml - Fixture structure
       supersedes: null
+    - _ulid: 01KG0MT1QAF7J5T7QFAM0XQGQB
+      created_at: 2026-01-27T21:12:31.211Z
+      author: "@claude"
+      content: >-
+        ## Session Progress - Items View E2E
+
+
+        ### Fixed:
+
+        1. **Parser** (yaml.ts): Strip nested item arrays before schema validation so modules with
+        nested items can pass validation
+
+        2. **Fixtures** (core.yaml): Fixed acceptance_criteria to use 'id' not '_ulid', fixed trait
+        status enums (approved→stable, complete→verified)
+
+        3. **Daemon** (items.ts): Added computeParentMap() to compute parent ULIDs from _path at API
+        time - items now show proper hierarchy (4 items total)
+
+        4. **Tests**: Updated selectors to use .first() for nested accordion elements
+
+
+        ### Test Status:
+
+        - 6/19 passing (tree display basics, responsive layout)
+
+        - 13/19 failing (timeouts on accordion expand interactions)
+
+
+        ### Remaining Issues:
+
+        Accordion expand clicks not working as expected - clicking module doesn't show nested
+        children. Tests expecting to navigate to feature/trait after expanding module time out.
+
+
+        ### Files Changed:
+
+        - src/parser/yaml.ts (strip nested items before validation)
+
+        - packages/daemon/src/routes/items.ts (computeParentMap for hierarchy)
+
+        - packages/web-ui/tests/e2e/items.spec.ts (selector fixes)
+
+        - tests/fixtures/modules/core.yaml (schema fixes)
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
