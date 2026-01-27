@@ -10880,6 +10880,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-27T06:57:47.150Z
+    completed_at: 2026-01-27T06:59:05.730Z
     step_results:
       - step_index: 0
         status: completed
@@ -10909,4 +10910,11 @@ runs:
         completed_at: 2026-01-27T06:59:05.729Z
         notes: Items already captured in step 1. No additional captures needed. Workflow complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-27T06:59:05.730Z
+  - _ulid: 01KFZ6X4Y2B6AYM9W8Z14SHSYQ
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-27T07:50:18.307Z
+    step_results: []
+    initiated_by: "@claude"
