@@ -33302,9 +33302,10 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
-  closed_reason: null
+  closed_reason: "Items View E2E tests complete. PR #252 merged. 19 items tests + 16 tasks tests
+    passing. Created dedicated E2E fixtures to isolate from unit tests."
   depends_on:
     - "@task-watcher-impl"
   context: []
@@ -33317,7 +33318,7 @@
   vcs_refs: []
   created_at: 2026-01-23T20:18:47.924Z
   started_at: 2026-01-27T22:15:27.851Z
-  completed_at: null
+  completed_at: 2026-01-27T23:34:01.625Z
   notes:
     - _ulid: 01KFP8775DN1W0RZ0FZNRN14Q6
       created_at: 2026-01-23T20:20:06.957Z
