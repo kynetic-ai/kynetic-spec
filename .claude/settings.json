@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npm run dev -s -- session prompt-check"
+            "command": "kspec session prompt-check"
           }
         ]
       }
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npm run dev -s -- session checkpoint --json"
+            "command": "kspec session checkpoint --json"
           }
         ]
       }
