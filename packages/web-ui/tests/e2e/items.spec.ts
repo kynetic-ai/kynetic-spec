@@ -27,8 +27,8 @@ test.describe('Items View', () => {
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
       await expect(moduleNode).toBeVisible();
 
-      // Verify module displays title with actual text (scope to expand-toggle to avoid nested children)
-      const nodeTitle = moduleNode.getByTestId('expand-toggle').first().getByTestId('node-title');
+      // Verify module displays title with actual text - node-title is direct child, not inside expand-toggle
+      const nodeTitle = moduleNode.locator('> div').first().getByTestId('node-title');
       await expect(nodeTitle).toBeVisible();
       await expect(nodeTitle).toContainText('Core Module');
     });
@@ -41,18 +41,18 @@ test.describe('Items View', () => {
       await expect(moduleNode).toBeVisible();
 
       // Click expand toggle on module
-      const expandToggle = moduleNode.getByTestId('expand-toggle').first();
+      const expandToggle = moduleNode.locator('> div').first().getByTestId('expand-toggle');
       await expandToggle.click();
 
       // Child content should be visible - look for feature node
       const childContainer = moduleNode.getByTestId('tree-node-child');
       await expect(childContainer).toBeVisible();
 
-      // Feature should be present with actual title (scope to expand-toggle)
+      // Feature should be present with actual title
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
       await expect(featureNode).toBeVisible();
 
-      const featureTitle = featureNode.getByTestId('expand-toggle').first().getByTestId('node-title');
+      const featureTitle = featureNode.locator('> div').first().getByTestId('node-title');
       await expect(featureTitle).toContainText('Test Feature');
     });
 
@@ -63,12 +63,12 @@ test.describe('Items View', () => {
 
       // Expand module first
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       // Find and expand feature
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().click();
+      await featureNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       // Requirement should be visible
       const featureChildContainer = featureNode.getByTestId('tree-node-child');
@@ -77,7 +77,8 @@ test.describe('Items View', () => {
       const requirementNode = featureChildContainer.locator('[data-testid*="tree-node-requirement"]').first();
       await expect(requirementNode).toBeVisible();
 
-      const reqTitle = requirementNode.getByTestId('expand-toggle').first().getByTestId('node-title');
+      // Requirements don't have expand toggle (no children), just title
+      const reqTitle = requirementNode.locator('> div').first().getByTestId('node-title');
       await expect(reqTitle).toContainText('Test Requirement');
     });
 
@@ -88,12 +89,12 @@ test.describe('Items View', () => {
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
 
       // Expand module
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
       const childContainer = moduleNode.getByTestId('tree-node-child');
       await expect(childContainer).toBeVisible();
 
       // Collapse module
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       // Children should be hidden
       await expect(childContainer).not.toBeVisible();
@@ -105,8 +106,8 @@ test.describe('Items View', () => {
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
 
-      // Click on the title area (scope to expand-toggle to get only this node's title)
-      const nodeTitle = moduleNode.getByTestId('expand-toggle').first().getByTestId('node-title');
+      // Click on the title button (separate from expand toggle)
+      const nodeTitle = moduleNode.locator('> div').first().getByTestId('node-title');
       await nodeTitle.click();
 
       // Detail panel should open
@@ -126,11 +127,11 @@ test.describe('Items View', () => {
       // Expand module, then click on feature
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       await expect(detailPanel).toBeVisible();
@@ -150,7 +151,7 @@ test.describe('Items View', () => {
       // Click on module to open detail
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await moduleNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const typeBadge = detailPanel.getByTestId('implementation-status');
@@ -164,11 +165,11 @@ test.describe('Items View', () => {
       // Navigate to feature which has ACs
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       await expect(detailPanel).toBeVisible();
@@ -195,11 +196,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature which has a linked task
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       await expect(detailPanel).toBeVisible();
@@ -226,11 +227,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const linkedTask = detailPanel.getByTestId('linked-task').first();
@@ -251,7 +252,7 @@ test.describe('Items View', () => {
       // Click on module (which has no linked tasks)
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await moduleNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const implSection = detailPanel.getByTestId('implementation-section');
@@ -269,11 +270,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature which has traits
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       await expect(detailPanel).toBeVisible();
@@ -297,11 +298,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const traitChip = detailPanel.getByTestId('trait-chip').first();
@@ -327,15 +328,15 @@ test.describe('Items View', () => {
       // Navigate to test-requirement which has no traits
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().click();
+      await featureNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const featureChildContainer = featureNode.getByTestId('tree-node-child');
       const requirementNode = featureChildContainer.locator('[data-testid*="tree-node-requirement"]').first();
-      await requirementNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await requirementNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       await expect(detailPanel).toBeVisible();
@@ -353,11 +354,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature which has ACs
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const acItem = detailPanel.getByTestId('ac-item').first();
@@ -390,11 +391,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const acItem = detailPanel.getByTestId('ac-item').first();
@@ -418,11 +419,11 @@ test.describe('Items View', () => {
       // Navigate to test-feature
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().click();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
 
       const childContainer = moduleNode.getByTestId('tree-node-child');
       const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
 
       const detailPanel = page.getByTestId('spec-detail-panel');
       const acItem = detailPanel.getByTestId('ac-item').first();
@@ -459,10 +460,10 @@ test.describe('Items View', () => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/items');
 
-      // Click spec item to open detail (scope to expand-toggle)
+      // Click spec item to open detail
       const specTree = page.getByTestId('spec-tree').first();
       const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.getByTestId('expand-toggle').first().getByTestId('node-title').click();
+      await moduleNode.locator('> div').first().getByTestId('node-title').click();
 
       // Detail panel should slide over without navigating away
       const detailPanel = page.getByTestId('spec-detail-panel');

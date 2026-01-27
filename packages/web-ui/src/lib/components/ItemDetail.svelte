@@ -165,7 +165,7 @@
 									variant="outline"
 									size="sm"
 									data-testid="trait-chip"
-									on:click={() => {
+									onclick={() => {
 										// AC: @web-dashboard ac-14 - Navigate to trait detail
 										// Traits are items (type: trait), so we navigate to items view with the ref
 										const traitRef = trait.startsWith('@') ? trait.slice(1) : trait;
