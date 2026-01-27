@@ -33178,6 +33178,66 @@
         This commit only fixes structural daemon issues. The AC-related E2E failures still need
         investigation into Svelte 5 reactivity and component behavior.
       supersedes: null
+    - _ulid: 01KFZ6VPM61T7HKN147TW6RWA3
+      created_at: 2026-01-27T07:49:30.887Z
+      author: "@claude"
+      content: >-
+        ## Session Progress (Jan 26)
+
+
+        ### Accomplished
+
+        1. **Fixed core Svelte 5 reactivity issue** - Detail panel now renders after clicking task
+        row
+           - Root cause: Svelte 5's $state variables weren't triggering re-renders in conditional blocks
+           - Solution: Use $state object pattern + flushSync for synchronous DOM updates
+           - Also disabled SSR for tasks page (purely client-interactive)
+
+        2. **Created /svelte-5 skill** documenting patterns and gotchas for Svelte 5 development
+
+
+        3. **Test results improved from 3/17 to 9/17 passing:**
+           - Core detail panel tests now pass (opens, shows notes, shows todos/deps)
+           - Add note to task works
+           - Responsive layout tests pass
+           - Assignee filter test fixed
+
+        ### Key Fixes Applied
+
+        - `+page.ts`: export const ssr = false
+
+        - `+page.svelte`: panel = $state({ open: false, task: null }) with flushSync
+
+        - Added null checks (?.length) to all array accesses
+
+        - Added data-testid="task-status-badge" to detail panel
+
+        - Fixed test selectors (exact match for type, fill() for text inputs)
+
+        - Added in_progress task with spec_ref to fixtures
+
+
+        ### Remaining (8 failing tests)
+
+        1. **Filter tests** - Status/type/tag filters may have Select component interaction issues
+
+        2. **URL filter tests** - Need investigation on URL param handling
+
+        3. **Spec ref link test** - Works but test may need fixture adjustment
+
+        4. **Start task status update** - API call succeeds but panel doesn't refresh status badge
+
+        5. **WebSocket highlight** - Slug filter locator not finding element
+
+
+        ### Next Steps
+
+        1. Investigate Select component click handling in bits-ui (filter tests)
+
+        2. Fix panel refresh after startTask API call
+
+        3. Debug WebSocket highlight test (may be timing or locator issue)
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
