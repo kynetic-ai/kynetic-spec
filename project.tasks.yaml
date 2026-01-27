@@ -40135,4 +40135,74 @@
 
         Related to AC-15 (partial): AC row expansion shows full GWT with test coverage indicator.
       supersedes: null
+    - _ulid: 01KG0GQV2NGM36WJ6TY6P93X9R
+      created_at: 2026-01-27T20:01:24.565Z
+      author: "@claude"
+      content: >-
+        ## Complete Implementation Details
+
+
+        ### Background
+
+        The ItemDetail.svelte component displays acceptance criteria for spec items. Each AC can be
+        expanded to show full Given/When/Then text. There's a placeholder 'Coverage: Unknown'
+        indicator that should show whether the AC has test coverage.
+
+
+        ### Current State
+
+        - File: packages/web-ui/src/lib/components/ItemDetail.svelte
+
+        - Line ~145: `<div data-testid="test-coverage-indicator" class="text-xs
+        text-muted-foreground mt-2 uncovered">Coverage: Unknown</div>`
+
+        - The 'uncovered' class is hardcoded, indicator always shows 'Unknown'
+
+
+        ### What scanTestCoverage() Does
+
+        - Located in: src/cli/commands/validate.ts (currently not exported)
+
+        - Scans test files for AC annotations like `// AC: @spec-item ac-N`
+
+        - Returns coverage map: which spec items have which ACs covered by tests
+
+        - Already used by `kspec validate` command
+
+
+        ### Implementation Steps
+
+
+        1. **Export scanTestCoverage from validate.ts**
+           - Make the function exportable
+           - Ensure it can be called from daemon context
+
+        2. **Add coverage to Items API**
+           - File: packages/daemon/src/routes/items.ts
+           - GET /api/items/:ref should include AC coverage data
+           - Structure: `acceptance_criteria: [{ _ulid, given, when, then, covered: boolean }]`
+
+        3. **Update shared types**
+           - File: packages/shared/src/types.ts
+           - Add `covered?: boolean` to AcceptanceCriterion type in ItemDetail interface
+
+        4. **Update ItemDetail.svelte**
+           - Read coverage from AC data
+           - Show 'Covered' (green) or 'Not Covered' (red) instead of 'Unknown'
+           - Update class from 'uncovered' to 'covered' when appropriate
+
+        ### Acceptance Criteria
+
+        From @web-dashboard AC-15: 'shows full Given/When/Then text with test coverage indicator if
+        available'
+
+
+        ### Test Verification
+
+        After implementation, the E2E test in items.spec.ts should verify:
+
+        - Coverage indicator shows actual state (not just 'Unknown')
+
+        - Class reflects covered/uncovered status
+      supersedes: null
   todos: []
