@@ -4462,4 +4462,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG031Y246EC054DSQ2CEX9SF
+    type: success
+    content: Console log capture in E2E tests revealed exact bits-ui callback values, making the array
+      quirk immediately visible. Adding console.log to component handlers during debugging is highly
+      effective for understanding Svelte 5 reactivity issues.
+    created_at: 2026-01-27T16:02:15.236Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
