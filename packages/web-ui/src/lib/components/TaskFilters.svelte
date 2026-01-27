@@ -48,11 +48,15 @@
 
 	let hasFilters = $derived(status || type || tag || assignee || automation);
 
-	function updateFilter(key: string, value: string | undefined) {
+	function updateFilter(key: string, value: string | string[] | undefined) {
 		// Handle the case where value might be an array (bits-ui Svelte 5 quirk)
-		const actualValue = Array.isArray(value)
-			? value[value.length - 1]
-			: value;
+		// The quirk produces arrays like ['a', 'l', 'l', 'in_progress'] - we want the last element
+		let actualValue: string | undefined;
+		if (Array.isArray(value)) {
+			actualValue = value.length > 0 ? value[value.length - 1] : undefined;
+		} else {
+			actualValue = value;
+		}
 
 		const params = new URLSearchParams($page.url.searchParams);
 
