@@ -31838,7 +31838,7 @@
     3. Consider health endpoint polling instead of fixed delay
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -31856,6 +31856,9 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-27T18:41:27.129Z
+  closed_reason: Already fixed in commit b16e50ec. Daemon bundling fix ensured reliable path
+    resolution and proper startup sequencing. All 21 cli-serve.test.ts tests now pass.
 - _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
   slugs: []
   title: Fix daemon path resolution for npm installs
