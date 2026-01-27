@@ -39684,7 +39684,7 @@
   type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -39747,6 +39747,10 @@
         - Fixture files exist and are valid YAML
       supersedes: null
   todos: []
+  completed_at: 2026-01-27T18:07:59.304Z
+  closed_reason: Already fixed in commit 784b8c06. Daemon routes now pass project root to initContext
+    instead of .kspec path, and server.ts has defensive path normalization. Verified working via 16
+    passing E2E tests in Tasks View.
 - _ulid: 01KFXSGACX5DSA6ACKG95H8593
   slugs:
     - task-reference-normalization-in-merges
