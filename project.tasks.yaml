@@ -39768,19 +39768,3 @@
         keys ("0", "1", etc).
       supersedes: null
   todos: []
-- title: Testing manual task creation
-  type: task
-  spec_ref: null
-  meta_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KFYCZG398XJKXBKZ8MS15N0D
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-01-27T00:17:12.296Z
-  notes: []
-  todos: []
