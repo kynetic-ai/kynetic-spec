@@ -4471,4 +4471,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG0J4H7FFW05RZP39YDBM2YF
+    type: success
+    content: Reading reference tests (tasks.spec.ts) before writing new tests - understanding existing
+      patterns informed structure and avoided reinventing conventions
+    created_at: 2026-01-27T20:25:49.040Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
