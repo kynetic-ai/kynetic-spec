@@ -11052,7 +11052,7 @@ runs:
   - _ulid: 01KG0H5FNKES8Y4Z953BZX4JP0
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-27T20:08:51.635Z
     step_results:
@@ -11118,5 +11118,44 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-27T20:09:49.418Z
-        completed_at: 2026-01-27T20:09:49.418Z
+        completed_at: 2026-01-27T20:11:14.993Z
+        notes: >-
+          ## Coverage Check Results
+
+
+          ### Friction 1: E2E test fixture loading fragile
+
+          - **Partially tracked** - @01KFQ8VE5TGYP33H6CVHXBKAQE inbox item mentions health check for
+          daemon startup
+
+          - Missing: Shadow worktree simulation requirement not documented
+
+
+          ### Friction 2: No ULID validation for YAML fixtures  
+
+          - **Not tracked** - testUlid() helper exists for TypeScript but no equivalent for YAML
+          fixtures
+
+          - The AGENTS.md documents valid chars but no tooling to validate
+
+
+          ### Friction 3: Parent field not computed during item extraction
+
+          - **Not tracked** - This is a gap between parser and UI expectations
+
+          - No spec/task covers how hierarchical items should expose parent relationships
+
+
+          ### Friction 4: Daemon startup delay guessing
+
+          - **Already tracked** - Inbox @01KFQ8VE5TGYP33H6CVHXBKAQE covers this exact issue
+
+
+          ### Friction 5: No way to test API responses independently
+
+          - **Not tracked** - Would help with debugging daemon issues
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-27T20:11:14.993Z
+        completed_at: 2026-01-27T20:11:14.993Z
     initiated_by: "@claude"
