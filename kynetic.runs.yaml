@@ -10877,8 +10877,20 @@ runs:
   - _ulid: 01KFZ3WZME8BGV6R3E0GAR2A19
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-27T06:57:47.150Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-27T06:57:47.150Z
+        completed_at: 2026-01-27T06:58:49.519Z
+        notes: "Session reviewed. Captured: friction (loop mode note noise), success
+          (explore-then-parallel-fix pattern). Skipped: stop hook interruptions (already tracked in
+          observations @01KFFVG0, @01KFVTBK). The initContext bug fix was the main work - already
+          committed, no capture needed."
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-27T06:58:49.519Z
+        completed_at: 2026-01-27T06:58:49.519Z
     initiated_by: "@claude"
