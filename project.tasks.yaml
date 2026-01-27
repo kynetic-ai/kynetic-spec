@@ -39684,7 +39684,7 @@
   type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -39746,6 +39746,7 @@
         - Fixture files exist and are valid YAML
       supersedes: null
   todos: []
+  started_at: 2026-01-27T18:07:54.742Z
 - _ulid: 01KFXSGACX5DSA6ACKG95H8593
   slugs:
     - task-reference-normalization-in-merges
