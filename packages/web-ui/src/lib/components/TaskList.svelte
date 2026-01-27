@@ -42,6 +42,18 @@
 		return colors[status] || 'bg-gray-500';
 	}
 
+	function formatStatus(status: string): string {
+		const labels: Record<string, string> = {
+			pending: 'Pending',
+			in_progress: 'In Progress',
+			pending_review: 'Pending Review',
+			blocked: 'Blocked',
+			completed: 'Completed',
+			cancelled: 'Cancelled'
+		};
+		return labels[status] || status;
+	}
+
 	function getPriorityColor(priority: number): string {
 		if (priority === 1) return 'text-red-600 font-bold';
 		if (priority === 2) return 'text-orange-600 font-semibold';
@@ -90,7 +102,7 @@
 							{/if}
 						</TableCell>
 						<TableCell>
-							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{task.status}</Badge>
+							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{formatStatus(task.status)}</Badge>
 						</TableCell>
 						<TableCell class={getPriorityColor(task.priority)}>
 							<span data-testid="task-priority">P{task.priority}</span>

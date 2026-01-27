@@ -77,12 +77,12 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     // Clean up any existing daemon
     await cleanupExistingDaemon();
 
-    // Create temp directory
+    // Create temp directory with .kspec subdirectory
     const tempDir = join(tmpdir(), 'kspec-e2e-' + Date.now());
     const kspecDir = join(tempDir, '.kspec');
     mkdirSync(kspecDir, { recursive: true });
 
-    // Copy test fixtures (excluding multi-dir which has nested .kspec directories)
+    // Copy test fixtures to .kspec subdirectory (simulating shadow worktree mode)
     if (existsSync(ROOT_FIXTURES)) {
       cpSync(ROOT_FIXTURES, kspecDir, {
         recursive: true,
@@ -92,7 +92,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       throw new Error(`Test fixtures not found at ${ROOT_FIXTURES}`);
     }
 
-    // Initialize git repo (required for kspec)
+    // Initialize git repo in project root (required for kspec)
     execSync('git init', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
@@ -122,7 +122,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     }
 
     // Wait for daemon to be ready
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
 
     // Provide fixture to test
     await use({ tempDir, kspecDir });

@@ -41,8 +41,8 @@
 	});
 
 	$effect(() => {
-		// Re-fetch when filterParams changes
-		filterParams;
+		// Re-fetch when filterParams changes - explicitly access all properties for dependency tracking
+		const { status, type, tag, assignee, automation, limit, offset } = filterParams;
 		loadTasks();
 	});
 
@@ -168,6 +168,18 @@
 		return colors[status] || 'bg-gray-500';
 	}
 
+	function formatStatus(status: string): string {
+		const labels: Record<string, string> = {
+			pending: 'Pending',
+			in_progress: 'In Progress',
+			pending_review: 'Pending Review',
+			blocked: 'Blocked',
+			completed: 'Completed',
+			cancelled: 'Cancelled'
+		};
+		return labels[status] || status;
+	}
+
 	// AC: @web-dashboard ac-33 - Handle WebSocket task updates
 	function handleTaskUpdate(event: BroadcastEvent) {
 		console.log('[TasksPage] Task update received:', event);
@@ -280,7 +292,7 @@
 			<div class="flex flex-col gap-4 p-6">
 				<!-- Status and Priority -->
 				<div class="flex gap-2 items-center">
-					<Badge data-testid="task-status-badge" class={getStatusColor(panel.task.status)}>{panel.task.status}</Badge>
+					<Badge data-testid="task-status-badge" class={getStatusColor(panel.task.status)}>{formatStatus(panel.task.status)}</Badge>
 					<Badge variant="outline">Priority: {panel.task.priority}</Badge>
 					{#if panel.task.type !== 'task'}
 						<Badge variant="outline">{panel.task.type}</Badge>

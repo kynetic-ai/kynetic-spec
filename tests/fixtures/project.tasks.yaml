@@ -23,7 +23,7 @@ tasks:
     type: task
     status: in_progress
     priority: 1
-    automation: not_eligible
+    automation: manual_only
     spec_ref: "@another-spec"
     tags:
       - e2e
@@ -36,12 +36,14 @@ tasks:
         author: "@developer"
         content: Started work on this feature
     todos:
-      - _ulid: 01KF1645CCTJA52BZAQ20SZ1V7
-        content: Implement the main logic
-        status: completed
-      - _ulid: 01KF1645CCVJA52BZAQ20SZ1V8
-        content: Write tests
-        status: in_progress
+      - id: 1
+        text: Implement the main logic
+        done: true
+        added_at: "2026-01-01T00:00:00Z"
+      - id: 2
+        text: Write tests
+        done: false
+        added_at: "2026-01-01T00:30:00Z"
     created_at: "2026-01-01T00:00:00Z"
     started_at: "2026-01-01T01:00:00Z"
 

@@ -62,6 +62,18 @@
 		};
 		return colors[status] || 'bg-gray-500';
 	}
+
+	function formatStatus(status: string): string {
+		const labels: Record<string, string> = {
+			pending: 'Pending',
+			in_progress: 'In Progress',
+			pending_review: 'Pending Review',
+			blocked: 'Blocked',
+			completed: 'Completed',
+			cancelled: 'Cancelled'
+		};
+		return labels[status] || status;
+	}
 </script>
 
 <Sheet bind:open>
@@ -176,7 +188,7 @@
 									data-testid="linked-task"
 								>
 									<Badge class={getStatusColor(task.status)} data-testid="task-status-badge"
-										>{task.status}</Badge
+										>{formatStatus(task.status)}</Badge
 									>
 									<span class="text-sm flex-1" data-testid="task-title">{task.title}</span>
 									{#if task.notes_count > 0}
