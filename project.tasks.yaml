@@ -31840,6 +31840,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Already fixed in commit b16e50ec. Daemon bundling fix ensured reliable path
+    resolution and proper startup sequencing. All 21 cli-serve.test.ts tests now pass.
   depends_on: []
   context: []
   priority: 2
@@ -31847,6 +31849,7 @@
   vcs_refs: []
   created_at: 2026-01-23T19:39:59.042Z
   started_at: 2026-01-27T18:41:22.561Z
+  completed_at: 2026-01-27T18:41:27.129Z
   notes:
     - _ulid: 01KFQAYYE47MPKXC30BBX9Z89K
       created_at: 2026-01-24T06:27:16.037Z
@@ -31856,9 +31859,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-01-27T18:41:27.129Z
-  closed_reason: Already fixed in commit b16e50ec. Daemon bundling fix ensured reliable path
-    resolution and proper startup sequencing. All 21 cli-serve.test.ts tests now pass.
 - _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
   slugs: []
   title: Fix daemon path resolution for npm installs
@@ -33554,6 +33554,55 @@
       created_at: 2026-01-26T14:54:22.658Z
       author: "@claude"
       content: Reset from in_progress to pending
+      supersedes: null
+    - _ulid: 01KG0G1VK959XHM1A31ZDZ9F4B
+      created_at: 2026-01-27T19:49:24.201Z
+      author: "@claude"
+      content: |-
+        ## Session Status - Items View E2E Test Rewrite (Partial)
+
+        ### What was done:
+        1. **Enhanced test fixtures** (tests/fixtures/modules/core.yaml):
+           - Added trait item (test-trait) with proper type and status
+           - Added acceptance_criteria to test-feature (2 ACs with GWT format)
+           - Added traits reference to test-feature
+           - Fixed invalid ULIDs (Crockford base32 compliance)
+
+        2. **Enhanced task fixtures** (tests/fixtures/project.tasks.yaml):
+           - Added spec_ref: '@test-feature' to test-task-pending for linked task testing
+
+        3. **Fixed trait navigation** (ItemDetail.svelte):
+           - Changed console.log to proper goto() navigation to /items?ref={trait}
+           - Imported goto from $app/navigation
+
+        4. **Rewrote E2E tests** (items.spec.ts):
+           - Restructured tests by AC (AC-11 through AC-15)
+           - Removed conditional guards that masked failures
+           - Added content verification (toContainText) instead of just visibility checks
+           - Fixed daemon fixture parameter (added daemon to all test functions)
+
+        5. **Fixed test fixture setup** (test-base.ts):
+           - Added shadow worktree simulation (.kspec/.git file with gitdir: pointer)
+           - This enables kspec to detect .kspec/ as the spec directory
+
+        ### What's NOT working yet:
+        - **Fixtures still not loading correctly in E2E tests**
+        - Root cause appears to be missing 'parent' field computation
+        - Items are extracted flat but ItemTree expects parent ULIDs for hierarchy
+        - Only 1 item shows (Test Requirement) instead of module/feature/trait/requirement
+
+        ### Remaining work to complete this task:
+        1. Debug why module/feature/trait items aren't showing up (likely schema validation)
+        2. Verify loadAllItems returns all expected items
+        3. Add parent ULID computation during item extraction OR add parent field to fixtures
+        4. Run full E2E test suite to verify all tests pass
+
+        ### Files modified:
+        - tests/fixtures/modules/core.yaml
+        - tests/fixtures/project.tasks.yaml
+        - packages/web-ui/src/lib/components/ItemDetail.svelte
+        - packages/web-ui/tests/fixtures/test-base.ts
+        - packages/web-ui/tests/e2e/items.spec.ts
       supersedes: null
   todos: []
   automation: needs_review
