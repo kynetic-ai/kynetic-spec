@@ -1,29 +1,45 @@
-// Store for task detail panel state - works around bits-ui Portal reactivity issues in Svelte 5
+// Store for task detail panel state
+// Using traditional writable stores for SSR compatibility
+import { writable, derived, get } from 'svelte/store';
 import type { TaskDetail } from '@kynetic-ai/shared';
 
-// Using Svelte 5 runes for reactive state
-let isOpen = $state(false);
-let currentTask = $state<TaskDetail | null>(null);
+// Internal stores
+const isOpen = writable(false);
+const currentTask = writable<TaskDetail | null>(null);
 
+// Exported store API
 export const taskDetailStore = {
-	get open() {
-		return isOpen;
-	},
-	set open(value: boolean) {
-		isOpen = value;
-	},
-	get task() {
-		return currentTask;
-	},
-	set task(value: TaskDetail | null) {
-		currentTask = value;
-	},
+	// Subscribe methods for reactive access
+	subscribe: isOpen.subscribe,
+
+	// Derived values for components
+	open: { subscribe: isOpen.subscribe },
+	task: { subscribe: currentTask.subscribe },
+
+	// Actions
 	openWith(task: TaskDetail) {
-		currentTask = task;
-		isOpen = true;
+		currentTask.set(task);
+		isOpen.set(true);
 	},
 	close() {
-		isOpen = false;
-		currentTask = null;
+		isOpen.set(false);
+		currentTask.set(null);
+	},
+
+	// Get current values (for non-reactive access)
+	getOpen() {
+		return get(isOpen);
+	},
+	getTask() {
+		return get(currentTask);
 	}
 };
+
+// Export derived store for combined state
+export const taskDetailState = derived(
+	[isOpen, currentTask],
+	([$isOpen, $currentTask]) => ({
+		open: $isOpen,
+		task: $currentTask
+	})
+);

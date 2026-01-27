@@ -185,6 +185,19 @@ test.describe('Tasks View', () => {
         consoleLogs.push(`${msg.type()}: ${msg.text()}`);
       });
 
+      // Capture network requests
+      const apiCalls: string[] = [];
+      page.on('request', (request) => {
+        if (request.url().includes('/api/')) {
+          apiCalls.push(`${request.method()} ${request.url()}`);
+        }
+      });
+      page.on('response', (response) => {
+        if (response.url().includes('/api/')) {
+          apiCalls.push(`-> ${response.status()} ${response.url()}`);
+        }
+      });
+
       await page.goto('/tasks');
 
       // Wait for task list to load
@@ -200,8 +213,13 @@ test.describe('Tasks View', () => {
       await taskItem.click();
 
       // Wait briefly for API call and sheet animation
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(2000);
 
+      // Debug output
+      console.log('=== Console logs ===');
+      consoleLogs.forEach(log => console.log(log));
+      console.log('=== API calls ===');
+      apiCalls.forEach(call => console.log(call));
 
       // Detail panel should open
       const detailPanel = page.getByTestId('task-detail-panel');

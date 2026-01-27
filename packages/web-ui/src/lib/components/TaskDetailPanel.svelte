@@ -1,31 +1,32 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-5, ac-6, ac-7, ac-8
-	// Custom sheet implementation that bypasses bits-ui Portal reactivity issues
+	// Custom sheet implementation for task details
 	import type { TaskDetail as TaskDetailType } from '@kynetic-ai/shared';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Separator } from '$lib/components/ui/separator';
 	import { startTask, addTaskNote } from '$lib/api';
-	import { taskDetailStore } from '$lib/stores/taskDetail.svelte';
 	import XIcon from '@lucide/svelte/icons/x';
 
-	// Callbacks for parent notification
+	// Props for controlling the panel - use $bindable for reactivity
 	let {
+		open = $bindable(false),
+		task = $bindable<TaskDetailType | null>(null),
 		onclose = undefined as (() => void) | undefined,
 		onupdate = undefined as (() => void) | undefined
 	} = $props();
+
+	// Debug: log when props change
+	$effect(() => {
+		console.log('[TaskDetailPanel] open changed to:', open, 'task:', task?.title);
+	});
 
 	let noteContent = $state('');
 	let isSubmitting = $state(false);
 	let error = $state('');
 
-	// Access task from store
-	let task = $derived(taskDetailStore.task);
-	let isOpen = $derived(taskDetailStore.open);
-
 	function close() {
-		taskDetailStore.close();
 		onclose?.();
 	}
 
@@ -38,7 +39,7 @@
 
 	// Handle escape key
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
+		if (e.key === 'Escape' && open) {
 			close();
 		}
 	}
@@ -103,13 +104,15 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-{#if isOpen && task}
+{#if open && task}
 	<!-- Overlay -->
 	<div
 		class="fixed inset-0 z-50 bg-black/50"
 		onclick={handleOverlayClick}
+		onkeydown={(e) => e.key === 'Enter' && close()}
 		role="button"
 		tabindex="-1"
+		aria-label="Close panel"
 	>
 		<!-- Panel -->
 		<div
@@ -117,6 +120,8 @@
 			data-testid="task-detail-panel"
 			role="dialog"
 			aria-modal="true"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
 		>
 			<!-- Header -->
 			<div class="flex items-center justify-between p-6 border-b">
