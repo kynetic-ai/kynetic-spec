@@ -11052,7 +11052,7 @@ runs:
   - _ulid: 01KG0H5FNKES8Y4Z953BZX4JP0
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-27T20:08:51.635Z
     step_results:
@@ -11086,5 +11086,37 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-27T20:09:29.203Z
-        completed_at: 2026-01-27T20:09:29.203Z
+        completed_at: 2026-01-27T20:09:49.418Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **E2E test fixture loading is fragile** - The test-base.ts setup doesn't properly
+          simulate shadow worktree mode. Had to add workaround code to create fake .git file. Tests
+          were passing before but fixtures weren't actually loading (masked by conditional guards in
+          tests).
+
+
+          2. **No way to validate fixture ULIDs before runtime** - Invalid Crockford base32 ULIDs
+          (containing I, L, O, U) fail silently during schema validation. Had to manually check each
+          ULID. The testUlid() helper exists but only for TypeScript tests, not YAML fixtures.
+
+
+          3. **Parent field not computed during item extraction** - Items are loaded flat from YAML
+          but ItemTree expects parent ULIDs. This fundamental gap between data model and UI
+          expectations wasn't documented anywhere.
+
+
+          4. **Daemon startup delay guessing** - test-base.ts uses `await new Promise(r =>
+          setTimeout(r, 2000))` to wait for daemon. No health check polling, just hope 2 seconds is
+          enough.
+
+
+          5. **No way to test API responses independently** - Had to run full E2E tests to discover
+          items weren't loading. Would be faster to have a way to hit daemon API directly during
+          debugging.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-27T20:09:49.418Z
+        completed_at: 2026-01-27T20:09:49.418Z
     initiated_by: "@claude"
