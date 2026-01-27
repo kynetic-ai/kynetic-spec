@@ -20,13 +20,6 @@
 		try {
 			const response = await fetchItems();
 			items = response.items;
-
-			// Check if there's a ref in URL query params
-			const urlRef = $page.url.searchParams.get('ref');
-			if (urlRef) {
-				selectedRef = urlRef;
-				detailOpen = true;
-			}
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load spec items';
 			items = [];
@@ -52,6 +45,15 @@
 		const url = new URL(window.location.href);
 		url.searchParams.delete('ref');
 		window.history.pushState({}, '', url);
+	}
+
+	// React to URL ref param changes (handles both initial load and navigation)
+	$: {
+		const urlRef = $page.url.searchParams.get('ref');
+		if (urlRef && urlRef !== selectedRef) {
+			selectedRef = urlRef;
+			detailOpen = true;
+		}
 	}
 
 	onMount(() => {

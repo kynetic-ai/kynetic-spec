@@ -18,6 +18,7 @@
 	} from '$lib/components/ui/accordion';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { fetchItem, fetchItemTasks } from '$lib/api';
+	import { goto } from '$app/navigation';
 
 	export let ref: string | null = null;
 	export let open = false;
@@ -164,9 +165,11 @@
 									variant="outline"
 									size="sm"
 									data-testid="trait-chip"
-									on:click={() => {
-										// TODO: Navigate to trait detail or show trait info
-										console.log('Trait clicked:', trait);
+									onclick={() => {
+										// AC: @web-dashboard ac-14 - Navigate to trait detail
+										// Traits are items (type: trait), so we navigate to items view with the ref
+										const traitRef = trait.startsWith('@') ? trait.slice(1) : trait;
+										goto(`/items?ref=${encodeURIComponent(traitRef)}`);
 									}}
 								>
 									<span data-testid="trait-title">{trait}</span>

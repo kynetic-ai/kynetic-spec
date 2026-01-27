@@ -40,10 +40,22 @@
 		offset: 0
 	});
 
+	// Track the last processed ref to avoid infinite loops
+	let lastProcessedRef = $state('');
+
 	$effect(() => {
 		// Re-fetch when filterParams changes - explicitly access all properties for dependency tracking
 		const { status, type, tag, assignee, automation, limit, offset } = filterParams;
 		loadTasks();
+	});
+
+	// AC: Open task detail when URL has ref param
+	$effect(() => {
+		const urlRef = $page.url.searchParams.get('ref');
+		if (urlRef && urlRef !== lastProcessedRef) {
+			lastProcessedRef = urlRef;
+			handleSelectTask(urlRef);
+		}
 	});
 
 	async function loadTasks() {
@@ -90,6 +102,7 @@
 		panel.task = null;
 		noteContent = '';
 		panelError = '';
+		lastProcessedRef = ''; // Reset so we can reopen same task if URL param set again
 	}
 
 	// Handle clicking outside the panel

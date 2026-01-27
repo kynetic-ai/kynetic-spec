@@ -25,6 +25,67 @@ import {
 
 interface ItemsRouteOptions {}
 
+/**
+ * Compute parent ULIDs for items based on _path and _sourceFile.
+ * Items are nested when they share the same source file and
+ * one item's path is a prefix of another's path.
+ */
+function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefined> {
+  const parentMap = new Map<string, string | undefined>();
+
+  // Group items by source file
+  const byFile = new Map<string, LoadedSpecItem[]>();
+  for (const item of items) {
+    const file = item._sourceFile || '';
+    if (!byFile.has(file)) {
+      byFile.set(file, []);
+    }
+    byFile.get(file)!.push(item);
+  }
+
+  // For each file, determine parent relationships based on path
+  for (const [, fileItems] of byFile) {
+    // Sort by path length (shorter paths are potential parents)
+    const sorted = [...fileItems].sort((a, b) => {
+      const aLen = a._path?.length || 0;
+      const bLen = b._path?.length || 0;
+      return aLen - bLen;
+    });
+
+    for (const item of sorted) {
+      const itemPath = item._path;
+
+      if (!itemPath) {
+        // Root item in file - no parent
+        parentMap.set(item._ulid, undefined);
+        continue;
+      }
+
+      // Find the closest parent by matching path prefix
+      // Path format: "features[0].requirements[0]"
+      // Parent path: "features[0]" or undefined (root item)
+      const lastDot = itemPath.lastIndexOf('.');
+      const parentPath = lastDot > -1 ? itemPath.substring(0, lastDot) : undefined;
+
+      // Find parent item
+      let parentUlid: string | undefined;
+      if (parentPath === undefined) {
+        // Direct child of the root item (the item with no path)
+        const rootItem = fileItems.find(i => !i._path);
+        parentUlid = rootItem?._ulid;
+      } else {
+        // Find item with matching parent path
+        const parentItem = fileItems.find(i => i._path === parentPath);
+        parentUlid = parentItem?._ulid;
+      }
+
+      parentMap.set(item._ulid, parentUlid);
+    }
+  }
+
+  return parentMap;
+}
+
 export function createItemsRoutes(options: ItemsRouteOptions = {}) {
   // No closure-scoped kspecDir needed - comes from middleware
 
@@ -36,6 +97,9 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const ctx = await initContext(projectContext.path);
         const items = await loadAllItems(ctx);
+
+        // Compute parent relationships from path structure
+        const parentMap = computeParentMap(items);
 
         // Apply filters
         let filtered = items;
@@ -93,7 +157,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           type: item.type,
           status: item.status,
           tags: item.tags,
-          parent: item.parent,
+          parent: parentMap.get(item._ulid),
           created_at: item.created_at,
           acceptance_criteria_count: item.acceptance_criteria?.length || 0,
         }));
@@ -128,6 +192,9 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         const tasks = await loadAllTasks(ctx);
         const index = new ReferenceIndex(tasks, items);
 
+        // Compute parent relationships from path structure
+        const parentMap = computeParentMap(items);
+
         // AC: @api-contract ac-10, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
         const result = index.resolve(params.ref);
 
@@ -158,7 +225,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           type: item.type,
           status: item.status,
           tags: item.tags,
-          parent: item.parent,
+          parent: parentMap.get(item._ulid),
           description: item.description,
           acceptance_criteria: item.acceptance_criteria,
           traits: item.traits,

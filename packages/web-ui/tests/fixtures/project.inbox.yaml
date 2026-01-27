@@ -1,0 +1,19 @@
+inbox:
+  - _ulid: 01KJNBX0CA45ZT43W2T6HJMVA1
+    text: First inbox item for testing
+    tags:
+      - test
+      - e2e
+    added_by: test-user
+    created_at: "2026-01-01T10:00:00Z"
+  - _ulid: 01KJNBX1CC9N4YGP991WD7XS8S
+    text: Second inbox item with different tags
+    tags:
+      - feature
+    added_by: test-user
+    created_at: "2026-01-01T09:00:00Z"
+  - _ulid: 01KJNBX2CB8N4YGP991WD7XS9R
+    text: Third inbox item - oldest
+    tags: []
+    added_by: test-user
+    created_at: "2026-01-01T08:00:00Z"

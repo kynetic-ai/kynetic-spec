@@ -57,21 +57,21 @@ test.describe('Tasks View', () => {
       const filterStatus = page.getByTestId('filter-status');
       await expect(filterStatus).toBeVisible();
 
-      // Select "in_progress" status
+      // Select "pending" status
       await filterStatus.click();
-      await page.getByRole('option', { name: 'In Progress' }).click();
+      await page.getByRole('option', { name: 'Pending', exact: true }).click();
 
       // Wait for URL to update with filter
-      await page.waitForURL(/status=in_progress/, { timeout: 10000 });
+      await page.waitForURL(/status=pending/, { timeout: 10000 });
 
-      // Verify filtered results - should now show only in_progress tasks
+      // Verify filtered results - should now show only pending tasks
       await expect(taskItems.first()).toBeVisible({ timeout: 5000 });
 
-      // All visible tasks should have "In Progress" status badge
+      // All visible tasks should have "pending" status badge
       const count = await taskItems.count();
       for (let i = 0; i < count; i++) {
         const statusBadge = taskItems.nth(i).getByTestId('task-status-badge');
-        await expect(statusBadge).toContainText(/in progress/i);
+        await expect(statusBadge).toContainText(/pending/i);
       }
     });
 
@@ -164,11 +164,11 @@ test.describe('Tasks View', () => {
       // Apply status filter
       const filterStatus = page.getByTestId('filter-status');
       await filterStatus.click();
-      await page.getByRole('option', { name: 'In Progress' }).click();
+      await page.getByRole('option', { name: 'Pending', exact: true }).click();
 
       // Wait for URL to update
-      await page.waitForURL(/\/tasks\?.*status=in_progress/);
-      expect(page.url()).toContain('status=in_progress');
+      await page.waitForURL(/\/tasks\?.*status=pending/);
+      expect(page.url()).toContain('status=pending');
 
       // Apply tag filter (text input, not select)
       const filterTag = page.getByTestId('filter-tag');
@@ -176,19 +176,19 @@ test.describe('Tasks View', () => {
 
       // URL should now include both filters
       await page.waitForURL(/tag=e2e/);
-      expect(page.url()).toContain('status=in_progress');
+      expect(page.url()).toContain('status=pending');
       expect(page.url()).toContain('tag=e2e');
     });
 
     // AC: @web-dashboard ac-10
     test('restores filters from URL query params on page load', async ({ page, daemon }) => {
       // Navigate directly with query params
-      await page.goto('/tasks?status=in_progress&tag=e2e');
+      await page.goto('/tasks?status=pending&tag=e2e');
 
       // Wait for page to load and filters to be applied
       // Select components show their value in the trigger text
       const filterStatus = page.getByTestId('filter-status');
-      await expect(filterStatus).toContainText(/in.progress/i);
+      await expect(filterStatus).toContainText(/pending/i);
 
       // Tag input should have the value
       const filterTag = page.getByTestId('filter-tag');
@@ -354,9 +354,9 @@ test.describe('Tasks View', () => {
       const request = await requestPromise;
       expect(request.method()).toBe('POST');
 
-      // Status badge should update to "in_progress"
+      // Status badge should update to "pending"
       const statusBadge = detailPanel.getByTestId('task-status-badge');
-      await expect(statusBadge).toContainText(/in progress/i);
+      await expect(statusBadge).toContainText(/pending/i);
     });
 
     // AC: @web-dashboard ac-8

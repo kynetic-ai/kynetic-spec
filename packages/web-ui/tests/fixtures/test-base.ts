@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { execSync, spawnSync } from 'child_process';
-import { mkdirSync, cpSync, rmSync, existsSync } from 'fs';
+import { mkdirSync, cpSync, rmSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { tmpdir } from 'os';
 import { fileURLToPath } from 'url';
@@ -9,7 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const DAEMON_PORT = 3456;
-const ROOT_FIXTURES = join(__dirname, '../../../../tests/fixtures');
+// E2E tests use dedicated fixtures to avoid breaking unit tests
+const E2E_FIXTURES = join(__dirname, '../fixtures');
 // Path to built web UI (daemon serves this for E2E tests)
 const WEB_UI_BUILD = join(__dirname, '../../build');
 
@@ -82,20 +83,31 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     const kspecDir = join(tempDir, '.kspec');
     mkdirSync(kspecDir, { recursive: true });
 
-    // Copy test fixtures to .kspec subdirectory (simulating shadow worktree mode)
-    if (existsSync(ROOT_FIXTURES)) {
-      cpSync(ROOT_FIXTURES, kspecDir, {
+    // Copy E2E test fixtures to .kspec subdirectory (simulating shadow worktree mode)
+    if (existsSync(E2E_FIXTURES)) {
+      cpSync(E2E_FIXTURES, kspecDir, {
         recursive: true,
-        filter: (src) => !src.includes('multi-dir')
+        filter: (src) => !src.includes('test-base')
       });
     } else {
-      throw new Error(`Test fixtures not found at ${ROOT_FIXTURES}`);
+      throw new Error(`E2E test fixtures not found at ${E2E_FIXTURES}`);
     }
 
     // Initialize git repo in project root (required for kspec)
     execSync('git init', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
+
+    // Set up shadow worktree simulation for kspec to detect .kspec/ as spec directory
+    // The shadow detection checks if .kspec/.git is a file starting with "gitdir:"
+    // We create a fake .git file that satisfies this check
+    const gitWorktreesDir = join(tempDir, '.git', 'worktrees', '-kspec');
+    mkdirSync(gitWorktreesDir, { recursive: true });
+    // Create the .git file in .kspec pointing to the worktree location
+    writeFileSync(join(kspecDir, '.git'), `gitdir: ${gitWorktreesDir}\n`);
+    // Create minimal worktree metadata so git doesn't complain
+    writeFileSync(join(gitWorktreesDir, 'gitdir'), `${join(tempDir, '.git')}\n`);
+    writeFileSync(join(gitWorktreesDir, 'HEAD'), 'ref: refs/heads/kspec-meta\n');
 
     // Verify web UI is built (daemon serves it for E2E tests)
     if (!existsSync(WEB_UI_BUILD)) {
