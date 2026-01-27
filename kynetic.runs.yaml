@@ -11017,6 +11017,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-27T16:01:14.951Z
+    completed_at: 2026-01-27T16:02:52.942Z
     step_results:
       - step_index: 0
         status: completed
@@ -11048,4 +11049,11 @@ runs:
         notes: Captures already done in earlier step (01KG031N for friction, 01KG031Y for success). Workflow
           complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-27T16:02:52.942Z
+  - _ulid: 01KG0H5FNKES8Y4Z953BZX4JP0
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-27T20:08:51.635Z
+    step_results: []
+    initiated_by: "@claude"
