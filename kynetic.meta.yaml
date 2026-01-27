@@ -4439,4 +4439,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KFZ708S00S4EA95C1A57HHD2
+    type: success
+    content: "Svelte 5 reactivity solution: Use $state object pattern + flushSync() for reactive
+      conditional rendering. Separate $state variables may not trigger {#if} block re-renders;
+      wrapping state in object (panel = $state({ open: false, task: null })) and using flushSync(()
+      => { panel.open = true }) ensures synchronous DOM updates. Also documented in /svelte-5 skill.
+      Resolves friction @01KFYAH9."
+    created_at: 2026-01-27T07:52:00.544Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
