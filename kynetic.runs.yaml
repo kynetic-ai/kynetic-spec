@@ -11052,7 +11052,7 @@ runs:
   - _ulid: 01KG0H5FNKES8Y4Z953BZX4JP0
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-27T20:08:51.635Z
     step_results:
@@ -11157,5 +11157,41 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-27T20:11:14.993Z
-        completed_at: 2026-01-27T20:11:14.993Z
+        completed_at: 2026-01-27T20:11:30.781Z
+        notes: >-
+          ## Proposed Improvements (Untracked Friction)
+
+
+          ### 1. YAML Fixture ULID Validator
+
+          **What:** CLI command or pre-commit hook to validate ULIDs in YAML fixtures
+
+          **How it helps:** Catch invalid Crockford base32 chars before runtime, fail fast with
+          clear error
+
+          **Scope:** Small - regex check on all _ulid fields in tests/fixtures/
+
+
+          ### 2. Document parent field computation requirement
+
+          **What:** Add to AGENTS.md that ItemTree expects parent ULIDs, and document options for
+          providing them
+
+          **How it helps:** Prevents confusion when items load flat but UI expects hierarchy
+
+          **Scope:** Small - documentation update
+
+
+          ### 3. Daemon debug endpoint
+
+          **What:** Add endpoint like GET /api/debug/items that returns raw loaded items with
+          validation status
+
+          **How it helps:** Debug fixture loading without running full E2E tests
+
+          **Scope:** Medium - new API endpoint with schema validation details
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-27T20:11:30.781Z
+        completed_at: 2026-01-27T20:11:30.781Z
     initiated_by: "@claude"
