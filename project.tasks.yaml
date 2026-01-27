@@ -31838,7 +31838,7 @@
     3. Consider health endpoint polling instead of fixed delay
   spec_ref: null
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -31846,6 +31846,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T19:39:59.042Z
+  started_at: 2026-01-27T18:41:22.561Z
   notes:
     - _ulid: 01KFQAYYE47MPKXC30BBX9Z89K
       created_at: 2026-01-24T06:27:16.037Z
@@ -31855,7 +31856,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-27T18:41:22.561Z
 - _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
   slugs: []
   title: Fix daemon path resolution for npm installs
