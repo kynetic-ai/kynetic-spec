@@ -33612,6 +33612,70 @@
 
         Continue work from this branch in next session.
       supersedes: null
+    - _ulid: 01KG0H1C269DVS2ZQPHN2B50SS
+      created_at: 2026-01-27T20:06:36.871Z
+      author: "@claude"
+      content: >-
+        ## Debugging the Blocking Issue
+
+
+        ### Symptom
+
+        E2E test shows '1 items total' with only 'Test Requirement' visible.
+
+        Expected: 4 items (module, trait, feature, requirement) with proper hierarchy.
+
+
+        ### What We Know
+
+        1. Shadow worktree simulation IS working - fixtures are being found (observations show as
+        '4')
+
+        2. Items API returns data but only 1 item
+
+        3. ItemTree.svelte builds hierarchy using `item.parent` field
+
+        4. `extractItemsFromRaw()` in src/parser/yaml.ts does NOT set `parent` field
+
+
+        ### Likely Root Causes (investigate in order)
+
+
+        1. **Schema validation failing silently** - SpecItemSchema.safeParse() may be rejecting
+        items
+           - Check: Add console.log in extractItemsFromRaw to see what items pass/fail validation
+           - File: src/parser/yaml.ts:942-948
+
+        2. **Parent field not computed** - Items load flat, no parent ULIDs
+           - ItemTree expects `item.parent` to be the parent's ULID
+           - extractItemsFromRaw knows the parent (it's processing nested items) but doesn't set it
+           - Fix: Pass parent ULID when recursing into nested items
+
+        3. **ULID validation** - Some fixture ULIDs may still be invalid
+           - Already fixed AC ULIDs (were 25 chars, now 26)
+           - Validate all ULIDs match: /^[0-9A-HJKMNP-TV-Z]{26}$/i
+
+        ### Quick Debug Command
+
+        ```bash
+
+        # From branch items-view-e2e-rewrite, add to packages/daemon/src/routes/items.ts:
+
+        console.log('Loaded items:', items.length, items.map(i => i.title));
+
+        # Then run daemon manually and hit /api/items
+
+        ```
+
+
+        ### Files to Focus On
+
+        - src/parser/yaml.ts - extractItemsFromRaw() and loadAllItems()
+
+        - packages/daemon/src/routes/items.ts - API endpoint
+
+        - tests/fixtures/modules/core.yaml - Fixture structure
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
