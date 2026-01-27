@@ -1,8 +1,7 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33
 	import { page } from '$app/stores';
-	import { onMount, onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { onMount, onDestroy, flushSync } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
 	import TaskFilters from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
@@ -20,9 +19,11 @@
 	let error = $state('');
 	let updatedTaskIds = $state<Set<string>>(new Set());
 
-	// Use writable stores for panel state (more reliable than $state for conditional rendering)
-	const detailOpen = writable(false);
-	const selectedTask = writable<TaskDetail | null>(null);
+	// Use $state with an object for panel state to ensure deep reactivity
+	let panel = $state<{ open: boolean; task: TaskDetail | null }>({
+		open: false,
+		task: null
+	});
 
 	let noteContent = $state('');
 	let isSubmitting = $state(false);
@@ -67,10 +68,12 @@
 			console.log('[TasksPage] Fetching task details...');
 			const task = await fetchTask(taskId);
 			console.log('[TasksPage] Task fetched:', task?.title);
-			// Update stores
-			selectedTask.set(task);
-			detailOpen.set(true);
-			console.log('[TasksPage] detailOpen set to true');
+			// Update panel state using flushSync to ensure synchronous DOM update
+			flushSync(() => {
+				panel.task = task;
+				panel.open = true;
+			});
+			console.log('[TasksPage] panel.open set to true, panel.task:', panel.task?.title);
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load task details';
 			console.error('[TasksPage] Error loading task:', err);
@@ -83,8 +86,8 @@
 	}
 
 	function handleCloseDetail() {
-		detailOpen.set(false);
-		selectedTask.set(null);
+		panel.open = false;
+		panel.task = null;
 		noteContent = '';
 		panelError = '';
 	}
@@ -98,23 +101,22 @@
 
 	// Handle escape key
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape' && $detailOpen) {
+		if (e.key === 'Escape' && panel.open) {
 			handleCloseDetail();
 		}
 	}
 
 	async function handleStartTask() {
-		const task = $selectedTask;
-		if (!task) return;
+		if (!panel.task) return;
 
 		isSubmitting = true;
 		panelError = '';
 
 		try {
-			await startTask(task._ulid);
+			await startTask(panel.task._ulid);
 			// Reload task to get updated status
-			const updated = await fetchTask(task._ulid);
-			selectedTask.set(updated);
+			const updated = await fetchTask(panel.task._ulid);
+			panel.task = updated;
 			loadTasks();
 		} catch (err) {
 			panelError = err instanceof Error ? err.message : 'Failed to start task';
@@ -124,18 +126,17 @@
 	}
 
 	async function handleAddNote() {
-		const task = $selectedTask;
-		if (!task || !noteContent.trim()) return;
+		if (!panel.task || !noteContent.trim()) return;
 
 		isSubmitting = true;
 		panelError = '';
 
 		try {
-			await addTaskNote(task._ulid, noteContent);
+			await addTaskNote(panel.task._ulid, noteContent);
 			noteContent = '';
 			// Reload task to get updated notes
-			const updated = await fetchTask(task._ulid);
-			selectedTask.set(updated);
+			const updated = await fetchTask(panel.task._ulid);
+			panel.task = updated;
 			loadTasks();
 		} catch (err) {
 			panelError = err instanceof Error ? err.message : 'Failed to add note';
@@ -187,11 +188,10 @@
 		loadTasks();
 
 		// Reload selected task if it's the one that updated
-		const task = $selectedTask;
-		if (task && event.data?.ulid === task._ulid) {
-			fetchTask(task._ulid)
+		if (panel.task && event.data?.ulid === panel.task._ulid) {
+			fetchTask(panel.task._ulid)
 				.then((updated) => {
-					selectedTask.set(updated);
+					panel.task = updated;
 				})
 				.catch((err) => {
 					console.error('Error reloading task:', err);
@@ -245,7 +245,7 @@
 </div>
 
 <!-- Inline Task Detail Panel - AC: @web-dashboard ac-5, ac-6, ac-7, ac-8 -->
-{#if $detailOpen && $selectedTask}
+{#if panel.open && panel.task}
 	<div
 		class="fixed inset-0 z-50 bg-black/50"
 		onclick={handleOverlayClick}
@@ -266,7 +266,7 @@
 		>
 			<!-- Header -->
 			<div class="flex items-center justify-between p-6 border-b">
-				<h2 class="text-lg font-semibold" data-testid="task-description">{$selectedTask.title}</h2>
+				<h2 class="text-lg font-semibold" data-testid="task-description">{panel.task.title}</h2>
 				<button
 					onclick={handleCloseDetail}
 					class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -280,33 +280,33 @@
 			<div class="flex flex-col gap-4 p-6">
 				<!-- Status and Priority -->
 				<div class="flex gap-2 items-center">
-					<Badge class={getStatusColor($selectedTask.status)}>{$selectedTask.status}</Badge>
-					<Badge variant="outline">Priority: {$selectedTask.priority}</Badge>
-					{#if $selectedTask.type !== 'task'}
-						<Badge variant="outline">{$selectedTask.type}</Badge>
+					<Badge data-testid="task-status-badge" class={getStatusColor(panel.task.status)}>{panel.task.status}</Badge>
+					<Badge variant="outline">Priority: {panel.task.priority}</Badge>
+					{#if panel.task.type !== 'task'}
+						<Badge variant="outline">{panel.task.type}</Badge>
 					{/if}
 				</div>
 
 				<!-- Spec Reference -->
 				<!-- AC: @web-dashboard ac-6 -->
-				{#if $selectedTask.spec_ref}
+				{#if panel.task.spec_ref}
 					<div data-testid="task-spec-ref-link">
 						<p class="text-sm font-medium mb-1">Spec Reference:</p>
 						<a
-							href="/items?ref={encodeURIComponent($selectedTask.spec_ref)}"
+							href="/items?ref={encodeURIComponent(panel.task.spec_ref)}"
 							class="text-sm text-primary hover:underline"
 						>
-							{$selectedTask.spec_ref}
+							{panel.task.spec_ref}
 						</a>
 					</div>
 				{/if}
 
 				<!-- Tags -->
-				{#if $selectedTask.tags.length > 0}
+				{#if panel.task.tags?.length > 0}
 					<div>
 						<p class="text-sm font-medium mb-1">Tags:</p>
 						<div class="flex flex-wrap gap-1">
-							{#each $selectedTask.tags as tag}
+							{#each panel.task.tags as tag}
 								<Badge variant="secondary">{tag}</Badge>
 							{/each}
 						</div>
@@ -315,10 +315,10 @@
 
 				<!-- Dependencies -->
 				<div data-testid="task-dependencies">
-					{#if $selectedTask.depends_on.length > 0}
+					{#if panel.task.depends_on?.length > 0}
 						<p class="text-sm font-medium mb-1">Dependencies:</p>
 						<ul class="text-sm space-y-1">
-							{#each $selectedTask.depends_on as dep}
+							{#each panel.task.depends_on as dep}
 								<li>
 									<a href="/tasks?ref={encodeURIComponent(dep)}" class="text-primary hover:underline">
 										{dep}
@@ -332,11 +332,11 @@
 				</div>
 
 				<!-- Blocked By -->
-				{#if $selectedTask.blocked_by.length > 0}
+				{#if panel.task.blocked_by?.length > 0}
 					<div>
 						<p class="text-sm font-medium mb-1 text-destructive">Blocked By:</p>
 						<ul class="text-sm space-y-1">
-							{#each $selectedTask.blocked_by as blocker}
+							{#each panel.task.blocked_by as blocker}
 								<li class="text-muted-foreground">{blocker}</li>
 							{/each}
 						</ul>
@@ -347,7 +347,7 @@
 
 				<!-- Actions -->
 				<!-- AC: @web-dashboard ac-7 -->
-				{#if $selectedTask.status === 'pending'}
+				{#if panel.task.status === 'pending'}
 					<div>
 						<Button data-testid="start-task-button" onclick={handleStartTask} disabled={isSubmitting} class="w-full">
 							{isSubmitting ? 'Starting...' : 'Start Task'}
@@ -363,10 +363,10 @@
 
 				<!-- Todos -->
 				<div data-testid="task-todos">
-					{#if $selectedTask.todos && $selectedTask.todos.length > 0}
+					{#if panel.task.todos && panel.task.todos.length > 0}
 						<p class="text-sm font-medium mb-2">Todos:</p>
 						<ul class="space-y-2">
-							{#each $selectedTask.todos as todo}
+							{#each panel.task.todos as todo}
 								<li class="flex items-start gap-2 text-sm">
 									<span class="mt-0.5">
 										{#if todo.status === 'completed'}
@@ -393,7 +393,7 @@
 				<!-- Notes -->
 				<!-- AC: @web-dashboard ac-5 -->
 				<div data-testid="task-notes">
-					<p class="text-sm font-medium mb-2">Notes ({$selectedTask.notes.length}):</p>
+					<p class="text-sm font-medium mb-2">Notes ({panel.task.notes?.length ?? 0}):</p>
 
 					<!-- Add Note Form -->
 					<!-- AC: @web-dashboard ac-8 -->
@@ -417,7 +417,7 @@
 
 					<!-- Notes List -->
 					<div class="space-y-4" data-testid="task-notes-list">
-						{#each $selectedTask.notes as note}
+						{#each panel.task.notes ?? [] as note}
 							<div class="border rounded-lg p-3" data-testid="note-item">
 								<div class="flex justify-between items-start mb-2">
 									<span class="text-xs text-muted-foreground">{note.author}</span>
