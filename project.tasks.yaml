@@ -33720,6 +33720,83 @@
 
         - tests/fixtures/modules/core.yaml (schema fixes)
       supersedes: null
+    - _ulid: 01KG0MYK77WTPQJDP6X3TAQ9GY
+      created_at: 2026-01-27T21:15:00.199Z
+      author: "@claude"
+      content: >-
+        ## HANDOFF NOTE - Session End 2026-01-27
+
+
+        ### Current State
+
+        Branch: items-view-e2e-rewrite (pushed)
+
+        Tests: 6/19 passing, 13/19 failing (timeouts)
+
+
+        ### What Works
+
+        1. **All 4 items load correctly** - module, trait, feature, requirement
+
+        2. **Hierarchy is computed** - parent field populated via computeParentMap() in daemon
+
+        3. **Tree displays correctly** - screenshot shows 'Core Module' at root with '4 items total'
+
+        4. **Basic tests pass** - tree visibility, item type badge, responsive layout
+
+
+        ### What's Broken
+
+        Accordion expand interactions fail. When test clicks expand-toggle:
+
+        - The module's node-title click works (detail panel opens)
+
+        - But expand to show children times out
+
+        - Tests that need to navigate to feature/trait after expanding module fail
+
+
+        ### Key Files Changed
+
+        1. **src/parser/yaml.ts:942-968** - Strips nested item arrays (features, traits, etc.)
+        before SpecItemSchema.safeParse() since schema expects refs not objects
+
+        2. **packages/daemon/src/routes/items.ts:28-86** - computeParentMap() builds parent ULIDs
+        from _path field
+
+        3. **tests/fixtures/modules/core.yaml** - Fixed AC id format and trait status enums
+
+        4. **packages/web-ui/tests/e2e/items.spec.ts** - All selectors now use .first() for nested
+        elements
+
+
+        ### Debug Approach for Next Session
+
+        1. Check if accordion component actually expands (maybe CSS/visibility issue)
+
+        2. Look at ItemTree.svelte - verify AccordionContent renders when node.children.length > 0
+
+        3. Check if parent field is correctly set - items may all appear as roots if parent is
+        undefined
+
+        4. Try running single test with Playwright inspector: npm run test:e2e -w packages/web-ui --
+        tests/e2e/items.spec.ts -g 'expands module' --debug
+
+
+        ### Definition of Done Reminder
+
+        - [ ] Hierarchical tree structure works (AC-11)
+
+        - [ ] Item detail displays all fields (AC-12)  
+
+        - [ ] Linked tasks shown with status (AC-13)
+
+        - [ ] Trait chips are clickable (AC-14)
+
+        - [ ] AC expansion shows full GWT text (AC-15)
+
+        - [ ] All E2E tests pass - no skips
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
