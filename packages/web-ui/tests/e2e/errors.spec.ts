@@ -7,9 +7,14 @@
  * - AC-24: 409 with {error, current, valid_transitions} for state error
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 
 test.describe('Error Handling', () => {
+	// Start daemon for all tests
+	test.beforeEach(async ({ daemon }) => {
+		// Daemon fixture ensures daemon is running
+	});
+
 	test.describe('404 Not Found Errors', () => {
 		// AC: @api-contract ac-22
 		test('displays 404 error with suggestion for invalid task ref', async ({ page }) => {

@@ -31,7 +31,6 @@ import type {
   LoadedConvention,
 } from '../../parser/meta.js';
 import { grepItem } from '../../utils/grep.js';
-import { join } from 'path';
 
 interface ValidationRouteOptions {}
 
@@ -44,8 +43,7 @@ export function createValidationRoutes(options: ValidationRouteOptions = {}) {
       '/search',
       async ({ query, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const { tasks, items } = await buildIndexes(ctx);
 
         const pattern = query.q;
@@ -208,8 +206,7 @@ export function createValidationRoutes(options: ValidationRouteOptions = {}) {
     // AC: @api-contract ac-20 - Run full validation
     .get('/validate', async ({ projectContext }) => {
       // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const kspecDir = join(projectContext.path, '.kspec');
-      const ctx = await initContext(kspecDir);
+      const ctx = await initContext(projectContext.path);
 
       // AC: @api-contract ac-20 - Run validation and return ValidationResult
       const result = await validate(ctx);
@@ -228,8 +225,7 @@ export function createValidationRoutes(options: ValidationRouteOptions = {}) {
     // AC: @api-contract ac-21 - Get alignment stats and warnings
     .get('/alignment', async ({ projectContext }) => {
       // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const kspecDir = join(projectContext.path, '.kspec');
-      const ctx = await initContext(kspecDir);
+      const ctx = await initContext(projectContext.path);
       const { tasks, items, refIndex } = await buildIndexes(ctx);
 
       // AC: @api-contract ac-21 - Create AlignmentIndex and get stats

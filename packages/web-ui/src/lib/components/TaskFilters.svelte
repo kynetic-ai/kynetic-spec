@@ -11,41 +11,87 @@
 		SelectTrigger
 	} from '$lib/components/ui/select';
 
-	// Current filter values from URL
-	$: status = $page.url.searchParams.get('status') || '';
-	$: type = $page.url.searchParams.get('type') || '';
-	$: tag = $page.url.searchParams.get('tag') || '';
-	$: assignee = $page.url.searchParams.get('assignee') || '';
-	$: automation = $page.url.searchParams.get('automation') || '';
+	// Display labels for status values
+	const statusLabels: Record<string, string> = {
+		'': 'All Statuses',
+		all: 'All Statuses',
+		pending: 'Pending',
+		in_progress: 'In Progress',
+		pending_review: 'Pending Review',
+		blocked: 'Blocked',
+		completed: 'Completed',
+		cancelled: 'Cancelled'
+	};
 
-	function updateFilter(key: string, value: string) {
+	// Display labels for type values
+	const typeLabels: Record<string, string> = {
+		'': 'All Types',
+		all: 'All Types',
+		task: 'Task',
+		subtask: 'Subtask'
+	};
+
+	// Display labels for automation values
+	const automationLabels: Record<string, string> = {
+		'': 'All',
+		all: 'All',
+		eligible: 'Eligible',
+		blocked: 'Blocked'
+	};
+
+	// Derive filter values from URL - use $derived with $page store
+	let status = $derived($page.url.searchParams.get('status') || '');
+	let type = $derived($page.url.searchParams.get('type') || '');
+	let tag = $derived($page.url.searchParams.get('tag') || '');
+	let assignee = $derived($page.url.searchParams.get('assignee') || '');
+	let automation = $derived($page.url.searchParams.get('automation') || '');
+
+	let hasFilters = $derived(status || type || tag || assignee || automation);
+
+	function updateFilter(key: string, value: string | string[] | undefined) {
+		// Handle the case where value might be an array (bits-ui Svelte 5 quirk)
+		// The quirk produces arrays like ['a', 'l', 'l', 'in_progress'] - we want the last element
+		let actualValue: string | undefined;
+		if (Array.isArray(value)) {
+			actualValue = value.length > 0 ? value[value.length - 1] : undefined;
+		} else {
+			actualValue = value;
+		}
+
 		const params = new URLSearchParams($page.url.searchParams);
 
-		if (value === '' || value === 'all') {
+		if (!actualValue || actualValue === 'all') {
 			params.delete(key);
 		} else {
-			params.set(key, value);
+			params.set(key, actualValue);
 		}
 
 		// Reset offset when filter changes
 		params.delete('offset');
 
-		goto(`?${params.toString()}`, { replaceState: false, keepFocus: true });
+		const newUrl = `?${params.toString()}`;
+		goto(newUrl, { replaceState: false, keepFocus: true });
 	}
 
 	function clearFilters() {
 		goto('/tasks', { replaceState: false });
 	}
 
-	$: hasFilters = status || type || tag || assignee || automation;
+	// Compute the display value for Select triggers
+	let statusDisplay = $derived(status || 'all');
+	let typeDisplay = $derived(type || 'all');
+	let automationDisplay = $derived(automation || 'all');
 </script>
 
-<div class="flex flex-wrap gap-4 p-4 bg-muted/50 rounded-lg">
+<div class="flex flex-wrap gap-4 p-4 bg-muted/50 rounded-lg" data-testid="filter-controls">
 	<div class="flex-1 min-w-[200px]">
 		<label for="status-filter" class="text-sm font-medium mb-2 block">Status</label>
-		<Select value={status || 'all'} onValueChange={(v) => updateFilter('status', v || 'all')}>
+		<Select
+			value={statusDisplay}
+			onValueChange={(v) => updateFilter('status', v)}
+		>
 			<SelectTrigger id="status-filter" data-testid="filter-status">
-				{status || 'All Statuses'}
+				{statusLabels[statusDisplay] || 'All Statuses'}
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value="all">All Statuses</SelectItem>
@@ -61,9 +107,12 @@
 
 	<div class="flex-1 min-w-[200px]">
 		<label for="type-filter" class="text-sm font-medium mb-2 block">Type</label>
-		<Select value={type || 'all'} onValueChange={(v) => updateFilter('type', v || 'all')}>
+		<Select
+			value={typeDisplay}
+			onValueChange={(v) => updateFilter('type', v)}
+		>
 			<SelectTrigger id="type-filter" data-testid="filter-type">
-				{type || 'All Types'}
+				{typeLabels[typeDisplay] || 'All Types'}
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value="all">All Types</SelectItem>
@@ -76,11 +125,11 @@
 	<div class="flex-1 min-w-[200px]">
 		<label for="automation-filter" class="text-sm font-medium mb-2 block">Automation</label>
 		<Select
-			value={automation || 'all'}
-			onValueChange={(v) => updateFilter('automation', v || 'all')}
+			value={automationDisplay}
+			onValueChange={(v) => updateFilter('automation', v)}
 		>
 			<SelectTrigger id="automation-filter" data-testid="filter-automation">
-				{automation || 'All'}
+				{automationLabels[automationDisplay] || 'All'}
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value="all">All</SelectItem>
@@ -98,7 +147,7 @@
 			type="text"
 			placeholder="Filter by tag..."
 			value={tag}
-			on:input={(e) => updateFilter('tag', e.currentTarget.value)}
+			oninput={(e) => updateFilter('tag', (e.target as HTMLInputElement).value)}
 		/>
 	</div>
 
@@ -110,13 +159,13 @@
 			type="text"
 			placeholder="Filter by assignee..."
 			value={assignee}
-			on:input={(e) => updateFilter('assignee', e.currentTarget.value)}
+			oninput={(e) => updateFilter('assignee', (e.target as HTMLInputElement).value)}
 		/>
 	</div>
 
 	{#if hasFilters}
 		<div class="flex items-end">
-			<Button variant="outline" on:click={clearFilters}>Clear Filters</Button>
+			<Button variant="outline" onclick={clearFilters}>Clear Filters</Button>
 		</div>
 	{/if}
 </div>

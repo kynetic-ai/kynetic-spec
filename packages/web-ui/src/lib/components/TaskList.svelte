@@ -14,12 +14,19 @@
 
 	export let tasks: TaskSummary[];
 	export let updatedTaskIds: Set<string> = new Set();
+	export let onSelectTask: ((taskId: string) => void) | undefined = undefined;
 
 	const dispatch = createEventDispatcher<{
 		select: string;
 	}>();
 
 	function selectTask(task: TaskSummary) {
+		console.log('[TaskList] selectTask called for:', task._ulid, task.title);
+		// Try callback first (Svelte 5 pattern), then dispatch (Svelte 4 pattern)
+		if (onSelectTask) {
+			console.log('[TaskList] Calling onSelectTask callback');
+			onSelectTask(task._ulid);
+		}
 		dispatch('select', task._ulid);
 	}
 
@@ -33,6 +40,18 @@
 			cancelled: 'bg-gray-400'
 		};
 		return colors[status] || 'bg-gray-500';
+	}
+
+	function formatStatus(status: string): string {
+		const labels: Record<string, string> = {
+			pending: 'Pending',
+			in_progress: 'In Progress',
+			pending_review: 'Pending Review',
+			blocked: 'Blocked',
+			completed: 'Completed',
+			cancelled: 'Cancelled'
+		};
+		return labels[status] || status;
 	}
 
 	function getPriorityColor(priority: number): string {
@@ -66,10 +85,15 @@
 				{#each tasks as task}
 					<!-- AC: @web-dashboard ac-33 - Highlight animation on update -->
 					{@const isUpdated = updatedTaskIds.has(task._ulid)}
-					<TableRow
-						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 {isUpdated ? 'bg-primary/10' : ''}"
+					<!-- Use native tr for reliable click handling -->
+					<tr
+						class="cursor-pointer hover:bg-muted/50 transition-colors duration-300 border-b {isUpdated ? 'bg-primary/10 animate-pulse' : ''}"
 						data-testid="task-list-item"
-						on:click={() => selectTask(task)}
+						data-task-ref={task.slugs?.[0] || task._ulid}
+						onclick={() => selectTask(task)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && selectTask(task)}
 					>
 						<TableCell class="font-medium">
 							<span data-testid="task-title">{task.title}</span>
@@ -78,29 +102,28 @@
 							{/if}
 						</TableCell>
 						<TableCell>
-							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{task.status}</Badge>
+							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{formatStatus(task.status)}</Badge>
 						</TableCell>
 						<TableCell class={getPriorityColor(task.priority)}>
 							<span data-testid="task-priority">P{task.priority}</span>
 						</TableCell>
-						<TableCell>
+						<TableCell data-testid="task-spec-ref">
 							{#if task.spec_ref}
 								<a
-									data-testid="task-spec-ref"
 									href="/items?ref={encodeURIComponent(task.spec_ref)}"
 									class="text-primary hover:underline text-sm"
-									on:click|stopPropagation
+									onclick={(e) => e.stopPropagation()}
 								>
 									{task.spec_ref}
 								</a>
 							{:else}
-								<span data-testid="task-spec-ref" class="text-muted-foreground text-sm">—</span>
+								<span class="text-muted-foreground text-sm">—</span>
 							{/if}
 						</TableCell>
 						<TableCell>
 							<Badge data-testid="task-notes-count" variant="secondary">{task.notes_count}</Badge>
 						</TableCell>
-						<TableCell>
+						<TableCell data-testid="task-tags">
 							<div class="flex flex-wrap gap-1">
 								{#each task.tags.slice(0, 3) as tag}
 									<Badge variant="outline" class="text-xs">{tag}</Badge>
@@ -110,7 +133,7 @@
 								{/if}
 							</div>
 						</TableCell>
-					</TableRow>
+					</tr>
 				{/each}
 			{/if}
 		</TableBody>

@@ -10,6 +10,8 @@ const __dirname = dirname(__filename);
 
 const DAEMON_PORT = 3456;
 const ROOT_FIXTURES = join(__dirname, '../../../../tests/fixtures');
+// Path to built web UI (daemon serves this for E2E tests)
+const WEB_UI_BUILD = join(__dirname, '../../build');
 
 interface DaemonFixture {
   tempDir: string;
@@ -75,28 +77,44 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     // Clean up any existing daemon
     await cleanupExistingDaemon();
 
-    // Create temp directory
+    // Create temp directory with .kspec subdirectory
     const tempDir = join(tmpdir(), 'kspec-e2e-' + Date.now());
     const kspecDir = join(tempDir, '.kspec');
     mkdirSync(kspecDir, { recursive: true });
 
-    // Copy test fixtures
+    // Copy test fixtures to .kspec subdirectory (simulating shadow worktree mode)
     if (existsSync(ROOT_FIXTURES)) {
-      cpSync(ROOT_FIXTURES, kspecDir, { recursive: true });
+      cpSync(ROOT_FIXTURES, kspecDir, {
+        recursive: true,
+        filter: (src) => !src.includes('multi-dir')
+      });
     } else {
       throw new Error(`Test fixtures not found at ${ROOT_FIXTURES}`);
     }
 
-    // Initialize git repo (required for kspec)
+    // Initialize git repo in project root (required for kspec)
     execSync('git init', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: 'ignore' });
     execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
 
-    // Start daemon
+    // Verify web UI is built (daemon serves it for E2E tests)
+    if (!existsSync(WEB_UI_BUILD)) {
+      throw new Error(
+        `Web UI not built. Run 'npm run build -w packages/web-ui' first.\n` +
+        `Expected build at: ${WEB_UI_BUILD}`
+      );
+    }
+
+    // Start daemon - pass project root (tempDir), daemon derives .kspec internally
+    // Set WEB_UI_DIR so daemon serves the built web UI
     const startResult = spawnSync(
       'kspec',
-      ['serve', 'start', '--daemon', '--port', String(DAEMON_PORT), '--kspec-dir', kspecDir],
-      { cwd: tempDir, encoding: 'utf-8' }
+      ['serve', 'start', '--daemon', '--port', String(DAEMON_PORT), '--kspec-dir', tempDir],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        env: { ...process.env, WEB_UI_DIR: WEB_UI_BUILD }
+      }
     );
 
     if (startResult.status !== 0) {
@@ -104,13 +122,13 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     }
 
     // Wait for daemon to be ready
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
 
     // Provide fixture to test
     await use({ tempDir, kspecDir });
 
-    // Cleanup: stop daemon
-    spawnSync('kspec', ['serve', 'stop', '--kspec-dir', kspecDir], {
+    // Cleanup: stop daemon - pass project root to match start
+    spawnSync('kspec', ['serve', 'stop', '--kspec-dir', tempDir], {
       cwd: tempDir,
       encoding: 'utf-8',
     });

@@ -118,7 +118,6 @@ describe('Inbox API Endpoints', () => {
 
     // Check usage
     expect(serverContent).toContain('createInboxRoutes');
-    expect(serverContent).toContain('kspecDir');
     expect(serverContent).toContain('pubsub');
   });
 
@@ -168,13 +167,9 @@ describe('Inbox API Endpoints', () => {
       expect(routesContent).toContain('initContext');
       expect(routesContent).toContain('loadInboxItems');
 
-      // Should use project-specific context
-      const hasProjectContext = routesContent.includes('projectContext') ||
-                                 routesContent.includes('store.projectContext');
-      const usesHardcodedKspecDir = routesContent.includes('const ctx = await initContext(kspecDir)');
-
-      // Either uses projectContext OR still uses hardcoded kspecDir (transitional state)
-      expect(hasProjectContext || usesHardcodedKspecDir).toBe(true);
+      // Routes use projectContext from middleware (migration complete)
+      expect(routesContent).toContain('projectContext');
+      expect(routesContent).toContain('projectContext.path');
     });
 
     // AC: @multi-directory-daemon ac-24
@@ -212,14 +207,12 @@ describe('Inbox API Endpoints', () => {
         'utf-8'
       );
 
-      // After migration, routes should use context from middleware, not constructor parameter
-      // This test will pass after 01KFQAD3 is complete
-      const hasProjectContext = routesContent.includes('projectContext') ||
-                                 routesContent.includes('store.projectContext');
-      const usesHardcodedKspecDir = routesContent.includes('const ctx = await initContext(kspecDir)');
+      // Routes use projectContext from middleware, not hardcoded kspecDir
+      expect(routesContent).toContain('projectContext');
+      expect(routesContent).toContain('projectContext.path');
 
-      // Either uses projectContext OR still uses hardcoded kspecDir (transitional state)
-      expect(hasProjectContext || usesHardcodedKspecDir).toBe(true);
+      // Should NOT have hardcoded kspecDir pattern in handlers
+      expect(routesContent).not.toContain('const ctx = await initContext(kspecDir)');
     });
   });
 });

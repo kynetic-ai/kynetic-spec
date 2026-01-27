@@ -20,7 +20,6 @@ import {
   loadMetaContext,
   loadSessionContext,
 } from '../../parser/index.js';
-import { join } from 'path';
 
 interface MetaRouteOptions {}
 
@@ -31,8 +30,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
     // AC: @api-contract ac-15 - Get session context
     .get('/session', async ({ projectContext }) => {
       // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const kspecDir = join(projectContext.path, '.kspec');
-      const ctx = await initContext(kspecDir);
+      const ctx = await initContext(projectContext.path);
       const session = await loadSessionContext(ctx);
 
       // AC: @api-contract ac-15 - Return session context (focus, threads, questions)
@@ -47,8 +45,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
     // AC: @api-contract ac-16 - List agents
     .get('/agents', async ({ projectContext }) => {
       // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const kspecDir = join(projectContext.path, '.kspec');
-      const ctx = await initContext(kspecDir);
+      const ctx = await initContext(projectContext.path);
       const meta = await loadMetaContext(ctx);
 
       // AC: @api-contract ac-16 - Return all defined agents
@@ -63,8 +60,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
     // AC: @api-contract ac-17 - List workflows
     .get('/workflows', async ({ projectContext }) => {
       // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-      const kspecDir = join(projectContext.path, '.kspec');
-      const ctx = await initContext(kspecDir);
+      const ctx = await initContext(projectContext.path);
       const meta = await loadMetaContext(ctx);
 
       // AC: @api-contract ac-17 - Return all defined workflows
@@ -81,8 +77,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
       '/observations',
       async ({ query, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const meta = await loadMetaContext(ctx);
 
         // Start with all observations

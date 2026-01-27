@@ -7,9 +7,14 @@
  * - AC-27: Desktop slide-over panels (>= 1024px)
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test-base';
 
 test.describe('Navigation and URL State', () => {
+	// Start daemon for all tests
+	test.beforeEach(async ({ daemon }) => {
+		// Daemon fixture ensures daemon is running
+	});
+
 	test.describe('URL Filter State', () => {
 		// AC: @web-dashboard ac-10
 		test('URL updates with filter query params on tasks page', async ({ page }) => {

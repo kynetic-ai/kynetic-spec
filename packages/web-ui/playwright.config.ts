@@ -14,19 +14,16 @@ export default defineConfig({
   },
 
   use: {
-    baseURL: 'http://localhost:4173',
+    // Connect directly to daemon which serves both API and UI
+    baseURL: 'http://localhost:3456',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     actionTimeout: 10_000,
   },
 
-  webServer: {
-    command: 'npm run preview',
-    url: 'http://localhost:4173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
-  },
+  // No webServer - daemon is started by test fixture (test-base.ts)
+  // The daemon serves both the API and the built web UI
 
   projects: [
     {

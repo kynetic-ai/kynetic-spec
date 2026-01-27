@@ -30,7 +30,6 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
-import { join } from 'path';
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -45,10 +44,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       '/',
       async ({ query, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const tasks = await loadAllTasks(ctx);
-        const index = new ReferenceIndex(ctx);
+        const specItems = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, specItems);
 
         // Apply filters
         let filtered = tasks;
@@ -121,10 +120,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       '/:ref',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const tasks = await loadAllTasks(ctx);
-        const index = new ReferenceIndex(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // AC: @api-contract ac-5, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
         const result = index.resolve(params.ref);
@@ -182,11 +181,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       '/:ref/start',
       async ({ params, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // Resolve ref
         const result = index.resolve(params.ref);
@@ -226,7 +224,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // Save and commit
         await saveTask(ctx, updatedTask);
         await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
-        await commitIfShadow(ctx, `task: start ${params.ref}`);
+        await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
 
         // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
@@ -252,10 +250,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       '/:ref/note',
       async ({ params, body, error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        const kspecDir = join(projectContext.path, '.kspec');
-        const ctx = await initContext(kspecDir);
+        const ctx = await initContext(projectContext.path);
         const tasks = await loadAllTasks(ctx);
-        const index = new ReferenceIndex(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
 
         // Resolve ref
         const result = index.resolve(params.ref);
@@ -288,7 +286,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         }
 
         // AC: @api-contract ac-7 - Append note
-        const author = await getAuthor(ctx.root);
+        const author = getAuthor();
         const note = createNote(body.content, author);
 
         const updatedTask: LoadedTask = {
@@ -298,7 +296,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // AC: @api-contract ac-7, @trait-api-endpoint ac-5 - Shadow commit
         await saveTask(ctx, updatedTask);
-        await commitIfShadow(ctx, `task: add note to ${params.ref}`);
+        await commitIfShadow(ctx.shadow, `task: add note to ${params.ref}`);
 
         // AC: @api-contract ac-7 - WebSocket broadcast
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project

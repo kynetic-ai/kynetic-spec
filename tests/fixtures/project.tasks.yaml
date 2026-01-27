@@ -15,6 +15,35 @@ tasks:
     todos: []
     created_at: "2026-01-01T00:00:00Z"
 
+  - _ulid: 01KF1645CC9N4YGP991WD7XS8S
+    slugs:
+      - test-task-secondary
+    title: Test secondary task
+    type: task
+    status: pending
+    priority: 1
+    automation: manual_only
+    tags:
+      - e2e
+      - test
+    description: A secondary task for testing various scenarios
+    depends_on: []
+    notes:
+      - _ulid: 01KF1645CCVJA52BZAQ20SZ1V6
+        created_at: "2026-01-01T01:00:00Z"
+        author: "@test"
+        content: Initial note on secondary task
+    todos:
+      - id: 1
+        text: Implement the main logic
+        done: true
+        added_at: "2026-01-01T00:00:00Z"
+      - id: 2
+        text: Write tests
+        done: false
+        added_at: "2026-01-01T00:30:00Z"
+    created_at: "2026-01-01T00:00:00Z"
+
   - _ulid: 01KF1645CB8N4YGP991WD7XS9R
     slugs:
       - test-task-blocked

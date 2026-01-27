@@ -15,6 +15,11 @@ import { test, expect } from '../fixtures/test-base';
  */
 
 test.describe('WebSocket Connection Handling', () => {
+	// Start daemon for all tests
+	test.beforeEach(async ({ daemon }) => {
+		// Daemon fixture ensures daemon is running
+	});
+
 	// AC: @web-dashboard ac-29
 	test('shows connected status when daemon running', async ({ page }) => {
 		await page.goto('/');
