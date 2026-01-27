@@ -10660,6 +10660,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-26T23:32:53.397Z
+    completed_at: 2026-01-26T23:34:48.643Z
     step_results:
       - step_index: 0
         status: completed
@@ -10787,4 +10788,11 @@ runs:
         completed_at: 2026-01-26T23:34:48.643Z
         notes: All items captured in step 5. Workflow complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-26T23:34:48.643Z
+  - _ulid: 01KFYESD4RGYE11KPP3XYXEMKT
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-27T00:48:49.816Z
+    step_results: []
+    initiated_by: "@claude"
