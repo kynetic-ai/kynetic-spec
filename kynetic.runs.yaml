@@ -11055,6 +11055,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-27T20:08:51.635Z
+    completed_at: 2026-01-27T20:26:14.956Z
     step_results:
       - step_index: 0
         status: completed
@@ -11228,4 +11229,11 @@ runs:
           - Parent field documentation (not a gap, just implementation detail)
           - Debug endpoint (can use curl)
     initiated_by: "@claude"
-    completed_at: 2026-01-27T20:26:14.956Z
+  - _ulid: 01KG0N24B4HXS3Z9WNY0Z6MQZY
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-27T21:16:56.036Z
+    step_results: []
+    initiated_by: "@claude"
