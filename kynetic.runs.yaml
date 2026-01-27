@@ -11014,8 +11014,20 @@ runs:
   - _ulid: 01KG030366TGC3MZYSFMGSFZMF
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-27T16:01:14.951Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-27T16:01:14.951Z
+        completed_at: 2026-01-27T16:02:25.320Z
+        notes: "Reflected on session. Captured: (1) bits-ui Select onValueChange array quirk as friction,
+          (2) console log debugging pattern as success. Searched existing coverage - bits-ui
+          observation exists but was about Sheet/Dialog, not Select. WebSocket issues are
+          well-tracked in specs."
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-27T16:02:25.320Z
+        completed_at: 2026-01-27T16:02:25.320Z
     initiated_by: "@claude"
