@@ -4453,4 +4453,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG031N6WQM6BM3S0J2YFEF0H
+    type: friction
+    content: "bits-ui Select onValueChange in Svelte 5 returns array of characters plus new value (e.g.,
+      ['a','l','l','in_progress'] instead of 'in_progress'). Workaround: extract last element from
+      array when Array.isArray(value)."
+    created_at: 2026-01-27T16:02:06.172Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
