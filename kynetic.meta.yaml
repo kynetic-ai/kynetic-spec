@@ -4487,4 +4487,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG0N4V90NDXX0MVSYXWWTN2M
+    type: friction
+    content: Schema validation (safeParse) failures in extractItemsFromRaw are silent - items just don't
+      appear in results with no error or warning. This caused significant debugging time when trait
+      had invalid enum values and module had nested items in traits field. Consider adding
+      validation error logging or a strict mode that throws on parse failures.
+    created_at: 2026-01-27T21:18:25.056Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
