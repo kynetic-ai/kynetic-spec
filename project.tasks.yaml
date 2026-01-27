@@ -31838,7 +31838,7 @@
     3. Consider health endpoint polling instead of fixed delay
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -31855,6 +31855,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-27T18:41:22.561Z
 - _ulid: 01KFP5Y1Q7674XFEY34NJX1BA1
   slugs: []
   title: Fix daemon path resolution for npm installs
@@ -39686,6 +39687,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Already fixed in commit 784b8c06. Daemon routes now pass project root to initContext
+    instead of .kspec path, and server.ts has defensive path normalization. Verified working via 16
+    passing E2E tests in Tasks View.
   depends_on: []
   context: []
   priority: 1
@@ -39696,6 +39700,7 @@
   vcs_refs: []
   created_at: 2026-01-25T23:48:14.936Z
   started_at: 2026-01-27T18:07:54.742Z
+  completed_at: 2026-01-27T18:07:59.304Z
   notes:
     - _ulid: 01KFVRY8GHTGV0PDSDH7PQYNMD
       created_at: 2026-01-25T23:48:31.377Z
@@ -39747,10 +39752,6 @@
         - Fixture files exist and are valid YAML
       supersedes: null
   todos: []
-  completed_at: 2026-01-27T18:07:59.304Z
-  closed_reason: Already fixed in commit 784b8c06. Daemon routes now pass project root to initContext
-    instead of .kspec path, and server.ts has defensive path normalization. Verified working via 16
-    passing E2E tests in Tasks View.
 - _ulid: 01KFXSGACX5DSA6ACKG95H8593
   slugs:
     - task-reference-normalization-in-merges
