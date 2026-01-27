@@ -33129,6 +33129,55 @@
 
         3. Debug detail panel reactivity (may need browser-only rendering or different approach)
       supersedes: null
+    - _ulid: 01KFZ3T4B2215TYF1YW78R72P0
+      created_at: 2026-01-27T06:56:13.666Z
+      author: "@claude"
+      content: >-
+        Session progress - Fixed daemon initContext bug (commit 4dbd28fa):
+
+
+        **Root cause identified and fixed:**
+
+        All daemon routes were calling `initContext(join(projectContext.path, '.kspec'))` but
+        `initContext()` expects PROJECT ROOT, not the .kspec path. This would cause
+        RUNNING_FROM_SHADOW errors on real projects with shadow worktrees. The bug was hidden in E2E
+        tests because they use fake .kspec directories.
+
+
+        **Changes made (10 files, -53 lines):**
+
+        - 5 route files: Pass `projectContext.path` directly to `initContext()`
+
+        - Fixed `commitIfShadow(ctx, ...)` → `commitIfShadow(ctx.shadow, ...)`
+
+        - Fixed `getAuthor(ctx.root)` → `getAuthor()` (invalid parameter)
+
+        - Updated 5 static analysis tests to reflect new patterns
+
+
+        **Test status after fix:**
+
+        - Unit tests: 1428 passed, 1 failed (pre-existing Bun build issue), 3 skipped
+
+        - E2E tests: 60 passed, 57 failed (pre-existing UI issues)
+
+
+        **Still remaining for AC completion:**
+
+        The E2E test failures are unrelated to this fix - they're the original UI issues:
+
+        - Detail panels not opening when tasks clicked (AC-5)
+
+        - Filter interactions failing (AC-9, AC-10)
+
+        - Task actions failing (AC-7, AC-8)
+
+        - WebSocket highlight tests failing (AC-33)
+
+
+        This commit only fixes structural daemon issues. The AC-related E2E failures still need
+        investigation into Svelte 5 reactivity and component behavior.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84SZN5C4787Q4QAQB9ND8
