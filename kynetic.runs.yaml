@@ -10791,8 +10791,39 @@ runs:
   - _ulid: 01KFYESD4RGYE11KPP3XYXEMKT
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-01-27T00:48:49.816Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-27T00:48:49.816Z
+        completed_at: 2026-01-27T00:49:12.636Z
+        notes: >-
+          Session review complete. Main work: investigating Svelte 5 SSR reactivity bug where state
+          updates but {#if} blocks don't re-render after hydration.
+
+
+          **What Worked Well:**
+
+          - Debug logging approach (console.log + network interception in tests) quickly identified
+          that state WAS updating
+
+          - Systematic elimination of component boundaries to isolate the issue
+
+          - Task notes for documenting investigation progress
+
+
+          **Friction Points:**
+
+          1. Svelte 5 SSR reactivity - state changes after hydration don't trigger re-renders
+          (framework bug, not kspec issue)
+
+          2. E2E test debugging is slow - each test run takes ~30s due to build + daemon startup
+
+          3. No clear way to test if build is actually updated vs cached
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-27T00:49:12.636Z
+        completed_at: 2026-01-27T00:49:12.636Z
     initiated_by: "@claude"
