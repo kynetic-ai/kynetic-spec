@@ -561,6 +561,10 @@ features:
         given: app is built with VITE_STATIC_MODE=true
         when: app initializes on page load
         then: mode is set to static without attempting daemon health check
+      - id: ac-20
+        given: app is in static mode
+        when: fetching kspec-snapshot.json
+        then: URL is prefixed with SvelteKit configured base path from $app/paths
     status:
       maturity: draft
       implementation: in_progress
