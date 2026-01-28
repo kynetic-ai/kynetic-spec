@@ -28,8 +28,9 @@ import type {
 	EventHandler,
 	StateChangeHandler
 } from './types.js';
+import { DAEMON_WS_BASE } from '../constants.js';
 
-const DEFAULT_URL = 'ws://localhost:3456/ws';
+const DEFAULT_URL = `${DAEMON_WS_BASE}/ws`;
 const MAX_BACKOFF_MS = 30000; // 30s
 const CONNECTION_LOST_THRESHOLD_MS = 10000; // 10s
 const MAX_RECONNECT_ATTEMPTS = 10;

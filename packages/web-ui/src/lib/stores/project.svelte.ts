@@ -13,6 +13,7 @@
  */
 
 import { browser } from '$app/environment';
+import { DAEMON_API_BASE } from '$lib/constants';
 
 const STORAGE_KEY = 'kspec-selected-project';
 
@@ -69,7 +70,7 @@ export async function loadProjects(): Promise<void> {
 	error = null;
 
 	try {
-		const response = await fetch('http://localhost:3456/api/projects');
+		const response = await fetch(`${DAEMON_API_BASE}/api/projects`);
 		if (!response.ok) {
 			throw new Error('Failed to load projects');
 		}

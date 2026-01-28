@@ -27,8 +27,9 @@ import {
 	isInvalidProjectError,
 	type Project
 } from './stores/project.svelte';
+import { DAEMON_API_BASE } from './constants';
 
-const API_BASE = 'http://localhost:3456';
+const API_BASE = DAEMON_API_BASE;
 
 /**
  * Get headers for API requests, including X-Kspec-Dir if project is selected
