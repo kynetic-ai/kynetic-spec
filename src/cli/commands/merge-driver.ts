@@ -253,9 +253,9 @@ async function performSemanticMerge(
   // For now, use generic object merging for all types
   // Future: Specialized merging based on _fileType
 
-  // Check if root is array vs object
+  // Check if root is array vs object (check all three versions)
   // AC: @merge-file-detection ac-7
-  const isRootLevelArray = isRootArray(versions.ours) || isRootArray(versions.theirs);
+  const isRootLevelArray = isRootArray(versions.base) || isRootArray(versions.ours) || isRootArray(versions.theirs);
 
   let finalMerged: Record<string, unknown> | unknown[];
   let conflicts: ConflictInfo[];
