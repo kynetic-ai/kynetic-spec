@@ -80,6 +80,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const paginated = filtered.slice(offset, offset + limit);
 
         // AC: @api-contract ac-2 - Return with status, priority, spec_ref, notes count
+        // AC: @web-dashboard ac-1 - Include depends_on for blocked task computation
         const items = paginated.map((task) => ({
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -89,6 +90,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           spec_ref: task.spec_ref,
           meta_ref: task.meta_ref,
           tags: task.tags,
+          depends_on: task.depends_on || [],
           notes_count: task.notes?.length || 0,
           todos_count: task.todos?.length || 0,
           started_at: task.started_at,

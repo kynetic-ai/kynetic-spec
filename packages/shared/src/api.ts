@@ -42,6 +42,7 @@ export interface TaskSummary {
   priority: number;
   spec_ref?: string;
   tags: string[];
+  depends_on: string[];
   created_at: string;
   started_at?: string;
   notes_count: number;
