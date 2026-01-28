@@ -1,0 +1,81 @@
+# GitHub Pages Deployment
+#
+# Deploys static site from kspec-meta shadow branch to GitHub Pages.
+# Triggers on push to kspec-meta, builds JSON snapshot + SPA.
+#
+# AC: @gh-pages-export ac-8, ac-9, ac-10
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [kspec-meta]
+
+# AC: @gh-pages-export ac-10 - Debounce rapid commits
+# Cancel in-progress deployments for same branch
+concurrency:
+  group: gh-pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code from main branch (contains CLI and web-ui source)
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # Checkout kspec-meta branch to .kspec directory (spec/task data)
+      # AC: @gh-pages-export ac-8 - Triggered on kspec-meta push
+      - name: Checkout kspec-meta branch
+        uses: actions/checkout@v4
+        with:
+          ref: kspec-meta
+          path: .kspec
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CLI
+        run: npm run build
+
+      - name: Create output directory
+        run: mkdir -p gh-pages-output
+
+      # AC: @gh-pages-export ac-8 - Run kspec export
+      - name: Generate JSON snapshot
+        run: |
+          ./dist/cli/index.js export \
+            --format json \
+            --include-validation \
+            -o gh-pages-output/kspec-snapshot.json
+
+      # AC: @gh-pages-export ac-9 - Build and copy SPA assets
+      - name: Build web UI
+        run: npm run build -w packages/web-ui
+
+      - name: Copy SPA assets
+        run: cp -r packages/web-ui/build/* gh-pages-output/
+
+      # AC: @gh-pages-export ac-8 - Deploy to gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages-output
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: 'Deploy kspec dashboard - ${{ github.sha }}'

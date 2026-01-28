@@ -1,6 +1,7 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
+	// AC: @gh-pages-export ac-16 - Disable Start Task in static mode
 	import { page } from '$app/stores';
 	import { onMount, onDestroy, flushSync } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
@@ -8,10 +9,12 @@
 	import TaskList from '$lib/components/TaskList.svelte';
 	import { fetchTasks, fetchTask, startTask, addTaskNote } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
+	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Separator } from '$lib/components/ui/separator';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import XIcon from '@lucide/svelte/icons/x';
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 
@@ -133,6 +136,12 @@
 	async function handleStartTask() {
 		if (!panel.task) return;
 
+		// AC: @gh-pages-export ac-16, ac-18 - Check static mode
+		if (isStaticMode()) {
+			panelError = 'Cannot start task in read-only mode. Use the kspec CLI.';
+			return;
+		}
+
 		isSubmitting = true;
 		panelError = '';
 
@@ -143,7 +152,12 @@
 			panel.task = updated;
 			loadTasks();
 		} catch (err) {
-			panelError = err instanceof Error ? err.message : 'Failed to start task';
+			// AC: @gh-pages-export ac-18 - Graceful error message
+			if (err instanceof ReadOnlyModeError) {
+				panelError = err.message;
+			} else {
+				panelError = err instanceof Error ? err.message : 'Failed to start task';
+			}
 		} finally {
 			isSubmitting = false;
 		}
@@ -151,6 +165,12 @@
 
 	async function handleAddNote() {
 		if (!panel.task || !noteContent.trim()) return;
+
+		// AC: @gh-pages-export ac-18 - Check static mode
+		if (isStaticMode()) {
+			panelError = 'Cannot add notes in read-only mode. Use the kspec CLI.';
+			return;
+		}
 
 		isSubmitting = true;
 		panelError = '';
@@ -163,7 +183,12 @@
 			panel.task = updated;
 			loadTasks();
 		} catch (err) {
-			panelError = err instanceof Error ? err.message : 'Failed to add note';
+			// AC: @gh-pages-export ac-18 - Graceful error message
+			if (err instanceof ReadOnlyModeError) {
+				panelError = err.message;
+			} else {
+				panelError = err instanceof Error ? err.message : 'Failed to add note';
+			}
 		} finally {
 			isSubmitting = false;
 		}
@@ -383,11 +408,30 @@
 
 				<!-- Actions -->
 				<!-- AC: @web-dashboard ac-7 -->
+				<!-- AC: @gh-pages-export ac-16 - Disabled with tooltip in static mode -->
 				{#if panel.task.status === 'pending'}
 					<div>
-						<Button data-testid="start-task-button" onclick={handleStartTask} disabled={isSubmitting} class="w-full">
-							{isSubmitting ? 'Starting...' : 'Start Task'}
-						</Button>
+						{#if isStaticMode()}
+							<Tooltip.Root>
+								<Tooltip.Trigger asChild let:builder>
+									<Button
+										builders={[builder]}
+										data-testid="start-task-button"
+										disabled={true}
+										class="w-full"
+									>
+										Start Task
+									</Button>
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									<p>Read-only mode - use CLI to start task</p>
+								</Tooltip.Content>
+							</Tooltip.Root>
+						{:else}
+							<Button data-testid="start-task-button" onclick={handleStartTask} disabled={isSubmitting} class="w-full">
+								{isSubmitting ? 'Starting...' : 'Start Task'}
+							</Button>
+						{/if}
 					</div>
 				{/if}
 
@@ -433,23 +477,26 @@
 
 					<!-- Add Note Form -->
 					<!-- AC: @web-dashboard ac-8 -->
-					<div class="mb-4 space-y-2" data-testid="add-note-form">
-						<Textarea
-							placeholder="Add a note..."
-							bind:value={noteContent}
-							disabled={isSubmitting}
-							rows={3}
-							data-testid="note-textarea"
-						/>
-						<Button
-							onclick={handleAddNote}
-							disabled={isSubmitting || !noteContent.trim()}
-							size="sm"
-							data-testid="add-note-button"
-						>
-							{isSubmitting ? 'Adding...' : 'Add Note'}
-						</Button>
-					</div>
+					<!-- AC: @gh-pages-export ac-18 - Disabled in static mode -->
+					{#if !isStaticMode()}
+						<div class="mb-4 space-y-2" data-testid="add-note-form">
+							<Textarea
+								placeholder="Add a note..."
+								bind:value={noteContent}
+								disabled={isSubmitting}
+								rows={3}
+								data-testid="note-textarea"
+							/>
+							<Button
+								onclick={handleAddNote}
+								disabled={isSubmitting || !noteContent.trim()}
+								size="sm"
+								data-testid="add-note-button"
+							>
+								{isSubmitting ? 'Adding...' : 'Add Note'}
+							</Button>
+						</div>
+					{/if}
 
 					<!-- Notes List -->
 					<div class="space-y-4" data-testid="task-notes-list">

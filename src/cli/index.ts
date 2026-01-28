@@ -15,6 +15,7 @@ import { initContext } from "../parser/yaml.js";
 import {
   registerCloneForTestingCommand,
   registerDeriveCommand,
+  registerExportCommand,
   registerHelpCommand,
   registerInboxCommands,
   registerInitCommand,
@@ -162,6 +163,7 @@ registerModuleCommands(program);
 registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 registerMergeDriverCommand(program);
+registerExportCommand(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {

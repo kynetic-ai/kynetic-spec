@@ -6,21 +6,34 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
+	import ReadOnlyBanner from '$lib/components/ReadOnlyBanner.svelte';
 	import { initConnection } from '$lib/stores/connection.svelte';
 	import { loadProjects, getSelectedProjectPath, isInitialized } from '$lib/stores/project.svelte';
+	import { initMode, isStaticMode, isLoading as isModeLoading } from '$lib/stores/mode.svelte';
 	import { browser } from '$app/environment';
 
 	let { children } = $props();
 
-	// Track if projects are loaded
-	let projectsReady = $state(false);
+	// Track if app is ready (mode detected and projects loaded if in daemon mode)
+	let appReady = $state(false);
 
 	// AC: @web-dashboard ac-28 - Initialize WebSocket connection
 	// AC: @multi-directory-daemon ac-25 - Load projects list on mount
+	// AC: @gh-pages-export ac-11 - Mode detection before initialization
 	onMount(async () => {
-		// Load projects first so we know which project to connect to
+		// First: detect mode (daemon or static)
+		await initMode();
+
+		// In static mode, skip project loading and WebSocket
+		// AC: @gh-pages-export ac-11 - Static mode uses embedded JSON
+		if (isStaticMode()) {
+			appReady = true;
+			return;
+		}
+
+		// In daemon mode: load projects and connect WebSocket
 		await loadProjects();
-		projectsReady = true;
+		appReady = true;
 
 		// Initialize WebSocket with selected project
 		const projectPath = getSelectedProjectPath();
@@ -28,7 +41,7 @@
 	});
 
 	// For SSR, treat as ready since we can't have a selected project anyway
-	let ready = $derived(browser ? projectsReady : true);
+	let ready = $derived(browser ? appReady : true);
 </script>
 
 <svelte:head>
@@ -47,6 +60,9 @@
 
 	<!-- Main content area with responsive inset -->
 	<SidebarInset>
+		<!-- AC: @gh-pages-export ac-15 - Show read-only banner in static mode -->
+		<ReadOnlyBanner />
+
 		<main class="flex-1 overflow-auto p-4 pb-20 md:pb-4">
 			{#if ready}
 				{@render children()}

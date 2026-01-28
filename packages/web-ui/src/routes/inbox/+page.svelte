@@ -1,8 +1,10 @@
 <script lang="ts">
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
+	// AC: @gh-pages-export ac-17 - Hide Add button in static mode
 	import { onMount } from 'svelte';
 	import type { InboxItem } from '@kynetic-ai/shared';
 	import { fetchInbox, addInboxItem, deleteInboxItem } from '$lib/api';
+	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
@@ -59,8 +61,15 @@
 	}
 
 	// AC: @web-dashboard ac-17, ac-18
+	// AC: @gh-pages-export ac-17, ac-18 - Handle static mode
 	async function handleAddItem() {
 		if (!newItemText.trim()) return;
+
+		// AC: @gh-pages-export ac-17, ac-18 - Check static mode
+		if (isStaticMode()) {
+			error = 'Cannot add items in read-only mode. Use the kspec CLI.';
+			return;
+		}
 
 		try {
 			addingItem = true;
@@ -74,7 +83,12 @@
 			newItemText = '';
 			showAddInput = false;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to add item';
+			// AC: @gh-pages-export ac-18 - Graceful error message
+			if (err instanceof ReadOnlyModeError) {
+				error = err.message;
+			} else {
+				error = err instanceof Error ? err.message : 'Failed to add item';
+			}
 		} finally {
 			addingItem = false;
 		}
@@ -96,6 +110,14 @@
 	async function handleDelete() {
 		if (!itemToDelete) return;
 
+		// AC: @gh-pages-export ac-18 - Check static mode
+		if (isStaticMode()) {
+			error = 'Cannot delete items in read-only mode. Use the kspec CLI.';
+			deleteConfirmOpen = false;
+			itemToDelete = null;
+			return;
+		}
+
 		try {
 			deletingItem = true;
 			error = '';
@@ -108,7 +130,12 @@
 			deleteConfirmOpen = false;
 			itemToDelete = null;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to delete item';
+			// AC: @gh-pages-export ac-18 - Graceful error message
+			if (err instanceof ReadOnlyModeError) {
+				error = err.message;
+			} else {
+				error = err instanceof Error ? err.message : 'Failed to delete item';
+			}
 		} finally {
 			deletingItem = false;
 		}
@@ -132,16 +159,20 @@
 </script>
 
 <!-- AC: @web-dashboard ac-16, ac-17, ac-18, ac-19 -->
+<!-- AC: @gh-pages-export ac-17 - Hide Add button in static mode -->
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
 		<h1 class="text-3xl font-bold">Inbox</h1>
-		<Button
-			data-testid="add-inbox-button"
-			on:click={() => (showAddInput = !showAddInput)}
-			variant={showAddInput ? 'secondary' : 'default'}
-		>
-			{showAddInput ? 'Cancel' : 'Add Item'}
-		</Button>
+		<!-- AC: @gh-pages-export ac-17 - Add button hidden in static mode -->
+		{#if !isStaticMode()}
+			<Button
+				data-testid="add-inbox-button"
+				on:click={() => (showAddInput = !showAddInput)}
+				variant={showAddInput ? 'secondary' : 'default'}
+			>
+				{showAddInput ? 'Cancel' : 'Add Item'}
+			</Button>
+		{/if}
 	</div>
 
 	{#if error}
@@ -189,15 +220,18 @@
 							<div class="flex-1">
 								<p class="text-sm leading-relaxed" data-testid="inbox-text">{item.text}</p>
 							</div>
-							<Button
-								data-testid="delete-inbox-button"
-								variant="ghost"
-								size="sm"
-								on:click={() => confirmDelete(item)}
-								class="text-red-600 hover:text-red-700 hover:bg-red-50"
-							>
-								Delete
-							</Button>
+							<!-- AC: @gh-pages-export ac-18 - Hide Delete in static mode -->
+							{#if !isStaticMode()}
+								<Button
+									data-testid="delete-inbox-button"
+									variant="ghost"
+									size="sm"
+									on:click={() => confirmDelete(item)}
+									class="text-red-600 hover:text-red-700 hover:bg-red-50"
+								>
+									Delete
+								</Button>
+							{/if}
 						</div>
 					</CardHeader>
 					<CardContent class="pt-0">
