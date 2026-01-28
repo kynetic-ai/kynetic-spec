@@ -40423,6 +40423,7 @@
     - bug-fix
   vcs_refs: []
   created_at: 2026-01-26T18:37:08.166Z
+  started_at: 2026-01-28T06:24:29.354Z
   notes:
     - _ulid: 01KFXSH5097E9GCNTCSRD4W0D8
       created_at: 2026-01-26T18:37:19.242Z
@@ -40520,8 +40521,40 @@
         `Record<string, unknown>`. When JavaScript iterates an array as an object, you get numeric
         keys ("0", "1", etc).
       supersedes: null
+    - _ulid: 01KG1MD1ZJR62YAG337KSTMKN5
+      created_at: 2026-01-28T06:24:39.923Z
+      author: "@claude"
+      content: >-
+        Implemented fix for AC-7 (root-level array handling in merge driver).
+
+
+        Changes to src/cli/commands/merge-driver.ts:
+
+        - Added isRootArray() helper for type detection
+
+        - Added mergeRootArrays() function with ULID-based deduplication and field-level conflict
+        detection
+
+        - Updated performSemanticMerge() to detect root arrays and route to appropriate merge
+        function
+
+        - Updated applyResolution() to handle [ulid].field paths for array roots
+
+
+        Tests added to tests/merge-driver-cli.test.ts (4 new tests):
+
+        - Merge root-level task arrays with additions from both sides
+
+        - Empty base with root-level array additions  
+
+        - Field conflicts within root-level array items
+
+        - Non-conflicting field additions in root arrays
+
+
+        All 91 merge-related tests pass. PR #257 created.
+      supersedes: null
   todos: []
-  started_at: 2026-01-28T06:24:29.354Z
 - _ulid: 01KG0G9PVZRNSCK547VHH478JV
   slugs: []
   title: Implement AC test coverage indicator in Items View
