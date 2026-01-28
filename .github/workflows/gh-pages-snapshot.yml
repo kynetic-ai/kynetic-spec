@@ -1,0 +1,87 @@
+# GitHub Pages - JSON Snapshot Deployment
+#
+# Generates and deploys JSON snapshot when kspec-meta changes.
+# Preserves existing web UI assets from gh-pages branch.
+#
+# This workflow lives on the kspec-meta branch to trigger on pushes to it.
+#
+# AC: @gh-pages-export ac-8
+name: Deploy JSON Snapshot to GitHub Pages
+
+on:
+  push:
+    branches: [kspec-meta]
+    paths-ignore:
+      - '.github/**'  # Don't trigger on workflow file changes
+  workflow_dispatch:
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout main branch for CLI source code
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # Checkout kspec-meta branch to .kspec directory
+      - name: Checkout kspec-meta branch
+        uses: actions/checkout@v4
+        with:
+          ref: kspec-meta
+          path: .kspec
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CLI
+        run: npm run build
+
+      - name: Create output directory
+        run: mkdir -p gh-pages-output
+
+      # Fetch existing web UI assets from gh-pages branch
+      - name: Fetch existing UI assets
+        run: |
+          git fetch origin gh-pages:gh-pages || true
+          if git rev-parse --verify gh-pages >/dev/null 2>&1; then
+            # Copy all files except the snapshot (we're regenerating it)
+            git archive gh-pages | tar -x -C gh-pages-output --exclude='kspec-snapshot.json' || true
+            echo "Fetched existing UI assets"
+          else
+            echo "No existing gh-pages branch - will deploy snapshot only"
+          fi
+
+      # AC: @gh-pages-export ac-8 - Run kspec export
+      - name: Generate JSON snapshot
+        run: |
+          ./dist/cli/index.js export \
+            --format json \
+            --include-validation \
+            -o gh-pages-output/kspec-snapshot.json
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages-output
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: 'Deploy kspec snapshot - ${{ github.sha }}'
