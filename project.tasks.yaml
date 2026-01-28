@@ -41147,7 +41147,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -41165,3 +41165,4 @@
         Replace let:builder with bits-ui child snippet pattern."
       supersedes: null
   todos: []
+  started_at: 2026-01-28T18:49:42.386Z
