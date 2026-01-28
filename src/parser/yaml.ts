@@ -293,6 +293,8 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
 /**
  * Check if a filename is a potential manifest file.
  * Excludes files with suffixes that indicate other kspec file types.
+ *
+ * AC: @manifest-discovery ac-5 (excludes task/inbox/meta/runs files)
  */
 function isManifestCandidate(filename: string): boolean {
   if (!filename.endsWith(".yaml")) return false;
@@ -309,9 +311,11 @@ function isManifestCandidate(filename: string): boolean {
  * 2. If not found, scan directory for *.yaml files (excluding other kspec types)
  * 3. For each candidate, validate it contains a 'kynetic:' version field
  * 4. Return first valid match (alphabetically after explicit names)
+ *
+ * AC: @manifest-discovery ac-1, ac-2, ac-3, ac-4, ac-5
  */
 async function findManifestInDir(dir: string): Promise<string | null> {
-  // Priority 1: Explicit candidates (backward compat)
+  // AC: @manifest-discovery ac-1, ac-2 - explicit names have priority
   const priorityCandidates = ["kynetic.yaml", "kynetic.spec.yaml"];
 
   for (const candidate of priorityCandidates) {
@@ -324,15 +328,17 @@ async function findManifestInDir(dir: string): Promise<string | null> {
     }
   }
 
-  // Priority 2: Glob for *.yaml with validation
+  // AC: @manifest-discovery ac-3, ac-4, ac-5 - glob fallback with validation
   try {
     const entries = await fs.readdir(dir);
+    // AC: @manifest-discovery ac-4 - alphabetical order
     const candidates = entries.filter(isManifestCandidate).sort();
 
     for (const candidate of candidates) {
       const filePath = path.join(dir, candidate);
       try {
         const raw = await readYamlFile<unknown>(filePath);
+        // AC: @manifest-discovery ac-5 - validate kynetic version field
         if (raw && typeof raw === "object" && "kynetic" in raw) {
           return filePath;
         }

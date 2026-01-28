@@ -96,11 +96,13 @@ export interface MetaContext {
  * 2. If not found, scan directory for *.meta.yaml files
  * 3. For each candidate, validate it contains a 'kynetic_meta:' version field
  * 4. Return first valid match (alphabetically after explicit name)
+ *
+ * AC: @meta-manifest-discovery ac-1, ac-2, ac-3
  */
 export async function findMetaManifest(
   specDir: string,
 ): Promise<string | null> {
-  // Priority 1: Explicit candidate (backward compat)
+  // AC: @meta-manifest-discovery ac-1, ac-3 - explicit name has priority
   const priorityPath = path.join(specDir, "kynetic.meta.yaml");
   try {
     await fs.access(priorityPath);
@@ -109,9 +111,10 @@ export async function findMetaManifest(
     // Continue to glob fallback
   }
 
-  // Priority 2: Glob for *.meta.yaml with validation
+  // AC: @meta-manifest-discovery ac-2, ac-3 - glob fallback with validation
   try {
     const entries = await fs.readdir(specDir);
+    // AC: @meta-manifest-discovery ac-3 - alphabetical order
     const candidates = entries
       .filter((f) => f.endsWith(".meta.yaml"))
       .sort();
@@ -120,6 +123,7 @@ export async function findMetaManifest(
       const filePath = path.join(specDir, candidate);
       try {
         const raw = await readYamlFile<unknown>(filePath);
+        // AC: @meta-manifest-discovery ac-2 - validate kynetic_meta version field
         if (raw && typeof raw === "object" && "kynetic_meta" in raw) {
           return filePath;
         }
