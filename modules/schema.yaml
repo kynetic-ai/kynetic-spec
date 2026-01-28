@@ -376,6 +376,24 @@ features:
         traits: []
         notes: []
         created: 2026-01-28T21:29:30.620Z
+        description: >-
+          Defines how kspec discovers manifest files in a project directory.
+
+
+          Discovery algorithm:
+
+          1. Check for explicit names: kynetic.yaml, kynetic.spec.yaml (in order)
+
+          2. If not found, scan directory for *.yaml files (excluding *.tasks.yaml, *.inbox.yaml,
+          *.meta.yaml, *.runs.yaml)
+
+          3. For each candidate, validate it contains a 'kynetic:' version field
+
+          4. Return first valid match (alphabetical order for non-explicit names)
+
+
+          This provides backward compatibility while supporting project-specific naming like
+          {slug}.yaml.
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
