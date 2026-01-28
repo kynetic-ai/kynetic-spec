@@ -127,6 +127,72 @@ function hasUlidItems(arr: unknown[]): boolean {
 }
 
 /**
+ * Check if a value is a root-level array (not an object).
+ */
+function isRootArray(value: unknown): value is unknown[] {
+  return Array.isArray(value);
+}
+
+/**
+ * Merge root-level arrays with ULID-based deduplication and field-level conflict detection.
+ * AC: @merge-file-detection ac-7
+ */
+function mergeRootArrays(
+  base: unknown,
+  ours: unknown,
+  theirs: unknown,
+): ObjectMergeResult {
+  const baseArr = Array.isArray(base) ? base : [];
+  const oursArr = Array.isArray(ours) ? ours : [];
+  const theirsArr = Array.isArray(theirs) ? theirs : [];
+
+  const conflicts: ConflictInfo[] = [];
+
+  // Check if arrays contain ULID items
+  if (!hasUlidItems(oursArr) && !hasUlidItems(theirsArr)) {
+    // Non-ULID arrays: keep ours (fallback)
+    return { merged: oursArr as unknown as Record<string, unknown>, conflicts: [] };
+  }
+
+  // Use ULID array merging
+  const mergedArray = mergeUlidArrays(
+    baseArr as Array<{ _ulid: string }>,
+    oursArr as Array<{ _ulid: string }>,
+    theirsArr as Array<{ _ulid: string }>,
+  );
+
+  // Merge each item recursively for field-level conflicts
+  const mergedItems: unknown[] = [];
+  for (const item of mergedArray) {
+    const itemUlid = (item as any)._ulid;
+    const baseItem = baseArr.find((i: any) => i._ulid === itemUlid);
+    const oursItem = oursArr.find((i: any) => i._ulid === itemUlid);
+    const theirsItem = theirsArr.find((i: any) => i._ulid === itemUlid);
+
+    if (oursItem && theirsItem) {
+      // Item exists in both - merge fields
+      const itemMerge = mergeObjects(
+        baseItem as Record<string, unknown> | undefined,
+        oursItem as Record<string, unknown>,
+        theirsItem as Record<string, unknown>,
+        `[${itemUlid}]`,
+      );
+      mergedItems.push(itemMerge.merged);
+      conflicts.push(...itemMerge.conflicts);
+    } else {
+      mergedItems.push(item);
+    }
+  }
+
+  // Return array but typed to satisfy ObjectMergeResult
+  // The caller will handle this specially
+  return {
+    merged: mergedItems as unknown as Record<string, unknown>,
+    conflicts
+  };
+}
+
+/**
  * Perform a semantic merge of three YAML files.
  *
  * AC: @merge-driver-cli ac-1
@@ -179,15 +245,26 @@ async function performSemanticMerge(
   // For now, use generic object merging for all types
   // Future: Specialized merging based on _fileType
 
-  // Merge the objects with array-aware merging
-  const mergeResult = mergeObjectsWithArrays(
-    versions.base as Record<string, unknown>,
-    versions.ours as Record<string, unknown>,
-    versions.theirs as Record<string, unknown>,
-    "", // root path
-  );
+  // Check if root is array vs object
+  // AC: @merge-file-detection ac-7
+  const isRootLevelArray = isRootArray(versions.ours) || isRootArray(versions.theirs);
 
-  let finalMerged = mergeResult.merged;
+  let mergeResult: ObjectMergeResult;
+  let rootIsArray = false;
+
+  if (isRootLevelArray) {
+    rootIsArray = true;
+    mergeResult = mergeRootArrays(versions.base, versions.ours, versions.theirs);
+  } else {
+    mergeResult = mergeObjectsWithArrays(
+      versions.base as Record<string, unknown>,
+      versions.ours as Record<string, unknown>,
+      versions.theirs as Record<string, unknown>,
+      "",
+    );
+  }
+
+  let finalMerged: Record<string, unknown> | unknown[] = mergeResult.merged;
   const conflicts = mergeResult.conflicts;
 
   // Handle conflicts based on mode
@@ -234,16 +311,30 @@ async function performSemanticMerge(
 }
 
 /**
- * Apply a resolution to a merged object at a given path.
- * Path format: "field.nestedField" or "array[0].field"
+ * Apply a resolution to a merged object or array at a given path.
+ * Path format: "field.nestedField", "array[0].field", or "[ulid].field" for root arrays
  */
 function applyResolution(
-  obj: Record<string, unknown>,
+  obj: Record<string, unknown> | unknown[],
   path: string,
   value: unknown,
 ): void {
   const parts = path.split(/\.|\[|\]/).filter((p) => p.length > 0);
   let current: any = obj;
+
+  // Handle root array: first part is ULID, find item by it
+  if (Array.isArray(obj) && parts.length > 0) {
+    const ulid = parts[0];
+    const itemIndex = obj.findIndex((item: any) => item._ulid === ulid);
+    if (itemIndex === -1) return;
+    if (parts.length === 1) {
+      // Replacing entire item - not typical
+      obj[itemIndex] = value;
+      return;
+    }
+    current = obj[itemIndex];
+    parts.shift(); // Remove ULID, continue with remaining path
+  }
 
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
