@@ -11595,7 +11595,7 @@ runs:
   - _ulid: 01KG2F821VMX3HQBVG58J4V2H5
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-28T14:13:47.707Z
     step_results:
@@ -11718,5 +11718,11 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-28T14:15:08.069Z
-        completed_at: 2026-01-28T14:15:08.069Z
+        completed_at: 2026-01-28T14:19:56.051Z
+        notes: "User decisions: (1) workflow prune already captured, (2) use Node LTS - just fix it, (3)
+          capture gh-pages docs as inbox"
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-28T14:19:56.051Z
+        completed_at: 2026-01-28T14:19:56.051Z
     initiated_by: "@claude"
