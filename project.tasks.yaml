@@ -40413,7 +40413,7 @@
   type: task
   spec_ref: "@merge-file-detection"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -40521,6 +40521,7 @@
         keys ("0", "1", etc).
       supersedes: null
   todos: []
+  started_at: 2026-01-28T06:24:29.354Z
 - _ulid: 01KG0G9PVZRNSCK547VHH478JV
   slugs: []
   title: Implement AC test coverage indicator in Items View
@@ -40626,7 +40627,10 @@
         - Class reflects covered/uncovered status
       supersedes: null
   todos: []
-- title: Update tasks.spec.ts to use correct bits-ui Select selectors
+- _ulid: 01KG1H918VB2BT4MVRARPQRBR7
+  slugs: []
+  title: Update tasks.spec.ts to use correct bits-ui Select selectors
+  type: task
   description: >-
     tasks.spec.ts lines 62 and 167 still use the old incorrect getByRole('option') pattern for
     bits-ui Select. Should be updated to use data-slot selectors per e2e skill guidance.
@@ -40648,17 +40652,14 @@
 
 
     From PR #256 review comment.
-  type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  _ulid: 01KG1H918VB2BT4MVRARPQRBR7
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-01-28T05:30:02.394Z
   notes: []
