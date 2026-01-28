@@ -11520,7 +11520,7 @@ runs:
   - _ulid: 01KG1GE2KNVEVFADG47WZ47G79
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-28T05:15:19.029Z
     step_results:
@@ -11535,5 +11535,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-28T05:18:06.457Z
-        completed_at: 2026-01-28T05:18:06.457Z
+        completed_at: 2026-01-28T05:19:07.056Z
+        notes: "Searched existing coverage. Found one high-confidence friction: E2E skill incorrectly
+          recommends getByRole('option') for bits-ui Select dropdowns, but bits-ui uses data-slot
+          attributes (data-slot='select-content', data-slot='select-item'). This caused multiple
+          test iterations to discover correct pattern. Not already tracked in observations."
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-28T05:19:07.056Z
+        completed_at: 2026-01-28T05:19:07.056Z
     initiated_by: "@claude"
