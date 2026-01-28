@@ -41097,7 +41097,7 @@
     Spec: @gh-pages-export
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41139,3 +41139,5 @@
         Build verified with VITE_STATIC_MODE=true BASE_PATH=/kynetic-spec
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T17:55:17.322Z
+  closed_reason: "PR #264 merged. All navigation links now use SvelteKit base path for GitHub Pages."
