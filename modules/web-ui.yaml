@@ -557,6 +557,10 @@ features:
         given: SPA mode
         when: any write action attempted
         then: graceful no-op with informative message
+      - id: ac-19
+        given: app is built with VITE_STATIC_MODE=true
+        when: app initializes on page load
+        then: mode is set to static without attempting daemon health check
     status:
       maturity: draft
       implementation: in_progress
