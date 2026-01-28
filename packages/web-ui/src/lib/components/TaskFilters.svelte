@@ -70,7 +70,7 @@
 		// Reset offset when filter changes
 		params.delete('offset');
 
-		const newUrl = `?${params.toString()}`;
+		const newUrl = `${base}/tasks?${params.toString()}`;
 		goto(newUrl, { replaceState: false, keepFocus: true });
 	}
 
