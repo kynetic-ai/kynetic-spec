@@ -41020,7 +41020,10 @@
         - Hardcoded /kspec-snapshot.json path no longer in built bundle
       supersedes: null
   todos: []
-- title: "Fix GitHub Pages remaining issues: SPA routing and daemon API requests"
+- _ulid: 01KG2RGNNYGP7S4KBHRM987HQ9
+  slugs: []
+  title: "Fix GitHub Pages remaining issues: SPA routing and daemon API requests"
+  type: task
   description: >-
     Two issues with GitHub Pages deployment after static mode fix:
 
@@ -41037,18 +41040,16 @@
     Related to: @01KG2HYF (static mode fix)
 
     Spec: @gh-pages-export
-  type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KG2RGNNYGP7S4KBHRM987HQ9
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-28T16:55:47.117Z
   notes: []
   todos: []
+  started_at: 2026-01-28T16:55:53.351Z
