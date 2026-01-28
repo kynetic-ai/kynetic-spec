@@ -32068,7 +32068,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAD3"
@@ -32482,6 +32482,8 @@
         - [x] No new test.skip() except pre-existing WebSocket limitation
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T02:42:14.634Z
+  closed_reason: "Dashboard E2E tests implemented and merged (PR #254)"
 - _ulid: 01KFP84NR39GV1JN5P32T37XBX
   slugs: []
   title: Implement Tasks View (AC-4 to AC-10, AC-33)
