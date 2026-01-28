@@ -67,6 +67,8 @@ jobs:
       # AC: @gh-pages-export ac-9 - Build and copy SPA assets
       - name: Build web UI
         run: npm run build -w packages/web-ui
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
 
       - name: Copy SPA assets
         run: cp -r packages/web-ui/build/* gh-pages-output/
