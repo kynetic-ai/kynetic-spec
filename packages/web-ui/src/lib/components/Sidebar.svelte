@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import {
 		Sidebar,
@@ -67,7 +68,7 @@
 	// Open observations panel
 	function openObservations() {
 		// Navigate to observations view (will implement panel in next step)
-		window.location.href = '/observations';
+		goto('/observations');
 	}
 </script>
 

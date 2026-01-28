@@ -64,11 +64,12 @@ jobs:
             --include-validation \
             -o gh-pages-output/kspec-snapshot.json
 
-      # AC: @gh-pages-export ac-9 - Build and copy SPA assets
+      # AC: @gh-pages-export ac-9, ac-19 - Build and copy SPA assets
       - name: Build web UI
         run: npm run build -w packages/web-ui
         env:
           BASE_PATH: /${{ github.event.repository.name }}
+          VITE_STATIC_MODE: "true"
 
       - name: Copy SPA assets
         run: cp -r packages/web-ui/build/* gh-pages-output/
