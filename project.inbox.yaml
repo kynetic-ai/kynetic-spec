@@ -799,3 +799,13 @@ inbox:
       - testing
       - tooling
     added_by: "@claude"
+  - _ulid: 01KG0ZH7SAKM6FQP67MAH1P9ZT
+    text: Document E2E fixture isolation pattern - add to AGENTS.md or packages/web-ui/tests/README.md
+      explaining that E2E tests use dedicated fixtures at packages/web-ui/tests/fixtures/ to avoid
+      breaking unit tests
+    created_at: 2026-01-28T00:19:56.843Z
+    tags:
+      - reflection
+      - docs
+      - e2e
+    added_by: "@claude"
