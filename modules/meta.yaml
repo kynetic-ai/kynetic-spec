@@ -183,6 +183,10 @@ features:
             given: A directory with kynetic.meta.yaml
             when: Finding the meta manifest
             then: Returns kynetic.meta.yaml path
+          - id: ac-2
+            given: A directory with {slug}.meta.yaml containing kynetic_meta version field
+            when: Finding the meta manifest and no kynetic.meta.yaml exists
+            then: Returns {slug}.meta.yaml path
   - _ulid: 01KF1XAGT00000000000000000
     slugs:
       - agent-definitions
