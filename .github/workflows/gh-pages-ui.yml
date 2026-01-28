@@ -1,0 +1,74 @@
+# GitHub Pages - Web UI Deployment
+#
+# Deploys web UI when packages/web-ui/** changes on main.
+# Preserves existing JSON snapshot from gh-pages branch.
+#
+# AC: @gh-pages-export ac-9, ac-19
+name: Deploy Web UI to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/web-ui/**'
+      - '.github/workflows/gh-pages-ui.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create output directory
+        run: mkdir -p gh-pages-output
+
+      # Fetch existing JSON snapshot from gh-pages branch
+      - name: Fetch existing snapshot
+        run: |
+          git fetch origin gh-pages:gh-pages || true
+          if git show gh-pages:kspec-snapshot.json > gh-pages-output/kspec-snapshot.json 2>/dev/null; then
+            echo "Found existing snapshot"
+          else
+            echo "No existing snapshot found - will deploy without it"
+          fi
+
+      # AC: @gh-pages-export ac-9, ac-19 - Build and copy SPA assets
+      - name: Build web UI
+        run: npm run build -w packages/web-ui
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+          VITE_STATIC_MODE: "true"
+
+      - name: Copy SPA assets
+        run: cp -r packages/web-ui/build/* gh-pages-output/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages-output
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: 'Deploy web UI - ${{ github.sha }}'

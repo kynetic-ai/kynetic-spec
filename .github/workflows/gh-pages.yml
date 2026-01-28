@@ -1,15 +1,15 @@
-# GitHub Pages Deployment
+# GitHub Pages - Full Deployment (Manual)
 #
-# Deploys static site from kspec-meta shadow branch to GitHub Pages.
-# Triggers on push to kspec-meta, builds JSON snapshot + SPA.
+# Deploys both JSON snapshot and web UI together.
+# Use this for manual full rebuilds. Automatic deploys use:
+# - gh-pages-ui.yml (on main) - triggers on web-ui changes
+# - gh-pages-snapshot.yml (on kspec-meta) - triggers on spec changes
 #
 # AC: @gh-pages-export ac-8, ac-9, ac-10
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (Full)
 
 on:
-  push:
-    branches: [kspec-meta]
-  workflow_dispatch:  # Allow manual trigger for testing
+  workflow_dispatch:  # Manual trigger only
 
 # AC: @gh-pages-export ac-10 - Debounce rapid commits
 # Cancel in-progress deployments for same branch
