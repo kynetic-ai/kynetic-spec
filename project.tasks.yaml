@@ -40888,7 +40888,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41018,3 +41018,5 @@
         - Hardcoded /kspec-snapshot.json path no longer in built bundle
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T16:06:04.221Z
+  closed_reason: "PR #262 merged. Build-time static mode flag implemented with base path prefix for GitHub Pages."
