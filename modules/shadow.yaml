@@ -741,7 +741,7 @@ features:
             then: root is identified as array and ULID-based array merge applied to root
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KFXSFHV34AN5G6TD88NK41K7
         slugs:
           - merge-ref-normalization
