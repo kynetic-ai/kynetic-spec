@@ -41147,7 +41147,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41173,3 +41173,5 @@
         under 'bits-ui Component Patterns' section.
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T18:59:54.299Z
+  closed_reason: "PR #266 merged - fixed Svelte 5 snippet compatibility in Tooltip for pending tasks"
