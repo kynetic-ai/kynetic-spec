@@ -342,4 +342,102 @@ tasks:
     // Should not have conflict comments
     expect(merged).not.toContain("# CONFLICT:");
   });
+
+  // AC: @merge-file-detection ac-7
+  describe("root-level array handling", () => {
+    it("should merge root-level task arrays", async () => {
+      await fs.writeFile(baseFile, `- _ulid: 01TASK0000000000000000000
+  title: Original task
+  status: pending
+`);
+      await fs.writeFile(oursFile, `- _ulid: 01TASK0000000000000000000
+  title: Original task
+  status: pending
+- _ulid: 01OURS0000000000000000000
+  title: Ours task
+  status: pending
+`);
+      await fs.writeFile(theirsFile, `- _ulid: 01TASK0000000000000000000
+  title: Original task
+  status: pending
+- _ulid: 01THRS0000000000000000000
+  title: Theirs task
+  status: pending
+`);
+
+      const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
+      expect(result.exitCode).toBe(0);
+
+      const merged = await fs.readFile(oursFile, "utf-8");
+      expect(merged).toContain("01TASK0000000000000000000");
+      expect(merged).toContain("01OURS0000000000000000000");
+      expect(merged).toContain("01THRS0000000000000000000");
+      expect(merged.trim()).toMatch(/^-/); // Preserves array structure
+    });
+
+    it("should handle empty base with root-level array additions", async () => {
+      await fs.writeFile(baseFile, "[]");
+      await fs.writeFile(oursFile, `- _ulid: 01OURS0000000000000000000
+  title: Ours task
+`);
+      await fs.writeFile(theirsFile, `- _ulid: 01THRS0000000000000000000
+  title: Theirs task
+`);
+
+      const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
+      expect(result.exitCode).toBe(0);
+
+      const merged = await fs.readFile(oursFile, "utf-8");
+      expect(merged).toContain("01OURS0000000000000000000");
+      expect(merged).toContain("01THRS0000000000000000000");
+    });
+
+    it("should detect field conflicts within root-level array items", async () => {
+      await fs.writeFile(baseFile, `- _ulid: 01TASK0000000000000000000
+  title: Original
+  status: pending
+`);
+      await fs.writeFile(oursFile, `- _ulid: 01TASK0000000000000000000
+  title: Ours title
+  status: pending
+`);
+      await fs.writeFile(theirsFile, `- _ulid: 01TASK0000000000000000000
+  title: Theirs title
+  status: pending
+`);
+
+      const result = kspec(
+        `merge-driver ${baseFile} ${oursFile} ${theirsFile} --non-interactive`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).toBe(1);
+
+      const merged = await fs.readFile(oursFile, "utf-8");
+      expect(merged).toContain("# CONFLICT:");
+      expect(merged.trim()).toMatch(/^#|^-/); // Starts with comment or array
+    });
+
+    it("should handle root array with non-conflicting field additions", async () => {
+      await fs.writeFile(baseFile, `- _ulid: 01TASK0000000000000000000
+  title: Task
+`);
+      await fs.writeFile(oursFile, `- _ulid: 01TASK0000000000000000000
+  title: Task
+  status: in_progress
+`);
+      await fs.writeFile(theirsFile, `- _ulid: 01TASK0000000000000000000
+  title: Task
+  priority: 2
+`);
+
+      const result = kspec(`merge-driver ${baseFile} ${oursFile} ${theirsFile}`, tempDir);
+      expect(result.exitCode).toBe(0);
+
+      const merged = await fs.readFile(oursFile, "utf-8");
+      expect(merged).toContain("status: in_progress");
+      expect(merged).toContain("priority: 2");
+      expect(merged).not.toContain("# CONFLICT:");
+    });
+  });
 });
