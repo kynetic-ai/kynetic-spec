@@ -30553,6 +30553,13 @@
         single iteration capacity (~300-500 lines). Requires human-driven session or task
         decomposition."
       supersedes: null
+    - _ulid: 01KG1SED007EDYS2FAFK1A1MEH
+      created_at: 2026-01-28T07:52:46.849Z
+      author: "@claude"
+      content: Starting implementation of export command. Created src/export/types.ts with KspecSnapshot
+        types and src/export/json.ts with generateJsonSnapshot function. Now implementing CLI
+        command handler.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
