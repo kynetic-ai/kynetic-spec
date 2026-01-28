@@ -20,6 +20,15 @@ import {
   type ConflictInfo,
   type ObjectMergeResult,
 } from "../../merge/index.js";
+
+/**
+ * Result type for root-level merges that can be either object or array.
+ */
+interface RootMergeResult {
+  merged: Record<string, unknown> | unknown[];
+  conflicts: ConflictInfo[];
+  isArray: boolean;
+}
 import { EXIT_CODES } from "../exit-codes.js";
 import { error } from "../output.js";
 
@@ -141,7 +150,7 @@ function mergeRootArrays(
   base: unknown,
   ours: unknown,
   theirs: unknown,
-): ObjectMergeResult {
+): RootMergeResult {
   const baseArr = Array.isArray(base) ? base : [];
   const oursArr = Array.isArray(ours) ? ours : [];
   const theirsArr = Array.isArray(theirs) ? theirs : [];
@@ -151,7 +160,7 @@ function mergeRootArrays(
   // Check if arrays contain ULID items
   if (!hasUlidItems(oursArr) && !hasUlidItems(theirsArr)) {
     // Non-ULID arrays: keep ours (fallback)
-    return { merged: oursArr as unknown as Record<string, unknown>, conflicts: [] };
+    return { merged: oursArr, conflicts: [], isArray: true };
   }
 
   // Use ULID array merging
@@ -184,11 +193,10 @@ function mergeRootArrays(
     }
   }
 
-  // Return array but typed to satisfy ObjectMergeResult
-  // The caller will handle this specially
   return {
-    merged: mergedItems as unknown as Record<string, unknown>,
-    conflicts
+    merged: mergedItems,
+    conflicts,
+    isArray: true,
   };
 }
 
@@ -249,23 +257,23 @@ async function performSemanticMerge(
   // AC: @merge-file-detection ac-7
   const isRootLevelArray = isRootArray(versions.ours) || isRootArray(versions.theirs);
 
-  let mergeResult: ObjectMergeResult;
-  let rootIsArray = false;
+  let finalMerged: Record<string, unknown> | unknown[];
+  let conflicts: ConflictInfo[];
 
   if (isRootLevelArray) {
-    rootIsArray = true;
-    mergeResult = mergeRootArrays(versions.base, versions.ours, versions.theirs);
+    const arrayResult = mergeRootArrays(versions.base, versions.ours, versions.theirs);
+    finalMerged = arrayResult.merged;
+    conflicts = arrayResult.conflicts;
   } else {
-    mergeResult = mergeObjectsWithArrays(
+    const objectResult = mergeObjectsWithArrays(
       versions.base as Record<string, unknown>,
       versions.ours as Record<string, unknown>,
       versions.theirs as Record<string, unknown>,
       "",
     );
+    finalMerged = objectResult.merged;
+    conflicts = objectResult.conflicts;
   }
-
-  let finalMerged: Record<string, unknown> | unknown[] = mergeResult.merged;
-  const conflicts = mergeResult.conflicts;
 
   // Handle conflicts based on mode
   if (conflicts.length > 0) {
