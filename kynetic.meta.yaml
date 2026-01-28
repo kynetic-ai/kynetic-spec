@@ -4542,6 +4542,8 @@ observations:
       Update e2e/SKILL.md line 15 and lines 162-164."
     created_at: 2026-01-28T05:19:29.888Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Fixed in PR #256 - updated E2E skill with correct bits-ui Select selector pattern"
+    resolved_at: 2026-01-28T05:24:34.861Z
+    resolved_by: "@claude"
 includes: []
