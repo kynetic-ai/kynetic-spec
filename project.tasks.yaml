@@ -38898,7 +38898,7 @@
     This task can be deferred - not blocking for E2E tests or basic multi-project support.
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFQAFM"
@@ -39043,6 +39043,8 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-28T05:12:42.982Z
+  closed_reason: "PR #255 merged - implemented web UI project selector with AC-25, AC-26, AC-27 coverage"
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
   slugs:
     - task-loop-mode-workflows
