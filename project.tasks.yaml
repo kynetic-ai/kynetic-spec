@@ -41189,6 +41189,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-28T19:58:07.439Z
+  started_at: 2026-01-28T20:06:58.958Z
   notes:
     - _ulid: 01KG32Z0NN5RY0X6N7QYJF2CWW
       created_at: 2026-01-28T19:58:22.902Z
@@ -41327,5 +41328,9 @@
 
         This is simpler than repository_dispatch and requires no CLI changes.
       supersedes: null
+    - _ulid: 01KG33MSX3TTTMMMRZDZ9DYCT9
+      created_at: 2026-01-28T20:10:16.867Z
+      author: "@claude"
+      content: Testing kspec-meta workflow trigger by adding this note
+      supersedes: null
   todos: []
-  started_at: 2026-01-28T20:06:58.958Z
