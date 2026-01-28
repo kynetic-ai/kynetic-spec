@@ -4497,4 +4497,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG0ZHY1QR402HYBSWCMZJ9Z5
+    type: success
+    content: Dedicated E2E fixtures pattern - creating packages/web-ui/tests/fixtures/ separate from
+      shared tests/fixtures/ cleanly isolates E2E test data from unit tests, preventing
+      cross-contamination
+    created_at: 2026-01-28T00:20:19.639Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
