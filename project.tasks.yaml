@@ -39023,6 +39023,24 @@
 
         Build verified, all tests pass (except unrelated daemon-executable test).
       supersedes: null
+    - _ulid: 01KG1F1KMG8VDG0YEFDVGFXXA3
+      created_at: 2026-01-28T04:51:01.905Z
+      author: "@claude"
+      content: >-
+        All E2E tests passing (10/10 project-selector tests + 28 smoke/navigation tests). Unit tests
+        passing (1428/1429 - one pre-existing failure unrelated to this change).
+
+
+        Key fixes during E2E test debugging:
+
+        1. Fixed Select component selectors (bits-ui uses data-slot attributes, not role='option')
+
+        2. Fixed race condition: layout now waits for projects to load before rendering children
+
+        3. Fixed localStorage access timing in tests
+
+        4. Tests use full page navigation which preserves localStorage selection
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
