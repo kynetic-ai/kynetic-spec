@@ -414,15 +414,17 @@
 					<div>
 						{#if isStaticMode()}
 							<Tooltip.Root>
-								<Tooltip.Trigger asChild let:builder>
-									<Button
-										builders={[builder]}
-										data-testid="start-task-button"
-										disabled={true}
-										class="w-full"
-									>
-										Start Task
-									</Button>
+								<Tooltip.Trigger>
+									{#snippet child({ props })}
+										<Button
+											{...props}
+											data-testid="start-task-button"
+											disabled={true}
+											class="w-full"
+										>
+											Start Task
+										</Button>
+									{/snippet}
 								</Tooltip.Trigger>
 								<Tooltip.Content>
 									<p>Read-only mode - use CLI to start task</p>

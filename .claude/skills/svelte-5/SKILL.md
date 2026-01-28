@@ -211,6 +211,57 @@ Usage:
 </script>
 ```
 
+## bits-ui Component Patterns
+
+### Migrating `let:builder` to Child Snippets
+
+In Svelte 4, bits-ui components used `let:builder` to expose builder props for composition:
+
+```svelte
+<!-- Svelte 4 - BROKEN in Svelte 5 -->
+<Tooltip.Trigger asChild let:builder>
+  <Button builders={[builder]} disabled={true}>
+    Hover me
+  </Button>
+</Tooltip.Trigger>
+```
+
+In Svelte 5, this pattern causes `invalid_default_snippet` errors because `let:` directives conflict with default snippet rendering.
+
+**Fix: Use the `child` snippet pattern:**
+
+```svelte
+<!-- Svelte 5 - Correct -->
+<Tooltip.Trigger>
+  {#snippet child({ props })}
+    <Button {...props} disabled={true}>
+      Hover me
+    </Button>
+  {/snippet}
+</Tooltip.Trigger>
+```
+
+**Key differences:**
+- Remove `asChild` attribute
+- Remove `let:builder` directive
+- Use `{#snippet child({ props })}` instead
+- Spread `{...props}` onto the child element instead of `builders={[builder]}`
+
+This applies to all bits-ui trigger components:
+- `Tooltip.Trigger`
+- `Dialog.Trigger`
+- `Popover.Trigger`
+- `DropdownMenu.Trigger`
+- etc.
+
+### Why This Breaks
+
+The bits-ui trigger components support two rendering modes:
+1. **Default children**: `{@render children?.()}` - renders child content directly
+2. **Child snippet**: `{@render child({ props })}` - passes builder props to child
+
+Using `let:builder` expects mode 2 but the component tries to render mode 1, causing Svelte 5 to throw `invalid_default_snippet`.
+
 ## Common Mistakes
 
 ### 1. Mixing Stores and Runes
