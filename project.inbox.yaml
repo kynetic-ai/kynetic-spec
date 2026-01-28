@@ -809,3 +809,12 @@ inbox:
       - docs
       - e2e
     added_by: "@claude"
+  - _ulid: 01KG0ZHAGAYGYQAZJ3JCHNVNZW
+    text: Improve E2E daemon cleanup in test-base.ts - more aggressively clean up orphaned daemon
+      processes, possibly using unique port per test run or better PID tracking
+    created_at: 2026-01-28T00:19:59.626Z
+    tags:
+      - reflection
+      - e2e
+      - testing
+    added_by: "@claude"
