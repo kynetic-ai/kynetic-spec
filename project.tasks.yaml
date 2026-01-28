@@ -40985,4 +40985,36 @@
         - ac-19: Build flag skips daemon detection
         - ac-20: Base path prefix for snapshot URL
       supersedes: null
+    - _ulid: 01KG2KY6731SEN3V0ZD649S18E
+      created_at: 2026-01-28T15:35:47.171Z
+      author: "@claude"
+      content: |-
+        ## Implementation Complete
+
+        ### Changes Made
+
+        1. **Added ac-19 and ac-20** to @gh-pages-export spec:
+           - ac-19: Build flag bypasses daemon check
+           - ac-20: Base path prefix for snapshot URL
+
+        2. **Updated mode.svelte.ts**:
+           - Added `base` import from $app/paths
+           - Added `BUILD_STATIC_MODE` constant from import.meta.env.VITE_STATIC_MODE
+           - Modified initMode() to check flag first and skip daemon health check
+           - Added loadStaticSnapshot() helper with proper base path prefix
+           - Fixed fallback path to also use base
+           - If static snapshot fails, stay in static mode with error (no daemon fallback)
+
+        3. **Updated gh-pages.yml**:
+           - Added VITE_STATIC_MODE: 'true' to build env
+
+        4. **Fixed Sidebar.svelte**:
+           - Imported goto from $app/navigation
+           - Replaced window.location.href with goto()
+
+        ### Verification
+        - Build succeeds with VITE_STATIC_MODE=true
+        - 1457 unit tests pass
+        - Hardcoded /kspec-snapshot.json path no longer in built bundle
+      supersedes: null
   todos: []
