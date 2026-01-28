@@ -30560,6 +30560,62 @@
         types and src/export/json.ts with generateJsonSnapshot function. Now implementing CLI
         command handler.
       supersedes: null
+    - _ulid: 01KG1SQTXSF93N2TTSVG4J99YY
+      created_at: 2026-01-28T07:57:56.025Z
+      author: "@claude"
+      content: >-
+        Completed export command implementation (Phase 1):
+
+
+        **Files created:**
+
+        - src/export/types.ts - Type definitions for KspecSnapshot, ExportedTask, ExportedItem
+
+        - src/export/json.ts - JSON snapshot generation with reference resolution and trait
+        expansion
+
+        - src/export/html.ts - Self-contained HTML export with embedded JSON
+
+        - src/export/index.ts - Module exports
+
+        - src/cli/commands/export.ts - CLI command handler
+
+
+        **Files modified:**
+
+        - src/cli/commands/index.ts - Added export command export
+
+        - src/cli/index.ts - Added export command registration
+
+
+        **Tests added:**
+
+        - tests/export/json.test.ts - Unit tests for JSON generation
+
+        - tests/export/html.test.ts - Unit tests for HTML generation  
+
+        - tests/export/cli.test.ts - CLI integration tests
+
+
+        **ACs covered:**
+
+        - ac-1: JSON export to stdout or file ✓
+
+        - ac-2: Includes timestamp, version, metadata ✓
+
+        - ac-3: Tasks include resolved spec_ref title ✓
+
+        - ac-4: Items have expanded ACs and traits ✓
+
+        - ac-5: --include-validation adds validation block ✓
+
+        - ac-6: HTML format embeds JSON + SPA ✓
+
+        - ac-7: --dry-run shows what would be exported ✓
+
+
+        Ready for Phase 2 (Static data layer in web UI).
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
