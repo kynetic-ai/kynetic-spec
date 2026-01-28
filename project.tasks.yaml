@@ -40882,19 +40882,76 @@
   created_at: 2026-01-28T05:30:02.394Z
   notes: []
   todos: []
-- title: Fix GitHub Pages static mode - WebSocket connection attempted instead of using static JSON
+- _ulid: 01KG2HYF6BP6SDSVFDVET659AN
+  slugs: []
+  title: Fix GitHub Pages static mode - WebSocket connection attempted instead of using static JSON
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KG2HYF6BP6SDSVFDVET659AN
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-28T15:00:59.206Z
-  notes: []
+  notes:
+    - _ulid: 01KG2HYTMPR6CHT5C9GRRCAH7T
+      created_at: 2026-01-28T15:01:10.935Z
+      author: "@claude"
+      content: >-
+        ## Issue Summary
+
+
+        GitHub Pages deployment tries to connect to WebSocket (ws://localhost:3456/ws) instead of
+        using static JSON mode.
+
+
+        ## Architecture (Working as Designed)
+
+
+        The app has proper mode detection in `+layout.svelte`:
+
+        1. `initMode()` called first - tries daemon health check with 2s timeout
+
+        2. Falls back to loading `/kspec-snapshot.json` from static files
+
+        3. Only initializes WebSocket if in daemon mode
+
+
+        ## Key Files
+
+
+        - `packages/web-ui/src/lib/constants.ts` - Hardcoded localhost:3456 URLs
+
+        - `packages/web-ui/src/lib/stores/mode.svelte.ts` - Mode detection and fallback logic
+
+        - `packages/web-ui/src/routes/+layout.svelte` - WebSocket conditional init
+
+        - `.github/workflows/gh-pages.yml` - Builds and deploys snapshot
+
+
+        ## Likely Root Causes
+
+
+        1. **Static JSON not accessible**: `kspec-snapshot.json` may be missing or at wrong path due
+        to BASE_PATH
+
+        2. **Fallback defaults to daemon**: If static JSON fails to load, mode.svelte.ts line 63
+        defaults to daemon mode
+
+        3. **Base path mismatch**: JSON exported but not found at
+        `/kynetic-spec/kspec-snapshot.json`
+
+
+        ## Next Steps
+
+
+        - Analyze spec coverage for static mode behavior
+
+        - Identify gaps in mode detection/fallback logic
+
+        - Plan fix for proper static mode on GitHub Pages
+      supersedes: null
   todos: []
