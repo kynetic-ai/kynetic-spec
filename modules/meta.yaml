@@ -192,7 +192,8 @@ features:
             when: Finding the meta manifest
             then: Returns kynetic.meta.yaml if present, else first alphabetically
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF1XAGT00000000000000000
     slugs:
       - agent-definitions
