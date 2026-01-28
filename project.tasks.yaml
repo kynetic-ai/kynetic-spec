@@ -40896,6 +40896,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-28T15:00:59.206Z
+  started_at: 2026-01-28T15:01:18.899Z
   notes:
     - _ulid: 01KG2HYTMPR6CHT5C9GRRCAH7T
       created_at: 2026-01-28T15:01:10.935Z
@@ -40954,5 +40955,34 @@
 
         - Plan fix for proper static mode on GitHub Pages
       supersedes: null
+    - _ulid: 01KG2KN9GVR5Z6TX6GSKPWTFHY
+      created_at: 2026-01-28T15:30:55.643Z
+      author: "@claude"
+      content: |-
+        ## Implementation Approach
+
+        ### Build-Time Static Mode Flag
+        - Add VITE_STATIC_MODE env var check in mode.svelte.ts
+        - When true, skip daemon detection entirely
+        - Load static snapshot directly with base path prefix
+        - If load fails, stay in static mode with error (never fall back to daemon)
+
+        ### Files to Modify
+        1. packages/web-ui/src/lib/stores/mode.svelte.ts
+           - Import base from $app/paths
+           - Add BUILD_STATIC_MODE constant from import.meta.env.VITE_STATIC_MODE
+           - Add loadStaticSnapshot() helper with base path and error logging
+           - Modify initMode() to check flag first
+
+        2. .github/workflows/gh-pages.yml
+           - Add VITE_STATIC_MODE: 'true' to build env
+
+        3. packages/web-ui/src/lib/components/Sidebar.svelte
+           - Import goto from $app/navigation
+           - Replace window.location.href with goto()
+
+        ### Spec Coverage
+        - ac-19: Build flag skips daemon detection
+        - ac-20: Base path prefix for snapshot URL
+      supersedes: null
   todos: []
-  started_at: 2026-01-28T15:01:18.899Z
