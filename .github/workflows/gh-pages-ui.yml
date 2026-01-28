@@ -47,8 +47,8 @@ jobs:
       # Fetch existing JSON snapshot from gh-pages branch
       - name: Fetch existing snapshot
         run: |
-          git fetch origin gh-pages:gh-pages || true
-          if git show gh-pages:kspec-snapshot.json > gh-pages-output/kspec-snapshot.json 2>/dev/null; then
+          git fetch origin gh-pages || true
+          if git show origin/gh-pages:kspec-snapshot.json > gh-pages-output/kspec-snapshot.json 2>/dev/null; then
             echo "Found existing snapshot"
           else
             echo "No existing snapshot found - will deploy without it"
