@@ -411,6 +411,10 @@ features:
             given: Multiple *.yaml files matching pattern
             when: Finding the manifest
             then: Returns first alphabetically after checking explicit names
+          - id: ac-5
+            given: A *.yaml file without kynetic version field
+            when: Finding the manifest
+            then: File is skipped as invalid manifest
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
