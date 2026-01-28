@@ -170,7 +170,7 @@
 										// AC: @web-dashboard ac-14 - Navigate to trait detail
 										// Traits are items (type: trait), so we navigate to items view with the ref
 										const traitRef = trait.startsWith('@') ? trait.slice(1) : trait;
-										goto(`/items?ref=${encodeURIComponent(traitRef)}`);
+										goto(`${base}/items?ref=${encodeURIComponent(traitRef)}`);
 									}}
 								>
 									<span data-testid="trait-title">{trait}</span>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import { fetchTasks } from '$lib/api';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -96,7 +97,7 @@
 
 	// AC: @web-dashboard ac-3
 	function navigateToTasks(status: string) {
-		goto(`/tasks?status=${status}`);
+		goto(`${base}/tasks?status=${status}`);
 	}
 
 	// Status display config
