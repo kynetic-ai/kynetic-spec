@@ -415,6 +415,9 @@ features:
             given: A *.yaml file without kynetic version field
             when: Finding the manifest
             then: File is skipped as invalid manifest
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
