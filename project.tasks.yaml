@@ -40413,7 +40413,7 @@
   type: task
   spec_ref: "@merge-file-detection"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -40555,6 +40555,9 @@
         All 91 merge-related tests pass. PR #257 created.
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T06:42:51.213Z
+  closed_reason: "PR #257 merged. Fixed merge driver root-level array handling (AC-7) with proper type
+    safety and base array detection."
 - _ulid: 01KG0G9PVZRNSCK547VHH478JV
   slugs: []
   title: Implement AC test coverage indicator in Items View
