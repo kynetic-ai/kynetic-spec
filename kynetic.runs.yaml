@@ -11354,7 +11354,7 @@ runs:
   - _ulid: 01KG0YX6ANC9XHQCZQ06K4WHKG
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-28T00:08:59.989Z
     step_results:
@@ -11384,5 +11384,36 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-28T00:09:17.408Z
-        completed_at: 2026-01-28T00:09:17.408Z
+        completed_at: 2026-01-28T00:09:31.194Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **E2E fixture isolation not obvious** - Had to learn the hard way that modifying shared
+          `tests/fixtures/` breaks unit tests. No documentation or error message suggested separate
+          E2E fixtures.
+
+
+          2. **ULID validation is silent on invalid characters** - Used "CORE" (contains O) and
+          "TRAIT" (contains I) in test ULIDs. Schema validation failed silently without clear
+          indication of which character was invalid. The `testUlid()` helper exists but wasn't
+          mentioned until late.
+
+
+          3. **Daemon process cleanup between E2E runs** - Old daemon processes from previous test
+          runs blocked new ones. Had to manually find and kill processes. The test-base.ts tries to
+          clean up but doesn't always work.
+
+
+          4. **Background task output retrieval** - Several times `npm run test:e2e` ran in
+          background but output file was empty or corrupted. Had to retry with different approaches.
+
+
+          5. **WebSocket connection tests always fail first** - Every E2E run shows WebSocket
+          "Disconnected" on connection tests before other tests pass. Timing-sensitive tests are
+          flaky.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-28T00:09:31.194Z
+        completed_at: 2026-01-28T00:09:31.194Z
     initiated_by: "@claude"
