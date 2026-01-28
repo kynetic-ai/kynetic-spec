@@ -11354,7 +11354,7 @@ runs:
   - _ulid: 01KG0YX6ANC9XHQCZQ06K4WHKG
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-28T00:08:59.989Z
     step_results:
@@ -11415,5 +11415,30 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-28T00:09:31.194Z
-        completed_at: 2026-01-28T00:09:31.194Z
+        completed_at: 2026-01-28T00:09:49.153Z
+        notes: >-
+          ## Coverage Check
+
+
+          1. **E2E fixture isolation** - NOT tracked. No existing spec/task/observation mentions
+          dedicated E2E fixtures vs shared fixtures.
+
+
+          2. **ULID validation issues** - ALREADY TRACKED. Multiple observations exist:
+             - @01KF94GR: Schema strictness caught ULID issues
+             - @01KFCW3T: ULID validation requires Crockford base32
+             - @01KFJ7AG: Test fixture ULID validation
+             - @01KFQ38Z: testUlid() helper exists
+
+          3. **Daemon cleanup** - NOT tracked. No results for daemon cleanup between tests.
+
+
+          4. **Background task output** - NOT searched yet (this is Claude Code behavior, not kspec)
+
+
+          5. **WebSocket test flakiness** - Need to search.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-28T00:09:49.153Z
+        completed_at: 2026-01-28T00:09:49.153Z
     initiated_by: "@claude"
