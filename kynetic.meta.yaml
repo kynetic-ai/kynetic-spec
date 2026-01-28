@@ -4533,4 +4533,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG1GNQJZRR2F3TH526VHVA3A
+    type: friction
+    content: "E2E skill has incorrect selector guidance for bits-ui Select: recommends
+      getByRole('option') but bits-ui uses data-slot attributes. Correct pattern: await
+      dropdownContent.locator('[data-slot=\"select-content\"]'); then
+      dropdownContent.locator('[data-slot=\"select-item\"]').filter({ hasText: 'value' }).click().
+      Update e2e/SKILL.md line 15 and lines 162-164."
+    created_at: 2026-01-28T05:19:29.888Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
