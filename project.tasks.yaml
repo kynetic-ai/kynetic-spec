@@ -41305,4 +41305,26 @@
 
         This keeps kspec-meta clean and gives explicit control over when deployments happen.
       supersedes: null
+    - _ulid: 01KG33D9ZWRDJWNZJT20FVZ9P9
+      created_at: 2026-01-28T20:06:11.197Z
+      author: "@claude"
+      content: >-
+        ## Revised Approach: Add workflow to kspec-meta
+
+
+        User pointed out kspec-meta already has .gitattributes, .gitignore, CLAUDE.md - supporting
+        files are not pollution.
+
+
+        **Simple fix:**
+
+        1. Copy gh-pages.yml to kspec-meta branch's .github/workflows/
+
+        2. Modify trigger: on push to kspec-meta (self-trigger)
+
+        3. Keep the dual-checkout pattern (main for code, kspec-meta for data)
+
+
+        This is simpler than repository_dispatch and requires no CLI changes.
+      supersedes: null
   todos: []
