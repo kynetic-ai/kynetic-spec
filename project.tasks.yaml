@@ -30422,7 +30422,7 @@
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   closed_reason: null
   depends_on: []
@@ -30433,7 +30433,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:30.144Z
-  started_at: null
+  started_at: 2026-01-28T07:52:37.361Z
   notes:
     - _ulid: 01KFMMYSR4869CYZT7VKF9K76Y
       created_at: 2026-01-23T05:24:13.700Z
@@ -40415,6 +40415,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #257 merged. Fixed merge driver root-level array handling (AC-7) with proper type
+    safety and base array detection."
   depends_on: []
   context: []
   priority: 2
@@ -40424,6 +40426,7 @@
   vcs_refs: []
   created_at: 2026-01-26T18:37:08.166Z
   started_at: 2026-01-28T06:24:29.354Z
+  completed_at: 2026-01-28T06:42:51.213Z
   notes:
     - _ulid: 01KFXSH5097E9GCNTCSRD4W0D8
       created_at: 2026-01-26T18:37:19.242Z
@@ -40555,9 +40558,6 @@
         All 91 merge-related tests pass. PR #257 created.
       supersedes: null
   todos: []
-  completed_at: 2026-01-28T06:42:51.213Z
-  closed_reason: "PR #257 merged. Fixed merge driver root-level array handling (AC-7) with proper type
-    safety and base array detection."
 - _ulid: 01KG0G9PVZRNSCK547VHH478JV
   slugs: []
   title: Implement AC test coverage indicator in Items View
