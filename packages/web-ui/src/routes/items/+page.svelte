@@ -1,5 +1,6 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-11, ac-12, ac-13, ac-14, ac-15
+	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import type { ItemSummary } from '@kynetic-ai/shared';
@@ -7,12 +8,13 @@
 	import ItemTree from '$lib/components/ItemTree.svelte';
 	import ItemDetail from '$lib/components/ItemDetail.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { getProjectVersion } from '$lib/stores/project.svelte';
 
-	let items: ItemSummary[] = [];
-	let loading = true;
-	let error: string | null = null;
-	let selectedRef: string | null = null;
-	let detailOpen = false;
+	let items = $state<ItemSummary[]>([]);
+	let loading = $state(true);
+	let error = $state<string | null>(null);
+	let selectedRef = $state<string | null>(null);
+	let detailOpen = $state(false);
 
 	async function loadItems() {
 		loading = true;
@@ -48,16 +50,25 @@
 	}
 
 	// React to URL ref param changes (handles both initial load and navigation)
-	$: {
+	$effect(() => {
 		const urlRef = $page.url.searchParams.get('ref');
 		if (urlRef && urlRef !== selectedRef) {
 			selectedRef = urlRef;
 			detailOpen = true;
 		}
-	}
+	});
 
 	onMount(() => {
 		loadItems();
+	});
+
+	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
+	$effect(() => {
+		const version = getProjectVersion();
+		if (version > 0) {
+			// Only reload if version has been incremented (not on initial load)
+			loadItems();
+		}
 	});
 </script>
 

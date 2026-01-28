@@ -17,6 +17,8 @@
 	import { fetchSessionContext, fetchObservations } from '$lib/api';
 	import type { SessionContext } from '@kynetic-ai/shared';
 	import ConnectionStatus from '$lib/components/ConnectionStatus.svelte';
+	import ProjectSelector from '$lib/components/ProjectSelector.svelte';
+	import { hasMultipleProjects, getProjectVersion } from '$lib/stores/project.svelte';
 
 	// Navigation items
 	const navItems = [
@@ -30,11 +32,23 @@
 	let sessionContext = $state<SessionContext | null>(null);
 	let unresolvedObservationsCount = $state(0);
 
+	// AC: @multi-directory-daemon ac-25 - Track if multiple projects exist
+	let showProjectSelector = $derived(hasMultipleProjects());
+
 	onMount(async () => {
 		await loadSessionData();
 		// Refresh every 30s (will be replaced with WebSocket updates later)
 		const interval = setInterval(loadSessionData, 30000);
 		return () => clearInterval(interval);
+	});
+
+	// AC: @multi-directory-daemon ac-27 - Reload session data when project changes
+	$effect(() => {
+		const version = getProjectVersion();
+		if (version > 0) {
+			// Only reload if version has been incremented (not on initial load)
+			loadSessionData();
+		}
 	});
 
 	async function loadSessionData() {
@@ -65,6 +79,18 @@
 	</SidebarHeader>
 
 	<SidebarContent>
+		<!-- AC: @multi-directory-daemon ac-25 - Project selector when multiple projects -->
+		{#if showProjectSelector}
+			<SidebarGroup>
+				<SidebarGroupLabel>Project</SidebarGroupLabel>
+				<SidebarGroupContent>
+					<div class="px-2">
+						<ProjectSelector />
+					</div>
+				</SidebarGroupContent>
+			</SidebarGroup>
+		{/if}
+
 		<!-- AC: @web-dashboard ac-20 - Display session focus -->
 		{#if sessionContext?.focus}
 			<SidebarGroup>
