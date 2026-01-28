@@ -4506,4 +4506,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG17R6Y5MEF5DPZ1Z73YFJEW
+    type: success
+    content: Using /e2e skill patterns immediately caught ULID validation issue (Crockford base32
+      excludes I, L, O, U). Invalid ULIDs in fixtures fail silently - the skill's warning helped
+      debug quickly.
+    created_at: 2026-01-28T02:43:33.957Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
