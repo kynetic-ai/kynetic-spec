@@ -41050,6 +41050,31 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-28T16:55:47.117Z
-  notes: []
-  todos: []
   started_at: 2026-01-28T16:55:53.351Z
+  notes:
+    - _ulid: 01KG2RQ5ENQF95MBDY105YE2Z6
+      created_at: 2026-01-28T16:59:19.893Z
+      author: "@claude"
+      content: |-
+        ## Fixes Applied
+
+        ### 1. Race condition fix (daemon API requests)
+        - Modified isStaticMode() to return true synchronously when BUILD_STATIC_MODE=true
+        - This prevents API calls from running before async initMode() completes
+        - Sidebar's onMount now correctly skips daemon API calls
+
+        ### 2. SPA routing fix (404 on routes)
+        - Changed adapter-static fallback from 'index.html' to '404.html'
+        - GitHub Pages serves 404.html for missing routes, enabling SPA routing
+        - Compatible with both GitHub Pages and local daemon serving
+
+        ### Files changed
+        - packages/web-ui/src/lib/stores/mode.svelte.ts
+        - packages/web-ui/svelte.config.js
+
+        ### Verification
+        - Build succeeds with VITE_STATIC_MODE=true
+        - 404.html created in build output
+        - Unit tests pass (1457 passed)
+      supersedes: null
+  todos: []
