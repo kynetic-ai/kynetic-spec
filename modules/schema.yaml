@@ -407,6 +407,10 @@ features:
             given: A directory with {slug}.yaml containing kynetic version field
             when: Finding the manifest and no kynetic.yaml or kynetic.spec.yaml exists
             then: Returns {slug}.yaml path
+          - id: ac-4
+            given: Multiple *.yaml files matching pattern
+            when: Finding the manifest
+            then: Returns first alphabetically after checking explicit names
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
