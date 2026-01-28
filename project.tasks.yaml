@@ -30843,6 +30843,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: GitHub Actions workflow for gh-pages deployment with debouncing. ACs 8-10 covered.
   depends_on: []
   context: []
   priority: 3
@@ -30852,6 +30853,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:23:44.138Z
   started_at: 2026-01-28T08:09:53.862Z
+  completed_at: 2026-01-28T08:15:14.316Z
   notes:
     - _ulid: 01KFMMZ7ERXA4B0E6CNG6EKSQ0
       created_at: 2026-01-23T05:24:27.736Z
@@ -30936,8 +30938,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-01-28T08:15:14.316Z
-  closed_reason: GitHub Actions workflow for gh-pages deployment with debouncing. ACs 8-10 covered.
 - _ulid: 01KFMMZKBXWB014BCCJ11K5HNT
   slugs: []
   title: Daemon auto-start configuration
@@ -40880,5 +40880,21 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-28T05:30:02.394Z
+  notes: []
+  todos: []
+- title: Fix GitHub Pages static mode - WebSocket connection attempted instead of using static JSON
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  _ulid: 01KG2HYF6BP6SDSVFDVET659AN
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-28T15:00:59.206Z
   notes: []
   todos: []
