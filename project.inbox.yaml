@@ -818,11 +818,6 @@ inbox:
       - e2e
       - testing
     added_by: "@claude"
-  - _ulid: 01KG1VFQ3WH0JCSM7AE95RCBM6
-    text: Test gh-pages CI workflow
-    created_at: 2026-01-28T08:28:27.132Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KG2FKPX5C9XFGYW0J62G1DWR
     text: "Document GitHub Pages deployment quirks in AGENTS.md: (1) SvelteKit BASE_PATH env var needed
       for subdirectory hosting, (2) workflow file must exist on trigger branch or use
