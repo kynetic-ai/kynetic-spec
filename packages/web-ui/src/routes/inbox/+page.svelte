@@ -1,4 +1,5 @@
 <script lang="ts">
+	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { onMount } from 'svelte';
 	import type { InboxItem } from '@kynetic-ai/shared';
 	import { fetchInbox, addInboxItem, deleteInboxItem } from '$lib/api';
@@ -14,6 +15,7 @@
 		DialogHeader,
 		DialogTitle
 	} from '$lib/components/ui/dialog';
+	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	// AC: @web-dashboard ac-16
 	let items: InboxItem[] = [];
@@ -32,6 +34,15 @@
 
 	onMount(async () => {
 		await loadInbox();
+	});
+
+	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
+	$effect(() => {
+		const version = getProjectVersion();
+		if (version > 0) {
+			// Only reload if version has been incremented (not on initial load)
+			loadInbox();
+		}
 	});
 
 	async function loadInbox() {

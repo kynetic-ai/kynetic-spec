@@ -11,9 +11,10 @@
  * - ac-31 (@web-dashboard): Reset lastSeqProcessed on reconnect
  * - ac-32 (@web-dashboard): Re-subscribe on reconnect
  * - ac-33 (@web-dashboard): Trigger UI updates on events
+ * - ac-27 (@multi-directory-daemon): Reconnect with different project
  */
 
-import { WebSocketManager } from '../websocket/manager.js';
+import { WebSocketManager, type WebSocketManagerOptions } from '../websocket/manager.js';
 import type { ConnectionState } from '../websocket/types.js';
 
 // Global WebSocket manager instance
@@ -26,14 +27,15 @@ let connectionLost = $state(false);
 /**
  * Initialize WebSocket connection
  * AC: @web-dashboard ac-28
+ * AC: @multi-directory-daemon ac-34 - Supports project path option
  */
-export function initConnection(url?: string): void {
+export function initConnection(options?: WebSocketManagerOptions | string): void {
 	if (manager) {
 		console.warn('[ConnectionStore] Already initialized');
 		return;
 	}
 
-	manager = new WebSocketManager(url);
+	manager = new WebSocketManager(options);
 
 	// AC: @web-dashboard ac-29 - Track connection state
 	manager.onStateChange((state) => {
@@ -42,6 +44,19 @@ export function initConnection(url?: string): void {
 	});
 
 	manager.connect();
+}
+
+/**
+ * Reconnect with a different project
+ * AC: @multi-directory-daemon ac-27
+ */
+export function reconnectWithProject(projectPath: string | null): void {
+	if (!manager) {
+		console.warn('[ConnectionStore] Not initialized, cannot reconnect with project');
+		return;
+	}
+
+	manager.setProjectPath(projectPath);
 }
 
 /**

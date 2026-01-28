@@ -1,5 +1,6 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33
+	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { page } from '$app/stores';
 	import { onMount, onDestroy, flushSync } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
@@ -12,6 +13,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Separator } from '$lib/components/ui/separator';
 	import XIcon from '@lucide/svelte/icons/x';
+	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	let tasks = $state<TaskSummary[]>([]);
 	let total = $state(0);
@@ -47,6 +49,15 @@
 		// Re-fetch when filterParams changes - explicitly access all properties for dependency tracking
 		const { status, type, tag, assignee, automation, limit, offset } = filterParams;
 		loadTasks();
+	});
+
+	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
+	$effect(() => {
+		const version = getProjectVersion();
+		if (version > 0) {
+			// Only reload if version has been incremented (not on initial load)
+			loadTasks();
+		}
 	});
 
 	// AC: Open task detail when URL has ref param

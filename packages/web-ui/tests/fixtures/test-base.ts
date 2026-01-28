@@ -17,6 +17,8 @@ const WEB_UI_BUILD = join(__dirname, '../../build');
 interface DaemonFixture {
   tempDir: string;
   kspecDir: string;
+  /** Create a valid second project for multi-project tests */
+  createSecondProject: () => Promise<string>;
 }
 
 async function cleanupExistingDaemon(): Promise<void> {
@@ -136,8 +138,60 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     // Wait for daemon to be ready
     await new Promise((r) => setTimeout(r, 2000));
 
+    // Helper to create a valid second project for multi-project tests
+    // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
+    async function createSecondProject(): Promise<string> {
+      const secondProjectPath = tempDir + '-second';
+      const secondKspecDir = join(secondProjectPath, '.kspec');
+
+      // Create project directory with valid .kspec structure
+      mkdirSync(secondKspecDir, { recursive: true });
+
+      // Create minimal kynetic.yaml
+      writeFileSync(
+        join(secondKspecDir, 'kynetic.yaml'),
+        `kynetic: "1.0"
+project: Second Test Project
+`
+      );
+
+      // Create project.tasks.yaml (empty tasks file)
+      writeFileSync(
+        join(secondKspecDir, 'project.tasks.yaml'),
+        `# Tasks for second test project
+tasks: []
+`
+      );
+
+      // Initialize git repo in second project
+      execSync('git init', { cwd: secondProjectPath, stdio: 'ignore' });
+      execSync('git config user.email "test@test.com"', { cwd: secondProjectPath, stdio: 'ignore' });
+      execSync('git config user.name "Test"', { cwd: secondProjectPath, stdio: 'ignore' });
+
+      // Set up shadow worktree simulation (same as main project)
+      const gitWorktreesDir = join(secondProjectPath, '.git', 'worktrees', '-kspec');
+      mkdirSync(gitWorktreesDir, { recursive: true });
+      writeFileSync(join(secondKspecDir, '.git'), `gitdir: ${gitWorktreesDir}\n`);
+      writeFileSync(join(gitWorktreesDir, 'gitdir'), `${join(secondProjectPath, '.git')}\n`);
+      writeFileSync(join(gitWorktreesDir, 'HEAD'), 'ref: refs/heads/kspec-meta\n');
+
+      // Register second project with daemon
+      const response = await fetch(`http://localhost:${DAEMON_PORT}/api/projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: secondProjectPath }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Failed to register second project: ${error}`);
+      }
+
+      return secondProjectPath;
+    }
+
     // Provide fixture to test
-    await use({ tempDir, kspecDir });
+    await use({ tempDir, kspecDir, createSecondProject });
 
     // Cleanup: stop daemon - pass project root to match start
     spawnSync('kspec', ['serve', 'stop', '--kspec-dir', tempDir], {
@@ -146,9 +200,11 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     });
     await new Promise((r) => setTimeout(r, 1000));
 
-    // Remove temp directory
+    // Remove temp directories (main and any second project)
     try {
       rmSync(tempDir, { recursive: true, force: true });
+      // Also clean up second project if it exists
+      rmSync(tempDir + '-second', { recursive: true, force: true });
     } catch {
       // Best effort cleanup
     }

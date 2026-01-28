@@ -4,6 +4,7 @@
 	import { fetchTasks } from '$lib/api';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
+	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	// AC: @web-dashboard ac-1, ac-2, ac-3
 	// Task counts by status
@@ -27,6 +28,15 @@
 
 	onMount(async () => {
 		await loadCounts();
+	});
+
+	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
+	$effect(() => {
+		const version = getProjectVersion();
+		if (version > 0) {
+			// Only reload if version has been incremented (not on initial load)
+			loadCounts();
+		}
 	});
 
 	async function loadCounts() {

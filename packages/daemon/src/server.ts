@@ -221,8 +221,13 @@ export async function createServer(options: ServerOptions) {
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
       beforeHandle({ request, store }) {
-        // AC: @multi-directory-daemon ac-21, ac-22, ac-23 - Extract and validate project binding
-        const projectPath = request.headers.get('X-Kspec-Dir') || undefined;
+        // AC: @multi-directory-daemon ac-21, ac-22, ac-23, ac-34 - Extract and validate project binding
+        // AC: @multi-directory-daemon ac-34 - Browser WebSocket API doesn't support custom headers,
+        // so we also accept project path as query parameter
+        const url = new URL(request.url, `http://${request.headers.get('host')}`);
+        const projectPath = request.headers.get('X-Kspec-Dir')
+                        || url.searchParams.get('project')
+                        || undefined;
         const requestId = ulid(); // Temporary ID to correlate upgrade with open
 
         try {

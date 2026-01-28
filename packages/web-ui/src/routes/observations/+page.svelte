@@ -1,4 +1,5 @@
 <script lang="ts">
+	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { onMount } from 'svelte';
 	import type { Observation } from '@kynetic-ai/shared';
 	import { fetchObservations } from '$lib/api';
@@ -10,6 +11,7 @@
 		AlertTriangle,
 		HelpCircle
 	} from 'lucide-svelte';
+	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	// AC: @web-dashboard ac-22
 	let observations: Observation[] = [];
@@ -40,6 +42,15 @@
 
 	onMount(async () => {
 		await loadObservations();
+	});
+
+	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
+	$effect(() => {
+		const version = getProjectVersion();
+		if (version > 0) {
+			// Only reload if version has been incremented (not on initial load)
+			loadObservations();
+		}
 	});
 
 	async function loadObservations() {

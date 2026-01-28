@@ -11,6 +11,7 @@
  * - ac-31 (@web-dashboard): Reset lastSeqProcessed = -1 on reconnect
  * - ac-32 (@web-dashboard): Re-subscribe to all topics on reconnect
  * - ac-33 (@web-dashboard): Trigger update handlers on broadcast events
+ * - ac-34 (@multi-directory-daemon): Project path as query parameter for WebSocket
  */
 
 import type {
@@ -27,15 +28,22 @@ import type {
 	EventHandler,
 	StateChangeHandler
 } from './types.js';
+import { DAEMON_WS_BASE } from '../constants.js';
 
-const DEFAULT_URL = 'ws://localhost:3456/ws';
+const DEFAULT_URL = `${DAEMON_WS_BASE}/ws`;
 const MAX_BACKOFF_MS = 30000; // 30s
 const CONNECTION_LOST_THRESHOLD_MS = 10000; // 10s
 const MAX_RECONNECT_ATTEMPTS = 10;
 
+export interface WebSocketManagerOptions {
+	url?: string;
+	projectPath?: string;
+}
+
 export class WebSocketManager {
 	private ws: WebSocket | null = null;
-	private url: string;
+	private baseUrl: string;
+	private projectPath: string | null;
 	private state: ConnectionState = 'disconnected';
 	private subscriptions = new Map<string, Subscription>();
 	private eventHandlers = new Map<string, Set<EventHandler>>();
@@ -58,8 +66,52 @@ export class WebSocketManager {
 		last_disconnected_at: null
 	};
 
-	constructor(url: string = DEFAULT_URL) {
-		this.url = url;
+	constructor(options: WebSocketManagerOptions | string = {}) {
+		// Support both old string signature and new options object
+		if (typeof options === 'string') {
+			this.baseUrl = options;
+			this.projectPath = null;
+		} else {
+			this.baseUrl = options.url || DEFAULT_URL;
+			this.projectPath = options.projectPath || null;
+		}
+	}
+
+	/**
+	 * Get the full WebSocket URL with project path as query param if set
+	 * AC: @multi-directory-daemon ac-34
+	 */
+	private getUrl(): string {
+		if (!this.projectPath) {
+			return this.baseUrl;
+		}
+		const url = new URL(this.baseUrl);
+		url.searchParams.set('project', this.projectPath);
+		return url.toString();
+	}
+
+	/**
+	 * Update the project path and trigger reconnection if connected
+	 * AC: @multi-directory-daemon ac-27
+	 */
+	setProjectPath(path: string | null): void {
+		if (this.projectPath === path) return;
+
+		this.projectPath = path;
+
+		// If connected, disconnect and reconnect with new project
+		if (this.isConnected()) {
+			this.reconnectAttempts = 0; // Reset so we try fresh
+			this.disconnect();
+			this.connect();
+		}
+	}
+
+	/**
+	 * Get current project path
+	 */
+	getProjectPath(): string | null {
+		return this.projectPath;
 	}
 
 	/**
@@ -93,6 +145,7 @@ export class WebSocketManager {
 	/**
 	 * Connect to WebSocket server
 	 * AC: @web-dashboard ac-28
+	 * AC: @multi-directory-daemon ac-34 - Includes project as query param
 	 */
 	connect(): void {
 		if (this.ws && (this.state === 'connected' || this.state === 'connecting')) {
@@ -101,7 +154,9 @@ export class WebSocketManager {
 		}
 
 		this.setState('connecting');
-		this.ws = new WebSocket(this.url);
+		const url = this.getUrl();
+		console.log('[WebSocketManager] Connecting to:', url);
+		this.ws = new WebSocket(url);
 
 		this.ws.onopen = () => {
 			console.log('[WebSocketManager] Connected');

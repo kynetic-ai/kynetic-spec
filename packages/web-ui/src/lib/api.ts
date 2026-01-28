@@ -3,6 +3,10 @@
  *
  * Helper functions for making requests to the kspec daemon API.
  * All functions use fetch with localhost:3456 as the base URL.
+ *
+ * AC Coverage:
+ * - ac-26 (@multi-directory-daemon): X-Kspec-Dir header injection
+ * - ac-36 (@multi-directory-daemon): Invalid project error detection
  */
 
 import type {
@@ -17,12 +21,57 @@ import type {
 	ErrorResponse,
 	SearchResponse
 } from '@kynetic-ai/shared';
+import {
+	getSelectedProjectPath,
+	clearInvalidSelection,
+	isInvalidProjectError,
+	type Project
+} from './stores/project.svelte';
+import { DAEMON_API_BASE } from './constants';
 
-const API_BASE = 'http://localhost:3456';
+const API_BASE = DAEMON_API_BASE;
+
+/**
+ * Get headers for API requests, including X-Kspec-Dir if project is selected
+ * AC: @multi-directory-daemon ac-26
+ */
+function getProjectHeaders(): HeadersInit {
+	const path = getSelectedProjectPath();
+	return path ? { 'X-Kspec-Dir': path } : {};
+}
+
+/**
+ * Handle response errors, detecting invalid project errors
+ * AC: @multi-directory-daemon ac-36
+ */
+async function handleResponseError(response: Response): Promise<never> {
+	const error: ErrorResponse = await response.json();
+	const message = error.message || error.error;
+
+	// Check if this is an invalid project error
+	if (isInvalidProjectError(response, message)) {
+		clearInvalidSelection();
+	}
+
+	throw new Error(message);
+}
+
+/**
+ * Fetch registered projects
+ * AC: @multi-directory-daemon ac-25, ac-28
+ */
+export async function fetchProjects(): Promise<{ projects: Project[] }> {
+	const response = await fetch(`${API_BASE}/api/projects`);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
 
 /**
  * Fetch tasks with optional filters
  * AC: @web-dashboard ac-9, ac-10
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchTasks(params?: {
 	status?: string;
@@ -43,10 +92,11 @@ export async function fetchTasks(params?: {
 		});
 	}
 
-	const response = await fetch(url.toString());
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -55,12 +105,14 @@ export async function fetchTasks(params?: {
 /**
  * Fetch single task by reference
  * AC: @web-dashboard ac-5
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchTask(ref: string): Promise<TaskDetail> {
-	const response = await fetch(`${API_BASE}/api/tasks/${ref}`);
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}`, {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -69,38 +121,41 @@ export async function fetchTask(ref: string): Promise<TaskDetail> {
 /**
  * Start a task (change status to in_progress)
  * AC: @web-dashboard ac-7
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function startTask(ref: string): Promise<void> {
 	const response = await fetch(`${API_BASE}/api/tasks/${ref}/start`, {
-		method: 'POST'
+		method: 'POST',
+		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 }
 
 /**
  * Add a note to a task
  * AC: @web-dashboard ac-8
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function addTaskNote(ref: string, content: string): Promise<void> {
 	const response = await fetch(`${API_BASE}/api/tasks/${ref}/note`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
 		},
 		body: JSON.stringify({ content })
 	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 }
 
 /**
  * Fetch spec items with optional filters
  * AC: @web-dashboard ac-11
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchItems(params?: {
 	type?: string | string[];
@@ -122,10 +177,11 @@ export async function fetchItems(params?: {
 		});
 	}
 
-	const response = await fetch(url.toString());
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -134,12 +190,14 @@ export async function fetchItems(params?: {
 /**
  * Fetch single spec item by reference
  * AC: @web-dashboard ac-12
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchItem(ref: string): Promise<ItemDetail> {
-	const response = await fetch(`${API_BASE}/api/items/${ref}`);
+	const response = await fetch(`${API_BASE}/api/items/${ref}`, {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -148,12 +206,14 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
 /**
  * Fetch tasks linked to a spec item
  * AC: @web-dashboard ac-13
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<TaskSummary>> {
-	const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`);
+	const response = await fetch(`${API_BASE}/api/items/${ref}/tasks`, {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -162,6 +222,7 @@ export async function fetchItemTasks(ref: string): Promise<PaginatedResponse<Tas
 /**
  * Fetch inbox items
  * AC: @web-dashboard ac-16
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchInbox(params?: {
 	limit?: number;
@@ -177,10 +238,11 @@ export async function fetchInbox(params?: {
 		});
 	}
 
-	const response = await fetch(url.toString());
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -189,18 +251,19 @@ export async function fetchInbox(params?: {
 /**
  * Add a new inbox item
  * AC: @web-dashboard ac-18
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function addInboxItem(text: string, tags?: string[]): Promise<InboxItem> {
 	const response = await fetch(`${API_BASE}/api/inbox`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
 		},
 		body: JSON.stringify({ text, tags })
 	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	const result = await response.json();
@@ -210,26 +273,29 @@ export async function addInboxItem(text: string, tags?: string[]): Promise<Inbox
 /**
  * Delete an inbox item
  * AC: @web-dashboard ac-19
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function deleteInboxItem(ref: string): Promise<void> {
 	const response = await fetch(`${API_BASE}/api/inbox/${ref}`, {
-		method: 'DELETE'
+		method: 'DELETE',
+		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 }
 
 /**
  * Fetch session context
  * AC: @web-dashboard ac-20
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchSessionContext(): Promise<SessionContext> {
-	const response = await fetch(`${API_BASE}/api/meta/session`);
+	const response = await fetch(`${API_BASE}/api/meta/session`, {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -238,6 +304,7 @@ export async function fetchSessionContext(): Promise<SessionContext> {
 /**
  * Fetch observations
  * AC: @web-dashboard ac-21, ac-22
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function fetchObservations(params?: {
 	type?: 'friction' | 'success' | 'question' | 'idea';
@@ -253,10 +320,11 @@ export async function fetchObservations(params?: {
 		});
 	}
 
-	const response = await fetch(url.toString());
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();
@@ -265,15 +333,17 @@ export async function fetchObservations(params?: {
 /**
  * Search across all entities
  * AC: @web-dashboard ac-24
+ * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
  */
 export async function search(query: string): Promise<SearchResponse> {
 	const url = new URL(`${API_BASE}/api/search`);
 	url.searchParams.set('q', query);
 
-	const response = await fetch(url.toString());
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
 	if (!response.ok) {
-		const error: ErrorResponse = await response.json();
-		throw new Error(error.message || error.error);
+		await handleResponseError(response);
 	}
 
 	return response.json();

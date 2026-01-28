@@ -7,13 +7,28 @@
 	import MobileNav from '$lib/components/MobileNav.svelte';
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
 	import { initConnection } from '$lib/stores/connection.svelte';
+	import { loadProjects, getSelectedProjectPath, isInitialized } from '$lib/stores/project.svelte';
+	import { browser } from '$app/environment';
 
 	let { children } = $props();
 
+	// Track if projects are loaded
+	let projectsReady = $state(false);
+
 	// AC: @web-dashboard ac-28 - Initialize WebSocket connection
-	onMount(() => {
-		initConnection();
+	// AC: @multi-directory-daemon ac-25 - Load projects list on mount
+	onMount(async () => {
+		// Load projects first so we know which project to connect to
+		await loadProjects();
+		projectsReady = true;
+
+		// Initialize WebSocket with selected project
+		const projectPath = getSelectedProjectPath();
+		initConnection({ projectPath: projectPath ?? undefined });
 	});
+
+	// For SSR, treat as ready since we can't have a selected project anyway
+	let ready = $derived(browser ? projectsReady : true);
 </script>
 
 <svelte:head>
@@ -33,7 +48,14 @@
 	<!-- Main content area with responsive inset -->
 	<SidebarInset>
 		<main class="flex-1 overflow-auto p-4 pb-20 md:pb-4">
-			{@render children()}
+			{#if ready}
+				{@render children()}
+			{:else}
+				<!-- AC: @multi-directory-daemon ac-25 - Wait for projects to load -->
+				<div class="flex items-center justify-center h-32">
+					<span class="text-muted-foreground">Loading...</span>
+				</div>
+			{/if}
 		</main>
 	</SidebarInset>
 
