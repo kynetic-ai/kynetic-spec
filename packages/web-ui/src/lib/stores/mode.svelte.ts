@@ -104,10 +104,13 @@ async function loadStaticSnapshot(): Promise<void> {
 
 /**
  * Check if running in static mode
- * AC: @gh-pages-export ac-11
+ * AC: @gh-pages-export ac-11, ac-19
+ *
+ * Returns true immediately if BUILD_STATIC_MODE is set (synchronous check)
+ * to prevent race conditions where API calls run before initMode() completes.
  */
 export function isStaticMode(): boolean {
-	return mode === 'static';
+	return BUILD_STATIC_MODE || mode === 'static';
 }
 
 /**
