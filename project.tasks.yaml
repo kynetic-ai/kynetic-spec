@@ -41175,19 +41175,89 @@
         under 'bits-ui Component Patterns' section.
       supersedes: null
   todos: []
-- title: "Split GitHub Pages workflow: separate web UI deploy from JSON snapshot generation"
+- _ulid: 01KG32YHJFBTMKAEXCGQKCV6Q9
+  slugs: []
+  title: "Split GitHub Pages workflow: separate web UI deploy from JSON snapshot generation"
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KG32YHJFBTMKAEXCGQKCV6Q9
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-28T19:58:07.439Z
-  notes: []
+  notes:
+    - _ulid: 01KG32Z0NN5RY0X6N7QYJF2CWW
+      created_at: 2026-01-28T19:58:22.902Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+        Current gh-pages.yml triggers only on kspec-meta push. Web UI code changes on main don't
+        trigger deployment.
+
+
+        ## Desired Behavior
+
+        1. Web UI deploy: trigger when packages/web-ui/** changes on main
+
+        2. JSON snapshot: trigger when kspec-meta branch changes
+
+
+        ## Constraints (GitHub Actions)
+
+        - Workflow files MUST live on default branch (main), not kspec-meta
+
+        - kspec-meta is an orphan branch, can't contain workflow files that execute
+
+        - Use workflow_run event to chain workflows if needed
+
+
+        ## Proposed Architecture
+
+
+        ### Workflow 1: gh-pages-ui.yml (on main)
+
+        - Trigger: push to main, paths: packages/web-ui/**
+
+        - Build web UI with VITE_STATIC_MODE=true
+
+        - Download latest kspec-snapshot.json artifact (or fetch from gh-pages branch)
+
+        - Deploy combined output to gh-pages
+
+
+        ### Workflow 2: gh-pages-snapshot.yml (on main)
+
+        - Trigger: push to kspec-meta branch
+
+        - Checkout kspec-meta + main (for CLI build)
+
+        - Generate kspec-snapshot.json
+
+        - Either: upload artifact OR commit directly to gh-pages branch
+
+        - Optionally trigger Workflow 1 via workflow_dispatch or repository_dispatch
+
+
+        ### Alternative: Single workflow with multiple triggers
+
+        - on: push to main (web-ui paths) OR push to kspec-meta
+
+        - Conditional steps based on which trigger fired
+
+        - Always combines latest of both
+
+
+        ## References
+
+        - GitHub docs: workflow_run event for chaining
+
+        - Artifacts v4 allows cross-workflow download with run-id
+
+        - Current workflow: .github/workflows/gh-pages.yml
+      supersedes: null
   todos: []
