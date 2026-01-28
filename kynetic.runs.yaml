@@ -11235,6 +11235,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-27T21:16:56.036Z
+    completed_at: 2026-01-27T21:18:33.882Z
     step_results:
       - step_index: 0
         status: completed
@@ -11350,4 +11351,11 @@ runs:
           - Node.js debugging pattern (covered by existing 01KFCS35)
           - Test fixture schema drift (related to blocked 01KFBDQE)
     initiated_by: "@claude"
-    completed_at: 2026-01-27T21:18:33.882Z
+  - _ulid: 01KG0YX6ANC9XHQCZQ06K4WHKG
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-28T00:08:59.989Z
+    step_results: []
+    initiated_by: "@claude"
