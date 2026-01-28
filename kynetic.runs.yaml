@@ -11598,6 +11598,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-28T14:13:47.707Z
+    completed_at: 2026-01-28T14:20:33.452Z
     step_results:
       - step_index: 0
         status: completed
@@ -11728,4 +11729,11 @@ runs:
         notes: "Captured: inbox @01KG2FKP (gh-pages docs), observation @01KG2FM2 (success: mode guard
           pattern)"
     initiated_by: "@claude"
-    completed_at: 2026-01-28T14:20:33.452Z
+  - _ulid: 01KG2NJNZY7QXQEZRYXJCB5NY5
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-01-28T16:04:27.266Z
+    step_results: []
+    initiated_by: "@claude"
