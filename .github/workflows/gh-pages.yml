@@ -9,6 +9,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [kspec-meta]
+  workflow_dispatch:  # Allow manual trigger for testing
 
 # AC: @gh-pages-export ac-10 - Debounce rapid commits
 # Cancel in-progress deployments for same branch
