@@ -41343,7 +41343,7 @@
   type: task
   spec_ref: "@manifest-discovery"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -41367,3 +41367,4 @@
         Backward compat: kynetic.* names always have priority.
       supersedes: null
   todos: []
+  started_at: 2026-01-28T21:31:52.424Z
