@@ -11595,7 +11595,7 @@ runs:
   - _ulid: 01KG2F821VMX3HQBVG58J4V2H5
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-28T14:13:47.707Z
     step_results:
@@ -11629,5 +11629,35 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-28T14:14:15.843Z
-        completed_at: 2026-01-28T14:14:15.843Z
+        completed_at: 2026-01-28T14:14:30.029Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **GitHub Actions workflow file location** - The gh-pages workflow only triggers when
+          the workflow file exists on the branch being pushed (kspec-meta). Since it only existed on
+          main, pushes to kspec-meta didn't trigger it. Required manual trigger via
+          workflow_dispatch.
+
+
+          2. **Node.js version mismatch** - The test.yml uses Node 18 but Vite requires 20.19+. This
+          wasn't caught until CI failed. No central place defining Node version requirements.
+
+
+          3. **GitHub Pages base path discovery** - Had to debug 404s to discover SvelteKit needs
+          BASE_PATH for subdirectory hosting. The initial deployment looked successful but assets
+          failed to load.
+
+
+          4. **Checkout pollution** - Running 'git checkout origin/gh-pages -- .' accidentally
+          staged 30+ files from gh-pages branch into main. Easy to make this mistake when checking
+          file contents.
+
+
+          5. **Multiple active workflow runs** - 49 workflow runs accumulated over time. Had to
+          specify run ID explicitly. No cleanup mechanism or warning about stale runs.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-28T14:14:30.029Z
+        completed_at: 2026-01-28T14:14:30.029Z
     initiated_by: "@claude"
