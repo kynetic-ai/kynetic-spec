@@ -11354,7 +11354,7 @@ runs:
   - _ulid: 01KG0YX6ANC9XHQCZQ06K4WHKG
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-28T00:08:59.989Z
     step_results:
@@ -11440,5 +11440,37 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-28T00:09:49.153Z
-        completed_at: 2026-01-28T00:09:49.153Z
+        completed_at: 2026-01-28T00:10:00.722Z
+        notes: >-
+          ## Proposed Improvements (Untracked Only)
+
+
+          ### 1. Document E2E fixture isolation pattern
+
+          **What:** Add to AGENTS.md or create packages/web-ui/tests/README.md documenting that E2E
+          tests use dedicated fixtures at `packages/web-ui/tests/fixtures/` to avoid breaking unit
+          tests.
+
+          **How it helps:** Future contributors won't repeat the mistake of modifying shared
+          fixtures for E2E needs.
+
+          **Scope:** Small (documentation only)
+
+
+          ### 2. E2E daemon cleanup improvement  
+
+          **What:** Improve test-base.ts to more aggressively clean up old daemon processes,
+          possibly using a unique port per test run or PID tracking.
+
+          **How it helps:** Reduces flaky test failures from orphaned daemons.
+
+          **Scope:** Medium (code change to test infrastructure)
+
+
+          Note: ULID validation friction is already well-documented in observations. WebSocket
+          flakiness is a known issue with the test approach (timing-sensitive).
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-28T00:10:00.722Z
+        completed_at: 2026-01-28T00:10:00.722Z
     initiated_by: "@claude"
