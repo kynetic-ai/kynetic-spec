@@ -30634,6 +30634,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:34.720Z
+  started_at: 2026-01-28T07:58:23.052Z
   notes:
     - _ulid: 01KFMMYY2MBT3DTFFXAVGX4Q0D
       created_at: 2026-01-23T05:24:18.132Z
@@ -30683,9 +30684,38 @@
         kspec-snapshot.json). SPA static adapter configuration + client-side routing implementation.
         Part of coordinated GitHub Pages feature."
       supersedes: null
+    - _ulid: 01KG1T5RD65PHV7C4NBGK7MAH7
+      created_at: 2026-01-28T08:05:32.199Z
+      author: "@claude"
+      content: |-
+        Completed static data layer implementation (Phase 2):
+
+        **Files created:**
+        - packages/web-ui/src/lib/stores/mode.svelte.ts - Mode detection (daemon vs static)
+        - packages/web-ui/src/lib/types/snapshot.ts - KspecSnapshot type definitions
+        - packages/web-ui/src/lib/api-static.ts - Static API provider
+        - packages/web-ui/src/lib/components/ReadOnlyBanner.svelte - Read-only mode banner
+
+        **Files modified:**
+        - packages/web-ui/src/lib/api.ts - Added mode-aware dispatch for all API functions
+        - packages/web-ui/src/routes/+layout.svelte - Added mode init and ReadOnlyBanner
+
+        **ACs covered:**
+        - ac-11: Fetch JSON snapshot and render from static mode ✓
+        - ac-12: Deep link /tasks/@ref works via ref resolution ✓
+        - ac-13: Deep link /items/@ref works via ref resolution ✓
+        - ac-14: Validation badge in ReadOnlyBanner ✓
+        - ac-15: Data freshness indicator with relative time ✓
+
+        Static mode detection:
+        1. Try daemon health check (2s timeout)
+        2. Fall back to /kspec-snapshot.json
+        3. isStaticMode() gate for write operations
+
+        Build successful - ready for Phase 3 (read-only mode UI enforcement).
+      supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-28T07:58:23.052Z
 - _ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
   slugs: []
   title: Read-only mode behaviors
