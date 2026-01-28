@@ -41080,7 +41080,10 @@
         - Unit tests pass (1457 passed)
       supersedes: null
   todos: []
-- title: Fix navigation links to use SvelteKit base path
+- _ulid: 01KG2TVAPAY5PTXGTJC694RBVP
+  slugs: []
+  title: Fix navigation links to use SvelteKit base path
+  type: task
   description: >-
     Navigation links in Sidebar.svelte use hardcoded paths like '/tasks' which don't include the
     base path for GitHub Pages deployment.
@@ -41092,18 +41095,16 @@
     Related: @01KG2RGN, @01KG2HYF
 
     Spec: @gh-pages-export
-  type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KG2TVAPAY5PTXGTJC694RBVP
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-28T17:36:33.481Z
   notes: []
   todos: []
+  started_at: 2026-01-28T17:36:41.439Z
