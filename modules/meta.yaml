@@ -148,6 +148,19 @@ features:
           Unified validation ensures consistency across both layers.
         implements:
           - "@meta-manifest"
+      - _ulid: 01KG386XTQ7XB205RJBSWNW318
+        slugs:
+          - meta-manifest-discovery
+        title: Meta Manifest File Discovery
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-28T21:30:05.015Z
   - _ulid: 01KF1XAGT00000000000000000
     slugs:
       - agent-definitions
