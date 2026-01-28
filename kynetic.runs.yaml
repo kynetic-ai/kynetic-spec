@@ -11595,7 +11595,7 @@ runs:
   - _ulid: 01KG2F821VMX3HQBVG58J4V2H5
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-28T14:13:47.707Z
     step_results:
@@ -11659,5 +11659,39 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-28T14:14:30.029Z
-        completed_at: 2026-01-28T14:14:30.029Z
+        completed_at: 2026-01-28T14:14:51.295Z
+        notes: >-
+          ## Existing Coverage Check
+
+
+          1. **GitHub Actions workflow file location** - Not tracked. @workflow-triggers covers CLI
+          workflow triggers, not GitHub Actions file placement semantics.
+
+
+          2. **Node.js version mismatch** - Not tracked. No existing spec/task about Node version
+          requirements.
+
+
+          3. **GitHub Pages base path** - Not tracked. @gh-pages-export covers the feature but ACs
+          don't mention base path configuration for subdirectory hosting.
+
+
+          4. **Checkout pollution** - Not tracked. This is a git knowledge issue, not a kspec issue.
+
+
+          5. **Multiple active workflow runs** - Not tracked. No spec for workflow run cleanup or
+          limits.
+
+
+          **Untracked friction points needing capture:**
+
+          - Node version requirements documentation
+
+          - Workflow run cleanup/limits
+
+          - (Base path is now fixed, just needed documentation)
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-28T14:14:51.295Z
+        completed_at: 2026-01-28T14:14:51.295Z
     initiated_by: "@claude"
