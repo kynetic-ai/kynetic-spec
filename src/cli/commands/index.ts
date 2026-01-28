@@ -2,6 +2,7 @@
 
 export { registerCloneForTestingCommand } from "./clone-for-testing.js";
 export { registerDeriveCommand } from "./derive.js";
+export { registerExportCommand } from "./export.js";
 export { registerHelpCommand } from "./help.js";
 export { registerInboxCommands } from "./inbox.js";
 export { registerInitCommand } from "./init.js";
