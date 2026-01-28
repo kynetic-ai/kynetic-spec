@@ -399,6 +399,10 @@ features:
             given: A directory with kynetic.yaml
             when: Finding the manifest
             then: Returns kynetic.yaml path
+          - id: ac-2
+            given: A directory with kynetic.spec.yaml but no kynetic.yaml
+            when: Finding the manifest
+            then: Returns kynetic.spec.yaml path
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
