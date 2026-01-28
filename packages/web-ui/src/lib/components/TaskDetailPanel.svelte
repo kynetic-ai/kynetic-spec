@@ -2,6 +2,7 @@
 	// AC: @web-dashboard ac-5, ac-6, ac-7, ac-8
 	// Custom sheet implementation for task details
 	import type { TaskDetail as TaskDetailType } from '@kynetic-ai/shared';
+	import { base } from '$app/paths';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Textarea } from '$lib/components/ui/textarea';
@@ -152,7 +153,7 @@
 					<div data-testid="task-spec-ref-link">
 						<p class="text-sm font-medium mb-1">Spec Reference:</p>
 						<a
-							href="/items?ref={encodeURIComponent(task.spec_ref)}"
+							href="{base}/items?ref={encodeURIComponent(task.spec_ref)}"
 							class="text-sm text-primary hover:underline"
 						>
 							{task.spec_ref}
@@ -179,7 +180,7 @@
 						<ul class="text-sm space-y-1">
 							{#each task.depends_on as dep}
 								<li>
-									<a href="/tasks?ref={encodeURIComponent(dep)}" class="text-primary hover:underline">
+									<a href="{base}/tasks?ref={encodeURIComponent(dep)}" class="text-primary hover:underline">
 										{dep}
 									</a>
 								</li>

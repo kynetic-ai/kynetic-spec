@@ -1,6 +1,7 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-12, ac-13, ac-14, ac-15
 	import type { ItemDetail, TaskSummary } from '@kynetic-ai/shared';
+	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import {
@@ -169,7 +170,7 @@
 										// AC: @web-dashboard ac-14 - Navigate to trait detail
 										// Traits are items (type: trait), so we navigate to items view with the ref
 										const traitRef = trait.startsWith('@') ? trait.slice(1) : trait;
-										goto(`/items?ref=${encodeURIComponent(traitRef)}`);
+										goto(`${base}/items?ref=${encodeURIComponent(traitRef)}`);
 									}}
 								>
 									<span data-testid="trait-title">{trait}</span>
@@ -186,7 +187,7 @@
 						<div class="space-y-2">
 							{#each linkedTasks as task}
 								<a
-									href="/tasks?ref={encodeURIComponent(task._ulid)}"
+									href="{base}/tasks?ref={encodeURIComponent(task._ulid)}"
 									class="flex items-center gap-2 p-2 rounded border hover:bg-muted/50 transition-colors"
 									data-testid="linked-task"
 								>

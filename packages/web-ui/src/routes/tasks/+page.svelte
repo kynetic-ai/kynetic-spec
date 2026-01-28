@@ -3,6 +3,7 @@
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	// AC: @gh-pages-export ac-16 - Disable Start Task in static mode
 	import { page } from '$app/stores';
+	import { base } from '$app/paths';
 	import { onMount, onDestroy, flushSync } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
 	import TaskFilters from '$lib/components/TaskFilters.svelte';
@@ -354,7 +355,7 @@
 					<div data-testid="task-spec-ref-link">
 						<p class="text-sm font-medium mb-1">Spec Reference:</p>
 						<a
-							href="/items?ref={encodeURIComponent(panel.task.spec_ref)}"
+							href="{base}/items?ref={encodeURIComponent(panel.task.spec_ref)}"
 							class="text-sm text-primary hover:underline"
 						>
 							{panel.task.spec_ref}
@@ -381,7 +382,7 @@
 						<ul class="text-sm space-y-1">
 							{#each panel.task.depends_on as dep}
 								<li>
-									<a href="/tasks?ref={encodeURIComponent(dep)}" class="text-primary hover:underline">
+									<a href="{base}/tasks?ref={encodeURIComponent(dep)}" class="text-primary hover:underline">
 										{dep}
 									</a>
 								</li>

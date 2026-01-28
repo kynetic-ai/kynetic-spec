@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import * as Command from '$lib/components/ui/command';
 	import { search } from '$lib/api';
 	import type { SearchResult } from '@kynetic-ai/shared';
@@ -81,13 +82,13 @@
 
 		// Map type to route
 		const routes: Record<string, (ulid: string) => string> = {
-			task: (ulid) => `/tasks?selected=${ulid}`,
-			item: (ulid) => `/items?selected=${ulid}`,
-			inbox: (ulid) => `/inbox?selected=${ulid}`,
-			observation: (ulid) => `/observations?selected=${ulid}`,
-			agent: (ulid) => `/meta?selected=${ulid}`,
-			workflow: (ulid) => `/meta?selected=${ulid}`,
-			convention: (ulid) => `/meta?selected=${ulid}`
+			task: (ulid) => `${base}/tasks?selected=${ulid}`,
+			item: (ulid) => `${base}/items?selected=${ulid}`,
+			inbox: (ulid) => `${base}/inbox?selected=${ulid}`,
+			observation: (ulid) => `${base}/observations?selected=${ulid}`,
+			agent: (ulid) => `${base}/meta?selected=${ulid}`,
+			workflow: (ulid) => `${base}/meta?selected=${ulid}`,
+			convention: (ulid) => `${base}/meta?selected=${ulid}`
 		};
 
 		const route = routes[result.type]?.(result.ulid);
