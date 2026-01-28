@@ -41260,4 +41260,49 @@
 
         - Current workflow: .github/workflows/gh-pages.yml
       supersedes: null
+    - _ulid: 01KG3382QJYV50Z764A99WB8HG
+      created_at: 2026-01-28T20:03:19.922Z
+      author: "@claude"
+      content: >-
+        ## Root Cause Found
+
+
+        The gh-pages workflow NEVER triggered on kspec-meta push because:
+
+
+        **GitHub Actions runs workflows from the branch being pushed to, not from main.**
+
+
+        Since kspec-meta is an orphan branch with no .github/workflows/ directory, push events to it
+        have nothing to run.
+
+
+        ## Options
+
+
+        1. **Add workflow file to kspec-meta branch** - Works but pollutes the clean spec-only
+        branch
+
+        2. **repository_dispatch from kspec CLI** - CLI calls GitHub API after shadow sync to
+        trigger workflow
+
+        3. **Scheduled workflow** - Runs periodically, checks if kspec-meta changed, deploys if so
+
+        4. **workflow_run watching main** - Doesn't help since main isn't changing
+
+
+        ## Recommended: repository_dispatch
+
+
+        Add to kspec shadow sync:
+
+        1. After git push to kspec-meta
+
+        2. Call GitHub API: POST /repos/{owner}/{repo}/dispatches with event_type
+
+        3. Workflow on main has 'on: repository_dispatch' trigger
+
+
+        This keeps kspec-meta clean and gives explicit control over when deployments happen.
+      supersedes: null
   todos: []
