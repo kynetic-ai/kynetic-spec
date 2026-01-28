@@ -363,6 +363,19 @@ features:
           Not MVP - this is a convenience feature.
         implements:
           - "@file-structure"
+      - _ulid: 01KG385W7W2R2HV8ZG5XQHJMBF
+        slugs:
+          - manifest-discovery
+        title: Manifest File Discovery
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-28T21:29:30.620Z
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
