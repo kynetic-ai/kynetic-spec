@@ -30844,6 +30844,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:44.138Z
+  started_at: 2026-01-28T08:09:53.862Z
   notes:
     - _ulid: 01KFMMZ7ERXA4B0E6CNG6EKSQ0
       created_at: 2026-01-23T05:24:27.736Z
@@ -30898,9 +30899,36 @@
         SPA build. CI workflow creation + debounce logic + GitHub Actions configuration. Part of
         coordinated GitHub Pages feature."
       supersedes: null
+    - _ulid: 01KG1TFBY79GA6D074JVRW599M
+      created_at: 2026-01-28T08:10:47.112Z
+      author: "@claude"
+      content: |-
+        Completed CI workflow implementation (Phase 5):
+
+        **File created:**
+        - .github/workflows/gh-pages.yml
+
+        **Workflow details:**
+        1. Triggers on push to kspec-meta branch (AC-8)
+        2. Uses concurrency group with cancel-in-progress for debouncing (AC-10)
+        3. Checks out main branch (code) and kspec-meta branch (data to .kspec/)
+        4. Builds CLI and runs export with --include-validation
+        5. Builds web UI and copies to output directory (AC-9)
+        6. Deploys to gh-pages branch using peaceiris/actions-gh-pages@v4
+
+        **ACs covered:**
+        - ac-8: Trigger on kspec-meta push, runs export ✓
+        - ac-9: Copies SPA assets alongside JSON ✓
+        - ac-10: Debounce via concurrency group with cancel-in-progress ✓
+
+        All 18 ACs for @gh-pages-export are now covered across the 4 tasks:
+        - Phase 1: ac-1 through ac-7 (export command)
+        - Phase 2: ac-11 through ac-13 (static data layer)
+        - Phase 3: ac-14 through ac-18 (read-only mode UI)
+        - Phase 5: ac-8 through ac-10 (CI workflow)
+      supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-28T08:09:53.862Z
 - _ulid: 01KFMMZKBXWB014BCCJ11K5HNT
   slugs: []
   title: Daemon auto-start configuration
