@@ -1,6 +1,7 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-33
 	import type { TaskSummary } from '@kynetic-ai/shared';
+	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
 		Table,
@@ -110,7 +111,7 @@
 						<TableCell data-testid="task-spec-ref">
 							{#if task.spec_ref}
 								<a
-									href="/items?ref={encodeURIComponent(task.spec_ref)}"
+									href="{base}/items?ref={encodeURIComponent(task.spec_ref)}"
 									class="text-primary hover:underline text-sm"
 									onclick={(e) => e.stopPropagation()}
 								>

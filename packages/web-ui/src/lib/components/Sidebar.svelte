@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import {
 		Sidebar,
@@ -21,12 +22,12 @@
 	import ProjectSelector from '$lib/components/ProjectSelector.svelte';
 	import { hasMultipleProjects, getProjectVersion } from '$lib/stores/project.svelte';
 
-	// Navigation items
+	// Navigation items - paths are relative, will be prefixed with base in template
 	const navItems = [
-		{ href: '/', label: 'Dashboard' },
-		{ href: '/tasks', label: 'Tasks' },
-		{ href: '/items', label: 'Items' },
-		{ href: '/inbox', label: 'Inbox' }
+		{ path: '/', label: 'Dashboard' },
+		{ path: '/tasks', label: 'Tasks' },
+		{ path: '/items', label: 'Items' },
+		{ path: '/inbox', label: 'Inbox' }
 	];
 
 	// AC: @web-dashboard ac-20, ac-21
@@ -68,7 +69,7 @@
 	// Open observations panel
 	function openObservations() {
 		// Navigate to observations view (will implement panel in next step)
-		goto('/observations');
+		goto(`${base}/observations`);
 	}
 </script>
 
@@ -111,8 +112,8 @@
 					{#each navItems as item}
 						<SidebarMenuItem>
 							<SidebarMenuButton
-								href={item.href}
-								isActive={$page.url.pathname === item.href}
+								href="{base}{item.path}"
+								isActive={$page.url.pathname === `${base}${item.path}` || $page.url.pathname === item.path}
 								data-testid="nav-link-{item.label.toLowerCase()}"
 							>
 								<span>{item.label}</span>

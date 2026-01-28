@@ -2,6 +2,7 @@
 	// AC: @web-dashboard ac-9, ac-10
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { base } from '$app/paths';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import {
@@ -74,7 +75,7 @@
 	}
 
 	function clearFilters() {
-		goto('/tasks', { replaceState: false });
+		goto(`${base}/tasks`, { replaceState: false });
 	}
 
 	// Compute the display value for Select triggers
