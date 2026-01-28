@@ -12,7 +12,7 @@ Learnings and patterns from completed E2E work (tasks.spec.ts, items.spec.ts).
 | Scenario | Pattern | Example |
 |----------|---------|---------|
 | Isolated daemon | `import { test } from '../fixtures/test-base'` | Every E2E test |
-| Select dropdown | Click trigger → `getByRole('option')` | Filter tests |
+| Select dropdown (bits-ui) | Click trigger → `locator('[data-slot="select-item"]')` | Filter tests |
 | Text input | `pressSequentially()` with delay | Tag filter |
 | Wait for API | `waitForRequest()` | Action tests |
 | Wait for URL | `waitForURL(/pattern/)` | Navigation tests |
@@ -140,6 +140,26 @@ $: if (ref && open) {
 
 **Solution:** Take last element if array:
 
+### Problem: bits-ui Select E2E Selectors
+
+**Symptom:** `getByRole('option')` doesn't find bits-ui Select items.
+
+**Root cause:** bits-ui uses `data-slot` attributes instead of standard ARIA roles.
+
+**Solution:** Use `data-slot` attribute selectors:
+
+```typescript
+// Open dropdown
+await page.getByTestId('my-select-trigger').click();
+
+// Wait for content
+const dropdown = page.locator('[data-slot="select-content"]');
+await expect(dropdown).toBeVisible();
+
+// Select item by text
+await dropdown.locator('[data-slot="select-item"]').filter({ hasText: 'Option Name' }).click();
+```
+
 ```typescript
 function updateFilter(key: string, value: string | string[] | undefined) {
   let actualValue: string | undefined;
@@ -157,10 +177,16 @@ function updateFilter(key: string, value: string | string[] | undefined) {
 ### Filter Testing
 
 ```typescript
-// Select dropdown
+// Select dropdown (bits-ui uses data-slot attributes, not role="option")
 const filterStatus = page.getByTestId('filter-status');
 await filterStatus.click();
-await page.getByRole('option', { name: 'Pending', exact: true }).click();
+
+// Wait for dropdown content to appear
+const dropdownContent = page.locator('[data-slot="select-content"]');
+await expect(dropdownContent).toBeVisible();
+
+// Click option using data-slot selector
+await dropdownContent.locator('[data-slot="select-item"]').filter({ hasText: 'Pending' }).click();
 await page.waitForURL(/status=pending/);
 
 // Text input - use pressSequentially, not fill()
