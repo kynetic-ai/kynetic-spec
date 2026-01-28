@@ -4515,4 +4515,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG17RDSGDZB9X9XTRXN4458K
+    type: friction
+    content: Session context is loaded from .kspec-session file (not kynetic.meta.yaml). This caused
+      debugging time when E2E tests couldn't find session focus. The API (fetchSessionContext) and
+      file location should be documented in /e2e skill or AGENTS.md.
+    created_at: 2026-01-28T02:43:40.977Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
