@@ -30628,6 +30628,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Static data layer with mode detection, API dispatch, and deep linking. ACs 11-14 covered.
   depends_on: []
   context: []
   priority: 3
@@ -30637,6 +30638,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:23:34.720Z
   started_at: 2026-01-28T07:58:23.052Z
+  completed_at: 2026-01-28T08:14:57.024Z
   notes:
     - _ulid: 01KFMMYY2MBT3DTFFXAVGX4Q0D
       created_at: 2026-01-23T05:24:18.132Z
@@ -30718,15 +30720,13 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-01-28T08:14:57.024Z
-  closed_reason: Static data layer with mode detection, API dispatch, and deep linking. ACs 11-14 covered.
 - _ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
   slugs: []
   title: Read-only mode behaviors
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -30832,6 +30832,9 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-28T08:15:05.316Z
+  closed_reason: Read-only mode UI with disabled buttons, hidden forms, and graceful error messages.
+    ACs 15-18 covered.
 - _ulid: 01KFMMXWWAMNM41ERK65RYAD46
   slugs: []
   title: GitHub Pages CI workflow
