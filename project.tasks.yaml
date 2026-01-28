@@ -30422,9 +30422,10 @@
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
-  closed_reason: null
+  closed_reason: Export command implemented with JSON/HTML formats, reference resolution, trait
+    expansion, validation inclusion, and dry-run support. All ACs 1-7 covered with tests.
   depends_on: []
   context: []
   priority: 3
@@ -30618,6 +30619,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-28T08:14:48.972Z
 - _ulid: 01KFMMXKP1XPV6Z805YHW97AAN
   slugs: []
   title: Static SPA for GitHub Pages
