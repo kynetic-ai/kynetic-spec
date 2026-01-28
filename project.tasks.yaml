@@ -41141,19 +41141,27 @@
         Build verified with VITE_STATIC_MODE=true BASE_PATH=/kynetic-spec
       supersedes: null
   todos: []
-- title: Fix Svelte 5 snippet compatibility in Tooltip for pending tasks
+- _ulid: 01KG2Z084AG9TSWDRYYK5JBEDT
+  slugs: []
+  title: Fix Svelte 5 snippet compatibility in Tooltip for pending tasks
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KG2Z084AG9TSWDRYYK5JBEDT
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-28T18:49:09.002Z
-  notes: []
+  notes:
+    - _ulid: 01KG2Z0HZ08VAMZD76N8BMFBNV
+      created_at: 2026-01-28T18:49:19.072Z
+      author: "@claude"
+      content: "Issue: Tooltip.Trigger in tasks/+page.svelte uses Svelte 4 'let:builder' pattern which is
+        incompatible with Svelte 5. This only affects pending tasks because the Tooltip is
+        conditionally rendered only when panel.task.status === 'pending' AND isStaticMode(). Fix:
+        Replace let:builder with bits-ui child snippet pattern."
+      supersedes: null
   todos: []
