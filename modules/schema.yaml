@@ -417,7 +417,7 @@ features:
             then: File is skipped as invalid manifest
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
