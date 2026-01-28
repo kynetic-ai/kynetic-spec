@@ -41155,6 +41155,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-28T18:49:09.002Z
+  started_at: 2026-01-28T18:49:42.386Z
   notes:
     - _ulid: 01KG2Z0HZ08VAMZD76N8BMFBNV
       created_at: 2026-01-28T18:49:19.072Z
@@ -41164,5 +41165,11 @@
         conditionally rendered only when panel.task.status === 'pending' AND isStaticMode(). Fix:
         Replace let:builder with bits-ui child snippet pattern."
       supersedes: null
+    - _ulid: 01KG2Z3BN3HBY7DZGDX64YF7HT
+      created_at: 2026-01-28T18:50:50.916Z
+      author: "@claude"
+      content: Fixed by replacing Svelte 4 'let:builder' pattern with Svelte 5 child snippet pattern in
+        tasks/+page.svelte lines 415-426. Also documented this migration pattern in /svelte-5 skill
+        under 'bits-ui Component Patterns' section.
+      supersedes: null
   todos: []
-  started_at: 2026-01-28T18:49:42.386Z
