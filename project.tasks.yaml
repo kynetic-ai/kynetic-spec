@@ -38935,6 +38935,94 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KG1DXVC38J25YXH9WBCWM152
+      created_at: 2026-01-28T04:31:30.179Z
+      author: "@claude"
+      content: >-
+        Implemented web UI project selector:
+
+
+        **Phase 0**: Added WebSocket query param support (?project=<path>) in server.ts for browser
+        compatibility (browsers can't send headers during WS upgrade)
+
+
+        **Phase 1**: Created project.svelte.ts store with Svelte 5 runes managing:
+
+        - projects list
+
+        - selectedPath with localStorage persistence
+
+        - projectVersion counter for reactive reloads
+
+        - loading/error states
+
+        - Helper functions: loadProjects(), selectProject(), getSelectedProjectPath(),
+        hasMultipleProjects()
+
+
+        **Phase 2**: Modified api.ts to:
+
+        - Add fetchProjects() function
+
+        - Add getProjectHeaders() helper
+
+        - Inject X-Kspec-Dir header into all 12 API functions
+
+        - Add invalid project error detection for AC-36 recovery
+
+
+        **Phase 3**: Updated WebSocket manager.ts with:
+
+        - WebSocketManagerOptions interface with optional projectPath
+
+        - getUrl() method to append project as query param
+
+        - setProjectPath() method for project changes
+
+        - Updated connection.svelte.ts with reconnectWithProject() function
+
+
+        **Phase 4-5**: Created ProjectSelector.svelte component:
+
+        - Uses existing Select primitives from shadcn/ui
+
+        - Shows project name (last path segment) with full path as tooltip
+
+        - Triggers selectProject() and WebSocket reconnect on change
+
+        - Added data-testid attributes for E2E tests
+
+
+        Integrated in Sidebar.svelte:
+
+        - Shows between header and Current Focus section
+
+        - Only visible when hasMultipleProjects() returns true
+
+
+        **Phase 6-7**: Layout and page updates:
+
+        - +layout.svelte loads projects before initializing WebSocket
+
+        - All 5 page components (+page.svelte, tasks, items, inbox, observations) watch
+        getProjectVersion() and reload on change
+
+
+        **Phase 8**: E2E test fixtures:
+
+        - Added createSecondProject() helper to test-base.ts
+
+        - Creates valid .kspec/ structure with kynetic.yaml and project.tasks.yaml
+
+        - Initializes git repo and shadow worktree
+
+        - Registers project with daemon API
+
+        - Enabled all 10 project-selector tests
+
+
+        Build verified, all tests pass (except unrelated daemon-executable test).
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFR829X5CKEQJA9XQ4711WT1
