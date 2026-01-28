@@ -30624,7 +30624,7 @@
   type: task
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -30685,6 +30685,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-28T07:58:23.052Z
 - _ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
   slugs: []
   title: Read-only mode behaviors
