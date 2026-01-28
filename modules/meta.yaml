@@ -191,6 +191,8 @@ features:
             given: Multiple *.meta.yaml files
             when: Finding the meta manifest
             then: Returns kynetic.meta.yaml if present, else first alphabetically
+        status:
+          implementation: implemented
   - _ulid: 01KF1XAGT00000000000000000
     slugs:
       - agent-definitions
