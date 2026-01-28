@@ -178,6 +178,11 @@ features:
 
           This provides backward compatibility while supporting project-specific naming like
           {slug}.meta.yaml.
+        acceptance_criteria:
+          - id: ac-1
+            given: A directory with kynetic.meta.yaml
+            when: Finding the meta manifest
+            then: Returns kynetic.meta.yaml path
   - _ulid: 01KF1XAGT00000000000000000
     slugs:
       - agent-definitions
