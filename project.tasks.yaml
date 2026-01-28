@@ -30834,7 +30834,7 @@
   type: infra
   spec_ref: "@gh-pages-export"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -30900,6 +30900,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-28T08:09:53.862Z
 - _ulid: 01KFMMZKBXWB014BCCJ11K5HNT
   slugs: []
   title: Daemon auto-start configuration
