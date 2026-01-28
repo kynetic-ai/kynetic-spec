@@ -41181,7 +41181,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41334,3 +41334,6 @@
       content: Testing kspec-meta workflow trigger by adding this note
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T20:20:59.827Z
+  closed_reason: "PR #267 merged - split GitHub Pages workflow into separate UI and snapshot
+    deployments. kspec-meta workflow tested and working."
