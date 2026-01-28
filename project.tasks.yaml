@@ -41044,6 +41044,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #263 merged. Fixed race condition in isStaticMode() and SPA routing with 404.html fallback."
   depends_on: []
   context: []
   priority: 1
@@ -41051,6 +41052,7 @@
   vcs_refs: []
   created_at: 2026-01-28T16:55:47.117Z
   started_at: 2026-01-28T16:55:53.351Z
+  completed_at: 2026-01-28T17:21:48.261Z
   notes:
     - _ulid: 01KG2RQ5ENQF95MBDY105YE2Z6
       created_at: 2026-01-28T16:59:19.893Z
@@ -41078,5 +41080,30 @@
         - Unit tests pass (1457 passed)
       supersedes: null
   todos: []
-  completed_at: 2026-01-28T17:21:48.261Z
-  closed_reason: "PR #263 merged. Fixed race condition in isStaticMode() and SPA routing with 404.html fallback."
+- title: Fix navigation links to use SvelteKit base path
+  description: >-
+    Navigation links in Sidebar.svelte use hardcoded paths like '/tasks' which don't include the
+    base path for GitHub Pages deployment.
+
+
+    Need to prefix all internal links with `base` from `$app/paths`.
+
+
+    Related: @01KG2RGN, @01KG2HYF
+
+    Spec: @gh-pages-export
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  _ulid: 01KG2TVAPAY5PTXGTJC694RBVP
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-28T17:36:33.481Z
+  notes: []
+  todos: []
