@@ -1,7 +1,8 @@
 /**
  * Tests for manifest file discovery with slug-based naming support.
  *
- * Tests for @manifest-discovery and @meta-manifest-discovery specs.
+ * AC: @manifest-discovery ac-1, ac-2, ac-3, ac-4, ac-5
+ * AC: @meta-manifest-discovery ac-1, ac-2, ac-3
  *
  * Note: These tests use traditional mode (spec/ subdirectory) since shadow mode
  * requires proper git worktree setup which is complex for unit tests.
@@ -98,6 +99,7 @@ describe("Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "valid.yaml"));
   });
 
+  // AC: @manifest-discovery ac-1, ac-3
   it("prefers kynetic.yaml over slug-based names", async () => {
     await fs.writeFile(
       path.join(specDir, "kynetic.yaml"),
@@ -112,6 +114,7 @@ describe("Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "kynetic.yaml"));
   });
 
+  // AC: @manifest-discovery ac-5
   it("excludes task files from manifest discovery", async () => {
     await fs.writeFile(
       path.join(specDir, "project.tasks.yaml"),
@@ -126,6 +129,7 @@ describe("Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "valid.yaml"));
   });
 
+  // AC: @manifest-discovery ac-5
   it("excludes inbox files from manifest discovery", async () => {
     await fs.writeFile(
       path.join(specDir, "project.inbox.yaml"),
@@ -140,6 +144,7 @@ describe("Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "valid.yaml"));
   });
 
+  // AC: @manifest-discovery ac-5
   it("excludes meta files from manifest discovery", async () => {
     await fs.writeFile(
       path.join(specDir, "kynetic.meta.yaml"),
@@ -154,6 +159,7 @@ describe("Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "valid.yaml"));
   });
 
+  // AC: @manifest-discovery ac-1
   it("also checks current directory for manifest", async () => {
     // Put manifest in tempDir directly (not in spec/)
     await fs.writeFile(
@@ -165,6 +171,7 @@ describe("Manifest File Discovery", () => {
     expect(result).toBe(path.join(tempDir, "kynetic.yaml"));
   });
 
+  // AC: @manifest-discovery ac-5
   it("returns null when no valid manifest exists", async () => {
     // Only create invalid files
     await fs.writeFile(
@@ -228,6 +235,7 @@ describe("Meta Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "kynetic.meta.yaml"));
   });
 
+  // AC: @meta-manifest-discovery ac-3
   it("returns first alphabetically when multiple meta.yaml files exist", async () => {
     await fs.writeFile(
       path.join(specDir, "zebra.meta.yaml"),
@@ -242,6 +250,7 @@ describe("Meta Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "alpha.meta.yaml"));
   });
 
+  // AC: @meta-manifest-discovery ac-2
   it("skips meta.yaml files without kynetic_meta version field", async () => {
     await fs.writeFile(
       path.join(specDir, "invalid.meta.yaml"),
@@ -256,6 +265,7 @@ describe("Meta Manifest File Discovery", () => {
     expect(result).toBe(path.join(specDir, "valid.meta.yaml"));
   });
 
+  // AC: @meta-manifest-discovery ac-2
   it("returns null when no valid meta manifest exists", async () => {
     await fs.writeFile(
       path.join(specDir, "invalid.meta.yaml"),
