@@ -30732,6 +30732,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-23T05:23:39.403Z
+  started_at: 2026-01-28T08:05:54.809Z
   notes:
     - _ulid: 01KFMMZ2RF2A6WANTXKG12GW2B
       created_at: 2026-01-23T05:24:22.928Z
@@ -30776,9 +30777,57 @@
         mode detection + UI state management across multiple components. Part of coordinated GitHub
         Pages feature."
       supersedes: null
+    - _ulid: 01KG1TCCZBAAQZ80XCKH51MWPW
+      created_at: 2026-01-28T08:09:09.868Z
+      author: "@claude"
+      content: >-
+        Completed read-only mode UI implementation (Phase 3):
+
+
+        **Files modified:**
+
+        - packages/web-ui/src/routes/tasks/+page.svelte - Disabled Start Task button with tooltip,
+        hide Add Note form
+
+        - packages/web-ui/src/routes/inbox/+page.svelte - Hide Add Item button and Delete button
+
+
+        **Behavior in static mode:**
+
+        1. Start Task button is disabled with tooltip explaining 'Read-only mode - use CLI to start
+        task'
+
+        2. Add Note form is completely hidden (no confusion about unavailable feature)
+
+        3. Inbox Add Item button is hidden
+
+        4. Inbox Delete buttons are hidden
+
+        5. All write operation handlers check isStaticMode() and show graceful error messages
+
+        6. ReadOnlyModeError is caught and displayed appropriately
+
+
+        **ACs covered:**
+
+        - ac-16: Start Task button disabled with tooltip ✓
+
+        - ac-17: Add button disabled/hidden ✓  
+
+        - ac-18: Graceful no-op with informative message ✓
+
+
+        Combined with Phase 2:
+
+        - ac-14: Validation badge in ReadOnlyBanner ✓
+
+        - ac-15: Data freshness indicator ✓
+
+
+        Ready for Phase 5 (CI workflow).
+      supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-28T08:05:54.809Z
 - _ulid: 01KFMMXWWAMNM41ERK65RYAD46
   slugs: []
   title: GitHub Pages CI workflow
