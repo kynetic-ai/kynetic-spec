@@ -11353,7 +11353,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KG0YX6ANC9XHQCZQ06K4WHKG
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-28T00:08:59.989Z
@@ -11477,5 +11477,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-28T00:20:09.916Z
-        completed_at: 2026-01-28T00:20:09.916Z
+        completed_at: 2026-01-28T00:20:28.783Z
+        notes: "Captured: inbox @01KG0ZH7 (docs), inbox @01KG0ZHA (daemon cleanup), observation @01KG0ZHY
+          (success pattern)"
     initiated_by: "@claude"
+    completed_at: 2026-01-28T00:20:28.783Z
