@@ -11595,7 +11595,7 @@ runs:
   - _ulid: 01KG2F821VMX3HQBVG58J4V2H5
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-28T14:13:47.707Z
     step_results:
@@ -11693,5 +11693,30 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-28T14:14:51.295Z
-        completed_at: 2026-01-28T14:14:51.295Z
+        completed_at: 2026-01-28T14:15:08.069Z
+        notes: >-
+          ## Proposed Improvements
+
+
+          1. **Workflow run cleanup command**
+             - What: `kspec workflow prune` to cancel/complete stale workflow runs
+             - How it helps: Prevents accumulation of 49+ active runs that require explicit IDs
+             - Scope: Small - add command to cancel runs older than X days or in specific states
+
+          2. **Node version in CI docs**
+             - What: Document Node version requirements in AGENTS.md or CI section
+             - How it helps: Prevents version mismatch between workflows
+             - Scope: Small - documentation update
+
+          3. **GitHub Pages deployment notes**
+             - What: Add section to AGENTS.md about gh-pages workflow quirks (base path, workflow file location)
+             - How it helps: Future reference for similar deployments
+             - Scope: Small - documentation
+
+          Only #1 is a code change; #2 and #3 are documentation that could be done now or captured
+          as observations.
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-28T14:15:08.069Z
+        completed_at: 2026-01-28T14:15:08.069Z
     initiated_by: "@claude"
