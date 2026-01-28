@@ -11595,8 +11595,39 @@ runs:
   - _ulid: 01KG2F821VMX3HQBVG58J4V2H5
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-01-28T14:13:47.707Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-01-28T14:13:47.707Z
+        completed_at: 2026-01-28T14:14:15.843Z
+        notes: >-
+          ## What Worked Well
+
+
+          1. **Plan-to-implementation flow** - The detailed plan from plan mode provided clear
+          structure. Each phase had specific files to create/modify and ACs to cover.
+
+
+          2. **Parallel task tracking** - Using both internal task list and kspec tasks kept work
+          organized. The kspec task workflow (start → note → submit → complete after PR merge)
+          worked smoothly.
+
+
+          3. **Test-driven verification** - Writing tests alongside implementation caught issues
+          early. The export tests (25 total) validated all AC coverage.
+
+
+          4. **Incremental PR approach** - Creating separate PRs for fixes (workflow_dispatch
+          trigger, Node.js version, base path) made debugging easier than one large PR.
+
+
+          5. **Mode detection pattern** - The isStaticMode() guard pattern worked cleanly for
+          conditionally disabling features without major refactoring.
+      - step_index: 1
+        status: completed
+        started_at: 2026-01-28T14:14:15.843Z
+        completed_at: 2026-01-28T14:14:15.843Z
     initiated_by: "@claude"
