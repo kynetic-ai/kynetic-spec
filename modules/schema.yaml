@@ -394,6 +394,11 @@ features:
 
           This provides backward compatibility while supporting project-specific naming like
           {slug}.yaml.
+        acceptance_criteria:
+          - id: ac-1
+            given: A directory with kynetic.yaml
+            when: Finding the manifest
+            then: Returns kynetic.yaml path
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
