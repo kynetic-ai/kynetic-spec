@@ -41042,7 +41042,7 @@
     Spec: @gh-pages-export
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41078,3 +41078,5 @@
         - Unit tests pass (1457 passed)
       supersedes: null
   todos: []
+  completed_at: 2026-01-28T17:21:48.261Z
+  closed_reason: "PR #263 merged. Fixed race condition in isStaticMode() and SPA routing with 404.html fallback."
