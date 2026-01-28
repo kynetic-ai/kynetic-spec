@@ -60,10 +60,10 @@ jobs:
       # Fetch existing web UI assets from gh-pages branch
       - name: Fetch existing UI assets
         run: |
-          git fetch origin gh-pages:gh-pages || true
-          if git rev-parse --verify gh-pages >/dev/null 2>&1; then
+          git fetch origin gh-pages || true
+          if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
             # Copy all files except the snapshot (we're regenerating it)
-            git archive gh-pages | tar -x -C gh-pages-output --exclude='kspec-snapshot.json' || true
+            git archive origin/gh-pages | tar -x -C gh-pages-output --exclude='kspec-snapshot.json' || true
             echo "Fetched existing UI assets"
           else
             echo "No existing gh-pages branch - will deploy snapshot only"
