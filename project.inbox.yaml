@@ -836,3 +836,11 @@ inbox:
     created_at: 2026-01-29T19:13:45.135Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG5JTC7202XVYEFJ341GPBPB
+    text: "Workflow/skill docs: Pre-session hygiene guidance. kspec session start already shows dirty
+      tree and WIP tasks. Update workflow steps to explicitly prompt 'check for dirty tree, decide
+      how to handle'. Update skill docs (/task-work) to mention hygiene checks. Agents need to act
+      on info already surfaced."
+    created_at: 2026-01-29T19:13:56.963Z
+    tags: []
+    added_by: "@claude"
