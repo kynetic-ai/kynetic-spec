@@ -869,3 +869,11 @@ inbox:
     created_at: 2026-01-29T19:19:59.573Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG623HYWXSEQ2JKP489SYPTP
+    text: "Session checkpoint hook fails with error when working directory is inside .kspec/ shadow
+      worktree. Error: RUNNING_FROM_SHADOW. Should handle gracefully - either auto-detect and run
+      from parent, or skip silently with warning instead of erroring. Current behavior disrupts
+      session end. Triggered by: cd .kspec && git status (then hook runs from wrong directory)."
+    created_at: 2026-01-29T23:41:06.397Z
+    tags: []
+    added_by: "@claude"
