@@ -767,6 +767,9 @@ features:
             given: merge encounters ref that cannot be resolved
             when: normalization runs
             then: ref is kept as-is (no error, graceful degradation)
+        status:
+          maturity: draft
+          implementation: in_progress
     status:
       maturity: draft
       implementation: implemented
