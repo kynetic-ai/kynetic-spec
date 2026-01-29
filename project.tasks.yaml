@@ -41414,6 +41414,7 @@
     - export
   vcs_refs: []
   created_at: 2026-01-29T01:31:06.102Z
+  started_at: 2026-01-29T01:40:45.944Z
   notes:
     - _ulid: 01KG3P0QTY1H3W41Q5A0RVGMDW
       created_at: 2026-01-29T01:31:22.335Z
@@ -41434,5 +41435,17 @@
 
         File: src/cli/commands/export.ts:59
       supersedes: null
+    - _ulid: 01KG3PP501E0JV5R4GD0XEQ525
+      created_at: 2026-01-29T01:43:03.938Z
+      author: "@claude"
+      content: >-
+        Fixed by suppressing info() message when JSON output goes to stdout. Added check for
+        jsonToStdout condition before calling info(). Verified:
+
+        - JSON to stdout now starts with valid JSON (no info prefix)
+
+        - Info message still shows when writing to file
+
+        - All 25 export tests pass
+      supersedes: null
   todos: []
-  started_at: 2026-01-29T01:40:45.944Z
