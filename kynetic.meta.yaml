@@ -4563,4 +4563,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG4M2R8569QYJMCB8GJ6XR9C
+    type: success
+    content: "Throwaway inspection tests: Writing quick, disposable tests to inspect actual DOM/state is
+      effective debugging. DOM inspection test revealed bits-ui elements have both role='option' AND
+      data-slot attributes - concrete evidence in minutes."
+    created_at: 2026-01-29T10:16:45.573Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
