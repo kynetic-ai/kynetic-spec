@@ -14,9 +14,9 @@
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	// AC: @web-dashboard ac-22
-	let observations: Observation[] = [];
-	let loading = true;
-	let error = '';
+	let observations = $state<Observation[]>([]);
+	let loading = $state(true);
+	let error = $state('');
 
 	// Type icons mapping
 	const typeIcons = {
