@@ -12,7 +12,7 @@ Learnings and patterns from completed E2E work (tasks.spec.ts, items.spec.ts).
 | Scenario | Pattern | Example |
 |----------|---------|---------|
 | Isolated daemon | `import { test } from '../fixtures/test-base'` | Every E2E test |
-| Select dropdown (bits-ui) | Click trigger → `locator('[data-slot="select-item"]')` | Filter tests |
+| Select dropdown (bits-ui) | Click trigger → `getByRole('option')` or `locator('[data-slot="select-item"]')` | Filter tests |
 | Text input | `pressSequentially()` with delay | Tag filter |
 | Wait for API | `waitForRequest()` | Action tests |
 | Wait for URL | `waitForURL(/pattern/)` | Navigation tests |
@@ -140,25 +140,23 @@ $: if (ref && open) {
 
 **Solution:** Take last element if array:
 
-### Problem: bits-ui Select E2E Selectors
+### bits-ui Select E2E Selectors
 
-**Symptom:** `getByRole('option')` doesn't find bits-ui Select items.
-
-**Root cause:** bits-ui uses `data-slot` attributes instead of standard ARIA roles.
-
-**Solution:** Use `data-slot` attribute selectors:
+bits-ui Select components use **both** standard ARIA roles and `data-slot` attributes. Either selector approach works:
 
 ```typescript
 // Open dropdown
 await page.getByTestId('my-select-trigger').click();
 
-// Wait for content
-const dropdown = page.locator('[data-slot="select-content"]');
-await expect(dropdown).toBeVisible();
+// Option 1: Standard ARIA role (recommended - more semantic)
+await page.getByRole('option', { name: 'Option Name' }).click();
 
-// Select item by text
+// Option 2: data-slot attribute (alternative)
+const dropdown = page.locator('[data-slot="select-content"]');
 await dropdown.locator('[data-slot="select-item"]').filter({ hasText: 'Option Name' }).click();
 ```
+
+**Note:** Each select item element has both `role="option"` and `data-slot="select-item"` attributes.
 
 ```typescript
 function updateFilter(key: string, value: string | string[] | undefined) {
@@ -177,16 +175,12 @@ function updateFilter(key: string, value: string | string[] | undefined) {
 ### Filter Testing
 
 ```typescript
-// Select dropdown (bits-ui uses data-slot attributes, not role="option")
+// Select dropdown - both role="option" and data-slot work
 const filterStatus = page.getByTestId('filter-status');
 await filterStatus.click();
 
-// Wait for dropdown content to appear
-const dropdownContent = page.locator('[data-slot="select-content"]');
-await expect(dropdownContent).toBeVisible();
-
-// Click option using data-slot selector
-await dropdownContent.locator('[data-slot="select-item"]').filter({ hasText: 'Pending' }).click();
+// Click option using ARIA role (recommended)
+await page.getByRole('option', { name: 'Pending', exact: true }).click();
 await page.waitForURL(/status=pending/);
 
 // Text input - use pressSequentially, not fill()
