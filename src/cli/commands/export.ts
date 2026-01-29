@@ -56,7 +56,11 @@ export function registerExportCommand(program: Command): void {
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
-        info("Generating snapshot...");
+        // Only show progress when not outputting JSON to stdout (keep stdout clean for piping)
+        const jsonToStdout = options.format === "json" && !options.output && !options.dryRun;
+        if (!jsonToStdout) {
+          info("Generating snapshot...");
+        }
 
         // Generate the snapshot
         // AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
