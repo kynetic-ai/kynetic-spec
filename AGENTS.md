@@ -739,6 +739,21 @@ E2E tests use hardcoded port 3456. Tests cannot run in parallel on the same mach
 
 **Mitigation:** `test-base.ts` kills any existing daemon on port 3456 before each test run.
 
+### GitHub Pages Deployment Quirks
+
+Two common issues when working with the GitHub Pages deployment:
+
+1. **SvelteKit BASE_PATH requirement**: When deploying to a GitHub Pages subdirectory (e.g., `username.github.io/repo-name/`), the `VITE_BASE_PATH` environment variable must be set during build. The CI workflow handles this automatically, but local static builds need it too:
+   ```bash
+   VITE_BASE_PATH=/kynetic-spec npm run build -w packages/web-ui
+   ```
+
+2. **Workflow file location**: GitHub Actions workflows only trigger when the workflow file exists on the branch being pushed. For `kspec-meta` branch pushes, the workflow must either:
+   - Exist on `kspec-meta` itself, OR
+   - Use `workflow_dispatch` for manual triggering from any branch
+
+The current setup uses separate workflows: `gh-pages.yml` (manual dispatch) and `gh-pages-ui.yml` (auto on main push).
+
 ## Test Fixture Patterns
 
 When writing tests, follow these patterns to avoid common friction points.
