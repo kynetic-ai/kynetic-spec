@@ -40763,6 +40763,7 @@
     - implementation
   vcs_refs: []
   created_at: 2026-01-27T19:53:41.503Z
+  started_at: 2026-01-29T10:34:19.648Z
   notes:
     - _ulid: 01KG0GA702KM4R9ZR8ZF3Y635N
       created_at: 2026-01-27T19:53:58.018Z
@@ -40850,8 +40851,15 @@
 
         - Class reflects covered/uncovered status
       supersedes: null
+    - _ulid: 01KG4NJT30GHB1N2Z0TDG35T73
+      created_at: 2026-01-29T10:43:00.320Z
+      author: "@claude"
+      content: |-
+        Starting implementation. Completed:
+        - Exported scanTestCoverage() from validate.ts
+        - Added covered?: boolean to AcceptanceCriterion in shared types
+      supersedes: null
   todos: []
-  started_at: 2026-01-29T10:34:19.648Z
 - _ulid: 01KG1H918VB2BT4MVRARPQRBR7
   slugs: []
   title: Update tasks.spec.ts to use correct bits-ui Select selectors
