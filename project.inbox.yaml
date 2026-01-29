@@ -869,3 +869,11 @@ inbox:
     created_at: 2026-01-29T19:18:13.626Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG5K5EAMQPWN8G2B3ZRGEMGF
+    text: "Task summary view for large files: Add 'kspec task list --summary' or 'kspec task stats'
+      command. Should provide: task counts by status, recent activity summary, active/blocked
+      counts. Useful when project.tasks.yaml grows too large to read directly (55k+ tokens). Session
+      friction: had to use git log workaround to understand task state."
+    created_at: 2026-01-29T19:19:59.573Z
+    tags: []
+    added_by: "@claude"
