@@ -11867,7 +11867,7 @@ runs:
   - _ulid: 01KG4M0MJ03NYCQ53NYZ8WCZ29
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-01-29T10:15:36.256Z
     step_results:
@@ -11881,5 +11881,25 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-29T10:16:21.323Z
-        completed_at: 2026-01-29T10:16:21.323Z
+        completed_at: 2026-01-29T10:16:31.288Z
+        notes: >-
+          High-confidence findings:
+
+
+          SUCCESS: Investigation-first approach - Before closing task as 'tests pass', investigated
+          WHY they pass. Discovered skill docs were wrong, not tests. Prevented false closure.
+
+
+          SUCCESS: Throwaway test for DOM inspection - Quick way to get concrete evidence about
+          component behavior.
+
+
+          FRICTION: Skill documentation staleness - /e2e skill had incorrect info about bits-ui
+          selectors (claimed getByRole doesn't work when it does). No mechanism to flag skill docs
+          as potentially outdated when dependencies change. Searched - not tracked in
+          inbox/tasks/observations.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-29T10:16:31.288Z
+        completed_at: 2026-01-29T10:16:31.288Z
     initiated_by: "@claude"
