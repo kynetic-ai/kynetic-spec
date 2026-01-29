@@ -32240,6 +32240,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-23T19:40:24.453Z
+  started_at: 2026-01-29T23:38:50.645Z
   notes:
     - _ulid: 01KFQAZ0ZVC7VRT9B0DM4H5841
       created_at: 2026-01-24T06:27:18.651Z
@@ -32247,9 +32248,36 @@
       content: "Automation status set to needs_review: Missing spec_ref - process improvement needs spec
         definition"
       supersedes: null
+    - _ulid: 01KG61ZPW97H3XFT64EVDQQJNS
+      created_at: 2026-01-29T23:39:00.361Z
+      author: "@claude"
+      content: >-
+        Fixed CI re-verification enforcement in pr-review-merge and pr-review-loop workflows:
+
+
+        1. Added CRITICAL note to pr-review-merge description: After ANY push, must re-verify CI
+        from beginning
+
+        2. Updated step 2 (CI passes) on_fail: Explicitly wait for CI to re-run completely before
+        continuing
+
+        3. Updated step 4 (feedback addressed) on_fail: Added 'RETURN TO STEP 1' instruction after
+        pushing
+
+        4. Added new FINAL CI VERIFICATION step before merge decision: Requires fresh CI check on
+        current HEAD
+
+        5. Updated pr-review-loop description with same CRITICAL note
+
+        6. Updated pr-review-loop CI check step: Emphasized must execute EVERY time changes pushed,
+        verify against current HEAD
+
+
+        This prevents agents from barreling through the workflow after pushing fixes without
+        re-checking CI status.
+      supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-01-29T23:38:50.645Z
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
   slugs: []
   title: Implement Dashboard View (AC-1 to AC-3, AC-20, AC-21)
