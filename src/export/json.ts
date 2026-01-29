@@ -12,11 +12,13 @@ import * as path from "node:path";
 import type { AcceptanceCriterion, InboxItem } from "../schema/index.js";
 import {
   buildIndexes,
+  computeACCoverage,
   initContext,
   loadAllItems,
   loadAllTasks,
   loadInboxItems,
   loadMetaContext,
+  scanTestCoverage,
   type LoadedSpecItem,
   type LoadedTask,
   ReferenceIndex,
@@ -108,17 +110,25 @@ function getInheritedACs(
 }
 
 /**
- * Expand items with inherited ACs from traits.
+ * Expand items with inherited ACs from traits and test coverage.
  * AC: @gh-pages-export ac-4
+ * AC: @web-dashboard ac-15 - Add test coverage for static mode
  */
 function expandItems(
   items: LoadedSpecItem[],
-  traitIndex: TraitIndex
+  traitIndex: TraitIndex,
+  coveredACs: Set<string>
 ): ExportedItem[] {
   return items.map((item) => {
+    // Compute coverage for acceptance criteria using shared utility
+    const acWithCoverage =
+      item.acceptance_criteria && item.acceptance_criteria.length > 0
+        ? computeACCoverage(item, coveredACs)
+        : item.acceptance_criteria;
+
     const exportedItem: ExportedItem = {
       ...item,
-      acceptance_criteria: item.acceptance_criteria,
+      acceptance_criteria: acWithCoverage,
     };
 
     // Get inherited ACs from traits
@@ -185,11 +195,14 @@ export async function generateJsonSnapshot(
   // Build indexes
   const { refIndex, traitIndex } = await buildIndexes(ctx);
 
+  // Scan test coverage for AC annotations
+  const coveredACs = await scanTestCoverage(ctx.rootDir);
+
   // Expand tasks with resolved spec references
   const exportedTasks = expandTasks(tasks, items, refIndex);
 
-  // Expand items with inherited ACs
-  const exportedItems = expandItems(items, traitIndex);
+  // Expand items with inherited ACs and test coverage
+  const exportedItems = expandItems(items, traitIndex, coveredACs);
 
   // Build the snapshot
   const snapshot: KspecSnapshot = {

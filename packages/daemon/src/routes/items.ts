@@ -20,6 +20,8 @@ import {
   loadAllTasks,
   ReferenceIndex,
   AlignmentIndex,
+  scanTestCoverage,
+  computeACCoverage,
   type LoadedSpecItem,
 } from '../../parser/index.js';
 
@@ -217,6 +219,18 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           });
         }
 
+        // AC: @web-dashboard ac-15 - Compute test coverage for acceptance criteria
+        let acceptanceCriteriaWithCoverage = item.acceptance_criteria;
+        if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
+          try {
+            const coveredACs = await scanTestCoverage(projectContext.path);
+            acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
+          } catch (err) {
+            // Coverage scan failed - leave as undefined
+            console.warn('AC coverage scan failed:', err);
+          }
+        }
+
         // AC: @api-contract ac-10 - Return full item with acceptance_criteria, traits, relationships
         return {
           _ulid: item._ulid,
@@ -227,7 +241,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           tags: item.tags,
           parent: parentMap.get(item._ulid),
           description: item.description,
-          acceptance_criteria: item.acceptance_criteria,
+          acceptance_criteria: acceptanceCriteriaWithCoverage,
           traits: item.traits,
           relationships: item.relationships,
           created_at: item.created_at,

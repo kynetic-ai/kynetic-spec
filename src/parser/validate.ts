@@ -684,10 +684,41 @@ function detectTraitCycles(
 // ============================================================
 
 /**
- * Scan test files for AC annotations to build coverage index
+ * Recursively find all test files in a directory
+ */
+async function findTestFilesRecursive(dir: string): Promise<string[]> {
+  const testFiles: string[] = [];
+
+  try {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        // Recurse into subdirectories
+        const subFiles = await findTestFilesRecursive(fullPath);
+        testFiles.push(...subFiles);
+      } else if (
+        entry.isFile() &&
+        (entry.name.endsWith(".test.ts") || entry.name.endsWith(".test.js"))
+      ) {
+        testFiles.push(fullPath);
+      }
+    }
+  } catch {
+    // Directory doesn't exist or can't be read - return empty
+  }
+
+  return testFiles;
+}
+
+/**
+ * Scan test files for AC annotations to build coverage index.
+ * Recursively scans all subdirectories under tests/.
  * Returns a Set of covered ACs in format "@spec-ref ac-N"
  */
-async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
+export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   const coveredACs = new Set<string>();
   const testsDir = path.join(rootDir, "tests");
 
@@ -695,14 +726,10 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
     // Check if tests directory exists
     await fs.access(testsDir);
 
-    // Read all test files
-    const files = await fs.readdir(testsDir);
-    const testFiles = files.filter(
-      (f) => f.endsWith(".test.ts") || f.endsWith(".test.js"),
-    );
+    // Recursively find all test files
+    const testFiles = await findTestFilesRecursive(testsDir);
 
-    for (const file of testFiles) {
-      const filePath = path.join(testsDir, file);
+    for (const filePath of testFiles) {
       const content = await fs.readFile(filePath, "utf-8");
 
       // Match AC annotations: // AC: @spec-ref ac-N
@@ -733,6 +760,43 @@ async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   }
 
   return coveredACs;
+}
+
+/**
+ * Compute coverage status for acceptance criteria of a spec item.
+ * Shared utility used by both daemon API and JSON export.
+ *
+ * @param item - The spec item containing acceptance_criteria
+ * @param coveredACs - Set of covered AC references from scanTestCoverage()
+ * @returns Array of ACs with covered field populated
+ */
+export function computeACCoverage<
+  T extends { id: string; given: string; when: string; then: string },
+>(
+  item: { _ulid: string; slugs?: string[]; acceptance_criteria?: T[] },
+  coveredACs: Set<string>,
+): Array<T & { covered: boolean }> {
+  if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
+    return [];
+  }
+
+  return item.acceptance_criteria.map((ac, index) => {
+    const acId = `ac-${index + 1}`;
+    const possibleRefs: string[] = [];
+
+    // Try with primary slug
+    if (item.slugs && item.slugs.length > 0) {
+      possibleRefs.push(`@${item.slugs[0]} ${acId}`);
+      possibleRefs.push(`@${item.slugs[0]}`);
+    }
+
+    // Try with ULID (short form)
+    possibleRefs.push(`@${item._ulid.slice(0, 8)} ${acId}`);
+    possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
+
+    const covered = possibleRefs.some((ref) => coveredACs.has(ref));
+    return { ...ac, covered };
+  });
 }
 
 /**

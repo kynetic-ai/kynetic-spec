@@ -20,6 +20,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { fetchItem, fetchItemTasks } from '$lib/api';
 	import { goto } from '$app/navigation';
+	import { CheckCircle, XCircle, HelpCircle } from 'lucide-svelte';
 
 	export let ref: string | null = null;
 	export let open = false;
@@ -143,10 +144,25 @@
 												<span class="font-medium text-muted-foreground">Then:</span>
 												{ac.then}
 											</div>
-											<!-- Test coverage indicator placeholder -->
-											<div data-testid="test-coverage-indicator" class="text-xs text-muted-foreground mt-2 uncovered">
-												<!-- TODO: Integrate test coverage data -->
-												Coverage: Unknown
+											<!-- AC: @web-dashboard ac-15 - Test coverage indicator -->
+											<div
+												data-testid="test-coverage-indicator"
+												class="text-xs mt-2 inline-flex items-center gap-1 {ac.covered === true
+													? 'text-green-600 covered'
+													: ac.covered === false
+														? 'text-amber-600 uncovered'
+														: 'text-muted-foreground unknown'}"
+											>
+												{#if ac.covered === true}
+													<CheckCircle class="w-3 h-3" />
+													<span>Covered</span>
+												{:else if ac.covered === false}
+													<XCircle class="w-3 h-3" />
+													<span>Not covered</span>
+												{:else}
+													<HelpCircle class="w-3 h-3" />
+													<span>Coverage: Unknown</span>
+												{/if}
 											</div>
 										</div>
 									</AccordionContent>

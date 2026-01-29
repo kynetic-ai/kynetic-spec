@@ -89,10 +89,16 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     if (existsSync(E2E_FIXTURES)) {
       cpSync(E2E_FIXTURES, kspecDir, {
         recursive: true,
-        filter: (src) => !src.includes('test-base')
+        filter: (src) => !src.includes('test-base') && !src.includes('project-tests')
       });
     } else {
       throw new Error(`E2E test fixtures not found at ${E2E_FIXTURES}`);
+    }
+
+    // Copy project-level tests directory for AC coverage scanning
+    const projectTests = join(E2E_FIXTURES, 'project-tests');
+    if (existsSync(projectTests)) {
+      cpSync(projectTests, join(tempDir, 'tests'), { recursive: true });
     }
 
     // Initialize git repo in project root (required for kspec)
