@@ -41681,7 +41681,7 @@
     run daemon manually with debug output, inspect ContextManager code paths, create minimal
     reproduction case, or escalate infrastructure debugging to separate focused task."
   origin: observation_promotion
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41764,3 +41764,6 @@
       content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/276"
       supersedes: null
   todos: []
+  completed_at: 2026-01-29T23:14:12.765Z
+  closed_reason: "PR #276 merged - E2E reliability improvements: health check polling, staleness
+    detection, PidFileManager sync"
