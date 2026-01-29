@@ -41671,23 +41671,49 @@
         Build succeeds. Changes ensure UI reactively updates when data loads.
       supersedes: null
   todos: []
-- title: Fix E2E daemon fixture loading reliability
+- _ulid: 01KG5VSF6W02TWCENVY5JGM3HG
+  slugs: []
+  title: Fix E2E daemon fixture loading reliability
+  type: task
   description: "Daemon fixture loading blocker affected 2/3 tasks across 10 iterations with no
     alternative approach attempted. Pattern: E2E test harness starts daemon with --kspec-dir
     pointing to temp fixtures, daemon returns empty data instead of YAML content. Should have tried:
     run daemon manually with debug output, inspect ContextManager code paths, create minimal
     reproduction case, or escalate infrastructure debugging to separate focused task."
-  priority: 2
   origin: observation_promotion
-  _ulid: 01KG5VSF6W02TWCENVY5JGM3HG
-  slugs: []
-  type: task
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
   tags: []
   vcs_refs: []
   created_at: 2026-01-29T21:50:44.444Z
-  notes: []
+  notes:
+    - _ulid: 01KG5VSSRD6430BCW8BM82TC0N
+      created_at: 2026-01-29T21:50:55.245Z
+      author: "@claude"
+      content: |-
+        ## Scope
+
+        Fix the E2E test infrastructure so daemon fixtures load reliably. Currently:
+        - Daemon starts with --kspec-dir pointing to temp fixtures
+        - Returns empty data instead of YAML content
+        - Causes 2+ minute timeouts in E2E tests
+
+        ## Related Observations
+        - 01KFVPXS: E2E tests timeout after 2+ minutes
+        - 01KFTGC4: E2E test verification blocked by daemon requirements
+        - 01KFXVK5: dist/daemon/ can become stale without warning
+
+        ## Approach Options
+        1. Debug ContextManager code paths for temp directory handling
+        2. Add verbose/debug mode to daemon startup for diagnosis
+        3. Create minimal reproduction case
+        4. Check if dist/daemon staleness is root cause
+
+        ## Unblocks
+        - @task-watcher-tests (P1) - AC-19 verification needs E2E
+        - 01KFMMZW (P2) - API integration tests
+      supersedes: null
   todos: []
