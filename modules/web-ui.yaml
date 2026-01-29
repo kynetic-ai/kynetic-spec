@@ -567,7 +567,7 @@ features:
         then: URL is prefixed with SvelteKit configured base path from $app/paths
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
     slugs:
       - cli-serve-commands
