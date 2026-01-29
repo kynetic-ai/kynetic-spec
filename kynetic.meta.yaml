@@ -4554,4 +4554,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG4M2HRF76XZRXKVAMDZFDP2
+    type: success
+    content: "Investigation-first debugging: When tests pass but docs say they shouldn't, investigate
+      WHY before closing. In this session, discovered skill documentation was outdated rather than
+      tests being wrong - prevented false task closure and led to fixing actual issue (stale docs)."
+    created_at: 2026-01-29T10:16:38.927Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
