@@ -40859,6 +40859,27 @@
         - Exported scanTestCoverage() from validate.ts
         - Added covered?: boolean to AcceptanceCriterion in shared types
       supersedes: null
+    - _ulid: 01KG4P9DZK6N8BGPWJ92G6J68N
+      created_at: 2026-01-29T10:55:21.587Z
+      author: "@claude"
+      content: |-
+        Implementation complete:
+
+        1. Exported scanTestCoverage() from validate.ts
+        2. Added covered?: boolean to AcceptanceCriterion in shared types
+        3. Updated daemon items route (GET /api/items/:ref) to compute coverage
+        4. Updated JSON export (generateJsonSnapshot) to include coverage in static mode
+        5. Updated ItemDetail.svelte with proper coverage indicator display:
+           - Green checkmark + 'Covered' for covered ACs
+           - Amber X + 'Not covered' for uncovered ACs  
+           - Gray question mark + 'Coverage: Unknown' for unknown
+        6. Removed duplicate scanTestCoverage from task.ts, now imports from validate
+        7. Updated E2E tests:
+           - Added test fixture coverage-test.test.ts with AC annotation
+           - Modified test-base.ts to copy project-level tests to temp dir
+           - Added tests for both covered and uncovered AC indicators
+        All 20 items E2E tests pass.
+      supersedes: null
   todos: []
 - _ulid: 01KG1H918VB2BT4MVRARPQRBR7
   slugs: []
