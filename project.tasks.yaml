@@ -31258,10 +31258,8 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: blocked
-  blocked_by:
-    - "Needs architectural decision: E2E test framework approach (Bun test runner vs vitest with
-      real server vs manual QA). See notes for analysis."
+  status: pending
+  blocked_by: []
   depends_on: []
   context: []
   priority: 2
@@ -41683,6 +41681,8 @@
   origin: observation_promotion
   status: completed
   blocked_by: []
+  closed_reason: "PR #276 merged - E2E reliability improvements: health check polling, staleness
+    detection, PidFileManager sync"
   depends_on: []
   context: []
   priority: 1
@@ -41693,6 +41693,7 @@
   vcs_refs: []
   created_at: 2026-01-29T21:50:44.444Z
   started_at: 2026-01-29T22:51:20.910Z
+  completed_at: 2026-01-29T23:14:12.765Z
   notes:
     - _ulid: 01KG5VSSRD6430BCW8BM82TC0N
       created_at: 2026-01-29T21:50:55.245Z
@@ -41764,6 +41765,3 @@
       content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/276"
       supersedes: null
   todos: []
-  completed_at: 2026-01-29T23:14:12.765Z
-  closed_reason: "PR #276 merged - E2E reliability improvements: health check polling, staleness
-    detection, PidFileManager sync"
