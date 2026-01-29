@@ -10,9 +10,8 @@ const config = {
 			// Output directory for static build (to be embedded in daemon)
 			pages: 'build',
 			assets: 'build',
-			// Use 404.html for GitHub Pages SPA routing (GH Pages serves this for missing routes)
-			// For local daemon, index.html would work but 404.html is compatible with both
-			fallback: '404.html',
+			// Generate index.html as SPA entry point
+			fallback: 'index.html',
 			precompress: false,
 			strict: true
 		}),

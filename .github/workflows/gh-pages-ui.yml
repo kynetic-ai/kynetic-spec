@@ -64,6 +64,10 @@ jobs:
       - name: Copy SPA assets
         run: cp -r packages/web-ui/build/* gh-pages-output/
 
+      # GitHub Pages serves 404.html for unknown routes, enabling SPA client-side routing
+      - name: Create 404.html for SPA routing
+        run: cp gh-pages-output/index.html gh-pages-output/404.html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
