@@ -40752,7 +40752,7 @@
   type: task
   spec_ref: "@web-dashboard"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFP84S"
@@ -40851,6 +40851,7 @@
         - Class reflects covered/uncovered status
       supersedes: null
   todos: []
+  started_at: 2026-01-29T10:34:19.648Z
 - _ulid: 01KG1H918VB2BT4MVRARPQRBR7
   slugs: []
   title: Update tasks.spec.ts to use correct bits-ui Select selectors
@@ -40880,6 +40881,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Tests already correct - bits-ui uses proper ARIA roles. Skill documentation updated instead.
   depends_on: []
   context: []
   priority: 3
@@ -40887,6 +40889,7 @@
   vcs_refs: []
   created_at: 2026-01-28T05:30:02.394Z
   started_at: 2026-01-29T10:02:15.608Z
+  completed_at: 2026-01-29T10:02:19.484Z
   notes:
     - _ulid: 01KG4K7KGKB1Y3XRKHE0284Z3S
       created_at: 2026-01-29T10:01:55.987Z
@@ -40898,8 +40901,6 @@
         needed."
       supersedes: null
   todos: []
-  completed_at: 2026-01-29T10:02:19.484Z
-  closed_reason: Tests already correct - bits-ui uses proper ARIA roles. Skill documentation updated instead.
 - _ulid: 01KG2HYF6BP6SDSVFDVET659AN
   slugs: []
   title: Fix GitHub Pages static mode - WebSocket connection attempted instead of using static JSON
