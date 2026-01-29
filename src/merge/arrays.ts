@@ -7,6 +7,8 @@
  * - Append-only arrays (notes, todos)
  */
 
+import type { ReferenceIndex } from "../parser/refs.js";
+
 /**
  * Merge arrays that contain entities with _ulid fields.
  *
@@ -78,38 +80,95 @@ export function mergeUlidArrays<T extends { _ulid: string }>(
 }
 
 /**
+ * Normalize a kspec reference to its canonical ULID form if possible.
+ * Returns the original value if not a ref or resolution fails.
+ *
+ * AC: @merge-ref-normalization ac-2
+ * Graceful degradation: unresolvable refs kept as-is.
+ *
+ * @param value The value to potentially normalize
+ * @param refIndex Optional reference index for resolution
+ * @returns Canonical form (@ULID) or original value
+ */
+export function normalizeRef<T extends string | number>(
+  value: T,
+  refIndex?: ReferenceIndex,
+): string | number {
+  // Only process strings that look like refs
+  if (typeof value !== "string" || !value.startsWith("@")) {
+    return value;
+  }
+
+  // No index available - keep as-is
+  if (!refIndex) {
+    return value;
+  }
+
+  // Try to resolve
+  const result = refIndex.resolve(value);
+  if (result.ok) {
+    // Return canonical ULID form with @ prefix
+    return `@${result.ulid}`;
+  }
+
+  // AC: @merge-ref-normalization ac-2 - Resolution failed, keep original
+  return value;
+}
+
+/**
  * Merge set-like arrays (tags, depends_on, etc).
  *
  * AC: @yaml-merge-driver ac-6
  * Set union: combine both arrays, remove duplicates.
  *
+ * AC: @merge-ref-normalization ac-1
+ * For arrays containing kspec refs (depends_on, blocked_by, etc),
+ * normalizes refs to canonical ULID form before comparison to
+ * prevent duplicates when same item is referenced differently.
+ *
  * Strategy:
  * 1. Start with items from ours
  * 2. Add items from theirs that aren't in ours
- * 3. Remove duplicates
+ * 3. Remove duplicates (using normalized form for refs)
+ * 4. Preserve original representation (ours takes precedence)
  *
  * @param base Array from common ancestor (not used for set merge)
  * @param ours Array from current branch
  * @param theirs Array from incoming branch
+ * @param refIndex Optional reference index for normalizing refs
  * @returns Merged array with unique items
  */
 export function mergeSetArray<T extends string | number>(
   base: T[] | undefined,
   ours: T[] | undefined,
   theirs: T[] | undefined,
+  refIndex?: ReferenceIndex,
 ): T[] {
   const oursArr = ours ?? [];
   const theirsArr = theirs ?? [];
 
-  // Use Set to eliminate duplicates
-  const result = new Set<T>(oursArr);
+  // Build a map from normalized form -> original value
+  // This preserves the original form while deduplicating by canonical meaning
+  // AC: @merge-ref-normalization ac-1
+  const normalizedToOriginal = new Map<string | number, T>();
 
-  // Add items from theirs
-  for (const item of theirsArr) {
-    result.add(item);
+  // Add ours first (ours takes precedence for representation)
+  for (const item of oursArr) {
+    const normalized = normalizeRef(item, refIndex);
+    if (!normalizedToOriginal.has(normalized)) {
+      normalizedToOriginal.set(normalized, item);
+    }
   }
 
-  return Array.from(result);
+  // Add theirs (only if not already present in normalized form)
+  for (const item of theirsArr) {
+    const normalized = normalizeRef(item, refIndex);
+    if (!normalizedToOriginal.has(normalized)) {
+      normalizedToOriginal.set(normalized, item);
+    }
+  }
+
+  return Array.from(normalizedToOriginal.values());
 }
 
 /**
