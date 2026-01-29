@@ -5,7 +5,7 @@
 
 import type { Command } from 'commander';
 import { spawn, execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, readdirSync, statSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { error, info, output, success, warn, isJsonMode } from '../output.js';
@@ -27,6 +27,42 @@ function isBunAvailable(): boolean {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+/**
+ * Check if daemon dist files are stale (source newer than dist)
+ * Returns true if rebuild is recommended
+ */
+function checkDaemonStaleness(): boolean {
+  // __dirname is dist/cli/commands, go up 3 levels to package root, then into packages/daemon/src
+  const sourceDir = join(__dirname, '../../../packages/daemon/src');
+  // dist/daemon is 2 levels up from __dirname
+  const distDir = join(__dirname, '../../daemon');
+
+  if (!existsSync(sourceDir) || !existsSync(distDir)) return false;
+
+  try {
+    const getNewestMtime = (dir: string): number => {
+      const files = readdirSync(dir, { withFileTypes: true });
+      let newest = 0;
+      for (const f of files) {
+        const fullPath = join(dir, f.name);
+        if (f.isDirectory()) {
+          newest = Math.max(newest, getNewestMtime(fullPath));
+        } else if (f.name.endsWith('.ts')) {
+          newest = Math.max(newest, statSync(fullPath).mtimeMs);
+        }
+      }
+      return newest;
+    };
+
+    const newestSource = getNewestMtime(sourceDir);
+    const newestDist = getNewestMtime(distDir);
+
+    return newestSource > newestDist;
+  } catch {
+    return false; // Don't warn if check fails
+  }
+}
 
 
 /**
@@ -181,6 +217,12 @@ async function startServer(opts: {
       error('Install Bun: https://bun.sh/docs/installation');
     }
     process.exit(EXIT_CODES.ERROR);
+  }
+
+  // Check for stale daemon build (dev experience improvement)
+  if (checkDaemonStaleness() && !jsonMode) {
+    warn('Warning: dist/daemon/ may be stale (source files are newer).');
+    warn('  Run "npm run build:daemon" to update.');
   }
 
   // AC: @cli-serve-commands ac-2 - background mode
