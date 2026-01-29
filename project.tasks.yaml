@@ -41343,7 +41343,7 @@
   type: task
   spec_ref: "@manifest-discovery"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41395,3 +41395,5 @@
         All tests pass. Backward compatible - existing kynetic.yaml files take priority.
       supersedes: null
   todos: []
+  completed_at: 2026-01-29T01:01:33.378Z
+  closed_reason: "PR #268 merged - slug-based manifest naming with full AC test coverage"
