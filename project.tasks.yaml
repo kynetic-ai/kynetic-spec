@@ -41397,22 +41397,41 @@
         All tests pass. Backward compatible - existing kynetic.yaml files take priority.
       supersedes: null
   todos: []
-- title: Fix JSON export stdout contamination
+- _ulid: 01KG3P07ZP4PENSQPJA3GFT51D
+  slugs: []
+  title: Fix JSON export stdout contamination
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - bug
-    - cli
-    - export
-  _ulid: 01KG3P07ZP4PENSQPJA3GFT51D
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - bug
+    - cli
+    - export
   vcs_refs: []
   created_at: 2026-01-29T01:31:06.102Z
-  notes: []
+  notes:
+    - _ulid: 01KG3P0QTY1H3W41Q5A0RVGMDW
+      created_at: 2026-01-29T01:31:22.335Z
+      author: "@claude"
+      content: >-
+        Issue: When exporting JSON to stdout (no -o flag), the info() call on line 59 of export.ts
+        outputs 'ℹ Generating snapshot...' to stdout before the JSON, corrupting the output.
+
+
+        This breaks the GitHub Pages snapshot at
+        https://kynetic-ai.github.io/kynetic-spec/kspec-snapshot.json - only tasks are parsed, other
+        fields missing.
+
+
+        Fix: Suppress info message when JSON output goes to stdout. Line 59 should check if
+        format=json and no output file before calling info().
+
+
+        File: src/cli/commands/export.ts:59
+      supersedes: null
   todos: []
