@@ -26176,7 +26176,7 @@
   type: task
   spec_ref: "@gh-pages-export"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -26328,6 +26328,11 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-29T05:46:10.092Z
+  closed_reason: "All 20 acceptance criteria fully implemented with comprehensive AC annotations.
+    Subtasks completed: Export command (ACs 1-7), Static SPA (ACs 11-14), Read-only mode (ACs
+    15-18), CI workflow (ACs 8-10), Static mode detection (ACs 19-20). Full test coverage in
+    tests/export/."
 - _ulid: 01KFMMJ8G6W8QGAGP599P4T7E8
   slugs:
     - task-cli-serve-commands
