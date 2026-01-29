@@ -41345,6 +41345,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #268 merged - slug-based manifest naming with full AC test coverage"
   depends_on: []
   context: []
   priority: 2
@@ -41352,6 +41353,7 @@
   vcs_refs: []
   created_at: 2026-01-28T21:31:36.760Z
   started_at: 2026-01-28T21:31:52.424Z
+  completed_at: 2026-01-29T01:01:33.378Z
   notes:
     - _ulid: 01KG38A0468FV0JQXDNEVVQD8F
       created_at: 2026-01-28T21:31:45.671Z
@@ -41395,5 +41397,22 @@
         All tests pass. Backward compatible - existing kynetic.yaml files take priority.
       supersedes: null
   todos: []
-  completed_at: 2026-01-29T01:01:33.378Z
-  closed_reason: "PR #268 merged - slug-based manifest naming with full AC test coverage"
+- title: Fix JSON export stdout contamination
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - bug
+    - cli
+    - export
+  _ulid: 01KG3P07ZP4PENSQPJA3GFT51D
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-29T01:31:06.102Z
+  notes: []
+  todos: []
