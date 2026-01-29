@@ -41731,4 +41731,31 @@
 
         Already completed: Health check polling in test-base.ts
       supersedes: null
+    - _ulid: 01KG600TWW5QMR6QQ0RGCHMMFR
+      created_at: 2026-01-29T23:04:40.093Z
+      author: "@claude"
+      content: |-
+        Implementation complete. Changes made:
+
+        1. **Health check polling** (test-base.ts:144-155)
+           - Replaced fixed 2s wait with /api/health endpoint polling
+           - 30 attempts at 100ms intervals (3s max)
+           - Clear error message on timeout
+
+        2. **Daemon staleness detection** (serve.ts:32-61, 190-193)
+           - Added checkDaemonStaleness() function
+           - Recursively compares packages/daemon/src/ vs dist/daemon/ mtimes
+           - Shows warning before spawning daemon if source is newer
+
+        3. **PidFileManager sync** (pid-utils.ts)
+           - Synced with daemon version to include file locking (ac-10b)
+           - Uses O_CREAT | O_EXCL for atomic file creation
+           - Inline retry pattern (no recursion) for stale file cleanup
+
+        Verification:
+        - npm test passes (69/71 tests, 2 pre-existing flaky tests)
+        - daemon-pid.test.ts: 11/11 tests pass
+        - E2E smoke tests: 5/5 pass
+        - Staleness warning verified manually (touch + kspec serve start)
+      supersedes: null
   todos: []
