@@ -41451,22 +41451,23 @@
         - All 25 export tests pass
       supersedes: null
   todos: []
-- title: Add --kspec-dir option to export command for CI environments
+- _ulid: 01KG3QX4MNM022479PSX5G75GP
+  slugs: []
+  title: Add --kspec-dir option to export command for CI environments
   type: task
   spec_ref: null
   meta_ref: null
+  status: cancelled
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - export
     - ci
-  _ulid: 01KG3QX4MNM022479PSX5G75GP
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
   vcs_refs: []
   created_at: 2026-01-29T02:04:21.525Z
   notes: []
   todos: []
+  closed_reason: Fixed with simpler workflow change - using git worktree instead of separate checkout
