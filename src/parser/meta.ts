@@ -89,32 +89,77 @@ export interface MetaContext {
 }
 
 /**
- * Find the meta manifest file (kynetic.meta.yaml)
+ * Find the meta manifest file.
+ *
+ * Discovery algorithm:
+ * 1. Check for explicit name: kynetic.meta.yaml (backward compat)
+ * 2. If not found, scan directory for *.meta.yaml files
+ * 3. For each candidate, validate it contains a 'kynetic_meta:' version field
+ * 4. Return first valid match (alphabetically after explicit name)
+ *
+ * AC: @meta-manifest-discovery ac-1, ac-2, ac-3
  */
 export async function findMetaManifest(
   specDir: string,
 ): Promise<string | null> {
-  const candidates = ["kynetic.meta.yaml"];
+  // AC: @meta-manifest-discovery ac-1, ac-3 - explicit name has priority
+  const priorityPath = path.join(specDir, "kynetic.meta.yaml");
+  try {
+    await fs.access(priorityPath);
+    return priorityPath;
+  } catch {
+    // Continue to glob fallback
+  }
 
-  for (const candidate of candidates) {
-    const filePath = path.join(specDir, candidate);
-    try {
-      await fs.access(filePath);
-      return filePath;
-    } catch {
-      // File doesn't exist, try next
+  // AC: @meta-manifest-discovery ac-2, ac-3 - glob fallback with validation
+  try {
+    const entries = await fs.readdir(specDir);
+    // AC: @meta-manifest-discovery ac-3 - alphabetical order
+    const candidates = entries
+      .filter((f) => f.endsWith(".meta.yaml"))
+      .sort();
+
+    for (const candidate of candidates) {
+      const filePath = path.join(specDir, candidate);
+      try {
+        const raw = await readYamlFile<unknown>(filePath);
+        // AC: @meta-manifest-discovery ac-2 - validate kynetic_meta version field
+        if (raw && typeof raw === "object" && "kynetic_meta" in raw) {
+          return filePath;
+        }
+      } catch {
+        // Skip invalid files
+      }
     }
+  } catch {
+    // Directory read failed
   }
 
   return null;
 }
 
 /**
+ * Get the base name (slug) from a manifest path.
+ * E.g., "kynetic.yaml" -> "kynetic", "myproject.spec.yaml" -> "myproject"
+ */
+function getManifestBaseName(manifestPath: string | null): string {
+  if (!manifestPath) return "kynetic";
+  const fileName = path.basename(manifestPath);
+  // Remove .yaml extension
+  let baseName = fileName.replace(/\.yaml$/, "");
+  // Remove .spec suffix if present
+  baseName = baseName.replace(/\.spec$/, "");
+  return baseName || "kynetic";
+}
+
+/**
  * Get the meta manifest file path.
+ * Derives from main manifest name (e.g., myproject.yaml -> myproject.meta.yaml)
  * Returns path even if file doesn't exist yet.
  */
 export function getMetaManifestPath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, "kynetic.meta.yaml");
+  const baseName = getManifestBaseName(ctx.manifestPath);
+  return path.join(ctx.specDir, `${baseName}.meta.yaml`);
 }
 
 /**
@@ -633,10 +678,12 @@ export async function saveSessionContext(
 // ============================================================
 
 /**
- * Get the workflow runs file path
+ * Get the workflow runs file path.
+ * Derives from main manifest name (e.g., myproject.yaml -> myproject.runs.yaml)
  */
 export function getWorkflowRunsPath(ctx: KspecContext): string {
-  return path.join(ctx.specDir, "kynetic.runs.yaml");
+  const baseName = getManifestBaseName(ctx.manifestPath);
+  return path.join(ctx.specDir, `${baseName}.runs.yaml`);
 }
 
 /**

@@ -146,34 +146,36 @@ export async function findTaskFiles(dir: string): Promise<string[]> {
 }
 
 /**
- * Find the manifest file (kynetic.yaml or kynetic.spec.yaml)
+ * Find the manifest file.
+ *
+ * Discovery algorithm per directory:
+ * 1. Check for explicit names: kynetic.yaml, kynetic.spec.yaml (backward compat)
+ * 2. If not found, scan for *.yaml files with 'kynetic:' version field
+ *
+ * Searches current dir, then spec/ subdir, then parent directories.
  */
 export async function findManifest(startDir: string): Promise<string | null> {
   let dir = startDir;
 
   while (true) {
-    const candidates = ["kynetic.yaml", "kynetic.spec.yaml"];
-
-    for (const candidate of candidates) {
-      const filePath = path.join(dir, candidate);
-      try {
-        await fs.access(filePath);
-        return filePath;
-      } catch {
-        // File doesn't exist, try next
-      }
+    // Check current directory
+    const manifestInDir = await findManifestInDir(dir);
+    if (manifestInDir) {
+      return manifestInDir;
     }
 
     // Also check in spec/ subdirectory
     const specDir = path.join(dir, "spec");
-    for (const candidate of candidates) {
-      const filePath = path.join(specDir, candidate);
-      try {
-        await fs.access(filePath);
-        return filePath;
-      } catch {
-        // File doesn't exist, try next
+    try {
+      const stat = await fs.stat(specDir);
+      if (stat.isDirectory()) {
+        const manifestInSpec = await findManifestInDir(specDir);
+        if (manifestInSpec) {
+          return manifestInSpec;
+        }
       }
+    } catch {
+      // spec/ doesn't exist
     }
 
     const parentDir = path.dirname(dir);
@@ -289,13 +291,34 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
 }
 
 /**
+ * Check if a filename is a potential manifest file.
+ * Excludes files with suffixes that indicate other kspec file types.
+ *
+ * AC: @manifest-discovery ac-5 (excludes task/inbox/meta/runs files)
+ */
+function isManifestCandidate(filename: string): boolean {
+  if (!filename.endsWith(".yaml")) return false;
+  const exclusions = [".tasks.yaml", ".inbox.yaml", ".meta.yaml", ".runs.yaml"];
+  return !exclusions.some((excl) => filename.endsWith(excl));
+}
+
+/**
  * Find manifest file within a specific directory (no parent traversal).
  * Used for shadow mode where we know exactly where to look.
+ *
+ * Discovery algorithm:
+ * 1. Check for explicit names: kynetic.yaml, kynetic.spec.yaml (backward compat)
+ * 2. If not found, scan directory for *.yaml files (excluding other kspec types)
+ * 3. For each candidate, validate it contains a 'kynetic:' version field
+ * 4. Return first valid match (alphabetically after explicit names)
+ *
+ * AC: @manifest-discovery ac-1, ac-2, ac-3, ac-4, ac-5
  */
 async function findManifestInDir(dir: string): Promise<string | null> {
-  const candidates = ["kynetic.yaml", "kynetic.spec.yaml"];
+  // AC: @manifest-discovery ac-1, ac-2 - explicit names have priority
+  const priorityCandidates = ["kynetic.yaml", "kynetic.spec.yaml"];
 
-  for (const candidate of candidates) {
+  for (const candidate of priorityCandidates) {
     const filePath = path.join(dir, candidate);
     try {
       await fs.access(filePath);
@@ -303,6 +326,28 @@ async function findManifestInDir(dir: string): Promise<string | null> {
     } catch {
       // File doesn't exist, try next
     }
+  }
+
+  // AC: @manifest-discovery ac-3, ac-4, ac-5 - glob fallback with validation
+  try {
+    const entries = await fs.readdir(dir);
+    // AC: @manifest-discovery ac-4 - alphabetical order
+    const candidates = entries.filter(isManifestCandidate).sort();
+
+    for (const candidate of candidates) {
+      const filePath = path.join(dir, candidate);
+      try {
+        const raw = await readYamlFile<unknown>(filePath);
+        // AC: @manifest-discovery ac-5 - validate kynetic version field
+        if (raw && typeof raw === "object" && "kynetic" in raw) {
+          return filePath;
+        }
+      } catch {
+        // Skip invalid files
+      }
+    }
+  } catch {
+    // Directory read failed
   }
 
   return null;
