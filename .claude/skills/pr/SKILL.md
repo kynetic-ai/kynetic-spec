@@ -129,7 +129,10 @@ This enforces quality gates:
 2. All review comments addressed (automated AND human)
 3. All @claude requests completed
 4. All review threads resolved
-5. Explicit merge decision
+5. **Final CI re-verification** before merge decision
+6. Explicit merge decision
+
+**CRITICAL: After ANY push, re-verify CI from the beginning.** Prior CI checks are invalidated by new commits. Never merge without fresh CI verification on current HEAD.
 
 **Do not merge while CI is running or blocking.** Wait for all checks to complete. Only skip gates if user explicitly says to merge anyway.
 

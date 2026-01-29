@@ -104,6 +104,15 @@ The workflow handles:
 5. Wait for CI to pass
 6. Merge with quality gates
 
+### CRITICAL: CI Re-verification
+
+**After ANY push, you MUST re-verify CI from the beginning.** Prior CI checks are invalidated by new commits. Never merge without fresh CI verification on the current HEAD.
+
+If you push fixes during review:
+1. Wait for CI to complete on the new commits
+2. Verify CI status shows current HEAD (not stale)
+3. Only then proceed to merge
+
 ## Subagent Context
 
 This skill runs in **ACP subagent context**:
