@@ -21,6 +21,7 @@ import {
   ReferenceIndex,
   AlignmentIndex,
   scanTestCoverage,
+  computeACCoverage,
   type LoadedSpecItem,
 } from '../../parser/index.js';
 
@@ -223,25 +224,10 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
           try {
             const coveredACs = await scanTestCoverage(projectContext.path);
-            acceptanceCriteriaWithCoverage = item.acceptance_criteria.map((ac, index) => {
-              const acId = `ac-${index + 1}`;
-              const possibleRefs: string[] = [];
-
-              // Try with primary slug
-              if (item.slugs && item.slugs.length > 0) {
-                possibleRefs.push(`@${item.slugs[0]} ${acId}`);
-                possibleRefs.push(`@${item.slugs[0]}`);
-              }
-
-              // Try with ULID (short form)
-              possibleRefs.push(`@${item._ulid.slice(0, 8)} ${acId}`);
-              possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
-
-              const covered = possibleRefs.some((ref) => coveredACs.has(ref));
-              return { ...ac, covered };
-            });
-          } catch {
+            acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
+          } catch (err) {
             // Coverage scan failed - leave as undefined
+            console.warn('AC coverage scan failed:', err);
           }
         }
 

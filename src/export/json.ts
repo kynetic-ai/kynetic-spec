@@ -12,6 +12,7 @@ import * as path from "node:path";
 import type { AcceptanceCriterion, InboxItem } from "../schema/index.js";
 import {
   buildIndexes,
+  computeACCoverage,
   initContext,
   loadAllItems,
   loadAllTasks,
@@ -119,27 +120,11 @@ function expandItems(
   coveredACs: Set<string>
 ): ExportedItem[] {
   return items.map((item) => {
-    // Compute coverage for acceptance criteria
-    let acWithCoverage = item.acceptance_criteria;
-    if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
-      acWithCoverage = item.acceptance_criteria.map((ac, index) => {
-        const acId = `ac-${index + 1}`;
-        const possibleRefs: string[] = [];
-
-        // Try with primary slug
-        if (item.slugs && item.slugs.length > 0) {
-          possibleRefs.push(`@${item.slugs[0]} ${acId}`);
-          possibleRefs.push(`@${item.slugs[0]}`);
-        }
-
-        // Try with ULID (short form)
-        possibleRefs.push(`@${item._ulid.slice(0, 8)} ${acId}`);
-        possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
-
-        const covered = possibleRefs.some((ref) => coveredACs.has(ref));
-        return { ...ac, covered };
-      });
-    }
+    // Compute coverage for acceptance criteria using shared utility
+    const acWithCoverage =
+      item.acceptance_criteria && item.acceptance_criteria.length > 0
+        ? computeACCoverage(item, coveredACs)
+        : item.acceptance_criteria;
 
     const exportedItem: ExportedItem = {
       ...item,
