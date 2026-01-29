@@ -32276,6 +32276,19 @@
         This prevents agents from barreling through the workflow after pushing fixes without
         re-checking CI status.
       supersedes: null
+    - _ulid: 01KG626BK2R4ERG41XF4FP0ZC9
+      created_at: 2026-01-29T23:42:38.178Z
+      author: "@claude"
+      content: >-
+        Also updated related skills to emphasize CI re-verification:
+
+
+        1. .claude/skills/pr-review/SKILL.md - Added 'CRITICAL: CI Re-verification' section
+        explaining the requirement to re-verify CI after any push
+
+        2. .claude/skills/pr/SKILL.md - Added 'Final CI re-verification' to quality gates list and
+        CRITICAL note about prior checks being invalidated by new commits
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
