@@ -41471,22 +41471,56 @@
   created_at: 2026-01-29T02:04:21.525Z
   notes: []
   todos: []
-- title: Fix Svelte 5 reactivity in inbox and observations pages
+- _ulid: 01KG3RS91C5B2FD5KFRR5XPQQ5
+  slugs: []
+  title: Fix Svelte 5 reactivity in inbox and observations pages
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags:
-    - web-ui
-    - bug
-    - svelte-5
-  _ulid: 01KG3RS91C5B2FD5KFRR5XPQQ5
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags:
+    - web-ui
+    - bug
+    - svelte-5
   vcs_refs: []
   created_at: 2026-01-29T02:19:43.531Z
-  notes: []
+  notes:
+    - _ulid: 01KG3RSTBFG3YMNG2XCWV858KB
+      created_at: 2026-01-29T02:20:01.264Z
+      author: "@claude"
+      content: >-
+        Root cause: Svelte 5 requires $state() runes for reactive variables. Plain 'let'
+        declarations are NOT automatically reactive in Svelte 5.
+
+
+        Affected pages (broken):
+
+        - /inbox (packages/web-ui/src/routes/inbox/+page.svelte)
+
+        - /observations (packages/web-ui/src/routes/observations/+page.svelte)
+
+
+        Working pages use $state() correctly:
+
+        - Dashboard, Tasks, Items all use: let loading = $state(true)
+
+
+        Fix: Convert plain let declarations to $state() runes:
+
+        - let items = $state<InboxItem[]>([])
+
+        - let loading = $state(true)
+
+        - let error = $state('')
+
+        - etc.
+
+
+        The data loads correctly but the UI never updates from 'loading' state because the variable
+        assignment has no reactive effect.
+      supersedes: null
   todos: []
