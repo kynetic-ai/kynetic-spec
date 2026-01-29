@@ -4582,4 +4582,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG5SGK089902EVXG1FPKPX0S
+    type: success
+    content: "Explore+Plan parallel subagent pattern for implementation tasks: Before implementing a
+      task with existing spec/notes, launch two subagents in parallel - (1) Explore agent to gather
+      codebase context (file locations, interfaces, test patterns) and (2) Plan agent to design the
+      implementation approach. Both complete before coding begins, providing thorough context AND a
+      concrete plan. Used successfully for ref normalization task - all tests passed first try."
+    created_at: 2026-01-29T21:10:56.264Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
