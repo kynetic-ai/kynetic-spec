@@ -35,12 +35,10 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      # Checkout kspec-meta branch to .kspec directory
-      - name: Checkout kspec-meta branch
-        uses: actions/checkout@v4
-        with:
-          ref: kspec-meta
-          path: .kspec
+      # Create .kspec as a proper git worktree (not a separate clone)
+      # This allows kspec's shadow mode detection to work correctly
+      - name: Setup kspec-meta worktree
+        run: git worktree add .kspec kspec-meta
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
