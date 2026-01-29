@@ -743,9 +743,9 @@ E2E tests use hardcoded port 3456. Tests cannot run in parallel on the same mach
 
 Two common issues when working with the GitHub Pages deployment:
 
-1. **SvelteKit BASE_PATH requirement**: When deploying to a GitHub Pages subdirectory (e.g., `username.github.io/repo-name/`), the `VITE_BASE_PATH` environment variable must be set during build. The CI workflow handles this automatically, but local static builds need it too:
+1. **SvelteKit BASE_PATH requirement**: When deploying to a GitHub Pages subdirectory (e.g., `username.github.io/repo-name/`), the `BASE_PATH` environment variable must be set during build. The CI workflow handles this automatically, but local static builds need it too:
    ```bash
-   VITE_BASE_PATH=/kynetic-spec npm run build -w packages/web-ui
+   BASE_PATH=/kynetic-spec npm run build -w packages/web-ui
    ```
 
 2. **Workflow file location**: GitHub Actions workflows only trigger when the workflow file exists on the branch being pushed. For `kspec-meta` branch pushes, the workflow must either:
