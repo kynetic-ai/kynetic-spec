@@ -119,6 +119,8 @@ export interface AcceptanceCriterion {
   given: string;
   when: string;
   then: string;
+  /** Test coverage status: true=covered, false=not covered, undefined=unknown */
+  covered?: boolean;
 }
 
 /**

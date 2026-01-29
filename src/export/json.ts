@@ -17,6 +17,7 @@ import {
   loadAllTasks,
   loadInboxItems,
   loadMetaContext,
+  scanTestCoverage,
   type LoadedSpecItem,
   type LoadedTask,
   ReferenceIndex,
@@ -108,17 +109,41 @@ function getInheritedACs(
 }
 
 /**
- * Expand items with inherited ACs from traits.
+ * Expand items with inherited ACs from traits and test coverage.
  * AC: @gh-pages-export ac-4
+ * AC: @web-dashboard ac-15 - Add test coverage for static mode
  */
 function expandItems(
   items: LoadedSpecItem[],
-  traitIndex: TraitIndex
+  traitIndex: TraitIndex,
+  coveredACs: Set<string>
 ): ExportedItem[] {
   return items.map((item) => {
+    // Compute coverage for acceptance criteria
+    let acWithCoverage = item.acceptance_criteria;
+    if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
+      acWithCoverage = item.acceptance_criteria.map((ac, index) => {
+        const acId = `ac-${index + 1}`;
+        const possibleRefs: string[] = [];
+
+        // Try with primary slug
+        if (item.slugs && item.slugs.length > 0) {
+          possibleRefs.push(`@${item.slugs[0]} ${acId}`);
+          possibleRefs.push(`@${item.slugs[0]}`);
+        }
+
+        // Try with ULID (short form)
+        possibleRefs.push(`@${item._ulid.slice(0, 8)} ${acId}`);
+        possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
+
+        const covered = possibleRefs.some((ref) => coveredACs.has(ref));
+        return { ...ac, covered };
+      });
+    }
+
     const exportedItem: ExportedItem = {
       ...item,
-      acceptance_criteria: item.acceptance_criteria,
+      acceptance_criteria: acWithCoverage,
     };
 
     // Get inherited ACs from traits
@@ -185,11 +210,14 @@ export async function generateJsonSnapshot(
   // Build indexes
   const { refIndex, traitIndex } = await buildIndexes(ctx);
 
+  // Scan test coverage for AC annotations
+  const coveredACs = await scanTestCoverage(ctx.rootDir);
+
   // Expand tasks with resolved spec references
   const exportedTasks = expandTasks(tasks, items, refIndex);
 
-  // Expand items with inherited ACs
-  const exportedItems = expandItems(items, traitIndex);
+  // Expand items with inherited ACs and test coverage
+  const exportedItems = expandItems(items, traitIndex, coveredACs);
 
   // Build the snapshot
   const snapshot: KspecSnapshot = {

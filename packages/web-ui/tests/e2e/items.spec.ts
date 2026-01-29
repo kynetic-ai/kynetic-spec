@@ -435,8 +435,38 @@ test.describe('Items View', () => {
       const coverageIndicator = acItem.getByTestId('test-coverage-indicator');
       await expect(coverageIndicator).toBeVisible();
 
-      // Currently shows "Unknown" - placeholder for future implementation
-      await expect(coverageIndicator).toContainText('Coverage');
+      // AC: @web-dashboard ac-15 - Shows actual coverage status
+      // AC-1 is covered by tests/coverage-test.test.ts in fixtures
+      await expect(coverageIndicator).toContainText('Covered');
+      // Verify it has the 'covered' class (green styling)
+      await expect(coverageIndicator).toHaveClass(/covered/);
+    });
+
+    test('shows not covered indicator for uncovered ACs', async ({ page, daemon }) => {
+      await page.goto('/items');
+
+      // Navigate to test-feature
+      const specTree = page.getByTestId('spec-tree').first();
+      const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
+
+      const childContainer = moduleNode.getByTestId('tree-node-child');
+      const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
+
+      const detailPanel = page.getByTestId('spec-detail-panel');
+      // AC-2 is the second AC and is NOT covered by tests
+      const acItem = detailPanel.getByTestId('ac-item').nth(1);
+
+      // Expand AC
+      await acItem.getByTestId('ac-expand-toggle').click();
+
+      // Coverage indicator should show not covered
+      const coverageIndicator = acItem.getByTestId('test-coverage-indicator');
+      await expect(coverageIndicator).toBeVisible();
+      await expect(coverageIndicator).toContainText('Not covered');
+      // Verify it has the 'uncovered' class (amber styling)
+      await expect(coverageIndicator).toHaveClass(/uncovered/);
     });
   });
 

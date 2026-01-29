@@ -15,6 +15,7 @@ import {
   loadAllTasks,
   ReferenceIndex,
   saveTask,
+  scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
@@ -1659,50 +1660,6 @@ export function registerTaskCommands(program: Command): void {
 
         // Import getDiffSince from utils
         const { getDiffSince } = await import("../../utils/index.js");
-
-        // Import scanTestCoverage (we'll need to export it from validate.ts)
-        // For now, duplicate the logic here
-        const scanTestCoverage = async (
-          rootDir: string,
-        ): Promise<Set<string>> => {
-          const coveredACs = new Set<string>();
-          const testsDir = path.join(rootDir, "tests");
-          const fs = await import("node:fs/promises");
-
-          try {
-            await fs.access(testsDir);
-            const files = await fs.readdir(testsDir);
-            const testFiles = files.filter(
-              (f) => f.endsWith(".test.ts") || f.endsWith(".test.js"),
-            );
-
-            for (const file of testFiles) {
-              const filePath = path.join(testsDir, file);
-              const content = await fs.readFile(filePath, "utf-8");
-              const acPattern =
-                /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
-              let match;
-
-              while ((match = acPattern.exec(content)) !== null) {
-                const specRef = match[1];
-                const acList = match[2];
-
-                if (acList) {
-                  const acs = acList.split(",").map((ac) => ac.trim());
-                  for (const ac of acs) {
-                    coveredACs.add(`${specRef} ${ac}`);
-                  }
-                } else {
-                  coveredACs.add(specRef);
-                }
-              }
-            }
-          } catch (_err) {
-            // Tests directory doesn't exist or can't be read
-          }
-
-          return coveredACs;
-        };
 
         // Gather review context
         const reviewContext: {

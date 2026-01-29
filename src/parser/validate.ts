@@ -687,7 +687,7 @@ function detectTraitCycles(
  * Scan test files for AC annotations to build coverage index
  * Returns a Set of covered ACs in format "@spec-ref ac-N"
  */
-async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
+export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   const coveredACs = new Set<string>();
   const testsDir = path.join(rootDir, "tests");
 
