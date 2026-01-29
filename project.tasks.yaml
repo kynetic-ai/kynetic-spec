@@ -40436,6 +40436,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-26T18:36:51.997Z
+  started_at: 2026-01-29T20:42:20.698Z
   notes:
     - _ulid: 01KFXSGACWPEA08Q7VS0FDB6A7
       created_at: 2026-01-26T18:36:51.996Z
@@ -40594,8 +40595,43 @@
 
         This removes the open question - task is now fully actionable.
       supersedes: null
+    - _ulid: 01KG5R2HYGTGS78C9KR7KANVF0
+      created_at: 2026-01-29T20:45:47.856Z
+      author: "@claude"
+      content: >-
+        Session progress - Investigation and planning complete:
+
+
+        **Explored codebase:**
+
+        - `src/merge/arrays.ts:96-113` - `mergeSetArray` currently uses raw Set comparison
+
+        - `src/parser/refs.ts:109-317` - `ReferenceIndex` class with `resolve()` method
+
+        - `src/cli/commands/merge-driver.ts` - merge orchestration, currently no ref resolution
+
+        - Context loading via `initContext()` + `loadAllTasks()` + `loadAllItems()`
+
+
+        **Implementation plan ready:**
+
+        1. Add `normalizeRef()` helper to arrays.ts
+
+        2. Modify `mergeSetArray` to accept optional `ReferenceIndex` param
+
+        3. Add `buildRefIndex()` helper to merge-driver.ts (lazy load, graceful degradation)
+
+        4. Define `REF_SET_FIELDS = ['depends_on', 'blocked_by', 'implements', 'relates_to',
+        'tests', 'context', 'traits']`
+
+        5. Thread refIndex through `performSemanticMerge` → `mergeObjectsWithArrays`
+
+        6. Add tests for AC-1 (deduplication) and AC-2 (graceful degradation)
+
+
+        **Next steps:** Ready to implement code changes. Start with arrays.ts modifications.
+      supersedes: null
   todos: []
-  started_at: 2026-01-29T20:42:20.698Z
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
   title: Fix merge driver root-level array handling
