@@ -3861,8 +3861,10 @@ observations:
       verification), or DoD adjustment for automation eligibility."
     created_at: 2026-01-25T11:59:34.155Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Addressed by task @01KG5VSF
+    resolved_at: 2026-01-29T21:51:19.232Z
+    resolved_by: "@claude"
   - _ulid: 01KFTGKVRXEEV5MBV1XH1XQ39T
     type: friction
     content: "Loop iteration 6 encountered systematic blockers: All eligible P2 tasks are web UI E2E
