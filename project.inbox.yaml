@@ -852,3 +852,12 @@ inbox:
     created_at: 2026-01-29T19:13:58.396Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG5JTF34KYQTPQJJRBCD7YDE
+    text: "Meta-observation prompts: 1) Document meta-observation examples in AGENTS.md (process
+      observations vs technical observations). 2) Inject soft reminders every N tool calls prompting
+      meta-awareness: 'Consider: how is this session going? Any patterns to note?' Non-blocking
+      awareness prompts. From analysis showing 20 observations captured but none about work process
+      itself."
+    created_at: 2026-01-29T19:13:59.908Z
+    tags: []
+    added_by: "@claude"
