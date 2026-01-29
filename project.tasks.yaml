@@ -41681,7 +41681,7 @@
     run daemon manually with debug output, inspect ContextManager code paths, create minimal
     reproduction case, or escalate infrastructure debugging to separate focused task."
   origin: observation_promotion
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
