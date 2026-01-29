@@ -41477,7 +41477,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41535,3 +41535,5 @@
         Build succeeds. Changes ensure UI reactively updates when data loads.
       supersedes: null
   todos: []
+  completed_at: 2026-01-29T02:53:10.511Z
+  closed_reason: "PR #270 merged - Svelte 5 reactivity fixed for inbox and observations pages"
