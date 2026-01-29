@@ -20,19 +20,19 @@
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	// AC: @web-dashboard ac-16
-	let items: InboxItem[] = [];
-	let loading = true;
-	let error = '';
+	let items = $state<InboxItem[]>([]);
+	let loading = $state(true);
+	let error = $state('');
 
 	// AC: @web-dashboard ac-17
-	let showAddInput = false;
-	let newItemText = '';
-	let addingItem = false;
+	let showAddInput = $state(false);
+	let newItemText = $state('');
+	let addingItem = $state(false);
 
 	// AC: @web-dashboard ac-19
-	let deleteConfirmOpen = false;
-	let itemToDelete: InboxItem | null = null;
-	let deletingItem = false;
+	let deleteConfirmOpen = $state(false);
+	let itemToDelete = $state<InboxItem | null>(null);
+	let deletingItem = $state(false);
 
 	onMount(async () => {
 		await loadInbox();
