@@ -31258,7 +31258,7 @@
   type: task
   spec_ref: "@api-contract"
   meta_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -31455,6 +31455,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  closed_reason: Covered by Playwright E2E test suite - E2E tests exercise API endpoints through real user flows
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   slugs: []
   title: E2E integration tests with Playwright
