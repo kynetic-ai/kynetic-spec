@@ -26178,6 +26178,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "All 20 acceptance criteria fully implemented with comprehensive AC annotations.
+    Subtasks completed: Export command (ACs 1-7), Static SPA (ACs 11-14), Read-only mode (ACs
+    15-18), CI workflow (ACs 8-10), Static mode detection (ACs 19-20). Full test coverage in
+    tests/export/."
   depends_on: []
   context: []
   priority: 3
@@ -26188,6 +26192,7 @@
   vcs_refs: []
   created_at: 2026-01-23T05:17:18.785Z
   started_at: 2026-01-29T05:46:05.773Z
+  completed_at: 2026-01-29T05:46:10.092Z
   notes:
     - _ulid: 01KFMMJ4J1T09TTDMA5SAW6DFM
       created_at: 2026-01-23T05:17:18.785Z
@@ -26328,11 +26333,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-01-29T05:46:10.092Z
-  closed_reason: "All 20 acceptance criteria fully implemented with comprehensive AC annotations.
-    Subtasks completed: Export command (ACs 1-7), Static SPA (ACs 11-14), Read-only mode (ACs
-    15-18), CI workflow (ACs 8-10), Static mode detection (ACs 19-20). Full test coverage in
-    tests/export/."
 - _ulid: 01KFMMJ8G6W8QGAGP599P4T7E8
   slugs:
     - task-cli-serve-commands
@@ -40886,7 +40886,16 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-28T05:30:02.394Z
-  notes: []
+  notes:
+    - _ulid: 01KG4K7KGKB1Y3XRKHE0284Z3S
+      created_at: 2026-01-29T10:01:55.987Z
+      author: "@claude"
+      content: "Investigation complete: bits-ui Select components DO use proper ARIA roles. DOM inspection
+        shows elements have both role=\"option\" AND data-slot=\"select-item\" on the same elements.
+        The existing tests using getByRole('option') are correct. The /e2e skill documentation was
+        outdated - it incorrectly claimed getByRole doesn't work with bits-ui. No test changes
+        needed."
+      supersedes: null
   todos: []
 - _ulid: 01KG2HYF6BP6SDSVFDVET659AN
   slugs: []
