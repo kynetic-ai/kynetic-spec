@@ -41685,8 +41685,11 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 2
-  tags: []
+  priority: 1
+  tags:
+    - e2e
+    - daemon
+    - infrastructure
   vcs_refs: []
   created_at: 2026-01-29T21:50:44.444Z
   notes:
