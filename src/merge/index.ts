@@ -18,6 +18,7 @@ export { parseYamlVersions } from "./parse.js";
 export {
   mergeUlidArrays,
   mergeSetArray,
+  normalizeRef,
   detectDeletion,
 } from "./arrays.js";
 

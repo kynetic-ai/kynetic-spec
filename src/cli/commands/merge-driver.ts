@@ -12,6 +12,7 @@ import {
   parseYamlVersions,
   mergeObjects,
   mergeUlidArrays,
+  mergeSetArray,
   resolveConflictsInteractive,
   formatConflictComment,
   detectFileType,
@@ -20,6 +21,13 @@ import {
   type ConflictInfo,
   type ObjectMergeResult,
 } from "../../merge/index.js";
+import {
+  initContext,
+  loadAllTasks,
+  loadAllItems,
+} from "../../parser/yaml.js";
+import { loadMetaContext } from "../../parser/meta.js";
+import { ReferenceIndex } from "../../parser/refs.js";
 
 /**
  * Result type for root-level merges that can be either object or array.
@@ -33,16 +41,72 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error } from "../output.js";
 
 /**
+ * Field names that contain kspec refs and should use normalized merging.
+ * AC: @merge-ref-normalization ac-1
+ */
+const REF_SET_FIELDS = [
+  "depends_on",
+  "blocked_by",
+  "implements",
+  "relates_to",
+  "tests",
+  "context",
+  "traits",
+];
+
+/**
+ * Check if a field name is a ref-containing set field.
+ */
+function isRefSetField(fieldName: string): boolean {
+  return REF_SET_FIELDS.includes(fieldName);
+}
+
+/**
+ * Lazily build a ReferenceIndex for ref normalization.
+ * Returns undefined if context can't be initialized (graceful degradation).
+ *
+ * AC: @merge-ref-normalization ac-2
+ * Graceful degradation when context unavailable.
+ */
+async function buildRefIndex(): Promise<ReferenceIndex | undefined> {
+  try {
+    // Initialize from current working directory
+    // The merge driver runs from the project root
+    const ctx = await initContext();
+
+    // Load all items needed for the index
+    const tasks = await loadAllTasks(ctx);
+    const items = await loadAllItems(ctx);
+    const metaContext = await loadMetaContext(ctx);
+    const metaItems = [
+      ...metaContext.agents,
+      ...metaContext.workflows,
+      ...metaContext.conventions,
+      ...metaContext.observations,
+    ];
+
+    return new ReferenceIndex(tasks, items, metaItems);
+  } catch {
+    // Failed to load context - return undefined for graceful degradation
+    return undefined;
+  }
+}
+
+/**
  * Enhanced object merge that handles arrays with ULID items specially.
  *
  * For array fields containing objects with _ulid, uses ULID-based merging
  * to first merge the array structure, then recursively merges each item.
+ *
+ * AC: @merge-ref-normalization ac-1
+ * For ref-containing set fields (depends_on, etc), uses normalized comparison.
  */
 function mergeObjectsWithArrays(
   base: Record<string, unknown> | undefined,
   ours: Record<string, unknown> | undefined,
   theirs: Record<string, unknown> | undefined,
   path = "",
+  refIndex?: ReferenceIndex,
 ): ObjectMergeResult {
   const baseObj = base ?? {};
   const oursObj = ours ?? {};
@@ -63,6 +127,23 @@ function mergeObjectsWithArrays(
     const baseVal = baseObj[key];
     const oursVal = oursObj[key];
     const theirsVal = theirsObj[key];
+
+    // Check if this is a ref-containing set field (string arrays like depends_on)
+    // AC: @merge-ref-normalization ac-1
+    if (
+      isRefSetField(key) &&
+      (Array.isArray(baseVal) || Array.isArray(oursVal) || Array.isArray(theirsVal))
+    ) {
+      // Use ref-normalized set merge
+      const mergedSet = mergeSetArray(
+        baseVal as string[] | undefined,
+        oursVal as string[] | undefined,
+        theirsVal as string[] | undefined,
+        refIndex,
+      );
+      merged[key] = mergedSet;
+      continue;
+    }
 
     // Check if this field is an array of ULID items
     if (
@@ -253,6 +334,10 @@ async function performSemanticMerge(
   // For now, use generic object merging for all types
   // Future: Specialized merging based on _fileType
 
+  // Build reference index for ref normalization (lazy, may fail gracefully)
+  // AC: @merge-ref-normalization ac-1, ac-2
+  const refIndex = await buildRefIndex();
+
   // Check if root is array vs object (check all three versions)
   // AC: @merge-file-detection ac-7
   const isRootLevelArray = isRootArray(versions.base) || isRootArray(versions.ours) || isRootArray(versions.theirs);
@@ -270,6 +355,7 @@ async function performSemanticMerge(
       versions.ours as Record<string, unknown>,
       versions.theirs as Record<string, unknown>,
       "",
+      refIndex,
     );
     finalMerged = objectResult.merged;
     conflicts = objectResult.conflicts;
