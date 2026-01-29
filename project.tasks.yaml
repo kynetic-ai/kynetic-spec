@@ -40427,7 +40427,7 @@
   type: task
   spec_ref: "@merge-ref-normalization"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -40663,6 +40663,8 @@
         **All 32 merge-arrays tests pass, all 12 merge-driver-cli tests pass.**
       supersedes: null
   todos: []
+  completed_at: 2026-01-29T21:06:36.941Z
+  closed_reason: "PR #275 merged. Implemented ref normalization in merge driver with full AC coverage."
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
   title: Fix merge driver root-level array handling
