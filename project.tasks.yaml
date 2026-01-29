@@ -40427,7 +40427,7 @@
   type: task
   spec_ref: "@merge-ref-normalization"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KFM7FQ"
@@ -40595,6 +40595,7 @@
         This removes the open question - task is now fully actionable.
       supersedes: null
   todos: []
+  started_at: 2026-01-29T20:42:20.698Z
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
   title: Fix merge driver root-level array handling
@@ -40754,6 +40755,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #274 merged. Implemented AC test coverage indicator in Items View with visual
+    indicators for covered/uncovered/unknown status. Addressed all review comments including code
+    deduplication, recursive test scanning, and error logging. Deferred performance optimization
+    captured as inbox item @01KG5DPP."
   depends_on:
     - "@01KFP84S"
   context: []
@@ -40764,6 +40769,7 @@
   vcs_refs: []
   created_at: 2026-01-27T19:53:41.503Z
   started_at: 2026-01-29T10:34:19.648Z
+  completed_at: 2026-01-29T18:07:26.476Z
   notes:
     - _ulid: 01KG0GA702KM4R9ZR8ZF3Y635N
       created_at: 2026-01-27T19:53:58.018Z
@@ -40892,11 +40898,6 @@
         Pushed commit b97211ce to address Greptile review feedback.
       supersedes: null
   todos: []
-  completed_at: 2026-01-29T18:07:26.476Z
-  closed_reason: "PR #274 merged. Implemented AC test coverage indicator in Items View with visual
-    indicators for covered/uncovered/unknown status. Addressed all review comments including code
-    deduplication, recursive test scanning, and error logging. Deferred performance optimization
-    captured as inbox item @01KG5DPP."
 - _ulid: 01KG1H918VB2BT4MVRARPQRBR7
   slugs: []
   title: Update tasks.spec.ts to use correct bits-ui Select selectors
