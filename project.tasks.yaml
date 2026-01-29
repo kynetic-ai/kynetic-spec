@@ -40878,7 +40878,7 @@
     From PR #256 review comment.
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -40897,6 +40897,7 @@
         needed."
       supersedes: null
   todos: []
+  started_at: 2026-01-29T10:02:15.608Z
 - _ulid: 01KG2HYF6BP6SDSVFDVET659AN
   slugs: []
   title: Fix GitHub Pages static mode - WebSocket connection attempted instead of using static JSON
