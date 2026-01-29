@@ -861,3 +861,11 @@ inbox:
     created_at: 2026-01-29T19:13:59.908Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG5K26VTV668BNDD3SJWDM5R
+    text: "Shadow worktree protections: 1) Add explicit guidance to AGENTS.md that agents should work
+      from project root, not .kspec/ directory. 2) kspec CLI should detect and warn/block when run
+      from inside .kspec/ worktree. 3) Standardize git hook to prevent accidental git operations
+      inside worktree. From session friction: commands failed when run from .kspec/ directory."
+    created_at: 2026-01-29T19:18:13.626Z
+    tags: []
+    added_by: "@claude"
