@@ -4572,4 +4572,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG4M2YJ6TSAQ52TWWK1F2337
+    type: friction
+    content: "Skill documentation can become stale without detection: /e2e skill claimed
+      getByRole('option') doesn't work with bits-ui when it actually does (bits-ui added proper ARIA
+      roles). No mechanism flags skill docs as potentially outdated when dependencies change. Task
+      @01KG1H91 was created based on incorrect assumption from stale docs."
+    created_at: 2026-01-29T10:16:52.039Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
