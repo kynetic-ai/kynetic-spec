@@ -769,7 +769,7 @@ features:
             then: ref is kept as-is (no error, graceful degradation)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     status:
       maturity: draft
       implementation: implemented
