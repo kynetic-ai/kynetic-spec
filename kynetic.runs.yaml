@@ -11870,6 +11870,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-29T10:15:36.256Z
+    completed_at: 2026-01-29T10:17:04.210Z
     step_results:
       - step_index: 0
         status: completed
@@ -11915,4 +11916,11 @@ runs:
         completed_at: 2026-01-29T10:17:04.209Z
         notes: Already captured in step 3. Session complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-29T10:17:04.210Z
+  - _ulid: 01KG5FTPSH2CZ6KADAXW37B48Y
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-29T18:21:42.066Z
+    step_results: []
+    initiated_by: "@claude"
