@@ -41403,7 +41403,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -41435,3 +41435,4 @@
         File: src/cli/commands/export.ts:59
       supersedes: null
   todos: []
+  started_at: 2026-01-29T01:40:45.944Z
