@@ -4163,8 +4163,10 @@ observations:
       configuration issues. Blocked work on @01KFP84N and @01KFP84S in loop iteration 2.
     created_at: 2026-01-25T23:13:19.358Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Addressed by task @01KG5VSF
+    resolved_at: 2026-01-29T21:51:17.744Z
+    resolved_by: "@claude"
   - _ulid: 01KFVPY36ARRRWYKQZTRXC8CAX
     type: friction
     content: "Loop mode task verification gap: Multiple iterations accepted task notes claiming 'already
@@ -4340,9 +4342,9 @@ observations:
     author: "@claude"
     resolved: true
     resolution: Promoted to task @01KG5VSF
-    promoted_to: "@01KG5VSF"
     resolved_at: 2026-01-29T21:51:11.063Z
     resolved_by: "@claude"
+    promoted_to: "@01KG5VSF"
   - _ulid: 01KFVVHGHH2Q71ECC19CF59E4E
     type: success
     content: "Loop mode escalation discipline working as designed: Session 01KFVN3D ran 18 iterations
