@@ -141,8 +141,21 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       throw new Error('Failed to start daemon: ' + startResult.stderr);
     }
 
-    // Wait for daemon to be ready
-    await new Promise((r) => setTimeout(r, 2000));
+    // Wait for daemon to be ready by polling health endpoint
+    const maxAttempts = 30;
+    const pollInterval = 100;
+    for (let i = 0; i < maxAttempts; i++) {
+      try {
+        const response = await fetch(`http://localhost:${DAEMON_PORT}/api/health`);
+        if (response.ok) break;
+      } catch {
+        // Daemon not ready yet
+      }
+      if (i === maxAttempts - 1) {
+        throw new Error(`Daemon failed to become ready after ${maxAttempts * pollInterval}ms`);
+      }
+      await new Promise((r) => setTimeout(r, pollInterval));
+    }
 
     // Helper to create a valid second project for multi-project tests
     // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
