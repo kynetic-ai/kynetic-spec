@@ -41403,7 +41403,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -41449,3 +41449,5 @@
         - All 25 export tests pass
       supersedes: null
   todos: []
+  completed_at: 2026-01-29T01:55:55.860Z
+  closed_reason: "PR #269 merged - JSON export stdout contamination fixed"
