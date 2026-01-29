@@ -40878,7 +40878,7 @@
     From PR #256 review comment.
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -40898,6 +40898,8 @@
         needed."
       supersedes: null
   todos: []
+  completed_at: 2026-01-29T10:02:19.484Z
+  closed_reason: Tests already correct - bits-ui uses proper ARIA roles. Skill documentation updated instead.
 - _ulid: 01KG2HYF6BP6SDSVFDVET659AN
   slugs: []
   title: Fix GitHub Pages static mode - WebSocket connection attempted instead of using static JSON
