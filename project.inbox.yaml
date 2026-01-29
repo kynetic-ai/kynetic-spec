@@ -844,3 +844,11 @@ inbox:
     created_at: 2026-01-29T19:13:56.963Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG5JTDKWKFRJBX6XWFNB52T8
+    text: "Intermediate notes: Add workflow prompts for note-taking at key points (start, pivot, PR
+      created, feedback received). Also add skill guidance documenting best practices - notes should
+      capture 'why decisions were made' not just 'what was done'. Examples: 'Starting with approach
+      A because [reason]', 'Hit issue with X, pivoting to Y'."
+    created_at: 2026-01-29T19:13:58.396Z
+    tags: []
+    added_by: "@claude"
