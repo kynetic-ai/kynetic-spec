@@ -40429,6 +40429,7 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "PR #275 merged. Implemented ref normalization in merge driver with full AC coverage."
   depends_on:
     - "@01KFM7FQ"
   context: []
@@ -40437,6 +40438,7 @@
   vcs_refs: []
   created_at: 2026-01-26T18:36:51.997Z
   started_at: 2026-01-29T20:42:20.698Z
+  completed_at: 2026-01-29T21:06:36.941Z
   notes:
     - _ulid: 01KFXSGACWPEA08Q7VS0FDB6A7
       created_at: 2026-01-26T18:36:51.996Z
@@ -40663,8 +40665,6 @@
         **All 32 merge-arrays tests pass, all 12 merge-driver-cli tests pass.**
       supersedes: null
   todos: []
-  completed_at: 2026-01-29T21:06:36.941Z
-  closed_reason: "PR #275 merged. Implemented ref normalization in merge driver with full AC coverage."
 - _ulid: 01KFXSGT66D0FS1QM8ZD95E8R8
   slugs: []
   title: Fix merge driver root-level array handling
@@ -41670,4 +41670,24 @@
 
         Build succeeds. Changes ensure UI reactively updates when data loads.
       supersedes: null
+  todos: []
+- title: Fix E2E daemon fixture loading reliability
+  description: "Daemon fixture loading blocker affected 2/3 tasks across 10 iterations with no
+    alternative approach attempted. Pattern: E2E test harness starts daemon with --kspec-dir
+    pointing to temp fixtures, daemon returns empty data instead of YAML content. Should have tried:
+    run daemon manually with debug output, inspect ContextManager code paths, create minimal
+    reproduction case, or escalate infrastructure debugging to separate focused task."
+  priority: 2
+  origin: observation_promotion
+  _ulid: 01KG5VSF6W02TWCENVY5JGM3HG
+  slugs: []
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-29T21:50:44.444Z
+  notes: []
   todos: []
