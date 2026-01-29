@@ -31260,6 +31260,7 @@
   meta_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Covered by Playwright E2E test suite - E2E tests exercise API endpoints through real user flows
   depends_on: []
   context: []
   priority: 2
@@ -31455,7 +31456,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  closed_reason: Covered by Playwright E2E test suite - E2E tests exercise API endpoints through real user flows
 - _ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
   slugs: []
   title: E2E integration tests with Playwright
@@ -32232,7 +32232,7 @@
     review handling quality.
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -32249,6 +32249,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-29T23:38:50.645Z
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
   slugs: []
   title: Implement Dashboard View (AC-1 to AC-3, AC-20, AC-21)

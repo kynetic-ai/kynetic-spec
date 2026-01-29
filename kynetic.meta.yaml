@@ -220,16 +220,23 @@ workflows:
   - _ulid: 01KFM9G3BR4VFNBM2G7BGE5BZY
     id: pr-review-merge
     trigger: pr-merge
-    description: Quality gate for reviewing and merging PRs. Ensures all CI passes, all reviews
-      addressed, all requests completed, and all threads resolved before merge. Do not merge unless
-      user explicitly overrides.
+    description: |
+      Quality gate for reviewing and merging PRs. Ensures all CI passes, all reviews
+      addressed, all requests completed, and all threads resolved before merge.
+
+      CRITICAL: After ANY push, you MUST re-verify CI from the beginning. Do not trust
+      prior CI checks - they are invalidated by new commits. Never merge without fresh
+      CI verification on the current HEAD.
     steps:
       - type: check
         content: All CI checks complete (none pending or running)
         on_fail: Wait for CI to finish. Do not merge while checks are running.
       - type: check
         content: All CI checks pass (green)
-        on_fail: Fix failures, push changes, wait for CI to re-run and pass.
+        on_fail: |
+          Fix failures, push changes.
+          WAIT for CI to re-run completely.
+          THEN re-verify this step (CI passing) before continuing - do not proceed while CI is running.
       - type: action
         content: |
           Read ALL review comments on the PR.
@@ -240,6 +247,7 @@ workflows:
         on_fail: |
           Fix each issue raised by reviewers.
           Push changes and wait for re-review if needed.
+          THEN RETURN TO STEP 1 - re-verify CI complete and passing before continuing.
       - type: action
         content: |
           Check for @claude mentions or other requests in comments.
@@ -253,6 +261,15 @@ workflows:
         on_fail: |
           Click "Resolve conversation" on each thread after addressing.
           The pr-review-resolution-check CI will block merge if threads remain.
+      - type: check
+        content: |
+          FINAL CI VERIFICATION: Re-check CI status NOW.
+          Use: gh pr checks or gh pr view --json statusCheckRollup
+          ALL checks must be complete AND passing on current HEAD.
+          If ANY changes were pushed during this workflow, CI must have re-run.
+        on_fail: |
+          DO NOT MERGE. Wait for CI to complete and pass.
+          If CI is failing, fix issues and restart workflow from beginning.
       - type: decision
         content: Ready to merge?
         options:
@@ -540,9 +557,13 @@ workflows:
   - _ulid: 01KFRX0S3VBZGV72A17E21AB9E
     id: pr-review-loop
     trigger: loop-pr-review
-    description: PR review subagent workflow for loop mode. Runs local review, verifies AC coverage and
-      spec alignment, fixes issues, waits for CI, and merges with quality gates. Sequential
-      execution (ralph waits).
+    description: |
+      PR review subagent workflow for loop mode. Runs local review, verifies AC coverage
+      and spec alignment, fixes issues, waits for CI, and merges with quality gates.
+      Sequential execution (ralph waits).
+
+      CRITICAL: After ANY push, must re-verify CI passes before merge. Prior CI checks
+      are invalidated by new commits. Never assume prior green CI is still valid.
     steps:
       - type: action
         content: |
@@ -610,16 +631,20 @@ workflows:
         content: |
           Wait for CI to complete and pass (ac-5).
 
+          CRITICAL: This step MUST be executed EVERY time changes are pushed.
+          Do not skip or assume prior CI checks are valid.
+
           Poll CI status until all checks complete.
           Use: gh pr view --json statusCheckRollup
 
-          Do NOT merge while checks are running or failing.
+          Do NOT proceed while checks are running or failing.
+          VERIFY the checks ran against current HEAD (latest commit SHA).
         on_fail: |
           If CI fails:
           - Investigate failure
           - Fix if possible
           - Push changes
-          - Wait for CI again
+          - RETURN TO THIS STEP and wait for CI again (do not skip ahead)
 
           If cannot fix:
           - Mark task automation: needs_review with CI failure details (ac-8)
