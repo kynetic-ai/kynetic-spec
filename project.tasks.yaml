@@ -41692,6 +41692,7 @@
     - infrastructure
   vcs_refs: []
   created_at: 2026-01-29T21:50:44.444Z
+  started_at: 2026-01-29T22:51:20.910Z
   notes:
     - _ulid: 01KG5VSSRD6430BCW8BM82TC0N
       created_at: 2026-01-29T21:50:55.245Z
@@ -41719,5 +41720,15 @@
         - @task-watcher-tests (P1) - AC-19 verification needs E2E
         - 01KFMMZW (P2) - API integration tests
       supersedes: null
+    - _ulid: 01KG5Z8P3X5CQMGG9T3K6T1G99
+      created_at: 2026-01-29T22:51:28.765Z
+      author: "@claude"
+      content: |-
+        Starting implementation of E2E reliability fixes:
+        1. Health check polling - replacing fixed 2s wait with /api/health polling
+        2. Daemon build staleness detection - warning when dist/daemon is older than source
+        3. PidFileManager sync - copying file locking pattern from daemon to CLI version
+
+        Already completed: Health check polling in test-base.ts
+      supersedes: null
   todos: []
-  started_at: 2026-01-29T22:51:20.910Z
