@@ -2247,3 +2247,8 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-30T09:10:14.507Z
+    acceptance_criteria:
+      - id: ac-1
+        given: observations are listed with --all flag
+        when: displaying the observation list
+        then: a Resolved column shows checkmark for resolved, X for unresolved observations
