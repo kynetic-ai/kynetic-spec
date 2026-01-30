@@ -3059,6 +3059,20 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KG72TJ7H0XNSFJ0VV3WEVAQG
+    slugs:
+      - cli-utilities
+    title: CLI Utility Commands
+    type: feature
+    tags: []
+    description: "Utility commands for common development tasks: ULID generation, debugging helpers."
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-30T09:12:54.769Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
