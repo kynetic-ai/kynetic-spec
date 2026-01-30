@@ -42246,6 +42246,12 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG72VS5D1JGKD43SXM19MBQR
+      created_at: 2026-01-30T09:13:34.638Z
+      author: "@claude"
+      content: "Eligible: Apply existing @trait-multi-ref-batch trait to meta resolve command. Trait has 8
+        ACs defining the behavior."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG715ECQCHS16JF029SCJHXC
