@@ -12100,7 +12100,7 @@ runs:
   - _ulid: 01KG64HTMVNMFEKBBTNQK1AYD7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-30T00:23:51.195Z
     step_results:
@@ -12125,5 +12125,12 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-30T00:24:26.773Z
-        completed_at: 2026-01-30T00:24:26.773Z
+        completed_at: 2026-01-30T00:24:55.665Z
+        notes: "Coverage: (1) cd .kspec/ - captured @01KG623H, (2) task list alias - inbox @01KFMP6G, (3)
+          inbox delete --yes - NOT TRACKED, (4) blocked→complete - NOT TRACKED, (5) large file
+          reading - general issue"
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-30T00:24:55.665Z
+        completed_at: 2026-01-30T00:24:55.665Z
     initiated_by: "@claude"
