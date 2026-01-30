@@ -42241,6 +42241,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:39:03.734Z
+  started_at: 2026-01-30T10:52:13.550Z
   notes:
     - _ulid: 01KG72282K8N9EQ1N8687T8BDZ
       created_at: 2026-01-30T08:59:37.939Z
@@ -42252,9 +42253,19 @@
       author: "@claude"
       content: "Eligible: Created spec @obs-list-display with ac-1 for resolved column display."
       supersedes: null
+    - _ulid: 01KG78KTR4H8Y48KAVF668N30S
+      created_at: 2026-01-30T10:54:05.572Z
+      author: "@claude"
+      content: |-
+        Implemented Resolved column for observation list with --all flag:
+        - Added conditional Resolved column that only shows when --all is used
+        - Shows ✓ (green) for resolved, ✗ (red) for unresolved observations
+        - Adjusted column widths and content truncation to accommodate new column
+        - Added test verifying column presence and checkmark indicators
+        - All 15 observation-related tests pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T10:52:13.550Z
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
   slugs: []
   title: Add 'kspec util ulid' command for ULID generation
