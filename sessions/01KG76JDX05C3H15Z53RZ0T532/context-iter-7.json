@@ -1,0 +1,338 @@
+{
+  "generated_at": "2026-01-30T11:13:26.351Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KG70XC",
+      "title": "Add 'kspec util ulid' command for ULID generation",
+      "started_at": "2026-01-30T11:09:45.563Z",
+      "priority": 4,
+      "spec_ref": "@cli-utilities",
+      "note_count": 3,
+      "last_note_at": "2026-01-30T11:11:36.507Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KG70Z6",
+      "title": "Add multi-ref batch support to meta resolve",
+      "priority": 4,
+      "spec_ref": "@trait-multi-ref-batch",
+      "tags": [
+        "cli",
+        "meta",
+        "batch"
+      ]
+    },
+    {
+      "ref": "01KG71BB",
+      "title": "Add concrete examples to CLI --help for variadic options",
+      "priority": 4,
+      "spec_ref": "@cli-help-examples",
+      "tags": [
+        "reflection",
+        "cli",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KG71C9",
+      "title": "Document E2E fixture isolation pattern in AGENTS.md",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "reflection",
+        "docs",
+        "e2e"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    },
+    {
+      "ref": "01KFQAEM",
+      "title": "Per-project file watcher tests",
+      "blocked_by": [
+        "Watcher unit tests complete (17 tests, all ACs covered) but skip in CI due to GitHub Actions fs.watch limitations. AC-19 HTTP 503 response verification requires E2E/integration test blocked on @01KFMMZW. Tests pass locally and implementation verified correct."
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KG70WJ",
+      "title": "Add Resolved column to observation list with --all",
+      "completed_at": "2026-01-30T11:08:05.023Z",
+      "closed_reason": "Merged in PR #286. Added Resolved column (✓/✗) to observation list when --all flag is used. Column shows green checkmark for resolved, red X for unresolved. Tests verify column presence and indicator display."
+    },
+    {
+      "ref": "01KG70TT",
+      "title": "Add --force flag to task complete command",
+      "completed_at": "2026-01-30T10:51:25.887Z",
+      "closed_reason": "Merged in PR #285. Added --force flag to task complete command to bypass blocked state. Shows warning when force-completing, adds note documenting forced completion with blocked_by reason. AC coverage: @task-commands ac-1 verified with 2 tests."
+    },
+    {
+      "ref": "01KG6ZGQ",
+      "title": "Add 'task list' alias for 'tasks' command",
+      "completed_at": "2026-01-30T10:39:01.448Z",
+      "closed_reason": "Merged in PR #284. Added 'kspec task list' as alias for 'kspec tasks list' for CLI naming consistency - other commands use 'kspec <noun> list' pattern. All options work identically (--status, --type, --tag, --meta-ref, --grep, --verbose, --full)."
+    },
+    {
+      "ref": "01KG7175",
+      "title": "Auto-set BUN_ENV=production when spawning daemon",
+      "completed_at": "2026-01-30T10:31:30.509Z",
+      "closed_reason": "Merged in PR #283. Set BUN_ENV=production in all daemon spawn locations (serve.ts detached/foreground modes and maybeAutoStartDaemon in index.ts) to prevent Bun dev mode HTML transformation causing asset hash mismatches."
+    },
+    {
+      "ref": "01KG762Y",
+      "title": "Fix PR review subagent not completing task after merge",
+      "completed_at": "2026-01-30T10:17:32.734Z",
+      "closed_reason": "Merged in PR #282. Fixed PR review subagent to complete task after merge by updating prompt exit conditions and adding defensive verification in ralph."
+    },
+    {
+      "ref": "01KG715E",
+      "title": "Handle session checkpoint hook when in .kspec/ directory",
+      "completed_at": "2026-01-30T10:01:24.614Z",
+      "closed_reason": "PR #281 merged. Fix catches RUNNING_FROM_SHADOW error gracefully - shows warning in human mode, exits silently in JSON mode."
+    },
+    {
+      "ref": "01KG6ZE0",
+      "title": "Fix workflow show 0-indexed step numbering",
+      "completed_at": "2026-01-30T09:46:23.730Z",
+      "closed_reason": "PR #280 merged. Fixed 0-indexed step numbering in workflow commands - progress and step columns now display 1-indexed values."
+    },
+    {
+      "ref": "01KG6ZDE",
+      "title": "Fix help workflow command collision",
+      "completed_at": "2026-01-30T09:37:14.269Z",
+      "closed_reason": "PR #279 merged. Fixed help workflow command collision by renaming helpContent['workflow'] to 'task-workflow'."
+    },
+    {
+      "ref": "01KG6CJQ",
+      "title": "Implement: Ralph max-tasks-per-iteration limiting",
+      "completed_at": "2026-01-30T04:03:21.903Z",
+      "closed_reason": "Implemented --max-tasks flag for ralph. PR #278 merged. Adds soft enforcement (wrap-up message) and hard enforcement (PreToolUse hook). Default is 1 task per iteration, 0 for unlimited."
+    },
+    {
+      "ref": "01KFP5YG",
+      "title": "Improve PR review process enforcement",
+      "completed_at": "2026-01-30T00:20:34.166Z",
+      "closed_reason": "PR #277 merged - added CI re-verification requirements to pr-review-merge and pr-review-loop workflows plus skill documentation"
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "cfef92c",
+      "full_hash": "cfef92ca462de499108f5353f86a761d872765bc",
+      "date": "2026-01-30T11:11:45.000Z",
+      "message": "feat(cli): add 'kspec util ulid' command for ULID generation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "97862c5",
+      "full_hash": "97862c50a2c836a6eaf2e4917b9a35e7fc6c9b24",
+      "date": "2026-01-30T11:07:58.000Z",
+      "message": "feat(cli): add Resolved column to observation list with --all flag (#286)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "95b74a7",
+      "full_hash": "95b74a7d4c6b168697f45ed8a43532ca724c278a",
+      "date": "2026-01-30T10:54:20.000Z",
+      "message": "feat(cli): add Resolved column to observation list with --all flag",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4090c19",
+      "full_hash": "4090c195323836fcbd1382b099ff40ed7add73e4",
+      "date": "2026-01-30T10:51:19.000Z",
+      "message": "feat(cli): add --force flag to task complete command (#285)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "319ea75",
+      "full_hash": "319ea757b727422df8489845af1a5181a9893a7f",
+      "date": "2026-01-30T10:45:24.000Z",
+      "message": "feat(cli): add --force flag to task complete command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2f45c3c",
+      "full_hash": "2f45c3c7343ceac35aaf5107e1ef4c4246d49c7d",
+      "date": "2026-01-30T10:38:53.000Z",
+      "message": "feat(cli): add 'task list' alias for 'tasks list' command (#284)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "96b9182",
+      "full_hash": "96b91828620b5c6fb6e9bdb5fd19ad1929c0749e",
+      "date": "2026-01-30T10:33:49.000Z",
+      "message": "feat(cli): add 'task list' alias for 'tasks list' command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b9e7e42",
+      "full_hash": "b9e7e426f190882612a2f583329327db21ad8e30",
+      "date": "2026-01-30T10:31:20.000Z",
+      "message": "fix(daemon): set BUN_ENV=production when spawning daemon (#283)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "51c24f5",
+      "full_hash": "51c24f56196028600fa78f4573f130788b16fed0",
+      "date": "2026-01-30T10:24:58.000Z",
+      "message": "fix(daemon): also set BUN_ENV=production in maybeAutoStartDaemon",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "da37e87",
+      "full_hash": "da37e87ae5993a565451b8d15c70511ecf75b437",
+      "date": "2026-01-30T10:20:39.000Z",
+      "message": "fix(daemon): set BUN_ENV=production when spawning daemon",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QE",
+      "text": "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help --exit-codes, kspec help commands --json for programmatic CLI discovery",
+      "created_at": "2026-01-19T02:35:45.411Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFBJM1",
+      "text": "Review RALPH_LOOP_INSTRUCTIONS.md - consolidate into skills or delete. Unique content: PR review workflow for autonomous loops, 'every iteration ends with PR' rule, reflect guidance for loops. Consider codifying loop-specific reflect behavior into /reflect skill.",
+      "created_at": "2026-01-19T16:50:14.589Z",
+      "tags": [
+        "docs",
+        "ralph"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 392,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 7,
+    "blocked": 2,
+    "completed": 368,
+    "inbox_items": 76
+  }
+}

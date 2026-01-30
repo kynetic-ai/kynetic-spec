@@ -42284,6 +42284,8 @@
   spec_ref: "@cli-utilities"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #287. Added kspec util ulid command with --count option for generating
+    valid ULIDs in Crockford base32 format. Full AC coverage in tests/util.test.ts."
   depends_on: []
   context: []
   priority: 4
@@ -42294,6 +42296,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:39:29.871Z
   started_at: 2026-01-30T11:09:45.563Z
+  completed_at: 2026-01-30T11:17:34.081Z
   notes:
     - _ulid: 01KG72289YG7PQP9GPXW5CKGGN
       created_at: 2026-01-30T08:59:38.174Z
@@ -42314,9 +42317,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-30T11:17:34.081Z
-  closed_reason: "Merged in PR #287. Added kspec util ulid command with --count option for generating
-    valid ULIDs in Crockford base32 format. Full AC coverage in tests/util.test.ts."
 - _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
   slugs: []
   title: Add multi-ref batch support to meta resolve
@@ -42324,7 +42324,7 @@
   description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
     @ref2 @ref3 --resolution "..."' for batch resolving related observations
   spec_ref: "@trait-multi-ref-batch"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42349,6 +42349,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-30T11:19:45.598Z
 - _ulid: 01KG715ECQCHS16JF029SCJHXC
   slugs: []
   title: Handle session checkpoint hook when in .kspec/ directory
