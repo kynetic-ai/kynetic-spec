@@ -2383,8 +2383,11 @@ observations:
       absolute paths.
     created_at: 2026-01-20T15:11:32.624Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Documented in AGENTS.md 'Important: Always Run from Project Root' section with
+      troubleshooting guidance"
+    resolved_at: 2026-01-30T05:13:29.247Z
+    resolved_by: "@claude"
   - _ulid: 01KFDZGT05N02FNX2HXM4CRT8H
     type: success
     content: E2E validation workflow effective for confirming system readiness. Created test data,
