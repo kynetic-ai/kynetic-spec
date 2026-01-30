@@ -42215,6 +42215,11 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG72V44AVY5T11H8MW2J4Z0N
+      created_at: 2026-01-30T09:13:13.098Z
+      author: "@claude"
+      content: "Eligible: Created spec @cli-utilities with ac-1 for ULID generation command."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
