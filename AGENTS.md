@@ -874,12 +874,7 @@ kspec util ulid
 
 # Generate multiple ULIDs
 kspec util ulid --count 5
-
-# Generate with a readable prefix (auto-sanitized to valid Crockford base32)
-kspec util ulid --prefix TASK --count 3
 ```
-
-The command handles Crockford base32 requirements automatically (no I, L, O, U characters).
 
 ### E2E Tests (Playwright)
 
