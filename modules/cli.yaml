@@ -2606,7 +2606,7 @@ features:
             then: Displays max-tasks configuration in dry-run output
         status:
           maturity: draft
-          implementation: implemented
+          implementation: verified
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
