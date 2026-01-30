@@ -42689,21 +42689,40 @@
       content: "PR created: #282 https://github.com/kynetic-ai/kynetic-spec/pull/282"
       supersedes: null
   todos: []
-- title: Document new CLI features from overnight loop
+- _ulid: 01KG8K6ATDYPAW4P8N5525R0KE
+  slugs: []
+  title: Document new CLI features from overnight loop
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 3
-  slugs: []
-  tags:
-    - docs
-    - cli
-  _ulid: 01KG8K6ATDYPAW4P8N5525R0KE
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - docs
+    - cli
   vcs_refs: []
   created_at: 2026-01-30T23:18:12.044Z
-  notes: []
+  notes:
+    - _ulid: 01KG8K6QYRDRQKFPDZ6AGC7S00
+      created_at: 2026-01-30T23:18:25.496Z
+      author: "@claude"
+      content: |-
+        Items to document in AGENTS.md:
+
+        1. **kspec util ulid** - New command for generating valid ULIDs
+           - Supports --count and --prefix options
+           - Useful for creating test fixtures with valid Crockford base32 ULIDs
+           - Add to Quick Start or new Utilities section
+
+        2. **meta resolve multi-ref** - Batch support added
+           - Can now resolve multiple observations: kspec meta resolve @ref1 @ref2 "Resolution"
+           - Update Meta Commands Reference section
+
+        3. **task complete --force** - Force flag for edge cases
+           - Allows completing tasks regardless of current state
+           - Document when this is appropriate (e.g., stuck states, cleanup)
+      supersedes: null
   todos: []
