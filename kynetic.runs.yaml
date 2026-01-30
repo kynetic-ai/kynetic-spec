@@ -12248,7 +12248,7 @@ runs:
   - _ulid: 01KG73A8TC63GDKPKRCERKAPBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-01-30T09:21:29.420Z
     step_results:
@@ -12273,5 +12273,12 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-01-30T09:22:05.111Z
-        completed_at: 2026-01-30T09:22:05.111Z
+        completed_at: 2026-01-30T09:22:31.649Z
+        notes: "Coverage check: (1) Batch spec/AC - tracked in @01KFC3SV, @01KF8TQ5; (2) inbox promote
+          --spec-ref - NOT tracked; (3) filter tasks missing spec - partially in @query-filters; (4)
+          --tags syntax - NOT tracked (minor); (5) item get --verbose - tracked in @01KFH6XF"
+      - step_index: 4
+        status: completed
+        started_at: 2026-01-30T09:22:31.649Z
+        completed_at: 2026-01-30T09:22:31.649Z
     initiated_by: "@claude"
