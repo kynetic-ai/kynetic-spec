@@ -42088,7 +42088,7 @@
   description: Fix workflow show 0-indexed display - Progress should show 1-indexed (3/3 not 2/3),
     step numbers should be 1-indexed (1,2,3 not 0,1,2)
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
