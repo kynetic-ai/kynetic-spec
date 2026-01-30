@@ -42192,23 +42192,44 @@
   created_at: 2026-01-30T08:43:54.135Z
   notes: []
   todos: []
-- title: Auto-set BUN_ENV=production when spawning daemon
+- _ulid: 01KG7175F5P831523KRV6KVZT5
+  slugs: []
+  title: Auto-set BUN_ENV=production when spawning daemon
   type: task
-  priority: 3
+  description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
+    HTML transformation causing asset hash mismatches
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - reflection
     - daemon
     - small
-  description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
-    HTML transformation causing asset hash mismatches
-  _ulid: 01KG7175F5P831523KRV6KVZT5
+  vcs_refs: []
+  created_at: 2026-01-30T08:44:50.533Z
+  notes: []
+  todos: []
+- title: Add concrete examples to CLI --help for variadic options
+  type: task
+  priority: 4
+  spec_ref: null
+  tags:
+    - reflection
+    - cli
+    - dx
+  description: CLI help syntax examples - Add concrete examples to variadic options like --depends-on
+    showing 'kspec task set @ref --depends-on @ref1 @ref2' instead of just '<refs...>'. Surfaced
+    when trial/error was needed to find space-separated format.
+  _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:44:50.533Z
+  created_at: 2026-01-30T08:47:08.275Z
   notes: []
   todos: []
