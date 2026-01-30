@@ -42250,7 +42250,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG7175F5P831523KRV6KVZT5
   slugs: []
   title: Auto-set BUN_ENV=production when spawning daemon
