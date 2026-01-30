@@ -12198,7 +12198,7 @@ runs:
   - _ulid: 01KG6W97SH8NGD4MTHXWPDRYE2
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-30T07:18:35.569Z
     step_results:
@@ -12211,5 +12211,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-30T07:18:52.844Z
-        completed_at: 2026-01-30T07:18:52.844Z
+        completed_at: 2026-01-30T07:19:04.745Z
+        notes: "Friction: (1) No bulk observation resolution - ran 12 individual resolve commands, (2)
+          Observation list doesn't show resolved status in table, (3) --unresolved filter didn't
+          work as expected"
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-30T07:19:04.745Z
+        completed_at: 2026-01-30T07:19:04.745Z
     initiated_by: "@claude"
