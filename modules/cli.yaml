@@ -3286,3 +3286,6 @@ requirements:
         given: a command has variadic options like --depends-on or --refs
         when: viewing --help output
         then: examples show concrete usage like 'kspec task set @ref --depends-on @ref1 @ref2'
+    status:
+      maturity: draft
+      implementation: in_progress
