@@ -41818,7 +41818,7 @@
   type: task
   spec_ref: "@ralph-task-limit"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -41990,3 +41990,4 @@
            - Ignores stale markers
       supersedes: null
   todos: []
+  started_at: 2026-01-30T02:44:46.050Z
