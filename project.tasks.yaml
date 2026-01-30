@@ -42182,7 +42182,7 @@
     effectively done (covered by other work) but technically blocked. Current workaround is cancel,
     which loses 'completed' semantic. Should warn but allow completion."
   spec_ref: "@task-commands"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
