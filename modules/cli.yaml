@@ -3288,4 +3288,4 @@ requirements:
         then: examples show concrete usage like 'kspec task set @ref --depends-on @ref1 @ref2'
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
