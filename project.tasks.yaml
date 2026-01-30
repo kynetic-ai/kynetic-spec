@@ -32232,7 +32232,7 @@
     review handling quality.
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -32291,6 +32291,9 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-01-30T00:20:34.166Z
+  closed_reason: "PR #277 merged - added CI re-verification requirements to pr-review-merge and
+    pr-review-loop workflows plus skill documentation"
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
   slugs: []
   title: Implement Dashboard View (AC-1 to AC-3, AC-20, AC-21)
