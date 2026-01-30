@@ -42113,23 +42113,43 @@
   created_at: 2026-01-30T08:38:06.381Z
   notes: []
   todos: []
-- title: Add Resolved column to observation list with --all
+- _ulid: 01KG70WJSPMY1WJPQ6DF77JPZN
+  slugs: []
+  title: Add Resolved column to observation list with --all
   type: task
-  priority: 4
+  description: Add Resolved column to observation list output when using --all flag - show ✓/✗ status
+    so you can see resolved vs unresolved at a glance
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 4
   tags:
     - cli
     - meta
     - dx
-  description: Add Resolved column to observation list output when using --all flag - show ✓/✗ status
-    so you can see resolved vs unresolved at a glance
-  _ulid: 01KG70WJSPMY1WJPQ6DF77JPZN
+  vcs_refs: []
+  created_at: 2026-01-30T08:39:03.734Z
+  notes: []
+  todos: []
+- title: Add 'kspec util ulid' command for ULID generation
+  type: task
+  priority: 4
+  spec_ref: null
+  tags:
+    - reflection
+    - cli
+    - dx
+  description: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML
+    editing. Useful when creating new spec items or features directly in YAML."
+  _ulid: 01KG70XCAJPAQE5064RMHH34RK
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:39:03.734Z
+  created_at: 2026-01-30T08:39:29.871Z
   notes: []
   todos: []
