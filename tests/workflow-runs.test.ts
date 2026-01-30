@@ -280,7 +280,7 @@ describe('workflow show', () => {
     expect(result.stdout).toContain('Workflow Run Details');
     expect(result.stdout).toContain('test-workflow');
     expect(result.stdout).toContain('active');
-    expect(result.stdout).toContain('0/3');
+    expect(result.stdout).toContain('1/3');
     expect(result.stdout).toContain('Initiated by: @test');
     expect(result.stdout).toContain(`@${testTaskUlid}`);
   });
