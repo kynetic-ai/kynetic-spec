@@ -12443,6 +12443,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-30T11:12:23.353Z
+    completed_at: 2026-01-30T11:13:19.311Z
     step_results:
       - step_index: 0
         status: completed
@@ -12471,4 +12472,11 @@ runs:
         notes: No items to capture - clean session with no high-confidence friction identified. Workflow
           complete.
     initiated_by: "@claude"
-    completed_at: 2026-01-30T11:13:19.311Z
+  - _ulid: 01KG8M70SZYH2DF43EK0X00R1T
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-30T23:36:03.135Z
+    step_results: []
+    initiated_by: "@claude"
