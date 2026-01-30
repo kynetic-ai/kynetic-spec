@@ -716,3 +716,11 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KG762FPAHRBF776W4SBHM8GX
+    text: Ralph task limit file (.claude/ralph-task-limit.json) persists if ralph exits early. Add
+      cleanup in finally hook to remove marker regardless of exit reason.
+    created_at: 2026-01-30T10:09:40.043Z
+    tags:
+      - infra
+      - ralph
+    added_by: "@claude"
