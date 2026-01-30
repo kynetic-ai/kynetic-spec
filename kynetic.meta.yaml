@@ -3591,8 +3591,11 @@ observations:
       when all issues are fixed and acknowledged by the bot.
     created_at: 2026-01-23T09:32:29.258Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Accepted limitation - GitHub requires manual 'Resolve conversation' clicks in UI,
+      documented in AGENTS.md
+    resolved_at: 2026-01-30T05:18:21.704Z
+    resolved_by: "@claude"
   - _ulid: 01KFNAT4N61CEP3GHFQZ328T28
     type: success
     content: "PR merge workflow with review resolution: Successfully merged PR #189 using
