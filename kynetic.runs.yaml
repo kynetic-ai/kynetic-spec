@@ -12248,7 +12248,7 @@ runs:
   - _ulid: 01KG73A8TC63GDKPKRCERKAPBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-30T09:21:29.420Z
     step_results:
@@ -12266,5 +12266,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-30T09:21:51.542Z
-        completed_at: 2026-01-30T09:21:51.542Z
+        completed_at: 2026-01-30T09:22:05.111Z
+        notes: "Friction: (1) No batch spec/AC creation - manual multi-command for each task, (2) inbox
+          promote lacks --spec-ref, (3) No easy filter for tasks missing spec, (4) --tag x --tag y
+          verbose vs --tags x,y, (5) item get lacks --verbose for ACs"
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-30T09:22:05.111Z
+        completed_at: 2026-01-30T09:22:05.111Z
     initiated_by: "@claude"
