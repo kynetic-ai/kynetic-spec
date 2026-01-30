@@ -42695,7 +42695,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42759,3 +42759,5 @@
         - Skills updated: meta, task-work, triage
       supersedes: null
   todos: []
+  completed_at: 2026-01-30T23:34:02.109Z
+  closed_reason: "Merged in PR #291"
