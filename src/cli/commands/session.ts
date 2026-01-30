@@ -17,7 +17,11 @@ import {
   loadSessionContext,
   ReferenceIndex,
 } from "../../parser/index.js";
-import { type ShadowSyncResult, shadowPull } from "../../parser/shadow.js";
+import {
+  ShadowError,
+  type ShadowSyncResult,
+  shadowPull,
+} from "../../parser/shadow.js";
 import type { SessionContext as StoredSessionContext } from "../../schema/index.js";
 import {
   errors,
@@ -1170,6 +1174,19 @@ async function sessionCheckpointAction(
       }
     }
   } catch (err) {
+    // Handle RUNNING_FROM_SHADOW gracefully - skip with warning instead of erroring
+    // This happens when the stop hook runs while cwd is inside .kspec/ directory
+    if (err instanceof ShadowError && err.code === "RUNNING_FROM_SHADOW") {
+      if (!isJsonMode()) {
+        console.log(
+          chalk.yellow(
+            "[kspec] Session checkpoint skipped - running from inside .kspec/ directory",
+          ),
+        );
+      }
+      // Allow stop to proceed (exit successfully, no JSON output blocks the stop)
+      return;
+    }
     error(errors.failures.runCheckpoint, err);
     process.exit(EXIT_CODES.ERROR);
   }
