@@ -2596,6 +2596,10 @@ features:
             given: New iteration begins
             when: Ralph starts iteration loop
             then: Counter resets to 0; stale marker files older than 1 hour are cleared
+          - id: ac-marker-format
+            given: Task limit reached
+            when: Marker file written
+            then: File is JSON with active, since (ISO8601), max, completed, sessionId fields
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
