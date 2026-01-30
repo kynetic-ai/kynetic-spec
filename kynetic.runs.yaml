@@ -12100,7 +12100,7 @@ runs:
   - _ulid: 01KG64HTMVNMFEKBBTNQK1AYD7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-30T00:23:51.195Z
     step_results:
@@ -12118,5 +12118,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-30T00:24:13.114Z
-        completed_at: 2026-01-30T00:24:13.114Z
+        completed_at: 2026-01-30T00:24:26.773Z
+        notes: "Friction: (1) cd .kspec/ breaks checkpoint hook - already captured @01KG623H, (2) Task state
+          machine rigid - blocked→complete fails, (3) kspec task list vs tasks list inconsistency,
+          (4) inbox delete needs --yes flag, (5) Large meta.yaml requires grep+offset"
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-30T00:24:26.773Z
+        completed_at: 2026-01-30T00:24:26.773Z
     initiated_by: "@claude"
