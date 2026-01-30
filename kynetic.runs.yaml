@@ -12201,6 +12201,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-30T07:18:35.569Z
+    completed_at: 2026-01-30T07:24:01.514Z
     step_results:
       - step_index: 0
         status: completed
@@ -12244,4 +12245,11 @@ runs:
         notes: "Captured: 2 inbox items (01KG6WFQ batch resolve, 01KG6WJF resolved column), 1 success
           observation (01KG6WJZ triage pattern)"
     initiated_by: "@claude"
-    completed_at: 2026-01-30T07:24:01.514Z
+  - _ulid: 01KG73A8TC63GDKPKRCERKAPBN
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-30T09:21:29.420Z
+    step_results: []
+    initiated_by: "@claude"
