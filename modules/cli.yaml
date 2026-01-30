@@ -2552,6 +2552,23 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KG6CHDCEB2D34NEDF1QSWW80
+        slugs:
+          - ralph-task-limit
+        title: Ralph max-tasks-per-iteration limiting
+        type: requirement
+        tags: []
+        description: Limits how many tasks can be completed per iteration via --max-tasks flag. Default is 1
+          (conservative), 0 means unlimited. Enforcement is soft (message injection) then hard
+          (PreToolUse hook blocking task start). Counts only kspec task complete commands (not
+          submit, which is status change to pending_review).
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-30T02:43:26.222Z
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
