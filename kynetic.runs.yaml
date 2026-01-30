@@ -12149,6 +12149,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-30T04:45:26.341Z
+    completed_at: 2026-01-30T04:46:31.916Z
     step_results:
       - step_index: 0
         status: completed
@@ -12194,4 +12195,11 @@ runs:
         notes: No items to capture. Session was successful with no unique friction points. The
           plan-to-spec-to-task workflow confirmed working as documented.
     initiated_by: "@claude"
-    completed_at: 2026-01-30T04:46:31.916Z
+  - _ulid: 01KG6W97SH8NGD4MTHXWPDRYE2
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-30T07:18:35.569Z
+    step_results: []
+    initiated_by: "@claude"
