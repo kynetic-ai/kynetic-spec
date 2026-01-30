@@ -42339,7 +42339,7 @@
   description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
     HTML transformation causing asset hash mismatches
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42363,6 +42363,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-30T10:18:55.516Z
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   title: Add concrete examples to CLI --help for variadic options
@@ -42465,6 +42466,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #282. Fixed PR review subagent to complete task after merge by updating
+    prompt exit conditions and adding defensive verification in ralph."
   depends_on: []
   context: []
   priority: 1
@@ -42472,6 +42475,7 @@
   vcs_refs: []
   created_at: 2026-01-30T10:09:54.809Z
   started_at: 2026-01-30T10:10:16.116Z
+  completed_at: 2026-01-30T10:17:32.734Z
   notes:
     - _ulid: 01KG763ASZNQPPQJNY0M2J39N7
       created_at: 2026-01-30T10:10:07.807Z
@@ -42564,6 +42568,3 @@
       content: "PR created: #282 https://github.com/kynetic-ai/kynetic-spec/pull/282"
       supersedes: null
   todos: []
-  completed_at: 2026-01-30T10:17:32.734Z
-  closed_reason: "Merged in PR #282. Fixed PR review subagent to complete task after merge by updating
-    prompt exit conditions and adding defensive verification in ralph."
