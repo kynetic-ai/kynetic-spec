@@ -42350,6 +42350,7 @@
     - small
   vcs_refs: []
   created_at: 2026-01-30T08:44:50.533Z
+  started_at: 2026-01-30T10:18:55.516Z
   notes:
     - _ulid: 01KG7228Z3S7X6EWFHZSMS6SFR
       created_at: 2026-01-30T08:59:38.851Z
@@ -42361,9 +42362,15 @@
       author: "@claude"
       content: "Eligible: Small fix - set BUN_ENV=production in spawn call in serve.ts."
       supersedes: null
+    - _ulid: 01KG76PAQJKP08NB1PAKMS2T02
+      created_at: 2026-01-30T10:20:30.322Z
+      author: "@claude"
+      content: Added BUN_ENV=production to spawn options in both detached (daemon) and foreground mode
+        spawn calls. This prevents Bun dev mode HTML transformation that can cause asset hash
+        mismatches in web UI.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T10:18:55.516Z
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   title: Add concrete examples to CLI --help for variadic options
