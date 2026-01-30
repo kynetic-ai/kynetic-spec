@@ -12103,6 +12103,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-01-30T00:23:51.195Z
+    completed_at: 2026-01-30T00:27:55.712Z
     step_results:
       - step_index: 0
         status: completed
@@ -12142,4 +12143,11 @@ runs:
         notes: "Captured: (1) success observation @01KG64RZ about --force flag pattern, (2) inbox @01KG64S1
           for task complete --force to bypass blocked"
     initiated_by: "@claude"
-    completed_at: 2026-01-30T00:27:55.712Z
+  - _ulid: 01KG6KGSY4PWQSMB3NCAEEYN7R
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-01-30T04:45:26.341Z
+    step_results: []
+    initiated_by: "@claude"
