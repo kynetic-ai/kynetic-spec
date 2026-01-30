@@ -42725,4 +42725,28 @@
            - Allows completing tasks regardless of current state
            - Document when this is appropriate (e.g., stuck states, cleanup)
       supersedes: null
+    - _ulid: 01KG8KBC4WX81477D38NP8WBBH
+      created_at: 2026-01-30T23:20:57.245Z
+      author: "@claude"
+      content: |-
+        ## Documentation Locations Identified
+
+        ### 1. kspec util ulid (Priority locations)
+        - **AGENTS.md:864-882** - Replace/enhance the Node.js script with simpler CLI command
+        - **AGENTS.md:849-862** - Add to Test Helper Reference table
+        - **CLAUDE.md:7-38** - Add to Quick Start examples
+
+        ### 2. meta resolve multi-ref (Update these)
+        - **AGENTS.md:346** - Update single-ref example to show multi-ref
+        - **AGENTS.md:400** - Update Observation Lifecycle section
+        - **.claude/skills/meta/SKILL.md:166** - Update Resolving Observations section
+        - **.claude/skills/triage/docs/observations.md:29** - Update Processing Commands
+        - **.claude/skills/triage/SKILL.md:67** - Update Quick Start
+
+        ### 3. task complete --force (Key locations)
+        - **AGENTS.md:228** - Add to State transitions section
+        - **.claude/skills/task-work/SKILL.md:210-219** - Add to Complete section
+        - **.claude/skills/kspec/SKILL.md** - Task lifecycle examples
+        - **CLAUDE.md:27** - Quick Start example
+      supersedes: null
   todos: []
