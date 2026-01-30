@@ -17,6 +17,7 @@ export interface BatchOperationResult {
   status: "success" | "error";
   error?: string;
   message?: string;
+  warning?: string;
   data?: unknown;
 }
 
@@ -66,6 +67,7 @@ export interface BatchOperationOptions<TItem, TContext> {
     success: boolean;
     message?: string;
     error?: string;
+    warning?: string;
     data?: unknown;
   }>;
   /** Function to extract ULID from an item */
@@ -141,6 +143,7 @@ export async function executeBatchOperation<TItem, TContext>(
         status: opResult.success ? "success" : "error",
         message: opResult.message,
         error: opResult.error,
+        warning: opResult.warning,
         data: opResult.data,
       });
     } catch (err) {
