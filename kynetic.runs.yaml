@@ -12310,9 +12310,11 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KG757RS7YPEV7MC24SZCP2FE
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 6
     started_at: 2026-01-30T09:55:04.616Z
     step_results: []
     initiated_by: "@claude"
+    abort_reason: Task has no spec_ref - bug fix without formal spec
+    completed_at: 2026-01-30T09:55:26.076Z
