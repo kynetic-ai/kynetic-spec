@@ -42120,7 +42120,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG70TTSFTW79VCZQRV82AND2
   slugs: []
   title: Add --force flag to task complete command
