@@ -42173,22 +42173,42 @@
   created_at: 2026-01-30T08:40:29.333Z
   notes: []
   todos: []
-- title: Handle session checkpoint hook when in .kspec/ directory
+- _ulid: 01KG715ECQCHS16JF029SCJHXC
+  slugs: []
+  title: Handle session checkpoint hook when in .kspec/ directory
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Session checkpoint hook fails with error when working directory is inside .kspec/
     shadow worktree. Error: RUNNING_FROM_SHADOW. Should handle gracefully - either auto-detect and
     run from parent, or skip silently with warning instead of erroring. Current behavior disrupts
     session end. Triggered by: cd .kspec && git status (then hook runs from wrong directory)."
-  _ulid: 01KG715ECQCHS16JF029SCJHXC
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-30T08:43:54.135Z
+  notes: []
+  todos: []
+- title: Auto-set BUN_ENV=production when spawning daemon
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - reflection
+    - daemon
+    - small
+  description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
+    HTML transformation causing asset hash mismatches
+  _ulid: 01KG7175F5P831523KRV6KVZT5
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:43:54.135Z
+  created_at: 2026-01-30T08:44:50.533Z
   notes: []
   todos: []
