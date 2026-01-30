@@ -42050,8 +42050,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-30T08:13:18.956Z
-  notes: []
+  notes:
+    - _ulid: 01KG72273V2M782DPHNGQQ51F6
+      created_at: 2026-01-30T08:59:36.955Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
   slugs: []
   title: Fix workflow show 0-indexed step numbering
@@ -42070,8 +42076,14 @@
     - cli
   vcs_refs: []
   created_at: 2026-01-30T08:13:37.632Z
-  notes: []
+  notes:
+    - _ulid: 01KG7227BV9P47MYT9DZYF9B8Z
+      created_at: 2026-01-30T08:59:37.211Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
   slugs: []
   title: Add 'task list' alias for 'tasks' command
@@ -42090,8 +42102,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:15:06.893Z
-  notes: []
+  notes:
+    - _ulid: 01KG7227KJ66C9DN9YVZ1M3KZN
+      created_at: 2026-01-30T08:59:37.458Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG70TTSFTW79VCZQRV82AND2
   slugs: []
   title: Add --force flag to task complete command
@@ -42111,8 +42129,14 @@
     - tasks
   vcs_refs: []
   created_at: 2026-01-30T08:38:06.381Z
-  notes: []
+  notes:
+    - _ulid: 01KG7227V3EAKJZCXH9WXVSGH9
+      created_at: 2026-01-30T08:59:37.699Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG70WJSPMY1WJPQ6DF77JPZN
   slugs: []
   title: Add Resolved column to observation list with --all
@@ -42131,8 +42155,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:39:03.734Z
-  notes: []
+  notes:
+    - _ulid: 01KG72282K8N9EQ1N8687T8BDZ
+      created_at: 2026-01-30T08:59:37.939Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
   slugs: []
   title: Add 'kspec util ulid' command for ULID generation
@@ -42151,8 +42181,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:39:29.871Z
-  notes: []
+  notes:
+    - _ulid: 01KG72289YG7PQP9GPXW5CKGGN
+      created_at: 2026-01-30T08:59:38.174Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
   slugs: []
   title: Add multi-ref batch support to meta resolve
@@ -42171,8 +42207,14 @@
     - batch
   vcs_refs: []
   created_at: 2026-01-30T08:40:29.333Z
-  notes: []
+  notes:
+    - _ulid: 01KG7228H19V27CAKEMBCE1KPW
+      created_at: 2026-01-30T08:59:38.401Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG715ECQCHS16JF029SCJHXC
   slugs: []
   title: Handle session checkpoint hook when in .kspec/ directory
@@ -42190,8 +42232,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-30T08:43:54.135Z
-  notes: []
+  notes:
+    - _ulid: 01KG7228R5M5JB4656PPFRBKRK
+      created_at: 2026-01-30T08:59:38.629Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG7175F5P831523KRV6KVZT5
   slugs: []
   title: Auto-set BUN_ENV=production when spawning daemon
@@ -42210,8 +42258,14 @@
     - small
   vcs_refs: []
   created_at: 2026-01-30T08:44:50.533Z
-  notes: []
+  notes:
+    - _ulid: 01KG7228Z3S7X6EWFHZSMS6SFR
+      created_at: 2026-01-30T08:59:38.851Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   title: Add concrete examples to CLI --help for variadic options
@@ -42231,8 +42285,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:47:08.275Z
-  notes: []
+  notes:
+    - _ulid: 01KG72296NRACBA52HRQX11D8N
+      created_at: 2026-01-30T08:59:39.093Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
   slugs: []
   title: Document E2E fixture isolation pattern in AGENTS.md
@@ -42252,22 +42312,34 @@
     - e2e
   vcs_refs: []
   created_at: 2026-01-30T08:47:38.660Z
-  notes: []
+  notes:
+    - _ulid: 01KG7229DTTT2DF6KWT73YY988
+      created_at: 2026-01-30T08:59:39.323Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
-- title: Add explicit loop end signal for ralph agents
+  automation: needs_review
+- _ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
+  slugs: []
+  title: Add explicit loop end signal for ralph agents
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Ralph loop: Add signal/mechanism for agents to explicitly end the loop when target
     work is complete (e.g., special exit command or completion marker)"
-  _ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-01-30T08:57:22.432Z
-  notes: []
+  notes:
+    - _ulid: 01KG7229MZABY4EGXT7RXNYAR4
+      created_at: 2026-01-30T08:59:39.551Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
