@@ -42463,7 +42463,7 @@
   type: task
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42564,3 +42564,6 @@
       content: "PR created: #282 https://github.com/kynetic-ai/kynetic-spec/pull/282"
       supersedes: null
   todos: []
+  completed_at: 2026-01-30T10:17:32.734Z
+  closed_reason: "Merged in PR #282. Fixed PR review subagent to complete task after merge by updating
+    prompt exit conditions and adding defensive verification in ralph."
