@@ -42341,6 +42341,11 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG732NEKV6PNXGZ6BF762QQ5
+      created_at: 2026-01-30T09:17:20.212Z
+      author: "@claude"
+      content: "Eligible: Created spec @cli-help-examples with ac-1 for variadic option examples."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
