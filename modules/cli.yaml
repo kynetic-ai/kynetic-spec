@@ -2654,6 +2654,10 @@ features:
             given: The ralph session ends or a new iteration starts
             when: Ralph checks for stale end-iteration markers
             then: Any marker from previous iterations is cleared
+          - id: ac-noop-outside
+            given: The command is run outside of a ralph loop
+            when: The agent executes 'kspec ralph end-iteration'
+            then: The command succeeds but logs a warning that no ralph session was detected
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
