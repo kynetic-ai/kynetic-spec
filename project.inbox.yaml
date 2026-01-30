@@ -843,12 +843,3 @@ inbox:
     created_at: 2026-01-29T23:41:06.397Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KG6WFQE0PWBMMH4PGZMXMX2T
-    text: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1 @ref2
-      @ref3 --resolution "..."' for batch resolving related observations
-    created_at: 2026-01-30T07:22:08.192Z
-    tags:
-      - cli
-      - meta
-      - batch
-    added_by: "@claude"

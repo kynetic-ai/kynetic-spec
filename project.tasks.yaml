@@ -42133,23 +42133,43 @@
   created_at: 2026-01-30T08:39:03.734Z
   notes: []
   todos: []
-- title: Add 'kspec util ulid' command for ULID generation
+- _ulid: 01KG70XCAJPAQE5064RMHH34RK
+  slugs: []
+  title: Add 'kspec util ulid' command for ULID generation
   type: task
-  priority: 4
+  description: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML
+    editing. Useful when creating new spec items or features directly in YAML."
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 4
   tags:
     - reflection
     - cli
     - dx
-  description: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML
-    editing. Useful when creating new spec items or features directly in YAML."
-  _ulid: 01KG70XCAJPAQE5064RMHH34RK
+  vcs_refs: []
+  created_at: 2026-01-30T08:39:29.871Z
+  notes: []
+  todos: []
+- title: Add multi-ref batch support to meta resolve
+  type: task
+  priority: 4
+  spec_ref: null
+  tags:
+    - cli
+    - meta
+    - batch
+  description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
+    @ref2 @ref3 --resolution "..."' for batch resolving related observations
+  _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:39:29.871Z
+  created_at: 2026-01-30T08:40:29.333Z
   notes: []
   todos: []
