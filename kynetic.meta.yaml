@@ -4745,8 +4745,10 @@ observations:
     content: ShellA
     created_at: 2026-01-30T11:25:19.037Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: ShellTest
+    resolved_at: 2026-01-30T11:25:26.717Z
+    resolved_by: "@claude"
   - _ulid: 01KG7AD2AXC4ZZBNMZW62K516P
     type: friction
     content: ShellB
