@@ -4511,8 +4511,11 @@ observations:
       array when Array.isArray(value)."
     created_at: 2026-01-27T16:02:06.172Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Incorrect diagnosis - bits-ui Select works correctly; issue was likely misuse of spread
+      operator or other code error
+    resolved_at: 2026-01-30T05:14:58.910Z
+    resolved_by: "@claude"
   - _ulid: 01KG031Y246EC054DSQ2CEX9SF
     type: success
     content: Console log capture in E2E tests revealed exact bits-ui callback values, making the array
