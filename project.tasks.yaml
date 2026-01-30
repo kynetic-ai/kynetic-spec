@@ -42056,6 +42056,12 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG7261ZA2X7CXK6F64C02Z18
+      created_at: 2026-01-30T09:01:42.762Z
+      author: "@claude"
+      content: "Eligible: Clear bug fix - rename helpContent['workflow'] key to avoid collision with
+        workflow command."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
