@@ -42182,7 +42182,7 @@
     effectively done (covered by other work) but technically blocked. Current workaround is cancel,
     which loses 'completed' semantic. Should warn but allow completion."
   spec_ref: "@task-commands"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42219,6 +42219,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T10:51:25.887Z
+  closed_reason: "Merged in PR #285. Added --force flag to task complete command to bypass blocked
+    state. Shows warning when force-completing, adds note documenting forced completion with
+    blocked_by reason. AC coverage: @task-commands ac-1 verified with 2 tests."
 - _ulid: 01KG70WJSPMY1WJPQ6DF77JPZN
   slugs: []
   title: Add Resolved column to observation list with --all
