@@ -42044,6 +42044,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #279 merged. Fixed help workflow command collision by renaming
+    helpContent['workflow'] to 'task-workflow'."
   depends_on: []
   context: []
   priority: 3
@@ -42051,6 +42053,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:13:18.956Z
   started_at: 2026-01-30T09:29:27.194Z
+  completed_at: 2026-01-30T09:37:14.269Z
   notes:
     - _ulid: 01KG72273V2M782DPHNGQQ51F6
       created_at: 2026-01-30T08:59:36.955Z
@@ -42078,9 +42081,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-30T09:37:14.269Z
-  closed_reason: "PR #279 merged. Fixed help workflow command collision by renaming
-    helpContent['workflow'] to 'task-workflow'."
 - _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
   slugs: []
   title: Fix workflow show 0-indexed step numbering
@@ -42088,7 +42088,7 @@
   description: Fix workflow show 0-indexed display - Progress should show 1-indexed (3/3 not 2/3),
     step numbers should be 1-indexed (1,2,3 not 0,1,2)
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42112,6 +42112,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-30T09:37:23.482Z
 - _ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
   slugs: []
   title: Add 'task list' alias for 'tasks' command
