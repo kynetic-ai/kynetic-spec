@@ -42138,7 +42138,7 @@
   description: Add kspec task list as alias for kspec tasks. CLI naming consistency - other commands
     use 'kspec <noun> list' pattern.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42163,6 +42163,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-30T10:32:32.531Z
 - _ulid: 01KG70TTSFTW79VCZQRV82AND2
   slugs: []
   title: Add --force flag to task complete command
@@ -42341,6 +42342,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #283. Set BUN_ENV=production in all daemon spawn locations (serve.ts
+    detached/foreground modes and maybeAutoStartDaemon in index.ts) to prevent Bun dev mode HTML
+    transformation causing asset hash mismatches."
   depends_on: []
   context: []
   priority: 3
@@ -42351,6 +42355,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:44:50.533Z
   started_at: 2026-01-30T10:18:55.516Z
+  completed_at: 2026-01-30T10:31:30.509Z
   notes:
     - _ulid: 01KG7228Z3S7X6EWFHZSMS6SFR
       created_at: 2026-01-30T08:59:38.851Z
@@ -42371,10 +42376,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-30T10:31:30.509Z
-  closed_reason: "Merged in PR #283. Set BUN_ENV=production in all daemon spawn locations (serve.ts
-    detached/foreground modes and maybeAutoStartDaemon in index.ts) to prevent Bun dev mode HTML
-    transformation causing asset hash mismatches."
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   title: Add concrete examples to CLI --help for variadic options
