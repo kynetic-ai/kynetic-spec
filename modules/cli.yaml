@@ -2569,6 +2569,12 @@ features:
         traits: []
         notes: []
         created: 2026-01-30T02:43:26.222Z
+        acceptance_criteria:
+          - id: ac-flag
+            given: User runs kspec ralph
+            when: --max-tasks flag is provided or defaults
+            then: Parses N as positive integer (1-999) or 0 for unlimited; default is 1; invalid values exit
+              with code 2
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
