@@ -3259,3 +3259,17 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KG73272E0JY1Z4FCBWZDF4WQ
+    slugs:
+      - cli-help-examples
+    title: CLI Help Examples
+    type: requirement
+    tags: []
+    description: CLI help output includes concrete examples for complex options, especially variadic flags.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-30T09:17:05.486Z
