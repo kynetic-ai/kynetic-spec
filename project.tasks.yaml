@@ -42363,5 +42363,11 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG72AV57CFS811VM78M4YTGZ
+      created_at: 2026-01-30T09:04:19.623Z
+      author: "@claude"
+      content: "Kept needs_review: Feature needs design decision on mechanism (special command vs exit
+        file vs tool response). Create spec with ACs before automation."
+      supersedes: null
   todos: []
   automation: needs_review
