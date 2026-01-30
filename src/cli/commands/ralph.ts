@@ -479,6 +479,30 @@ async function buildSubagentContext(
 }
 
 /**
+ * Check if a task was completed by the subagent.
+ * AC: @ralph-subagent-spawning ac-12
+ */
+async function verifyTaskCompleted(taskRef: string): Promise<boolean> {
+  const result = spawnSync("kspec", ["task", "get", taskRef, "--json"], {
+    encoding: "utf-8",
+    stdio: "pipe",
+  });
+
+  if (result.status !== 0) {
+    warn(`Failed to check task status for ${taskRef}: ${result.stderr}`);
+    return false;
+  }
+
+  try {
+    const task = JSON.parse(result.stdout);
+    return task.status === "completed";
+  } catch {
+    warn(`Failed to parse task status for ${taskRef}`);
+    return false;
+  }
+}
+
+/**
  * Mark a task as needing review due to subagent timeout.
  * AC: @ralph-subagent-spawning ac-9
  */
@@ -680,8 +704,22 @@ async function processPendingReviewTasks(
         );
         consecutiveFailures.count++;
       } else {
-        success(`${DEFAULT_SUBAGENT_PREFIX} Completed: ${task.ref}`);
-        consecutiveFailures.count = 0;
+        // AC: @ralph-subagent-spawning ac-12 - Verify task was completed
+        const wasCompleted = await verifyTaskCompleted(task.ref);
+        if (wasCompleted) {
+          success(`${DEFAULT_SUBAGENT_PREFIX} Completed: ${task.ref}`);
+          consecutiveFailures.count = 0;
+        } else {
+          // Task wasn't completed - subagent likely exited early
+          warn(
+            `${DEFAULT_SUBAGENT_PREFIX} Subagent succeeded but task ${task.ref} is still pending_review`,
+          );
+          await markTaskNeedsReview(
+            task.ref,
+            "Subagent merged PR but did not complete the task. Review required to verify merge and complete task manually.",
+          );
+          consecutiveFailures.count++;
+        }
       }
 
       // Check if we've hit max failures

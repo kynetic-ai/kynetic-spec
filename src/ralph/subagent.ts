@@ -85,7 +85,7 @@ export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
 
 /**
  * Build the prompt for a PR review subagent.
- * AC: @ralph-subagent-spawning ac-2, ac-10
+ * AC: @ralph-subagent-spawning ac-2, ac-10, ac-12
  */
 export function buildSubagentPrompt(context: SubagentContext): string {
   const specSection = context.specWithACs
@@ -129,13 +129,17 @@ This will:
 2. Check spec alignment
 3. Wait for CI to pass
 4. Merge the PR if all gates pass
+5. Complete the task with PR reference
+
+**CRITICAL: You MUST complete the task after merging the PR.**
+Use: \`kspec task complete ${context.taskRef} --reason "Merged in PR #N. <summary>"\`
 
 **Exit when:**
-- PR is merged successfully
+- PR is merged AND task is completed successfully
 - PR cannot be merged (quality gates failed, needs human review)
 - No PR found for this task
 
-Do NOT start new work. Your only job is to get this specific PR merged.
+Do NOT start new work. Your only job is to get this specific PR merged and task completed.
 `;
 }
 

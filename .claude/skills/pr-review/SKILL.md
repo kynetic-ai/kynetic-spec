@@ -145,12 +145,20 @@ PR #234 merged successfully.
 Task @task-reflect-loop-skill ready for completion.
 ```
 
-## Integration
+## Task Completion
 
-After PR merge, the calling context (ralph or user) should:
+**CRITICAL: You MUST complete the task after merging the PR.**
+
+The `@pr-review-loop` workflow includes task completion as the final step (ac-7). After the PR is merged:
 
 ```bash
-kspec task complete @task-ref --reason "PR #N merged"
+kspec task complete @task-ref --reason "Merged in PR #N. <summary>"
 ```
 
-This skill focuses solely on the PR review/merge cycle.
+Include in the reason:
+- PR number
+- Summary of what was implemented
+- Any notable changes or deviations
+- AC coverage confirmation
+
+Do NOT exit after merge without completing the task.
