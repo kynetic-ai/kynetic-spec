@@ -42134,7 +42134,7 @@
   description: "Add --force flag to task complete to bypass blocked state. Use case: task is
     effectively done (covered by other work) but technically blocked. Current workaround is cancel,
     which loses 'completed' semantic. Should warn but allow completion."
-  spec_ref: null
+  spec_ref: "@task-commands"
   status: pending
   blocked_by: []
   depends_on: []
@@ -42153,7 +42153,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG70WJSPMY1WJPQ6DF77JPZN
   slugs: []
   title: Add Resolved column to observation list with --all
