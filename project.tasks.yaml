@@ -41827,6 +41827,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-30T02:44:09.719Z
+  started_at: 2026-01-30T02:44:46.050Z
   notes:
     - _ulid: 01KG6CJQVPY003VNGCB5VDFMJM
       created_at: 2026-01-30T02:44:09.719Z
@@ -41989,5 +41990,43 @@
            - Blocks when marker exists
            - Ignores stale markers
       supersedes: null
+    - _ulid: 01KG6DAX3AZAK5S1NTSQDP39BP
+      created_at: 2026-01-30T02:57:21.515Z
+      author: "@claude"
+      content: |-
+        ## Implementation Complete
+
+        ### Files Modified
+        1. **src/cli/commands/ralph.ts** - Core logic
+           - Added --max-tasks <n> CLI option (default 1, 0=unlimited)
+           - Added flag validation (0-999 range)
+           - Added info message with max-tasks configuration
+           - Added dry-run output showing max-tasks
+           - Added task limit marker file operations (write/read/clear/clearStale)
+           - Added extractBashCommand() to detect Bash tool calls from SessionUpdate
+           - Added detectTaskCompleteCommand() pattern matcher
+           - Added task completion detection in ACP update handler
+           - Added wrap-up message injection when limit reached
+           - Added marker file cleanup in finally block
+
+        2. **src/cli/commands/session.ts** - Stats query
+           - Added IterationStats interface
+           - Added getIterationStats(ctx, since) function for querying completions
+
+        3. **.claude/hooks/ralph-task-limit-guard.sh** - New PreToolUse hook
+           - Intercepts kspec task start commands
+           - Checks marker file at .claude/ralph-task-limit.json
+           - Blocks when marker exists with active:true
+           - Provides helpful error message with limit info
+
+        4. **.claude/settings.json** - Hook registration
+           - Added ralph-task-limit-guard.sh to PreToolUse hooks array
+
+        ### Tests Added
+        - tests/ralph/task-limit.test.ts (11 tests)
+        - tests/hooks/ralph-task-limit-guard.test.ts (9 tests)
+        - tests/cli/session-iteration-stats.test.ts (3 tests)
+
+        All 23 new tests pass. Existing tests unaffected.
+      supersedes: null
   todos: []
-  started_at: 2026-01-30T02:44:46.050Z
