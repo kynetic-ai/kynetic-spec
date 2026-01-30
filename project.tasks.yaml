@@ -42149,6 +42149,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:15:06.893Z
+  started_at: 2026-01-30T10:32:32.531Z
   notes:
     - _ulid: 01KG7227KJ66C9DN9YVZ1M3KZN
       created_at: 2026-01-30T08:59:37.458Z
@@ -42161,9 +42162,14 @@
       content: "Eligible: Simple CLI alias - add 'list' subcommand to 'task' that delegates to 'tasks'
         command."
       supersedes: null
+    - _ulid: 01KG77EG5ZNEY1BPNC4HG0JM4Q
+      created_at: 2026-01-30T10:33:42.335Z
+      author: "@claude"
+      content: Added 'kspec task list' as alias for 'kspec tasks list'. All options work identically
+        (--status, --type, --tag, --meta-ref, --grep, --verbose, --full). Help shows it's an alias.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T10:32:32.531Z
 - _ulid: 01KG70TTSFTW79VCZQRV82AND2
   slugs: []
   title: Add --force flag to task complete command
