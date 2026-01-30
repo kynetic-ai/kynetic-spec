@@ -4747,4 +4747,11 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG7AD2AXC4ZZBNMZW62K516P
+    type: friction
+    content: ShellB
+    created_at: 2026-01-30T11:25:21.117Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
