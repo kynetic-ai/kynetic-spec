@@ -3083,6 +3083,9 @@ features:
         given: a user needs valid ULIDs for YAML fixtures
         when: running 'kspec util ulid' or 'kspec util ulid --count N'
         then: outputs N valid ULIDs (default 1), using Crockford base32 format suitable for kspec schemas
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
