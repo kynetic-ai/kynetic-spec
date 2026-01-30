@@ -42339,7 +42339,7 @@
   description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
     HTML transformation causing asset hash mismatches
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42371,6 +42371,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T10:31:30.509Z
+  closed_reason: "Merged in PR #283. Set BUN_ENV=production in all daemon spawn locations (serve.ts
+    detached/foreground modes and maybeAutoStartDaemon in index.ts) to prevent Bun dev mode HTML
+    transformation causing asset hash mismatches."
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   title: Add concrete examples to CLI --help for variadic options
