@@ -42471,6 +42471,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-30T10:09:54.809Z
+  started_at: 2026-01-30T10:10:16.116Z
   notes:
     - _ulid: 01KG763ASZNQPPQJNY0M2J39N7
       created_at: 2026-01-30T10:10:07.807Z
@@ -42520,5 +42521,41 @@
 
         - .claude/skills/pr-review/SKILL.md (remove conflicting guidance)
       supersedes: null
+    - _ulid: 01KG766NMEBG6BFXRTRJ1JHKFH
+      created_at: 2026-01-30T10:11:57.198Z
+      author: "@claude"
+      content: >-
+        ## Implementation Complete
+
+
+        ### Changes Made
+
+
+        1. **src/ralph/subagent.ts** (buildSubagentPrompt)
+           - Added step 5: Complete the task with PR reference
+           - Added CRITICAL note requiring task completion
+           - Updated exit conditions: 'PR merged AND task completed successfully'
+           - Added ac-12 to AC annotation
+
+        2. **src/cli/commands/ralph.ts** (processPendingReviewTasks)
+           - Added verifyTaskCompleted() helper function
+           - Updated success path to verify task was completed
+           - If task still pending_review after subagent success, marks needs_review with note
+
+        3. **.claude/skills/pr-review/SKILL.md**
+           - Replaced 'Integration' section with 'Task Completion' section
+           - Removed guidance about caller completing task
+           - Added CRITICAL note that subagent MUST complete task
+
+        4. **.kspec/kynetic.meta.yaml** (spec)
+           - Added ac-12: 'subagent must complete the task; ralph verifies task is completed after subagent success'
+
+        ### Testing
+
+        - Build succeeds
+
+        - ralph tests pass (11 tests)
+
+        - @pr-review-loop workflow unchanged (already correct)
+      supersedes: null
   todos: []
-  started_at: 2026-01-30T10:10:16.116Z
