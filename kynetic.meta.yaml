@@ -4729,4 +4729,11 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG7ACKM3GYQPQ6RHY81BXW72
+    type: friction
+    content: Batch2
+    created_at: 2026-01-30T11:25:06.051Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
