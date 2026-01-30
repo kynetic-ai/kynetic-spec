@@ -42088,7 +42088,7 @@
   description: Fix workflow show 0-indexed display - Progress should show 1-indexed (3/3 not 2/3),
     step numbers should be 1-indexed (1,2,3 not 0,1,2)
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42128,6 +42128,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T09:46:23.730Z
+  closed_reason: "PR #280 merged. Fixed 0-indexed step numbering in workflow commands - progress and
+    step columns now display 1-indexed values."
 - _ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
   slugs: []
   title: Add 'task list' alias for 'tasks' command
