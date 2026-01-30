@@ -42050,6 +42050,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-30T08:13:18.956Z
+  started_at: 2026-01-30T09:29:27.194Z
   notes:
     - _ulid: 01KG72273V2M782DPHNGQQ51F6
       created_at: 2026-01-30T08:59:36.955Z
@@ -42062,9 +42063,16 @@
       content: "Eligible: Clear bug fix - rename helpContent['workflow'] key to avoid collision with
         workflow command."
       supersedes: null
+    - _ulid: 01KG73TJWK1YQHCQ83QJB7B6X0
+      created_at: 2026-01-30T09:30:24.019Z
+      author: "@claude"
+      content: Fixed by renaming helpContent['workflow'] to 'task-workflow' to avoid collision with the
+        workflow CLI command. Updated seeAlso reference in setup help as well. Now 'kspec help
+        workflow' shows the workflow command help and 'kspec help task-workflow' shows the typical
+        workflow guide.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T09:29:27.194Z
 - _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
   slugs: []
   title: Fix workflow show 0-indexed step numbering
