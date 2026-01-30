@@ -45,6 +45,7 @@ import {
   WorkflowStepSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
+import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
 
@@ -86,6 +87,27 @@ function resolveMetaRefToUlid(
   if (observation) return { ulid: observation._ulid, type: "observation" };
 
   return null;
+}
+
+/**
+ * Batch-compatible resolver for observations.
+ * Returns null instead of calling process.exit() to allow partial failure handling.
+ * AC: @trait-multi-ref-batch ac-2, ac-8 - Partial failure handling and ref resolution
+ */
+function resolveObservationRefForBatch(
+  ref: string,
+  observations: Observation[],
+): { item: Observation | null; error?: string } {
+  const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
+  const observation = observations.find((o) =>
+    o._ulid.startsWith(normalizedRef),
+  );
+
+  if (!observation) {
+    return { item: null, error: `Observation not found: ${ref}` };
+  }
+
+  return { item: observation };
 }
 
 /**
@@ -1067,107 +1089,150 @@ export function registerMetaCommands(program: Command): void {
     });
 
   // AC-obs-4, AC-obs-7, AC-obs-9: kspec meta resolve
+  // AC: @trait-multi-ref-batch - Batch support with --refs flag
   meta
-    .command("resolve <ref> [resolution]")
-    .description("Resolve an observation")
-    .action(async (ref: string, resolution: string | undefined) => {
-      try {
-        const ctx = await initContext();
+    .command("resolve [ref] [resolution]")
+    .description("Resolve an observation (or multiple with --refs)")
+    .option("--refs <refs...>", "Resolve multiple observations by ref")
+    .option(
+      "--resolution <text>",
+      "Resolution text (required for batch mode unless observations have promoted tasks)",
+    )
+    .action(
+      async (
+        ref: string | undefined,
+        resolutionArg: string | undefined,
+        options,
+      ) => {
+        try {
+          const ctx = await initContext();
 
-        if (!ctx.manifestPath) {
-          error(errors.project.noKspecProject);
-          process.exit(EXIT_CODES.ERROR);
-        }
+          if (!ctx.manifestPath) {
+            error(errors.project.noKspecProject);
+            process.exit(EXIT_CODES.ERROR);
+          }
 
-        const metaCtx = await loadMetaContext(ctx);
-        const observations = metaCtx.observations || [];
+          const metaCtx = await loadMetaContext(ctx);
+          const observations = metaCtx.observations || [];
 
-        // Find observation
-        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
-        const observation = observations.find((o) =>
-          o._ulid.startsWith(normalizedRef),
-        );
-
-        if (!observation) {
-          error(errors.reference.observationNotFound(ref));
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        // AC-obs-7: Check if already resolved
-        if (observation.resolved) {
-          const resolvedDate = new Date(observation.resolved_at!)
-            .toISOString()
-            .split("T")[0];
-          const resolutionText = observation.resolution || "";
-          const truncated =
-            resolutionText.length > 50
-              ? `${resolutionText.substring(0, 50)}...`
-              : resolutionText;
-          error(
-            errors.conflict.observationAlreadyResolved(resolvedDate, truncated),
-          );
-          process.exit(EXIT_CODES.CONFLICT);
-        }
-
-        // AC-obs-9: Auto-populate resolution from task completion if promoted
-        let finalResolution = resolution;
-        if (!finalResolution && observation.promoted_to) {
-          // Fetch task to get completion reason
+          // Load tasks/items for auto-resolution from promoted tasks
           const tasks = await loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const index = new ReferenceIndex(tasks, items);
-          const taskResult = index.resolve(observation.promoted_to);
 
-          if (taskResult.ok) {
-            const item = taskResult.item;
-            // Type guard: ensure this is a task (has status and depends_on properties)
-            if ("status" in item && "depends_on" in item) {
-              const task = item as LoadedTask;
-              if (task.status === "completed" && task.closed_reason) {
-                finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
-              } else if (task.status === "completed") {
-                finalResolution = `Resolved via task ${observation.promoted_to}`;
-              } else {
-                error(`Task ${observation.promoted_to} is not completed yet`);
-                process.exit(EXIT_CODES.ERROR);
+          // Resolution can come from positional arg or --resolution flag
+          const resolution = resolutionArg || options.resolution;
+
+          // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
+          const refsFlag = options.refs
+            ? [...new Set(options.refs as string[])]
+            : undefined;
+
+          // AC: @trait-multi-ref-batch ac-1, ac-2, ac-3, ac-4, ac-5
+          const result = await executeBatchOperation({
+            positionalRef: ref,
+            refsFlag,
+            context: { ctx, observations, tasks, items, index, resolution },
+            items: observations,
+            index: index,
+            resolveRef: (refStr, obsList) => {
+              return resolveObservationRefForBatch(
+                refStr,
+                obsList as Observation[],
+              );
+            },
+            executeOperation: async (
+              observation: Observation,
+              { ctx, tasks, items, index, resolution },
+            ) => {
+              // AC-obs-7: Check if already resolved
+              if (observation.resolved) {
+                const resolvedDate = new Date(observation.resolved_at!)
+                  .toISOString()
+                  .split("T")[0];
+                const resolutionText = observation.resolution || "";
+                const truncated =
+                  resolutionText.length > 50
+                    ? `${resolutionText.substring(0, 50)}...`
+                    : resolutionText;
+                return {
+                  success: false,
+                  error: `Already resolved on ${resolvedDate}: ${truncated}`,
+                };
               }
-            } else {
-              error(`Reference ${observation.promoted_to} is not a task`);
-              process.exit(EXIT_CODES.ERROR);
-            }
-          } else {
-            error(`Task ${observation.promoted_to} not found`);
-            process.exit(EXIT_CODES.ERROR);
-          }
-        }
 
-        if (!finalResolution) {
-          error(errors.validation.resolutionRequired);
+              // AC-obs-9: Auto-populate resolution from task completion if promoted
+              let finalResolution = resolution;
+              if (!finalResolution && observation.promoted_to) {
+                const taskResult = index.resolve(observation.promoted_to);
+
+                if (taskResult.ok) {
+                  const item = taskResult.item;
+                  // Type guard: ensure this is a task
+                  if ("status" in item && "depends_on" in item) {
+                    const task = item as LoadedTask;
+                    if (task.status === "completed" && task.closed_reason) {
+                      finalResolution = `Resolved via task ${observation.promoted_to}: ${task.closed_reason}`;
+                    } else if (task.status === "completed") {
+                      finalResolution = `Resolved via task ${observation.promoted_to}`;
+                    } else {
+                      return {
+                        success: false,
+                        error: `Task ${observation.promoted_to} is not completed yet`,
+                      };
+                    }
+                  } else {
+                    return {
+                      success: false,
+                      error: `Reference ${observation.promoted_to} is not a task`,
+                    };
+                  }
+                } else {
+                  return {
+                    success: false,
+                    error: `Task ${observation.promoted_to} not found`,
+                  };
+                }
+              }
+
+              if (!finalResolution) {
+                return {
+                  success: false,
+                  error: "Resolution text required",
+                };
+              }
+
+              // AC-obs-4: Update observation
+              observation.resolved = true;
+              observation.resolution = finalResolution;
+              observation.resolved_at = new Date().toISOString();
+              observation.resolved_by = observation.author;
+
+              await saveObservation(ctx, observation);
+
+              // AC: @trait-shadow-commit ac-1
+              await commitIfShadow(
+                ctx.shadow,
+                "observation-resolve",
+                observation._ulid.substring(0, 8),
+              );
+
+              return {
+                success: true,
+                message: `Resolved: ${observation._ulid.substring(0, 8)}`,
+              };
+            },
+            getUlid: (obs: Observation) => obs._ulid,
+          });
+
+          // AC: @trait-multi-ref-batch ac-5, ac-7 - Output formatting
+          formatBatchOutput(result, "Resolve");
+        } catch (err) {
+          error(errors.failures.resolveObservation, err);
           process.exit(EXIT_CODES.ERROR);
         }
-
-        // AC-obs-4: Update observation
-        observation.resolved = true;
-        observation.resolution = finalResolution;
-        observation.resolved_at = new Date().toISOString();
-        observation.resolved_by = observation.author; // Use same author
-
-        await saveObservation(ctx, observation);
-
-        // AC: @trait-shadow-commit ac-1
-        await commitIfShadow(
-          ctx.shadow,
-          "observation-resolve",
-          observation._ulid.substring(0, 8),
-        );
-
-        // AC-obs-4: outputs "OK Resolved: <ULID-prefix>"
-        success(`Resolved: ${observation._ulid.substring(0, 8)}`);
-      } catch (err) {
-        error(errors.failures.resolveObservation, err);
-        process.exit(EXIT_CODES.ERROR);
-      }
-    });
+      },
+    );
 
   // Meta add command - create new meta items
   meta

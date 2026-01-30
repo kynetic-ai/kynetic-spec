@@ -959,6 +959,255 @@ describe('Integration: observation-task resolution loop', () => {
   });
 });
 
+// AC: @trait-multi-ref-batch - Batch support for meta resolve
+describe('Integration: meta resolve batch mode', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // Helper to create observation and get full ULID (avoids prefix collision in fast tests)
+  function createObservation(type: string, content: string): string {
+    const result = kspecJson<any>(`meta observe ${type} "${content}"`, tempDir);
+    return result._ulid;
+  }
+
+  // AC: @trait-multi-ref-batch ac-1 - --refs operates on all provided references
+  it('should resolve multiple observations with --refs flag', () => {
+    // Create multiple observations - use JSON mode to get full ULIDs
+    const obs1Ulid = createObservation('friction', 'Friction 1');
+    const obs2Ulid = createObservation('success', 'Success 1');
+    const obs3Ulid = createObservation('question', 'Question 1');
+
+    // Verify we have 3 distinct ULIDs
+    expect(new Set([obs1Ulid, obs2Ulid, obs3Ulid]).size).toBe(3);
+
+    // Resolve all three with --refs and shared resolution text
+    const result = kspecJson<any>(
+      `meta resolve --refs @${obs1Ulid} @${obs2Ulid} @${obs3Ulid} --resolution "Batch resolved"`,
+      tempDir
+    );
+
+    // Should process all 3
+    expect(result.summary.total).toBe(3);
+    expect(result.summary.succeeded).toBe(3);
+    expect(result.summary.failed).toBe(0);
+
+    // Verify all are resolved
+    const observations = kspecJson<any[]>('meta observations --all', tempDir);
+    const resolved = observations.filter(
+      (o) => [obs1Ulid, obs2Ulid, obs3Ulid].includes(o._ulid)
+    );
+    expect(resolved.length).toBe(3);
+    expect(resolved.every((o) => o.resolved)).toBe(true);
+  });
+
+  // AC: @trait-multi-ref-batch ac-2 - Continue processing after errors
+  it('should continue processing when some refs fail', () => {
+    // Create two observations, resolve one
+    const obs1Ulid = createObservation('friction', 'Can resolve');
+    const obs2Ulid = createObservation('friction', 'Already done');
+
+    // Resolve obs2 first
+    kspec(`meta resolve @${obs2Ulid} "Pre-resolved"`, tempDir);
+
+    // Try to resolve both - obs2 should fail (already resolved)
+    // JSON mode will still return structured data even on partial failure
+    try {
+      const result = kspecJson<any>(
+        `meta resolve --refs @${obs1Ulid} @${obs2Ulid} --resolution "Batch resolve"`,
+        tempDir
+      );
+      // Should show partial success
+      expect(result.summary.succeeded).toBe(1);
+      expect(result.summary.failed).toBe(1);
+    } catch (e: any) {
+      // Partial failure still exits with error code but should contain JSON
+      const stdout = e.stdout || e.message || '';
+      // Parse the JSON from stdout
+      const jsonMatch = stdout.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const result = JSON.parse(jsonMatch[0]);
+        expect(result.summary.succeeded).toBe(1);
+        expect(result.summary.failed).toBe(1);
+      } else {
+        // Fall back to checking for partial success message in human output
+        expect(e.message).toContain('1 of 2');
+      }
+    }
+
+    // Obs1 should be resolved despite obs2 failing
+    const observations = kspecJson<any[]>('meta observations --all', tempDir);
+    const obs1 = observations.find((o) => o._ulid === obs1Ulid);
+    expect(obs1?.resolved).toBe(true);
+  });
+
+  // AC: @trait-multi-ref-batch ac-3 - Exit code 0 when all succeed
+  it('should exit with code 0 when all refs succeed', () => {
+    // Create observations
+    const obs1Ulid = createObservation('friction', 'Resolve me 1');
+    const obs2Ulid = createObservation('friction', 'Resolve me 2');
+
+    // Verify distinct ULIDs
+    expect(obs1Ulid).not.toBe(obs2Ulid);
+
+    // Should not throw (exit code 0) - use JSON to verify
+    const result = kspecJson<any>(
+      `meta resolve --refs @${obs1Ulid} @${obs2Ulid} --resolution "All good"`,
+      tempDir
+    );
+    expect(result.summary.total).toBe(2);
+    expect(result.summary.succeeded).toBe(2);
+    expect(result.success).toBe(true);
+  });
+
+  // AC: @trait-multi-ref-batch ac-4 - Exit code 1 when any fail
+  it('should exit with code 1 when any refs fail', () => {
+    const obsUlid = createObservation('friction', 'Will fail');
+
+    // Resolve it first
+    kspec(`meta resolve @${obsUlid} "Already done"`, tempDir);
+
+    // Try to resolve again - should fail with exit code 1
+    // Use kspecRun to get full result object including exit code
+    const result = kspecRun(
+      `meta resolve --refs @${obsUlid} --resolution "Should fail"`,
+      tempDir,
+      { expectFail: true }
+    );
+    expect(result.exitCode).toBe(1);
+    // Output should contain the error reason
+    expect(result.stdout + result.stderr).toContain('Already resolved');
+  });
+
+  // AC: @trait-multi-ref-batch ac-5 - Success and failure counts reported
+  it('should report success and failure counts', () => {
+    // Create 3 observations, pre-resolve 1
+    const obs1Ulid = createObservation('friction', 'Good 1');
+    const obs2Ulid = createObservation('friction', 'Good 2');
+    const obs3Ulid = createObservation('friction', 'Already done');
+
+    kspec(`meta resolve @${obs3Ulid} "Pre-resolved"`, tempDir);
+
+    try {
+      // Use JSON mode to get precise counts
+      const result = kspecJson<any>(
+        `meta resolve --refs @${obs1Ulid} @${obs2Ulid} @${obs3Ulid} --resolution "Batch"`,
+        tempDir
+      );
+      expect(result.summary.succeeded).toBe(2);
+      expect(result.summary.failed).toBe(1);
+      expect(result.summary.total).toBe(3);
+    } catch (e: any) {
+      // Parse JSON from error output
+      const stdout = e.stdout || e.message || '';
+      const jsonMatch = stdout.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const result = JSON.parse(jsonMatch[0]);
+        expect(result.summary.succeeded).toBe(2);
+        expect(result.summary.failed).toBe(1);
+      } else {
+        expect(e.message).toContain('2 of 3');
+      }
+    }
+  });
+
+  // AC: @trait-multi-ref-batch ac-6 - Mutual exclusion of positional ref and --refs
+  it('should error when both positional ref and --refs are provided', () => {
+    const obsUlid = createObservation('friction', 'Test');
+
+    try {
+      kspec(
+        `meta resolve @${obsUlid} --refs @${obsUlid} --resolution "Both"`,
+        tempDir
+      );
+      expect.fail('Should have thrown error');
+    } catch (e: any) {
+      expect(e.message).toContain('Cannot use both positional ref and --refs');
+    }
+  });
+
+  // AC: @trait-multi-ref-batch ac-7 - JSON output contains array of results
+  it('should output array of results in JSON mode', () => {
+    const obs1Ulid = createObservation('friction', 'JSON test 1');
+    const obs2Ulid = createObservation('friction', 'JSON test 2');
+
+    // Verify distinct ULIDs
+    expect(obs1Ulid).not.toBe(obs2Ulid);
+
+    const result = kspecJson<any>(
+      `meta resolve --refs @${obs1Ulid} @${obs2Ulid} --resolution "JSON batch"`,
+      tempDir
+    );
+
+    // Should be a BatchResult object with results array
+    expect(result.success).toBe(true);
+    expect(result.summary).toBeDefined();
+    expect(result.summary.total).toBe(2);
+    expect(result.summary.succeeded).toBe(2);
+    expect(result.summary.failed).toBe(0);
+    expect(result.results).toHaveLength(2);
+    expect(result.results[0].status).toBe('success');
+    expect(result.results[1].status).toBe('success');
+  });
+
+  // AC: @trait-multi-ref-batch ac-8 - Duplicate refs processed once only
+  it('should deduplicate refs and process each once', () => {
+    const obsUlid = createObservation('friction', 'Dedup test');
+
+    // Pass same ref multiple times - use JSON to verify count
+    const result = kspecJson<any>(
+      `meta resolve --refs @${obsUlid} @${obsUlid} @${obsUlid} --resolution "Single resolution"`,
+      tempDir
+    );
+
+    // Should only process once due to deduplication
+    expect(result.summary.total).toBe(1);
+    expect(result.summary.succeeded).toBe(1);
+
+    // Verify only resolved once
+    const observations = kspecJson<any[]>('meta observations --all', tempDir);
+    const obs = observations.find((o) => o._ulid === obsUlid);
+    expect(obs?.resolved).toBe(true);
+    expect(obs?.resolution).toBe('Single resolution');
+  });
+
+  // Test that single-ref mode still works (backwards compatibility)
+  it('should still work with positional ref argument (single mode)', () => {
+    const obsUlid = createObservation('friction', 'Single mode test');
+
+    const output = kspec(`meta resolve @${obsUlid} "Single resolution"`, tempDir);
+    // Single mode output shows just the result without X of Y counts
+    expect(output).toContain('Resolve:');
+
+    // Verify resolved
+    const observations = kspecJson<any[]>('meta observations --all', tempDir);
+    const obs = observations.find((o) => o._ulid === obsUlid);
+    expect(obs?.resolved).toBe(true);
+  });
+
+  // Test resolution text can come from --resolution flag in single mode too
+  it('should accept --resolution flag in single mode', () => {
+    const obsUlid = createObservation('friction', 'Resolution flag test');
+
+    const output = kspec(
+      `meta resolve @${obsUlid} --resolution "Via flag"`,
+      tempDir
+    );
+    // Single mode shows result
+    expect(output).toContain('Resolve:');
+
+    const observations = kspecJson<any[]>('meta observations --all', tempDir);
+    const obs = observations.find((o) => o._ulid === obsUlid);
+    expect(obs?.resolution).toBe('Via flag');
+  });
+});
+
 describe('Integration: meta_ref in tasks', () => {
   let tempDir: string;
 
