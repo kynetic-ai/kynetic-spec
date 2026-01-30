@@ -2588,6 +2588,10 @@ features:
             given: --max-tasks 0 is specified
             when: Ralph runs iteration
             then: No task limit enforced (legacy behavior); no marker file written
+          - id: ac-hook-block
+            given: Marker file exists at .claude/ralph-task-limit.json with active:true
+            when: PreToolUse hook intercepts kspec task start command
+            then: Hook blocks with message explaining task limit reached; allows other commands
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
