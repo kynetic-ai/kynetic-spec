@@ -92,10 +92,12 @@ async function maybeAutoStartDaemon(): Promise<void> {
     }
 
     // Start daemon in background using current runtime
+    // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
     const child = spawn(process.execPath, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
       detached: true,
       stdio: 'ignore',
       cwd: process.cwd(),
+      env: { ...process.env, BUN_ENV: 'production' },
     });
 
     // Detach from parent
