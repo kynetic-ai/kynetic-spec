@@ -1005,6 +1005,11 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: a task is blocked by dependencies
+        when: running 'kspec task complete @ref --force'
+        then: the task is completed despite blocked state, with a warning displayed
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
