@@ -42166,7 +42166,7 @@
   type: task
   description: Add Resolved column to observation list output when using --all flag - show ✓/✗ status
     so you can see resolved vs unresolved at a glance
-  spec_ref: null
+  spec_ref: "@obs-list-display"
   status: pending
   blocked_by: []
   depends_on: []
@@ -42185,7 +42185,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
   slugs: []
   title: Add 'kspec util ulid' command for ULID generation
