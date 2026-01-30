@@ -42197,7 +42197,7 @@
   type: task
   description: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML
     editing. Useful when creating new spec items or features directly in YAML."
-  spec_ref: null
+  spec_ref: "@cli-utilities"
   status: pending
   blocked_by: []
   depends_on: []
@@ -42216,7 +42216,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
   slugs: []
   title: Add multi-ref batch support to meta resolve
