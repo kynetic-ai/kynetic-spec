@@ -74,6 +74,9 @@ traits:
         given: batch operation with duplicate refs
         when: --refs @a @a @b provided
         then: each ref processed once only
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFDZSHFANRHKH2PJGT0907PC
     slugs:
       - trait-confirmation-prompt
