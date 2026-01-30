@@ -42587,6 +42587,32 @@
         considered but CLI is more consistent with other agent actions and provides better audit
         trail."
       supersedes: null
+    - _ulid: 01KG8NEAM04PVJ57E2AFR07B5R
+      created_at: 2026-01-30T23:57:31.137Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        1. Added EndIterationMarker interface and helpers (write/read/clear/clearStale)
+
+        2. Added 'kspec ralph end-iteration' subcommand with --reason flag
+
+        3. Modified ralph to detect end-iteration command via extractBashCommand pattern matching
+
+        4. Added endIterationRequested state variable that triggers graceful loop exit after
+        iteration
+
+        5. Added cleanup in iteration start and session end to clear stale markers
+
+
+        The pattern follows the existing task-limit marker approach for consistency. Detection
+        happens in the streaming update handler, and graceful exit occurs after the current
+        iteration's reflect phase completes.
+
+
+        Tests added: tests/ralph/end-iteration.test.ts (8 tests, all passing)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
