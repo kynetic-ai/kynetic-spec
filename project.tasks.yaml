@@ -42324,7 +42324,7 @@
   description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
     @ref2 @ref3 --resolution "..."' for batch resolving related observations
   spec_ref: "@trait-multi-ref-batch"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
