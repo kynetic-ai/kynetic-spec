@@ -2554,6 +2554,11 @@ features:
             given: subagent output is displayed
             when: rendering to terminal
             then: output includes [REVIEW SUBAGENT] prefix to distinguish from main agent
+          - id: ac-12
+            given: subagent successfully merges PR
+            when: workflow completes
+            then: subagent must complete the task (kspec task complete) before exiting; ralph verifies task is
+              completed after subagent success
         status:
           maturity: draft
           implementation: in_progress
