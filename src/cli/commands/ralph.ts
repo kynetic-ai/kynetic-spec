@@ -58,9 +58,144 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, success, warn } from "../output.js";
 import {
   gatherSessionContext,
+  getIterationStats,
   type ActiveTaskSummary,
   type SessionContext,
 } from "./session.js";
+
+// ─── Task Limit Marker ──────────────────────────────────────────────────────
+
+/**
+ * Marker file schema for task limit enforcement.
+ * AC: @ralph-task-limit ac-marker-format
+ */
+interface TaskLimitMarker {
+  active: boolean;
+  since: string; // ISO8601
+  max: number;
+  completed: number;
+  sessionId: string;
+}
+
+const TASK_LIMIT_MARKER_PATH = ".claude/ralph-task-limit.json";
+const STALE_MARKER_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
+
+/**
+ * Write task limit marker file.
+ * AC: @ralph-task-limit ac-wrapup, ac-marker-format
+ */
+async function writeTaskLimitMarker(
+  rootDir: string,
+  marker: TaskLimitMarker,
+): Promise<void> {
+  const markerPath = path.join(rootDir, TASK_LIMIT_MARKER_PATH);
+  const dir = path.dirname(markerPath);
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(markerPath, JSON.stringify(marker, null, 2));
+}
+
+/**
+ * Read task limit marker file if it exists.
+ */
+async function readTaskLimitMarker(
+  rootDir: string,
+): Promise<TaskLimitMarker | null> {
+  const markerPath = path.join(rootDir, TASK_LIMIT_MARKER_PATH);
+  try {
+    const content = await fs.readFile(markerPath, "utf-8");
+    return JSON.parse(content) as TaskLimitMarker;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clear task limit marker file.
+ * AC: @ralph-task-limit ac-reset
+ */
+async function clearTaskLimitMarker(rootDir: string): Promise<void> {
+  const markerPath = path.join(rootDir, TASK_LIMIT_MARKER_PATH);
+  try {
+    await fs.unlink(markerPath);
+  } catch {
+    // Ignore if file doesn't exist
+  }
+}
+
+/**
+ * Clear stale marker files (older than 1 hour).
+ * AC: @ralph-task-limit ac-reset
+ */
+async function clearStaleMarker(rootDir: string): Promise<boolean> {
+  const marker = await readTaskLimitMarker(rootDir);
+  if (!marker) return false;
+
+  const markerAge = Date.now() - new Date(marker.since).getTime();
+  if (markerAge > STALE_MARKER_THRESHOLD_MS) {
+    await clearTaskLimitMarker(rootDir);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Detect if a Bash command is a task complete command.
+ * AC: @ralph-task-limit ac-detection
+ */
+function detectTaskCompleteCommand(command: string): boolean {
+  // Match variations of "kspec task complete"
+  // Don't match "kspec task submit" - that's just status change to pending_review
+  return /\bkspec\s+task\s+complete\b/.test(command);
+}
+
+/**
+ * Extract Bash command from SessionUpdate if it's a tool_call or tool_call_update event.
+ * Returns null if not a Bash tool call.
+ */
+function extractBashCommand(update: SessionUpdate): string | null {
+  const u = update as Record<string, unknown>;
+
+  // Check if this is a tool call event
+  if (u.sessionUpdate !== "tool_call" && u.sessionUpdate !== "tool_call_update") {
+    return null;
+  }
+
+  // Extract tool name - check various locations Claude Code uses
+  let toolName: string | undefined;
+
+  // Try _meta.claudeCode.toolName first (Claude Code pattern)
+  const meta = u._meta as Record<string, unknown> | undefined;
+  if (meta) {
+    const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
+    if (claudeCode?.toolName) {
+      toolName = String(claudeCode.toolName);
+    } else if (meta.toolName) {
+      toolName = String(meta.toolName);
+    }
+  }
+
+  // Fall back to name or title field
+  if (!toolName && u.name) {
+    toolName = String(u.name);
+  }
+  if (!toolName && u.title) {
+    toolName = String(u.title);
+  }
+
+  // Check if it's a Bash tool (handle MCP prefix variations)
+  if (!toolName) return null;
+  const isBash = toolName === "Bash" || toolName.endsWith("__Bash");
+  if (!isBash) return null;
+
+  // Extract command from input
+  const input = (u.rawInput || u.input || u.params) as Record<string, unknown> | undefined;
+  if (!input) return null;
+
+  const command = input.command;
+  if (typeof command !== "string") return null;
+
+  return command;
+}
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
@@ -600,6 +735,11 @@ export function registerRalphCommand(program: Command): void {
       "--focus <instructions>",
       "Focus instructions included in every iteration prompt",
     )
+    .option(
+      "--max-tasks <n>",
+      "Max tasks per iteration (0 = unlimited)",
+      "1",
+    )
     .action(async (options) => {
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
@@ -625,6 +765,13 @@ export function registerRalphCommand(program: Command): void {
         if (Number.isNaN(restartEvery) || restartEvery < 0) {
           error("--restart-every must be a non-negative integer");
           process.exit(EXIT_CODES.ERROR);
+        }
+
+        // AC: @ralph-task-limit ac-flag
+        const maxTasks = parseInt(options.maxTasks, 10);
+        if (Number.isNaN(maxTasks) || maxTasks < 0 || maxTasks > 999) {
+          error("--max-tasks must be 0 (unlimited) or a positive integer up to 999");
+          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         // Handle custom adapter command for testing
@@ -659,8 +806,10 @@ export function registerRalphCommand(program: Command): void {
 
         const restartInfo =
           restartEvery > 0 ? `, restart every ${restartEvery}` : "";
+        const maxTasksInfo =
+          maxTasks === 0 ? "unlimited" : `${maxTasks}`;
         info(
-          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo})`,
+          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo}, max-tasks=${maxTasksInfo})`,
         );
         if (options.focus) {
           info(`Focus: ${options.focus}`);
@@ -687,6 +836,7 @@ export function registerRalphCommand(program: Command): void {
             maxLoops,
             maxRetries,
             maxFailures,
+            maxTasks,
             yolo: options.yolo,
             focus: options.focus,
           },
@@ -700,9 +850,24 @@ export function registerRalphCommand(program: Command): void {
         const translator = createTranslator();
         const renderer = createCliRenderer();
 
+        // Task limit state - tracks completions per iteration
+        // AC: @ralph-task-limit ac-reset, ac-wrapup
+        let taskLimitReached = false;
+        let tasksCompletedThisIteration = 0;
+
         try {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
+
+            // AC: @ralph-task-limit ac-reset - Reset counter and clear stale markers at iteration start
+            taskLimitReached = false;
+            tasksCompletedThisIteration = 0;
+            const wasStale = await clearStaleMarker(ctx.rootDir);
+            if (wasStale) {
+              info("Cleared stale task limit marker from previous session");
+            }
+            // Also clear any marker from previous iteration of this session
+            await clearTaskLimitMarker(ctx.rootDir);
 
             // Gather fresh context each iteration (only automation-eligible tasks)
             // AC: @cli-ralph ac-16
@@ -760,9 +925,18 @@ export function registerRalphCommand(program: Command): void {
               sessionId,
             );
 
+            // AC: @ralph-task-limit ac-dryrun
             if (options.dryRun) {
               console.log(
-                chalk.yellow("=== DRY RUN - Task Work Prompt ===\n"),
+                chalk.yellow("=== DRY RUN - Configuration ===\n"),
+              );
+              console.log(`  max-loops: ${maxLoops}`);
+              console.log(`  max-tasks: ${maxTasks === 0 ? "unlimited" : maxTasks}`);
+              console.log(`  max-retries: ${maxRetries}`);
+              console.log(`  max-failures: ${maxFailures}`);
+              console.log(`  restart-every: ${restartEvery === 0 ? "never" : restartEvery}`);
+              console.log(
+                chalk.yellow("\n=== Task Work Prompt ===\n"),
               );
               console.log(taskWorkPrompt);
               console.log(chalk.yellow("\n=== Reflect Prompt ===\n"));
@@ -822,6 +996,49 @@ export function registerRalphCommand(program: Command): void {
                       if (event) {
                         renderer.render(event);
                       }
+
+                      // AC: @ralph-task-limit ac-detection, ac-wrapup
+                      // Detect task completions for limit enforcement
+                      if (maxTasks > 0 && !taskLimitReached) {
+                        const bashCmd = extractBashCommand(update);
+                        if (bashCmd && detectTaskCompleteCommand(bashCmd)) {
+                          // Pattern matched - verify via kspec query
+                          getIterationStats(ctx, iterationStartTime)
+                            .then(async (stats) => {
+                              if (stats.tasks_completed >= maxTasks && !taskLimitReached) {
+                                taskLimitReached = true;
+                                tasksCompletedThisIteration = stats.tasks_completed;
+                                info(`Task limit reached (${stats.tasks_completed}/${maxTasks})`);
+
+                                // AC: @ralph-task-limit ac-marker-format, ac-wrapup
+                                // Write marker file for hook enforcement
+                                const marker: TaskLimitMarker = {
+                                  active: true,
+                                  since: iterationStartTime.toISOString(),
+                                  max: maxTasks,
+                                  completed: stats.tasks_completed,
+                                  sessionId,
+                                };
+                                await writeTaskLimitMarker(ctx.rootDir, marker);
+
+                                // Inject wrap-up message to agent
+                                if (agent && acpSessionId) {
+                                  const wrapUpMsg = `\n\n**TASK LIMIT REACHED** - ${stats.tasks_completed} task(s) completed this iteration (limit: ${maxTasks}).\n\nPlease wrap up your current work and exit cleanly. Do not start new tasks.\n\nCompleted tasks this iteration: ${stats.completed_refs.join(", ")}`;
+                                  agent.client.prompt({
+                                    sessionId: acpSessionId,
+                                    prompt: [{ type: "text", text: wrapUpMsg }],
+                                  }).catch(() => {
+                                    // Ignore if message injection fails
+                                  });
+                                }
+                              }
+                            })
+                            .catch(() => {
+                              // Ignore query failures - detection is best-effort
+                            });
+                        }
+                      }
+
                       // Log raw update event (async, non-blocking)
                       appendEvent(specDir, {
                         session_id: sessionId,
@@ -1000,6 +1217,9 @@ export function registerRalphCommand(program: Command): void {
           if (agent) {
             agent.kill();
           }
+
+          // AC: @ralph-task-limit ac-reset - Clear marker file when session ends
+          await clearTaskLimitMarker(ctx.rootDir);
 
           // Log session end
           const status =
