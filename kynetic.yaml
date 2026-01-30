@@ -76,7 +76,7 @@ traits:
         then: each ref processed once only
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFDZSHFANRHKH2PJGT0907PC
     slugs:
       - trait-confirmation-prompt
