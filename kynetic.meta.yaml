@@ -4754,6 +4754,8 @@ observations:
     content: ShellB
     created_at: 2026-01-30T11:25:21.117Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: ShellTest
+    resolved_at: 2026-01-30T11:25:26.831Z
+    resolved_by: "@claude"
 includes: []
