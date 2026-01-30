@@ -233,10 +233,13 @@ workflows:
         on_fail: Wait for CI to finish. Do not merge while checks are running.
       - type: check
         content: All CI checks pass (green)
-        on_fail: |
+        on_fail: >
           Fix failures, push changes.
+
           WAIT for CI to re-run completely.
-          THEN re-verify this step (CI passing) before continuing - do not proceed while CI is running.
+
+          THEN re-verify this step (CI passing) before continuing - do not proceed while CI is
+          running.
       - type: action
         content: |
           Read ALL review comments on the PR.
@@ -4622,6 +4625,14 @@ observations:
       implementation approach. Both complete before coding begins, providing thorough context AND a
       concrete plan. Used successfully for ref normalization task - all tests passed first try."
     created_at: 2026-01-29T21:10:56.264Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KG64RZ0E5YPAMRYH81851MJA
+    type: success
+    content: CLI --force flag pattern works well for agent/script use. inbox delete --force skips
+      confirmation. Same pattern could apply to other commands needing non-interactive mode.
+    created_at: 2026-01-30T00:27:45.039Z
     author: "@claude"
     resolved: false
     resolution: null
