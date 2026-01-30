@@ -41818,7 +41818,7 @@
   type: task
   spec_ref: "@ralph-task-limit"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -42030,3 +42030,7 @@
         All 23 new tests pass. Existing tests unaffected.
       supersedes: null
   todos: []
+  completed_at: 2026-01-30T04:03:21.903Z
+  closed_reason: "Implemented --max-tasks flag for ralph. PR #278 merged. Adds soft enforcement
+    (wrap-up message) and hard enforcement (PreToolUse hook). Default is 1 task per iteration, 0 for
+    unlimited."
