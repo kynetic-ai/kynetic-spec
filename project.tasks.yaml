@@ -42138,7 +42138,7 @@
   description: Add kspec task list as alias for kspec tasks. CLI naming consistency - other commands
     use 'kspec <noun> list' pattern.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42170,6 +42170,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T10:39:01.448Z
+  closed_reason: "Merged in PR #284. Added 'kspec task list' as alias for 'kspec tasks list' for CLI
+    naming consistency - other commands use 'kspec <noun> list' pattern. All options work
+    identically (--status, --type, --tag, --meta-ref, --grep, --verbose, --full)."
 - _ulid: 01KG70TTSFTW79VCZQRV82AND2
   slugs: []
   title: Add --force flag to task complete command
