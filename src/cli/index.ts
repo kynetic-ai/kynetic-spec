@@ -35,6 +35,7 @@ import {
   registerTaskCommands,
   registerTasksCommands,
   registerTraitCommands,
+  registerUtilCommands,
   registerValidateCommand,
   registerWorkflowCommand,
 } from "./commands/index.js";
@@ -166,6 +167,7 @@ registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 registerMergeDriverCommand(program);
 registerExportCommand(program);
+registerUtilCommands(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {

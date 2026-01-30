@@ -21,5 +21,6 @@ export { registerShadowCommands } from "./shadow.js";
 export { registerTaskCommands } from "./task.js";
 export { registerTasksCommands } from "./tasks.js";
 export { registerItemTraitCommands, registerTraitCommands } from "./trait.js";
+export { registerUtilCommands } from "./util.js";
 export { registerValidateCommand } from "./validate.js";
 export { registerWorkflowCommand } from "./workflow.js";
