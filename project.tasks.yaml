@@ -42374,7 +42374,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
   slugs: []
   title: Add explicit loop end signal for ralph agents
