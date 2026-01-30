@@ -3625,8 +3625,11 @@ observations:
       timeout or add stdio logging for test debugging.
     created_at: 2026-01-23T17:57:18.782Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Obsolete - daemon-serve.test.ts was refactored into multiple smaller test files
+      (daemon-server.test.ts, daemon-api-*.test.ts, etc.)
+    resolved_at: 2026-01-30T05:18:24.199Z
+    resolved_by: "@claude"
   - _ulid: 01KFP9AJAJKHTZ005GYT1E017V
     type: success
     content: Parallel subagent research for planning - Launching multiple explore agents simultaneously
