@@ -42512,7 +42512,7 @@
     packages/web-ui/tests/README.md explaining that E2E tests use dedicated fixtures at
     packages/web-ui/tests/fixtures/ to avoid breaking unit tests
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42545,6 +42545,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T12:00:39.118Z
+  closed_reason: "Merged in PR #290. Added E2E Fixture Isolation Pattern section to AGENTS.md
+    documenting the separation between E2E fixtures (packages/web-ui/tests/fixtures/) and unit test
+    fixtures (tests/fixtures/), including directory structure, why separation is needed, and how
+    test-base.ts creates isolated environments."
 - _ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
   slugs: []
   title: Add explicit loop end signal for ralph agents
