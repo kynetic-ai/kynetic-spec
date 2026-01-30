@@ -42339,7 +42339,7 @@
   description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
     HTML transformation causing asset hash mismatches
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
