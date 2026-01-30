@@ -42457,7 +42457,7 @@
     showing 'kspec task set @ref --depends-on @ref1 @ref2' instead of just '<refs...>'. Surfaced
     when trial/error was needed to find space-separated format.
   spec_ref: "@cli-help-examples"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42500,6 +42500,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T11:53:41.923Z
+  closed_reason: "Merged in PR #289. Added concrete examples to --help output for all commands with
+    variadic options (task set/add/complete/cancel/delete, meta resolve/add, item add/set, inbox
+    add/promote, module add). 12 tests validate AC @cli-help-examples ac-1."
 - _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
   slugs: []
   title: Document E2E fixture isolation pattern in AGENTS.md
