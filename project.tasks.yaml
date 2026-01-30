@@ -42457,19 +42457,67 @@
       supersedes: null
   todos: []
   automation: needs_review
-- title: Fix PR review subagent not completing task after merge
+- _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
+  slugs: []
+  title: Fix PR review subagent not completing task after merge
   type: task
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-01-30T10:09:54.809Z
-  notes: []
+  notes:
+    - _ulid: 01KG763ASZNQPPQJNY0M2J39N7
+      created_at: 2026-01-30T10:10:07.807Z
+      author: "@claude"
+      content: >-
+        ## Issue Analysis
+
+
+        The PR review subagent merges PRs but doesn't complete the associated task, leaving it in
+        pending_review for the next iteration where the task limit gets triggered.
+
+
+        ### Root Cause
+
+
+        1. **Subagent prompt exit conditions** (src/ralph/subagent.ts:133-136):
+           - Says 'Exit when: PR is merged successfully'
+           - But task completion is step 8 in @pr-review-loop workflow (after merge at step 7)
+           - So subagent exits BEFORE completing the task
+
+        2. **Conflicting documentation**:
+           - SKILL.md says task completion is caller's responsibility
+           - @pr-review-loop workflow includes task completion as ac-7
+           - Subagent follows the 'exit when merged' instruction
+
+        ### Fix Approach
+
+
+        1. **Update subagent prompt** - Change exit conditions to require task completion:
+           - 'PR merged and task completed successfully' (not just 'PR merged')
+
+        2. **Check @pr-review-loop workflow** - Ensure consistent messaging
+
+
+        3. **Add defensive check in ralph** - After subagent success:
+           - Verify task transitioned from pending_review to completed
+           - If still pending_review, instruct subagent to complete properly (not auto-complete)
+
+        ### Files to Modify
+
+
+        - src/ralph/subagent.ts (buildSubagentPrompt)
+
+        - src/cli/commands/ralph.ts (processPendingReviewTasks success path)
+
+        - .kspec/kynetic.meta.yaml (@pr-review-loop if needed)
+
+        - .claude/skills/pr-review/SKILL.md (remove conflicting guidance)
+      supersedes: null
   todos: []
