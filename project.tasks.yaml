@@ -42212,24 +42212,45 @@
   created_at: 2026-01-30T08:44:50.533Z
   notes: []
   todos: []
-- title: Add concrete examples to CLI --help for variadic options
+- _ulid: 01KG71BBZK3PV36RVW1JA5G22N
+  slugs: []
+  title: Add concrete examples to CLI --help for variadic options
+  type: task
+  description: CLI help syntax examples - Add concrete examples to variadic options like --depends-on
+    showing 'kspec task set @ref --depends-on @ref1 @ref2' instead of just '<refs...>'. Surfaced
+    when trial/error was needed to find space-separated format.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 4
+  tags:
+    - reflection
+    - cli
+    - dx
+  vcs_refs: []
+  created_at: 2026-01-30T08:47:08.275Z
+  notes: []
+  todos: []
+- title: Document E2E fixture isolation pattern in AGENTS.md
   type: task
   priority: 4
   spec_ref: null
   tags:
     - reflection
-    - cli
-    - dx
-  description: CLI help syntax examples - Add concrete examples to variadic options like --depends-on
-    showing 'kspec task set @ref --depends-on @ref1 @ref2' instead of just '<refs...>'. Surfaced
-    when trial/error was needed to find space-separated format.
-  _ulid: 01KG71BBZK3PV36RVW1JA5G22N
+    - docs
+    - e2e
+  description: Document E2E fixture isolation pattern - add to AGENTS.md or
+    packages/web-ui/tests/README.md explaining that E2E tests use dedicated fixtures at
+    packages/web-ui/tests/fixtures/ to avoid breaking unit tests
+  _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:47:08.275Z
+  created_at: 2026-01-30T08:47:38.660Z
   notes: []
   todos: []
