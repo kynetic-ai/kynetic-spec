@@ -194,7 +194,7 @@ async function workflowRuns(options: {
         (w) => `@${w._ulid}` === run.workflow_ref,
       );
       const workflowName = workflow?.id || run.workflow_ref;
-      const stepProgress = `${run.current_step}/${run.total_steps}`;
+      const stepProgress = `${run.current_step + 1}/${run.total_steps}`;
       const started = new Date(run.started_at).toLocaleString();
 
       table.push([
@@ -237,7 +237,7 @@ async function workflowShow(runRef: string, _options: { json?: boolean }) {
     console.log(`ID:           ${shortUlid(run._ulid)}`);
     console.log(`Workflow:     ${workflowName} (${run.workflow_ref})`);
     console.log(`Status:       ${formatStatus(run.status)}`);
-    console.log(`Progress:     ${run.current_step}/${run.total_steps}`);
+    console.log(`Progress:     ${run.current_step + 1}/${run.total_steps}`);
     console.log(`Started:      ${new Date(run.started_at).toLocaleString()}`);
 
     if (run.initiated_by) {
@@ -267,7 +267,7 @@ async function workflowShow(runRef: string, _options: { json?: boolean }) {
 
       for (const result of run.step_results) {
         table.push([
-          result.step_index.toString(),
+          (result.step_index + 1).toString(),
           formatStatus(result.status),
           new Date(result.started_at).toLocaleString(),
           new Date(result.completed_at).toLocaleString(),
