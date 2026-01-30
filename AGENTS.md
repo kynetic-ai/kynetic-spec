@@ -663,6 +663,39 @@ test('my test', async ({ daemon, page }) => {
 
 **Do NOT** start a global daemon for E2E tests - each test run needs isolation.
 
+**E2E Fixture Isolation Pattern:**
+
+E2E tests use dedicated fixtures at `packages/web-ui/tests/fixtures/` to avoid breaking unit tests. This separation is critical:
+
+```
+packages/web-ui/tests/
+├── fixtures/              # E2E test fixtures ONLY
+│   ├── test-base.ts      # Playwright fixture (daemon lifecycle)
+│   ├── kynetic.yaml      # Sample kspec project
+│   ├── project.tasks.yaml
+│   ├── project.inbox.yaml
+│   ├── kynetic.meta.yaml
+│   └── project-tests/    # Mock test files for AC coverage scanning
+└── e2e/                   # E2E test specs
+    └── *.spec.ts
+```
+
+Why separate fixtures:
+- **Unit test fixtures** (`tests/fixtures/`) use `setupTempFixtures()` with specific YAML structures for testing validators, parsers, etc.
+- **E2E fixtures** (`packages/web-ui/tests/fixtures/`) simulate a real kspec project with realistic data for UI testing
+- Mixing them causes schema validation failures (unit tests expect minimal structures, E2E expects complete projects)
+
+When `test-base.ts` runs:
+1. Creates temp directory at `/tmp/kspec-e2e-<timestamp>`
+2. Copies E2E fixtures to `<temp>/.kspec/` (simulating shadow worktree)
+3. Initializes git repo (required for kspec detection)
+4. Creates fake shadow worktree `.git` file (so kspec finds spec directory)
+5. Starts daemon pointing at temp directory
+6. Tests run against isolated project
+7. Cleanup removes temp directory and stops daemon
+
+**Important:** Never add E2E fixtures to the main `tests/fixtures/` directory. Keep them in `packages/web-ui/tests/fixtures/`.
+
 ### Web UI Development
 
 ```bash
