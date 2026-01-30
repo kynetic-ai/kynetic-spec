@@ -42373,6 +42373,12 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG735PZY242M03M71Y5VD28X
+      created_at: 2026-01-30T09:19:00.094Z
+      author: "@claude"
+      content: "Eligible: Pure documentation task - add E2E fixture isolation section to AGENTS.md
+        explaining packages/web-ui/tests/fixtures/ usage."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
