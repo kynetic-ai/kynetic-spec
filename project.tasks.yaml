@@ -42459,6 +42459,9 @@
   spec_ref: "@cli-help-examples"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #289. Added concrete examples to --help output for all commands with
+    variadic options (task set/add/complete/cancel/delete, meta resolve/add, item add/set, inbox
+    add/promote, module add). 12 tests validate AC @cli-help-examples ac-1."
   depends_on: []
   context: []
   priority: 4
@@ -42469,6 +42472,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:47:08.275Z
   started_at: 2026-01-30T11:40:59.737Z
+  completed_at: 2026-01-30T11:53:41.923Z
   notes:
     - _ulid: 01KG72296NRACBA52HRQX11D8N
       created_at: 2026-01-30T08:59:39.093Z
@@ -42500,10 +42504,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-30T11:53:41.923Z
-  closed_reason: "Merged in PR #289. Added concrete examples to --help output for all commands with
-    variadic options (task set/add/complete/cancel/delete, meta resolve/add, item add/set, inbox
-    add/promote, module add). 12 tests validate AC @cli-help-examples ac-1."
 - _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
   slugs: []
   title: Document E2E fixture isolation pattern in AGENTS.md
@@ -42512,7 +42512,7 @@
     packages/web-ui/tests/README.md explaining that E2E tests use dedicated fixtures at
     packages/web-ui/tests/fixtures/ to avoid breaking unit tests
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42537,6 +42537,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-30T11:54:24.127Z
 - _ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
   slugs: []
   title: Add explicit loop end signal for ralph agents
