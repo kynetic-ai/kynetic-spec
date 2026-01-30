@@ -230,10 +230,13 @@ async function startServer(opts: {
     const runtime = 'bun';
 
     // Spawn detached process
+    // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
+    // which can cause asset hash mismatches in the web UI
     const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       detached: true,
       stdio: 'ignore', // TODO: redirect to log file when logging implemented
       cwd: process.cwd(),
+      env: { ...process.env, BUN_ENV: 'production' },
     });
 
     // Detach from parent
@@ -276,9 +279,11 @@ async function startServer(opts: {
 
     const runtime = 'bun';
 
+    // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
     const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
       stdio: 'inherit',
       cwd: process.cwd(),
+      env: { ...process.env, BUN_ENV: 'production' },
     });
 
     // Handle Ctrl+C - forward SIGTERM to child for graceful shutdown
