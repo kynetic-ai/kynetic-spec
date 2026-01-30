@@ -2580,6 +2580,10 @@ features:
             when: ACP update handler receives Bash tool call containing kspec task complete
             then: Ralph queries kspec for actual completion count since iteration start, not relying on pattern
               alone
+          - id: ac-wrapup
+            given: N tasks completed this iteration (N equals max-tasks)
+            when: Detection triggers and count verified via kspec query
+            then: Ralph writes marker file and injects wrap-up message telling agent to stop starting new tasks
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
