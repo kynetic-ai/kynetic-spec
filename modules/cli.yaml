@@ -2556,7 +2556,7 @@ features:
             then: output includes [REVIEW SUBAGENT] prefix to distinguish from main agent
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KG6CHDCEB2D34NEDF1QSWW80
         slugs:
           - ralph-task-limit
