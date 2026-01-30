@@ -42088,6 +42088,11 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG72743CGNC657NRZCQ942P2
+      created_at: 2026-01-30T09:02:17.708Z
+      author: "@claude"
+      content: "Eligible: Clear off-by-one bug - add +1 to step/progress display values."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
