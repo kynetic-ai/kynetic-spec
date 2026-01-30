@@ -226,6 +226,7 @@ pending → in_progress → pending_review → completed
 - `kspec task start` → `in_progress`
 - `kspec task submit` → `pending_review` (code done, awaiting merge)
 - `kspec task complete` → `completed` (from in_progress, pending, or pending_review)
+- `kspec task complete --force` → `completed` (force from any state, for cleanup or stuck tasks)
 - `kspec task block` → `blocked`
 - `kspec task unblock` → `pending`
 - `kspec task cancel` → `cancelled`
@@ -342,8 +343,9 @@ kspec meta observe success "Pattern that worked well..."
 # Review later
 kspec meta observations list
 
-# Resolve when addressed
+# Resolve when addressed (single or batch)
 kspec meta resolve @observation-ref "How it was resolved"
+kspec meta resolve @ref1 @ref2 @ref3 "Resolved in batch"
 
 # Promote to task if actionable
 kspec meta promote @observation-ref --title "Task title"
@@ -396,8 +398,9 @@ kspec meta observations list
 kspec meta observations list --type friction
 kspec meta observations list --unresolved
 
-# Resolve observations
+# Resolve observations (single or batch)
 kspec meta resolve @obs-ref "Resolution notes"
+kspec meta resolve @ref1 @ref2 "Batch resolution"
 
 # Promote to task
 kspec meta promote @obs-ref --title "Task title"
@@ -863,22 +866,14 @@ See `tests/helpers/cli.ts` for full documentation.
 
 ### Generating ULIDs for YAML Fixtures
 
-When manually creating YAML fixture files (not TypeScript tests), generate valid ULIDs using the same pattern as `testUlid()`:
+When manually creating YAML fixture files, use the `kspec util ulid` command:
 
 ```bash
-node -e "
-const CROCKFORD_BASE32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-function testUlid(prefix = '', sequence = 0) {
-  const safe = prefix.toUpperCase().replace(/I/g,'J').replace(/L/g,'K').replace(/O/g,'0').replace(/U/g,'V');
-  const base = '01' + safe;
-  const padLen = 24 - base.length;
-  const sequenceStr = sequence.toString().padStart(Math.min(padLen, 8), '0').slice(0, padLen);
-  return (base + sequenceStr).padEnd(25, '0') + CROCKFORD_BASE32[sequence % 32];
-}
-// Generate ULIDs for your fixture
-console.log(testUlid('0BS', 0));  // observations
-console.log(testUlid('JNBX', 0)); // inbox
-"
+# Generate a single valid ULID
+kspec util ulid
+
+# Generate multiple ULIDs
+kspec util ulid --count 5
 ```
 
 ### E2E Tests (Playwright)

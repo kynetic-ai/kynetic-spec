@@ -26,7 +26,8 @@ kspec meta observations --pending-resolution
 kspec meta observations promote @ref --title "Add bulk AC command" --priority 2
 
 # Resolve observation (when addressed or no longer relevant)
-kspec meta observations resolve @ref
+kspec meta resolve @ref "Resolution notes"
+kspec meta resolve @ref1 @ref2 "Batch resolution"
 
 # Convert inbox item to observation (if it's friction, not a task)
 kspec meta observe --from-inbox @ref
