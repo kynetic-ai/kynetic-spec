@@ -42184,6 +42184,11 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG72P59HGSRV784P2BZVNFZH
+      created_at: 2026-01-30T09:10:30.449Z
+      author: "@claude"
+      content: "Eligible: Created spec @obs-list-display with ac-1 for resolved column display."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
