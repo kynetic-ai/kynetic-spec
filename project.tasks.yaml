@@ -42230,7 +42230,7 @@
   description: Add Resolved column to observation list output when using --all flag - show ✓/✗ status
     so you can see resolved vs unresolved at a glance
   spec_ref: "@obs-list-display"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
