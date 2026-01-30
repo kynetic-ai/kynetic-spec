@@ -2600,6 +2600,10 @@ features:
             given: Task limit reached
             when: Marker file written
             then: File is JSON with active, since (ISO8601), max, completed, sessionId fields
+          - id: ac-dryrun
+            given: --dry-run flag provided with --max-tasks N
+            when: Ralph shows config
+            then: Displays max-tasks configuration in dry-run output
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
