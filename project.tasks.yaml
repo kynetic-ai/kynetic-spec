@@ -42282,7 +42282,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
   slugs: []
   title: Add concrete examples to CLI --help for variadic options
