@@ -42264,6 +42264,11 @@
         - Added test verifying column presence and checkmark indicators
         - All 15 observation-related tests pass
       supersedes: null
+    - _ulid: 01KG799KZ5KDQW7Q2Z3SHX2Y3E
+      created_at: 2026-01-30T11:05:59.525Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
