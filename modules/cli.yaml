@@ -3273,3 +3273,8 @@ requirements:
     traits: []
     notes: []
     created: 2026-01-30T09:17:05.486Z
+    acceptance_criteria:
+      - id: ac-1
+        given: a command has variadic options like --depends-on or --refs
+        when: viewing --help output
+        then: examples show concrete usage like 'kspec task set @ref --depends-on @ref1 @ref2'
