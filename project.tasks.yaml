@@ -32234,6 +32234,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #277 merged - added CI re-verification requirements to pr-review-merge and
+    pr-review-loop workflows plus skill documentation"
   depends_on: []
   context: []
   priority: 3
@@ -32241,6 +32243,7 @@
   vcs_refs: []
   created_at: 2026-01-23T19:40:24.453Z
   started_at: 2026-01-29T23:38:50.645Z
+  completed_at: 2026-01-30T00:20:34.166Z
   notes:
     - _ulid: 01KFQAZ0ZVC7VRT9B0DM4H5841
       created_at: 2026-01-24T06:27:18.651Z
@@ -32291,9 +32294,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-01-30T00:20:34.166Z
-  closed_reason: "PR #277 merged - added CI re-verification requirements to pr-review-merge and
-    pr-review-loop workflows plus skill documentation"
 - _ulid: 01KFP84J1E2ZPEK1Y1VHK8NQEW
   slugs: []
   title: Implement Dashboard View (AC-1 to AC-3, AC-20, AC-21)
@@ -41810,4 +41810,66 @@
       author: "@claude"
       content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/276"
       supersedes: null
+  todos: []
+- title: "Implement: Ralph max-tasks-per-iteration limiting"
+  type: task
+  spec_ref: "@ralph-task-limit"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-ralph-max-tasks-per-iteration-limiting
+  tags: []
+  depends_on:
+    - "@task-ralph-command-automated-task-loop"
+  notes:
+    - _ulid: 01KG6CJQVPY003VNGCB5VDFMJM
+      created_at: 2026-01-30T02:44:09.719Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Limits how many tasks can be completed per iteration via --max-tasks flag. Default is 1
+        (conservative), 0 means unlimited. Enforcement is soft (message injection) then hard
+        (PreToolUse hook blocking task start). Counts only kspec task complete commands (not submit,
+        which is status change to pending_review).
+
+
+
+        Acceptance Criteria:
+
+        - ac-flag: Given User runs kspec ralph, when --max-tasks flag is provided or defaults, then
+        Parses N as positive integer (1-999) or 0 for unlimited; default is 1; invalid values exit
+        with code 2
+
+        - ac-detection: Given Agent completes a task (kspec task complete), when ACP update handler
+        receives Bash tool call containing kspec task complete, then Ralph queries kspec for actual
+        completion count since iteration start, not relying on pattern alone
+
+        - ac-wrapup: Given N tasks completed this iteration (N equals max-tasks), when Detection
+        triggers and count verified via kspec query, then Ralph writes marker file and injects
+        wrap-up message telling agent to stop starting new tasks
+
+        - ac-unlimited: Given --max-tasks 0 is specified, when Ralph runs iteration, then No task
+        limit enforced (legacy behavior); no marker file written
+
+        - ac-hook-block: Given Marker file exists at .claude/ralph-task-limit.json with active:true,
+        when PreToolUse hook intercepts kspec task start command, then Hook blocks with message
+        explaining task limit reached; allows other commands
+
+        - ac-reset: Given New iteration begins, when Ralph starts iteration loop, then Counter
+        resets to 0; stale marker files older than 1 hour are cleared
+
+        - ac-marker-format: Given Task limit reached, when Marker file written, then File is JSON
+        with active, since (ISO8601), max, completed, sessionId fields
+
+        - ac-dryrun: Given --dry-run flag provided with --max-tasks N, when Ralph shows config, then
+        Displays max-tasks configuration in dry-run output
+      supersedes: null
+  _ulid: 01KG6CJQVQ1SSF70RDKY8Y721R
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-30T02:44:09.719Z
   todos: []
