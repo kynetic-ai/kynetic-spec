@@ -2584,6 +2584,10 @@ features:
             given: N tasks completed this iteration (N equals max-tasks)
             when: Detection triggers and count verified via kspec query
             then: Ralph writes marker file and injects wrap-up message telling agent to stop starting new tasks
+          - id: ac-unlimited
+            given: --max-tasks 0 is specified
+            when: Ralph runs iteration
+            then: No task limit enforced (legacy behavior); no marker file written
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
