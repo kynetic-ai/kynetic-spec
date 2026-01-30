@@ -42299,7 +42299,7 @@
     run from parent, or skip silently with warning instead of erroring. Current behavior disrupts
     session end. Triggered by: cd .kspec && git status (then hook runs from wrong directory)."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
