@@ -698,3 +698,12 @@ inbox:
       - batch
       - dx
     added_by: "@claude"
+  - _ulid: 01KG73HCQWVK5J74XNH3FWSCPE
+    text: Add --spec-ref flag to 'inbox promote' command to link task to spec in one step instead of
+      requiring follow-up 'task set --spec-ref'. Small scope.
+    created_at: 2026-01-30T09:25:22.813Z
+    tags:
+      - reflection
+      - cli
+      - dx
+    added_by: "@claude"
