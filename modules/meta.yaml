@@ -2232,3 +2232,18 @@ features:
           or by explicit type markers.
         implements:
           - "@meta-ref"
+requirements:
+  - _ulid: 01KG72NNQBBTTDPJQWGQMF50E2
+    slugs:
+      - obs-list-display
+    title: Observation List Display
+    type: requirement
+    tags: []
+    description: Requirements for displaying observations in CLI output.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-01-30T09:10:14.507Z
