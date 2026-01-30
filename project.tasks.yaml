@@ -42184,6 +42184,9 @@
   spec_ref: "@task-commands"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #285. Added --force flag to task complete command to bypass blocked
+    state. Shows warning when force-completing, adds note documenting forced completion with
+    blocked_by reason. AC coverage: @task-commands ac-1 verified with 2 tests."
   depends_on: []
   context: []
   priority: 4
@@ -42194,6 +42197,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:38:06.381Z
   started_at: 2026-01-30T10:39:39.542Z
+  completed_at: 2026-01-30T10:51:25.887Z
   notes:
     - _ulid: 01KG7227V3EAKJZCXH9WXVSGH9
       created_at: 2026-01-30T08:59:37.699Z
@@ -42219,10 +42223,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-30T10:51:25.887Z
-  closed_reason: "Merged in PR #285. Added --force flag to task complete command to bypass blocked
-    state. Shows warning when force-completing, adds note documenting forced completion with
-    blocked_by reason. AC coverage: @task-commands ac-1 verified with 2 tests."
 - _ulid: 01KG70WJSPMY1WJPQ6DF77JPZN
   slugs: []
   title: Add Resolved column to observation list with --all
@@ -42230,7 +42230,7 @@
   description: Add Resolved column to observation list output when using --all flag - show ✓/✗ status
     so you can see resolved vs unresolved at a glance
   spec_ref: "@obs-list-display"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42254,6 +42254,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-01-30T10:52:13.550Z
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
   slugs: []
   title: Add 'kspec util ulid' command for ULID generation
