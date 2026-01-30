@@ -163,7 +163,7 @@ Run this after 'kspec init' to set up agent integration.
       "kspec setup --agent claude-code",
       "kspec setup --dry-run",
     ],
-    seeAlso: ["init", "workflow"],
+    seeAlso: ["init", "task-workflow"],
   },
 
   item: {
@@ -249,7 +249,7 @@ and no incomplete dependencies.
     seeAlso: ["task", "tasks"],
   },
 
-  workflow: {
+  "task-workflow": {
     title: "Typical Workflow",
     concept: `
 Common workflow for working on tasks.
