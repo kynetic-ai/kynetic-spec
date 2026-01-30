@@ -42557,7 +42557,7 @@
   description: "Ralph loop: Add signal/mechanism for agents to explicitly end the loop when target
     work is complete (e.g., special exit command or completion marker)"
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42579,6 +42579,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-01-30T23:50:58.841Z
 - _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
   slugs: []
   title: Fix PR review subagent not completing task after merge
@@ -42697,6 +42698,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #291"
   depends_on: []
   context: []
   priority: 3
@@ -42706,6 +42708,7 @@
   vcs_refs: []
   created_at: 2026-01-30T23:18:12.044Z
   started_at: 2026-01-30T23:21:33.158Z
+  completed_at: 2026-01-30T23:34:02.109Z
   notes:
     - _ulid: 01KG8K6QYRDRQKFPDZ6AGC7S00
       created_at: 2026-01-30T23:18:25.496Z
@@ -42759,5 +42762,3 @@
         - Skills updated: meta, task-work, triage
       supersedes: null
   todos: []
-  completed_at: 2026-01-30T23:34:02.109Z
-  closed_reason: "Merged in PR #291"
