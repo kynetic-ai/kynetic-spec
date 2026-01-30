@@ -3335,8 +3335,10 @@ observations:
       task once marked completed."
     created_at: 2026-01-22T08:10:39.796Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Lesson learned - workflow documented in AGENTS.md: submit → PR → review → merge → complete"
+    resolved_at: 2026-01-30T05:18:17.949Z
+    resolved_by: "@claude"
   - _ulid: 01KFJCFDD4RMTAP9TSVRK20KYQ
     type: success
     content: "Complete iteration 12 workflow executed successfully: Found pending_review task → Created
