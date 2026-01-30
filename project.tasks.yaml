@@ -42228,7 +42228,7 @@
   type: task
   description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
     @ref2 @ref3 --resolution "..."' for batch resolving related observations
-  spec_ref: null
+  spec_ref: "@trait-multi-ref-batch"
   status: pending
   blocked_by: []
   depends_on: []
@@ -42247,7 +42247,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG715ECQCHS16JF029SCJHXC
   slugs: []
   title: Handle session checkpoint hook when in .kspec/ directory
