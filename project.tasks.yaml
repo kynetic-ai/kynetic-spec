@@ -42558,4 +42558,9 @@
 
         - @pr-review-loop workflow unchanged (already correct)
       supersedes: null
+    - _ulid: 01KG768AD8RDRY1ENGT2PFX956
+      created_at: 2026-01-30T10:12:51.240Z
+      author: "@claude"
+      content: "PR created: #282 https://github.com/kynetic-ai/kynetic-spec/pull/282"
+      supersedes: null
   todos: []
