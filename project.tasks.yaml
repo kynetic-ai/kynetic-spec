@@ -42463,7 +42463,7 @@
   type: task
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42521,3 +42521,4 @@
         - .claude/skills/pr-review/SKILL.md (remove conflicting guidance)
       supersedes: null
   todos: []
+  started_at: 2026-01-30T10:10:16.116Z
