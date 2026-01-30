@@ -790,14 +790,19 @@ export function registerRalphCommand(program: Command): void {
         const adapter = resolveAdapter(options.adapter);
 
         // Validate adapter package exists before proceeding
-        // Skip validation for custom adapters (--adapter-cmd), non-npx adapters,
-        // and dry-run mode (doesn't spawn agent)
-        if (
-          !options.dryRun &&
-          !options.adapterCmd &&
-          adapter.command === "npx" &&
-          adapter.args[0]
-        ) {
+        // Skip validation for:
+        // - Custom adapters (--adapter-cmd)
+        // - Non-npx adapters
+        // - Dry-run mode with default adapter (doesn't spawn agent, default may not be installed in CI)
+        // Note: If user explicitly specifies --adapter, validate even in dry-run to catch typos
+        const isDefaultAdapter = options.adapter === "claude-code-acp";
+        const skipValidation =
+          options.adapterCmd ||
+          adapter.command !== "npx" ||
+          !adapter.args[0] ||
+          (options.dryRun && isDefaultAdapter);
+
+        if (!skipValidation) {
           validateAdapter(adapter.args[0]);
         }
 
