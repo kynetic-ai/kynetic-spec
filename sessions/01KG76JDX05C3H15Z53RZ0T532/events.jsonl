@@ -9668,3 +9668,4 @@
 {"ts":1769774175466,"seq":9667,"type":"session.update","session_id":"01KG76JDX05C3H15Z53RZ0T532","data":{"iteration":11,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" no high-confidence items to"}}}}
 {"ts":1769774175522,"seq":9668,"type":"session.update","session_id":"01KG76JDX05C3H15Z53RZ0T532","data":{"iteration":11,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" capture."}}}}
 {"ts":1769774175918,"seq":9669,"type":"session.update","session_id":"01KG76JDX05C3H15Z53RZ0T532","data":{"iteration":11,"phase":"reflect","stopReason":"end_turn","completed":true}}
+{"ts":1769774446596,"seq":9670,"type":"session.end","session_id":"01KG76JDX05C3H15Z53RZ0T532","data":{"status":"completed","consecutiveFailures":0}}

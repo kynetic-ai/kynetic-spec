@@ -724,3 +724,12 @@ inbox:
       - infra
       - ralph
     added_by: "@claude"
+  - _ulid: 01KG8K06G0ZM9MAP0MNKMHWWK3
+    text: Cross-project skill comparison - ability to diff skill availability between projects/repos.
+      Discovered need when investigating why kynetic-bot's ralph subagent couldn't find /pr-review
+      skill (exists in kynetic-spec but not kynetic-bot).
+    created_at: 2026-01-30T23:14:51.008Z
+    tags:
+      - reflection
+      - skills
+    added_by: "@claude"
