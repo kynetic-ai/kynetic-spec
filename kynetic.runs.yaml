@@ -12475,7 +12475,7 @@ runs:
   - _ulid: 01KG8M70SZYH2DF43EK0X00R1T
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-30T23:36:03.135Z
     step_results:
@@ -12503,5 +12503,21 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-30T23:36:33.553Z
-        completed_at: 2026-01-30T23:36:33.553Z
+        completed_at: 2026-01-30T23:36:51.170Z
+        notes: >-
+          Search results:
+
+          - Friction 1 (documented non-existent feature): One-off mistake, not systemic. Greptile
+          review caught it.
+
+          - Friction 2 (no pre-doc verification): Not tracked, but low value - was a one-time error
+          caught by review.
+
+
+          Both friction points were one-off mistakes rather than systemic issues. The existing
+          automated review (Greptile) caught the error before merge.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-30T23:36:51.170Z
+        completed_at: 2026-01-30T23:36:51.170Z
     initiated_by: "@claude"
