@@ -291,6 +291,7 @@ function formatConventionDetail(convention: Convention): void {
 /**
  * Format observations table output
  * AC-obs-2: outputs table with columns: ID, Type, Workflow, Created, Content (truncated)
+ * AC: @obs-list-display ac-1 - When --all flag used, show Resolved column with ✓/✗
  */
 function formatObservations(
   observations: Observation[],
@@ -309,19 +310,35 @@ function formatObservations(
     return;
   }
 
+  // AC: @obs-list-display ac-1 - Include Resolved column when showing all observations
+  const headers = showResolved
+    ? [
+        chalk.bold("ID"),
+        chalk.bold("Type"),
+        chalk.bold("Resolved"),
+        chalk.bold("Workflow"),
+        chalk.bold("Created"),
+        chalk.bold("Content"),
+      ]
+    : [
+        chalk.bold("ID"),
+        chalk.bold("Type"),
+        chalk.bold("Workflow"),
+        chalk.bold("Created"),
+        chalk.bold("Content"),
+      ];
+
+  const colWidths = showResolved
+    ? [10, 10, 10, 20, 12, 40]
+    : [10, 10, 20, 12, 50];
+
   const table = new Table({
-    head: [
-      chalk.bold("ID"),
-      chalk.bold("Type"),
-      chalk.bold("Workflow"),
-      chalk.bold("Created"),
-      chalk.bold("Content"),
-    ],
+    head: headers,
     style: {
       head: [],
       border: [],
     },
-    colWidths: [10, 10, 20, 12, 50],
+    colWidths,
     wordWrap: true,
   });
 
@@ -329,12 +346,22 @@ function formatObservations(
     const id = obs._ulid.substring(0, 8);
     const workflow = obs.workflow_ref || "-";
     const created = new Date(obs.created_at).toISOString().split("T")[0];
+    // Adjust content truncation based on available column width
+    const maxContentLen = showResolved ? 37 : 47;
     const content =
-      obs.content.length > 47
-        ? `${obs.content.substring(0, 47)}...`
+      obs.content.length > maxContentLen
+        ? `${obs.content.substring(0, maxContentLen)}...`
         : obs.content;
 
-    table.push([id, obs.type, workflow, created, content]);
+    // AC: @obs-list-display ac-1 - Show ✓ for resolved, ✗ for unresolved
+    if (showResolved) {
+      const resolvedIndicator = obs.resolved
+        ? chalk.green("✓")
+        : chalk.red("✗");
+      table.push([id, obs.type, resolvedIndicator, workflow, created, content]);
+    } else {
+      table.push([id, obs.type, workflow, created, content]);
+    }
   }
 
   console.log(table.toString());

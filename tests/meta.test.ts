@@ -668,6 +668,41 @@ describe('Integration: meta observations', () => {
     expect(outputAll).toContain('This will be resolved');
   });
 
+  // AC: @obs-list-display ac-1
+  it('should show Resolved column with checkmarks when using --all flag', async () => {
+    // Create two observations: one resolved, one unresolved
+    const createOutput = kspec('meta observe friction "Will be resolved"', tempDir);
+    const match = createOutput.match(/Created observation: ([A-Z0-9]{8})/);
+    expect(match).not.toBeNull();
+    const obsRef = match![1];
+
+    kspec('meta observe success "Will stay unresolved"', tempDir);
+
+    // Resolve one observation
+    kspec(`meta resolve @${obsRef} "Fixed it"`, tempDir);
+
+    // List with --all should show Resolved column
+    const outputAll = kspec('meta observations --all', tempDir);
+
+    // Should contain Resolved header
+    expect(outputAll).toContain('Resolved');
+
+    // Should show both observations with resolved indicators
+    // ✓ for resolved, ✗ for unresolved
+    expect(outputAll).toContain('✓');
+    expect(outputAll).toContain('✗');
+    expect(outputAll).toContain('Will be resolved');
+    expect(outputAll).toContain('Will stay unresolved');
+
+    // List without --all should NOT show Resolved column
+    const outputDefault = kspec('meta observations', tempDir);
+    expect(outputDefault).not.toContain('Resolved');
+    // Should not show resolved observation
+    expect(outputDefault).not.toContain('Will be resolved');
+    // Should show unresolved observation
+    expect(outputDefault).toContain('Will stay unresolved');
+  });
+
   // AC: @observations ac-obs-5
   it('should output JSON with full observation objects', () => {
     kspec('meta observe friction "Test observation"', tempDir);
