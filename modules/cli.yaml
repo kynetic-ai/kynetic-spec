@@ -2631,6 +2631,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-30T23:51:13.793Z
+        acceptance_criteria:
+          - id: ac-cmd
+            given: An agent is running in a ralph loop iteration
+            when: The agent executes 'kspec ralph end-iteration'
+            then: The command writes a marker file indicating end-iteration requested
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
