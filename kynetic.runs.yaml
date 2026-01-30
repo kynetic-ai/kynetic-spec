@@ -12198,7 +12198,7 @@ runs:
   - _ulid: 01KG6W97SH8NGD4MTHXWPDRYE2
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-30T07:18:35.569Z
     step_results:
@@ -12218,5 +12218,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-30T07:19:04.745Z
-        completed_at: 2026-01-30T07:19:04.745Z
+        completed_at: 2026-01-30T07:19:32.451Z
+        notes: "Coverage check: (1) Bulk resolve - partially covered by @trait-multi-ref-batch but not
+          applied to meta resolve, inbox has related batch items (01KFC3SV, 01KFMP5R), (2)
+          Observation list missing resolved column - not tracked, (3) --unresolved filter - not
+          tracked, may be bug"
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-30T07:19:32.451Z
+        completed_at: 2026-01-30T07:19:32.451Z
     initiated_by: "@claude"
