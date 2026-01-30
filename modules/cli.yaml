@@ -2646,6 +2646,10 @@ features:
             when: The current prompt (task-work or reflect phase) completes
             then: Ralph ends the iteration without sending additional prompts and proceeds to next iteration or
               loop exit
+          - id: ac-reason
+            given: An agent wants to signal end-iteration with context
+            when: The agent executes 'kspec ralph end-iteration --reason "No eligible tasks"'
+            then: The reason is captured in the marker and logged for auditability
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
