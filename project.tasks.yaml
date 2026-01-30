@@ -42281,6 +42281,11 @@
       author: "@automation-assess"
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
+    - _ulid: 01KG729K7P9J58DTK873GG5R46
+      created_at: 2026-01-30T09:03:38.742Z
+      author: "@claude"
+      content: "Eligible: Small fix - set BUN_ENV=production in spawn call in serve.ts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG71BBZK3PV36RVW1JA5G22N
