@@ -2650,6 +2650,10 @@ features:
             given: An agent wants to signal end-iteration with context
             when: The agent executes 'kspec ralph end-iteration --reason "No eligible tasks"'
             then: The reason is captured in the marker and logged for auditability
+          - id: ac-cleanup
+            given: The ralph session ends or a new iteration starts
+            when: Ralph checks for stale end-iteration markers
+            then: Any marker from previous iterations is cleared
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
