@@ -12338,3 +12338,11 @@ runs:
     step_results: []
     initiated_by: "@claude"
     abort_reason: Task has no spec_ref - bug fix without formal spec
+  - _ulid: 01KG75F4HB5FPZ8VXHTM9EJDAW
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-01-30T09:59:06.028Z
+    step_results: []
+    initiated_by: "@claude"
