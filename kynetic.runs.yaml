@@ -12198,7 +12198,7 @@ runs:
   - _ulid: 01KG6W97SH8NGD4MTHXWPDRYE2
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-30T07:18:35.569Z
     step_results:
@@ -12233,5 +12233,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-30T07:19:41.467Z
-        completed_at: 2026-01-30T07:19:41.467Z
+        completed_at: 2026-01-30T07:23:47.158Z
+        notes: "User approved: (1) Batch meta resolve captured as 01KG6WFQ, (2) Resolved column in
+          observation list captured as 01KG6WJF. Item 3 (--unresolved filter) discovered to be
+          working correctly - default filters to unresolved, --all shows all."
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-30T07:23:47.158Z
+        completed_at: 2026-01-30T07:23:47.158Z
     initiated_by: "@claude"
