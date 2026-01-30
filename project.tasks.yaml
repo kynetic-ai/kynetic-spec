@@ -42034,21 +42034,41 @@
         All 23 new tests pass. Existing tests unaffected.
       supersedes: null
   todos: []
-- title: Fix help workflow command collision
+- _ulid: 01KG6ZDE7DBW96Z729KJMFJ4MX
+  slugs: []
+  title: Fix help workflow command collision
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "[bug] 'kspec help workflow' shows unrelated 'Typical Workflow' content because
     helpContent['workflow'] key collides with workflow CLI command name. The task workflow guide
     should be renamed to 'task-workflow' or 'getting-started' in src/cli/help/content.ts"
-  _ulid: 01KG6ZDE7DBW96Z729KJMFJ4MX
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-30T08:13:18.956Z
+  notes: []
+  todos: []
+- title: Fix workflow show 0-indexed step numbering
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - bug
+    - workflow
+    - cli
+  description: Fix workflow show 0-indexed display - Progress should show 1-indexed (3/3 not 2/3),
+    step numbers should be 1-indexed (1,2,3 not 0,1,2)
+  _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:13:18.956Z
+  created_at: 2026-01-30T08:13:37.632Z
   notes: []
   todos: []
