@@ -42293,6 +42293,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:39:29.871Z
+  started_at: 2026-01-30T11:09:45.563Z
   notes:
     - _ulid: 01KG72289YG7PQP9GPXW5CKGGN
       created_at: 2026-01-30T08:59:38.174Z
@@ -42304,9 +42305,15 @@
       author: "@claude"
       content: "Eligible: Created spec @cli-utilities with ac-1 for ULID generation command."
       supersedes: null
+    - _ulid: 01KG79KX1VHS8HW23TN1DFMME5
+      created_at: 2026-01-30T11:11:36.507Z
+      author: "@claude"
+      content: Implemented kspec util ulid command with --count option. Generates valid ULIDs using
+        Crockford base32 format. Added 8 tests covering single/multiple generation, JSON output, and
+        edge cases.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T11:09:45.563Z
 - _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
   slugs: []
   title: Add multi-ref batch support to meta resolve
