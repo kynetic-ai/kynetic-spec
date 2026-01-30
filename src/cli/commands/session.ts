@@ -481,6 +481,52 @@ export async function gatherSessionContext(
   };
 }
 
+// ─── Iteration Stats ─────────────────────────────────────────────────────────
+
+/**
+ * Stats for tasks completed/started within a time window.
+ * Used by ralph to track task completions per iteration.
+ */
+export interface IterationStats {
+  /** Number of tasks completed since the given time */
+  tasks_completed: number;
+  /** Number of tasks started since the given time */
+  tasks_started: number;
+  /** References of completed tasks */
+  completed_refs: string[];
+}
+
+/**
+ * Get iteration stats - tasks completed/started since a given time.
+ * AC: @ralph-task-limit ac-detection
+ */
+export async function getIterationStats(
+  ctx: KspecContext,
+  since: Date,
+): Promise<IterationStats> {
+  const allTasks = await loadAllTasks(ctx);
+
+  const completedSince = allTasks.filter((t) => {
+    if (t.status !== "completed" || !t.completed_at) return false;
+    return new Date(t.completed_at) >= since;
+  });
+
+  const startedSince = allTasks.filter((t) => {
+    if (!t.started_at) return false;
+    return new Date(t.started_at) >= since;
+  });
+
+  // Use first slug or ULID prefix as ref
+  const getRef = (t: LoadedTask) =>
+    t.slugs.length > 0 ? `@${t.slugs[0]}` : `@${t._ulid.slice(0, 8)}`;
+
+  return {
+    tasks_completed: completedSince.length,
+    tasks_started: startedSince.length,
+    completed_refs: completedSince.map(getRef),
+  };
+}
+
 // ─── Checkpoint ──────────────────────────────────────────────────────────────
 
 export interface CheckpointOptions {
