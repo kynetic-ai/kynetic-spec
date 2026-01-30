@@ -42042,7 +42042,7 @@
     helpContent['workflow'] key collides with workflow CLI command name. The task workflow guide
     should be renamed to 'task-workflow' or 'getting-started' in src/cli/help/content.ts"
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42078,6 +42078,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T09:37:14.269Z
+  closed_reason: "PR #279 merged. Fixed help workflow command collision by renaming
+    helpContent['workflow'] to 'task-workflow'."
 - _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
   slugs: []
   title: Fix workflow show 0-indexed step numbering
