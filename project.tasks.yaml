@@ -42512,7 +42512,7 @@
     packages/web-ui/tests/README.md explaining that E2E tests use dedicated fixtures at
     packages/web-ui/tests/fixtures/ to avoid breaking unit tests
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
