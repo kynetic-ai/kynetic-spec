@@ -42299,7 +42299,7 @@
     run from parent, or skip silently with warning instead of erroring. Current behavior disrupts
     session end. Triggered by: cd .kspec && git status (then hook runs from wrong directory)."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42329,6 +42329,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T10:01:24.614Z
+  closed_reason: "PR #281 merged. Fix catches RUNNING_FROM_SHADOW error gracefully - shows warning in
+    human mode, exits silently in JSON mode."
 - _ulid: 01KG7175F5P831523KRV6KVZT5
   slugs: []
   title: Auto-set BUN_ENV=production when spawning daemon
