@@ -3652,8 +3652,10 @@ observations:
       documentation.
     created_at: 2026-01-24T04:12:55.911Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Documented testUlid() helper in AGENTS.md Test Fixture Patterns section
+    resolved_at: 2026-01-30T05:13:26.859Z
+    resolved_by: "@claude"
   - _ulid: 01KFQ3ADC1GRARE3BAZZWDS9CF
     type: success
     content: Detailed task implementation notes made E2E infrastructure setup straightforward -
