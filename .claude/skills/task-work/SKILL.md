@@ -211,6 +211,7 @@ This enables `kspec log @task` to find related commits.
 - Use only after PR is merged to main
 - Task moves to `completed`
 - Indicates "work is done and shipped"
+- Use `--force` to complete from any state (for cleanup or stuck tasks)
 
 **Why this matters:**
 - Tracks tasks awaiting merge separately from done tasks

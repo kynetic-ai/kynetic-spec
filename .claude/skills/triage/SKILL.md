@@ -64,7 +64,8 @@ Process pending observations. See [docs/observations.md](docs/observations.md).
 ```bash
 kspec meta observations --pending-resolution
 # For each: resolve, promote to task, or leave
-kspec meta observations resolve @ref
+kspec meta resolve @ref "Resolution notes"
+kspec meta resolve @ref1 @ref2 "Batch resolution"
 kspec meta observations promote @ref --title "..."
 ```
 

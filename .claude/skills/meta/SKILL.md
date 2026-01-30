@@ -163,7 +163,11 @@ kspec meta observations promote @ref --title "Add bulk AC command" --priority 2
 When addressed or no longer relevant:
 
 ```bash
-kspec meta observations resolve @ref
+# Single observation
+kspec meta resolve @ref "Resolution notes"
+
+# Batch resolve multiple observations
+kspec meta resolve @ref1 @ref2 @ref3 "All addressed in PR #123"
 ```
 
 ## Where to Capture What
