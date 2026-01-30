@@ -42301,6 +42301,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #281 merged. Fix catches RUNNING_FROM_SHADOW error gracefully - shows warning in
+    human mode, exits silently in JSON mode."
   depends_on: []
   context: []
   priority: 3
@@ -42308,6 +42310,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:43:54.135Z
   started_at: 2026-01-30T09:52:44.698Z
+  completed_at: 2026-01-30T10:01:24.614Z
   notes:
     - _ulid: 01KG7228R5M5JB4656PPFRBKRK
       created_at: 2026-01-30T08:59:38.629Z
@@ -42329,9 +42332,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-30T10:01:24.614Z
-  closed_reason: "PR #281 merged. Fix catches RUNNING_FROM_SHADOW error gracefully - shows warning in
-    human mode, exits silently in JSON mode."
 - _ulid: 01KG7175F5P831523KRV6KVZT5
   slugs: []
   title: Auto-set BUN_ENV=production when spawning daemon
@@ -42457,3 +42457,19 @@
       supersedes: null
   todos: []
   automation: needs_review
+- title: Fix PR review subagent not completing task after merge
+  type: task
+  spec_ref: "@ralph-subagent-spawning"
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-30T10:09:54.809Z
+  notes: []
+  todos: []
