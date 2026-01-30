@@ -104,6 +104,69 @@ describe('Integration: task completion enforcement', () => {
     expect(stdout + stderr).toContain('Cannot complete blocked task');
   });
 
+  // AC: @task-commands ac-1
+  it('should complete blocked task with --force flag and show warning', () => {
+    // Block a task
+    kspec('task block @test-task-pending --reason "Waiting for API"', tempDir);
+
+    // Verify it's blocked
+    const taskData = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskData.status).toBe('blocked');
+
+    // Complete with --force should succeed with warning
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --force --reason "Work done by other task"',
+      tempDir
+    );
+    expect(exitCode).toBe(0);
+    const output = stdout + stderr;
+    expect(output).toContain('Completed task');
+    expect(output).toContain('Waiting for API'); // Warning shows what it was blocked by
+
+    // Verify it's completed
+    const afterComplete = kspecJson<{
+      status: string;
+      closed_reason: string | null;
+      notes: Array<{ content: string; author: string }>;
+    }>('task get @test-task-pending', tempDir);
+    expect(afterComplete.status).toBe('completed');
+    expect(afterComplete.closed_reason).toBe('Work done by other task');
+
+    // Check that a note was added documenting the forced completion
+    const forceNote = afterComplete.notes.find((n) =>
+      n.content.includes('--force')
+    );
+    expect(forceNote).toBeTruthy();
+    expect(forceNote?.content).toContain('blocked');
+    expect(forceNote?.content).toContain('Waiting for API');
+  });
+
+  // AC: @task-commands ac-1 - JSON output includes warning
+  it('should include warning in JSON output when force-completing blocked task', () => {
+    // Block a task
+    kspec('task block @test-task-pending --reason "Dependency missing"', tempDir);
+
+    // Complete with --force and --json
+    const result = kspecJson<{
+      success: boolean;
+      summary: { total: number; succeeded: number };
+      results: Array<{
+        status: string;
+        warning?: string;
+      }>;
+    }>(
+      'task complete @test-task-pending --force --reason "Covered elsewhere"',
+      tempDir
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.results[0].status).toBe('success');
+    expect(result.results[0].warning).toContain('Dependency missing');
+  });
+
   // AC: @spec-completion-enforcement ac-5
   it('should error when trying to complete cancelled task', () => {
     // Cancel a task

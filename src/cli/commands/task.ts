@@ -1050,6 +1050,10 @@ export function registerTaskCommands(program: Command): void {
     .option("--refs <refs...>", "Complete multiple tasks by ref")
     .option("--reason <reason>", "Completion reason/notes")
     .option("--skip-review", "Skip review requirement (requires --reason)")
+    .option(
+      "--force",
+      "Force completion even if blocked (AC: @task-commands ac-1)",
+    )
     .option("--no-sync", "Skip syncing spec implementation status")
     .action(async (ref: string | undefined, options) => {
       try {
@@ -1088,8 +1092,13 @@ export function registerTaskCommands(program: Command): void {
                 };
               }
 
+              // AC: @task-commands ac-1 - Allow --force to bypass blocked state
+              // Handle blocked task with --force before other checks
+              const forcingBlockedTask =
+                foundTask.status === "blocked" && options.force;
+
               // AC: @spec-completion-enforcement ac-7 - Allow skip-review bypass
-              if (!options.skipReview) {
+              if (!options.skipReview && !forcingBlockedTask) {
                 // AC: @spec-completion-enforcement ac-2
                 if (foundTask.status === "in_progress") {
                   return {
@@ -1142,6 +1151,16 @@ export function registerTaskCommands(program: Command): void {
                   getAuthor(),
                 );
                 taskNotes = [...taskNotes, skipNote];
+              }
+
+              // AC: @task-commands ac-1 - Document force completion of blocked task
+              if (forcingBlockedTask) {
+                const blockedBy = foundTask.blocked_by.join("; ");
+                const forceNote = createNote(
+                  `Completed with --force despite blocked state. Was blocked by: ${blockedBy || "(dependency-blocked)"}${options.reason ? `. Reason: ${options.reason}` : ""}`,
+                  getAuthor(),
+                );
+                taskNotes = [...taskNotes, forceNote];
               }
 
               // Update status
@@ -1206,10 +1225,21 @@ export function registerTaskCommands(program: Command): void {
                 }
               }
 
+              // AC: @task-commands ac-1 - Show warning when force-completing blocked task
+              let warningMsg: string | undefined;
+              if (forcingBlockedTask) {
+                const blockedBy = foundTask.blocked_by.join("; ");
+                warningMsg = `Task was blocked by: ${blockedBy || "(dependency-blocked)"}`;
+                if (!isJsonMode()) {
+                  warn(warningMsg);
+                }
+              }
+
               return {
                 success: true,
                 message: `Completed task: ${index.shortUlid(updatedTask._ulid)}`,
                 data: updatedTask,
+                ...(forcingBlockedTask && { warning: warningMsg }),
               };
             } catch (err) {
               return {
