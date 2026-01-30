@@ -4758,4 +4758,14 @@ observations:
     resolution: ShellTest
     resolved_at: 2026-01-30T11:25:26.831Z
     resolved_by: "@claude"
+  - _ulid: 01KG7ARFWPEDQZE6FH3A9RYZ1A
+    type: success
+    content: "Test pattern: when creating multiple items in quick succession for batch operation tests,
+      use JSON mode to capture full ULIDs instead of parsing 8-char prefixes from human output. ULID
+      prefixes can collide when items are created within the same millisecond, causing test
+      deduplication to produce unexpected results. Full ULIDs are always unique."
+    created_at: 2026-01-30T11:31:35.447Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
