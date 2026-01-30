@@ -42153,23 +42153,42 @@
   created_at: 2026-01-30T08:39:29.871Z
   notes: []
   todos: []
-- title: Add multi-ref batch support to meta resolve
+- _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
+  slugs: []
+  title: Add multi-ref batch support to meta resolve
   type: task
-  priority: 4
+  description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
+    @ref2 @ref3 --resolution "..."' for batch resolving related observations
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 4
   tags:
     - cli
     - meta
     - batch
-  description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
-    @ref2 @ref3 --resolution "..."' for batch resolving related observations
-  _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
+  vcs_refs: []
+  created_at: 2026-01-30T08:40:29.333Z
+  notes: []
+  todos: []
+- title: Handle session checkpoint hook when in .kspec/ directory
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Session checkpoint hook fails with error when working directory is inside .kspec/
+    shadow worktree. Error: RUNNING_FROM_SHADOW. Should handle gracefully - either auto-detect and
+    run from parent, or skip silently with warning instead of erroring. Current behavior disrupts
+    session end. Triggered by: cd .kspec && git status (then hook runs from wrong directory)."
+  _ulid: 01KG715ECQCHS16JF029SCJHXC
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:40:29.333Z
+  created_at: 2026-01-30T08:43:54.135Z
   notes: []
   todos: []
