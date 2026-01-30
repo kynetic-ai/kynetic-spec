@@ -319,6 +319,16 @@ Exit when:
 - **Task work complete** - PR created (normal exit)
 - **No eligible tasks** - `kspec tasks ready --eligible` returns empty
 
+### Explicit Loop End Signal
+
+If you determine the loop should end (e.g., no more eligible tasks, or you've completed your focused work), you can explicitly signal ralph:
+
+```bash
+kspec ralph end-iteration --reason "No eligible tasks remaining"
+```
+
+This writes a marker file that ralph detects and triggers graceful loop exit after the current iteration completes. Use this when you want to ensure the loop ends cleanly rather than just finishing your current turn.
+
 ### What Is NOT an Exit Condition
 
 These are NOT reasons to exit or mark needs_review:
