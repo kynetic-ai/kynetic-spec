@@ -42282,7 +42282,7 @@
   description: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML
     editing. Useful when creating new spec items or features directly in YAML."
   spec_ref: "@cli-utilities"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42314,6 +42314,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T11:17:34.081Z
+  closed_reason: "Merged in PR #287. Added kspec util ulid command with --count option for generating
+    valid ULIDs in Crockford base32 format. Full AC coverage in tests/util.test.ts."
 - _ulid: 01KG70Z6CNBMWTX5W6Y3T8VDGQ
   slugs: []
   title: Add multi-ref batch support to meta resolve
