@@ -42052,23 +42052,43 @@
   created_at: 2026-01-30T08:13:18.956Z
   notes: []
   todos: []
-- title: Fix workflow show 0-indexed step numbering
+- _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
+  slugs: []
+  title: Fix workflow show 0-indexed step numbering
   type: task
-  priority: 3
+  description: Fix workflow show 0-indexed display - Progress should show 1-indexed (3/3 not 2/3),
+    step numbers should be 1-indexed (1,2,3 not 0,1,2)
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - bug
     - workflow
     - cli
-  description: Fix workflow show 0-indexed display - Progress should show 1-indexed (3/3 not 2/3),
-    step numbers should be 1-indexed (1,2,3 not 0,1,2)
-  _ulid: 01KG6ZE0F0BGC895SC1M7FZT7C
+  vcs_refs: []
+  created_at: 2026-01-30T08:13:37.632Z
+  notes: []
+  todos: []
+- title: Add 'task list' alias for 'tasks' command
+  type: task
+  priority: 4
+  spec_ref: null
+  tags:
+    - reflection
+    - cli
+    - dx
+  description: Add kspec task list as alias for kspec tasks. CLI naming consistency - other commands
+    use 'kspec <noun> list' pattern.
+  _ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-30T08:13:37.632Z
+  created_at: 2026-01-30T08:15:06.893Z
   notes: []
   todos: []
