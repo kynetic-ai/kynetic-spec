@@ -42230,7 +42230,7 @@
   description: Add Resolved column to observation list output when using --all flag - show ✓/✗ status
     so you can see resolved vs unresolved at a glance
   spec_ref: "@obs-list-display"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42271,6 +42271,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T11:08:05.023Z
+  closed_reason: "Merged in PR #286. Added Resolved column (✓/✗) to observation list when --all flag
+    is used. Column shows green checkmark for resolved, red X for unresolved. Tests verify column
+    presence and indicator display."
 - _ulid: 01KG70XCAJPAQE5064RMHH34RK
   slugs: []
   title: Add 'kspec util ulid' command for ULID generation
