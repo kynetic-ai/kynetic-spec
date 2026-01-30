@@ -2504,8 +2504,10 @@ observations:
       always use absolute paths or check pwd before kspec commands."
     created_at: 2026-01-20T15:41:58.270Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Documented in AGENTS.md 'Important: Always Run from Project Root' section"
+    resolved_at: 2026-01-30T05:13:34.013Z
+    resolved_by: "@claude"
   - _ulid: 01KFE1BE12S5W2TCJAC1K6DN1E
     type: success
     content: "Fixed spec-implementation mismatch by updating the spec to match working implementation.
