@@ -2575,6 +2575,11 @@ features:
             when: --max-tasks flag is provided or defaults
             then: Parses N as positive integer (1-999) or 0 for unlimited; default is 1; invalid values exit
               with code 2
+          - id: ac-detection
+            given: Agent completes a task (kspec task complete)
+            when: ACP update handler receives Bash tool call containing kspec task complete
+            then: Ralph queries kspec for actual completion count since iteration start, not relying on pattern
+              alone
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
