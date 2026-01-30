@@ -42307,6 +42307,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-30T08:43:54.135Z
+  started_at: 2026-01-30T09:52:44.698Z
   notes:
     - _ulid: 01KG7228R5M5JB4656PPFRBKRK
       created_at: 2026-01-30T08:59:38.629Z
@@ -42319,9 +42320,15 @@
       content: "Eligible: Bug fix - detect .kspec/ directory and either auto-run from parent or skip
         gracefully with warning. Prefer skip with warning to avoid unexpected behavior."
       supersedes: null
+    - _ulid: 01KG7546KJY6A7E18WVGR27ZSV
+      created_at: 2026-01-30T09:53:07.699Z
+      author: "@claude"
+      content: "Implemented fix: Catch ShadowError with code RUNNING_FROM_SHADOW in
+        sessionCheckpointAction. Human mode shows warning, JSON mode exits silently. Both allow
+        session stop to proceed."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T09:52:44.698Z
 - _ulid: 01KG7175F5P831523KRV6KVZT5
   slugs: []
   title: Auto-set BUN_ENV=production when spawning daemon
