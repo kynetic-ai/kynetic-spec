@@ -42324,7 +42324,7 @@
   description: Apply @trait-multi-ref-batch to meta resolve command - enable 'kspec meta resolve @ref1
     @ref2 @ref3 --resolution "..."' for batch resolving related observations
   spec_ref: "@trait-multi-ref-batch"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42359,6 +42359,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-30T11:39:10.186Z
+  closed_reason: "Merged in PR #288. Added multi-ref batch support to meta resolve command using
+    @trait-multi-ref-batch. Features: --refs flag for multiple observations, --resolution for shared
+    resolution text, deduplication, continue-on-error handling, success/failure counts, JSON array
+    output. All 8 trait ACs covered with tests."
 - _ulid: 01KG715ECQCHS16JF029SCJHXC
   slugs: []
   title: Handle session checkpoint hook when in .kspec/ directory
