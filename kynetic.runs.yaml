@@ -12247,7 +12247,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KG73A8TC63GDKPKRCERKAPBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-01-30T09:21:29.420Z
@@ -12287,5 +12287,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-01-30T09:22:41.555Z
-        completed_at: 2026-01-30T09:22:41.555Z
+        completed_at: 2026-01-30T09:25:33.372Z
+        notes: "Captured: (1) @01KG73HC - inbox promote --spec-ref, (2) @01KG73HE - --tags comma syntax.
+          Skipped success pattern capture."
     initiated_by: "@claude"
+    completed_at: 2026-01-30T09:25:33.372Z
