@@ -30,12 +30,14 @@ import { EXIT_CODES } from "../exit-codes.js";
 import {
   error,
   formatTaskDetails,
+  formatTaskList,
   info,
   isJsonMode,
   output,
   success,
   warn,
 } from "../output.js";
+import { grepItem } from "../../utils/grep.js";
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -357,6 +359,85 @@ export function registerTaskCommands(program: Command): void {
   const task = program
     .command("task")
     .description("Operations on individual tasks");
+
+  // kspec task list - alias for 'kspec tasks list'
+  task
+    .command("list")
+    .description("List all tasks (alias for 'kspec tasks list')")
+    .option("-s, --status <status>", "Filter by status")
+    .option("-t, --type <type>", "Filter by type")
+    .option("--tag <tag>", "Filter by tag")
+    .option("--meta-ref <ref>", "Filter by meta reference")
+    .option("-g, --grep <pattern>", "Search content with regex pattern")
+    .option("-v, --verbose", "Show more details")
+    .option("--full", "Show full details (notes, todos, timestamps)")
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const allTasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+
+        // Load meta items if filtering by meta-ref
+        const { loadMetaContext } = await import("../../parser/meta.js");
+        const metaContext = await loadMetaContext(ctx);
+        const allMetaItems = [
+          ...metaContext.agents,
+          ...metaContext.workflows,
+          ...metaContext.conventions,
+          ...metaContext.observations,
+        ];
+
+        const index = new ReferenceIndex(allTasks, items, allMetaItems);
+
+        let taskList = allTasks;
+
+        // Apply filters
+        if (options.status) {
+          taskList = taskList.filter((t) => t.status === options.status);
+        }
+        if (options.type) {
+          taskList = taskList.filter((t) => t.type === options.type);
+        }
+        if (options.tag) {
+          taskList = taskList.filter((t) => t.tags.includes(options.tag));
+        }
+        if (options.metaRef) {
+          const metaRefResult = index.resolve(options.metaRef);
+          if (!metaRefResult.ok) {
+            error(errors.reference.metaRefNotFound(options.metaRef));
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          const targetRef = options.metaRef.startsWith("@")
+            ? options.metaRef
+            : `@${options.metaRef}`;
+          taskList = taskList.filter(
+            (t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef,
+          );
+        }
+        if (options.grep) {
+          taskList = taskList.filter((t) => {
+            const match = grepItem(
+              t as unknown as Record<string, unknown>,
+              options.grep,
+            );
+            return match !== null;
+          });
+        }
+
+        output(taskList, () =>
+          formatTaskList(
+            taskList,
+            options.verbose,
+            index,
+            options.grep,
+            options.full,
+          ),
+        );
+      } catch (err) {
+        error(errors.failures.listTasks, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
 
   // kspec task get <ref>
   task
