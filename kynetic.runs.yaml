@@ -12046,6 +12046,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-01-29T23:29:00.631Z
+    completed_at: 2026-01-29T23:30:46.371Z
     step_results:
       - step_index: 0
         status: completed
@@ -12096,4 +12097,11 @@ runs:
           high-confidence enough to warrant new entries. Session reflection complete with no new
           observations added.
     initiated_by: "@claude"
-    completed_at: 2026-01-29T23:30:46.371Z
+  - _ulid: 01KG64HTMVNMFEKBBTNQK1AYD7
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-01-30T00:23:51.195Z
+    step_results: []
+    initiated_by: "@claude"
