@@ -150,12 +150,6 @@ inbox:
     created_at: 2026-01-20T16:13:29.715Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KFE2XHT2AJN680ST7ZXK4TAT
-    text: "Ralph loop: Add progress checkpoint output at each iteration showing
-      completed/in-progress/remaining counts"
-    created_at: 2026-01-20T16:13:31.843Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFEYXF9Y42AYHFPQC43PR13F
     text: "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec item set
       for spec items. When deriving tasks, automatically create task dependencies based on spec
