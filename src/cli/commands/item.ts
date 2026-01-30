@@ -580,6 +580,13 @@ export function registerItemCommands(program: Command): void {
       "--as <field>",
       "Child field override (e.g., requirements, constraints)",
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec item add --under @parent --title "Feature name" --type feature
+  $ kspec item add --under @parent --title "Multi-tag" --tag api public`,
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -691,6 +698,14 @@ export function registerItemCommands(program: Command): void {
       "Set verified_at (defaults to now if --verified-by provided)",
     )
     .option("--trait <trait...>", "Set traits (replaces existing)")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec item set @item-ref --title "New title"
+  $ kspec item set @item-ref --tag api internal security
+  $ kspec item set @item-ref --trait reusable testable`,
+    )
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();

@@ -562,6 +562,14 @@ export function registerTaskCommands(program: Command): void {
       "--automation <status>",
       "Automation eligibility (eligible, needs_review, manual_only)",
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec task add --title "Implement feature" --spec-ref @feature-spec
+  $ kspec task add --title "Fix bug" --type bug --priority 1
+  $ kspec task add --title "Multi-tag task" --tag cli urgent`,
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -704,6 +712,15 @@ export function registerTaskCommands(program: Command): void {
     .option(
       "--status <status>",
       "Reject with error - use state transition commands instead",
+    )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec task set @task-slug --priority 2
+  $ kspec task set @task-slug --depends-on @dep1 @dep2
+  $ kspec task set @task-slug --tag cli urgent
+  $ kspec task set --refs @task1 @task2 --priority 3`,
     )
     .action(async (ref: string | undefined, options) => {
       try {
@@ -1055,6 +1072,13 @@ export function registerTaskCommands(program: Command): void {
       "Force completion even if blocked (AC: @task-commands ac-1)",
     )
     .option("--no-sync", "Skip syncing spec implementation status")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec task complete @task-slug --reason "Merged in PR #123"
+  $ kspec task complete --refs @task1 @task2 --reason "Batch completion"`,
+    )
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
@@ -1401,6 +1425,13 @@ export function registerTaskCommands(program: Command): void {
     .description("Cancel a task")
     .option("--refs <refs...>", "Cancel multiple tasks by ref")
     .option("--reason <reason>", "Cancellation reason")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec task cancel @task-slug --reason "No longer needed"
+  $ kspec task cancel --refs @task1 @task2 --reason "Superseded by @new-task"`,
+    )
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
@@ -1572,6 +1603,14 @@ export function registerTaskCommands(program: Command): void {
     .option("--refs <refs...>", "Delete multiple tasks by ref")
     .option("--force", "Skip confirmation (required for --refs)")
     .option("--dry-run", "Show what would be deleted without deleting")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec task delete @task-slug
+  $ kspec task delete --refs @task1 @task2 --force
+  $ kspec task delete --refs @task1 @task2 --dry-run`,
+    )
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();

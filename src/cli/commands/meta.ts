@@ -1098,6 +1098,13 @@ export function registerMetaCommands(program: Command): void {
       "--resolution <text>",
       "Resolution text (required for batch mode unless observations have promoted tasks)",
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec meta resolve @obs-ref "Fixed in PR #123"
+  $ kspec meta resolve --refs @obs1 @obs2 --resolution "Resolved in batch"`,
+    )
     .action(
       async (
         ref: string | undefined,
@@ -1254,6 +1261,14 @@ export function registerMetaCommands(program: Command): void {
     )
     .option("--based-on <ref>", "Base workflow reference (for loop workflows)")
     .option("--tag <tag...>", "Tags for the workflow (for workflows)")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec meta add agent --id my-agent --name "My Agent" --capability search code
+  $ kspec meta add convention --domain testing --rule "Always test" --rule "Use mocks"
+  $ kspec meta add workflow --id my-flow --trigger manual --tag automation ci`,
+    )
     .action(async (type: string, options) => {
       try {
         const ctx = await initContext();

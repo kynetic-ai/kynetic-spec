@@ -74,6 +74,13 @@ export function registerInboxCommands(program: Command): void {
     .command("add <text>")
     .description("Capture an idea quickly")
     .option("--tag <tag...>", "Add tags for categorization")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec inbox add "Idea for new feature"
+  $ kspec inbox add "Consider refactoring X" --tag refactor tech-debt`,
+    )
     .action(async (text: string, options) => {
       try {
         const ctx = await initContext();
@@ -164,6 +171,13 @@ export function registerInboxCommands(program: Command): void {
     .option("--spec-ref <ref>", "Link to spec item")
     .option("--tag <tag...>", "Tags for the task")
     .option("--keep", "Keep inbox item after promoting")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec inbox promote @ref --title "New task from idea"
+  $ kspec inbox promote @ref --title "Tagged task" --tag cli urgent`,
+    )
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();

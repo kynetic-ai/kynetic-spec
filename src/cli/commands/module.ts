@@ -30,6 +30,13 @@ export function registerModuleCommands(program: Command): void {
     .requiredOption("--slug <slug>", "Module slug (becomes filename)")
     .option("--description <desc>", "Module description")
     .option("--tag <tag...>", "Tags")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec module add --title "Auth Module" --slug auth
+  $ kspec module add --title "API Module" --slug api --tag core public`,
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
