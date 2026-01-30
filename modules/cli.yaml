@@ -2641,6 +2641,11 @@ features:
             when: The command output or marker file indicates end-iteration
             then: Ralph detects the signal and sets a flag to end the current iteration after the prompt
               completes
+          - id: ac-graceful
+            given: Ralph has detected an end-iteration signal during a prompt
+            when: The current prompt (task-work or reflect phase) completes
+            then: Ralph ends the iteration without sending additional prompts and proceeds to next iteration or
+              loop exit
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
