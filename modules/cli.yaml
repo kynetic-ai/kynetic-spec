@@ -2561,7 +2561,7 @@ features:
               completed after subagent success
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KG6CHDCEB2D34NEDF1QSWW80
         slugs:
           - ralph-task-limit
