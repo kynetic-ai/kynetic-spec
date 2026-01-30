@@ -4691,8 +4691,10 @@ observations:
     content: Test2
     created_at: 2026-01-30T11:22:39.465Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: Batch test
+    resolved_at: 2026-01-30T11:22:46.980Z
+    resolved_by: "@claude"
   - _ulid: 01KG7A867AR8FGM6WE8EXM64QT
     type: friction
     content: Test3
