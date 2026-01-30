@@ -42323,7 +42323,7 @@
   description: CLI help syntax examples - Add concrete examples to variadic options like --depends-on
     showing 'kspec task set @ref --depends-on @ref1 @ref2' instead of just '<refs...>'. Surfaced
     when trial/error was needed to find space-separated format.
-  spec_ref: null
+  spec_ref: "@cli-help-examples"
   status: pending
   blocked_by: []
   depends_on: []
@@ -42342,7 +42342,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
   slugs: []
   title: Document E2E fixture isolation pattern in AGENTS.md
