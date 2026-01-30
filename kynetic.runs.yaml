@@ -12248,7 +12248,7 @@ runs:
   - _ulid: 01KG73A8TC63GDKPKRCERKAPBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-30T09:21:29.420Z
     step_results:
@@ -12280,5 +12280,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-30T09:22:31.649Z
-        completed_at: 2026-01-30T09:22:31.649Z
+        completed_at: 2026-01-30T09:22:41.555Z
+        notes: "Proposals: (1) inbox promote --spec-ref flag [Small] - eliminates follow-up task set call;
+          (2) --tags x,y syntax [Small/minor] - convenience. Already tracked: batch creation,
+          verbose output."
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-30T09:22:41.555Z
+        completed_at: 2026-01-30T09:22:41.555Z
     initiated_by: "@claude"
