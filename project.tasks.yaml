@@ -42457,7 +42457,7 @@
     showing 'kspec task set @ref --depends-on @ref1 @ref2' instead of just '<refs...>'. Surfaced
     when trial/error was needed to find space-separated format.
   spec_ref: "@cli-help-examples"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
