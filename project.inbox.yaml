@@ -861,12 +861,3 @@ inbox:
       - meta
       - batch
     added_by: "@claude"
-  - _ulid: 01KG6WJFRG31DNCKBT8XHCX4NK
-    text: Add Resolved column to observation list output when using --all flag - show ✓/✗ status so you
-      can see resolved vs unresolved at a glance
-    created_at: 2026-01-30T07:23:38.640Z
-    tags:
-      - cli
-      - meta
-      - dx
-    added_by: "@claude"
