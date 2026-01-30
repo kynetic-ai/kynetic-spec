@@ -42282,7 +42282,7 @@
   description: "CLI ULID helper: kspec util ulid [--count N]. Generate valid ULIDs for manual YAML
     editing. Useful when creating new spec items or features directly in YAML."
   spec_ref: "@cli-utilities"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
