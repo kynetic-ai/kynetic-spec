@@ -42089,7 +42089,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
   slugs: []
   title: Add 'task list' alias for 'tasks' command
