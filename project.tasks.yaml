@@ -42468,6 +42468,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-30T08:47:08.275Z
+  started_at: 2026-01-30T11:40:59.737Z
   notes:
     - _ulid: 01KG72296NRACBA52HRQX11D8N
       created_at: 2026-01-30T08:59:39.093Z
@@ -42479,9 +42480,26 @@
       author: "@claude"
       content: "Eligible: Created spec @cli-help-examples with ac-1 for variadic option examples."
       supersedes: null
+    - _ulid: 01KG7BH8F3XPAEG1ZVBTRWAF6R
+      created_at: 2026-01-30T11:45:07.043Z
+      author: "@claude"
+      content: |-
+        Added concrete examples to --help output for all commands with variadic options:
+        - task set: --refs, --depends-on, --tag examples
+        - task add: --tag example
+        - task complete: --refs example
+        - task cancel: --refs example  
+        - task delete: --refs, --force, --dry-run examples
+        - meta resolve: --refs, --resolution examples
+        - meta add: --capability, --rule, --tag examples
+        - item add/set: --tag, --trait examples
+        - inbox add/promote: --tag examples
+        - module add: --tag example
+
+        Added help-examples.test.ts with 12 tests verifying AC @cli-help-examples ac-1.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-30T11:40:59.737Z
 - _ulid: 01KG71C9N5BZ7SM937M7YP3KFA
   slugs: []
   title: Document E2E fixture isolation pattern in AGENTS.md
