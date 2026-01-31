@@ -42801,19 +42801,49 @@
         - Skills updated: meta, task-work, triage
       supersedes: null
   todos: []
-- title: Add signal handlers for ralph marker cleanup on Ctrl+C
+- _ulid: 01KG8Q5GZYKQFYNYV5N216H646
+  slugs: []
+  title: Add signal handlers for ralph marker cleanup on Ctrl+C
   type: task
   spec_ref: "@ralph-end-iteration"
   meta_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  _ulid: 01KG8Q5GZYKQFYNYV5N216H646
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-01-31T00:27:39.901Z
-  notes: []
+  notes:
+    - _ulid: 01KG8Q5T13YNJ1H7KH1P5S6Y8J
+      created_at: 2026-01-31T00:27:49.155Z
+      author: "@claude"
+      content: >-
+        Scope: Add process signal handlers (SIGINT, SIGTERM) to ralph run command that clean up both
+        marker files before exit.
+
+
+        Cross-platform considerations:
+
+        - Node.js process.on('SIGINT') works on Unix
+
+        - On Windows, Ctrl+C triggers SIGINT in Node.js too
+
+        - SIGTERM is Unix-only but harmless to register on Windows
+
+
+        Implementation approach:
+
+        1. Register signal handlers after context is initialized
+
+        2. Handlers call clearTaskLimitMarker() and clearEndIterationMarker()
+
+        3. Also kill agent if running
+
+        4. Then call process.exit()
+
+
+        Covers ac-signal-cleanup on both @ralph-end-iteration and @ralph-task-limit specs.
+      supersedes: null
   todos: []
