@@ -42872,7 +42872,7 @@
   description: Add --spec-ref flag to 'inbox promote' command to link task to spec in one step instead
     of requiring follow-up 'task set --spec-ref'. Small scope.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -42883,10 +42883,10 @@
     - dx
   vcs_refs: []
   created_at: 2026-01-31T03:36:55.863Z
+  started_at: 2026-01-31T05:15:40.565Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-01-31T05:15:40.565Z
 - _ulid: 01KG9207MXNT85M0WPJ63HAKFF
   slugs: []
   title: Add --depends-on flag to task add command
