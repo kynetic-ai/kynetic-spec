@@ -2614,6 +2614,10 @@ features:
             given: --dry-run flag provided with --max-tasks N
             when: Ralph shows config
             then: Displays max-tasks configuration in dry-run output
+          - id: ac-signal-cleanup
+            given: Ralph is running with an active task-limit marker file
+            when: The process receives SIGINT (Ctrl+C) or SIGTERM
+            then: The marker file is cleaned up before the process exits, cross-platform
         status:
           maturity: draft
           implementation: verified
