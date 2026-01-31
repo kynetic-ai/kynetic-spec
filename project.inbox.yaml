@@ -588,15 +588,6 @@ inbox:
       - testing
       - tooling
     added_by: "@claude"
-  - _ulid: 01KG0ZHAGAYGYQAZJ3JCHNVNZW
-    text: Improve E2E daemon cleanup in test-base.ts - more aggressively clean up orphaned daemon
-      processes, possibly using unique port per test run or better PID tracking
-    created_at: 2026-01-28T00:19:59.626Z
-    tags:
-      - reflection
-      - e2e
-      - testing
-    added_by: "@claude"
   - _ulid: 01KG5DPPNHA63VSTQMCP332V48
     text: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
       invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
