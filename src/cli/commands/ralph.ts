@@ -1021,16 +1021,21 @@ export function registerRalphCommand(program: Command): void {
 
         // AC: @ralph-end-iteration ac-signal-cleanup, @ralph-task-limit ac-signal-cleanup
         // Signal handlers for cleanup on Ctrl+C or kill
-        const signalCleanup = async (signal: string) => {
+        // Note: Signal handlers must be synchronous, so we use Promise.finally()
+        // to ensure cleanup completes before exit
+        const signalCleanup = (signal: string) => {
           info(`Received ${signal}, cleaning up...`);
           // Kill agent if running
           if (agent) {
             agent.kill();
           }
-          // Clean up marker files
-          await clearTaskLimitMarker(ctx.rootDir);
-          await clearEndIterationMarker(ctx.rootDir);
-          process.exit(0);
+          // Clean up marker files, then exit after cleanup completes
+          Promise.all([
+            clearTaskLimitMarker(ctx.rootDir),
+            clearEndIterationMarker(ctx.rootDir),
+          ]).finally(() => {
+            process.exit(0);
+          });
         };
         const sigintHandler = () => { signalCleanup("SIGINT"); };
         const sigtermHandler = () => { signalCleanup("SIGTERM"); };

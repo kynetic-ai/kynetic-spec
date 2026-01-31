@@ -139,21 +139,25 @@ describe('Marker file cleanup', () => {
 
 describe('Signal cleanup', () => {
   // AC: @ralph-end-iteration ac-signal-cleanup
-  // Note: Actual signal handling (SIGINT/SIGTERM) requires integration testing
-  // with a running ralph process. This test verifies the code structure.
+  // Static analysis to verify signal handlers are registered correctly.
+  // Full integration testing would require spawning ralph and sending signals.
 
-  it('should register SIGINT and SIGTERM handlers (verified via code inspection)', () => {
-    // The signal handlers are registered in ralph.ts:
-    // - process.on("SIGINT", sigintHandler)
-    // - process.on("SIGTERM", sigtermHandler)
-    // They call signalCleanup() which:
-    // 1. Kills the agent if running
-    // 2. Clears both marker files
-    // 3. Exits the process
-    //
-    // This is verified by code inspection. Full integration testing
-    // would require spawning ralph and sending signals, which is
-    // complex and platform-dependent.
-    expect(true).toBe(true);
+  it('should register SIGINT and SIGTERM handlers', async () => {
+    const ralphContent = await fs.readFile(
+      path.join(process.cwd(), 'src/cli/commands/ralph.ts'),
+      'utf-8'
+    );
+
+    // Verify signal handlers are registered
+    expect(ralphContent).toContain('process.on("SIGINT"');
+    expect(ralphContent).toContain('process.on("SIGTERM"');
+
+    // Verify cleanup functions are called in handlers
+    expect(ralphContent).toContain('clearTaskLimitMarker');
+    expect(ralphContent).toContain('clearEndIterationMarker');
+
+    // Verify cleanup awaits before exit (uses Promise.finally pattern)
+    expect(ralphContent).toContain('Promise.all');
+    expect(ralphContent).toContain('.finally(() =>');
   });
 });
