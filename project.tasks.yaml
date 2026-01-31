@@ -42927,7 +42927,7 @@
     or auto-expire runs older than N days. Prevents accumulation that clutters workflow commands
     (had 19 active runs). Small scope.
   spec_ref: "@workflow-prune"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42941,6 +42941,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-31T07:12:27.151Z
 - _ulid: 01KG920GGRXCMVRSYP1TAWMKPM
   slugs: []
   title: Add --title override to kspec derive command
