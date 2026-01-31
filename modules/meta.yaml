@@ -1171,6 +1171,10 @@ features:
             given: workflow prune with --status aborted
             when: aborted runs exist
             then: only aborted runs are removed
+          - id: ac-3
+            given: workflow prune with --abandoned
+            when: active runs exist with no activity for extended period
+            then: stale active runs are identified and can be pruned
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
