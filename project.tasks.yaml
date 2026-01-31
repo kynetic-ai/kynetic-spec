@@ -42938,10 +42938,17 @@
     - reflection
   vcs_refs: []
   created_at: 2026-01-31T03:37:05.410Z
-  notes: []
+  started_at: 2026-01-31T07:12:27.151Z
+  notes:
+    - _ulid: 01KG9EHCHK2VXH7JZY5X33R0QX
+      created_at: 2026-01-31T07:16:05.811Z
+      author: "@claude"
+      content: Implementation complete. Added 'workflow prune' command with filters for age
+        (--older-than), status (--status), and abandoned runs (--abandoned). Includes --dry-run
+        preview mode. All 9 tests passing covering all 4 ACs.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-01-31T07:12:27.151Z
 - _ulid: 01KG920GGRXCMVRSYP1TAWMKPM
   slugs: []
   title: Add --title override to kspec derive command
