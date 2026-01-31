@@ -42908,10 +42908,10 @@
     - tasks
   vcs_refs: []
   created_at: 2026-01-31T03:37:00.829Z
+  started_at: 2026-01-31T07:07:56.550Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-01-31T07:07:56.550Z
 - _ulid: 01KG920C42YJJ8G3ERGBZYSX90
   slugs: []
   title: Add workflow prune command for stale run cleanup
@@ -42954,3 +42954,20 @@
   notes: []
   todos: []
   automation: eligible
+- title: Test Dependency Task
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 3
+  slugs:
+    - test-dep-manual
+  tags: []
+  depends_on: []
+  _ulid: 01KG9E7GVKXTDDEMH8A4H07J51
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-31T07:10:42.546Z
+  notes: []
+  todos: []
