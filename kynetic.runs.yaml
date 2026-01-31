@@ -12541,7 +12541,7 @@ runs:
   - _ulid: 01KG926AYD55DRS6464CECV34W
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-01-31T03:40:20.813Z
     step_results:
@@ -12575,5 +12575,32 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-01-31T03:40:32.943Z
-        completed_at: 2026-01-31T03:40:32.943Z
+        completed_at: 2026-01-31T03:40:45.075Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **No bulk delete for inbox** - Had to run 'kspec inbox delete @ref --force' for each of
+          19 items individually. Would benefit from 'kspec inbox delete --refs @a @b @c'.
+
+
+          2. **Verification required grepping/running commands** - No 'kspec search <keyword>' to
+          quickly check if something is implemented. Had to grep code, run commands, check help
+          manually.
+
+
+          3. **Inbox list parsing** - Had to use grep/head/tail on 'inbox list' output. No filtering
+          options like '--tag workflow' or '--older-than 2w'.
+
+
+          4. **No inbox consolidation command** - When finding duplicates, had to manually delete
+          one. Could use 'inbox merge @old-ref @new-ref' to transfer context.
+
+
+          5. **Promotion workflow incomplete** - After 'inbox promote', had to run 'task set' to add
+          priority and automation eligibility. Could be flags on promote.
+      - step_index: 2
+        status: completed
+        started_at: 2026-01-31T03:40:45.075Z
+        completed_at: 2026-01-31T03:40:45.075Z
     initiated_by: "@claude"
