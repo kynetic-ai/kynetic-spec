@@ -597,15 +597,6 @@ inbox:
       - daemon
       - web-ui
     added_by: "@claude"
-  - _ulid: 01KG5JT0NF2YP8SN3BXESGVWX3
-    text: "Ralph loop handoff triggers: Track task completions per iteration, configure
-      max_tasks_per_iteration. On task complete/start after hitting max, deny tool call with reason
-      'Max tasks reached for this iteration' and trigger end-of-iteration flow. Prevents context
-      saturation from continuous task chaining. From analysis of 72-min ralph session that completed
-      10+ tasks without breaks."
-    created_at: 2026-01-29T19:13:45.135Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KG5JTC7202XVYEFJ341GPBPB
     text: "Workflow/skill docs: Pre-session hygiene guidance. kspec session start already shows dirty
       tree and WIP tasks. Update workflow steps to explicitly prompt 'check for dirty tree, decide
