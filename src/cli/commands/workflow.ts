@@ -13,6 +13,7 @@ import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
 import {
+  deleteWorkflowRuns,
   findActiveRuns,
   findWorkflowRunByRef,
   getAuthor,
@@ -744,6 +745,179 @@ async function workflowNext(
 }
 
 /**
+ * Command: kspec workflow prune [--older-than <duration>] [--status <status>] [--abandoned] [--dry-run]
+ * AC: @workflow-prune ac-1, ac-2, ac-3, ac-4
+ */
+async function workflowPrune(options: {
+  olderThan?: string;
+  status?: string;
+  abandoned?: boolean;
+  dryRun?: boolean;
+  json?: boolean;
+}) {
+  const ctx = await initContext();
+  let runs = await loadWorkflowRuns(ctx);
+
+  // Track which runs to prune
+  let toPrune: WorkflowRun[] = [];
+
+  // AC: @workflow-prune ac-1 - Filter by age
+  if (options.olderThan) {
+    const match = options.olderThan.match(/^(\d+)([dhm])$/);
+    if (!match) {
+      error(
+        'Invalid duration format. Use format like: 30d (days), 12h (hours), 45m (minutes)',
+      );
+      process.exit(EXIT_CODES.USAGE_ERROR);
+    }
+
+    const [, amount, unit] = match;
+    const amountNum = parseInt(amount);
+    const milliseconds = {
+      m: amountNum * 60 * 1000,
+      h: amountNum * 60 * 60 * 1000,
+      d: amountNum * 24 * 60 * 60 * 1000,
+    }[unit];
+
+    if (milliseconds === undefined) {
+      error('Invalid duration unit. Use d (days), h (hours), or m (minutes)');
+      process.exit(EXIT_CODES.USAGE_ERROR);
+    }
+
+    const cutoffTime = Date.now() - milliseconds;
+    toPrune = runs.filter((r) => {
+      const runTime = new Date(r.started_at).getTime();
+      return runTime < cutoffTime;
+    });
+  }
+
+  // AC: @workflow-prune ac-2 - Filter by status
+  if (options.status) {
+    const validStatuses = ['active', 'paused', 'completed', 'aborted'];
+    if (!validStatuses.includes(options.status)) {
+      error(
+        `Invalid status: ${options.status}. Must be one of: ${validStatuses.join(', ')}`,
+      );
+      process.exit(EXIT_CODES.USAGE_ERROR);
+    }
+
+    if (toPrune.length > 0) {
+      // Filter existing toPrune list
+      toPrune = toPrune.filter((r) => r.status === options.status);
+    } else {
+      // No age filter, just status
+      toPrune = runs.filter((r) => r.status === options.status);
+    }
+  }
+
+  // AC: @workflow-prune ac-3 - Filter by abandoned (active with no activity for 7+ days)
+  if (options.abandoned) {
+    const abandonedCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000; // 7 days
+    const abandonedRuns = runs.filter((r) => {
+      if (r.status !== 'active') return false;
+
+      // Find most recent activity time
+      let lastActivity = new Date(r.started_at).getTime();
+      if (r.step_results.length > 0) {
+        const lastStep = r.step_results[r.step_results.length - 1];
+        lastActivity = new Date(lastStep.completed_at).getTime();
+      }
+
+      return lastActivity < abandonedCutoff;
+    });
+
+    if (toPrune.length > 0) {
+      // Intersect with existing toPrune list
+      const abandonedUlids = new Set(abandonedRuns.map((r) => r._ulid));
+      toPrune = toPrune.filter((r) => abandonedUlids.has(r._ulid));
+    } else {
+      toPrune = abandonedRuns;
+    }
+  }
+
+  // If no filters provided, error
+  if (!options.olderThan && !options.status && !options.abandoned) {
+    error(
+      'Must specify at least one filter: --older-than, --status, or --abandoned',
+    );
+    process.exit(EXIT_CODES.USAGE_ERROR);
+  }
+
+  // AC: @workflow-prune ac-4 - Dry run mode
+  if (options.dryRun || isJsonMode()) {
+    const output_data = {
+      would_delete: toPrune.length,
+      runs: toPrune.map((r) => ({
+        _ulid: r._ulid,
+        workflow_ref: r.workflow_ref,
+        status: r.status,
+        started_at: r.started_at,
+      })),
+    };
+
+    if (isJsonMode()) {
+      output(output_data);
+    } else {
+      console.log(
+        chalk.yellow(
+          `Would delete ${toPrune.length} workflow run${toPrune.length === 1 ? '' : 's'}:`,
+        ),
+      );
+      if (toPrune.length > 0) {
+        const table = new Table({
+          head: ['ID', 'Workflow', 'Status', 'Started'],
+          colWidths: [12, 25, 12, 20],
+        });
+
+        const metaCtx = await loadMetaContext(ctx);
+        for (const run of toPrune) {
+          const workflow = metaCtx.workflows.find(
+            (w) => `@${w._ulid}` === run.workflow_ref,
+          );
+          const workflowName = workflow?.id || run.workflow_ref;
+          const started = new Date(run.started_at).toLocaleString();
+
+          table.push([
+            shortUlid(run._ulid),
+            workflowName,
+            formatStatus(run.status),
+            started,
+          ]);
+        }
+
+        console.log(table.toString());
+        console.log(
+          chalk.gray('\nRun without --dry-run to actually delete these runs'),
+        );
+      }
+    }
+    return;
+  }
+
+  // Actually delete
+  if (toPrune.length === 0) {
+    if (!isJsonMode()) {
+      console.log(chalk.gray('No runs match the specified criteria'));
+    } else {
+      output({ deleted: 0 });
+    }
+    return;
+  }
+
+  const ulidsToDelete = toPrune.map((r) => r._ulid);
+  await deleteWorkflowRuns(ctx, ulidsToDelete);
+  await commitIfShadow(ctx.shadow, 'workflow-prune');
+
+  if (isJsonMode()) {
+    output({ deleted: toPrune.length });
+  } else {
+    success(
+      `Deleted ${toPrune.length} workflow run${toPrune.length === 1 ? '' : 's'}`,
+    );
+  }
+}
+
+/**
  * Register workflow commands
  */
 export function registerWorkflowCommand(program: Command): void {
@@ -815,4 +989,23 @@ export function registerWorkflowCommand(program: Command): void {
     .argument("<run-ref>", "Run reference (@ulid or ulid prefix)")
     .option("--json", "Output JSON")
     .action(workflowResume);
+
+  workflow
+    .command("prune")
+    .description("Remove old or stale workflow runs")
+    .option(
+      "--older-than <duration>",
+      "Delete runs older than specified duration (e.g., 30d, 12h, 45m)",
+    )
+    .option(
+      "--status <status>",
+      "Delete runs with specific status (active, paused, completed, aborted)",
+    )
+    .option(
+      "--abandoned",
+      "Delete active runs with no activity for 7+ days",
+    )
+    .option("--dry-run", "Show what would be deleted without deleting")
+    .option("--json", "Output JSON")
+    .action(workflowPrune);
 }

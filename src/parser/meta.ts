@@ -774,3 +774,26 @@ export async function findActiveRuns(
   const runs = await loadWorkflowRuns(ctx);
   return runs.filter((r) => r.status === "active");
 }
+
+/**
+ * Delete workflow runs by ULIDs
+ * AC: @workflow-prune ac-1, ac-2, ac-3, ac-4
+ */
+export async function deleteWorkflowRuns(
+  ctx: KspecContext,
+  ulidsToDelete: string[],
+): Promise<void> {
+  const runsPath = getWorkflowRunsPath(ctx);
+  const runs = await loadWorkflowRuns(ctx);
+
+  // Filter out runs to delete
+  const remainingRuns = runs.filter((r) => !ulidsToDelete.includes(r._ulid));
+
+  // Save back
+  const runsFile: WorkflowRunsFile = {
+    kynetic_runs: "1.0",
+    runs: remainingRuns,
+  };
+
+  await writeYamlFilePreserveFormat(runsPath, runsFile);
+}
