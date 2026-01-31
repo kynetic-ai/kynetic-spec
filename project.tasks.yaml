@@ -42906,24 +42906,43 @@
   created_at: 2026-01-31T03:37:00.829Z
   notes: []
   todos: []
-- title: Add workflow prune command for stale run cleanup
+- _ulid: 01KG920C42YJJ8G3ERGBZYSX90
+  slugs: []
+  title: Add workflow prune command for stale run cleanup
   type: task
-  priority: 3
+  description: Add workflow run auto-cleanup - either 'workflow prune' command to remove stale runs,
+    or auto-expire runs older than N days. Prevents accumulation that clutters workflow commands
+    (had 19 active runs). Small scope.
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - workflow
     - dx
     - reflection
-  description: Add workflow run auto-cleanup - either 'workflow prune' command to remove stale runs,
-    or auto-expire runs older than N days. Prevents accumulation that clutters workflow commands
-    (had 19 active runs). Small scope.
-  _ulid: 01KG920C42YJJ8G3ERGBZYSX90
+  vcs_refs: []
+  created_at: 2026-01-31T03:37:05.410Z
+  notes: []
+  todos: []
+- title: Add --title override to kspec derive command
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - reflection
+    - kspec-cli
+  description: 'Allow --title override on kspec derive: kspec derive @spec --title "Custom Task Title"
+    to override auto-generated "Implement: {spec title}" format'
+  _ulid: 01KG920GGRXCMVRSYP1TAWMKPM
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-31T03:37:05.410Z
+  created_at: 2026-01-31T03:37:09.911Z
   notes: []
   todos: []
