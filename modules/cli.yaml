@@ -2658,6 +2658,10 @@ features:
             given: The command is run outside of a ralph loop
             when: The agent executes 'kspec ralph end-iteration'
             then: The command succeeds but logs a warning that no ralph session was detected
+          - id: ac-signal-cleanup
+            given: Ralph is running with active marker files
+            when: The process receives SIGINT (Ctrl+C) or SIGTERM
+            then: Marker files are cleaned up before the process exits, cross-platform
         status:
           maturity: draft
           implementation: implemented
