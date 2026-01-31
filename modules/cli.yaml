@@ -2668,7 +2668,7 @@ features:
             then: Marker files are cleaned up before the process exits, cross-platform
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
