@@ -974,7 +974,7 @@ features:
             then: error is shown and task is not created
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
