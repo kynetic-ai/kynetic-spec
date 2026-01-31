@@ -42897,7 +42897,7 @@
     instead of requiring follow-up 'task set' or manual YAML edit. Small scope: single flag
     addition. Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
   spec_ref: "@task-add-depends-on"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42911,6 +42911,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-01-31T07:07:56.550Z
 - _ulid: 01KG920C42YJJ8G3ERGBZYSX90
   slugs: []
   title: Add workflow prune command for stale run cleanup
