@@ -42807,7 +42807,7 @@
   type: task
   spec_ref: "@ralph-end-iteration"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42862,3 +42862,6 @@
         Cross-platform note: Node.js handles Ctrl+C as SIGINT on both Unix and Windows.
       supersedes: null
   todos: []
+  completed_at: 2026-01-31T00:41:47.666Z
+  closed_reason: "Merged in PR #294. Added SIGINT/SIGTERM signal handlers with Promise.all().finally()
+    pattern to ensure marker cleanup completes before process exit."
