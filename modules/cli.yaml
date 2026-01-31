@@ -963,6 +963,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-31T05:16:53.558Z
+        acceptance_criteria:
+          - id: ac-1
+            given: task add command with --depends-on @other-task
+            when: task is created
+            then: task has depends_on field set to referenced task ULID
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
