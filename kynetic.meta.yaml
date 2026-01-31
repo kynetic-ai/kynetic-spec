@@ -4768,4 +4768,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG8PFDENWCZK15W036ZB8CX9
+    type: success
+    content: Following existing patterns (task-limit marker) made implementing new feature
+      (end-iteration) straightforward. Same file paths, detection mechanism, and cleanup lifecycle.
+    created_at: 2026-01-31T00:15:35.381Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
