@@ -12541,7 +12541,7 @@ runs:
   - _ulid: 01KG926AYD55DRS6464CECV34W
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-01-31T03:40:20.813Z
     step_results:
@@ -12669,5 +12669,10 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-01-31T03:41:28.287Z
-        completed_at: 2026-01-31T03:41:28.287Z
+        completed_at: 2026-01-31T04:39:22.674Z
+        notes: User approved all 4 improvements for capture
+      - step_index: 5
+        status: completed
+        started_at: 2026-01-31T04:39:22.674Z
+        completed_at: 2026-01-31T04:39:22.674Z
     initiated_by: "@claude"
