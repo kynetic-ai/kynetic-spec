@@ -558,6 +558,7 @@ export function registerTaskCommands(program: Command): void {
     .option("--priority <n>", "Priority (1-5)", "3")
     .option("--slug <slug>", "Human-friendly slug")
     .option("--tag <tag...>", "Tags")
+    .option("--depends-on <refs...>", "Set task dependencies")
     .option(
       "--automation <status>",
       "Automation eligibility (eligible, needs_review, manual_only)",
@@ -639,6 +640,23 @@ Examples:
             | "manual_only";
         }
 
+        // AC: @task-add-depends-on ac-2 - Validate dependency refs
+        if (options.dependsOn) {
+          for (const depRef of options.dependsOn) {
+            const depResult = refIndex.resolve(depRef);
+            if (!depResult.ok) {
+              error(errors.reference.depNotFound(depRef));
+              process.exit(EXIT_CODES.NOT_FOUND);
+            }
+            // Ensure the dependency is a task, not a spec item
+            const isTask = tasks.some((t) => t._ulid === depResult.ulid);
+            if (!isTask) {
+              error(`Reference "${depRef}" is not a task`);
+              process.exit(EXIT_CODES.NOT_FOUND);
+            }
+          }
+        }
+
         // AC: @spec-task-add-description ac-6 - Omit description if empty string
         const descriptionValue =
           options.description && options.description.trim() !== ""
@@ -654,6 +672,7 @@ Examples:
           priority: parseInt(options.priority, 10),
           slugs: options.slug ? [options.slug] : [],
           tags: options.tag || [],
+          depends_on: options.dependsOn || [],
           automation: automationValue,
         };
 
