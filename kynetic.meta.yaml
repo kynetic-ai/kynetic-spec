@@ -4776,4 +4776,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG8RAYQJPYB4KBVHQMMGKXPV
+    type: success
+    content: "Review feedback loop (Greptile + Claude) caught real bugs: async race condition in signal
+      handler and no-op test. Worth keeping mandatory."
+    created_at: 2026-01-31T00:48:06.387Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
