@@ -950,6 +950,19 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KG97Q3XPX6XW95D8G08J3NAW
+        slugs:
+          - task-add-depends-on
+        title: Task Add Dependency Flag
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-31T05:16:53.558Z
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
