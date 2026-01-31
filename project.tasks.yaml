@@ -42941,7 +42941,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 2
   tags:
     - reflection
     - kspec-cli
@@ -42949,3 +42949,4 @@
   created_at: 2026-01-31T03:37:09.911Z
   notes: []
   todos: []
+  automation: eligible
