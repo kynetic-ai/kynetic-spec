@@ -1167,6 +1167,10 @@ features:
             given: workflow prune command with --older-than 30d
             when: runs exist older than 30 days
             then: old runs are removed, recent runs are preserved
+          - id: ac-2
+            given: workflow prune with --status aborted
+            when: aborted runs exist
+            then: only aborted runs are removed
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
