@@ -90,15 +90,6 @@ inbox:
       - cli
       - phase-2
     added_by: "@claude"
-  - _ulid: 01KFBJM1XW2DSC0V47Y86EZYHB
-    text: "Review RALPH_LOOP_INSTRUCTIONS.md - consolidate into skills or delete. Unique content: PR
-      review workflow for autonomous loops, 'every iteration ends with PR' rule, reflect guidance
-      for loops. Consider codifying loop-specific reflect behavior into /reflect skill."
-    created_at: 2026-01-19T16:50:14.589Z
-    tags:
-      - docs
-      - ralph
-    added_by: "@claude"
   - _ulid: 01KFBKA7PCR1VKHEPJBTY843Q9
     text: Review KYNETIC_SPEC_DESIGN.md vs actual .kspec/ spec - identify any gaps/features in design
       doc not yet in spec before clearing out. Bootstrap doc is now obsolete.
