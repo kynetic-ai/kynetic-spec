@@ -2658,6 +2658,9 @@ features:
             given: The command is run outside of a ralph loop
             when: The agent executes 'kspec ralph end-iteration'
             then: The command succeeds but logs a warning that no ralph session was detected
+        status:
+          maturity: draft
+          implementation: implemented
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:
       - acp-client
