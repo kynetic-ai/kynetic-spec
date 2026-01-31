@@ -42909,7 +42909,14 @@
   vcs_refs: []
   created_at: 2026-01-31T03:37:00.829Z
   started_at: 2026-01-31T07:07:56.550Z
-  notes: []
+  notes:
+    - _ulid: 01KG9E8CGGSACH28VQPFKMFP1G
+      created_at: 2026-01-31T07:11:10.864Z
+      author: "@claude"
+      content: "Implementation complete. Added --depends-on flag to task add command with validation. All
+        6 tests passing - covers both ACs: creating tasks with dependencies (AC-1) and error
+        handling for invalid/non-task refs (AC-2)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KG920C42YJJ8G3ERGBZYSX90
