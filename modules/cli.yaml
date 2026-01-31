@@ -1650,6 +1650,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-31T05:17:54.838Z
+        acceptance_criteria:
+          - id: ac-1
+            given: derive command with --title 'Custom Title'
+            when: task is derived from spec
+            then: task title uses provided value instead of spec title
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
