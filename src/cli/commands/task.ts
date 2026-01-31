@@ -253,6 +253,14 @@ async function setTaskFields(
             error: errors.reference.depNotFound(depRef),
           };
         }
+        // Ensure the dependency is a task, not a spec item
+        const isTask = tasks.some((t) => t._ulid === depResult.ulid);
+        if (!isTask) {
+          return {
+            success: false,
+            error: `Reference "${depRef}" is not a task`,
+          };
+        }
       }
       updatedTask.depends_on = options.dependsOn;
       changes.push("depends_on");
