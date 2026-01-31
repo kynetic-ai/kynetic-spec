@@ -42559,6 +42559,9 @@
   spec_ref: "@ralph-end-iteration"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #292. Added 'kspec ralph end-iteration' command for explicit loop
+    termination. Restructured ralph command to support subcommands with full backward
+    compatibility."
   depends_on: []
   context: []
   priority: 3
@@ -42566,6 +42569,7 @@
   vcs_refs: []
   created_at: 2026-01-30T08:57:22.432Z
   started_at: 2026-01-30T23:50:58.841Z
+  completed_at: 2026-01-31T00:10:04.572Z
   notes:
     - _ulid: 01KG7229MZABY4EGXT7RXNYAR4
       created_at: 2026-01-30T08:59:39.551Z
@@ -42615,10 +42619,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-31T00:10:04.572Z
-  closed_reason: "Merged in PR #292. Added 'kspec ralph end-iteration' command for explicit loop
-    termination. Restructured ralph command to support subcommands with full backward
-    compatibility."
 - _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
   slugs: []
   title: Fix PR review subagent not completing task after merge
@@ -42800,4 +42800,20 @@
         - AGENTS.md: util ulid, meta resolve batch, task complete --force
         - Skills updated: meta, task-work, triage
       supersedes: null
+  todos: []
+- title: Add signal handlers for ralph marker cleanup on Ctrl+C
+  type: task
+  spec_ref: "@ralph-end-iteration"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  _ulid: 01KG8Q5GZYKQFYNYV5N216H646
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-01-31T00:27:39.901Z
+  notes: []
   todos: []
