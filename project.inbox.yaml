@@ -687,3 +687,13 @@ inbox:
       - cli
       - inbox
     added_by: "@claude"
+  - _ulid: 01KG95JSDYYKPFFS17PW2BCJ5H
+    text: "Add --priority and --automation flags to inbox promote: 'kspec inbox promote @ref --title X
+      --priority 2 --automation eligible'. Completes task setup in one command instead of promote +
+      task set."
+    created_at: 2026-01-31T04:39:34.591Z
+    tags:
+      - reflection
+      - cli
+      - inbox
+    added_by: "@claude"
