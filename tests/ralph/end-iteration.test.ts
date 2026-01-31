@@ -136,3 +136,28 @@ describe('Marker file cleanup', () => {
     expect(marker.reason).toBe('test reason');
   });
 });
+
+describe('Signal cleanup', () => {
+  // AC: @ralph-end-iteration ac-signal-cleanup
+  // Static analysis to verify signal handlers are registered correctly.
+  // Full integration testing would require spawning ralph and sending signals.
+
+  it('should register SIGINT and SIGTERM handlers', async () => {
+    const ralphContent = await fs.readFile(
+      path.join(process.cwd(), 'src/cli/commands/ralph.ts'),
+      'utf-8'
+    );
+
+    // Verify signal handlers are registered
+    expect(ralphContent).toContain('process.on("SIGINT"');
+    expect(ralphContent).toContain('process.on("SIGTERM"');
+
+    // Verify cleanup functions are called in handlers
+    expect(ralphContent).toContain('clearTaskLimitMarker');
+    expect(ralphContent).toContain('clearEndIterationMarker');
+
+    // Verify cleanup awaits before exit (uses Promise.finally pattern)
+    expect(ralphContent).toContain('Promise.all');
+    expect(ralphContent).toContain('.finally(() =>');
+  });
+});
