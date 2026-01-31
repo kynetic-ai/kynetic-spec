@@ -972,6 +972,9 @@ features:
             given: task add with --depends-on @invalid-ref
             when: reference doesn't resolve to a task
             then: error is shown and task is not created
+        status:
+          maturity: draft
+          implementation: in_progress
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
