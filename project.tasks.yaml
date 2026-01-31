@@ -42876,7 +42876,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 2
   tags:
     - reflection
     - cli
@@ -42885,6 +42885,7 @@
   created_at: 2026-01-31T03:36:55.863Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KG9207MXNT85M0WPJ63HAKFF
   slugs: []
   title: Add --depends-on flag to task add command
@@ -42927,21 +42928,21 @@
   created_at: 2026-01-31T03:37:05.410Z
   notes: []
   todos: []
-- title: Add --title override to kspec derive command
+- _ulid: 01KG920GGRXCMVRSYP1TAWMKPM
+  slugs: []
+  title: Add --title override to kspec derive command
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - reflection
-    - kspec-cli
   description: 'Allow --title override on kspec derive: kspec derive @spec --title "Custom Task Title"
     to override auto-generated "Implement: {spec title}" format'
-  _ulid: 01KG920GGRXCMVRSYP1TAWMKPM
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - reflection
+    - kspec-cli
   vcs_refs: []
   created_at: 2026-01-31T03:37:09.911Z
   notes: []
