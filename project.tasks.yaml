@@ -42874,6 +42874,7 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Already implemented - --spec-ref flag exists on inbox promote command
   depends_on: []
   context: []
   priority: 2
@@ -42884,11 +42885,10 @@
   vcs_refs: []
   created_at: 2026-01-31T03:36:55.863Z
   started_at: 2026-01-31T05:15:40.565Z
+  completed_at: 2026-01-31T05:15:45.934Z
   notes: []
   todos: []
   automation: eligible
-  completed_at: 2026-01-31T05:15:45.934Z
-  closed_reason: Already implemented - --spec-ref flag exists on inbox promote command
 - _ulid: 01KG9207MXNT85M0WPJ63HAKFF
   slugs: []
   title: Add --depends-on flag to task add command
@@ -42896,7 +42896,7 @@
   description: "Add --depends-on flag to 'kspec task add' - Set task dependencies at creation time
     instead of requiring follow-up 'task set' or manual YAML edit. Small scope: single flag
     addition. Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
-  spec_ref: null
+  spec_ref: "@task-add-depends-on"
   status: pending
   blocked_by: []
   depends_on: []
