@@ -42897,7 +42897,7 @@
     instead of requiring follow-up 'task set' or manual YAML edit. Small scope: single flag
     addition. Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
   spec_ref: "@task-add-depends-on"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42919,6 +42919,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-31T07:41:12.749Z
+  closed_reason: "Merged in PR #295. Added --depends-on flag to task add command with validation. Also
+    fixed validation inconsistency in task set --depends-on per Greptile review feedback."
 - _ulid: 01KG920C42YJJ8G3ERGBZYSX90
   slugs: []
   title: Add workflow prune command for stale run cleanup
@@ -42929,6 +42932,8 @@
   spec_ref: "@workflow-prune"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #296. Added workflow prune command with age, status, and abandoned
+    filters plus dry-run mode."
   depends_on: []
   context: []
   priority: 2
@@ -42939,6 +42944,7 @@
   vcs_refs: []
   created_at: 2026-01-31T03:37:05.410Z
   started_at: 2026-01-31T07:12:27.151Z
+  completed_at: 2026-01-31T07:38:35.432Z
   notes:
     - _ulid: 01KG9EHCHK2VXH7JZY5X33R0QX
       created_at: 2026-01-31T07:16:05.811Z
@@ -42949,9 +42955,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-31T07:38:35.432Z
-  closed_reason: "Merged in PR #296. Added workflow prune command with age, status, and abandoned
-    filters plus dry-run mode."
 - _ulid: 01KG920GGRXCMVRSYP1TAWMKPM
   slugs: []
   title: Add --title override to kspec derive command
