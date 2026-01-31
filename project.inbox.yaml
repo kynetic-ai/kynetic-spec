@@ -657,3 +657,13 @@ inbox:
     created_at: 2026-01-20T16:13:31.843Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KG95JMC8M2P9454F4QJ894RX
+    text: Apply @trait-multi-ref-batch to inbox delete command - enable 'kspec inbox delete --refs @a @b
+      @c' for bulk cleanup during triage. Surfaced during inbox triage session with 19 individual
+      delete calls.
+    created_at: 2026-01-31T04:39:29.417Z
+    tags:
+      - reflection
+      - cli
+      - batch
+    added_by: "@claude"
