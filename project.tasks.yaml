@@ -42897,7 +42897,7 @@
     instead of requiring follow-up 'task set' or manual YAML edit. Small scope: single flag
     addition. Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
   spec_ref: "@task-add-depends-on"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
