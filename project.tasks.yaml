@@ -42918,7 +42918,7 @@
   description: Add workflow run auto-cleanup - either 'workflow prune' command to remove stale runs,
     or auto-expire runs older than N days. Prevents accumulation that clutters workflow commands
     (had 19 active runs). Small scope.
-  spec_ref: null
+  spec_ref: "@workflow-prune"
   status: pending
   blocked_by: []
   depends_on: []
