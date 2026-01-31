@@ -42898,7 +42898,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 2
   tags:
     - reflection
     - cli
@@ -42907,6 +42907,7 @@
   created_at: 2026-01-31T03:37:00.829Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KG920C42YJJ8G3ERGBZYSX90
   slugs: []
   title: Add workflow prune command for stale run cleanup
