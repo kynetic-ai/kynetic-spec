@@ -1019,6 +1019,24 @@ export function registerRalphCommand(program: Command): void {
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
 
+        // AC: @ralph-end-iteration ac-signal-cleanup, @ralph-task-limit ac-signal-cleanup
+        // Signal handlers for cleanup on Ctrl+C or kill
+        const signalCleanup = async (signal: string) => {
+          info(`Received ${signal}, cleaning up...`);
+          // Kill agent if running
+          if (agent) {
+            agent.kill();
+          }
+          // Clean up marker files
+          await clearTaskLimitMarker(ctx.rootDir);
+          await clearEndIterationMarker(ctx.rootDir);
+          process.exit(0);
+        };
+        const sigintHandler = () => { signalCleanup("SIGINT"); };
+        const sigtermHandler = () => { signalCleanup("SIGTERM"); };
+        process.on("SIGINT", sigintHandler);
+        process.on("SIGTERM", sigtermHandler);
+
         // Create translator and renderer for this session
         const translator = createTranslator();
         const renderer = createCliRenderer();
@@ -1424,6 +1442,10 @@ export function registerRalphCommand(program: Command): void {
             }
           }
         } finally {
+          // Remove signal handlers to avoid double cleanup
+          process.off("SIGINT", sigintHandler);
+          process.off("SIGTERM", sigtermHandler);
+
           // Clean up agent
           if (agent) {
             agent.kill();
