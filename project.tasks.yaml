@@ -42557,7 +42557,7 @@
   description: "Ralph loop: Add signal/mechanism for agents to explicitly end the loop when target
     work is complete (e.g., special exit command or completion marker)"
   spec_ref: "@ralph-end-iteration"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42615,6 +42615,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-01-31T00:10:04.572Z
+  closed_reason: "Merged in PR #292. Added 'kspec ralph end-iteration' command for explicit loop
+    termination. Restructured ralph command to support subcommands with full backward
+    compatibility."
 - _ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
   slugs: []
   title: Fix PR review subagent not completing task after merge
