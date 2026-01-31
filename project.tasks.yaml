@@ -42807,7 +42807,7 @@
   type: task
   spec_ref: "@ralph-end-iteration"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -42847,3 +42847,4 @@
         Covers ac-signal-cleanup on both @ralph-end-iteration and @ralph-task-limit specs.
       supersedes: null
   todos: []
+  started_at: 2026-01-31T00:27:54.524Z
