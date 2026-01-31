@@ -1637,6 +1637,19 @@ features:
             given: parent spec has task in cancelled state
             when: derive creates child task with depends_on
             then: cancelled parent task is excluded from depends_on; only active/completed tasks used
+      - _ulid: 01KG97RZRPWSSF09C2J394RJK2
+        slugs:
+          - derive-title-override
+        title: Derive Title Override Flag
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-31T05:17:54.838Z
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
