@@ -42815,6 +42815,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-01-31T00:27:39.901Z
+  started_at: 2026-01-31T00:27:54.524Z
   notes:
     - _ulid: 01KG8Q5T13YNJ1H7KH1P5S6Y8J
       created_at: 2026-01-31T00:27:49.155Z
@@ -42846,5 +42847,18 @@
 
         Covers ac-signal-cleanup on both @ralph-end-iteration and @ralph-task-limit specs.
       supersedes: null
+    - _ulid: 01KG8Q814J0MS6GN9N6MVE8985
+      created_at: 2026-01-31T00:29:01.971Z
+      author: "@claude"
+      content: |-
+        Implementation complete. Added SIGINT/SIGTERM handlers that:
+        1. Log the signal received
+        2. Kill agent if running
+        3. Clear both marker files (task-limit and end-iteration)
+        4. Exit cleanly
+
+        Handlers are removed in finally block to avoid double cleanup on normal exit.
+
+        Cross-platform note: Node.js handles Ctrl+C as SIGINT on both Unix and Windows.
+      supersedes: null
   todos: []
-  started_at: 2026-01-31T00:27:54.524Z
