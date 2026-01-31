@@ -1149,6 +1149,19 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KG9A7465T6JK3S7KXKEB3JNE
+        slugs:
+          - workflow-prune
+        title: Workflow Run Pruning
+        type: feature
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-01-31T06:00:35.269Z
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
