@@ -291,16 +291,6 @@ inbox:
     created_at: 2026-01-23T16:34:59.430Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KFP9A2761K3N9S2M2CG23BHE
-    text: "Add --depends-on flag to 'kspec task add' - Set task dependencies at creation time instead of
-      requiring follow-up 'task set' or manual YAML edit. Small scope: single flag addition.
-      Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
-    created_at: 2026-01-23T20:39:08.774Z
-    tags:
-      - reflection
-      - cli
-      - tasks
-    added_by: "@claude"
   - _ulid: 01KFP9A66QC28CY8R3JWNBKD3F
     text: "Test coverage report command: 'kspec coverage @spec-ref' - Scan codebase for '// AC: @spec
       ac-N' annotations and report which ACs have test coverage vs gaps. Helps verify all acceptance

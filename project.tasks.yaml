@@ -42865,23 +42865,44 @@
         Cross-platform note: Node.js handles Ctrl+C as SIGINT on both Unix and Windows.
       supersedes: null
   todos: []
-- title: Add --spec-ref flag to inbox promote command
+- _ulid: 01KG9202SR3EM1Y7MQAG448FFM
+  slugs: []
+  title: Add --spec-ref flag to inbox promote command
+  type: task
+  description: Add --spec-ref flag to 'inbox promote' command to link task to spec in one step instead
+    of requiring follow-up 'task set --spec-ref'. Small scope.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - reflection
+    - cli
+    - dx
+  vcs_refs: []
+  created_at: 2026-01-31T03:36:55.863Z
+  notes: []
+  todos: []
+- title: Add --depends-on flag to task add command
   type: task
   priority: 3
   spec_ref: null
   tags:
     - reflection
     - cli
-    - dx
-  description: Add --spec-ref flag to 'inbox promote' command to link task to spec in one step instead
-    of requiring follow-up 'task set --spec-ref'. Small scope.
-  _ulid: 01KG9202SR3EM1Y7MQAG448FFM
+    - tasks
+  description: "Add --depends-on flag to 'kspec task add' - Set task dependencies at creation time
+    instead of requiring follow-up 'task set' or manual YAML edit. Small scope: single flag
+    addition. Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
+  _ulid: 01KG9207MXNT85M0WPJ63HAKFF
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-31T03:36:55.863Z
+  created_at: 2026-01-31T03:37:00.829Z
   notes: []
   todos: []
