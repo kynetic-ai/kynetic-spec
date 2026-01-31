@@ -1162,6 +1162,11 @@ features:
         traits: []
         notes: []
         created: 2026-01-31T06:00:35.269Z
+        acceptance_criteria:
+          - id: ac-1
+            given: workflow prune command with --older-than 30d
+            when: runs exist older than 30 days
+            then: old runs are removed, recent runs are preserved
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
