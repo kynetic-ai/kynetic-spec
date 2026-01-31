@@ -4792,4 +4792,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KG95K29ERJ12XFDWW44P0MPF
+    type: success
+    content: kspec search command exists and works well - found it during reflection when checking
+      coverage. Searched 'multi-ref' and got comprehensive results across specs, tasks, inbox.
+      Should use this more proactively during work.
+    created_at: 2026-01-31T04:39:43.662Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
