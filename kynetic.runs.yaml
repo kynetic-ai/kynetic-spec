@@ -12541,7 +12541,7 @@ runs:
   - _ulid: 01KG926AYD55DRS6464CECV34W
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-01-31T03:40:20.813Z
     step_results:
@@ -12602,5 +12602,29 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-01-31T03:40:45.075Z
-        completed_at: 2026-01-31T03:40:45.075Z
+        completed_at: 2026-01-31T03:41:16.683Z
+        notes: >-
+          ## Coverage Check Results
+
+
+          1. **Bulk inbox delete** - NOT TRACKED. @trait-multi-ref-batch exists but @01KG71J2 only
+          mentions 'trait add/remove, task set --automation'. Inbox delete not included.
+
+
+          2. **kspec search** - Already exists! Just discovered 'kspec search' during this check.
+          Was grepping manually when this tool exists.
+
+
+          3. **Inbox filtering (--tag, --older-than)** - NOT TRACKED. No coverage found.
+
+
+          4. **Inbox merge/consolidation** - NOT TRACKED. No coverage found.
+
+
+          5. **Promote with flags** - PARTIALLY TRACKED. @01KG73HC adds --spec-ref (just promoted),
+          but --priority and --automation not covered.
+      - step_index: 3
+        status: completed
+        started_at: 2026-01-31T03:41:16.683Z
+        completed_at: 2026-01-31T03:41:16.683Z
     initiated_by: "@claude"
