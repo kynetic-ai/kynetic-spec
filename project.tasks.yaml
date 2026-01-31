@@ -42954,20 +42954,38 @@
   notes: []
   todos: []
   automation: eligible
-- title: Test Dependency Task
+- _ulid: 01KG9E7GVKXTDDEMH8A4H07J51
+  slugs:
+    - test-dep-manual
+  title: Test Dependency Task
+  type: task
+  spec_ref: null
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-01-31T07:10:42.546Z
+  notes: []
+  todos: []
+- title: Main Task with Dependency
   type: task
   spec_ref: null
   meta_ref: null
   priority: 3
   slugs:
-    - test-dep-manual
+    - test-main-manual
   tags: []
-  depends_on: []
-  _ulid: 01KG9E7GVKXTDDEMH8A4H07J51
+  depends_on:
+    - "@test-dep-manual"
+  _ulid: 01KG9E7QJKT0NRH6Z1KKEWS8XK
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-01-31T07:10:42.546Z
+  created_at: 2026-01-31T07:10:49.427Z
   notes: []
   todos: []
