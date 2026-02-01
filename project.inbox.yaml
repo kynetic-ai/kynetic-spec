@@ -713,3 +713,12 @@ inbox:
       - cli
       - validation
     added_by: "@claude"
+  - _ulid: 01KGDCRJEGPN3QH2FDGG1DDXVB
+    text: Nested requirements not addressable by slug via CLI - kspec item ac add @slug fails for items
+      nested under requirements:. Either make nested items addressable or document that requirements
+      should be promoted to features first
+    created_at: 2026-02-01T20:02:01.809Z
+    tags:
+      - cli
+      - ux
+    added_by: "@claude"
