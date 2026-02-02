@@ -2386,6 +2386,11 @@ features:
         when: determining whether to continue looping
         then: loop continues if automation:eligible ready tasks OR automation:eligible in_progress tasks
           exist; exits with message when neither remain
+      - id: ac-20
+        given: processPendingReviewTasks completes during iteration
+        when: checking for loop continuation
+        then: uses freshly gathered task context (not stale from iteration start) to detect tasks that
+          became ready due to dependency unblocking
     status:
       maturity: draft
       implementation: implemented
