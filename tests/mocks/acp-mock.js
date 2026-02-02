@@ -17,6 +17,7 @@
  * - MOCK_ACP_STOP_REASON: Stop reason (default: end_turn)
  * - MOCK_ACP_COMPLETE_TASK: Task ref to complete after successful prompt (e.g., "@task-slug")
  * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
+ * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
  */
 
 import * as fs from 'node:fs';
@@ -38,6 +39,7 @@ const responseText = process.env.MOCK_ACP_RESPONSE_TEXT || 'Mock response';
 const stopReason = process.env.MOCK_ACP_STOP_REASON || 'end_turn';
 const completeTask = process.env.MOCK_ACP_COMPLETE_TASK;
 const projectDir = process.env.MOCK_ACP_PROJECT_DIR;
+const cliPath = process.env.MOCK_ACP_CLI_PATH || 'kspec';
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -144,7 +146,11 @@ async function handlePrompt(id, params) {
   if (completeTask && projectDir) {
     try {
       // Use --force to complete from pending_review state
-      execSync(`kspec task complete ${completeTask} --reason "Mock automated completion" --force`, {
+      // Use node + cliPath for CI compatibility (kspec may not be globally installed)
+      const cmd = cliPath === 'kspec'
+        ? `kspec task complete ${completeTask} --reason "Mock automated completion" --force`
+        : `node ${cliPath} task complete ${completeTask} --reason "Mock automated completion" --force`;
+      execSync(cmd, {
         cwd: projectDir,
         stdio: ['ignore', 'pipe', 'pipe'],
       });

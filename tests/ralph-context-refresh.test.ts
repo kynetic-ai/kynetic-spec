@@ -393,6 +393,7 @@ describe('ralph context refresh - mock task completion integration', () => {
       MOCK_ACP_EXIT_CODE: '0',
       MOCK_ACP_COMPLETE_TASK: `@${taskASlug}`,
       MOCK_ACP_PROJECT_DIR: tempDir,
+      MOCK_ACP_CLI_PATH: CLI_PATH,
     });
 
     // The mock should have completed Task A
@@ -423,6 +424,7 @@ describe('ralph context refresh - mock task completion integration', () => {
       MOCK_ACP_EXIT_CODE: '0',
       MOCK_ACP_COMPLETE_TASK: `@${taskASlug}`,
       MOCK_ACP_PROJECT_DIR: tempDir,
+      MOCK_ACP_CLI_PATH: CLI_PATH,
     });
 
     // Check the context snapshot saved after iteration 1
