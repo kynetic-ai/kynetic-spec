@@ -42975,19 +42975,52 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix stale context after processPendingReviewTasks in ralph loop
+- _ulid: 01KGFK9EDFW61N76RCHNR7RVQ0
+  slugs: []
+  title: Fix stale context after processPendingReviewTasks in ralph loop
   type: task
   spec_ref: null
   meta_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KGFK9EDFW61N76RCHNR7RVQ0
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-02-02T16:34:35.055Z
-  notes: []
+  notes:
+    - _ulid: 01KGFK9QXVZ907BEF0KGBR6HRF
+      created_at: 2026-02-02T16:34:44.795Z
+      author: "@claude"
+      content: >-
+        Bug analysis:
+
+
+        The ralph loop gathers session context at iteration start, then processes pending_review
+        tasks (which may complete blocking tasks), but then checks for ready tasks using the STALE
+        context.
+
+
+        Flow:
+
+        1. gatherSessionContext() - blocking tasks are in pending_review, dependent tasks show as
+        blocked
+
+        2. processPendingReviewTasks() - subagents complete the blocking tasks  
+
+        3. Check sessionCtx.ready_tasks - STALE! Still shows empty because context was gathered
+        before completions
+
+
+        Result: Loop exits with 'No automation-eligible tasks' even though tasks just became
+        unblocked.
+
+
+        Fix: Re-gather context (or re-check ready tasks) AFTER processPendingReviewTasks completes,
+        before the early exit check at lines 1108-1116.
+
+
+        Relevant code: src/cli/commands/ralph.ts lines 1080-1116
+      supersedes: null
   todos: []
