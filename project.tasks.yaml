@@ -42989,6 +42989,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-02T16:34:35.055Z
+  started_at: 2026-02-02T16:36:09.626Z
   notes:
     - _ulid: 01KGFK9QXVZ907BEF0KGBR6HRF
       created_at: 2026-02-02T16:34:44.795Z
@@ -43044,5 +43045,25 @@
           when: checking for loop continuation
           then: uses freshly gathered task context (not stale from iteration start) to detect tasks that became ready due to dependency unblocking
       supersedes: null
+    - _ulid: 01KGFKHNFK1FAE1Q9WFKQWMVSZ
+      created_at: 2026-02-02T16:39:04.435Z
+      author: "@claude"
+      content: >-
+        Fix implemented:
+
+
+        Added context refresh after processPendingReviewTasks (AC-20). When pending_review tasks
+        exist and are processed, context is re-gathered to detect tasks that became ready due to
+        dependency unblocking.
+
+
+        Changes:
+
+        - src/cli/commands/ralph.ts: After processPendingReviewTasks, check if pending_review_tasks
+        existed. If so, re-gather context before the ready task check. Use refreshed context for
+        prompt building.
+
+
+        All existing tests pass. Build succeeds.
+      supersedes: null
   todos: []
-  started_at: 2026-02-02T16:36:09.626Z
