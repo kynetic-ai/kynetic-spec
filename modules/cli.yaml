@@ -1658,6 +1658,9 @@ features:
             given: derive command with --title 'Custom Title'
             when: task is derived from spec
             then: task title uses provided value instead of spec title
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
