@@ -42899,6 +42899,8 @@
   spec_ref: "@task-add-depends-on"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #295. Added --depends-on flag to task add command with validation. Also
+    fixed validation inconsistency in task set --depends-on per Greptile review feedback."
   depends_on: []
   context: []
   priority: 2
@@ -42909,6 +42911,7 @@
   vcs_refs: []
   created_at: 2026-01-31T03:37:00.829Z
   started_at: 2026-01-31T07:07:56.550Z
+  completed_at: 2026-01-31T07:41:12.749Z
   notes:
     - _ulid: 01KG9E8CGGSACH28VQPFKMFP1G
       created_at: 2026-01-31T07:11:10.864Z
@@ -42919,9 +42922,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-01-31T07:41:12.749Z
-  closed_reason: "Merged in PR #295. Added --depends-on flag to task add command with validation. Also
-    fixed validation inconsistency in task set --depends-on per Greptile review feedback."
 - _ulid: 01KG920C42YJJ8G3ERGBZYSX90
   slugs: []
   title: Add workflow prune command for stale run cleanup
@@ -42975,3 +42975,19 @@
   notes: []
   todos: []
   automation: eligible
+- title: Fix stale context after processPendingReviewTasks in ralph loop
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KGFK9EDFW61N76RCHNR7RVQ0
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-02T16:34:35.055Z
+  notes: []
+  todos: []
