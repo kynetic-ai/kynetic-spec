@@ -15,10 +15,14 @@
  * - MOCK_ACP_DELAY_MS: Delay before responding to prompt
  * - MOCK_ACP_RESPONSE_TEXT: Text to include in response
  * - MOCK_ACP_STOP_REASON: Stop reason (default: end_turn)
+ * - MOCK_ACP_COMPLETE_TASK: Task ref to complete after successful prompt (e.g., "@task-slug")
+ * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
+ * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
  */
 
 import * as fs from 'node:fs';
 import * as readline from 'node:readline';
+import { execSync } from 'node:child_process';
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -33,6 +37,9 @@ const stateFile = process.env.MOCK_ACP_STATE_FILE;
 const delayMs = parseInt(process.env.MOCK_ACP_DELAY_MS || '0', 10);
 const responseText = process.env.MOCK_ACP_RESPONSE_TEXT || 'Mock response';
 const stopReason = process.env.MOCK_ACP_STOP_REASON || 'end_turn';
+const completeTask = process.env.MOCK_ACP_COMPLETE_TASK;
+const projectDir = process.env.MOCK_ACP_PROJECT_DIR;
+const cliPath = process.env.MOCK_ACP_CLI_PATH || 'kspec';
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -134,7 +141,27 @@ async function handlePrompt(id, params) {
     },
   });
 
-  // Send completion response
+  // Complete task if configured (simulates agent completing work)
+  // IMPORTANT: Must complete BEFORE sending response so ralph's verifyTaskCompleted() sees the change
+  if (completeTask && projectDir) {
+    try {
+      // Use --force to complete from pending_review state
+      // Use node + cliPath for CI compatibility (kspec may not be globally installed)
+      const cmd = cliPath === 'kspec'
+        ? `kspec task complete ${completeTask} --reason "Mock automated completion" --force`
+        : `node ${cliPath} task complete ${completeTask} --reason "Mock automated completion" --force`;
+      execSync(cmd, {
+        cwd: projectDir,
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      console.error(`Mock ACP: Completed task ${completeTask}`);
+    } catch (err) {
+      console.error(`Mock ACP: Failed to complete task ${completeTask}: ${err.message}`);
+      // Don't fail the mock - task completion is best-effort
+    }
+  }
+
+  // Send completion response AFTER task is completed
   sendResponse(id, { stopReason });
 }
 

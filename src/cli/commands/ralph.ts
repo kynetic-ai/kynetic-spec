@@ -1105,10 +1105,21 @@ export function registerRalphCommand(program: Command): void {
               break;
             }
 
+            // AC: @cli-ralph ac-20 - Refresh context after pending_review processing
+            // If pending_review tasks were processed, they may have completed and unblocked
+            // dependent tasks. Re-gather context to detect newly available tasks.
+            let currentCtx = sessionCtx;
+            if (sessionCtx.pending_review_tasks.length > 0) {
+              currentCtx = await gatherSessionContext(ctx, {
+                limit: "10",
+                eligible: true,
+              });
+            }
+
             // Check for automation-eligible tasks (ready or in_progress)
             // AC: @cli-ralph ac-19
-            const hasActiveTasks = sessionCtx.active_tasks.length > 0;
-            const hasReadyTasks = sessionCtx.ready_tasks.length > 0;
+            const hasActiveTasks = currentCtx.active_tasks.length > 0;
+            const hasReadyTasks = currentCtx.ready_tasks.length > 0;
 
             if (!hasActiveTasks && !hasReadyTasks) {
               info("No automation-eligible tasks (ready or in_progress). Exiting loop.");
@@ -1121,7 +1132,7 @@ export function registerRalphCommand(program: Command): void {
 
             // Build prompts - task-work first, then reflect
             const taskWorkPrompt = buildTaskWorkPrompt(
-              sessionCtx,
+              currentCtx,
               iteration,
               maxLoops,
               sessionId,
@@ -1162,8 +1173,8 @@ export function registerRalphCommand(program: Command): void {
                 phase: "task-work",
                 prompt: taskWorkPrompt,
                 tasks: {
-                  active: sessionCtx.active_tasks.map((t) => t.ref),
-                  ready: sessionCtx.ready_tasks.map((t) => t.ref),
+                  active: currentCtx.active_tasks.map((t) => t.ref),
+                  ready: currentCtx.ready_tasks.map((t) => t.ref),
                 },
               },
             });
