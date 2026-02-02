@@ -43066,4 +43066,9 @@
 
         All existing tests pass. Build succeeds.
       supersedes: null
+    - _ulid: 01KGFKJZRDDPXGF49HCKQBT7NT
+      created_at: 2026-02-02T16:39:47.725Z
+      author: "@claude"
+      content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/297"
+      supersedes: null
   todos: []
