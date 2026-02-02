@@ -43023,4 +43023,25 @@
 
         Relevant code: src/cli/commands/ralph.ts lines 1080-1116
       supersedes: null
+    - _ulid: 01KGFKBTNCDN0FJD6QVV0Q75D9
+      created_at: 2026-02-02T16:35:53.132Z
+      author: "@claude"
+      content: >-
+        Spec gap confirmed:
+
+
+        AC-19 specifies WHAT to check (automation:eligible ready/in_progress tasks) but not WHEN
+        relative to pending_review processing.
+
+
+        AC-8 in @ralph-subagent-spawning specifies subagent spawning BEFORE main agent, but no AC
+        specifies context refresh AFTER pending_review completes.
+
+
+        Proposed AC for @cli-ralph:
+          id: ac-context-refresh-after-pending-review
+          given: processPendingReviewTasks completes during iteration
+          when: checking for loop continuation
+          then: uses freshly gathered task context (not stale from iteration start) to detect tasks that became ready due to dependency unblocking
+      supersedes: null
   todos: []
