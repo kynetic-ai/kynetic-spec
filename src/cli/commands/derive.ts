@@ -271,6 +271,7 @@ async function deriveTaskFromSpec(
     dryRun: boolean;
     dependsOn?: string[];
     priority?: number;
+    title?: string;
   },
 ): Promise<DeriveResult> {
   // Check if a task already exists for this spec
@@ -314,8 +315,9 @@ async function deriveTaskFromSpec(
     : [];
 
   // Build task input with depends_on and initial notes
+  // AC: @derive-title-override ac-1 - use provided title if specified
   const taskInput: TaskInput = {
-    title: `Implement: ${specItem.title}`,
+    title: options.title ?? `Implement: ${specItem.title}`,
     type: "task",
     spec_ref: `@${specItem.slugs[0] || specItem._ulid}`,
     derivation: "auto",
@@ -414,6 +416,7 @@ export function registerDeriveCommand(program: Command): void {
       "Set priority for created task(s) (1-5)",
       parseInt,
     )
+    .option("--title <title>", "Override task title (default: 'Implement: {spec title}')")
     .action(async (ref: string | undefined, options) => {
       try {
         // Validate arguments
@@ -521,6 +524,7 @@ export function registerDeriveCommand(program: Command): void {
               dryRun: options.dryRun || false,
               dependsOn,
               priority: options.priority,
+              title: options.title,
             },
           );
 
