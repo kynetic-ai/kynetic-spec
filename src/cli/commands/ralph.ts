@@ -1173,8 +1173,8 @@ export function registerRalphCommand(program: Command): void {
                 phase: "task-work",
                 prompt: taskWorkPrompt,
                 tasks: {
-                  active: sessionCtx.active_tasks.map((t) => t.ref),
-                  ready: sessionCtx.ready_tasks.map((t) => t.ref),
+                  active: currentCtx.active_tasks.map((t) => t.ref),
+                  ready: currentCtx.ready_tasks.map((t) => t.ref),
                 },
               },
             });
