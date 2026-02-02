@@ -42962,7 +42962,7 @@
   description: 'Allow --title override on kspec derive: kspec derive @spec --title "Custom Task Title"
     to override auto-generated "Implement: {spec title}" format'
   spec_ref: "@derive-title-override"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
