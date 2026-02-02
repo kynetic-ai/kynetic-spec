@@ -722,3 +722,13 @@ inbox:
       - cli
       - ux
     added_by: "@claude"
+  - _ulid: 01KGG6GYZAMZCTWRPZG2XM2YQ9
+    text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting.
+      Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to
+      auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns
+      (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session
+      research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI
+      coding assistants."
+    created_at: 2026-02-02T22:10:44.331Z
+    tags: []
+    added_by: "@claude"
