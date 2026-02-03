@@ -43090,27 +43090,35 @@
         review and manual testing. All 1570 existing tests pass.
       supersedes: null
   todos: []
-- title: "Design: Batch command execution via JSON"
+- _ulid: 01KGGN86BXM3BCGR2C7VPETY1K
+  slugs: []
+  title: "Design: Batch command execution via JSON"
   type: task
-  priority: 1
-  spec_ref: null
-  tags:
-    - cli
-    - dx
-    - bulk
   description: 'Batch command execution via JSON - Generic kspec batch command that accepts JSON array
     of CLI commands with args. Example: [{"cmd": "item ac add", "ref": "@spec-1", "given": "...",
     ...}]. Separates concerns: skills/scripts generate the JSON (smart translation), CLI executes it
     (dumb executor). Supports --dry-run for preview, --file or stdin input. Replaces need for
     command-specific bulk variants. Pairs with skills that translate intent (plan sections,
     templates) into batch JSON.'
-  _ulid: 01KGGN86BXM3BCGR2C7VPETY1K
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 1
+  tags:
+    - cli
+    - dx
+    - bulk
   vcs_refs: []
   created_at: 2026-02-03T02:28:05.622Z
-  notes: []
+  notes:
+    - _ulid: 01KGGN8F4S71Y478ZZ54K5JAKY
+      created_at: 2026-02-03T02:28:14.618Z
+      author: "@claude"
+      content: 'Original idea: Generic kspec batch command that accepts JSON array of CLI commands.
+        Example: [{"cmd": "item ac add", "ref": "@spec-1", "given": "..."}]. Skills/scripts generate
+        JSON, CLI executes. Supports --dry-run, --file/stdin input. Replaces need for
+        command-specific bulk variants.'
+      supersedes: null
   todos: []
