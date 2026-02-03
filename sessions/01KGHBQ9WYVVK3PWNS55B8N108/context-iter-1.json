@@ -1,0 +1,306 @@
+{
+  "generated_at": "2026-02-03T09:00:50.227Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KGFK9E",
+      "title": "Fix stale context after processPendingReviewTasks in ralph loop",
+      "started_at": "2026-02-02T16:36:09.626Z",
+      "priority": 1,
+      "spec_ref": null,
+      "note_count": 5,
+      "last_note_at": "2026-02-02T16:50:52.175Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KGGNB3",
+      "title": "Improve ralph log separation between subagent and main loops",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KGGTR7",
+      "title": "Fix daemon TypeScript strict mode compatibility",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "daemon",
+        "typescript",
+        "reflection"
+      ]
+    },
+    {
+      "ref": "01KGGWAE",
+      "title": "Support --tags x,y,z comma-separated syntax",
+      "priority": 3,
+      "spec_ref": "@comma-tag-syntax",
+      "tags": [
+        "reflection",
+        "cli",
+        "dx"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KFQAEM",
+      "title": "Per-project file watcher tests",
+      "completed_at": "2026-02-03T05:29:18.338Z",
+      "closed_reason": "Tests complete (17 passing locally). CI skip is documented in AGENTS.md - GitHub Actions doesn't support recursive fs.watch. Implementation verified working."
+    },
+    {
+      "ref": "01KG920G",
+      "title": "Add --title override to kspec derive command",
+      "completed_at": "2026-02-03T00:00:38.578Z",
+      "closed_reason": "Merged in PR #298. Added --title flag to derive command for custom task titles."
+    },
+    {
+      "ref": "01KG9207",
+      "title": "Add --depends-on flag to task add command",
+      "completed_at": "2026-01-31T07:41:12.749Z",
+      "closed_reason": "Merged in PR #295. Added --depends-on flag to task add command with validation. Also fixed validation inconsistency in task set --depends-on per Greptile review feedback."
+    },
+    {
+      "ref": "01KG920C",
+      "title": "Add workflow prune command for stale run cleanup",
+      "completed_at": "2026-01-31T07:38:35.432Z",
+      "closed_reason": "Merged in PR #296. Added workflow prune command with age, status, and abandoned filters plus dry-run mode."
+    },
+    {
+      "ref": "01KG9202",
+      "title": "Add --spec-ref flag to inbox promote command",
+      "completed_at": "2026-01-31T05:15:45.934Z",
+      "closed_reason": "Already implemented - --spec-ref flag exists on inbox promote command"
+    },
+    {
+      "ref": "01KG8Q5G",
+      "title": "Add signal handlers for ralph marker cleanup on Ctrl+C",
+      "completed_at": "2026-01-31T00:41:47.666Z",
+      "closed_reason": "Merged in PR #294. Added SIGINT/SIGTERM signal handlers with Promise.all().finally() pattern to ensure marker cleanup completes before process exit."
+    },
+    {
+      "ref": "01KG71Y3",
+      "title": "Add explicit loop end signal for ralph agents",
+      "completed_at": "2026-01-31T00:10:04.572Z",
+      "closed_reason": "Merged in PR #292. Added 'kspec ralph end-iteration' command for explicit loop termination. Restructured ralph command to support subcommands with full backward compatibility."
+    },
+    {
+      "ref": "01KG8K6A",
+      "title": "Document new CLI features from overnight loop",
+      "completed_at": "2026-01-30T23:34:02.109Z",
+      "closed_reason": "Merged in PR #291"
+    },
+    {
+      "ref": "01KG71C9",
+      "title": "Document E2E fixture isolation pattern in AGENTS.md",
+      "completed_at": "2026-01-30T12:00:39.118Z",
+      "closed_reason": "Merged in PR #290. Added E2E Fixture Isolation Pattern section to AGENTS.md documenting the separation between E2E fixtures (packages/web-ui/tests/fixtures/) and unit test fixtures (tests/fixtures/), including directory structure, why separation is needed, and how test-base.ts creates isolated environments."
+    },
+    {
+      "ref": "01KG71BB",
+      "title": "Add concrete examples to CLI --help for variadic options",
+      "completed_at": "2026-01-30T11:53:41.923Z",
+      "closed_reason": "Merged in PR #289. Added concrete examples to --help output for all commands with variadic options (task set/add/complete/cancel/delete, meta resolve/add, item add/set, inbox add/promote, module add). 12 tests validate AC @cli-help-examples ac-1."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "3861e49",
+      "full_hash": "3861e49f72376102d9cdd3dfebf2cd11574e8e66",
+      "date": "2026-02-03T00:00:30.000Z",
+      "message": "feat(derive): add --title flag to override default task title (#298)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ccd02c9",
+      "full_hash": "ccd02c9d651230268c2163beb95b0d9495c83dcb",
+      "date": "2026-02-02T23:46:02.000Z",
+      "message": "feat(derive): add --title flag to override default task title",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6208a03",
+      "full_hash": "6208a036d2e373faecadf627dacbdc4efede27d0",
+      "date": "2026-02-02T18:09:01.000Z",
+      "message": "fix(ralph): Refresh context after pending_review processing (#297)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0842620",
+      "full_hash": "08426202811dabbc1b60c6f3e47c93b3e958698e",
+      "date": "2026-02-02T18:02:03.000Z",
+      "message": "fix: use currentCtx in event logging for consistency",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "73a65eb",
+      "full_hash": "73a65ebf6a6facef0243f85ac8daaa14c0a63bba",
+      "date": "2026-02-02T17:49:55.000Z",
+      "message": "fix(test): pass CLI_PATH to mock for CI compatibility",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "77caf92",
+      "full_hash": "77caf92969aec21baf7ebad5844ea5fe6e0b874f",
+      "date": "2026-02-02T17:35:50.000Z",
+      "message": "test(ralph): add AC-20 context refresh tests",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "cdf932a",
+      "full_hash": "cdf932a9c45bcb4a9cdc40da4c00fff5b538b677",
+      "date": "2026-02-02T16:50:45.000Z",
+      "message": "test(ralph): Add AC-20 test note",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6575378",
+      "full_hash": "65753784338a15dfda8c67e15c932c7dc9e96f87",
+      "date": "2026-02-02T16:39:30.000Z",
+      "message": "fix(ralph): Refresh context after pending_review processing (AC-20)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6392971",
+      "full_hash": "63929713104f298ed1537f1176fc3ae6727d6c37",
+      "date": "2026-01-31T07:40:58.000Z",
+      "message": "feat(cli): add --depends-on flag to task add command (#295)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2291053",
+      "full_hash": "22910539d473da02bfdf030fbc1c63bb3d85bb03",
+      "date": "2026-01-31T07:38:28.000Z",
+      "message": "feat(cli): add workflow prune command for stale run cleanup (#296)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFDQCG",
+      "text": "Add feature to spawn worktree for an agent to work in",
+      "created_at": "2026-01-20T12:51:58.887Z",
+      "tags": [],
+      "added_by": "Jacob Chapel"
+    },
+    {
+      "ref": "01KFE2XF",
+      "text": "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to prevent scope creep beyond target work",
+      "created_at": "2026-01-20T16:13:29.715Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFE2XH",
+      "text": "Ralph loop: Add progress checkpoint output at each iteration showing completed/in-progress/remaining counts",
+      "created_at": "2026-01-20T16:13:31.843Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFEYXF",
+      "text": "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec item set for spec items. When deriving tasks, automatically create task dependencies based on spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates task-A depending on task-B. Removes need to manually set task dependencies after derive.",
+      "created_at": "2026-01-21T00:22:49.407Z",
+      "tags": [
+        "cli",
+        "derive",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFEZDX",
+      "text": "Ephemeral workflow runs - Add support for workflows that don't persist run state. Use cases: simple instruction flows, quick checklists, trivial step sequences. Options: (1) --ephemeral flag on 'workflow start', (2) workflow.ephemeral field in definition, (3) both with override. Ephemeral runs: no file storage, no shadow commits, not shown in 'workflow runs', state only in session context or just sequential display. Reduces noise for simple flows.",
+      "created_at": "2026-01-21T00:31:48.669Z",
+      "tags": [
+        "workflow",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFGRVB",
+      "text": "Umbrella/parent tasks should depend on children, not vice versa - Parent represents 'validate complete feature' and becomes ready when all implementation children are done. Current pattern had children depending on parent which blocks them when parent is manual_only",
+      "created_at": "2026-01-21T17:15:16.966Z",
+      "tags": [
+        "reflection",
+        "workflow",
+        "modeling"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFKW1Z",
+      "text": "Add update/note capability to inbox items - allow 'inbox update @ref --content' or 'inbox note @ref' to modify/append to items without delete+re-add cycle",
+      "created_at": "2026-01-22T22:09:03.514Z",
+      "tags": [
+        "cli",
+        "inbox",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFM8HD",
+      "text": "Trait applicability guidance in /spec skill - Add section reminding agents to check available traits (kspec trait list) before adding ACs. Prompt: 'Does this spec need common behaviors like JSON output, dry-run, confirmation?' Surfaced during yaml-merge-driver spec creation where user had to remind about traits.",
+      "created_at": "2026-01-23T01:47:12.512Z",
+      "tags": [
+        "reflection",
+        "spec",
+        "skill"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 408,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 12,
+    "blocked": 0,
+    "completed": 380,
+    "inbox_items": 50
+  }
+}
