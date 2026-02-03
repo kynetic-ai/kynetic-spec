@@ -43488,6 +43488,7 @@
     - agent-first
   vcs_refs: []
   created_at: 2026-02-03T10:09:05.084Z
+  started_at: 2026-02-03T10:09:53.426Z
   notes:
     - _ulid: 01KGHFNC9TZBNJ0BX2PCN9G4B4
       created_at: 2026-02-03T10:09:40.667Z
@@ -43603,5 +43604,29 @@
 
         3. Update CLAUDE.md - instruct agents to run bootstrap first
       supersedes: null
+    - _ulid: 01KGHGB5WEWYR4JHPY7DP49CC4
+      created_at: 2026-02-03T10:21:34.990Z
+      author: Claude
+      content: |-
+        Implementation complete:
+
+        CREATED:
+        - scripts/bootstrap.cjs - Zero-dependency Node.js script
+          - Uses CommonJS (.cjs) to work regardless of package.json type
+          - Detects: kspec CLI, .kspec/ dir, node_modules, dist/
+          - Only runs steps that are needed
+          - Reports actions taken with colored output
+          - Ends with session start output
+
+        UPDATED:
+        - package.json - Added "bootstrap" npm script
+        - CLAUDE.md - Added bootstrap as first step in Quick Start
+        - AGENTS.md - Updated 'For New Contributors' and 'Starting a Session' sections
+        - INSTALL.md - Added bootstrap option in 'From Source' section
+
+        TESTED:
+        - Verified bootstrap detects already-configured state (skips setup)
+        - Verified npm run bootstrap works
+        - Existing tests have unrelated timeout failures (not introduced by this change)
+      supersedes: null
   todos: []
-  started_at: 2026-02-03T10:09:53.426Z
