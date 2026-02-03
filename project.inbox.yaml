@@ -30,16 +30,6 @@ inbox:
       - tasks
       - dx
     added_by: "@claude"
-  - _ulid: 01KF6541Q2CXEXRYFFHAGD53H4
-    text: "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent
-      progress, event stream, session status. Would build on streaming/ACP foundation. Lower
-      priority than core auditability work."
-    created_at: 2026-01-17T14:18:06.435Z
-    tags:
-      - ralph
-      - tui
-      - optional
-    added_by: "@claude"
   - _ulid: 01KFA1QEC3GS0H6M3MKCFQ01DS
     text: "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
       --exit-codes, kspec help commands --json for programmatic CLI discovery"
