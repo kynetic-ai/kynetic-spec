@@ -42964,6 +42964,7 @@
   spec_ref: "@derive-title-override"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #298. Added --title flag to derive command for custom task titles."
   depends_on: []
   context: []
   priority: 2
@@ -42973,6 +42974,7 @@
   vcs_refs: []
   created_at: 2026-01-31T03:37:09.911Z
   started_at: 2026-02-02T23:43:07.916Z
+  completed_at: 2026-02-03T00:00:38.578Z
   notes:
     - _ulid: 01KGGBYSWKJFSEBDYADF04BRA5
       created_at: 2026-02-02T23:45:40.755Z
@@ -42984,8 +42986,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-03T00:00:38.578Z
-  closed_reason: "Merged in PR #298. Added --title flag to derive command for custom task titles."
 - _ulid: 01KGFK9EDFW61N76RCHNR7RVQ0
   slugs: []
   title: Fix stale context after processPendingReviewTasks in ralph loop
@@ -43089,4 +43089,28 @@
         with shadow branch support. Added comment documenting that verification is through code
         review and manual testing. All 1570 existing tests pass.
       supersedes: null
+  todos: []
+- title: "Design: Batch command execution via JSON"
+  type: task
+  priority: 1
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+    - bulk
+  description: 'Batch command execution via JSON - Generic kspec batch command that accepts JSON array
+    of CLI commands with args. Example: [{"cmd": "item ac add", "ref": "@spec-1", "given": "...",
+    ...}]. Separates concerns: skills/scripts generate the JSON (smart translation), CLI executes it
+    (dumb executor). Supports --dry-run for preview, --file or stdin input. Replaces need for
+    command-specific bulk variants. Pairs with skills that translate intent (plan sections,
+    templates) into batch JSON.'
+  _ulid: 01KGGN86BXM3BCGR2C7VPETY1K
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T02:28:05.622Z
+  notes: []
   todos: []
