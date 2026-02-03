@@ -3209,6 +3209,10 @@ features:
         given: user runs a command with --tag cli,urgent
         when: tags are parsed
         then: both 'cli' and 'urgent' are added as separate tags
+      - id: ac-2
+        given: user runs a command with --tag cli,urgent api
+        when: tags are parsed
+        then: all three tags 'cli', 'urgent', and 'api' are added
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
