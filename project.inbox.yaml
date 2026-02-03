@@ -548,3 +548,14 @@ inbox:
       - design
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGP9FAD0QQFQS47DEGC3QFK
+    text: "Inbox CLI improvements: (1) Add filtering to list: --before/--after <date>, --author <name>
+      (--tag exists), (2) Add merge command: 'kspec inbox merge @source @target' for consolidating
+      duplicates, (3) Add --priority and --automation flags to promote command. Consolidated from
+      @01KG95JP, @01KG95JQ, @01KG95JS."
+    created_at: 2026-02-03T02:46:16.141Z
+    tags:
+      - cli
+      - inbox
+      - dx
+    added_by: "@claude"
