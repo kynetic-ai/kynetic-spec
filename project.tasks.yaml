@@ -43470,3 +43470,23 @@
   created_at: 2026-02-03T05:29:09.292Z
   notes: []
   todos: []
+- title: Create zero-dependency bootstrap script for agent sessions
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - cli
+    - dx
+    - bootstrap
+    - agent-first
+  depends_on: []
+  _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T10:09:05.084Z
+  notes: []
+  todos: []
