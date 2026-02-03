@@ -83,11 +83,17 @@ function run(cmd, options = {}) {
 }
 
 /**
- * Check if a command exists and works
+ * Check if a command exists and works (cross-platform)
  */
 function commandExists(cmd) {
-  const result = spawnSync('which', [cmd], { encoding: 'utf8' });
-  return result.status === 0;
+  try {
+    // Try running the command with --version flag
+    // This works cross-platform without relying on 'which' (Unix) or 'where' (Windows)
+    execSync(`${cmd} --version`, { encoding: 'utf8', stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
