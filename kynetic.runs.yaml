@@ -12127,7 +12127,7 @@ runs:
   - _ulid: 01KGGCW7AFK60MVQ4EK1NZF943
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-03T00:01:44.784Z
     step_results:
@@ -12146,5 +12146,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-03T00:02:31.207Z
-        completed_at: 2026-02-03T00:02:31.207Z
+        completed_at: 2026-02-03T00:02:45.820Z
+        notes: "Both friction points already covered: (1) Branch protection is expected - /pr skill handles
+          it. (2) Workflow prune already implemented and working - just cleaned up 48 abandoned runs
+          with --abandoned flag."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-03T00:02:45.820Z
+        completed_at: 2026-02-03T00:02:45.820Z
     initiated_by: "@claude"
