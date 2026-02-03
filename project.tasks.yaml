@@ -43168,26 +43168,33 @@
         Currently daemon source is copied instead of compiled because of these type issues.
       supersedes: null
   todos: []
-- title: "Design: First-party plan support with shadow branch storage"
+- _ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
+  slugs: []
+  title: "Design: First-party plan support with shadow branch storage"
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - reflection
-    - planning
-    - shadow
   description: First-party plan support with shadow branch storage - Store plan documents in kspec
     shadow branch (e.g., .kspec/plans/) and link them to derived tasks. Plans persist across
     sessions, provide implementation context without embedding in notes. Could integrate with Claude
     Code plan mode workflow. Medium scope. Surfaced when plan file at ~/.claude/plans/ wouldn't
     persist for future sessions.
-  _ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - reflection
+    - planning
+    - shadow
   vcs_refs: []
   created_at: 2026-02-03T04:06:24.035Z
-  notes: []
+  notes:
+    - _ulid: 01KGGTWEPNKHCMZ5HQ0F8WKKD9
+      created_at: 2026-02-03T04:06:32.406Z
+      author: "@claude"
+      content: Store plan documents in .kspec/plans/ and link them to derived tasks. Plans persist across
+        sessions, provide implementation context without embedding in notes. Could integrate with
+        Claude Code plan mode workflow.
+      supersedes: null
   todos: []
