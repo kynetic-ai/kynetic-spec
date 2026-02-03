@@ -745,6 +745,13 @@ async function processPendingReviewTasks(
     return true;
   }
 
+  // Visual separator for subagent section
+  console.log("");
+  console.log(chalk.cyan(`${"═".repeat(60)}`));
+  console.log(chalk.cyan.bold(`${DEFAULT_SUBAGENT_PREFIX} Processing Pending Review Tasks`));
+  console.log(chalk.cyan(`${"═".repeat(60)}`));
+  console.log("");
+
   info(
     `${DEFAULT_SUBAGENT_PREFIX} Found ${pendingReviewTasks.length} pending_review task(s)`,
   );
@@ -828,6 +835,13 @@ async function processPendingReviewTasks(
       }
     }
   }
+
+  // Visual separator at end of subagent section
+  console.log("");
+  console.log(chalk.cyan(`${"═".repeat(60)}`));
+  console.log(chalk.cyan.bold(`${DEFAULT_SUBAGENT_PREFIX} Completed Review Processing`));
+  console.log(chalk.cyan(`${"═".repeat(60)}`));
+  console.log("");
 
   return true;
 }
