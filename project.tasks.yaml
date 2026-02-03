@@ -43310,7 +43310,14 @@
         task list, item list, validate. Extends to inbox list. AC: (1) truncated lists show all
         items with --verbose, (2) summaries expand to detailed info."
       supersedes: null
+    - _ulid: 01KGHBMS72XWT054CJWKQWWDMM
+      created_at: 2026-02-03T08:59:26.819Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Task creates a spec/trait - output is specification,
+        not code"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KGGZKQDSPMJ2242BCMJX48K6
   slugs: []
   title: Add AC schema field validation to detect drift
