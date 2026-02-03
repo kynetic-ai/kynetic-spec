@@ -530,15 +530,6 @@ inbox:
     created_at: 2026-01-29T19:19:59.573Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KG71J2XTYMT3HY7S54W108DQ
-    text: "Apply @trait-multi-ref-batch to remaining commands (trait add/remove, task set --automation).
-      Consolidates: @01KFMH54, @01KFMP5R. Note: meta resolve already promoted to task @01KG70Z6."
-    created_at: 2026-01-30T08:50:48.379Z
-    tags:
-      - cli
-      - batch
-      - dx
-    added_by: "@claude"
   - _ulid: 01KG73HEVZBVNM5W1GPNAEDDYB
     text: Support --tags x,y,z comma-separated syntax in addition to --tag x --tag y. Applies to inbox
       add and other tag-accepting commands. Small scope, convenience improvement.
