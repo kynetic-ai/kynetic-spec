@@ -43265,3 +43265,26 @@
         and their schemas."
       supersedes: null
   todos: []
+- title: Create @trait-verbose-output for consistent verbose behavior
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - trait
+    - cli
+    - dx
+  description: "Trait: Verbose Output Mode (@trait-verbose-output) - Cross-cutting behavior for
+    commands that display lists. Defines --verbose/-v flag to show complete output without
+    truncation. AC: (1) truncated lists show all items with --verbose, (2) summaries expand to
+    detailed info. Applies to: validate (orphaned specs, mismatches), tasks list, inbox list, item
+    list. Ensures consistent flag naming and behavior across CLI."
+  _ulid: 01KGGXCH1XAJW9919DQ4EW4D87
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T04:50:16.252Z
+  notes: []
+  todos: []
