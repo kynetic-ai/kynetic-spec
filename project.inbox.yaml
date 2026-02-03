@@ -529,3 +529,14 @@ inbox:
       - inbox
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGPJ61YA22XXS5Z6QRZXCNK
+    text: "Workflow CLI improvements: (1) 'workflow show' should infer active run like 'workflow next',
+      (2) Warn when --input flags passed but step has no inputs defined, (3) Improve 'workflow show'
+      output format with vertical display, status indicators, indented notes. Consolidated from
+      @01KFKSF6, @01KFKSGC, @01KFKTNR."
+    created_at: 2026-02-03T02:51:01.566Z
+    tags:
+      - workflow
+      - cli
+      - dx
+    added_by: "@claude"
