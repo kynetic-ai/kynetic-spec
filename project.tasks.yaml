@@ -43190,8 +43190,9 @@
     fix Elysia generic issues, eliminate implicit any. Currently daemon source is copied instead of
     compiled because of these issues. Medium scope.
   spec_ref: null
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Requires human architectural decisions about Elysia types and daemon packaging
   depends_on: []
   context: []
   priority: 3
