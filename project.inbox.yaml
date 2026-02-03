@@ -461,15 +461,6 @@ inbox:
       - cli
       - automation
     added_by: "@claude"
-  - _ulid: 01KFXVKCFHNA343QRNFNYR44XC
-    text: Add pre-test hook or watcher to ensure dist/daemon/ is rebuilt when packages/daemon/src
-      changes - prevents stale daemon code causing mysterious E2E failures
-    created_at: 2026-01-26T19:13:29.585Z
-    tags:
-      - build
-      - dx
-      - daemon
-    added_by: "@claude"
   - _ulid: 01KFYAHFF2NZRP7F60JN8Q3DXC
     text: E2E test dev mode - configure Playwright to work with vite dev server instead of requiring
       full build for faster test iteration (12+ seconds to 1-2 seconds)
