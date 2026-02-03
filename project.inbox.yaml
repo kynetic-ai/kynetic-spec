@@ -644,3 +644,13 @@ inbox:
       - config
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGFB2MJKNJQ3ZPYCZHQRHQE
+    text: "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC:
+      @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for
+      review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6."
+    created_at: 2026-02-03T00:44:48.658Z
+    tags:
+      - cli
+      - testing
+      - dx
+    added_by: "@claude"
