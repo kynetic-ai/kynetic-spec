@@ -42962,7 +42962,7 @@
   description: 'Allow --title override on kspec derive: kspec derive @spec --title "Custom Task Title"
     to override auto-generated "Implement: {spec title}" format'
   spec_ref: "@derive-title-override"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -42984,6 +42984,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-03T00:00:38.578Z
+  closed_reason: "Merged in PR #298. Added --title flag to derive command for custom task titles."
 - _ulid: 01KGFK9EDFW61N76RCHNR7RVQ0
   slugs: []
   title: Fix stale context after processPendingReviewTasks in ralph loop
