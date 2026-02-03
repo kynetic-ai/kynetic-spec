@@ -13733,7 +13733,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: blocked
+  status: cancelled
   blocked_by:
     - Needs clearer scoping - see latest note for details
   depends_on: []
@@ -13922,6 +13922,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  closed_reason: Scope unclear - replaced with well-scoped @task-ac-drift-validator
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
   slugs: []
   title: Improve Result type enforcement and type guards
