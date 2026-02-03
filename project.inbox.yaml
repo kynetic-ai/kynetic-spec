@@ -412,16 +412,6 @@ inbox:
       - dx
       - build
     added_by: "@claude"
-  - _ulid: 01KGGES9XK0NBEGDATAGV7Y3W7
-    text: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set --automation,
-      inbox delete. Enables batch operations like 'kspec inbox delete --refs @a @b @c'. Consolidated
-      from @01KG71J2, @01KG95JM."
-    created_at: 2026-02-03T00:35:06.292Z
-    tags:
-      - cli
-      - batch
-      - dx
-    added_by: "@claude"
   - _ulid: 01KGGF4YYFQSRX5SMSKRC9BFF0
     text: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable
       separate repo for specs), feature toggles, default values (author, priority), validation
