@@ -43006,7 +43006,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43104,6 +43104,11 @@
         review and manual testing. All 1570 existing tests pass.
       supersedes: null
   todos: []
+  completed_at: 2026-02-03T09:01:13.803Z
+  closed_reason: "Merged in PR #297. Fixed ralph loop to refresh context after
+    processPendingReviewTasks completes, preventing premature exit when tasks become unblocked.
+    Added comprehensive integration tests for AC-20 with mock ACP that actually completes tasks. All
+    tests pass in CI."
 - _ulid: 01KGGN86BXM3BCGR2C7VPETY1K
   slugs: []
   title: "Design: Batch command execution via JSON"
