@@ -43240,7 +43240,7 @@
   type: task
   description: Support --tags x,y,z comma-separated syntax in addition to --tag x --tag y. Applies to
     inbox add and other tag-accepting commands. Small scope, convenience improvement.
-  spec_ref: null
+  spec_ref: "@comma-tag-syntax"
   status: pending
   blocked_by: []
   depends_on: []
