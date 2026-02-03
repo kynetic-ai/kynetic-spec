@@ -3213,6 +3213,10 @@ features:
         given: user runs a command with --tag cli,urgent api
         when: tags are parsed
         then: all three tags 'cli', 'urgent', and 'api' are added
+      - id: ac-3
+        given: user runs a command with --tag cli --tag urgent
+        when: tags are parsed
+        then: behavior unchanged - both tags added as before
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
