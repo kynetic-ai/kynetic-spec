@@ -12164,7 +12164,7 @@ runs:
   - _ulid: 01KGGXEGV5495RFERBHQVF9BT2
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-03T04:51:21.574Z
     step_results:
@@ -12246,5 +12246,27 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-03T04:52:07.259Z
-        completed_at: 2026-02-03T04:52:07.259Z
+        completed_at: 2026-02-03T04:52:17.259Z
+        notes: >-
+          Untracked friction - proposed improvements:
+
+
+          1. **List --count flag** (small scope)
+             - What: Add --count flag to inbox list (and other list commands)
+             - How it helps: Quick item counts without full output or JSON piping
+             - Example: 'kspec inbox list --count' → '48 items'
+             - Could be part of @trait-filterable-list
+
+          2. **Promote --note flag** (small scope)
+             - What: Add --note flag to inbox promote command
+             - How it helps: Add context note in same command, avoids separate task note call
+             - Example: 'kspec inbox promote @ref --title X --note "Context from inbox..."'
+             - Could extend existing @01KGGP9F inbox improvements item
+
+          All other friction points (bulk delete, merge, update) already tracked in inbox items
+          created this session.
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-03T04:52:17.259Z
+        completed_at: 2026-02-03T04:52:17.259Z
     initiated_by: "@claude"
