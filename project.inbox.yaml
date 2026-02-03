@@ -407,16 +407,6 @@ inbox:
     created_at: 2026-01-20T16:13:31.843Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KG95JSDYYKPFFS17PW2BCJ5H
-    text: "Add --priority and --automation flags to inbox promote: 'kspec inbox promote @ref --title X
-      --priority 2 --automation eligible'. Completes task setup in one command instead of promote +
-      task set."
-    created_at: 2026-01-31T04:39:34.591Z
-    tags:
-      - reflection
-      - cli
-      - inbox
-    added_by: "@claude"
   - _ulid: 01KGC92T084XGVC5G5THSVS79J
     text: Show before/after diff when mutating spec items or ACs - after kspec item ac set/add, show
       inline diff of what changed instead of requiring separate kspec item get
