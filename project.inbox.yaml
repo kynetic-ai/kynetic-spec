@@ -268,15 +268,6 @@ inbox:
       - testing
       - tooling
     added_by: "@claude"
-  - _ulid: 01KG5DPPNHA63VSTQMCP332V48
-    text: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
-      invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
-    created_at: 2026-01-29T17:44:33.714Z
-    tags:
-      - performance
-      - daemon
-      - web-ui
-    added_by: "@claude"
   - _ulid: 01KG5JTC7202XVYEFJ341GPBPB
     text: "Workflow/skill docs: Pre-session hygiene guidance. kspec session start already shows dirty
       tree and WIP tasks. Update workflow steps to explicitly prompt 'check for dirty tree, decide

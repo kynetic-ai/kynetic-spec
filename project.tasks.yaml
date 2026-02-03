@@ -43198,3 +43198,23 @@
         Claude Code plan mode workflow.
       supersedes: null
   todos: []
+- title: Cache scanTestCoverage() results for daemon performance
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - performance
+    - daemon
+    - web-ui
+  description: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
+    invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
+  _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T04:07:47.271Z
+  notes: []
+  todos: []
