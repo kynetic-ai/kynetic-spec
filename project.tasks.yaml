@@ -43254,6 +43254,7 @@
   created_at: 2026-02-03T04:31:39.171Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KGGXA85MWJ3G70KNSRJ17WQS
   slugs: []
   title: "Design: CLI schema introspection commands for agent discoverability"
