@@ -520,3 +520,13 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGPSRFPPH8WP42VRDC76Z5J
+    text: "Spec item slug/addressing improvements: (1) Warn/error on slug collision when creating items,
+      (2) Make nested requirements addressable by slug (currently kspec item ac add @slug fails for
+      items under requirements:). Consolidated from @01KGDCRG, @01KGDCRJ."
+    created_at: 2026-02-03T02:55:09.815Z
+    tags:
+      - cli
+      - validation
+      - ux
+    added_by: "@claude"
