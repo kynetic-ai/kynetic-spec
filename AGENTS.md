@@ -172,14 +172,31 @@ If you see the error "Cannot run kspec from inside .kspec/ directory", this is t
 
 ### For New Contributors
 
-When cloning the repo:
+**Recommended: Use the bootstrap script**
+
+The bootstrap script handles all setup automatically and reports what it did:
 
 ```bash
 # Clone repo
 git clone <repo-url>
 cd kynetic-spec
 
-# Initialize shadow (fetches remote kspec-meta if exists)
+# Bootstrap (detects state, runs only needed steps, shows session context)
+node scripts/bootstrap.cjs
+```
+
+The bootstrap script:
+1. Checks if kspec is already configured (skips unnecessary steps)
+2. Runs `npm install` if dependencies missing
+3. Runs `npm run build` if not built
+4. Runs `npm link` if CLI not available
+5. Runs `kspec init --no-prompt` if shadow branch not set up
+6. Outputs session context at the end
+7. Reports exactly what actions it took (transparency for agents)
+
+**Manual setup (alternative)**
+
+```bash
 npm install
 npm run build
 npm link
@@ -253,7 +270,15 @@ Always add notes when completing significant work. This creates an audit trail.
 
 ### Starting a Session
 
-Always begin by getting context:
+**Always run bootstrap first** to ensure kspec is ready:
+
+```bash
+node scripts/bootstrap.cjs
+```
+
+This handles setup if needed and shows session context. If kspec is already configured, it skips setup and just shows the session.
+
+Alternatively, if you know kspec is already set up:
 
 ```bash
 kspec session start
