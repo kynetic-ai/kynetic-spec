@@ -655,3 +655,14 @@ inbox:
       - batch
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGF4YYFQSRX5SMSKRC9BFF0
+    text: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable
+      separate repo for specs), feature toggles, default values (author, priority), validation
+      strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs.
+      Consolidated from @01KFGVVJ, @01KFGVVN."
+    created_at: 2026-02-03T00:41:28.272Z
+    tags:
+      - feature
+      - config
+      - dx
+    added_by: "@claude"
