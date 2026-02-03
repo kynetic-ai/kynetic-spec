@@ -12164,7 +12164,7 @@ runs:
   - _ulid: 01KGGXEGV5495RFERBHQVF9BT2
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-03T04:51:21.574Z
     step_results:
@@ -12268,5 +12268,14 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-03T04:52:17.259Z
-        completed_at: 2026-02-03T04:52:17.259Z
+        completed_at: 2026-02-03T04:56:28.662Z
+        notes: |-
+          User decisions:
+          1. --count flag: YES - add to inbox
+          2. --note on promote: YES - add to inbox  
+          3. Categorize-then-process pattern: SKIP - obvious, not worth tracking
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-03T04:56:28.662Z
+        completed_at: 2026-02-03T04:56:28.662Z
     initiated_by: "@claude"
