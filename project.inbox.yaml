@@ -448,3 +448,13 @@ inbox:
       - batch
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGXR37N7581W4FM1HHKMWEW
+    text: "Add --count flag to list commands (inbox list, task list, item list): 'kspec inbox list
+      --count' → '48 items'. Quick counts without full output or JSON piping. Small scope. Surfaced
+      during triage session."
+    created_at: 2026-02-03T04:56:35.318Z
+    tags:
+      - cli
+      - dx
+      - reflection
+    added_by: "@claude"
