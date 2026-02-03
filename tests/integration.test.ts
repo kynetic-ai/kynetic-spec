@@ -963,6 +963,17 @@ describe('Integration: derive', () => {
     const pendingForSpec = allTasks.filter((t: any) => t.slugs.some((s: string) => s.startsWith('task-test-feature')));
     expect(pendingForSpec.length).toBe(1); // One new pending task for the spec
   });
+
+  // AC: @derive-title-override ac-1
+  it('should use --title override instead of default title', () => {
+    const output = kspec('derive @test-feature --flat --title "Custom Task Title"', tempDir);
+    expect(output).toContain('Created');
+
+    // Verify task was created with custom title
+    const taskOutput = kspec('task get @task-test-feature --json', tempDir);
+    const task = JSON.parse(taskOutput);
+    expect(task.title).toBe('Custom Task Title');
+  });
 });
 
 describe('Integration: session', () => {
