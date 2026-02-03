@@ -689,3 +689,13 @@ inbox:
       - daemon
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGEQ17NNAP23C3T6PP9814E
+    text: "Daemon auto-rebuild during development: Either watch mode (npm run dev:daemon) or pre-test
+      hook to ensure dist/daemon/ is rebuilt when packages/daemon/src changes. Prevents stale daemon
+      code causing mysterious E2E failures. Consolidated from @01KFQ53E, @01KFXVKC."
+    created_at: 2026-02-03T00:33:51.862Z
+    tags:
+      - daemon
+      - dx
+      - build
+    added_by: "@claude"
