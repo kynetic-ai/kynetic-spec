@@ -12768,6 +12768,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-02T23:03:55.967Z
+    completed_at: 2026-02-02T23:05:28.004Z
     step_results:
       - step_index: 0
         status: completed
@@ -12800,4 +12801,11 @@ runs:
         notes: "Captures already completed: 2 success observations (@01KGG9KZ, @01KGG9M7) and 2 inbox items
           for derive improvements (@01KGG6GY, @01KGG6H6). Session reflection complete."
     initiated_by: "@claude"
-    completed_at: 2026-02-02T23:05:28.004Z
+  - _ulid: 01KGGCW7AFK60MVQ4EK1NZF943
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-03T00:01:44.784Z
+    step_results: []
+    initiated_by: "@claude"
