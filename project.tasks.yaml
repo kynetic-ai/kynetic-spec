@@ -43008,6 +43008,10 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #297. Fixed ralph loop to refresh context after
+    processPendingReviewTasks completes, preventing premature exit when tasks become unblocked.
+    Added comprehensive integration tests for AC-20 with mock ACP that actually completes tasks. All
+    tests pass in CI."
   depends_on: []
   context: []
   priority: 1
@@ -43015,6 +43019,7 @@
   vcs_refs: []
   created_at: 2026-02-02T16:34:35.055Z
   started_at: 2026-02-02T16:36:09.626Z
+  completed_at: 2026-02-03T09:01:13.803Z
   notes:
     - _ulid: 01KGFK9QXVZ907BEF0KGBR6HRF
       created_at: 2026-02-02T16:34:44.795Z
@@ -43104,11 +43109,6 @@
         review and manual testing. All 1570 existing tests pass.
       supersedes: null
   todos: []
-  completed_at: 2026-02-03T09:01:13.803Z
-  closed_reason: "Merged in PR #297. Fixed ralph loop to refresh context after
-    processPendingReviewTasks completes, preventing premature exit when tasks become unblocked.
-    Added comprehensive integration tests for AC-20 with mock ACP that actually completes tasks. All
-    tests pass in CI."
 - _ulid: 01KGGN86BXM3BCGR2C7VPETY1K
   slugs: []
   title: "Design: Batch command execution via JSON"
@@ -43150,7 +43150,7 @@
     Consider: clearer section headers, different colors, or visual dividers when transitioning
     between subagent completion and next iteration start."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43161,6 +43161,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-03T09:02:21.488Z
 - _ulid: 01KGGTR7GHNG1P7SQJKEJM0H2T
   slugs: []
   title: Fix daemon TypeScript strict mode compatibility
