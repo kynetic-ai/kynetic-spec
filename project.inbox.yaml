@@ -580,3 +580,13 @@ inbox:
       - dx
       - cli
     added_by: "@claude"
+  - _ulid: 01KGGKNX3XQ0TXYQZ4V2R7MVPT
+    text: "CLI array field flag patterns: (1) Generic --clear <field> or --<field> [] for clearing
+      arrays, (2) --add-<field> vs multiple flags for append semantics. Design unified approach for
+      depends-on, tags, blocked-by, etc. Consolidated from @01KFGRV6, @01KFR0KN."
+    created_at: 2026-02-03T02:00:37.758Z
+    tags:
+      - cli
+      - design
+      - dx
+    added_by: "@claude"
