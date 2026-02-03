@@ -1,14 +1,4 @@
 inbox:
-  - _ulid: 01KF4DS5K10SKW9A533DQR7TH0
-    text: "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider:
-      recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering
-      field, tags for urgency"
-    created_at: 2026-01-16T22:10:58.273Z
-    tags:
-      - design
-      - tasks
-      - dx
-    added_by: "@claude"
   - _ulid: 01KFA1QEC3GS0H6M3MKCFQ01DS
     text: "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
       --exit-codes, kspec help commands --json for programmatic CLI discovery"
