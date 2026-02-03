@@ -458,3 +458,13 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KGGXR8A4QC9X0BADPMDDTDMH
+    text: "Add --note flag to inbox promote: 'kspec inbox promote @ref --title X --note \"Context...\"'.
+      Adds context note in same command, avoids separate task note call. Small scope. Surfaced
+      during triage session."
+    created_at: 2026-02-03T04:56:40.516Z
+    tags:
+      - cli
+      - inbox
+      - reflection
+    added_by: "@claude"
