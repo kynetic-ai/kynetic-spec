@@ -38145,6 +38145,8 @@
     - Watcher unit tests complete (17 tests, all ACs covered) but skip in CI due to GitHub Actions
       fs.watch limitations. AC-19 HTTP 503 response verification requires E2E/integration test
       blocked on @01KFMMZW. Tests pass locally and implementation verified correct.
+  closed_reason: Tests complete (17 passing locally). CI skip is documented in AGENTS.md - GitHub
+    Actions doesn't support recursive fs.watch. Implementation verified working.
   depends_on:
     - "@01KFQABQ"
   context: []
@@ -38156,6 +38158,7 @@
   vcs_refs: []
   created_at: 2026-01-24T06:18:21.894Z
   started_at: 2026-02-03T05:29:18.338Z
+  completed_at: 2026-02-03T05:29:18.338Z
   notes:
     - _ulid: 01KFRTSGKPDPBGHRAKDD4NZ9X8
       created_at: 2026-01-24T20:23:09.686Z
@@ -38324,9 +38327,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-03T05:29:18.338Z
-  closed_reason: Tests complete (17 passing locally). CI skip is documented in AGENTS.md - GitHub
-    Actions doesn't support recursive fs.watch. Implementation verified working.
 - _ulid: 01KFQAF08VSFJQ2D6EERRH890E
   slugs:
     - task-watcher-impl
@@ -43182,6 +43182,7 @@
         Currently daemon source is copied instead of compiled because of these type issues.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
   slugs: []
   title: "Design: First-party plan support with shadow branch storage"
