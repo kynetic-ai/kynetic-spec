@@ -43477,3 +43477,23 @@
   created_at: 2026-02-03T05:29:09.292Z
   notes: []
   todos: []
+- title: Document loop mode blocking pattern to prevent premature end-iteration
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - documentation
+    - ralph
+    - loop-mode
+    - reflection
+  depends_on: []
+  _ulid: 01KGJ5DMRTSEWKEGAKCSS0DQKW
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T16:29:55.855Z
+  notes: []
+  todos: []
