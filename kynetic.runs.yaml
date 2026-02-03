@@ -12164,7 +12164,7 @@ runs:
   - _ulid: 01KGGXEGV5495RFERBHQVF9BT2
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-03T04:51:21.574Z
     step_results:
@@ -12193,5 +12193,29 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-03T04:51:35.255Z
-        completed_at: 2026-02-03T04:51:35.255Z
+        completed_at: 2026-02-03T04:51:46.979Z
+        notes: >-
+          Friction points:
+
+          1. No bulk inbox delete - had to run 'kspec inbox delete @ref --force' separately for each
+          item. When consolidating 3 items, needed 3 delete commands
+
+          2. Consolidation requires delete+add - no 'inbox merge @source @target' command. Had to
+          manually copy text to new item, then delete old ones
+
+          3. No way to update/edit inbox item content - if I wanted to add to an existing item, had
+          to delete+re-add
+
+          4. Promote doesn't accept notes - when promoting inbox to task, had to run separate 'task
+          note' command to add context
+
+          5. Count checking required JSON pipe - used 'kspec inbox list --json | jq length'
+          repeatedly; could be 'kspec inbox list --count'
+
+          6. AskUserQuestion doesn't support 'tell me more' responses well - user answered with
+          questions/clarifications, had to parse and re-ask
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-03T04:51:46.979Z
+        completed_at: 2026-02-03T04:51:46.979Z
     initiated_by: "@claude"
