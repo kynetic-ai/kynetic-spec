@@ -43122,3 +43122,22 @@
         command-specific bulk variants.'
       supersedes: null
   todos: []
+- title: Improve ralph log separation between subagent and main loops
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Improve ralph log separation between review subagent and main iteration loops.
+    Currently output blends together making it hard to distinguish which context you're reading.
+    Consider: clearer section headers, different colors, or visual dividers when transitioning
+    between subagent completion and next iteration start."
+  _ulid: 01KGGNB3HMC4SZD8F74SRYDCFF
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T02:29:41.043Z
+  notes: []
+  todos: []
