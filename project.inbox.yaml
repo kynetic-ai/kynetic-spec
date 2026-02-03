@@ -407,16 +407,6 @@ inbox:
     created_at: 2026-01-20T16:13:31.843Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KG95JQVGYY5VR91HR386R058
-    text: "Add inbox merge command: 'kspec inbox merge @source @target' - appends source content to
-      target item, then deletes source. Use case: consolidating duplicates during triage without
-      losing context."
-    created_at: 2026-01-31T04:39:32.977Z
-    tags:
-      - reflection
-      - cli
-      - inbox
-    added_by: "@claude"
   - _ulid: 01KG95JSDYYKPFFS17PW2BCJ5H
     text: "Add --priority and --automation flags to inbox promote: 'kspec inbox promote @ref --title X
       --priority 2 --automation eligible'. Completes task setup in one command instead of promote +
