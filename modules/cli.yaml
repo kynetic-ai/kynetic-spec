@@ -1660,7 +1660,7 @@ features:
             then: task title uses provided value instead of spec title
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
