@@ -43477,23 +43477,197 @@
   created_at: 2026-02-03T05:29:09.292Z
   notes: []
   todos: []
-- title: Document loop mode blocking pattern to prevent premature end-iteration
+- _ulid: 01KGJ5DMRTSEWKEGAKCSS0DQKW
+  slugs: []
+  title: Document loop mode blocking pattern to prevent premature end-iteration
   type: task
   spec_ref: null
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - documentation
     - ralph
     - loop-mode
     - reflection
-  depends_on: []
-  _ulid: 01KGJ5DMRTSEWKEGAKCSS0DQKW
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-03T16:29:55.855Z
-  notes: []
+  notes:
+    - _ulid: 01KGJ5ECYHJ59ZNMC7XTKSVZQ4
+      created_at: 2026-02-03T16:30:20.626Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        In Ralph session 01KGHBQ9WYVVK3PWNS55B8N108, the agent prematurely ended the loop after 2
+        iterations (of 10) by calling:
+
+
+        ```
+
+        kspec ralph end-iteration --reason "Task 01KGGTR7 requires architectural decisions beyond
+        automation scope. Investigation complete, documented findings."
+
+        ```
+
+
+        The CORRECT behavior should have been:
+
+        1. Mark task @01KGGTR7 as blocked with reason
+
+        2. Mark automation status as needs_review
+
+        3. Check `kspec tasks ready --eligible` for other work
+
+        4. Continue the loop with remaining tasks
+
+
+        ## Root Cause
+
+
+        The documentation teaches what NOT to do but doesn't explain what TO do instead. The agent
+        saw:
+
+        - "Task seems complex is NOT an exit condition" (task-work SKILL.md:335)
+
+        - "You can signal: kspec ralph end-iteration" (task-work SKILL.md:327)
+
+
+        But there was no guidance saying: "Block the task and continue to other work"
+
+
+        ## Files Requiring Updates
+
+
+        ### 1. .claude/skills/task-work/SKILL.md
+
+
+        **Section: Exit Conditions (lines 316-320)**
+
+        Current text only mentions "no eligible tasks" - needs to clarify:
+
+        - Check `kspec tasks ready --eligible` for OTHER tasks
+
+        - Only end-iteration when ALL eligible tasks are blocked/done
+
+        - One blocked task is not "no eligible tasks"
+
+
+        **Section: What Is NOT an Exit Condition (lines 332-348)**
+
+        Tells agents what NOT to do but missing what TO do:
+
+        - Add escalation pattern: try → block → continue → end-iteration
+
+        - Explicitly state: "Never use end-iteration just because ONE task is complex"
+
+
+        **Section: Explicit Loop End Signal (lines 322-330)**
+
+        Vague wording "completed your focused work" - needs tightening:
+
+        - Valid: all eligible tasks blocked/completed
+
+        - Invalid: one task is hard so I'm done
+
+
+        **NEW SECTION NEEDED: Blocking vs End-Iteration**
+
+        Add table comparing three mechanisms:
+
+        | Situation | Action | When to Use |
+
+        |-----------|--------|-------------|
+
+        | Task requires other task first | `kspec task block` | True dependency |
+
+        | Task needs external input | `kspec task block` | Human decision needed |
+
+        | Task is complex/hard | DO THE WORK | Always - complexity is not a blocker |
+
+        | No more work possible | `kspec ralph end-iteration` | ALL tasks blocked/done |
+
+
+        ### 2. AGENTS.md
+
+
+        **NEW SECTION: Using Task Blocking in Loop Mode (after line 234)**
+
+        Add guidance with examples:
+
+
+        ```bash
+
+        # Pattern: When you discover a genuine blocker
+
+        kspec task block @complex-task --reason "Requires architectural decision on X"
+
+        kspec task set @complex-task --automation needs_review
+
+        kspec tasks ready --eligible  # Check for other work
+
+        # Continue with unblocked tasks
+
+        ```
+
+
+        Valid blocking reasons:
+
+        - External dependency (API spec needed)
+
+        - Human architectural decision required
+
+        - Spec gap blocking understanding
+
+
+        Invalid blocking reasons (DO THE WORK):
+
+        - Task seems complex
+
+        - Multiple test failures
+
+        - Service needs to be running
+
+
+        ### 3. .claude/skills/kspec/SKILL.md (minor)
+
+        Cross-reference the new loop mode blocking guidance from task-work skill.
+
+
+        ## Key Message to Encode
+
+
+        The loop should ONLY end when:
+
+        1. All automation-eligible tasks are completed, OR
+
+        2. All remaining eligible tasks are blocked AND no unblocked work exists
+
+
+        One hard task should result in:
+
+        1. Block that task with reason
+
+        2. Mark as needs_review
+
+        3. Move to next eligible task
+
+        4. Loop continues
+
+
+        ## Session Evidence
+
+
+        Session: 01KGHBQ9WYVVK3PWNS55B8N108
+
+        - seq 2710: Agent added task note documenting investigation
+
+        - seq 2714: Agent called end-iteration (WRONG)
+
+        - Should have: blocked task, continued to @01KGGWAE (comma-separated tags task)
+      supersedes: null
   todos: []
