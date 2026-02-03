@@ -501,3 +501,13 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KGGTT34ES3W098NNYE9Y8BZZ
+    text: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set --automation,
+      inbox delete, task note. Enables batch operations like 'kspec task note @ref1 @ref2 @ref3
+      \"shared content\"'. Consolidated from @01KG71J2, @01KG95JM, @01KFVXBM."
+    created_at: 2026-02-03T04:05:15.022Z
+    tags:
+      - cli
+      - batch
+      - dx
+    added_by: "@claude"
