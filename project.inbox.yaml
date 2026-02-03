@@ -407,16 +407,6 @@ inbox:
     created_at: 2026-01-20T16:13:31.843Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KG95JP8B7QQGBKAKB5V43J6J
-    text: "Add filtering options to inbox list: --tag <tag>, --before/--after <date>, --author <name>.
-      Enables focused triage (e.g., 'inbox list --tag ralph') and finding stale items. Surfaced
-      during triage when manually grep/head/tail on output."
-    created_at: 2026-01-31T04:39:31.340Z
-    tags:
-      - reflection
-      - cli
-      - inbox
-    added_by: "@claude"
   - _ulid: 01KG95JQVGYY5VR91HR386R058
     text: "Add inbox merge command: 'kspec inbox merge @source @target' - appends source content to
       target item, then deletes source. Use case: consolidating duplicates during triage without
