@@ -1015,38 +1015,6 @@ runs:
         started_at: 2026-01-23T07:02:02.886Z
         completed_at: 2026-01-23T07:02:16.506Z
     initiated_by: "@claude"
-  - _ulid: 01KFMTZWK3CNA1HHWBKG2XPT8T
-    workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-    status: active
-    current_step: 0
-    total_steps: 6
-    started_at: 2026-01-23T07:09:40.835Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFMV3PE98QDAD5MXXJ36ZJ9Q
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T07:11:45.609Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T07:11:45.609Z
-        completed_at: 2026-01-23T07:11:53.816Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T07:11:53.816Z
-        completed_at: 2026-01-23T07:11:53.816Z
-    initiated_by: "@claude"
-  - _ulid: 01KFMVGYVNRGHM69JD8EVWN8GJ
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-23T07:19:00.213Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KFMWB8FQJ7JC68RGJPPRVEH9
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -1091,14 +1059,6 @@ runs:
         status: completed
         started_at: 2026-01-23T07:36:02.093Z
         completed_at: 2026-01-23T07:36:18.342Z
-    initiated_by: "@claude"
-  - _ulid: 01KFMX8BFEZ933HYS9JBB1HWPR
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-23T07:49:15.374Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFMXCN7853DRGE7VD96E7S8M
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -1190,22 +1150,6 @@ runs:
         started_at: 2026-01-23T08:39:02.293Z
         completed_at: 2026-01-23T08:39:15.516Z
     initiated_by: "@claude"
-  - _ulid: 01KFMZJY3GF3DVWZTJJXZJFMPK
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-23T08:29:59.280Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFN0PH8BHHCV8B1C22RFW8GB
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-23T08:49:25.772Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KFN1B9KDXBS9VX86RM0R5T7K
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -1250,22 +1194,6 @@ runs:
         status: completed
         started_at: 2026-01-23T09:11:19.281Z
         completed_at: 2026-01-23T09:11:32.339Z
-    initiated_by: "@claude"
-  - _ulid: 01KFN2EZEA8TJZ94KM8458KNZ7
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T09:20:15.306Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T09:20:15.306Z
-        completed_at: 2026-01-23T09:24:32.823Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T09:24:32.823Z
-        completed_at: 2026-01-23T09:24:32.823Z
     initiated_by: "@claude"
   - _ulid: 01KFN2YCTD3MBR8M583P2P0SC2
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -1329,22 +1257,6 @@ runs:
         started_at: 2026-01-23T09:36:12.124Z
         completed_at: 2026-01-23T09:36:30.975Z
     initiated_by: "@claude"
-  - _ulid: 01KFN3S4YD9XMQK9HYCWY1DVTB
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T09:43:17.198Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T09:43:17.198Z
-        completed_at: 2026-01-23T09:43:22.530Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T09:43:22.530Z
-        completed_at: 2026-01-23T09:43:22.530Z
-    initiated_by: "@claude"
   - _ulid: 01KFN45ASQRYKDW2TW0ADRBJJA
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -1390,14 +1302,6 @@ runs:
         started_at: 2026-01-23T09:56:20.125Z
         completed_at: 2026-01-23T09:56:33.948Z
     initiated_by: "@claude"
-  - _ulid: 01KFN4YSK2Y8QNTHHG0A7M5X5V
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-23T10:03:50.754Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KFN53WFRSS13KTAWHSV68MCV
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -1442,14 +1346,6 @@ runs:
         status: completed
         started_at: 2026-01-23T10:15:38.598Z
         completed_at: 2026-01-23T10:15:52.103Z
-    initiated_by: "@claude"
-  - _ulid: 01KFN6B99V2GXRE20R6S4214EA
-    workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-    status: active
-    current_step: 0
-    total_steps: 6
-    started_at: 2026-01-23T10:28:08.635Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFN6S3E7E11RFNKMGFZKM43W
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -1621,22 +1517,6 @@ runs:
         started_at: 2026-01-23T11:46:00.579Z
         completed_at: 2026-01-23T11:46:16.547Z
     initiated_by: "@claude"
-  - _ulid: 01KFNB4AZGVM7RJPBY2K91FJY4
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T11:51:43.856Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T11:51:43.856Z
-        completed_at: 2026-01-23T11:51:54.787Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T11:51:54.787Z
-        completed_at: 2026-01-23T11:51:54.787Z
-    initiated_by: "@claude"
   - _ulid: 01KFNB6FDCQSAABYTF7VKWE4SF
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -1771,22 +1651,6 @@ runs:
         status: completed
         started_at: 2026-01-23T12:30:12.695Z
         completed_at: 2026-01-23T12:30:28.728Z
-    initiated_by: "@claude"
-  - _ulid: 01KFNDR2333R7N3MCZ3KA9FGTZ
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T12:37:27.267Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T12:37:27.267Z
-        completed_at: 2026-01-23T12:37:36.744Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T12:37:36.744Z
-        completed_at: 2026-01-23T12:37:36.744Z
     initiated_by: "@claude"
   - _ulid: 01KFNEDJTMR4FM36G41B9K6BK9
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -1923,22 +1787,6 @@ runs:
         started_at: 2026-01-23T13:53:33.477Z
         completed_at: 2026-01-23T13:53:47.936Z
     initiated_by: "@claude"
-  - _ulid: 01KFNJPWNH9RT9S4X5NG9D9HGK
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T14:04:11.825Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T14:04:11.825Z
-        completed_at: 2026-01-23T14:04:24.903Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T14:04:24.903Z
-        completed_at: 2026-01-23T14:04:24.903Z
-    initiated_by: "@claude"
   - _ulid: 01KFNJY6VERDP97CFTR1GSHZD2
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: aborted
@@ -1946,14 +1794,6 @@ runs:
     total_steps: 9
     started_at: 2026-01-23T14:08:11.630Z
     completed_at: 2026-01-23T14:10:37.229Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFNKWT1V13QKZQGEZYMF0X90
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-23T14:24:54.331Z
     step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFNMQP1JV3VFQR56M8N2A1RR
@@ -2000,22 +1840,6 @@ runs:
         status: completed
         started_at: 2026-01-23T14:41:03.471Z
         completed_at: 2026-01-23T14:41:20.469Z
-    initiated_by: "@claude"
-  - _ulid: 01KFNNB2BN3MDRY7T08CN4V392
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T14:50:10.165Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T14:50:10.165Z
-        completed_at: 2026-01-23T14:50:22.347Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T14:50:22.347Z
-        completed_at: 2026-01-23T14:50:22.347Z
     initiated_by: "@claude"
   - _ulid: 01KFNQJPRZ7JY98W4Q5JA94ZM4
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -2197,22 +2021,6 @@ runs:
         started_at: 2026-01-23T16:38:12.366Z
         completed_at: 2026-01-23T16:38:36.254Z
     initiated_by: "@claude"
-  - _ulid: 01KFNXJPEY4X9D9CBWMXJXF5XX
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T17:14:08.734Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T17:14:08.734Z
-        completed_at: 2026-01-23T17:14:19.131Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T17:14:19.131Z
-        completed_at: 2026-01-23T17:14:19.131Z
-    initiated_by: "@claude"
   - _ulid: 01KFNXMS025AD8CDHCM2K0F72Q
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -2302,42 +2110,6 @@ runs:
         status: completed
         started_at: 2026-01-23T17:49:44.996Z
         completed_at: 2026-01-23T17:49:58.092Z
-    initiated_by: "@claude"
-  - _ulid: 01KFP0PAQBBBK3XTRTB46JT58Q
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-23T18:08:33.515Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T18:08:33.515Z
-        completed_at: 2026-01-23T18:08:42.692Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T18:08:42.692Z
-        completed_at: 2026-01-23T18:08:42.692Z
-    initiated_by: "@claude"
-  - _ulid: 01KFP0VKS6ANHZDV760BT6R0SZ
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 2
-    total_steps: 9
-    started_at: 2026-01-23T18:11:26.631Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-23T18:11:26.631Z
-        completed_at: 2026-01-23T18:11:37.252Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-23T18:11:37.252Z
-        completed_at: 2026-01-23T18:23:58.444Z
-      - step_index: 2
-        status: completed
-        started_at: 2026-01-23T18:23:58.444Z
-        completed_at: 2026-01-23T18:23:58.444Z
     initiated_by: "@claude"
   - _ulid: 01KFP8R7R6GCRG9QMGVQ1ZM78R
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
@@ -3504,22 +3276,6 @@ runs:
           - testUlid docs: PR #210
           - ULID validation clarity: already clear
     initiated_by: "@claude"
-  - _ulid: 01KFRJHPV2D8SNE2YPZPW604PD
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T17:59:05.315Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T17:59:05.315Z
-        completed_at: 2026-01-24T17:59:12.703Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T17:59:12.703Z
-        completed_at: 2026-01-24T17:59:12.703Z
-    initiated_by: "@claude"
   - _ulid: 01KFRJQ0WYWZBHYN5AG0008R3S
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -3565,22 +3321,6 @@ runs:
         started_at: 2026-01-24T18:13:51.668Z
         completed_at: 2026-01-24T18:14:08.792Z
     initiated_by: "@claude"
-  - _ulid: 01KFRKQN9ZHE4JSXSQMM7B7QA0
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T18:19:48.927Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T18:19:48.927Z
-        completed_at: 2026-01-24T18:19:57.603Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T18:19:57.603Z
-        completed_at: 2026-01-24T18:19:57.603Z
-    initiated_by: "@claude"
   - _ulid: 01KFRKWGM6B9F9XFQKRA6Q7693
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -3625,30 +3365,6 @@ runs:
         status: completed
         started_at: 2026-01-24T18:30:47.745Z
         completed_at: 2026-01-24T18:31:04.723Z
-    initiated_by: "@claude"
-  - _ulid: 01KFRMN1N32BDPS99297SN3HKS
-    workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-    status: active
-    current_step: 0
-    total_steps: 6
-    started_at: 2026-01-24T18:35:51.843Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFRMSF4VMEQMA2FC1T26A5HA
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T18:38:16.732Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T18:38:16.732Z
-        completed_at: 2026-01-24T18:38:23.715Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T18:38:23.715Z
-        completed_at: 2026-01-24T18:38:23.715Z
     initiated_by: "@claude"
   - _ulid: 01KFRMXQ6W311WNTDP5TNXFDJN
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -3740,46 +3456,6 @@ runs:
         started_at: 2026-01-24T18:52:02.301Z
         completed_at: 2026-01-24T18:52:14.491Z
     initiated_by: "@claude"
-  - _ulid: 01KFRP8A3ADZF6NZG47M7XYE8A
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T19:03:51.659Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T19:03:51.659Z
-        completed_at: 2026-01-24T19:04:02.383Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T19:04:02.383Z
-        completed_at: 2026-01-24T19:04:02.383Z
-    initiated_by: "@claude"
-  - _ulid: 01KFRPH3GZQ3FMKZKK9290Z15Q
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-24T19:08:39.839Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFRQD4JGQRPWKX7ZWGPNQ26F
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T19:23:58.417Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T19:23:58.417Z
-        completed_at: 2026-01-24T19:24:10.597Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T19:24:10.597Z
-        completed_at: 2026-01-24T19:24:10.597Z
-    initiated_by: "@claude"
   - _ulid: 01KFRQFG2BF81XPSR1KJ4GEAXC
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: completed
@@ -3814,14 +3490,6 @@ runs:
         status: completed
         started_at: 2026-01-24T19:28:51.575Z
         completed_at: 2026-01-24T19:28:56.839Z
-    initiated_by: "@claude"
-  - _ulid: 01KFRQR4GFEV9Q2WT89RXA45HE
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-24T19:29:58.799Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFRRA0VV17B5D5GXV8ZXCAPJ
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -3993,22 +3661,6 @@ runs:
         started_at: 2026-01-24T20:19:41.691Z
         completed_at: 2026-01-24T20:19:52.053Z
     initiated_by: "@claude"
-  - _ulid: 01KFRTV5WJ69W8S0J1DK9YHWH2
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T20:24:04.243Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T20:24:04.243Z
-        completed_at: 2026-01-24T20:24:10.421Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T20:24:10.421Z
-        completed_at: 2026-01-24T20:24:10.421Z
-    initiated_by: "@claude"
   - _ulid: 01KFRVNPZ4Z3Q8VBDNFD9T7JHF
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -4064,22 +3716,6 @@ runs:
         completed_at: 2026-01-24T20:40:20.802Z
         notes: "PR #222 merged successfully"
     initiated_by: "@claude"
-  - _ulid: 01KFRW1MBF3FJ1RC7GXNF09RPV
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T20:45:04.239Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T20:45:04.239Z
-        completed_at: 2026-01-24T20:45:10.623Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T20:45:10.623Z
-        completed_at: 2026-01-24T20:45:10.623Z
-    initiated_by: "@claude"
   - _ulid: 01KFRWMKX34NNB4Q6F5PC8W2MP
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -4124,22 +3760,6 @@ runs:
         status: completed
         started_at: 2026-01-24T21:00:34.012Z
         completed_at: 2026-01-24T21:00:53.625Z
-    initiated_by: "@claude"
-  - _ulid: 01KFRXFG2E4PMDWS6W9REAPA4J
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T21:10:07.182Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T21:10:07.182Z
-        completed_at: 2026-01-24T21:10:18.190Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T21:10:18.190Z
-        completed_at: 2026-01-24T21:10:18.190Z
     initiated_by: "@claude"
   - _ulid: 01KFRY2A994TFFH75P9D7XGEWD
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -4198,38 +3818,6 @@ runs:
         started_at: 2026-01-24T21:22:15.603Z
         completed_at: 2026-01-24T21:22:30.830Z
         notes: "PR #224 merged successfully using merge commit (preserves trailers). Branch deleted."
-    initiated_by: "@claude"
-  - _ulid: 01KFRYYHZHCX9XPV8K3DD0D1JB
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T21:35:49.233Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T21:35:49.233Z
-        completed_at: 2026-01-24T21:35:58.615Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T21:35:58.615Z
-        completed_at: 2026-01-24T21:35:58.615Z
-    initiated_by: "@claude"
-  - _ulid: 01KFRZ8GQ17CT97VPB27304HE0
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-24T21:41:15.617Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFRZW31C864G9BA7APD5JEN9
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-24T21:51:56.973Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFS1XJXZZYPMBZ121165CBNH
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
@@ -4321,14 +3909,6 @@ runs:
         started_at: 2026-01-24T22:49:08.162Z
         completed_at: 2026-01-24T22:49:20.919Z
     initiated_by: "@claude"
-  - _ulid: 01KFS3FV1AT7TJCJJJFPWE4BXM
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-24T22:55:09.867Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KFS4JRZ7C9VGHK139HGWH434
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: completed
@@ -4373,22 +3953,6 @@ runs:
         status: completed
         started_at: 2026-01-24T23:19:19.464Z
         completed_at: 2026-01-24T23:19:34.228Z
-    initiated_by: "@claude"
-  - _ulid: 01KFS58BB1W5WH2FZSS4Y2J817
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T23:26:01.569Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T23:26:01.569Z
-        completed_at: 2026-01-24T23:26:11.031Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T23:26:11.031Z
-        completed_at: 2026-01-24T23:26:11.031Z
     initiated_by: "@claude"
   - _ulid: 01KFS5AF3TT84REMGMC43HA1CE
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
@@ -4510,22 +4074,6 @@ runs:
         status: completed
         started_at: 2026-01-24T23:44:15.195Z
         completed_at: 2026-01-24T23:44:26.799Z
-    initiated_by: "@claude"
-  - _ulid: 01KFS6JD1AKMYZ94TVRZH2PFJE
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-24T23:48:59.563Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-24T23:48:59.563Z
-        completed_at: 2026-01-24T23:49:09.124Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-24T23:49:09.124Z
-        completed_at: 2026-01-24T23:49:09.124Z
     initiated_by: "@claude"
   - _ulid: 01KFS6MJ42V8Q5K56T8FDQHTWR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
@@ -4908,34 +4456,6 @@ runs:
           - Observation @01KFT1Q5: Success - subagent git history recovery pattern
           - Observation @01KFT1QE: Friction - shadow divergence lacks guided resolution
     initiated_by: "@claude"
-  - _ulid: 01KFT8CAN49MGKWFDYPBSXXQE7
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 4
-    total_steps: 8
-    started_at: 2026-01-25T09:39:52.101Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T09:39:52.101Z
-        completed_at: 2026-01-25T09:40:03.204Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T09:40:03.204Z
-        completed_at: 2026-01-25T09:40:25.109Z
-      - step_index: 2
-        status: completed
-        started_at: 2026-01-25T09:40:25.109Z
-        completed_at: 2026-01-25T09:41:03.590Z
-      - step_index: 3
-        status: completed
-        started_at: 2026-01-25T09:41:03.590Z
-        completed_at: 2026-01-25T09:41:15.754Z
-      - step_index: 4
-        status: completed
-        started_at: 2026-01-25T09:41:15.754Z
-        completed_at: 2026-01-25T09:41:15.754Z
-    initiated_by: "@claude"
   - _ulid: 01KFTA0PKH2KA9VRZN65JP9GJV
     workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
     status: completed
@@ -5144,46 +4664,6 @@ runs:
         started_at: 2026-01-25T10:14:47.841Z
         completed_at: 2026-01-25T10:14:52.147Z
     initiated_by: "@claude"
-  - _ulid: 01KFTAH61QD7586YPDECMZFB2S
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 1
-    total_steps: 9
-    started_at: 2026-01-25T10:17:28.375Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T10:17:28.375Z
-        completed_at: 2026-01-25T10:17:36.097Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T10:17:36.097Z
-        completed_at: 2026-01-25T10:17:36.097Z
-    initiated_by: "@claude"
-  - _ulid: 01KFTDC1W8W83KN6EWMG0Z7N1D
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 3
-    total_steps: 9
-    started_at: 2026-01-25T11:07:05.992Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T11:07:05.992Z
-        completed_at: 2026-01-25T11:07:14.166Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T11:07:14.166Z
-        completed_at: 2026-01-25T11:09:13.036Z
-      - step_index: 2
-        status: completed
-        started_at: 2026-01-25T11:09:13.036Z
-        completed_at: 2026-01-25T11:12:12.305Z
-      - step_index: 3
-        status: completed
-        started_at: 2026-01-25T11:12:12.305Z
-        completed_at: 2026-01-25T11:12:12.305Z
-    initiated_by: "@claude"
   - _ulid: 01KFTDPDPSC1CP50SBWHH0JJ1V
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: completed
@@ -5332,39 +4812,6 @@ runs:
           - Success patterns documented in task-work skill
 
           Session reflection complete with zero new captures (all duplicates).
-    initiated_by: "@claude"
-  - _ulid: 01KFTE5FAE38C5XV9CC4SGWR8E
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 1
-    total_steps: 10
-    started_at: 2026-01-25T11:20:58.958Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T11:20:58.958Z
-        completed_at: 2026-01-25T11:23:20.767Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T11:23:20.767Z
-        completed_at: 2026-01-25T11:23:20.767Z
-    initiated_by: "@claude"
-    task_ref: "@01KFQAG8K9ZZ767XDK21KJRHJ6"
-  - _ulid: 01KFTE5WAXT5K0QYA96KPSVTFV
-    workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-    status: active
-    current_step: 0
-    total_steps: 6
-    started_at: 2026-01-25T11:21:12.285Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KFTEAFK5KHX1EK4FFXC3FV3T
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-25T11:23:43.078Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFTEREYB4RP0AP4D3H26FTDK
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
@@ -5561,38 +5008,6 @@ runs:
         status: completed
         started_at: 2026-01-25T11:36:20.459Z
         completed_at: 2026-01-25T11:36:27.763Z
-    initiated_by: "@claude"
-  - _ulid: 01KFTFE96X8WYP4Q1GW5R8EDAZ
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 5
-    total_steps: 9
-    started_at: 2026-01-25T11:43:16.190Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T11:43:16.190Z
-        completed_at: 2026-01-25T11:43:24.577Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T11:43:24.577Z
-        completed_at: 2026-01-25T11:44:00.732Z
-      - step_index: 2
-        status: completed
-        started_at: 2026-01-25T11:44:00.732Z
-        completed_at: 2026-01-25T11:44:41.453Z
-      - step_index: 3
-        status: completed
-        started_at: 2026-01-25T11:44:41.453Z
-        completed_at: 2026-01-25T11:45:18.964Z
-      - step_index: 4
-        status: completed
-        started_at: 2026-01-25T11:45:18.964Z
-        completed_at: 2026-01-25T11:48:22.587Z
-      - step_index: 5
-        status: completed
-        started_at: 2026-01-25T11:48:22.587Z
-        completed_at: 2026-01-25T11:48:22.587Z
     initiated_by: "@claude"
   - _ulid: 01KFTFSX9QXTMNCFJ3G46YJB3G
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
@@ -5833,14 +5248,6 @@ runs:
 
           Total captured: 1 observation
           Quality over quantity: Only captured high-confidence systemic friction.
-    initiated_by: "@claude"
-  - _ulid: 01KFTGT3RCYDWQEBRP7JPJZP4S
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-25T12:07:12.396Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFTH24PTMRRQDN4P9VTTNA51
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
@@ -6104,14 +5511,6 @@ runs:
         started_at: 2026-01-25T12:39:18.517Z
         completed_at: 2026-01-25T12:39:50.596Z
     initiated_by: "@claude"
-  - _ulid: 01KFTJQ925MYY55W49XP5YMCGT
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-01-25T12:40:36.677Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KFTJT2GVTS382YV6GASP0RM6
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: completed
@@ -6245,42 +5644,6 @@ runs:
         status: completed
         started_at: 2026-01-25T12:52:22.898Z
         completed_at: 2026-01-25T12:52:32.288Z
-    initiated_by: "@claude"
-  - _ulid: 01KFTKFDCE89FB7V6R7E1E5XN5
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 6
-    total_steps: 10
-    started_at: 2026-01-25T12:53:47.534Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T12:53:47.534Z
-        completed_at: 2026-01-25T12:54:05.593Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T12:54:05.593Z
-        completed_at: 2026-01-25T12:55:19.017Z
-      - step_index: 2
-        status: completed
-        started_at: 2026-01-25T12:55:19.017Z
-        completed_at: 2026-01-25T12:55:38.104Z
-      - step_index: 3
-        status: completed
-        started_at: 2026-01-25T12:55:38.104Z
-        completed_at: 2026-01-25T12:55:43.834Z
-      - step_index: 4
-        status: completed
-        started_at: 2026-01-25T12:55:43.834Z
-        completed_at: 2026-01-25T12:55:48.508Z
-      - step_index: 5
-        status: completed
-        started_at: 2026-01-25T12:55:48.508Z
-        completed_at: 2026-01-25T13:03:12.041Z
-      - step_index: 6
-        status: completed
-        started_at: 2026-01-25T13:03:12.041Z
-        completed_at: 2026-01-25T13:03:12.041Z
     initiated_by: "@claude"
   - _ulid: 01KFTKG6Y3QQNDCFNB3CES3SFJ
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -6511,14 +5874,6 @@ runs:
         status: completed
         started_at: 2026-01-25T13:17:10.339Z
         completed_at: 2026-01-25T13:17:16.078Z
-    initiated_by: "@claude"
-  - _ulid: 01KFTN0RTTCAC5Z6PSGZ5RXCJR
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-25T13:20:44.891Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFTN6Q7W47F6SADX9S1BTYMW
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
@@ -6802,30 +6157,6 @@ runs:
           - Environmental issues with existing solutions
 
           Session reflection complete. Loop operated as designed with no significant friction.
-    initiated_by: "@claude"
-  - _ulid: 01KFTPEBR8EDTFDV8NS98N0E3R
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 3
-    total_steps: 9
-    started_at: 2026-01-25T13:45:38.825Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-01-25T13:45:38.825Z
-        completed_at: 2026-01-25T13:45:48.135Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-01-25T13:45:48.135Z
-        completed_at: 2026-01-25T13:46:17.717Z
-      - step_index: 2
-        status: completed
-        started_at: 2026-01-25T13:46:17.717Z
-        completed_at: 2026-01-25T13:46:49.275Z
-      - step_index: 3
-        status: completed
-        started_at: 2026-01-25T13:46:49.275Z
-        completed_at: 2026-01-25T13:46:49.275Z
     initiated_by: "@claude"
   - _ulid: 01KFTPK5D22KVBD8K4YYJB3RJN
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
@@ -7539,14 +6870,6 @@ runs:
 
 
           Session reflection complete - no new items to track.
-    initiated_by: "@claude"
-  - _ulid: 01KFTS7J30NFERP0N4EC04HHFD
-    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
-    status: active
-    current_step: 0
-    total_steps: 9
-    started_at: 2026-01-25T14:34:21.665Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KFTSB8DDC8X96AFGKJ6VZYYA
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
