@@ -43190,7 +43190,7 @@
     fix Elysia generic issues, eliminate implicit any. Currently daemon source is copied instead of
     compiled because of these issues. Medium scope.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43210,6 +43210,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-03T09:17:17.411Z
 - _ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
   slugs: []
   title: "Design: First-party plan support with shadow branch storage"
