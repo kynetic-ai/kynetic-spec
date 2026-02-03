@@ -43470,23 +43470,137 @@
   created_at: 2026-02-03T05:29:09.292Z
   notes: []
   todos: []
-- title: Create zero-dependency bootstrap script for agent sessions
+- _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
+  slugs: []
+  title: Create zero-dependency bootstrap script for agent sessions
   type: task
   spec_ref: null
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - cli
     - dx
     - bootstrap
     - agent-first
-  depends_on: []
-  _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-03T10:09:05.084Z
-  notes: []
+  notes:
+    - _ulid: 01KGHFNC9TZBNJ0BX2PCN9G4B4
+      created_at: 2026-02-03T10:09:40.667Z
+      author: Claude
+      content: >-
+        ## Problem
+
+
+        When an agent starts a session on a fresh clone or machine, kspec may not be
+        built/linked/initialized. The agent then has to:
+
+        1. Run npm install
+
+        2. Run npm run build  
+
+        3. Run npm link
+
+        4. Run kspec init (which prompts interactively)
+
+        5. Run kspec session start
+
+
+        This creates friction and the agent may not know the correct sequence.
+
+
+        ## Solution
+
+
+        Create a zero-dependency Node.js bootstrap script at `scripts/bootstrap.js` that:
+
+
+        1. **Runs without npm install** - Uses only Node.js built-ins (child_process, fs, path)
+
+        2. **Detects current state** - Checks if kspec is already working
+
+        3. **Does minimal work** - Only runs steps that are needed
+
+        4. **Is transparent** - Reports exactly what it did to the agent
+
+        5. **Outputs session context** - Ends with session start info
+
+
+        ## Detection Logic
+
+
+        1. Check if `kspec --version` works (command exists and runs)
+
+        2. Check if `.kspec/` directory exists and is healthy
+
+        3. If both pass, just run session start
+
+        4. Otherwise, run the setup steps needed
+
+
+        ## Setup Steps (when needed)
+
+
+        1. `npm install` - if node_modules missing or stale
+
+        2. `npm run build` - if dist/ missing or stale  
+
+        3. `npm link` - if kspec command not found
+
+        4. `kspec init --no-prompt` - if .kspec/ not initialized
+
+        5. `kspec session start` - always at the end
+
+
+        ## Output Format
+
+
+        Script should output structured info for the agent:
+
+        ```
+
+        === Kspec Bootstrap ===
+
+        Status: [fresh_setup | already_configured | repaired]
+
+
+        Actions taken:
+
+        - Installed dependencies (npm install)
+
+        - Built project (npm run build)
+
+        - Linked CLI (npm link)
+
+        - Initialized shadow branch (kspec init)
+
+
+        [session start output here]
+
+        ```
+
+
+        ## Location & Invocation
+
+
+        - File: `scripts/bootstrap.js`
+
+        - Run: `node scripts/bootstrap.js`
+
+        - Add npm script: `"bootstrap": "node scripts/bootstrap.js"`
+
+
+        ## Documentation Updates
+
+
+        1. Add to AGENTS.md - new section on session bootstrap
+
+        2. Update INSTALL.md - mention bootstrap as alternative to manual steps
+
+        3. Update CLAUDE.md - instruct agents to run bootstrap first
+      supersedes: null
   todos: []
