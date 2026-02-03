@@ -43150,7 +43150,7 @@
     Consider: clearer section headers, different colors, or visual dividers when transitioning
     between subagent completion and next iteration start."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
