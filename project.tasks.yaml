@@ -13736,6 +13736,7 @@
   status: cancelled
   blocked_by:
     - Needs clearer scoping - see latest note for details
+  closed_reason: Scope unclear - replaced with well-scoped @task-ac-drift-validator
   depends_on: []
   context: []
   priority: 3
@@ -13922,7 +13923,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  closed_reason: Scope unclear - replaced with well-scoped @task-ac-drift-validator
 - _ulid: 01KFBDR7PSY773FVHBJE6FMXDY
   slugs: []
   title: Improve Result type enforcement and type guards
@@ -43295,4 +43295,45 @@
         task list, item list, validate. Extends to inbox list. AC: (1) truncated lists show all
         items with --verbose, (2) summaries expand to detailed info."
       supersedes: null
+  todos: []
+- title: Add AC schema field validation to detect drift
+  description: >-
+    Check acceptance criteria for field references (item.field, status.field, etc.) that don't exist
+    in the actual schema. Catches drift between spec prose and implementation reality.
+
+
+    Research findings from @01KFBDQE:
+
+    - ACs reference 'children' but SpecItem has no children field (hierarchy is parse-time only)
+
+    - ACs reference 'spec_ref.children' but spec_ref is just a string
+
+    - ACs describe cascade operations that aren't schema-queryable
+
+
+    Implementation approach:
+
+    - Add checkACSchemaReferences() function similar to checkStaleness()
+
+    - Extract field patterns from AC then clauses
+
+    - Validate against SpecItem/Task schema fields
+
+    - Add --drift flag to validate command
+
+    - Report CompletenessWarning with type 'ac_schema_field_mismatch'
+  type: task
+  spec_ref: null
+  meta_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KGGZKQDSPMJ2242BCMJX48K6
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-03T05:29:09.292Z
+  notes: []
   todos: []
