@@ -43198,23 +43198,43 @@
         Claude Code plan mode workflow.
       supersedes: null
   todos: []
-- title: Cache scanTestCoverage() results for daemon performance
+- _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
+  slugs: []
+  title: Cache scanTestCoverage() results for daemon performance
   type: task
-  priority: 3
+  description: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
+    invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
   spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - performance
     - daemon
     - web-ui
-  description: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
-    invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
-  _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
+  vcs_refs: []
+  created_at: 2026-02-03T04:07:47.271Z
+  notes: []
+  todos: []
+- title: Support --tags x,y,z comma-separated syntax
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - reflection
+    - cli
+    - dx
+  description: Support --tags x,y,z comma-separated syntax in addition to --tag x --tag y. Applies to
+    inbox add and other tag-accepting commands. Small scope, convenience improvement.
+  _ulid: 01KGGWAE59ENQWYH04CRDZBW3S
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-03T04:07:47.271Z
+  created_at: 2026-02-03T04:31:39.171Z
   notes: []
   todos: []
