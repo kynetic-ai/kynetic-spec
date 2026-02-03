@@ -3204,6 +3204,11 @@ features:
     traits: []
     notes: []
     created: 2026-02-03T08:59:38.294Z
+    acceptance_criteria:
+      - id: ac-1
+        given: user runs a command with --tag cli,urgent
+        when: tags are parsed
+        then: both 'cli' and 'urgent' are added as separate tags
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
