@@ -44108,7 +44108,7 @@
     steps. Note: Each task can only reference one plan. Re-derivation overwrites plan_ref."
   spec_ref: "@plan-derive"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44146,6 +44146,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-04T10:25:51.658Z
+  closed_reason: "Merged in PR #306. Implemented plan derive command for creating tasks from approved
+    or active plans with bidirectional linking. AC coverage: ac-5 (task creation,
+    plan_ref/derived_tasks updates, status transitions) and ac-6 (bidirectional display in task
+    get/plan get) both fully covered by 12 E2E tests. Fixed test expectations issue found in review.
+    All tests passing."
 - _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
   slugs: []
   title: Add plan_ref field to Task schema
@@ -44205,10 +44211,10 @@
     - planning
   vcs_refs: []
   created_at: 2026-02-04T07:45:35.701Z
+  started_at: 2026-02-04T10:16:48.296Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-02-04T10:16:48.296Z
 - _ulid: 01KGKSTCY0W8MMKJ1D8KK0HGDS
   slugs: []
   title: Implement plan document parser for structured plans
