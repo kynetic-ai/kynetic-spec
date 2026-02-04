@@ -3574,6 +3574,10 @@ features:
             given: "A plan with derive_from_specs: true and specs json-output and cli-traits"
             when: kspec plan import <path> is run
             then: Each derived task has spec_ref pointing to source spec AND plan_ref pointing to imported plan
+          - id: ac-20
+            given: "A plan with derive_from_specs: true and spec titled JSON Output Mode"
+            when: kspec plan import <path> is run
+            then: Derived task has title Implement JSON Output Mode (matching kspec derive convention)
       - _ulid: 01KGKY0XJ9CPJGPZFJ3BQJV9YM
         slugs:
           - plan-validation
