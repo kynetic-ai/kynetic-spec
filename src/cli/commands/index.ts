@@ -12,6 +12,7 @@ export { registerLogCommand } from "./log.js";
 export { registerMergeDriverCommand } from "./merge-driver.js";
 export { registerMetaCommands } from "./meta.js";
 export { registerModuleCommands } from "./module.js";
+export { registerPlanCommands } from "./plan.js";
 export { registerRalphCommand } from "./ralph.js";
 export { registerSearchCommand } from "./search.js";
 export { registerServeCommands } from "./serve.js";
