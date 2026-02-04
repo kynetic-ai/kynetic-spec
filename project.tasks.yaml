@@ -43946,7 +43946,7 @@
     src/schema/index.ts.'
   spec_ref: "@plan-crud"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43994,6 +43994,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-04T09:19:43.107Z
+  closed_reason: "Merged in PR #303. Implemented Plan and PlansFile schemas with comprehensive
+    validation and parser functions. Added 29 tests covering ac-1, ac-2, ac-3, ac-4, ac-7, ac-8,
+    ac-9. ACs ac-30 and ac-31 (JSON CLI output) correctly deferred to task 01KGKSSV. All tests
+    passing, CI green."
 - _ulid: 01KGKSSPHJ1W1315N0D4N4Q13T
   slugs: []
   title: Implement plan load/save parser functions
