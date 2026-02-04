@@ -12463,7 +12463,7 @@ runs:
   - _ulid: 01KGKVAAZMV9RGPPVBHHEDN0FQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-04T08:11:50.645Z
     step_results:
@@ -12481,5 +12481,16 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-04T08:12:09.079Z
-        completed_at: 2026-02-04T08:12:09.079Z
+        completed_at: 2026-02-04T08:12:21.641Z
+        notes: |-
+          Friction points:
+          1. Adding 33 ACs one at a time - no bulk AC add from file/YAML. Tedious.
+          2. Plan document not readily accessible - had to reconstruct from transcript
+          3. No 'kspec task list --spec-ref' option - used --tag as workaround
+          4. Started implementing before clarifying scope - should have confirmed first
+          5. Trait application was manual after-the-fact - kspec item add lacks --trait flag
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-04T08:12:21.641Z
+        completed_at: 2026-02-04T08:12:21.641Z
     initiated_by: "@claude"
