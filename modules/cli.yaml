@@ -3604,6 +3604,10 @@ features:
             given: A previously imported plan where @json-output has changed content
             when: kspec plan import <path> --update is run
             then: Existing spec @json-output is updated to match plan, message Updated @json-output
+          - id: ac-27
+            given: A plan with additional tasks array in Tasks section (tasks without specs)
+            when: kspec plan import <path> is run
+            then: Manual tasks are created without spec_ref, only with plan_ref
       - _ulid: 01KGKY0XJ9CPJGPZFJ3BQJV9YM
         slugs:
           - plan-validation
