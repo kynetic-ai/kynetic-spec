@@ -3395,6 +3395,11 @@ features:
         when: kspec plan import <path> is run
         then: 3 valid specs created, exit code 0 (success), output shows Created 3 specs, 2 errors with
           error details
+      - id: ac-24
+        given: A plan file is successfully imported
+        when: Import completes
+        then: Plan record added to project.plans.yaml with status active, source path, list of created
+          spec/task refs
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
