@@ -44066,7 +44066,7 @@
     Register in src/cli/index.ts.'
   spec_ref: "@plan-crud"
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
