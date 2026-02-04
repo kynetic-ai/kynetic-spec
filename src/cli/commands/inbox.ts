@@ -21,6 +21,7 @@ import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
+import { parseTagsArray } from "../parse-utils.js";
 
 /**
  * Format relative time for display (wrapper for utils function)
@@ -87,7 +88,7 @@ Examples:
 
         const input: InboxItemInput = {
           text,
-          tags: options.tag || [],
+          tags: parseTagsArray(options.tag),
         };
 
         const item = createInboxItem(input);
@@ -203,7 +204,7 @@ Examples:
           type: options.type,
           priority: parseInt(options.priority, 10),
           spec_ref: options.specRef || null,
-          tags: options.tag || item.tags, // Inherit tags from inbox item if not specified
+          tags: options.tag ? parseTagsArray(options.tag) : item.tags, // Inherit tags from inbox item if not specified
           description:
             options.description !== undefined ? options.description : item.text, // Use provided description (even if empty) or fall back to inbox item text
         };

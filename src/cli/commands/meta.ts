@@ -48,6 +48,7 @@ import { errors } from "../../strings/errors.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
+import { parseTagsArray } from "../parse-utils.js";
 
 /**
  * Resolve a meta reference to its ULID
@@ -1365,7 +1366,7 @@ Examples:
             steps,
             ...(options.mode && { mode: options.mode }),
             ...(options.basedOn && { based_on: options.basedOn }),
-            ...(options.tag && options.tag.length > 0 && { tags: options.tag }),
+            ...(options.tag && options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
           };
         } else {
           // convention

@@ -13,6 +13,7 @@ import type { SpecItem } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, success } from "../output.js";
+import { parseTagsArray } from "../parse-utils.js";
 
 /**
  * Register module commands
@@ -69,7 +70,7 @@ Examples:
             implementation: "not_started",
           },
           description: options.description || "",
-          tags: options.tag || [],
+          tags: parseTagsArray(options.tag),
           depends_on: [],
           implements: [],
           relates_to: [],

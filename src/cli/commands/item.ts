@@ -35,6 +35,7 @@ import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success, warn } from "../output.js";
+import { parseTagsArray } from "../parse-utils.js";
 
 /**
  * Format a spec item for display
@@ -322,7 +323,7 @@ export function registerItemCommands(program: Command): void {
         }
 
         if (options.tag && options.tag.length > 0) {
-          filter.tags = options.tag;
+          filter.tags = parseTagsArray(options.tag);
         }
 
         if (options.has && options.has.length > 0) {
@@ -623,7 +624,7 @@ Examples:
           type: options.type as ItemType,
           slugs: options.slug ? [options.slug] : [],
           priority: options.priority,
-          tags: options.tag || [],
+          tags: parseTagsArray(options.tag),
           description: options.description,
           depends_on: [],
           implements: [],
@@ -769,7 +770,7 @@ Examples:
           updates.slugs = slugs;
         }
         if (options.priority) updates.priority = options.priority;
-        if (options.tag) updates.tags = options.tag;
+        if (options.tag) updates.tags = parseTagsArray(options.tag);
         if (options.trait) updates.traits = options.trait;
         if (options.description) updates.description = options.description;
 
