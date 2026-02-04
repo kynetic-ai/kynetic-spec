@@ -1,0 +1,360 @@
+{
+  "generated_at": "2026-02-04T09:38:28.646Z",
+  "branch": "feat/task-plan-ref",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KGKSSV",
+      "title": "Implement plan add/get/set/list/note CLI commands",
+      "started_at": "2026-02-04T09:22:47.418Z",
+      "priority": 2,
+      "spec_ref": "@plan-crud",
+      "note_count": 1,
+      "last_note_at": "2026-02-04T09:29:40.635Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    },
+    {
+      "ref": "01KGKST6",
+      "title": "Add plan_ref field to Task schema",
+      "started_at": "2026-02-04T09:30:48.316Z",
+      "priority": 2,
+      "spec_ref": "@plan-derive",
+      "note_count": 1,
+      "last_note_at": "2026-02-04T09:36:17.436Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KGKSSY",
+      "title": "Implement plan derive command for task creation",
+      "priority": 2,
+      "spec_ref": "@plan-derive",
+      "tags": [
+        "cli",
+        "planning"
+      ]
+    },
+    {
+      "ref": "01KGKST8",
+      "title": "Add plan reference validation to kspec validate",
+      "priority": 2,
+      "spec_ref": "@plan-validation",
+      "tags": [
+        "validation",
+        "planning"
+      ]
+    },
+    {
+      "ref": "01KGKSTC",
+      "title": "Implement plan document parser for structured plans",
+      "priority": 2,
+      "spec_ref": "@plan-import",
+      "tags": [
+        "parser",
+        "planning"
+      ]
+    },
+    {
+      "ref": "01KGKSTH",
+      "title": "Implement plan import with spec/task auto-generation",
+      "priority": 2,
+      "spec_ref": "@plan-import",
+      "tags": [
+        "cli",
+        "planning",
+        "integration"
+      ]
+    },
+    {
+      "ref": "01KGGWAE",
+      "title": "Support --tags x,y,z comma-separated syntax",
+      "priority": 3,
+      "spec_ref": "@comma-tag-syntax",
+      "tags": [
+        "reflection",
+        "cli",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KGGXA8",
+      "title": "Design: CLI schema introspection commands for agent discoverability",
+      "priority": 3,
+      "spec_ref": "@cli-schema-introspection",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KGGTR7",
+      "title": "Fix daemon TypeScript strict mode compatibility",
+      "blocked_by": [
+        "Requires human architectural decisions about Elysia types and daemon packaging"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KGKSSP",
+      "title": "Implement plan load/save parser functions",
+      "completed_at": "2026-02-04T09:22:12.159Z",
+      "closed_reason": "Merged in PR #303. Implemented plan parser functions (getPlansFilePath, loadPlans, findPlanByRef, createPlan, savePlan, deletePlan, filterPlansByStatus, getPlanStats) in src/parser/plans.ts following patterns from meta.ts. Added 18 comprehensive tests covering all ACs (ac-1, ac-2, ac-3, ac-7, ac-8, ac-9, ac-30, ac-31). All tests passing. Work was merged together with task 01KGKSSK (schema definition) in a single PR."
+    },
+    {
+      "ref": "01KGKSSK",
+      "title": "Define Plan and PlansFile schemas",
+      "completed_at": "2026-02-04T09:19:43.107Z",
+      "closed_reason": "Merged in PR #303. Implemented Plan and PlansFile schemas with comprehensive validation and parser functions. Added 29 tests covering ac-1, ac-2, ac-3, ac-4, ac-7, ac-8, ac-9. ACs ac-30 and ac-31 (JSON CLI output) correctly deferred to task 01KGKSSV. All tests passing, CI green."
+    },
+    {
+      "ref": "01KGHFM9",
+      "title": "Create zero-dependency bootstrap script for agent sessions",
+      "completed_at": "2026-02-04T09:06:01.942Z",
+      "closed_reason": "Merged in PR #300 - 36565a76"
+    },
+    {
+      "ref": "01KGGNB3",
+      "title": "Improve ralph log separation between subagent and main loops",
+      "completed_at": "2026-02-04T09:05:59.334Z",
+      "closed_reason": "Merged in PR #299 - e787ccab"
+    },
+    {
+      "ref": "01KGGTW6",
+      "title": "Design: First-party plan support with shadow branch storage",
+      "completed_at": "2026-02-04T08:19:35.168Z",
+      "closed_reason": "Created @plan-support feature spec with 33 ACs, 6 traits, and 11 implementation tasks. Reviewed by Plan agent, all gaps fixed."
+    },
+    {
+      "ref": "01KGJ5DM",
+      "title": "Document loop mode blocking pattern to prevent premature end-iteration",
+      "completed_at": "2026-02-04T02:25:27.391Z",
+      "closed_reason": "Documentation updates merged in PR #302. Added blocking vs end-iteration guidance to task-work skill, AGENTS.md, and kspec skill."
+    },
+    {
+      "ref": "01KGFK9E",
+      "title": "Fix stale context after processPendingReviewTasks in ralph loop",
+      "completed_at": "2026-02-03T09:01:13.803Z",
+      "closed_reason": "Merged in PR #297. Fixed ralph loop to refresh context after processPendingReviewTasks completes, preventing premature exit when tasks become unblocked. Added comprehensive integration tests for AC-20 with mock ACP that actually completes tasks. All tests pass in CI."
+    },
+    {
+      "ref": "01KFQAEM",
+      "title": "Per-project file watcher tests",
+      "completed_at": "2026-02-03T05:29:18.338Z",
+      "closed_reason": "Tests complete (17 passing locally). CI skip is documented in AGENTS.md - GitHub Actions doesn't support recursive fs.watch. Implementation verified working."
+    },
+    {
+      "ref": "01KG920G",
+      "title": "Add --title override to kspec derive command",
+      "completed_at": "2026-02-03T00:00:38.578Z",
+      "closed_reason": "Merged in PR #298. Added --title flag to derive command for custom task titles."
+    },
+    {
+      "ref": "01KG9207",
+      "title": "Add --depends-on flag to task add command",
+      "completed_at": "2026-01-31T07:41:12.749Z",
+      "closed_reason": "Merged in PR #295. Added --depends-on flag to task add command with validation. Also fixed validation inconsistency in task set --depends-on per Greptile review feedback."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "608fcbb",
+      "full_hash": "608fcbbdc73a28c5ebcaa31f00d5127c24dc8c47",
+      "date": "2026-02-04T09:36:29.000Z",
+      "message": "feat(schema): add plan_ref field to Task schema",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6d02d23",
+      "full_hash": "6d02d233d1b8fb3f5a07ee6dbad9b9304b2010a8",
+      "date": "2026-02-04T09:29:56.000Z",
+      "message": "feat(cli): implement plan add/get/set/list/note CLI commands",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "94d92bf",
+      "full_hash": "94d92bfea57751b9dd0e804b6ff69c6268999dd7",
+      "date": "2026-02-04T09:19:33.000Z",
+      "message": "feat(schema): add Plan and PlansFile schemas",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "568c6ca",
+      "full_hash": "568c6caecd3c27d4bcb2de0ea68d9d7bebd69d6d",
+      "date": "2026-02-04T09:13:19.000Z",
+      "message": "feat(parser): add plan load/save parser functions",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6f21955",
+      "full_hash": "6f21955da1624e9fb023952298fadd5300cca4ea",
+      "date": "2026-02-04T09:10:01.000Z",
+      "message": "feat(schema): add Plan and PlansFile schemas",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d49c4b4",
+      "full_hash": "d49c4b461d398c2cc1ab5a3d7712c040e26b6cdc",
+      "date": "2026-02-04T02:25:16.000Z",
+      "message": "docs: clarify loop mode blocking pattern to prevent premature end-iteration (#302)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "af981b9",
+      "full_hash": "af981b9548c180c7fe9b75c94cb554f789b95839",
+      "date": "2026-02-04T02:04:45.000Z",
+      "message": "docs: clarify loop mode blocking pattern to prevent premature end-iteration",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e787cca",
+      "full_hash": "e787ccab168315fe92ef6748caec19f6614247dc",
+      "date": "2026-02-04T01:54:28.000Z",
+      "message": "Improve ralph log separation between subagent and main loops (#299)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "96e7d32",
+      "full_hash": "96e7d32816f9839038b98ef5c6ef5a403f3bd829",
+      "date": "2026-02-04T01:48:08.000Z",
+      "message": "fix(ralph): wrap console output in newSection for consistent prefixing",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "36565a7",
+      "full_hash": "36565a7697c3c37c4ad2f91a768bfd266145198f",
+      "date": "2026-02-04T01:46:26.000Z",
+      "message": "feat(cli): add zero-dependency bootstrap script for agent sessions (#300)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFDQCG",
+      "text": "Add feature to spawn worktree for an agent to work in",
+      "created_at": "2026-01-20T12:51:58.887Z",
+      "tags": [],
+      "added_by": "Jacob Chapel"
+    },
+    {
+      "ref": "01KFE2XF",
+      "text": "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to prevent scope creep beyond target work",
+      "created_at": "2026-01-20T16:13:29.715Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFE2XH",
+      "text": "Ralph loop: Add progress checkpoint output at each iteration showing completed/in-progress/remaining counts",
+      "created_at": "2026-01-20T16:13:31.843Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFEYXF",
+      "text": "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec item set for spec items. When deriving tasks, automatically create task dependencies based on spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates task-A depending on task-B. Removes need to manually set task dependencies after derive.",
+      "created_at": "2026-01-21T00:22:49.407Z",
+      "tags": [
+        "cli",
+        "derive",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFEZDX",
+      "text": "Ephemeral workflow runs - Add support for workflows that don't persist run state. Use cases: simple instruction flows, quick checklists, trivial step sequences. Options: (1) --ephemeral flag on 'workflow start', (2) workflow.ephemeral field in definition, (3) both with override. Ephemeral runs: no file storage, no shadow commits, not shown in 'workflow runs', state only in session context or just sequential display. Reduces noise for simple flows.",
+      "created_at": "2026-01-21T00:31:48.669Z",
+      "tags": [
+        "workflow",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFGRVB",
+      "text": "Umbrella/parent tasks should depend on children, not vice versa - Parent represents 'validate complete feature' and becomes ready when all implementation children are done. Current pattern had children depending on parent which blocks them when parent is manual_only",
+      "created_at": "2026-01-21T17:15:16.966Z",
+      "tags": [
+        "reflection",
+        "workflow",
+        "modeling"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFKW1Z",
+      "text": "Add update/note capability to inbox items - allow 'inbox update @ref --content' or 'inbox note @ref' to modify/append to items without delete+re-add cycle",
+      "created_at": "2026-01-22T22:09:03.514Z",
+      "tags": [
+        "cli",
+        "inbox",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFM8HD",
+      "text": "Trait applicability guidance in /spec skill - Add section reminding agents to check available traits (kspec trait list) before adding ACs. Prompt: 'Does this spec need common behaviors like JSON output, dry-run, confirmation?' Surfaced during yaml-merge-driver spec creation where user had to remind about traits.",
+      "created_at": "2026-01-23T01:47:12.512Z",
+      "tags": [
+        "reflection",
+        "spec",
+        "skill"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 421,
+    "in_progress": 0,
+    "pending_review": 2,
+    "ready": 16,
+    "blocked": 1,
+    "completed": 387,
+    "inbox_items": 53
+  }
+}
