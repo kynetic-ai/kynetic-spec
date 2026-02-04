@@ -3457,6 +3457,21 @@ features:
         traits: []
         notes: []
         created: 2026-02-04T08:58:57.716Z
+      - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
+        slugs:
+          - plan-derive
+        title: Plan Derivation
+        type: requirement
+        tags: []
+        description: Plan-to-task derivation with bidirectional linking (plan_ref on tasks, derived_tasks on
+          plans)
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-04T08:59:03.124Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
