@@ -3370,6 +3370,10 @@ features:
         given: A plan with spec referencing parent @nonexistent (not in plan, not in project)
         when: kspec plan import <path> is run
         then: Error Parent @nonexistent not found, that spec is skipped, other valid specs still created
+      - id: ac-18
+        given: A plan where spec A has parent @B and spec B has parent @A
+        when: kspec plan import <path> is run
+        then: "Error Circular parent reference: @A -> @B -> @A, import aborts before creating specs"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
