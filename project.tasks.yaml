@@ -44127,7 +44127,7 @@
     task list to show plan indicator when present."
   spec_ref: "@plan-derive"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44149,6 +44149,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-04T09:56:25.374Z
+  closed_reason: "Merged in PR #305. Implemented plan_ref field on Task schema with full validation
+    and CLI support. Added plan_ref to both TaskSchema and TaskInputSchema. Implemented --plan-ref
+    flag in task add and task set commands with validation (ensures ref points to plans, not
+    tasks/specs). Updated task get output to display plan_ref field. All AC-6 requirements met with
+    8 comprehensive E2E tests covering creating, displaying, setting, clearing plan_ref, validation,
+    and error cases. Tests properly isolated in temp directories."
 - _ulid: 01KGKST8YNXET2CRHTM7268JG4
   slugs: []
   title: Add plan reference validation to kspec validate
