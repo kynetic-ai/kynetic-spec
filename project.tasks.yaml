@@ -43337,7 +43337,14 @@
         sessions, provide implementation context without embedding in notes. Could integrate with
         Claude Code plan mode workflow.
       supersedes: null
+    - _ulid: 01KGK9NT3F06FSKH6ENGFBJPQK
+      created_at: 2026-02-04T03:03:32.207Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Architectural design work - requires human decisions
+        on storage format, Claude Code integration, and shadow branch workflow"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
   slugs: []
   title: Cache scanTestCoverage() results for daemon performance
