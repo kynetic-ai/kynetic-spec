@@ -3472,6 +3472,21 @@ features:
         traits: []
         notes: []
         created: 2026-02-04T08:59:03.124Z
+      - _ulid: 01KGKY0V9Y24D22PNWTMR44BMM
+        slugs:
+          - plan-import
+        title: Plan Document Import
+        type: requirement
+        tags: []
+        description: "Parse structured plan documents with ## Specs YAML blocks, auto-generate specs and
+          tasks, handle errors gracefully"
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-04T08:59:05.407Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
