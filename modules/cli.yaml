@@ -3462,6 +3462,10 @@ features:
             given: A user wants to create a plan
             when: kspec plan add --title "Title" --content "Markdown content" is run
             then: A plan is created with ULID, stored in project.plans.yaml, and auto-committed to shadow branch
+          - id: ac-2
+            given: A markdown file exists at a path
+            when: kspec plan add --title "Title" --content-file ./plan.md is run
+            then: File content is read and stored as plan content
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
