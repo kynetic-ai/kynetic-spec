@@ -44099,7 +44099,7 @@
     spec_ref and plan_ref on derived tasks. Add implementation notes to derived tasks. Create manual
     tasks from additional array. Support --dry-run, --update, --stdin. Handle partial success with
     exit code 6 (PARTIAL). Store plan record in project.plans.yaml with status active."
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-import"
   meta_ref: null
   status: pending
   blocked_by: []
