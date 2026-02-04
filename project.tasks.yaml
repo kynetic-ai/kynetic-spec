@@ -43436,10 +43436,19 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-03T04:31:39.171Z
-  notes: []
+  started_at: 2026-02-04T17:54:05.175Z
+  notes:
+    - _ulid: 01KGMWZ55STEE8A0A03JP322AS
+      created_at: 2026-02-04T17:59:55.834Z
+      author: "@claude"
+      content: Implemented comma-separated tag syntax support. Created parseTagsArray() helper in
+        src/cli/parse-utils.ts that splits comma-separated values while preserving existing
+        space-separated behavior. Applied to task add/set, inbox add/promote, item add/set, meta
+        add, and module add commands. Added 10 comprehensive tests (7 unit + 3 E2E) covering all 3
+        ACs. All tests passing.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-04T17:54:05.175Z
 - _ulid: 01KGGXA85MWJ3G70KNSRJ17WQS
   slugs: []
   title: "Design: CLI schema introspection commands for agent discoverability"
