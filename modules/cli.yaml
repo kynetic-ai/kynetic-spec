@@ -3649,6 +3649,9 @@ features:
             given: A task has plan_ref pointing to a non-existent plan
             when: kspec validate is run
             then: Validation warns about dangling plan reference
+        status:
+          maturity: draft
+          implementation: in_progress
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
