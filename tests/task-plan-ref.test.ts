@@ -162,4 +162,53 @@ describe("Integration: task plan_ref field", () => {
     // plan_ref should be absent or null
     expect(task.plan_ref === null || task.plan_ref === undefined).toBe(true);
   });
+
+  // AC: @plan-validation ac-10
+  describe("Validation", () => {
+    it("should pass validation when plan_ref points to existing plan", () => {
+      // Create a plan and task with valid plan_ref
+      kspec(
+        'plan add --title "Test Plan" --content "Content" --slug valid-plan',
+        tempDir,
+      );
+      kspec(
+        'task add --title "Test Task" --plan-ref @valid-plan --slug test-task-valid',
+        tempDir,
+      );
+
+      // Validation should pass (no reference errors for this ref)
+      const output = kspec("validate", tempDir);
+      // Should not have errors about this specific ref
+      // (Other errors might exist but not about @valid-plan)
+      expect(output).not.toContain('"@valid-plan" not found');
+    });
+
+    it("should warn when plan_ref points to non-existent plan", async () => {
+      // Create a task with plan_ref that doesn't exist
+      // We'll manually edit the task YAML to bypass CLI validation
+      kspec('task add --title "Test Task" --slug test-dangling', tempDir);
+
+      // Manually add plan_ref to task YAML
+      const { promises: fs } = await import("fs");
+      const { join } = await import("path");
+      const { parse, stringify } = await import("yaml");
+
+      const tasksFile = join(tempDir, "project.tasks.yaml");
+      const content = await fs.readFile(tasksFile, "utf-8");
+      const data = parse(content);
+
+      // Find the task and add non-existent plan_ref
+      const task = data.tasks.find((t: { slugs: string[] }) =>
+        t.slugs.includes("test-dangling"),
+      );
+      task.plan_ref = "@nonexistent-plan";
+
+      await fs.writeFile(tasksFile, stringify(data));
+
+      // Validation should warn about dangling reference
+      const output = kspec("validate", tempDir);
+      expect(output).toContain("@nonexistent-plan");
+      expect(output).toMatch(/not found/i);
+    });
+  });
 });

@@ -19,6 +19,7 @@ import {
   WorkflowSchema,
 } from "../schema/index.js";
 import { findMetaManifest, loadMetaContext } from "./meta.js";
+import { loadPlans } from "./plans.js";
 import {
   ReferenceIndex,
   type RefValidationError,
@@ -1169,12 +1170,24 @@ export async function validate(
     ...metaCtx.observations,
   ];
 
+  // Load plans for reference validation
+  // AC: @plan-validation ac-10
+  const allPlans = await loadPlans(ctx);
+
   // Reference validation
   if (
     runRefs &&
-    (allTasks.length > 0 || allItems.length > 0 || allMetaItems.length > 0)
+    (allTasks.length > 0 ||
+      allItems.length > 0 ||
+      allMetaItems.length > 0 ||
+      allPlans.length > 0)
   ) {
-    const index = new ReferenceIndex(allTasks, allItems, allMetaItems);
+    const index = new ReferenceIndex(
+      allTasks,
+      allItems,
+      allMetaItems,
+      allPlans,
+    );
     const refResult = validateRefs(index, allTasks, allItems);
     result.refErrors = refResult.errors;
     result.refWarnings = refResult.warnings;
