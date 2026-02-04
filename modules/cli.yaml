@@ -3466,6 +3466,10 @@ features:
             given: A markdown file exists at a path
             when: kspec plan add --title "Title" --content-file ./plan.md is run
             then: File content is read and stored as plan content
+          - id: ac-3
+            given: A plan exists in draft status
+            when: kspec plan set @plan --status approved is run
+            then: Status is updated to approved and approved_at timestamp is set
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
