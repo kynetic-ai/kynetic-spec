@@ -3331,6 +3331,10 @@ features:
         given: A plan exists
         when: kspec plan get @plan is run
         then: "Full plan displayed: title, status, content (markdown), linked tasks, timestamps"
+      - id: ac-9
+        given: A plan exists
+        when: kspec plan note @plan "Progress note..." is run
+        then: Note is appended to plan's notes array with ULID, timestamp, and author
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
