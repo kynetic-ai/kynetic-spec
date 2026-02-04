@@ -3432,6 +3432,10 @@ features:
         given: A plan file is imported
         when: kspec plan import <path> --json is run
         then: Output is JSON with created specs, tasks, and any errors
+      - id: ac-33
+        given: Plan import encounters a missing parent reference
+        when: Error is displayed
+        then: "Message includes recovery hint: Check parent exists or define it earlier in plan"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
