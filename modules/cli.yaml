@@ -3548,6 +3548,10 @@ features:
             given: "A plan file has ## Implementation Notes section"
             when: Specs and tasks are auto-created
             then: Implementation notes are added as initial note to all derived tasks
+          - id: ac-14
+            given: A plan contains a spec with slug that already exists
+            when: kspec plan import <path> is run (no flags)
+            then: Existing spec is skipped with warning, other specs still created
       - _ulid: 01KGKY0XJ9CPJGPZFJ3BQJV9YM
         slugs:
           - plan-validation
