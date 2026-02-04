@@ -283,6 +283,30 @@ kspec tasks ready --eligible  # Check for other work
 
 **Key principle:** One blocked task is NOT "no more work." Check for other eligible tasks before ending the loop. See `/task-work` skill for detailed loop mode guidance.
 
+### Ralph Loop Model
+
+Ralph operates in a prompt-response loop:
+
+```
+for each iteration (1..maxLoops):
+  1. Ralph sends task-work prompt
+  2. Agent works on tasks, may create PR(s)
+  3. Agent stops responding (turn complete)
+  4. Ralph sends reflection prompt
+  5. Agent captures learnings, stops responding
+  6. Ralph processes pending_review tasks via subagent
+  7. If no end-loop signal: continue to next iteration
+```
+
+**Key insight:** When you stop responding, ralph continues automatically.
+The loop only ends when:
+- Max iterations reached
+- Agent explicitly calls `kspec ralph end-loop`
+- Max consecutive failures reached
+
+**Do NOT call `end-loop` after creating a PR.** Simply stop responding.
+Ralph will continue to the next phase/iteration.
+
 ### Notes (Work Log)
 
 Tasks have append-only notes that track progress:

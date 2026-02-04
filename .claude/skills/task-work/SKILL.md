@@ -283,11 +283,17 @@ Loop mode is NOT a free pass to:
    kspec task submit @task
    ```
 
-6. **Create PR and exit**
-   ```bash
+6. **Create PR and stop responding**
+   ```
    /pr
    ```
-   After PR created, EXIT. Ralph handles PR review via separate subagent.
+   After PR created, **stop responding** (do NOT call any more commands).
+   Ralph automatically:
+   1. Sends the reflection prompt to you
+   2. Processes pending_review tasks via subagent
+   3. Continues to the next iteration with remaining tasks
+
+   **Do NOT call `end-loop`** - creating a PR completes ONE task, not the loop.
 
 ### Tasks Requiring Services
 
@@ -322,7 +328,24 @@ Exit when:
 
 **Important:** "No eligible tasks" means ALL eligible tasks are done or blocked, not just the one you're working on. If one task is blocked, check for others before ending.
 
-### Blocking vs End-Iteration
+### Turn Completion vs Loop End
+
+**Turn Completion (normal):** Stop responding. Ralph continues automatically.
+Your turn ends when you stop sending tool calls. Ralph then:
+- Sends the reflection prompt
+- Processes pending_review tasks via subagent
+- Continues to the next iteration
+
+**Loop End (explicit signal):** `kspec ralph end-loop` - ends ALL remaining iterations.
+Only use when `kspec tasks ready --eligible` returns empty AND you've verified
+no more work is possible.
+
+**Common Mistake:** Calling `end-loop` after creating a PR.
+- Creating a PR = one task's code done
+- Other ready tasks may still exist
+- Ralph continues automatically to work on them
+
+### Blocking vs Ending the Loop
 
 When you hit a genuine blocker on a task, the correct pattern is:
 
@@ -339,7 +362,7 @@ When you hit a genuine blocker on a task, the correct pattern is:
 | Task is complex/difficult | **DO THE WORK** | Complexity is not a blocker |
 | Tests are failing | **FIX THEM** | Debug and resolve |
 | Service needs to be running | **START IT** | See "Tasks Requiring Services" |
-| No more eligible tasks exist | `end-iteration` | Only valid end condition |
+| No more eligible tasks exist | `end-loop` | Only valid end condition |
 
 ```bash
 # Pattern: When you hit a genuine blocker mid-task
@@ -350,15 +373,15 @@ kspec task set @task --automation needs_review
 # Check for other work before ending
 kspec tasks ready --eligible
 # If tasks exist: pick one and continue
-# If empty: then end-iteration is appropriate
+# If empty: then end-loop is appropriate
 ```
 
 ### Explicit Loop End Signal
 
-Use `end-iteration` **only** when no more work is possible:
+Use `end-loop` **only** when no more work is possible:
 
 ```bash
-kspec ralph end-iteration --reason "No eligible tasks remaining"
+kspec ralph end-loop --reason "No eligible tasks remaining"
 ```
 
 **Valid reasons to end:**
@@ -369,6 +392,7 @@ kspec ralph end-iteration --reason "No eligible tasks remaining"
 - "This task is hard" → do it anyway
 - "This task needs external decision" → block it and check for other tasks
 - "I've done enough" → check for more eligible tasks first
+- "I just created a PR" → ralph continues automatically, don't call end-loop
 
 ### What Is NOT an Exit Condition
 
