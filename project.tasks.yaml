@@ -44087,6 +44087,11 @@
         Commands support JSON output, status transitions with validation, content from files, note
         appending, and filtering.
       supersedes: null
+    - _ulid: 01KGM0VCJA8755CRTYA54BF08E
+      created_at: 2026-02-04T09:48:32.202Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
