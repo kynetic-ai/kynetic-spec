@@ -13081,8 +13081,18 @@ runs:
   - _ulid: 01KGMVE1XC2RT82GVHTR5N5JCM
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-04T17:33:06.861Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-04T17:33:06.861Z
+        completed_at: 2026-02-04T17:33:16.210Z
+        inputs:
+          spec_ref: "@plan-validation"
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-04T17:33:16.210Z
+        completed_at: 2026-02-04T17:33:16.210Z
     initiated_by: "@claude"
