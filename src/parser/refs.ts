@@ -556,14 +556,13 @@ export function validateRefs(
 
         // AC: @plan-validation ac-10 - plan_ref must point to a plan
         if (field === "plan_ref") {
-          const targetItem = result.item as { status?: string };
-          // Plans have a status field with values: draft, approved, active, completed
-          // Tasks/specs don't have this exact status type
+          const targetItem = result.item as {
+            derived_tasks?: unknown[];
+            derived_specs?: unknown[];
+          };
+          // Plans have derived_tasks and derived_specs fields that tasks don't have
           const isPlan =
-            typeof targetItem.status === "string" &&
-            ["draft", "approved", "active", "completed"].includes(
-              targetItem.status,
-            );
+            "derived_tasks" in targetItem || "derived_specs" in targetItem;
 
           if (!isPlan) {
             warnings.push({
