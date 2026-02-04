@@ -3457,6 +3457,11 @@ features:
         traits: []
         notes: []
         created: 2026-02-04T08:58:57.716Z
+        acceptance_criteria:
+          - id: ac-1
+            given: A user wants to create a plan
+            when: kspec plan add --title "Title" --content "Markdown content" is run
+            then: A plan is created with ULID, stored in project.plans.yaml, and auto-committed to shadow branch
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
