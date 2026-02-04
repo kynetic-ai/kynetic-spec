@@ -44203,6 +44203,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #307 merged. Implemented plan_ref validation with warnings for dangling
+    references. All AC coverage verified with tests."
   depends_on: []
   context: []
   priority: 2
@@ -44212,6 +44214,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:35.701Z
   started_at: 2026-02-04T10:16:48.296Z
+  completed_at: 2026-02-04T17:49:42.058Z
   notes:
     - _ulid: 01KGM313D0BES1E2JFW8FAAAB0
       created_at: 2026-02-04T10:26:36.576Z
@@ -44251,9 +44254,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-04T17:49:42.058Z
-  closed_reason: "PR #307 merged. Implemented plan_ref validation with warnings for dangling
-    references. All AC coverage verified with tests."
 - _ulid: 01KGKSTCY0W8MMKJ1D8KK0HGDS
   slugs: []
   title: Implement plan document parser for structured plans
@@ -44265,7 +44265,7 @@
     parsePlanDocument(content: string): ParsedPlan."
   spec_ref: "@plan-import"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44278,6 +44278,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T17:50:11.798Z
 - _ulid: 01KGKSTH10AAV14XWDTZEZQV17
   slugs: []
   title: Implement plan import with spec/task auto-generation
