@@ -44132,10 +44132,18 @@
     - planning
   vcs_refs: []
   created_at: 2026-02-04T07:45:32.916Z
-  notes: []
+  started_at: 2026-02-04T09:30:48.316Z
+  notes:
+    - _ulid: 01KGM04Z0W3DGXYT8NM1DEDGQH
+      created_at: 2026-02-04T09:36:17.436Z
+      author: "@claude"
+      content: Added plan_ref field to Task schema (both TaskSchema and TaskInputSchema). Implemented
+        --plan-ref flag support in task add and task set commands with validation (checks if ref is
+        a plan, not a task/spec). Updated task get output to display plan_ref. Added 8 comprehensive
+        tests covering AC-6 (task displays plan_ref, bidirectional linking). All tests passing.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-04T09:30:48.316Z
 - _ulid: 01KGKST8YNXET2CRHTM7268JG4
   slugs: []
   title: Add plan reference validation to kspec validate
