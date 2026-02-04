@@ -3416,6 +3416,10 @@ features:
         given: A plan has been imported with slug auth-redesign
         when: "@auth-redesign is used in any kspec command"
         then: Reference resolves to the plan (ReferenceIndex includes plans)
+      - id: ac-29
+        given: A plan with 5 specs where 2 have validation errors
+        when: kspec plan import <path> is run (default behavior)
+        then: Valid specs are created, errors logged, exit code 0 with summary output
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
