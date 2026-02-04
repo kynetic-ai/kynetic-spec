@@ -43977,6 +43977,7 @@
   created_at: 2026-02-04T07:45:16.850Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KGKSSV1Q78EA0FQN42E3JJHA
   slugs: []
   title: Implement plan add/get/set/list/note CLI commands
