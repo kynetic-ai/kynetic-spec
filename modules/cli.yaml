@@ -3263,6 +3263,11 @@ features:
         when: "'kspec help --exit-codes' is run"
         then: "Output shows all exit codes with: code number, symbolic name, description, and list of
           commands that may return each code"
+      - id: ac-3
+        given: "'kspec help --exit-codes --json' is run"
+        when: Exit codes metadata exists
+        then: "Output is valid JSON array of exit code objects with: code (number), name (string),
+          description (string), commands (array of applicable command names)"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
