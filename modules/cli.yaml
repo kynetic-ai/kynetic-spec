@@ -3490,6 +3490,10 @@ features:
             given: A plan exists
             when: kspec plan get @plan --json is run
             then: Output is valid JSON with all plan fields (title, status, content, derived_tasks, timestamps)
+          - id: ac-31
+            given: Multiple plans exist
+            when: kspec plan list --json is run
+            then: Output is JSON array of plan objects with summary fields
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
