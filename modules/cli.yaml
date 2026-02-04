@@ -3494,6 +3494,9 @@ features:
             given: Multiple plans exist
             when: kspec plan list --json is run
             then: Output is JSON array of plan objects with summary fields
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
