@@ -43933,13 +43933,35 @@
   created_at: 2026-02-04T07:45:16.850Z
   notes: []
   todos: []
-- title: Implement plan add/get/set/list/note CLI commands
+- _ulid: 01KGKSSV1Q78EA0FQN42E3JJHA
+  slugs: []
+  title: Implement plan add/get/set/list/note CLI commands
+  type: task
   description: 'Create src/cli/commands/plan.ts following patterns from inbox.ts. Commands: plan add,
     plan get, plan set, plan list, plan note. plan add --title "..." [--content "..."]
     [--content-file path] [--tag ...]. plan set @ref --status <status> [--title "..."] [--content
     "..."]. plan list [--status filter]. plan note @ref "note content". Enforce status transitions:
     Block invalid transitions with exit code 5. Call commitIfShadow() after all write operations.
     Register in src/cli/index.ts.'
+  spec_ref: "@plan-support"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - planning
+  vcs_refs: []
+  created_at: 2026-02-04T07:45:21.463Z
+  notes: []
+  todos: []
+- title: Implement plan derive command for task creation
+  description: "Add plan derive @plan [--title \"...\"] subcommand. Creates task with plan_ref field
+    pointing to plan. Updates plan's derived_tasks array. Requires plan status to be approved or
+    active. Auto-transitions plan to active on first derivation. Outputs task ref and suggested next
+    steps. Note: Each task can only reference one plan. Re-derivation overwrites plan_ref."
   type: task
   spec_ref: "@plan-support"
   meta_ref: null
@@ -43949,11 +43971,11 @@
     - cli
     - planning
   depends_on: []
-  _ulid: 01KGKSSV1Q78EA0FQN42E3JJHA
+  _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-04T07:45:21.463Z
+  created_at: 2026-02-04T07:45:24.551Z
   notes: []
   todos: []
