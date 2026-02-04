@@ -44052,7 +44052,7 @@
     points to non-existent plan. Warn if plan derived_tasks contains non-existent task refs.
     Validate plan YAML structure on load. Do not fail validation for missing refs - warn only (plans
     may be deleted).
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-validation"
   meta_ref: null
   status: pending
   blocked_by: []
