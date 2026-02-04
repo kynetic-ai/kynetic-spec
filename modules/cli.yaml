@@ -3390,6 +3390,11 @@ features:
         given: A plan spec entry missing required title field
         when: kspec plan import <path> is run
         then: "Error Spec at index N missing required field: title, that spec skipped"
+      - id: ac-23
+        given: A plan with 5 specs where 2 have errors and 3 are valid
+        when: kspec plan import <path> is run
+        then: 3 valid specs created, exit code 0 (success), output shows Created 3 specs, 2 errors with
+          error details
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
