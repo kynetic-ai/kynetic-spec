@@ -44030,7 +44030,7 @@
     both TaskSchema and TaskInputSchema. Update task get output to display plan_ref when present
     (omit when null). Update task set to accept --plan-ref @plan for retroactive linking. Update
     task list to show plan indicator when present."
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-derive"
   meta_ref: null
   status: pending
   blocked_by: []
