@@ -3524,7 +3524,7 @@ features:
             then: Both display the bidirectional link (task shows plan_ref, plan shows derived_tasks)
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KGKY0V9Y24D22PNWTMR44BMM
         slugs:
           - plan-import
