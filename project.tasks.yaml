@@ -44001,25 +44001,48 @@
   created_at: 2026-02-04T07:45:32.916Z
   notes: []
   todos: []
-- title: Add plan reference validation to kspec validate
+- _ulid: 01KGKST8YNXET2CRHTM7268JG4
+  slugs: []
+  title: Add plan reference validation to kspec validate
+  type: task
   description: Update src/cli/commands/validate.ts to check plan references. Warn if task plan_ref
     points to non-existent plan. Warn if plan derived_tasks contains non-existent task refs.
     Validate plan YAML structure on load. Do not fail validation for missing refs - warn only (plans
     may be deleted).
+  spec_ref: "@plan-support"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - validation
+    - planning
+  vcs_refs: []
+  created_at: 2026-02-04T07:45:35.701Z
+  notes: []
+  todos: []
+- title: Implement plan document parser for structured plans
+  description: "Create src/parser/plan-document.ts for parsing structured plan files. Extract YAML
+    blocks from ## Specs and ## Tasks markdown sections. Validate specs against SpecItemInputSchema.
+    Topological sort specs for parent-before-child creation order. Parse ## Implementation Notes
+    section for task notes. Handle edge cases: missing sections, invalid YAML, circular refs. Export
+    parsePlanDocument(content: string): ParsedPlan."
   type: task
   spec_ref: "@plan-support"
   meta_ref: null
   priority: 2
   slugs: []
   tags:
-    - validation
+    - parser
     - planning
   depends_on: []
-  _ulid: 01KGKST8YNXET2CRHTM7268JG4
+  _ulid: 01KGKSTCY0W8MMKJ1D8KK0HGDS
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-04T07:45:35.701Z
+  created_at: 2026-02-04T07:45:39.776Z
   notes: []
   todos: []
