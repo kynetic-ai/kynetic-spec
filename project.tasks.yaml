@@ -44048,6 +44048,7 @@
   created_at: 2026-02-04T07:45:32.916Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KGKST8YNXET2CRHTM7268JG4
   slugs: []
   title: Add plan reference validation to kspec validate
