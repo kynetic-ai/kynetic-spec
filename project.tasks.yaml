@@ -43318,7 +43318,7 @@
     Code plan mode workflow. Medium scope. Surfaced when plan file at ~/.claude/plans/ wouldn't
     persist for future sessions.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
