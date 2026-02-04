@@ -44011,6 +44011,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #303. Implemented plan parser functions (getPlansFilePath, loadPlans,
+    findPlanByRef, createPlan, savePlan, deletePlan, filterPlansByStatus, getPlanStats) in
+    src/parser/plans.ts following patterns from meta.ts. Added 18 comprehensive tests covering all
+    ACs (ac-1, ac-2, ac-3, ac-7, ac-8, ac-9, ac-30, ac-31). All tests passing. Work was merged
+    together with task 01KGKSSK (schema definition) in a single PR."
   depends_on: []
   context: []
   priority: 2
@@ -44020,6 +44025,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:16.850Z
   started_at: 2026-02-04T09:10:59.017Z
+  completed_at: 2026-02-04T09:22:12.159Z
   notes:
     - _ulid: 01KGKYV4P65KZT6X3Q1DGKB7Z3
       created_at: 2026-02-04T09:13:26.983Z
@@ -44048,12 +44054,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-04T09:22:12.159Z
-  closed_reason: "Merged in PR #303. Implemented plan parser functions (getPlansFilePath, loadPlans,
-    findPlanByRef, createPlan, savePlan, deletePlan, filterPlansByStatus, getPlanStats) in
-    src/parser/plans.ts following patterns from meta.ts. Added 18 comprehensive tests covering all
-    ACs (ac-1, ac-2, ac-3, ac-7, ac-8, ac-9, ac-30, ac-31). All tests passing. Work was merged
-    together with task 01KGKSSK (schema definition) in a single PR."
 - _ulid: 01KGKSSV1Q78EA0FQN42E3JJHA
   slugs: []
   title: Implement plan add/get/set/list/note CLI commands
@@ -44066,7 +44066,7 @@
     Register in src/cli/index.ts.'
   spec_ref: "@plan-crud"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44079,6 +44079,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T09:22:47.418Z
 - _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
   slugs: []
   title: Implement plan derive command for task creation
