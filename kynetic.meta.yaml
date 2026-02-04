@@ -4905,4 +4905,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGMX3K0D0104A8JD0NWRP526
+    type: success
+    content: "Test-driven regex debugging proved effective: wrote comprehensive tests for plan document
+      parser's markdown section extraction (## Specs, ## Tasks, ## Implementation Notes), which
+      immediately caught regex pattern bugs (^## anchors failed to match). Fixed patterns before
+      integration, avoiding late-stage debugging. Pattern: write tests first for parsing/extraction
+      logic, especially when dealing with complex patterns or unfamiliar APIs."
+    created_at: 2026-02-04T18:02:21.069Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
