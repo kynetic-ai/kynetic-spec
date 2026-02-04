@@ -43420,6 +43420,7 @@
         and their schemas."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGGXCH1XAJW9919DQ4EW4D87
   slugs: []
   title: Create @trait-verbose-output for consistent verbose behavior
