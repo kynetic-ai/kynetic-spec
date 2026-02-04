@@ -44068,6 +44068,9 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #304. Implemented all plan CRUD CLI commands (add, get, set, list,
+    note) with comprehensive test coverage for all 9 acceptance criteria. Resolved review comment by
+    adding fallback for slug parameter. All CI checks passed."
   depends_on: []
   context: []
   priority: 2
@@ -44077,6 +44080,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:21.463Z
   started_at: 2026-02-04T09:22:47.418Z
+  completed_at: 2026-02-04T09:58:10.109Z
   notes:
     - _ulid: 01KGKZRVGVQQG8XW778N3ZZ3V4
       created_at: 2026-02-04T09:29:40.635Z
@@ -44094,10 +44098,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-04T09:58:10.109Z
-  closed_reason: "Merged in PR #304. Implemented all plan CRUD CLI commands (add, get, set, list,
-    note) with comprehensive test coverage for all 9 acceptance criteria. Resolved review comment by
-    adding fallback for slug parameter. All CI checks passed."
 - _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
   slugs: []
   title: Implement plan derive command for task creation
@@ -44119,7 +44119,18 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:24.551Z
   started_at: 2026-02-04T09:57:43.421Z
-  notes: []
+  notes:
+    - _ulid: 01KGM1NTDP7V2Q4JTND41DZ8MF
+      created_at: 2026-02-04T10:02:58.359Z
+      author: "@claude"
+      content: "Implemented plan derive command in src/cli/commands/plan.ts. Command creates tasks from
+        approved or active plans with bidirectional linking (plan_ref on task, derived_tasks on
+        plan). Added 12 comprehensive E2E tests covering all ACs (ac-5, ac-6): task creation from
+        approved/active plans, plan_ref and derived_tasks updates, status transitions, custom
+        titles/priorities, error handling for draft plans, slug uniqueness, and bidirectional
+        display in both task get and plan get. All tests passing. Implementation follows patterns
+        from spec derive command. Supports --title and --priority flags for customization."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
