@@ -44104,7 +44104,7 @@
     steps. Note: Each task can only reference one plan. Re-derivation overwrites plan_ref."
   spec_ref: "@plan-derive"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44117,6 +44117,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T09:57:43.421Z
 - _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
   slugs: []
   title: Add plan_ref field to Task schema
@@ -44129,6 +44130,12 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #305. Implemented plan_ref field on Task schema with full validation
+    and CLI support. Added plan_ref to both TaskSchema and TaskInputSchema. Implemented --plan-ref
+    flag in task add and task set commands with validation (ensures ref points to plans, not
+    tasks/specs). Updated task get output to display plan_ref field. All AC-6 requirements met with
+    8 comprehensive E2E tests covering creating, displaying, setting, clearing plan_ref, validation,
+    and error cases. Tests properly isolated in temp directories."
   depends_on: []
   context: []
   priority: 2
@@ -44138,6 +44145,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:32.916Z
   started_at: 2026-02-04T09:30:48.316Z
+  completed_at: 2026-02-04T09:56:25.374Z
   notes:
     - _ulid: 01KGM04Z0W3DGXYT8NM1DEDGQH
       created_at: 2026-02-04T09:36:17.436Z
@@ -44149,13 +44157,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-04T09:56:25.374Z
-  closed_reason: "Merged in PR #305. Implemented plan_ref field on Task schema with full validation
-    and CLI support. Added plan_ref to both TaskSchema and TaskInputSchema. Implemented --plan-ref
-    flag in task add and task set commands with validation (ensures ref points to plans, not
-    tasks/specs). Updated task get output to display plan_ref field. All AC-6 requirements met with
-    8 comprehensive E2E tests covering creating, displaying, setting, clearing plan_ref, validation,
-    and error cases. Tests properly isolated in temp directories."
 - _ulid: 01KGKST8YNXET2CRHTM7268JG4
   slugs: []
   title: Add plan reference validation to kspec validate
