@@ -12719,6 +12719,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-04T09:37:14.022Z
+    completed_at: 2026-02-04T09:38:16.926Z
     step_results:
       - step_index: 0
         status: completed
@@ -12750,4 +12751,11 @@ runs:
           (success). Used 'kspec meta observe' commands. No inbox items or questions to add.
           Reflection complete."
     initiated_by: "@claude"
-    completed_at: 2026-02-04T09:38:16.926Z
+  - _ulid: 01KGM09EMDQQ0MDGBJQ2WC8DMY
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-04T09:38:44.494Z
+    step_results: []
+    initiated_by: "@claude"
