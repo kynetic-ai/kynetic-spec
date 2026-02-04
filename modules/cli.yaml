@@ -3323,6 +3323,10 @@ features:
         given: A task was derived from a plan
         when: kspec task get @task or kspec plan get @plan is run
         then: Both display the bidirectional link (task shows plan_ref, plan shows derived_tasks)
+      - id: ac-7
+        given: Multiple plans exist in various states
+        when: kspec plan list [--status <filter>] is run
+        then: Plans are listed with title, status, derived task count, and timestamps
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
