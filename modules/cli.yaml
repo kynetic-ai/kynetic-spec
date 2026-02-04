@@ -3278,6 +3278,25 @@ features:
         when: --json flag is provided to help command
         then: globalJsonMode is set before output() is called, and JSON output is produced (not
           human-readable text) - fixes existing broken behavior
+  - _ulid: 01KGKSNZQJ7KKJ747VXPBMX9TP
+    slugs:
+      - plan-support
+    title: First-Party Plan Support
+    type: feature
+    tags:
+      - planning
+      - shadow
+      - agent-first
+    description: Plans are durable artifacts that capture implementation context, approach, and
+      rationale before translating to specs and tasks. They persist in the shadow branch, link to
+      derived work, and provide auditable planning history.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-04T07:43:15.186Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
