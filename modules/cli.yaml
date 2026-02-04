@@ -3339,6 +3339,11 @@ features:
         given: A task has plan_ref pointing to a non-existent plan
         when: kspec validate is run
         then: Validation warns about dangling plan reference
+      - id: ac-11
+        given: "A plan file with ## Specs YAML block exists"
+        when: kspec plan import <path> is run
+        then: Specs are parsed from YAML, validated against schema, and created in order (parents before
+          children)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
