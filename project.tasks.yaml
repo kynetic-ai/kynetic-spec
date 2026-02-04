@@ -44295,6 +44295,15 @@
         (specs parsing), ac-12 (derive flag), ac-13 (impl notes), ac-16 (topo sort), ac-17 (missing
         parents), ac-18 (circular deps), ac-21 (yaml errors), ac-22 (validation)."
       supersedes: null
+    - _ulid: 01KGMWJBB5VGX4RRXEE9JB28DZ
+      created_at: 2026-02-04T17:52:56.165Z
+      author: "@claude"
+      content: "Implementation complete. Created src/parser/plan-document.ts with: 1) Markdown section
+        extraction (## Specs, ## Tasks, ## Implementation Notes), 2) YAML parsing with error
+        handling, 3) Topological sorting for parent dependencies with circular detection, 4) Schema
+        validation for specs and tasks. Added 23 comprehensive tests covering all parsing scenarios.
+        All tests passing."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKSTH10AAV14XWDTZEZQV17
