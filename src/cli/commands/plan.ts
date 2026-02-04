@@ -8,16 +8,19 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import {
   createPlan,
+  createTask,
   findPlanByRef,
   filterPlansByStatus,
   getAuthor,
   initContext,
   type LoadedPlan,
+  loadAllTasks,
   loadPlans,
   savePlan,
+  saveTask,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { PlanInput } from "../../schema/index.js";
+import type { PlanInput, TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
@@ -368,6 +371,106 @@ Examples:
         });
       } catch (err) {
         error(errors.failures.addPlanNote, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec plan derive <ref>
+  // AC: @plan-derive ac-5, ac-6
+  plan
+    .command("derive <ref>")
+    .description("Create a task from a plan")
+    .option("--title <title>", "Override task title")
+    .option("--priority <n>", "Set task priority (1-5)", parseInt)
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec plan derive @plan-ref
+  $ kspec plan derive @plan-ref --title "Custom title"
+  $ kspec plan derive @plan-ref --priority 1`,
+    )
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const plans = await loadPlans(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const foundPlan = resolvePlanRef(ref, plans);
+
+        // AC: @plan-derive ac-5 - check plan status
+        if (foundPlan.status !== "approved" && foundPlan.status !== "active") {
+          error(
+            `Plan must be in 'approved' or 'active' status to derive tasks (current: ${foundPlan.status})`,
+          );
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // Generate task slug from plan title
+        const generateSlug = (title: string): string => {
+          return title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")
+            .slice(0, 50);
+        };
+
+        // Generate task title and slug
+        const taskTitle = options.title || `Implement: ${foundPlan.title}`;
+        let taskSlug = generateSlug(taskTitle);
+
+        // Ensure slug uniqueness
+        let slugSuffix = 1;
+        const originalSlug = taskSlug;
+        while (tasks.some((t) => t.slugs.includes(taskSlug))) {
+          taskSlug = `${originalSlug}-${slugSuffix}`;
+          slugSuffix++;
+        }
+
+        // AC: @plan-derive ac-5 - create task with plan_ref
+        const planRef = foundPlan.slugs[0]
+          ? `@${foundPlan.slugs[0]}`
+          : `@${foundPlan._ulid.slice(0, 8)}`;
+
+        const taskInput: TaskInput = {
+          title: taskTitle,
+          type: "task",
+          plan_ref: planRef,
+          priority: options.priority ?? 3,
+          slugs: [taskSlug],
+          tags: [],
+          depends_on: [],
+          notes: [],
+        };
+
+        const newTask = createTask(taskInput);
+        await saveTask(ctx, newTask);
+
+        // AC: @plan-derive ac-5 - update plan's derived_tasks array
+        const taskRef = `@${taskSlug}`;
+        if (!foundPlan.derived_tasks.includes(taskRef)) {
+          foundPlan.derived_tasks.push(taskRef);
+        }
+
+        // AC: @plan-derive ac-5 - transition plan to active if not already
+        if (foundPlan.status === "approved") {
+          foundPlan.status = "active";
+        }
+
+        await savePlan(ctx, foundPlan);
+
+        await commitIfShadow(
+          ctx.shadow,
+          "plan-derive",
+          foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
+          taskTitle,
+        );
+
+        success(`Created task from plan: ${taskRef}`, {
+          task: newTask,
+          plan: foundPlan,
+        });
+      } catch (err) {
+        error("Failed to derive task from plan", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
