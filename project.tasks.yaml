@@ -43425,7 +43425,7 @@
   description: Support --tags x,y,z comma-separated syntax in addition to --tag x --tag y. Applies to
     inbox add and other tag-accepting commands. Small scope, convenience improvement.
   spec_ref: "@comma-tag-syntax"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43439,6 +43439,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T17:54:05.175Z
 - _ulid: 01KGGXA85MWJ3G70KNSRJ17WQS
   slugs: []
   title: "Design: CLI schema introspection commands for agent discoverability"
