@@ -43643,7 +43643,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43855,3 +43855,6 @@
            - Added cross-reference note in Blocking section pointing to /task-work for loop mode details
       supersedes: null
   todos: []
+  completed_at: 2026-02-04T02:25:27.391Z
+  closed_reason: "Documentation updates merged in PR #302. Added blocking vs end-iteration guidance to
+    task-work skill, AGENTS.md, and kspec skill."
