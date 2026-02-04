@@ -3486,6 +3486,10 @@ features:
             given: A plan exists
             when: kspec plan note @plan "Progress note..." is run
             then: Note is appended to plan notes array with ULID, timestamp, and author
+          - id: ac-30
+            given: A plan exists
+            when: kspec plan get @plan --json is run
+            then: Output is valid JSON with all plan fields (title, status, content, derived_tasks, timestamps)
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
