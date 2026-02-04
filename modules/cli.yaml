@@ -3428,6 +3428,10 @@ features:
         given: Multiple plans exist
         when: kspec plan list --json is run
         then: Output is JSON array of plan objects with summary fields
+      - id: ac-32
+        given: A plan file is imported
+        when: kspec plan import <path> --json is run
+        then: Output is JSON with created specs, tasks, and any errors
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
