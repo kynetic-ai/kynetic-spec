@@ -43318,7 +43318,7 @@
     Code plan mode workflow. Medium scope. Surfaced when plan file at ~/.claude/plans/ wouldn't
     persist for future sessions.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43345,6 +43345,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-02-04T07:41:29.457Z
 - _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
   slugs: []
   title: Cache scanTestCoverage() results for daemon performance
