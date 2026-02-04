@@ -43957,25 +43957,47 @@
   created_at: 2026-02-04T07:45:21.463Z
   notes: []
   todos: []
-- title: Implement plan derive command for task creation
+- _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
+  slugs: []
+  title: Implement plan derive command for task creation
+  type: task
   description: "Add plan derive @plan [--title \"...\"] subcommand. Creates task with plan_ref field
     pointing to plan. Updates plan's derived_tasks array. Requires plan status to be approved or
     active. Auto-transitions plan to active on first derivation. Outputs task ref and suggested next
     steps. Note: Each task can only reference one plan. Re-derivation overwrites plan_ref."
+  spec_ref: "@plan-support"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - planning
+  vcs_refs: []
+  created_at: 2026-02-04T07:45:24.551Z
+  notes: []
+  todos: []
+- title: Add plan_ref field to Task schema
+  description: "Modify src/schema/task.ts to add plan_ref: RefSchema.nullable().optional(). Add to
+    both TaskSchema and TaskInputSchema. Update task get output to display plan_ref when present
+    (omit when null). Update task set to accept --plan-ref @plan for retroactive linking. Update
+    task list to show plan indicator when present."
   type: task
   spec_ref: "@plan-support"
   meta_ref: null
   priority: 2
   slugs: []
   tags:
-    - cli
+    - schema
     - planning
   depends_on: []
-  _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
+  _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-04T07:45:24.551Z
+  created_at: 2026-02-04T07:45:32.916Z
   notes: []
   todos: []
