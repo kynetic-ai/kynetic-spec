@@ -380,4 +380,197 @@ describe("Integration: plan commands", () => {
       expect(output).toContain("Progress update");
     });
   });
+
+  describe("plan derive", () => {
+    // AC: @plan-derive ac-5
+    it("should create a task from an approved plan", () => {
+      kspec(
+        'plan add --title "Auth Feature" --content "Implementation plan" --status approved',
+        tempDir,
+      );
+
+      const output = kspec("plan derive @01", tempDir);
+      expect(output).toContain("Created task from plan:");
+      expect(output).toContain("@implement-auth-feature");
+
+      // Verify task was created with plan_ref (8-char ULID prefix)
+      const task = kspecJson<{ plan_ref: string; title: string }>(
+        "task get @implement-auth-feature --json",
+        tempDir,
+      );
+      expect(task.plan_ref).toMatch(/^@01[A-Z0-9]{6}$/);  // 8-char ULID format
+      expect(task.title).toBe("Implement: Auth Feature");
+    });
+
+    // AC: @plan-derive ac-5
+    it("should create a task from an active plan", () => {
+      kspec(
+        'plan add --title "Active Plan" --content "Plan" --status active',
+        tempDir,
+      );
+
+      const output = kspec("plan derive @01", tempDir);
+      expect(output).toContain("Created task from plan:");
+    });
+
+    // AC: @plan-derive ac-5
+    it("should update plan's derived_tasks array", () => {
+      kspec(
+        'plan add --title "Feature Plan" --content "Plan" --status approved',
+        tempDir,
+      );
+
+      kspec("plan derive @01", tempDir);
+
+      const plan = kspecJson<{ derived_tasks: string[] }>(
+        "plan get @01 --json",
+        tempDir,
+      );
+      expect(plan.derived_tasks).toHaveLength(1);
+      expect(plan.derived_tasks[0]).toMatch(/@implement-feature-plan/);
+    });
+
+    // AC: @plan-derive ac-5
+    it("should transition approved plan to active", () => {
+      kspec(
+        'plan add --title "Approval Test" --content "Plan" --status approved',
+        tempDir,
+      );
+
+      kspec("plan derive @01", tempDir);
+
+      const plan = kspecJson<{ status: string }>("plan get @01 --json", tempDir);
+      expect(plan.status).toBe("active");
+    });
+
+    // AC: @plan-derive ac-5
+    it("should not change status if plan is already active", () => {
+      kspec(
+        'plan add --title "Already Active" --content "Plan" --status active',
+        tempDir,
+      );
+
+      kspec("plan derive @01", tempDir);
+
+      const plan = kspecJson<{ status: string }>("plan get @01 --json", tempDir);
+      expect(plan.status).toBe("active");
+    });
+
+    // AC: @plan-derive ac-5
+    it("should fail for draft plan", () => {
+      kspec('plan add --title "Draft Plan" --content "Plan"', tempDir);
+
+      const result = kspecRun("plan derive @01", tempDir, { expectFail: true });
+      expect(result.exitCode).toBe(2);  // USAGE_ERROR
+      const output = result.stdout + result.stderr;
+      expect(output).toContain(
+        "Plan must be in 'approved' or 'active' status",
+      );
+    });
+
+    // AC: @plan-derive ac-5
+    it("should support custom title with --title flag", () => {
+      kspec(
+        'plan add --title "Custom Title Test" --content "Plan" --status approved',
+        tempDir,
+      );
+
+      const output = kspec("plan derive @01 --title 'My Custom Task'", tempDir);
+      expect(output).toContain("Created task from plan:");
+
+      const task = kspecJson<{ title: string }>(
+        "task get @my-custom-task --json",
+        tempDir,
+      );
+      expect(task.title).toBe("My Custom Task");
+    });
+
+    // AC: @plan-derive ac-5
+    it("should support custom priority with --priority flag", () => {
+      kspec(
+        'plan add --title "Priority Test" --content "Plan" --status approved',
+        tempDir,
+      );
+
+      kspec("plan derive @01 --priority 1", tempDir);
+
+      const task = kspecJson<{ priority: number }>(
+        "task get @implement-priority-test --json",
+        tempDir,
+      );
+      expect(task.priority).toBe(1);
+    });
+
+    // AC: @plan-derive ac-6
+    it("should display plan_ref in task get output", () => {
+      kspec(
+        'plan add --title "Display Test" --content "Plan" --status approved',
+        tempDir,
+      );
+      kspec("plan derive @01", tempDir);
+
+      const output = kspec("task get @implement-display-test", tempDir);
+      expect(output).toContain("Plan ref:");
+      expect(output).toContain("@01");
+    });
+
+    // AC: @plan-derive ac-6
+    it("should display derived_tasks in plan get output", () => {
+      kspec(
+        'plan add --title "Derived Test" --content "Plan" --status approved',
+        tempDir,
+      );
+      kspec("plan derive @01", tempDir);
+
+      const output = kspec("plan get @01", tempDir);
+      expect(output).toContain("Derived Work:");
+      expect(output).toContain("Tasks:");
+      expect(output).toContain("@implement-derived-test");
+    });
+
+    it("should generate unique slugs when derived multiple times", () => {
+      kspec('plan add --title "Same Title" --content "Plan" --status approved', tempDir);
+
+      // First derive
+      kspec("plan derive @01", tempDir);
+
+      // Manually create second task with same base slug
+      kspec('task add --title "Implement: Same Title" --slug implement-same-title-1', tempDir);
+
+      // Second derive should generate unique slug
+      kspec("plan derive @01", tempDir);
+
+      const plan = kspecJson<{ derived_tasks: string[] }>(
+        "plan get @01 --json",
+        tempDir,
+      );
+      expect(plan.derived_tasks).toHaveLength(2);
+
+      // Check all three tasks exist with unique slugs
+      const tasks = kspecJson<Array<{ slugs: string[] }>>(
+        "task list --json",
+        tempDir,
+      );
+      const slugs = tasks.flatMap((t) => t.slugs);
+      expect(slugs).toContain("implement-same-title");
+      expect(slugs).toContain("implement-same-title-1");
+      expect(slugs).toContain("implement-same-title-2");
+    });
+
+    it("should work with plan slug reference", () => {
+      kspec(
+        'plan add --title "Slug Test" --content "Plan" --status approved --slug my-feature',
+        tempDir,
+      );
+
+      const output = kspec("plan derive @my-feature", tempDir);
+      expect(output).toContain("Created task from plan:");
+
+      const task = kspecJson<{ plan_ref: string }>(
+        "task get @implement-slug-test --json",
+        tempDir,
+      );
+      expect(task.plan_ref).toBe("@my-feature");
+    });
+  });
 });
