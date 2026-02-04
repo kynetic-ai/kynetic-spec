@@ -43399,7 +43399,7 @@
   type: task
   description: "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
     --exit-codes, kspec help commands --json for programmatic CLI discovery"
-  spec_ref: null
+  spec_ref: "@cli-schema-introspection"
   status: pending
   blocked_by: []
   depends_on: []
