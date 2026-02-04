@@ -43425,7 +43425,7 @@
   description: Support --tags x,y,z comma-separated syntax in addition to --tag x --tag y. Applies to
     inbox add and other tag-accepting commands. Small scope, convenience improvement.
   spec_ref: "@comma-tag-syntax"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
