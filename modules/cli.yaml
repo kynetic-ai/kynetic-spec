@@ -3314,6 +3314,11 @@ features:
         given: A plan is in completed or rejected status
         when: kspec plan set @plan --status draft is run
         then: Command fails with exit code 5 (conflict) and message Cannot transition from terminal status
+      - id: ac-5
+        given: An approved or active plan exists
+        when: kspec plan derive @plan is run
+        then: A task is created with plan_ref pointing to the plan, the plan's derived_tasks array is
+          updated, and plan transitions to active if not already
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
