@@ -43344,6 +43344,32 @@
       content: "Automation status set to manual_only: Architectural design work - requires human decisions
         on storage format, Claude Code integration, and shadow branch workflow"
       supersedes: null
+    - _ulid: 01KGKSW183TRW3FQ987V74JKHW
+      created_at: 2026-02-04T07:46:33.347Z
+      author: "@claude"
+      content: |-
+        Created @plan-support feature spec under @cli module with 33 acceptance criteria covering:
+        - Plan CRUD operations (AC-1 through AC-9)
+        - Plan validation (AC-10)
+        - Plan import with auto-generation (AC-11 through AC-29)
+        - JSON output support (AC-30 through AC-32)
+        - Error handling with recovery hints (AC-33)
+
+        Created 11 implementation tasks (all P2-P3, standalone, no dependencies):
+        - 01KGKSSK: Schema definition
+        - 01KGKSSP: Parser functions
+        - 01KGKSSV: CLI CRUD commands
+        - 01KGKSSY: Plan derive command
+        - 01KGKST6: Task schema plan_ref field
+        - 01KGKST8: Plan validation
+        - 01KGKSTC: Plan document parser
+        - 01KGKSTH: Plan import command
+        - 01KGKSTS: AGENTS.md documentation
+        - 01KGKSTX: /plan skill
+        - 01KGKSV0: @plan-workflow meta definition
+
+        All tasks are independent and can be implemented in any order.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
@@ -44117,24 +44143,24 @@
   created_at: 2026-02-04T07:45:56.938Z
   notes: []
   todos: []
-- title: Add @plan-workflow to meta definitions
+- _ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
+  slugs: []
+  title: Add @plan-workflow to meta definitions
+  type: task
   description: "Add workflow to kynetic.meta.yaml. Steps covering: explore, create plan, verify
     sections, review, dry-run, import, verify, add notes. Include decision step for user approval
     with options. Include check steps for required sections and dry-run verification. Reference
     /plan skill for format details."
-  type: task
   spec_ref: "@plan-support"
   meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - workflow
     - planning
-  depends_on: []
-  _ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-04T07:46:00.306Z
   notes: []
