@@ -44122,7 +44122,7 @@
     task list to show plan indicator when present."
   spec_ref: "@plan-derive"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44135,6 +44135,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T09:30:48.316Z
 - _ulid: 01KGKST8YNXET2CRHTM7268JG4
   slugs: []
   title: Add plan reference validation to kspec validate
