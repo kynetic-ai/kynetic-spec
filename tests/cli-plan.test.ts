@@ -546,7 +546,7 @@ describe("Integration: plan commands", () => {
       );
       expect(plan.derived_tasks).toHaveLength(2);
 
-      // Check both tasks exist with unique slugs
+      // Check all three tasks exist with unique slugs
       const tasks = kspecJson<Array<{ slugs: string[] }>>(
         "task list --json",
         tempDir,
@@ -554,6 +554,7 @@ describe("Integration: plan commands", () => {
       const slugs = tasks.flatMap((t) => t.slugs);
       expect(slugs).toContain("implement-same-title");
       expect(slugs).toContain("implement-same-title-1");
+      expect(slugs).toContain("implement-same-title-2");
     });
 
     it("should work with plan slug reference", () => {
