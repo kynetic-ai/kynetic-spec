@@ -3215,6 +3215,9 @@ features:
         given: user runs a command with --tag cli --tag urgent
         when: tags are parsed
         then: behavior unchanged - both tags added as before
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KGK9Z2Y8CJGVWGWDTJX3KGRJ
     slugs:
       - cli-schema-introspection
