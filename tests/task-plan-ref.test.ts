@@ -182,5 +182,33 @@ describe("Integration: task plan_ref field", () => {
       // (Other errors might exist but not about @valid-plan)
       expect(output).not.toContain('"@valid-plan" not found');
     });
+
+    it("should warn when plan_ref points to non-existent plan", async () => {
+      // Create a task with plan_ref that doesn't exist
+      // We'll manually edit the task YAML to bypass CLI validation
+      kspec('task add --title "Test Task" --slug test-dangling', tempDir);
+
+      // Manually add plan_ref to task YAML
+      const { promises: fs } = await import("fs");
+      const { join } = await import("path");
+      const { parse, stringify } = await import("yaml");
+
+      const tasksFile = join(tempDir, "project.tasks.yaml");
+      const content = await fs.readFile(tasksFile, "utf-8");
+      const data = parse(content);
+
+      // Find the task and add non-existent plan_ref
+      const task = data.tasks.find((t: { slugs: string[] }) =>
+        t.slugs.includes("test-dangling"),
+      );
+      task.plan_ref = "@nonexistent-plan";
+
+      await fs.writeFile(tasksFile, stringify(data));
+
+      // Validation should warn about dangling reference
+      const output = kspec("validate", tempDir);
+      expect(output).toContain("@nonexistent-plan");
+      expect(output).toMatch(/not found/i);
+    });
   });
 });
