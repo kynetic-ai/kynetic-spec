@@ -3299,6 +3299,7 @@ features:
       - "@trait-dry-run"
       - "@trait-semantic-exit-codes"
       - "@trait-error-guidance"
+      - "@trait-shadow-commit"
     notes: []
     created: 2026-02-04T07:43:15.186Z
     acceptance_criteria:
