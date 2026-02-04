@@ -11797,7 +11797,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KG8M70SZYH2DF43EK0X00R1T
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: aborted
     current_step: 4
     total_steps: 6
     started_at: 2026-01-30T23:36:03.135Z
@@ -11861,6 +11861,7 @@ runs:
         started_at: 2026-01-30T23:36:57.817Z
         completed_at: 2026-01-30T23:36:57.817Z
     initiated_by: "@claude"
+    completed_at: 2026-02-04T02:53:54.967Z
   - _ulid: 01KG926AYD55DRS6464CECV34W
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: completed
@@ -12418,6 +12419,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-04T02:52:27.991Z
+    completed_at: 2026-02-04T02:53:40.508Z
     step_results:
       - step_index: 0
         status: completed
@@ -12456,4 +12458,3 @@ runs:
         notes: Captured success pattern about well-structured task notes. No friction to capture - existing
           tooling addresses it. Pruning stale workflow runs now.
     initiated_by: "@claude"
-    completed_at: 2026-02-04T02:53:40.508Z
