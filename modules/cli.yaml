@@ -3474,6 +3474,10 @@ features:
             given: A plan is in completed or rejected status
             when: kspec plan set @plan --status draft is run
             then: Command fails with exit code 5 (conflict) and message Cannot transition from terminal status
+          - id: ac-7
+            given: Multiple plans exist in various states
+            when: kspec plan list [--status <filter>] is run
+            then: Plans are listed with title, status, derived task count, and timestamps
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
