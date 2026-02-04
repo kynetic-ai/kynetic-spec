@@ -13084,6 +13084,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-04T17:33:06.861Z
+    completed_at: 2026-02-04T17:36:02.167Z
     step_results:
       - step_index: 0
         status: completed
@@ -13114,4 +13115,11 @@ runs:
         notes: "Found MUST-FIX: Missing test for AC ac-10 (dangling plan_ref warning). Added test that
           validates warning appears when plan_ref points to non-existent plan. All tests pass."
     initiated_by: "@claude"
-    completed_at: 2026-02-04T17:36:02.167Z
+  - _ulid: 01KGMWBSNWDWB183PRNB3DGJ6E
+    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-04T17:49:21.468Z
+    step_results: []
+    initiated_by: "@claude"
