@@ -3596,6 +3596,10 @@ features:
             when: Import completes
             then: Plan record added to project.plans.yaml with status active, source path, list of created
               spec/task refs
+          - id: ac-25
+            given: A plan previously imported (specs @json-output and @cli-traits exist)
+            when: kspec plan import <path> is run again
+            then: Existing specs skipped with message, no duplicates, exit code 0
       - _ulid: 01KGKY0XJ9CPJGPZFJ3BQJV9YM
         slugs:
           - plan-validation
