@@ -3268,6 +3268,11 @@ features:
         when: Exit codes metadata exists
         then: "Output is valid JSON array of exit code objects with: code (number), name (string),
           description (string), commands (array of applicable command names)"
+      - id: ac-4
+        given: A command has typed arguments and options
+        when: "'kspec help <command> --json-schema' is run"
+        then: "Output is valid JSON Schema describing: type object, properties for each option/argument,
+          required array, and each property has type, description, enum (for choices), default"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
