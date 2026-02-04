@@ -44008,7 +44008,7 @@
     pointing to plan. Updates plan's derived_tasks array. Requires plan status to be approved or
     active. Auto-transitions plan to active on first derivation. Outputs task ref and suggested next
     steps. Note: Each task can only reference one plan. Re-derivation overwrites plan_ref."
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-derive"
   meta_ref: null
   status: pending
   blocked_by: []
