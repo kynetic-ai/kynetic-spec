@@ -43329,6 +43329,7 @@
     - shadow
   vcs_refs: []
   created_at: 2026-02-03T04:06:24.035Z
+  started_at: 2026-02-04T07:41:29.457Z
   notes:
     - _ulid: 01KGGTWEPNKHCMZ5HQ0F8WKKD9
       created_at: 2026-02-03T04:06:32.406Z
@@ -43345,7 +43346,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-04T07:41:29.457Z
 - _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
   slugs: []
   title: Cache scanTestCoverage() results for daemon performance
@@ -43887,4 +43887,27 @@
         3. **kspec/SKILL.md**:
            - Added cross-reference note in Blocking section pointing to /task-work for loop mode details
       supersedes: null
+  todos: []
+- title: Define Plan and PlansFile schemas
+  description: 'Create src/schema/plan.ts following patterns from task.ts. Fields: _ulid, slugs,
+    title, content, summary, status, derived_tasks, related_specs, source, source_path, created_at,
+    approved_at, rejected_at, completed_at, notes, tags. Status enum: draft, approved, active,
+    completed, rejected. PlansFile: { kynetic_plans: "1.0", plans: Plan[] }. Export from
+    src/schema/index.ts.'
+  type: task
+  spec_ref: "@plan-support"
+  meta_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - schema
+    - planning
+  depends_on: []
+  _ulid: 01KGKSSK8RMQ17005SSWYVDQ60
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-04T07:45:13.496Z
+  notes: []
   todos: []
