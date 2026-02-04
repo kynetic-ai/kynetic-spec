@@ -3258,6 +3258,11 @@ features:
         when: "'kspec help --json' is run"
         then: "Output is valid JSON containing: commands (nested tree with name, description, arguments,
           options, subcommands), content (curated help content), and no ANSI color codes"
+      - id: ac-2
+        given: EXIT_CODE_METADATA is defined in exit-codes.ts
+        when: "'kspec help --exit-codes' is run"
+        then: "Output shows all exit codes with: code number, symbolic name, description, and list of
+          commands that may return each code"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
