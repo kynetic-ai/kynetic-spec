@@ -3310,6 +3310,10 @@ features:
         given: A plan exists in draft status
         when: kspec plan set @plan --status approved is run
         then: Status is updated to approved and approved_at timestamp is set
+      - id: ac-4
+        given: A plan is in completed or rejected status
+        when: kspec plan set @plan --status draft is run
+        then: Command fails with exit code 5 (conflict) and message Cannot transition from terminal status
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
