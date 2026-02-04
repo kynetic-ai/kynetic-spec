@@ -3319,6 +3319,10 @@ features:
         when: kspec plan derive @plan is run
         then: A task is created with plan_ref pointing to the plan, the plan's derived_tasks array is
           updated, and plan transitions to active if not already
+      - id: ac-6
+        given: A task was derived from a plan
+        when: kspec task get @task or kspec plan get @plan is run
+        then: Both display the bidirectional link (task shows plan_ref, plan shows derived_tasks)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
