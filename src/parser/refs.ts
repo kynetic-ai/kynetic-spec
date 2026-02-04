@@ -6,6 +6,7 @@
  */
 
 import type { LoadedMetaItem } from "./meta.js";
+import type { LoadedPlan } from "./plans.js";
 import type { AnyLoadedItem, LoadedSpecItem, LoadedTask } from "./yaml.js";
 
 // ============================================================
@@ -119,11 +120,13 @@ export class ReferenceIndex {
   /**
    * Build index from loaded items and meta items
    * AC: @agent-definitions ac-agent-3
+   * AC: @plan-validation ac-10
    */
   constructor(
     tasks: LoadedTask[],
     items: LoadedSpecItem[],
     metaItems: LoadedMetaItem[] = [],
+    plans: LoadedPlan[] = [],
   ) {
     // Index tasks
     for (const task of tasks) {
@@ -133,6 +136,12 @@ export class ReferenceIndex {
     // Index spec items
     for (const item of items) {
       this.indexItem(item);
+    }
+
+    // Index plans
+    // AC: @plan-validation ac-10
+    for (const plan of plans) {
+      this.indexPlan(plan);
     }
 
     // Index meta items (agents, workflows, conventions, observations)
@@ -154,6 +163,28 @@ export class ReferenceIndex {
 
     // Index by slugs
     for (const slug of item.slugs) {
+      const existing = this.slugIndex.get(slug);
+      if (existing) {
+        existing.push(ulid);
+      } else {
+        this.slugIndex.set(slug, [ulid]);
+      }
+    }
+  }
+
+  /**
+   * Index a plan
+   * AC: @plan-validation ac-10
+   */
+  private indexPlan(plan: LoadedPlan): void {
+    const ulid = plan._ulid;
+
+    // Index by ULID
+    this.ulidIndex.set(ulid, plan as unknown as AnyLoadedItem);
+    this.allUlids.push(ulid);
+
+    // Index by slugs
+    for (const slug of plan.slugs) {
       const existing = this.slugIndex.get(slug);
       if (existing) {
         existing.push(ulid);
@@ -334,6 +365,7 @@ const REF_FIELDS = [
   "tests",
   "supersedes",
   "spec_ref",
+  "plan_ref", // AC: @plan-validation ac-10 - Plan reference
   "context",
   "added_by", // Agent reference
   "author", // Agent reference
@@ -520,6 +552,29 @@ export function validateRefs(
             });
           }
           seenTraits.add(result.ulid);
+        }
+
+        // AC: @plan-validation ac-10 - plan_ref must point to a plan
+        if (field === "plan_ref") {
+          const targetItem = result.item as { status?: string };
+          // Plans have a status field with values: draft, approved, active, completed
+          // Tasks/specs don't have this exact status type
+          const isPlan =
+            typeof targetItem.status === "string" &&
+            ["draft", "approved", "active", "completed"].includes(
+              targetItem.status,
+            );
+
+          if (!isPlan) {
+            warnings.push({
+              ref,
+              sourceFile,
+              sourceUlid: item._ulid,
+              field,
+              warning: "deprecated_target", // Reuse warning type
+              message: `Plan reference "${ref}" points to non-plan item`,
+            });
+          }
         }
       }
     }
