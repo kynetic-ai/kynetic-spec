@@ -4883,4 +4883,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGM07T7QV2VV9Z6PY0TJEBHX
+    type: success
+    content: Validation ordering for better errors - When validating references, check type mismatch
+      (isTask/isSpecItem) before checking existence. Gives 'Reference X is not a plan' instead of
+      'Plan reference not found' when user passes wrong type. Applied in task add and task set
+      --plan-ref validation.
+    created_at: 2026-02-04T09:37:50.839Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
