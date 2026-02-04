@@ -44390,7 +44390,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44404,3 +44404,6 @@
   started_at: 2026-02-04T15:25:50.061Z
   notes: []
   todos: []
+  completed_at: 2026-02-04T17:31:46.080Z
+  closed_reason: "Renamed end-iteration to end-loop. Updated spec, code, tests, and docs. Added
+    unknown subcommand detection with helpful migration message. PR #308 merged."
