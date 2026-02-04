@@ -3356,6 +3356,10 @@ features:
         given: A plan contains a spec with slug that already exists
         when: kspec plan import <path> is run (no flags)
         then: Existing spec is skipped with warning, other specs still created
+      - id: ac-15
+        given: A plan file with specs and tasks
+        when: kspec plan import <path> --dry-run is run
+        then: Shows what would be created without making changes, exits with code 0
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
