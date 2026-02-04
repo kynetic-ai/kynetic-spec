@@ -3404,6 +3404,10 @@ features:
         given: A plan previously imported (specs @json-output and @cli-traits exist)
         when: kspec plan import <path> is run again
         then: Existing specs skipped with message, no duplicates, exit code 0
+      - id: ac-26
+        given: A previously imported plan where @json-output has changed content
+        when: kspec plan import <path> --update is run
+        then: Existing spec @json-output is updated to match plan, message Updated @json-output
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
