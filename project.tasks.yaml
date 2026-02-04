@@ -44195,7 +44195,7 @@
     may be deleted).
   spec_ref: "@plan-validation"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44208,6 +44208,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T10:16:48.296Z
 - _ulid: 01KGKSTCY0W8MMKJ1D8KK0HGDS
   slugs: []
   title: Implement plan document parser for structured plans
