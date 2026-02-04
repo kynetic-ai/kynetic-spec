@@ -12895,7 +12895,7 @@ runs:
   - _ulid: 01KGM1SRDA4KK339V36MPR3A3J
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 10
     started_at: 2026-02-04T10:05:07.370Z
     step_results:
@@ -12906,7 +12906,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-04T10:05:18.927Z
-        completed_at: 2026-02-04T10:05:18.927Z
+        completed_at: 2026-02-04T10:06:28.791Z
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-04T10:06:28.791Z
+        completed_at: 2026-02-04T10:06:28.791Z
     initiated_by: "@claude"
   - _ulid: 01KGM1TB72QXN45K6G06QSFH5B
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -12914,6 +12918,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-04T10:05:26.627Z
+    completed_at: 2026-02-04T10:06:23.874Z
     step_results:
       - step_index: 0
         status: completed
@@ -12942,4 +12947,3 @@ runs:
         started_at: 2026-02-04T10:06:17.722Z
         completed_at: 2026-02-04T10:06:23.874Z
     initiated_by: "@claude"
-    completed_at: 2026-02-04T10:06:23.874Z
