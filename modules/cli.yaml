@@ -3296,6 +3296,7 @@ features:
     tests: []
     traits:
       - "@trait-json-output"
+      - "@trait-dry-run"
     notes: []
     created: 2026-02-04T07:43:15.186Z
     acceptance_criteria:
