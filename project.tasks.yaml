@@ -43655,6 +43655,7 @@
     - reflection
   vcs_refs: []
   created_at: 2026-02-03T16:29:55.855Z
+  started_at: 2026-02-04T02:03:09.679Z
   notes:
     - _ulid: 01KGJ5ECYHJ59ZNMC7XTKSVZQ4
       created_at: 2026-02-03T16:30:20.626Z
@@ -43830,5 +43831,27 @@
 
         - Should have: blocked task, continued to @01KGGWAE (comma-separated tags task)
       supersedes: null
+    - _ulid: 01KGK69CXAW00RZN2G31C93VK4
+      created_at: 2026-02-04T02:04:19.755Z
+      author: "@claude"
+      content: >-
+        Updated documentation in three files to clarify loop mode blocking pattern:
+
+
+        1. **task-work/SKILL.md**: 
+           - Rewrote Exit Conditions to emphasize 'no eligible tasks' means ALL tasks
+           - Added 'Blocking vs End-Iteration' section with comparison table
+           - Clarified that tasks must be ATTEMPTED before blocking
+           - Added valid/invalid end-iteration reasons
+           - Expanded 'What Is NOT an Exit Condition' with explicit guidance on what to do instead
+
+        2. **AGENTS.md**:
+           - Added 'Task Blocking in Loop Mode' section after Task States
+           - Documents the attempt→block→check→continue pattern
+           - Lists valid vs invalid blocking reasons
+           - Example commands for proper blocking workflow
+
+        3. **kspec/SKILL.md**:
+           - Added cross-reference note in Blocking section pointing to /task-work for loop mode details
+      supersedes: null
   todos: []
-  started_at: 2026-02-04T02:03:09.679Z
