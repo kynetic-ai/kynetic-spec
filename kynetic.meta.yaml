@@ -4847,4 +4847,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGKYGDYSYSF0WC2KEJN5P66S
+    type: friction
+    content: "Parent relationship not persisted: item add with under flag creates items but parent field
+      is null. Also spec says parent flag but CLI requires under flag."
+    created_at: 2026-02-04T09:07:36.025Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
