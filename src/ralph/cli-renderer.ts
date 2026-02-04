@@ -282,59 +282,65 @@ export function createPrefixedRenderer(prefix: string): RalphRenderer {
     atLineStart: true,
   };
 
-  return {
-    render(event) {
-      // Prefix ALL console output, including streaming content
-      const originalLog = console.log;
-      const originalWrite = process.stdout.write;
+  /**
+   * Execute a function with prefixed console.log and stdout.write.
+   * Ensures all output is prefixed consistently.
+   */
+  function withPrefixedOutput<T>(fn: () => T): T {
+    const originalLog = console.log;
+    const originalWrite = process.stdout.write;
 
-      // Wrap console.log to add prefix
-      console.log = (...args: unknown[]) => {
-        originalLog(prefixStr, ...args);
-        state.atLineStart = true;
-      };
+    // Wrap console.log to add prefix
+    console.log = (...args: unknown[]) => {
+      originalLog(prefixStr, ...args);
+      state.atLineStart = true;
+    };
 
-      // Wrap process.stdout.write for streaming content
-      // Track line boundaries to only prefix at start of lines
-      // Using any here because stdout.write has complex overloads
-      // biome-ignore lint/suspicious/noExplicitAny: stdout.write has complex overloads
-      process.stdout.write = function (chunk: any, ...args: any[]): boolean {
-        if (typeof chunk === "string") {
-          // Split by newlines but preserve them
-          const parts = chunk.split(/(\n)/);
-          let output = "";
+    // Wrap process.stdout.write for streaming content
+    // Track line boundaries to only prefix at start of lines
+    // biome-ignore lint/suspicious/noExplicitAny: stdout.write has complex overloads
+    process.stdout.write = (chunk: any, ...args: any[]): boolean => {
+      if (typeof chunk === "string") {
+        // Split by newlines but preserve them
+        const parts = chunk.split(/(\n)/);
+        let output = "";
 
-          for (const part of parts) {
-            if (part === "\n") {
+        for (const part of parts) {
+          if (part === "\n") {
+            output += part;
+            state.atLineStart = true;
+          } else if (part.length > 0) {
+            if (state.atLineStart) {
+              output += prefixStr + part;
+              state.atLineStart = false;
+            } else {
               output += part;
-              state.atLineStart = true;
-            } else if (part.length > 0) {
-              if (state.atLineStart) {
-                output += prefixStr + part;
-                state.atLineStart = false;
-              } else {
-                output += part;
-              }
             }
           }
-
-          return originalWrite.call(process.stdout, output, ...args);
         }
 
-        // For Uint8Array, pass through unchanged
-        return originalWrite.call(process.stdout, chunk, ...args);
-      };
-
-      try {
-        inner.render(event);
-      } finally {
-        console.log = originalLog;
-        process.stdout.write = originalWrite;
+        return originalWrite.call(process.stdout, output, ...args);
       }
+
+      // For Uint8Array, pass through unchanged
+      return originalWrite.call(process.stdout, chunk, ...args);
+    };
+
+    try {
+      return fn();
+    } finally {
+      console.log = originalLog;
+      process.stdout.write = originalWrite;
+    }
+  }
+
+  return {
+    render(event) {
+      withPrefixedOutput(() => inner.render(event));
     },
     newSection(label) {
       state.atLineStart = true;
-      inner.newSection?.(`${prefix} ${label}`);
+      withPrefixedOutput(() => inner.newSection?.(`${prefix} ${label}`));
     },
   };
 }
