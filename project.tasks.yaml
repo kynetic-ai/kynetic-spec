@@ -43560,6 +43560,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #300 - 36565a76"
   depends_on: []
   context: []
   priority: 1
@@ -43571,6 +43572,7 @@
   vcs_refs: []
   created_at: 2026-02-03T10:09:05.084Z
   started_at: 2026-02-03T10:09:53.426Z
+  completed_at: 2026-02-04T09:06:01.942Z
   notes:
     - _ulid: 01KGHFNC9TZBNJ0BX2PCN9G4B4
       created_at: 2026-02-03T10:09:40.667Z
@@ -43712,8 +43714,6 @@
         - Existing tests have unrelated timeout failures (not introduced by this change)
       supersedes: null
   todos: []
-  completed_at: 2026-02-04T09:06:01.942Z
-  closed_reason: "Merged in PR #300 - 36565a76"
 - _ulid: 01KGJ5DMRTSEWKEGAKCSS0DQKW
   slugs: []
   title: Document loop mode blocking pattern to prevent premature end-iteration
@@ -43946,7 +43946,7 @@
     src/schema/index.ts.'
   spec_ref: "@plan-crud"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43959,6 +43959,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T09:08:27.061Z
 - _ulid: 01KGKSSPHJ1W1315N0D4N4Q13T
   slugs: []
   title: Implement plan load/save parser functions
