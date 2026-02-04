@@ -318,25 +318,68 @@ After 3 genuine attempts with different fixes, add a note documenting what you t
 Exit when:
 - **Task work complete** - PR created (normal exit)
 - **No eligible tasks** - `kspec tasks ready --eligible` returns empty
+- **All remaining eligible tasks blocked** - every eligible task has a genuine external blocker
+
+**Important:** "No eligible tasks" means ALL eligible tasks are done or blocked, not just the one you're working on. If one task is blocked, check for others before ending.
+
+### Blocking vs End-Iteration
+
+When you hit a genuine blocker on a task, the correct pattern is:
+
+1. **Attempt the work first** - actually try to solve the problem
+2. **Block the specific task** - not the whole loop
+3. **Check for other work** - there may be more eligible tasks
+4. **Continue or end** - only end when nothing remains
+
+| Situation | Action | Correct Response |
+|-----------|--------|------------------|
+| Task needs external input | `kspec task block` | Block task, continue to next |
+| Task has spec gap | `kspec task block` | Block task, continue to next |
+| Task requires architectural decision | `kspec task block` | Block task, mark needs_review, continue |
+| Task is complex/difficult | **DO THE WORK** | Complexity is not a blocker |
+| Tests are failing | **FIX THEM** | Debug and resolve |
+| Service needs to be running | **START IT** | See "Tasks Requiring Services" |
+| No more eligible tasks exist | `end-iteration` | Only valid end condition |
+
+```bash
+# Pattern: When you hit a genuine blocker mid-task
+kspec task note @task "Attempted X, Y, Z. Blocked because: [external reason]"
+kspec task block @task --reason "Requires architectural decision on X"
+kspec task set @task --automation needs_review
+
+# Check for other work before ending
+kspec tasks ready --eligible
+# If tasks exist: pick one and continue
+# If empty: then end-iteration is appropriate
+```
 
 ### Explicit Loop End Signal
 
-If you determine the loop should end (e.g., no more eligible tasks, or you've completed your focused work), you can explicitly signal ralph:
+Use `end-iteration` **only** when no more work is possible:
 
 ```bash
 kspec ralph end-iteration --reason "No eligible tasks remaining"
 ```
 
-This writes a marker file that ralph detects and triggers graceful loop exit after the current iteration completes. Use this when you want to ensure the loop ends cleanly rather than just finishing your current turn.
+**Valid reasons to end:**
+- `kspec tasks ready --eligible` returns empty
+- All remaining eligible tasks are blocked (and you checked)
+
+**Invalid reasons to end:**
+- "This task is hard" → do it anyway
+- "This task needs external decision" → block it and check for other tasks
+- "I've done enough" → check for more eligible tasks first
 
 ### What Is NOT an Exit Condition
 
-These are NOT reasons to exit or mark needs_review:
+These are NOT reasons to exit, block, or mark needs_review:
 - "Task seems complex" - do it anyway
 - "Might take multiple iterations" - that's fine, iterate
 - "Requires daemon" - start the daemon
 - "E2E tests need running" - run them
 - "Estimated time exceeds iteration" - estimates are not work, do the work
+
+**What to do instead:** Push through. Complexity and difficulty are expected. Block tasks only for genuine external blockers (human decision needed, spec gap, external dependency). If you can theoretically solve it with more effort, it's not blocked - keep working.
 
 ### Key Behaviors
 
