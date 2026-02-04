@@ -3548,6 +3548,11 @@ features:
         traits: []
         notes: []
         created: 2026-02-04T08:59:07.722Z
+        acceptance_criteria:
+          - id: ac-10
+            given: A task has plan_ref pointing to a non-existent plan
+            when: kspec validate is run
+            then: Validation warns about dangling plan reference
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
