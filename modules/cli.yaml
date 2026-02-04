@@ -3273,6 +3273,11 @@ features:
         when: "'kspec help <command> --json-schema' is run"
         then: "Output is valid JSON Schema describing: type object, properties for each option/argument,
           required array, and each property has type, description, enum (for choices), default"
+      - id: ac-5
+        given: The help command has a --json flag
+        when: --json flag is provided to help command
+        then: globalJsonMode is set before output() is called, and JSON output is produced (not
+          human-readable text) - fixes existing broken behavior
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
