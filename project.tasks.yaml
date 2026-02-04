@@ -44095,6 +44095,7 @@
   created_at: 2026-02-04T07:45:39.776Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KGKSTH10AAV14XWDTZEZQV17
   slugs: []
   title: Implement plan import with spec/task auto-generation
