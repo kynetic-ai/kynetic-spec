@@ -44066,7 +44066,7 @@
     Register in src/cli/index.ts.'
   spec_ref: "@plan-crud"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44094,6 +44094,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-04T09:58:10.109Z
+  closed_reason: "Merged in PR #304. Implemented all plan CRUD CLI commands (add, get, set, list,
+    note) with comprehensive test coverage for all 9 acceptance criteria. Resolved review comment by
+    adding fallback for slug parameter. All CI checks passed."
 - _ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
   slugs: []
   title: Implement plan derive command for task creation
@@ -44114,10 +44118,10 @@
     - planning
   vcs_refs: []
   created_at: 2026-02-04T07:45:24.551Z
+  started_at: 2026-02-04T09:57:43.421Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-02-04T09:57:43.421Z
 - _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
   slugs: []
   title: Add plan_ref field to Task schema
