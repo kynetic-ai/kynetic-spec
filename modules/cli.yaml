@@ -3496,7 +3496,7 @@ features:
             then: Output is JSON array of plan objects with summary fields
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
