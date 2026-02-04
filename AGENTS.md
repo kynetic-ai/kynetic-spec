@@ -250,6 +250,39 @@ pending → in_progress → pending_review → completed
 
 `blocked` is auto-computed when `depends_on` tasks aren't completed.
 
+### Task Blocking in Loop Mode
+
+When running in automated loop mode (ralph), understanding when to block vs continue is critical.
+
+**The pattern:**
+1. **Attempt the work** - actually try to solve the problem first
+2. **Hit a genuine blocker** - external dependency, needs human decision, spec gap
+3. **Block the task** - with documented reason and what you tried
+4. **Check for other work** - `kspec tasks ready --eligible`
+5. **Continue or end** - only end when ALL eligible tasks are blocked/done
+
+**Valid blocking reasons** (external blockers):
+- Requires human architectural decision
+- Needs spec clarification
+- Depends on external API/service not available
+- Blocked by another task
+
+**Invalid blocking reasons** (do the work):
+- Task seems complex
+- Tests are failing (fix them)
+- Service needs running (start it)
+- Might take multiple iterations
+
+```bash
+# When you hit a genuine blocker after attempting work
+kspec task note @task "Attempted: X, Y, Z. Blocked because: [external reason]"
+kspec task block @task --reason "Requires architectural decision on X"
+kspec task set @task --automation needs_review
+kspec tasks ready --eligible  # Check for other work
+```
+
+**Key principle:** One blocked task is NOT "no more work." Check for other eligible tasks before ending the loop. See `/task-work` skill for detailed loop mode guidance.
+
 ### Notes (Work Log)
 
 Tasks have append-only notes that track progress:
