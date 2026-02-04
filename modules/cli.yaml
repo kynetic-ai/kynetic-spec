@@ -3360,6 +3360,12 @@ features:
         given: A plan file with specs and tasks
         when: kspec plan import <path> --dry-run is run
         then: Shows what would be created without making changes, exits with code 0
+      - id: ac-16
+        given: A plan with spec cli-traits that references parent @json-output (defined earlier in same
+          plan)
+        when: kspec plan import <path> is run
+        then: Specs are created in topological order (parents before children), local refs resolved against
+          newly-created specs
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
