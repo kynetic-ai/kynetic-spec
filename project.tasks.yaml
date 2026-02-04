@@ -43962,7 +43962,7 @@
     getPlansPath(), loadPlans(), savePlan(), findPlanByRef(). Add .plans.yaml to manifest exclusions
     in yaml.ts. Export from src/parser/index.ts. Use writeYamlFilePreserveFormat() for saves. Update
     ReferenceIndex to include plans for @plan-ref resolution."
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-crud"
   meta_ref: null
   status: pending
   blocked_by: []
