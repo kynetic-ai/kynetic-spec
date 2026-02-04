@@ -3420,6 +3420,10 @@ features:
         given: A plan with 5 specs where 2 have validation errors
         when: kspec plan import <path> is run (default behavior)
         then: Valid specs are created, errors logged, exit code 0 with summary output
+      - id: ac-30
+        given: A plan exists
+        when: kspec plan get @plan --json is run
+        then: Output is valid JSON with all plan fields (title, status, content, derived_tasks, timestamps)
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
