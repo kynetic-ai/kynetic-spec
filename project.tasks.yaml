@@ -43986,7 +43986,7 @@
     "..."]. plan list [--status filter]. plan note @ref "note content". Enforce status transitions:
     Block invalid transitions with exit code 5. Call commitIfShadow() after all write operations.
     Register in src/cli/index.ts.'
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-crud"
   meta_ref: null
   status: pending
   blocked_by: []
