@@ -44071,25 +44071,49 @@
   created_at: 2026-02-04T07:45:43.967Z
   notes: []
   todos: []
-- title: Add Plan Documents section to AGENTS.md
+- _ulid: 01KGKSTSH9JPK989VT2BBSBR5N
+  slugs: []
+  title: Add Plan Documents section to AGENTS.md
+  type: task
   description: "Add new section after Spec-First Development in AGENTS.md. Cover: what plans are, when
     to use them, document format basics. Include plan workflow: explore -> plan -> review -> import.
     Show example kspec plan import commands with flags. Explain manual vs automatic adjustment. Note
     that plans are working documents - import immediately."
+  spec_ref: "@plan-support"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - docs
+    - planning
+  vcs_refs: []
+  created_at: 2026-02-04T07:45:52.681Z
+  notes: []
+  todos: []
+- title: Create /plan skill for structured plan documents
+  description: "Create .claude/skills/plan/SKILL.md with: Workflow phases (explore, plan, review,
+    import). Format instructions with example sections. Quick reference commands. Common patterns
+    (small feature, large feature, existing specs). Integration with other skills (/spec-plan,
+    /triage, /task-work). Create sub-documents in .claude/skills/plan/docs/: format.md (detailed
+    plan format reference), import.md (import workflow details), examples.md (example plan
+    documents)."
   type: task
   spec_ref: "@plan-support"
   meta_ref: null
   priority: 3
   slugs: []
   tags:
-    - docs
+    - skill
     - planning
   depends_on: []
-  _ulid: 01KGKSTSH9JPK989VT2BBSBR5N
+  _ulid: 01KGKSTXPAKXRK6SK3DX5P5808
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-04T07:45:52.681Z
+  created_at: 2026-02-04T07:45:56.938Z
   notes: []
   todos: []
