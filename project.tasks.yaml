@@ -44244,6 +44244,11 @@
         Updated validate.ts to load plans and pass them to ReferenceIndex. Added test to verify
         validation works correctly when plan_ref points to existing plan. All tests passing.
       supersedes: null
+    - _ulid: 01KGMVZGD2SCETZR1BX5QR96N5
+      created_at: 2026-02-04T17:42:38.755Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKSTCY0W8MMKJ1D8KK0HGDS
@@ -44392,6 +44397,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Renamed end-iteration to end-loop. Updated spec, code, tests, and docs. Added
+    unknown subcommand detection with helpful migration message. PR #308 merged."
   depends_on: []
   context: []
   priority: 1
@@ -44402,8 +44409,6 @@
   vcs_refs: []
   created_at: 2026-02-04T15:25:42.686Z
   started_at: 2026-02-04T15:25:50.061Z
+  completed_at: 2026-02-04T17:31:46.080Z
   notes: []
   todos: []
-  completed_at: 2026-02-04T17:31:46.080Z
-  closed_reason: "Renamed end-iteration to end-loop. Updated spec, code, tests, and docs. Added
-    unknown subcommand detection with helpful migration message. PR #308 merged."
