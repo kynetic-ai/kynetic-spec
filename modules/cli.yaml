@@ -3217,6 +3217,41 @@ features:
         given: user runs a command with --tag cli --tag urgent
         when: tags are parsed
         then: behavior unchanged - both tags added as before
+  - _ulid: 01KGK9Z2Y8CJGVWGWDTJX3KGRJ
+    slugs:
+      - cli-schema-introspection
+    title: CLI Schema Introspection
+    type: feature
+    tags:
+      - agent-first
+      - cli
+      - dx
+    description: >-
+      Provides programmatic discovery of CLI commands, argument schemas, and exit codes for agent
+      and tool integration.
+
+
+      Agents need structured metadata to:
+
+      1. Discover available commands without parsing help text
+
+      2. Understand argument types and constraints for validation
+
+      3. Handle exit codes semantically in automation scripts
+
+      4. Generate UI elements or tooling from CLI definitions
+
+
+      This feature extends the existing help system with introspection-focused outputs that
+      prioritize machine readability over human readability. Infrastructure exists in
+      introspection.ts and exit-codes.ts - needs wiring up.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-04T03:08:36.169Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
