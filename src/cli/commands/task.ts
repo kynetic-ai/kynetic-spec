@@ -214,6 +214,53 @@ async function setTaskFields(
       changes.push("meta_ref");
     }
 
+    if (options.planRef !== undefined) {
+      // Handle 'null' string to clear plan_ref
+      if (options.planRef === "null") {
+        updatedTask.plan_ref = null;
+        changes.push("plan_ref: cleared");
+      } else {
+        // First check if it's a task or spec item (wrong type)
+        const cleanRef = options.planRef.startsWith("@")
+          ? options.planRef.slice(1)
+          : options.planRef;
+
+        const isTask = tasks.some(
+          (t) =>
+            t.slugs.includes(cleanRef) ||
+            t._ulid === cleanRef ||
+            t._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+        );
+        const isSpecItem = items.some(
+          (i) =>
+            i.slugs.includes(cleanRef) ||
+            i._ulid === cleanRef ||
+            i._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+        );
+
+        if (isTask || isSpecItem) {
+          return {
+            success: false,
+            error: `Reference "${options.planRef}" is not a plan`,
+          };
+        }
+
+        // Now check if the plan exists
+        const { findPlanByRef } = await import("../../parser/plans.js");
+        const plan = await findPlanByRef(ctx, options.planRef);
+
+        if (!plan) {
+          return {
+            success: false,
+            error: `Plan reference not found: ${options.planRef}`,
+          };
+        }
+
+        updatedTask.plan_ref = options.planRef;
+        changes.push("plan_ref");
+      }
+    }
+
     if (options.priority) {
       const priority = parseInt(options.priority, 10);
       if (Number.isNaN(priority) || priority < 1 || priority > 5) {
@@ -563,6 +610,7 @@ export function registerTaskCommands(program: Command): void {
       "--meta-ref <ref>",
       "Reference to meta item (workflow, agent, or convention)",
     )
+    .option("--plan-ref <ref>", "Reference to plan this task is derived from")
     .option("--priority <n>", "Priority (1-5)", "3")
     .option("--slug <slug>", "Human-friendly slug")
     .option("--tag <tag...>", "Tags")
@@ -648,6 +696,41 @@ Examples:
             | "manual_only";
         }
 
+        // Validate plan_ref if provided (AC: @plan-derive ac-5, ac-6)
+        if (options.planRef) {
+          // First check if it's a task or spec item (wrong type)
+          const cleanRef = options.planRef.startsWith("@")
+            ? options.planRef.slice(1)
+            : options.planRef;
+
+          const isTask = tasks.some(
+            (t) =>
+              t.slugs.includes(cleanRef) ||
+              t._ulid === cleanRef ||
+              t._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+          );
+          const isSpecItem = items.some(
+            (i) =>
+              i.slugs.includes(cleanRef) ||
+              i._ulid === cleanRef ||
+              i._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()),
+          );
+
+          if (isTask || isSpecItem) {
+            error(`Reference "${options.planRef}" is not a plan`);
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+
+          // Now check if the plan exists
+          const { findPlanByRef } = await import("../../parser/plans.js");
+          const plan = await findPlanByRef(ctx, options.planRef);
+
+          if (!plan) {
+            error(`Plan reference not found: ${options.planRef}`);
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+        }
+
         // AC: @task-add-depends-on ac-2 - Validate dependency refs
         if (options.dependsOn) {
           for (const depRef of options.dependsOn) {
@@ -677,6 +760,7 @@ Examples:
           type: options.type,
           spec_ref: options.specRef || null,
           meta_ref: options.metaRef || null,
+          plan_ref: options.planRef || null,
           priority: parseInt(options.priority, 10),
           slugs: options.slug ? [options.slug] : [],
           tags: options.tag || [],
@@ -722,6 +806,7 @@ Examples:
       "--meta-ref <ref>",
       "Link to meta item (workflow, agent, or convention)",
     )
+    .option("--plan-ref <ref>", "Link to plan (use 'null' to clear)")
     .option("--priority <n>", "Set priority (1-5)")
     .option("--slug <slug>", "Add a slug alias")
     .option("--tag <tag...>", "Add tags")

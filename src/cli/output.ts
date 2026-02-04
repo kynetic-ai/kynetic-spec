@@ -443,6 +443,11 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
     console.log(`${fieldLabels.specRef}  ${task.spec_ref}`);
   }
 
+  // AC: @plan-derive ac-6 - display plan_ref
+  if (task.plan_ref) {
+    console.log(`Plan ref:  ${task.plan_ref}`);
+  }
+
   if (task.depends_on.length > 0) {
     if (index) {
       console.log(fieldLabels.depends);
