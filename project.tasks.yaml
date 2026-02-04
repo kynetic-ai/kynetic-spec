@@ -43320,6 +43320,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Created @plan-support feature spec with 33 ACs, 6 traits, and 11 implementation
+    tasks. Reviewed by Plan agent, all gaps fixed.
   depends_on: []
   context: []
   priority: 3
@@ -43330,6 +43332,7 @@
   vcs_refs: []
   created_at: 2026-02-03T04:06:24.035Z
   started_at: 2026-02-04T07:41:29.457Z
+  completed_at: 2026-02-04T08:19:35.168Z
   notes:
     - _ulid: 01KGGTWEPNKHCMZ5HQ0F8WKKD9
       created_at: 2026-02-03T04:06:32.406Z
@@ -43386,9 +43389,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-04T08:19:35.168Z
-  closed_reason: Created @plan-support feature spec with 33 ACs, 6 traits, and 11 implementation
-    tasks. Reviewed by Plan agent, all gaps fixed.
 - _ulid: 01KGGTYQTJS4HJP7MEXCKQ91VA
   slugs: []
   title: Cache scanTestCoverage() results for daemon performance
@@ -43940,7 +43940,7 @@
     approved_at, rejected_at, completed_at, notes, tags. Status enum: draft, approved, active,
     completed, rejected. PlansFile: { kynetic_plans: "1.0", plans: Plan[] }. Export from
     src/schema/index.ts.'
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-crud"
   meta_ref: null
   status: pending
   blocked_by: []
