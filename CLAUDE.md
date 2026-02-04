@@ -6,10 +6,18 @@ Read the AGENTS.md file for full project context. Key points:
 
 ## Quick Start
 
+**First: Run bootstrap** to ensure kspec is installed and configured:
+
+```bash
+node scripts/bootstrap.cjs
+```
+
+This handles all setup automatically (install, build, link, init) and shows session context. If already configured, it just shows the session.
+
 **Note:** Use `kspec` for all commands. Only use `npm run dev --` when testing uncommitted code changes (it runs TypeScript directly without building).
 
 ```bash
-# First: Get session context (active work, ready tasks, inbox, recent activity)
+# Get session context (if you didn't just run bootstrap)
 kspec session start
 
 # Get details on a specific task

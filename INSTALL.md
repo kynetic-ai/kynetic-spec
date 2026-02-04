@@ -32,6 +32,20 @@ cd ~/tools/kspec
 npm install && npm run build && npm link
 ```
 
+**For agents developing kspec itself**, use the bootstrap script which handles setup automatically:
+
+```bash
+git clone https://github.com/kynetic-ai/kynetic-spec.git
+cd kynetic-spec
+node scripts/bootstrap.cjs
+```
+
+The bootstrap script:
+- Detects current state (skips steps that aren't needed)
+- Runs install, build, link, and init as required
+- Reports what actions it took (transparency)
+- Shows session context at the end
+
 ## Setup
 
 There are two setup paths depending on whether your project already uses kspec.
