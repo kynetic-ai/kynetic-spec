@@ -44122,7 +44122,7 @@
     task list to show plan indicator when present."
   spec_ref: "@plan-derive"
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
