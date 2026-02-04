@@ -3478,6 +3478,10 @@ features:
             given: Multiple plans exist in various states
             when: kspec plan list [--status <filter>] is run
             then: Plans are listed with title, status, derived task count, and timestamps
+          - id: ac-8
+            given: A plan exists
+            when: kspec plan get @plan is run
+            then: "Full plan displayed: title, status, content (markdown), linked tasks, timestamps"
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
         slugs:
           - plan-derive
