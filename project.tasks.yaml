@@ -44025,6 +44025,7 @@
   created_at: 2026-02-04T07:45:24.551Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
   slugs: []
   title: Add plan_ref field to Task schema
