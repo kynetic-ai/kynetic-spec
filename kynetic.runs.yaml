@@ -12463,7 +12463,7 @@ runs:
   - _ulid: 01KGKVAAZMV9RGPPVBHHEDN0FQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-04T08:11:50.645Z
     step_results:
@@ -12505,5 +12505,26 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-04T08:12:43.048Z
-        completed_at: 2026-02-04T08:12:43.048Z
+        completed_at: 2026-02-04T08:12:54.286Z
+        notes: |-
+          Proposed improvements for untracked friction:
+
+          1. Bulk AC add (kspec item ac import)
+             - Import multiple ACs from YAML file/stdin
+             - Helps with plans that have many ACs
+             - Scope: Medium
+
+          2. Task list filter by spec-ref (--spec-ref flag)
+             - Filter tasks by linked spec
+             - Helps verify spec-task alignment
+             - Scope: Small
+
+          3. Trait flag on item add (--trait option)
+             - Apply traits at creation time
+             - Avoids separate trait add calls
+             - Scope: Small
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-04T08:12:54.286Z
+        completed_at: 2026-02-04T08:12:54.286Z
     initiated_by: "@claude"
