@@ -3540,6 +3540,10 @@ features:
             when: kspec plan import <path> is run
             then: Specs are parsed from YAML, validated against schema, and created in order (parents before
               children)
+          - id: ac-12
+            given: "A plan file with derive_from_specs: true in Tasks section"
+            when: kspec plan import <path> is run
+            then: Tasks are auto-derived from each created spec, with plan_ref linking to imported plan
       - _ulid: 01KGKY0XJ9CPJGPZFJ3BQJV9YM
         slugs:
           - plan-validation
