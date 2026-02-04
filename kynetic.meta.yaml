@@ -4893,4 +4893,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGM1RX4NR7ADX19G2FTPF0S2
+    type: success
+    content: "Pattern-following implementation: When implementing new CLI commands, examining similar
+      existing commands (e.g., derive.ts for task creation patterns, plan.ts for command structure)
+      and reusing their patterns leads to consistent, correct implementations. This approach worked
+      well for plan derive - imports, error handling, slug generation, and bidirectional updates all
+      followed established patterns, resulting in clean first implementation with no structural
+      issues."
+    created_at: 2026-02-04T10:04:39.445Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
