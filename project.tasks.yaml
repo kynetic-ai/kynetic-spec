@@ -44201,7 +44201,7 @@
     may be deleted).
   spec_ref: "@plan-validation"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44251,6 +44251,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-04T17:49:42.058Z
+  closed_reason: "PR #307 merged. Implemented plan_ref validation with warnings for dangling
+    references. All AC coverage verified with tests."
 - _ulid: 01KGKSTCY0W8MMKJ1D8KK0HGDS
   slugs: []
   title: Implement plan document parser for structured plans
