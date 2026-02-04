@@ -44131,6 +44131,11 @@
         display in both task get and plan get. All tests passing. Implementation follows patterns
         from spec derive command. Supports --title and --priority flags for customization."
       supersedes: null
+    - _ulid: 01KGM2BKMEX9CYM958Q4KE7QKB
+      created_at: 2026-02-04T10:14:52.302Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
