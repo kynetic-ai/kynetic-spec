@@ -44075,7 +44075,7 @@
     Topological sort specs for parent-before-child creation order. Parse ## Implementation Notes
     section for task notes. Handle edge cases: missing sections, invalid YAML, circular refs. Export
     parsePlanDocument(content: string): ParsedPlan."
-  spec_ref: "@plan-support"
+  spec_ref: "@plan-import"
   meta_ref: null
   status: pending
   blocked_by: []
