@@ -44383,23 +44383,24 @@
       supersedes: null
   todos: []
   automation: manual_only
-- title: Fix end-iteration naming and documentation confusion
+- _ulid: 01KGMM4RX357TX4GEQ41KVYQED
+  slugs: []
+  title: Fix end-iteration naming and documentation confusion
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - ralph
     - documentation
     - dx
-  depends_on: []
-  _ulid: 01KGMM4RX357TX4GEQ41KVYQED
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-04T15:25:42.686Z
   notes: []
   todos: []
+  started_at: 2026-02-04T15:25:50.061Z
