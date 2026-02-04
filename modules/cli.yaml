@@ -3348,6 +3348,10 @@ features:
         given: "A plan file with derive_from_specs: true in Tasks section"
         when: kspec plan import <path> is run
         then: Tasks are auto-derived from each created spec, with plan_ref linking to imported plan
+      - id: ac-13
+        given: "A plan file has ## Implementation Notes section"
+        when: Specs and tasks are auto-created
+        then: Implementation notes are added as initial note to all derived tasks
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
