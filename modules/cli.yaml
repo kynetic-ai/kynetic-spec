@@ -3442,6 +3442,21 @@ features:
         given: Plan import encounters a missing parent reference
         when: Error is displayed
         then: "Message includes recovery hint: Check parent exists or define it earlier in plan"
+    requirements:
+      - _ulid: 01KGKY0KSM993VBXR1WNG69QC9
+        slugs:
+          - plan-crud
+        title: Plan CRUD Operations
+        type: requirement
+        tags: []
+        description: "Core plan management commands: add, get, set, list, note with JSON output support"
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-04T08:58:57.716Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
