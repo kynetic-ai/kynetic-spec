@@ -3509,6 +3509,12 @@ features:
         traits: []
         notes: []
         created: 2026-02-04T08:59:03.124Z
+        acceptance_criteria:
+          - id: ac-5
+            given: An approved or active plan exists
+            when: kspec plan derive @plan is run
+            then: A task is created with plan_ref pointing to the plan, the plan derived_tasks array is updated,
+              and plan transitions to active if not already
       - _ulid: 01KGKY0V9Y24D22PNWTMR44BMM
         slugs:
           - plan-import
