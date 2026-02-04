@@ -3366,6 +3366,10 @@ features:
         when: kspec plan import <path> is run
         then: Specs are created in topological order (parents before children), local refs resolved against
           newly-created specs
+      - id: ac-17
+        given: A plan with spec referencing parent @nonexistent (not in plan, not in project)
+        when: kspec plan import <path> is run
+        then: Error Parent @nonexistent not found, that spec is skipped, other valid specs still created
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
