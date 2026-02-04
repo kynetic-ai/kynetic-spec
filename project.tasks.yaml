@@ -44121,6 +44121,7 @@
   created_at: 2026-02-04T07:45:43.967Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KGKSTSH9JPK989VT2BBSBR5N
   slugs: []
   title: Add Plan Documents section to AGENTS.md
