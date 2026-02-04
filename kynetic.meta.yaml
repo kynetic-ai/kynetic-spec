@@ -4873,4 +4873,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGM07QTQKAAQTMWERMMZHJ65
+    type: success
+    content: Schema-first implementation pattern - Defining schemas (Plan, PlansFile) first, then parser
+      functions (loadPlans, findPlanByRef), then CLI commands (plan add/get/set) created clean
+      separation. Each layer had focused tests. Pattern worked well for both plan CLI (23 tests) and
+      plan_ref field (8 tests).
+    created_at: 2026-02-04T09:37:48.375Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
