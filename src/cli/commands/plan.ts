@@ -114,7 +114,7 @@ Examples:
         await savePlan(ctx, newPlan);
 
         // AC: @plan-crud ac-1 - auto-commit to shadow branch
-        await commitIfShadow(ctx.shadow, "plan-add", newPlan.slugs[0], options.title);
+        await commitIfShadow(ctx.shadow, "plan-add", newPlan.slugs[0] || newPlan._ulid.slice(0, 8), options.title);
 
         success(`Created plan: ${newPlan._ulid.slice(0, 8)} - ${newPlan.title}`, {
           plan: newPlan,
