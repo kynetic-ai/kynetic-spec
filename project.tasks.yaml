@@ -43888,26 +43888,48 @@
            - Added cross-reference note in Blocking section pointing to /task-work for loop mode details
       supersedes: null
   todos: []
-- title: Define Plan and PlansFile schemas
+- _ulid: 01KGKSSK8RMQ17005SSWYVDQ60
+  slugs: []
+  title: Define Plan and PlansFile schemas
+  type: task
   description: 'Create src/schema/plan.ts following patterns from task.ts. Fields: _ulid, slugs,
     title, content, summary, status, derived_tasks, related_specs, source, source_path, created_at,
     approved_at, rejected_at, completed_at, notes, tags. Status enum: draft, approved, active,
     completed, rejected. PlansFile: { kynetic_plans: "1.0", plans: Plan[] }. Export from
     src/schema/index.ts.'
+  spec_ref: "@plan-support"
+  meta_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - schema
+    - planning
+  vcs_refs: []
+  created_at: 2026-02-04T07:45:13.496Z
+  notes: []
+  todos: []
+- title: Implement plan load/save parser functions
+  description: "Create src/parser/plans.ts following patterns from meta.ts (workflow runs). Functions:
+    getPlansPath(), loadPlans(), savePlan(), findPlanByRef(). Add .plans.yaml to manifest exclusions
+    in yaml.ts. Export from src/parser/index.ts. Use writeYamlFilePreserveFormat() for saves. Update
+    ReferenceIndex to include plans for @plan-ref resolution."
   type: task
   spec_ref: "@plan-support"
   meta_ref: null
   priority: 2
   slugs: []
   tags:
-    - schema
+    - parser
     - planning
   depends_on: []
-  _ulid: 01KGKSSK8RMQ17005SSWYVDQ60
+  _ulid: 01KGKSSPHJ1W1315N0D4N4Q13T
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-04T07:45:13.496Z
+  created_at: 2026-02-04T07:45:16.850Z
   notes: []
   todos: []
