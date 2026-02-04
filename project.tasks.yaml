@@ -44004,7 +44004,7 @@
     ReferenceIndex to include plans for @plan-ref resolution."
   spec_ref: "@plan-crud"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44017,6 +44017,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-04T09:10:59.017Z
 - _ulid: 01KGKSSV1Q78EA0FQN42E3JJHA
   slugs: []
   title: Implement plan add/get/set/list/note CLI commands
