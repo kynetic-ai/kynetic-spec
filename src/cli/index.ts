@@ -26,6 +26,7 @@ import {
   registerMergeDriverCommand,
   registerMetaCommands,
   registerModuleCommands,
+  registerPlanCommands,
   registerRalphCommand,
   registerSearchCommand,
   registerServeCommands,
@@ -163,6 +164,7 @@ registerRalphCommand(program);
 registerMetaCommands(program);
 registerLinkCommands(program);
 registerModuleCommands(program);
+registerPlanCommands(program);
 registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 registerMergeDriverCommand(program);

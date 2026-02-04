@@ -30,6 +30,7 @@ export const sessionHeaders = {
 export const fieldLabels = {
   ulid: "ULID:",
   slugs: "Slugs:",
+  title: "Title:",
   type: "Type:",
   status: "Status:",
   priority: "Priority:",

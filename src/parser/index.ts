@@ -6,6 +6,7 @@ export * from "./convention-validation.js";
 export * from "./fix.js";
 export * from "./items.js";
 export * from "./meta.js";
+export * from "./plans.js";
 export * from "./refs.js";
 export * from "./shadow.js";
 export * from "./traits.js";

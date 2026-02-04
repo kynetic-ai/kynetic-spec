@@ -16,6 +16,7 @@ export const referenceErrors = {
   metaNotFound: (ref: string) => `Meta item not found: ${ref}`,
   inboxNotFound: (ref: string) => `Inbox item not found: ${ref}`,
   observationNotFound: (ref: string) => `Observation not found: ${ref}`,
+  planNotFound: (ref: string) => `Plan not found: ${ref}`,
   depNotFound: (ref: string) => `Dependency reference not found: ${ref}`,
   acNotFound: (acId: string, itemRef: string) =>
     `Acceptance criterion "${acId}" not found on @${itemRef}`,
@@ -297,6 +298,13 @@ export const operationFailures = {
   createMeta: (type: string) => `Failed to create ${type}`,
   updateMetaItem: "Failed to update meta item",
   deleteMetaItem: "Failed to delete meta item",
+
+  // Plan operations
+  getPlan: "Failed to get plan",
+  createPlan: "Failed to create plan",
+  updatePlan: "Failed to update plan",
+  listPlans: "Failed to list plans",
+  addPlanNote: "Failed to add plan note",
 
   // Inbox operations
   addInboxItem: "Failed to add inbox item",

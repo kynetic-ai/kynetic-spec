@@ -68,6 +68,10 @@ export const TaskSchema = z.object({
   // Meta relationship (links to workflow, agent, or convention for process improvement tracking)
   meta_ref: RefSchema.nullable().optional(),
 
+  // Plan relationship (links to the plan this task was derived from)
+  // AC: @plan-derive ac-5, ac-6
+  plan_ref: RefSchema.nullable().optional(),
+
   // Origin tracking (where this task came from)
   origin: z.enum(["manual", "derived", "observation_promotion"]).optional(),
 
@@ -125,6 +129,9 @@ export const TaskInputSchema = z.object({
 
   // Meta relationship
   meta_ref: RefSchema.nullable().optional(),
+
+  // Plan relationship
+  plan_ref: RefSchema.nullable().optional(),
 
   // Origin tracking
   origin: z.enum(["manual", "derived", "observation_promotion"]).optional(),
