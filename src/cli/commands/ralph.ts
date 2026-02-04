@@ -78,16 +78,16 @@ interface TaskLimitMarker {
 }
 
 const TASK_LIMIT_MARKER_PATH = ".claude/ralph-task-limit.json";
-const END_ITERATION_MARKER_PATH = ".claude/ralph-end-iteration.json";
+const END_LOOP_MARKER_PATH = ".claude/ralph-end-loop.json";
 const STALE_MARKER_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
 
-// ─── End Iteration Marker ───────────────────────────────────────────────────
+// ─── End Loop Marker ────────────────────────────────────────────────────────
 
 /**
- * Marker file schema for explicit end-iteration signaling.
- * AC: @ralph-end-iteration ac-cmd
+ * Marker file schema for explicit end-loop signaling.
+ * AC: @ralph-end-loop ac-cmd
  */
-interface EndIterationMarker {
+interface EndLoopMarker {
   requested: boolean;
   timestamp: string; // ISO8601
   reason?: string;
@@ -152,17 +152,17 @@ async function clearStaleMarker(rootDir: string): Promise<boolean> {
 }
 
 /**
- * Write end-iteration marker file.
- * AC: @ralph-end-iteration ac-cmd
+ * Write end-loop marker file.
+ * AC: @ralph-end-loop ac-cmd
  */
-async function writeEndIterationMarker(
+async function writeEndLoopMarker(
   rootDir: string,
   reason?: string,
 ): Promise<void> {
-  const markerPath = path.join(rootDir, END_ITERATION_MARKER_PATH);
+  const markerPath = path.join(rootDir, END_LOOP_MARKER_PATH);
   const dir = path.dirname(markerPath);
   await fs.mkdir(dir, { recursive: true });
-  const marker: EndIterationMarker = {
+  const marker: EndLoopMarker = {
     requested: true,
     timestamp: new Date().toISOString(),
     reason,
@@ -171,27 +171,27 @@ async function writeEndIterationMarker(
 }
 
 /**
- * Read end-iteration marker file if it exists.
- * AC: @ralph-end-iteration ac-detect
+ * Read end-loop marker file if it exists.
+ * AC: @ralph-end-loop ac-detect
  */
-async function readEndIterationMarker(
+async function readEndLoopMarker(
   rootDir: string,
-): Promise<EndIterationMarker | null> {
-  const markerPath = path.join(rootDir, END_ITERATION_MARKER_PATH);
+): Promise<EndLoopMarker | null> {
+  const markerPath = path.join(rootDir, END_LOOP_MARKER_PATH);
   try {
     const content = await fs.readFile(markerPath, "utf-8");
-    return JSON.parse(content) as EndIterationMarker;
+    return JSON.parse(content) as EndLoopMarker;
   } catch {
     return null;
   }
 }
 
 /**
- * Clear end-iteration marker file.
- * AC: @ralph-end-iteration ac-cleanup
+ * Clear end-loop marker file.
+ * AC: @ralph-end-loop ac-cleanup
  */
-async function clearEndIterationMarker(rootDir: string): Promise<void> {
-  const markerPath = path.join(rootDir, END_ITERATION_MARKER_PATH);
+async function clearEndLoopMarker(rootDir: string): Promise<void> {
+  const markerPath = path.join(rootDir, END_LOOP_MARKER_PATH);
   try {
     await fs.unlink(markerPath);
   } catch {
@@ -200,16 +200,16 @@ async function clearEndIterationMarker(rootDir: string): Promise<void> {
 }
 
 /**
- * Clear stale end-iteration markers (older than 1 hour).
- * AC: @ralph-end-iteration ac-cleanup
+ * Clear stale end-loop markers (older than 1 hour).
+ * AC: @ralph-end-loop ac-cleanup
  */
-async function clearStaleEndIterationMarker(rootDir: string): Promise<boolean> {
-  const marker = await readEndIterationMarker(rootDir);
+async function clearStaleEndLoopMarker(rootDir: string): Promise<boolean> {
+  const marker = await readEndLoopMarker(rootDir);
   if (!marker) return false;
 
   const markerAge = Date.now() - new Date(marker.timestamp).getTime();
   if (markerAge > STALE_MARKER_THRESHOLD_MS) {
-    await clearEndIterationMarker(rootDir);
+    await clearEndLoopMarker(rootDir);
     return true;
   }
   return false;
@@ -226,12 +226,12 @@ function detectTaskCompleteCommand(command: string): boolean {
 }
 
 /**
- * Detect if a Bash command is an end-iteration command.
- * AC: @ralph-end-iteration ac-detect
+ * Detect if a Bash command is an end-loop command.
+ * AC: @ralph-end-loop ac-detect
  */
-function detectEndIterationCommand(command: string): boolean {
-  // Match "kspec ralph end-iteration" with any arguments
-  return /\bkspec\s+ralph\s+end-iteration\b/.test(command);
+function detectEndLoopCommand(command: string): boolean {
+  // Match "kspec ralph end-loop" with any arguments
+  return /\bkspec\s+ralph\s+end-loop\b/.test(command);
 }
 
 /**
@@ -853,39 +853,39 @@ export function registerRalphCommand(program: Command): void {
     .command("ralph")
     .description("Ralph automated task loop and agent control");
 
-  // end-iteration subcommand - allows agent to signal loop end
-  // AC: @ralph-end-iteration ac-cmd, ac-reason, ac-noop-outside
+  // end-loop subcommand - allows agent to signal loop termination
+  // AC: @ralph-end-loop ac-cmd, ac-reason, ac-noop-outside
   ralph
-    .command("end-iteration")
-    .description("Signal ralph to end the current iteration gracefully")
-    .option("--reason <reason>", "Reason for ending the iteration")
+    .command("end-loop")
+    .description("End the ralph loop gracefully (stops all remaining iterations)")
+    .option("--reason <reason>", "Reason for ending the loop")
     .action(async (options) => {
       try {
         const ctx = await initContext();
 
         // Check if we're in a ralph session by looking for any ralph marker
         const taskLimitMarker = await readTaskLimitMarker(ctx.rootDir);
-        const endIterationMarker = await readEndIterationMarker(ctx.rootDir);
+        const endLoopMarker = await readEndLoopMarker(ctx.rootDir);
 
         // Write the marker with reason if provided
-        await writeEndIterationMarker(ctx.rootDir, options.reason);
+        await writeEndLoopMarker(ctx.rootDir, options.reason);
 
         // Determine if we're likely in a ralph session
-        const inRalphSession = taskLimitMarker !== null || endIterationMarker !== null;
+        const inRalphSession = taskLimitMarker !== null || endLoopMarker !== null;
 
         if (!inRalphSession) {
-          // AC: @ralph-end-iteration ac-noop-outside
+          // AC: @ralph-end-loop ac-noop-outside
           warn("No active ralph session detected. Marker written but may have no effect.");
           info("This command is designed to be called by agents during a ralph loop.");
         } else {
-          success("End-iteration signal sent");
+          success("Loop end signal sent");
         }
 
         if (options.reason) {
           info(`Reason: ${options.reason}`);
         }
       } catch (err) {
-        error("Failed to signal end-iteration", err);
+        error("Failed to signal end-loop", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -894,6 +894,7 @@ export function registerRalphCommand(program: Command): void {
   ralph
     .command("run", { isDefault: true })
     .description("Run ACP agent in a loop to process ready tasks")
+    .argument("[args...]", "")
     .option("--max-loops <n>", "Maximum iterations", "5")
     .option("--max-retries <n>", "Max retries per iteration on error", "3")
     .option(
@@ -920,7 +921,24 @@ export function registerRalphCommand(program: Command): void {
       "Max tasks per iteration (0 = unlimited)",
       "1",
     )
-    .action(async (options) => {
+    .action(async (args: string[], options) => {
+      // Check for unknown subcommands that fell through to default
+      // Only check args that look like subcommand names (alphanumeric with hyphens, no quotes)
+      if (args.length > 0) {
+        const unknownCmd = args[0];
+        // Skip if it looks like a malformed option or quoted argument
+        const looksLikeSubcommand = /^[a-z][a-z0-9-]*$/i.test(unknownCmd);
+        if (looksLikeSubcommand) {
+          if (unknownCmd === "end-iteration") {
+            error(`Unknown command: ${unknownCmd}. Did you mean 'end-loop'?`);
+            info("The command was renamed from 'end-iteration' to 'end-loop' to clarify it ends the entire loop.");
+          } else {
+            error(`Unknown command: ${unknownCmd}`);
+          }
+          info("Run 'kspec ralph --help' to see available commands.");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+      }
       try {
         const maxLoops = parseInt(options.maxLoops, 10);
         const maxRetries = parseInt(options.maxRetries, 10);
@@ -1033,7 +1051,7 @@ export function registerRalphCommand(program: Command): void {
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
 
-        // AC: @ralph-end-iteration ac-signal-cleanup, @ralph-task-limit ac-signal-cleanup
+        // AC: @ralph-end-loop ac-signal-cleanup, @ralph-task-limit ac-signal-cleanup
         // Signal handlers for cleanup on Ctrl+C or kill
         // Note: Signal handlers must be synchronous, so we use Promise.finally()
         // to ensure cleanup completes before exit
@@ -1046,7 +1064,7 @@ export function registerRalphCommand(program: Command): void {
           // Clean up marker files, then exit after cleanup completes
           Promise.all([
             clearTaskLimitMarker(ctx.rootDir),
-            clearEndIterationMarker(ctx.rootDir),
+            clearEndLoopMarker(ctx.rootDir),
           ]).finally(() => {
             process.exit(0);
           });
@@ -1065,9 +1083,9 @@ export function registerRalphCommand(program: Command): void {
         let taskLimitReached = false;
         let tasksCompletedThisIteration = 0;
 
-        // End-iteration signal state
-        // AC: @ralph-end-iteration ac-detect, ac-graceful
-        let endIterationRequested = false;
+        // End-loop signal state
+        // AC: @ralph-end-loop ac-detect, ac-graceful
+        let endLoopRequested = false;
 
         try {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
@@ -1083,13 +1101,13 @@ export function registerRalphCommand(program: Command): void {
             // Also clear any marker from previous iteration of this session
             await clearTaskLimitMarker(ctx.rootDir);
 
-            // AC: @ralph-end-iteration ac-cleanup - Reset end-iteration state
-            endIterationRequested = false;
-            const wasStaleEndIteration = await clearStaleEndIterationMarker(ctx.rootDir);
-            if (wasStaleEndIteration) {
-              info("Cleared stale end-iteration marker from previous session");
+            // AC: @ralph-end-loop ac-cleanup - Reset end-loop state
+            endLoopRequested = false;
+            const wasStaleEndLoop = await clearStaleEndLoopMarker(ctx.rootDir);
+            if (wasStaleEndLoop) {
+              info("Cleared stale end-loop marker from previous session");
             }
-            await clearEndIterationMarker(ctx.rootDir);
+            await clearEndLoopMarker(ctx.rootDir);
 
             // Gather fresh context each iteration (only automation-eligible tasks)
             // AC: @cli-ralph ac-16
@@ -1272,22 +1290,22 @@ export function registerRalphCommand(program: Command): void {
                         }
                       }
 
-                      // AC: @ralph-end-iteration ac-detect
-                      // Detect explicit end-iteration command
-                      if (!endIterationRequested) {
+                      // AC: @ralph-end-loop ac-detect
+                      // Detect explicit end-loop command
+                      if (!endLoopRequested) {
                         const bashCmd = extractBashCommand(update);
-                        if (bashCmd && detectEndIterationCommand(bashCmd)) {
-                          endIterationRequested = true;
+                        if (bashCmd && detectEndLoopCommand(bashCmd)) {
+                          endLoopRequested = true;
                           // Read marker to get reason if present
-                          readEndIterationMarker(ctx.rootDir)
+                          readEndLoopMarker(ctx.rootDir)
                             .then((marker) => {
                               const reason = marker?.reason
                                 ? ` (${marker.reason})`
                                 : "";
-                              info(`End-iteration signal received${reason}`);
+                              info(`End-loop signal received${reason}`);
                             })
                             .catch(() => {
-                              info("End-iteration signal received");
+                              info("End-loop signal received");
                             });
                         }
                       }
@@ -1418,8 +1436,8 @@ export function registerRalphCommand(program: Command): void {
               success(`Completed iteration ${iteration}`);
               consecutiveFailures = 0;
 
-              // AC: @ralph-end-iteration ac-graceful - Check for end-iteration signal
-              if (endIterationRequested) {
+              // AC: @ralph-end-loop ac-graceful - Check for end-loop signal
+              if (endLoopRequested) {
                 info("Agent requested end of loop. Exiting gracefully.");
                 break;
               }
@@ -1484,8 +1502,8 @@ export function registerRalphCommand(program: Command): void {
           // AC: @ralph-task-limit ac-reset - Clear marker file when session ends
           await clearTaskLimitMarker(ctx.rootDir);
 
-          // AC: @ralph-end-iteration ac-cleanup - Clear end-iteration marker when session ends
-          await clearEndIterationMarker(ctx.rootDir);
+          // AC: @ralph-end-loop ac-cleanup - Clear end-loop marker when session ends
+          await clearEndLoopMarker(ctx.rootDir);
 
           // Log session end
           const status =
