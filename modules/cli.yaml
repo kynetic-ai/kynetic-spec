@@ -281,6 +281,11 @@ features:
             when: kspec batch runs
             then: Validation fails before any execution, no commands run, error identifies the invalid command
               by index, exit code is 1
+          - id: ac-dry-run
+            given: --dry-run flag with valid batch
+            when: kspec batch --dry-run runs
+            then: All commands are validated but not executed, output shows what would run, no state changes
+              occur
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
