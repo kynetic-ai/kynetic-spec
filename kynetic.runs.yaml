@@ -2332,7 +2332,7 @@ runs:
   - _ulid: 01KGQYQ1WX8Z6BA8WFC9Q5TEKE
     workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 5
     started_at: 2026-02-05T22:28:10.781Z
     step_results:
@@ -2347,5 +2347,9 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-05T22:39:33.315Z
-        completed_at: 2026-02-05T22:39:33.315Z
+        completed_at: 2026-02-05T22:39:38.466Z
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-05T22:39:38.466Z
+        completed_at: 2026-02-05T22:39:38.466Z
     initiated_by: "@claude"
