@@ -44314,6 +44314,11 @@
         validation for specs and tasks. Added 23 comprehensive tests covering all parsing scenarios.
         All tests passing."
       supersedes: null
+    - _ulid: 01KGP0DGMP466EZE5KB8JGV41T
+      created_at: 2026-02-05T04:19:26.486Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKSTH10AAV14XWDTZEZQV17
