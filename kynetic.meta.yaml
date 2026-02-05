@@ -5312,4 +5312,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQY77CSM15MQWKTJS05N14P
+    type: friction
+    content: "pr-review-merge consumes 36% of all workflow time (215 of 594 min). Step 1 (CI check)
+      bimodal: 30 runs under 30s but 9 over 5 min. No fast-path for trivial PRs that pass all gates
+      immediately. Consecutive chains of up to 14 suggest batch PR processing needs a dedicated
+      workflow."
+    created_at: 2026-02-05T22:19:32.121Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
