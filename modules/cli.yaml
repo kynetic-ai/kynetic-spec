@@ -243,6 +243,10 @@ features:
                 given: Command object with args
                 when: Args are mapped to CLI parameters
                 then: Keys map to flag names without -- prefix, positional args use their documented argument name
+              - id: ac-unknown-command
+                given: Command object with unrecognized command path
+                when: Validation runs
+                then: Error identifies the unknown command and suggests similar valid commands
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
