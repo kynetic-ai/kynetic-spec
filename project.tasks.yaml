@@ -44450,6 +44450,7 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #315. Updated AGENTS.md /spec-plan skill description with workflow references."
   depends_on: []
   context: []
   priority: 3
@@ -44459,6 +44460,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:52.681Z
   started_at: 2026-02-05T08:38:17.473Z
+  completed_at: 2026-02-05T08:59:05.647Z
   notes:
     - _ulid: 01KGKY7CXWEPK0BVF7PD163PX3
       created_at: 2026-02-04T09:02:40.061Z
@@ -44474,8 +44476,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-05T08:59:05.647Z
-  closed_reason: "Merged in PR #315. Updated AGENTS.md /spec-plan skill description with workflow references."
 - _ulid: 01KGKSTXPAKXRK6SK3DX5P5808
   slugs: []
   title: Create /plan skill for structured plan documents
@@ -44488,7 +44488,7 @@
     documents)."
   spec_ref: "@plan-support"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44517,6 +44517,9 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-05T08:59:07.992Z
+  closed_reason: "Merged in PR #315. Rewrote SKILL.md as orchestrator with design/import/manual
+    workflow integration."
 - _ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
   slugs: []
   title: Add @plan-workflow to meta definitions
