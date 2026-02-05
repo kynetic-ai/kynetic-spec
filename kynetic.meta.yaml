@@ -5265,4 +5265,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQVA9RFHA4J4BEN5EAAMRJJ
+    type: success
+    content: "Subagent delegation pattern: using Explore agent for codebase survey + general-purpose
+      agent for PR review kept main context clean and session efficient during daemon strict-mode
+      fix"
+    created_at: 2026-02-05T21:28:47.119Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
