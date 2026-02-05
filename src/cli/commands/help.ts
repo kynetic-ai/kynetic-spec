@@ -2,7 +2,7 @@
 
 import chalk from "chalk";
 import type { Command } from "commander";
-import { EXIT_CODES } from "../exit-codes.js";
+import { EXIT_CODES, EXIT_CODE_METADATA } from "../exit-codes.js";
 import { type HelpContent, helpContent } from "../help/content.js";
 import { program } from "../index.js";
 import {
@@ -12,7 +12,7 @@ import {
   flattenCommandTree,
   formatCommandUsage,
 } from "../introspection.js";
-import { output } from "../output.js";
+import { output, setJsonMode, isJsonMode } from "../output.js";
 
 /**
  * Show help for a specific topic (command or concept)
@@ -223,6 +223,123 @@ function showJson(): void {
 }
 
 /**
+ * Show exit codes documentation
+ * AC: @cli-schema-introspection ac-2
+ */
+function showExitCodes(): void {
+  console.log(chalk.bold.cyan("kspec - Exit Codes"));
+  console.log(chalk.gray("─".repeat(60)));
+  console.log("\nExit codes returned by kspec commands:\n");
+
+  for (const exitCode of EXIT_CODE_METADATA) {
+    console.log(chalk.bold(`${exitCode.code} - ${exitCode.name}`));
+    console.log(`  ${exitCode.description}`);
+    console.log(chalk.gray(`  Commands: ${exitCode.commands}`));
+    console.log();
+  }
+}
+
+/**
+ * Output exit codes as JSON
+ * AC: @cli-schema-introspection ac-3
+ */
+function showExitCodesJson(): void {
+  const exitCodesData = EXIT_CODE_METADATA.map((ec) => ({
+    code: ec.code,
+    name: ec.name,
+    description: ec.description,
+    commands: ec.commands,
+  }));
+
+  output(exitCodesData);
+}
+
+/**
+ * Generate JSON Schema for a command
+ * AC: @cli-schema-introspection ac-4
+ */
+function showCommandJsonSchema(topic: string): void {
+  const tree = extractCommandTree(program);
+  const command = findCommand(tree, topic.split(" "));
+
+  if (!command) {
+    console.error(chalk.red(`Unknown command: ${topic}`));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  // Build JSON Schema object
+  const schema: Record<string, unknown> = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    type: "object",
+    title: `${command.name} command options`,
+    description: command.description,
+    properties: {},
+    required: [],
+  };
+
+  const properties: Record<string, unknown> = {};
+  const required: string[] = [];
+
+  // Add arguments as properties
+  for (const arg of command.arguments) {
+    const propName = arg.name;
+    properties[propName] = {
+      type: arg.variadic ? "array" : "string",
+      description: arg.description,
+    };
+
+    if (arg.variadic) {
+      (properties[propName] as Record<string, unknown>).items = {
+        type: "string",
+      };
+    }
+
+    if (arg.required) {
+      required.push(propName);
+    }
+  }
+
+  // Add options as properties
+  for (const opt of command.options) {
+    // Extract option name from flags (e.g., "-f, --force" -> "force")
+    const flagMatch = opt.flags.match(/--([a-zA-Z0-9-]+)/);
+    if (!flagMatch) continue;
+
+    const propName = flagMatch[1];
+
+    // Determine type from flags
+    let type: string = "boolean";
+    if (opt.flags.includes("<")) {
+      type = "string";
+    } else if (opt.flags.includes("[")) {
+      type = "string";
+    }
+
+    const propSchema: Record<string, unknown> = {
+      type,
+      description: opt.description,
+    };
+
+    if (opt.defaultValue !== undefined) {
+      propSchema.default = opt.defaultValue;
+    }
+
+    properties[propName] = propSchema;
+
+    if (opt.required) {
+      required.push(propName);
+    }
+  }
+
+  schema.properties = properties;
+  if (required.length > 0) {
+    schema.required = required;
+  }
+
+  output(schema);
+}
+
+/**
  * Register the help command
  */
 export function registerHelpCommand(program: Command): void {
@@ -231,9 +348,46 @@ export function registerHelpCommand(program: Command): void {
     .description("Extended help for commands and concepts")
     .option("--all", "Show full command reference")
     .option("--json", "Output as JSON")
-    .action((topic?: string, options?: { all?: boolean; json?: boolean }) => {
-      // Handle flags
-      if (options?.json) {
+    .option("--exit-codes", "Show exit code documentation")
+    .option("--json-schema", "Output JSON Schema for command (use with topic)")
+    .action((
+      topic: string | undefined,
+      options: {
+        all?: boolean;
+        json?: boolean;
+        exitCodes?: boolean;
+        jsonSchema?: boolean;
+      },
+    ) => {
+      // Handle exit codes flag
+      if (options?.exitCodes) {
+        // AC: @cli-schema-introspection ac-2, ac-3
+        // Note: globalJsonMode is already set by preAction hook if --json flag present
+        if (isJsonMode()) {
+          showExitCodesJson();
+        } else {
+          showExitCodes();
+        }
+        return;
+      }
+
+      // Handle JSON schema flag
+      if (options?.jsonSchema) {
+        if (!topic) {
+          console.error(
+            chalk.red("Error: --json-schema requires a command topic"),
+          );
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+        // AC: @cli-schema-introspection ac-4
+        setJsonMode(true);
+        showCommandJsonSchema(topic);
+        return;
+      }
+
+      // AC: @cli-schema-introspection ac-1, ac-5
+      // If --json flag is present (globalJsonMode set by preAction hook), show JSON
+      if (isJsonMode()) {
         showJson();
         return;
       }
