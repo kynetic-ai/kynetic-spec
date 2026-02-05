@@ -286,6 +286,10 @@ features:
             when: kspec batch --dry-run runs
             then: All commands are validated but not executed, output shows what would run, no state changes
               occur
+          - id: ac-forward-ref
+            given: Batch where command 2 references slug created by command 1
+            when: kspec batch runs
+            then: Pre-validation recognizes the forward reference as valid, execution succeeds for both commands
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
