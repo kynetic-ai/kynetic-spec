@@ -27,6 +27,7 @@ import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.j
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { ulid } from "ulid";
+import { registerPlanImportCommand } from "./plan-import.js";
 
 /**
  * Format relative time for display
@@ -63,6 +64,9 @@ export function registerPlanCommands(program: Command): void {
   const plan = program
     .command("plan")
     .description("Manage implementation plans");
+
+  // Register plan import subcommand
+  registerPlanImportCommand(plan);
 
   // kspec plan add
   // AC: @plan-crud ac-1, ac-2
