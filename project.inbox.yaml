@@ -519,3 +519,14 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KGQYE7TTS16KPQ4VSDXRX6XP
+    text: "Unify comma-separated tag input as a trait across all commands. Currently --tags x,y,z works
+      on some commands but not others (e.g., inbox add requires --tag x --tag y --tag z). Should be
+      a @trait-comma-separated-tags (or extend @trait-multi-ref-batch) applied consistently to:
+      inbox add, task add, task set, item add, item set, and any other tag-accepting command."
+    created_at: 2026-02-05T22:23:21.946Z
+    tags:
+      - trait
+      - cli
+      - dx
+    added_by: "@claude"
