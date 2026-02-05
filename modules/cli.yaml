@@ -279,6 +279,10 @@ features:
                 given: A mutating command (item add, task start, derive, inbox promote, etc.)
                 when: Used in batch
                 then: Command is accepted and executed
+              - id: ac-denylist
+                given: A non-mutating command (item get, task list, search, validate, etc.)
+                when: Used in batch
+                then: Validation rejects with message explaining batch is for mutating operations only
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
