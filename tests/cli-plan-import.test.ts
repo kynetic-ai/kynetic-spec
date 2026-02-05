@@ -144,7 +144,9 @@ Follow coding standards Y.
     );
 
     const output = kspec(`plan import "${planPath}" --module @test-core`, tempDir);
-    expect(output).toContain("Skipping existing spec: @existing-feature");
+    // Check summary output (stdout)
+    expect(output).toContain("Skipped (1)");
+    expect(output).toContain("@existing-feature");
     expect(output).toContain("Already exists");
   });
 
@@ -173,11 +175,11 @@ Follow coding standards Y.
     expect(output).toContain("Would create spec: @feature-one");
 
     // Verify nothing was actually created
-    const items = kspecJson<Array<{ slugs: string[] }>>(
+    const result = kspecJson<{ items: Array<{ slugs: string[] }> }>(
       "item list --json",
       tempDir,
     );
-    const hasFeatureOne = items.some((item) =>
+    const hasFeatureOne = result.items.some((item) =>
       item.slugs.includes("feature-one"),
     );
     expect(hasFeatureOne).toBe(false);
@@ -260,7 +262,7 @@ Follow coding standards Y.
 `,
     );
 
-    const result = kspecRun(`plan import "${planPath}" --module @test-core`, tempDir);
+    const result = kspecRun(`plan import "${planPath}" --module @test-core`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(2); // USAGE_ERROR
     expect(result.stderr).toContain("Circular parent reference");
   });
@@ -343,7 +345,7 @@ derive_from_specs: true
 `,
     );
 
-    const result = kspecRun(`plan import "${planPath}" --module @test-core`, tempDir);
+    const result = kspecRun(`plan import "${planPath}" --module @test-core`, tempDir, { expectFail: true });
     expect(result.exitCode).toBe(2); // USAGE_ERROR
     expect(result.stderr).toContain("Malformed YAML");
   });
@@ -364,8 +366,10 @@ derive_from_specs: true
 `,
     );
 
-    const output = kspec(`plan import "${planPath}" --module @test-core`, tempDir);
-    expect(output).toContain("Spec at index 0 missing required field: title");
+    const result = kspecRun(`plan import "${planPath}" --module @test-core`, tempDir);
+    // Check error appears in summary (stdout) or warning (stderr)
+    const allOutput = result.stdout + result.stderr;
+    expect(allOutput).toContain("missing required field: title");
   });
 
   // AC: @plan-import ac-23, ac-29
@@ -551,7 +555,7 @@ derive_from_specs: true
       created_specs: string[];
       created_tasks: string[];
       errors: unknown[];
-    }>(`plan import "${planPath}" --module @test-core --json`, tempDir);
+    }>(`plan import "${planPath}" --module @test-core`, tempDir);
 
     expect(result.plan).toBe("@test-plan");
     expect(result.created_specs).toContain("@feature-one");

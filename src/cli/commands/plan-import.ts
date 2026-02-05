@@ -113,9 +113,12 @@ async function importPlan(
   if (parsed.errors.length > 0) {
     for (const err of parsed.errors) {
       if (err.type === "yaml") {
-        // AC: @plan-import ac-21 - YAML parse errors
+        // AC: @plan-import ac-21 - YAML parse errors (fatal)
         error(err.message);
         process.exit(EXIT_CODES.USAGE_ERROR);
+      } else if (err.type === "validation") {
+        // AC: @plan-import ac-22 - Validation errors (non-fatal, add to warnings)
+        warn(err.message);
       }
     }
   }
@@ -182,6 +185,14 @@ async function importPlan(
     skipped: [],
     planRef,
   };
+
+  // Add parser validation errors to result
+  // AC: @plan-import ac-22, ac-29 - Include parser validation errors in summary
+  for (const err of parsed.errors) {
+    if (err.type === "validation") {
+      result.errors.push({ message: err.message });
+    }
+  }
 
   // Track newly created specs for parent resolution
   // AC: @plan-import ac-16 - Resolve local references
@@ -308,7 +319,12 @@ async function importPlan(
         const addResult = await addChildItem(ctx, actualParent, newSpec);
 
         // Track the created spec for parent resolution
-        const createdSpec = addResult.item as LoadedSpecItem;
+        // Need to construct LoadedSpecItem with _sourceFile and _path for nested specs
+        const createdSpec: LoadedSpecItem = {
+          ...(addResult.item as SpecItem),
+          _sourceFile: actualParent._sourceFile,
+          _path: addResult.path,
+        };
         createdSpecsMap.set(specSlug, createdSpec);
 
         result.createdSpecs.push(specRef);
