@@ -13531,6 +13531,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-05T05:13:53.001Z
+    completed_at: 2026-02-05T05:15:05.102Z
     step_results:
       - step_index: 0
         status: completed
@@ -13564,4 +13565,11 @@ runs:
           capture. Session successfully implemented CLI schema introspection with all 5 ACs covered
           and 22 tests passing."
     initiated_by: "@claude"
-    completed_at: 2026-02-05T05:15:05.102Z
+  - _ulid: 01KGP3M5YJ22W8NHXZA3DP03DX
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-05T05:15:30.643Z
+    step_results: []
+    initiated_by: "@claude"
