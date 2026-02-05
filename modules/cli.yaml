@@ -3279,6 +3279,9 @@ features:
         when: --json flag is provided to help command
         then: globalJsonMode is set before output() is called, and JSON output is produced (not
           human-readable text) - fixes existing broken behavior
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KGKSNZQJ7KKJ747VXPBMX9TP
     slugs:
       - plan-support
