@@ -234,6 +234,11 @@ features:
             traits: []
             notes: []
             created: 2026-02-05T22:53:37.098Z
+            acceptance_criteria:
+              - id: ac-command-field
+                given: Command object in batch array
+                when: The command field is parsed
+                then: Field matches a known mutating CLI command path such as item add or task note
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
