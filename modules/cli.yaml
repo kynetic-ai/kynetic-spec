@@ -311,6 +311,10 @@ features:
             given: Malformed JSON input (from any source)
             when: kspec batch runs
             then: Parse error with line/position info if available, exit code 1, no commands executed
+          - id: ac-empty-batch
+            given: Empty JSON array []
+            when: kspec batch runs
+            then: Error message says batch contains no commands, exit code 1
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
