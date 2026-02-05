@@ -5274,4 +5274,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQY6YCTSAKEY4FKBJTVHXEZ
+    type: success
+    content: "Workflow run mining before prune: /reflect captured 99.4% of run content into durable
+      artifacts. Out of 181 runs with ~100 meaningful notes, only 1 contained unique info not
+      already tracked. Validates reflection-based knowledge capture approach."
+    created_at: 2026-02-05T22:19:22.907Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
