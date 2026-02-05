@@ -1,4 +1,5 @@
 // AC: @auto-cli-docs ac-1, ac-2, ac-3, ac-4, ac-5
+// AC: @cli-schema-introspection ac-1, ac-2, ac-3, ac-4, ac-5
 import { describe, it, expect } from 'vitest';
 import { Command } from 'commander';
 import {
@@ -7,6 +8,7 @@ import {
   flattenCommandTree,
   formatCommandUsage,
 } from '../src/cli/introspection.js';
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from './helpers/cli.js';
 
 describe('extractCommandTree', () => {
   it('should extract basic command metadata', () => {
@@ -218,5 +220,81 @@ describe('help command integration', () => {
     const updatedTree = extractCommandTree(program);
     expect(updatedTree.subcommands).toHaveLength(3);
     expect(updatedTree.subcommands.map((c) => c.name)).toContain('delete');
+  });
+});
+
+describe('CLI schema introspection', () => {
+  // AC: @cli-schema-introspection ac-1
+  it('should output help as JSON with commands and content', async () => {
+    const tempDir = await setupTempFixtures();
+    const result = kspecJson<{ commands: unknown; content: unknown }>('help', tempDir);
+    expect(result).toHaveProperty('commands');
+    expect(result).toHaveProperty('content');
+    expect(typeof result.commands).toBe('object');
+    expect(typeof result.content).toBe('object');
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cli-schema-introspection ac-2
+  it('should show exit codes in human-readable format', async () => {
+    const tempDir = await setupTempFixtures();
+    const result = kspec('help --exit-codes', tempDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Exit Codes');
+    expect(result.stdout).toContain('SUCCESS');
+    expect(result.stdout).toContain('ERROR');
+    expect(result.stdout).toContain('USAGE_ERROR');
+    expect(result.stdout).toContain('NOT_FOUND');
+    expect(result.stdout).toContain('VALIDATION_FAILED');
+    expect(result.stdout).toContain('CONFLICT');
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cli-schema-introspection ac-3
+  it('should output exit codes as JSON', async () => {
+    const tempDir = await setupTempFixtures();
+    const result = kspecJson<Array<{ code: number; name: string; description: string; commands: string }>>(
+      'help --exit-codes',
+      tempDir
+    );
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+
+    const successCode = result.find((ec) => ec.name === 'SUCCESS');
+    expect(successCode).toBeDefined();
+    expect(successCode?.code).toBe(0);
+    expect(successCode?.description).toContain('success');
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cli-schema-introspection ac-4
+  it('should output JSON Schema for a command', async () => {
+    const tempDir = await setupTempFixtures();
+    const result = kspecJson<{
+      $schema: string;
+      type: string;
+      title: string;
+      properties: Record<string, unknown>;
+    }>('help task --json-schema', tempDir);
+
+    expect(result.$schema).toContain('json-schema.org');
+    expect(result.type).toBe('object');
+    expect(result).toHaveProperty('properties');
+    expect(typeof result.properties).toBe('object');
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cli-schema-introspection ac-5
+  it('should produce valid JSON without ANSI codes when --json is used', async () => {
+    const tempDir = await setupTempFixtures();
+    const result = kspec('help --json', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    // Should be valid JSON
+    expect(() => JSON.parse(result.stdout)).not.toThrow();
+
+    // Should not contain ANSI escape codes
+    expect(result.stdout).not.toMatch(/\x1b\[/);
+    await cleanupTempDir(tempDir);
   });
 });
