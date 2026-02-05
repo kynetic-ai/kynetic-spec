@@ -13568,8 +13568,16 @@ runs:
   - _ulid: 01KGP3M5YJ22W8NHXZA3DP03DX
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 10
     started_at: 2026-02-05T05:15:30.643Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-05T05:15:30.643Z
+        completed_at: 2026-02-05T05:15:42.449Z
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-05T05:15:42.449Z
+        completed_at: 2026-02-05T05:15:42.449Z
     initiated_by: "@claude"
