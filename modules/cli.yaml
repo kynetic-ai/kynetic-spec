@@ -283,6 +283,10 @@ features:
                 given: A non-mutating command (item get, task list, search, validate, etc.)
                 when: Used in batch
                 then: Validation rejects with message explaining batch is for mutating operations only
+              - id: ac-batch-itself
+                given: A batch command nested inside a batch
+                when: Used in batch
+                then: Validation rejects with message that batch cannot be nested
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
