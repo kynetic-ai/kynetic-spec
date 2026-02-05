@@ -258,6 +258,10 @@ features:
             given: JSON array piped via stdin
             when: kspec batch runs with no --file or --commands flag
             then: Commands are read from stdin and executed in order
+          - id: ac-file
+            given: --file flag with path to JSON file
+            when: kspec batch --file commands.json runs
+            then: Commands are read from the file and executed in order
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
