@@ -27,6 +27,7 @@ import {
 } from "../../utils/commit.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
+import { parseTagsArray } from "../parse-utils.js";
 import {
   error,
   formatTaskDetails,
@@ -281,7 +282,8 @@ async function setTaskFields(
     }
 
     if (options.tag) {
-      const newTags = options.tag.filter(
+      const parsedTags = parseTagsArray(options.tag);
+      const newTags = parsedTags.filter(
         (t: string) => !updatedTask.tags.includes(t),
       );
       if (newTags.length > 0) {
@@ -763,7 +765,7 @@ Examples:
           plan_ref: options.planRef || null,
           priority: parseInt(options.priority, 10),
           slugs: options.slug ? [options.slug] : [],
-          tags: options.tag || [],
+          tags: parseTagsArray(options.tag),
           depends_on: options.dependsOn || [],
           automation: automationValue,
         };
