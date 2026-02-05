@@ -2370,7 +2370,7 @@ runs:
   - _ulid: 01KGR040NX8RM3YER307FDMEYM
     workflow_ref: "@01KGPF7BP1KF0FAQAEFXNNTPTT"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 8
     started_at: 2026-02-05T22:52:44.094Z
     step_results:
@@ -2391,5 +2391,10 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-05T22:53:03.780Z
-        completed_at: 2026-02-05T22:53:03.780Z
+        completed_at: 2026-02-05T22:53:26.463Z
+        notes: "Dry-run clean: 3 specs under @cli-design, 3 derived tasks. No errors."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-05T22:53:26.463Z
+        completed_at: 2026-02-05T22:53:26.463Z
     initiated_by: "@claude"
