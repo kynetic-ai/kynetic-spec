@@ -96,12 +96,23 @@ The import path uses structured markdown documents. The parser (`parsePlanDocume
 
 derive_from_specs: true
 
+```yaml
+- title: Write migration guide
+  slug: migration-guide
+  priority: 2
+  tags:
+    - docs
+```
+
 ## Implementation Notes
 
 Use passport.js for OAuth. Token refresh should use sliding window with 15min expiry.
 ```
 
-**Key fields:** `title` (required), `slug`, `type`, `parent` (use `@ref`), `acceptance_criteria` (each needs `id`, `given`, `when`, `then`), `traits` (array of trait IDs).
+**Section details:**
+- `## Specs` - YAML code block with array of spec objects. Fields: `title` (required), `slug`, `type`, `parent` (use `@ref`), `description`, `acceptance_criteria` (each needs `id`, `given`, `when`, `then`), `traits` (array of trait IDs)
+- `## Tasks` - `derive_from_specs: true|false` as a bare line (creates a task per spec). Optional YAML code block with additional manual tasks (fields: `title` required, `slug`, `priority`, `description`, `tags`). Manual tasks get `plan_ref` but no `spec_ref`
+- `## Implementation Notes` - Plain text, propagated as initial note to all derived tasks
 
 ## Trait Considerations
 
