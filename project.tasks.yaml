@@ -43120,7 +43120,7 @@
     command-specific bulk variants. Pairs with skills that translate intent (plan sections,
     templates) into batch JSON.'
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43157,6 +43157,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-05T22:57:55.576Z
+  closed_reason: "Design translated to specs and tasks via plan import. Plan: @batch-command-execution-via-json"
 - _ulid: 01KGGNB3HMC4SZD8F74SRYDCFF
   slugs: []
   title: Improve ralph log separation between subagent and main loops
