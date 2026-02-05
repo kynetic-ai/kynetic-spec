@@ -201,6 +201,58 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    features:
+      - _ulid: 01KGR05MC5ZTSVV9MEFF1A3AN3
+        slugs:
+          - batch-exec
+        title: Batch Command Execution
+        type: feature
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+          - trait-error-guidance
+          - trait-dry-run
+          - trait-shadow-commit
+        notes: []
+        created: 2026-02-05T22:53:37.029Z
+        requirements:
+          - _ulid: 01KGR05MEAH53X163Q1FAW8Y9Z
+            slugs:
+              - batch-command-schema
+            title: Batch Command Schema
+            type: requirement
+            tags: []
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-05T22:53:37.098Z
+          - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
+            slugs:
+              - batch-allowed-commands
+            title: Batch Allowed Commands
+            type: requirement
+            tags: []
+            description: >
+              Defines which CLI commands are allowed in batch mode. Commands are classified as
+              mutating or read-only based on whether they modify kspec state (YAML files in the
+              shadow branch). All mutating commands are allowed. Read-only commands and meta/system
+              commands are rejected during validation. The classification is determined by command
+              metadata, not a hardcoded list.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-05T22:53:37.154Z
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands

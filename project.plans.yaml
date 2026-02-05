@@ -1,0 +1,390 @@
+kynetic_plans: "1.0"
+plans:
+  - _ulid: 01KGR05MC5X908ARRYNJVFFX8H
+    slugs:
+      - batch-command-execution-via-json
+    title: Batch Command Execution via JSON
+    content: >
+      # Batch Command Execution via JSON
+
+
+      ## Context
+
+
+      Skills and automation scripts often need to execute multiple heterogeneous kspec CLI commands
+      in sequence — e.g., create 3 spec items, add ACs to each, derive tasks, add notes. Currently
+      this requires spawning separate CLI processes for each command, with no coordination,
+      pre-validation, or unified error reporting.
+
+
+      The existing batch infrastructure (`--refs` flag via `@trait-multi-ref-batch`, and `item patch
+      --bulk`) handles **homogeneous** batch operations well. This plan addresses the missing
+      **heterogeneous** case: executing a mix of different commands from a single JSON payload.
+
+
+      **Naming note:** The existing `batch.ts` module handles homogeneous multi-ref batch
+      operations. This new `batch-exec.ts` module handles heterogeneous command-level batch
+      execution. The CLI command is `kspec batch` (no ambiguity since the existing batch framework
+      is internal, not user-facing).
+
+
+      ## Design Decisions
+
+
+      - **Execution model**: Sequential, stop on first error (default). `--continue` flag overrides
+      to continue-on-error with partial failure reporting.
+
+      - **Input modes**: `--file <path>`, stdin pipe, and `--commands '<json>'` (inline). Inline is
+      convenient for small payloads despite shell escaping gotchas — document the caveat.
+
+      - **Validation strategy**: Pre-validate all commands before executing any. `--dry-run` shows
+      validation results only. Validation covers: command existence, required args/flags, ref
+      resolution, type checking.
+
+      - **Scope**: All mutating commands. Read-only commands are excluded — they don't make sense in
+      a batch write context. The allow/deny classification is determined by a `mutating` annotation
+      on command metadata, not a hardcoded list.
+
+      - **Shadow commits**: Single commit at end of successful batch (not per-command). On partial
+      success with `--continue`, commit whatever succeeded.
+
+      - **Confirmation prompts**: Batch mode implies `--force` for all confirmation-gated
+      operations. Batch is non-interactive by definition.
+
+      - **Exit codes**: Follow existing `trait-semantic-exit-codes` convention — exit 1 for any
+      failure (total or partial), exit 0 only when all succeed.
+
+
+      ## Command Shape
+
+
+      ```
+
+      kspec batch [options]
+
+
+      Options:
+        --file <path>       Read commands from JSON file
+        --commands <json>    Inline JSON array of commands
+        --continue           Continue on error (default: stop on first error)
+        --dry-run            Validate and show what would execute, don't run
+        --json               JSON output mode
+      ```
+
+
+      If neither `--file` nor `--commands` is provided, reads from stdin.
+
+
+      ## Input Format
+
+
+      JSON array of command objects:
+
+
+      ```json
+
+      [
+        {
+          "command": "item add",
+          "args": { "under": "@cli", "title": "Batch Execution", "type": "feature", "slug": "batch-exec" }
+        },
+        {
+          "command": "item ac add",
+          "args": { "ref": "@batch-exec", "given": "JSON array on stdin", "when": "kspec batch runs", "then": "all commands execute in order" }
+        },
+        {
+          "command": "derive",
+          "args": { "ref": "@batch-exec" }
+        },
+        {
+          "command": "task note",
+          "args": { "ref": "@task-batch-exec", "content": "Implementation approach: extend CLI dispatch" }
+        }
+      ]
+
+      ```
+
+
+      ### Command Object Schema
+
+
+      ```typescript
+
+      {
+        command: string;     // CLI command path e.g. "item add", "task note", "item ac add"
+        args: Record<string, string | number | boolean | string[]>;  // Named arguments and flags
+        id?: string;         // Optional user-provided ID for referencing in output/errors
+      }
+
+      ```
+
+
+      **Key design choices:**
+
+      - `command` uses the same names as CLI subcommands (space-separated path)
+
+      - `args` uses named keys matching flag names (without `--` prefix)
+
+      - Positional arguments use the documented argument name as key (e.g., `ref` for `<ref>`)
+
+      - Boolean flags: `true` to enable, omit or `false` to disable
+
+      - Array values (e.g., tags): use JSON array `["cli", "dx"]`
+
+
+      ### Forward References
+
+
+      Commands within a batch can reference items created earlier in the same batch by slug. The
+      pre-validation phase resolves refs against both existing state AND planned creates within the
+      batch.
+
+
+      **Limitation:** Forward reference tracking only covers creates. If a batch creates `@foo` then
+      deletes it, a later reference to `@foo` will pass pre-validation but fail at runtime. This is
+      acceptable — complex create-delete-reference chains within a single batch are unusual and the
+      runtime error is clear.
+
+
+      ## Output Format
+
+
+      ### Human (default)
+
+
+      ```
+
+      Batch: 4 commands validated
+        ✓ [1] item add @batch-exec
+        ✓ [2] item ac add @batch-exec ac-1
+        ✓ [3] derive @batch-exec → @task-batch-exec
+        ✗ [4] task note @task-batch-exec — Task not found
+
+      Batch failed at command 4 of 4
+        3 succeeded, 1 failed
+      ```
+
+
+      ### JSON (`--json`)
+
+
+      ```json
+
+      {
+        "success": false,
+        "summary": { "total": 4, "validated": 4, "executed": 4, "succeeded": 3, "failed": 1 },
+        "results": [
+          { "index": 0, "id": null, "command": "item add", "status": "success", "ref": "@batch-exec", "message": "Created spec item" },
+          { "index": 1, "id": null, "command": "item ac add", "status": "success", "ref": "@batch-exec", "message": "Added AC ac-1" },
+          { "index": 2, "id": null, "command": "derive", "status": "success", "ref": "@task-batch-exec", "message": "Derived task" },
+          { "index": 3, "id": null, "command": "task note", "status": "error", "error": "Task not found: @task-batch-exec" }
+        ]
+      }
+
+      ```
+
+
+      **Note:** The `summary` includes `validated` and `executed` counts in addition to the standard
+      `total`/`succeeded`/`failed`. This extends the existing `BatchResult` shape from `batch.ts` to
+      accommodate the pre-validation phase. The `results[].ref` field is optional — only present
+      when the command operates on or creates a ref.
+
+
+      ## Exit Codes
+
+
+      - `0` — All commands succeeded
+
+      - `1` — Any failure (validation failed, execution error, partial failure with `--continue`)
+
+
+      Consistent with `@trait-semantic-exit-codes` ac-7 which defines batch partial failures as exit
+      code 1.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Batch Command Execution
+        slug: batch-exec
+        type: feature
+        parent: "@cli-design"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+          - trait-error-guidance
+          - trait-dry-run
+          - trait-shadow-commit
+        acceptance_criteria:
+          - id: ac-stdin
+            given: JSON array piped via stdin
+            when: kspec batch runs with no --file or --commands flag
+            then: Commands are read from stdin and executed in order
+          - id: ac-file
+            given: --file flag with path to JSON file
+            when: kspec batch --file commands.json runs
+            then: Commands are read from the file and executed in order
+          - id: ac-inline
+            given: --commands flag with JSON string
+            when: kspec batch --commands '[{"command":"task note","args":{"ref":"@t","content":"hi"}}]' runs
+            then: Inline JSON is parsed and commands execute
+          - id: ac-stop-on-error
+            given: Default mode (no --continue flag) with 5 commands where command 3 fails at runtime
+            when: Batch executes
+            then: Commands 1-2 succeed, command 3 fails with error, commands 4-5 are not executed, exit code is 1
+          - id: ac-continue
+            given: --continue flag with 5 commands where command 3 fails at runtime
+            when: Batch executes
+            then: All 5 commands are attempted, command 3 failure is recorded, other commands succeed, exit code is 1
+          - id: ac-prevalidate
+            given: Batch with 3 commands where command 2 has invalid syntax
+            when: kspec batch runs
+            then: Validation fails before any execution, no commands run, error identifies the invalid command by index, exit code is 1
+          - id: ac-dry-run
+            given: --dry-run flag with valid batch
+            when: kspec batch --dry-run runs
+            then: All commands are validated but not executed, output shows what would run, no state changes occur
+          - id: ac-forward-ref
+            given: Batch where command 2 references slug created by command 1
+            when: kspec batch runs
+            then: Pre-validation recognizes the forward reference as valid, execution succeeds for both commands
+          - id: ac-single-commit
+            given: Batch with 3 successful mutating commands
+            when: Batch completes successfully
+            then: A single shadow branch commit is created containing all changes (not 3 separate commits)
+          - id: ac-partial-commit
+            given: Batch with --continue where commands 1-2 succeed and command 3 fails
+            when: Batch completes with partial success
+            then: A single shadow commit is created containing changes from commands 1-2 only
+          - id: ac-mutating-only
+            given: Batch containing a read-only command like "item get"
+            when: kspec batch runs
+            then: Validation rejects with error identifying the non-mutating command
+          - id: ac-confirmation-suppressed
+            given: Batch containing a command that normally requires confirmation (e.g., item delete without --force)
+            when: kspec batch runs
+            then: Command executes without prompting for confirmation (batch mode is implicitly non-interactive)
+          - id: ac-invalid-json
+            given: Malformed JSON input (from any source)
+            when: kspec batch runs
+            then: Parse error with line/position info if available, exit code 1, no commands executed
+          - id: ac-empty-batch
+            given: Empty JSON array []
+            when: kspec batch runs
+            then: Error message says batch contains no commands, exit code 1
+
+      - title: Batch Command Schema
+        slug: batch-command-schema
+        type: requirement
+        parent: "@batch-exec"
+        acceptance_criteria:
+          - id: ac-command-field
+            given: Command object in batch array
+            when: The command field is parsed
+            then: Field matches a known mutating CLI command path such as item add or task note
+          - id: ac-args-mapping
+            given: Command object with args
+            when: Args are mapped to CLI parameters
+            then: Keys map to flag names without -- prefix, positional args use their documented argument name (e.g., "ref" for <ref>)
+          - id: ac-unknown-command
+            given: Command object with unrecognized command path
+            when: Validation runs
+            then: Error identifies the unknown command and suggests similar valid commands
+          - id: ac-missing-required
+            given: Command object missing a required arg
+            when: Validation runs
+            then: Error identifies which arg is missing for which command
+          - id: ac-id-field
+            given: Command object with optional "id" field
+            when: Batch output is rendered
+            then: The id appears in per-command results for correlation
+
+      - title: Batch Allowed Commands
+        slug: batch-allowed-commands
+        type: requirement
+        parent: "@batch-exec"
+        description: >
+          Defines which CLI commands are allowed in batch mode. Commands are classified
+          as mutating or read-only based on whether they modify kspec state (YAML files
+          in the shadow branch). All mutating commands are allowed. Read-only commands
+          and meta/system commands are rejected during validation. The classification
+          is determined by command metadata, not a hardcoded list.
+        acceptance_criteria:
+          - id: ac-allowlist
+            given: A mutating command (item add, task start, derive, inbox promote, etc.)
+            when: Used in batch
+            then: Command is accepted and executed
+          - id: ac-denylist
+            given: A non-mutating command (item get, task list, search, validate, session start, shadow status, help, etc.)
+            when: Used in batch
+            then: Validation rejects with message explaining batch is for mutating operations only
+          - id: ac-batch-itself
+            given: A "batch" command nested inside a batch
+            when: Used in batch
+            then: Validation rejects with message that batch cannot be nested
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ## Implementation Notes
+
+
+      Architecture builds on existing infrastructure:
+
+
+      1. **Command registry** — Extend `src/cli/introspection.ts` to produce a map of command paths
+      to their handler functions and metadata, including a `mutating: boolean` annotation. This
+      enables dynamic dispatch without Commander.js parsing overhead and drives the allow/deny
+      classification.
+
+
+      2. **Batch executor** (`src/cli/batch-exec.ts`) — New module:
+         - `parseBatchInput(source)` — Reads from stdin/file/inline, parses JSON array
+         - `validateBatch(commands, registry, context)` — Pre-validates all commands: known command, required args, ref resolution (including forward refs from earlier commands in batch)
+         - `executeBatch(commands, registry, context, options)` — Executes validated commands sequentially, collects results, handles stop-on-error vs continue
+
+      3. **Shadow commit batching** — Use a `context.batchMode` flag. When set, `commitIfShadow()`
+      skips the commit. The batch executor issues a single commit after all operations complete (or
+      after partial completion with `--continue`). The flag is set before execution and cleared
+      after.
+
+
+      4. **Forward reference resolution** — During pre-validation, track slugs that will be created
+      by earlier commands. Build a "planned refs" set that the validator checks against when a ref
+      doesn't exist yet. Only tracks creates, not deletes (documented limitation).
+
+
+      5. **Confirmation suppression** — When `context.batchMode` is set, commands that check for
+      `@trait-confirmation-prompt` behavior skip the prompt and proceed as if `--force` were passed.
+
+
+      6. **Handler extraction** — Each command's `.action()` handler needs to be callable
+      programmatically (not just via Commander.js parsing). Extract the core logic into importable
+      functions that batch can call directly. Many commands already follow this pattern (e.g.,
+      `resolveTaskRefForBatch()`).
+
+
+      7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
+      temp kspec project running a real batch payload end-to-end. Test the full matrix:
+      stdin/file/inline × stop-on-error/continue × success/failure/partial.
+    status: active
+    derived_tasks:
+      - "@implement-batch-command-execution"
+      - "@implement-batch-command-schema"
+      - "@implement-batch-allowed-commands"
+    derived_specs:
+      - "@batch-exec"
+      - "@batch-command-schema"
+      - "@batch-allowed-commands"
+    source_path: /tmp/claude-1000/-home-chapel-Projects-kynetic-spec/dd701050-f76c-46cd-b8e1-0bb6f8fea697/scratchpad/batch-exec-plan.md
+    created_at: 2026-02-05T22:53:37.028Z
+    approved_at: null
+    completed_at: null
+    notes: []

@@ -43201,6 +43201,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #318. Eliminated all 15 explicit any casts across 8 daemon source files
+    with proper TypeScript types: error catches use unknown with instanceof Error type guards,
+    Elysia store/context uses typed casts, event payloads use string and Record<string, unknown>.
+    All CI checks passed, no review comments or unresolved threads."
   depends_on: []
   context: []
   priority: 3
@@ -43211,6 +43215,7 @@
   vcs_refs: []
   created_at: 2026-02-03T04:04:13.958Z
   started_at: 2026-02-05T20:53:22.436Z
+  completed_at: 2026-02-05T21:18:18.168Z
   notes:
     - _ulid: 01KGGTRE31MN3WE9RQK0KD32RF
       created_at: 2026-02-03T04:04:20.705Z
@@ -43348,11 +43353,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-02-05T21:18:18.168Z
-  closed_reason: "Merged PR #318. Eliminated all 15 explicit any casts across 8 daemon source files
-    with proper TypeScript types: error catches use unknown with instanceof Error type guards,
-    Elysia store/context uses typed casts, event payloads use string and Record<string, unknown>.
-    All CI checks passed, no review comments or unresolved threads."
 - _ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
   slugs: []
   title: "Design: First-party plan support with shadow branch storage"
@@ -44679,4 +44679,193 @@
 
         Added tests verifying no double-prefixing for both console.log and stdout.write paths.
       supersedes: null
+  todos: []
+- _ulid: 01KGR05MRK1VGWHX7CTHW64KDR
+  slugs:
+    - implement-batch-command-execution
+  title: Implement Batch Command Execution
+  type: task
+  spec_ref: "@batch-exec"
+  plan_ref: "@batch-command-execution-via-json"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-05T22:53:37.427Z
+  notes:
+    - _ulid: 01KGR05MRKC2P7MADTHFGB747E
+      created_at: 2026-02-05T22:53:37.427Z
+      author: "@claude"
+      content: >-
+        Implementation notes from plan:
+
+
+        Architecture builds on existing infrastructure:
+
+
+        1. **Command registry** — Extend `src/cli/introspection.ts` to produce a map of command
+        paths to their handler functions and metadata, including a `mutating: boolean` annotation.
+        This enables dynamic dispatch without Commander.js parsing overhead and drives the
+        allow/deny classification.
+
+
+        2. **Batch executor** (`src/cli/batch-exec.ts`) — New module:
+           - `parseBatchInput(source)` — Reads from stdin/file/inline, parses JSON array
+           - `validateBatch(commands, registry, context)` — Pre-validates all commands: known command, required args, ref resolution (including forward refs from earlier commands in batch)
+           - `executeBatch(commands, registry, context, options)` — Executes validated commands sequentially, collects results, handles stop-on-error vs continue
+
+        3. **Shadow commit batching** — Use a `context.batchMode` flag. When set, `commitIfShadow()`
+        skips the commit. The batch executor issues a single commit after all operations complete
+        (or after partial completion with `--continue`). The flag is set before execution and
+        cleared after.
+
+
+        4. **Forward reference resolution** — During pre-validation, track slugs that will be
+        created by earlier commands. Build a "planned refs" set that the validator checks against
+        when a ref doesn't exist yet. Only tracks creates, not deletes (documented limitation).
+
+
+        5. **Confirmation suppression** — When `context.batchMode` is set, commands that check for
+        `@trait-confirmation-prompt` behavior skip the prompt and proceed as if `--force` were
+        passed.
+
+
+        6. **Handler extraction** — Each command's `.action()` handler needs to be callable
+        programmatically (not just via Commander.js parsing). Extract the core logic into importable
+        functions that batch can call directly. Many commands already follow this pattern (e.g.,
+        `resolveTaskRefForBatch()`).
+
+
+        7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
+        temp kspec project running a real batch payload end-to-end. Test the full matrix:
+        stdin/file/inline × stop-on-error/continue × success/failure/partial.
+  todos: []
+- _ulid: 01KGR05N2YJQSJM5J48YHGQP2J
+  slugs:
+    - implement-batch-command-schema
+  title: Implement Batch Command Schema
+  type: task
+  spec_ref: "@batch-command-schema"
+  plan_ref: "@batch-command-execution-via-json"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-05T22:53:37.758Z
+  notes:
+    - _ulid: 01KGR05N2Y7XEPBV0X7Y4SHGB7
+      created_at: 2026-02-05T22:53:37.758Z
+      author: "@claude"
+      content: >-
+        Implementation notes from plan:
+
+
+        Architecture builds on existing infrastructure:
+
+
+        1. **Command registry** — Extend `src/cli/introspection.ts` to produce a map of command
+        paths to their handler functions and metadata, including a `mutating: boolean` annotation.
+        This enables dynamic dispatch without Commander.js parsing overhead and drives the
+        allow/deny classification.
+
+
+        2. **Batch executor** (`src/cli/batch-exec.ts`) — New module:
+           - `parseBatchInput(source)` — Reads from stdin/file/inline, parses JSON array
+           - `validateBatch(commands, registry, context)` — Pre-validates all commands: known command, required args, ref resolution (including forward refs from earlier commands in batch)
+           - `executeBatch(commands, registry, context, options)` — Executes validated commands sequentially, collects results, handles stop-on-error vs continue
+
+        3. **Shadow commit batching** — Use a `context.batchMode` flag. When set, `commitIfShadow()`
+        skips the commit. The batch executor issues a single commit after all operations complete
+        (or after partial completion with `--continue`). The flag is set before execution and
+        cleared after.
+
+
+        4. **Forward reference resolution** — During pre-validation, track slugs that will be
+        created by earlier commands. Build a "planned refs" set that the validator checks against
+        when a ref doesn't exist yet. Only tracks creates, not deletes (documented limitation).
+
+
+        5. **Confirmation suppression** — When `context.batchMode` is set, commands that check for
+        `@trait-confirmation-prompt` behavior skip the prompt and proceed as if `--force` were
+        passed.
+
+
+        6. **Handler extraction** — Each command's `.action()` handler needs to be callable
+        programmatically (not just via Commander.js parsing). Extract the core logic into importable
+        functions that batch can call directly. Many commands already follow this pattern (e.g.,
+        `resolveTaskRefForBatch()`).
+
+
+        7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
+        temp kspec project running a real batch payload end-to-end. Test the full matrix:
+        stdin/file/inline × stop-on-error/continue × success/failure/partial.
+  todos: []
+- title: Implement Batch Allowed Commands
+  type: task
+  spec_ref: "@batch-allowed-commands"
+  plan_ref: "@batch-command-execution-via-json"
+  priority: 3
+  slugs:
+    - implement-batch-allowed-commands
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KGR05NEFE799ZZ56YM7DQNGX
+      created_at: 2026-02-05T22:53:38.127Z
+      author: "@claude"
+      content: >-
+        Implementation notes from plan:
+
+
+        Architecture builds on existing infrastructure:
+
+
+        1. **Command registry** — Extend `src/cli/introspection.ts` to produce a map of command
+        paths to their handler functions and metadata, including a `mutating: boolean` annotation.
+        This enables dynamic dispatch without Commander.js parsing overhead and drives the
+        allow/deny classification.
+
+
+        2. **Batch executor** (`src/cli/batch-exec.ts`) — New module:
+           - `parseBatchInput(source)` — Reads from stdin/file/inline, parses JSON array
+           - `validateBatch(commands, registry, context)` — Pre-validates all commands: known command, required args, ref resolution (including forward refs from earlier commands in batch)
+           - `executeBatch(commands, registry, context, options)` — Executes validated commands sequentially, collects results, handles stop-on-error vs continue
+
+        3. **Shadow commit batching** — Use a `context.batchMode` flag. When set, `commitIfShadow()`
+        skips the commit. The batch executor issues a single commit after all operations complete
+        (or after partial completion with `--continue`). The flag is set before execution and
+        cleared after.
+
+
+        4. **Forward reference resolution** — During pre-validation, track slugs that will be
+        created by earlier commands. Build a "planned refs" set that the validator checks against
+        when a ref doesn't exist yet. Only tracks creates, not deletes (documented limitation).
+
+
+        5. **Confirmation suppression** — When `context.batchMode` is set, commands that check for
+        `@trait-confirmation-prompt` behavior skip the prompt and proceed as if `--force` were
+        passed.
+
+
+        6. **Handler extraction** — Each command's `.action()` handler needs to be callable
+        programmatically (not just via Commander.js parsing). Extract the core logic into importable
+        functions that batch can call directly. Many commands already follow this pattern (e.g.,
+        `resolveTaskRefForBatch()`).
+
+
+        7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
+        temp kspec project running a real batch payload end-to-end. Test the full matrix:
+        stdin/file/inline × stop-on-error/continue × success/failure/partial.
+  _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-05T22:53:38.127Z
   todos: []
