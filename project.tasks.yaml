@@ -44525,7 +44525,7 @@
     /plan skill for format details."
   spec_ref: "@plan-support"
   meta_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
