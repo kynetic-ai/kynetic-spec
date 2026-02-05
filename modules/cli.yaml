@@ -213,11 +213,11 @@ features:
         relates_to: []
         tests: []
         traits:
-          - trait-json-output
-          - trait-semantic-exit-codes
-          - trait-error-guidance
-          - trait-dry-run
-          - trait-shadow-commit
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-dry-run"
+          - "@trait-shadow-commit"
         notes: []
         created: 2026-02-05T22:53:37.029Z
         requirements:
@@ -253,6 +253,11 @@ features:
             traits: []
             notes: []
             created: 2026-02-05T22:53:37.154Z
+        acceptance_criteria:
+          - id: ac-stdin
+            given: JSON array piped via stdin
+            when: kspec batch runs with no --file or --commands flag
+            then: Commands are read from stdin and executed in order
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
