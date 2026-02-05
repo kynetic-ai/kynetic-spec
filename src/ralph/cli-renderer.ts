@@ -290,9 +290,10 @@ export function createPrefixedRenderer(prefix: string): RalphRenderer {
     const originalLog = console.log;
     const originalWrite = process.stdout.write;
 
-    // Wrap console.log to add prefix
+    // Wrap console.log - prefix is handled by stdout.write wrapper below,
+    // so we just delegate to the original and mark line start.
     console.log = (...args: unknown[]) => {
-      originalLog(prefixStr, ...args);
+      originalLog(...args);
       state.atLineStart = true;
     };
 
@@ -340,7 +341,7 @@ export function createPrefixedRenderer(prefix: string): RalphRenderer {
     },
     newSection(label) {
       state.atLineStart = true;
-      withPrefixedOutput(() => inner.newSection?.(`${prefix} ${label}`));
+      withPrefixedOutput(() => inner.newSection?.(label));
     },
   };
 }
