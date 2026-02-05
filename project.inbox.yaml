@@ -498,3 +498,14 @@ inbox:
       - dx
       - skills
     added_by: "@claude"
+  - _ulid: 01KGQY6QYS94S2D9J983436MX6
+    text: "Workflow lifecycle CLI design (from mining run 01KFS6MJ): kspec workflow complete @run-ref
+      (mark run completed, archive), kspec workflow cancel @run-ref (cancel abandoned run), kspec
+      workflow cleanup --older-than Nd (auto-cancel stale runs). Extends existing @01KFPH39
+      auto-cleanup with concrete subcommand design."
+    created_at: 2026-02-05T22:19:16.313Z
+    tags:
+      - workflow
+      - cli
+      - dx
+    added_by: "@claude"
