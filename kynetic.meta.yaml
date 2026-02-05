@@ -5341,4 +5341,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGR0NPZC3QHBRCAQBQX7KV92
+    type: friction
+    content: "Plan import drops ACs and writes malformed trait refs: Two bugs in kspec plan import
+      discovered during batch-exec plan import. (1) ACs from Specs YAML block not written to created
+      items. (2) Trait refs written without @ prefix causing schema errors. Both required manual
+      workarounds. Tasks created: @01KGR0K2, @01KGR0K5."
+    created_at: 2026-02-05T23:02:23.980Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
