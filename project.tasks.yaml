@@ -43199,7 +43199,7 @@
     fix Elysia generic issues, eliminate implicit any. Currently daemon source is copied instead of
     compiled because of these issues. Medium scope.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43348,6 +43348,11 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-02-05T21:18:18.168Z
+  closed_reason: "Merged PR #318. Eliminated all 15 explicit any casts across 8 daemon source files
+    with proper TypeScript types: error catches use unknown with instanceof Error type guards,
+    Elysia store/context uses typed casts, event payloads use string and Record<string, unknown>.
+    All CI checks passed, no review comments or unresolved threads."
 - _ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
   slugs: []
   title: "Design: First-party plan support with shadow branch storage"
