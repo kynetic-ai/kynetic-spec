@@ -274,6 +274,11 @@ features:
             traits: []
             notes: []
             created: 2026-02-05T22:53:37.154Z
+            acceptance_criteria:
+              - id: ac-allowlist
+                given: A mutating command (item add, task start, derive, inbox promote, etc.)
+                when: Used in batch
+                then: Command is accepted and executed
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
