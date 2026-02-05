@@ -262,6 +262,10 @@ features:
             given: --file flag with path to JSON file
             when: kspec batch --file commands.json runs
             then: Commands are read from the file and executed in order
+          - id: ac-inline
+            given: --commands flag with JSON string
+            when: kspec batch --commands with inline JSON runs
+            then: Inline JSON is parsed and commands execute
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
