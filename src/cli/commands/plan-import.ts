@@ -30,7 +30,7 @@ import { commitIfShadow } from "../../parser/shadow.js";
 import type { PlanInput, SpecItemInput, TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, output, setJsonMode, success, warn } from "../output.js";
+import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { ulid } from "ulid";
 
 /**
@@ -84,12 +84,9 @@ interface ImportResult {
  */
 async function importPlan(
   planPath: string,
-  options: { module: string; dryRun?: boolean; update?: boolean; json?: boolean },
+  options: { module: string; dryRun?: boolean; update?: boolean },
 ): Promise<void> {
-  // Set JSON mode if requested
-  if (options.json) {
-    setJsonMode(true);
-  }
+  // JSON mode is set by global preAction hook
 
   const ctx = await initContext();
   const author = getAuthor();
@@ -468,7 +465,7 @@ async function importPlan(
   const errorCount = result.errors.length + result.skipped.length;
 
   // AC: @plan-import ac-32 - JSON output
-  if (options.json) {
+  if (isJsonMode()) {
     output({
       plan: planRef,
       created_specs: result.createdSpecs,
