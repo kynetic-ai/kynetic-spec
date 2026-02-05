@@ -5302,4 +5302,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQY75ANKENZMWPXRNYWJYYP
+    type: idea
+    content: "Workflow run telemetry: Before pruning old runs, mine them for aggregate stats (abort
+      rates, durations, sequencing patterns). Consider keeping aggregate statistics even when
+      pruning individual records to enable trend analysis. First mining found: 9.9 hrs total, PR
+      review 36%, reflect 46%, task-work-loop 6.5%."
+    created_at: 2026-02-05T22:19:30.006Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
