@@ -44945,6 +44945,14 @@
         scoped per-spec if the plan format supports it, or (c) be attached to the plan record only,
         not duplicated into tasks."
       supersedes: null
+    - _ulid: 01KGR2RQFJN9BH2S9RQZCMMK95
+      created_at: 2026-02-05T23:38:59.954Z
+      author: "@claude"
+      content: "Additional issue: derive_from_specs doesn't infer task dependencies from spec hierarchy.
+        When a feature has child requirements, the parent feature's task should depends_on the
+        children's tasks (children are building blocks for the parent). Currently all derived tasks
+        have empty depends_on and must be set manually."
+      supersedes: null
   todos: []
 - _ulid: 01KGR0K54RN3HN1J08ACZMHFFP
   slugs: []
