@@ -44753,6 +44753,18 @@
         7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
         temp kspec project running a real batch payload end-to-end. Test the full matrix:
         stdin/file/inline × stop-on-error/continue × success/failure/partial.
+    - _ulid: 01KGR1880314CP5YJAABQNX3MB
+      created_at: 2026-02-05T23:12:31.235Z
+      author: "@claude"
+      content: "Scope: This is the main feature task. Responsible for the batch command itself
+        (src/cli/commands/batch.ts), the batch executor module (src/cli/batch-exec.ts), shadow
+        commit batching (context.batchMode flag), forward reference resolution, confirmation
+        suppression, and the kspec batch CLI registration. Covers ACs: ac-stdin, ac-file, ac-inline,
+        ac-stop-on-error, ac-continue, ac-prevalidate, ac-dry-run, ac-forward-ref, ac-single-commit,
+        ac-partial-commit, ac-confirmation-suppressed, ac-invalid-json, ac-empty-batch. Depends on
+        the other two tasks being done first or simultaneously — the command schema defines the
+        input format and the allowed commands list drives validation."
+      supersedes: null
   todos: []
 - _ulid: 01KGR05N2YJQSJM5J48YHGQP2J
   slugs:
