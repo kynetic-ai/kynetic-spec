@@ -33893,7 +33893,7 @@
   type: task
   description: "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help --exit-codes, kspec help commands --json for programmatic CLI discovery"
   spec_ref: "@cli-schema-introspection"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -33904,6 +33904,7 @@
     - phase-2
   vcs_refs: []
   created_at: 2026-02-03T04:49:01.620Z
+  started_at: 2026-02-05T05:04:17.225Z
   notes:
     - _ulid: 01KGGXAFVYYXMSS5TWSXNXV7EB
       created_at: 2026-02-03T04:49:09.502Z
@@ -33931,7 +33932,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-05T05:04:17.225Z
 - _ulid: 01KGGXCH1XAJW9919DQ4EW4D87
   slugs: []
   title: Create @trait-verbose-output for consistent verbose behavior
