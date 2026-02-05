@@ -3733,4 +3733,11 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGP16HK67C30T8A8KMYGDFCR
+    type: friction
+    content: kspec validate output is noisy with pre-existing reference errors and alignment warnings (22 ref errors, 152 alignment warnings). Makes it hard to verify whether a specific change introduced new issues. A --diff or --new-only flag that shows only issues not present in the previous commit would help.
+    created_at: 2026-02-05T04:33:06.662Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
