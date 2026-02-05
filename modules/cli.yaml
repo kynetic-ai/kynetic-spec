@@ -302,6 +302,11 @@ features:
             given: Batch containing a read-only command like item get
             when: kspec batch runs
             then: Validation rejects with error identifying the non-mutating command
+          - id: ac-confirmation-suppressed
+            given: Batch containing a command that normally requires confirmation (e.g., item delete without
+              --force)
+            when: kspec batch runs
+            then: Command executes without prompting for confirmation (batch mode is implicitly non-interactive)
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
