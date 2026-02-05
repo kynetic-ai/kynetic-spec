@@ -2278,8 +2278,20 @@ runs:
   - _ulid: 01KGQYAKZW9T9RYMTS44R2ZMQ4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-05T22:21:23.324Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-05T22:21:23.324Z
+        completed_at: 2026-02-05T22:21:35.301Z
+        notes: "What worked: (1) Parallel subagent mining - 3 agents analyzing same data from different
+          angles found complementary insights. (2) Mine-before-prune workflow preserved
+          institutional knowledge. (3) kspec workflow prune already existed and worked correctly.
+          (4) Scratchpad for intermediate data enabled parallel agent work."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-05T22:21:35.301Z
+        completed_at: 2026-02-05T22:21:35.301Z
     initiated_by: "@claude"
