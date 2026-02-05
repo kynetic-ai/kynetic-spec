@@ -43146,6 +43146,14 @@
       content: "Automation status set to manual_only: Design work requiring human architectural decisions
         on API shape and execution model"
       supersedes: null
+    - _ulid: 01KGR0CY3SFE5EQR8NYKYM92BW
+      created_at: 2026-02-05T22:57:36.377Z
+      author: "@claude"
+      content: Design complete via spec-plan workflow. Plan @batch-command-execution-via-json created with
+        3 specs (batch-exec feature + batch-command-schema + batch-allowed-commands), 22 ACs, 5
+        traits. 3 implementation tasks derived. Design reviewed by subagent - 2 blockers (exit code
+        conflict, trait slug mismatch) found and fixed before import.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KGGNB3HMC4SZD8F74SRYDCFF
@@ -44806,15 +44814,21 @@
         temp kspec project running a real batch payload end-to-end. Test the full matrix:
         stdin/file/inline × stop-on-error/continue × success/failure/partial.
   todos: []
-- title: Implement Batch Allowed Commands
+- _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
+  slugs:
+    - implement-batch-allowed-commands
+  title: Implement Batch Allowed Commands
   type: task
   spec_ref: "@batch-allowed-commands"
   plan_ref: "@batch-command-execution-via-json"
-  priority: 3
-  slugs:
-    - implement-batch-allowed-commands
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-05T22:53:38.127Z
   notes:
     - _ulid: 01KGR05NEFE799ZZ56YM7DQNGX
       created_at: 2026-02-05T22:53:38.127Z
@@ -44862,10 +44876,4 @@
         7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
         temp kspec project running a real batch payload end-to-end. Test the full matrix:
         stdin/file/inline × stop-on-error/continue × success/failure/partial.
-  _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-05T22:53:38.127Z
   todos: []
