@@ -509,3 +509,13 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KGQYE4Q8354Q70GF5QWFJJP6
+    text: workflow runs --json should include step_results with notes and abort_reason content.
+      Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most
+      valuable data for mining/telemetry but require parsing raw YAML to access.
+    created_at: 2026-02-05T22:23:18.760Z
+    tags:
+      - workflow
+      - cli
+      - dx
+    added_by: "@claude"
