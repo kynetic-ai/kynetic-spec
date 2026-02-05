@@ -2277,7 +2277,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGQYAKZW9T9RYMTS44R2ZMQ4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-05T22:21:23.324Z
@@ -2323,5 +2323,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-05T22:23:11.873Z
-        completed_at: 2026-02-05T22:23:11.873Z
+        completed_at: 2026-02-05T22:23:32.382Z
+        notes: "Captured: (1) inbox @01KGQYE4 - workflow runs --json step_results. (2) inbox @01KGQYE7 -
+          unified comma-separated tag trait. (3) observation @01KGQYEC - parallel subagent mining
+          pattern."
     initiated_by: "@claude"
+    completed_at: 2026-02-05T22:23:32.383Z
