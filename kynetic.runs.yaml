@@ -2281,6 +2281,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-05T22:21:23.324Z
+    completed_at: 2026-02-05T22:23:32.383Z
     step_results:
       - step_index: 0
         status: completed
@@ -2328,4 +2329,11 @@ runs:
           unified comma-separated tag trait. (3) observation @01KGQYEC - parallel subagent mining
           pattern."
     initiated_by: "@claude"
-    completed_at: 2026-02-05T22:23:32.383Z
+  - _ulid: 01KGQYQ1WX8Z6BA8WFC9Q5TEKE
+    workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
+    status: active
+    current_step: 0
+    total_steps: 5
+    started_at: 2026-02-05T22:28:10.781Z
+    step_results: []
+    initiated_by: "@claude"
