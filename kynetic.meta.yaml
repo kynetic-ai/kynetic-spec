@@ -3768,4 +3768,11 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGP3JJEWMA65YMH03YMY9XKP
+    type: success
+    content: "Test-first implementation with AC annotations: Writing tests with AC annotations (// AC: @spec-ref ac-N) before implementation ensures complete coverage and creates clear traceability. Pattern used in help.test.ts covered all 5 ACs systematically and caught the --json flag issue early."
+    created_at: 2026-02-05T05:14:37.916Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
