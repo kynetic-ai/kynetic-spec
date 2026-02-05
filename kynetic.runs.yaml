@@ -2278,7 +2278,7 @@ runs:
   - _ulid: 01KGQYAKZW9T9RYMTS44R2ZMQ4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-05T22:21:23.324Z
     step_results:
@@ -2293,5 +2293,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-05T22:21:35.301Z
-        completed_at: 2026-02-05T22:21:35.301Z
+        completed_at: 2026-02-05T22:21:49.072Z
+        notes: "Friction: (1) Node.js v24 TypeScript mode breaks inline scripts with shell escapes - had to
+          write to temp files. (2) --tags vs --tag flag naming. (3) Session reload lost subagent
+          output files, had to re-launch 2 of 3 agents. (4) workflow runs --json omits step_results
+          notes - had to read raw YAML for actual content."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-05T22:21:49.072Z
+        completed_at: 2026-02-05T22:21:49.072Z
     initiated_by: "@claude"
