@@ -44901,6 +44901,15 @@
         7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
         temp kspec project running a real batch payload end-to-end. Test the full matrix:
         stdin/file/inline × stop-on-error/continue × success/failure/partial.
+    - _ulid: 01KGR18DBJ9W99BD14926D8GEE
+      created_at: 2026-02-05T23:12:36.722Z
+      author: "@claude"
+      content: "Scope: Classify CLI commands as mutating vs read-only. Responsible for adding a mutating
+        annotation to command metadata in src/cli/introspection.ts, building the allow/deny registry
+        that validateBatch checks against, and the specific rejection for nested batch commands.
+        Covers ACs: ac-allowlist, ac-denylist, ac-batch-itself. Also covers ac-mutating-only on the
+        parent spec."
+      supersedes: null
   todos: []
 - _ulid: 01KGR0K2F8HA3TJXGD5EXD7SBP
   slugs: []
