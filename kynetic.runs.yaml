@@ -2369,7 +2369,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGR040NX8RM3YER307FDMEYM
     workflow_ref: "@01KGPF7BP1KF0FAQAEFXNNTPTT"
-    status: active
+    status: completed
     current_step: 7
     total_steps: 8
     started_at: 2026-02-05T22:52:44.094Z
@@ -2422,5 +2422,9 @@ runs:
       - step_index: 7
         status: completed
         started_at: 2026-02-05T22:57:20.505Z
-        completed_at: 2026-02-05T22:57:20.505Z
+        completed_at: 2026-02-05T22:57:27.802Z
+        notes: "Import workflow complete. 3 tasks ready: @implement-batch-command-execution,
+          @implement-batch-command-schema, @implement-batch-allowed-commands. Implementation
+          deferred to task-work session."
     initiated_by: "@claude"
+    completed_at: 2026-02-05T22:57:27.802Z
