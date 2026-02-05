@@ -688,6 +688,170 @@ workflows:
 
           Be selective - systemic patterns only, not one-off issues.
           This step is optional - only capture if friction was encountered.
+  - _ulid: 01KGPF7BP1XWM82TSK942D6Y0R
+    id: spec-plan-design
+    trigger: manual
+    description: Research and design phase for plan-to-spec translation. Explore codebase, clarify requirements, design approach, review for completeness and spec gaps. Concludes with choosing import or manual execution path.
+    steps:
+      - type: action
+        content: |
+          Explore and research the codebase.
+          Understand: existing specs/items in the domain, related patterns, current code structure, traits that may apply.
+          Use /spec skill knowledge for spec types, AC format, and trait reference.
+          Focus on what already exists to avoid duplication. Use parallel searches for efficiency.
+        inputs:
+          - name: feature_description
+            description: What you're planning to build
+            type: string
+      - type: action
+        content: |
+          Clarify requirements with the user.
+          Present structured questions with clear options. One question at a time - do not batch multiple questions.
+          Each question should resolve a specific design choice or scope decision.
+          Continue until no open questions remain. Capture answers as they inform the design.
+      - type: action
+        content: |
+          Design the approach.
+          Synthesize exploration findings, user answers, and requirements into a concrete design.
+          Propose: spec items needed, AC for each, applicable traits, parent placement, and task structure.
+          Write the design to a durable artifact (plan file or document) so it survives session boundaries.
+      - type: check
+        content: Design passes holistic review
+        on_fail: |
+          Address review feedback - fix gaps, refine AC, add missing traits. Iterate until review passes.
+          Review for: (1) completeness - gaps or missing scenarios, (2) consistency - specs align with existing patterns,
+          (3) spec coverage - proper types, AC quality, trait applicability per /spec skill, (4) edge cases.
+          Exit criteria: design written to file, all review issues addressed.
+      - type: decision
+        content: Choose execution path based on the reviewed plan
+        options:
+          - Import path - write structured plan document and auto-generate (3+ specs, batch creation)
+          - Manual path - create specs incrementally with kspec commands (1-2 specs, quick additions)
+  - _ulid: 01KGPF7BP1KF0FAQAEFXNNTPTT
+    id: spec-plan-import
+    trigger: manual
+    description: Execute plan via structured document import - write document, choose module, preview, import, review traits, validate, start work. Follows @spec-plan-design. Import auto-creates plan record with status active.
+    steps:
+      - type: action
+        content: |
+          Write or finalize plan document.
+          Format: # Title, ## Specs with YAML code block (title required, optional: slug, type, parent, AC, traits),
+          ## Tasks with derive_from_specs flag, ## Implementation Notes (plain text).
+        inputs:
+          - name: plan_file_path
+            description: Path to the markdown plan file
+            type: string
+      - type: action
+        content: |
+          Choose target module.
+          Use: kspec item list --type module
+          If no suitable module exists, create one: kspec item add --type module --title "Module Name"
+          Note the generated reference for the next step.
+        inputs:
+          - name: module_ref
+            description: Reference to the target module
+            type: ref
+      - type: action
+        content: |
+          Preview with dry-run.
+          Use: kspec plan import <path> --module @module --dry-run
+          Review: spec count, task count, errors, skipped items.
+      - type: check
+        content: Dry-run output acceptable - all specs valid, parents resolved, no circular deps, at least one spec found
+        on_fail: |
+          Fix document based on error type:
+          (1) YAML parse errors - fix syntax
+          (2) Missing parent refs - add parent to plan or verify existing ref
+          (3) Circular deps - restructure parent chain
+          (4) Missing required fields - add title to spec entries
+          Re-run dry-run.
+      - type: action
+        content: |
+          Run actual import.
+          Use: kspec plan import <path> --module @module
+          For re-imports of revised documents, add --update to update existing specs.
+          Import auto-creates plan record (status: active) with derived_specs and derived_tasks linked.
+          Verify: kspec plan get @plan-slug
+      - type: action
+        content: |
+          Review and apply traits.
+          Use: kspec trait list for available traits.
+          For each created spec, consider cross-cutting concerns
+          (json-output, dry-run, error-guidance, semantic-exit-codes, shadow-commit, filterable-list).
+          Apply any not already declared in plan document: kspec item trait add @spec @trait
+          Note: traits add inherited AC automatically.
+      - type: check
+        content: Validate references - kspec validate --refs
+        on_fail: Fix reference issues (dangling parent refs, missing spec_ref/plan_ref links)
+      - type: action
+        content: |
+          Start implementation.
+          Pick first task from: kspec plan get @plan --json (derived_tasks).
+          Use: kspec task start @task
+          Then follow /task-work for task lifecycle.
+  - _ulid: 01KGPF7BP1W8ZPHG5MHG4CXYE4
+    id: spec-plan-manual
+    trigger: manual
+    description: Execute plan via incremental spec creation - create plan record, find parent, create specs with AC, review traits, derive tasks with plan linking, validate, start work. Follows @spec-plan-design.
+    steps:
+      - type: action
+        content: |
+          Create plan record.
+          Use: kspec plan add --title "Plan Title" --content "Brief description of what's being planned" --status approved
+          Status approved because you're committing to the work.
+        inputs:
+          - name: plan_ref
+            description: The created plan reference
+            type: ref
+      - type: action
+        content: |
+          Find parent and create spec items.
+          Search: kspec search "<keyword>", kspec item list --tag <domain>, kspec item get @parent
+          If no suitable parent exists, create a module: kspec item add --type module --title "Module Name"
+          Create specs: kspec item add --under @parent --title "Title" --type feature --slug slug
+          Repeat for each spec.
+        inputs:
+          - name: parent_ref
+            description: Reference to the parent item
+            type: ref
+      - type: action
+        content: |
+          Add acceptance criteria.
+          For each spec: kspec item ac add @spec --given "precondition" --when "action" --then "expected result"
+          Each AC independently testable. 3-5 AC per spec is typical.
+          Cover happy path and key edge cases.
+      - type: action
+        content: |
+          Review and apply traits.
+          Use: kspec trait list to browse available traits.
+          Consider cross-cutting concerns for the spec type
+          (CLI features often need: json-output, dry-run, error-guidance, semantic-exit-codes).
+          Apply: kspec item trait add @spec @trait
+          Traits add inherited AC automatically.
+      - type: action
+        content: |
+          Derive tasks and link to plan.
+          Preview: kspec derive @spec --dry-run
+          Create: kspec derive @spec (recursive by default, creates task tree with dependencies)
+          Link each derived task to plan: kspec task set @task --plan-ref @plan
+          Set plan active: kspec plan set @plan --status active
+          Add implementation notes: kspec task note @task "Implementation approach: ..."
+          Note: task set --plan-ref creates a one-way link (task->plan). The plan's derived_tasks
+          array is only auto-updated by kspec plan derive and kspec plan import, not by manual linking.
+      - type: check
+        content: Validate all references - kspec validate --refs. Verify spec_ref and plan_ref resolve correctly on tasks.
+        on_fail: Fix reference issues
+      - type: action
+        content: |
+          Verify structure.
+          kspec item status @spec shows linked tasks.
+          For each task: kspec task get @task confirms plan_ref and spec_ref are set.
+          Note: check task-side links (not plan's derived_tasks which is not auto-updated in manual path).
+      - type: action
+        content: |
+          Start implementation.
+          Use: kspec task start @first-task
+          Then follow /task-work for task lifecycle.
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
