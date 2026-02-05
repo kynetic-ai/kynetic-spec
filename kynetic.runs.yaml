@@ -2431,7 +2431,7 @@ runs:
   - _ulid: 01KGR0F1AVEH0551MFQN8YFA2K
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-05T22:58:45.211Z
     step_results:
@@ -2446,5 +2446,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-05T22:58:57.678Z
-        completed_at: 2026-02-05T22:58:57.678Z
+        completed_at: 2026-02-05T22:59:11.565Z
+        notes: "Friction: (1) Plan import drops ACs - had to add 22 manually via 13 CLI calls. (2) Import
+          writes trait refs without @ prefix - caused schema errors, needed manual YAML fix. (3) No
+          bulk AC add command - very repetitive. (4) Workflow catch-up was manual/repetitive for
+          already-done steps. (5) Item list caps at 50 with no pagination."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-05T22:59:11.565Z
+        completed_at: 2026-02-05T22:59:11.565Z
     initiated_by: "@claude"
