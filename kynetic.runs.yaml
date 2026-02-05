@@ -2431,7 +2431,7 @@ runs:
   - _ulid: 01KGR0F1AVEH0551MFQN8YFA2K
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-05T22:58:45.211Z
     step_results:
@@ -2454,5 +2454,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-05T22:59:11.565Z
-        completed_at: 2026-02-05T22:59:11.565Z
+        completed_at: 2026-02-05T22:59:37.574Z
+        notes: "Coverage check: (1) Plan import drops ACs - NOT TRACKED, bug. (2) Import wrong trait ref
+          format - NOT TRACKED, bug. (3) Bulk AC add - ALREADY TRACKED as @01KGKYG2. (4) Workflow
+          catch-up - NOT TRACKED. (5) Item list pagination - NOT TRACKED (trait-filterable-list
+          partially relevant)."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-05T22:59:37.574Z
+        completed_at: 2026-02-05T22:59:37.574Z
     initiated_by: "@claude"
