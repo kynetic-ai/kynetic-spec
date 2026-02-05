@@ -44490,6 +44490,8 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #315. Rewrote SKILL.md as orchestrator with design/import/manual
+    workflow integration."
   depends_on: []
   context: []
   priority: 3
@@ -44499,6 +44501,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:56.938Z
   started_at: 2026-02-05T08:38:19.787Z
+  completed_at: 2026-02-05T08:59:07.992Z
   notes:
     - _ulid: 01KGKY7FHB8PEVSPEHEK32S45Z
       created_at: 2026-02-04T09:02:42.731Z
@@ -44517,9 +44520,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-05T08:59:07.992Z
-  closed_reason: "Merged in PR #315. Rewrote SKILL.md as orchestrator with design/import/manual
-    workflow integration."
 - _ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
   slugs: []
   title: Add @plan-workflow to meta definitions
@@ -44530,7 +44530,7 @@
     /plan skill for format details."
   spec_ref: "@plan-support"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44559,6 +44559,9 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-05T08:59:10.387Z
+  closed_reason: "Merged in PR #315. Added @spec-plan-design, @spec-plan-import, @spec-plan-manual
+    workflows to meta."
 - _ulid: 01KGMM4RX357TX4GEQ41KVYQED
   slugs: []
   title: Fix end-iteration naming and documentation confusion
