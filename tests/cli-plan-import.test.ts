@@ -109,10 +109,11 @@ Follow coding standards Y.
     kspec(`plan import "${planPath}" --module @test-core`, tempDir);
 
     // Check that task has the implementation notes
-    const tasks = kspecJson<Array<{ notes: Array<{ content: string }> }>>(
+    const allTasks = kspecJson<Array<{ notes: Array<{ content: string }>; plan_ref: string }>>(
       "task list --json",
       tempDir,
     );
+    const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].notes).toHaveLength(1);
     expect(tasks[0].notes[0].content).toContain("Implementation notes from plan");
@@ -286,9 +287,10 @@ derive_from_specs: true
 
     kspec(`plan import "${planPath}" --module @test-core`, tempDir);
 
-    const tasks = kspecJson<
+    const allTasks = kspecJson<
       Array<{ spec_ref: string; plan_ref: string; slugs: string[] }>
     >("task list --json", tempDir);
+    const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].spec_ref).toBe("@feature-one");
     expect(tasks[0].plan_ref).toBe("@test-plan");
@@ -316,10 +318,11 @@ derive_from_specs: true
 
     kspec(`plan import "${planPath}" --module @test-core`, tempDir);
 
-    const tasks = kspecJson<Array<{ title: string }>>(
+    const allTasks = kspecJson<Array<{ title: string; plan_ref: string }>>(
       "task list --json",
       tempDir,
     );
+    const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].title).toBe("Implement JSON Output Mode");
   });

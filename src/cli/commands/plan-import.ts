@@ -30,7 +30,7 @@ import { commitIfShadow } from "../../parser/shadow.js";
 import type { PlanInput, SpecItemInput, TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, output, success, warn } from "../output.js";
+import { error, info, output, setJsonMode, success, warn } from "../output.js";
 import { ulid } from "ulid";
 
 /**
@@ -86,6 +86,11 @@ async function importPlan(
   planPath: string,
   options: { module: string; dryRun?: boolean; update?: boolean; json?: boolean },
 ): Promise<void> {
+  // Set JSON mode if requested
+  if (options.json) {
+    setJsonMode(true);
+  }
+
   const ctx = await initContext();
   const author = getAuthor();
 
@@ -184,8 +189,18 @@ async function importPlan(
 
   // Process specs
   // AC: @plan-import ac-14, ac-16, ac-17, ac-22, ac-23, ac-25, ac-26, ac-29
-  for (const spec of sorted) {
+  for (let i = 0; i < sorted.length; i++) {
+    const spec = sorted[i];
     try {
+      // Validate required fields first
+      // AC: @plan-import ac-22
+      if (!spec.title) {
+        const errMsg = `Spec at index ${i} missing required field: title`;
+        warn(errMsg);
+        result.errors.push({ message: errMsg, spec });
+        continue;
+      }
+
       const specSlug = spec.slug || generateSlug(spec.title);
       const specRef = `@${specSlug}`;
 
@@ -209,15 +224,6 @@ async function importPlan(
           info(`Updated spec: ${specRef}`);
           result.updatedSpecs.push(specRef);
         }
-        continue;
-      }
-
-      // Validate required fields
-      // AC: @plan-import ac-22
-      if (!spec.title) {
-        const errMsg = `Spec missing required field: title`;
-        warn(errMsg);
-        result.errors.push({ message: errMsg, spec });
         continue;
       }
 
