@@ -4926,4 +4926,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGP14D6DF0APPMFXGEZ8EJS6
+    type: success
+    content: "Using createdSpecsMap to track specs during import solved parent reference resolution
+      elegantly. Specs created in topological order could reference earlier-created specs by slug
+      lookup in the map, working in both dry-run and real modes. Pattern: track created entities in
+      a map keyed by slug for multi-step operations with interdependencies."
+    created_at: 2026-02-05T04:31:56.621Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
