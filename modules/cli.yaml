@@ -266,6 +266,11 @@ features:
             given: --commands flag with JSON string
             when: kspec batch --commands with inline JSON runs
             then: Inline JSON is parsed and commands execute
+          - id: ac-stop-on-error
+            given: Default mode (no --continue flag) with 5 commands where command 3 fails at runtime
+            when: Batch executes
+            then: Commands 1-2 succeed, command 3 fails with error, commands 4-5 are not executed, exit code is
+              1
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
