@@ -43427,6 +43427,10 @@
   spec_ref: "@comma-tag-syntax"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #310. Implemented comma-separated tag syntax support via
+    parseTagsArray() helper in src/cli/parse-utils.ts. Applied across all tag-accepting commands
+    (task, inbox, item, meta, module). All 3 acceptance criteria covered with comprehensive unit and
+    E2E tests. CI passed all checks."
   depends_on: []
   context: []
   priority: 3
@@ -43437,6 +43441,7 @@
   vcs_refs: []
   created_at: 2026-02-03T04:31:39.171Z
   started_at: 2026-02-04T17:54:05.175Z
+  completed_at: 2026-02-05T04:23:02.540Z
   notes:
     - _ulid: 01KGMWZ55STEE8A0A03JP322AS
       created_at: 2026-02-04T17:59:55.834Z
@@ -43449,11 +43454,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-05T04:23:02.540Z
-  closed_reason: "Merged in PR #310. Implemented comma-separated tag syntax support via
-    parseTagsArray() helper in src/cli/parse-utils.ts. Applied across all tag-accepting commands
-    (task, inbox, item, meta, module). All 3 acceptance criteria covered with comprehensive unit and
-    E2E tests. CI passed all checks."
 - _ulid: 01KGGXA85MWJ3G70KNSRJ17WQS
   slugs: []
   title: "Design: CLI schema introspection commands for agent discoverability"
@@ -44344,7 +44344,7 @@
     exit code 6 (PARTIAL). Store plan record in project.plans.yaml with status active."
   spec_ref: "@plan-import"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44358,6 +44358,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-05T04:23:46.261Z
 - _ulid: 01KGKSTSH9JPK989VT2BBSBR5N
   slugs: []
   title: Add Plan Documents section to AGENTS.md
