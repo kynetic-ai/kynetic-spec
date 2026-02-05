@@ -71,7 +71,7 @@ function resolveWebUiPath(webUiDir?: string): string | null {
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
-let projectManager: any; // ProjectContextManager instance
+let projectManager: import('./project-context').ProjectContextManager | undefined;
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -231,7 +231,7 @@ export async function createServer(options: ServerOptions) {
         const requestId = ulid(); // Temporary ID to correlate upgrade with open
 
         try {
-          const manager = (store as any).projectManager;
+          const manager = (store as Record<string, unknown>).projectManager as import('./project-context').ProjectContextManager | undefined;
           if (!manager) {
             // Fallback: project manager not initialized yet
             wsProjectPaths.set(requestId, startupProjectPath);
@@ -251,9 +251,9 @@ export async function createServer(options: ServerOptions) {
             // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject
             try {
               projectContext = manager.getProject();
-            } catch (err: any) {
+            } catch (err: unknown) {
               // AC: @multi-directory-daemon ac-23 - Reject when no default
-              if (err.message.includes('No default project configured')) {
+              if (err instanceof Error && err.message.includes('No default project configured')) {
                 throw new Error('No project specified');
               }
               throw err;
@@ -263,8 +263,8 @@ export async function createServer(options: ServerOptions) {
           // Store resolved path for open() handler
           wsProjectPaths.set(requestId, projectContext.path);
           return { wsRequestId: requestId };
-        } catch (err: any) {
-          console.error(`[daemon] WebSocket connection rejected: ${err.message}`);
+        } catch (err: unknown) {
+          console.error(`[daemon] WebSocket connection rejected: ${err instanceof Error ? err.message : String(err)}`);
           throw err;
         }
       },
@@ -274,7 +274,7 @@ export async function createServer(options: ServerOptions) {
 
         // AC: @multi-directory-daemon ac-21 - Get bound project path
         // Fallback to startup project if not found (shouldn't happen)
-        const requestId = (ws.data as any).wsRequestId;
+        const requestId = (ws.data as ConnectionData & { wsRequestId?: string }).wsRequestId;
         const projectPath = requestId ? wsProjectPaths.get(requestId) || startupProjectPath : startupProjectPath;
 
         // Clean up temporary mapping

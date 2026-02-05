@@ -74,8 +74,8 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
           }
 
           return { projectContext };
-        } catch (err: any) {
-          const message = err.message;
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
 
           // AC: @multi-directory-daemon ac-3, ac-20b
           if (

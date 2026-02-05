@@ -70,7 +70,7 @@ export class PubSubManager {
    * AC: @api-contract ac-29, @trait-websocket-protocol ac-3, ac-6
    * AC: @multi-directory-daemon ac-18, ac-21 - Filter by project binding
    */
-  broadcast(topic: string, event: string, data: any, projectPath?: string) {
+  broadcast(topic: string, event: string, data: Record<string, unknown>, projectPath?: string) {
     for (const [sessionId, ws] of this.connections) {
       // AC: @multi-directory-daemon ac-18 - Only send to connections bound to same project
       if (projectPath && ws.data.projectPath !== projectPath) {

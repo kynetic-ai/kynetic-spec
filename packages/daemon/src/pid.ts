@@ -50,8 +50,8 @@ export class PidFileManager {
       } finally {
         closeSync(fd);
       }
-    } catch (err: any) {
-      if (err.code === 'EEXIST') {
+    } catch (err: unknown) {
+      if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'EEXIST') {
         // File already exists - check if daemon is actually running
         if (this.isDaemonRunning()) {
           throw new Error('Daemon already running');
