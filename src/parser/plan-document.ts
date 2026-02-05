@@ -11,6 +11,7 @@
 
 import { parse as parseYaml } from "yaml";
 import { z } from "zod";
+import { AcceptanceCriterionSchema } from "../schema/spec.js";
 
 /**
  * Spec definition from plan document
@@ -21,7 +22,7 @@ export const PlanSpecSchema = z.object({
   type: z.string().optional(),
   parent: z.string().optional(),
   description: z.string().optional(),
-  acceptance_criteria: z.array(z.any()).optional(),
+  acceptance_criteria: z.array(AcceptanceCriterionSchema).optional(),
   traits: z.array(z.string()).optional(),
 });
 
@@ -278,6 +279,15 @@ export function topologicalSort(
 
   for (const spec of specs) {
     const slug = spec.slug || slugify(spec.title);
+    if (specBySlug.has(slug)) {
+      return {
+        sorted: [],
+        error: {
+          type: "validation",
+          message: `Duplicate slug detected: "${slug}". Ensure each spec has a unique slug or title.`,
+        },
+      };
+    }
     specBySlug.set(slug, spec);
     graph.set(slug, []);
   }

@@ -217,7 +217,8 @@ derive_from_specs: true
   parent: "@parent-spec"
   description: Full description
   acceptance_criteria:
-    - given: condition
+    - id: ac-1
+      given: condition
       when: action
       then: result
   traits:
@@ -237,6 +238,7 @@ derive_from_specs: true
       description: "Full description",
       acceptance_criteria: [
         {
+          id: "ac-1",
           given: "condition",
           when: "action",
           then: "result",
