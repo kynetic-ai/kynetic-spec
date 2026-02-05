@@ -5331,4 +5331,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGR0NMTJDKB72NAP0YEENDF3
+    type: success
+    content: "Subagent-driven holistic review for spec-plan design: Launching a general-purpose subagent
+      with structured review criteria (completeness, consistency, spec coverage, edge cases) caught
+      2 blockers and 7 should-fix items before plan import. Pattern: write plan doc, then have
+      subagent review against existing codebase patterns before committing."
+    created_at: 2026-02-05T23:02:21.778Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
