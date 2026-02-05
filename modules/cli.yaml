@@ -298,6 +298,10 @@ features:
             given: Batch with --continue where commands 1-2 succeed and command 3 fails
             when: Batch completes with partial success
             then: A single shadow commit is created containing changes from commands 1-2 only
+          - id: ac-mutating-only
+            given: Batch containing a read-only command like item get
+            when: kspec batch runs
+            then: Validation rejects with error identifying the non-mutating command
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
