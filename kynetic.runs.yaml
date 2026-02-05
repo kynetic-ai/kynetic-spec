@@ -2331,7 +2331,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGQYQ1WX8Z6BA8WFC9Q5TEKE
     workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
-    status: active
+    status: completed
     current_step: 4
     total_steps: 5
     started_at: 2026-02-05T22:28:10.781Z
@@ -2362,5 +2362,8 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-05T22:51:13.291Z
-        completed_at: 2026-02-05T22:51:13.291Z
+        completed_at: 2026-02-05T22:52:39.163Z
+        notes: "Choosing import path: 3 specs, 15+ ACs, derive_from_specs. Plan document ready at
+          scratchpad."
     initiated_by: "@claude"
+    completed_at: 2026-02-05T22:52:39.163Z
