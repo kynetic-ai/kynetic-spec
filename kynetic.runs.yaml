@@ -2332,8 +2332,20 @@ runs:
   - _ulid: 01KGQYQ1WX8Z6BA8WFC9Q5TEKE
     workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 5
     started_at: 2026-02-05T22:28:10.781Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-05T22:28:10.781Z
+        completed_at: 2026-02-05T22:39:33.315Z
+        inputs:
+          feature_description: Batch command execution via JSON - a generic 'kspec batch' command that accepts
+            a JSON array of heterogeneous CLI commands for sequential execution with pre-validation,
+            dry-run, and unified error reporting
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-05T22:39:33.315Z
+        completed_at: 2026-02-05T22:39:33.315Z
     initiated_by: "@claude"
