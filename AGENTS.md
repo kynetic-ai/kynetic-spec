@@ -1021,7 +1021,7 @@ When working on this project, you ARE using kspec to build kspec. Track your wor
 | `/reflect` | Session reflection and learning capture |
 | `/release` | Create versioned releases with git tags and GitHub releases |
 | `/spec` | Spec authoring guide - item types, acceptance criteria, traits |
-| `/spec-plan` | Translate approved plans to specs |
+| `/spec-plan` | Plan-to-spec translation with design, import, and manual workflows (`@spec-plan-design`, `@spec-plan-import`, `@spec-plan-manual`) |
 | `/task-work` | Full task lifecycle - inherit, verify, start, note, submit, PR, complete (`@task-work-session` workflow) |
 | `/triage` | Systematic inbox and observation processing |
 
