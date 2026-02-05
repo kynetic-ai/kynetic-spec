@@ -13287,8 +13287,18 @@ runs:
   - _ulid: 01KGP0EK8D006T2Q0VCXKWBF54
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-05T04:20:01.933Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-05T04:20:01.933Z
+        completed_at: 2026-02-05T04:20:07.912Z
+        inputs:
+          spec_ref: "@comma-tag-syntax"
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-05T04:20:07.912Z
+        completed_at: 2026-02-05T04:20:07.912Z
     initiated_by: "@claude"
