@@ -2278,7 +2278,7 @@ runs:
   - _ulid: 01KGQYAKZW9T9RYMTS44R2ZMQ4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-05T22:21:23.324Z
     step_results:
@@ -2316,5 +2316,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-05T22:22:18.802Z
-        completed_at: 2026-02-05T22:22:18.802Z
+        completed_at: 2026-02-05T22:23:11.873Z
+        notes: "User approved both. (1) workflow runs --json include step_results - approved as-is. (2)
+          Comma-separated tags - user wants to expand scope: make it a trait and unify across all
+          commands that set/use tags, not just inbox add."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-05T22:23:11.873Z
+        completed_at: 2026-02-05T22:23:11.873Z
     initiated_by: "@claude"
