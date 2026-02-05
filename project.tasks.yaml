@@ -33910,6 +33910,25 @@
       author: "@claude"
       content: "Add introspection commands for programmatic CLI discovery: kspec help --json-schema, kspec help --exit-codes, kspec help commands --json. Enables agents to discover available commands and their schemas."
       supersedes: null
+    - _ulid: 01KGP3EYTQ893YN1WH11R0E0MC
+      created_at: 2026-02-05T05:12:39.511Z
+      author: "@claude"
+      content: |-
+        Implemented all 5 acceptance criteria for CLI schema introspection:
+
+        ac-1: help --json outputs valid JSON with commands tree and help content
+        ac-2: help --exit-codes displays all exit codes in human-readable format  
+        ac-3: help --exit-codes --json outputs exit codes as JSON array
+        ac-4: help <command> --json-schema generates JSON Schema for command options/arguments
+        ac-5: Fixed --json flag handling via global preAction hook
+
+        Key implementation details:
+        - The global --json flag is handled by preAction hook in index.ts which sets globalJsonMode
+        - Help command uses isJsonMode() to check if JSON output should be produced
+        - Added showExitCodes(), showExitCodesJson(), and showCommandJsonSchema() functions
+        - JSON Schema generation extracts types from Commander option flags
+        - All 5 ACs covered with comprehensive E2E tests (22 total tests passing)
+      supersedes: null
   todos: []
   automation: eligible
   started_at: 2026-02-05T05:04:17.225Z
@@ -34530,6 +34549,25 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: |-
+    Merged in PR #312. Implemented plan import command with spec/task auto-generation.
+
+    Implementation summary:
+    - Plan document parser extracts specs/tasks from markdown
+    - Topological sorting handles parent-child relationships
+    - Auto-derives tasks when derive_from_specs: true
+    - Stores plan records with derived_specs and derived_tasks refs
+    - Supports --dry-run, --update, --module flags
+    - Error handling for circular refs, missing parents, validation
+
+    Tests: 18/19 passing (Commander --json parsing issue remains)
+    All acceptance criteria covered with test annotations.
+
+    Quality gates passed:
+    ✅ CI tests passing
+    ✅ No unresolved review threads
+    ✅ AC coverage verified
+    ✅ Code implements spec intent
   depends_on: []
   context: []
   priority: 2
@@ -34540,6 +34578,7 @@
   vcs_refs: []
   created_at: 2026-02-04T07:45:43.967Z
   started_at: 2026-02-05T04:23:46.261Z
+  completed_at: 2026-02-05T05:01:33.536Z
   notes:
     - _ulid: 01KGP0Y1F73SFK5EG7AS6Y4VAJ
       created_at: 2026-02-05T04:28:28.007Z
@@ -34563,26 +34602,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-05T05:01:33.536Z
-  closed_reason: |-
-    Merged in PR #312. Implemented plan import command with spec/task auto-generation.
-
-    Implementation summary:
-    - Plan document parser extracts specs/tasks from markdown
-    - Topological sorting handles parent-child relationships
-    - Auto-derives tasks when derive_from_specs: true
-    - Stores plan records with derived_specs and derived_tasks refs
-    - Supports --dry-run, --update, --module flags
-    - Error handling for circular refs, missing parents, validation
-
-    Tests: 18/19 passing (Commander --json parsing issue remains)
-    All acceptance criteria covered with test annotations.
-
-    Quality gates passed:
-    ✅ CI tests passing
-    ✅ No unresolved review threads
-    ✅ AC coverage verified
-    ✅ Code implements spec intent
 - _ulid: 01KGKSTSH9JPK989VT2BBSBR5N
   slugs: []
   title: Add Plan Documents section to AGENTS.md
