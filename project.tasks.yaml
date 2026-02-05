@@ -44700,7 +44700,9 @@
   plan_ref: "@batch-command-execution-via-json"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-batch-command-schema"
+    - "@implement-batch-allowed-commands"
   context: []
   priority: 3
   tags: []
