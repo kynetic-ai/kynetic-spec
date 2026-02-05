@@ -44508,6 +44508,36 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-05T04:59:24.536Z
-  notes: []
-  todos: []
   started_at: 2026-02-05T04:59:29.510Z
+  notes:
+    - _ulid: 01KGP37JYA2NTWB3XCPCNBZ7AP
+      created_at: 2026-02-05T05:08:37.962Z
+      author: "@claude"
+      content: >-
+        Fixed doubled [REVIEW SUBAGENT] prefix in ralph loop output.
+
+
+        Root cause: createPrefixedRenderer in cli-renderer.ts had two independent sources of prefix
+        doubling:
+
+
+        1. withPrefixedOutput() wrapped both console.log and process.stdout.write to add the prefix.
+        Since console.log output flows through stdout.write, the prefix was applied twice for any
+        console.log-based output (headers, section labels, tool updates, etc.).
+
+
+        2. newSection() manually prepended the prefix to the label (${prefix} ${label}) before
+        passing it to inner.newSection(), which then got prefixed again by the wrappers.
+
+
+        Fix:
+
+        - Removed prefix from console.log wrapper (line 295) - let stdout.write be the single source
+        of prefixing
+
+        - Removed manual prefix from newSection label (line 343) - pass just the label
+
+
+        Added tests verifying no double-prefixing for both console.log and stdout.write paths.
+      supersedes: null
+  todos: []
