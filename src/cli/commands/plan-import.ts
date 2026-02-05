@@ -510,7 +510,7 @@ async function importPlan(
         `\nImported plan: ${successCount} items created, ${errorCount} errors`,
       );
     }
-  }
+  }  // end of else block (non-JSON output)
 
   // Exit code logic
   // AC: @plan-import ac-15 - Dry run exits 0
