@@ -44901,26 +44901,36 @@
     - plan
   vcs_refs: []
   created_at: 2026-02-05T23:00:57.448Z
-  notes: []
+  notes:
+    - _ulid: 01KGR162P9SW7BPJV7M577377B
+      created_at: 2026-02-05T23:11:20.265Z
+      author: "@claude"
+      content: "Additional plan import issue: derive_from_specs copies the full Implementation Notes
+        section verbatim to ALL derived tasks. For batch-exec plan, all 3 tasks got identical
+        7-point architecture notes even though most points are only relevant to the parent feature
+        task. Implementation Notes should either: (a) only go to the parent feature's task, (b) be
+        scoped per-spec if the plan format supports it, or (c) be attached to the plan record only,
+        not duplicated into tasks."
+      supersedes: null
   todos: []
-- title: "Fix: Plan import writes trait refs without @ prefix"
+- _ulid: 01KGR0K54RN3HN1J08ACZMHFFP
+  slugs: []
+  title: "Fix: Plan import writes trait refs without @ prefix"
+  type: task
   description: kspec plan import writes trait references as bare strings (e.g., trait-json-output)
     instead of @-prefixed refs (e.g., @trait-json-output). This causes schema validation failures
     and makes items unreachable via kspec item get. Requires manual YAML editing to fix.
-  type: task
   spec_ref: "@plan-import"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - bug
     - plan
-  depends_on: []
-  _ulid: 01KGR0K54RN3HN1J08ACZMHFFP
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-05T23:01:00.184Z
   notes: []
