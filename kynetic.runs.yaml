@@ -13680,7 +13680,7 @@ runs:
   - _ulid: 01KGQTX8V4T7ZXJNJ8PG8G4T61
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-05T21:21:40.196Z
     step_results:
@@ -13706,5 +13706,25 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-05T21:21:55.913Z
-        completed_at: 2026-02-05T21:21:55.913Z
+        completed_at: 2026-02-05T21:22:07.496Z
+        notes: >-
+          Friction points:
+
+          1. Task was blocked with needs_review automation status but the block was unnecessary -
+          the architectural decisions it was waiting for turned out to not be needed. The task had
+          been over-cautiously blocked in a previous session. Lesson: tasks should only be blocked
+          for genuine external blockers, not for perceived complexity.
+
+          2. Branch management on main - the /pr skill pattern of creating branch from main,
+          resetting main, is well-established but the commit was already on main before I ran /pr.
+          Had to do the branch-create-reset dance. Minor friction, but committing directly to main
+          before deciding on PR strategy adds an extra step.
+
+          3. No real friction with the actual type fixes - the patterns (catch unknown + instanceof,
+          Record<string,unknown> for payloads) are well-established TypeScript idioms that applied
+          cleanly.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-05T21:22:07.496Z
+        completed_at: 2026-02-05T21:22:07.496Z
     initiated_by: "@claude"
