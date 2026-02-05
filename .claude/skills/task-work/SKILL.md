@@ -321,12 +321,9 @@ After 3 genuine attempts with different fixes, add a note documenting what you t
 
 ### Exit Conditions
 
-Exit when:
-- **Task work complete** - PR created (normal exit)
-- **No eligible tasks** - `kspec tasks ready --eligible` returns empty
-- **All remaining eligible tasks blocked** - every eligible task has a genuine external blocker
+**Normal exit: Stop responding.** After creating a PR (or blocking a task), simply stop responding. Ralph continues automatically — it checks for remaining eligible tasks at the start of each iteration and exits the loop itself when none remain. You do not need to manage loop termination.
 
-**Important:** "No eligible tasks" means ALL eligible tasks are done or blocked, not just the one you're working on. If one task is blocked, check for others before ending.
+**Important:** "No eligible tasks" means ALL eligible tasks are done or blocked, not just the one you're working on. If one task is blocked, check for others before stopping.
 
 ### Turn Completion vs Loop End
 
@@ -351,8 +348,10 @@ When you hit a genuine blocker on a task, the correct pattern is:
 
 1. **Attempt the work first** - actually try to solve the problem
 2. **Block the specific task** - not the whole loop
-3. **Check for other work** - there may be more eligible tasks
-4. **Continue or end** - only end when nothing remains
+3. **MUST run `kspec tasks ready --eligible`** - its output is authoritative
+4. **If tasks remain: work on the next one.** If empty: stop responding — ralph exits automatically.
+
+**Trust the YAML state.** If a task's `depends_on` is empty, it has no dependencies. If `kspec tasks ready --eligible` lists a task, it IS eligible and ready to work on. Do not invent blocking relationships based on perceived connections between tasks, PRs in CI, or other inferred state. The command output is the source of truth.
 
 | Situation | Action | Correct Response |
 |-----------|--------|------------------|
@@ -362,7 +361,7 @@ When you hit a genuine blocker on a task, the correct pattern is:
 | Task is complex/difficult | **DO THE WORK** | Complexity is not a blocker |
 | Tests are failing | **FIX THEM** | Debug and resolve |
 | Service needs to be running | **START IT** | See "Tasks Requiring Services" |
-| No more eligible tasks exist | `end-loop` | Only valid end condition |
+| No more eligible tasks exist | Stop responding | Ralph auto-exits when no tasks remain |
 
 ```bash
 # Pattern: When you hit a genuine blocker mid-task
@@ -370,29 +369,32 @@ kspec task note @task "Attempted X, Y, Z. Blocked because: [external reason]"
 kspec task block @task --reason "Requires architectural decision on X"
 kspec task set @task --automation needs_review
 
-# Check for other work before ending
+# MUST check for other work — command output is authoritative
 kspec tasks ready --eligible
 # If tasks exist: pick one and continue
-# If empty: then end-loop is appropriate
+# If empty: stop responding — ralph exits the loop automatically
 ```
 
-### Explicit Loop End Signal
+### Explicit Loop End Signal (Rare Escape Hatch)
 
-Use `end-loop` **only** when no more work is possible:
+Ralph automatically exits the loop when no eligible tasks remain — you do not need to signal this. In almost all cases, simply stop responding and let ralph manage loop termination.
+
+`end-loop` exists only for situations where work is stalling across multiple iterations with no productive progress — something ralph's automatic task checks cannot detect. If you are uncertain whether to end, **default to stopping** rather than calling `end-loop`.
 
 ```bash
-kspec ralph end-loop --reason "No eligible tasks remaining"
+# Only if work is genuinely stalling across iterations
+kspec ralph end-loop --reason "No progress across N iterations: [description]"
 ```
 
-**Valid reasons to end:**
-- `kspec tasks ready --eligible` returns empty
-- All remaining eligible tasks are blocked (and you checked)
+**Before calling `end-loop`, you MUST:**
+1. Run `kspec tasks ready --eligible` and confirm it returns empty
+2. Verify the stall is real, not just one difficult task
 
-**Invalid reasons to end:**
-- "This task is hard" → do it anyway
-- "This task needs external decision" → block it and check for other tasks
-- "I've done enough" → check for more eligible tasks first
-- "I just created a PR" → ralph continues automatically, don't call end-loop
+**Do NOT call `end-loop`:**
+- After creating a PR → ralph continues automatically
+- When one task is blocked → block it and check for others
+- When a task is hard → do the work
+- When `kspec tasks ready --eligible` still shows tasks → work on them
 
 ### What Is NOT an Exit Condition
 
@@ -407,7 +409,7 @@ These are NOT reasons to exit, block, or mark needs_review:
 
 ### Key Behaviors
 
-- Only `automation: eligible` tasks are considered
+- Only `automation: eligible` tasks are considered. Automation eligibility is determined solely by the `automation` field, not by task type, title, or description. If a task is marked `eligible`, work on it — do not re-triage based on whether it looks like a "design task" or any other category.
 - Verification still performed (prevent duplicate work)
 - Decisions auto-resolve without prompts
 - PR review handled externally by ralph (not this workflow)
