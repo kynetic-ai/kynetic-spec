@@ -307,6 +307,10 @@ features:
               --force)
             when: kspec batch runs
             then: Command executes without prompting for confirmation (batch mode is implicitly non-interactive)
+          - id: ac-invalid-json
+            given: Malformed JSON input (from any source)
+            when: kspec batch runs
+            then: Parse error with line/position info if available, exit code 1, no commands executed
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
