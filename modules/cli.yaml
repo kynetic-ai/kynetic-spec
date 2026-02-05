@@ -294,6 +294,10 @@ features:
             given: Batch with 3 successful mutating commands
             when: Batch completes successfully
             then: A single shadow branch commit is created containing all changes (not 3 separate commits)
+          - id: ac-partial-commit
+            given: Batch with --continue where commands 1-2 succeed and command 3 fails
+            when: Batch completes with partial success
+            then: A single shadow commit is created containing changes from commands 1-2 only
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
