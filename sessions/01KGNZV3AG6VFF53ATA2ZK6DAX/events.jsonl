@@ -1,0 +1,1 @@
+{"ts":1770264563030,"seq":0,"type":"session.start","session_id":"01KGNZV3AG6VFF53ATA2ZK6DAX","data":{"adapter":"claude-code-acp","maxLoops":30,"maxRetries":3,"maxFailures":3,"maxTasks":1,"yolo":true}}

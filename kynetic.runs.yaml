@@ -13227,6 +13227,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-04T18:01:02.315Z
+    completed_at: 2026-02-04T18:02:28.803Z
     step_results:
       - step_index: 0
         status: completed
@@ -13259,4 +13260,11 @@ runs:
           duplicate (test helper API already @01KFFYBZ). Total: 1 new observation, 1 duplicate
           skipped, 3 low-confidence items filtered out."
     initiated_by: "@claude"
-    completed_at: 2026-02-04T18:02:28.803Z
+  - _ulid: 01KGNZVR5F3W0RP4G22TNS0QBA
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-05T04:09:44.367Z
+    step_results: []
+    initiated_by: "@claude"
