@@ -44275,7 +44275,7 @@
     parsePlanDocument(content: string): ParsedPlan."
   spec_ref: "@plan-import"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44321,6 +44321,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-05T04:20:29.666Z
+  closed_reason: "Merged in PR #309. Implemented plan document parser in src/parser/plan-document.ts
+    with markdown section extraction, YAML parsing, topological sorting for parent dependencies,
+    circular dependency detection, and comprehensive error handling. All 9 parser-scoped ACs covered
+    with 23 passing tests. Fixed code review issues: added AcceptanceCriterionSchema validation and
+    duplicate slug detection."
 - _ulid: 01KGKSTH10AAV14XWDTZEZQV17
   slugs: []
   title: Implement plan import with spec/task auto-generation
