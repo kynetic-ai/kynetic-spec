@@ -321,7 +321,7 @@ async function importPlan(
         // Track the created spec for parent resolution
         // Need to construct LoadedSpecItem with _sourceFile and _path for nested specs
         const createdSpec: LoadedSpecItem = {
-          ...(addResult.item as SpecItem),
+          ...(addResult.item as LoadedSpecItem),
           _sourceFile: actualParent._sourceFile,
           _path: addResult.path,
         };
