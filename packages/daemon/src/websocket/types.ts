@@ -29,7 +29,7 @@ export interface CommandAck {
   request_id?: string;
   success: boolean;
   error?: string;
-  details?: any;
+  details?: string;
 }
 
 // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
@@ -47,7 +47,7 @@ export interface BroadcastEvent {
   timestamp: string;
   topic: string;
   event: string;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 // Internal connection metadata

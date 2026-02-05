@@ -105,9 +105,10 @@ export class ProjectContextManager {
       if (context) {
         context.watcherActive = true;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // AC: @multi-directory-daemon ac-19 - Handle OS limits (EMFILE/ENFILE)
-      if (error.code === 'EMFILE' || error.code === 'ENFILE') {
+      const code = error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined;
+      if (code === 'EMFILE' || code === 'ENFILE') {
         throw new Error('Unable to watch project - resource limit reached');
       }
       throw error;

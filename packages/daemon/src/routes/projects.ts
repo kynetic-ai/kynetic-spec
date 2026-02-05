@@ -80,9 +80,10 @@ export function createProjectsRoutes(options: ProjectsRouteOptions) {
           // Start watcher for the registered project
           try {
             await projectManager.startWatcher(body.path);
-          } catch (error: any) {
+          } catch (error: unknown) {
             // AC: @multi-directory-daemon ac-19 - Handle OS limits
-            if (error.message.includes('resource limit')) {
+            const message = error instanceof Error ? error.message : String(error);
+            if (message.includes('resource limit')) {
               return errorResponse(503, {
                 error: 'Unable to watch project - resource limit reached',
               });
@@ -98,16 +99,19 @@ export function createProjectsRoutes(options: ProjectsRouteOptions) {
               watcherStatus: context.watcherActive ? 'active' : 'stopped',
             },
           };
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : String(error);
+          const code = error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined;
+
           // AC: @multi-directory-daemon ac-5 - Invalid project (no .kspec/)
-          if (error.message.includes('.kspec/ not found')) {
+          if (message.includes('.kspec/ not found')) {
             return errorResponse(400, {
               error: `Invalid kspec project - .kspec/ not found at ${body.path}`,
             });
           }
 
           // AC: @multi-directory-daemon ac-8b - Permission denied
-          if (error.code === 'EACCES' || error.code === 'EPERM') {
+          if (code === 'EACCES' || code === 'EPERM') {
             return errorResponse(403, {
               error: `Permission denied - cannot read ${body.path}`,
             });
@@ -115,7 +119,7 @@ export function createProjectsRoutes(options: ProjectsRouteOptions) {
 
           // Generic error
           return errorResponse(500, {
-            error: error.message || 'Failed to register project',
+            error: message || 'Failed to register project',
           });
         }
       },
@@ -149,9 +153,9 @@ export function createProjectsRoutes(options: ProjectsRouteOptions) {
           success: true,
           message: `Project unregistered: ${projectPath}`,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         return errorResponse(500, {
-          error: error.message || 'Failed to unregister project',
+          error: error instanceof Error ? error.message : 'Failed to unregister project',
         });
       }
     });

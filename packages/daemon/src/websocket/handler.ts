@@ -123,7 +123,7 @@ export class WebSocketHandler {
     request_id: string | undefined,
     success: boolean,
     error?: string,
-    details?: any
+    details?: string
   ) {
     const ack: CommandAck = {
       ack: true,
