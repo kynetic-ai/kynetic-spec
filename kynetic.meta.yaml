@@ -4985,4 +4985,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGP40YN2T598YCSXZWJWWG5T
+    type: success
+    content: Tracing output flow (console.log → stdout.write chain) quickly revealed the doubled prefix
+      bug. When debugging output duplication, mapping the full write path through all
+      wrappers/interceptors identifies where multiple layers add the same content.
+    created_at: 2026-02-05T05:22:29.154Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
