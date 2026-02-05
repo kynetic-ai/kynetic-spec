@@ -5283,4 +5283,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQY7097397E46Q8T1WZADDF
+    type: friction
+    content: "task-work-loop has 69% abort rate (11/16 runs) — almost entirely because no eligible tasks
+      existed when started. Workflow works fine when work exists (5/5 completed all 9 steps). Root
+      cause: ralph orchestrator starts workflow without pre-checking kspec tasks ready --eligible."
+    created_at: 2026-02-05T22:19:24.839Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
