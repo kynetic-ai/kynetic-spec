@@ -487,3 +487,14 @@ inbox:
       - cli
       - reflection
     added_by: "@claude"
+  - _ulid: 01KGQY6NQPNRS1FE7TQVGYGHGK
+    text: "Skill documentation staleness detection - No mechanism exists to detect when skill docs drift
+      from reality (e.g., /e2e skill had incorrect bits-ui selector info). Consider: checksum/hash
+      of referenced files, last-verified dates, or a 'kspec skill verify' command that tests skill
+      examples against current codebase."
+    created_at: 2026-02-05T22:19:14.038Z
+    tags:
+      - cli
+      - dx
+      - skills
+    added_by: "@claude"
