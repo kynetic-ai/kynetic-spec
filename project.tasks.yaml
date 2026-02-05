@@ -44828,6 +44828,16 @@
         7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
         temp kspec project running a real batch payload end-to-end. Test the full matrix:
         stdin/file/inline × stop-on-error/continue × success/failure/partial.
+    - _ulid: 01KGR18ASFFTFPT7ZW82GMT94E
+      created_at: 2026-02-05T23:12:34.095Z
+      author: "@claude"
+      content: "Scope: Define and validate the batch command input schema. Responsible for the Zod schema
+        for command objects ({command, args, id?}), arg-to-CLI-parameter mapping logic, and
+        validation error messages (unknown command suggestions, missing required arg
+        identification). This is the parseBatchInput and the schema portion of validateBatch. Covers
+        ACs: ac-command-field, ac-args-mapping, ac-unknown-command, ac-missing-required,
+        ac-id-field."
+      supersedes: null
   todos: []
 - _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
   slugs:
