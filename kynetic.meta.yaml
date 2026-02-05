@@ -5322,4 +5322,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQYECS40M7NHKZKJPKKEK9Y
+    type: success
+    content: "Parallel subagent mining pattern: spawning 3 specialized agents (notes, patterns, gaps) to
+      analyze the same dataset from different angles. Each found complementary insights the others
+      missed. Effective for pre-prune data extraction."
+    created_at: 2026-02-05T22:23:27.012Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
