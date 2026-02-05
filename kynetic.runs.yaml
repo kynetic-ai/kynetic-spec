@@ -13450,6 +13450,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-05T04:55:16.339Z
+    completed_at: 2026-02-05T04:56:09.156Z
     step_results:
       - step_index: 0
         status: completed
@@ -13481,4 +13482,11 @@ runs:
         notes: No items captured. All potential items either already tracked or not meeting high-confidence
           criteria for loop mode.
     initiated_by: "@claude"
-    completed_at: 2026-02-05T04:56:09.156Z
+  - _ulid: 01KGP2HDDCN24EF00MNRWHBSF1
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-05T04:56:31.405Z
+    step_results: []
+    initiated_by: "@claude"
