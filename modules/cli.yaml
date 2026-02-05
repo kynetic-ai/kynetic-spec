@@ -251,6 +251,10 @@ features:
                 given: Command object missing a required arg
                 when: Validation runs
                 then: Error identifies which arg is missing for which command
+              - id: ac-id-field
+                given: Command object with optional id field
+                when: Batch output is rendered
+                then: The id appears in per-command results for correlation
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
