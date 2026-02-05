@@ -3217,7 +3217,7 @@ features:
         then: behavior unchanged - both tags added as before
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KGK9Z2Y8CJGVWGWDTJX3KGRJ
     slugs:
       - cli-schema-introspection
