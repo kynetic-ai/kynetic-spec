@@ -239,6 +239,10 @@ features:
                 given: Command object in batch array
                 when: The command field is parsed
                 then: Field matches a known mutating CLI command path such as item add or task note
+              - id: ac-args-mapping
+                given: Command object with args
+                when: Args are mapped to CLI parameters
+                then: Keys map to flag names without -- prefix, positional args use their documented argument name
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
