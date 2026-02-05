@@ -1388,14 +1388,6 @@ runs:
           (success). Used 'kspec meta observe' commands. No inbox items or questions to add.
           Reflection complete."
     initiated_by: "@claude"
-  - _ulid: 01KGM09EMDQQ0MDGBJQ2WC8DMY
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-04T09:38:44.494Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KGM0VWZF4ZT8P0CNPQ7MAXVM
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: completed
@@ -1662,14 +1654,6 @@ runs:
         started_at: 2026-02-04T10:25:16.378Z
         completed_at: 2026-02-04T10:25:32.683Z
     initiated_by: "@claude"
-  - _ulid: 01KGMN9HKZSK808AFZME0XB006
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-04T15:45:47.647Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KGMV4QRRPAW418XZFMNMKPFX
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: completed
@@ -1706,22 +1690,6 @@ runs:
         completed_at: 2026-02-04T17:28:53.684Z
         notes: No items to capture. Session completed successfully with no systemic issues. All problems
           encountered were resolved within the session.
-    initiated_by: "@claude"
-  - _ulid: 01KGMVDH9D57XYMNTBV6CYFXBB
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 1
-    total_steps: 10
-    started_at: 2026-02-04T17:32:49.837Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-04T17:32:49.837Z
-        completed_at: 2026-02-04T17:52:08.623Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-04T17:52:08.623Z
-        completed_at: 2026-02-04T17:52:08.623Z
     initiated_by: "@claude"
   - _ulid: 01KGMVE1XC2RT82GVHTR5N5JCM
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -1897,14 +1865,6 @@ runs:
           duplicate (test helper API already @01KFFYBZ). Total: 1 new observation, 1 duplicate
           skipped, 3 low-confidence items filtered out."
     initiated_by: "@claude"
-  - _ulid: 01KGNZVR5F3W0RP4G22TNS0QBA
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-05T04:09:44.367Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KGP0E1S2ZMCY71K5G7YRKQGT
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: completed
@@ -2073,14 +2033,6 @@ runs:
         notes: Reflection complete. Session delivered plan import command with core functionality working
           and partial test coverage.
     initiated_by: "@claude"
-  - _ulid: 01KGP15KNG4VCPKMSDKEQSF4MF
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-05T04:32:36.016Z
-    step_results: []
-    initiated_by: "@claude"
   - _ulid: 01KGP2F43KBXXYWNXK0VDB666T
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: completed
@@ -2118,14 +2070,6 @@ runs:
         completed_at: 2026-02-05T04:56:09.156Z
         notes: No items captured. All potential items either already tracked or not meeting high-confidence
           criteria for loop mode.
-    initiated_by: "@claude"
-  - _ulid: 01KGP2HDDCN24EF00MNRWHBSF1
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-05T04:56:31.405Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KGP2JN5X7N8T0VT5N6D8PRPW
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -2202,50 +2146,6 @@ runs:
           capture. Session successfully implemented CLI schema introspection with all 5 ACs covered
           and 22 tests passing."
     initiated_by: "@claude"
-  - _ulid: 01KGP3M5YJ22W8NHXZA3DP03DX
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 6
-    total_steps: 10
-    started_at: 2026-02-05T05:15:30.643Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-05T05:15:30.643Z
-        completed_at: 2026-02-05T05:15:42.449Z
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-05T05:15:42.449Z
-        completed_at: 2026-02-05T05:16:14.325Z
-        notes: All 5 ACs have test coverage in tests/help.test.ts with proper AC annotations
-      - step_index: 2
-        status: completed
-        started_at: 2026-02-05T05:16:14.325Z
-        completed_at: 2026-02-05T05:16:35.158Z
-        notes: "Implementation verified: all 5 ACs correctly implemented in help.ts with proper JSON
-          handling, exit code display, and JSON Schema generation"
-      - step_index: 3
-        status: completed
-        started_at: 2026-02-05T05:16:35.158Z
-        completed_at: 2026-02-05T05:17:29.778Z
-        notes: "Local review completed: no MUST-FIX issues. All ACs have test coverage, tests are E2E and
-          properly isolated."
-      - step_index: 4
-        status: skipped
-        started_at: 2026-02-05T05:17:29.778Z
-        completed_at: 2026-02-05T05:17:36.047Z
-        notes: No fixes needed, skipping push
-      - step_index: 5
-        status: completed
-        started_at: 2026-02-05T05:17:36.047Z
-        completed_at: 2026-02-05T05:23:29.039Z
-        notes: "All CI checks passed: claude-review, test, check-unresolved-comments. Verified HEAD:
-          2abfe0d0"
-      - step_index: 6
-        status: completed
-        started_at: 2026-02-05T05:23:29.039Z
-        completed_at: 2026-02-05T05:23:29.039Z
-    initiated_by: "@claude"
   - _ulid: 01KGP3PG3CGGCH8MFZJCEZ7XNA
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: completed
@@ -2289,30 +2189,6 @@ runs:
         completed_at: 2026-02-05T05:17:24.515Z
         notes: "No MUST-FIX issues found. All quality gates passed: AC coverage complete, tests are E2E and
           properly isolated, no fluff tests."
-    initiated_by: "@claude"
-  - _ulid: 01KGPFCHKN74V7MNJA1QEHEK7G
-    workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
-    status: active
-    current_step: 0
-    total_steps: 5
-    started_at: 2026-02-05T08:41:03.349Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KGPFCKG80W5GCRN5EEQW1BAQ
-    workflow_ref: "@01KGPF7BP1KF0FAQAEFXNNTPTT"
-    status: active
-    current_step: 0
-    total_steps: 8
-    started_at: 2026-02-05T08:41:05.288Z
-    step_results: []
-    initiated_by: "@claude"
-  - _ulid: 01KGPFCNATAY80Z623BBSTAKCR
-    workflow_ref: "@01KGPF7BP1W8ZPHG5MHG4CXYE4"
-    status: active
-    current_step: 0
-    total_steps: 8
-    started_at: 2026-02-05T08:41:07.162Z
-    step_results: []
     initiated_by: "@claude"
   - _ulid: 01KGQTX8V4T7ZXJNJ8PG8G4T61
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
