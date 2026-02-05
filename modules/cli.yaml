@@ -247,6 +247,10 @@ features:
                 given: Command object with unrecognized command path
                 when: Validation runs
                 then: Error identifies the unknown command and suggests similar valid commands
+              - id: ac-missing-required
+                given: Command object missing a required arg
+                when: Validation runs
+                then: Error identifies which arg is missing for which command
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
