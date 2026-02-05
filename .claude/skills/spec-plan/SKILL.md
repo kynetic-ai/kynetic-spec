@@ -138,7 +138,7 @@ See `/spec` for full trait reference.
 
 ## Plan Lifecycle
 
-Plans track status: `draft` -> `approved` -> `active` -> `completed`
+Plans track status: `draft` -> `approved` -> `active` -> `completed` (or `rejected` from any non-terminal state)
 
 - **Import** auto-creates plan as `active` (specs being created)
 - **Manual** creates plan as `approved` (you're committing to the work)
