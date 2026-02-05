@@ -44489,6 +44489,7 @@
     - planning
   vcs_refs: []
   created_at: 2026-02-04T07:45:56.938Z
+  started_at: 2026-02-05T08:38:19.787Z
   notes:
     - _ulid: 01KGKY7FHB8PEVSPEHEK32S45Z
       created_at: 2026-02-04T09:02:42.731Z
@@ -44497,7 +44498,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-05T08:38:19.787Z
 - _ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
   slugs: []
   title: Add @plan-workflow to meta definitions
@@ -44508,7 +44508,7 @@
     /plan skill for format details."
   spec_ref: "@plan-support"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44527,6 +44527,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-02-05T08:38:22.033Z
 - _ulid: 01KGMM4RX357TX4GEQ41KVYQED
   slugs: []
   title: Fix end-iteration naming and documentation confusion
