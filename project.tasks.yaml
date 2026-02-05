@@ -44458,6 +44458,7 @@
     - planning
   vcs_refs: []
   created_at: 2026-02-04T07:45:52.681Z
+  started_at: 2026-02-05T08:38:17.473Z
   notes:
     - _ulid: 01KGKY7CXWEPK0BVF7PD163PX3
       created_at: 2026-02-04T09:02:40.061Z
@@ -44466,7 +44467,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-05T08:38:17.473Z
 - _ulid: 01KGKSTXPAKXRK6SK3DX5P5808
   slugs: []
   title: Create /plan skill for structured plan documents
@@ -44479,7 +44479,7 @@
     documents)."
   spec_ref: "@plan-support"
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44497,6 +44497,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-02-05T08:38:19.787Z
 - _ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
   slugs: []
   title: Add @plan-workflow to meta definitions
