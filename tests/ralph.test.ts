@@ -940,13 +940,71 @@ describe('subagent module', () => {
 
   // AC: @ralph-subagent-spawning ac-11
   describe('createPrefixedRenderer', () => {
-    it('creates renderer with prefix in newSection', () => {
+    it('does not double prefix for console.log output', () => {
       const renderer = createPrefixedRenderer('[TEST]');
 
-      expect(renderer.newSection).toBeDefined();
-      // newSection should include the prefix - we can't easily test console output
-      // but we verify the function exists and can be called
-      expect(typeof renderer.newSection).toBe('function');
+      // Spy on console.log to capture what the wrapper passes to the original
+      const logCalls: unknown[][] = [];
+      const spy = vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
+        logCalls.push(args);
+      });
+
+      try {
+        renderer.newSection?.('My Section');
+      } finally {
+        spy.mockRestore();
+      }
+
+      // The wrapper should NOT pass the prefix as an extra argument to console.log.
+      // The stdout.write wrapper handles prefixing, so console.log should receive
+      // only the original arguments (no doubled prefix).
+      const allArgs = logCalls.map(args => args.map(String).join(' ')).join('\n');
+      expect(allArgs).toContain('My Section');
+
+      // Count prefix occurrences per line - should never appear doubled
+      for (const call of logCalls) {
+        const line = call.map(String).join(' ');
+        const prefixCount = (line.match(/\[TEST\]/g) || []).length;
+        expect(prefixCount, `Line has doubled prefix: ${line}`).toBeLessThanOrEqual(1);
+      }
+    });
+
+    it('does not double prefix for streaming content via stdout.write', () => {
+      const renderer = createPrefixedRenderer('[TEST]');
+
+      // Capture process.stdout.write output - this IS used by streaming render events
+      const chunks: string[] = [];
+      const originalWrite = process.stdout.write;
+      process.stdout.write = ((chunk: unknown) => {
+        if (typeof chunk === 'string') chunks.push(chunk);
+        return true;
+      }) as typeof process.stdout.write;
+
+      // Also suppress console.log (vitest intercepts it differently)
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+      try {
+        // Render a streaming agent_message event which goes through stdout.write
+        renderer.render({
+          timestamp: 0,
+          data: {
+            kind: 'agent_message',
+            content: 'Hello World\n',
+            isStreaming: true,
+          },
+        });
+      } finally {
+        process.stdout.write = originalWrite;
+        logSpy.mockRestore();
+      }
+
+      const output = chunks.join('');
+      expect(output).toContain('Hello World');
+      // Prefix should appear at most once per line
+      for (const line of output.split('\n')) {
+        const prefixCount = (line.match(/\[TEST\]/g) || []).length;
+        expect(prefixCount, `Line has doubled prefix: ${line}`).toBeLessThanOrEqual(1);
+      }
     });
 
     it('creates renderer with render function', () => {
