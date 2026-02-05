@@ -325,7 +325,11 @@ Run the task-work skill in loop mode:
 
 Loop mode means: no confirmations, auto-resolve decisions, automation-eligible tasks only.
 
-Exit when task work is complete or no eligible tasks remain.
+**Normal flow:** Work on a task, create a PR, then stop responding. Ralph continues automatically —
+it checks for remaining eligible tasks at the start of each iteration and exits the loop itself when none remain.
+
+**Do NOT call \`end-loop\` after completing a task.** Simply stop responding.
+\`end-loop\` is a rare escape hatch for when work is stalling across multiple iterations with no progress — not a normal exit path.
 `;
 }
 

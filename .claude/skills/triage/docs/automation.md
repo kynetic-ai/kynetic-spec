@@ -17,6 +17,8 @@ A task is ready for automation when:
 
 **Having spec + ACs is necessary but not sufficient** - you must also verify the spec is appropriate and ACs are adequate for the task.
 
+**Task type does not determine automation eligibility.** Any non-spike task can be `automation: eligible` — including design tasks, refactoring tasks, documentation tasks, etc. The `automation` field is the definitive source. Once a task is marked `eligible`, do not second-guess it based on type, title, or description.
+
 ## Workflow
 
 ### 1. Get Assessment Overview

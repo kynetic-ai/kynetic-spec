@@ -254,34 +254,41 @@ pending → in_progress → pending_review → completed
 
 When running in automated loop mode (ralph), understanding when to block vs continue is critical.
 
+**Key principle:** One blocked task is NOT "no more work." You MUST run `kspec tasks ready --eligible` and act on its output — it is authoritative.
+
 **The pattern:**
 1. **Attempt the work** - actually try to solve the problem first
 2. **Hit a genuine blocker** - external dependency, needs human decision, spec gap
 3. **Block the task** - with documented reason and what you tried
-4. **Check for other work** - `kspec tasks ready --eligible`
-5. **Continue or end** - only end when ALL eligible tasks are blocked/done
+4. **MUST run `kspec tasks ready --eligible`** - command output is authoritative
+5. **If tasks remain: work on the next one.** If empty: stop responding — ralph exits automatically.
+
+**Trust the YAML state.** Only formal dependencies (`depends_on` field) constitute task-level blocking. If `depends_on` is empty, the task has no dependencies. If `kspec tasks ready --eligible` lists a task, it IS ready. Do not invent blocking relationships based on perceived connections between tasks, PRs in CI, or other inferred state.
 
 **Valid blocking reasons** (external blockers):
 - Requires human architectural decision
 - Needs spec clarification
 - Depends on external API/service not available
-- Blocked by another task
+- Formally blocked by another task (listed in `depends_on`)
 
 **Invalid blocking reasons** (do the work):
 - Task seems complex
 - Tests are failing (fix them)
 - Service needs running (start it)
 - Might take multiple iterations
+- Another task's PR is in CI (not a formal dependency)
 
 ```bash
 # When you hit a genuine blocker after attempting work
 kspec task note @task "Attempted: X, Y, Z. Blocked because: [external reason]"
 kspec task block @task --reason "Requires architectural decision on X"
 kspec task set @task --automation needs_review
-kspec tasks ready --eligible  # Check for other work
-```
 
-**Key principle:** One blocked task is NOT "no more work." Check for other eligible tasks before ending the loop. See `/task-work` skill for detailed loop mode guidance.
+# MUST check for other work — command output is authoritative
+kspec tasks ready --eligible
+# If tasks exist: pick one and continue
+# If empty: stop responding — ralph exits the loop automatically
+```
 
 ### Ralph Loop Model
 
@@ -289,23 +296,25 @@ Ralph operates in a prompt-response loop:
 
 ```
 for each iteration (1..maxLoops):
-  1. Ralph sends task-work prompt
-  2. Agent works on tasks, may create PR(s)
-  3. Agent stops responding (turn complete)
-  4. Ralph sends reflection prompt
-  5. Agent captures learnings, stops responding
-  6. Ralph processes pending_review tasks via subagent
-  7. If no end-loop signal: continue to next iteration
+  1. Ralph checks for eligible tasks — if none remain, exits loop
+  2. Ralph sends task-work prompt
+  3. Agent works on tasks, may create PR(s)
+  4. Agent stops responding (turn complete)
+  5. Ralph sends reflection prompt
+  6. Agent captures learnings, stops responding
+  7. Ralph processes pending_review tasks via subagent
+  8. Continue to next iteration (back to step 1)
 ```
 
 **Key insight:** When you stop responding, ralph continues automatically.
-The loop only ends when:
+The loop ends when (in order of how common):
+- **Ralph's automatic check finds no eligible tasks** (primary mechanism — handles most cases)
 - Max iterations reached
-- Agent explicitly calls `kspec ralph end-loop`
 - Max consecutive failures reached
+- Agent calls `kspec ralph end-loop` (rare escape hatch — only for stalled work across iterations)
 
 **Do NOT call `end-loop` after creating a PR.** Simply stop responding.
-Ralph will continue to the next phase/iteration.
+Ralph will check for remaining work and either continue or exit on its own.
 
 ### Notes (Work Log)
 

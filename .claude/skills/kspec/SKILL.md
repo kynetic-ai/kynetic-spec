@@ -109,7 +109,7 @@ kspec task block @task-slug --reason "Waiting on API spec"
 kspec task unblock @task-slug
 ```
 
-**In loop mode:** Block only for genuine external blockers (human decision needed, spec gap, external dependency). Complexity and difficulty are NOT blockers - push through. Always check `kspec tasks ready --eligible` for other work before ending the loop. See `/task-work` for detailed loop mode guidance.
+**In loop mode:** Block only for genuine external blockers (human decision needed, spec gap, external dependency). Complexity and difficulty are NOT blockers — push through. You MUST verify by running `kspec tasks ready --eligible` before stopping — its output is authoritative. Do not infer task eligibility; the command is the source of truth. See `/task-work` for detailed loop mode guidance.
 
 ### Cancellation
 
