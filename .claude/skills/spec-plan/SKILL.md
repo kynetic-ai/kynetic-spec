@@ -78,10 +78,12 @@ The import path uses structured markdown documents. The parser (`parsePlanDocume
   traits:
     - error-guidance
   acceptance_criteria:
-    - given: User clicks "Sign in with Google"
+    - id: ac-1
+      given: User clicks "Sign in with Google"
       when: OAuth flow completes successfully
       then: User session is created with provider metadata
-    - given: OAuth provider returns an error
+    - id: ac-2
+      given: OAuth provider returns an error
       when: Error callback is received
       then: User sees descriptive error with retry option
 - title: Token Refresh
@@ -99,7 +101,7 @@ derive_from_specs: true
 Use passport.js for OAuth. Token refresh should use sliding window with 15min expiry.
 ```
 
-**Key fields:** `title` (required), `slug`, `type`, `parent` (use `@ref`), `acceptance_criteria` (Given/When/Then), `traits` (array of trait IDs).
+**Key fields:** `title` (required), `slug`, `type`, `parent` (use `@ref`), `acceptance_criteria` (each needs `id`, `given`, `when`, `then`), `traits` (array of trait IDs).
 
 ## Trait Considerations
 
