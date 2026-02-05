@@ -551,6 +551,32 @@ This flow bridges spec-reality gaps **in the moment** rather than after the fact
 **For systematic triage, run `/triage`.**
 **After plan approval, run `/spec-plan` to translate plan to specs.**
 
+### Plan Documents
+
+Plans are durable artifacts that capture implementation context and rationale. They persist in the shadow branch and link to derived specs and tasks.
+
+```bash
+# Create a plan
+kspec plan add --title "Feature Name" --content "Description..."
+kspec plan add --title "Feature Name" --content-file ./plan.md
+
+# Import a structured plan document (auto-creates specs and tasks)
+kspec plan import ./plan.md --module @target-module --dry-run   # preview first
+kspec plan import ./plan.md --module @target-module             # execute
+kspec plan import ./plan.md --module @target-module --update    # re-import with changes
+
+# Manage plans
+kspec plan list                          # list all plans
+kspec plan get @plan-ref                 # view plan details
+kspec plan set @plan-ref --status active # update status
+kspec plan note @plan-ref "Progress..."  # add note
+kspec plan derive @plan-ref              # create task from plan
+```
+
+**Plan lifecycle:** `draft` → `approved` → `active` → `completed`
+
+**Import path** parses structured markdown with `## Specs` (YAML array), `## Tasks` (`derive_from_specs: true` + optional manual tasks), and `## Implementation Notes`. See `/spec-plan` for full format reference.
+
 ### Inbox vs Observations
 
 Two capture mechanisms serve different purposes:
