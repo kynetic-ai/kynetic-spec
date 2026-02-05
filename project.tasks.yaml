@@ -44543,6 +44543,15 @@
       content: "Automation status set to manual_only: Meta configuration - workflow definition requires
         understanding usage patterns"
       supersedes: null
+    - _ulid: 01KGPFHZDQCWJBJ7S05CE3VPMT
+      created_at: 2026-02-05T08:44:01.335Z
+      author: "@claude"
+      content: "Added three workflow definitions to .kspec/kynetic.meta.yaml: @spec-plan-design (5 steps:
+        explore, clarify, design, review, choose path), @spec-plan-import (8 steps: write doc,
+        choose module, dry-run, check, import, traits, validate, start), @spec-plan-manual (8 steps:
+        create plan, find parent, add AC, traits, derive+link, validate, verify, start). All three
+        workflows validated and start correctly."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KGMM4RX357TX4GEQ41KVYQED
