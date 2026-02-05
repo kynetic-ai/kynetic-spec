@@ -5292,4 +5292,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGQY72Q4C5V3GNRWKCJGY2MZ
+    type: friction
+    content: session-reflect-loop runs too aggressively in ralph loops — 72 runs (40% of all runs),
+      chains of up to 31 consecutive executions, vast majority capture zero new items. 113 min spent
+      (19% of total workflow time) with questionable marginal value in consecutive chains. Should be
+      conditional on whether preceding task-work-loop actually completed work.
+    created_at: 2026-02-05T22:19:27.333Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
