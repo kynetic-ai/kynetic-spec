@@ -5257,4 +5257,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGPHG81NE1BNP4RX9Y7Z6YM8
+    type: friction
+    content: Committed directly to main forgetting branch protection requires PRs. Had to create branch
+      after the fact and reset. Should always create feature branch first in this repo.
+    created_at: 2026-02-05T09:18:01.781Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
