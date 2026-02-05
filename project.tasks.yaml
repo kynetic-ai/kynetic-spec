@@ -44493,20 +44493,21 @@
   completed_at: 2026-02-04T17:31:46.080Z
   notes: []
   todos: []
-- title: Fix doubled [REVIEW SUBAGENT] prefix in newSection output
+- _ulid: 01KGP2PPFRPESKDEG850M2F784
+  slugs: []
+  title: Fix doubled [REVIEW SUBAGENT] prefix in newSection output
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 1
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KGP2PPFRPESKDEG850M2F784
-  status: pending
+  status: in_progress
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-02-05T04:59:24.536Z
   notes: []
   todos: []
+  started_at: 2026-02-05T04:59:29.510Z
