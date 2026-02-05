@@ -2370,7 +2370,7 @@ runs:
   - _ulid: 01KGR040NX8RM3YER307FDMEYM
     workflow_ref: "@01KGPF7BP1KF0FAQAEFXNNTPTT"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 8
     started_at: 2026-02-05T22:52:44.094Z
     step_results:
@@ -2402,5 +2402,10 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-05T22:53:31.528Z
-        completed_at: 2026-02-05T22:53:31.528Z
+        completed_at: 2026-02-05T22:53:47.458Z
+        notes: "Import complete: 3 specs, 3 tasks. Plan @batch-command-execution-via-json active."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-05T22:53:47.458Z
+        completed_at: 2026-02-05T22:53:47.458Z
     initiated_by: "@claude"
