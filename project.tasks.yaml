@@ -44448,7 +44448,7 @@
     that plans are working documents - import immediately."
   spec_ref: "@plan-support"
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44474,6 +44474,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-05T08:59:05.647Z
+  closed_reason: "Merged in PR #315. Updated AGENTS.md /spec-plan skill description with workflow references."
 - _ulid: 01KGKSTXPAKXRK6SK3DX5P5808
   slugs: []
   title: Create /plan skill for structured plan documents
