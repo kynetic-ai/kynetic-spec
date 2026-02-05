@@ -44375,6 +44375,11 @@
         doesn't actually update). Implementation is functional for the happy path - dry-run works,
         topological sorting works, task derivation with plan_ref works."
       supersedes: null
+    - _ulid: 01KGP1QQFYHHZGTYMCCF68DQ1J
+      created_at: 2026-02-05T04:42:29.758Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGKSTSH9JPK989VT2BBSBR5N
