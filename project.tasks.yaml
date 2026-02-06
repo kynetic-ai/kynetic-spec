@@ -45105,7 +45105,7 @@
   description: Display relates_to and depends_on fields in kspec item get output. Currently these
     fields are only visible by reading the YAML directly.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -45117,6 +45117,7 @@
   created_at: 2026-02-06T09:54:42.298Z
   notes: []
   todos: []
+  started_at: 2026-02-06T09:56:26.674Z
 - _ulid: 01KGS609QTMJF99PTWF59PP2Z2
   slugs: []
   title: Add --count flag to list commands
@@ -45156,22 +45157,22 @@
   created_at: 2026-02-06T09:54:54.506Z
   notes: []
   todos: []
-- title: Add --note flag to inbox promote
+- _ulid: 01KGS60NJPF8D3N7DRX9RMGFBS
+  slugs: []
+  title: Add --note flag to inbox promote
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - dx
   description: "Add --note flag to inbox promote: 'kspec inbox promote @ref --title X --note
     \"Context...\"'. Adds context note in same command, avoids separate task note call. Small scope.
     Surfaced during triage session."
-  _ulid: 01KGS60NJPF8D3N7DRX9RMGFBS
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
   vcs_refs: []
   created_at: 2026-02-06T09:55:00.310Z
   notes: []
