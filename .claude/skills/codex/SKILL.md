@@ -70,11 +70,12 @@ If no PR is found, error: "No PR found for task @task-ref. Create a PR first wit
 For straightforward diff review, prefer the native `codex exec review` subcommand:
 
 ```bash
-codex exec review \
+codex exec \
   -m gpt-5.3-codex \
   -c model_reasoning_effort="high" \
   -s danger-full-access \
   --skip-git-repo-check \
+  review \
   "$(cat <<'PROMPT'
 Also check for:
 - AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
@@ -82,20 +83,9 @@ Also check for:
 - Test quality: no fluff tests, prefer E2E over unit
 
 After reviewing, post your review to GitHub using `gh pr review <NUMBER>`.
-For inline comments, write a JSON body file and post via gh api:
-
-```json
-// Write to /tmp/codex-pr-review-body.json
-{
-  "event": "REQUEST_CHANGES",
-  "body": "## Review Summary\n\nOverall assessment...",
-  "comments": [
-    {"path": "src/file.ts", "line": 42, "body": "Review comment (markdown)"}
-  ]
-}
-```
-
-Then post: `gh api repos/{owner}/{repo}/pulls/<NUMBER>/reviews --method POST --input /tmp/codex-pr-review-body.json`
+For inline comments, write a JSON body to /tmp/codex-pr-review-body.json with this structure:
+  {"event":"REQUEST_CHANGES","body":"summary","comments":[{"path":"src/file.ts","line":42,"body":"comment"}]}
+Then post: gh api repos/{owner}/{repo}/pulls/<NUMBER>/reviews --method POST --input /tmp/codex-pr-review-body.json
 
 Also write the full review to /tmp/codex-pr-<NUMBER>-review.md
 
