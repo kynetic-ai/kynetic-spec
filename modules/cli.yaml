@@ -355,6 +355,10 @@ features:
             given: Empty JSON array []
             when: kspec batch runs
             then: Error message says batch contains no commands, exit code 1
+          - id: ac-default-atomic
+            given: kspec batch runs without --no-atomic
+            when: Batch executes
+            then: "Atomic mode: commands execute against isolated copy of state"
         status:
           maturity: draft
           implementation: in_progress
