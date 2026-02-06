@@ -45105,7 +45105,7 @@
   description: Display relates_to and depends_on fields in kspec item get output. Currently these
     fields are only visible by reading the YAML directly.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -45125,6 +45125,8 @@
         refs, hidden when empty.
       supersedes: null
   todos: []
+  completed_at: 2026-02-06T10:25:48.774Z
+  closed_reason: "Merged in PR #323"
 - _ulid: 01KGS609QTMJF99PTWF59PP2Z2
   slugs: []
   title: Add --count flag to list commands
