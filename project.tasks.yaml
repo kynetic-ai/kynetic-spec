@@ -45514,3 +45514,113 @@
         cross-references /kspec for full docs.
       supersedes: null
   todos: []
+- _ulid: 01KGTN29WS9GX7H2ZFPG8EJEMW
+  slugs:
+    - implement-session-log-list
+  title: Implement Session Log List
+  type: task
+  spec_ref: "@session-log-list"
+  plan_ref: "@session-log-analysis-tooling"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-06T23:37:16.953Z
+  notes:
+    - _ulid: 01KGTN29WTAB8MDVNXZ11XB0M3
+      created_at: 2026-02-06T23:37:16.954Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Read session.yaml for metadata, count lines in events.jsonl for event count,
+        count context-iter-*.json files for iteration count. For task completions,
+        scan events for task.complete or session.end with task data. Keep it lazy -
+        only parse what's needed for the summary columns.
+  todos: []
+- _ulid: 01KGTN2A484D5W7WHWWS4QHMRP
+  slugs:
+    - implement-session-log-show
+  title: Implement Session Log Show
+  type: task
+  spec_ref: "@session-log-show"
+  plan_ref: "@session-log-analysis-tooling"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-06T23:37:17.192Z
+  notes:
+    - _ulid: 01KGTN2A48JDP1PQH6CQXFRV7S
+      created_at: 2026-02-06T23:37:17.192Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Session ID prefix resolution: list all session dirs, filter by prefix match.
+        Iteration detection: count context-iter-*.json files and parse each for task state changes.
+        Event timeline: stream events.jsonl line by line, format each with relative timestamp.
+        Depends on shared session summary reader and event stream reader from list spec.
+  todos: []
+- _ulid: 01KGTN2ACK018NKMN7ESS3NJG2
+  slugs:
+    - implement-session-log-stats
+  title: Implement Session Log Stats
+  type: task
+  spec_ref: "@session-log-stats"
+  plan_ref: "@session-log-analysis-tooling"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-06T23:37:17.459Z
+  notes:
+    - _ulid: 01KGTN2ACKW9SZBP59JJBJPPQV
+      created_at: 2026-02-06T23:37:17.459Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Aggregate by iterating session summaries (metadata-only for totals/averages).
+        Tool usage requires streaming events.jsonl across all matching sessions - only
+        parse when --tool-usage is requested to avoid unnecessary I/O.
+        Time grouping (--by-week/--by-day) buckets sessions by started_at date.
+        Depends on shared session summary reader and event stream reader.
+  todos: []
+- title: Implement Session Log Search
+  type: task
+  spec_ref: "@session-log-search"
+  plan_ref: "@session-log-analysis-tooling"
+  priority: 3
+  slugs:
+    - implement-session-log-search
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KGTN2AKV5HWC7ZW7Q2HE7EFQ
+      created_at: 2026-02-06T23:37:17.691Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Stream events.jsonl line by line across sessions. JSON.stringify each event data
+        field and test against pattern for substring match. Pre-filter sessions by metadata
+        (--since, --agent) before scanning events to reduce I/O.
+        Content excerpt: take 200 chars around match position.
+        Depends on shared event stream reader and date filter utility.
+  _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-06T23:37:17.691Z
+  todos: []

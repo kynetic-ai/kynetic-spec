@@ -388,3 +388,317 @@ plans:
     approved_at: null
     completed_at: null
     notes: []
+  - _ulid: 01KGTN29J5WATB2F4JFDVZP9F5
+    slugs:
+      - session-log-analysis-tooling
+    title: Session Log Analysis Tooling
+    content: >
+      # Session Log Analysis Tooling
+
+
+      CLI commands for querying, viewing, and analyzing session event logs stored in
+      `.kspec/sessions/`.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Session Log List
+        slug: session-log-list
+        type: feature
+        parent: "@session-events"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+          - trait-filterable-list
+        description: |
+          List session logs with summary statistics. Provides a quick overview of all sessions
+          with key metrics per session: status, duration, event count, iteration count, and
+          task completions. Supports filtering by status, agent type, and date range.
+        acceptance_criteria:
+          - id: ac-1
+            given: sessions exist in .kspec/sessions/
+            when: kspec session log list is run
+            then: displays table with columns for session ID, status, agent type, started, duration, events, iterations, and tasks completed
+          - id: ac-2
+            given: sessions exist
+            when: --status flag is provided (e.g. --status completed)
+            then: only sessions matching that status are shown
+          - id: ac-3
+            given: sessions exist
+            when: --since flag is provided (e.g. --since 7d or --since 2026-01-20)
+            then: only sessions started after that date or relative duration are shown
+          - id: ac-4
+            given: sessions exist
+            when: --agent flag is provided (e.g. --agent claude-code-acp)
+            then: only sessions matching that agent type are shown
+          - id: ac-5
+            given: sessions exist
+            when: --sort flag is provided (e.g. --sort duration or --sort events)
+            then: sessions are sorted by the specified field, default sort is by started_at descending
+          - id: ac-6
+            given: no sessions exist
+            when: kspec session log list is run
+            then: displays No sessions found message and exits with code 0
+          - id: ac-7
+            given: sessions exist
+            when: --count flag is provided
+            then: output is limited to the specified number of sessions
+        implementation_notes: |
+          Read session.yaml for metadata, count lines in events.jsonl for event count,
+          count context-iter-*.json files for iteration count. For task completions,
+          scan events for task.complete or session.end with task data. Keep it lazy -
+          only parse what's needed for the summary columns.
+
+      - title: Session Log Show
+        slug: session-log-show
+        type: feature
+        parent: "@session-events"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+        description: |
+          Show detailed view of a single session. Displays metadata, iteration-by-iteration
+          summary, task transitions, and optionally the full event timeline. Supports
+          filtering events by type and limiting output depth.
+        acceptance_criteria:
+          - id: ac-1
+            given: a session ID or prefix is provided
+            when: kspec session log show is run with a session reference
+            then: displays session metadata including status, agent, started, ended, duration, and task_id
+          - id: ac-2
+            given: a session with multiple iterations
+            when: session is shown
+            then: displays per-iteration summary with iteration number, event count, and tasks started or completed per iteration
+          - id: ac-3
+            given: a session with events
+            when: --events flag is provided
+            then: displays chronological event timeline with timestamps, type, and data summary
+          - id: ac-4
+            given: a session with events
+            when: --events and --type flags are provided (e.g. --type tool.call)
+            then: only events of that type are displayed in the timeline
+          - id: ac-5
+            given: a session with events
+            when: --events and --limit N flags are provided
+            then: only the last N events are displayed
+          - id: ac-6
+            given: a session with context snapshots
+            when: --context N flag is provided
+            then: displays the context snapshot for iteration N
+          - id: ac-7
+            given: session ID prefix matches exactly one session
+            when: prefix is provided (e.g. first 8 chars of ULID)
+            then: resolves to full session and displays it
+          - id: ac-8
+            given: session ID prefix matches multiple sessions
+            when: prefix is provided
+            then: displays error listing ambiguous matches with guidance to be more specific
+          - id: ac-9
+            given: session ID does not match any session
+            when: ID is provided
+            then: displays Session not found error with exit code 1
+        implementation_notes: |
+          Session ID prefix resolution: list all session dirs, filter by prefix match.
+          Iteration detection: count context-iter-*.json files and parse each for task state changes.
+          Event timeline: stream events.jsonl line by line, format each with relative timestamp.
+          Depends on shared session summary reader and event stream reader from list spec.
+
+      - title: Session Log Stats
+        slug: session-log-stats
+        type: feature
+        parent: "@session-events"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+        description: |
+          Aggregate analytics across sessions. Computes throughput metrics, duration averages,
+          success/failure rates, and iteration efficiency. Supports scoping by date range
+          and agent type.
+        acceptance_criteria:
+          - id: ac-1
+            given: sessions exist
+            when: kspec session log stats is run
+            then: displays total sessions, total events, total iterations, total tasks completed, and total duration
+          - id: ac-2
+            given: sessions exist
+            when: stats are computed
+            then: displays avg duration per session, avg iterations per session, and avg tasks per session
+          - id: ac-3
+            given: sessions exist
+            when: stats are computed
+            then: displays status breakdown showing count and percentage for each status (completed, active, abandoned)
+          - id: ac-4
+            given: sessions exist
+            when: --since flag is provided
+            then: stats are scoped to sessions started after that date or relative duration
+          - id: ac-5
+            given: sessions exist
+            when: --agent flag is provided
+            then: stats are scoped to sessions matching that agent type
+          - id: ac-6
+            given: sessions with tool.call events
+            when: --tool-usage flag is provided
+            then: displays top 10 tool calls by frequency with tool name, count, and percentage of total calls
+          - id: ac-7
+            given: sessions exist
+            when: --by-week or --by-day flag is provided
+            then: displays stats grouped by time period with sessions count, tasks completed, and total duration per period
+          - id: ac-8
+            given: no sessions match the filter criteria
+            when: stats are run with filters
+            then: displays No sessions match criteria message and exits with code 0
+        implementation_notes: |
+          Aggregate by iterating session summaries (metadata-only for totals/averages).
+          Tool usage requires streaming events.jsonl across all matching sessions - only
+          parse when --tool-usage is requested to avoid unnecessary I/O.
+          Time grouping (--by-week/--by-day) buckets sessions by started_at date.
+          Depends on shared session summary reader and event stream reader.
+
+      - title: Session Log Search
+        slug: session-log-search
+        type: feature
+        parent: "@session-events"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+        description: |
+          Search across session events by content. Finds sessions containing matching events,
+          with filtering by event type. Useful for finding which session something happened in
+          or locating specific tool calls or failures. Returns matching events with session context.
+        acceptance_criteria:
+          - id: ac-1
+            given: sessions with events exist
+            when: kspec session log search is run with a pattern argument
+            then: searches event data fields for case-insensitive substring match and displays matching events grouped by session
+          - id: ac-2
+            given: sessions with events
+            when: --type flag is provided (e.g. --type tool.call)
+            then: only events of that type are searched
+          - id: ac-3
+            given: sessions with events
+            when: --since flag is provided
+            then: only sessions started after that date or relative duration are searched
+          - id: ac-4
+            given: search matches events
+            when: results are displayed
+            then: each match shows session ID, event timestamp, event type, and matching content excerpt limited to 200 characters
+          - id: ac-5
+            given: search matches many events
+            when: --limit N flag is provided
+            then: output is limited to N total matches across all sessions, default limit is 50
+          - id: ac-6
+            given: search pattern matches no events
+            when: search completes
+            then: displays No matches found message and exits with code 0
+          - id: ac-7
+            given: sessions with events
+            when: --agent flag is provided
+            then: only sessions matching that agent type are searched
+        implementation_notes: |
+          Stream events.jsonl line by line across sessions. JSON.stringify each event data
+          field and test against pattern for substring match. Pre-filter sessions by metadata
+          (--since, --agent) before scanning events to reduce I/O.
+          Content excerpt: take 200 chars around match position.
+          Depends on shared event stream reader and date filter utility.
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ## Implementation Notes
+
+
+      All four commands live under `kspec session log <subcommand>`. The session log namespace
+
+      avoids collision with existing `session start`, `session checkpoint`, etc.
+
+
+      Shared infrastructure to build:
+
+      - Session summary reader: reads session.yaml + counts events.jsonl lines + counts context
+      files
+        without parsing full event payloads (lazy loading for list performance)
+      - Event stream reader: lazy JSONL line reader that yields parsed events (for
+      show/search/stats)
+
+      - Date filter utility: parse --since flag supporting both relative (7d, 2w, 1m) and absolute
+      (ISO date) formats
+
+      - Session ID prefix resolver: match partial ULID prefixes to full session IDs
+
+
+      Performance consideration: with 37 sessions and 372K+ events, list should be fast (metadata
+      only),
+
+      but search and stats may need to stream events rather than load all into memory. Use
+      line-by-line
+
+      JSONL reading to keep memory bounded.
+
+
+      The event JSONL format is:
+      {"ts":number,"seq":number,"type":string,"session_id":string,"data":{...}}
+
+      Each line is independent, making streaming/filtering straightforward.
+    status: active
+    derived_tasks:
+      - "@implement-session-log-list"
+      - "@implement-session-log-show"
+      - "@implement-session-log-stats"
+      - "@implement-session-log-search"
+    derived_specs:
+      - "@session-log-list"
+      - "@session-log-show"
+      - "@session-log-stats"
+      - "@session-log-search"
+    source_path: /tmp/claude-1000/-home-chapel-Projects-kynetic-spec/2b6689dd-0bc1-484e-869b-d2cb3026e8b9/scratchpad/session-log-analysis.md
+    created_at: 2026-02-06T23:37:16.613Z
+    approved_at: null
+    completed_at: null
+    notes:
+      - _ulid: 01KGTN29J6B977RDGV8QSVADKK
+        created_at: 2026-02-06T23:37:16.614Z
+        author: "@claude"
+        content: >-
+          Implementation notes:
+
+
+          All four commands live under `kspec session log <subcommand>`. The session log namespace
+
+          avoids collision with existing `session start`, `session checkpoint`, etc.
+
+
+          Shared infrastructure to build:
+
+          - Session summary reader: reads session.yaml + counts events.jsonl lines + counts context
+          files
+            without parsing full event payloads (lazy loading for list performance)
+          - Event stream reader: lazy JSONL line reader that yields parsed events (for
+          show/search/stats)
+
+          - Date filter utility: parse --since flag supporting both relative (7d, 2w, 1m) and
+          absolute (ISO date) formats
+
+          - Session ID prefix resolver: match partial ULID prefixes to full session IDs
+
+
+          Performance consideration: with 37 sessions and 372K+ events, list should be fast
+          (metadata only),
+
+          but search and stats may need to stream events rather than load all into memory. Use
+          line-by-line
+
+          JSONL reading to keep memory bounded.
+
+
+          The event JSONL format is:
+          {"ts":number,"seq":number,"type":string,"session_id":string,"data":{...}}
+
+          Each line is independent, making streaming/filtering straightforward.
