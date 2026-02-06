@@ -44698,7 +44698,7 @@
   type: task
   spec_ref: "@batch-exec"
   plan_ref: "@batch-command-execution-via-json"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-batch-command-schema"
