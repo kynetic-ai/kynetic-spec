@@ -14872,7 +14872,7 @@
     (5) Aggregate stats (tool usage, error rates). Could be CLI commands like 'kspec session events'
     or separate analysis tooling. Would help with retrospectives and debugging automation issues."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
