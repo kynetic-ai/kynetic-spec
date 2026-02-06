@@ -1125,6 +1125,10 @@ features:
             given: user runs kspec item trait remove @spec @trait1 @trait2
             when: multiple trait refs provided
             then: all specified traits are removed from the spec's traits array
+          - id: ac-12
+            given: user runs kspec item trait add @spec @valid-trait @nonexistent
+            when: one trait ref cannot be resolved
+            then: valid traits are still added; errors reported for unresolved refs; exit code 1
         status:
           maturity: draft
           implementation: implemented
