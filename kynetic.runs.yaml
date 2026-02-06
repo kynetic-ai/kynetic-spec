@@ -2748,7 +2748,7 @@ runs:
   - _ulid: 01KGTKYB3TXBQ21A8ZNK7VNBG6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-06T23:17:38.554Z
     step_results:
@@ -2762,5 +2762,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-06T23:17:52.958Z
-        completed_at: 2026-02-06T23:17:52.958Z
+        completed_at: 2026-02-06T23:18:05.702Z
+        notes: "Friction: (1) No lightweight batch JSON validation for doc examples — had to rely on Codex
+          to catch arg name errors, (2) positional arg names not discoverable from batch help — had
+          to read source to find 'text' vs 'content', (3) review thread resolution requires manual
+          GraphQL mutations"
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-06T23:18:05.702Z
+        completed_at: 2026-02-06T23:18:05.702Z
     initiated_by: "@claude"
