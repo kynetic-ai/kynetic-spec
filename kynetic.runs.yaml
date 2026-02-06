@@ -2799,12 +2799,13 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGTMBK5CNX7G86TAK3KBNVHS
     workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
-    status: active
+    status: aborted
     current_step: 0
     total_steps: 5
     started_at: 2026-02-06T23:24:52.780Z
     step_results: []
     initiated_by: "@claude"
+    completed_at: 2026-02-06T23:41:34.928Z
   - _ulid: 01KGTN9B9MQ355KZHTX7C4HP6A
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
