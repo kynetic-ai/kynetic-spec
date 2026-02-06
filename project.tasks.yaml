@@ -45115,9 +45115,16 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-06T09:54:42.298Z
-  notes: []
-  todos: []
   started_at: 2026-02-06T09:56:26.674Z
+  notes:
+    - _ulid: 01KGS64P4NG1JEZ7DJ9DWKD6N8
+      created_at: 2026-02-06T09:57:11.957Z
+      author: "@claude"
+      content: Added relationship field display (depends_on, implements, relates_to) to item get output.
+        Added labels to labels.ts, conditional display after tags section. Fields show as @slug
+        refs, hidden when empty.
+      supersedes: null
+  todos: []
 - _ulid: 01KGS609QTMJF99PTWF59PP2Z2
   slugs: []
   title: Add --count flag to list commands
