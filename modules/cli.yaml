@@ -427,6 +427,7 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+          - "@trait-dry-run"
         acceptance_criteria:
           - id: ac-1
             given: a spec item @login has acceptance criteria
