@@ -12,6 +12,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
+import { markMutating } from "../command-annotations.js";
 import {
   deleteWorkflowRuns,
   findActiveRuns,
@@ -925,8 +926,7 @@ export function registerWorkflowCommand(program: Command): void {
     .command("workflow")
     .description("Manage workflow runs");
 
-  workflow
-    .command("start")
+  markMutating(workflow.command("start"))
     .description("Start a new workflow run")
     .argument("<workflow-ref>", "Workflow reference (@id or @ulid)")
     .option("--task <task-ref>", "Link run to a task")
@@ -949,16 +949,14 @@ export function registerWorkflowCommand(program: Command): void {
     .option("--json", "Output JSON")
     .action(workflowShow);
 
-  workflow
-    .command("abort")
+  markMutating(workflow.command("abort"))
     .description("Abort an active workflow run")
     .argument("<run-ref>", "Run reference (@ulid or ulid prefix)")
     .option("--reason <text>", "Reason for aborting")
     .option("--json", "Output JSON")
     .action(workflowAbort);
 
-  workflow
-    .command("next")
+  markMutating(workflow.command("next"))
     .description("Advance workflow run to next step")
     .argument("[run-ref]", "Run reference (optional if only one active run)")
     .option("--skip", "Mark current step as skipped")
@@ -976,22 +974,19 @@ export function registerWorkflowCommand(program: Command): void {
     .option("--json", "Output JSON")
     .action(workflowNext);
 
-  workflow
-    .command("pause")
+  markMutating(workflow.command("pause"))
     .description("Pause an active workflow run")
     .argument("<run-ref>", "Run reference (@ulid or ulid prefix)")
     .option("--json", "Output JSON")
     .action(workflowPause);
 
-  workflow
-    .command("resume")
+  markMutating(workflow.command("resume"))
     .description("Resume a paused workflow run")
     .argument("<run-ref>", "Run reference (@ulid or ulid prefix)")
     .option("--json", "Output JSON")
     .action(workflowResume);
 
-  workflow
-    .command("prune")
+  markMutating(workflow.command("prune"))
     .description("Remove old or stale workflow runs")
     .option(
       "--older-than <duration>",

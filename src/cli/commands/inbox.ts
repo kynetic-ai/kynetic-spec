@@ -1,5 +1,6 @@
 import * as readline from "node:readline";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   createInboxItem,
   createTask,
@@ -71,8 +72,7 @@ export function registerInboxCommands(program: Command): void {
     .description("Low-friction capture for ideas (not yet tasks)");
 
   // kspec inbox add <text>
-  inbox
-    .command("add <text>")
+  markMutating(inbox.command("add <text>"))
     .description("Capture an idea quickly")
     .option("--tag <tag...>", "Add tags for categorization")
     .addHelpText(
@@ -159,8 +159,7 @@ Examples:
     });
 
   // kspec inbox promote <ref>
-  inbox
-    .command("promote <ref>")
+  markMutating(inbox.command("promote <ref>"))
     .description("Convert inbox item to task")
     .option("--title <title>", "Task title (prompts if not provided)")
     .option(
@@ -238,8 +237,7 @@ Examples:
     });
 
   // kspec inbox delete <ref>
-  inbox
-    .command("delete <ref>")
+  markMutating(inbox.command("delete <ref>"))
     .description("Remove an inbox item")
     .option("--force", "Skip confirmation")
     .action(async (ref: string, options) => {

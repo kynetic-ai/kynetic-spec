@@ -7,6 +7,7 @@
  */
 
 import type { Command, Option as CommanderOption } from "commander";
+import { getAnnotation } from "./command-annotations.js";
 
 /**
  * Metadata for a single command option
@@ -60,6 +61,8 @@ export interface CommandMeta {
   subcommands: CommandMeta[];
   /** Whether this command is hidden */
   hidden: boolean;
+  /** Whether this command mutates kspec state (annotated via markMutating) */
+  mutating: boolean;
 }
 
 /**
@@ -128,6 +131,7 @@ export function extractCommandTree(
     options,
     subcommands,
     hidden: isHidden(command),
+    mutating: getAnnotation(command)?.mutating ?? false,
   };
 }
 

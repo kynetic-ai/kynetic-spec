@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Command } from "commander";
 import { ulid } from "ulid";
+import { markMutating } from "../command-annotations.js";
 import {
   buildIndexes,
   checkSlugUniqueness,
@@ -24,8 +25,7 @@ export function registerModuleCommands(program: Command): void {
     .description("Module management commands");
 
   // kspec module add - create a new module YAML file
-  module
-    .command("add")
+  markMutating(module.command("add"))
     .description("Create a new module YAML file")
     .requiredOption("--title <title>", "Module title")
     .requiredOption("--slug <slug>", "Module slug (becomes filename)")

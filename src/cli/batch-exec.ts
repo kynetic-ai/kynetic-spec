@@ -258,19 +258,33 @@ export function validateBatchCommands(
       continue;
     }
 
-    // 2. Apply command filter if provided
+    // 2. Reject nested batch commands
+    // AC: @batch-allowed-commands ac-batch-itself
+    if (found.name === "batch") {
+      errors.push({
+        index: i,
+        id: cmd.id,
+        command: cmd.command,
+        type: "rejected_command",
+        message: "Nested batch commands are not allowed",
+      });
+      continue;
+    }
+
+    // 3. Apply command filter if provided
+    // AC: @batch-allowed-commands ac-denylist
     if (options?.commandFilter && !options.commandFilter(found)) {
       errors.push({
         index: i,
         id: cmd.id,
         command: cmd.command,
         type: "rejected_command",
-        message: `Command "${cmd.command}" is not allowed in batch mode`,
+        message: `Command "${cmd.command}" is not allowed in batch mode. Only mutating commands can be used in batch.`,
       });
       continue;
     }
 
-    // 3. Check for unknown args
+    // 4. Check for unknown args
     const { names: knownNames, required: requiredNames } =
       getKnownArgNames(found);
 
@@ -292,7 +306,7 @@ export function validateBatchCommands(
       }
     }
 
-    // 4. Check for missing required args
+    // 5. Check for missing required args
     for (const reqName of requiredNames) {
       const camelName = kebabToCamel(reqName);
       if (
