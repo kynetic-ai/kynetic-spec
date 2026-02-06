@@ -2748,7 +2748,7 @@ runs:
   - _ulid: 01KGTKYB3TXBQ21A8ZNK7VNBG6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-06T23:17:38.554Z
     step_results:
@@ -2784,5 +2784,13 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-06T23:18:29.023Z
-        completed_at: 2026-02-06T23:18:29.023Z
+        completed_at: 2026-02-06T23:20:54.045Z
+        notes: "Captured: (1) inbox @01KGTM3P - batch commands reference subcommand, (2) inbox @01KGTM3W -
+          better error messages with arg name suggestions, (3) observation - Codex review as docs
+          quality gate. User pointed out --dry-run already validates, noted in captures that batch
+          commands is for discoverability before writing vs validation after."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-06T23:20:54.045Z
+        completed_at: 2026-02-06T23:20:54.045Z
     initiated_by: "@claude"
