@@ -5419,4 +5419,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTF57CRAX3CDYVTGBRS5NTV
+    type: friction
+    content: Atomic copy-back was a design gap caught by reviewers, not by tests. The plan described
+      'copy-back' as straightforward fs.cp, but both reviewers independently flagged that
+      delete-then-copy is not safe under I/O failure. Future plans involving filesystem atomicity
+      should explicitly call out failure modes in the design — the happy path isn't enough.
+    created_at: 2026-02-06T21:54:01.240Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
