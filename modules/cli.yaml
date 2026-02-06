@@ -355,6 +355,9 @@ features:
             given: Empty JSON array []
             when: kspec batch runs
             then: Error message says batch contains no commands, exit code 1
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
