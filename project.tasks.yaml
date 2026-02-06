@@ -45636,3 +45636,23 @@
         Depends on shared event stream reader and date filter utility.
   todos: []
   automation: eligible
+- title: Document prompt-file pattern in codex skill
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - docs
+    - skills
+    - codex
+  depends_on: []
+  _ulid: 01KGTNT0HR1XZ5B44B4AJAKJDE
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-06T23:50:13.815Z
+  notes: []
+  todos: []
