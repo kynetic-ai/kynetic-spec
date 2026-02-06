@@ -2484,8 +2484,42 @@ runs:
   - _ulid: 01KGS4SX69AZJ5DET5SQS3J9CA
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-06T09:33:50.153Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-06T09:33:50.153Z
+        completed_at: 2026-02-06T09:34:02.134Z
+        notes: >-
+          ## What Worked Well
+
+
+          1. **Plan-first approach** — Having a detailed, approved plan with exact file lists, code
+          snippets, and classification tables made implementation mechanical. Zero ambiguity about
+          what to annotate.
+
+
+          2. **WeakMap annotation pattern** — Clean separation of concerns. No monkey-patching
+          Commander, type-safe, GC-friendly. The `markMutating(cmd.command("..."))` chaining pattern
+          reads naturally and is easy to audit.
+
+
+          3. **Parallel file editing** — Reading all command files in parallel via grep first, then
+          making targeted edits. The consistent `.command()` pattern across all 11 files made bulk
+          annotation predictable.
+
+
+          4. **Incremental verification** — Build check after annotations, then new tests, then
+          regression tests, then full suite. Caught nothing (clean implementation), but the
+          discipline is right.
+
+
+          5. **PR review subagent** — Spawning the review in background while doing cleanup kept
+          things efficient. The /pr-review skill handled all quality gates autonomously.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-06T09:34:02.134Z
+        completed_at: 2026-02-06T09:34:02.134Z
     initiated_by: "@claude"
