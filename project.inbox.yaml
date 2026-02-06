@@ -564,11 +564,6 @@ inbox:
     created_at: 2026-02-06T18:58:39.824Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KGT54E6MP7S4W2WMVW6MZMPM
-    text: continue-test
-    created_at: 2026-02-06T18:58:49.684Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KGT54EPT7B696MFGDYH1Q67G
     text: continue-after-fail
     created_at: 2026-02-06T18:58:50.202Z
