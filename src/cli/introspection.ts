@@ -16,8 +16,10 @@ export interface OptionMeta {
   flags: string;
   /** Option description */
   description: string;
-  /** Whether option is required */
+  /** Whether the option's value is required when used (i.e. <value> not [value]) */
   required: boolean;
+  /** Whether the option itself must be provided (i.e. requiredOption) */
+  mandatory: boolean;
   /** Default value if any */
   defaultValue?: unknown;
   /** Whether option can be repeated */
@@ -68,6 +70,7 @@ function extractOptionMeta(option: CommanderOption): OptionMeta {
     flags: option.flags,
     description: option.description || "",
     required: option.required,
+    mandatory: (option as any).mandatory ?? false,
     defaultValue: option.defaultValue,
     variadic: option.variadic,
   };
