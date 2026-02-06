@@ -539,3 +539,15 @@ inbox:
       - workflow
       - dx
     added_by: "@claude"
+  - _ulid: 01KGS2Q37MKX299YV6TFTJQA3D
+    text: "Plan import slug namespacing: kspec plan import auto-assigns slug from plan title, which can
+      collide with spec slugs created by the same import (e.g. plan 'Gallery Home' gets slug
+      'gallery-home', colliding with spec slug 'gallery-home'). Plans should auto-namespace their
+      slug (e.g. 'plan-gallery-home') or detect collision and prompt for resolution. Related to
+      01KGGPSR but that covers item-to-item collision, not plan-to-item."
+    created_at: 2026-02-06T08:57:20.884Z
+    tags:
+      - cli
+      - plan
+      - dx
+    added_by: "@claude"
