@@ -5475,4 +5475,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTM42H2M0WPJGE9X7CHS7MX
+    type: success
+    content: "Codex PR review as documentation quality gate: /codex pr caught real arg-name bugs in
+      batch JSON examples that would have caused user failures. The review→fix→push cycle was fast.
+      Worth using on all docs-heavy PRs."
+    created_at: 2026-02-06T23:20:46.370Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
