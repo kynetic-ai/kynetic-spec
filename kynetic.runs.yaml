@@ -2809,7 +2809,7 @@ runs:
   - _ulid: 01KGTN9B9MQ355KZHTX7C4HP6A
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-06T23:41:07.764Z
     step_results:
@@ -2823,5 +2823,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-06T23:41:40.243Z
-        completed_at: 2026-02-06T23:41:40.243Z
+        completed_at: 2026-02-06T23:41:54.863Z
+        notes: "Friction: (1) Shell quoting for codex exec prompts - had to write to file, (2) YAML quoting
+          in plan docs - embedded quotes break parser, (3) Trait slug discoverability - json-output
+          vs trait-json-output not documented in /spec-plan, (4) Workflow run cleanup - no complete
+          action, design workflow left stale"
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-06T23:41:54.863Z
+        completed_at: 2026-02-06T23:41:54.863Z
     initiated_by: "@claude"
