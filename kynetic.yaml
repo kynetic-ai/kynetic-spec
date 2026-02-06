@@ -143,6 +143,11 @@ traits:
         given: list command output
         when: results are displayed
         then: summary shows total matching items and filter state
+      - id: ac-8
+        given: list command supports count mode
+        when: --count flag is provided
+        then: 'outputs only the total number of matching items as a plain integer (no item details); ignores
+          --limit and --offset; in JSON mode outputs {"count": N}'
   - _ulid: 01KFDZSHFAEN1ATTA5QKQVGCVJ
     slugs:
       - trait-priority-parameter
