@@ -45550,7 +45550,8 @@
   plan_ref: "@session-log-analysis-tooling"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-session-log-list"
   context: []
   priority: 3
   tags: []
@@ -45596,15 +45597,21 @@
         Time grouping (--by-week/--by-day) buckets sessions by started_at date.
         Depends on shared session summary reader and event stream reader.
   todos: []
-- title: Implement Session Log Search
+- _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
+  slugs:
+    - implement-session-log-search
+  title: Implement Session Log Search
   type: task
   spec_ref: "@session-log-search"
   plan_ref: "@session-log-analysis-tooling"
-  priority: 3
-  slugs:
-    - implement-session-log-search
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-06T23:37:17.691Z
   notes:
     - _ulid: 01KGTN2AKV5HWC7ZW7Q2HE7EFQ
       created_at: 2026-02-06T23:37:17.691Z
@@ -45617,10 +45624,4 @@
         (--since, --agent) before scanning events to reduce I/O.
         Content excerpt: take 200 chars around match position.
         Depends on shared event stream reader and date filter utility.
-  _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-06T23:37:17.691Z
   todos: []
