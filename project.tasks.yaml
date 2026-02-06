@@ -44924,7 +44924,7 @@
   spec_ref: "@plan-import"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44954,6 +44954,7 @@
         have empty depends_on and must be set manually."
       supersedes: null
   todos: []
+  started_at: 2026-02-06T00:03:33.089Z
 - _ulid: 01KGR0K54RN3HN1J08ACZMHFFP
   slugs: []
   title: "Fix: Plan import writes trait refs without @ prefix"
