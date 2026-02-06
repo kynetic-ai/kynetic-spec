@@ -2483,7 +2483,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGS4SX69AZJ5DET5SQS3J9CA
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-06T09:33:50.153Z
@@ -2596,5 +2596,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-06T09:36:05.083Z
-        completed_at: 2026-02-06T09:36:05.083Z
+        completed_at: 2026-02-06T09:36:18.530Z
+        notes: Captured success observation @01KGS4Y7 for WeakMap annotation pattern. No other items to
+          capture — friction was agent-side bulk editing, not kspec feature gaps.
     initiated_by: "@claude"
+    completed_at: 2026-02-06T09:36:18.530Z
