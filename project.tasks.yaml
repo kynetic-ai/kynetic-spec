@@ -14977,6 +14977,33 @@
 
         - Shared infra: lazy JSONL reader, date filter utility, session ID prefix resolver
       supersedes: null
+    - _ulid: 01KGTMYKBPBES529VVSJAVN5F8
+      created_at: 2026-02-06T23:35:15.574Z
+      author: "@claude"
+      content: >-
+        Codex review completed and all feedback addressed:
+
+        - MUST-FIX: Fixed trait refs to use full slugs (trait-json-output,
+        trait-semantic-exit-codes, trait-filterable-list)
+
+        - SHOULD-FIX: Added per-spec implementation_notes to show/stats/search specs
+
+        - SHOULD-FIX: Made search excerpt concrete (200 chars) and added default limit (50 matches)
+
+        - SHOULD-FIX: Split compound AC in stats (totals vs averages now separate ACs)
+
+        - Scoped tool-usage output to top 10
+
+
+        Dry-run passes cleanly: 4 specs, 4 derived tasks under @session-events in @cli module.
+
+
+        Plan document at scratchpad path (session-specific). Awaiting user confirmation to run
+        import.
+
+
+        Next: kspec plan import <path> --module @cli
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
