@@ -2604,7 +2604,7 @@ runs:
   - _ulid: 01KGS7T25BC4G4F13916ZW38M7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
     step_results:
@@ -2664,5 +2664,29 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-06T10:26:46.733Z
-        completed_at: 2026-02-06T10:26:46.733Z
+        completed_at: 2026-02-06T10:27:14.128Z
+        notes: >-
+          ## Coverage Check
+
+
+          1. **Bulk AC add** — Already tracked as observation @01KGKYG2 ('Bulk AC add missing:
+          Adding 33 ACs required 33 individual...'). Same friction hit again this session (11 ACs).
+          Not yet in inbox/tasks.
+
+
+          2. **spec_ref on promote** — Not tracked anywhere. New friction point.
+
+
+          3. **Test coverage tracking per task** — Partially covered: inbox item @01KGGFB2 covers
+          'AC test coverage analysis' command, and @01KFST4F covers 'Task Completion Validation'
+          (verify tests pass on complete). But neither covers lightweight 'needs tests' tagging on a
+          task.
+
+
+          4. **Shadow branch parallel constraint** — Not tracked. Fundamental architecture
+          limitation, not easily fixable.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-06T10:27:14.128Z
+        completed_at: 2026-02-06T10:27:14.128Z
     initiated_by: "@claude"
