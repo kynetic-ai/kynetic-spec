@@ -5464,4 +5464,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTH9GNRYXV1P230AB1KWJPH
+    type: success
+    content: "GitHub PR review API with --input JSON file works reliably for inline comments. Pattern:
+      write structured JSON to /tmp/codex-pr-review-body.json with {event, body, comments[{path,
+      line, body}]}, then post via gh api repos/{o}/{r}/pulls/{n}/reviews --method POST --input
+      file. Codex figured out the line vs position issue on its own (first attempt used line numbers
+      which mapped to null, then corrected to diff positions)."
+    created_at: 2026-02-06T22:31:18.968Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
