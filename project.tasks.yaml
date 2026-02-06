@@ -44894,7 +44894,7 @@
   type: task
   spec_ref: "@batch-allowed-commands"
   plan_ref: "@batch-command-execution-via-json"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44975,6 +44975,13 @@
         pre-existing daemon-executable failure).
       supersedes: null
   todos: []
+  completed_at: 2026-02-06T09:32:26.908Z
+  closed_reason: "Merged in PR #322. Implements WeakMap-based command annotation registry
+    (command-annotations.ts) with markMutating/getAnnotation/createBatchCommandFilter. Adds
+    mutating:boolean to CommandMeta in introspection.ts (defaults false for deny-by-default).
+    Annotates 53 mutating commands across 11 registration files. Updates batch-exec.ts with
+    nested-batch rejection before commandFilter and improved denylist message. 22 tests cover all 3
+    ACs (ac-allowlist, ac-denylist, ac-batch-itself). All CI checks pass."
 - _ulid: 01KGR0K2F8HA3TJXGD5EXD7SBP
   slugs: []
   title: "Fix: Plan import drops acceptance criteria from spec YAML"
