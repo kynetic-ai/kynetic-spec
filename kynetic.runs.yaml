@@ -2484,7 +2484,7 @@ runs:
   - _ulid: 01KGS4SX69AZJ5DET5SQS3J9CA
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-06T09:33:50.153Z
     step_results:
@@ -2574,5 +2574,22 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-06T09:34:35.385Z
-        completed_at: 2026-02-06T09:34:35.385Z
+        completed_at: 2026-02-06T09:34:43.638Z
+        notes: >-
+          ## Proposed Improvements
+
+
+          No kspec feature improvements to propose. The friction points were about agent-level bulk
+          editing patterns, not missing kspec functionality.
+
+
+          **One observation worth capturing:** The WeakMap annotation pattern + introspection
+          integration worked cleanly as an extension point design. This is a success pattern — when
+          adding metadata to Commander commands, WeakMap avoids monkey-patching and integrates
+          cleanly with the existing `extractCommandTree` flow. Worth documenting for future similar
+          tasks (e.g., if we need to add other annotations like "requires-auth" or "idempotent").
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-06T09:34:43.638Z
+        completed_at: 2026-02-06T09:34:43.638Z
     initiated_by: "@claude"
