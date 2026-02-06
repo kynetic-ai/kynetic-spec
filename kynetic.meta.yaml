@@ -5349,8 +5349,11 @@ observations:
       workarounds. Tasks created: @01KGR0K2, @01KGR0K5."
     created_at: 2026-02-05T23:02:23.980Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Both bugs fixed in PR #319: createSpecItem() now preserves acceptance_criteria, and
+      trait refs are normalized with @ prefix during import."
+    resolved_at: 2026-02-06T00:25:02.261Z
+    resolved_by: "@claude"
   - _ulid: 01KGR5CVAAHCBBX27FD0ZN3SVQ
     type: success
     content: Precise plan with exact file paths, line numbers, and code diffs made the plan-import bug
