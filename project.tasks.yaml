@@ -44775,7 +44775,7 @@
   type: task
   spec_ref: "@batch-command-schema"
   plan_ref: "@batch-command-execution-via-json"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44841,6 +44841,7 @@
         ac-id-field."
       supersedes: null
   todos: []
+  started_at: 2026-02-06T08:23:55.728Z
 - _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
   slugs:
     - implement-batch-allowed-commands
