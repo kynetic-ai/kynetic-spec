@@ -45143,9 +45143,16 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-06T09:54:48.185Z
-  notes: []
-  todos: []
   started_at: 2026-02-06T09:57:17.789Z
+  notes:
+    - _ulid: 01KGS67FJ18AKPR4CMHTMJ219F
+      created_at: 2026-02-06T09:58:43.522Z
+      author: "@claude"
+      content: "Added --count flag to inbox list, item list, task list, tasks list. Shows plain integer in
+        normal mode, {count: N} in JSON mode. Placed after filtering but before limit/offset so it
+        returns total matching count."
+      supersedes: null
+  todos: []
 - _ulid: 01KGS60FXABBQPF07ZVN0KGAB4
   slugs: []
   title: Support multiple traits in item trait add/remove
