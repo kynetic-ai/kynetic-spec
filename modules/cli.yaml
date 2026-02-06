@@ -363,6 +363,10 @@ features:
             given: Atomic mode, 5 cmds where cmd 3 fails
             when: Batch encounters failure
             then: ALL changes discarded, no shadow commit, state identical to before batch, exit 1
+          - id: ac-atomic-isolation
+            given: Atomic mode, commands modifying state
+            when: Batch is executing
+            then: Modifications in isolated copy; other kspec operations see original state
         status:
           maturity: draft
           implementation: in_progress
