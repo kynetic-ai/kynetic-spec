@@ -14874,6 +14874,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Spec design complete. Created 4 specs (session-log-list, session-log-show,
+    session-log-stats, session-log-search) under @session-events with 30 total ACs. Codex-reviewed
+    and all feedback addressed. 4 derived implementation tasks with list as dependency for
+    show/stats/search.
   depends_on: []
   context: []
   priority: 3
@@ -14884,6 +14888,7 @@
   vcs_refs: []
   created_at: 2026-01-19T17:37:54.924Z
   started_at: 2026-02-06T23:24:57.251Z
+  completed_at: 2026-02-06T23:37:48.811Z
   notes:
     - _ulid: 01KFFHED2QZAKGGPBS5N4DA7SW
       created_at: 2026-01-21T05:46:38.551Z
@@ -15006,11 +15011,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-06T23:37:48.811Z
-  closed_reason: Spec design complete. Created 4 specs (session-log-list, session-log-show,
-    session-log-stats, session-log-search) under @session-events with 30 total ACs. Codex-reviewed
-    and all feedback addressed. 4 derived implementation tasks with list as dependency for
-    show/stats/search.
 - _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
   slugs: []
   title: Spec out pending_review task state
@@ -45546,6 +45546,7 @@
         scan events for task.complete or session.end with task data. Keep it lazy -
         only parse what's needed for the summary columns.
   todos: []
+  automation: eligible
 - _ulid: 01KGTN2A484D5W7WHWWS4QHMRP
   slugs:
     - implement-session-log-show
@@ -45574,6 +45575,7 @@
         Event timeline: stream events.jsonl line by line, format each with relative timestamp.
         Depends on shared session summary reader and event stream reader from list spec.
   todos: []
+  automation: eligible
 - _ulid: 01KGTN2ACK018NKMN7ESS3NJG2
   slugs:
     - implement-session-log-stats
@@ -45603,6 +45605,7 @@
         Time grouping (--by-week/--by-day) buckets sessions by started_at date.
         Depends on shared session summary reader and event stream reader.
   todos: []
+  automation: eligible
 - _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
   slugs:
     - implement-session-log-search
@@ -45632,3 +45635,4 @@
         Content excerpt: take 200 chars around match position.
         Depends on shared event stream reader and date filter utility.
   todos: []
+  automation: eligible
