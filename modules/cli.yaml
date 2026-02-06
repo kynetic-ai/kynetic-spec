@@ -371,6 +371,10 @@ features:
             given: --no-atomic flag provided
             when: kspec batch runs
             then: "Immediate mode: per-command commits, no rollback"
+          - id: ac-immediate-per-commit
+            given: Immediate mode, 3 successful commands
+            when: Batch completes
+            then: 3 individual shadow commits (one per command)
         status:
           maturity: draft
           implementation: in_progress
