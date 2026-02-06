@@ -44977,6 +44977,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Fixed: trait refs normalized with @ prefix during plan import. PR #319 merged."
   depends_on: []
   context: []
   priority: 2
@@ -44986,6 +44987,7 @@
   vcs_refs: []
   created_at: 2026-02-05T23:01:00.184Z
   started_at: 2026-02-06T00:10:29.794Z
+  completed_at: 2026-02-06T00:23:53.703Z
   notes:
     - _ulid: 01KGR4J379NPYYGASPZXBK071D
       created_at: 2026-02-06T00:10:19.754Z
@@ -44996,5 +44998,21 @@
         pass through unchanged. All 47 plan import tests pass."
       supersedes: null
   todos: []
-  completed_at: 2026-02-06T00:23:53.703Z
-  closed_reason: "Fixed: trait refs normalized with @ prefix during plan import. PR #319 merged."
+- title: Update AC-13 to reflect per-spec implementation notes scoping
+  type: task
+  spec_ref: "@plan-import"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - spec-drift
+  depends_on: []
+  _ulid: 01KGR8NWW2W00WEJESB6F3E7QT
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-06T01:22:18.589Z
+  notes: []
+  todos: []
