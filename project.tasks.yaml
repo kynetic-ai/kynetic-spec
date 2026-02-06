@@ -45076,6 +45076,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Updated AC-13 wording to reflect per-spec implementation notes scoping from PR #320"
   depends_on: []
   context: []
   priority: 3
@@ -45084,6 +45085,7 @@
   vcs_refs: []
   created_at: 2026-02-06T01:22:18.589Z
   started_at: 2026-02-06T09:54:31.347Z
+  completed_at: 2026-02-06T09:54:35.811Z
   notes:
     - _ulid: 01KGR8P4M55NS4ZAVS48YJQFHR
       created_at: 2026-02-06T01:22:26.565Z
@@ -45096,5 +45098,22 @@
         updated to match this new behavior."
       supersedes: null
   todos: []
-  completed_at: 2026-02-06T09:54:35.811Z
-  closed_reason: "Updated AC-13 wording to reflect per-spec implementation notes scoping from PR #320"
+- title: Display relationship fields in item get output
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+  description: Display relates_to and depends_on fields in kspec item get output. Currently these
+    fields are only visible by reading the YAML directly.
+  _ulid: 01KGS603ZVW9TVQQPXWAACEXE1
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-06T09:54:42.298Z
+  notes: []
+  todos: []

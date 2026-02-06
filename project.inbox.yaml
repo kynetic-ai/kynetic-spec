@@ -430,14 +430,6 @@ inbox:
       - validation
       - ux
     added_by: "@claude"
-  - _ulid: 01KGGTM33Q6HJW4QZS9JZBVRTM
-    text: Display relates_to and depends_on fields in kspec item get output. Currently these fields are
-      only visible by reading the YAML directly.
-    created_at: 2026-02-03T04:01:58.391Z
-    tags:
-      - cli
-      - dx
-    added_by: "@claude"
   - _ulid: 01KGGTT34ES3W098NNYE9Y8BZZ
     text: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set --automation,
       inbox delete, task note. Enables batch operations like 'kspec task note @ref1 @ref2 @ref3
