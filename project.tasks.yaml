@@ -44708,6 +44708,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-05T22:53:37.427Z
+  started_at: 2026-02-06T18:52:28.077Z
   notes:
     - _ulid: 01KGR05MRKC2P7MADTHFGB747E
       created_at: 2026-02-05T22:53:37.427Z
@@ -44767,8 +44768,52 @@
         the other two tasks being done first or simultaneously — the command schema defines the
         input format and the allowed commands list drives validation."
       supersedes: null
+    - _ulid: 01KGT5Q54EF33YJ9WCF374MJEB
+      created_at: 2026-02-06T19:09:02.990Z
+      author: "@claude"
+      content: >-
+        Implementation complete: batch command execution with two modes.
+
+
+        **Atomic mode** (default): copies .kspec/ to temp dir, executes against copy, rolls back on
+        failure, copies back + single shadow commit on success. Uses KSPEC_SPEC_DIR env var override
+        in initContext() and setBatchMode() to suppress per-command shadow commits.
+
+
+        **Immediate mode** (--no-atomic): executes against real .kspec/ state, per-command
+        auto-commits via existing shadow machinery. No rollback on failure. --continue flag implies
+        immediate mode.
+
+
+        Key implementation details:
+
+        - KSPEC_SPEC_DIR env var in initContext() for temp dir redirection
+
+        - BatchExitError + exit interceptor to catch process.exit() calls
+
+        - OutputCapture to intercept console.log/error/warn per command
+
+        - resetCommandTree() to clear Commander state between dispatches
+
+        - Auto-append --force for confirmation suppression
+
+        - Strip ANSI via chalk.level=0 during dispatch
+
+        - .git removed from temp copy to prevent worktree pointer leaks
+
+        - Copy-back handles deletions by clearing real specDir first
+
+
+        Files created: batch-context.ts, commands/batch.ts
+
+        Files modified: batch-exec.ts, schema/batch.ts, parser/yaml.ts, parser/shadow.ts,
+        cli/index.ts, commands/index.ts
+
+        Tests: 39 tests (21 unit + 18 integration), all passing
+
+        Full test suite: 1823/1824 pass (1 pre-existing bun compilation failure)
+      supersedes: null
   todos: []
-  started_at: 2026-02-06T18:52:28.077Z
 - _ulid: 01KGR05N2YJQSJM5J48YHGQP2J
   slugs:
     - implement-batch-command-schema
