@@ -225,6 +225,8 @@ derive_from_specs: true
   traits:
     - "@json-output"
     - "@dry-run"
+  implementation_notes: |
+    Use existing patterns for this feature.
 \`\`\`
 `;
 
@@ -246,7 +248,32 @@ derive_from_specs: true
         },
       ],
       traits: ["@json-output", "@dry-run"],
+      implementation_notes: "Use existing patterns for this feature.\n",
     });
+  });
+
+  it("should parse implementation_notes on some specs and not others", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Spec With Notes
+  slug: with-notes
+  implementation_notes: |
+    Specific notes for this spec.
+
+- title: Spec Without Notes
+  slug: without-notes
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(2);
+    expect(result.specs[0].implementation_notes).toBe("Specific notes for this spec.\n");
+    expect(result.specs[1].implementation_notes).toBeUndefined();
   });
 });
 

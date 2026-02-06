@@ -81,7 +81,7 @@ derive_from_specs: true
   });
 
   // AC: @plan-import ac-13
-  it("should add implementation notes to derived tasks", async () => {
+  it("should add global implementation notes to plan record and reference to tasks", async () => {
     const planPath = path.join(tempDir, "test-plan.md");
     await fs.writeFile(
       planPath,
@@ -108,7 +108,16 @@ Follow coding standards Y.
 
     kspec(`plan import "${planPath}" --module @test-core`, tempDir);
 
-    // Check that task has the implementation notes
+    // Plan record should have the global implementation notes
+    const plan = kspecJson<{ notes: Array<{ content: string }> }>(
+      "plan get @test-plan --json",
+      tempDir,
+    );
+    expect(plan.notes).toHaveLength(1);
+    expect(plan.notes[0].content).toContain("Implementation notes:");
+    expect(plan.notes[0].content).toContain("Use pattern X");
+
+    // Task without per-spec notes should get a reference to the plan
     const allTasks = kspecJson<Array<{ notes: Array<{ content: string }>; plan_ref: string }>>(
       "task list --json",
       tempDir,
@@ -116,8 +125,170 @@ Follow coding standards Y.
     const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].notes).toHaveLength(1);
-    expect(tasks[0].notes[0].content).toContain("Implementation notes from plan");
-    expect(tasks[0].notes[0].content).toContain("Use pattern X");
+    expect(tasks[0].notes[0].content).toContain("See plan @test-plan for implementation notes");
+  });
+
+  // AC: @plan-import ac-13 - Per-spec implementation notes
+  it("should add per-spec implementation notes to the corresponding task only", async () => {
+    const planPath = path.join(tempDir, "per-spec-notes.md");
+    await fs.writeFile(
+      planPath,
+      `# Per Spec Notes Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Alpha
+  slug: feature-alpha
+  type: feature
+  implementation_notes: |
+    Use pattern A for alpha implementation.
+
+- title: Feature Beta
+  slug: feature-beta
+  type: feature
+  implementation_notes: |
+    Use pattern B for beta implementation.
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const allTasks = kspecJson<Array<{ title: string; notes: Array<{ content: string }>; plan_ref: string }>>(
+      "task list --json",
+      tempDir,
+    );
+    const tasks = allTasks.filter(t => t.plan_ref === "@per-spec-notes-plan");
+
+    expect(tasks).toHaveLength(2);
+
+    const alphaTask = tasks.find(t => t.title === "Implement Feature Alpha");
+    const betaTask = tasks.find(t => t.title === "Implement Feature Beta");
+
+    expect(alphaTask).toBeDefined();
+    expect(alphaTask!.notes).toHaveLength(1);
+    expect(alphaTask!.notes[0].content).toContain("Use pattern A");
+    expect(alphaTask!.notes[0].content).not.toContain("Use pattern B");
+
+    expect(betaTask).toBeDefined();
+    expect(betaTask!.notes).toHaveLength(1);
+    expect(betaTask!.notes[0].content).toContain("Use pattern B");
+    expect(betaTask!.notes[0].content).not.toContain("Use pattern A");
+  });
+
+  // AC: @plan-import ac-13 - Mixed: some specs with per-spec notes, some without
+  it("should scope per-spec notes and reference plan for specs without", async () => {
+    const planPath = path.join(tempDir, "mixed-notes.md");
+    await fs.writeFile(
+      planPath,
+      `# Mixed Notes Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature With Notes
+  slug: feature-with-notes
+  type: feature
+  implementation_notes: |
+    Specific implementation details for this feature.
+
+- title: Feature Without Notes
+  slug: feature-without-notes
+  type: feature
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+
+## Implementation Notes
+
+Global architecture notes for the plan.
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const allTasks = kspecJson<Array<{ title: string; notes: Array<{ content: string }>; plan_ref: string }>>(
+      "task list --json",
+      tempDir,
+    );
+    const tasks = allTasks.filter(t => t.plan_ref === "@mixed-notes-plan");
+
+    expect(tasks).toHaveLength(2);
+
+    const withNotes = tasks.find(t => t.title === "Implement Feature With Notes");
+    const withoutNotes = tasks.find(t => t.title === "Implement Feature Without Notes");
+
+    // Task with per-spec notes gets those notes
+    expect(withNotes).toBeDefined();
+    expect(withNotes!.notes).toHaveLength(1);
+    expect(withNotes!.notes[0].content).toContain("Specific implementation details");
+    expect(withNotes!.notes[0].content).not.toContain("See plan");
+
+    // Task without per-spec notes gets plan reference
+    expect(withoutNotes).toBeDefined();
+    expect(withoutNotes!.notes).toHaveLength(1);
+    expect(withoutNotes!.notes[0].content).toContain("See plan @mixed-notes-plan for implementation notes");
+
+    // Plan record should have global notes
+    const plan = kspecJson<{ notes: Array<{ content: string }> }>(
+      "plan get @mixed-notes-plan --json",
+      tempDir,
+    );
+    expect(plan.notes).toHaveLength(1);
+    expect(plan.notes[0].content).toContain("Global architecture notes");
+  });
+
+  // AC: @plan-import ac-13 - Backward compatibility: old format without per-spec notes
+  it("should handle old-format plan without per-spec notes", async () => {
+    const planPath = path.join(tempDir, "old-format.md");
+    await fs.writeFile(
+      planPath,
+      `# Old Format Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Legacy Feature
+  slug: legacy-feature
+  type: feature
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+
+## Implementation Notes
+
+These are the global notes only.
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Plan record should have global notes
+    const plan = kspecJson<{ notes: Array<{ content: string }> }>(
+      "plan get @old-format-plan --json",
+      tempDir,
+    );
+    expect(plan.notes).toHaveLength(1);
+    expect(plan.notes[0].content).toContain("These are the global notes only");
+
+    // Task should get plan reference (not the full global notes)
+    const allTasks = kspecJson<Array<{ notes: Array<{ content: string }>; plan_ref: string }>>(
+      "task list --json",
+      tempDir,
+    );
+    const tasks = allTasks.filter(t => t.plan_ref === "@old-format-plan");
+    expect(tasks).toHaveLength(1);
+    expect(tasks[0].notes).toHaveLength(1);
+    expect(tasks[0].notes[0].content).toContain("See plan @old-format-plan for implementation notes");
   });
 
   // AC: @plan-import ac-14, ac-25
@@ -617,15 +788,23 @@ Ensure backward compatibility.
     expect(plan.derived_specs).toHaveLength(2);
     expect(plan.derived_tasks).toHaveLength(3);
 
-    // Verify tasks have implementation notes
-    const tasks = kspecJson<Array<{ notes: Array<{ content: string }> }>>(
+    // Verify plan record has global implementation notes
+    const planRecord = kspecJson<{ notes: Array<{ content: string }> }>(
+      "plan get @complete-feature-plan --json",
+      tempDir,
+    );
+    expect(planRecord.notes).toHaveLength(1);
+    expect(planRecord.notes[0].content).toContain("Follow existing patterns");
+
+    // Verify derived tasks reference the plan (no per-spec notes in this plan)
+    const tasks = kspecJson<Array<{ notes: Array<{ content: string }>; plan_ref: string }>>(
       "task list --json",
       tempDir,
     );
     const derivedTasks = tasks.filter(
-      (t) => t.notes.length > 0 && t.notes[0].content.includes("Implementation notes"),
+      (t) => t.plan_ref === "@complete-feature-plan" && t.notes.length > 0 && t.notes[0].content.includes("See plan"),
     );
-    expect(derivedTasks).toHaveLength(2); // Both derived tasks should have notes
+    expect(derivedTasks).toHaveLength(2); // Both derived tasks should reference the plan
   });
 
   // Bug fix: acceptance criteria should be preserved during import

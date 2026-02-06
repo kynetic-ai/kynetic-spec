@@ -90,6 +90,8 @@ The import path uses structured markdown documents. The parser (`parsePlanDocume
   slug: token-refresh
   type: requirement
   parent: "@oauth-provider"
+  implementation_notes: |
+    Use sliding window with 15min expiry for token refresh.
 ```
 
 ## Tasks
@@ -106,13 +108,13 @@ derive_from_specs: true
 
 ## Implementation Notes
 
-Use passport.js for OAuth. Token refresh should use sliding window with 15min expiry.
+Use passport.js for OAuth. General architecture follows existing auth patterns.
 ```
 
 **Section details:**
-- `## Specs` - YAML code block with array of spec objects. Fields: `title` (required), `slug`, `type`, `parent` (use `@ref`), `description`, `acceptance_criteria` (each needs `id`, `given`, `when`, `then`), `traits` (array of trait IDs)
+- `## Specs` - YAML code block with array of spec objects. Fields: `title` (required), `slug`, `type`, `parent` (use `@ref`), `description`, `acceptance_criteria` (each needs `id`, `given`, `when`, `then`), `traits` (array of trait IDs), `implementation_notes` (plain text, scoped to this spec's derived task)
 - `## Tasks` - `derive_from_specs: true|false` as a bare line (creates a task per spec). Optional YAML code block with additional manual tasks (fields: `title` required, `slug`, `priority`, `description`, `tags`). Manual tasks get `plan_ref` but no `spec_ref`
-- `## Implementation Notes` - Plain text, propagated as initial note to all derived tasks
+- `## Implementation Notes` - Plain text, attached to the plan record. Per-spec notes use the `implementation_notes` field in each spec's YAML entry
 
 ## Trait Considerations
 
