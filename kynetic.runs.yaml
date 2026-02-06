@@ -2484,7 +2484,7 @@ runs:
   - _ulid: 01KGS4SX69AZJ5DET5SQS3J9CA
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-06T09:33:50.153Z
     step_results:
@@ -2521,5 +2521,32 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-06T09:34:02.134Z
-        completed_at: 2026-02-06T09:34:02.134Z
+        completed_at: 2026-02-06T09:34:13.889Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **Repetitive edit pattern** — Annotating 49 commands required ~35 individual Edit tool
+          calls, each following the exact same pattern: change `group\n    .command(...)` to
+          `markMutating(group.command(...))`. A bulk annotation tool or script would have cut this
+          in half. Each edit was trivial but the volume was high.
+
+
+          2. **Import statement additions** — Had to add `import { markMutating } from
+          "../command-annotations.js"` to 11 files individually. Same content, different files.
+          Could have been a single multi-file operation.
+
+
+          3. **Reading command files to find registration sites** — Had to grep for `.command(`
+          across 11 files, then read surrounding context for each to understand the exact chaining
+          pattern. The patterns were consistent but required reading each file to confirm.
+
+
+          4. **No friction with batch-exec or introspection changes** — These were clean, targeted
+          edits. The extension points (commandFilter, CommandMeta interface) were well-designed from
+          PR #321.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-06T09:34:13.889Z
+        completed_at: 2026-02-06T09:34:13.889Z
     initiated_by: "@claude"
