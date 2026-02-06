@@ -45607,7 +45607,8 @@
   plan_ref: "@session-log-analysis-tooling"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-session-log-list"
   context: []
   priority: 3
   tags: []
