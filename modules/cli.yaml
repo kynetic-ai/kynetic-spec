@@ -359,6 +359,10 @@ features:
             given: kspec batch runs without --no-atomic
             when: Batch executes
             then: "Atomic mode: commands execute against isolated copy of state"
+          - id: ac-atomic-rollback
+            given: Atomic mode, 5 cmds where cmd 3 fails
+            when: Batch encounters failure
+            then: ALL changes discarded, no shadow commit, state identical to before batch, exit 1
         status:
           maturity: draft
           implementation: in_progress
