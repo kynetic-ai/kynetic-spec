@@ -5363,4 +5363,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGRP6D35N9WE3EKT2KBEBC5W
+    type: success
+    content: "Plan-import scoped notes fix: well-scoped plan with specific line numbers and code changes
+      led to zero-iteration implementation (all tests passed first try). Good pattern for future fix
+      plans."
+    created_at: 2026-02-06T05:18:31.013Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
