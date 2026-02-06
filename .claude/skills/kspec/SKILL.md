@@ -258,13 +258,13 @@ Execute multiple commands in a single operation with atomic rollback or per-comm
 
 ```bash
 # Pipe JSON via stdin
-echo '[{"command":"inbox add","args":{"content":"test idea"}}]' | kspec batch
+echo '[{"command":"inbox add","args":{"text":"test idea"}}]' | kspec batch
 
 # Read from file
 kspec batch --file commands.json
 
 # Inline JSON
-kspec batch --commands '[{"command":"inbox add","args":{"content":"test"}}]'
+kspec batch --commands '[{"command":"inbox add","args":{"text":"test"}}]'
 ```
 
 ### Command Format
@@ -274,7 +274,7 @@ Each command is a JSON object:
 ```json
 {
   "command": "task note",
-  "args": { "ref": "@task-slug", "content": "Progress update" },
+  "args": { "ref": "@task-slug", "message": "Progress update" },
   "id": "optional-correlation-id"
 }
 ```
@@ -327,7 +327,7 @@ kspec batch --file new-specs.json
 
 # Batch resolve observations
 kspec batch --commands '[
-  {"command":"meta resolve","args":{"refs":"@obs1 @obs2","resolution":"Addressed in PR #100"}}
+  {"command":"meta resolve","args":{"refs":["@obs1","@obs2"],"resolution":"Addressed in PR #100"}}
 ]'
 ```
 

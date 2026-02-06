@@ -58,9 +58,9 @@ When resolving many observations at once, use `kspec batch`:
 
 ```bash
 kspec batch --commands '[
-  {"command":"meta resolve","args":{"refs":"@obs1","resolution":"Fixed in PR #100"}},
-  {"command":"meta resolve","args":{"refs":"@obs2","resolution":"No longer relevant"}},
-  {"command":"meta resolve","args":{"refs":"@obs3 @obs4","resolution":"Addressed by new workflow"}}
+  {"command":"meta resolve","args":{"ref":"@obs1","resolution":"Fixed in PR #100"}},
+  {"command":"meta resolve","args":{"ref":"@obs2","resolution":"No longer relevant"}},
+  {"command":"meta resolve","args":{"refs":["@obs3","@obs4"],"resolution":"Addressed by new workflow"}}
 ]'
 ```
 

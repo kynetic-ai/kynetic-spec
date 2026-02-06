@@ -153,7 +153,7 @@ Execute multiple commands atomically or with per-command commits:
 
 ```bash
 # Atomic (default) — single commit, rollback on failure
-echo '[{"command":"task note","args":{"ref":"@task","content":"update"}}]' | kspec batch
+echo '[{"command":"task note","args":{"ref":"@task","message":"update"}}]' | kspec batch
 kspec batch --file commands.json
 
 # Immediate mode — per-command commits
