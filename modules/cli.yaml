@@ -335,9 +335,9 @@ features:
             when: Batch completes successfully
             then: A single shadow branch commit is created containing all changes (not 3 separate commits)
           - id: ac-partial-commit
-            given: Batch with --continue where commands 1-2 succeed and command 3 fails
+            given: Immediate mode with --continue, commands 1-2 succeed, command 3 fails
             when: Batch completes with partial success
-            then: A single shadow commit is created containing changes from commands 1-2 only
+            then: 2 individual commits (commands 1-2), no commit for command 3
           - id: ac-mutating-only
             given: Batch containing a read-only command like item get
             when: kspec batch runs
