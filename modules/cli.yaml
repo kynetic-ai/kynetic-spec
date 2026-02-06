@@ -257,7 +257,7 @@ features:
                 then: The id appears in per-command results for correlation
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
