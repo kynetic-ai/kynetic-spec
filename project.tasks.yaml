@@ -45117,23 +45117,42 @@
   created_at: 2026-02-06T09:54:42.298Z
   notes: []
   todos: []
-- title: Add --count flag to list commands
+- _ulid: 01KGS609QTMJF99PTWF59PP2Z2
+  slugs: []
+  title: Add --count flag to list commands
+  type: task
+  description: "Add --count flag to list commands (inbox list, task list, item list): 'kspec inbox
+    list --count' → '48 items'. Quick counts without full output or JSON piping. Small scope.
+    Surfaced during triage session."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
+  vcs_refs: []
+  created_at: 2026-02-06T09:54:48.185Z
+  notes: []
+  todos: []
+- title: Support multiple traits in item trait add/remove
   type: task
   priority: 3
   spec_ref: null
   tags:
     - cli
     - dx
-  description: "Add --count flag to list commands (inbox list, task list, item list): 'kspec inbox
-    list --count' → '48 items'. Quick counts without full output or JSON piping. Small scope.
-    Surfaced during triage session."
-  _ulid: 01KGS609QTMJF99PTWF59PP2Z2
+  description: "Allow kspec item trait add to accept multiple traits: kspec item trait add @spec
+    @trait1 @trait2 @trait3 instead of requiring separate commands for each trait"
+  _ulid: 01KGS60FXABBQPF07ZVN0KGAB4
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-06T09:54:48.185Z
+  created_at: 2026-02-06T09:54:54.506Z
   notes: []
   todos: []
