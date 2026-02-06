@@ -44983,5 +44983,13 @@
     - plan
   vcs_refs: []
   created_at: 2026-02-05T23:01:00.184Z
-  notes: []
+  notes:
+    - _ulid: 01KGR4J379NPYYGASPZXBK071D
+      created_at: 2026-02-06T00:10:19.754Z
+      author: "@claude"
+      content: "Fixed: Both dry-run and real import paths in plan-import.ts now normalize trait refs with
+        .map(t => t.startsWith('@') ? t : '@' + t), matching the existing parent ref normalization
+        pattern. Added integration tests: bare trait names get @ prefix, already-prefixed traits
+        pass through unchanged. All 47 plan import tests pass."
+      supersedes: null
   todos: []
