@@ -80,6 +80,27 @@ kspec task set @ref --automation eligible
 kspec task set @ref --automation needs_review --reason "..."
 ```
 
+## Bulk Operations with Batch
+
+When processing many items at once (e.g. deleting stale inbox items, promoting several at once, batch-resolving observations), use `kspec batch` instead of running commands one at a time:
+
+```bash
+# Delete multiple stale inbox items atomically
+kspec batch --commands '[
+  {"command":"inbox delete","args":{"ref":"@ref1","force":true}},
+  {"command":"inbox delete","args":{"ref":"@ref2","force":true}},
+  {"command":"inbox delete","args":{"ref":"@ref3","force":true}}
+]'
+
+# Promote several inbox items to tasks
+kspec batch --commands '[
+  {"command":"inbox promote","args":{"ref":"@ref1","title":"Task A"}},
+  {"command":"inbox promote","args":{"ref":"@ref2","title":"Task B"}}
+]'
+```
+
+Atomic mode (default) ensures either all operations succeed or none do. Use `--dry-run` to preview. See `/kspec` for full batch documentation.
+
 ## Key Principles
 
 - **Ask one question at a time** - Don't batch decisions

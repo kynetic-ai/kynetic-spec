@@ -52,6 +52,20 @@ For each observation:
 │           └─ No → add to inbox for later triage
 ```
 
+## Bulk Resolution with Batch
+
+When resolving many observations at once, use `kspec batch`:
+
+```bash
+kspec batch --commands '[
+  {"command":"meta resolve","args":{"refs":"@obs1","resolution":"Fixed in PR #100"}},
+  {"command":"meta resolve","args":{"refs":"@obs2","resolution":"No longer relevant"}},
+  {"command":"meta resolve","args":{"refs":"@obs3 @obs4","resolution":"Addressed by new workflow"}}
+]'
+```
+
+Use `--dry-run` to preview. See `/kspec` for full batch documentation.
+
 ## Common Patterns
 
 | Pattern | Action |

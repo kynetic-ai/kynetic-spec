@@ -43,6 +43,11 @@ kspec inbox promote @ref --title "Task title"
 
 # Validate spec files
 kspec validate
+
+# Execute multiple commands atomically
+echo '[{"command":"inbox add","args":{"content":"idea"}}]' | kspec batch
+kspec batch --file commands.json
+kspec batch --dry-run --file commands.json  # preview only
 ```
 
 ## Important

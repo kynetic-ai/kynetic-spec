@@ -250,6 +250,87 @@ If it's a friction point rather than a task:
 kspec meta observe --from-inbox @ref
 ```
 
+## Batch Operations
+
+Execute multiple commands in a single operation with atomic rollback or per-command commits.
+
+### Input Methods
+
+```bash
+# Pipe JSON via stdin
+echo '[{"command":"inbox add","args":{"content":"test idea"}}]' | kspec batch
+
+# Read from file
+kspec batch --file commands.json
+
+# Inline JSON
+kspec batch --commands '[{"command":"inbox add","args":{"content":"test"}}]'
+```
+
+### Command Format
+
+Each command is a JSON object:
+
+```json
+{
+  "command": "task note",
+  "args": { "ref": "@task-slug", "content": "Progress update" },
+  "id": "optional-correlation-id"
+}
+```
+
+- `command` — CLI command path (e.g. `"item add"`, `"task start"`, `"inbox promote"`)
+- `args` — Key/value map of flags (without `--`) and positional args
+- `id` — Optional; appears in results for matching
+
+### Execution Modes
+
+```bash
+# Atomic (default) — single commit, rollback on failure
+kspec batch --file commands.json
+
+# Immediate — per-command commits, no rollback
+kspec batch --no-atomic --file commands.json
+
+# Continue on error (implies immediate mode)
+kspec batch --continue --file commands.json
+
+# Dry run — validate without executing
+kspec batch --dry-run --file commands.json
+```
+
+**Atomic mode** (default): Commands execute against an isolated copy of state. On success, a single shadow commit covers all changes. On failure, all changes are discarded — state is identical to before the batch.
+
+**Immediate mode** (`--no-atomic`): Each command commits individually. If a command fails, previous commits remain and subsequent commands are skipped (unless `--continue`).
+
+**Continue mode** (`--continue`): Implies immediate. All commands are attempted regardless of failures. Failed commands are recorded; successful ones commit individually.
+
+### Constraints
+
+- Only **mutating** commands are allowed (e.g. `item add`, `task start`, `inbox promote`). Read-only commands (e.g. `item get`, `task list`) are rejected during validation.
+- Commands that normally require confirmation run without prompting (batch is implicitly non-interactive).
+- Batch cannot be nested — `batch` inside a batch is rejected.
+- Forward references work: command 2 can reference a slug created by command 1.
+
+### Use Cases
+
+```bash
+# Bulk promote inbox items
+kspec batch --commands '[
+  {"command":"inbox promote","args":{"ref":"@ref1","title":"Task A"}},
+  {"command":"inbox promote","args":{"ref":"@ref2","title":"Task B"}},
+  {"command":"inbox promote","args":{"ref":"@ref3","title":"Task C"}}
+]'
+
+# Create multiple spec items atomically
+kspec batch --file new-specs.json
+
+# Batch resolve observations
+kspec batch --commands '[
+  {"command":"meta resolve","args":{"refs":"@obs1 @obs2","resolution":"Addressed in PR #100"}}
+]'
+```
+
 ## Spec Operations
 
 ### Viewing Specs
