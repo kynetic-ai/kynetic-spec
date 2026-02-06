@@ -147,6 +147,25 @@ kspec task note <ref> "message"     # Add note
 kspec task notes <ref>              # View notes
 ```
 
+### Batch Execution
+
+Execute multiple commands atomically or with per-command commits:
+
+```bash
+# Atomic (default) — single commit, rollback on failure
+echo '[{"command":"task note","args":{"ref":"@task","message":"update"}}]' | kspec batch
+kspec batch --file commands.json
+
+# Immediate mode — per-command commits
+kspec batch --no-atomic --file commands.json
+
+# Continue on error, dry run
+kspec batch --continue --file commands.json
+kspec batch --dry-run --file commands.json
+```
+
+Each command: `{"command": "cli path", "args": {...}, "id": "optional"}`. Only mutating commands allowed.
+
 ### References
 
 Tasks can be referenced by:

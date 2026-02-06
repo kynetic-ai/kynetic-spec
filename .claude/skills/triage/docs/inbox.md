@@ -83,6 +83,26 @@ kspec item add --under @parent --title "..." --type requirement --slug slug
 kspec derive @spec-ref
 ```
 
+## Bulk Processing with Batch
+
+When triaging many items, use `kspec batch` to process in bulk:
+
+```bash
+# Delete multiple stale items atomically
+kspec batch --commands '[
+  {"command":"inbox delete","args":{"ref":"@ref1","force":true}},
+  {"command":"inbox delete","args":{"ref":"@ref2","force":true}}
+]'
+
+# Promote multiple items to tasks
+kspec batch --commands '[
+  {"command":"inbox promote","args":{"ref":"@ref1","title":"Task A","spec-ref":"@spec"}},
+  {"command":"inbox promote","args":{"ref":"@ref2","title":"Task B"}}
+]'
+```
+
+Use `--dry-run` to preview. See `/kspec` for full batch documentation.
+
 ## Common Patterns
 
 | Pattern | Action |

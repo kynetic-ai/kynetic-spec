@@ -50,6 +50,20 @@ When: 1-2 specs, incremental updates, quick additions
 Start: `kspec workflow start @spec-plan-manual`
 Best for: Small features, adding specs to existing areas
 
+### Programmatic Alternative: `kspec batch`
+
+For fully programmatic spec/task creation (e.g. scripts or agent pipelines), use `kspec batch` to execute multiple commands atomically:
+
+```bash
+kspec batch --commands '[
+  {"command":"item add","args":{"under":"@parent","title":"Feature X","type":"feature","slug":"feature-x"}},
+  {"command":"item ac add","args":{"ref":"@feature-x","given":"...","when":"...","then":"..."}},
+  {"command":"derive","args":{"ref":"@feature-x"}}
+]'
+```
+
+Batch runs all commands against an isolated state copy and commits once on success. On failure, everything rolls back. Use `--dry-run` to preview. See `/kspec` for full batch documentation.
+
 ### Decision Guide
 
 | Situation                                | Path   |
