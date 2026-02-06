@@ -1113,6 +1113,10 @@ features:
             given: user runs 'kspec item trait remove @spec @trait'
             when: trait in spec's list
             then: removes trait from traits array
+          - id: ac-9
+            given: user runs kspec item trait add @spec @trait1 @trait2
+            when: multiple trait refs provided
+            then: all valid traits are added to the spec's traits array
         status:
           maturity: draft
           implementation: implemented
