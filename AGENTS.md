@@ -575,7 +575,7 @@ kspec plan derive @plan-ref              # create task from plan
 
 **Plan lifecycle:** `draft` → `approved` → `active` → `completed` (or `rejected` from any non-terminal state)
 
-**Import path** parses structured markdown with `## Specs` (YAML array), `## Tasks` (`derive_from_specs: true` + optional manual tasks), and `## Implementation Notes`. See `/spec-plan` for full format reference.
+**Import path** parses structured markdown with `## Specs` (YAML array with optional per-spec `implementation_notes`), `## Tasks` (`derive_from_specs: true` + optional manual tasks), and `## Implementation Notes` (global, attached to plan record). See `/spec-plan` for full format reference.
 
 ### Inbox vs Observations
 

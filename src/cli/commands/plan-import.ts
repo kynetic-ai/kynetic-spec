@@ -173,6 +173,16 @@ async function importPlan(
   const newPlan = createPlan(planInput);
   const planRef = `@${planSlug}`;
 
+  // AC: @plan-import ac-13 - Attach global implementation notes to plan record
+  if (parsed.implementationNotes) {
+    newPlan.notes.push({
+      _ulid: ulid(),
+      created_at: new Date().toISOString(),
+      author,
+      content: `Implementation notes:\n\n${parsed.implementationNotes}`,
+    });
+  }
+
   // Initialize result
   const result: ImportResult = {
     createdSpecs: [],
@@ -379,13 +389,25 @@ async function importPlan(
 
         const newTask = createTask(taskInput);
 
-        // AC: @plan-import ac-13 - Add implementation notes
-        if (parsed.implementationNotes) {
+        // AC: @plan-import ac-13 - Scoped implementation notes
+        const planSpec = parsed.specs.find(s =>
+          (s.slug || generateSlug(s.title)) === specSlug
+        );
+        if (planSpec?.implementation_notes) {
+          // Per-spec notes go directly to this task
           newTask.notes.push({
             _ulid: ulid(),
             created_at: new Date().toISOString(),
             author,
-            content: `Implementation notes from plan:\n\n${parsed.implementationNotes}`,
+            content: `Implementation notes:\n\n${planSpec.implementation_notes}`,
+          });
+        } else if (parsed.implementationNotes) {
+          // No per-spec notes — reference the plan
+          newTask.notes.push({
+            _ulid: ulid(),
+            created_at: new Date().toISOString(),
+            author,
+            content: `See plan ${planRef} for implementation notes`,
           });
         }
 
