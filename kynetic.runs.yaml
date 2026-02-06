@@ -2748,8 +2748,19 @@ runs:
   - _ulid: 01KGTKYB3TXBQ21A8ZNK7VNBG6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-06T23:17:38.554Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-06T23:17:38.554Z
+        completed_at: 2026-02-06T23:17:52.958Z
+        notes: "What worked: (1) Codex review caught real arg-name bugs in docs, (2) parallel Explore agent
+          for comprehensive gap analysis, (3) spec-first approach made validation easy, (4) verified
+          examples against actual Commander definitions"
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-06T23:17:52.958Z
+        completed_at: 2026-02-06T23:17:52.958Z
     initiated_by: "@claude"
