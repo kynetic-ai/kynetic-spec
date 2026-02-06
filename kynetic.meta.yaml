@@ -5406,8 +5406,10 @@ observations:
       this a standard part of the PR review workflow."
     created_at: 2026-02-06T21:53:44.771Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: 01KGTF4Y
+    resolved_at: 2026-02-06T22:30:50.992Z
+    resolved_by: "@claude"
   - _ulid: 01KGTF4YT5Y2233BHBFZ3S8N75
     type: friction
     content: "Codex sandbox can't reach api.github.com: when running codex exec with --sandbox
