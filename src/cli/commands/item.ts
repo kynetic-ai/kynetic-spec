@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   AlignmentIndex,
   addChildItem,
@@ -560,8 +561,7 @@ export function registerItemCommands(program: Command): void {
     });
 
   // kspec item add - create a new spec item under a parent
-  item
-    .command("add")
+  markMutating(item.command("add"))
     .description("Create a new spec item under a parent")
     .requiredOption(
       "--under <ref>",
@@ -672,8 +672,7 @@ Examples:
     });
 
   // kspec item set - update a spec item field
-  item
-    .command("set <ref>")
+  markMutating(item.command("set <ref>"))
     .description("Update a spec item field")
     .option("--title <title>", "Set title")
     .option("--type <type>", "Set type")
@@ -840,8 +839,7 @@ Examples:
     });
 
   // kspec item delete - delete a spec item
-  item
-    .command("delete <ref>")
+  markMutating(item.command("delete <ref>"))
     .description("Delete a spec item (including nested items)")
     .option("--force", "Skip confirmation")
     .option("--cascade", "Delete item and all descendants")
@@ -1014,8 +1012,7 @@ Examples:
     });
 
   // kspec item patch - update item fields via JSON
-  item
-    .command("patch [ref]")
+  markMutating(item.command("patch [ref]"))
     .description("Update spec item fields via JSON patch")
     .option("--data <json>", "JSON data to patch")
     .option("--bulk", "Read patches from stdin (JSONL or JSON array)")
@@ -1271,8 +1268,7 @@ Examples:
     });
 
   // kspec item note <ref> <message>
-  item
-    .command("note <ref> <message>")
+  markMutating(item.command("note <ref> <message>"))
     .description("Add a note to a spec item")
     .option("--author <author>", "Note author")
     .option("--supersedes <ulid>", "ULID of note this supersedes")
@@ -1439,8 +1435,7 @@ Examples:
     });
 
   // kspec item ac add <ref>
-  acCmd
-    .command("add <ref>")
+  markMutating(acCmd.command("add <ref>"))
     .description("Add an acceptance criterion to a spec item")
     .option("--id <id>", "AC identifier (auto-generated if not provided)")
     .requiredOption("--given <text>", "The precondition (Given...)")
@@ -1485,8 +1480,7 @@ Examples:
     });
 
   // kspec item ac set <ref> <ac-id>
-  acCmd
-    .command("set <ref> <acId>")
+  markMutating(acCmd.command("set <ref> <acId>"))
     .description("Update an acceptance criterion")
     .option("--id <newId>", "Rename the AC ID")
     .option("--given <text>", "Update the precondition")
@@ -1554,8 +1548,7 @@ Examples:
     });
 
   // kspec item ac remove <ref> <ac-id>
-  acCmd
-    .command("remove <ref> <acId>")
+  markMutating(acCmd.command("remove <ref> <acId>"))
     .description("Remove an acceptance criterion")
     .option("--force", "Skip confirmation")
     .action(async (ref: string, acId: string, options) => {

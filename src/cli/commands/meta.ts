@@ -12,6 +12,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
+import { markMutating } from "../command-annotations.js";
 import {
   type Agent,
   type Convention,
@@ -768,8 +769,7 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-obs-1: kspec meta observe <type> <content>
   // AC: @meta-observe-cmd from-inbox-conversion
-  meta
-    .command("observe [type] [content]")
+  markMutating(meta.command("observe [type] [content]"))
     .description("Create an observation (friction, success, question, idea)")
     .option(
       "--workflow <ref>",
@@ -1007,8 +1007,7 @@ export function registerMetaCommands(program: Command): void {
     });
 
   // AC-obs-3, AC-obs-6, AC-obs-8: kspec meta promote
-  meta
-    .command("promote <ref>")
+  markMutating(meta.command("promote <ref>"))
     .description("Promote observation to a task")
     .requiredOption("--title <title>", "Task title")
     .option("--priority <priority>", "Task priority (1-5)", "2")
@@ -1091,8 +1090,7 @@ export function registerMetaCommands(program: Command): void {
 
   // AC-obs-4, AC-obs-7, AC-obs-9: kspec meta resolve
   // AC: @trait-multi-ref-batch - Batch support with --refs flag
-  meta
-    .command("resolve [ref] [resolution]")
+  markMutating(meta.command("resolve [ref] [resolution]"))
     .description("Resolve an observation (or multiple with --refs)")
     .option("--refs <refs...>", "Resolve multiple observations by ref")
     .option(
@@ -1243,8 +1241,7 @@ Examples:
     );
 
   // Meta add command - create new meta items
-  meta
-    .command("add <type>")
+  markMutating(meta.command("add <type>"))
     .description("Create a new meta item (agent, workflow, or convention)")
     .option("--id <id>", "Semantic ID (required for agents and workflows)")
     .option("--domain <domain>", "Domain (required for conventions)")
@@ -1415,8 +1412,7 @@ Examples:
     });
 
   // Meta set command - update existing meta items
-  meta
-    .command("set <ref>")
+  markMutating(meta.command("set <ref>"))
     .description("Update an existing meta item")
     .option("--name <name>", "Update name (for agents)")
     .option("--description <desc>", "Update description")
@@ -1540,8 +1536,7 @@ Examples:
     });
 
   // Meta delete command - delete meta items
-  meta
-    .command("delete <ref>")
+  markMutating(meta.command("delete <ref>"))
     .description("Delete a meta item")
     .option("--confirm", "Skip confirmation prompt")
     .action(async (ref: string, options) => {
@@ -1699,8 +1694,7 @@ Examples:
     });
 
   // meta-focus-cmd: kspec meta focus [ref]
-  meta
-    .command("focus [ref]")
+  markMutating(meta.command("focus [ref]"))
     .description("Get or set session focus")
     .option("--clear", "Clear current focus")
     .action(async (ref: string | undefined, options) => {
@@ -1749,8 +1743,7 @@ Examples:
     });
 
   // meta-thread-cmd: kspec meta thread <action> [text]
-  meta
-    .command("thread <action> [text]")
+  markMutating(meta.command("thread <action> [text]"))
     .description("Manage active threads")
     .action(async (action: string, text: string | undefined) => {
       try {
@@ -1841,8 +1834,7 @@ Examples:
     });
 
   // meta-question-cmd: kspec meta question <action> [text]
-  meta
-    .command("question <action> [text]")
+  markMutating(meta.command("question <action> [text]"))
     .description("Manage open questions")
     .action(async (action: string, text: string | undefined) => {
       try {

@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   type AnyLoadedItem,
   buildIndexes,
@@ -48,8 +49,7 @@ export function registerLinkCommands(program: Command): void {
     .description("Manage relationships between spec items");
 
   // kspec link create
-  link
-    .command("create")
+  markMutating(link.command("create"))
     .description("Create a relationship from one item to another")
     .argument("<from>", "Source item reference (e.g., @my-item)")
     .argument("<to>", "Target item reference (e.g., @other-item)")
@@ -320,8 +320,7 @@ export function registerLinkCommands(program: Command): void {
     });
 
   // kspec link delete
-  link
-    .command("delete")
+  markMutating(link.command("delete"))
     .description("Remove a relationship between items")
     .argument("<from>", "Source item reference")
     .argument("<to>", "Target item reference")

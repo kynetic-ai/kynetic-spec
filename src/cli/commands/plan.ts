@@ -6,6 +6,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   createPlan,
   createTask,
@@ -70,8 +71,7 @@ export function registerPlanCommands(program: Command): void {
 
   // kspec plan add
   // AC: @plan-crud ac-1, ac-2
-  plan
-    .command("add")
+  markMutating(plan.command("add"))
     .description("Create a new plan")
     .requiredOption("--title <title>", "Plan title")
     .option("--content <text>", "Plan content (markdown)")
@@ -214,8 +214,7 @@ Examples:
 
   // kspec plan set <ref>
   // AC: @plan-crud ac-3, ac-4
-  plan
-    .command("set <ref>")
+  markMutating(plan.command("set <ref>"))
     .description("Update plan fields")
     .option("--title <title>", "Update title")
     .option("--status <status>", "Update status")
@@ -344,8 +343,7 @@ Examples:
 
   // kspec plan note <ref> <text>
   // AC: @plan-crud ac-9
-  plan
-    .command("note <ref> <text>")
+  markMutating(plan.command("note <ref> <text>"))
     .description("Add a note to a plan")
     .action(async (ref: string, text: string) => {
       try {
@@ -381,8 +379,7 @@ Examples:
 
   // kspec plan derive <ref>
   // AC: @plan-derive ac-5, ac-6
-  plan
-    .command("derive <ref>")
+  markMutating(plan.command("derive <ref>"))
     .description("Create a task from a plan")
     .option("--title <title>", "Override task title")
     .option("--priority <n>", "Set task priority (1-5)", parseInt)

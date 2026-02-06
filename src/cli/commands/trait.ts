@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   buildIndexes,
   checkSlugUniqueness,
@@ -25,8 +26,7 @@ export function registerTraitCommands(program: Command): void {
 
   // kspec trait add <title>
   // AC: @trait-cli ac-1, ac-2
-  trait
-    .command("add <title>")
+  markMutating(trait.command("add <title>"))
     .description("Create a new trait")
     .option("--description <desc>", "Trait description")
     .option("--slug <slug>", "Human-friendly slug")
@@ -242,8 +242,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
 
   // kspec item trait add <spec-ref> <trait-ref>
   // AC: @trait-cli ac-5, ac-6, ac-7
-  traitCmd
-    .command("add <specRef> <traitRef>")
+  markMutating(traitCmd.command("add <specRef> <traitRef>"))
     .description("Add a trait to a spec item")
     .action(async (specRef: string, traitRef: string) => {
       try {
@@ -313,8 +312,7 @@ export function registerItemTraitCommands(itemCommand: Command): void {
 
   // kspec item trait remove <spec-ref> <trait-ref>
   // AC: @trait-cli ac-8
-  traitCmd
-    .command("remove <specRef> <traitRef>")
+  markMutating(traitCmd.command("remove <specRef> <traitRef>"))
     .description("Remove a trait from a spec item")
     .action(async (specRef: string, traitRef: string) => {
       try {

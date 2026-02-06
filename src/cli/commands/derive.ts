@@ -1,4 +1,5 @@
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   AlignmentIndex,
   createNote,
@@ -401,8 +402,7 @@ function getParentTaskRef(
  * Register the 'derive' command
  */
 export function registerDeriveCommand(program: Command): void {
-  program
-    .command("derive [ref]")
+  markMutating(program.command("derive [ref]"))
     .description("Create task(s) from spec item(s)")
     .option("--all", "Derive tasks for all spec items without linked tasks")
     .option(

@@ -1,6 +1,7 @@
 import * as path from "node:path";
 import chalk from "chalk";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   checkSlugUniqueness,
   createNote,
@@ -597,8 +598,7 @@ export function registerTaskCommands(program: Command): void {
     });
 
   // kspec task add
-  task
-    .command("add")
+  markMutating(task.command("add"))
     .description("Create a new task")
     .requiredOption("--title <title>", "Task title")
     .option("--description <description>", "Task description")
@@ -795,8 +795,7 @@ Examples:
     });
 
   // kspec task set <ref>
-  task
-    .command("set [ref]")
+  markMutating(task.command("set [ref]"))
     .description("Update task fields")
     .option(
       "--refs <refs...>",
@@ -951,8 +950,7 @@ Examples:
     });
 
   // kspec task patch <ref>
-  task
-    .command("patch <ref>")
+  markMutating(task.command("patch <ref>"))
     .description("Update task with JSON data")
     .option("--data <json>", "JSON object with fields to update")
     .option("--dry-run", "Show what would change without writing")
@@ -1065,8 +1063,7 @@ Examples:
     });
 
   // kspec task start <ref>
-  task
-    .command("start <ref>")
+  markMutating(task.command("start <ref>"))
     .description("Start working on a task (pending -> in_progress)")
     .option("--no-sync", "Skip syncing spec implementation status")
     .action(async (ref: string, options) => {
@@ -1175,8 +1172,7 @@ Examples:
   // kspec task complete <ref> | --refs <refs...>
   // AC: @multi-ref-batch ac-1 - Basic multi-ref syntax
   // AC: @multi-ref-batch ac-2 - Backward compatibility
-  task
-    .command("complete [ref]")
+  markMutating(task.command("complete [ref]"))
     .description("Complete a task (pending_review -> completed)")
     .option("--refs <refs...>", "Complete multiple tasks by ref")
     .option("--reason <reason>", "Completion reason/notes")
@@ -1413,8 +1409,7 @@ Examples:
 
   // kspec task submit <ref>
   // Transitions in_progress → pending_review (code done, awaiting merge)
-  task
-    .command("submit <ref>")
+  markMutating(task.command("submit <ref>"))
     .description("Submit task for review (transitions to pending_review)")
     .action(async (ref: string) => {
       try {
@@ -1453,8 +1448,7 @@ Examples:
     });
 
   // kspec task block <ref>
-  task
-    .command("block <ref>")
+  markMutating(task.command("block <ref>"))
     .description("Block a task")
     .requiredOption("--reason <reason>", "Reason for blocking")
     .action(async (ref: string, options) => {
@@ -1495,8 +1489,7 @@ Examples:
     });
 
   // kspec task unblock <ref>
-  task
-    .command("unblock <ref>")
+  markMutating(task.command("unblock <ref>"))
     .description("Unblock a task")
     .action(async (ref: string) => {
       try {
@@ -1534,8 +1527,7 @@ Examples:
 
   // kspec task cancel <ref> | --refs <refs...>
   // AC: @multi-ref-batch ac-1, ac-2
-  task
-    .command("cancel [ref]")
+  markMutating(task.command("cancel [ref]"))
     .description("Cancel a task")
     .option("--refs <refs...>", "Cancel multiple tasks by ref")
     .option("--reason <reason>", "Cancellation reason")
@@ -1612,8 +1604,7 @@ Examples:
 
   // kspec task reset <ref>
   // AC: @spec-task-reset ac-1, ac-2, ac-3, ac-4, ac-5, ac-6
-  task
-    .command("reset <ref>")
+  markMutating(task.command("reset <ref>"))
     .description("Reset a task to pending state")
     .action(async (ref: string) => {
       try {
@@ -1711,8 +1702,7 @@ Examples:
 
   // kspec task delete <ref> | --refs <refs...>
   // AC: @multi-ref-batch ac-1, ac-2
-  task
-    .command("delete [ref]")
+  markMutating(task.command("delete [ref]"))
     .description("Delete a task permanently")
     .option("--refs <refs...>", "Delete multiple tasks by ref")
     .option("--force", "Skip confirmation (required for --refs)")
@@ -1815,8 +1805,7 @@ Examples:
     });
 
   // kspec task note <ref> <message>
-  task
-    .command("note <ref> <message>")
+  markMutating(task.command("note <ref> <message>"))
     .description("Add a note to a task")
     .option("--author <author>", "Note author")
     .option("--supersedes <ulid>", "ULID of note this supersedes")
@@ -2120,8 +2109,7 @@ Examples:
   const todoCmd = task.command("todo").description("Manage task todos");
 
   // kspec task todo add <ref> <text>
-  todoCmd
-    .command("add <ref> <text>")
+  markMutating(todoCmd.command("add <ref> <text>"))
     .description("Add a todo to a task")
     .option("--author <author>", "Todo author")
     .action(async (ref: string, text: string, options) => {
@@ -2162,8 +2150,7 @@ Examples:
     });
 
   // kspec task todo done <ref> <id>
-  todoCmd
-    .command("done <ref> <id>")
+  markMutating(todoCmd.command("done <ref> <id>"))
     .description("Mark a todo as done")
     .action(async (ref: string, idStr: string) => {
       try {
@@ -2218,8 +2205,7 @@ Examples:
     });
 
   // kspec task todo undone <ref> <id>
-  todoCmd
-    .command("undone <ref> <id>")
+  markMutating(todoCmd.command("undone <ref> <id>"))
     .description("Mark a todo as not done")
     .action(async (ref: string, idStr: string) => {
       try {

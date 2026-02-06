@@ -6,6 +6,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Command } from "commander";
+import { markMutating } from "../command-annotations.js";
 import {
   addChildItem,
   buildIndexes,
@@ -38,8 +39,7 @@ import { ulid } from "ulid";
  * AC: @plan-import ac-11, ac-15, ac-32
  */
 export function registerPlanImportCommand(planCommand: Command): void {
-  planCommand
-    .command("import <path>")
+  markMutating(planCommand.command("import <path>"))
     .description("Import plan document and auto-generate specs/tasks")
     .requiredOption(
       "--module <ref>",
