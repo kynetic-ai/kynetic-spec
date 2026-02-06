@@ -44965,6 +44965,15 @@
       content: "Starting implementation. PR #321 (batch-command-schema) is merged. Plan approved —
         creating annotation registry, classifying all commands, updating batch-exec, writing tests."
       supersedes: null
+    - _ulid: 01KGS43XJXM7GATMA138KPG9GT
+      created_at: 2026-02-06T09:21:49.661Z
+      author: "@claude"
+      content: Implementation complete. Created command-annotations.ts with WeakMap registry, added
+        mutating field to CommandMeta in introspection.ts, updated batch-exec.ts with nested-batch
+        rejection and improved denylist message, annotated all 49 mutating commands across 11
+        command files. 22 new tests pass, 40 existing batch-schema tests pass, full suite green (1
+        pre-existing daemon-executable failure).
+      supersedes: null
   todos: []
 - _ulid: 01KGR0K2F8HA3TJXGD5EXD7SBP
   slugs: []
