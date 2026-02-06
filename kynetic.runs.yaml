@@ -2604,8 +2604,38 @@ runs:
   - _ulid: 01KGS7T25BC4G4F13916ZW38M7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-06T10:26:20.971Z
+        completed_at: 2026-02-06T10:26:33.824Z
+        notes: >-
+          ## What Worked Well
+
+
+          1. **Spec-first AC drafting with subagent review** — Drafted all ACs, then used a subagent
+          to review for gaps before applying. Caught real issues: --count+--json interaction,
+          missing ACs for optional flags on inbox promote, partial success behavior gap. This
+          prevented rework.
+
+
+          2. **Parallel inbox-to-task promotion** — Promoted 4 inbox items sequentially (shadow
+          branch constraint) but it was smooth. The inbox→promote→start→implement→submit flow worked
+          well.
+
+
+          3. **Backward-compatible JSON output** — When multi-trait changed the JSON shape, keeping
+          top-level trait/added fields from results[0] preserved existing tests while adding the
+          results array. Zero test changes needed for the shape change.
+
+
+          4. **Review-then-fix cycle** — Using a subagent for PR review, addressing findings, then a
+          second subagent to verify fixes. Clean separation of concerns.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-06T10:26:33.824Z
+        completed_at: 2026-02-06T10:26:33.824Z
     initiated_by: "@claude"
