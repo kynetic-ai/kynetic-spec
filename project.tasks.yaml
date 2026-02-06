@@ -44700,6 +44700,10 @@
   plan_ref: "@batch-command-execution-via-json"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #324. Implemented kspec batch with atomic (default) and immediate
+    (--no-atomic) execution modes. 40 tests, 22 spec ACs. Addressed review feedback from both Codex
+    and Claude CI: positional arg ordering, copy-back safety, finally-block cleanup, validation
+    count accuracy."
   depends_on:
     - "@implement-batch-command-schema"
     - "@implement-batch-allowed-commands"
@@ -44709,6 +44713,7 @@
   vcs_refs: []
   created_at: 2026-02-05T22:53:37.427Z
   started_at: 2026-02-06T18:52:28.077Z
+  completed_at: 2026-02-06T21:52:55.842Z
   notes:
     - _ulid: 01KGR05MRKC2P7MADTHFGB747E
       created_at: 2026-02-05T22:53:37.427Z
@@ -44814,11 +44819,6 @@
         Full test suite: 1823/1824 pass (1 pre-existing bun compilation failure)
       supersedes: null
   todos: []
-  completed_at: 2026-02-06T21:52:55.842Z
-  closed_reason: "Merged in PR #324. Implemented kspec batch with atomic (default) and immediate
-    (--no-atomic) execution modes. 40 tests, 22 spec ACs. Addressed review feedback from both Codex
-    and Claude CI: positional arg ordering, copy-back safety, finally-block cleanup, validation
-    count accuracy."
 - _ulid: 01KGR05N2YJQSJM5J48YHGQP2J
   slugs:
     - implement-batch-command-schema
@@ -45288,4 +45288,21 @@
       author: "@claude"
       content: This note was added during promote
       supersedes: null
+  todos: []
+- title: Document kspec batch command across docs and skills
+  type: task
+  spec_ref: "@batch-exec"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KGTHJ9JB482P2TH67QF3DQRQ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-06T22:36:06.603Z
+  notes: []
   todos: []
