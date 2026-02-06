@@ -5351,4 +5351,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGR5CVAAHCBBX27FD0ZN3SVQ
+    type: success
+    content: Precise plan with exact file paths, line numbers, and code diffs made the plan-import bug
+      fix session trivially fast. Plan → implement → test → PR → merge in one smooth pass with zero
+      rework.
+    created_at: 2026-02-06T00:24:56.394Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
