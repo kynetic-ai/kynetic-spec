@@ -45074,7 +45074,7 @@
   spec_ref: "@plan-import"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -45096,3 +45096,5 @@
         updated to match this new behavior."
       supersedes: null
   todos: []
+  completed_at: 2026-02-06T09:54:35.811Z
+  closed_reason: "Updated AC-13 wording to reflect per-spec implementation notes scoping from PR #320"
