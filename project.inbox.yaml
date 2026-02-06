@@ -551,3 +551,13 @@ inbox:
       - plan
       - dx
     added_by: "@claude"
+  - _ulid: 01KGS2Q5KSNZ5F7TR3NEQNAQTJ
+    text: "kspec plan set --remove-slug: plan set only supports --slug (add) but not --remove-slug.
+      kspec item set already has --remove-slug. Add parity so plan slugs can be managed without
+      manual YAML editing."
+    created_at: 2026-02-06T08:57:23.321Z
+    tags:
+      - cli
+      - plan
+      - dx
+    added_by: "@claude"
