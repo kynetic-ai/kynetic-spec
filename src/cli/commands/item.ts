@@ -478,10 +478,10 @@ export function registerItemCommands(program: Command): void {
             console.log(`${fieldLabels.dependsOn} ${item.depends_on.join(", ")}`);
           }
           if (Array.isArray(item.implements) && item.implements.length > 0) {
-            console.log(`${fieldLabels.implements}  ${item.implements.join(", ")}`);
+            console.log(`${fieldLabels.implements} ${item.implements.join(", ")}`);
           }
           if (Array.isArray(item.relates_to) && item.relates_to.length > 0) {
-            console.log(`${fieldLabels.relatesTo}  ${item.relates_to.join(", ")}`);
+            console.log(`${fieldLabels.relatesTo} ${item.relates_to.join(", ")}`);
           }
 
           if (item.description) {

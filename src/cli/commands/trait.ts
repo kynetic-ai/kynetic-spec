@@ -265,29 +265,40 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         }
 
         let currentTraits = spec.traits || [];
-        const results: Array<{ trait: string; added: boolean }> = [];
+        const results: Array<{
+          trait: string;
+          added: boolean;
+          error?: string;
+        }> = [];
+        let hasErrors = false;
 
         for (const traitRef of traitRefs) {
-          // AC: @trait-cli ac-7 - verify trait exists
+          // AC: @trait-cli ac-7, ac-12 - verify trait exists (continue on failure)
           const traitResult = refIndex.resolve(traitRef);
           if (!traitResult.ok) {
             error(`Trait not found: ${traitRef}`);
-            process.exit(EXIT_CODES.NOT_FOUND);
+            results.push({ trait: traitRef, added: false, error: "not found" });
+            hasErrors = true;
+            continue;
           }
 
           const traitItem = traitResult.item as LoadedSpecItem;
           if (traitItem.type !== "trait") {
             error(`${traitRef} is not a trait (type: ${traitItem.type})`);
-            process.exit(EXIT_CODES.ERROR);
+            results.push({
+              trait: traitRef,
+              added: false,
+              error: `not a trait (type: ${traitItem.type})`,
+            });
+            hasErrors = true;
+            continue;
           }
 
           const traitRefString = `@${traitItem.slugs[0] || traitItem._ulid}`;
 
           // AC: @trait-cli ac-6, ac-10 - idempotent (skip existing)
           if (currentTraits.includes(traitRefString)) {
-            warn(
-              `Spec already has trait ${traitRefString} (skipped)`,
-            );
+            warn(`Spec already has trait ${traitRefString} (skipped)`);
             results.push({ trait: traitRefString, added: false });
             continue;
           }
@@ -323,6 +334,11 @@ export function registerItemTraitCommands(itemCommand: Command): void {
             },
           );
         }
+
+        // AC: @trait-cli ac-12 - exit code 1 when some refs failed
+        if (hasErrors) {
+          process.exit(EXIT_CODES.ERROR);
+        }
       } catch (err) {
         error("Failed to add trait to spec", err);
         process.exit(EXIT_CODES.ERROR);
@@ -354,14 +370,25 @@ export function registerItemTraitCommands(itemCommand: Command): void {
         }
 
         let currentTraits = spec.traits || [];
-        const results: Array<{ trait: string; removed: boolean }> = [];
+        const results: Array<{
+          trait: string;
+          removed: boolean;
+          error?: string;
+        }> = [];
+        let hasErrors = false;
 
         for (const traitRef of traitRefs) {
-          // Resolve trait to get its ref format
+          // Resolve trait to get its ref format (continue on failure)
           const traitResult = refIndex.resolve(traitRef);
           if (!traitResult.ok) {
             error(`Trait not found: ${traitRef}`);
-            process.exit(EXIT_CODES.NOT_FOUND);
+            results.push({
+              trait: traitRef,
+              removed: false,
+              error: "not found",
+            });
+            hasErrors = true;
+            continue;
           }
 
           const traitItem = traitResult.item as LoadedSpecItem;
@@ -403,6 +430,11 @@ export function registerItemTraitCommands(itemCommand: Command): void {
               warn("No traits removed (none were present)");
             },
           );
+        }
+
+        // Exit code 1 when some refs failed
+        if (hasErrors) {
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error("Failed to remove trait from spec", err);
