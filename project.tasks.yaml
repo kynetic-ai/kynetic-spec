@@ -44775,7 +44775,7 @@
   type: task
   spec_ref: "@batch-command-schema"
   plan_ref: "@batch-command-execution-via-json"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44881,6 +44881,12 @@
         - BatchParseError preserves JSON.parse position info for debugging
       supersedes: null
   todos: []
+  completed_at: 2026-02-06T09:03:26.862Z
+  closed_reason: "Merged in PR #321. Implemented batch command schema (Zod schemas for BatchCommand
+    and BatchInput), parsing layer (stdin/file/inline with BatchParseError), and validation (command
+    path resolution, arg mapping with kebab/camelCase, unknown command suggestions via fuzzy
+    matching, missing required arg detection, commandFilter extension point). All 5 ACs covered by
+    40 unit tests. No regressions."
 - _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
   slugs:
     - implement-batch-allowed-commands
