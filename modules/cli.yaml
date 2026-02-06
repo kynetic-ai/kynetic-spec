@@ -367,6 +367,10 @@ features:
             given: Atomic mode, commands modifying state
             when: Batch is executing
             then: Modifications in isolated copy; other kspec operations see original state
+          - id: ac-no-atomic-flag
+            given: --no-atomic flag provided
+            when: kspec batch runs
+            then: "Immediate mode: per-command commits, no rollback"
         status:
           maturity: draft
           implementation: in_progress
