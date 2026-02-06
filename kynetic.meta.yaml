@@ -5396,4 +5396,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTF4QA30P761909YYA8KHVK
+    type: success
+    content: "Codex CLI as external PR reviewer: running 'codex exec -m gpt-5.3-codex --sandbox
+      danger-full-access --full-auto' with a code review prompt caught a real
+      positional-arg-ordering bug that the implementing agent missed. Two independent reviewers
+      (Codex + Claude CI) found complementary issues — Codex caught the arg order bug and temp dir
+      naming, Claude CI caught the validation count mismatch and finally-block safety. Worth making
+      this a standard part of the PR review workflow."
+    created_at: 2026-02-06T21:53:44.771Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
