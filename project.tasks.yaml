@@ -44698,7 +44698,7 @@
   type: task
   spec_ref: "@batch-exec"
   plan_ref: "@batch-command-execution-via-json"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-batch-command-schema"
@@ -44814,6 +44814,11 @@
         Full test suite: 1823/1824 pass (1 pre-existing bun compilation failure)
       supersedes: null
   todos: []
+  completed_at: 2026-02-06T21:52:55.842Z
+  closed_reason: "Merged in PR #324. Implemented kspec batch with atomic (default) and immediate
+    (--no-atomic) execution modes. 40 tests, 22 spec ACs. Addressed review feedback from both Codex
+    and Claude CI: positional arg ordering, copy-back safety, finally-block cleanup, validation
+    count accuracy."
 - _ulid: 01KGR05N2YJQSJM5J48YHGQP2J
   slugs:
     - implement-batch-command-schema
