@@ -440,6 +440,11 @@ features:
             given: reference @nonexistent does not exist
             when: kspec item get @nonexistent runs
             then: exits with error and helpful message
+          - id: ac-4
+            given: a spec item has relationship fields (relates_to, depends_on, or implements)
+            when: kspec item get @ref runs
+            then: relationship fields are displayed as @slug references; stale references that cannot be
+              resolved are shown as raw refs
       - _ulid: 01KEZCJPHXT212CZV6W64YJFAQ
         slugs:
           - item-list
