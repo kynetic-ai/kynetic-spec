@@ -44902,6 +44902,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-05T22:53:38.127Z
+  started_at: 2026-02-06T09:12:15.358Z
   notes:
     - _ulid: 01KGR05NEFE799ZZ56YM7DQNGX
       created_at: 2026-02-05T22:53:38.127Z
@@ -44958,8 +44959,13 @@
         Covers ACs: ac-allowlist, ac-denylist, ac-batch-itself. Also covers ac-mutating-only on the
         parent spec."
       supersedes: null
+    - _ulid: 01KGS3JJEDCJV2PRHBZER6VHJN
+      created_at: 2026-02-06T09:12:21.197Z
+      author: "@claude"
+      content: "Starting implementation. PR #321 (batch-command-schema) is merged. Plan approved —
+        creating annotation registry, classifying all commands, updating batch-exec, writing tests."
+      supersedes: null
   todos: []
-  started_at: 2026-02-06T09:12:15.358Z
 - _ulid: 01KGR0K2F8HA3TJXGD5EXD7SBP
   slugs: []
   title: "Fix: Plan import drops acceptance criteria from spec YAML"
