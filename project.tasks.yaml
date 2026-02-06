@@ -44998,21 +44998,31 @@
         pass through unchanged. All 47 plan import tests pass."
       supersedes: null
   todos: []
-- title: Update AC-13 to reflect per-spec implementation notes scoping
+- _ulid: 01KGR8NWW2W00WEJESB6F3E7QT
+  slugs: []
+  title: Update AC-13 to reflect per-spec implementation notes scoping
   type: task
   spec_ref: "@plan-import"
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs: []
-  tags:
-    - spec-drift
-  depends_on: []
-  _ulid: 01KGR8NWW2W00WEJESB6F3E7QT
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags:
+    - spec-drift
   vcs_refs: []
   created_at: 2026-02-06T01:22:18.589Z
-  notes: []
+  notes:
+    - _ulid: 01KGR8P4M55NS4ZAVS48YJQFHR
+      created_at: 2026-02-06T01:22:26.565Z
+      author: "@claude"
+      content: "AC-13 currently says: 'Implementation notes are added as initial note to all derived
+        tasks.' After PR #320 (fix/plan-import-scope-implementation-notes), the actual behavior is:
+        (1) per-spec implementation_notes fields go to their corresponding derived task only, (2)
+        global ## Implementation Notes attach to the plan record, (3) tasks without per-spec notes
+        get a reference: 'See plan @plan-ref for implementation notes'. The AC wording should be
+        updated to match this new behavior."
+      supersedes: null
   todos: []
