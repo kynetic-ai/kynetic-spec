@@ -45201,19 +45201,19 @@
   started_at: 2026-02-06T10:00:19.731Z
   notes: []
   todos: []
-- title: Test note flag
-  type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - test
-  description: Test item for --note flag verification
-  _ulid: 01KGS6CAMA0RPRFNHXYDBG5BR8
+- _ulid: 01KGS6CAMA0RPRFNHXYDBG5BR8
   slugs: []
-  status: pending
+  title: Test note flag
+  type: task
+  description: Test item for --note flag verification
+  spec_ref: null
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - test
   vcs_refs: []
   created_at: 2026-02-06T10:01:22.314Z
   notes:
@@ -45223,3 +45223,4 @@
       content: This note was added during promote
       supersedes: null
   todos: []
+  closed_reason: Test task for --note verification
