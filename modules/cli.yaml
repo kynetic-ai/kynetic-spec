@@ -3732,9 +3732,11 @@ features:
             when: kspec plan import <path> is run
             then: Tasks are auto-derived from each created spec, with plan_ref linking to imported plan
           - id: ac-13
-            given: "A plan file has ## Implementation Notes section"
+            given: "A plan file has per-spec implementation_notes fields and a global ## Implementation Notes
+              section"
             when: Specs and tasks are auto-created
-            then: Implementation notes are added as initial note to all derived tasks
+            then: Per-spec notes are added to their corresponding derived task only, global notes are attached
+              to the plan record, and tasks without per-spec notes get a note referencing the plan
           - id: ac-14
             given: A plan contains a spec with slug that already exists
             when: kspec plan import <path> is run (no flags)
