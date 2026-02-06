@@ -2603,7 +2603,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGS7T25BC4G4F13916ZW38M7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
@@ -2731,5 +2731,17 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-06T10:34:31.554Z
-        completed_at: 2026-02-06T10:34:31.554Z
+        completed_at: 2026-02-06T10:34:58.830Z
+        notes: >-
+          Captured:
+
+          - Resolved observation @01KGKYG2 (bulk AC add) — batch system exists, needs docs
+
+          - Inbox @01KGS89E — Document batch command usage for agents
+
+          - Success observation @01KGS89M — Subagent-reviewed AC drafts pattern
+
+          - Dropped: spec_ref auto-suggest (unclear value), subagent pattern capture (expected
+          behavior)
     initiated_by: "@claude"
+    completed_at: 2026-02-06T10:34:58.831Z
