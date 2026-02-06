@@ -222,6 +222,31 @@ export interface KspecContext {
  * When shadow is detected, all operations use .kspec/ as specDir.
  */
 export async function initContext(startDir?: string): Promise<KspecContext> {
+  // KSPEC_SPEC_DIR override: used by batch atomic mode to redirect to temp copy
+  const specDirOverride = process.env.KSPEC_SPEC_DIR;
+  if (specDirOverride) {
+    const specDir = path.resolve(specDirOverride);
+    const manifestPath = await findManifestInDir(specDir);
+
+    let manifest: Manifest | null = null;
+    if (manifestPath) {
+      try {
+        const rawManifest = await readYamlFile<unknown>(manifestPath);
+        manifest = ManifestSchema.parse(rawManifest);
+      } catch {
+        // Manifest exists but may be invalid
+      }
+    }
+
+    return {
+      rootDir: path.dirname(specDir),
+      specDir,
+      manifestPath,
+      manifest,
+      shadow: null, // No shadow in overridden context
+    };
+  }
+
   const cwd = startDir || process.cwd();
 
   // Check if running from inside the shadow worktree

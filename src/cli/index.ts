@@ -12,7 +12,9 @@ const { version } = require("../../package.json");
 
 import { setVerboseModeGetter } from "../parser/shadow.js";
 import { initContext } from "../parser/yaml.js";
+import { isBatchMode } from "./batch-context.js";
 import {
+  registerBatchCommand,
   registerCloneForTestingCommand,
   registerDeriveCommand,
   registerExportCommand,
@@ -118,6 +120,9 @@ program
   .option("--json", "Output in JSON format")
   .option("--debug-shadow", "Enable debug output for shadow operations")
   .hook("preAction", async (thisCommand) => {
+    // Skip all hooks during batch dispatch — the batch handler manages modes itself
+    if (isBatchMode()) return;
+
     // Check for --json and --debug-shadow flags at top level or on subcommand
     const opts = thisCommand.opts();
     if (opts.json) {
@@ -170,6 +175,7 @@ registerWorkflowCommand(program);
 registerMergeDriverCommand(program);
 registerExportCommand(program);
 registerUtilCommands(program);
+registerBatchCommand(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {
