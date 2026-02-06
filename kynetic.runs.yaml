@@ -2434,6 +2434,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-05T22:58:45.211Z
+    completed_at: 2026-02-05T23:02:30.053Z
     step_results:
       - step_index: 0
         status: completed
@@ -2480,4 +2481,11 @@ runs:
           @01KGR0NP (plan import bugs). Tasks @01KGR0K2 and @01KGR0K5 created in step 5. Inbox
           @01KGR0N6 for workflow advance-to."
     initiated_by: "@claude"
-    completed_at: 2026-02-05T23:02:30.053Z
+  - _ulid: 01KGS4SX69AZJ5DET5SQS3J9CA
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-06T09:33:50.153Z
+    step_results: []
+    initiated_by: "@claude"
