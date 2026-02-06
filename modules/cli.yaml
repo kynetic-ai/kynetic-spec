@@ -379,6 +379,10 @@ features:
             given: Immediate mode, 5 cmds where cmd 3 fails
             when: Batch stops
             then: Commands 1-2 remain committed, cmds 4-5 not executed, exit 1
+          - id: ac-continue-implies-immediate
+            given: --continue without --no-atomic
+            when: kspec batch runs
+            then: Immediate mode activated implicitly with notice in output
         status:
           maturity: draft
           implementation: in_progress
