@@ -5429,4 +5429,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTF5E6S42VZ1FWESSMX2QZS
+    type: success
+    content: "Plan-driven implementation with spec-first ACs: having 22 acceptance criteria defined
+      before coding made both implementation and testing systematic. Each test was annotated with
+      its AC reference, and the review could verify coverage by checking annotations. The
+      plan→spec→implement→test→review pipeline worked well for this medium-complexity feature."
+    created_at: 2026-02-06T21:54:08.217Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
