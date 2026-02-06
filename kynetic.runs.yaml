@@ -2604,7 +2604,7 @@ runs:
   - _ulid: 01KGS7T25BC4G4F13916ZW38M7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
     step_results:
@@ -2711,5 +2711,25 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-06T10:27:26.357Z
-        completed_at: 2026-02-06T10:27:26.357Z
+        completed_at: 2026-02-06T10:34:31.554Z
+        notes: >-
+          ## Discussion outcomes
+
+
+          1. **Bulk AC add** — User pointed out batch command system exists (PRs #321/#322 -
+          batch-exec.ts, batch.ts). The parsing/validation layer is built. The friction is really
+          about documentation — agents don't know they can batch item ac add calls. Resolve the
+          observation, capture a doc improvement item instead.
+
+
+          2. **Auto-suggest spec_ref on promote** — User unclear on the value. Dropping — the
+          friction was minor (just warnings on task complete, not blocking).
+
+
+          3. **Subagent AC review pattern** — User says this is expected behavior. Not worth special
+          capture.
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-06T10:34:31.554Z
+        completed_at: 2026-02-06T10:34:31.554Z
     initiated_by: "@claude"
