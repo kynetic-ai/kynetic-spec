@@ -2258,6 +2258,10 @@ features:
             given: inbox ref does not exist
             when: kspec inbox promote @nonexistent runs
             then: exits with error and helpful message
+          - id: ac-4
+            given: inbox item @ref exists
+            when: kspec inbox promote @ref --title 'X' --priority 2 --tag 'backend' --spec-ref '@some-spec' runs
+            then: created task has the specified priority, tags, and spec_ref fields set
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
