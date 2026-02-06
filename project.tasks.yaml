@@ -44926,6 +44926,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Fixed: createSpecItem() now preserves acceptance_criteria. PR #319 merged."
   depends_on: []
   context: []
   priority: 2
@@ -44935,6 +44936,7 @@
   vcs_refs: []
   created_at: 2026-02-05T23:00:57.448Z
   started_at: 2026-02-06T00:03:33.089Z
+  completed_at: 2026-02-06T00:23:51.521Z
   notes:
     - _ulid: 01KGR162P9SW7BPJV7M577377B
       created_at: 2026-02-05T23:11:20.265Z
@@ -44963,8 +44965,6 @@
         via item get --json). All 47 plan import tests pass."
       supersedes: null
   todos: []
-  completed_at: 2026-02-06T00:23:51.521Z
-  closed_reason: "Fixed: createSpecItem() now preserves acceptance_criteria. PR #319 merged."
 - _ulid: 01KGR0K54RN3HN1J08ACZMHFFP
   slugs: []
   title: "Fix: Plan import writes trait refs without @ prefix"
@@ -44975,7 +44975,7 @@
   spec_ref: "@plan-import"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -44996,3 +44996,5 @@
         pass through unchanged. All 47 plan import tests pass."
       supersedes: null
   todos: []
+  completed_at: 2026-02-06T00:23:53.703Z
+  closed_reason: "Fixed: trait refs normalized with @ prefix during plan import. PR #319 merged."
