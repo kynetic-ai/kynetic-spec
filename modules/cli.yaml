@@ -312,7 +312,8 @@ features:
             then: "In atomic mode: all changes rolled back. In immediate mode: commands 1-2 committed, commands
               4-5 not executed. Exit code is 1"
           - id: ac-continue
-            given: --continue flag with 5 commands where command 3 fails at runtime
+            given: Immediate mode (--continue implies --no-atomic) with 5 commands where command 3 fails at
+              runtime
             when: Batch executes
             then: All 5 commands are attempted, command 3 failure is recorded, other commands succeed, exit code
               is 1
