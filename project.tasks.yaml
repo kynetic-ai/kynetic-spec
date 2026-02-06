@@ -14872,7 +14872,7 @@
     (5) Aggregate stats (tool usage, error rates). Could be CLI commands like 'kspec session events'
     or separate analysis tooling. Would help with retrospectives and debugging automation issues."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -15006,6 +15006,11 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-06T23:37:48.811Z
+  closed_reason: Spec design complete. Created 4 specs (session-log-list, session-log-show,
+    session-log-stats, session-log-search) under @session-events with 30 total ACs. Codex-reviewed
+    and all feedback addressed. 4 derived implementation tasks with list as dependency for
+    show/stats/search.
 - _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
   slugs: []
   title: Spec out pending_review task state
