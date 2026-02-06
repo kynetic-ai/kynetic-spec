@@ -45663,23 +45663,32 @@
         file) pattern. Encountered this friction during session-log-analysis plan review.
       supersedes: null
   todos: []
-- title: Add YAML quoting guidance to spec-plan skill
+- _ulid: 01KGTNV773RBWK67KFHFMTJ856
+  slugs: []
+  title: Add YAML quoting guidance to spec-plan skill
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - docs
     - skills
     - spec-plan
-  depends_on: []
-  _ulid: 01KGTNV773RBWK67KFHFMTJ856
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-06T23:50:53.411Z
-  notes: []
+  notes:
+    - _ulid: 01KGTNVDT5V9PH6K0BK1HMSXQQ
+      created_at: 2026-02-06T23:51:00.165Z
+      author: "@claude"
+      content: 'Add Common YAML Issues section to /spec-plan skill docs. Key gotcha: embedded double
+        quotes in scalar values break the parser (e.g. when: "kspec foo" is run). Recommend avoiding
+        quotes in AC given/when/then or using YAML block scalars. Could also improve
+        parsePlanDocument() error message to suggest fixes. Encountered during session-log-analysis
+        plan authoring.'
+      supersedes: null
   todos: []
