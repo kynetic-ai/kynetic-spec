@@ -2245,6 +2245,11 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: inbox item @ref exists
+            when: kspec inbox promote @ref --title 'Task title' runs
+            then: task is created with title, inbox item is deleted, task ref shown in output
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
