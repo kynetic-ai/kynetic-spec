@@ -383,6 +383,10 @@ features:
             given: --continue without --no-atomic
             when: kspec batch runs
             then: Immediate mode activated implicitly with notice in output
+          - id: ac-json-mode-field
+            given: --json flag provided
+            when: Batch completes
+            then: "JSON output includes mode field: atomic or immediate"
         status:
           maturity: draft
           implementation: in_progress
