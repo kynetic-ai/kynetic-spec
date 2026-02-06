@@ -1117,6 +1117,10 @@ features:
             given: user runs kspec item trait add @spec @trait1 @trait2
             when: multiple trait refs provided
             then: all valid traits are added to the spec's traits array
+          - id: ac-10
+            given: user runs kspec item trait add @spec @trait1 @trait2
+            when: one trait already exists on spec and one is new
+            then: only the new trait is added; existing trait skipped without error
         status:
           maturity: draft
           implementation: implemented
