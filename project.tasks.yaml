@@ -45289,20 +45289,72 @@
       content: This note was added during promote
       supersedes: null
   todos: []
-- title: Document kspec batch command across docs and skills
+- _ulid: 01KGTHJ9JB482P2TH67QF3DQRQ
+  slugs: []
+  title: Document kspec batch command across docs and skills
   type: task
   spec_ref: "@batch-exec"
   meta_ref: null
   plan_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KGTHJ9JB482P2TH67QF3DQRQ
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-02-06T22:36:06.603Z
-  notes: []
+  notes:
+    - _ulid: 01KGTHJNS7CRYMWZEJCG1RFYGB
+      created_at: 2026-02-06T22:36:19.111Z
+      author: "@claude"
+      content: >-
+        Batch command (PR #324) is fully implemented with spec coverage in cli.yaml (@batch-exec)
+        but has zero documentation in user-facing or agent-facing docs.
+
+
+        Documentation targets (by priority):
+
+
+        HIGH:
+
+        - .claude/skills/kspec/SKILL.md — Add dedicated 'Batch Operations' section with full command
+        reference, input methods, execution modes, JSON format, use cases
+
+        - CLAUDE.md — Add batch to Quick Start examples section
+
+        - README.md — Add batch to CLI commands section
+
+
+        MEDIUM (topically relevant):
+
+        - .claude/skills/spec-plan/SKILL.md — Note batch for programmatic spec/task creation from
+        plans
+
+        - .claude/skills/triage/SKILL.md + docs/inbox.md — Note batch for bulk triage (promote,
+        resolve, delete)
+
+        - AGENTS.md — Add to command reference areas
+
+
+        LOW:
+
+        - .claude/skills/task-work/SKILL.md — Mention batch in loop mode context
+
+        - .claude/skills/triage/docs/observations.md — Bulk observation resolution
+
+
+        Key content to document:
+
+        - Input: stdin pipe, --file, --commands inline
+
+        - Modes: atomic (default, single commit, rollback) vs immediate (--no-atomic, per-command
+        commits)
+
+        - Flags: --dry-run, --continue (implies --no-atomic)
+
+        - JSON format: {command: '...', args: {...}, id?: '...'} 
+
+        - Use cases: bulk triage, plan imports, multi-spec creation, observation batch resolve
+      supersedes: null
   todos: []
