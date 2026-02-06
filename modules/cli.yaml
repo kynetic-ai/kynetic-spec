@@ -390,7 +390,7 @@ features:
             then: "JSON output includes mode field: atomic or immediate"
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
