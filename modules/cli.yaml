@@ -2250,6 +2250,10 @@ features:
             given: inbox item @ref exists
             when: kspec inbox promote @ref --title 'Task title' runs
             then: task is created with title, inbox item is deleted, task ref shown in output
+          - id: ac-2
+            given: inbox item @ref exists
+            when: kspec inbox promote @ref --title 'X' --note 'Context...' runs
+            then: task is created and an initial note with the provided content is added to the task
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
