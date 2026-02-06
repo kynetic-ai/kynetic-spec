@@ -45296,7 +45296,7 @@
   spec_ref: "@batch-exec"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -45358,3 +45358,4 @@
         - Use cases: bulk triage, plan imports, multi-spec creation, observation batch resolve
       supersedes: null
   todos: []
+  started_at: 2026-02-06T22:37:01.690Z
