@@ -44783,6 +44783,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-05T22:53:37.758Z
+  started_at: 2026-02-06T08:23:55.728Z
   notes:
     - _ulid: 01KGR05N2Y7XEPBV0X7Y4SHGB7
       created_at: 2026-02-05T22:53:37.758Z
@@ -44840,8 +44841,46 @@
         ACs: ac-command-field, ac-args-mapping, ac-unknown-command, ac-missing-required,
         ac-id-field."
       supersedes: null
+    - _ulid: 01KGS2C9RZC5MYSH2YR2BRTCJF
+      created_at: 2026-02-06T08:51:27.135Z
+      author: "@claude"
+      content: >-
+        Implemented batch command schema and validation:
+
+
+        Files created:
+
+        - src/schema/batch.ts — Zod schemas (BatchCommandSchema, BatchInputSchema) and result types
+        (BatchCommandResult, BatchExecSummary, BatchExecResult)
+
+        - src/cli/batch-exec.ts — parseBatchInput() (stdin/file/inline), validateBatchCommands()
+        with commandFilter extension point, reportBatchValidationErrors() (human + JSON)
+
+        - tests/batch-schema.test.ts — 40 tests covering all 5 ACs + parse error paths
+
+
+        Files modified:
+
+        - src/schema/index.ts — added batch re-export
+
+        - src/cli/introspection.ts — added mandatory field to OptionMeta (distinguishes 'option must
+        be provided' from 'value required when used')
+
+
+        Key design decisions:
+
+        - Uses existing introspection infrastructure (extractCommandTree, findCommand,
+        flattenCommandTree) and suggest.ts (findClosestCommand) for command resolution and fuzzy
+        suggestions
+
+        - commandFilter option on validateBatchCommands() is the extension point for @01KGR05NE
+        (allowed-commands task)
+
+        - Supports both kebab-case and camelCase arg names via normalization
+
+        - BatchParseError preserves JSON.parse position info for debugging
+      supersedes: null
   todos: []
-  started_at: 2026-02-06T08:23:55.728Z
 - _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
   slugs:
     - implement-batch-allowed-commands
