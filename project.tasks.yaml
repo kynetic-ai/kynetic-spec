@@ -45160,7 +45160,7 @@
   description: "Allow kspec item trait add to accept multiple traits: kspec item trait add @spec
     @trait1 @trait2 @trait3 instead of requiring separate commands for each trait"
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
