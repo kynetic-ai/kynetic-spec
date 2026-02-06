@@ -5408,4 +5408,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTF4YT5Y2233BHBFZ3S8N75
+    type: friction
+    content: "Codex sandbox can't reach api.github.com: when running codex exec with --sandbox
+      danger-full-access, network access to GitHub API was blocked, so the review comment had to be
+      posted manually. This required reading codex output, extracting the review text, and posting
+      via gh ourselves. A wrapper script or skill that handles the 'codex review then post' pattern
+      would eliminate this manual step."
+    created_at: 2026-02-06T21:53:52.453Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
