@@ -5372,4 +5372,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGS4Y7YZCP10F4FR6V38DYW5
+    type: success
+    content: WeakMap<Command, T> annotation pattern works cleanly for adding metadata to Commander
+      commands. Avoids monkey-patching internals, is type-safe and GC-friendly, chains naturally
+      with .command() calls (markMutating(cmd.command(...))), and integrates with
+      extractCommandTree() by reading annotations during traversal. Reusable for future annotation
+      types (e.g. requires-auth, idempotent). See src/cli/command-annotations.ts for reference
+      implementation.
+    created_at: 2026-02-06T09:36:12.255Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
