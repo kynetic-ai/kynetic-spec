@@ -277,13 +277,14 @@ async function importPlan(
           type: (spec.type as any) || "feature",
           slugs: [specSlug],
           description: spec.description,
+          ...(spec.acceptance_criteria ? { acceptance_criteria: spec.acceptance_criteria } : {}),
           priority: undefined,
           tags: [],
           depends_on: [],
           implements: [],
           relates_to: [],
           tests: [],
-          traits: spec.traits || [],
+          traits: (spec.traits || []).map(t => t.startsWith('@') ? t : `@${t}`),
           notes: [],
         }) as LoadedSpecItem;
         createdSpecsMap.set(specSlug, dryRunSpec);
@@ -300,7 +301,7 @@ async function importPlan(
           implements: [],
           relates_to: [],
           tests: [],
-          traits: spec.traits || [],
+          traits: (spec.traits || []).map(t => t.startsWith('@') ? t : `@${t}`),
           notes: [],
         };
 
