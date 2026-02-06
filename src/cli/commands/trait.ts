@@ -240,11 +240,11 @@ export function registerItemTraitCommands(itemCommand: Command): void {
     .command("trait")
     .description("Manage traits on spec items");
 
-  // kspec item trait add <spec-ref> <trait-ref>
-  // AC: @trait-cli ac-5, ac-6, ac-7
-  markMutating(traitCmd.command("add <specRef> <traitRef>"))
-    .description("Add a trait to a spec item")
-    .action(async (specRef: string, traitRef: string) => {
+  // kspec item trait add <spec-ref> <trait-refs...>
+  // AC: @trait-cli ac-5, ac-6, ac-7, ac-9, ac-10
+  markMutating(traitCmd.command("add <specRef> <traitRefs...>"))
+    .description("Add one or more traits to a spec item")
+    .action(async (specRef: string, traitRefs: string[]) => {
       try {
         const ctx = await initContext();
         const { refIndex, items } = await buildIndexes(ctx);
@@ -264,57 +264,92 @@ export function registerItemTraitCommands(itemCommand: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // AC: @trait-cli ac-7 - verify trait exists
-        const traitResult = refIndex.resolve(traitRef);
-        if (!traitResult.ok) {
-          error(`Trait not found: ${traitRef}`);
-          process.exit(EXIT_CODES.NOT_FOUND);
+        let currentTraits = spec.traits || [];
+        const results: Array<{
+          trait: string;
+          added: boolean;
+          error?: string;
+        }> = [];
+        let hasErrors = false;
+
+        for (const traitRef of traitRefs) {
+          // AC: @trait-cli ac-7, ac-12 - verify trait exists (continue on failure)
+          const traitResult = refIndex.resolve(traitRef);
+          if (!traitResult.ok) {
+            error(`Trait not found: ${traitRef}`);
+            results.push({ trait: traitRef, added: false, error: "not found" });
+            hasErrors = true;
+            continue;
+          }
+
+          const traitItem = traitResult.item as LoadedSpecItem;
+          if (traitItem.type !== "trait") {
+            error(`${traitRef} is not a trait (type: ${traitItem.type})`);
+            results.push({
+              trait: traitRef,
+              added: false,
+              error: `not a trait (type: ${traitItem.type})`,
+            });
+            hasErrors = true;
+            continue;
+          }
+
+          const traitRefString = `@${traitItem.slugs[0] || traitItem._ulid}`;
+
+          // AC: @trait-cli ac-6, ac-10 - idempotent (skip existing)
+          if (currentTraits.includes(traitRefString)) {
+            warn(`Spec already has trait ${traitRefString} (skipped)`);
+            results.push({ trait: traitRefString, added: false });
+            continue;
+          }
+
+          // AC: @trait-cli ac-5, ac-9 - add trait to traits array
+          currentTraits = [...currentTraits, traitRefString];
+          results.push({ trait: traitRefString, added: true });
         }
 
-        const traitItem = traitResult.item as LoadedSpecItem;
-        if (traitItem.type !== "trait") {
-          error(`${traitRef} is not a trait (type: ${traitItem.type})`);
+        const added = results.filter((r) => r.added);
+        const specSlug = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
+        if (added.length > 0) {
+          await updateSpecItem(ctx, spec, { traits: currentTraits });
+          await commitIfShadow(ctx.shadow, "item-trait-add", specSlug);
+
+          const traitNames = added.map((r) => r.trait).join(", ");
+          success(`Added ${traitNames} to ${specSlug}`, {
+            spec: specSlug,
+            trait: results[0].trait,
+            added: results[0].added,
+            results,
+          });
+        } else {
+          output(
+            {
+              spec: specSlug,
+              trait: results[0].trait,
+              added: false,
+              results,
+            },
+            () => {
+              warn("No new traits added (all already present)");
+            },
+          );
+        }
+
+        // AC: @trait-cli ac-12 - exit code 1 when some refs failed
+        if (hasErrors) {
           process.exit(EXIT_CODES.ERROR);
         }
-
-        // AC: @trait-cli ac-6 - idempotent (no duplicate)
-        const currentTraits = spec.traits || [];
-        const traitRefString = `@${traitItem.slugs[0] || traitItem._ulid}`;
-
-        if (currentTraits.includes(traitRefString)) {
-          warn(
-            `Spec already has trait ${traitRefString} (idempotent - no change)`,
-          );
-          output(
-            { spec: spec._ulid, trait: traitRefString, added: false },
-            () => {},
-          );
-          return;
-        }
-
-        // AC: @trait-cli ac-5 - add trait to traits array
-        const updatedTraits = [...currentTraits, traitRefString];
-        await updateSpecItem(ctx, spec, { traits: updatedTraits });
-
-        const specSlug = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
-        await commitIfShadow(ctx.shadow, "item-trait-add", specSlug);
-
-        success(`Added trait ${traitRefString} to ${specSlug}`, {
-          spec: specSlug,
-          trait: traitRefString,
-          added: true,
-        });
       } catch (err) {
         error("Failed to add trait to spec", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
 
-  // kspec item trait remove <spec-ref> <trait-ref>
-  // AC: @trait-cli ac-8
-  markMutating(traitCmd.command("remove <specRef> <traitRef>"))
-    .description("Remove a trait from a spec item")
-    .action(async (specRef: string, traitRef: string) => {
+  // kspec item trait remove <spec-ref> <trait-refs...>
+  // AC: @trait-cli ac-8, ac-11
+  markMutating(traitCmd.command("remove <specRef> <traitRefs...>"))
+    .description("Remove one or more traits from a spec item")
+    .action(async (specRef: string, traitRefs: string[]) => {
       try {
         const ctx = await initContext();
         const { refIndex } = await buildIndexes(ctx);
@@ -334,40 +369,73 @@ export function registerItemTraitCommands(itemCommand: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // Resolve trait to get its ref format
-        const traitResult = refIndex.resolve(traitRef);
-        if (!traitResult.ok) {
-          error(`Trait not found: ${traitRef}`);
-          process.exit(EXIT_CODES.NOT_FOUND);
+        let currentTraits = spec.traits || [];
+        const results: Array<{
+          trait: string;
+          removed: boolean;
+          error?: string;
+        }> = [];
+        let hasErrors = false;
+
+        for (const traitRef of traitRefs) {
+          // Resolve trait to get its ref format (continue on failure)
+          const traitResult = refIndex.resolve(traitRef);
+          if (!traitResult.ok) {
+            error(`Trait not found: ${traitRef}`);
+            results.push({
+              trait: traitRef,
+              removed: false,
+              error: "not found",
+            });
+            hasErrors = true;
+            continue;
+          }
+
+          const traitItem = traitResult.item as LoadedSpecItem;
+          const traitRefString = `@${traitItem.slugs[0] || traitItem._ulid}`;
+
+          // AC: @trait-cli ac-8, ac-11 - remove from traits array
+          if (!currentTraits.includes(traitRefString)) {
+            warn(`Spec does not have trait ${traitRefString} (skipped)`);
+            results.push({ trait: traitRefString, removed: false });
+            continue;
+          }
+
+          currentTraits = currentTraits.filter((t) => t !== traitRefString);
+          results.push({ trait: traitRefString, removed: true });
         }
 
-        const traitItem = traitResult.item as LoadedSpecItem;
-        const traitRefString = `@${traitItem.slugs[0] || traitItem._ulid}`;
-
-        // AC: @trait-cli ac-8 - remove from traits array
-        const currentTraits = spec.traits || [];
-
-        // Check if trait is in the list
-        if (!currentTraits.includes(traitRefString)) {
-          warn(`Spec does not have trait ${traitRefString}`);
-          output(
-            { spec: spec._ulid, trait: traitRefString, removed: false },
-            () => {},
-          );
-          return;
-        }
-
-        const updatedTraits = currentTraits.filter((t) => t !== traitRefString);
-        await updateSpecItem(ctx, spec, { traits: updatedTraits });
-
+        const removed = results.filter((r) => r.removed);
         const specSlug = spec.slugs[0] || refIndex.shortUlid(spec._ulid);
-        await commitIfShadow(ctx.shadow, "item-trait-remove", specSlug);
+        if (removed.length > 0) {
+          await updateSpecItem(ctx, spec, { traits: currentTraits });
+          await commitIfShadow(ctx.shadow, "item-trait-remove", specSlug);
 
-        success(`Removed trait ${traitRefString} from ${specSlug}`, {
-          spec: specSlug,
-          trait: traitRefString,
-          removed: true,
-        });
+          const traitNames = removed.map((r) => r.trait).join(", ");
+          success(`Removed ${traitNames} from ${specSlug}`, {
+            spec: specSlug,
+            trait: results[0].trait,
+            removed: results[0].removed,
+            results,
+          });
+        } else {
+          output(
+            {
+              spec: specSlug,
+              trait: results[0].trait,
+              removed: false,
+              results,
+            },
+            () => {
+              warn("No traits removed (none were present)");
+            },
+          );
+        }
+
+        // Exit code 1 when some refs failed
+        if (hasErrors) {
+          process.exit(EXIT_CODES.ERROR);
+        }
       } catch (err) {
         error("Failed to remove trait from spec", err);
         process.exit(EXIT_CODES.ERROR);

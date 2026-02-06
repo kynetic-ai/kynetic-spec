@@ -3,6 +3,7 @@ import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
   createInboxItem,
+  createNote,
   createTask,
   deleteInboxItem,
   findInboxItemByRef,
@@ -109,6 +110,7 @@ Examples:
     .option("--tag <tag>", "Filter by tag")
     .option("--limit <n>", "Limit results")
     .option("--newest", "Sort newest first (default is oldest first)")
+    .option("--count", "Show only the count of matching items")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -125,6 +127,14 @@ Examples:
           const dateB = new Date(b.created_at).getTime();
           return options.newest ? dateB - dateA : dateA - dateB;
         });
+
+        // AC: @trait-filterable-list ac-8
+        if (options.count) {
+          output({ count: items.length }, () => {
+            console.log(items.length);
+          });
+          return;
+        }
 
         // Limit
         if (options.limit) {
@@ -170,6 +180,7 @@ Examples:
     .option("--type <type>", "Task type (task, bug, spike, etc.)", "task")
     .option("--spec-ref <ref>", "Link to spec item")
     .option("--tag <tag...>", "Tags for the task")
+    .option("--note <text>", "Add initial note to the created task")
     .option("--keep", "Keep inbox item after promoting")
     .addHelpText(
       "after",
@@ -209,6 +220,13 @@ Examples:
         };
 
         const task = createTask(taskInput);
+
+        // AC: @cmd-inbox-promote ac-2
+        if (options.note) {
+          const note = createNote(options.note);
+          task.notes = [...(task.notes || []), note];
+        }
+
         await saveTask(ctx, task);
 
         // Load for index to get short ULID

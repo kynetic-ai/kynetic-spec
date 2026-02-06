@@ -301,6 +301,7 @@ export function registerItemCommands(program: Command): void {
     .option("-v, --verbose", "Show more details")
     .option("--tree", "Show parent/child hierarchy")
     .option("--limit <n>", "Limit results", "50")
+    .option("--count", "Show only the count of matching items")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -347,6 +348,14 @@ export function registerItemCommands(program: Command): void {
           (item): item is LoadedSpecItem =>
             !("status" in item && typeof item.status === "string"),
         );
+
+        // AC: @trait-filterable-list ac-8
+        if (options.count) {
+          output({ count: result.total }, () => {
+            console.log(result.total);
+          });
+          return;
+        }
 
         output(
           {
@@ -462,6 +471,17 @@ export function registerItemCommands(program: Command): void {
             item.tags.length > 0
           ) {
             console.log(`${fieldLabels.tags}      ${item.tags.join(", ")}`);
+          }
+
+          // AC: @item-get ac-4
+          if (Array.isArray(item.depends_on) && item.depends_on.length > 0) {
+            console.log(`${fieldLabels.dependsOn} ${item.depends_on.join(", ")}`);
+          }
+          if (Array.isArray(item.implements) && item.implements.length > 0) {
+            console.log(`${fieldLabels.implements} ${item.implements.join(", ")}`);
+          }
+          if (Array.isArray(item.relates_to) && item.relates_to.length > 0) {
+            console.log(`${fieldLabels.relatesTo} ${item.relates_to.join(", ")}`);
           }
 
           if (item.description) {

@@ -429,6 +429,7 @@ export function registerTaskCommands(program: Command): void {
     .option("-g, --grep <pattern>", "Search content with regex pattern")
     .option("-v, --verbose", "Show more details")
     .option("--full", "Show full details (notes, todos, timestamps)")
+    .option("--count", "Show only the count of matching tasks")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -480,6 +481,14 @@ export function registerTaskCommands(program: Command): void {
             );
             return match !== null;
           });
+        }
+
+        // AC: @trait-filterable-list ac-8
+        if (options.count) {
+          output({ count: taskList.length }, () => {
+            console.log(taskList.length);
+          });
+          return;
         }
 
         output(taskList, () =>
