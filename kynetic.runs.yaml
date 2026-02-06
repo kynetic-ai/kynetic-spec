@@ -2604,7 +2604,7 @@ runs:
   - _ulid: 01KGS7T25BC4G4F13916ZW38M7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
     step_results:
@@ -2688,5 +2688,28 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-06T10:27:14.128Z
-        completed_at: 2026-02-06T10:27:14.128Z
+        completed_at: 2026-02-06T10:27:26.357Z
+        notes: >-
+          ## Proposed Improvements
+
+
+          1. **Promote observation @01KGKYG2 (bulk AC add) to inbox** — This is the second session
+          hitting this friction. Scope: medium (need to design the batch input format — file-based
+          YAML, or repeated flag groups).
+
+
+          2. **Auto-suggest spec_ref during inbox promote** — When promoting an inbox item tagged
+          with 'cli' or 'dx', search for matching spec items and suggest a --spec-ref. Scope: medium
+          (needs fuzzy matching between inbox text and spec titles/descriptions). Alternative:
+          simpler approach — just add spec_ref to promoted tasks that reference known command specs
+          (e.g., item tagged 'cli' mentioning 'inbox list' → @cmd-inbox-list).
+
+
+          3. **Success pattern: Subagent-reviewed AC drafts** — Worth capturing as a success
+          observation. The pattern of drafting ACs → subagent review → apply revised ACs caught 5+
+          real issues before implementation.
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-06T10:27:26.357Z
+        completed_at: 2026-02-06T10:27:26.357Z
     initiated_by: "@claude"
