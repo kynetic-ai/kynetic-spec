@@ -2604,7 +2604,7 @@ runs:
   - _ulid: 01KGS7T25BC4G4F13916ZW38M7
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
     step_results:
@@ -2637,5 +2637,32 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-06T10:26:33.824Z
-        completed_at: 2026-02-06T10:26:33.824Z
+        completed_at: 2026-02-06T10:26:46.733Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **No bulk AC add command** — Adding 11 ACs required 11 sequential kspec item ac add
+          calls. Each one auto-commits to shadow branch. A bulk mode (kspec item ac add @ref
+          --from-file or multiple --given/--when/--then triplets) would have saved time.
+
+
+          2. **Tasks created from inbox promote lack spec_ref** — After promoting inbox items to
+          tasks, kspec warned 'This task has no spec_ref' on completion. The promoted items are all
+          DX improvements to existing spec'd commands, but the promote command doesn't auto-link to
+          the most relevant spec. Had to ignore the warnings.
+
+
+          3. **No test-specific task tracking** — The review flagged missing test coverage for 4 new
+          features, but there's no mechanism to track 'needs tests' as a follow-up without creating
+          separate tasks. A tag or todo on the task would help.
+
+
+          4. **Shadow branch sequential constraint** — Can't run kspec commands in parallel because
+          they all write to .kspec/ and auto-commit. Not a huge issue for 4 tasks, but for larger
+          batches this serializes everything.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-06T10:26:46.733Z
+        completed_at: 2026-02-06T10:26:46.733Z
     initiated_by: "@claude"
