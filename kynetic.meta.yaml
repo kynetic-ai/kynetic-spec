@@ -5419,8 +5419,11 @@ observations:
       would eliminate this manual step."
     created_at: 2026-02-06T21:53:52.453Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Addressed by /codex skill (PR #325). Using danger-full-access sandbox gives Codex full
+      network access including GitHub API."
+    resolved_at: 2026-02-06T22:30:56.697Z
+    resolved_by: "@claude"
   - _ulid: 01KGTF57CRAX3CDYVTGBRS5NTV
     type: friction
     content: Atomic copy-back was a design gap caught by reviewers, not by tests. The plan described
