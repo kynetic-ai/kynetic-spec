@@ -167,6 +167,21 @@ describe("buildCommandArgv", () => {
     expect(argv).toContain("@task1");
     expect(argv).toContain("my note");
   });
+
+  it("emits positional args in definition order, not JSON key order", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "note")!;
+    // Pass keys in reverse order — content before ref
+    const argv = buildCommandArgv(
+      { command: "task note", args: { content: "my note", ref: "@task1" } },
+      cmdMeta,
+    );
+    // Positional args should be: ref first, then content (Commander definition order)
+    const positionalStart = 2; // after "task" and "note"
+    expect(argv[positionalStart]).toBe("@task1");
+    expect(argv[positionalStart + 1]).toBe("my note");
+  });
 });
 
 // ── Unit Tests: resetCommandTree ─────────────────────────────────────

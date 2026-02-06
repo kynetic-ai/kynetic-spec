@@ -413,12 +413,21 @@ export interface ExecuteBatchOptions {
  *
  * Translates { command: "inbox add", args: { content: "hello", tag: ["a","b"] } }
  * into ["inbox", "add", "hello", "--tag", "a", "--tag", "b"]
+ *
+ * Positional args are emitted in Commander definition order (not JSON key order)
+ * to ensure correct argument mapping regardless of how the JSON was serialized.
  */
 export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): string[] {
   const argv: string[] = [...cmd.command.trim().split(/\s+/)];
 
-  // Separate positional args from options
-  const positionalNames = cmdMeta.arguments.map((a) => a.name);
+  // Build sets for classification
+  const positionalDefs = cmdMeta.arguments; // ordered by Commander definition
+  const positionalNameSet = new Set<string>();
+  for (const arg of positionalDefs) {
+    positionalNameSet.add(arg.name);
+    positionalNameSet.add(kebabToCamel(arg.name));
+  }
+
   const optionMap = new Map<string, { flags: string; variadic: boolean }>();
   for (const opt of cmdMeta.options) {
     const name = extractOptionName(opt.flags);
@@ -428,22 +437,28 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
     }
   }
 
-  // Process args object
+  // Phase 1: Emit positional args in Commander definition order
+  for (const argDef of positionalDefs) {
+    const name = argDef.name;
+    const camelName = kebabToCamel(name);
+    const value = cmd.args[name] ?? cmd.args[camelName];
+    if (value === undefined) continue;
+
+    if (Array.isArray(value)) {
+      for (const v of value) argv.push(String(v));
+    } else {
+      argv.push(String(value));
+    }
+  }
+
+  // Phase 2: Emit options from remaining keys
   for (const [key, value] of Object.entries(cmd.args)) {
-    // Check if this is a positional arg
     const camelKey = kebabToCamel(key);
-    if (positionalNames.includes(key) || positionalNames.includes(camelKey)) {
-      // Positional: add value directly (variadic args become multiple values)
-      if (Array.isArray(value)) {
-        for (const v of value) argv.push(String(v));
-      } else {
-        argv.push(String(value));
-      }
+    // Skip positional args (already emitted)
+    if (positionalNameSet.has(key) || positionalNameSet.has(camelKey)) {
       continue;
     }
 
-    // It's an option
-    const optInfo = optionMap.get(key) || optionMap.get(camelKey);
     // Convert camelCase key back to kebab-case for CLI
     const kebabKey = key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
     const flagName = `--${kebabKey}`;
@@ -569,8 +584,8 @@ async function executeAtomic(
   const ctx = await initContext();
   const realSpecDir = ctx.specDir;
 
-  // Create temp copy
-  const tempDir = path.join(os.tmpdir(), `kspec-batch-${Date.now()}`);
+  // Create temp copy using mkdtemp for safe, collision-free naming
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-batch-"));
   await fs.cp(realSpecDir, tempDir, { recursive: true });
 
   // Remove .git from temp copy to prevent worktree pointer leaks
