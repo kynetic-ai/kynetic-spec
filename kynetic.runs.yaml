@@ -2748,7 +2748,7 @@ runs:
   - _ulid: 01KGTKYB3TXBQ21A8ZNK7VNBG6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-06T23:17:38.554Z
     step_results:
@@ -2770,5 +2770,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-06T23:18:05.702Z
-        completed_at: 2026-02-06T23:18:05.702Z
+        completed_at: 2026-02-06T23:18:17.558Z
+        notes: "Searched specs/tasks/inbox: (1) batch JSON doc validation — not tracked, (2) positional arg
+          discoverability for batch — not tracked, (3) review thread resolution — gh CLI limitation,
+          not kspec concern, skip"
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-06T23:18:17.558Z
+        completed_at: 2026-02-06T23:18:17.558Z
     initiated_by: "@claude"
