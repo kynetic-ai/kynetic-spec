@@ -45133,7 +45133,7 @@
     list --count' → '48 items'. Quick counts without full output or JSON piping. Small scope.
     Surfaced during triage session."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -45145,6 +45145,7 @@
   created_at: 2026-02-06T09:54:48.185Z
   notes: []
   todos: []
+  started_at: 2026-02-06T09:57:17.789Z
 - _ulid: 01KGS60FXABBQPF07ZVN0KGAB4
   slugs: []
   title: Support multiple traits in item trait add/remove
