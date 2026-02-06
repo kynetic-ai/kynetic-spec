@@ -14883,15 +14883,64 @@
     - sessions
   vcs_refs: []
   created_at: 2026-01-19T17:37:54.924Z
+  started_at: 2026-02-06T23:24:57.251Z
   notes:
     - _ulid: 01KFFHED2QZAKGGPBS5N4DA7SW
       created_at: 2026-01-21T05:46:38.551Z
       author: "@claude"
       content: "Automation status set to manual_only: Design/spec task, not implementation"
       supersedes: null
+    - _ulid: 01KGTMF2PBMT348WSGFN07T01H
+      created_at: 2026-02-06T23:26:46.987Z
+      author: "@claude"
+      content: >-
+        Design phase research completed. Explored full session infrastructure:
+
+
+        **What exists:**
+
+        - 37 session logs, 372K+ events in .kspec/sessions/
+
+        - Each session: session.yaml (metadata), events.jsonl (JSONL event log), context-iter-N.json
+        (snapshots)
+
+        - Event types: session.start/update/end, prompt.sent, tool.call/result, note
+
+        - Existing spec: @session-events covers storage layer (7 ACs, all implemented)
+
+        - No CLI commands to query/analyze session data
+
+
+        **Proposed specs (3):**
+
+        1. session-log-list — List sessions with summary stats (status, duration, event count, task
+        completions)
+
+        2. session-log-show — Show detailed session view (events timeline, task transitions,
+        iteration summaries)  
+
+        3. session-log-stats — Aggregate analytics across sessions (throughput, duration trends,
+        success rates)
+
+
+        **Traits:** @json-output, @semantic-exit-codes on all three
+
+
+        **Open design questions (awaiting user input):**
+
+        1. Scope: all 3 specs or start with list+show?
+
+        2. Naming: `kspec session log list` (sub-sub) vs `kspec session list` (direct subcommand)?
+
+        3. Stats depth: simple counts vs deeper analysis (failure rates, tool patterns, iteration
+        efficiency)?
+
+
+        **Workflow state:** @spec-plan-design started (run 01KGTMBK), paused at design review step
+        pending user decisions on scope/naming/depth.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-06T23:24:57.251Z
 - _ulid: 01KFBNG4Z7ARVG01WG2HB5KQG8
   slugs: []
   title: Spec out pending_review task state
