@@ -559,3 +559,14 @@ inbox:
       - dx
       - batch
     added_by: "@claude"
+  - _ulid: 01KGTM3P85VN4TFMTQ3GFQBG5A
+    text: "kspec batch commands — list allowed commands with positional arg names and option flags.
+      Reference for writing batch JSON without reading source. Example output: 'inbox add <text>
+      [--tag <tag...>]'. Complements --dry-run (which validates after writing) with discoverability
+      before writing."
+    created_at: 2026-02-06T23:20:33.798Z
+    tags:
+      - cli
+      - batch
+      - dx
+    added_by: "@claude"
