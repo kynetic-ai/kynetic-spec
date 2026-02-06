@@ -2607,6 +2607,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-06T10:26:20.971Z
+    completed_at: 2026-02-06T10:34:58.831Z
     step_results:
       - step_index: 0
         status: completed
@@ -2744,4 +2745,11 @@ runs:
           - Dropped: spec_ref auto-suggest (unclear value), subagent pattern capture (expected
           behavior)
     initiated_by: "@claude"
-    completed_at: 2026-02-06T10:34:58.831Z
+  - _ulid: 01KGTKYB3TXBQ21A8ZNK7VNBG6
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-06T23:17:38.554Z
+    step_results: []
+    initiated_by: "@claude"
