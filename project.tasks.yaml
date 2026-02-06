@@ -44777,6 +44777,11 @@
   plan_ref: "@batch-command-execution-via-json"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #321. Implemented batch command schema (Zod schemas for BatchCommand
+    and BatchInput), parsing layer (stdin/file/inline with BatchParseError), and validation (command
+    path resolution, arg mapping with kebab/camelCase, unknown command suggestions via fuzzy
+    matching, missing required arg detection, commandFilter extension point). All 5 ACs covered by
+    40 unit tests. No regressions."
   depends_on: []
   context: []
   priority: 3
@@ -44784,6 +44789,7 @@
   vcs_refs: []
   created_at: 2026-02-05T22:53:37.758Z
   started_at: 2026-02-06T08:23:55.728Z
+  completed_at: 2026-02-06T09:03:26.862Z
   notes:
     - _ulid: 01KGR05N2Y7XEPBV0X7Y4SHGB7
       created_at: 2026-02-05T22:53:37.758Z
@@ -44881,12 +44887,6 @@
         - BatchParseError preserves JSON.parse position info for debugging
       supersedes: null
   todos: []
-  completed_at: 2026-02-06T09:03:26.862Z
-  closed_reason: "Merged in PR #321. Implemented batch command schema (Zod schemas for BatchCommand
-    and BatchInput), parsing layer (stdin/file/inline with BatchParseError), and validation (command
-    path resolution, arg mapping with kebab/camelCase, unknown command suggestions via fuzzy
-    matching, missing required arg detection, commandFilter extension point). All 5 ACs covered by
-    40 unit tests. No regressions."
 - _ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
   slugs:
     - implement-batch-allowed-commands
@@ -44894,7 +44894,7 @@
   type: task
   spec_ref: "@batch-allowed-commands"
   plan_ref: "@batch-command-execution-via-json"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -44959,6 +44959,7 @@
         parent spec."
       supersedes: null
   todos: []
+  started_at: 2026-02-06T09:12:15.358Z
 - _ulid: 01KGR0K2F8HA3TJXGD5EXD7SBP
   slugs: []
   title: "Fix: Plan import drops acceptance criteria from spec YAML"
