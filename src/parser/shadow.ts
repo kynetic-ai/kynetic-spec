@@ -13,6 +13,7 @@ import { exec, execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { promisify } from "node:util";
+import { isBatchMode } from "../cli/batch-context.js";
 
 const execAsync = promisify(exec);
 
@@ -532,6 +533,11 @@ export async function commitIfShadow(
   detail?: string,
   verbose?: boolean,
 ): Promise<boolean> {
+  // Suppress auto-commits during atomic batch execution
+  if (isBatchMode()) {
+    return false;
+  }
+
   if (!shadowConfig?.enabled) {
     return false;
   }

@@ -56,11 +56,20 @@ export interface BatchExecSummary {
 }
 
 /**
+ * Execution mode for batch commands.
+ * - "atomic": all-or-nothing with temp copy (default)
+ * - "immediate": per-command commits, no rollback
+ */
+export type BatchExecMode = "atomic" | "immediate";
+
+/**
  * Complete result of a batch execution.
  */
 export interface BatchExecResult {
   /** Overall success (true only if all commands succeeded) */
   success: boolean;
+  /** Execution mode used */
+  mode: BatchExecMode;
   /** Aggregate counts */
   summary: BatchExecSummary;
   /** Per-command results */
