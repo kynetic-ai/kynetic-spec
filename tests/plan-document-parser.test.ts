@@ -18,6 +18,7 @@ import {
   validateParentRefs,
   type PlanSpec,
 } from "../src/parser/plan-document.js";
+import { createSpecItem } from "../src/parser/yaml.js";
 
 describe("Plan Document Parser", () => {
   // AC: @plan-import ac-11
@@ -448,5 +449,31 @@ describe("Parent Reference Validation", () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].spec?.slug).toBe("invalid");
+  });
+});
+
+describe("createSpecItem", () => {
+  it("should preserve acceptance_criteria when provided", () => {
+    const ac = [
+      { id: "ac-1", given: "precondition", when: "action", then: "result" },
+    ];
+    const item = createSpecItem({
+      title: "Test Feature",
+      type: "feature",
+      slugs: ["test-feature"],
+      acceptance_criteria: ac,
+    });
+
+    expect(item.acceptance_criteria).toEqual(ac);
+  });
+
+  it("should leave acceptance_criteria undefined when not provided", () => {
+    const item = createSpecItem({
+      title: "Test Feature",
+      type: "feature",
+      slugs: ["test-feature"],
+    });
+
+    expect(item.acceptance_criteria).toBeUndefined();
   });
 });

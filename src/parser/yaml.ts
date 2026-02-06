@@ -1308,6 +1308,7 @@ export function createSpecItem(input: SpecItemInput): SpecItem {
     priority: input.priority,
     tags: input.tags || [],
     description: input.description,
+    acceptance_criteria: input.acceptance_criteria,
     depends_on: input.depends_on || [],
     implements: input.implements || [],
     relates_to: input.relates_to || [],

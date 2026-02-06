@@ -627,4 +627,103 @@ Ensure backward compatibility.
     );
     expect(derivedTasks).toHaveLength(2); // Both derived tasks should have notes
   });
+
+  // Bug fix: acceptance criteria should be preserved during import
+  it("should preserve acceptance criteria on imported specs", async () => {
+    const planPath = path.join(tempDir, "ac-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# AC Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature With ACs
+  slug: feature-with-acs
+  type: feature
+  acceptance_criteria:
+    - id: ac-1
+      given: a precondition
+      when: an action occurs
+      then: expected result
+    - id: ac-2
+      given: another precondition
+      when: another action
+      then: another result
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const item = kspecJson<{
+      acceptance_criteria?: Array<{ id: string; given: string; when: string; then: string }>;
+    }>("item get @feature-with-acs --json", tempDir);
+    expect(item.acceptance_criteria).toHaveLength(2);
+    expect(item.acceptance_criteria![0].id).toBe("ac-1");
+    expect(item.acceptance_criteria![1].id).toBe("ac-2");
+  });
+
+  // Bug fix: bare trait names should get @ prefix during import
+  it("should normalize bare trait names with @ prefix", async () => {
+    const planPath = path.join(tempDir, "trait-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Trait Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature With Traits
+  slug: feature-with-traits
+  type: feature
+  traits:
+    - trait-json-output
+    - "@trait-dry-run"
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const item = kspecJson<{ traits: string[] }>(
+      "item get @feature-with-traits --json",
+      tempDir,
+    );
+    expect(item.traits).toContain("@trait-json-output");
+    expect(item.traits).toContain("@trait-dry-run");
+    expect(item.traits).not.toContain("trait-json-output");
+  });
+
+  // Bug fix: dry-run path should also preserve ACs and normalize traits
+  it("should normalize traits in dry-run mode (no crash)", async () => {
+    const planPath = path.join(tempDir, "dry-trait-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Dry Trait Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Dry Feature
+  slug: dry-feature
+  type: feature
+  traits:
+    - bare-trait
+  acceptance_criteria:
+    - id: ac-1
+      given: precondition
+      when: action
+      then: result
+\`\`\`
+`,
+    );
+
+    // Should not crash and should report the spec
+    const output = kspec(
+      `plan import "${planPath}" --module @test-core --dry-run`,
+      tempDir,
+    );
+    expect(output).toContain("Would create spec: @dry-feature");
+  });
 });
