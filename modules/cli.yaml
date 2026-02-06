@@ -2221,7 +2221,7 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
+        description: |-
           kspec inbox promote <ref> [options]
 
           Options:
@@ -2230,14 +2230,15 @@ features:
           - --spec-ref <ref>: Link to spec item
           - --type <type>: Task type (task, bug, spike, etc.)
           - --tag <tag>: Add tag(s) to task
+          - --note <text>: Add initial note to created task
 
           Converts inbox item to task. Prompts for required fields
           if not provided via options. Deletes inbox item after
           successful task creation.
 
           Examples:
-          - kspec inbox promote @01KF0... (interactive)
           - kspec inbox promote @01KF0... --title "Improve errors" --priority 2
+          - kspec inbox promote @01KF0... --title "Fix bug" --note "Context from investigation..."
         implements:
           - "@inbox-commands"
         traits:
