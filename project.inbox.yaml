@@ -573,3 +573,15 @@ inbox:
       - validation
       - dx
     added_by: "@claude"
+  - _ulid: 01KGS2QCK49D7EH5EDCGZ9NV4F
+    text: "Plan import task enrichment: kspec plan import creates tasks with generic 'See plan @X for
+      implementation notes'. Plan docs contain per-spec implementation notes in the YAML structure
+      and implementation notes section. Consider extracting per-spec context and attaching as
+      task-specific notes during import, so each task is self-contained without requiring a separate
+      enrichment pass."
+    created_at: 2026-02-06T08:57:30.468Z
+    tags:
+      - cli
+      - plan
+      - dx
+    added_by: "@claude"
