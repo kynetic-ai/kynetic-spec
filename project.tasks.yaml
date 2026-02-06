@@ -45133,7 +45133,7 @@
     list --count' → '48 items'. Quick counts without full output or JSON piping. Small scope.
     Surfaced during triage session."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
