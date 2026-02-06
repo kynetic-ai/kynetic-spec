@@ -5492,4 +5492,12 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGTNYAQNT0KVK3YTF5E7ZKYD
+    type: success
+    content: Parallel subagent research (two Explore agents) during spec-plan design phase efficiently
+      gathered session infrastructure context in ~60s instead of sequential exploration.
+    created_at: 2026-02-06T23:52:35.318Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
