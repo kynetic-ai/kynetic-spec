@@ -411,6 +411,7 @@ describe("batch command integration", () => {
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @batch-exec ac-stdin — stdin tested via parseBatchInput in batch-schema.test.ts
   // AC: @batch-exec ac-inline
   it("accepts inline JSON commands", () => {
     const result = kspecJson<BatchExecResult>(
@@ -440,6 +441,7 @@ describe("batch command integration", () => {
 
   // AC: @batch-exec ac-default-atomic
   // AC: @batch-exec ac-single-commit
+  // AC: @batch-exec ac-atomic-isolation
   it("atomic mode: all succeed → single commit, changes visible", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --commands '[{"command":"inbox add","args":{"text":"atomic-1"}},{"command":"inbox add","args":{"text":"atomic-2"}}]'`,
@@ -473,6 +475,7 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-no-atomic-flag
+  // AC: @batch-exec ac-immediate-per-commit
   it("immediate mode: per-command execution", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --no-atomic --commands '[{"command":"inbox add","args":{"text":"immediate-1"}},{"command":"inbox add","args":{"text":"immediate-2"}}]'`,
@@ -510,6 +513,7 @@ describe("batch command integration", () => {
 
   // AC: @batch-exec ac-continue
   // AC: @batch-exec ac-continue-implies-immediate
+  // AC: @batch-exec ac-partial-commit
   it("--continue: continues through failures, implies immediate mode", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --continue --commands '[{"command":"inbox add","args":{"text":"cont-1"}},{"command":"task start","args":{"ref":"@bad"}},{"command":"inbox add","args":{"text":"cont-3"}}]'`,

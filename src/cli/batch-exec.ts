@@ -532,7 +532,11 @@ export async function executeBatch(
     return {
       success: false,
       mode,
-      summary: { total: commands.length, succeeded: 0, failed: commands.length },
+      summary: {
+        total: commands.length,
+        succeeded: 0,
+        failed: validation.errors.length,
+      },
       results: validation.errors.map((err) => ({
         index: err.index,
         id: err.id,
@@ -600,6 +604,7 @@ async function executeAtomic(
 
   const results: BatchCommandResult[] = [];
   let allSucceeded = true;
+  let copyBackFailed = false;
 
   try {
     for (let i = 0; i < commands.length; i++) {
@@ -626,30 +631,40 @@ async function executeAtomic(
 
     // Copy back on success
     if (allSucceeded) {
-      // Clear real specDir contents (except .git and .gitattributes) before copy-back
-      const entries = await fs.readdir(realSpecDir);
-      for (const entry of entries) {
-        if (entry === ".git" || entry === ".gitattributes") continue;
-        await fs.rm(path.join(realSpecDir, entry), { recursive: true, force: true });
-      }
-      // Copy temp contents back
-      const tempEntries = await fs.readdir(tempDir);
-      for (const entry of tempEntries) {
-        await fs.cp(
-          path.join(tempDir, entry),
-          path.join(realSpecDir, entry),
-          { recursive: true },
-        );
-      }
+      try {
+        // Clear real specDir contents (except .git and .gitattributes) before copy-back
+        const entries = await fs.readdir(realSpecDir);
+        for (const entry of entries) {
+          if (entry === ".git" || entry === ".gitattributes") continue;
+          await fs.rm(path.join(realSpecDir, entry), { recursive: true, force: true });
+        }
+        // Copy temp contents back
+        const tempEntries = await fs.readdir(tempDir);
+        for (const entry of tempEntries) {
+          await fs.cp(
+            path.join(tempDir, entry),
+            path.join(realSpecDir, entry),
+            { recursive: true },
+          );
+        }
 
-      // Single shadow commit for all changes
-      if (ctx.shadow?.enabled) {
-        const successCount = results.filter((r) => r.success).length;
-        await shadowAutoCommit(
-          ctx.shadow.worktreeDir,
-          `batch: ${successCount} command${successCount !== 1 ? "s" : ""}`,
+        // Single shadow commit for all changes
+        if (ctx.shadow?.enabled) {
+          const successCount = results.filter((r) => r.success).length;
+          await shadowAutoCommit(
+            ctx.shadow.worktreeDir,
+            `batch: ${successCount} command${successCount !== 1 ? "s" : ""}`,
+          );
+          shadowPushAsync(ctx.shadow.worktreeDir);
+        }
+      } catch (copyErr) {
+        // Copy-back failed — preserve tempDir for manual recovery
+        copyBackFailed = true;
+        allSucceeded = false;
+        console.error(
+          `Batch copy-back failed: ${copyErr instanceof Error ? copyErr.message : copyErr}`,
         );
-        shadowPushAsync(ctx.shadow.worktreeDir);
+        console.error(`Temp dir preserved for recovery: ${tempDir}`);
       }
     }
   } finally {
@@ -661,8 +676,10 @@ async function executeAtomic(
     } else {
       delete process.env.KSPEC_SPEC_DIR;
     }
-    // Remove temp dir
-    await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+    // Only remove temp dir if copy-back succeeded (or commands failed)
+    if (!copyBackFailed) {
+      await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+    }
   }
 
   const succeeded = results.filter((r) => r.success).length;
@@ -767,11 +784,20 @@ async function dispatchCommand(
   capture.start();
   installExitInterceptor();
 
+  let caughtError: unknown = undefined;
+  let succeeded = false;
+
   try {
     await program.parseAsync(argv, { from: "user" });
+    succeeded = true;
+  } catch (err) {
+    caughtError = err;
+  } finally {
     capture.stop();
     uninstallExitInterceptor();
+  }
 
+  if (succeeded) {
     const output = capture.getOutput();
     // Try to parse output as JSON for structured results
     let parsedOutput: unknown = output;
@@ -788,59 +814,59 @@ async function dispatchCommand(
       success: true,
       output: parsedOutput,
     };
-  } catch (err) {
-    capture.stop();
-    uninstallExitInterceptor();
+  }
 
-    if (err instanceof BatchExitError) {
-      // Filter out BatchExitError noise from captured output (handlers may
-      // catch and re-log the error before calling process.exit again)
-      const capturedOutput = capture
-        .getOutput()
-        .split("\n")
-        .filter((line) => !line.includes("BatchExitError"))
-        .join("\n")
-        .trim();
+  // Handle errors
+  const err = caughtError;
 
-      if (err.code === 0) {
-        return {
-          index,
-          id: cmd.id,
-          command: cmd.command,
-          success: true,
-          output: capturedOutput,
-        };
-      }
+  if (err instanceof BatchExitError) {
+    // Filter out BatchExitError noise from captured output (handlers may
+    // catch and re-log the error before calling process.exit again)
+    const capturedOutput = capture
+      .getOutput()
+      .split("\n")
+      .filter((line) => !line.includes("BatchExitError"))
+      .join("\n")
+      .trim();
+
+    if (err.code === 0) {
       return {
         index,
         id: cmd.id,
         command: cmd.command,
-        success: false,
-        error: capturedOutput || `Command exited with code ${err.code}`,
+        success: true,
+        output: capturedOutput,
       };
     }
-
-    // Commander errors (e.g., missing required arg at runtime)
-    const isCommanderError =
-      err && typeof err === "object" && "code" in err && "exitCode" in err;
-    if (isCommanderError) {
-      const cmdErr = err as unknown as { message: string; exitCode: number };
-      return {
-        index,
-        id: cmd.id,
-        command: cmd.command,
-        success: false,
-        error: cmdErr.message || capture.getOutput(),
-      };
-    }
-
-    // Generic errors
     return {
       index,
       id: cmd.id,
       command: cmd.command,
       success: false,
-      error: err instanceof Error ? err.message : String(err),
+      error: capturedOutput || `Command exited with code ${err.code}`,
     };
   }
+
+  // Commander errors (e.g., missing required arg at runtime)
+  const isCommanderError =
+    err && typeof err === "object" && "code" in err && "exitCode" in err;
+  if (isCommanderError) {
+    const cmdErr = err as unknown as { message: string; exitCode: number };
+    return {
+      index,
+      id: cmd.id,
+      command: cmd.command,
+      success: false,
+      error: cmdErr.message || capture.getOutput(),
+    };
+  }
+
+  // Generic errors
+  return {
+    index,
+    id: cmd.id,
+    command: cmd.command,
+    success: false,
+    error: err instanceof Error ? err.message : String(err),
+  };
 }
