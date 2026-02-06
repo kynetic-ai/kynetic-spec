@@ -2809,7 +2809,7 @@ runs:
   - _ulid: 01KGTN9B9MQ355KZHTX7C4HP6A
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-06T23:41:07.764Z
     step_results:
@@ -2831,5 +2831,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-06T23:41:54.863Z
-        completed_at: 2026-02-06T23:41:54.863Z
+        completed_at: 2026-02-06T23:42:12.767Z
+        notes: "Coverage: (1) Codex prompt quoting - NOT tracked, (2) YAML quoting in plan docs - NOT
+          tracked, (3) Trait slug discoverability - NOT tracked, (4) Workflow stale runs - ALREADY
+          tracked: inbox @01KFEZDX (ephemeral workflows), inbox @01KGQY6Q (workflow lifecycle),
+          observation @01KFS6P9 (run accumulation)"
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-06T23:42:12.767Z
+        completed_at: 2026-02-06T23:42:12.767Z
     initiated_by: "@claude"
