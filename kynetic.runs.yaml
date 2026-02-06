@@ -2484,7 +2484,7 @@ runs:
   - _ulid: 01KGS4SX69AZJ5DET5SQS3J9CA
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-06T09:33:50.153Z
     step_results:
@@ -2548,5 +2548,31 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-06T09:34:13.889Z
-        completed_at: 2026-02-06T09:34:13.889Z
+        completed_at: 2026-02-06T09:34:35.385Z
+        notes: >-
+          ## Coverage Check
+
+
+          **Friction 1 (Repetitive edit pattern):** Not tracked. The friction is specific to
+          cross-cutting annotations that touch many files with the same pattern. This is a general
+          agent workflow issue, not a kspec feature gap. No spec/task/inbox item covers it.
+
+
+          **Friction 2 (Import additions to 11 files):** Not tracked. Same category as #1 — bulk
+          file modification pattern. Not a kspec feature gap.
+
+
+          **Friction 3 (Reading command files for registration sites):** Partially covered — the
+          introspection system (`extractCommandTree`) already provides a runtime view of commands,
+          but there's no tooling to list which source files register which commands. Not a
+          significant gap since this was a one-time task.
+
+
+          **Assessment:** The friction points are about agent-side bulk editing workflow, not kspec
+          feature gaps. These are inherent to the task shape (cross-cutting annotation of many
+          files) rather than missing functionality. No new items to propose.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-06T09:34:35.385Z
+        completed_at: 2026-02-06T09:34:35.385Z
     initiated_by: "@claude"
