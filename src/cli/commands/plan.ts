@@ -121,17 +121,33 @@ Examples:
         };
 
         // Auto-namespace plan slugs with "plan-" prefix to prevent collision with spec slugs
-        // If user provides a slug, check for collision with spec items
-        // If no slug provided, auto-generate with "plan-" prefix
-        const planSlug = options.slug || `plan-${generateSlug(options.title)}`;
+        // If user provides a slug, check for collision with spec items and plans
+        // If no slug provided, auto-generate with "plan-" prefix and ensure uniqueness
+        const plans = await loadPlans(ctx);
+        let planSlug = options.slug || `plan-${generateSlug(options.title)}`;
 
-        // Check for collision with spec items when manual slug is provided
+        // Check for collision with spec items and plans
+        const { refIndex } = await buildIndexes(ctx);
         if (options.slug) {
-          const { refIndex } = await buildIndexes(ctx);
-          const collision = refIndex.resolve(`@${options.slug}`);
-          if (collision.ok) {
+          // Manual slug: check for collision with spec items
+          const specCollision = refIndex.resolve(`@${options.slug}`);
+          if (specCollision.ok) {
             error(`Slug "${options.slug}" collides with existing spec item. Use a different slug or omit --slug for auto-namespaced slug.`);
             process.exit(EXIT_CODES.CONFLICT);
+          }
+          // Check for collision with existing plans
+          const planCollision = plans.find(p => p.slugs.includes(options.slug));
+          if (planCollision) {
+            error(`Slug "${options.slug}" collides with existing plan. Use a different slug.`);
+            process.exit(EXIT_CODES.CONFLICT);
+          }
+        } else {
+          // Auto-generated slug: ensure uniqueness by appending counter if needed
+          let counter = 1;
+          const baseSlug = planSlug;
+          while (plans.some(p => p.slugs.includes(planSlug))) {
+            planSlug = `${baseSlug}-${counter}`;
+            counter++;
           }
         }
 
@@ -281,9 +297,15 @@ Examples:
           if (!foundPlan.slugs.includes(options.slug)) {
             // Check for collision with spec items
             const { refIndex } = await buildIndexes(ctx);
-            const collision = refIndex.resolve(`@${options.slug}`);
-            if (collision.ok) {
+            const specCollision = refIndex.resolve(`@${options.slug}`);
+            if (specCollision.ok) {
               error(`Slug "${options.slug}" collides with existing spec item. Use a different slug.`);
+              process.exit(EXIT_CODES.CONFLICT);
+            }
+            // Check for collision with other plans
+            const planCollision = plans.find(p => p._ulid !== foundPlan._ulid && p.slugs.includes(options.slug));
+            if (planCollision) {
+              error(`Slug "${options.slug}" collides with existing plan. Use a different slug.`);
               process.exit(EXIT_CODES.CONFLICT);
             }
             foundPlan.slugs.push(options.slug);

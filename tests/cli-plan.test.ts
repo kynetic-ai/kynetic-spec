@@ -157,6 +157,40 @@ describe("Integration: plan commands", () => {
       expect(result.stderr).toContain("collides with existing spec item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
+
+    it("should error when provided slug collides with existing plan", () => {
+      // Create first plan with custom slug
+      kspec('plan add --title "First Plan" --content "Content" --slug my-custom-slug', tempDir);
+
+      // Try to create second plan with same slug
+      const result = kspecRun(
+        'plan add --title "Second Plan" --content "Content" --slug my-custom-slug',
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.stderr).toContain("collides with existing plan");
+      expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
+    });
+
+    it("should auto-generate unique slug when same title is used twice", () => {
+      // Create two plans with the same title
+      kspec('plan add --title "Duplicate Title" --content "First"', tempDir);
+      kspec('plan add --title "Duplicate Title" --content "Second"', tempDir);
+
+      // Both should be retrievable with different slugs
+      const plan1 = kspecJson<{ title: string; slugs: string[] }>(
+        "plan get @plan-duplicate-title --json",
+        tempDir,
+      );
+      expect(plan1.slugs).toContain("plan-duplicate-title");
+
+      const plan2 = kspecJson<{ title: string; slugs: string[] }>(
+        "plan get @plan-duplicate-title-1 --json",
+        tempDir,
+      );
+      expect(plan2.slugs).toContain("plan-duplicate-title-1");
+    });
   });
 
   describe("plan get", () => {
@@ -313,6 +347,21 @@ describe("Integration: plan commands", () => {
       );
 
       expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
+    });
+
+    it("should error when adding slug that collides with existing plan", () => {
+      // Create another plan with a known slug
+      kspec('plan add --title "Other Plan" --content "Content" --slug other-plan-slug', tempDir);
+
+      // Try to add that slug to the first plan
+      const result = kspecRun(
+        "plan set @01 --slug other-plan-slug",
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.stderr).toContain("collides with existing plan");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
   });

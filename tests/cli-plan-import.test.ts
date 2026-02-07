@@ -901,6 +901,55 @@ Ensure backward compatibility.
     expect(plan.slugs).toContain("plan-namespace-test");
   });
 
+  it("should auto-generate unique plan slugs when importing same title twice", async () => {
+    // Import the same plan twice
+    const planPath = path.join(tempDir, "duplicate-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Duplicate Import
+
+## Specs
+
+\`\`\`yaml
+- title: Feature
+  slug: duplicate-feature
+  type: feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Create new spec slug for second import to avoid skip
+    await fs.writeFile(
+      planPath,
+      `# Duplicate Import
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Two
+  slug: duplicate-feature-two
+  type: feature
+\`\`\`
+`,
+    );
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Both plans should be retrievable with different slugs
+    const plan1 = kspecJson<{ slugs: string[] }>(
+      "plan get @plan-duplicate-import --json",
+      tempDir,
+    );
+    expect(plan1.slugs).toContain("plan-duplicate-import");
+
+    const plan2 = kspecJson<{ slugs: string[] }>(
+      "plan get @plan-duplicate-import-1 --json",
+      tempDir,
+    );
+    expect(plan2.slugs).toContain("plan-duplicate-import-1");
+  });
+
   // Bug fix: dry-run path should also preserve ACs and normalize traits
   it("should normalize traits in dry-run mode (no crash)", async () => {
     const planPath = path.join(tempDir, "dry-trait-plan.md");
