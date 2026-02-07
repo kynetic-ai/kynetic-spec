@@ -22,6 +22,7 @@ import {
 } from "../schema/index.js";
 import { errors } from "../strings/index.js";
 import { ItemIndex } from "./items.js";
+import type { LoadedPlan } from "./plans.js";
 import { ReferenceIndex } from "./refs.js";
 import {
   detectRunningFromShadowWorktree,
@@ -1206,8 +1207,10 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
 /**
  * Build both ReferenceIndex and ItemIndex from context.
  * Use this when you need query capabilities in addition to reference resolution.
+ * Pass plans for cross-namespace slug collision detection (plans aren't loaded by default
+ * to avoid circular dependency with plans.ts).
  */
-export async function buildIndexes(ctx: KspecContext): Promise<{
+export async function buildIndexes(ctx: KspecContext, plans: LoadedPlan[] = []): Promise<{
   refIndex: ReferenceIndex;
   itemIndex: ItemIndex;
   traitIndex: TraitIndex;
@@ -1216,7 +1219,7 @@ export async function buildIndexes(ctx: KspecContext): Promise<{
 }> {
   const tasks = await loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
-  const refIndex = new ReferenceIndex(tasks, items);
+  const refIndex = new ReferenceIndex(tasks, items, [], plans);
   const itemIndex = new ItemIndex(tasks, items);
   const traitIndex = new TraitIndex(items, refIndex);
   return { refIndex, itemIndex, traitIndex, tasks, items };

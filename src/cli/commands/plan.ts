@@ -133,24 +133,18 @@ Examples:
         let planSlug = options.slug || `plan-${generateSlug(options.title)}`;
 
         // Check for collision with spec items and plans
-        const { refIndex } = await buildIndexes(ctx);
+        const { refIndex } = await buildIndexes(ctx, plans);
         if (options.slug) {
-          // Manual slug: check for collision with specs/tasks
+          // Manual slug: check for collision across all namespaces (specs/tasks/plans)
           if (!refIndex.isSlugAvailable(options.slug)) {
             error(`Slug "${options.slug}" collides with existing item. Use a different slug or omit --slug for auto-namespaced slug.`);
-            process.exit(EXIT_CODES.CONFLICT);
-          }
-          // Check for collision with existing plans
-          const planCollision = plans.find(p => p.slugs.includes(options.slug));
-          if (planCollision) {
-            error(`Slug "${options.slug}" collides with existing plan. Use a different slug.`);
             process.exit(EXIT_CODES.CONFLICT);
           }
         } else {
           // Auto-generated slug: ensure uniqueness across all namespaces
           let counter = 1;
           const baseSlug = planSlug;
-          while (plans.some(p => p.slugs.includes(planSlug)) || !refIndex.isSlugAvailable(planSlug)) {
+          while (!refIndex.isSlugAvailable(planSlug)) {
             planSlug = `${baseSlug}-${counter}`;
             counter++;
           }
@@ -300,16 +294,10 @@ Examples:
 
         if (options.slug) {
           if (!foundPlan.slugs.includes(options.slug)) {
-            // Check for collision with specs/tasks
-            const { refIndex } = await buildIndexes(ctx);
+            // Check for collision with specs/tasks/plans
+            const { refIndex } = await buildIndexes(ctx, plans);
             if (!refIndex.isSlugAvailable(options.slug)) {
               error(`Slug "${options.slug}" collides with existing item. Use a different slug.`);
-              process.exit(EXIT_CODES.CONFLICT);
-            }
-            // Check for collision with other plans
-            const planCollision = plans.find(p => p._ulid !== foundPlan._ulid && p.slugs.includes(options.slug));
-            if (planCollision) {
-              error(`Slug "${options.slug}" collides with existing plan. Use a different slug.`);
               process.exit(EXIT_CODES.CONFLICT);
             }
             foundPlan.slugs.push(options.slug);
