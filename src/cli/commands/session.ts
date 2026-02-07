@@ -25,9 +25,15 @@ import {
 import type { SessionContext as StoredSessionContext } from "../../schema/index.js";
 import {
   type SessionLogSummary,
+  type SessionLogDetail,
+  type IterationSummary,
   getAllSessionLogSummaries,
+  getSessionLogDetail,
+  resolveSessionId,
+  readEvents,
+  readSessionContext,
 } from "../../sessions/store.js";
-import type { SessionStatus } from "../../sessions/types.js";
+import type { SessionEvent, SessionStatus } from "../../sessions/types.js";
 import {
   errors,
   hints,
@@ -1379,6 +1385,267 @@ async function sessionLogListAction(
   }
 }
 
+// ─── Session Log Show ─────────────────────────────────────────────────────────
+
+interface SessionLogShowOptions {
+  events?: boolean;
+  type?: string;
+  limit?: string;
+  context?: string;
+}
+
+/**
+ * Format an event timestamp as relative time from session start.
+ */
+function formatEventTimestamp(
+  eventTs: number,
+  sessionStartTs: number,
+): string {
+  const relativeMs = eventTs - sessionStartTs;
+  const totalSec = Math.floor(relativeMs / 1000);
+  const minutes = Math.floor(totalSec / 60);
+  const seconds = totalSec % 60;
+  if (minutes > 0) {
+    return `+${minutes}m${seconds}s`;
+  }
+  return `+${seconds}s`;
+}
+
+/**
+ * Summarize event data for display.
+ * Returns a short string describing the event payload.
+ */
+function summarizeEventData(event: SessionEvent): string {
+  const data = event.data as Record<string, unknown> | null;
+  if (!data) return "";
+
+  // Handle tool_call events
+  if (event.type === "session.update") {
+    const update = data.update as {
+      sessionUpdate?: string;
+      rawInput?: { command?: string };
+      _meta?: { claudeCode?: { toolName?: string } };
+    } | null;
+    if (update?.sessionUpdate === "tool_call") {
+      const toolName = update._meta?.claudeCode?.toolName || "unknown";
+      const command = update.rawInput?.command;
+      if (command) {
+        const truncated =
+          command.length > 60 ? command.slice(0, 57) + "..." : command;
+        return `${toolName}: ${truncated}`;
+      }
+      return toolName;
+    }
+  }
+
+  // Handle prompt.sent events
+  if (event.type === "prompt.sent") {
+    const prompt = data.prompt as string | null;
+    if (prompt) {
+      const truncated =
+        prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
+      return truncated;
+    }
+  }
+
+  // Handle session.start/end
+  if (event.type === "session.start") {
+    return "Session started";
+  }
+  if (event.type === "session.end") {
+    const reason = data.reason as string | null;
+    return reason ? `Session ended: ${reason}` : "Session ended";
+  }
+
+  // Default: show first key
+  const keys = Object.keys(data);
+  if (keys.length > 0) {
+    return `{${keys.slice(0, 3).join(", ")}${keys.length > 3 ? ", ..." : ""}}`;
+  }
+  return "";
+}
+
+/**
+ * Format the session log show output.
+ *
+ * AC: @session-log-show ac-1
+ */
+function formatSessionLogShow(
+  detail: SessionLogDetail,
+  events: SessionEvent[] | null,
+  contextSnapshot: unknown | null,
+  sessionStartTs: number,
+): void {
+  // AC: @session-log-show ac-1 - Session metadata
+  console.log(chalk.bold(`Session ${detail.id.slice(0, 8)}`));
+  console.log(chalk.gray("─".repeat(60)));
+  console.log(`  ID:        ${detail.id}`);
+
+  const statusColor =
+    detail.status === "completed"
+      ? chalk.green
+      : detail.status === "active"
+        ? chalk.blue
+        : chalk.yellow;
+  console.log(`  Status:    ${statusColor(detail.status)}`);
+  console.log(`  Agent:     ${detail.agent_type}`);
+  if (detail.task_id) {
+    console.log(`  Task:      ${detail.task_id}`);
+  }
+  console.log(`  Started:   ${detail.started_at}`);
+  if (detail.ended_at) {
+    console.log(`  Ended:     ${detail.ended_at}`);
+  }
+  console.log(`  Duration:  ${formatDuration(detail.duration_ms)}`);
+  console.log(`  Events:    ${detail.event_count}`);
+  console.log(`  Iterations: ${detail.iteration_count}`);
+
+  // AC: @session-log-show ac-2 - Per-iteration summary
+  if (detail.iterations.length > 0) {
+    console.log("\n" + chalk.bold("Iterations"));
+    console.log(chalk.gray("─".repeat(60)));
+    for (const iter of detail.iterations) {
+      const taskInfo: string[] = [];
+      if (iter.tasks_started.length > 0) {
+        taskInfo.push(`started: ${iter.tasks_started.join(", ")}`);
+      }
+      if (iter.tasks_completed.length > 0) {
+        taskInfo.push(`completed: ${iter.tasks_completed.join(", ")}`);
+      }
+      const taskStr = taskInfo.length > 0 ? ` | ${taskInfo.join(" | ")}` : "";
+      console.log(
+        `  ${chalk.cyan(`[${iter.iteration}]`)} ${iter.event_count} events${taskStr}`,
+      );
+    }
+  }
+
+  // AC: @session-log-show ac-3 - Event timeline
+  if (events !== null) {
+    console.log("\n" + chalk.bold("Events"));
+    console.log(chalk.gray("─".repeat(60)));
+    if (events.length === 0) {
+      console.log(chalk.gray("  No events to display."));
+    } else {
+      for (const event of events) {
+        const timestamp = formatEventTimestamp(event.ts, sessionStartTs);
+        const summary = summarizeEventData(event);
+        const typeColor =
+          event.type === "session.start" || event.type === "session.end"
+            ? chalk.green
+            : event.type === "session.update"
+              ? chalk.blue
+              : chalk.gray;
+        console.log(
+          `  ${chalk.yellow(timestamp.padEnd(10))} ${typeColor(event.type.padEnd(16))} ${chalk.gray(summary)}`,
+        );
+      }
+    }
+  }
+
+  // AC: @session-log-show ac-6 - Context snapshot
+  if (contextSnapshot !== null) {
+    console.log("\n" + chalk.bold("Context Snapshot"));
+    console.log(chalk.gray("─".repeat(60)));
+    console.log(JSON.stringify(contextSnapshot, null, 2));
+  }
+}
+
+/**
+ * Session log show action handler.
+ */
+async function sessionLogShowAction(
+  sessionRef: string,
+  options: SessionLogShowOptions,
+): Promise<void> {
+  try {
+    const ctx = await initContext();
+
+    // AC: @session-log-show ac-7, ac-8, ac-9 - Resolve session ID
+    const resolution = await resolveSessionId(ctx.specDir, sessionRef);
+
+    if (!resolution.ok) {
+      if (resolution.error === "not_found") {
+        // AC: @session-log-show ac-9
+        error(`Session not found: ${sessionRef}`);
+        process.exit(EXIT_CODES.NOT_FOUND);
+      } else {
+        // AC: @session-log-show ac-8
+        error(
+          `Ambiguous session ID prefix. Matches:\n  ${resolution.matches.join("\n  ")}\nPlease provide a more specific prefix.`,
+        );
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+      }
+    }
+
+    const sessionId = resolution.id;
+
+    // Get session detail
+    const detail = await getSessionLogDetail(ctx.specDir, sessionId);
+    if (!detail) {
+      error(`Session not found: ${sessionId}`);
+      process.exit(EXIT_CODES.NOT_FOUND);
+    }
+
+    // AC: @session-log-show ac-3, ac-4, ac-5 - Event timeline
+    let events: SessionEvent[] | null = null;
+    if (options.events) {
+      let allEvents = await readEvents(ctx.specDir, sessionId);
+
+      // AC: @session-log-show ac-4 - Filter by type
+      if (options.type) {
+        const typeFilter = options.type;
+        allEvents = allEvents.filter((e) => e.type === typeFilter);
+      }
+
+      // AC: @session-log-show ac-5 - Limit to last N events
+      if (options.limit) {
+        const limit = parseInt(options.limit, 10);
+        if (!Number.isNaN(limit) && limit > 0) {
+          allEvents = allEvents.slice(-limit);
+        }
+      }
+
+      events = allEvents;
+    }
+
+    // AC: @session-log-show ac-6 - Context snapshot
+    let contextSnapshot: unknown | null = null;
+    if (options.context) {
+      const iterNum = parseInt(options.context, 10);
+      if (!Number.isNaN(iterNum) && iterNum > 0) {
+        contextSnapshot = await readSessionContext(
+          ctx.specDir,
+          sessionId,
+          iterNum,
+        );
+        if (contextSnapshot === null) {
+          error(`No context snapshot found for iteration ${iterNum}`);
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+      } else {
+        error(`Invalid iteration number: ${options.context}`);
+        process.exit(EXIT_CODES.USAGE_ERROR);
+      }
+    }
+
+    const sessionStartTs = new Date(detail.started_at).getTime();
+
+    // Build JSON output structure
+    const jsonOutput = {
+      ...detail,
+      ...(events !== null ? { events } : {}),
+      ...(contextSnapshot !== null ? { context: contextSnapshot } : {}),
+    };
+
+    output(jsonOutput, () =>
+      formatSessionLogShow(detail, events, contextSnapshot, sessionStartTs),
+    );
+  } catch (err) {
+    error("Failed to show session log", err);
+    process.exit(EXIT_CODES.ERROR);
+  }
+}
+
 /**
  * Register the 'session' command group and aliases
  */
@@ -1426,6 +1693,15 @@ export function registerSessionCommands(program: Command): void {
     .option("--count", "Show only the count of matching sessions")
     .option("-n, --limit <n>", "Limit number of sessions shown")
     .action(sessionLogListAction);
+
+  log
+    .command("show <session-id>")
+    .description("Show detailed view of a single session")
+    .option("-e, --events", "Include chronological event timeline")
+    .option("-t, --type <type>", "Filter events by type (e.g., tool.call)")
+    .option("-n, --limit <n>", "Show only the last N events")
+    .option("-c, --context <n>", "Show context snapshot for iteration N")
+    .action(sessionLogShowAction);
 
   session
     .command("checkpoint")
