@@ -488,3 +488,64 @@ features:
     }).toThrow();
   });
 });
+
+describe('Trait CLI - item add --trait', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    // Create a trait
+    kspec('trait add "JSON Output Support" --slug json-output', tempDir);
+    kspec('trait add "Semantic Exit Codes" --slug exit-codes', tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should create spec item with trait applied', async () => {
+    const result = kspecJson<{ item: { traits: string[] } }>(
+      'item add --under @test-core --title "Feature with trait" --trait @json-output',
+      tempDir
+    );
+
+    expect(result.item.traits).toContain('@json-output');
+  });
+
+  it('should apply multiple traits', async () => {
+    const result = kspecJson<{ item: { traits: string[] } }>(
+      'item add --under @test-core --title "Feature with traits" --trait @json-output --trait @exit-codes',
+      tempDir
+    );
+
+    expect(result.item.traits).toContain('@json-output');
+    expect(result.item.traits).toContain('@exit-codes');
+    expect(result.item.traits).toHaveLength(2);
+  });
+
+  it('should persist traits in spec file', async () => {
+    kspec(
+      'item add --under @test-core --title "Persisted trait feature" --slug persisted-feat --trait @json-output',
+      tempDir
+    );
+
+    const specFile = await fs.readFile(
+      path.join(tempDir, 'modules/core.yaml'),
+      'utf-8'
+    );
+
+    expect(specFile).toContain('traits:');
+    expect(specFile).toContain('@json-output');
+  });
+
+  it('should work without --trait flag', async () => {
+    const result = kspecJson<{ item: { traits: string[] } }>(
+      'item add --under @test-core --title "Feature without trait"',
+      tempDir
+    );
+
+    expect(result.item.traits).toEqual([]);
+  });
+});

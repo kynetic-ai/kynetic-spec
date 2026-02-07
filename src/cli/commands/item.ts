@@ -596,6 +596,7 @@ export function registerItemCommands(program: Command): void {
     .option("--slug <slug>", "Human-friendly slug")
     .option("--priority <priority>", "Priority (high, medium, low)")
     .option("--tag <tag...>", "Tags")
+    .option("--trait <trait...>", "Traits to apply (e.g., @trait-testable)")
     .option("--description <desc>", "Description")
     .option(
       "--as <field>",
@@ -606,7 +607,8 @@ export function registerItemCommands(program: Command): void {
       `
 Examples:
   $ kspec item add --under @parent --title "Feature name" --type feature
-  $ kspec item add --under @parent --title "Multi-tag" --tag api public`,
+  $ kspec item add --under @parent --title "Multi-tag" --tag api public
+  $ kspec item add --under @parent --title "API endpoint" --trait @trait-api-endpoint`,
     )
     .action(async (options) => {
       try {
@@ -650,7 +652,7 @@ Examples:
           implements: [],
           relates_to: [],
           tests: [],
-          traits: [],
+          traits: options.trait || [],
           notes: [],
         };
 
