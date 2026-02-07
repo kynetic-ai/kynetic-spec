@@ -1276,8 +1276,4 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
-acceptance_criteria:
-  - id: ac-4
-    given: "#comment-like"
-    when: x
-    then: y
+acceptance_criteria: []
