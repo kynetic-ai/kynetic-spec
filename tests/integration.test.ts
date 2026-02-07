@@ -974,6 +974,108 @@ describe('Integration: derive', () => {
     const task = JSON.parse(taskOutput);
     expect(task.title).toBe('Custom Task Title');
   });
+
+  it('should display AC count in derive output', () => {
+    // Add ACs to test-feature
+    kspec(
+      'item ac add @test-feature --given "condition one" --when "action one" --then "result one"',
+      tempDir
+    );
+    kspec(
+      'item ac add @test-feature --given "condition two" --when "action two" --then "result two"',
+      tempDir
+    );
+    kspec(
+      'item ac add @test-feature --given "condition three" --when "action three" --then "result three"',
+      tempDir
+    );
+
+    // Derive task - should show AC count
+    const output = kspec('derive @test-feature --flat', tempDir);
+    expect(output).toContain('(3 ACs)');
+  });
+
+  it('should display AC count in dry-run output', () => {
+    // Add ACs to test-feature
+    kspec(
+      'item ac add @test-feature --given "dry run condition" --when "dry run action" --then "dry run result"',
+      tempDir
+    );
+    kspec(
+      'item ac add @test-feature --given "another condition" --when "another action" --then "another result"',
+      tempDir
+    );
+
+    // Dry run - should show AC count
+    const output = kspec('derive @test-feature --flat --dry-run', tempDir);
+    expect(output).toContain('(2 ACs)');
+  });
+
+  it('should include ac_count in JSON output', () => {
+    // Add ACs to test-feature
+    kspec(
+      'item ac add @test-feature --given "json condition" --when "json action" --then "json result"',
+      tempDir
+    );
+    kspec(
+      'item ac add @test-feature --given "second condition" --when "second action" --then "second result"',
+      tempDir
+    );
+    kspec(
+      'item ac add @test-feature --given "third condition" --when "third action" --then "third result"',
+      tempDir
+    );
+    kspec(
+      'item ac add @test-feature --given "fourth condition" --when "fourth action" --then "fourth result"',
+      tempDir
+    );
+
+    // Derive with JSON output
+    const output = kspec('derive @test-feature --flat --json', tempDir);
+    const results = JSON.parse(output);
+
+    expect(results).toHaveLength(1);
+    expect(results[0].ac_count).toBe(4);
+  });
+
+  it('should show complexity warning for specs with >5 ACs', () => {
+    // Add 6 ACs to test-feature
+    for (let i = 1; i <= 6; i++) {
+      kspec(
+        `item ac add @test-feature --given "condition ${i}" --when "action ${i}" --then "result ${i}"`,
+        tempDir
+      );
+    }
+
+    // Derive task - should show warning (warning goes to stderr)
+    const result = kspecRun('derive @test-feature --flat', tempDir);
+    expect(result.stdout).toContain('6 ACs');
+    expect(result.stderr).toContain('consider splitting before implementing');
+  });
+
+  it('should show complexity warning in dry-run for specs with >5 ACs', () => {
+    // Add 7 ACs to test-feature
+    for (let i = 1; i <= 7; i++) {
+      kspec(
+        `item ac add @test-feature --given "dry condition ${i}" --when "dry action ${i}" --then "dry result ${i}"`,
+        tempDir
+      );
+    }
+
+    // Dry run - should show warning (warning goes to stderr)
+    const result = kspecRun('derive @test-feature --flat --dry-run', tempDir);
+    expect(result.stdout).toContain('7 ACs');
+    expect(result.stderr).toContain('consider splitting before implementing');
+  });
+
+  it('should not show AC count for specs with 0 ACs', () => {
+    // test-feature has no ACs in fixtures by default (after fresh setup)
+    // Derive task
+    const output = kspec('derive @test-feature --flat', tempDir);
+    expect(output).toContain('Created');
+    // Should NOT contain "(0 ACs)"
+    expect(output).not.toContain('ACs)');
+  });
 });
 
 describe('Integration: session', () => {
