@@ -741,3 +741,16 @@ plans:
     approved_at: null
     completed_at: null
     notes: []
+  - _ulid: 01KGW26GNVK6SDNV4V78TS4NX0
+    slugs:
+      - custom-slug
+    title: Two
+    content: B
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    source_path: null
+    created_at: 2026-02-07T12:46:00.891Z
+    approved_at: null
+    completed_at: null
+    notes: []
