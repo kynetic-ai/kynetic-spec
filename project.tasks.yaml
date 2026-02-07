@@ -45526,7 +45526,7 @@
   type: task
   spec_ref: "@session-log-list"
   plan_ref: "@session-log-analysis-tooling"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -45547,6 +45547,7 @@
         only parse what's needed for the summary columns.
   todos: []
   automation: eligible
+  started_at: 2026-02-07T03:37:36.820Z
 - _ulid: 01KGTN2A484D5W7WHWWS4QHMRP
   slugs:
     - implement-session-log-show
@@ -45985,21 +45986,21 @@
         ~25 lines + tests for both replace and append paths."
       supersedes: null
   todos: []
-- title: Enrich session start with pending_review and recently completed notes
+- _ulid: 01KGTZEYRB1B81YREN5FKHSN38
+  slugs: []
+  title: Enrich session start with pending_review and recently completed notes
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Recent notes should cover pending review notes and most recently closed task notes as
     well, probably separated out with some more organization so it is clear what was being worked on
     and if there is anything from prior work worth sharing forward (in case its a continuation of
     the same type of work)
-  _ulid: 01KGTZEYRB1B81YREN5FKHSN38
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T02:38:57.291Z
   notes:
