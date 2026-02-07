@@ -35904,19 +35904,19 @@
         Change suppression from 'skip entire chunk' to 'strip matching patterns from chunk content'. This handles both standalone noise chunks and noise embedded in real content.
       supersedes: null
   todos: []
-- title: Increase ralph loop prompt timeout from 5min to 30min
+- _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
+  slugs: []
+  title: Increase ralph loop prompt timeout from 5min to 30min
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
-  status: pending
+  status: in_progress
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T06:05:22.110Z
   notes:
@@ -35947,3 +35947,4 @@
         - `src/agents/spawner.ts` — may need to thread timeout options through
       supersedes: null
   todos: []
+  started_at: 2026-02-07T06:06:33.409Z
