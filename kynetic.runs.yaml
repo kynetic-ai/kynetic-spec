@@ -2861,7 +2861,7 @@ runs:
   - _ulid: 01KGVJWXXWVW70BM2DC2NXG2XX
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-07T08:18:38.140Z
     step_results:
@@ -2934,5 +2934,36 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-07T08:19:11.618Z
-        completed_at: 2026-02-07T08:19:11.618Z
+        completed_at: 2026-02-07T08:19:56.415Z
+        notes: >-
+          Step 3: Coverage Check
+
+
+          1. **Inbox filtering** — TRACKED in inbox item @01KGGP9F (Inbox CLI improvements). Covers
+          --before/--after, --author filters.
+
+
+          2. **Inbox overlap/duplicate check** — PARTIALLY TRACKED. @01KGGP9F has 'inbox merge' for
+          consolidation, but no cross-reference against tasks/completed work. The specific friction
+          was 'is this already done?' not 'are these duplicates of each other'.
+
+
+          3. **Promote with --spec-ref** — ALREADY EXISTS. Task @01KG9202 completed this. I just
+          forgot to use it. Not a tool gap, an awareness gap.
+
+
+          4. **Batch error message for needs_review --reason** — TRACKED. Task @01KGTY3D
+          (did-you-mean suggestions) covers improving batch validation errors. The specific case
+          (needs_review requiring reason arg) would be caught by this.
+
+
+          5. **Spec hierarchy browsing** — NOT TRACKED. No item list --module or tree view exists in
+          specs, tasks, or inbox.
+
+
+          6. **Item list 50 limit** — NOT TRACKED. No mention of pagination or higher limits.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-07T08:19:56.415Z
+        completed_at: 2026-02-07T08:19:56.415Z
     initiated_by: "@claude"
