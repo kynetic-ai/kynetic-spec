@@ -5528,4 +5528,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGVK9K0AR02A2MJBXWBFE5DH
+    type: success
+    content: "Batch triage workflow: categorize inbox by theme first, quick-win deletions, then
+      one-at-a-time promotion with AskUserQuestion showing What/Why/How context. Cross-reference
+      against git log and completed tasks to catch already-done items. This pattern processed 61
+      items efficiently."
+    created_at: 2026-02-07T08:25:32.938Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
