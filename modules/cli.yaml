@@ -2354,6 +2354,19 @@ features:
             given: inbox item @ref exists
             when: kspec inbox set @ref --tag newtag runs
             then: item tags are updated to include newtag
+      - _ulid: 01KGVJRKPVM5K1W0YS1K7A886N
+        slugs:
+          - inbox-note
+        title: kspec inbox note
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-07T08:16:16.603Z
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
