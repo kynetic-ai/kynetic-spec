@@ -134,10 +134,10 @@ Use passport.js for OAuth. General architecture follows existing auth patterns.
 
 Traits are reusable AC bundles for cross-cutting concerns. CLI features commonly need:
 
-- `json-output` - structured JSON output mode
-- `dry-run` - preview without side effects
-- `error-guidance` - actionable error messages
-- `semantic-exit-codes` - meaningful process exit codes
+- `trait-json-output` - structured JSON output mode
+- `trait-dry-run` - preview without side effects
+- `trait-error-guidance` - actionable error messages
+- `trait-semantic-exit-codes` - meaningful process exit codes
 
 ```bash
 # Browse available traits
@@ -145,6 +145,18 @@ kspec trait list
 
 # Apply trait to spec (adds inherited AC automatically)
 kspec item trait add @spec @trait
+```
+
+**Important:** In plan documents, use the **full trait slug** (e.g., `trait-json-output`, not `json-output`). The import only auto-prefixes `@`, not `@trait-`. Without the full slug, trait refs resolve to nonexistent items.
+
+```yaml
+# ❌ Broken - short name
+traits:
+  - json-output
+
+# ✅ Correct - full slug
+traits:
+  - trait-json-output
 ```
 
 Import path: declare traits in the plan document YAML.
@@ -169,6 +181,51 @@ Plans track status: `draft` -> `approved` -> `active` -> `completed` (or `reject
 - **Too granular**: Not every plan bullet needs its own spec
 - **Forgetting traits**: Leads to missing cross-cutting AC (check `kspec trait list`)
 - **Skipping dry-run on import**: Catches errors before they create partial state
+
+## YAML Syntax Issues
+
+Plan documents embed YAML code blocks that are parsed as structured data. Common pitfalls:
+
+### Embedded Quotes Break Parsing
+
+YAML scalar values containing double quotes cause parse failures:
+
+```yaml
+# ❌ Broken - embedded quotes in scalar
+acceptance_criteria:
+  - id: ac-1
+    when: "kspec foo" is run  # Parser sees this as malformed
+
+# ✅ Fixed - use block scalar or avoid inner quotes
+acceptance_criteria:
+  - id: ac-1
+    when: |
+      "kspec foo" is run
+
+  # Or rephrase to avoid quotes
+  - id: ac-2
+    when: user runs kspec foo command
+```
+
+### Colons in Values Need Quoting
+
+YAML treats colons as key-value separators:
+
+```yaml
+# ❌ Broken - unquoted colon
+then: output shows time: 10:30
+
+# ✅ Fixed - quote the entire value
+then: "output shows time: 10:30"
+```
+
+### Best Practices
+
+1. **Avoid quotes in AC given/when/then** - rephrase to use plain language
+2. **Use block scalars (`|`) for complex text** - preserves content literally
+3. **Quote values containing `: `** - prevents key-value interpretation
+4. **Run `--dry-run` first** - catches syntax errors before partial state is created
+5. **Check parser errors carefully** - they often indicate quote or colon issues
 
 ## Integration
 
