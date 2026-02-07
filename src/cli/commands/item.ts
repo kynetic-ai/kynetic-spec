@@ -596,6 +596,7 @@ export function registerItemCommands(program: Command): void {
     .option("--slug <slug>", "Human-friendly slug")
     .option("--priority <priority>", "Priority (high, medium, low)")
     .option("--tag <tag...>", "Tags")
+    .option("--trait <trait...>", "Traits to apply (e.g., @trait-testable)")
     .option("--description <desc>", "Description")
     .option(
       "--as <field>",
@@ -606,7 +607,8 @@ export function registerItemCommands(program: Command): void {
       `
 Examples:
   $ kspec item add --under @parent --title "Feature name" --type feature
-  $ kspec item add --under @parent --title "Multi-tag" --tag api public`,
+  $ kspec item add --under @parent --title "Multi-tag" --tag api public
+  $ kspec item add --under @parent --title "API endpoint" --trait @trait-api-endpoint`,
     )
     .action(async (options) => {
       try {
@@ -639,6 +641,43 @@ Examples:
           }
         }
 
+        // Validate and canonicalize traits
+        const validatedTraits: string[] = [];
+        const seenTraitUlids = new Set<string>();
+        let hasTraitErrors = false;
+
+        if (options.trait) {
+          for (const traitRef of options.trait) {
+            const traitResult = refIndex.resolve(traitRef);
+            if (!traitResult.ok) {
+              error(`Trait not found: ${traitRef}`);
+              hasTraitErrors = true;
+              continue;
+            }
+
+            const traitItem = traitResult.item as LoadedSpecItem;
+            if (traitItem.type !== "trait") {
+              error(`${traitRef} is not a trait (type: ${traitItem.type})`);
+              hasTraitErrors = true;
+              continue;
+            }
+
+            // Deduplicate by ULID
+            if (seenTraitUlids.has(traitItem._ulid)) {
+              continue;
+            }
+            seenTraitUlids.add(traitItem._ulid);
+
+            // Store canonical ref (prefer slug over ULID)
+            const canonicalRef = `@${traitItem.slugs[0] || traitItem._ulid}`;
+            validatedTraits.push(canonicalRef);
+          }
+        }
+
+        if (hasTraitErrors) {
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
         const input: SpecItemInput = {
           title: options.title,
           type: options.type as ItemType,
@@ -650,7 +689,7 @@ Examples:
           implements: [],
           relates_to: [],
           tests: [],
-          traits: [],
+          traits: validatedTraits,
           notes: [],
         };
 
