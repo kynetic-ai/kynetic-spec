@@ -45608,6 +45608,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-06T23:37:17.192Z
+  started_at: 2026-02-07T08:32:19.412Z
   notes:
     - _ulid: 01KGTN2A48JDP1PQH6CQXFRV7S
       created_at: 2026-02-06T23:37:17.192Z
@@ -45619,9 +45620,22 @@
         Iteration detection: count context-iter-*.json files and parse each for task state changes.
         Event timeline: stream events.jsonl line by line, format each with relative timestamp.
         Depends on shared session summary reader and event stream reader from list spec.
+    - _ulid: 01KGVM4010NG9VEZACN7TV9HJX
+      created_at: 2026-02-07T08:39:58.241Z
+      author: "@claude"
+      content: |-
+        Implemented session log show command with all 9 spec ACs plus trait ACs. Added:
+        - Session ID prefix resolution (exact match, unique prefix, ambiguous handling)
+        - Per-iteration summaries with event counts and task transitions
+        - Event timeline display with --events flag
+        - Event filtering by --type flag
+        - Event limiting with --limit flag
+        - Context snapshot display with --context N flag
+        - JSON output support for all features
+        - 28 tests covering all acceptance criteria
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T08:32:19.412Z
 - _ulid: 01KGTN2ACK018NKMN7ESS3NJG2
   slugs:
     - implement-session-log-stats
