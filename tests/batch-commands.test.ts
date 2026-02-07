@@ -165,4 +165,30 @@ describe("batch commands", () => {
       expect(result.stdout).toContain("list allowed commands");
     });
   });
+
+  describe("nested batch rejection", () => {
+    it("rejects 'batch commands' in batch input with nested-batch error", () => {
+      // AC: @batch-allowed-commands ac-batch-itself - regression test for subcommands
+      const result = kspec(
+        'batch --dry-run --commands \'[{"command":"batch commands","args":{}}]\'',
+        tempDir,
+        { expectFail: true }
+      );
+      expect(result.exitCode).not.toBe(0);
+      // Should get specific nested-batch rejection, not generic mutating-only error
+      expect(result.stdout + result.stderr).toContain("Nested batch commands are not allowed");
+    });
+
+    it("rejects 'batch' command group in batch input", () => {
+      // The parent 'batch' command is now a command group (has subcommands),
+      // so it's rejected as a non-executable command group before reaching nested check
+      const result = kspec(
+        'batch --dry-run --commands \'[{"command":"batch","args":{}}]\'',
+        tempDir,
+        { expectFail: true }
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stdout + result.stderr).toContain("is a command group");
+    });
+  });
 });

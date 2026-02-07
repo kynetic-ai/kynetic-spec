@@ -278,9 +278,9 @@ export function validateBatchCommands(
       continue;
     }
 
-    // 2. Reject nested batch commands
+    // 2. Reject nested batch commands (batch or any subcommands like batch commands)
     // AC: @batch-allowed-commands ac-batch-itself
-    if (found.name === "batch") {
+    if (found.fullPath[1] === "batch") {
       errors.push({
         index: i,
         id: cmd.id,
