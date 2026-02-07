@@ -46588,6 +46588,14 @@
         agent messages (no newline). Added tests for: standalone noise suppression, embedded noise
         stripping, multiple patterns in same chunk, and accumulation across chunks."
       supersedes: null
+    - _ulid: 01KGW6PQP7Z3WN0V476PWQQFVZ
+      created_at: 2026-02-07T14:04:46.664Z
+      author: "@claude"
+      content: "Known limitation: Split-chunk noise during streaming cannot be fully suppressed because
+        text is emitted before the complete pattern is known. The fix ensures final accumulated
+        content is clean at finalization. Streaming output is ephemeral and scrolls away, so this is
+        acceptable."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
