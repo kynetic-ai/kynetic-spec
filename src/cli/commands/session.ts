@@ -412,6 +412,21 @@ export async function gatherSessionContext(
 
   // Get recent notes from active, pending_review, and recently completed tasks
   // AC: @cmd-session-start ac-1, ac-2
+  // Collect notes per-status first to prevent one status from starving others
+  const noteLimitPerStatus = options.full ? limit : Math.ceil(limit / 3);
+
+  const inProgressNotes = collectRecentNotes(
+    allTasks.filter((t) => t.status === "in_progress"),
+    index,
+    { limit: noteLimitPerStatus, since: sinceDate },
+  );
+
+  const pendingReviewNotes = collectRecentNotes(
+    allTasks.filter((t) => t.status === "pending_review"),
+    index,
+    { limit: noteLimitPerStatus, since: sinceDate },
+  );
+
   const recentlyCompletedForNotes = allTasks
     .filter((t) => t.status === "completed" && t.completed_at)
     .sort((a, b) => {
@@ -421,17 +436,18 @@ export async function gatherSessionContext(
     })
     .slice(0, 5); // Last 3-5 completed tasks per AC-2
 
-  const tasksForNotes = [
-    ...allTasks.filter((t) => t.status === "in_progress"),
-    ...allTasks.filter((t) => t.status === "pending_review"),
-    ...recentlyCompletedForNotes,
-  ];
-
-  const recentNotes = collectRecentNotes(
-    tasksForNotes,
+  const completedNotes = collectRecentNotes(
+    recentlyCompletedForNotes,
     index,
-    { limit: options.full ? limit * 2 : limit, since: sinceDate },
+    { limit: noteLimitPerStatus, since: sinceDate },
   );
+
+  // Combine notes from all statuses, preserving representation from each
+  const recentNotes = [...inProgressNotes, ...pendingReviewNotes, ...completedNotes]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
 
   // Get incomplete todos from active tasks
   const activeTodos = collectIncompleteTodos(

@@ -189,6 +189,54 @@ describe('session start notes enrichment', () => {
     });
   });
 
+  // AC: @cmd-session-start ac-1, ac-2
+  describe('mixed-status note starvation prevention', () => {
+    it('should include pending_review and completed notes even with many in_progress notes', { timeout: 20000 }, () => {
+      // Create many in_progress tasks with notes (potential starvation scenario)
+      for (let i = 1; i <= 5; i++) {
+        kspec(`task add --title "Active ${i}" --slug active-${i}`, tempDir);
+        kspec(`task start @active-${i}`, tempDir);
+        kspec(`task note @active-${i} "Active note ${i}"`, tempDir);
+      }
+
+      // Create a pending_review task with notes
+      kspec('task add --title "Review task" --slug review-task', tempDir);
+      kspec('task start @review-task', tempDir);
+      kspec('task note @review-task "Review note"', tempDir);
+      kspec('task submit @review-task', tempDir);
+
+      // Create a completed task with notes
+      kspec('task add --title "Done task" --slug done-task', tempDir);
+      kspec('task start @done-task', tempDir);
+      kspec('task note @done-task "Done note"', tempDir);
+      kspec('task submit @done-task', tempDir);
+      kspec('task complete @done-task --reason "Finished"', tempDir);
+
+      // Get session context
+      const session = kspecJson<SessionContext>('session start --json', tempDir);
+
+      // All three status types should be represented
+      const inProgressNotes = session.recent_notes.filter(
+        (n) => n.task_status === 'in_progress',
+      );
+      const pendingReviewNotes = session.recent_notes.filter(
+        (n) => n.task_status === 'pending_review',
+      );
+      const completedNotes = session.recent_notes.filter(
+        (n) => n.task_status === 'completed',
+      );
+
+      // Each status should have notes present (not starved out)
+      expect(inProgressNotes.length).toBeGreaterThan(0);
+      expect(pendingReviewNotes.length).toBeGreaterThan(0);
+      expect(completedNotes.length).toBeGreaterThan(0);
+
+      // Verify specific notes are present
+      expect(pendingReviewNotes.some((n) => n.content.includes('Review note'))).toBe(true);
+      expect(completedNotes.some((n) => n.content.includes('Done note'))).toBe(true);
+    });
+  });
+
   describe('task_status field in JSON output', () => {
     it('should include task_status field for all notes', () => {
       // Create tasks in different states with notes
