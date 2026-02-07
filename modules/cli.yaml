@@ -554,6 +554,10 @@ features:
             given: item @my-item exists
             when: kspec item set @my-item --status implemented runs
             then: item's implementation status is updated to 'implemented'
+          - id: ac-5
+            given: item @my-item exists
+            when: kspec item set @my-item --relates-to @other-item runs
+            then: item's relates_to array includes @other-item
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
