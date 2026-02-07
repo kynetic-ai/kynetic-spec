@@ -208,8 +208,8 @@ Examples:
           }
         }
 
-        // Show helpful hint on failure
-        if (!result.success) {
+        // Show helpful hint only for validation failures (not runtime execution failures)
+        if (result.validationFailed) {
           console.error("");
           console.error("Run 'kspec batch commands' for a list of available commands.");
         }

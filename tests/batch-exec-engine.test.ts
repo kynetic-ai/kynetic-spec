@@ -655,6 +655,36 @@ describe("batch command integration", () => {
     );
     expect(result.stdout).not.toContain("kspec batch commands");
   });
+
+  it("does not show hint for runtime execution failures", () => {
+    // Runtime failure (valid command, but ref doesn't exist) should NOT show the hint
+    const result = kspec(
+      `batch --commands '[{"command":"task start","args":{"ref":"@nonexistent"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).not.toContain("kspec batch commands");
+  });
+
+  it("sets validationFailed flag in JSON output for validation errors", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    expect(result.validationFailed).toBe(true);
+  });
+
+  it("does not set validationFailed flag for runtime execution failures", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '[{"command":"task start","args":{"ref":"@nonexistent"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    expect(result.validationFailed).toBeUndefined();
+  });
 });
 
 // ── KSPEC_SPEC_DIR Override ──────────────────────────────────────────

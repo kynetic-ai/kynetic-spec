@@ -548,6 +548,7 @@ export async function executeBatch(
         error: err.message,
         suggestion: err.suggestion,
       })),
+      validationFailed: true,
     };
   }
 

@@ -76,4 +76,6 @@ export interface BatchExecResult {
   summary: BatchExecSummary;
   /** Per-command results */
   results: BatchCommandResult[];
+  /** True if failure was due to pre-validation errors (unknown command, unknown arg, etc.) */
+  validationFailed?: boolean;
 }
