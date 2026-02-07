@@ -5547,4 +5547,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGVK9P011GDQGTW9TJRE8FA9
+    type: friction
+    content: "Automation triage forces context switch to spec creation: when assessing eligibility,
+      discovering a task needs a spec means switching from assessment mode to authoring mode (find
+      module, find parent, create item, add ACs, link task). Consider a guided flow or --create-spec
+      flag on task set --automation."
+    created_at: 2026-02-07T08:25:36.001Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
