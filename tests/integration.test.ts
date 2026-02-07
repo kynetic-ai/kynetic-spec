@@ -2041,6 +2041,179 @@ describe('Integration: inbox promote', () => {
   });
 });
 
+// AC: @inbox-set ac-1
+describe('Integration: inbox set --content', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should replace item content while preserving ULID and timestamp', () => {
+    // Create inbox item
+    const createOutput = kspecJson<{ item: { _ulid: string; text: string; created_at: string } }>(
+      'inbox add "Original text content"',
+      tempDir
+    );
+    const originalUlid = createOutput.item._ulid;
+    const originalCreatedAt = createOutput.item.created_at;
+    const itemRef = `@${originalUlid.slice(0, 8)}`;
+
+    // Update content
+    kspec(`inbox set ${itemRef} --content "New text content"`, tempDir);
+
+    // Verify update preserved ULID and timestamp
+    const updated = kspecJson<{ _ulid: string; text: string; created_at: string; tags: string[] }>(
+      `inbox get ${itemRef}`,
+      tempDir
+    );
+    expect(updated._ulid).toBe(originalUlid);
+    expect(updated.created_at).toBe(originalCreatedAt);
+    expect(updated.text).toBe('New text content');
+  });
+
+  it('should preserve tags when only updating content', () => {
+    // Create inbox item with tags
+    kspec('inbox add "Text with tags" --tag foo --tag bar', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Update content only
+    kspec(`inbox set ${itemRef} --content "Updated text"`, tempDir);
+
+    // Verify tags preserved
+    const updated = kspecJson<{ text: string; tags: string[] }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.text).toBe('Updated text');
+    expect(updated.tags).toEqual(['foo', 'bar']);
+  });
+});
+
+// AC: @inbox-set ac-2
+describe('Integration: inbox set --tag', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should add new tags to existing tags', () => {
+    // Create inbox item with initial tag
+    kspec('inbox add "Test item" --tag initial', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Add more tags
+    kspec(`inbox set ${itemRef} --tag newtag`, tempDir);
+
+    // Verify both tags present
+    const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.tags).toContain('initial');
+    expect(updated.tags).toContain('newtag');
+  });
+
+  it('should not duplicate tags', () => {
+    // Create inbox item with tag
+    kspec('inbox add "Test item" --tag duplicate', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Try to add same tag again
+    kspec(`inbox set ${itemRef} --tag duplicate`, tempDir);
+
+    // Verify no duplicates
+    const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.tags.filter(t => t === 'duplicate').length).toBe(1);
+  });
+
+  it('should support --clear-tags to replace all tags', () => {
+    // Create inbox item with multiple tags
+    kspec('inbox add "Test item" --tag old1 --tag old2', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Clear and add new tags
+    kspec(`inbox set ${itemRef} --clear-tags --tag new1 --tag new2`, tempDir);
+
+    // Verify only new tags present
+    const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.tags).not.toContain('old1');
+    expect(updated.tags).not.toContain('old2');
+    expect(updated.tags).toContain('new1');
+    expect(updated.tags).toContain('new2');
+  });
+});
+
+// AC: @inbox-note ac-1
+describe('Integration: inbox note', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should append note to existing text with separator', () => {
+    // Create inbox item
+    kspec('inbox add "Original idea"', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Append note
+    kspec(`inbox note ${itemRef} "Additional context added later"`, tempDir);
+
+    // Verify note was appended
+    const updated = kspecJson<{ text: string }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.text).toContain('Original idea');
+    expect(updated.text).toContain('---'); // Separator
+    expect(updated.text).toContain('Additional context added later');
+  });
+
+  it('should support multiple notes', () => {
+    // Create inbox item
+    kspec('inbox add "Initial thought"', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Add multiple notes
+    kspec(`inbox note ${itemRef} "First update"`, tempDir);
+    kspec(`inbox note ${itemRef} "Second update"`, tempDir);
+
+    // Verify all content present
+    const updated = kspecJson<{ text: string }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.text).toContain('Initial thought');
+    expect(updated.text).toContain('First update');
+    expect(updated.text).toContain('Second update');
+    // Should have two separators
+    const separatorCount = (updated.text.match(/---/g) || []).length;
+    expect(separatorCount).toBe(2);
+  });
+
+  it('should preserve tags when adding notes', () => {
+    // Create inbox item with tags
+    kspec('inbox add "Tagged item" --tag important', tempDir);
+    const items = kspecJson<Array<{ _ulid: string }>>('inbox list', tempDir);
+    const itemRef = `@${items[0]._ulid.slice(0, 8)}`;
+
+    // Add note
+    kspec(`inbox note ${itemRef} "Note on tagged item"`, tempDir);
+
+    // Verify tags preserved
+    const updated = kspecJson<{ tags: string[] }>(`inbox get ${itemRef}`, tempDir);
+    expect(updated.tags).toContain('important');
+  });
+});
+
 // AC: @meta-observe-cmd from-inbox-conversion
 describe('Integration: meta observe --from-inbox', () => {
   let tempDir: string;

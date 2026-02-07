@@ -321,4 +321,101 @@ Examples:
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // kspec inbox set <ref>
+  // AC: @inbox-set ac-1, ac-2
+  markMutating(inbox.command("set <ref>"))
+    .description("Update an inbox item")
+    .option("--content <text>", "Replace item content")
+    .option("--tag <tag...>", "Add tags to item")
+    .option("--clear-tags", "Clear all tags before adding new ones")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec inbox set @ref --content "Updated text"
+  $ kspec inbox set @ref --tag newtag
+  $ kspec inbox set @ref --clear-tags --tag fresh-start`,
+    )
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const items = await loadInboxItems(ctx);
+        const item = resolveInboxRef(ref, items);
+
+        // Track what was updated
+        const updates: string[] = [];
+
+        // AC: @inbox-set ac-1 - Update content if provided
+        if (options.content !== undefined) {
+          item.text = options.content;
+          updates.push("content");
+        }
+
+        // AC: @inbox-set ac-2 - Update tags if provided
+        if (options.clearTags) {
+          item.tags = [];
+          updates.push("cleared tags");
+        }
+        if (options.tag) {
+          const newTags = parseTagsArray(options.tag);
+          // Append new tags, avoiding duplicates
+          for (const tag of newTags) {
+            if (!item.tags.includes(tag)) {
+              item.tags.push(tag);
+            }
+          }
+          updates.push("tags");
+        }
+
+        if (updates.length === 0) {
+          info("No updates specified. Use --content or --tag to update.");
+          return;
+        }
+
+        await saveInboxItem(ctx, item);
+        await commitIfShadow(
+          ctx.shadow,
+          "inbox-set",
+          item._ulid.slice(0, 8),
+          updates.join(", "),
+        );
+
+        success(`Updated inbox item: ${item._ulid.slice(0, 8)}`, { item });
+      } catch (err) {
+        error(errors.failures.updateInboxItem, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec inbox note <ref> <text>
+  // AC: @inbox-note ac-1
+  markMutating(inbox.command("note <ref> <text>"))
+    .description("Append a note to an inbox item")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec inbox note @ref "Additional context for this idea"
+  $ kspec inbox note @ref "Update: decided to defer this"`,
+    )
+    .action(async (ref: string, text: string) => {
+      try {
+        const ctx = await initContext();
+        const items = await loadInboxItems(ctx);
+        const item = resolveInboxRef(ref, items);
+
+        // Append note with separator
+        const separator = "\n\n---\n\n";
+        item.text = item.text + separator + text;
+
+        await saveInboxItem(ctx, item);
+        await commitIfShadow(ctx.shadow, "inbox-note", item._ulid.slice(0, 8));
+
+        success(`Added note to inbox item: ${item._ulid.slice(0, 8)}`, { item });
+      } catch (err) {
+        error(errors.failures.addInboxNote, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
 }
