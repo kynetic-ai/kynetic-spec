@@ -46225,7 +46225,7 @@
     2=warnings-only), or --errors-only / --severity flags to filter output and control exit
     behavior."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
