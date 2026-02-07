@@ -265,3 +265,11 @@ inbox:
       - reflection
       - process
     added_by: "@claude"
+  - _ulid: 01KGWZR76NDTG9N7A2GRSFB36J
+    text: "Active context from meta: use the meta database (observations, conventions, patterns) as a dynamic context source that automatically surfaces relevant entries based on current activity. E.g. when reviewing plan-import code, auto-surface friction observations tagged with plan-import. When doing code review, pull in resolved friction patterns as review priors. Replaces manual markdown maintenance (AGENTS.md, skill docs) with structured data that stays current as observations accumulate. Could use conventions or a new meta item type for durable patterns distinct from one-off observations."
+    created_at: 2026-02-07T21:22:29.717Z
+    tags:
+      - reflection
+      - meta
+      - architecture
+    added_by: "@claude"
