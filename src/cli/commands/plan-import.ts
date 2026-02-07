@@ -174,6 +174,9 @@ async function importPlan(
     counter++;
   }
 
+  // Track all slugs created during this import (refIndex is stale after mutations)
+  const importReservedSlugs = new Set<string>([planSlug]);
+
   const planInput: PlanInput = {
     title: parsed.title,
     content: parsed.content,
@@ -292,6 +295,7 @@ async function importPlan(
           `Would create spec: ${specRef} ${spec.parent ? `under ${spec.parent}` : "(root)"}`,
         );
         result.createdSpecs.push(specRef);
+        importReservedSlugs.add(specSlug);
 
         // Track would-be created spec for parent resolution in dry-run
         const dryRunSpec = createSpecItem({
@@ -348,6 +352,7 @@ async function importPlan(
         createdSpecsMap.set(specSlug, createdSpec);
 
         result.createdSpecs.push(specRef);
+        importReservedSlugs.add(specSlug);
         newPlan.derived_specs.push(specRef);
 
         info(`Created spec: ${specRef}`);
@@ -363,11 +368,10 @@ async function importPlan(
   // AC: @plan-import ac-12, ac-13, ac-19, ac-20
   if (parsed.tasks.derive_from_specs && result.createdSpecs.length > 0) {
     const tasks = await loadAllTasks(ctx);
-    // Track all slugs: existing tasks + specs created in this import + in-loop additions
-    // refIndex is stale for specs/plans created during this import, so include them explicitly
+    // Combine existing task slugs + all slugs reserved during this import (plan + specs)
     const importSlugs = new Set([
       ...tasks.flatMap((t) => t.slugs),
-      ...result.createdSpecs.map((ref) => ref.slice(1)),
+      ...importReservedSlugs,
     ]);
 
     for (const specRef of result.createdSpecs) {
@@ -388,6 +392,7 @@ async function importPlan(
         counter++;
       }
       importSlugs.add(uniqueSlug);
+      importReservedSlugs.add(uniqueSlug);
 
       if (options.dryRun) {
         info(`Would derive task: @${uniqueSlug} from ${specRef}`);
@@ -443,11 +448,11 @@ async function importPlan(
   // AC: @plan-import ac-27
   if (parsed.tasks.additional_tasks) {
     // Reload tasks to catch any created by derive loop above
-    // Include specs created in this import (refIndex is stale for them)
+    // Combine with all slugs reserved during this import (plan + specs)
     const manualTasks = await loadAllTasks(ctx);
     const manualImportSlugs = new Set([
       ...manualTasks.flatMap((t) => t.slugs),
-      ...result.createdSpecs.map((ref) => ref.slice(1)),
+      ...importReservedSlugs,
     ]);
 
     for (const taskDef of parsed.tasks.additional_tasks) {
