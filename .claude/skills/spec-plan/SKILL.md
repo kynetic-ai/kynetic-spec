@@ -90,7 +90,7 @@ The import path uses structured markdown documents. The parser (`parsePlanDocume
   type: feature
   parent: "@auth"
   traits:
-    - error-guidance
+    - trait-error-guidance
   acceptance_criteria:
     - id: ac-1
       given: User clicks "Sign in with Google"
@@ -153,7 +153,9 @@ kspec item trait add @spec @trait
 # ❌ Broken - short name
 traits:
   - json-output
+```
 
+```yaml
 # ✅ Correct - full slug
 traits:
   - trait-json-output
@@ -186,24 +188,29 @@ Plans track status: `draft` -> `approved` -> `active` -> `completed` (or `reject
 
 Plan documents embed YAML code blocks that are parsed as structured data. Common pitfalls:
 
-### Embedded Quotes Break Parsing
+### Mixed Quoting Breaks Parsing
 
-YAML scalar values containing double quotes cause parse failures:
+Mixing quoted and unquoted text in a single value causes parse failures:
 
 ```yaml
-# ❌ Broken - embedded quotes in scalar
+# ❌ Broken - quoted text followed by unquoted text
 acceptance_criteria:
   - id: ac-1
-    when: "kspec foo" is run  # Parser sees this as malformed
+    when: "kspec foo" is run  # Parser sees malformed mixed quoting
+```
 
-# ✅ Fixed - use block scalar or avoid inner quotes
+```yaml
+# ✅ Fixed - use block scalar for complex text
 acceptance_criteria:
   - id: ac-1
     when: |
       "kspec foo" is run
+```
 
-  # Or rephrase to avoid quotes
-  - id: ac-2
+```yaml
+# ✅ Or rephrase to avoid quotes entirely
+acceptance_criteria:
+  - id: ac-1
     when: user runs kspec foo command
 ```
 
