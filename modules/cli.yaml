@@ -558,6 +558,10 @@ features:
             given: item @my-item exists
             when: kspec item set @my-item --relates-to @other-item runs
             then: item's relates_to array includes @other-item
+          - id: ac-6
+            given: item @my-item exists
+            when: kspec item set @my-item --implements @feature-spec runs
+            then: item's implements array includes @feature-spec
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
