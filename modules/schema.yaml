@@ -1277,10 +1277,6 @@ requirements:
       maturity: draft
       implementation: implemented
 acceptance_criteria:
-  - id: ac-2
-    given: array like [1, 2, 3] is passed
-    when: parsed
-    then: works
   - id: ac-3
     given: ": starts with colon"
     when: something
