@@ -641,6 +641,43 @@ Examples:
           }
         }
 
+        // Validate and canonicalize traits
+        const validatedTraits: string[] = [];
+        const seenTraitUlids = new Set<string>();
+        let hasTraitErrors = false;
+
+        if (options.trait) {
+          for (const traitRef of options.trait) {
+            const traitResult = refIndex.resolve(traitRef);
+            if (!traitResult.ok) {
+              error(`Trait not found: ${traitRef}`);
+              hasTraitErrors = true;
+              continue;
+            }
+
+            const traitItem = traitResult.item as LoadedSpecItem;
+            if (traitItem.type !== "trait") {
+              error(`${traitRef} is not a trait (type: ${traitItem.type})`);
+              hasTraitErrors = true;
+              continue;
+            }
+
+            // Deduplicate by ULID
+            if (seenTraitUlids.has(traitItem._ulid)) {
+              continue;
+            }
+            seenTraitUlids.add(traitItem._ulid);
+
+            // Store canonical ref (prefer slug over ULID)
+            const canonicalRef = `@${traitItem.slugs[0] || traitItem._ulid}`;
+            validatedTraits.push(canonicalRef);
+          }
+        }
+
+        if (hasTraitErrors) {
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
         const input: SpecItemInput = {
           title: options.title,
           type: options.type as ItemType,
@@ -652,7 +689,7 @@ Examples:
           implements: [],
           relates_to: [],
           tests: [],
-          traits: options.trait || [],
+          traits: validatedTraits,
           notes: [],
         };
 

@@ -548,4 +548,58 @@ describe('Trait CLI - item add --trait', () => {
 
     expect(result.item.traits).toEqual([]);
   });
+
+  it('should error when trait ref does not exist', () => {
+    expect(() => {
+      kspec(
+        'item add --under @test-core --title "Invalid trait" --trait @nonexistent-trait',
+        tempDir
+      );
+    }).toThrow();
+  });
+
+  it('should error when ref is not a trait type', () => {
+    expect(() => {
+      kspec(
+        'item add --under @test-core --title "Non-trait ref" --trait @test-core',
+        tempDir
+      );
+    }).toThrow();
+  });
+
+  it('should deduplicate traits when same trait passed via different ref forms', () => {
+    // Get the ULID of json-output trait
+    const traitResult = kspecJson<{ _ulid: string }>(
+      'item get @json-output',
+      tempDir
+    );
+
+    // Pass same trait twice - once by slug, once by ULID
+    const result = kspecJson<{ item: { traits: string[] } }>(
+      `item add --under @test-core --title "Dedup test" --trait @json-output --trait @${traitResult._ulid}`,
+      tempDir
+    );
+
+    // Should only have one trait entry (canonical slug form)
+    expect(result.item.traits).toHaveLength(1);
+    expect(result.item.traits).toContain('@json-output');
+  });
+
+  it('should store canonical slug form instead of ULID', () => {
+    // Get the ULID of json-output trait
+    const traitResult = kspecJson<{ _ulid: string }>(
+      'item get @json-output',
+      tempDir
+    );
+
+    // Pass trait by ULID
+    const result = kspecJson<{ item: { traits: string[] } }>(
+      `item add --under @test-core --title "Canonical test" --trait @${traitResult._ulid}`,
+      tempDir
+    );
+
+    // Should be stored as @json-output (slug), not @ULID
+    expect(result.item.traits).toContain('@json-output');
+    expect(result.item.traits).not.toContain(`@${traitResult._ulid}`);
+  });
 });
