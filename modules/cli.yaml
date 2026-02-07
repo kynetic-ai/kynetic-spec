@@ -3253,7 +3253,7 @@ features:
         created: 2026-02-06T23:37:16.716Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KGTN29PMEC3KYM9VBY3W0T6F
         slugs:
           - session-log-search
