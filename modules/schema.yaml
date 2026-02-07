@@ -1285,3 +1285,7 @@ acceptance_criteria:
     given: "{"
     when: x
     then: y
+  - id: ac-3
+    given: :colon at start
+    when: x
+    then: y
