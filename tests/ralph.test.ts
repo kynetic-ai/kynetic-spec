@@ -822,6 +822,82 @@ describe('ralph event translator', () => {
         status: 'running',
       });
     });
+
+    it('handles rawOutput as array of content blocks instead of [object Object]', () => {
+      const translator = createTranslator();
+
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_arr1',
+        rawInput: { command: 'some-cmd' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      const event = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_arr1',
+        status: 'completed',
+        rawOutput: [
+          { type: 'text', text: 'Line one' },
+          { type: 'text', text: 'Line two' },
+        ],
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      const data = event!.data as { output: string };
+      expect(data.output).toContain('Line one');
+      expect(data.output).toContain('Line two');
+      expect(data.output).not.toContain('[object Object]');
+    });
+
+    it('handles output field as array of content blocks', () => {
+      const translator = createTranslator();
+
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_arr2',
+        rawInput: {},
+        _meta: { claudeCode: { toolName: 'Read' } },
+      } as SessionUpdate);
+
+      const event = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_arr2',
+        status: 'completed',
+        output: [
+          { type: 'text', text: 'File content here' },
+        ],
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      const data = event!.data as { output: string };
+      expect(data.output).toBe('File content here');
+      expect(data.output).not.toContain('[object Object]');
+    });
+
+    it('handles output as plain object via JSON.stringify', () => {
+      const translator = createTranslator();
+
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_obj1',
+        rawInput: {},
+        _meta: { claudeCode: { toolName: 'Task' } },
+      } as SessionUpdate);
+
+      const event = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_obj1',
+        status: 'completed',
+        rawOutput: { result: 'success', count: 42 },
+      } as SessionUpdate);
+
+      expect(event).not.toBeNull();
+      const data = event!.data as { output: string };
+      expect(data.output).toContain('"result"');
+      expect(data.output).toContain('success');
+      expect(data.output).not.toContain('[object Object]');
+    });
   });
 });
 

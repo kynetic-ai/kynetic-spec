@@ -209,7 +209,7 @@ function extractToolOutput(
 ): string | undefined {
   // Try rawOutput first
   if (update.rawOutput !== undefined) {
-    return truncateOutput(String(update.rawOutput));
+    return truncateOutput(stringify(update.rawOutput));
   }
 
   // Try _meta.claudeCode.toolResponse (Claude Code pattern)
@@ -226,13 +226,13 @@ function extractToolOutput(
           (toolResponse.stderr ? `\n${toolResponse.stderr}` : "");
         return truncateOutput(combined.trim());
       }
-      return truncateOutput(String(toolResponse));
+      return truncateOutput(stringify(toolResponse));
     }
   }
 
   // Try output field
   if (update.output !== undefined) {
-    return truncateOutput(String(update.output));
+    return truncateOutput(stringify(update.output));
   }
 
   return undefined;
@@ -245,7 +245,7 @@ function extractOriginalOutput(
   update: Record<string, unknown>,
 ): string | undefined {
   if (update.rawOutput !== undefined) {
-    return String(update.rawOutput);
+    return stringify(update.rawOutput);
   }
 
   const meta = update._meta as Record<string, unknown> | undefined;
@@ -263,10 +263,35 @@ function extractOriginalOutput(
   }
 
   if (update.output !== undefined) {
-    return String(update.output);
+    return stringify(update.output);
   }
 
   return undefined;
+}
+
+/**
+ * Safely stringify a value that may be a string, array of content blocks, or object.
+ * Handles ACP tool results delivered as arrays like [{type:'text',text:'...'},...]
+ */
+function stringify(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) {
+    // Array of content blocks: extract .text fields
+    const texts = value
+      .map((item) =>
+        typeof item === "string"
+          ? item
+          : typeof item === "object" && item !== null && "text" in item
+            ? String((item as { text: unknown }).text)
+            : JSON.stringify(item),
+      )
+      .filter(Boolean);
+    return texts.join("\n");
+  }
+  if (typeof value === "object" && value !== null) {
+    return JSON.stringify(value);
+  }
+  return String(value);
 }
 
 /**
