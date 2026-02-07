@@ -45805,19 +45805,19 @@
         saves a command on every spec creation."
       supersedes: null
   todos: []
-- title: Add AC count display and complexity warning to derive
+- _ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
+  slugs: []
+  title: Add AC count display and complexity warning to derive
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "[quick-win] Add AC count display and complexity warning to derive command - warn when
     spec has >5 ACs and suggest decomposition options"
-  _ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T02:13:41.788Z
   notes:
@@ -45828,5 +45828,36 @@
         display count in output (e.g. 'Derived task from @spec (3 ACs)'). If >5 ACs, warn: 'This
         spec has N ACs — consider splitting before implementing.' ~15 lines, no new deps. Quick win
         from the derive-granularity research (01KGG6GY)."
+      supersedes: null
+  todos: []
+- title: Add batch commands subcommand for discoverability
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - batch
+    - dx
+  description: "kspec batch commands — list allowed commands with positional arg names and option
+    flags. Reference for writing batch JSON without reading source. Example output: 'inbox add
+    <text> [--tag <tag...>]'. Complements --dry-run (which validates after writing) with
+    discoverability before writing."
+  _ulid: 01KGTY1XTCAKK8NGNY9188KPXA
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:14:21.772Z
+  notes:
+    - _ulid: 01KGTY1XTDQXCJCSQMH648DXH9
+      created_at: 2026-02-07T02:14:21.773Z
+      author: "@claude"
+      content: "Implementation: Add 'commands' subcommand to batch in src/cli/commands/batch.ts. Iterate
+        CommandMeta entries, format each as 'inbox add <text> [--tag <tag...>]'. Include
+        mutating/read-only classification from existing annotations. Support --json for
+        machine-readable output. CommandMeta already has all the data — this is pure display. ~30
+        lines + tests."
       supersedes: null
   todos: []
