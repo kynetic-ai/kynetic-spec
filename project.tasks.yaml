@@ -46021,7 +46021,7 @@
   type: task
   description: Add --trait flag to kspec item add command to apply traits at creation time
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46042,6 +46042,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T10:51:41.865Z
 - _ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
   slugs: []
   title: Add AC count display and complexity warning to derive
