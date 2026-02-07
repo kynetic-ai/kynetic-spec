@@ -46332,6 +46332,8 @@
   spec_ref: "@inbox-set"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #343. Added inbox set (content/tags) and inbox note commands with full
+    AC coverage. All 8 tests passing."
   depends_on: []
   context: []
   priority: 3
@@ -46342,6 +46344,7 @@
   vcs_refs: []
   created_at: 2026-02-07T02:38:10.875Z
   started_at: 2026-02-07T12:58:02.670Z
+  completed_at: 2026-02-07T13:17:53.791Z
   notes:
     - _ulid: 01KGTZDHDVQBFJ0C52T43JTBVT
       created_at: 2026-02-07T02:38:10.876Z
@@ -46372,9 +46375,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T13:17:53.791Z
-  closed_reason: "Merged in PR #343. Added inbox set (content/tags) and inbox note commands with full
-    AC coverage. All 8 tests passing."
 - _ulid: 01KGTZEYRB1B81YREN5FKHSN38
   slugs: []
   title: Enrich session start with pending_review and recently completed notes
@@ -46384,7 +46384,7 @@
     and if there is anything from prior work worth sharing forward (in case its a continuation of
     the same type of work)
   spec_ref: "@cmd-session-start"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46404,6 +46404,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T13:18:22.839Z
 - _ulid: 01KGVARWDN5AHFD3YXG2W20EZG
   slugs: []
   title: "Fix ralph log: String() on array of objects produces [object Object]"
