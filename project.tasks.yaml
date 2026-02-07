@@ -45708,6 +45708,7 @@
         file) pattern. Encountered this friction during session-log-analysis plan review.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTNV773RBWK67KFHFMTJ856
   slugs: []
   title: Add YAML quoting guidance to spec-plan skill
@@ -45737,6 +45738,7 @@
         plan authoring.'
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTNXP4V40SRTHWK20MS9MAP
   slugs: []
   title: Document full trait slug requirement in spec-plan skill
@@ -45765,6 +45767,7 @@
         during session-log-analysis plan."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
   slugs: []
   title: Auto-quote YAML AC fields containing special characters
@@ -45795,6 +45798,7 @@
         syntax."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTVH6MR2TY83BCRG7W3D1VE
   slugs: []
   title: Add --relates-to, --implements, --depends-on flags to item set
@@ -45850,6 +45854,7 @@
         saves a command on every spec creation."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
   slugs: []
   title: Add AC count display and complexity warning to derive
@@ -45875,6 +45880,7 @@
         from the derive-granularity research (01KGG6GY)."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTY1XTCAKK8NGNY9188KPXA
   slugs: []
   title: Add batch commands subcommand for discoverability
@@ -45906,6 +45912,7 @@
         lines + tests."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
   slugs: []
   title: Add did-you-mean suggestions to batch validation errors
@@ -45937,6 +45944,7 @@
         task."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
   slugs: []
   title: Separate validate exit codes for errors vs warnings
@@ -45969,6 +45977,7 @@
         CI usage on fresh projects where orphaned specs are expected."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
   slugs: []
   title: Auto-namespace plan slugs to prevent collision with spec slugs
@@ -46001,6 +46010,7 @@
         shared the same slug."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
   slugs: []
   title: Add inbox set and inbox note commands for editing items
@@ -46210,6 +46220,7 @@
         This handles both standalone noise chunks and noise embedded in real content.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
   slugs: []
   title: Increase ralph loop prompt timeout from 5min to 30min
@@ -46398,18 +46409,18 @@
         start, next, show, runs commands."
       supersedes: null
   todos: []
-- title: Add kspec worktree command to spawn isolated agent workspaces
-  type: task
-  priority: 3
-  spec_ref: null
-  tags: []
-  description: Add feature to spawn worktree for an agent to work in
-  _ulid: 01KGVGZHRPK2782D02FF83XC6K
+- _ulid: 01KGVGZHRPK2782D02FF83XC6K
   slugs: []
+  title: Add kspec worktree command to spawn isolated agent workspaces
+  type: task
+  description: Add feature to spawn worktree for an agent to work in
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T07:45:06.838Z
   notes:
