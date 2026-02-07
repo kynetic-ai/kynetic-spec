@@ -276,7 +276,7 @@ inbox:
       - reflection
     added_by: "@claude"
   - _ulid: 01KGW2YS8FC5HK08FASQS6S7KE
-    text: Test item for inbox set command
+    text: Updated content for test
     created_at: 2026-02-07T12:59:16.111Z
     tags:
       - test-tag
