@@ -200,8 +200,18 @@ Examples:
           if (r.success) {
             console.log(`  [${label}] ${r.command}: OK`);
           } else {
-            console.error(`  [${label}] ${r.command}: FAILED — ${r.error}`);
+            let errorLine = `  [${label}] ${r.command}: FAILED — ${r.error}`;
+            if (r.suggestion) {
+              errorLine += ` Did you mean: ${r.suggestion}?`;
+            }
+            console.error(errorLine);
           }
+        }
+
+        // Show helpful hint on failure
+        if (!result.success) {
+          console.error("");
+          console.error("Run 'kspec batch commands' for a list of available commands.");
         }
       }
 

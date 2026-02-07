@@ -615,6 +615,46 @@ describe("batch command integration", () => {
     expect(result.results[0].id).toBe("my-id-1");
     expect(result.results[1].id).toBe("my-id-2");
   });
+
+  it("includes suggestion in JSON output for typos", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --dry-run --commands '[{"command":"inbox add","args":{"tex":"test"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    // "tex" is close to "text" - should suggest it
+    const unknownArgError = result.results.find(r => r.error?.includes("Unknown argument"));
+    expect(unknownArgError?.suggestion).toBe("text");
+  });
+
+  it("shows 'Did you mean' in human-readable output for typos", () => {
+    const result = kspec(
+      `batch --dry-run --commands '[{"command":"task ad","args":{"title":"test"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).toContain("Did you mean: task add?");
+  });
+
+  it("shows 'kspec batch commands' hint on validation failure", () => {
+    const result = kspec(
+      `batch --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).toContain("Run 'kspec batch commands'");
+    expect(result.stderr).toContain("for a list of available commands");
+  });
+
+  it("does not show hint in JSON mode", () => {
+    const result = kspec(
+      `batch --json --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stdout).not.toContain("kspec batch commands");
+  });
 });
 
 // ── KSPEC_SPEC_DIR Override ──────────────────────────────────────────

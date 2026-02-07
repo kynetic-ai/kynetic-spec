@@ -513,6 +513,23 @@ describe("reportBatchValidationErrors", () => {
     expect(output).toContain("Did you mean: task add?");
   });
 
+  it("includes 'kspec batch commands' hint in human-readable errors", () => {
+    const output = reportBatchValidationErrors({
+      valid: false,
+      commands: [],
+      errors: [
+        {
+          index: 0,
+          command: "unknown cmd",
+          type: "unknown_command",
+          message: 'Unknown command: "unknown cmd"',
+        },
+      ],
+    });
+    expect(output).toContain("Run 'kspec batch commands'");
+    expect(output).toContain("for a list of available commands");
+  });
+
   it("formats human-readable errors with id when present", () => {
     const output = reportBatchValidationErrors({
       valid: false,
@@ -551,6 +568,25 @@ describe("reportBatchValidationErrors", () => {
     expect(parsed.valid).toBe(false);
     expect(parsed.errors).toHaveLength(1);
     expect(parsed.errors[0].type).toBe("unknown_command");
+  });
+
+  it("does not include hint text in JSON mode", () => {
+    const output = reportBatchValidationErrors(
+      {
+        valid: false,
+        commands: [],
+        errors: [
+          {
+            index: 0,
+            command: "bad",
+            type: "unknown_command",
+            message: "Unknown command",
+          },
+        ],
+      },
+      true,
+    );
+    expect(output).not.toContain("kspec batch commands");
   });
 
   it("returns valid JSON for valid result in json mode", () => {

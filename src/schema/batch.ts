@@ -44,6 +44,8 @@ export interface BatchCommandResult {
   output?: unknown;
   /** Error message on failure */
   error?: string;
+  /** Suggested correction (e.g. closest arg name) */
+  suggestion?: string;
 }
 
 /**
