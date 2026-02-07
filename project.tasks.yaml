@@ -35856,19 +35856,19 @@
         Apply to all 5 `String()` call sites in `extractToolOutput()` and `extractOriginalOutput()`.
       supersedes: null
   todos: []
-- title: "Fix: 'No onPostToolUseHook found' leaks past noise suppression"
+- _ulid: 01KGVAZ6ZXXCBK1DYJ4GF4FRAM
+  slugs: []
+  title: "Fix: 'No onPostToolUseHook found' leaks past noise suppression"
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KGVAZ6ZXXCBK1DYJ4GF4FRAM
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T06:00:04.348Z
   notes:
@@ -35903,4 +35903,21 @@
 
         Change suppression from 'skip entire chunk' to 'strip matching patterns from chunk content'. This handles both standalone noise chunks and noise embedded in real content.
       supersedes: null
+  todos: []
+- title: Increase ralph loop prompt timeout from 5min to 30min
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T06:05:22.110Z
+  notes: []
   todos: []
