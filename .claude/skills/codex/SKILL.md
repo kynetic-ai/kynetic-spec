@@ -356,8 +356,9 @@ Parse overrides from the user's message and map to CLI flags:
 When prompts contain shell-unsafe characters (quotes, backticks, special characters, or multi-line content), use the **prompt-file pattern** instead of inline quoting:
 
 ```bash
-# 1. Write prompt to temp file
-cat > /tmp/codex-prompt.txt << 'EOF'
+# 1. Write prompt to temp file (use mktemp for safety)
+PROMPT_FILE=$(mktemp /tmp/codex-prompt.XXXXXX)
+cat > "$PROMPT_FILE" << 'EOF'
 Review the code for:
 - Edge cases with special chars like `$var` and "quoted" strings
 - Multi-line logic that's hard to escape inline
@@ -370,7 +371,10 @@ codex exec \
   -c model_reasoning_effort="medium" \
   -s danger-full-access \
   --skip-git-repo-check \
-  "$(cat /tmp/codex-prompt.txt)"
+  "$(cat "$PROMPT_FILE")"
+
+# 3. Clean up
+rm -f "$PROMPT_FILE"
 ```
 
 ### When to Use This Pattern
@@ -382,14 +386,16 @@ codex exec \
 | Multi-line with formatting | Use prompt file |
 | Generated or dynamic content | Use prompt file |
 
-### Why Not Heredocs?
+### Why Prompt-File Over Heredocs?
 
-Heredocs (`<<'PROMPT'...PROMPT`) work for the examples in this doc but can fail when:
-- Nested quotes or backticks appear at certain positions
-- The prompt itself contains `PROMPT` or other delimiter strings
-- Shell expansion is needed in some parts but not others
+Quoted heredocs (`<<'DELIM'...DELIM`) handle quotes, backticks, and `$` literally — they don't cause parsing failures. However, the prompt-file pattern offers practical advantages:
 
-The prompt-file pattern is more reliable and easier to debug — you can `cat /tmp/codex-prompt.txt` to verify the exact content before running.
+- **Delimiter collision**: If your prompt contains the delimiter string itself, heredocs fail
+- **Mixed expansion**: When you need `$var` expanded in some places but literal in others, heredocs require awkward escaping
+- **Debuggability**: You can `cat "$PROMPT_FILE"` to verify exact content before running
+- **Reusability**: Same prompt file can be used across multiple commands
+
+For simple prompts, heredocs work fine. Use prompt-files when prompts are complex, generated dynamically, or need inspection before use.
 
 ## Tips
 
