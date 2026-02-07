@@ -45886,6 +45886,13 @@
         @trait-. Without this, trait refs resolve to nonexistent items. Caught by Codex review
         during session-log-analysis plan."
       supersedes: null
+    - _ulid: 01KGVR8T5CV1JHW23WN9BTJXT2
+      created_at: 2026-02-07T09:52:30.381Z
+      author: "@claude"
+      content: Updated Trait Considerations section with full slug requirement. Changed examples to use
+        trait-json-output instead of json-output. Added explicit warning that plan imports only
+        auto-prefix @, not @trait-.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
