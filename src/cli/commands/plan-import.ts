@@ -237,7 +237,14 @@ async function importPlan(
       const specSlug = spec.slug || generateSlug(spec.title);
       const specRef = `@${specSlug}`;
 
-      // Check if spec already exists
+      // Check against slugs reserved during this import (plan slug, earlier specs)
+      if (importReservedSlugs.has(specSlug)) {
+        warn(`Spec slug "${specSlug}" collides with another item in this import, skipping`);
+        result.skipped.push({ slug: specSlug, reason: "Slug collision within import" });
+        continue;
+      }
+
+      // Check if spec already exists in pre-import state
       const exists = refIndex.resolve(specRef);
 
       if (exists.ok && !options.update) {
