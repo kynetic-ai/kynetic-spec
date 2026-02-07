@@ -45871,6 +45871,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #334. Updated spec-plan skill documentation with full trait slug
+    requirement - changed examples to use trait-json-output instead of json-output, added explicit
+    warning that plan import only auto-prefixes @ not @trait-, and provided good/bad examples."
   depends_on: []
   context: []
   priority: 3
@@ -45881,6 +45884,7 @@
   vcs_refs: []
   created_at: 2026-02-06T23:52:14.235Z
   started_at: 2026-02-07T09:52:13.549Z
+  completed_at: 2026-02-07T10:06:16.239Z
   notes:
     - _ulid: 01KGTNXVZ2TZ06CZWZZG1QRWJ7
       created_at: 2026-02-06T23:52:20.195Z
@@ -45899,10 +45903,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T10:06:16.239Z
-  closed_reason: "Merged in PR #334. Updated spec-plan skill documentation with full trait slug
-    requirement - changed examples to use trait-json-output instead of json-output, added explicit
-    warning that plan import only auto-prefixes @ not @trait-, and provided good/bad examples."
 - _ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
   slugs: []
   title: Auto-quote YAML AC fields containing special characters
@@ -45911,7 +45911,7 @@
     item ac add receives given/when/then with { [ or :, automatically wrap in quotes before writing
     YAML.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -45934,6 +45934,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T10:06:40.864Z
 - _ulid: 01KGTVH6MR2TY83BCRG7W3D1VE
   slugs: []
   title: Add --relates-to, --implements, --depends-on flags to item set
