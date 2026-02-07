@@ -840,3 +840,238 @@ export async function getSessionLogDetail(
     iterations,
   };
 }
+
+// ─── Session Log Stats ───────────────────────────────────────────────────────
+
+/**
+ * Aggregate session statistics.
+ *
+ * AC: @session-log-stats ac-1, ac-2, ac-3
+ */
+export interface SessionLogStats {
+  /** Total number of sessions */
+  total_sessions: number;
+  /** Total events across all sessions */
+  total_events: number;
+  /** Total iterations across all sessions */
+  total_iterations: number;
+  /** Total tasks completed across all sessions */
+  total_tasks_completed: number;
+  /** Total duration in milliseconds */
+  total_duration_ms: number;
+
+  /** Average duration per session in milliseconds */
+  avg_duration_ms: number;
+  /** Average iterations per session */
+  avg_iterations_per_session: number;
+  /** Average tasks completed per session */
+  avg_tasks_per_session: number;
+
+  /** Status breakdown with counts and percentages */
+  status_breakdown: {
+    status: SessionStatus;
+    count: number;
+    percentage: number;
+  }[];
+}
+
+/**
+ * Tool usage statistics.
+ *
+ * AC: @session-log-stats ac-6
+ */
+export interface ToolUsageStats {
+  tool_name: string;
+  count: number;
+  percentage: number;
+}
+
+/**
+ * Time period stats for --by-day or --by-week.
+ *
+ * AC: @session-log-stats ac-7
+ */
+export interface TimePeriodStats {
+  period: string;
+  sessions_count: number;
+  tasks_completed: number;
+  total_duration_ms: number;
+}
+
+/**
+ * Compute aggregate statistics from session summaries.
+ *
+ * @param summaries - Array of session log summaries
+ * @returns Aggregate statistics
+ */
+export function computeSessionLogStats(
+  summaries: SessionLogSummary[],
+): SessionLogStats {
+  if (summaries.length === 0) {
+    return {
+      total_sessions: 0,
+      total_events: 0,
+      total_iterations: 0,
+      total_tasks_completed: 0,
+      total_duration_ms: 0,
+      avg_duration_ms: 0,
+      avg_iterations_per_session: 0,
+      avg_tasks_per_session: 0,
+      status_breakdown: [],
+    };
+  }
+
+  // Compute totals
+  let totalEvents = 0;
+  let totalIterations = 0;
+  let totalTasksCompleted = 0;
+  let totalDuration = 0;
+  const statusCounts: Record<SessionStatus, number> = {
+    active: 0,
+    completed: 0,
+    abandoned: 0,
+  };
+
+  for (const s of summaries) {
+    totalEvents += s.event_count;
+    totalIterations += s.iteration_count;
+    totalTasksCompleted += s.tasks_completed;
+    totalDuration += s.duration_ms;
+    statusCounts[s.status] = (statusCounts[s.status] || 0) + 1;
+  }
+
+  const n = summaries.length;
+
+  // Build status breakdown
+  const statusBreakdown: { status: SessionStatus; count: number; percentage: number }[] = [];
+  for (const status of ["completed", "active", "abandoned"] as SessionStatus[]) {
+    const count = statusCounts[status] || 0;
+    if (count > 0) {
+      statusBreakdown.push({
+        status,
+        count,
+        percentage: Math.round((count / n) * 100 * 10) / 10, // 1 decimal place
+      });
+    }
+  }
+
+  return {
+    total_sessions: n,
+    total_events: totalEvents,
+    total_iterations: totalIterations,
+    total_tasks_completed: totalTasksCompleted,
+    total_duration_ms: totalDuration,
+    avg_duration_ms: Math.round(totalDuration / n),
+    avg_iterations_per_session: Math.round((totalIterations / n) * 10) / 10,
+    avg_tasks_per_session: Math.round((totalTasksCompleted / n) * 10) / 10,
+    status_breakdown: statusBreakdown,
+  };
+}
+
+/**
+ * Count tool calls by scanning events.jsonl for tool_call events.
+ *
+ * This is relatively expensive as it parses all events, so only call
+ * when --tool-usage is requested.
+ *
+ * AC: @session-log-stats ac-6
+ */
+export async function computeToolUsageStats(
+  specDir: string,
+  sessionIds: string[],
+  limit: number = 10,
+): Promise<ToolUsageStats[]> {
+  const toolCounts: Record<string, number> = {};
+  let totalToolCalls = 0;
+
+  for (const sessionId of sessionIds) {
+    const eventsPath = getSessionEventsPath(specDir, sessionId);
+    try {
+      const content = await fsPromises.readFile(eventsPath, "utf-8");
+      if (!content.trim()) continue;
+      const lines = content.trim().split("\n");
+      for (const line of lines) {
+        // Quick pre-filter: only parse lines that might be tool_call events
+        if (!line.includes('"tool_call"')) continue;
+        try {
+          const event = JSON.parse(line);
+          if (event?.type === "session.update") {
+            const update = event?.data?.update;
+            if (update?.sessionUpdate === "tool_call") {
+              const toolName = update?._meta?.claudeCode?.toolName || "unknown";
+              toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
+              totalToolCalls++;
+            }
+          }
+        } catch {
+          // Skip unparseable lines
+        }
+      }
+    } catch {
+      // Skip sessions without events
+    }
+  }
+
+  // Sort by count descending, take top N
+  const sorted = Object.entries(toolCounts)
+    .map(([tool_name, count]) => ({
+      tool_name,
+      count,
+      percentage: totalToolCalls > 0
+        ? Math.round((count / totalToolCalls) * 100 * 10) / 10
+        : 0,
+    }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+
+  return sorted;
+}
+
+/**
+ * Group sessions by time period (day or week).
+ *
+ * AC: @session-log-stats ac-7
+ */
+export function computeTimePeriodStats(
+  summaries: SessionLogSummary[],
+  groupBy: "day" | "week",
+): TimePeriodStats[] {
+  const buckets: Record<string, { sessions: number; tasks: number; duration: number }> = {};
+
+  for (const s of summaries) {
+    const date = new Date(s.started_at);
+    let period: string;
+
+    if (groupBy === "day") {
+      period = date.toISOString().split("T")[0]; // YYYY-MM-DD
+    } else {
+      // Week: use ISO week format (YYYY-Www)
+      const year = date.getFullYear();
+      const jan1 = new Date(year, 0, 1);
+      const dayOfYear = Math.floor(
+        (date.getTime() - jan1.getTime()) / (24 * 60 * 60 * 1000)
+      );
+      const weekNum = Math.ceil((dayOfYear + jan1.getDay() + 1) / 7);
+      period = `${year}-W${weekNum.toString().padStart(2, "0")}`;
+    }
+
+    if (!buckets[period]) {
+      buckets[period] = { sessions: 0, tasks: 0, duration: 0 };
+    }
+    buckets[period].sessions += 1;
+    buckets[period].tasks += s.tasks_completed;
+    buckets[period].duration += s.duration_ms;
+  }
+
+  // Convert to array and sort by period (newest first for display)
+  const result: TimePeriodStats[] = Object.entries(buckets)
+    .map(([period, data]) => ({
+      period,
+      sessions_count: data.sessions,
+      tasks_completed: data.tasks,
+      total_duration_ms: data.duration,
+    }))
+    .sort((a, b) => b.period.localeCompare(a.period));
+
+  return result;
+}
