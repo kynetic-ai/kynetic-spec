@@ -46070,7 +46070,7 @@
   description: "[quick-win] Add AC count display and complexity warning to derive command - warn when
     spec has >5 ACs and suggest decomposition options"
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
