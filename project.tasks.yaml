@@ -45965,7 +45965,7 @@
   description: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
     relationship fields require manual YAML editing.
   spec_ref: "@item-set"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
