@@ -46135,6 +46135,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-07T02:14:21.772Z
+  started_at: 2026-02-07T11:21:13.923Z
   notes:
     - _ulid: 01KGTY1XTDQXCJCSQMH648DXH9
       created_at: 2026-02-07T02:14:21.773Z
@@ -46145,9 +46146,17 @@
         machine-readable output. CommandMeta already has all the data — this is pure display. ~30
         lines + tests."
       supersedes: null
+    - _ulid: 01KGVXG9DGRGGSKDQVC485B8H4
+      created_at: 2026-02-07T11:23:58.256Z
+      author: "@claude"
+      content: "Implemented 'kspec batch commands' subcommand that lists all mutating commands allowed in
+        batch mode. Features: human-readable output with signatures (e.g., 'inbox add <text>
+        [options]'), descriptions, and total count; JSON output with full metadata (arguments,
+        options, required flags). 15 tests covering both output modes and edge cases. Backwards
+        compatible - 'kspec batch' still works as before."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T11:21:13.923Z
 - _ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
   slugs: []
   title: Add did-you-mean suggestions to batch validation errors
