@@ -81,14 +81,6 @@ inbox:
       - dx
       - merge
     added_by: "@claude"
-  - _ulid: 01KFVMA6ZAWVVA3QDW6ZEE5ET0
-    text: Note supersession should filter display - when a note has been superseded, hide it by default
-      in task notes output. Show only 'active' notes (those not superseded). Add --all flag to show
-      full history including superseded notes. This matters because notes are used as instructions
-      for agents, and superseded notes should be ignored in favor of newer ones.
-    created_at: 2026-01-25T22:27:40.138Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KFYAHFF2NZRP7F60JN8Q3DXC
     text: E2E test dev mode - configure Playwright to work with vite dev server instead of requiring
       full build for faster test iteration (12+ seconds to 1-2 seconds)

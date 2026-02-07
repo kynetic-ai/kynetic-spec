@@ -46304,24 +46304,24 @@
         All 104 ralph tests + 43 ACP tests pass.
       supersedes: null
   todos: []
-- title: Auto-derive task dependencies from spec depends_on relationships
+- _ulid: 01KGVGSH49ACMXJBGCYW12ZDYF
+  slugs: []
+  title: Auto-derive task dependencies from spec depends_on relationships
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - derive
-    - dx
   description: "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec
     item set for spec items. When deriving tasks, automatically create task dependencies based on
     spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates
     task-A depending on task-B. Removes need to manually set task dependencies after derive."
-  _ulid: 01KGVGSH49ACMXJBGCYW12ZDYF
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - derive
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T07:41:49.575Z
   notes:
@@ -46334,5 +46334,34 @@
         found, add to new task's depends_on. Design decisions needed: if dependency spec has no task
         yet, warn (don't block). Skip transitive deps — only direct. No circular detection needed if
         specs are acyclic (validate could check). Addresses #1 post-import friction from MEMORY.md."
+      supersedes: null
+  todos: []
+- title: Filter superseded notes from default task display
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Note supersession should filter display - when a note has been superseded, hide it by
+    default in task notes output. Show only 'active' notes (those not superseded). Add --all flag to
+    show full history including superseded notes. This matters because notes are used as
+    instructions for agents, and superseded notes should be ignored in favor of newer ones.
+  _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T07:42:56.412Z
+  notes:
+    - _ulid: 01KGVGVJCX6RN0VBHEAVFR2QPS
+      created_at: 2026-02-07T07:42:56.413Z
+      author: "@claude"
+      content: "Implementation: First verify note supersession data model in src/schema/task.ts — notes
+        have a supersedes field referencing earlier note ULIDs. In task get display
+        (src/cli/commands/task.ts), filter out notes whose ULID appears in any other note's
+        supersedes list. Add --all flag to show full history. For --json output, always include all
+        notes with a 'superseded: true' computed field. Design question: should session start recent
+        notes also filter? Probably yes for consistency."
       supersedes: null
   todos: []
