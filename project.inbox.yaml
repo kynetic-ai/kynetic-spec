@@ -314,15 +314,3 @@ inbox:
       - plan
       - dx
     added_by: "@claude"
-  - _ulid: 01KGS2Q93E7C4RGGJ2MMRXYC8G
-    text: "kspec validate exit code: validate returns exit code 1 for alignment warnings (orphaned
-      specs, missing test coverage) even when there are zero errors. On fresh projects with specs
-      but no code, this is the expected state. Consider: separate exit codes (0=clean, 1=errors,
-      2=warnings-only), or --errors-only / --severity flags to filter output and control exit
-      behavior."
-    created_at: 2026-02-06T08:57:26.894Z
-    tags:
-      - cli
-      - validation
-      - dx
-    added_by: "@claude"

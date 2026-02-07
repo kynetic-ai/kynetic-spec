@@ -45861,24 +45861,24 @@
         lines + tests."
       supersedes: null
   todos: []
-- title: Add did-you-mean suggestions to batch validation errors
+- _ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
+  slugs: []
+  title: Add did-you-mean suggestions to batch validation errors
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - batch
-    - dx
   description: "Better batch pre-validation errors — when unknown arg key is used, suggest correct
     positional name. e.g. 'Unknown arg \"content\" for \"inbox add\". Did you mean \"text\"? Run
     kspec batch commands for reference.' CommandMeta already has the arg names. Note: --dry-run
     already catches this, but the error message doesn't suggest the fix."
-  _ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - batch
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T02:15:11.041Z
   notes:
@@ -45890,5 +45890,37 @@
         matching. Format: 'Unknown arg \"content\" for \"inbox add\". Did you mean \"text\"? Run
         kspec batch commands for reference.' ~15 lines. Pairs with batch commands discoverability
         task."
+      supersedes: null
+  todos: []
+- title: Separate validate exit codes for errors vs warnings
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - validation
+    - dx
+  description: "kspec validate exit code: validate returns exit code 1 for alignment warnings
+    (orphaned specs, missing test coverage) even when there are zero errors. On fresh projects with
+    specs but no code, this is the expected state. Consider: separate exit codes (0=clean, 1=errors,
+    2=warnings-only), or --errors-only / --severity flags to filter output and control exit
+    behavior."
+  _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:16:33.679Z
+  notes:
+    - _ulid: 01KGTY5YMF3V2RQ9QVRBEMJCZC
+      created_at: 2026-02-07T02:16:33.679Z
+      author: "@claude"
+      content: "Implementation: In src/cli/commands/validate.ts, track error count and warning count
+        separately. Exit codes: 0=clean (no errors, no warnings), 1=errors present, 2=warnings only.
+        Add --severity flag (error|warning, default: warning) to control what's reported. When
+        --severity error, suppress warning output and only exit 1 on real errors. ~20 lines. Enables
+        CI usage on fresh projects where orphaned specs are expected."
       supersedes: null
   todos: []
