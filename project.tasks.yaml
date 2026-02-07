@@ -45828,6 +45828,7 @@
         in PR #323, editing is the missing half."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
   slugs: []
   title: Add --trait flag to item add command
@@ -46040,6 +46041,7 @@
         ~25 lines + tests for both replace and append paths."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGTZEYRB1B81YREN5FKHSN38
   slugs: []
   title: Enrich session start with pending_review and recently completed notes
@@ -46068,6 +46070,7 @@
         see what's in flight and what just finished. ~40 lines, output formatting changes."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KGVARWDN5AHFD3YXG2W20EZG
   slugs: []
   title: "Fix ralph log: String() on array of objects produces [object Object]"
