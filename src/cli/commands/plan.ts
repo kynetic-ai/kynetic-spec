@@ -111,6 +111,12 @@ Examples:
           }
         }
 
+        // Validate title is non-empty
+        if (!options.title || options.title.trim().length === 0) {
+          error("Plan title cannot be empty.");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
         // Generate URL-safe slug from title
         const generateSlug = (title: string): string => {
           return title
@@ -129,10 +135,10 @@ Examples:
         // Check for collision with spec items and plans
         const { refIndex } = await buildIndexes(ctx);
         if (options.slug) {
-          // Manual slug: check for collision with spec items
-          const specCollision = refIndex.resolve(`@${options.slug}`);
-          if (specCollision.ok) {
-            error(`Slug "${options.slug}" collides with existing spec item. Use a different slug or omit --slug for auto-namespaced slug.`);
+          // Manual slug: check for collision with specs/tasks
+          const refCollision = refIndex.resolve(`@${options.slug}`);
+          if (refCollision.ok) {
+            error(`Slug "${options.slug}" collides with existing item. Use a different slug or omit --slug for auto-namespaced slug.`);
             process.exit(EXIT_CODES.CONFLICT);
           }
           // Check for collision with existing plans
@@ -142,10 +148,10 @@ Examples:
             process.exit(EXIT_CODES.CONFLICT);
           }
         } else {
-          // Auto-generated slug: ensure uniqueness by appending counter if needed
+          // Auto-generated slug: ensure uniqueness across all namespaces
           let counter = 1;
           const baseSlug = planSlug;
-          while (plans.some(p => p.slugs.includes(planSlug))) {
+          while (plans.some(p => p.slugs.includes(planSlug)) || refIndex.resolve(`@${planSlug}`).ok) {
             planSlug = `${baseSlug}-${counter}`;
             counter++;
           }
@@ -295,11 +301,11 @@ Examples:
 
         if (options.slug) {
           if (!foundPlan.slugs.includes(options.slug)) {
-            // Check for collision with spec items
+            // Check for collision with specs/tasks
             const { refIndex } = await buildIndexes(ctx);
-            const specCollision = refIndex.resolve(`@${options.slug}`);
-            if (specCollision.ok) {
-              error(`Slug "${options.slug}" collides with existing spec item. Use a different slug.`);
+            const refCollision = refIndex.resolve(`@${options.slug}`);
+            if (refCollision.ok) {
+              error(`Slug "${options.slug}" collides with existing item. Use a different slug.`);
               process.exit(EXIT_CODES.CONFLICT);
             }
             // Check for collision with other plans

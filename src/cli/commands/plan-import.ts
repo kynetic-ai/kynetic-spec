@@ -162,12 +162,12 @@ async function importPlan(
   // Create plan record
   // AC: @plan-import ac-24, ac-28
   // Auto-namespace plan slugs with "plan-" prefix to prevent collision with spec slugs
-  // Ensure uniqueness by appending counter if needed
+  // Ensure uniqueness across all namespaces (plans + specs + tasks)
   const plans = await loadPlans(ctx);
   let planSlug = `plan-${generateSlug(parsed.title)}`;
   let counter = 1;
   const baseSlug = planSlug;
-  while (plans.some(p => p.slugs.includes(planSlug))) {
+  while (plans.some(p => p.slugs.includes(planSlug)) || refIndex.resolve(`@${planSlug}`).ok) {
     planSlug = `${baseSlug}-${counter}`;
     counter++;
   }
@@ -361,6 +361,8 @@ async function importPlan(
   // AC: @plan-import ac-12, ac-13, ac-19, ac-20
   if (parsed.tasks.derive_from_specs && result.createdSpecs.length > 0) {
     const tasks = await loadAllTasks(ctx);
+    // Track slugs used during this import to prevent in-run duplicates
+    const usedTaskSlugs = new Set(tasks.flatMap((t) => t.slugs));
 
     for (const specRef of result.createdSpecs) {
       // Get spec from createdSpecsMap (works in both dry-run and real mode)
@@ -372,13 +374,14 @@ async function importPlan(
       const taskTitle = `Implement ${spec.title}`;
       const taskSlug = generateSlug(taskTitle);
 
-      // Ensure slug uniqueness
+      // Ensure slug uniqueness (including slugs created earlier in this import)
       let uniqueSlug = taskSlug;
       let counter = 1;
-      while (tasks.some((t) => t.slugs.includes(uniqueSlug))) {
+      while (usedTaskSlugs.has(uniqueSlug)) {
         uniqueSlug = `${taskSlug}-${counter}`;
         counter++;
       }
+      usedTaskSlugs.add(uniqueSlug);
 
       if (options.dryRun) {
         info(`Would derive task: @${uniqueSlug} from ${specRef}`);
@@ -433,18 +436,21 @@ async function importPlan(
   // Create manual tasks
   // AC: @plan-import ac-27
   if (parsed.tasks.additional_tasks) {
-    const tasks = await loadAllTasks(ctx);
+    // Reload tasks if derive loop didn't run (usedTaskSlugs may not exist)
+    const manualTasks = await loadAllTasks(ctx);
+    const usedManualSlugs = new Set(manualTasks.flatMap((t) => t.slugs));
 
     for (const taskDef of parsed.tasks.additional_tasks) {
       const taskSlug = taskDef.slug || generateSlug(taskDef.title);
 
-      // Ensure slug uniqueness
+      // Ensure slug uniqueness (including slugs created earlier in this import)
       let uniqueSlug = taskSlug;
       let counter = 1;
-      while (tasks.some((t) => t.slugs.includes(uniqueSlug))) {
+      while (usedManualSlugs.has(uniqueSlug)) {
         uniqueSlug = `${taskSlug}-${counter}`;
         counter++;
       }
+      usedManualSlugs.add(uniqueSlug);
 
       if (options.dryRun) {
         info(`Would create manual task: @${uniqueSlug}`);

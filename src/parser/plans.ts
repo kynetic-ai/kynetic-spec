@@ -112,40 +112,93 @@ export function createPlan(input: PlanInput, author?: string): Plan {
 }
 
 /**
+ * Acquire a simple mkdir-based file lock. Returns a release function.
+ * Uses mkdir atomicity on POSIX filesystems to prevent concurrent writes.
+ */
+async function acquireLock(
+  lockPath: string,
+  timeoutMs = 5000,
+): Promise<() => Promise<void>> {
+  const start = Date.now();
+  while (true) {
+    try {
+      await fs.mkdir(lockPath);
+      return async () => {
+        try {
+          await fs.rmdir(lockPath);
+        } catch {
+          // Lock already released
+        }
+      };
+    } catch {
+      if (Date.now() - start > timeoutMs) {
+        // Stale lock — force remove and retry once
+        try {
+          await fs.rmdir(lockPath);
+        } catch {
+          // ignore
+        }
+        try {
+          await fs.mkdir(lockPath);
+          return async () => {
+            try {
+              await fs.rmdir(lockPath);
+            } catch {
+              // Lock already released
+            }
+          };
+        } catch {
+          throw new Error(`Failed to acquire lock: ${lockPath}`);
+        }
+      }
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }
+}
+
+/**
  * Save a single plan (create or update)
  * AC: @plan-crud ac-1, ac-3 - save plan changes
+ * Uses file lock to prevent TOCTOU race on concurrent writes.
  */
 export async function savePlan(
   ctx: KspecContext,
   plan: LoadedPlan,
 ): Promise<void> {
   const plansPath = getPlansFilePath(ctx);
+  const lockPath = `${plansPath}.lock`;
 
   // Ensure directory exists
   const dir = path.dirname(plansPath);
   await fs.mkdir(dir, { recursive: true });
 
-  // Load existing plans
-  const plans = await loadPlans(ctx);
+  // Acquire lock for atomic read-modify-write
+  const releaseLock = await acquireLock(lockPath);
+  try {
+    // Load existing plans (inside lock to prevent TOCTOU)
+    const plans = await loadPlans(ctx);
 
-  // Strip runtime metadata before saving
-  const { _sourceFile, ...cleanPlan } = plan;
+    // Strip runtime metadata before saving
+    const { _sourceFile, ...cleanPlan } = plan;
 
-  // Update or add
-  const existingIndex = plans.findIndex((p) => p._ulid === plan._ulid);
-  if (existingIndex >= 0) {
-    plans[existingIndex] = cleanPlan as Plan;
-  } else {
-    plans.push(cleanPlan as Plan);
+    // Update or add
+    const existingIndex = plans.findIndex((p) => p._ulid === plan._ulid);
+    if (existingIndex >= 0) {
+      plans[existingIndex] = cleanPlan as Plan;
+    } else {
+      plans.push(cleanPlan as Plan);
+    }
+
+    // Save back to file
+    const plansFile: PlansFile = {
+      kynetic_plans: "1.0",
+      plans: plans.map(({ _sourceFile, ...p }) => p as Plan),
+    };
+
+    await writeYamlFilePreserveFormat(plansPath, plansFile);
+  } finally {
+    await releaseLock();
   }
-
-  // Save back to file
-  const plansFile: PlansFile = {
-    kynetic_plans: "1.0",
-    plans: plans.map(({ _sourceFile, ...p }) => p as Plan),
-  };
-
-  await writeYamlFilePreserveFormat(plansPath, plansFile);
 }
 
 /**

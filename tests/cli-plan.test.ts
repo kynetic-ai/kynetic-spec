@@ -139,7 +139,7 @@ describe("Integration: plan commands", () => {
       expect(plan.slugs).not.toContain("plan-custom-slug");
     });
 
-    it("should error when provided slug collides with existing spec item", async () => {
+    it("should error when provided slug collides with existing item", async () => {
       // The fixtures should have a spec item - let's check
       const itemsOutput = kspec("item list --json", tempDir);
       const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
@@ -154,7 +154,7 @@ describe("Integration: plan commands", () => {
         { expectFail: true },
       );
 
-      expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
@@ -333,7 +333,7 @@ describe("Integration: plan commands", () => {
     });
 
     // Slug collision detection for plan set --slug
-    it("should error when adding slug that collides with existing spec item", () => {
+    it("should error when adding slug that collides with existing item", () => {
       // Get an existing spec item slug from fixtures
       const itemsOutput = kspec("item list --json", tempDir);
       const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
@@ -346,7 +346,7 @@ describe("Integration: plan commands", () => {
         { expectFail: true },
       );
 
-      expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
