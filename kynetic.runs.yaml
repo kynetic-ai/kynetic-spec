@@ -2860,7 +2860,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KGVJWXXWVW70BM2DC2NXG2XX
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-07T08:18:38.140Z
@@ -3010,5 +3010,31 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-07T08:25:14.888Z
-        completed_at: 2026-02-07T08:25:14.888Z
+        completed_at: 2026-02-07T08:25:48.045Z
+        notes: >-
+          Step 6: Capture complete.
+
+
+          Captured:
+
+          - Inbox item @01KGVK8R: Item list --module flag and tree view
+
+          - Observation (success) @01KGVK9K: Batch triage workflow pattern
+
+          - Observation (success) @01KGVK9M: Implementation notes at promotion time
+
+          - Observation (friction) @01KGVK9P: Automation triage context switch to spec creation
+
+
+          Session summary:
+
+          - Inbox: 61 → 42 (19 deleted, 14 promoted to tasks, 1 new inbox item from reflection)
+
+          - Specs: 3 new specs created (inbox-set, inbox-note, ACs on item-set and
+          cmd-session-start)
+
+          - Tasks: 14 promoted, 14 marked eligible, 4 marked needs_review
+
+          - 0 unassessed tasks remain
     initiated_by: "@claude"
+    completed_at: 2026-02-07T08:25:48.045Z
