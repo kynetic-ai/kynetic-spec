@@ -1028,6 +1028,47 @@ export async function computeToolUsageStats(
 }
 
 /**
+ * Compute ISO-8601 week number and week-year in UTC.
+ *
+ * ISO-8601 rules:
+ * - Week 1 contains the first Thursday of the year
+ * - Week starts on Monday
+ * - Week-year may differ from calendar year at year boundaries
+ *
+ * Returns [weekYear, weekNumber] tuple.
+ */
+function getISOWeekUTC(date: Date): [number, number] {
+  // Clone and normalize to UTC midnight
+  const d = new Date(Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate()
+  ));
+
+  // Get day of week (ISO: Monday=1, Sunday=7)
+  const dayOfWeek = d.getUTCDay() || 7;
+
+  // Set to nearest Thursday (determines week-year)
+  d.setUTCDate(d.getUTCDate() + 4 - dayOfWeek);
+
+  // Week-year is the year of this Thursday
+  const weekYear = d.getUTCFullYear();
+
+  // January 4 is always in week 1 (as it's in the first week with a Thursday)
+  const jan4 = new Date(Date.UTC(weekYear, 0, 4));
+  const jan4DayOfWeek = jan4.getUTCDay() || 7;
+
+  // Start of week 1 (Monday before or on Jan 4)
+  const week1Start = new Date(jan4);
+  week1Start.setUTCDate(jan4.getUTCDate() - (jan4DayOfWeek - 1));
+
+  // Week number = weeks between week 1 start and the Thursday we found
+  const weekNum = Math.floor((d.getTime() - week1Start.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
+
+  return [weekYear, weekNum];
+}
+
+/**
  * Group sessions by time period (day or week).
  *
  * AC: @session-log-stats ac-7
@@ -1043,16 +1084,11 @@ export function computeTimePeriodStats(
     let period: string;
 
     if (groupBy === "day") {
-      period = date.toISOString().split("T")[0]; // YYYY-MM-DD
+      period = date.toISOString().split("T")[0]; // YYYY-MM-DD in UTC
     } else {
-      // Week: use ISO week format (YYYY-Www)
-      const year = date.getFullYear();
-      const jan1 = new Date(year, 0, 1);
-      const dayOfYear = Math.floor(
-        (date.getTime() - jan1.getTime()) / (24 * 60 * 60 * 1000)
-      );
-      const weekNum = Math.ceil((dayOfYear + jan1.getDay() + 1) / 7);
-      period = `${year}-W${weekNum.toString().padStart(2, "0")}`;
+      // Week: use ISO-8601 week format (YYYY-Www) in UTC
+      const [weekYear, weekNum] = getISOWeekUTC(date);
+      period = `${weekYear}-W${weekNum.toString().padStart(2, "0")}`;
     }
 
     if (!buckets[period]) {

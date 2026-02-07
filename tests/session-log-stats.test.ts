@@ -297,7 +297,7 @@ describe('computeTimePeriodStats', () => {
         id: 'session-1',
         status: 'completed',
         agent_type: 'claude-code-acp',
-        started_at: '2026-01-20T10:00:00.000Z', // Week 4
+        started_at: '2026-01-20T10:00:00.000Z', // 2026-01-20 is a Tuesday in week 4
         duration_ms: 3600000,
         event_count: 100,
         iteration_count: 3,
@@ -307,7 +307,7 @@ describe('computeTimePeriodStats', () => {
         id: 'session-2',
         status: 'completed',
         agent_type: 'claude-code-acp',
-        started_at: '2026-01-27T10:00:00.000Z', // Week 5
+        started_at: '2026-01-27T10:00:00.000Z', // 2026-01-27 is a Tuesday in week 5
         duration_ms: 7200000,
         event_count: 200,
         iteration_count: 5,
@@ -322,6 +322,74 @@ describe('computeTimePeriodStats', () => {
     for (const p of periods) {
       expect(p.period).toMatch(/^\d{4}-W\d{2}$/);
     }
+    // Verify concrete week assignments
+    expect(periods[0].period).toBe('2026-W05');
+    expect(periods[1].period).toBe('2026-W04');
+  });
+
+  it('should handle year boundary week correctly (ISO-8601)', () => {
+    // Test ISO-8601 week rules at year boundaries:
+    // - 2025-12-29 (Monday) to 2026-01-04 (Sunday) is Week 1 of 2026
+    // - 2025-12-28 (Sunday) is Week 52 of 2025
+    const summaries: SessionLogSummary[] = [
+      {
+        id: 'session-1',
+        status: 'completed',
+        agent_type: 'claude-code-acp',
+        started_at: '2025-12-28T10:00:00.000Z', // Sunday - still week 52 of 2025
+        duration_ms: 1000,
+        event_count: 1,
+        iteration_count: 1,
+        tasks_completed: 0,
+      },
+      {
+        id: 'session-2',
+        status: 'completed',
+        agent_type: 'claude-code-acp',
+        started_at: '2025-12-29T00:00:00.000Z', // Monday - week 1 of 2026 per ISO-8601
+        duration_ms: 1000,
+        event_count: 1,
+        iteration_count: 1,
+        tasks_completed: 0,
+      },
+      {
+        id: 'session-3',
+        status: 'completed',
+        agent_type: 'claude-code-acp',
+        started_at: '2026-01-01T00:00:00.000Z', // Thursday - still week 1 of 2026
+        duration_ms: 1000,
+        event_count: 1,
+        iteration_count: 1,
+        tasks_completed: 0,
+      },
+      {
+        id: 'session-4',
+        status: 'completed',
+        agent_type: 'claude-code-acp',
+        started_at: '2026-01-05T00:00:00.000Z', // Monday - week 2 of 2026
+        duration_ms: 1000,
+        event_count: 1,
+        iteration_count: 1,
+        tasks_completed: 0,
+      },
+    ];
+
+    const periods = computeTimePeriodStats(summaries, 'week');
+
+    // Should have 3 distinct weeks: 2025-W52, 2026-W01, 2026-W02
+    expect(periods).toHaveLength(3);
+    const periodSet = new Set(periods.map((p) => p.period));
+    expect(periodSet.has('2025-W52')).toBe(true);
+    expect(periodSet.has('2026-W01')).toBe(true);
+    expect(periodSet.has('2026-W02')).toBe(true);
+
+    // Verify session counts per week
+    const week52 = periods.find((p) => p.period === '2025-W52');
+    const week01 = periods.find((p) => p.period === '2026-W01');
+    const week02 = periods.find((p) => p.period === '2026-W02');
+    expect(week52?.sessions_count).toBe(1);
+    expect(week01?.sessions_count).toBe(2); // Dec 29 and Jan 1
+    expect(week02?.sessions_count).toBe(1);
   });
 });
 
