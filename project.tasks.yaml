@@ -46181,6 +46181,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-07T02:15:11.041Z
+  started_at: 2026-02-07T11:38:10.000Z
   notes:
     - _ulid: 01KGTY3DY13YX3W1VQS90SG9MS
       created_at: 2026-02-07T02:15:11.041Z
@@ -46191,9 +46192,25 @@
         kspec batch commands for reference.' ~15 lines. Pairs with batch commands discoverability
         task."
       supersedes: null
+    - _ulid: 01KGVYJWQ0GGY06E41SZM6QVCF
+      created_at: 2026-02-07T11:42:52.128Z
+      author: "@claude"
+      content: >-
+        Implemented did-you-mean suggestions for batch validation errors:
+
+        1. Added 'suggestion' field to BatchCommandResult type to propagate suggestions from
+        validation
+
+        2. Updated CLI output to show 'Did you mean: X?' when suggestions are available
+
+        3. Added 'Run kspec batch commands' hint at the end of all validation errors
+
+        4. Hint only appears in human-readable output, not JSON mode
+
+        5. Added 4 new tests for suggestions and hint display
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T11:38:10.000Z
 - _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
   slugs: []
   title: Separate validate exit codes for errors vs warnings
