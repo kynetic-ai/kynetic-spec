@@ -45789,6 +45789,7 @@
     - codex
   vcs_refs: []
   created_at: 2026-02-06T23:50:13.815Z
+  started_at: 2026-02-07T09:39:25.001Z
   notes:
     - _ulid: 01KGTNT7G9EKJ5312B1A8RWZ09
       created_at: 2026-02-06T23:50:20.937Z
@@ -45797,9 +45798,15 @@
         (quotes, backticks, multi-line). Recommend writing prompt to temp file then using $(cat
         file) pattern. Encountered this friction during session-log-analysis plan review.
       supersedes: null
+    - _ulid: 01KGVQHZDBC73KFSMADKREEK22
+      created_at: 2026-02-07T09:40:02.092Z
+      author: "@claude"
+      content: "Added 'Handling Complex Prompts' section before Tips. Documents prompt-file pattern: write
+        to /tmp/codex-prompt.txt then use $(cat file). Includes when-to-use table and explanation of
+        why prompt-file is more reliable than heredocs for complex content."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T09:39:25.001Z
 - _ulid: 01KGTNV773RBWK67KFHFMTJ856
   slugs: []
   title: Add YAML quoting guidance to spec-plan skill
