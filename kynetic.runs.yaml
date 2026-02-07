@@ -2812,6 +2812,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-06T23:41:07.764Z
+    completed_at: 2026-02-06T23:52:40.581Z
     step_results:
       - step_index: 0
         status: completed
@@ -2857,4 +2858,11 @@ runs:
         notes: "Captured: 3 tasks for improvements, 2 success observations. All friction items either
           captured as tasks or already tracked in inbox."
     initiated_by: "@claude"
-    completed_at: 2026-02-06T23:52:40.581Z
+  - _ulid: 01KGVJWXXWVW70BM2DC2NXG2XX
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-07T08:18:38.140Z
+    step_results: []
+    initiated_by: "@claude"
