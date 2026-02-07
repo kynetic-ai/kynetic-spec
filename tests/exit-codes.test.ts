@@ -16,6 +16,7 @@ describe('EXIT_CODES constants', () => {
     expect(EXIT_CODES.NOT_FOUND).toBe(3);
     expect(EXIT_CODES.VALIDATION_FAILED).toBe(4);
     expect(EXIT_CODES.CONFLICT).toBe(5);
+    expect(EXIT_CODES.VALIDATION_WARNINGS).toBe(6);
   });
 
   // AC: @cli-exit-codes exit-code-constants
@@ -35,6 +36,7 @@ describe('EXIT_CODES constants', () => {
     expect(typeof EXIT_CODES.NOT_FOUND).toBe('number');
     expect(typeof EXIT_CODES.VALIDATION_FAILED).toBe('number');
     expect(typeof EXIT_CODES.CONFLICT).toBe('number');
+    expect(typeof EXIT_CODES.VALIDATION_WARNINGS).toBe('number');
   });
 });
 
@@ -69,6 +71,7 @@ describe('EXIT_CODE_METADATA documentation', () => {
     expect(metadataByCode[EXIT_CODES.NOT_FOUND]?.name).toBe('NOT_FOUND');
     expect(metadataByCode[EXIT_CODES.VALIDATION_FAILED]?.name).toBe('VALIDATION_FAILED');
     expect(metadataByCode[EXIT_CODES.CONFLICT]?.name).toBe('CONFLICT');
+    expect(metadataByCode[EXIT_CODES.VALIDATION_WARNINGS]?.name).toBe('VALIDATION_WARNINGS');
   });
 });
 
@@ -90,6 +93,7 @@ describe('Exit codes help content', () => {
     expect(helpText).toContain('3 - NOT_FOUND');
     expect(helpText).toContain('4 - VALIDATION_FAILED');
     expect(helpText).toContain('5 - CONFLICT');
+    expect(helpText).toContain('6 - VALIDATION_WARNINGS');
   });
 
   // AC: @cli-exit-codes exit-codes-documented
@@ -110,5 +114,6 @@ describe('Exit codes help content', () => {
     expect(helpText).toContain('task');
     expect(helpText).toContain('validate');
     expect(helpText).toContain('item');
+    expect(helpText).toContain('VALIDATION_WARNINGS');
   });
 });

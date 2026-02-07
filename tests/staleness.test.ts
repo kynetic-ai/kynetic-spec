@@ -303,16 +303,16 @@ tasks:
 `,
     );
 
-    // Run validate --staleness (without --strict) - should exit 0
+    // Run validate --staleness (without --strict) - should exit 6 (warnings present)
     const resultNoStrict = kspecWithStatus("validate --staleness", tmpDir);
-    expect(resultNoStrict.exitCode).toBe(0);
+    expect(resultNoStrict.exitCode).toBe(6); // VALIDATION_WARNINGS
 
-    // Run validate --staleness --strict - should exit 4
+    // Run validate --staleness --strict - should exit 4 (warnings treated as errors)
     const resultStrict = kspecWithStatus(
       "validate --staleness --strict",
       tmpDir,
     );
-    expect(resultStrict.exitCode).toBe(4);
+    expect(resultStrict.exitCode).toBe(4); // VALIDATION_FAILED
   });
 
   // Additional test: No staleness warnings when everything is aligned
