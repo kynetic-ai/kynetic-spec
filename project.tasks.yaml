@@ -46514,7 +46514,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46598,6 +46598,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T14:14:15.729Z
+  closed_reason: "Merged in PR #345. Fixed noise suppression for hook warnings by changing from
+    skip-entire-chunk to strip-patterns strategy. The stripNoise function now removes noise patterns
+    from content while preserving surrounding text, handling both standalone noise and embedded
+    noise concatenated with agent messages. Added comprehensive tests covering whitespace
+    preservation, greedy matching prevention, and cross-chunk accumulation."
 - _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
   slugs: []
   title: Increase ralph loop prompt timeout from 5min to 30min
