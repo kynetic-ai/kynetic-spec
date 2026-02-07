@@ -2861,7 +2861,7 @@ runs:
   - _ulid: 01KGVJWXXWVW70BM2DC2NXG2XX
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-07T08:18:38.140Z
     step_results:
@@ -2899,5 +2899,40 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-07T08:18:52.864Z
-        completed_at: 2026-02-07T08:18:52.864Z
+        completed_at: 2026-02-07T08:19:11.618Z
+        notes: >-
+          Step 2: Friction Points
+
+
+          1. **No inbox filtering** — With 61 items, I had to read the full list and manually
+          categorize. No --tag, --author, or --before/--after filters exist on inbox list. I worked
+          around it by eyeballing the output and mentally grouping.
+
+
+          2. **No way to see if inbox item overlaps with existing task** — For each item I had to
+          manually run kspec task get or grep git log to check if work was done. A 'kspec inbox
+          check @ref' or cross-reference during list would save significant time.
+
+
+          3. **Promote doesn't support --spec-ref** — Wait, it does now (task 01KG9202). But I
+          didn't use it during this session — I promoted first then linked specs separately. Could
+          have done it in one step.
+
+
+          4. **batch needs_review requires --reason but error message doesn't show the flag name** —
+          When batch failed on needs_review, the error said 'requires --reason flag' but didn't show
+          the batch JSON arg name format. Had to guess it was 'reason' not 'needs-review-reason'.
+
+
+          5. **Creating specs during automation triage is a context switch** — Going from 'assess
+          eligibility' to 'create spec, add ACs, link task' is a different workflow. The triage flow
+          had to pause while I figured out the right module/parent for each spec.
+
+
+          6. **kspec item list only shows 50 items** — Had to use grep on module YAML files to find
+          the right parent specs. No --module flag or tree view to browse the spec hierarchy.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-07T08:19:11.618Z
+        completed_at: 2026-02-07T08:19:11.618Z
     initiated_by: "@claude"
