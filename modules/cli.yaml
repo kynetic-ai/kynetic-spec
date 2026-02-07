@@ -2332,6 +2332,19 @@ features:
           - "@trait-confirmation-prompt"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+      - _ulid: 01KGVJR07Y3QXA57WYZ0X3KBHG
+        slugs:
+          - inbox-set
+        title: kspec inbox set
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-07T08:15:56.671Z
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
