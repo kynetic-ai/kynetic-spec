@@ -3044,6 +3044,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-07T12:27:32.266Z
+    completed_at: 2026-02-07T12:28:42.528Z
     step_results:
       - step_index: 0
         status: completed
@@ -3077,4 +3078,11 @@ runs:
         notes: No items to capture - all identified patterns were either already tracked or resolved during
           session. Reflection complete.
     initiated_by: "@claude"
-    completed_at: 2026-02-07T12:28:42.528Z
+  - _ulid: 01KGWMQFTG4XGCJAT3F31Y4XHQ
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-07T18:09:51.440Z
+    step_results: []
+    initiated_by: "@claude"
