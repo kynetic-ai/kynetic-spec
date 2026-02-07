@@ -1276,3 +1276,8 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+acceptance_criteria:
+  - id: ac-1
+    given: 'user passes JSON like {"foo": "bar"}'
+    when: the system parses it
+    then: it should handle braces correctly
