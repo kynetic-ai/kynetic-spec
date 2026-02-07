@@ -351,6 +351,46 @@ Parse overrides from the user's message and map to CLI flags:
 - `--model X` or `-m X` → `-m X`
 - `--effort X` → `-c model_reasoning_effort="X"` (translate to config flag)
 
+## Handling Complex Prompts
+
+When prompts contain shell-unsafe characters (quotes, backticks, special characters, or multi-line content), use the **prompt-file pattern** instead of inline quoting:
+
+```bash
+# 1. Write prompt to temp file
+cat > /tmp/codex-prompt.txt << 'EOF'
+Review the code for:
+- Edge cases with special chars like `$var` and "quoted" strings
+- Multi-line logic that's hard to escape inline
+- Patterns matching {curly} braces
+EOF
+
+# 2. Use $(cat file) to inject the prompt
+codex exec \
+  -m gpt-5.3-codex \
+  -c model_reasoning_effort="medium" \
+  -s danger-full-access \
+  --skip-git-repo-check \
+  "$(cat /tmp/codex-prompt.txt)"
+```
+
+### When to Use This Pattern
+
+| Prompt Content | Approach |
+|----------------|----------|
+| Simple one-liner | Inline quotes work fine |
+| Contains `$`, backticks, quotes | Use prompt file |
+| Multi-line with formatting | Use prompt file |
+| Generated or dynamic content | Use prompt file |
+
+### Why Not Heredocs?
+
+Heredocs (`<<'PROMPT'...PROMPT`) work for the examples in this doc but can fail when:
+- Nested quotes or backticks appear at certain positions
+- The prompt itself contains `PROMPT` or other delimiter strings
+- Shell expansion is needed in some parts but not others
+
+The prompt-file pattern is more reliable and easier to debug — you can `cat /tmp/codex-prompt.txt` to verify the exact content before running.
+
 ## Tips
 
 - Always use `--skip-git-repo-check` — this project uses a shadow branch worktree that confuses Codex's git detection
