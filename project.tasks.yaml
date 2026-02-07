@@ -45967,6 +45967,10 @@
   spec_ref: "@item-set"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #335. Added --relates-to, --implements, --depends-on flags to item set
+    command with append semantics. Added --clear-* variants for clearing relationships. Validates
+    refs exist and are spec items (rejects tasks). All ACs (ac-5, ac-6, ac-7) covered with tests.
+    Added ac-4 test annotation for --status flag."
   depends_on: []
   context: []
   priority: 3
@@ -45977,6 +45981,7 @@
   vcs_refs: []
   created_at: 2026-02-07T01:30:16.599Z
   started_at: 2026-02-07T10:13:02.931Z
+  completed_at: 2026-02-07T10:36:42.792Z
   notes:
     - _ulid: 01KGTVH6MRWTD9RGYNGE30R7SF
       created_at: 2026-02-07T01:30:16.600Z
@@ -46000,13 +46005,16 @@
       author: Jacob Chapel
       content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
       supersedes: null
+    - _ulid: 01KGVVHKA8Y07PN812ED5CZEWH
+      created_at: 2026-02-07T10:49:44.008Z
+      author: "@claude"
+      content: "Follow-up fix in PR #336: Addressed Codex review finding about string-based duplicate
+        prevention. Now deduplicates by resolved ULID identity, preventing semantic duplicates when
+        same target referenced via @slug vs @ULID. Stores canonical slug format for user-friendly
+        display."
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T10:36:42.792Z
-  closed_reason: "Merged in PR #335. Added --relates-to, --implements, --depends-on flags to item set
-    command with append semantics. Added --clear-* variants for clearing relationships. Validates
-    refs exist and are spec items (rejects tasks). All ACs (ac-5, ac-6, ac-7) covered with tests.
-    Added ac-4 test annotation for --status flag."
 - _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
   slugs: []
   title: Add --trait flag to item add command
