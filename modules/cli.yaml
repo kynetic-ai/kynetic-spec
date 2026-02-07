@@ -562,6 +562,10 @@ features:
             given: item @my-item exists
             when: kspec item set @my-item --implements @feature-spec runs
             then: item's implements array includes @feature-spec
+          - id: ac-7
+            given: item @my-item exists
+            when: kspec item set @my-item --depends-on @other-spec runs
+            then: item's depends_on array includes @other-spec
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
