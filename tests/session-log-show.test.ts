@@ -194,6 +194,46 @@ describe('getSessionLogDetail', () => {
     expect(iter1!.tasks_started).toContain('@task-1');
     expect(iter2!.tasks_completed).toContain('@task-1');
   });
+
+  // Regression: events may exist for iterations before context snapshots are created
+  it('should handle events for iterations without context snapshots', async () => {
+    const sessionId = testUlid('SESS', 2);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    // Only create context snapshot for iteration 1
+    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
+
+    // But include events for iterations 1, 2, and 3
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }, // No iteration
+      { ts: 2000, seq: 1, type: 'prompt.sent', session_id: sessionId, data: { iteration: 1 } },
+      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { iteration: 2 } },
+      { ts: 4000, seq: 3, type: 'prompt.sent', session_id: sessionId, data: { iteration: 3 } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    // Should have 3 iterations (from events), not just 1 (from context)
+    expect(detail!.iterations).toHaveLength(3);
+
+    const iter1 = detail!.iterations.find(i => i.iteration === 1);
+    const iter2 = detail!.iterations.find(i => i.iteration === 2);
+    const iter3 = detail!.iterations.find(i => i.iteration === 3);
+    expect(iter1).toBeDefined();
+    expect(iter2).toBeDefined();
+    expect(iter3).toBeDefined();
+
+    // Events should be correctly bucketed - iter 1 gets 2 events (session.start + prompt.sent)
+    // Lifecycle events without iteration go to first known iteration
+    expect(iter1!.event_count).toBe(2);
+    expect(iter2!.event_count).toBe(1);
+    expect(iter3!.event_count).toBe(1);
+  });
 });
 
 // ─── CLI Integration Tests ──────────────────────────────────────────────────

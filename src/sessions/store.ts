@@ -709,6 +709,10 @@ function extractTaskRef(command: string): string | null {
 /**
  * Compute per-iteration summaries from events.
  *
+ * Dynamically creates iteration buckets based on both context snapshot files
+ * AND event data to handle cases where events are logged before context
+ * snapshots exist (e.g., active sessions).
+ *
  * AC: @session-log-show ac-2
  */
 async function computeIterationSummaries(
@@ -716,10 +720,19 @@ async function computeIterationSummaries(
   sessionId: string,
 ): Promise<IterationSummary[]> {
   const events = await readEvents(specDir, sessionId);
-  const iterations = await getIterationNumbers(specDir, sessionId);
+  const snapshotIterations = await getIterationNumbers(specDir, sessionId);
 
-  // If no iterations found, create a single iteration-0 summary
-  if (iterations.length === 0) {
+  // Collect all iteration numbers from both snapshots and events
+  const allIterations = new Set<number>(snapshotIterations);
+  for (const event of events) {
+    const data = event.data as { iteration?: number } | null;
+    if (typeof data?.iteration === "number") {
+      allIterations.add(data.iteration);
+    }
+  }
+
+  // If no iterations found anywhere, create a single iteration-0 summary
+  if (allIterations.size === 0) {
     return [
       {
         iteration: 0,
@@ -730,7 +743,8 @@ async function computeIterationSummaries(
     ];
   }
 
-  // Group events by iteration (from event data if available)
+  // Create buckets for all known iterations
+  const iterations = Array.from(allIterations).sort((a, b) => a - b);
   const iterationMap = new Map<number, SessionEvent[]>();
   for (const n of iterations) {
     iterationMap.set(n, []);
@@ -742,9 +756,11 @@ async function computeIterationSummaries(
     const iter = data?.iteration;
     if (typeof iter === "number" && iterationMap.has(iter)) {
       iterationMap.get(iter)!.push(event);
-    } else if (iterations.length > 0) {
-      // Assign to first iteration if no explicit iteration
-      iterationMap.get(iterations[0])!.push(event);
+    } else {
+      // Events without iteration info (lifecycle events) go to iteration 0
+      // or the first known iteration if 0 doesn't exist
+      const fallbackIter = iterationMap.has(0) ? 0 : iterations[0];
+      iterationMap.get(fallbackIter)!.push(event);
     }
   }
 
