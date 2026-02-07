@@ -45599,7 +45599,7 @@
   type: task
   spec_ref: "@session-log-show"
   plan_ref: "@session-log-analysis-tooling"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-log-list"
@@ -45647,6 +45647,18 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T08:55:07.802Z
+  closed_reason: |-
+    Merged in PR #330. Implemented session log show command with:
+    - Session ID prefix resolution (exact match, unique prefix, ambiguous handling)
+    - Per-iteration summaries with event counts and task transitions
+    - Event timeline display with --events flag
+    - Event filtering by --type and limiting with --limit
+    - Context snapshot display with --context N flag
+    - JSON output support
+    - 28 tests covering all 9 spec ACs plus trait ACs
+    - Fixed iteration drift issue where events before context snapshots were miscounted
+    - Updated spec AC-9 to use semantic exit code 3 (NOT_FOUND)
 - _ulid: 01KGTN2ACK018NKMN7ESS3NJG2
   slugs:
     - implement-session-log-stats
