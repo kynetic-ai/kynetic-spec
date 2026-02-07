@@ -45995,6 +45995,11 @@
         exist before adding. Added 17 tests covering all ACs (ac-5, ac-6, ac-7) plus duplicate
         prevention, error handling, and clear functionality.
       supersedes: null
+    - _ulid: 01KGVTRP9QM5Z356SREYN946MT
+      created_at: 2026-02-07T10:36:07.863Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
