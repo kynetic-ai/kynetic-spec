@@ -46862,7 +46862,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46885,6 +46885,8 @@
         Result<T> — no process.exit(). 19 unit tests pass, full suite has 0 regressions."
       supersedes: null
   todos: []
+  completed_at: 2026-02-07T18:08:42.821Z
+  closed_reason: "Merged in PR #347"
 - _ulid: 01KGWDPYTP4QK4B21BVRXZXQPD
   slugs: []
   title: Update README and AGENTS.md with documentation for recent features
