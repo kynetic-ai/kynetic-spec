@@ -5500,4 +5500,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGVCEFG5NP47A9K33GS192PD
+    type: friction
+    content: Codex PR review on self-authored PRs creates review threads that trigger
+      check-unresolved-comments CI gate. Requires manual GraphQL thread resolution + CI re-run
+      before merging. Codex skill should either skip inline comments on own PRs or auto-resolve
+      threads after posting.
+    created_at: 2026-02-07T06:25:53.158Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
