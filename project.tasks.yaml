@@ -46065,7 +46065,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46135,6 +46135,9 @@
         single-block, and plain-object scenarios.
       supersedes: null
   todos: []
+  completed_at: 2026-02-07T06:41:35.003Z
+  closed_reason: "Merged in PR #329. Added stringify() helper to handle array-of-content-blocks and
+    plain objects in ralph event output extraction."
 - _ulid: 01KGVAZ6ZXXCBK1DYJ4GF4FRAM
   slugs: []
   title: "Fix: 'No onPostToolUseHook found' leaks past noise suppression"
