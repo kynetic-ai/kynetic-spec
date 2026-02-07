@@ -45666,7 +45666,7 @@
   type: task
   spec_ref: "@session-log-stats"
   plan_ref: "@session-log-analysis-tooling"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-log-list"
@@ -45675,6 +45675,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-06T23:37:17.459Z
+  started_at: 2026-02-07T08:56:49.873Z
   notes:
     - _ulid: 01KGTN2ACKW9SZBP59JJBJPPQV
       created_at: 2026-02-06T23:37:17.459Z
@@ -45689,7 +45690,6 @@
         Depends on shared session summary reader and event stream reader.
   todos: []
   automation: eligible
-  started_at: 2026-02-07T08:56:49.873Z
 - _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
   slugs:
     - implement-session-log-search
