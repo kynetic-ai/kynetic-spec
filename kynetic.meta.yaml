@@ -5557,4 +5557,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGWG8W1A9ZHHWCKVNVAFQM6B
+    type: success
+    content: Codex PR review caught silent bug in session log list — tasks_completed metric searched for
+      non-existent event type. Real task completions use session.update tool_call events with
+      rawInput.command containing 'task complete'. Without review, feature would ship reporting 0
+      tasks for all real sessions.
+    created_at: 2026-02-07T16:51:58.122Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
