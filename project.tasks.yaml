@@ -45688,6 +45688,14 @@
         parse when --tool-usage is requested to avoid unnecessary I/O.
         Time grouping (--by-week/--by-day) buckets sessions by started_at date.
         Depends on shared session summary reader and event stream reader.
+    - _ulid: 01KGVNWZJYK3AZ79P5VXXSQCVD
+      created_at: 2026-02-07T09:11:05.567Z
+      author: "@claude"
+      content: "Implemented session log stats command with all 8 spec ACs. Codex review found issue with
+        week calculation using local time instead of UTC - fixed with proper ISO-8601 week helper
+        using UTC APIs. Added concrete boundary date tests. 31 tests passing. PR #331 ready for
+        merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
