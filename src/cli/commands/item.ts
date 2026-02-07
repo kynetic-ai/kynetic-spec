@@ -718,18 +718,27 @@ Examples:
       "Set verified_at (defaults to now if --verified-by provided)",
     )
     .option("--trait <trait...>", "Set traits (replaces existing)")
+    .option("--relates-to <ref>", "Add a relates_to reference")
+    .option("--implements <ref>", "Add an implements reference")
+    .option("--depends-on <ref>", "Add a depends_on reference")
+    .option("--clear-relates-to", "Clear all relates_to references")
+    .option("--clear-implements", "Clear all implements references")
+    .option("--clear-depends-on", "Clear all depends_on references")
     .addHelpText(
       "after",
       `
 Examples:
   $ kspec item set @item-ref --title "New title"
   $ kspec item set @item-ref --tag api internal security
-  $ kspec item set @item-ref --trait reusable testable`,
+  $ kspec item set @item-ref --trait reusable testable
+  $ kspec item set @item-ref --relates-to @other-item
+  $ kspec item set @item-ref --implements @feature-spec
+  $ kspec item set @item-ref --depends-on @prereq-spec`,
     )
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();
-        const { refIndex, items } = await buildIndexes(ctx);
+        const { refIndex, items, tasks } = await buildIndexes(ctx);
 
         const result = refIndex.resolve(ref);
         if (!result.ok) {
@@ -773,6 +782,51 @@ Examples:
           }
         }
 
+        // Mutual exclusivity: cannot add and clear same field
+        // Check this before ref resolution so usage errors take precedence
+        if (options.relatesTo && options.clearRelatesTo) {
+          error("Cannot use --relates-to and --clear-relates-to together");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+        if (options.implements && options.clearImplements) {
+          error("Cannot use --implements and --clear-implements together");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+        if (options.dependsOn && options.clearDependsOn) {
+          error("Cannot use --depends-on and --clear-depends-on together");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // Helper to validate relationship refs (must exist and be a spec item, not a task)
+        const validateRelationshipRef = (refStr: string, flagName: string): void => {
+          const refResult = refIndex.resolve(refStr);
+          if (!refResult.ok) {
+            error(errors.reference.itemNotFound(refStr));
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          // Ensure it's a spec item, not a task
+          const isTask = tasks.some((t) => t._ulid === refResult.ulid);
+          if (isTask) {
+            error(`${flagName} reference must be a spec item, not a task: ${refStr}`);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+        };
+
+        // AC: @item-set ac-5 - --relates-to validation
+        if (options.relatesTo) {
+          validateRelationshipRef(options.relatesTo, "--relates-to");
+        }
+
+        // AC: @item-set ac-6 - --implements validation
+        if (options.implements) {
+          validateRelationshipRef(options.implements, "--implements");
+        }
+
+        // AC: @item-set ac-7 - --depends-on validation
+        if (options.dependsOn) {
+          validateRelationshipRef(options.dependsOn, "--depends-on");
+        }
+
         // Build updates object
         const updates: Partial<SpecItemInput> = {};
 
@@ -813,6 +867,39 @@ Examples:
           updates.verified_at = options.verifiedAt || new Date().toISOString();
         } else if (options.verifiedAt) {
           updates.verified_at = options.verifiedAt;
+        }
+
+        // AC: @item-set ac-5 - Handle relates_to (append semantics)
+        if (options.relatesTo) {
+          const current = foundItem.relates_to || [];
+          if (!current.includes(options.relatesTo)) {
+            updates.relates_to = [...current, options.relatesTo];
+          }
+        }
+        if (options.clearRelatesTo) {
+          updates.relates_to = [];
+        }
+
+        // AC: @item-set ac-6 - Handle implements (append semantics)
+        if (options.implements) {
+          const current = foundItem.implements || [];
+          if (!current.includes(options.implements)) {
+            updates.implements = [...current, options.implements];
+          }
+        }
+        if (options.clearImplements) {
+          updates.implements = [];
+        }
+
+        // AC: @item-set ac-7 - Handle depends_on (append semantics)
+        if (options.dependsOn) {
+          const current = foundItem.depends_on || [];
+          if (!current.includes(options.dependsOn)) {
+            updates.depends_on = [...current, options.dependsOn];
+          }
+        }
+        if (options.clearDependsOn) {
+          updates.depends_on = [];
         }
 
         if (Object.keys(updates).length === 0) {
