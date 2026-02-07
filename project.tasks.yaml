@@ -46172,6 +46172,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #340. Added did-you-mean suggestions to batch validation errors:
+    suggestion field in BatchCommandResult, inline 'Did you mean: X?' display for typos, 'Run kspec
+    batch commands' hint for validation failures (human-readable output only). 6 new tests added."
   depends_on: []
   context: []
   priority: 3
@@ -46182,6 +46185,7 @@
   vcs_refs: []
   created_at: 2026-02-07T02:15:11.041Z
   started_at: 2026-02-07T11:38:10.000Z
+  completed_at: 2026-02-07T11:57:21.186Z
   notes:
     - _ulid: 01KGTY3DY13YX3W1VQS90SG9MS
       created_at: 2026-02-07T02:15:11.041Z
@@ -46211,10 +46215,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T11:57:21.186Z
-  closed_reason: "Merged in PR #340. Added did-you-mean suggestions to batch validation errors:
-    suggestion field in BatchCommandResult, inline 'Did you mean: X?' display for typos, 'Run kspec
-    batch commands' hint for validation failures (human-readable output only). 6 new tests added."
 - _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
   slugs: []
   title: Separate validate exit codes for errors vs warnings
@@ -46225,7 +46225,7 @@
     2=warnings-only), or --errors-only / --severity flags to filter output and control exit
     behavior."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46248,6 +46248,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T11:58:07.796Z
 - _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
   slugs: []
   title: Auto-namespace plan slugs to prevent collision with spec slugs
