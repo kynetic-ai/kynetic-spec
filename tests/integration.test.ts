@@ -2151,6 +2151,7 @@ describe('Integration: inbox set --tag', () => {
   });
 });
 
+// AC: @inbox-note ac-1
 describe('Integration: inbox note', () => {
   let tempDir: string;
 

@@ -389,6 +389,7 @@ Examples:
     });
 
   // kspec inbox note <ref> <text>
+  // AC: @inbox-note ac-1
   markMutating(inbox.command("note <ref> <text>"))
     .description("Append a note to an inbox item")
     .addHelpText(
