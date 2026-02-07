@@ -46255,6 +46255,12 @@
         EXIT_CODES.VALIDATION_WARNINGS constant. Updated help docs and tests. Fixed staleness and
         traits-field tests to expect correct exit codes."
       supersedes: null
+    - _ulid: 01KGW13QFH8VMKFB83F9BWZH56
+      created_at: 2026-02-07T12:27:00.977Z
+      author: "@claude"
+      content: "Addressed codex PR review feedback: made tests deterministic, clarified --strict help text
+        scope (orphan/staleness only), added AC annotations. Codex re-review passed: LGTM."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
