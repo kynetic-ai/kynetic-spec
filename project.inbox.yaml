@@ -291,3 +291,11 @@ inbox:
     created_at: 2026-02-07T06:20:42.319Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KGVD9Z9Z8FM94FKXGBYDDQS3
+    text: Add regression test for non-text content blocks (e.g. image blocks) in ralph stringify() to
+      lock rendering behavior for that payload shape
+    created_at: 2026-02-07T06:40:54.079Z
+    tags:
+      - testing
+      - ralph
+    added_by: "@claude"
