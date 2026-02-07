@@ -46126,6 +46126,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #339. Added 'kspec batch commands' subcommand that lists all mutating
+    commands allowed in batch mode with signatures, descriptions, and JSON output. Includes
+    regression tests for nested batch rejection. All CI checks passed."
   depends_on: []
   context: []
   priority: 3
@@ -46136,6 +46139,7 @@
   vcs_refs: []
   created_at: 2026-02-07T02:14:21.772Z
   started_at: 2026-02-07T11:21:13.923Z
+  completed_at: 2026-02-07T11:37:44.623Z
   notes:
     - _ulid: 01KGTY1XTDQXCJCSQMH648DXH9
       created_at: 2026-02-07T02:14:21.773Z
@@ -46157,10 +46161,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T11:37:44.623Z
-  closed_reason: "Merged in PR #339. Added 'kspec batch commands' subcommand that lists all mutating
-    commands allowed in batch mode with signatures, descriptions, and JSON output. Includes
-    regression tests for nested batch rejection. All CI checks passed."
 - _ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
   slugs: []
   title: Add did-you-mean suggestions to batch validation errors
@@ -46170,7 +46170,7 @@
     kspec batch commands for reference.' CommandMeta already has the arg names. Note: --dry-run
     already catches this, but the error message doesn't suggest the fix."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46193,6 +46193,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T11:38:10.000Z
 - _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
   slugs: []
   title: Separate validate exit codes for errors vs warnings
