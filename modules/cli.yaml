@@ -2345,6 +2345,11 @@ features:
         traits: []
         notes: []
         created: 2026-02-07T08:15:56.671Z
+        acceptance_criteria:
+          - id: ac-1
+            given: inbox item @ref exists with content 'old text'
+            when: kspec inbox set @ref --content 'new text' runs
+            then: item content is replaced with 'new text', ULID and timestamp preserved
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
