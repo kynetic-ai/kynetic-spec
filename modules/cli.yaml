@@ -3183,7 +3183,7 @@ features:
           - id: ac-9
             given: session ID does not match any session
             when: ID is provided
-            then: displays Session not found error with exit code 1
+            then: displays Session not found error with exit code 3 (NOT_FOUND)
         depends_on: []
         implements: []
         relates_to: []
