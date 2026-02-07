@@ -45599,7 +45599,7 @@
   type: task
   spec_ref: "@session-log-show"
   plan_ref: "@session-log-analysis-tooling"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-log-list"
