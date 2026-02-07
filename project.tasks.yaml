@@ -46330,7 +46330,7 @@
   description: Add update/note capability to inbox items - allow 'inbox update @ref --content' or
     'inbox note @ref' to modify/append to items without delete+re-add cycle
   spec_ref: "@inbox-set"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
