@@ -46048,7 +46048,7 @@
     well, probably separated out with some more organization so it is clear what was being worked on
     and if there is anything from prior work worth sharing forward (in case its a continuation of
     the same type of work)
-  spec_ref: null
+  spec_ref: "@cmd-session-start"
   status: pending
   blocked_by: []
   depends_on: []
