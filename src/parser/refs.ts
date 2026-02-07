@@ -282,6 +282,16 @@ export class ReferenceIndex {
   }
 
   /**
+   * Check if a slug is available (not used by any indexed item).
+   * Returns true only when the slug is completely unused.
+   * A slug is unavailable if it resolves to an item, is ambiguous, or is duplicated.
+   */
+  isSlugAvailable(slug: string): boolean {
+    const result = this.resolve(slug.startsWith("@") ? slug : `@${slug}`);
+    return !result.ok && result.error === "not_found";
+  }
+
+  /**
    * Get an item by exact ULID (no resolution, direct lookup)
    */
   getByUlid(ulid: string): AnyLoadedItem | LoadedMetaItem | undefined {
