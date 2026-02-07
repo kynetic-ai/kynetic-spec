@@ -46067,6 +46067,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #329. Added stringify() helper to handle array-of-content-blocks and
+    plain objects in ralph event output extraction."
   depends_on: []
   context: []
   priority: 2
@@ -46074,6 +46076,7 @@
   vcs_refs: []
   created_at: 2026-02-07T05:56:36.917Z
   started_at: 2026-02-07T06:32:04.575Z
+  completed_at: 2026-02-07T06:41:35.003Z
   notes:
     - _ulid: 01KGVASA25FCF8BH80S33YDTZ8
       created_at: 2026-02-07T05:56:50.885Z
@@ -46135,9 +46138,6 @@
         single-block, and plain-object scenarios.
       supersedes: null
   todos: []
-  completed_at: 2026-02-07T06:41:35.003Z
-  closed_reason: "Merged in PR #329. Added stringify() helper to handle array-of-content-blocks and
-    plain objects in ralph event output extraction."
 - _ulid: 01KGVAZ6ZXXCBK1DYJ4GF4FRAM
   slugs: []
   title: "Fix: 'No onPostToolUseHook found' leaks past noise suppression"
@@ -46302,5 +46302,37 @@
 
 
         All 104 ralph tests + 43 ACP tests pass.
+      supersedes: null
+  todos: []
+- title: Auto-derive task dependencies from spec depends_on relationships
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - derive
+    - dx
+  description: "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec
+    item set for spec items. When deriving tasks, automatically create task dependencies based on
+    spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates
+    task-A depending on task-B. Removes need to manually set task dependencies after derive."
+  _ulid: 01KGVGSH49ACMXJBGCYW12ZDYF
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T07:41:49.575Z
+  notes:
+    - _ulid: 01KGVGSH49350X0MVF442ZVV10
+      created_at: 2026-02-07T07:41:49.577Z
+      author: "@claude"
+      content: "Implementation: Two parts. (1) Add --depends-on flag to item set (may overlap with
+        01KGTVH6 relationship flags task). (2) In derive handler, when creating a task from a spec
+        that has depends_on, look up existing tasks with matching spec_ref for each dependency. If
+        found, add to new task's depends_on. Design decisions needed: if dependency spec has no task
+        yet, warn (don't block). Skip transitive deps — only direct. No circular detection needed if
+        specs are acyclic (validate could check). Addresses #1 post-import friction from MEMORY.md."
       supersedes: null
   todos: []
