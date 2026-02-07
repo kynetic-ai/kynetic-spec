@@ -585,7 +585,7 @@ describe('ralph event translator', () => {
     it('suppresses standalone onPostToolUseHook messages', () => {
       const translator = createTranslator();
       const event = translator.translate(
-        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_123')
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
       );
 
       expect(event).toBeNull();
@@ -614,9 +614,9 @@ describe('ralph event translator', () => {
 
     it('strips multiple noise patterns from same chunk', () => {
       const translator = createTranslator();
-      // Realistic pattern: two hook warnings with proper format
+      // Realistic pattern: two hook warnings with proper toolu_ format (26 chars after toolu_)
       const event = translator.translate(
-        makeChunk('agent_message_chunk', 'Start No onPreToolUseHook found for tool use ID: abc middle No onPostToolUseHook found for tool use ID: xyz end')
+        makeChunk('agent_message_chunk', 'Start No onPreToolUseHook found for tool use ID: toolu_01ABC2345678901234567890 middle No onPostToolUseHook found for tool use ID: toolu_01XYZ2345678901234567890 end')
       );
 
       expect(event).not.toBeNull();
@@ -624,12 +624,26 @@ describe('ralph event translator', () => {
       expect((event!.data as { content: string }).content).toBe('Start  middle  end');
     });
 
+    it('preserves content that directly follows noise without whitespace', () => {
+      const translator = createTranslator();
+      // Edge case: noise followed immediately by real content with no separator
+      // The tool ID pattern matches exactly 26 chars, so 'Hello' won't be consumed
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sWHello world')
+      );
+
+      expect(event).not.toBeNull();
+      // 'Hello world' should be preserved, not eaten by greedy matching
+      expect((event!.data as { content: string }).content).toBe('Hello world');
+    });
+
     it('accumulates cleaned content across chunks', () => {
       const translator = createTranslator();
 
       // Chunk with noise concatenated directly at the end (no space before noise)
+      // Tool ID must be exactly 26 chars after toolu_
       translator.translate(
-        makeChunk('agent_message_chunk', 'First part.No onPostToolUseHook found for tool use ID: xyz')
+        makeChunk('agent_message_chunk', 'First part.No onPostToolUseHook found for tool use ID: toolu_01XYZ2345678901234567890')
       );
 
       // Clean chunk with leading space
@@ -647,7 +661,7 @@ describe('ralph event translator', () => {
     it('handles noise in thought chunks the same way', () => {
       const translator = createTranslator();
       const event = translator.translate(
-        makeChunk('agent_thought_chunk', 'Thinking about this...No onPostToolUseHook found for tool use ID: toolu_abc')
+        makeChunk('agent_thought_chunk', 'Thinking about this...No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
       );
 
       expect(event).not.toBeNull();
