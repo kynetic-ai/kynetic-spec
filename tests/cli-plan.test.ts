@@ -139,7 +139,7 @@ describe("Integration: plan commands", () => {
       expect(plan.slugs).not.toContain("plan-custom-slug");
     });
 
-    it("should error when provided slug collides with existing spec item", async () => {
+    it("should error when provided slug collides with existing item", async () => {
       // The fixtures should have a spec item - let's check
       const itemsOutput = kspec("item list --json", tempDir);
       const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
@@ -154,11 +154,11 @@ describe("Integration: plan commands", () => {
         { expectFail: true },
       );
 
-      expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
-    it("should error when provided slug collides with existing plan", () => {
+    it("should error when provided slug collides with existing item", () => {
       // Create first plan with custom slug
       kspec('plan add --title "First Plan" --content "Content" --slug my-custom-slug', tempDir);
 
@@ -169,7 +169,7 @@ describe("Integration: plan commands", () => {
         { expectFail: true },
       );
 
-      expect(result.stderr).toContain("collides with existing plan");
+      expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
@@ -190,6 +190,38 @@ describe("Integration: plan commands", () => {
         tempDir,
       );
       expect(plan2.slugs).toContain("plan-duplicate-title-1");
+    });
+
+    it("should reject missing title", () => {
+      // --title is a required option in Commander
+      const result = kspec(
+        "plan add --content Content",
+        tempDir,
+        { expectFail: true },
+      );
+      // Commander itself rejects missing required options
+      expect(result.exitCode).not.toBe(0);
+    });
+
+    it("should auto-increment slug when auto-generated slug collides with existing spec", () => {
+      // Create a spec item with a slug that matches the auto-generated plan slug pattern
+      kspec(
+        'item add --under @test-core --title "Collision Test" --slug plan-collision-test',
+        tempDir,
+      );
+
+      // Create a plan whose auto-generated slug would be plan-collision-test
+      kspec(
+        'plan add --title "Collision Test" --content "Content"',
+        tempDir,
+      );
+
+      // Plan slug should have been incremented to avoid the spec collision
+      const plan = kspecJson<{ slugs: string[] }>(
+        "plan get @plan-collision-test-1 --json",
+        tempDir,
+      );
+      expect(plan.slugs).toContain("plan-collision-test-1");
     });
   });
 
@@ -333,7 +365,7 @@ describe("Integration: plan commands", () => {
     });
 
     // Slug collision detection for plan set --slug
-    it("should error when adding slug that collides with existing spec item", () => {
+    it("should error when adding slug that collides with existing item", () => {
       // Get an existing spec item slug from fixtures
       const itemsOutput = kspec("item list --json", tempDir);
       const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
@@ -346,11 +378,11 @@ describe("Integration: plan commands", () => {
         { expectFail: true },
       );
 
-      expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
 
-    it("should error when adding slug that collides with existing plan", () => {
+    it("should error when adding slug that collides with existing item", () => {
       // Create another plan with a known slug
       kspec('plan add --title "Other Plan" --content "Content" --slug other-plan-slug', tempDir);
 
@@ -361,7 +393,7 @@ describe("Integration: plan commands", () => {
         { expectFail: true },
       );
 
-      expect(result.stderr).toContain("collides with existing plan");
+      expect(result.stderr).toContain("collides with existing item");
       expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
   });

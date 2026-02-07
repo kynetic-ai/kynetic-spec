@@ -120,8 +120,11 @@ async function importPlan(
     }
   }
 
-  // Build indexes to check existing specs
-  const { refIndex, items } = await buildIndexes(ctx);
+  // Load plans for cross-namespace slug safety
+  const plans = await loadPlans(ctx);
+
+  // Build indexes to check existing specs (include plans for cross-namespace slug safety)
+  const { refIndex, items } = await buildIndexes(ctx, plans);
   const existingSpecRefs = new Set<string>();
   for (const item of items) {
     for (const slug of (item as LoadedSpecItem).slugs || []) {
@@ -162,15 +165,17 @@ async function importPlan(
   // Create plan record
   // AC: @plan-import ac-24, ac-28
   // Auto-namespace plan slugs with "plan-" prefix to prevent collision with spec slugs
-  // Ensure uniqueness by appending counter if needed
-  const plans = await loadPlans(ctx);
+  // Ensure uniqueness across all namespaces (plans + specs + tasks via refIndex)
   let planSlug = `plan-${generateSlug(parsed.title)}`;
   let counter = 1;
   const baseSlug = planSlug;
-  while (plans.some(p => p.slugs.includes(planSlug))) {
+  while (!refIndex.isSlugAvailable(planSlug)) {
     planSlug = `${baseSlug}-${counter}`;
     counter++;
   }
+
+  // Track all slugs created during this import (refIndex is stale after mutations)
+  const importReservedSlugs = new Set<string>([planSlug]);
 
   const planInput: PlanInput = {
     title: parsed.title,
@@ -232,7 +237,14 @@ async function importPlan(
       const specSlug = spec.slug || generateSlug(spec.title);
       const specRef = `@${specSlug}`;
 
-      // Check if spec already exists
+      // Check against slugs reserved during this import (plan slug, earlier specs)
+      if (importReservedSlugs.has(specSlug)) {
+        warn(`Spec slug "${specSlug}" collides with another item in this import, skipping`);
+        result.skipped.push({ slug: specSlug, reason: "Slug collision within import" });
+        continue;
+      }
+
+      // Check if spec already exists in pre-import state
       const exists = refIndex.resolve(specRef);
 
       if (exists.ok && !options.update) {
@@ -290,6 +302,7 @@ async function importPlan(
           `Would create spec: ${specRef} ${spec.parent ? `under ${spec.parent}` : "(root)"}`,
         );
         result.createdSpecs.push(specRef);
+        importReservedSlugs.add(specSlug);
 
         // Track would-be created spec for parent resolution in dry-run
         const dryRunSpec = createSpecItem({
@@ -346,6 +359,7 @@ async function importPlan(
         createdSpecsMap.set(specSlug, createdSpec);
 
         result.createdSpecs.push(specRef);
+        importReservedSlugs.add(specSlug);
         newPlan.derived_specs.push(specRef);
 
         info(`Created spec: ${specRef}`);
@@ -361,6 +375,11 @@ async function importPlan(
   // AC: @plan-import ac-12, ac-13, ac-19, ac-20
   if (parsed.tasks.derive_from_specs && result.createdSpecs.length > 0) {
     const tasks = await loadAllTasks(ctx);
+    // Combine existing task slugs + all slugs reserved during this import (plan + specs)
+    const importSlugs = new Set([
+      ...tasks.flatMap((t) => t.slugs),
+      ...importReservedSlugs,
+    ]);
 
     for (const specRef of result.createdSpecs) {
       // Get spec from createdSpecsMap (works in both dry-run and real mode)
@@ -372,13 +391,15 @@ async function importPlan(
       const taskTitle = `Implement ${spec.title}`;
       const taskSlug = generateSlug(taskTitle);
 
-      // Ensure slug uniqueness
+      // Ensure slug uniqueness across all namespaces + this import's slugs
       let uniqueSlug = taskSlug;
       let counter = 1;
-      while (tasks.some((t) => t.slugs.includes(uniqueSlug))) {
+      while (importSlugs.has(uniqueSlug) || !refIndex.isSlugAvailable(uniqueSlug)) {
         uniqueSlug = `${taskSlug}-${counter}`;
         counter++;
       }
+      importSlugs.add(uniqueSlug);
+      importReservedSlugs.add(uniqueSlug);
 
       if (options.dryRun) {
         info(`Would derive task: @${uniqueSlug} from ${specRef}`);
@@ -433,18 +454,25 @@ async function importPlan(
   // Create manual tasks
   // AC: @plan-import ac-27
   if (parsed.tasks.additional_tasks) {
-    const tasks = await loadAllTasks(ctx);
+    // Reload tasks to catch any created by derive loop above
+    // Combine with all slugs reserved during this import (plan + specs)
+    const manualTasks = await loadAllTasks(ctx);
+    const manualImportSlugs = new Set([
+      ...manualTasks.flatMap((t) => t.slugs),
+      ...importReservedSlugs,
+    ]);
 
     for (const taskDef of parsed.tasks.additional_tasks) {
       const taskSlug = taskDef.slug || generateSlug(taskDef.title);
 
-      // Ensure slug uniqueness
+      // Ensure slug uniqueness across all namespaces + this import's slugs
       let uniqueSlug = taskSlug;
       let counter = 1;
-      while (tasks.some((t) => t.slugs.includes(uniqueSlug))) {
+      while (manualImportSlugs.has(uniqueSlug) || !refIndex.isSlugAvailable(uniqueSlug)) {
         uniqueSlug = `${taskSlug}-${counter}`;
         counter++;
       }
+      manualImportSlugs.add(uniqueSlug);
 
       if (options.dryRun) {
         info(`Would create manual task: @${uniqueSlug}`);
