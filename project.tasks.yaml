@@ -46070,7 +46070,7 @@
   description: "[quick-win] Add AC count display and complexity warning to derive command - warn when
     spec has >5 ACs and suggest decomposition options"
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46112,6 +46112,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T11:20:22.826Z
+  closed_reason: "Merged in PR #338. Added AC count display (N ACs) and complexity warning (>5 ACs
+    suggests splitting) to derive command output. 7 tests covering all scenarios."
 - _ulid: 01KGTY1XTCAKK8NGNY9188KPXA
   slugs: []
   title: Add batch commands subcommand for discoverability
