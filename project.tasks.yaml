@@ -46873,9 +46873,18 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-07T16:07:10.499Z
-  notes: []
-  todos: []
   started_at: 2026-02-07T17:39:37.108Z
+  notes:
+    - _ulid: 01KGWKFNP1FM4KKBR9G2SW32H6
+      created_at: 2026-02-07T17:48:06.722Z
+      author: "@claude"
+      content: "Implemented shared CLI validation helpers: parseIntOption (Number() instead of parseInt,
+        rejects partial parses/floats), validateEnumOption (type-safe enum check), validateSpecRef
+        (positive assertion ref IS a spec item). Fixed gaps: inbox promote + meta promote now
+        validate priority, task add + inbox promote now validate spec_ref. All helpers return
+        Result<T> — no process.exit(). 19 unit tests pass, full suite has 0 regressions."
+      supersedes: null
+  todos: []
 - _ulid: 01KGWDPYTP4QK4B21BVRXZXQPD
   slugs: []
   title: Update README and AGENTS.md with documentation for recent features
