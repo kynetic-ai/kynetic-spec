@@ -35919,5 +35919,31 @@
   context: []
   vcs_refs: []
   created_at: 2026-02-07T06:05:22.110Z
-  notes: []
+  notes:
+    - _ulid: 01KGVB9DDRX1V0E61VRSHC1853
+      created_at: 2026-02-07T06:05:38.616Z
+      author: "@claude"
+      content: |-
+        ## Context
+
+        The ACP framing layer at `src/acp/framing.ts:64-67` sets a 5-minute (300,000ms) timeout for `session/prompt` and `session/resume` methods. The timer resets on any agent activity (tool calls, notifications) via `resetPendingTimers()` at line 245.
+
+        However, the 5-minute default is too aggressive for ralph loop usage. The agent can go silent for extended periods due to:
+        - Anthropic API slowness/throttling
+        - Extended thinking on complex tasks
+        - Large context processing before first output
+
+        ### Proposed fix
+
+        The ralph loop should override the default timeout when spawning agents. Options:
+        1. Pass a higher `methodTimeouts` override in `JsonRpcFramingOptions` when creating the framing layer for ralph agents (preferred — keeps default reasonable for non-ralph usage)
+        2. Increase the default globally (less ideal — 30min is too long for general use)
+
+        The framing constructor already supports overrides via `options.methodTimeouts` (line 94-97), so ralph just needs to pass `{ 'session/prompt': 30 * 60 * 1000 }` through the spawner.
+
+        ### Files
+        - `src/acp/framing.ts` — timeout defaults and override mechanism
+        - `src/ralph/index.ts` or `src/cli/commands/ralph.ts` — where agents are spawned
+        - `src/agents/spawner.ts` — may need to thread timeout options through
+      supersedes: null
   todos: []
