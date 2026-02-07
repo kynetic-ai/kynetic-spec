@@ -30,6 +30,8 @@ import {
   type ToolUsageStats,
   type TimePeriodStats,
   type IterationSummary,
+  type SessionSearchResult,
+  type SearchMatch,
   getAllSessionLogSummaries,
   getSessionLogDetail,
   resolveSessionId,
@@ -39,6 +41,7 @@ import {
   computeToolUsageStats,
   computeTimePeriodStats,
   listSessions,
+  searchSessionEvents,
 } from "../../sessions/store.js";
 import type { SessionEvent, SessionStatus } from "../../sessions/types.js";
 import {
@@ -1840,6 +1843,109 @@ async function sessionLogStatsAction(
   }
 }
 
+// ─── Session Log Search ─────────────────────────────────────────────────────────
+
+interface SessionLogSearchOptions {
+  type?: string;
+  since?: string;
+  agent?: string;
+  limit?: string;
+}
+
+/**
+ * Format relative timestamp from event timestamp (Unix ms) to session start.
+ */
+function formatSearchTimestamp(eventTs: number): string {
+  return new Date(eventTs).toISOString();
+}
+
+/**
+ * Format the session log search output.
+ *
+ * AC: @session-log-search ac-1, ac-4
+ */
+function formatSessionLogSearch(results: SessionSearchResult[]): void {
+  if (results.length === 0) {
+    // AC: @session-log-search ac-6
+    console.log("No matches found.");
+    return;
+  }
+
+  let totalMatches = 0;
+  for (const session of results) {
+    totalMatches += session.matches.length;
+  }
+
+  console.log(chalk.bold(`Found ${totalMatches} match(es) in ${results.length} session(s)`));
+  console.log(chalk.gray("─".repeat(60)));
+
+  for (const session of results) {
+    // Session header
+    console.log(
+      `\n${chalk.cyan(`Session ${session.session_id.slice(0, 8)}`)} ` +
+        `${chalk.gray(`(${session.agent_type}, started ${formatRelativeTime(new Date(session.started_at))})`)}`
+    );
+
+    // AC: @session-log-search ac-4 - Show matches with session ID, timestamp, type, excerpt
+    for (const match of session.matches) {
+      const ts = formatSearchTimestamp(match.timestamp);
+      const typeColor =
+        match.event_type === "session.start" || match.event_type === "session.end"
+          ? chalk.green
+          : match.event_type === "session.update"
+            ? chalk.blue
+            : chalk.gray;
+      console.log(
+        `  ${chalk.yellow(ts)} ${typeColor(match.event_type.padEnd(16))}`,
+      );
+      // Content excerpt on next line, indented
+      console.log(`    ${chalk.gray(match.content_excerpt)}`);
+    }
+  }
+}
+
+/**
+ * Session log search action handler.
+ *
+ * AC: @session-log-search ac-1 through ac-7
+ */
+async function sessionLogSearchAction(
+  pattern: string,
+  options: SessionLogSearchOptions,
+): Promise<void> {
+  try {
+    const ctx = await initContext();
+
+    // Parse options - validate limit as positive integer
+    let limit = 50;
+    if (options.limit) {
+      const parsed = parseInt(options.limit, 10);
+      if (Number.isNaN(parsed) || parsed <= 0) {
+        error(`Invalid limit: ${options.limit}. Must be a positive integer.`);
+        process.exit(EXIT_CODES.USAGE_ERROR);
+      }
+      limit = parsed;
+    }
+    const sinceDate = options.since ? parseTimeSpec(options.since) : undefined;
+
+    // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
+    const results = await searchSessionEvents(ctx.specDir, pattern, {
+      eventType: options.type,
+      sinceDate: sinceDate || undefined,
+      agentType: options.agent,
+      limit,
+    });
+
+    // AC: @session-log-search ac-6 - No matches found message
+    // exit code 0 regardless (per @trait-semantic-exit-codes ac-5)
+
+    output(results, () => formatSessionLogSearch(results));
+  } catch (err) {
+    error("Failed to search session logs", err);
+    process.exit(EXIT_CODES.ERROR);
+  }
+}
+
 /**
  * Register the 'session' command group and aliases
  */
@@ -1909,6 +2015,18 @@ export function registerSessionCommands(program: Command): void {
     .option("--by-day", "Group stats by day")
     .option("--by-week", "Group stats by week")
     .action(sessionLogStatsAction);
+
+  log
+    .command("search <pattern>")
+    .description("Search across session events by content")
+    .option("-t, --type <type>", "Only search events of this type (e.g., session.update)")
+    .option(
+      "--since <time>",
+      "Only search sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
+    )
+    .option("--agent <type>", "Only search sessions with this agent type")
+    .option("-n, --limit <n>", "Maximum matches to return (default: 50)")
+    .action(sessionLogSearchAction);
 
   session
     .command("checkpoint")
