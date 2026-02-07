@@ -106,41 +106,55 @@ describe('getSessionLogSummary', () => {
     expect(summary!.ended_at).toBeUndefined();
   });
 
-  it('should count task completions from events', async () => {
+  it('should count task completions from realistic tool_call events', async () => {
     const sessionId = testUlid('SESS', 2);
     await createSession(testDir, {
       id: sessionId,
       agent_type: 'claude-code-acp',
     });
 
-    // Append events including task completions
+    // Append events including realistic task complete tool calls
     await appendEvent(testDir, {
       type: 'session.start',
       session_id: sessionId,
       data: null,
     });
-    // Write events with task.complete type strings directly
+    // Write realistic session.update events with tool_call shape
     const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
-    const taskCompleteEvent = JSON.stringify({
+    const toolCallEvent1 = JSON.stringify({
       ts: Date.now(),
       seq: 1,
-      type: 'task.complete',
+      type: 'session.update',
       session_id: sessionId,
-      data: { task_ref: '@my-task' },
+      data: {
+        iteration: 1,
+        update: {
+          _meta: { claudeCode: { toolName: 'Bash' } },
+          sessionUpdate: 'tool_call',
+          rawInput: { command: 'kspec task complete @my-task --reason "Done"' },
+        },
+      },
     });
-    await fs.appendFile(eventsPath, taskCompleteEvent + '\n');
-    const taskCompleteEvent2 = JSON.stringify({
+    await fs.appendFile(eventsPath, toolCallEvent1 + '\n');
+    const toolCallEvent2 = JSON.stringify({
       ts: Date.now(),
       seq: 2,
-      type: 'task.complete',
+      type: 'session.update',
       session_id: sessionId,
-      data: { task_ref: '@another-task' },
+      data: {
+        iteration: 1,
+        update: {
+          _meta: { claudeCode: { toolName: 'Bash' } },
+          sessionUpdate: 'tool_call',
+          rawInput: { command: 'npm run dev -- task complete @another-task --reason "All done"' },
+        },
+      },
     });
-    await fs.appendFile(eventsPath, taskCompleteEvent2 + '\n');
+    await fs.appendFile(eventsPath, toolCallEvent2 + '\n');
 
     const summary = await getSessionLogSummary(testDir, sessionId);
     expect(summary!.tasks_completed).toBe(2);
-    expect(summary!.event_count).toBe(3); // session.start + 2 task.complete
+    expect(summary!.event_count).toBe(3); // session.start + 2 tool_call updates
   });
 });
 
@@ -239,7 +253,17 @@ describe('kspec session log list (CLI)', () => {
     }));
     await fs.writeFile(path.join(s3Dir, 'events.jsonl'), [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: s3, data: null }),
-      JSON.stringify({ ts: 2000, seq: 1, type: 'task.complete', session_id: s3, data: { ref: '@task-1' } }),
+      JSON.stringify({
+        ts: 2000, seq: 1, type: 'session.update', session_id: s3,
+        data: {
+          iteration: 1,
+          update: {
+            _meta: { claudeCode: { toolName: 'Bash' } },
+            sessionUpdate: 'tool_call',
+            rawInput: { command: 'kspec task complete @task-1 --reason "Done"' },
+          },
+        },
+      }),
     ].join('\n') + '\n');
   });
 

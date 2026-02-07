@@ -445,8 +445,12 @@ async function countIterations(
 }
 
 /**
- * Count task completions by scanning events for task.complete or session.end
- * with task data. Only parses the `type` field for performance.
+ * Count task completions by scanning events for tool calls that invoke
+ * `kspec task complete` or `npm run dev -- task complete`.
+ *
+ * Real sessions record task completions as session.update events with
+ * sessionUpdate: "tool_call" and rawInput.command containing the complete command.
+ * We use a fast substring check before JSON parsing for performance.
  */
 async function countTaskCompletions(
   specDir: string,
@@ -459,12 +463,18 @@ async function countTaskCompletions(
     const lines = content.trim().split("\n");
     let count = 0;
     for (const line of lines) {
-      // Quick string check before JSON parse for performance
-      if (
-        line.includes('"task.complete"') ||
-        line.includes('"task_completed"')
-      ) {
-        count++;
+      // Quick substring pre-filter: only parse lines that might contain task complete commands
+      if (!line.includes("task complete")) continue;
+      // Must be a tool_call event (session.update with sessionUpdate: "tool_call")
+      if (!line.includes('"tool_call"')) continue;
+      try {
+        const event = JSON.parse(line);
+        const command = event?.data?.update?.rawInput?.command;
+        if (typeof command === "string" && /\btask complete\b/.test(command)) {
+          count++;
+        }
+      } catch {
+        // Skip unparseable lines
       }
     }
     return count;
