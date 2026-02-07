@@ -2861,8 +2861,43 @@ runs:
   - _ulid: 01KGVJWXXWVW70BM2DC2NXG2XX
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-07T08:18:38.140Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-07T08:18:38.140Z
+        completed_at: 2026-02-07T08:18:52.864Z
+        notes: >-
+          Step 1: What Worked Well
+
+
+          1. **Batch command for bulk operations** — Deleting 6+ inbox items atomically in one
+          command instead of serial calls. The batch feature we recently built paid off immediately
+          during this triage session.
+
+
+          2. **Categorization before action** — Starting with a full inventory grouped by theme,
+          then working through quick wins first, gave the user confidence and momentum. Much better
+          than going item-by-item from the top.
+
+
+          3. **AskUserQuestion for one-at-a-time promotion** — Presenting each item with
+          What/Why/How context and letting the user decide individually kept alignment tight. No
+          surprises.
+
+
+          4. **Cross-referencing against completed tasks** — Checking git log and task list for
+          completed work caught 5+ items that were already done. Without this, they'd linger in
+          inbox forever.
+
+
+          5. **Implementation notes on promote** — Adding concrete implementation notes during
+          promotion (not after) means each task is self-contained. Future agents can pick them up
+          without context loss.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-07T08:18:52.864Z
+        completed_at: 2026-02-07T08:18:52.864Z
     initiated_by: "@claude"
