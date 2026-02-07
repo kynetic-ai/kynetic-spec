@@ -1,9 +1,4 @@
 inbox:
-  - _ulid: 01KFDQCG96CYSJ5HEK1Q87QMFS
-    text: Add feature to spawn worktree for an agent to work in
-    created_at: 2026-01-20T12:51:58.887Z
-    tags: []
-    added_by: Jacob Chapel
   - _ulid: 01KFE2XFQKG1SV7KQ4RSBD6DYP
     text: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to
       prevent scope creep beyond target work"

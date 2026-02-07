@@ -46365,24 +46365,24 @@
         notes also filter? Probably yes for consistency."
       supersedes: null
   todos: []
-- title: Support ephemeral workflow runs without persistent state
+- _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
+  slugs: []
+  title: Support ephemeral workflow runs without persistent state
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - workflow
-    - dx
   description: "Ephemeral workflow runs - Add support for workflows that don't persist run state. Use
     cases: simple instruction flows, quick checklists, trivial step sequences. Options: (1)
     --ephemeral flag on 'workflow start', (2) workflow.ephemeral field in definition, (3) both with
     override. Ephemeral runs: no file storage, no shadow commits, not shown in 'workflow runs',
     state only in session context or just sequential display. Reduces noise for simple flows."
-  _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - workflow
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T07:44:20.870Z
   notes:
@@ -46396,5 +46396,32 @@
         temp file. No shadow commits during run. Not shown in workflow runs. This avoids rethinking
         the execution model while achieving the goal of no persistent noise. Affects: workflow
         start, next, show, runs commands."
+      supersedes: null
+  todos: []
+- title: Add kspec worktree command to spawn isolated agent workspaces
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Add feature to spawn worktree for an agent to work in
+  _ulid: 01KGVGZHRPK2782D02FF83XC6K
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T07:45:06.838Z
+  notes:
+    - _ulid: 01KGVGZHRPM50MHRNSZ48T0EN8
+      created_at: 2026-02-07T07:45:06.838Z
+      author: "@claude"
+      content: "Implementation: Needs design/spec work. Key decisions: (1) Lifecycle — kspec worktree
+        create @task creates worktree on new branch, kspec worktree cleanup removes it. (2) Shadow
+        branch — worktrees share the same .kspec/ (single source of truth for tasks), or each gets a
+        read-only copy. Sharing is simpler but risks concurrent writes. (3) Naming — branch:
+        agent/<task-slug>, worktree dir: .worktrees/<task-slug>. (4) Integration — ralph could
+        auto-create worktree per task, merge back on completion. Start with manual create/cleanup,
+        add ralph integration later."
       supersedes: null
   todos: []
