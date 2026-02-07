@@ -5519,4 +5519,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGVDDPDMPZ9008WHBJHGHZN6
+    type: success
+    content: Task @01KGVARW had excellent root cause analysis in its notes (specific file, line numbers,
+      all call sites, exact reproduction). This made the fix trivial — under 10 minutes from start
+      to merged PR. Detailed bug reports with root cause are high-leverage.
+    created_at: 2026-02-07T06:42:56.052Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
