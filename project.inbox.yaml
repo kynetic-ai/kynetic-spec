@@ -276,7 +276,12 @@ inbox:
       - reflection
     added_by: "@claude"
   - _ulid: 01KGW2YS8FC5HK08FASQS6S7KE
-    text: Updated content for test
+    text: |-
+      Updated content for test
+
+      ---
+
+      Additional context appended via note command
     created_at: 2026-02-07T12:59:16.111Z
     tags:
       - test-tag
