@@ -46346,7 +46346,14 @@
         yet, warn (don't block). Skip transitive deps — only direct. No circular detection needed if
         specs are acyclic (validate could check). Addresses #1 post-import friction from MEMORY.md."
       supersedes: null
+    - _ulid: 01KGVJKYB7R1770K1W4FYCP6NN
+      created_at: 2026-02-07T08:13:43.655Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Needs design decisions on transitive deps and
+        missing dependency handling"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
   slugs: []
   title: Filter superseded notes from default task display
@@ -46375,7 +46382,14 @@
         notes with a 'superseded: true' computed field. Design question: should session start recent
         notes also filter? Probably yes for consistency."
       supersedes: null
+    - _ulid: 01KGVJKZ4JY6BXMV8EPWPXCZFR
+      created_at: 2026-02-07T08:13:44.466Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Needs data model verification for note supersession
+        tracking"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
   slugs: []
   title: Support ephemeral workflow runs without persistent state
@@ -46408,7 +46422,14 @@
         the execution model while achieving the goal of no persistent noise. Affects: workflow
         start, next, show, runs commands."
       supersedes: null
+    - _ulid: 01KGVJKZWYET14PKPZXRZG1RW4
+      created_at: 2026-02-07T08:13:45.246Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Fundamental workflow execution model change needs
+        design"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KGVGZHRPK2782D02FF83XC6K
   slugs: []
   title: Add kspec worktree command to spawn isolated agent workspaces
@@ -46435,4 +46456,11 @@
         auto-create worktree per task, merge back on completion. Start with manual create/cleanup,
         add ralph integration later."
       supersedes: null
+    - _ulid: 01KGVJM0MKYA8TG1X1NGH3G7A2
+      created_at: 2026-02-07T08:13:46.003Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Major new feature needs design for lifecycle,
+        shadow branch interaction, cleanup"
+      supersedes: null
   todos: []
+  automation: needs_review
