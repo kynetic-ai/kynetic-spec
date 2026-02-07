@@ -3081,7 +3081,7 @@ runs:
   - _ulid: 01KGWMQFTG4XGCJAT3F31Y4XHQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-07T18:09:51.440Z
     step_results:
@@ -3151,5 +3151,34 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-07T18:10:26.772Z
-        completed_at: 2026-02-07T18:10:26.772Z
+        completed_at: 2026-02-07T18:10:58.955Z
+        notes: >-
+          Coverage check results:
+
+
+          1. **Session log discoverability** - Session log commands ARE specced and implemented
+          (@session-log-list, @session-log-show, etc.). The friction was agent discoverability, not
+          missing features. The documentation task (01KGWDPY) already covers adding session log to
+          AGENTS.md. **Already tracked.**
+
+
+          2. **Codex stderr noise** - Not tracked. This is a Codex skill/tooling issue, not a kspec
+          issue. Low priority since the review files are clean.
+
+
+          3. **Shell quoting in test helper** - Partially covered by test helper improvements
+          (01KFJ4VY, 01KFBP98) but none specifically address the empty-string-through-shell edge
+          case. This is a minor friction point. **Not tracked but low value.**
+
+
+          4. **Codex conflating pre-existing vs introduced issues** - Not tracked. This is a prompt
+          engineering issue in the codex skill, not a kspec feature. **Not tracked.**
+
+
+          5. **Post-merge review workflow** - Not tracked. No existing spec, task, or inbox item for
+          reviewing already-merged code. **Not tracked, potentially useful.**
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-07T18:10:58.955Z
+        completed_at: 2026-02-07T18:10:58.955Z
     initiated_by: "@claude"
