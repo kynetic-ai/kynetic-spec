@@ -46280,6 +46280,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #342. Plan slugs are now auto-prefixed with 'plan-' to prevent
+    collision with spec slugs. Collision detection added for manual --slug in plan add/set commands.
+    Uniqueness check ensures auto-generated slugs don't collide with existing plans."
   depends_on: []
   context: []
   priority: 3
@@ -46290,6 +46293,7 @@
   vcs_refs: []
   created_at: 2026-02-07T02:36:54.458Z
   started_at: 2026-02-07T12:34:38.784Z
+  completed_at: 2026-02-07T12:57:05.176Z
   notes:
     - _ulid: 01KGTZB6SV49C2SS5GA2J0S3EF
       created_at: 2026-02-07T02:36:54.459Z
@@ -46319,10 +46323,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T12:57:05.176Z
-  closed_reason: "Merged in PR #342. Plan slugs are now auto-prefixed with 'plan-' to prevent
-    collision with spec slugs. Collision detection added for manual --slug in plan add/set commands.
-    Uniqueness check ensures auto-generated slugs don't collide with existing plans."
 - _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
   slugs: []
   title: Add inbox set and inbox note commands for editing items
@@ -46330,7 +46330,7 @@
   description: Add update/note capability to inbox items - allow 'inbox update @ref --content' or
     'inbox note @ref' to modify/append to items without delete+re-add cycle
   spec_ref: "@inbox-set"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46353,6 +46353,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T12:58:02.670Z
 - _ulid: 01KGTZEYRB1B81YREN5FKHSN38
   slugs: []
   title: Enrich session start with pending_review and recently completed notes
