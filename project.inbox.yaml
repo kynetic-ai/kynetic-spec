@@ -285,3 +285,9 @@ inbox:
       - plan
       - dx
     added_by: "@claude"
+  - _ulid: 01KGVC4ZYF62SY94YC4H8ER51E
+    text: "Add regression test asserting ralph spawn sites pass methodTimeouts for session/prompt and
+      session/resume (from Codex review of PR #328, task @01KGVB8X)"
+    created_at: 2026-02-07T06:20:42.319Z
+    tags: []
+    added_by: "@claude"
