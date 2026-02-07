@@ -45634,6 +45634,17 @@
         - JSON output support for all features
         - 28 tests covering all acceptance criteria
       supersedes: null
+    - _ulid: 01KGVMPT9D1RTHQDEEV3Z073VV
+      created_at: 2026-02-07T08:50:14.957Z
+      author: "@claude"
+      content: |-
+        Codex PR review completed. Fixed:
+        1. Per-iteration summaries now correctly handle events before context snapshots exist
+        2. Added regression test for iteration drift scenario
+        3. Updated AC-9 spec to use semantic exit code 3 (NOT_FOUND)
+
+        All issues from initial review addressed. PR ready for merge.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTN2ACK018NKMN7ESS3NJG2
