@@ -29,6 +29,7 @@ export {
   buildSubagentPrompt,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  RALPH_PROMPT_TIMEOUT,
   runSubagent,
   type SubagentConfig,
   type SubagentContext,

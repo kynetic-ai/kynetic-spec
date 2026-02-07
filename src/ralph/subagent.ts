@@ -79,6 +79,14 @@ export const DEFAULT_SUBAGENT_TIMEOUT = 10 * 60 * 1000;
 /** Default output prefix for subagent */
 export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
 
+/**
+ * Default ACP prompt timeout for ralph agents: 30 minutes.
+ * The framing layer default (5 min) is too aggressive — API slowness,
+ * extended thinking, and large context processing can exceed it even
+ * with the keepalive mechanism (which resets on tool calls/notifications).
+ */
+export const RALPH_PROMPT_TIMEOUT = 30 * 60 * 1000;
+
 // ============================================================================
 // Prompt Builder
 // ============================================================================
@@ -176,6 +184,10 @@ export async function runSubagent(
         clientInfo: {
           name: "kspec-ralph-subagent",
           version: "1.0.0",
+        },
+        methodTimeouts: {
+          "session/prompt": RALPH_PROMPT_TIMEOUT,
+          "session/resume": RALPH_PROMPT_TIMEOUT,
         },
       },
     });
