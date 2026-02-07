@@ -45720,6 +45720,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-06T23:37:17.691Z
+  started_at: 2026-02-07T09:20:33.167Z
   notes:
     - _ulid: 01KGTN2AKV5HWC7ZW7Q2HE7EFQ
       created_at: 2026-02-06T23:37:17.691Z
@@ -45732,9 +45733,27 @@
         (--since, --agent) before scanning events to reduce I/O.
         Content excerpt: take 200 chars around match position.
         Depends on shared event stream reader and date filter utility.
+    - _ulid: 01KGVPS69G0W0HSZQBEVREYC31
+      created_at: 2026-02-07T09:26:29.936Z
+      author: "@claude"
+      content: >-
+        Implemented session log search command with:
+
+        - Added searchSessionEvents() function to sessions/store.ts with case-insensitive substring
+        matching
+
+        - Pre-filters sessions by --since and --agent before scanning events for performance
+
+        - Quick substring pre-filter on lines before JSON parsing for efficiency
+
+        - Content excerpts limited to 200 chars, centered on match
+
+        - CLI command registered with --type, --since, --agent, -n/--limit flags
+
+        - 27 tests covering all 7 spec ACs plus trait ACs for JSON output and exit codes
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T09:20:33.167Z
 - _ulid: 01KGTNT0HR1XZ5B44B4AJAKJDE
   slugs: []
   title: Document prompt-file pattern in codex skill
