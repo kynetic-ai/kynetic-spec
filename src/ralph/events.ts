@@ -326,16 +326,29 @@ function wasOutputTruncated(
 // Noise Suppression
 // ============================================================================
 
-const SUPPRESSED_PATTERNS = [
-  /No onPostToolUseHook found/i,
-  /No onPreToolUseHook found/i,
+/**
+ * Noise patterns to strip from streaming content.
+ * These match Claude Code hook warning messages that leak into agent output.
+ * Pattern structure: message prefix + optional "for tool use ID: <id>" or similar
+ */
+const NOISE_PATTERNS = [
+  /No onPostToolUseHook found(?:\s+for\s+tool\s+use\s+ID:\s*\S+)?/gi,
+  /No onPreToolUseHook found(?:\s+for\s+tool\s+use(?:\s+ID:\s*\S+)?)?/gi,
 ];
 
 /**
- * Check if a message should be suppressed from display.
+ * Strip noise patterns from content.
+ * Returns the cleaned content, or null if nothing remains after stripping.
+ * Preserves leading/trailing whitespace to maintain streaming accumulation.
  */
-function shouldSuppress(content: string): boolean {
-  return SUPPRESSED_PATTERNS.some((pattern) => pattern.test(content));
+function stripNoise(content: string): string | null {
+  let cleaned = content;
+  for (const pattern of NOISE_PATTERNS) {
+    cleaned = cleaned.replace(pattern, "");
+  }
+  // Only return null if the content is entirely empty or whitespace
+  // But preserve whitespace otherwise for proper accumulation
+  return cleaned.length > 0 && cleaned.trim().length > 0 ? cleaned : null;
 }
 
 // ============================================================================
@@ -376,11 +389,6 @@ export function createTranslator(): RalphTranslator {
           update as { content?: { type: string; text?: string } }
         ).content;
         if (content?.type === "text" && typeof content.text === "string") {
-          // Check for noise
-          if (shouldSuppress(content.text)) {
-            return null;
-          }
-
           // Empty string signals finalization
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_message") {
@@ -399,13 +407,19 @@ export function createTranslator(): RalphTranslator {
             return null;
           }
 
+          // Strip noise patterns from content
+          const cleanedText = stripNoise(content.text);
+          if (cleanedText === null) {
+            return null;
+          }
+
           // Accumulate content
           if (state.activeMessage?.type === "agent_message") {
-            state.activeMessage.content += content.text;
+            state.activeMessage.content += cleanedText;
           } else {
             state.activeMessage = {
               type: "agent_message",
-              content: content.text,
+              content: cleanedText,
             };
           }
 
@@ -414,7 +428,7 @@ export function createTranslator(): RalphTranslator {
             timestamp,
             data: {
               kind: "agent_message",
-              content: content.text,
+              content: cleanedText,
               isStreaming: true,
             },
           };
@@ -427,10 +441,6 @@ export function createTranslator(): RalphTranslator {
           update as { content?: { type: string; text?: string } }
         ).content;
         if (content?.type === "text" && typeof content.text === "string") {
-          if (shouldSuppress(content.text)) {
-            return null;
-          }
-
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_thought") {
               const final: RalphEvent = {
@@ -448,12 +458,18 @@ export function createTranslator(): RalphTranslator {
             return null;
           }
 
+          // Strip noise patterns from content
+          const cleanedText = stripNoise(content.text);
+          if (cleanedText === null) {
+            return null;
+          }
+
           if (state.activeMessage?.type === "agent_thought") {
-            state.activeMessage.content += content.text;
+            state.activeMessage.content += cleanedText;
           } else {
             state.activeMessage = {
               type: "agent_thought",
-              content: content.text,
+              content: cleanedText,
             };
           }
 
@@ -462,7 +478,7 @@ export function createTranslator(): RalphTranslator {
             timestamp,
             data: {
               kind: "agent_thought",
-              content: content.text,
+              content: cleanedText,
               isStreaming: true,
             },
           };

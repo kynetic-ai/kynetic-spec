@@ -582,7 +582,7 @@ describe('ralph event translator', () => {
   });
 
   describe('noise suppression', () => {
-    it('suppresses onPostToolUseHook messages', () => {
+    it('suppresses standalone onPostToolUseHook messages', () => {
       const translator = createTranslator();
       const event = translator.translate(
         makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_123')
@@ -591,13 +591,68 @@ describe('ralph event translator', () => {
       expect(event).toBeNull();
     });
 
-    it('suppresses onPreToolUseHook messages', () => {
+    it('suppresses standalone onPreToolUseHook messages', () => {
       const translator = createTranslator();
       const event = translator.translate(
         makeChunk('agent_message_chunk', 'No onPreToolUseHook found for tool use')
       );
 
       expect(event).toBeNull();
+    });
+
+    it('strips embedded hook noise while preserving surrounding content', () => {
+      const translator = createTranslator();
+      // Simulates the observed bug: noise concatenated with agent message
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'Excellent creative brief. Now launching Phase 2...No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
+      );
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('agent_message');
+      expect((event!.data as { content: string }).content).toBe('Excellent creative brief. Now launching Phase 2...');
+    });
+
+    it('strips multiple noise patterns from same chunk', () => {
+      const translator = createTranslator();
+      // Realistic pattern: two hook warnings with proper format
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'Start No onPreToolUseHook found for tool use ID: abc middle No onPostToolUseHook found for tool use ID: xyz end')
+      );
+
+      expect(event).not.toBeNull();
+      // Content between/around noise is preserved (with empty space where noise was)
+      expect((event!.data as { content: string }).content).toBe('Start  middle  end');
+    });
+
+    it('accumulates cleaned content across chunks', () => {
+      const translator = createTranslator();
+
+      // Chunk with noise concatenated directly at the end (no space before noise)
+      translator.translate(
+        makeChunk('agent_message_chunk', 'First part.No onPostToolUseHook found for tool use ID: xyz')
+      );
+
+      // Clean chunk with leading space
+      translator.translate(
+        makeChunk('agent_message_chunk', ' Second part.')
+      );
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('First part. Second part.');
+    });
+
+    it('handles noise in thought chunks the same way', () => {
+      const translator = createTranslator();
+      const event = translator.translate(
+        makeChunk('agent_thought_chunk', 'Thinking about this...No onPostToolUseHook found for tool use ID: toolu_abc')
+      );
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('agent_thought');
+      expect((event!.data as { content: string }).content).toBe('Thinking about this...');
     });
   });
 
