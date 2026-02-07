@@ -12,6 +12,20 @@ describe('Item Set Relationship Flags', () => {
     await cleanupTempDir(tempDir);
   });
 
+  describe('--status flag', () => {
+    // AC: @item-set ac-4
+    it('should update implementation status', () => {
+      kspec('item add --under @test-core --title "Status Test" --type requirement --slug status-test', tempDir);
+
+      const result = kspec('item set @status-test --status implemented', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Updated item');
+
+      const item = kspecJson<{ status: { implementation?: string } }>('item get @status-test', tempDir);
+      expect(item.status.implementation).toBe('implemented');
+    });
+  });
+
   describe('--relates-to flag', () => {
     // AC: @item-set ac-5
     it('should add relates_to reference to item', () => {
