@@ -35788,18 +35788,18 @@
       content: "Implementation: Add two subcommands in src/cli/commands/inbox.ts. (1) inbox set @ref --content 'new text' — replaces item content, preserving ULID/timestamp/tags. (2) inbox note @ref 'appended context' — appends text to existing content with separator. Follow task note pattern for append. Find item by ref, modify content field, save via existing YAML writer. ~25 lines + tests for both replace and append paths."
       supersedes: null
   todos: []
-- title: Enrich session start with pending_review and recently completed notes
-  type: task
-  priority: 3
-  spec_ref: null
-  tags: []
-  description: Recent notes should cover pending review notes and most recently closed task notes as well, probably separated out with some more organization so it is clear what was being worked on and if there is anything from prior work worth sharing forward (in case its a continuation of the same type of work)
-  _ulid: 01KGTZEYRB1B81YREN5FKHSN38
+- _ulid: 01KGTZEYRB1B81YREN5FKHSN38
   slugs: []
+  title: Enrich session start with pending_review and recently completed notes
+  type: task
+  description: Recent notes should cover pending review notes and most recently closed task notes as well, probably separated out with some more organization so it is clear what was being worked on and if there is anything from prior work worth sharing forward (in case its a continuation of the same type of work)
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T02:38:57.291Z
   notes:
@@ -35824,5 +35824,35 @@
   context: []
   vcs_refs: []
   created_at: 2026-02-07T05:56:36.917Z
-  notes: []
+  notes:
+    - _ulid: 01KGVASA25FCF8BH80S33YDTZ8
+      created_at: 2026-02-07T05:56:50.885Z
+      author: "@claude"
+      content: |-
+        ## Bug Report
+
+        When a subagent completes in the ralph loop, tool results are sometimes rendered as `[object Object],[object Object]` instead of actual content.
+
+        ### Root Cause
+
+        `src/ralph/events.ts` — `extractToolOutput()` and `extractOriginalOutput()` use `String()` to convert values:
+
+        - Line 212: `String(update.rawOutput)`
+        - Line 229: `String(toolResponse)` (fallback when no stdout)
+        - Line 235: `String(update.output)`
+        - Lines 248, 266: same pattern in `extractOriginalOutput()`
+
+        When ACP delivers tool results as an array of content blocks (e.g. `[{type: 'text', text: '...'}, ...]`), `String()` on an array of objects produces `[object Object],[object Object]`.
+
+        The output then flows through `cli-renderer.ts:231-238` which prints it verbatim.
+
+        ### Fix
+
+        Add a helper function that checks if the value is a string, array, or object, and handles each:
+        - String → use as-is
+        - Array of content blocks → extract `.text` fields and join
+        - Object → `JSON.stringify()`
+
+        Apply to all 5 `String()` call sites in `extractToolOutput()` and `extractOriginalOutput()`.
+      supersedes: null
   todos: []
