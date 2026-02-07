@@ -4287,6 +4287,10 @@ requirements:
         given: tasks exist in pending_review status with notes
         when: kspec session start runs
         then: recent notes section includes pending_review task notes grouped separately from in_progress
+      - id: ac-2
+        given: tasks were recently completed with notes
+        when: kspec session start runs
+        then: recent notes section includes last 3-5 completed task notes in a Recently Completed group
   - _ulid: 01KFFG8XS20YMJR11CA4YZNX9N
     slugs:
       - spec-log-empty-repo
