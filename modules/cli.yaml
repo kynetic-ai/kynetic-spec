@@ -3195,7 +3195,7 @@ features:
         created: 2026-02-06T23:37:16.670Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KGTN29NCWB7E7MYK1P7CCMJ0
         slugs:
           - session-log-stats
