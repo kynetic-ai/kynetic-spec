@@ -74,17 +74,6 @@ inbox:
       - inbox
       - dx
     added_by: "@claude"
-  - _ulid: 01KFM8HDR0JSSEJMABYP3RT1VK
-    text: "Trait applicability guidance in /spec skill - Add section reminding agents to check available
-      traits (kspec trait list) before adding ACs. Prompt: 'Does this spec need common behaviors
-      like JSON output, dry-run, confirmation?' Surfaced during yaml-merge-driver spec creation
-      where user had to remind about traits."
-    created_at: 2026-01-23T01:47:12.512Z
-    tags:
-      - reflection
-      - spec
-      - skill
-    added_by: "@claude"
   - _ulid: 01KFMP2WPMN0XYTSQ10CBBQY8J
     text: Auto-quote YAML AC fields containing braces/colons to prevent parse errors. When kspec item ac
       add receives given/when/then with { [ or :, automatically wrap in quotes before writing YAML.
@@ -138,18 +127,6 @@ inbox:
       - cli
       - trait
     added_by: "@claude"
-  - _ulid: 01KFR0SJMJD9SPP35TDFSCPSN0
-    text: "Improve CLI feature discoverability documentation - Key features are not well-known: (1)
-      'kspec item ac add' for adding ACs via CLI instead of editing YAML, (2) 'kspec task set
-      --refs' for batch operations on multiple tasks. Consider: adding examples to AGENTS.md quick
-      reference, improving --help output with common use cases, or adding a 'kspec cheatsheet'
-      command. Agent didn't know these existed and did manual work instead."
-    created_at: 2026-01-24T12:48:48.787Z
-    tags:
-      - documentation
-      - cli
-      - dx
-    added_by: "@claude"
   - _ulid: 01KFRAJGB5027D4HR4EM9ENRWN
     text: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
       relationship fields require manual YAML editing.
@@ -169,26 +146,6 @@ inbox:
       - reflection
       - templates
       - testing
-    added_by: "@claude"
-  - _ulid: 01KFST4FC88SF28V7FZ6R1T0QW
-    text: "Task Completion Validation - Add validation when marking task complete: if task has test
-      tags, verify tests pass; warn if PR merged but task not completed. Catches 'PR merged but task
-      pending' pattern."
-    created_at: 2026-01-25T05:30:54.728Z
-    tags:
-      - reflection
-      - cli
-      - validation
-    added_by: "@claude"
-  - _ulid: 01KFST4H9EQ8MY4AKGRGHKCEJC
-    text: Automation Eligibility Default Fix - Tasks should not default to 'eligible'. Ralph should only
-      pick up explicitly eligible tasks. Require assessment before automation can claim. Prevents
-      ralph from producing documentary tests on complex/unclear tasks.
-    created_at: 2026-01-25T05:30:56.686Z
-    tags:
-      - reflection
-      - automation
-      - ralph
     added_by: "@claude"
   - _ulid: 01KFT2J3Z7AJ8VPKF1N7H15WGH
     text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during
@@ -236,31 +193,6 @@ inbox:
       - reflection
       - testing
       - tooling
-    added_by: "@claude"
-  - _ulid: 01KG5JTC7202XVYEFJ341GPBPB
-    text: "Workflow/skill docs: Pre-session hygiene guidance. kspec session start already shows dirty
-      tree and WIP tasks. Update workflow steps to explicitly prompt 'check for dirty tree, decide
-      how to handle'. Update skill docs (/task-work) to mention hygiene checks. Agents need to act
-      on info already surfaced."
-    created_at: 2026-01-29T19:13:56.963Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KG5JTDKWKFRJBX6XWFNB52T8
-    text: "Intermediate notes: Add workflow prompts for note-taking at key points (start, pivot, PR
-      created, feedback received). Also add skill guidance documenting best practices - notes should
-      capture 'why decisions were made' not just 'what was done'. Examples: 'Starting with approach
-      A because [reason]', 'Hit issue with X, pivoting to Y'."
-    created_at: 2026-01-29T19:13:58.396Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KG5JTF34KYQTPQJJRBCD7YDE
-    text: "Meta-observation prompts: 1) Document meta-observation examples in AGENTS.md (process
-      observations vs technical observations). 2) Inject soft reminders every N tool calls prompting
-      meta-awareness: 'Consider: how is this session going? Any patterns to note?' Non-blocking
-      awareness prompts. From analysis showing 20 observations captured but none about work process
-      itself."
-    created_at: 2026-01-29T19:13:59.908Z
-    tags: []
     added_by: "@claude"
   - _ulid: 01KG5K5EAMQPWN8G2B3ZRGEMGF
     text: "Task summary view for large files: Add 'kspec task list --summary' or 'kspec task stats'
