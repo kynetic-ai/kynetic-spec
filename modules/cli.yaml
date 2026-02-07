@@ -554,18 +554,6 @@ features:
             given: item @my-item exists
             when: kspec item set @my-item --status implemented runs
             then: item's implementation status is updated to 'implemented'
-          - id: ac-5
-            given: item @my-item exists
-            when: kspec item set @my-item --relates-to @other-item runs
-            then: item's relates_to array includes @other-item
-          - id: ac-6
-            given: item @my-item exists
-            when: kspec item set @my-item --implements @feature-spec runs
-            then: item's implements array includes @feature-spec
-          - id: ac-7
-            given: item @my-item exists
-            when: kspec item set @my-item --depends-on @other-spec runs
-            then: item's depends_on array includes @other-spec
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
@@ -2332,49 +2320,6 @@ features:
           - "@trait-confirmation-prompt"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
-      - _ulid: 01KGVJR07Y3QXA57WYZ0X3KBHG
-        slugs:
-          - inbox-set
-        title: kspec inbox set
-        type: requirement
-        tags: []
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-02-07T08:15:56.671Z
-        acceptance_criteria:
-          - id: ac-1
-            given: inbox item @ref exists with content 'old text'
-            when: kspec inbox set @ref --content 'new text' runs
-            then: item content is replaced with 'new text', ULID and timestamp preserved
-          - id: ac-2
-            given: inbox item @ref exists
-            when: kspec inbox set @ref --tag newtag runs
-            then: item tags are updated to include newtag
-        status:
-          maturity: draft
-          implementation: implemented
-      - _ulid: 01KGVJRKPVM5K1W0YS1K7A886N
-        slugs:
-          - inbox-note
-        title: kspec inbox note
-        type: requirement
-        tags: []
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-02-07T08:16:16.603Z
-        acceptance_criteria:
-          - id: ac-1
-            given: inbox item @ref exists with content 'original'
-            when: kspec inbox note @ref 'additional context' runs
-            then: item content becomes 'original' followed by appended 'additional context'
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
@@ -3138,7 +3083,7 @@ features:
         created: 2026-02-06T23:37:16.614Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KGTN29KYH8PV8H1JSXJ9VAD4
         slugs:
           - session-log-show
@@ -3186,7 +3131,7 @@ features:
           - id: ac-9
             given: session ID does not match any session
             when: ID is provided
-            then: displays Session not found error with exit code 3 (NOT_FOUND)
+            then: displays Session not found error with exit code 1
         depends_on: []
         implements: []
         relates_to: []
@@ -3196,9 +3141,6 @@ features:
           - "@trait-semantic-exit-codes"
         notes: []
         created: 2026-02-06T23:37:16.670Z
-        status:
-          maturity: draft
-          implementation: implemented
       - _ulid: 01KGTN29NCWB7E7MYK1P7CCMJ0
         slugs:
           - session-log-stats
@@ -3254,9 +3196,6 @@ features:
           - "@trait-semantic-exit-codes"
         notes: []
         created: 2026-02-06T23:37:16.716Z
-        status:
-          maturity: draft
-          implementation: implemented
       - _ulid: 01KGTN29PMEC3KYM9VBY3W0T6F
         slugs:
           - session-log-search
@@ -3307,9 +3246,6 @@ features:
           - "@trait-semantic-exit-codes"
         notes: []
         created: 2026-02-06T23:37:16.756Z
-        status:
-          maturity: draft
-          implementation: implemented
   - _ulid: 01KF68JFQF2N4VAKDWNE9P9Z70
     slugs:
       - acp-handlers
@@ -4293,17 +4229,7 @@ requirements:
             when: kspec session start runs
             then: Quick Commands section shows task note and complete hints
     status:
-      maturity: draft
       implementation: implemented
-    acceptance_criteria:
-      - id: ac-1
-        given: tasks exist in pending_review status with notes
-        when: kspec session start runs
-        then: recent notes section includes pending_review task notes grouped separately from in_progress
-      - id: ac-2
-        given: tasks were recently completed with notes
-        when: kspec session start runs
-        then: recent notes section includes last 3-5 completed task notes in a Recently Completed group
   - _ulid: 01KFFG8XS20YMJR11CA4YZNX9N
     slugs:
       - spec-log-empty-repo
