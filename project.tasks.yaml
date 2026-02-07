@@ -46847,7 +46847,10 @@
       supersedes: null
   todos: []
   automation: needs_review
-- title: Create shared CLI validation helpers (parseIntOption, validateRefExists, validateEnumOption)
+- _ulid: 01KGWDPVD3JXNSDHWDHVYQGVQX
+  slugs: []
+  title: Create shared CLI validation helpers (parseIntOption, validateRefExists, validateEnumOption)
+  type: task
   description: "Systemic fix for the validation gap pattern identified across 87.5% of overnight PRs.
     Create src/cli/validators.ts with: (1) parseIntOption - wraps parseInt with NaN/range check,
     replaces 20+ ad-hoc calls; (2) validateRefExists - resolves ref + type check, replaces repeated
@@ -46856,6 +46859,31 @@
     in task add, inbox promote, meta promote, plan derive. Add validation conventions section to
     AGENTS.md. See validation analysis at
     /tmp/claude-1000/-home-chapel-Projects-kynetic-spec/tasks/a47da04.output"
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - validation
+    - dx
+  vcs_refs: []
+  created_at: 2026-02-07T16:07:10.499Z
+  notes: []
+  todos: []
+- title: Update README and AGENTS.md with documentation for recent features
+  description: "Documentation gap analysis found README covers ~1/3 of CLI surface. Key gaps: (1) Fix
+    task state diagram - missing pending_review; (2) Add session log commands (show/stats/search);
+    (3) Add spec item management section; (4) Add inbox management section; (5) Add validate command
+    with --strict, exit codes; (6) Document new flags: item set
+    --relates-to/--implements/--depends-on, item add --trait, batch commands; (7) Expand CLI command
+    reference from ~12 to 30+ commands. Also update AGENTS.md with session log, inbox set/note, item
+    set relationship flags. See
+    /tmp/claude-1000/-home-chapel-Projects-kynetic-spec/tasks/a382af7.output for full analysis."
   type: task
   spec_ref: null
   meta_ref: null
@@ -46863,15 +46891,14 @@
   priority: 2
   slugs: []
   tags:
-    - cli
-    - validation
-    - dx
+    - docs
+    - readme
   depends_on: []
-  _ulid: 01KGWDPVD3JXNSDHWDHVYQGVQX
+  _ulid: 01KGWDPYTP4QK4B21BVRXZXQPD
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-07T16:07:10.499Z
+  created_at: 2026-02-07T16:07:14.005Z
   notes: []
   todos: []
