@@ -46330,7 +46330,7 @@
   description: Add update/note capability to inbox items - allow 'inbox update @ref --content' or
     'inbox note @ref' to modify/append to items without delete+re-add cycle
   spec_ref: "@inbox-set"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46372,6 +46372,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T13:17:53.791Z
+  closed_reason: "Merged in PR #343. Added inbox set (content/tags) and inbox note commands with full
+    AC coverage. All 8 tests passing."
 - _ulid: 01KGTZEYRB1B81YREN5FKHSN38
   slugs: []
   title: Enrich session start with pending_review and recently completed notes
