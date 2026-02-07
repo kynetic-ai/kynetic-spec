@@ -99,15 +99,6 @@ inbox:
       - testing
       - reflection
     added_by: "@claude"
-  - _ulid: 01KFRAJGB5027D4HR4EM9ENRWN
-    text: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
-      relationship fields require manual YAML editing.
-    created_at: 2026-01-24T15:39:42.822Z
-    tags:
-      - cli
-      - dx
-      - reflection
-    added_by: "@claude"
   - _ulid: 01KFT2J3Z7AJ8VPKF1N7H15WGH
     text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during
       init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful

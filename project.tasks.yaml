@@ -45720,23 +45720,23 @@
         during session-log-analysis plan."
       supersedes: null
   todos: []
-- title: Auto-quote YAML AC fields containing special characters
+- _ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
+  slugs: []
+  title: Auto-quote YAML AC fields containing special characters
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - reflection
-    - cli
-    - dx
   description: Auto-quote YAML AC fields containing braces/colons to prevent parse errors. When kspec
     item ac add receives given/when/then with { [ or :, automatically wrap in quotes before writing
     YAML.
-  _ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - reflection
+    - cli
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T01:29:26.775Z
   notes:
@@ -45748,5 +45748,34 @@
         src/parser/ write utilities. ~20 lines + tests for edge cases (nested quotes, already-quoted
         strings). Bug prevention — agents hit this when writing ACs with JSON examples or CLI flag
         syntax."
+      supersedes: null
+  todos: []
+- title: Add --relates-to, --implements, --depends-on flags to item set
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+    - reflection
+  description: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
+    relationship fields require manual YAML editing.
+  _ulid: 01KGTVH6MR2TY83BCRG7W3D1VE
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T01:30:16.599Z
+  notes:
+    - _ulid: 01KGTVH6MRWTD9RGYNGE30R7SF
+      created_at: 2026-02-07T01:30:16.600Z
+      author: "@claude"
+      content: "Implementation: Add relationship flags to item set in src/cli/commands/item.ts. Each takes
+        @ref, append semantics (add to existing array). Consider --clear-relates-to etc. for reset.
+        Follow --slug flag pattern. Validate refs exist. Tests: set each field, verify in item get
+        output, test append behavior and clear. Completes the relationship story — display was added
+        in PR #323, editing is the missing half."
       supersedes: null
   todos: []
