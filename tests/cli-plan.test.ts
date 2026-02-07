@@ -113,6 +113,84 @@ describe("Integration: plan commands", () => {
       );
       expect(result.exitCode).toBe(2); // EXIT_CODES.USAGE_ERROR
     });
+
+    // Auto-namespace plan slugs
+    it("should auto-generate slug with plan- prefix when no slug provided", () => {
+      kspec('plan add --title "My Feature" --content "Content"', tempDir);
+
+      const plan = kspecJson<{ slugs: string[] }>(
+        "plan get @plan-my-feature --json",
+        tempDir,
+      );
+      expect(plan.slugs).toContain("plan-my-feature");
+    });
+
+    it("should use provided slug as-is (no auto-prefix)", () => {
+      kspec(
+        'plan add --title "Another Feature" --content "Content" --slug custom-slug',
+        tempDir,
+      );
+
+      const plan = kspecJson<{ slugs: string[] }>(
+        "plan get @custom-slug --json",
+        tempDir,
+      );
+      expect(plan.slugs).toContain("custom-slug");
+      expect(plan.slugs).not.toContain("plan-custom-slug");
+    });
+
+    it("should error when provided slug collides with existing spec item", async () => {
+      // The fixtures should have a spec item - let's check
+      const itemsOutput = kspec("item list --json", tempDir);
+      const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
+
+      // Find an existing slug from spec items
+      const existingSlug =
+        parsed.items.flatMap((i) => i.slugs).find((s) => s) || "test-module";
+
+      const result = kspecRun(
+        `plan add --title "Collision Test" --content "Content" --slug ${existingSlug}`,
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
+    });
+
+    it("should error when provided slug collides with existing plan", () => {
+      // Create first plan with custom slug
+      kspec('plan add --title "First Plan" --content "Content" --slug my-custom-slug', tempDir);
+
+      // Try to create second plan with same slug
+      const result = kspecRun(
+        'plan add --title "Second Plan" --content "Content" --slug my-custom-slug',
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.stderr).toContain("collides with existing plan");
+      expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
+    });
+
+    it("should auto-generate unique slug when same title is used twice", () => {
+      // Create two plans with the same title
+      kspec('plan add --title "Duplicate Title" --content "First"', tempDir);
+      kspec('plan add --title "Duplicate Title" --content "Second"', tempDir);
+
+      // Both should be retrievable with different slugs
+      const plan1 = kspecJson<{ title: string; slugs: string[] }>(
+        "plan get @plan-duplicate-title --json",
+        tempDir,
+      );
+      expect(plan1.slugs).toContain("plan-duplicate-title");
+
+      const plan2 = kspecJson<{ title: string; slugs: string[] }>(
+        "plan get @plan-duplicate-title-1 --json",
+        tempDir,
+      );
+      expect(plan2.slugs).toContain("plan-duplicate-title-1");
+    });
   });
 
   describe("plan get", () => {
@@ -252,6 +330,39 @@ describe("Integration: plan commands", () => {
 
       const plan = kspecJson<{ slugs: string[] }>("plan get @01 --json", tempDir);
       expect(plan.slugs.filter((s) => s === "existing-slug")).toHaveLength(1);
+    });
+
+    // Slug collision detection for plan set --slug
+    it("should error when adding slug that collides with existing spec item", () => {
+      // Get an existing spec item slug from fixtures
+      const itemsOutput = kspec("item list --json", tempDir);
+      const parsed = JSON.parse(itemsOutput) as { items: Array<{ slugs: string[] }> };
+      const existingSlug =
+        parsed.items.flatMap((i) => i.slugs).find((s) => s) || "test-module";
+
+      const result = kspecRun(
+        `plan set @01 --slug ${existingSlug}`,
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.stderr).toContain("collides with existing spec item");
+      expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
+    });
+
+    it("should error when adding slug that collides with existing plan", () => {
+      // Create another plan with a known slug
+      kspec('plan add --title "Other Plan" --content "Content" --slug other-plan-slug', tempDir);
+
+      // Try to add that slug to the first plan
+      const result = kspecRun(
+        "plan set @01 --slug other-plan-slug",
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.stderr).toContain("collides with existing plan");
+      expect(result.exitCode).toBe(5); // EXIT_CODES.CONFLICT
     });
   });
 
@@ -393,12 +504,12 @@ describe("Integration: plan commands", () => {
       expect(output).toContain("Created task from plan:");
       expect(output).toContain("@implement-auth-feature");
 
-      // Verify task was created with plan_ref (8-char ULID prefix)
+      // Verify task was created with plan_ref (auto-namespaced slug)
       const task = kspecJson<{ plan_ref: string; title: string }>(
         "task get @implement-auth-feature --json",
         tempDir,
       );
-      expect(task.plan_ref).toMatch(/^@01[A-Z0-9]{6}$/);  // 8-char ULID format
+      expect(task.plan_ref).toBe("@plan-auth-feature");  // Auto-namespaced plan slug
       expect(task.title).toBe("Implement: Auth Feature");
     });
 
@@ -511,7 +622,7 @@ describe("Integration: plan commands", () => {
 
       const output = kspec("task get @implement-display-test", tempDir);
       expect(output).toContain("Plan ref:");
-      expect(output).toContain("@01");
+      expect(output).toContain("@plan-display-test");  // Auto-namespaced plan slug
     });
 
     // AC: @plan-derive ac-6

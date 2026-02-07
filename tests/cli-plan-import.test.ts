@@ -108,9 +108,9 @@ Follow coding standards Y.
 
     kspec(`plan import "${planPath}" --module @test-core`, tempDir);
 
-    // Plan record should have the global implementation notes
+    // Plan record should have the global implementation notes (with plan- prefix)
     const plan = kspecJson<{ notes: Array<{ content: string }> }>(
-      "plan get @test-plan --json",
+      "plan get @plan-test-plan --json",
       tempDir,
     );
     expect(plan.notes).toHaveLength(1);
@@ -122,10 +122,10 @@ Follow coding standards Y.
       "task list --json",
       tempDir,
     );
-    const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].notes).toHaveLength(1);
-    expect(tasks[0].notes[0].content).toContain("See plan @test-plan for implementation notes");
+    expect(tasks[0].notes[0].content).toContain("See plan @plan-test-plan for implementation notes");
   });
 
   // AC: @plan-import ac-13 - Per-spec implementation notes
@@ -163,7 +163,7 @@ derive_from_specs: true
       "task list --json",
       tempDir,
     );
-    const tasks = allTasks.filter(t => t.plan_ref === "@per-spec-notes-plan");
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-per-spec-notes-plan");
 
     expect(tasks).toHaveLength(2);
 
@@ -218,7 +218,7 @@ Global architecture notes for the plan.
       "task list --json",
       tempDir,
     );
-    const tasks = allTasks.filter(t => t.plan_ref === "@mixed-notes-plan");
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-mixed-notes-plan");
 
     expect(tasks).toHaveLength(2);
 
@@ -234,11 +234,11 @@ Global architecture notes for the plan.
     // Task without per-spec notes gets plan reference
     expect(withoutNotes).toBeDefined();
     expect(withoutNotes!.notes).toHaveLength(1);
-    expect(withoutNotes!.notes[0].content).toContain("See plan @mixed-notes-plan for implementation notes");
+    expect(withoutNotes!.notes[0].content).toContain("See plan @plan-mixed-notes-plan for implementation notes");
 
     // Plan record should have global notes
     const plan = kspecJson<{ notes: Array<{ content: string }> }>(
-      "plan get @mixed-notes-plan --json",
+      "plan get @plan-mixed-notes-plan --json",
       tempDir,
     );
     expect(plan.notes).toHaveLength(1);
@@ -274,7 +274,7 @@ These are the global notes only.
 
     // Plan record should have global notes
     const plan = kspecJson<{ notes: Array<{ content: string }> }>(
-      "plan get @old-format-plan --json",
+      "plan get @plan-old-format-plan --json",
       tempDir,
     );
     expect(plan.notes).toHaveLength(1);
@@ -285,10 +285,10 @@ These are the global notes only.
       "task list --json",
       tempDir,
     );
-    const tasks = allTasks.filter(t => t.plan_ref === "@old-format-plan");
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-old-format-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].notes).toHaveLength(1);
-    expect(tasks[0].notes[0].content).toContain("See plan @old-format-plan for implementation notes");
+    expect(tasks[0].notes[0].content).toContain("See plan @plan-old-format-plan for implementation notes");
   });
 
   // AC: @plan-import ac-14, ac-25
@@ -463,10 +463,10 @@ derive_from_specs: true
     const allTasks = kspecJson<
       Array<{ spec_ref: string; plan_ref: string; slugs: string[] }>
     >("task list --json", tempDir);
-    const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].spec_ref).toBe("@feature-one");
-    expect(tasks[0].plan_ref).toBe("@test-plan");
+    expect(tasks[0].plan_ref).toBe("@plan-test-plan");
   });
 
   // AC: @plan-import ac-20
@@ -495,7 +495,7 @@ derive_from_specs: true
       "task list --json",
       tempDir,
     );
-    const tasks = allTasks.filter(t => t.plan_ref === "@test-plan");
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-test-plan");
     expect(tasks).toHaveLength(1);
     expect(tasks[0].title).toBe("Implement JSON Output Mode");
   });
@@ -597,7 +597,7 @@ derive_from_specs: true
       derived_tasks: string[];
       status: string;
       source_path: string;
-    }>("plan get @test-plan --json", tempDir);
+    }>("plan get @plan-test-plan --json", tempDir);
     expect(plan.derived_specs).toContain("@feature-one");
     expect(plan.derived_tasks.length).toBeGreaterThan(0);
     expect(plan.status).toBe("active");
@@ -674,7 +674,7 @@ derive_from_specs: true
     const manualTask = tasks.find((t) => t.title === "Manual Task One");
     expect(manualTask).toBeDefined();
     expect(manualTask!.spec_ref).toBeUndefined();
-    expect(manualTask!.plan_ref).toBe("@test-plan");
+    expect(manualTask!.plan_ref).toBe("@plan-test-plan");
     expect(manualTask!.priority).toBe(1);
     expect(manualTask!.tags).toContain("manual");
   });
@@ -699,7 +699,7 @@ derive_from_specs: true
 
     // Should be able to reference the plan
     const plan = kspecJson<{ title: string }>(
-      "plan get @test-plan --json",
+      "plan get @plan-test-plan --json",
       tempDir,
     );
     expect(plan.title).toBe("Test Plan");
@@ -728,7 +728,7 @@ derive_from_specs: true
       errors: unknown[];
     }>(`plan import "${planPath}" --module @test-core`, tempDir);
 
-    expect(result.plan).toBe("@test-plan");
+    expect(result.plan).toBe("@plan-test-plan");
     expect(result.created_specs).toContain("@feature-one");
     expect(result.errors).toBeDefined();
   });
@@ -784,13 +784,13 @@ Ensure backward compatibility.
     const plan = kspecJson<{
       derived_specs: string[];
       derived_tasks: string[];
-    }>("plan get @complete-feature-plan --json", tempDir);
+    }>("plan get @plan-complete-feature-plan --json", tempDir);
     expect(plan.derived_specs).toHaveLength(2);
     expect(plan.derived_tasks).toHaveLength(3);
 
     // Verify plan record has global implementation notes
     const planRecord = kspecJson<{ notes: Array<{ content: string }> }>(
-      "plan get @complete-feature-plan --json",
+      "plan get @plan-complete-feature-plan --json",
       tempDir,
     );
     expect(planRecord.notes).toHaveLength(1);
@@ -802,7 +802,7 @@ Ensure backward compatibility.
       tempDir,
     );
     const derivedTasks = tasks.filter(
-      (t) => t.plan_ref === "@complete-feature-plan" && t.notes.length > 0 && t.notes[0].content.includes("See plan"),
+      (t) => t.plan_ref === "@plan-complete-feature-plan" && t.notes.length > 0 && t.notes[0].content.includes("See plan"),
     );
     expect(derivedTasks).toHaveLength(2); // Both derived tasks should reference the plan
   });
@@ -872,6 +872,82 @@ Ensure backward compatibility.
     expect(item.traits).toContain("@trait-json-output");
     expect(item.traits).toContain("@trait-dry-run");
     expect(item.traits).not.toContain("trait-json-output");
+  });
+
+  // Auto-namespace plan slugs
+  it("should auto-namespace plan slug with plan- prefix", async () => {
+    const planPath = path.join(tempDir, "namespace-test.md");
+    await fs.writeFile(
+      planPath,
+      `# Namespace Test
+
+## Specs
+
+\`\`\`yaml
+- title: Feature One
+  slug: feature-one
+  type: feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Plan slug should have plan- prefix
+    const plan = kspecJson<{ slugs: string[] }>(
+      "plan get @plan-namespace-test --json",
+      tempDir,
+    );
+    expect(plan.slugs).toContain("plan-namespace-test");
+  });
+
+  it("should auto-generate unique plan slugs when importing same title twice", async () => {
+    // Import the same plan twice
+    const planPath = path.join(tempDir, "duplicate-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Duplicate Import
+
+## Specs
+
+\`\`\`yaml
+- title: Feature
+  slug: duplicate-feature
+  type: feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Create new spec slug for second import to avoid skip
+    await fs.writeFile(
+      planPath,
+      `# Duplicate Import
+
+## Specs
+
+\`\`\`yaml
+- title: Feature Two
+  slug: duplicate-feature-two
+  type: feature
+\`\`\`
+`,
+    );
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Both plans should be retrievable with different slugs
+    const plan1 = kspecJson<{ slugs: string[] }>(
+      "plan get @plan-duplicate-import --json",
+      tempDir,
+    );
+    expect(plan1.slugs).toContain("plan-duplicate-import");
+
+    const plan2 = kspecJson<{ slugs: string[] }>(
+      "plan get @plan-duplicate-import-1 --json",
+      tempDir,
+    );
+    expect(plan2.slugs).toContain("plan-duplicate-import-1");
   });
 
   // Bug fix: dry-run path should also preserve ACs and normalize traits
