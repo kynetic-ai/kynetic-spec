@@ -339,16 +339,21 @@ const NOISE_PATTERNS = [
 /**
  * Strip noise patterns from content.
  * Returns the cleaned content, or null if nothing remains after stripping.
- * Preserves leading/trailing whitespace to maintain streaming accumulation.
+ * Preserves whitespace-only chunks that aren't noise to maintain streaming formatting.
  */
 function stripNoise(content: string): string | null {
   let cleaned = content;
   for (const pattern of NOISE_PATTERNS) {
     cleaned = cleaned.replace(pattern, "");
   }
-  // Only return null if the content is entirely empty or whitespace
-  // But preserve whitespace otherwise for proper accumulation
-  return cleaned.length > 0 && cleaned.trim().length > 0 ? cleaned : null;
+
+  // If nothing was stripped, return original (preserves pure whitespace chunks)
+  if (cleaned === content) {
+    return content;
+  }
+
+  // Something was stripped - return cleaned if non-empty, null otherwise
+  return cleaned.length > 0 ? cleaned : null;
 }
 
 // ============================================================================

@@ -654,6 +654,46 @@ describe('ralph event translator', () => {
       expect(event!.type).toBe('agent_thought');
       expect((event!.data as { content: string }).content).toBe('Thinking about this...');
     });
+
+    it('preserves whitespace-only chunks that are not noise', () => {
+      const translator = createTranslator();
+
+      // Whitespace-only chunks can be legitimate streaming tokens (formatting, newlines)
+      const spaceEvent = translator.translate(makeChunk('agent_message_chunk', ' '));
+      expect(spaceEvent).not.toBeNull();
+      expect((spaceEvent!.data as { content: string }).content).toBe(' ');
+
+      // Reset translator for thought chunk test
+      const thoughtTranslator = createTranslator();
+      const newlineEvent = thoughtTranslator.translate(makeChunk('agent_thought_chunk', '\n'));
+      expect(newlineEvent).not.toBeNull();
+      expect((newlineEvent!.data as { content: string }).content).toBe('\n');
+    });
+
+    it('preserves whitespace in accumulated content with noise stripped', () => {
+      const translator = createTranslator();
+
+      // First chunk with noise embedded
+      translator.translate(
+        makeChunk('agent_message_chunk', 'Hello')
+      );
+
+      // Whitespace chunk
+      translator.translate(
+        makeChunk('agent_message_chunk', ' ')
+      );
+
+      // More content
+      translator.translate(
+        makeChunk('agent_message_chunk', 'World')
+      );
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('Hello World');
+    });
   });
 
   describe('tool_call events', () => {
