@@ -45976,6 +45976,7 @@
     - reflection
   vcs_refs: []
   created_at: 2026-02-07T01:30:16.599Z
+  started_at: 2026-02-07T10:13:02.931Z
   notes:
     - _ulid: 01KGTVH6MRWTD9RGYNGE30R7SF
       created_at: 2026-02-07T01:30:16.600Z
@@ -45986,9 +45987,16 @@
         output, test append behavior and clear. Completes the relationship story — display was added
         in PR #323, editing is the missing half."
       supersedes: null
+    - _ulid: 01KGVSRDT1PFS66HMC7J0P0RHT
+      created_at: 2026-02-07T10:18:30.593Z
+      author: "@claude"
+      content: Implemented --relates-to, --implements, --depends-on flags for item set command with append
+        semantics. Added --clear-* variants for clearing each relationship type. Validated refs
+        exist before adding. Added 17 tests covering all ACs (ac-5, ac-6, ac-7) plus duplicate
+        prevention, error handling, and clear functionality.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T10:13:02.931Z
 - _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
   slugs: []
   title: Add --trait flag to item add command
