@@ -45850,6 +45850,12 @@
         parsePlanDocument() error message to suggest fixes. Encountered during session-log-analysis
         plan authoring.'
       supersedes: null
+    - _ulid: 01KGVR8QPBTHFQF93P1QS4TT1Q
+      created_at: 2026-02-07T09:52:27.852Z
+      author: "@claude"
+      content: "Added YAML Syntax Issues section to spec-plan skill covering: embedded quotes breaking
+        parsing, colons in values needing quoting, and best practices for AC fields."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTNXP4V40SRTHWK20MS9MAP
@@ -45870,6 +45876,7 @@
     - spec-plan
   vcs_refs: []
   created_at: 2026-02-06T23:52:14.235Z
+  started_at: 2026-02-07T09:52:13.549Z
   notes:
     - _ulid: 01KGTNXVZ2TZ06CZWZZG1QRWJ7
       created_at: 2026-02-06T23:52:20.195Z
@@ -45881,7 +45888,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T09:52:13.549Z
 - _ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
   slugs: []
   title: Auto-quote YAML AC fields containing special characters
