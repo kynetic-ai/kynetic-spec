@@ -287,3 +287,14 @@ inbox:
       - noise
       - streaming
     added_by: "@claude"
+  - _ulid: 01KGWG99FJBKHZJ1M6KPKMPNV9
+    text: Define typed event data schemas per EventType — session.start, session.update (with
+      tool_call/sessionUpdate variants), session.end, prompt.sent, tool.call, tool.result, note.
+      Current z.unknown() data field makes it impossible to reliably query events without
+      reverse-engineering from real JSONL files.
+    created_at: 2026-02-07T16:52:11.891Z
+    tags:
+      - reflection
+      - sessions
+      - schema
+    added_by: "@claude"
