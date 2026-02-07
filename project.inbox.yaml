@@ -1,16 +1,11 @@
 inbox:
   - _ulid: 01KFE2XFQKG1SV7KQ4RSBD6DYP
-    text: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to
-      prevent scope creep beyond target work"
+    text: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to prevent scope creep beyond target work"
     created_at: 2026-01-20T16:13:29.715Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KFH76CQV9J2NQKQE8QRYVQC3
-    text: "Cross-feature requirement pattern: How to express that core features (search, validate,
-      export) must support all entity types. When new entity type added, should automatically imply
-      tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity
-      types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec
-      that entity types must satisfy. Surfaced when realizing search doesn't cover inbox."
+    text: "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox."
     created_at: 2026-01-21T21:25:59.163Z
     tags:
       - design
@@ -18,10 +13,7 @@ inbox:
       - meta
     added_by: "@claude"
   - _ulid: 01KFHJNZKSXJ2RNAT06VEAYR3R
-    text: "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that
-      reference or are implemented by a given code path. Useful for bug fixes to quickly discover
-      what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive,
-      helps find already-instrumented code."
+    text: "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code."
     created_at: 2026-01-22T00:46:44.345Z
     tags:
       - dx
@@ -29,16 +21,12 @@ inbox:
       - reflection
     added_by: "@claude"
   - _ulid: 01KFNCZRVA7JJ21WRS9NVA8KM4
-    text: Implement X-Request-Id header middleware for all API endpoints (@trait-api-endpoint ac-6).
-      Should generate ULID if not provided, echo if present in request.
+    text: Implement X-Request-Id header middleware for all API endpoints (@trait-api-endpoint ac-6). Should generate ULID if not provided, echo if present in request.
     created_at: 2026-01-23T12:24:11.370Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KFPDCY6FN46DHZ13E7FMK051
-    text: "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and
-      Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR
-      review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where
-      needed, focus on CLI commands and daemon lifecycle."
+    text: "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle."
     created_at: 2026-01-23T21:50:37.263Z
     tags:
       - ci
@@ -46,9 +34,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KFQ5175HK1E74Y2DNQK9RXHY
-    text: "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach
-      conflicts with existing daemons. Should use high ephemeral port range and improve cleanup
-      mechanism."
+    text: "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism."
     created_at: 2026-01-24T04:43:39.058Z
     tags:
       - e2e
@@ -56,9 +42,7 @@ inbox:
       - reflection
     added_by: "@claude"
   - _ulid: 01KFT2J3Z7AJ8VPKF1N7H15WGH
-    text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during
-      init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful
-      for repos initialized before PR #183 or where config was lost."
+    text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful for repos initialized before PR #183 or where config was lost."
     created_at: 2026-01-25T07:58:10.407Z
     tags:
       - cli
@@ -66,54 +50,38 @@ inbox:
       - merge
     added_by: "@claude"
   - _ulid: 01KFYAHFF2NZRP7F60JN8Q3DXC
-    text: E2E test dev mode - configure Playwright to work with vite dev server instead of requiring
-      full build for faster test iteration (12+ seconds to 1-2 seconds)
+    text: E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)
     created_at: 2026-01-26T23:34:35.746Z
     tags:
       - e2e
       - dx
     added_by: "@claude"
   - _ulid: 01KG8RM7A4YFXDGF0C5ZDAHMKB
-    text: "Ralph loop: When no eligible tasks remain, detect uncommitted working tree changes and ask
-      agent to investigate and clean up. Could be orphaned work from interrupted sessions, debugging
-      artifacts, or incomplete implementations. Agent could: (1) identify what the changes are for,
-      (2) commit them with appropriate message, (3) stash for later, or (4) discard if truly stale.
-      Prevents accumulation of mystery diffs."
+    text: "Ralph loop: When no eligible tasks remain, detect uncommitted working tree changes and ask agent to investigate and clean up. Could be orphaned work from interrupted sessions, debugging artifacts, or incomplete implementations. Agent could: (1) identify what the changes are for, (2) commit them with appropriate message, (3) stash for later, or (4) discard if truly stale. Prevents accumulation of mystery diffs."
     created_at: 2026-01-31T00:53:10.084Z
     tags:
       - ralph
       - dx
     added_by: "@claude"
   - _ulid: 01KFE2XHT2AJN680ST7ZXK4TAT
-    text: "Ralph loop: Add progress checkpoint output at each iteration showing
-      completed/in-progress/remaining counts"
+    text: "Ralph loop: Add progress checkpoint output at each iteration showing completed/in-progress/remaining counts"
     created_at: 2026-01-20T16:13:31.843Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KGG6GYZAMZCTWRPZG2XM2YQ9
-    text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting.
-      Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to
-      auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns
-      (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session
-      research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI
-      coding assistants."
+    text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants."
     created_at: 2026-02-02T22:10:44.331Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KGGEMM4XAZZ19JXBXPC3FY3P
-    text: "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2)
-      Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start
-      within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D."
+    text: "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D."
     created_at: 2026-02-03T00:32:32.926Z
     tags:
       - daemon
       - dx
     added_by: "@claude"
   - _ulid: 01KGGF4YYFQSRX5SMSKRC9BFF0
-    text: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable
-      separate repo for specs), feature toggles, default values (author, priority), validation
-      strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs.
-      Consolidated from @01KFGVVJ, @01KFGVVN."
+    text: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN."
     created_at: 2026-02-03T00:41:28.272Z
     tags:
       - feature
@@ -121,9 +89,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGGFB2MJKNJQ3ZPYCZHQRHQE
-    text: "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC:
-      @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for
-      review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6."
+    text: "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6."
     created_at: 2026-02-03T00:44:48.658Z
     tags:
       - cli
@@ -131,9 +97,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGGG0KZWCGS6QQVGSZD7XKNG
-    text: "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2)
-      Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3)
-      Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4."
+    text: "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4."
     created_at: 2026-02-03T00:56:34.557Z
     tags:
       - shadow
@@ -141,9 +105,7 @@ inbox:
       - cli
     added_by: "@claude"
   - _ulid: 01KGGKNX3XQ0TXYQZ4V2R7MVPT
-    text: "CLI array field flag patterns: (1) Generic --clear <field> or --<field> [] for clearing
-      arrays, (2) --add-<field> vs multiple flags for append semantics. Design unified approach for
-      depends-on, tags, blocked-by, etc. Consolidated from @01KFGRV6, @01KFR0KN."
+    text: "CLI array field flag patterns: (1) Generic --clear <field> or --<field> [] for clearing arrays, (2) --add-<field> vs multiple flags for append semantics. Design unified approach for depends-on, tags, blocked-by, etc. Consolidated from @01KFGRV6, @01KFR0KN."
     created_at: 2026-02-03T02:00:37.758Z
     tags:
       - cli
@@ -151,10 +113,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGGP9FAD0QQFQS47DEGC3QFK
-    text: "Inbox CLI improvements: (1) Add filtering to list: --before/--after <date>, --author <name>
-      (--tag exists), (2) Add merge command: 'kspec inbox merge @source @target' for consolidating
-      duplicates, (3) Add --priority and --automation flags to promote command. Consolidated from
-      @01KG95JP, @01KG95JQ, @01KG95JS."
+    text: "Inbox CLI improvements: (1) Add filtering to list: --before/--after <date>, --author <name> (--tag exists), (2) Add merge command: 'kspec inbox merge @source @target' for consolidating duplicates, (3) Add --priority and --automation flags to promote command. Consolidated from @01KG95JP, @01KG95JQ, @01KG95JS."
     created_at: 2026-02-03T02:46:16.141Z
     tags:
       - cli
@@ -162,10 +121,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGGPJ61YA22XXS5Z6QRZXCNK
-    text: "Workflow CLI improvements: (1) 'workflow show' should infer active run like 'workflow next',
-      (2) Warn when --input flags passed but step has no inputs defined, (3) Improve 'workflow show'
-      output format with vertical display, status indicators, indented notes. Consolidated from
-      @01KFKSF6, @01KFKSGC, @01KFKTNR."
+    text: "Workflow CLI improvements: (1) 'workflow show' should infer active run like 'workflow next', (2) Warn when --input flags passed but step has no inputs defined, (3) Improve 'workflow show' output format with vertical display, status indicators, indented notes. Consolidated from @01KFKSF6, @01KFKSGC, @01KFKTNR."
     created_at: 2026-02-03T02:51:01.566Z
     tags:
       - workflow
@@ -173,9 +129,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGGPSRFPPH8WP42VRDC76Z5J
-    text: "Spec item slug/addressing improvements: (1) Warn/error on slug collision when creating items,
-      (2) Make nested requirements addressable by slug (currently kspec item ac add @slug fails for
-      items under requirements:). Consolidated from @01KGDCRG, @01KGDCRJ."
+    text: "Spec item slug/addressing improvements: (1) Warn/error on slug collision when creating items, (2) Make nested requirements addressable by slug (currently kspec item ac add @slug fails for items under requirements:). Consolidated from @01KGDCRG, @01KGDCRJ."
     created_at: 2026-02-03T02:55:09.815Z
     tags:
       - cli
@@ -183,9 +137,7 @@ inbox:
       - ux
     added_by: "@claude"
   - _ulid: 01KGGTT34ES3W098NNYE9Y8BZZ
-    text: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set --automation,
-      inbox delete, task note. Enables batch operations like 'kspec task note @ref1 @ref2 @ref3
-      \"shared content\"'. Consolidated from @01KG71J2, @01KG95JM, @01KFVXBM."
+    text: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set --automation, inbox delete, task note. Enables batch operations like 'kspec task note @ref1 @ref2 @ref3 \"shared content\"'. Consolidated from @01KG71J2, @01KG95JM, @01KFVXBM."
     created_at: 2026-02-03T04:05:15.022Z
     tags:
       - cli
@@ -200,10 +152,7 @@ inbox:
       - reflection
     added_by: "@claude"
   - _ulid: 01KGQY6NQPNRS1FE7TQVGYGHGK
-    text: "Skill documentation staleness detection - No mechanism exists to detect when skill docs drift
-      from reality (e.g., /e2e skill had incorrect bits-ui selector info). Consider: checksum/hash
-      of referenced files, last-verified dates, or a 'kspec skill verify' command that tests skill
-      examples against current codebase."
+    text: "Skill documentation staleness detection - No mechanism exists to detect when skill docs drift from reality (e.g., /e2e skill had incorrect bits-ui selector info). Consider: checksum/hash of referenced files, last-verified dates, or a 'kspec skill verify' command that tests skill examples against current codebase."
     created_at: 2026-02-05T22:19:14.038Z
     tags:
       - cli
@@ -211,10 +160,7 @@ inbox:
       - skills
     added_by: "@claude"
   - _ulid: 01KGQY6QYS94S2D9J983436MX6
-    text: "Workflow lifecycle CLI design (from mining run 01KFS6MJ): kspec workflow complete @run-ref
-      (mark run completed, archive), kspec workflow cancel @run-ref (cancel abandoned run), kspec
-      workflow cleanup --older-than Nd (auto-cancel stale runs). Extends existing @01KFPH39
-      auto-cleanup with concrete subcommand design."
+    text: "Workflow lifecycle CLI design (from mining run 01KFS6MJ): kspec workflow complete @run-ref (mark run completed, archive), kspec workflow cancel @run-ref (cancel abandoned run), kspec workflow cleanup --older-than Nd (auto-cancel stale runs). Extends existing @01KFPH39 auto-cleanup with concrete subcommand design."
     created_at: 2026-02-05T22:19:16.313Z
     tags:
       - workflow
@@ -222,9 +168,7 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGQYE4Q8354Q70GF5QWFJJP6
-    text: workflow runs --json should include step_results with notes and abort_reason content.
-      Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most
-      valuable data for mining/telemetry but require parsing raw YAML to access.
+    text: workflow runs --json should include step_results with notes and abort_reason content. Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most valuable data for mining/telemetry but require parsing raw YAML to access.
     created_at: 2026-02-05T22:23:18.760Z
     tags:
       - workflow
@@ -232,18 +176,14 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGR0N6QCNK3YS6K5H3VSXDFC
-    text: "Workflow advance-to command: kspec workflow advance-to @run <step> --notes '...' to skip
-      through already-completed steps in one command instead of calling next repeatedly. Useful when
-      work precedes workflow start or resuming across sessions."
+    text: "Workflow advance-to command: kspec workflow advance-to @run <step> --notes '...' to skip through already-completed steps in one command instead of calling next repeatedly. Useful when work precedes workflow start or resuming across sessions."
     created_at: 2026-02-05T23:02:07.341Z
     tags:
       - workflow
       - dx
     added_by: "@claude"
   - _ulid: 01KGS2Q5KSNZ5F7TR3NEQNAQTJ
-    text: "kspec plan set --remove-slug: plan set only supports --slug (add) but not --remove-slug.
-      kspec item set already has --remove-slug. Add parity so plan slugs can be managed without
-      manual YAML editing."
+    text: "kspec plan set --remove-slug: plan set only supports --slug (add) but not --remove-slug. kspec item set already has --remove-slug. Add parity so plan slugs can be managed without manual YAML editing."
     created_at: 2026-02-06T08:57:23.321Z
     tags:
       - cli
@@ -251,24 +191,19 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KGVC4ZYF62SY94YC4H8ER51E
-    text: "Add regression test asserting ralph spawn sites pass methodTimeouts for session/prompt and
-      session/resume (from Codex review of PR #328, task @01KGVB8X)"
+    text: "Add regression test asserting ralph spawn sites pass methodTimeouts for session/prompt and session/resume (from Codex review of PR #328, task @01KGVB8X)"
     created_at: 2026-02-07T06:20:42.319Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KGVD9Z9Z8FM94FKXGBYDDQS3
-    text: Add regression test for non-text content blocks (e.g. image blocks) in ralph stringify() to
-      lock rendering behavior for that payload shape
+    text: Add regression test for non-text content blocks (e.g. image blocks) in ralph stringify() to lock rendering behavior for that payload shape
     created_at: 2026-02-07T06:40:54.079Z
     tags:
       - testing
       - ralph
     added_by: "@claude"
   - _ulid: 01KGVK8R6J950C8Q6KVPY4K3Z0
-    text: "Item list --module flag and tree view: kspec item list --module cli to scope output to a
-      specific module. kspec item tree @module for hierarchical view (features -> requirements).
-      Currently 50+ items display flat, making it hard to find the right parent for new specs.
-      Friction: during automation triage had to grep YAML files to find parent specs."
+    text: "Item list --module flag and tree view: kspec item list --module cli to scope output to a specific module. kspec item tree @module for hierarchical view (features -> requirements). Currently 50+ items display flat, making it hard to find the right parent for new specs. Friction: during automation triage had to grep YAML files to find parent specs."
     created_at: 2026-02-07T08:25:05.490Z
     tags:
       - cli
@@ -276,11 +211,7 @@ inbox:
       - reflection
     added_by: "@claude"
   - _ulid: 01KGWDPRVJ8Z6H70GNEWPJH06R
-    text: "PR #345 ralph noise stripping: split-chunk noise leaks to streaming output before
-      finalization. When noise phrase is split across chunk boundaries (e.g. 'No onPostToolUse' +
-      'Hook found for tool use ID: toolu_...'), both chunks emit as streaming events. Need
-      boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null.
-      See /tmp/codex-pr-345-review.md for full analysis."
+    text: "PR #345 ralph noise stripping: split-chunk noise leaks to streaming output before finalization. When noise phrase is split across chunk boundaries (e.g. 'No onPostToolUse' + 'Hook found for tool use ID: toolu_...'), both chunks emit as streaming events. Need boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null. See /tmp/codex-pr-345-review.md for full analysis."
     created_at: 2026-02-07T16:07:07.890Z
     tags:
       - ralph
@@ -288,10 +219,7 @@ inbox:
       - streaming
     added_by: "@claude"
   - _ulid: 01KGWG99FJBKHZJ1M6KPKMPNV9
-    text: Define typed event data schemas per EventType — session.start, session.update (with
-      tool_call/sessionUpdate variants), session.end, prompt.sent, tool.call, tool.result, note.
-      Current z.unknown() data field makes it impossible to reliably query events without
-      reverse-engineering from real JSONL files.
+    text: Define typed event data schemas per EventType — session.start, session.update (with tool_call/sessionUpdate variants), session.end, prompt.sent, tool.call, tool.result, note. Current z.unknown() data field makes it impossible to reliably query events without reverse-engineering from real JSONL files.
     created_at: 2026-02-07T16:52:11.891Z
     tags:
       - reflection
@@ -299,11 +227,14 @@ inbox:
       - schema
     added_by: "@claude"
   - _ulid: 01KGWM89MZCZ35WZF3G32BXPVK
-    text: "Add integration-level regression tests for malformed priority values on derive and plan
-      derive (e.g. --priority 3abc, --priority 1.9) to lock in the Commander pre-parse fix from PR
-      #347"
+    text: "Add integration-level regression tests for malformed priority values on derive and plan derive (e.g. --priority 3abc, --priority 1.9) to lock in the Commander pre-parse fix from PR #347"
     created_at: 2026-02-07T18:01:33.599Z
     tags:
       - cli
       - testing
+    added_by: "@claude"
+  - _ulid: 01KGWQ2H7MKDYBV5HAWHW8X7E9
+    text: "Gate /reflect skill on session introspection: before running the full reflect workflow, check whether meaningful work was done during the session (tasks completed, PRs created, code changes). Skip reflection if the session had no substantive work — avoids the 19% workflow time spent on empty reflection chains (31 consecutive runs observed with no new insights). Skill-level change to the reflect skill, not a workflow change."
+    created_at: 2026-02-07T18:50:50.484Z
+    tags: []
     added_by: "@claude"
