@@ -46278,7 +46278,7 @@
     (e.g. 'plan-gallery-home') or detect collision and prompt for resolution. Related to 01KGGPSR
     but that covers item-to-item collision, not plan-to-item."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
