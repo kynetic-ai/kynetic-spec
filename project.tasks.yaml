@@ -46236,6 +46236,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-07T02:16:33.679Z
+  started_at: 2026-02-07T11:58:07.796Z
   notes:
     - _ulid: 01KGTY5YMF3V2RQ9QVRBEMJCZC
       created_at: 2026-02-07T02:16:33.679Z
@@ -46246,9 +46247,16 @@
         --severity error, suppress warning output and only exit 1 on real errors. ~20 lines. Enables
         CI usage on fresh projects where orphaned specs are expected."
       supersedes: null
+    - _ulid: 01KGW0B6R94X2S9RE2EEV1TTHS
+      created_at: 2026-02-07T12:13:37.417Z
+      author: "@claude"
+      content: "Implemented separate exit codes for validate command: 0=success (no errors/warnings),
+        4=VALIDATION_FAILED (errors present), 6=VALIDATION_WARNINGS (warnings only). Added
+        EXIT_CODES.VALIDATION_WARNINGS constant. Updated help docs and tests. Fixed staleness and
+        traits-field tests to expect correct exit codes."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T11:58:07.796Z
 - _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
   slugs: []
   title: Auto-namespace plan slugs to prevent collision with spec slugs
