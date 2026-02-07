@@ -30,6 +30,7 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
+import { parseIntOption } from "../validators.js";
 
 /**
  * Format relative time for display
@@ -458,6 +459,20 @@ Examples:
             `Plan must be in 'approved' or 'active' status to derive tasks (current: ${foundPlan.status})`,
           );
           process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // Validate priority if provided (commander's parseInt runs first,
+        // but may produce NaN for non-numeric input)
+        if (options.priority !== undefined) {
+          const priorityResult = parseIntOption(String(options.priority), {
+            min: 1,
+            max: 5,
+            name: "Priority",
+          });
+          if (!priorityResult.ok) {
+            error(priorityResult.error);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
         }
 
         // Generate task slug from plan title

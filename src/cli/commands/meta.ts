@@ -50,6 +50,7 @@ import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
+import { parseIntOption } from "../validators.js";
 
 /**
  * Resolve a meta reference to its ULID
@@ -1049,11 +1050,22 @@ export function registerMetaCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
+        // Validate priority
+        const priorityResult = parseIntOption(options.priority, {
+          min: 1,
+          max: 5,
+          name: "Priority",
+        });
+        if (!priorityResult.ok) {
+          error(priorityResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // AC-obs-3: Create task with title, description from observation, meta_ref, and origin
         const task = createTask({
           title: options.title,
           description: observation.content,
-          priority: Number.parseInt(options.priority, 10),
+          priority: priorityResult.value,
           meta_ref: observation.workflow_ref,
           origin: "observation_promotion",
         });

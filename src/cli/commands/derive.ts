@@ -19,6 +19,7 @@ import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, warn } from "../output.js";
+import { parseIntOption } from "../validators.js";
 
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
@@ -443,13 +444,16 @@ export function registerDeriveCommand(program: Command): void {
         }
 
         // Validate priority if provided
+        // Note: commander's parseInt parse function runs first, but parseIntOption
+        // provides stricter checking (rejects "3abc", "1.9", etc.)
         if (options.priority !== undefined) {
-          if (
-            Number.isNaN(options.priority) ||
-            options.priority < 1 ||
-            options.priority > 5
-          ) {
-            error("Priority must be a number between 1 and 5");
+          const priorityResult = parseIntOption(String(options.priority), {
+            min: 1,
+            max: 5,
+            name: "Priority",
+          });
+          if (!priorityResult.ok) {
+            error(priorityResult.error);
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
         }

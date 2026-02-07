@@ -40,6 +40,11 @@ import {
   warn,
 } from "../output.js";
 import { grepItem } from "../../utils/grep.js";
+import {
+  parseIntOption,
+  validateEnumOption,
+  validateSpecRef,
+} from "../validators.js";
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -264,14 +269,15 @@ async function setTaskFields(
     }
 
     if (options.priority) {
-      const priority = parseInt(options.priority, 10);
-      if (Number.isNaN(priority) || priority < 1 || priority > 5) {
-        return {
-          success: false,
-          error: "Priority must be between 1 and 5",
-        };
+      const priorityResult = parseIntOption(options.priority, {
+        min: 1,
+        max: 5,
+        name: "Priority",
+      });
+      if (!priorityResult.ok) {
+        return { success: false, error: priorityResult.error };
       }
-      updatedTask.priority = priority;
+      updatedTask.priority = priorityResult.value;
       changes.push("priority");
     }
 
@@ -345,12 +351,13 @@ async function setTaskFields(
       delete updatedTask.automation;
       changes.push("automation");
     } else if (options.automation !== undefined) {
-      const validStatuses = ["eligible", "needs_review", "manual_only"];
-      if (!validStatuses.includes(options.automation)) {
-        return {
-          success: false,
-          error: `Invalid automation status: ${options.automation}. Must be one of: ${validStatuses.join(", ")}`,
-        };
+      const automationResult = validateEnumOption(
+        options.automation,
+        ["eligible", "needs_review", "manual_only"] as const,
+        "automation status",
+      );
+      if (!automationResult.ok) {
+        return { success: false, error: automationResult.error };
       }
 
       // AC: @task-automation-eligibility ac-18 - require reason for needs_review
@@ -362,17 +369,14 @@ async function setTaskFields(
         };
       }
 
-      updatedTask.automation = options.automation as
-        | "eligible"
-        | "needs_review"
-        | "manual_only";
+      updatedTask.automation = automationResult.value;
       changes.push("automation");
 
       // If reason provided, add a note documenting the change
       // AC: @task-set ac-author
       if (options.reason) {
         const note = createNote(
-          `Automation status set to ${options.automation}: ${options.reason}`,
+          `Automation status set to ${automationResult.value}: ${options.reason}`,
           getAuthor(),
         );
         updatedTask.notes = [...updatedTask.notes, note];
@@ -687,6 +691,20 @@ Examples:
           }
         }
 
+        // Validate spec_ref if provided — must point to a spec item, not a task or meta item
+        if (options.specRef) {
+          const specRefResult = validateSpecRef(
+            options.specRef,
+            refIndex,
+            tasks,
+            items,
+          );
+          if (!specRefResult.ok) {
+            error(specRefResult.error);
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+        }
+
         // AC: @task-automation-eligibility ac-13 - validate automation if provided
         let automationValue:
           | "eligible"
@@ -694,17 +712,16 @@ Examples:
           | "manual_only"
           | undefined;
         if (options.automation) {
-          const validStatuses = ["eligible", "needs_review", "manual_only"];
-          if (!validStatuses.includes(options.automation)) {
-            error(
-              `Invalid automation status: ${options.automation}. Must be one of: ${validStatuses.join(", ")}`,
-            );
+          const automationResult = validateEnumOption(
+            options.automation,
+            ["eligible", "needs_review", "manual_only"] as const,
+            "automation status",
+          );
+          if (!automationResult.ok) {
+            error(automationResult.error);
             process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
-          automationValue = options.automation as
-            | "eligible"
-            | "needs_review"
-            | "manual_only";
+          automationValue = automationResult.value;
         }
 
         // Validate plan_ref if provided (AC: @plan-derive ac-5, ac-6)
@@ -759,6 +776,17 @@ Examples:
           }
         }
 
+        // Validate priority
+        const priorityResult = parseIntOption(options.priority, {
+          min: 1,
+          max: 5,
+          name: "Priority",
+        });
+        if (!priorityResult.ok) {
+          error(priorityResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // AC: @spec-task-add-description ac-6 - Omit description if empty string
         const descriptionValue =
           options.description && options.description.trim() !== ""
@@ -772,7 +800,7 @@ Examples:
           spec_ref: options.specRef || null,
           meta_ref: options.metaRef || null,
           plan_ref: options.planRef || null,
-          priority: parseInt(options.priority, 10),
+          priority: priorityResult.value,
           slugs: options.slug ? [options.slug] : [],
           tags: parseTagsArray(options.tag),
           depends_on: options.dependsOn || [],
