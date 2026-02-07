@@ -362,6 +362,17 @@ This shows active work, recently completed tasks, ready tasks, inbox items, and 
 3. **Note**: Add notes as you work (not just at end)
 4. **Complete**: Mark done with summary
 
+### Batch Mutations
+
+When running 2+ kspec write operations in sequence (e.g. capturing multiple inbox items, resolving several observations, adding notes), use `kspec batch` instead of individual commands. One atomic shadow branch commit instead of N:
+
+```bash
+echo '[
+  {"command":"inbox add","args":{"text":"idea 1"}},
+  {"command":"inbox add","args":{"text":"idea 2"}}
+]' | kspec batch
+```
+
 ### Creating Work
 
 - **Clear scope?** → Create task directly

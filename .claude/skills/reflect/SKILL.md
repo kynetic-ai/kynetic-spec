@@ -83,20 +83,19 @@ Present findings to user. **Ask one at a time** about each improvement:
 
 ### Step 6: Capture
 
-Use appropriate destination:
+Use appropriate destination. **When capturing 2+ items, use `kspec batch`** for a single atomic commit:
 
 ```bash
-# Actionable improvements (future work)
+# Single item
 kspec inbox add "Description" --tag reflection --tag <area>
-
-# Friction patterns (systemic issues)
 kspec meta observe friction "Description"
 
-# Success patterns (worth replicating)
-kspec meta observe success "Description"
-
-# Open questions
-kspec meta question add "Question?"
+# Multiple items — use batch
+echo '[
+  {"command":"inbox add","args":{"text":"Improvement idea","tags":["reflection","area"]}},
+  {"command":"meta observe","args":{"type":"friction","content":"Friction pattern"}},
+  {"command":"meta observe","args":{"type":"success","content":"Success pattern"}}
+]' | kspec batch
 ```
 
 ## Where to Capture What
