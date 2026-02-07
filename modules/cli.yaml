@@ -4293,7 +4293,8 @@ requirements:
             when: kspec session start runs
             then: Quick Commands section shows task note and complete hints
     status:
-      implementation: implemented
+      maturity: draft
+      implementation: in_progress
     acceptance_criteria:
       - id: ac-1
         given: tasks exist in pending_review status with notes
