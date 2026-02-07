@@ -264,3 +264,14 @@ inbox:
       - testing
       - ralph
     added_by: "@claude"
+  - _ulid: 01KGVK8R6J950C8Q6KVPY4K3Z0
+    text: "Item list --module flag and tree view: kspec item list --module cli to scope output to a
+      specific module. kspec item tree @module for hierarchical view (features -> requirements).
+      Currently 50+ items display flat, making it hard to find the right parent for new specs.
+      Friction: during automation triage had to grep YAML files to find parent specs."
+    created_at: 2026-02-07T08:25:05.490Z
+    tags:
+      - cli
+      - dx
+      - reflection
+    added_by: "@claude"
