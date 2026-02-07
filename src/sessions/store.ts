@@ -1111,3 +1111,192 @@ export function computeTimePeriodStats(
 
   return result;
 }
+
+// ─── Session Log Search ───────────────────────────────────────────────────────
+
+/**
+ * A single search match result.
+ *
+ * AC: @session-log-search ac-4
+ */
+export interface SearchMatch {
+  /** Session ID */
+  session_id: string;
+  /** Event timestamp (Unix ms) */
+  timestamp: number;
+  /** Event type */
+  event_type: string;
+  /** Matching content excerpt (limited to 200 chars) */
+  content_excerpt: string;
+}
+
+/**
+ * Search results grouped by session.
+ */
+export interface SessionSearchResult {
+  /** Session ID */
+  session_id: string;
+  /** Agent type for this session */
+  agent_type: string;
+  /** When the session started */
+  started_at: string;
+  /** Matches found in this session */
+  matches: SearchMatch[];
+}
+
+/**
+ * Search options for filtering sessions and events.
+ */
+export interface SearchOptions {
+  /** Only search events of this type (e.g., 'session.update', 'prompt.sent') */
+  eventType?: string;
+  /** Only search sessions started after this date */
+  sinceDate?: Date;
+  /** Only search sessions with this agent type */
+  agentType?: string;
+  /** Maximum total matches to return (default: 50) */
+  limit?: number;
+}
+
+/**
+ * Extract a content excerpt around a match, limited to maxLength chars.
+ *
+ * AC: @session-log-search ac-4
+ */
+function extractContentExcerpt(
+  data: unknown,
+  pattern: string,
+  maxLength: number = 200,
+): string {
+  // Stringify the data for searching
+  const str = JSON.stringify(data);
+  const lowerStr = str.toLowerCase();
+  const lowerPattern = pattern.toLowerCase();
+
+  const matchIndex = lowerStr.indexOf(lowerPattern);
+  if (matchIndex === -1) {
+    // Shouldn't happen since we pre-filtered, but return start of content
+    return str.length > maxLength ? str.slice(0, maxLength - 3) + "..." : str;
+  }
+
+  // Calculate excerpt window centered on match
+  const matchLen = pattern.length;
+  const contextBefore = Math.floor((maxLength - matchLen) / 2);
+  const start = Math.max(0, matchIndex - contextBefore);
+  const end = Math.min(str.length, start + maxLength);
+
+  let excerpt = str.slice(start, end);
+
+  // Add ellipsis indicators
+  if (start > 0) {
+    excerpt = "..." + excerpt.slice(3);
+  }
+  if (end < str.length) {
+    excerpt = excerpt.slice(0, -3) + "...";
+  }
+
+  return excerpt;
+}
+
+/**
+ * Search across session events for a pattern.
+ *
+ * This streams through events.jsonl files, applying filters as early as possible
+ * for performance. Sessions are pre-filtered by metadata (--since, --agent) before
+ * scanning events to reduce I/O.
+ *
+ * AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
+ *
+ * @param specDir - The .kspec directory path
+ * @param pattern - Case-insensitive substring to search for
+ * @param options - Search filtering options
+ * @returns Array of search results grouped by session
+ */
+export async function searchSessionEvents(
+  specDir: string,
+  pattern: string,
+  options: SearchOptions = {},
+): Promise<SessionSearchResult[]> {
+  // Defense-in-depth: normalize limit to a valid positive integer
+  const rawLimit = options.limit ?? 50;
+  const limit = Number.isNaN(rawLimit) || rawLimit <= 0 ? 50 : rawLimit;
+  const lowerPattern = pattern.toLowerCase();
+
+  // Get all session summaries for metadata filtering
+  const allSummaries = await getAllSessionLogSummaries(specDir);
+
+  // AC: @session-log-search ac-3 - Pre-filter by --since
+  let filteredSummaries = allSummaries;
+  if (options.sinceDate) {
+    filteredSummaries = filteredSummaries.filter(
+      (s) => new Date(s.started_at) >= options.sinceDate!,
+    );
+  }
+
+  // AC: @session-log-search ac-7 - Pre-filter by --agent
+  if (options.agentType) {
+    filteredSummaries = filteredSummaries.filter(
+      (s) => s.agent_type === options.agentType,
+    );
+  }
+
+  const results: SessionSearchResult[] = [];
+  let totalMatches = 0;
+
+  for (const summary of filteredSummaries) {
+    if (totalMatches >= limit) break;
+
+    const eventsPath = getSessionEventsPath(specDir, summary.id);
+    let content: string;
+    try {
+      content = await fsPromises.readFile(eventsPath, "utf-8");
+    } catch {
+      continue; // Skip sessions without events
+    }
+
+    if (!content.trim()) continue;
+
+    const matches: SearchMatch[] = [];
+    const lines = content.trim().split("\n");
+
+    for (const line of lines) {
+      if (totalMatches >= limit) break;
+
+      // Quick substring pre-filter before parsing JSON
+      if (!line.toLowerCase().includes(lowerPattern)) continue;
+
+      try {
+        const event = JSON.parse(line);
+
+        // AC: @session-log-search ac-2 - Filter by event type
+        if (options.eventType && event.type !== options.eventType) continue;
+
+        // Verify match in stringified data (not just line, in case pattern appears in metadata)
+        const dataStr = JSON.stringify(event.data);
+        if (!dataStr.toLowerCase().includes(lowerPattern)) continue;
+
+        // AC: @session-log-search ac-4 - Create match with excerpt
+        matches.push({
+          session_id: summary.id,
+          timestamp: event.ts,
+          event_type: event.type,
+          content_excerpt: extractContentExcerpt(event.data, pattern, 200),
+        });
+        totalMatches++;
+      } catch {
+        // Skip unparseable lines
+      }
+    }
+
+    if (matches.length > 0) {
+      results.push({
+        session_id: summary.id,
+        agent_type: summary.agent_type,
+        started_at: summary.started_at,
+        matches,
+      });
+    }
+  }
+
+  return results;
+}
