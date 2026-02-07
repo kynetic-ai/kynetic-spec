@@ -1276,8 +1276,4 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
-acceptance_criteria:
-  - id: ac-3
-    given: ": starts with colon"
-    when: something
-    then: works
+acceptance_criteria: []
