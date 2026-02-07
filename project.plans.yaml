@@ -715,3 +715,16 @@ plans:
     approved_at: null
     completed_at: null
     notes: []
+  - _ulid: 01KGW25YF6KXMAV6N0T2YH5K9W
+    slugs:
+      - plan-my-feature
+    title: My Feature
+    content: B
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    source_path: null
+    created_at: 2026-02-07T12:45:42.246Z
+    approved_at: null
+    completed_at: null
+    notes: []
