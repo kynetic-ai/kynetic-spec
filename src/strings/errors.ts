@@ -312,6 +312,8 @@ export const operationFailures = {
   promoteInboxItem: "Failed to promote inbox item",
   deleteInboxItem: "Failed to delete inbox item",
   getInboxItem: "Failed to get inbox item",
+  updateInboxItem: "Failed to update inbox item",
+  addInboxNote: "Failed to add note to inbox item",
 
   // Session operations
   gatherSessionContext: "Failed to gather session context",
