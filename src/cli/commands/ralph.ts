@@ -43,6 +43,7 @@ import {
   createTranslator,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  RALPH_PROMPT_TIMEOUT,
   runSubagent,
   type SubagentContext,
 } from "../../ralph/index.js";
@@ -1238,6 +1239,10 @@ export function registerRalphCommand(program: Command): void {
                       clientInfo: {
                         name: "kspec-ralph",
                         version: packageVersion,
+                      },
+                      methodTimeouts: {
+                        "session/prompt": RALPH_PROMPT_TIMEOUT,
+                        "session/resume": RALPH_PROMPT_TIMEOUT,
                       },
                     },
                   });
