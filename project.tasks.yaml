@@ -45778,7 +45778,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -45815,6 +45815,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T09:50:53.981Z
+  closed_reason: "Merged in PR #333. Added 'Handling Complex Prompts' section to codex skill
+    documenting the prompt-file pattern: use mktemp for temp file, write prompt with heredoc, inject
+    with $(cat file), cleanup. Includes when-to-use table and accurate rationale comparing
+    prompt-file to heredocs. Review feedback addressed (mktemp + cleanup, corrected heredoc
+    explanation)."
 - _ulid: 01KGTNV773RBWK67KFHFMTJ856
   slugs: []
   title: Add YAML quoting guidance to spec-plan skill
