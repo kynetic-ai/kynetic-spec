@@ -46227,6 +46227,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #341. Implemented separate exit codes for validate command: 0=success,
+    4=errors present (VALIDATION_FAILED), 6=warnings only (VALIDATION_WARNINGS). This enables CI
+    pipelines to distinguish validation failures from informational warnings. Added dedicated tests
+    with AC annotations and updated help documentation."
   depends_on: []
   context: []
   priority: 3
@@ -46237,6 +46241,7 @@
   vcs_refs: []
   created_at: 2026-02-07T02:16:33.679Z
   started_at: 2026-02-07T11:58:07.796Z
+  completed_at: 2026-02-07T12:33:48.141Z
   notes:
     - _ulid: 01KGTY5YMF3V2RQ9QVRBEMJCZC
       created_at: 2026-02-07T02:16:33.679Z
@@ -46263,11 +46268,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T12:33:48.141Z
-  closed_reason: "Merged in PR #341. Implemented separate exit codes for validate command: 0=success,
-    4=errors present (VALIDATION_FAILED), 6=warnings only (VALIDATION_WARNINGS). This enables CI
-    pipelines to distinguish validation failures from informational warnings. Added dedicated tests
-    with AC annotations and updated help documentation."
 - _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
   slugs: []
   title: Auto-namespace plan slugs to prevent collision with spec slugs
@@ -46278,7 +46278,7 @@
     (e.g. 'plan-gallery-home') or detect collision and prompt for resolution. Related to 01KGGPSR
     but that covers item-to-item collision, not plan-to-item."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46301,6 +46301,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-07T12:34:38.784Z
 - _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
   slugs: []
   title: Add inbox set and inbox note commands for editing items
