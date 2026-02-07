@@ -2861,7 +2861,7 @@ runs:
   - _ulid: 01KGVJWXXWVW70BM2DC2NXG2XX
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-07T08:18:38.140Z
     step_results:
@@ -2965,5 +2965,36 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-07T08:19:56.415Z
-        completed_at: 2026-02-07T08:19:56.415Z
+        completed_at: 2026-02-07T08:20:09.603Z
+        notes: >-
+          Step 4: Proposed Improvements
+
+
+          **Untracked:**
+
+
+          1. **Inbox cross-reference against completed work** — During triage, for each inbox item,
+          show if a related task was completed (match by keyword/tag overlap). Could be a
+          --check-coverage flag on inbox list, or a triage-specific command. Scope: medium — needs
+          fuzzy matching or tag-based correlation.
+
+
+          2. **Item list --module flag and tree view** — kspec item list --module cli to scope
+          output to a specific module. And/or kspec item tree @module to show hierarchical view
+          (features → requirements). Scope: medium — the data is there, just needs filtered display.
+
+
+          **Already tracked but worth noting as validated friction:**
+
+
+          3. Inbox filtering (@01KGGP9F) — Confirmed real need. 61 items without filters was
+          painful.
+
+
+          4. Batch error improvements (@01KGTY3D) — Confirmed. The needs_review/reason case is a
+          good test scenario to add to that task.
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-07T08:20:09.603Z
+        completed_at: 2026-02-07T08:20:09.603Z
     initiated_by: "@claude"
