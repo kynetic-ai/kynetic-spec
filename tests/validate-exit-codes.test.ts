@@ -1,13 +1,15 @@
 /**
  * Tests for validate command exit codes
  *
+ * AC: @cli-exit-codes
+ *
  * Exit code behavior:
  * - 0 (SUCCESS): No errors, no warnings
  * - 4 (VALIDATION_FAILED): Errors present (schema, refs, trait cycles, etc.)
  * - 6 (VALIDATION_WARNINGS): Warnings only (orphans, completeness, alignment, staleness)
  *
- * Note: The test fixtures have existing completeness warnings (missing ACs, automation
- * without spec). Tests account for this when checking exit codes.
+ * Note: --strict flag only escalates orphan and staleness warnings to errors,
+ * not completeness warnings.
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -26,16 +28,7 @@ describe('validate exit codes', () => {
     await cleanupTempDir(tempDir);
   });
 
-  describe('exit code 0 (SUCCESS)', () => {
-    it('should exit 0 when schema-only validation passes', () => {
-      // Schema-only check should pass even with other warnings
-      const result = kspec('validate --schema', tempDir);
-      // Note: Even schema-only runs return 6 if there are any warnings
-      // because the exit code logic considers all warning types
-      expect([0, 6]).toContain(result.exitCode);
-    });
-  });
-
+  // AC: @cli-exit-codes (exit 4 for validation errors)
   describe('exit code 4 (VALIDATION_FAILED)', () => {
     it('should exit 4 when schema errors are present', async () => {
       // Create an invalid spec file with bad ULID
@@ -85,21 +78,13 @@ items:
       expect(result.stderr + result.stdout).toContain('Reference errors');
     });
 
-    it('should exit 4 with --strict when orphans or warnings would cause failure', async () => {
-      // The base fixtures already have orphans (items not referenced by tasks)
-      // With --strict, the validate command should treat orphans as errors
-      // First verify there ARE orphans without --strict (exit 6)
-      const warningsResult = kspec('validate', tempDir);
-      expect(warningsResult.exitCode).toBe(6); // Has warnings
-
-      // Now with --strict - if orphans exist, it should be exit 4
-      const strictResult = kspec('validate --strict', tempDir);
-      // Note: --strict only affects orphans, not completeness warnings
-      // If there are orphans, exit 4. If no orphans but other warnings, exit 6.
-      expect([4, 6]).toContain(strictResult.exitCode);
-    });
   });
 
+  // Note: --strict flag behavior is tested in staleness.test.ts
+  // It escalates orphan and staleness warnings to errors
+  // The "orphan" detection (result.orphans) is distinct from alignment's "orphaned specs (no tasks)"
+
+  // AC: @cli-exit-codes (exit 6 for warnings only)
   describe('exit code 6 (VALIDATION_WARNINGS)', () => {
     it('should exit 6 when only warnings are present (no errors)', () => {
       // The base fixtures have completeness warnings (missing ACs)
@@ -116,7 +101,7 @@ items:
         path.join(specDir, 'orphan.yaml'),
         `
 items:
-  - _ulid: ${testUlid('ORPHAN')}
+  - _ulid: ${testUlid('0RPHN')}
     title: "Orphan Feature"
     type: feature
     description: "This feature is not referenced by any task"
@@ -150,7 +135,8 @@ items:
     });
   });
 
-  describe('clean project exit codes', () => {
+  // AC: @cli-exit-codes (exit 0 for clean validation)
+  describe('exit code 0 (SUCCESS)', () => {
     let cleanDir: string;
 
     beforeEach(async () => {
@@ -182,6 +168,12 @@ project:
       const result = kspec('validate', cleanDir);
       expect(result.exitCode).toBe(0);
       expect(result.stderr + result.stdout).toContain('Validation passed');
+    });
+
+    it('should exit 0 for schema-only check on clean project', () => {
+      const result = kspec('validate --schema', cleanDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stderr + result.stdout).toContain('Schema: OK');
     });
   });
 });

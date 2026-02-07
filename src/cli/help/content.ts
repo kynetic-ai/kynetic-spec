@@ -98,7 +98,7 @@ What it checks:
   - References: All @refs resolve to existing items
   - Orphans: Items not referenced by any task (warning)
 
-Use --strict to treat warnings as errors (exit 4 if any warnings).
+Use --strict to treat orphan and staleness warnings as errors (exit 4).
 
 Alias: 'kspec lint' does the same thing.
 `,
