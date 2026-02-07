@@ -2354,6 +2354,9 @@ features:
             given: inbox item @ref exists
             when: kspec inbox set @ref --tag newtag runs
             then: item tags are updated to include newtag
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KGVJRKPVM5K1W0YS1K7A886N
         slugs:
           - inbox-note
