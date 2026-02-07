@@ -35809,19 +35809,19 @@
       content: "Implementation: In src/cli/commands/session.ts, expand recent notes to include pending_review tasks and last 3-5 completed tasks (by completed_at). Group output into sections: 'In Progress', 'Pending Review', 'Recently Completed'. Show most recent 1-2 notes per task for context. Purpose: session continuity — pick up where the last session left off, see what's in flight and what just finished. ~40 lines, output formatting changes."
       supersedes: null
   todos: []
-- title: "Fix ralph log: String() on array of objects produces [object Object]"
+- _ulid: 01KGVARWDN5AHFD3YXG2W20EZG
+  slugs: []
+  title: "Fix ralph log: String() on array of objects produces [object Object]"
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KGVARWDN5AHFD3YXG2W20EZG
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-02-07T05:56:36.917Z
   notes:
@@ -35855,4 +35855,21 @@
 
         Apply to all 5 `String()` call sites in `extractToolOutput()` and `extractOriginalOutput()`.
       supersedes: null
+  todos: []
+- title: "Fix: 'No onPostToolUseHook found' leaks past noise suppression"
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KGVAZ6ZXXCBK1DYJ4GF4FRAM
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T06:00:04.348Z
+  notes: []
   todos: []
