@@ -45666,7 +45666,7 @@
   type: task
   spec_ref: "@session-log-stats"
   plan_ref: "@session-log-analysis-tooling"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-log-list"
@@ -45698,6 +45698,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T09:19:44.379Z
+  closed_reason: "Merged in PR #331. Implemented session log stats command with aggregate analytics:
+    totals (sessions, events, iterations, tasks, duration), averages, status breakdown, date
+    filtering (--since), agent filtering (--agent), tool usage stats (--tool-usage), and time period
+    grouping (--by-day/--by-week). Includes proper ISO-8601 week calculation in UTC with boundary
+    date tests. All 8 spec ACs covered with 31 tests."
 - _ulid: 01KGTN2AKVGXE0H6Q0TBTM1W3G
   slugs:
     - implement-session-log-search
