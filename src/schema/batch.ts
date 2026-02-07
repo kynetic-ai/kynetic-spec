@@ -44,6 +44,8 @@ export interface BatchCommandResult {
   output?: unknown;
   /** Error message on failure */
   error?: string;
+  /** Suggested correction (e.g. closest arg name) */
+  suggestion?: string;
 }
 
 /**
@@ -74,4 +76,6 @@ export interface BatchExecResult {
   summary: BatchExecSummary;
   /** Per-command results */
   results: BatchCommandResult[];
+  /** True if failure was due to pre-validation errors (unknown command, unknown arg, etc.) */
+  validationFailed?: boolean;
 }

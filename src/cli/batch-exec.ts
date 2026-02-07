@@ -392,6 +392,9 @@ export function reportBatchValidationErrors(
       lines.push(`  Did you mean: ${err.suggestion}?`);
     }
   }
+  // Add helpful hint for discoverability
+  lines.push("");
+  lines.push("Run 'kspec batch commands' for a list of available commands.");
   return lines.join("\n");
 }
 
@@ -543,7 +546,9 @@ export async function executeBatch(
         command: err.command,
         success: false,
         error: err.message,
+        suggestion: err.suggestion,
       })),
+      validationFailed: true,
     };
   }
 
