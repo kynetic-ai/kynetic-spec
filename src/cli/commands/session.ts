@@ -24,6 +24,11 @@ import {
 } from "../../parser/shadow.js";
 import type { SessionContext as StoredSessionContext } from "../../schema/index.js";
 import {
+  type SessionLogSummary,
+  getAllSessionLogSummaries,
+} from "../../sessions/store.js";
+import type { SessionStatus } from "../../sessions/types.js";
+import {
   errors,
   hints,
   sessionHeaders,
@@ -1192,6 +1197,188 @@ async function sessionCheckpointAction(
   }
 }
 
+// ─── Session Log List ─────────────────────────────────────────────────────────
+
+interface SessionLogListOptions {
+  status?: string;
+  agent?: string;
+  since?: string;
+  sort?: string;
+  count?: boolean;
+  limit?: string;
+}
+
+type SortField =
+  | "started_at"
+  | "duration"
+  | "events"
+  | "iterations"
+  | "tasks_completed";
+
+const VALID_SORT_FIELDS: SortField[] = [
+  "started_at",
+  "duration",
+  "events",
+  "iterations",
+  "tasks_completed",
+];
+
+/**
+ * Format a duration in milliseconds to a human-readable string.
+ */
+function formatDuration(ms: number): string {
+  if (ms < 0) return "—";
+  const totalSec = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m`;
+  }
+  return `${totalSec}s`;
+}
+
+/**
+ * Sort session summaries by the specified field.
+ * Default: started_at descending.
+ *
+ * AC: @session-log-list ac-5
+ */
+function sortSessions(
+  sessions: SessionLogSummary[],
+  sortField: SortField,
+): SessionLogSummary[] {
+  return [...sessions].sort((a, b) => {
+    switch (sortField) {
+      case "started_at":
+        return (
+          new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
+        );
+      case "duration":
+        return b.duration_ms - a.duration_ms;
+      case "events":
+        return b.event_count - a.event_count;
+      case "iterations":
+        return b.iteration_count - a.iteration_count;
+      case "tasks_completed":
+        return b.tasks_completed - a.tasks_completed;
+      default:
+        return (
+          new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
+        );
+    }
+  });
+}
+
+/**
+ * Format the session log list as a table.
+ *
+ * AC: @session-log-list ac-1
+ */
+function formatSessionLogList(sessions: SessionLogSummary[]): void {
+  if (sessions.length === 0) {
+    // AC: @session-log-list ac-6
+    console.log("No sessions found.");
+    return;
+  }
+
+  // Table header
+  console.log(
+    chalk.gray(
+      `${"ID".padEnd(10)} ${"Status".padEnd(11)} ${"Agent".padEnd(20)} ${"Started".padEnd(16)} ${"Duration".padEnd(10)} ${"Events".padEnd(8)} ${"Iters".padEnd(7)} Tasks`,
+    ),
+  );
+  console.log(chalk.gray("─".repeat(95)));
+
+  for (const s of sessions) {
+    const id = s.id.slice(0, 8);
+    const statusColor =
+      s.status === "completed"
+        ? chalk.green
+        : s.status === "active"
+          ? chalk.blue
+          : chalk.yellow;
+    const status = statusColor(s.status.padEnd(11));
+    const agent = s.agent_type.slice(0, 20).padEnd(20);
+    const started = formatRelativeTime(new Date(s.started_at)).padEnd(16);
+    const duration = formatDuration(s.duration_ms).padEnd(10);
+    const events = String(s.event_count).padEnd(8);
+    const iters = String(s.iteration_count).padEnd(7);
+    const tasks = String(s.tasks_completed);
+
+    console.log(
+      `${chalk.yellow(id)} ${status} ${chalk.gray(agent)} ${chalk.gray(started)} ${duration} ${events} ${iters} ${tasks}`,
+    );
+  }
+
+  console.log(chalk.gray(`\n${sessions.length} session(s)`));
+}
+
+/**
+ * Session log list action handler.
+ */
+async function sessionLogListAction(
+  options: SessionLogListOptions,
+): Promise<void> {
+  try {
+    const ctx = await initContext();
+    let sessions = await getAllSessionLogSummaries(ctx.specDir);
+
+    // AC: @session-log-list ac-2 - Filter by status
+    if (options.status) {
+      const statusFilter = options.status as SessionStatus;
+      sessions = sessions.filter((s) => s.status === statusFilter);
+    }
+
+    // AC: @session-log-list ac-4 - Filter by agent type
+    if (options.agent) {
+      const agentFilter = options.agent;
+      sessions = sessions.filter((s) => s.agent_type === agentFilter);
+    }
+
+    // AC: @session-log-list ac-3 - Filter by since date
+    if (options.since) {
+      const sinceDate = parseTimeSpec(options.since);
+      if (sinceDate) {
+        sessions = sessions.filter(
+          (s) => new Date(s.started_at) >= sinceDate,
+        );
+      }
+    }
+
+    // AC: @session-log-list ac-5 - Sort
+    const sortField: SortField =
+      options.sort && VALID_SORT_FIELDS.includes(options.sort as SortField)
+        ? (options.sort as SortField)
+        : "started_at";
+    sessions = sortSessions(sessions, sortField);
+
+    // AC: @session-log-list ac-7 - Limit output count
+    if (options.count) {
+      // AC: @trait-filterable-list ac-8
+      output({ count: sessions.length }, () => {
+        console.log(sessions.length);
+      });
+      return;
+    }
+
+    // Apply --limit (after filtering/sorting, before display)
+    if (options.limit) {
+      const limit = parseInt(options.limit, 10);
+      if (!Number.isNaN(limit) && limit > 0) {
+        sessions = sessions.slice(0, limit);
+      }
+    }
+
+    output(sessions, () => formatSessionLogList(sessions));
+  } catch (err) {
+    error("Failed to list session logs", err);
+    process.exit(EXIT_CODES.ERROR);
+  }
+}
+
 /**
  * Register the 'session' command group and aliases
  */
@@ -1213,6 +1400,32 @@ export function registerSessionCommands(program: Command): void {
     .option("--no-git", "Skip git commit information")
     .option("-n, --limit <n>", "Limit items per section", "10")
     .action(sessionStartAction);
+
+  // Session log subcommand group
+  const log = session
+    .command("log")
+    .description("Session log analysis commands");
+
+  log
+    .command("list")
+    .description("List session logs with summary statistics")
+    .option(
+      "-s, --status <status>",
+      "Filter by status (active, completed, abandoned)",
+    )
+    .option("--agent <type>", "Filter by agent type")
+    .option(
+      "--since <time>",
+      "Only show sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
+    )
+    .option(
+      "--sort <field>",
+      "Sort by field (started_at, duration, events, iterations, tasks_completed)",
+      "started_at",
+    )
+    .option("--count", "Show only the count of matching sessions")
+    .option("-n, --limit <n>", "Limit number of sessions shown")
+    .action(sessionLogListAction);
 
   session
     .command("checkpoint")
