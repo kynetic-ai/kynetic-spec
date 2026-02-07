@@ -46384,7 +46384,7 @@
     and if there is anything from prior work worth sharing forward (in case its a continuation of
     the same type of work)
   spec_ref: "@cmd-session-start"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46423,6 +46423,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T13:40:19.878Z
+  closed_reason: "Merged in PR #344. Session start now includes notes from pending_review and recently
+    completed tasks, grouped by status. Per-status allocation prevents note starvation. Both ACs
+    covered with tests."
 - _ulid: 01KGVARWDN5AHFD3YXG2W20EZG
   slugs: []
   title: "Fix ralph log: String() on array of objects produces [object Object]"
