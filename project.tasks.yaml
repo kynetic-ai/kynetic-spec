@@ -35946,5 +35946,22 @@
         - `src/ralph/index.ts` or `src/cli/commands/ralph.ts` — where agents are spawned
         - `src/agents/spawner.ts` — may need to thread timeout options through
       supersedes: null
+    - _ulid: 01KGVBKERPD0GFY7W34V0GAMDD
+      created_at: 2026-02-07T06:11:07.671Z
+      author: "@claude"
+      content: |-
+        ## Implementation
+
+        Added `RALPH_PROMPT_TIMEOUT` constant (30 minutes) in `src/ralph/subagent.ts` and applied it to both ACP agent spawn sites:
+
+        1. **Main ralph agent** (`src/cli/commands/ralph.ts:1235`) — `clientOptions.methodTimeouts` override for `session/prompt` and `session/resume`
+        2. **Review subagent** (`src/ralph/subagent.ts:173`) — same override
+
+        The framing layer's constructor already merges user-provided `methodTimeouts` over defaults (line 94-97), so this cleanly overrides the 5-minute default without touching the default for non-ralph usage.
+
+        Exported through `src/ralph/index.ts`.
+
+        All 104 ralph tests + 43 ACP tests pass.
+      supersedes: null
   todos: []
   started_at: 2026-02-07T06:06:33.409Z
