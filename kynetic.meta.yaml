@@ -5567,4 +5567,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGWG8YSAFS6GG225AV0AXPHW
+    type: friction
+    content: "Session event data payloads are untyped — EventTypeSchema defines the type enum but data
+      field is z.unknown(). Had to grep through real JSONL files to discover that Ralph records task
+      completions as session.update events with sessionUpdate: 'tool_call' and rawInput.command.
+      This caused a bug that was only caught by Codex reviewing against real data."
+    created_at: 2026-02-07T16:52:00.939Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
