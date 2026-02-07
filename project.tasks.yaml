@@ -46384,7 +46384,7 @@
     and if there is anything from prior work worth sharing forward (in case its a continuation of
     the same type of work)
   spec_ref: "@cmd-session-start"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
