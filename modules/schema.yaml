@@ -1281,3 +1281,7 @@ acceptance_criteria:
     given: "{starts with brace}"
     when: x
     then: y
+  - id: ac-2
+    given: "{"
+    when: x
+    then: y
