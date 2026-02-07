@@ -4282,6 +4282,11 @@ requirements:
             then: Quick Commands section shows task note and complete hints
     status:
       implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: tasks exist in pending_review status with notes
+        when: kspec session start runs
+        then: recent notes section includes pending_review task notes grouped separately from in_progress
   - _ulid: 01KFFG8XS20YMJR11CA4YZNX9N
     slugs:
       - spec-log-empty-repo
