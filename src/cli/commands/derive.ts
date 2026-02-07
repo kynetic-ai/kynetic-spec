@@ -18,7 +18,7 @@ import { commitIfShadow } from "../../parser/shadow.js";
 import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, isJsonMode, output } from "../output.js";
+import { error, info, isJsonMode, output, warn } from "../output.js";
 
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
@@ -223,6 +223,8 @@ interface DeriveResult {
   reason?: string;
   /** Task ref that was used for depends_on (if any) */
   dependsOn?: string[];
+  /** Number of acceptance criteria on the spec item */
+  acCount: number;
 }
 
 /**
@@ -275,6 +277,9 @@ async function deriveTaskFromSpec(
     title?: string;
   },
 ): Promise<DeriveResult> {
+  // Count acceptance criteria for display
+  const acCount = specItem.acceptance_criteria?.length ?? 0;
+
   // Check if a task already exists for this spec
   // AC: @cmd-derive ac-15 - skip cancelled tasks
   const linkedTasks = alignmentIndex.getTasksForSpec(specItem._ulid);
@@ -289,6 +294,7 @@ async function deriveTaskFromSpec(
       action: "skipped",
       task: activeTasks[0],
       reason: `task exists: ${taskRef}`,
+      acCount,
     };
   }
 
@@ -337,6 +343,7 @@ async function deriveTaskFromSpec(
       action: "would_create",
       task: previewTask,
       dependsOn: options.dependsOn,
+      acCount,
     };
   }
 
@@ -354,6 +361,7 @@ async function deriveTaskFromSpec(
     action: "created",
     task: newTask as LoadedTask,
     dependsOn: options.dependsOn,
+    acCount,
   };
 }
 
@@ -552,6 +560,7 @@ export function registerDeriveCommand(program: Command): void {
             spec_ref: `@${r.specItem.slugs[0] || r.specItem._ulid}`,
             depends_on: r.task?.depends_on || [],
             action: r.action,
+            ac_count: r.acCount,
           }));
           console.log(JSON.stringify(jsonOutput, null, 2));
           return; // Don't call output() which would output full results in global JSON mode
@@ -571,8 +580,15 @@ export function registerDeriveCommand(program: Command): void {
                 const deps = r.dependsOn?.length
                   ? ` (depends: ${r.dependsOn.join(", ")})`
                   : "";
-                console.log(`  + ${r.specItem.title}`);
+                const acInfo = r.acCount > 0 ? ` (${r.acCount} ACs)` : "";
+                console.log(`  + ${r.specItem.title}${acInfo}`);
                 console.log(`    -> ${taskSlug}${deps}`);
+                // Complexity warning for specs with many ACs
+                if (r.acCount > 5) {
+                  warn(
+                    `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
+                  );
+                }
               }
               if (skipped.length > 0) {
                 console.log("\nSkipped:");
@@ -596,7 +612,14 @@ export function registerDeriveCommand(program: Command): void {
                 const deps = r.dependsOn?.length
                   ? ` (depends: ${r.dependsOn.join(", ")})`
                   : "";
-                console.log(`OK Created task: ${taskSlug}${deps}`);
+                const acInfo = r.acCount > 0 ? ` (${r.acCount} ACs)` : "";
+                console.log(`OK Created task: ${taskSlug}${acInfo}${deps}`);
+                // Complexity warning for specs with many ACs
+                if (r.acCount > 5) {
+                  warn(
+                    `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
+                  );
+                }
               }
             }
 
