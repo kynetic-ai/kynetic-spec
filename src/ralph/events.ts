@@ -398,17 +398,21 @@ export function createTranslator(): RalphTranslator {
           // Empty string signals finalization
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_message") {
-              const final: RalphEvent = {
+              // Strip noise from accumulated content to handle split-chunk noise
+              const finalContent = stripNoise(state.activeMessage.content);
+              state.activeMessage = null;
+              if (finalContent === null) {
+                return null;
+              }
+              return {
                 type: "agent_message",
                 timestamp,
                 data: {
                   kind: "agent_message",
-                  content: state.activeMessage.content,
+                  content: finalContent,
                   isStreaming: false,
                 },
               };
-              state.activeMessage = null;
-              return final;
             }
             return null;
           }
@@ -449,17 +453,21 @@ export function createTranslator(): RalphTranslator {
         if (content?.type === "text" && typeof content.text === "string") {
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_thought") {
-              const final: RalphEvent = {
+              // Strip noise from accumulated content to handle split-chunk noise
+              const finalContent = stripNoise(state.activeMessage.content);
+              state.activeMessage = null;
+              if (finalContent === null) {
+                return null;
+              }
+              return {
                 type: "agent_thought",
                 timestamp,
                 data: {
                   kind: "agent_thought",
-                  content: state.activeMessage.content,
+                  content: finalContent,
                   isStreaming: false,
                 },
               };
-              state.activeMessage = null;
-              return final;
             }
             return null;
           }
@@ -617,17 +625,22 @@ export function createTranslator(): RalphTranslator {
 
   function finalize(): RalphEvent | null {
     if (state.activeMessage) {
-      const final: RalphEvent = {
-        type: state.activeMessage.type,
+      // Strip noise from accumulated content to handle split-chunk noise
+      const finalContent = stripNoise(state.activeMessage.content);
+      const type = state.activeMessage.type;
+      state.activeMessage = null;
+      if (finalContent === null) {
+        return null;
+      }
+      return {
+        type,
         timestamp: getTimestamp(),
         data: {
-          kind: state.activeMessage.type,
-          content: state.activeMessage.content,
+          kind: type,
+          content: finalContent,
           isStreaming: false,
         } as AgentMessageData | AgentThoughtData,
       };
-      state.activeMessage = null;
-      return final;
     }
     return null;
   }

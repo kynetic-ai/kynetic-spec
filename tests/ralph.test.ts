@@ -614,7 +614,7 @@ describe('ralph event translator', () => {
 
     it('strips multiple noise patterns from same chunk', () => {
       const translator = createTranslator();
-      // Realistic pattern: two hook warnings with proper toolu_ format (26 chars after toolu_)
+      // Realistic pattern: two hook warnings with proper toolu_ format (24 chars after toolu_)
       const event = translator.translate(
         makeChunk('agent_message_chunk', 'Start No onPreToolUseHook found for tool use ID: toolu_01ABC2345678901234567890 middle No onPostToolUseHook found for tool use ID: toolu_01XYZ2345678901234567890 end')
       );
@@ -641,7 +641,7 @@ describe('ralph event translator', () => {
       const translator = createTranslator();
 
       // Chunk with noise concatenated directly at the end (no space before noise)
-      // Tool ID must be exactly 26 chars after toolu_
+      // Tool ID must be exactly 24 chars after toolu_
       translator.translate(
         makeChunk('agent_message_chunk', 'First part.No onPostToolUseHook found for tool use ID: toolu_01XYZ2345678901234567890')
       );
@@ -656,6 +656,32 @@ describe('ralph event translator', () => {
 
       expect(final).not.toBeNull();
       expect((final!.data as { content: string }).content).toBe('First part. Second part.');
+    });
+
+    it('strips noise from accumulated content at finalization', () => {
+      const translator = createTranslator();
+
+      // Accumulate content that will contain noise when combined
+      translator.translate(
+        makeChunk('agent_message_chunk', 'Hello ')
+      );
+
+      // Noise arrives in its own chunk
+      translator.translate(
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
+      );
+
+      // More content
+      translator.translate(
+        makeChunk('agent_message_chunk', ' World')
+      );
+
+      // Finalize - accumulated content should be cleaned
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      // Noise stripped from accumulated content at finalization
+      expect((final!.data as { content: string }).content).toBe('Hello  World');
     });
 
     it('handles noise in thought chunks the same way', () => {
