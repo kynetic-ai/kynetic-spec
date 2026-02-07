@@ -2350,6 +2350,10 @@ features:
             given: inbox item @ref exists with content 'old text'
             when: kspec inbox set @ref --content 'new text' runs
             then: item content is replaced with 'new text', ULID and timestamp preserved
+          - id: ac-2
+            given: inbox item @ref exists
+            when: kspec inbox set @ref --tag newtag runs
+            then: item tags are updated to include newtag
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
