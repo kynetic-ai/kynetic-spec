@@ -46031,6 +46031,7 @@
     - reflection
   vcs_refs: []
   created_at: 2026-02-07T02:12:49.489Z
+  started_at: 2026-02-07T10:51:41.865Z
   notes:
     - _ulid: 01KGTXZ3PHDHTV2G847RXPPF2T
       created_at: 2026-02-07T02:12:49.489Z
@@ -46040,9 +46041,15 @@
         Use the pattern from multi-trait support added in PR #323. ~10 lines + tests. Small but
         saves a command on every spec creation."
       supersedes: null
+    - _ulid: 01KGVVSJRZ2JWN7GV8V5VB8C4J
+      created_at: 2026-02-07T10:54:05.599Z
+      author: "@claude"
+      content: "Implemented --trait flag for item add command. Added option to options list, updated input
+        construction to pass traits array, added example to help text. Created 4 tests covering:
+        single trait, multiple traits, persistence in YAML file, and default empty array behavior."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T10:51:41.865Z
 - _ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
   slugs: []
   title: Add AC count display and complexity warning to derive
