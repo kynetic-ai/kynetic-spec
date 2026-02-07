@@ -592,3 +592,235 @@ export async function readSessionContext(
     return null;
   }
 }
+
+// ─── Session ID Resolution ───────────────────────────────────────────────────
+
+/**
+ * Result of resolving a session ID prefix.
+ */
+export type SessionIdResolution =
+  | { ok: true; id: string }
+  | { ok: false; error: "not_found" }
+  | { ok: false; error: "ambiguous"; matches: string[] };
+
+/**
+ * Resolve a session ID or prefix to a full session ID.
+ *
+ * AC: @session-log-show ac-7, ac-8, ac-9
+ *
+ * @param specDir - The .kspec directory path
+ * @param idOrPrefix - Full session ID or prefix (e.g., first 8 chars)
+ * @returns Resolution result
+ */
+export async function resolveSessionId(
+  specDir: string,
+  idOrPrefix: string,
+): Promise<SessionIdResolution> {
+  const sessionIds = await listSessions(specDir);
+
+  // First, try exact match
+  if (sessionIds.includes(idOrPrefix)) {
+    return { ok: true, id: idOrPrefix };
+  }
+
+  // Try prefix match
+  const matches = sessionIds.filter((id) => id.startsWith(idOrPrefix));
+
+  if (matches.length === 0) {
+    return { ok: false, error: "not_found" };
+  }
+
+  if (matches.length === 1) {
+    return { ok: true, id: matches[0] };
+  }
+
+  // Ambiguous - multiple matches
+  return { ok: false, error: "ambiguous", matches };
+}
+
+// ─── Session Detail Data ─────────────────────────────────────────────────────
+
+/**
+ * Per-iteration summary for session log show.
+ */
+export interface IterationSummary {
+  /** Iteration number (1-indexed) */
+  iteration: number;
+  /** Number of events in this iteration */
+  event_count: number;
+  /** Tasks started in this iteration */
+  tasks_started: string[];
+  /** Tasks completed in this iteration */
+  tasks_completed: string[];
+}
+
+/**
+ * Full session detail data for session log show.
+ */
+export interface SessionLogDetail {
+  /** Session metadata */
+  id: string;
+  status: SessionStatus;
+  agent_type: string;
+  task_id?: string;
+  started_at: string;
+  ended_at?: string;
+  duration_ms: number;
+  /** Total event count */
+  event_count: number;
+  /** Total iteration count */
+  iteration_count: number;
+  /** Per-iteration summaries */
+  iterations: IterationSummary[];
+}
+
+/**
+ * Get iteration number from a context snapshot file.
+ */
+async function getIterationNumbers(
+  specDir: string,
+  sessionId: string,
+): Promise<number[]> {
+  const sessionDir = getSessionDir(specDir, sessionId);
+  try {
+    const entries = await fsPromises.readdir(sessionDir);
+    const iterations: number[] = [];
+    for (const entry of entries) {
+      const match = entry.match(/^context-iter-(\d+)\.json$/);
+      if (match) {
+        iterations.push(parseInt(match[1], 10));
+      }
+    }
+    return iterations.sort((a, b) => a - b);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Extract task refs from task commands in event data.
+ */
+function extractTaskRef(command: string): string | null {
+  // Match patterns like: kspec task start @ref, kspec task complete @ref
+  const match = command.match(/@[\w-]+/);
+  return match ? match[0] : null;
+}
+
+/**
+ * Compute per-iteration summaries from events.
+ *
+ * AC: @session-log-show ac-2
+ */
+async function computeIterationSummaries(
+  specDir: string,
+  sessionId: string,
+): Promise<IterationSummary[]> {
+  const events = await readEvents(specDir, sessionId);
+  const iterations = await getIterationNumbers(specDir, sessionId);
+
+  // If no iterations found, create a single iteration-0 summary
+  if (iterations.length === 0) {
+    return [
+      {
+        iteration: 0,
+        event_count: events.length,
+        tasks_started: [],
+        tasks_completed: [],
+      },
+    ];
+  }
+
+  // Group events by iteration (from event data if available)
+  const iterationMap = new Map<number, SessionEvent[]>();
+  for (const n of iterations) {
+    iterationMap.set(n, []);
+  }
+
+  for (const event of events) {
+    // Try to get iteration from event data
+    const data = event.data as { iteration?: number } | null;
+    const iter = data?.iteration;
+    if (typeof iter === "number" && iterationMap.has(iter)) {
+      iterationMap.get(iter)!.push(event);
+    } else if (iterations.length > 0) {
+      // Assign to first iteration if no explicit iteration
+      iterationMap.get(iterations[0])!.push(event);
+    }
+  }
+
+  const summaries: IterationSummary[] = [];
+  for (const [iterNum, iterEvents] of iterationMap) {
+    const tasksStarted: string[] = [];
+    const tasksCompleted: string[] = [];
+
+    for (const event of iterEvents) {
+      if (event.type === "session.update") {
+        const data = event.data as {
+          update?: {
+            sessionUpdate?: string;
+            rawInput?: { command?: string };
+          };
+        } | null;
+        const command = data?.update?.rawInput?.command;
+        if (typeof command === "string") {
+          if (/\btask start\b/.test(command)) {
+            const ref = extractTaskRef(command);
+            if (ref) tasksStarted.push(ref);
+          } else if (/\btask complete\b/.test(command)) {
+            const ref = extractTaskRef(command);
+            if (ref) tasksCompleted.push(ref);
+          }
+        }
+      }
+    }
+
+    summaries.push({
+      iteration: iterNum,
+      event_count: iterEvents.length,
+      tasks_started: tasksStarted,
+      tasks_completed: tasksCompleted,
+    });
+  }
+
+  return summaries.sort((a, b) => a.iteration - b.iteration);
+}
+
+/**
+ * Get full session detail for session log show.
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID (must be resolved first)
+ * @returns Session detail or null if not found
+ */
+export async function getSessionLogDetail(
+  specDir: string,
+  sessionId: string,
+): Promise<SessionLogDetail | null> {
+  const metadata = await getSession(specDir, sessionId);
+  if (!metadata) return null;
+
+  const [eventCount, iterationCount, iterations] = await Promise.all([
+    countEventLines(specDir, sessionId),
+    countIterations(specDir, sessionId),
+    computeIterationSummaries(specDir, sessionId),
+  ]);
+
+  const startMs = new Date(metadata.started_at).getTime();
+  const endMs = metadata.ended_at
+    ? new Date(metadata.ended_at).getTime()
+    : Date.now();
+  const durationMs = endMs - startMs;
+
+  return {
+    id: metadata.id,
+    status: metadata.status,
+    agent_type: metadata.agent_type,
+    task_id: metadata.task_id,
+    started_at: metadata.started_at,
+    ended_at: metadata.ended_at,
+    duration_ms: durationMs,
+    event_count: eventCount,
+    iteration_count: iterationCount,
+    iterations,
+  };
+}
