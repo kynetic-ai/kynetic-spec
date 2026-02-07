@@ -2367,6 +2367,11 @@ features:
         traits: []
         notes: []
         created: 2026-02-07T08:16:16.603Z
+        acceptance_criteria:
+          - id: ac-1
+            given: inbox item @ref exists with content 'original'
+            when: kspec inbox note @ref 'additional context' runs
+            then: item content becomes 'original' followed by appended 'additional context'
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
