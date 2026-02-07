@@ -1276,4 +1276,8 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
-acceptance_criteria: []
+acceptance_criteria:
+  - id: ac-1
+    given: "{starts with brace}"
+    when: x
+    then: y
