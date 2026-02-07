@@ -280,4 +280,5 @@ inbox:
     created_at: 2026-02-07T12:59:16.111Z
     tags:
       - test-tag
+      - newtag
     added_by: "@claude"
