@@ -152,12 +152,6 @@ inbox:
     created_at: 2026-02-02T22:10:44.331Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KGG6H6NNWB04N1SFFCHPY2V4
-    text: "[quick-win] Add AC count display and complexity warning to derive command - warn when spec
-      has >5 ACs and suggest decomposition options"
-    created_at: 2026-02-02T22:10:52.214Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KGGEMM4XAZZ19JXBXPC3FY3P
     text: "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2)
       Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start

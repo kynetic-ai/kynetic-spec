@@ -45779,20 +45779,20 @@
         in PR #323, editing is the missing half."
       supersedes: null
   todos: []
-- title: Add --trait flag to item add command
-  type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - reflection
-  description: Add --trait flag to kspec item add command to apply traits at creation time
-  _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
+- _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
   slugs: []
+  title: Add --trait flag to item add command
+  type: task
+  description: Add --trait flag to kspec item add command to apply traits at creation time
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - reflection
   vcs_refs: []
   created_at: 2026-02-07T02:12:49.489Z
   notes:
@@ -45803,5 +45803,30 @@
         to item add in src/cli/commands/item.ts. After item creation, call existing trait-add logic.
         Use the pattern from multi-trait support added in PR #323. ~10 lines + tests. Small but
         saves a command on every spec creation."
+      supersedes: null
+  todos: []
+- title: Add AC count display and complexity warning to derive
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "[quick-win] Add AC count display and complexity warning to derive command - warn when
+    spec has >5 ACs and suggest decomposition options"
+  _ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:13:41.788Z
+  notes:
+    - _ulid: 01KGTY0PRWEKP32BG55JFAPTES
+      created_at: 2026-02-07T02:13:41.789Z
+      author: "@claude"
+      content: "Implementation: In src/cli/commands/derive.ts, count ACs on the spec being derived. Always
+        display count in output (e.g. 'Derived task from @spec (3 ACs)'). If >5 ACs, warn: 'This
+        spec has N ACs — consider splitting before implementing.' ~15 lines, no new deps. Quick win
+        from the derive-granularity research (01KGG6GY)."
       supersedes: null
   todos: []
