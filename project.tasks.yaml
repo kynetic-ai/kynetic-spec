@@ -45965,7 +45965,7 @@
   description: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
     relationship fields require manual YAML editing.
   spec_ref: "@item-set"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46002,6 +46002,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T10:36:42.792Z
+  closed_reason: "Merged in PR #335. Added --relates-to, --implements, --depends-on flags to item set
+    command with append semantics. Added --clear-* variants for clearing relationships. Validates
+    refs exist and are spec items (rejects tasks). All ACs (ac-5, ac-6, ac-7) covered with tests.
+    Added ac-4 test annotation for --status flag."
 - _ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
   slugs: []
   title: Add --trait flag to item add command
