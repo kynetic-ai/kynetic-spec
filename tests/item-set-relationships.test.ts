@@ -69,6 +69,14 @@ describe('Item Set Relationship Flags', () => {
       expect(result.exitCode).toBe(3); // NOT_FOUND
       expect(result.stderr).toContain('not found');
     });
+
+    it('should error when relates_to reference is a task, not a spec item', () => {
+      kspec('item add --under @test-core --title "Item A" --type requirement --slug item-a', tempDir);
+      // test-task-pending is a task from the fixtures
+      const result = kspec('item set @item-a --relates-to @test-task-pending', tempDir, { expectFail: true });
+      expect(result.exitCode).toBe(2); // USAGE_ERROR
+      expect(result.stderr).toContain('must be a spec item, not a task');
+    });
   });
 
   describe('--implements flag', () => {

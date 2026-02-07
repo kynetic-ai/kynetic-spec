@@ -738,7 +738,7 @@ Examples:
     .action(async (ref, options) => {
       try {
         const ctx = await initContext();
-        const { refIndex, items } = await buildIndexes(ctx);
+        const { refIndex, items, tasks } = await buildIndexes(ctx);
 
         const result = refIndex.resolve(ref);
         if (!result.ok) {
@@ -782,35 +782,8 @@ Examples:
           }
         }
 
-        // Validate relationship refs exist
-        // AC: @item-set ac-5 - --relates-to validation
-        if (options.relatesTo) {
-          const refResult = refIndex.resolve(options.relatesTo);
-          if (!refResult.ok) {
-            error(errors.reference.itemNotFound(options.relatesTo));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-        }
-
-        // AC: @item-set ac-6 - --implements validation
-        if (options.implements) {
-          const refResult = refIndex.resolve(options.implements);
-          if (!refResult.ok) {
-            error(errors.reference.itemNotFound(options.implements));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-        }
-
-        // AC: @item-set ac-7 - --depends-on validation
-        if (options.dependsOn) {
-          const refResult = refIndex.resolve(options.dependsOn);
-          if (!refResult.ok) {
-            error(errors.reference.itemNotFound(options.dependsOn));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-        }
-
         // Mutual exclusivity: cannot add and clear same field
+        // Check this before ref resolution so usage errors take precedence
         if (options.relatesTo && options.clearRelatesTo) {
           error("Cannot use --relates-to and --clear-relates-to together");
           process.exit(EXIT_CODES.USAGE_ERROR);
@@ -822,6 +795,36 @@ Examples:
         if (options.dependsOn && options.clearDependsOn) {
           error("Cannot use --depends-on and --clear-depends-on together");
           process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // Helper to validate relationship refs (must exist and be a spec item, not a task)
+        const validateRelationshipRef = (refStr: string, flagName: string): void => {
+          const refResult = refIndex.resolve(refStr);
+          if (!refResult.ok) {
+            error(errors.reference.itemNotFound(refStr));
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          // Ensure it's a spec item, not a task
+          const isTask = tasks.some((t) => t._ulid === refResult.ulid);
+          if (isTask) {
+            error(`${flagName} reference must be a spec item, not a task: ${refStr}`);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+        };
+
+        // AC: @item-set ac-5 - --relates-to validation
+        if (options.relatesTo) {
+          validateRelationshipRef(options.relatesTo, "--relates-to");
+        }
+
+        // AC: @item-set ac-6 - --implements validation
+        if (options.implements) {
+          validateRelationshipRef(options.implements, "--implements");
+        }
+
+        // AC: @item-set ac-7 - --depends-on validation
+        if (options.dependsOn) {
+          validateRelationshipRef(options.dependsOn, "--depends-on");
         }
 
         // Build updates object
