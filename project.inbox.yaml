@@ -298,3 +298,12 @@ inbox:
       - sessions
       - schema
     added_by: "@claude"
+  - _ulid: 01KGWM89MZCZ35WZF3G32BXPVK
+    text: "Add integration-level regression tests for malformed priority values on derive and plan
+      derive (e.g. --priority 3abc, --priority 1.9) to lock in the Commander pre-parse fix from PR
+      #347"
+    created_at: 2026-02-07T18:01:33.599Z
+    tags:
+      - cli
+      - testing
+    added_by: "@claude"
