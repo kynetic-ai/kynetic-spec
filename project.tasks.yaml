@@ -45830,24 +45830,24 @@
         from the derive-granularity research (01KGG6GY)."
       supersedes: null
   todos: []
-- title: Add batch commands subcommand for discoverability
+- _ulid: 01KGTY1XTCAKK8NGNY9188KPXA
+  slugs: []
+  title: Add batch commands subcommand for discoverability
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - batch
-    - dx
   description: "kspec batch commands — list allowed commands with positional arg names and option
     flags. Reference for writing batch JSON without reading source. Example output: 'inbox add
     <text> [--tag <tag...>]'. Complements --dry-run (which validates after writing) with
     discoverability before writing."
-  _ulid: 01KGTY1XTCAKK8NGNY9188KPXA
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - batch
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T02:14:21.772Z
   notes:
@@ -45859,5 +45859,36 @@
         mutating/read-only classification from existing annotations. Support --json for
         machine-readable output. CommandMeta already has all the data — this is pure display. ~30
         lines + tests."
+      supersedes: null
+  todos: []
+- title: Add did-you-mean suggestions to batch validation errors
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - batch
+    - dx
+  description: "Better batch pre-validation errors — when unknown arg key is used, suggest correct
+    positional name. e.g. 'Unknown arg \"content\" for \"inbox add\". Did you mean \"text\"? Run
+    kspec batch commands for reference.' CommandMeta already has the arg names. Note: --dry-run
+    already catches this, but the error message doesn't suggest the fix."
+  _ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:15:11.041Z
+  notes:
+    - _ulid: 01KGTY3DY13YX3W1VQS90SG9MS
+      created_at: 2026-02-07T02:15:11.041Z
+      author: "@claude"
+      content: "Implementation: In batch validation (batch-exec.ts), when unknown arg key is encountered,
+        compare against CommandMeta positional names using string similarity or simple prefix
+        matching. Format: 'Unknown arg \"content\" for \"inbox add\". Did you mean \"text\"? Run
+        kspec batch commands for reference.' ~15 lines. Pairs with batch commands discoverability
+        task."
       supersedes: null
   todos: []
