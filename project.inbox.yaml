@@ -190,16 +190,6 @@ inbox:
       - automation
       - ralph
     added_by: "@claude"
-  - _ulid: 01KFST4K35P91SXSFDPTZC7KCP
-    text: "PR-Task Linkage Audit - When PR merges with 'Task: @ref' trailer, check if task is still
-      pending and prompt action. Could be CI check or post-merge hook. Catches orphaned tasks after
-      PR merge."
-    created_at: 2026-01-25T05:30:58.534Z
-    tags:
-      - reflection
-      - ci
-      - workflow
-    added_by: "@claude"
   - _ulid: 01KFT2J3Z7AJ8VPKF1N7H15WGH
     text: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during
       init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful
@@ -305,14 +295,6 @@ inbox:
       completed/in-progress/remaining counts"
     created_at: 2026-01-20T16:13:31.843Z
     tags: []
-    added_by: "@claude"
-  - _ulid: 01KGC92T084XGVC5G5THSVS79J
-    text: Show before/after diff when mutating spec items or ACs - after kspec item ac set/add, show
-      inline diff of what changed instead of requiring separate kspec item get
-    created_at: 2026-02-01T09:38:28.488Z
-    tags:
-      - reflection
-      - dx
     added_by: "@claude"
   - _ulid: 01KGG6GYZAMZCTWRPZG2XM2YQ9
     text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting.
@@ -432,11 +414,6 @@ inbox:
       - batch
       - dx
     added_by: "@claude"
-  - _ulid: 01KGHGWDTTZSZJB31VJG7M8D0J
-    text: test sync debug
-    created_at: 2026-02-03T10:31:00.187Z
-    tags: []
-    added_by: Claude
   - _ulid: 01KGKVK9TDARHY80HN3A8M8TEF
     text: Add --spec-ref filter to kspec task list command to filter tasks by linked spec item
     created_at: 2026-02-04T08:16:44.365Z
@@ -483,17 +460,6 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
-  - _ulid: 01KGQYE7TTS16KPQ4VSDXRX6XP
-    text: "Unify comma-separated tag input as a trait across all commands. Currently --tags x,y,z works
-      on some commands but not others (e.g., inbox add requires --tag x --tag y --tag z). Should be
-      a @trait-comma-separated-tags (or extend @trait-multi-ref-batch) applied consistently to:
-      inbox add, task add, task set, item add, item set, and any other tag-accepting command."
-    created_at: 2026-02-05T22:23:21.946Z
-    tags:
-      - trait
-      - cli
-      - dx
-    added_by: "@claude"
   - _ulid: 01KGR0N6QCNK3YS6K5H3VSXDFC
     text: "Workflow advance-to command: kspec workflow advance-to @run <step> --notes '...' to skip
       through already-completed steps in one command instead of calling next repeatedly. Useful when
@@ -536,28 +502,6 @@ inbox:
       - cli
       - validation
       - dx
-    added_by: "@claude"
-  - _ulid: 01KGS2QCK49D7EH5EDCGZ9NV4F
-    text: "Plan import task enrichment: kspec plan import creates tasks with generic 'See plan @X for
-      implementation notes'. Plan docs contain per-spec implementation notes in the YAML structure
-      and implementation notes section. Consider extracting per-spec context and attaching as
-      task-specific notes during import, so each task is self-contained without requiring a separate
-      enrichment pass."
-    created_at: 2026-02-06T08:57:30.468Z
-    tags:
-      - cli
-      - plan
-      - dx
-    added_by: "@claude"
-  - _ulid: 01KGS89EKRDNCHKV93FSEYADTG
-    text: Document batch command usage for agents — batch-exec.ts supports JSON batch input for multiple
-      CLI calls (e.g., batching item ac add). Add examples to AGENTS.md and/or kspec help batch.
-      Agents currently don't know this exists and serialize 10+ sequential calls instead.
-    created_at: 2026-02-06T10:34:45.240Z
-    tags:
-      - documentation
-      - dx
-      - batch
     added_by: "@claude"
   - _ulid: 01KGTM3P85VN4TFMTQ3GFQBG5A
     text: "kspec batch commands — list allowed commands with positional arg names and option flags.
