@@ -4294,7 +4294,7 @@ requirements:
             then: Quick Commands section shows task note and complete hints
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     acceptance_criteria:
       - id: ac-1
         given: tasks exist in pending_review status with notes
