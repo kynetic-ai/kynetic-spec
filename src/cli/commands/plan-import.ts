@@ -363,9 +363,12 @@ async function importPlan(
   // AC: @plan-import ac-12, ac-13, ac-19, ac-20
   if (parsed.tasks.derive_from_specs && result.createdSpecs.length > 0) {
     const tasks = await loadAllTasks(ctx);
-    // Track all existing slugs + in-loop duplicates
-    // refIndex covers specs + tasks + plans; Set tracks in-loop additions
-    const importSlugs = new Set(tasks.flatMap((t) => t.slugs));
+    // Track all slugs: existing tasks + specs created in this import + in-loop additions
+    // refIndex is stale for specs/plans created during this import, so include them explicitly
+    const importSlugs = new Set([
+      ...tasks.flatMap((t) => t.slugs),
+      ...result.createdSpecs.map((ref) => ref.slice(1)),
+    ]);
 
     for (const specRef of result.createdSpecs) {
       // Get spec from createdSpecsMap (works in both dry-run and real mode)
@@ -440,8 +443,12 @@ async function importPlan(
   // AC: @plan-import ac-27
   if (parsed.tasks.additional_tasks) {
     // Reload tasks to catch any created by derive loop above
+    // Include specs created in this import (refIndex is stale for them)
     const manualTasks = await loadAllTasks(ctx);
-    const manualImportSlugs = new Set(manualTasks.flatMap((t) => t.slugs));
+    const manualImportSlugs = new Set([
+      ...manualTasks.flatMap((t) => t.slugs),
+      ...result.createdSpecs.map((ref) => ref.slice(1)),
+    ]);
 
     for (const taskDef of parsed.tasks.additional_tasks) {
       const taskSlug = taskDef.slug || generateSlug(taskDef.title);
