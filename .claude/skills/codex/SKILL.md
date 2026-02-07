@@ -351,6 +351,52 @@ Parse overrides from the user's message and map to CLI flags:
 - `--model X` or `-m X` → `-m X`
 - `--effort X` → `-c model_reasoning_effort="X"` (translate to config flag)
 
+## Handling Complex Prompts
+
+When prompts contain shell-unsafe characters (quotes, backticks, special characters, or multi-line content), use the **prompt-file pattern** instead of inline quoting:
+
+```bash
+# 1. Write prompt to temp file (use mktemp for safety)
+PROMPT_FILE=$(mktemp /tmp/codex-prompt.XXXXXX)
+cat > "$PROMPT_FILE" << 'EOF'
+Review the code for:
+- Edge cases with special chars like `$var` and "quoted" strings
+- Multi-line logic that's hard to escape inline
+- Patterns matching {curly} braces
+EOF
+
+# 2. Use $(cat file) to inject the prompt
+codex exec \
+  -m gpt-5.3-codex \
+  -c model_reasoning_effort="medium" \
+  -s danger-full-access \
+  --skip-git-repo-check \
+  "$(cat "$PROMPT_FILE")"
+
+# 3. Clean up
+rm -f "$PROMPT_FILE"
+```
+
+### When to Use This Pattern
+
+| Prompt Content | Approach |
+|----------------|----------|
+| Simple one-liner | Inline quotes work fine |
+| Contains `$`, backticks, quotes | Use prompt file |
+| Multi-line with formatting | Use prompt file |
+| Generated or dynamic content | Use prompt file |
+
+### Why Prompt-File Over Heredocs?
+
+Quoted heredocs (`<<'DELIM'...DELIM`) handle quotes, backticks, and `$` literally — they don't cause parsing failures. However, the prompt-file pattern offers practical advantages:
+
+- **Delimiter collision**: If your prompt contains the delimiter string itself, heredocs fail
+- **Mixed expansion**: When you need `$var` expanded in some places but literal in others, heredocs require awkward escaping
+- **Debuggability**: You can `cat "$PROMPT_FILE"` to verify exact content before running
+- **Reusability**: Same prompt file can be used across multiple commands
+
+For simple prompts, heredocs work fine. Use prompt-files when prompts are complex, generated dynamically, or need inspection before use.
+
 ## Tips
 
 - Always use `--skip-git-repo-check` — this project uses a shadow branch worktree that confuses Codex's git detection
