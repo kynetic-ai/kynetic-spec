@@ -8,6 +8,7 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
+  buildIndexes,
   createPlan,
   createTask,
   findPlanByRef,
@@ -110,11 +111,35 @@ Examples:
           }
         }
 
+        // Generate URL-safe slug from title
+        const generateSlug = (title: string): string => {
+          return title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")
+            .slice(0, 50);
+        };
+
+        // Auto-namespace plan slugs with "plan-" prefix to prevent collision with spec slugs
+        // If user provides a slug, check for collision with spec items
+        // If no slug provided, auto-generate with "plan-" prefix
+        const planSlug = options.slug || `plan-${generateSlug(options.title)}`;
+
+        // Check for collision with spec items when manual slug is provided
+        if (options.slug) {
+          const { refIndex } = await buildIndexes(ctx);
+          const collision = refIndex.resolve(`@${options.slug}`);
+          if (collision.ok) {
+            error(`Slug "${options.slug}" collides with existing spec item. Use a different slug or omit --slug for auto-namespaced slug.`);
+            process.exit(EXIT_CODES.CONFLICT);
+          }
+        }
+
         const input: PlanInput = {
           title: options.title,
           content,
           status: options.status || "draft",
-          slugs: options.slug ? [options.slug] : [],
+          slugs: [planSlug],
         };
 
         const newPlan = createPlan(input);
@@ -254,6 +279,13 @@ Examples:
 
         if (options.slug) {
           if (!foundPlan.slugs.includes(options.slug)) {
+            // Check for collision with spec items
+            const { refIndex } = await buildIndexes(ctx);
+            const collision = refIndex.resolve(`@${options.slug}`);
+            if (collision.ok) {
+              error(`Slug "${options.slug}" collides with existing spec item. Use a different slug.`);
+              process.exit(EXIT_CODES.CONFLICT);
+            }
             foundPlan.slugs.push(options.slug);
             changes.push(`slug: +${options.slug}`);
           }

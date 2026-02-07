@@ -161,7 +161,8 @@ async function importPlan(
 
   // Create plan record
   // AC: @plan-import ac-24, ac-28
-  const planSlug = generateSlug(parsed.title);
+  // Auto-namespace plan slugs with "plan-" prefix to prevent collision with spec slugs
+  const planSlug = `plan-${generateSlug(parsed.title)}`;
   const planInput: PlanInput = {
     title: parsed.title,
     content: parsed.content,
