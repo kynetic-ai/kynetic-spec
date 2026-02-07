@@ -46516,6 +46516,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #345. Fixed noise suppression for hook warnings by changing from
+    skip-entire-chunk to strip-patterns strategy. The stripNoise function now removes noise patterns
+    from content while preserving surrounding text, handling both standalone noise and embedded
+    noise concatenated with agent messages. Added comprehensive tests covering whitespace
+    preservation, greedy matching prevention, and cross-chunk accumulation."
   depends_on: []
   context: []
   priority: 3
@@ -46523,6 +46528,7 @@
   vcs_refs: []
   created_at: 2026-02-07T06:00:04.348Z
   started_at: 2026-02-07T13:40:47.394Z
+  completed_at: 2026-02-07T14:14:15.729Z
   notes:
     - _ulid: 01KGVAZPBDYHGH6XKKK5BWB0WR
       created_at: 2026-02-07T06:00:20.077Z
@@ -46598,12 +46604,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-07T14:14:15.729Z
-  closed_reason: "Merged in PR #345. Fixed noise suppression for hook warnings by changing from
-    skip-entire-chunk to strip-patterns strategy. The stripNoise function now removes noise patterns
-    from content while preserving surrounding text, handling both standalone noise and embedded
-    noise concatenated with agent messages. Added comprehensive tests covering whitespace
-    preservation, greedy matching prevention, and cross-chunk accumulation."
 - _ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
   slugs: []
   title: Increase ralph loop prompt timeout from 5min to 30min
@@ -46847,3 +46847,31 @@
       supersedes: null
   todos: []
   automation: needs_review
+- title: Create shared CLI validation helpers (parseIntOption, validateRefExists, validateEnumOption)
+  description: "Systemic fix for the validation gap pattern identified across 87.5% of overnight PRs.
+    Create src/cli/validators.ts with: (1) parseIntOption - wraps parseInt with NaN/range check,
+    replaces 20+ ad-hoc calls; (2) validateRefExists - resolves ref + type check, replaces repeated
+    resolve+check pattern; (3) validateEnumOption - validates against allowed set. Also: add
+    spec_ref validation to task add (parity with task set), inbox promote; guard priority parseInt
+    in task add, inbox promote, meta promote, plan derive. Add validation conventions section to
+    AGENTS.md. See validation analysis at
+    /tmp/claude-1000/-home-chapel-Projects-kynetic-spec/tasks/a47da04.output"
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - cli
+    - validation
+    - dx
+  depends_on: []
+  _ulid: 01KGWDPVD3JXNSDHWDHVYQGVQX
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T16:07:10.499Z
+  notes: []
+  todos: []
