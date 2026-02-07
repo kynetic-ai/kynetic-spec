@@ -437,7 +437,7 @@ Examples:
   markMutating(plan.command("derive <ref>"))
     .description("Create a task from a plan")
     .option("--title <title>", "Override task title")
-    .option("--priority <n>", "Set task priority (1-5)", parseInt)
+    .option("--priority <n>", "Set task priority (1-5)")
     .addHelpText(
       "after",
       `
@@ -461,10 +461,9 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
-        // Validate priority if provided (commander's parseInt runs first,
-        // but may produce NaN for non-numeric input)
+        // Validate priority if provided
         if (options.priority !== undefined) {
-          const priorityResult = parseIntOption(String(options.priority), {
+          const priorityResult = parseIntOption(options.priority, {
             min: 1,
             max: 5,
             name: "Priority",
@@ -473,6 +472,8 @@ Examples:
             error(priorityResult.error);
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
+          // Replace raw string with validated number for downstream use
+          options.priority = priorityResult.value;
         }
 
         // Generate task slug from plan title

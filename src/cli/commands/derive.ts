@@ -420,11 +420,7 @@ export function registerDeriveCommand(program: Command): void {
     )
     .option("--force", "Create task even if one already exists for the spec")
     .option("--dry-run", "Show what would be created without making changes")
-    .option(
-      "--priority <n>",
-      "Set priority for created task(s) (1-5)",
-      parseInt,
-    )
+    .option("--priority <n>", "Set priority for created task(s) (1-5)")
     .option("--title <title>", "Override task title (default: 'Implement: {spec title}')")
     .action(async (ref: string | undefined, options) => {
       try {
@@ -444,10 +440,8 @@ export function registerDeriveCommand(program: Command): void {
         }
 
         // Validate priority if provided
-        // Note: commander's parseInt parse function runs first, but parseIntOption
-        // provides stricter checking (rejects "3abc", "1.9", etc.)
         if (options.priority !== undefined) {
-          const priorityResult = parseIntOption(String(options.priority), {
+          const priorityResult = parseIntOption(options.priority, {
             min: 1,
             max: 5,
             name: "Priority",
@@ -456,6 +450,8 @@ export function registerDeriveCommand(program: Command): void {
             error(priorityResult.error);
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
+          // Replace raw string with validated number for downstream use
+          options.priority = priorityResult.value;
         }
 
         const ctx = await initContext();
