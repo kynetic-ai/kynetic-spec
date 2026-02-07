@@ -45892,25 +45892,25 @@
         task."
       supersedes: null
   todos: []
-- title: Separate validate exit codes for errors vs warnings
+- _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
+  slugs: []
+  title: Separate validate exit codes for errors vs warnings
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - validation
-    - dx
   description: "kspec validate exit code: validate returns exit code 1 for alignment warnings
     (orphaned specs, missing test coverage) even when there are zero errors. On fresh projects with
     specs but no code, this is the expected state. Consider: separate exit codes (0=clean, 1=errors,
     2=warnings-only), or --errors-only / --severity flags to filter output and control exit
     behavior."
-  _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - validation
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T02:16:33.679Z
   notes:
@@ -45922,5 +45922,37 @@
         Add --severity flag (error|warning, default: warning) to control what's reported. When
         --severity error, suppress warning output and only exit 1 on real errors. ~20 lines. Enables
         CI usage on fresh projects where orphaned specs are expected."
+      supersedes: null
+  todos: []
+- title: Auto-namespace plan slugs to prevent collision with spec slugs
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - plan
+    - dx
+  description: "Plan import slug namespacing: kspec plan import auto-assigns slug from plan title,
+    which can collide with spec slugs created by the same import (e.g. plan 'Gallery Home' gets slug
+    'gallery-home', colliding with spec slug 'gallery-home'). Plans should auto-namespace their slug
+    (e.g. 'plan-gallery-home') or detect collision and prompt for resolution. Related to 01KGGPSR
+    but that covers item-to-item collision, not plan-to-item."
+  _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:36:54.458Z
+  notes:
+    - _ulid: 01KGTZB6SV49C2SS5GA2J0S3EF
+      created_at: 2026-02-07T02:36:54.459Z
+      author: "@claude"
+      content: "Implementation: In plan import handler (src/cli/commands/plan.ts or plan-document.ts),
+        auto-prefix generated slugs with 'plan-' (e.g., plan-gallery-home). For plan add, same
+        prefix. If manual --slug is provided, check for collision against spec index and error if
+        conflict detected. ~10 lines. Bug fix — hit during real plan imports where plan and spec
+        shared the same slug."
       supersedes: null
   todos: []
