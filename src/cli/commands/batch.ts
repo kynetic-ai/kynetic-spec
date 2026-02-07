@@ -5,18 +5,91 @@
  * immediate mode (per-command commits, no rollback).
  */
 
+import chalk from "chalk";
 import type { Command } from "commander";
 import {
   parseBatchInput,
   BatchParseError,
   executeBatch,
-  reportBatchValidationErrors,
 } from "../batch-exec.js";
-import { isJsonMode } from "../output.js";
+import { createBatchCommandFilter } from "../command-annotations.js";
+import { extractCommandTree, flattenCommandTree, type CommandMeta } from "../introspection.js";
+import { isJsonMode, output } from "../output.js";
 import { EXIT_CODES } from "../exit-codes.js";
 
 /**
- * Register the `kspec batch` command.
+ * Format a command signature for display.
+ * e.g., "inbox add <text> [--tag <tag...>]"
+ */
+function formatCommandSignature(cmd: CommandMeta): string {
+  const parts = [cmd.fullPath.slice(1).join(" ")]; // Skip root 'kspec'
+
+  // Add positional arguments
+  for (const arg of cmd.arguments) {
+    if (arg.required) {
+      parts.push(`<${arg.name}${arg.variadic ? "..." : ""}>`);
+    } else {
+      parts.push(`[${arg.name}${arg.variadic ? "..." : ""}]`);
+    }
+  }
+
+  // Add options (excluding common ones like --json, --verbose)
+  const skipOptions = new Set(["json", "verbose", "help"]);
+  const significantOptions = cmd.options.filter((opt) => {
+    const match = opt.flags.match(/--([a-zA-Z0-9-]+)/);
+    return match && !skipOptions.has(match[1]);
+  });
+
+  if (significantOptions.length > 0) {
+    parts.push("[options]");
+  }
+
+  return parts.join(" ");
+}
+
+/**
+ * Build structured command info for JSON output.
+ */
+interface BatchCommandInfo {
+  command: string;
+  signature: string;
+  description: string;
+  mutating: boolean;
+  arguments: Array<{
+    name: string;
+    description: string;
+    required: boolean;
+    variadic: boolean;
+  }>;
+  options: Array<{
+    flags: string;
+    description: string;
+    required: boolean;
+  }>;
+}
+
+function buildCommandInfo(cmd: CommandMeta): BatchCommandInfo {
+  return {
+    command: cmd.fullPath.slice(1).join(" "), // Skip root 'kspec'
+    signature: formatCommandSignature(cmd),
+    description: cmd.description,
+    mutating: cmd.mutating,
+    arguments: cmd.arguments.map((arg) => ({
+      name: arg.name,
+      description: arg.description,
+      required: arg.required,
+      variadic: arg.variadic,
+    })),
+    options: cmd.options.map((opt) => ({
+      flags: opt.flags,
+      description: opt.description,
+      required: opt.mandatory,
+    })),
+  };
+}
+
+/**
+ * Register the `kspec batch` command group.
  *
  * AC: @batch-exec ac-stdin — stdin input
  * AC: @batch-exec ac-file — file input
@@ -27,7 +100,7 @@ import { EXIT_CODES } from "../exit-codes.js";
  * AC: @batch-exec ac-json-mode-field — JSON output includes mode field
  */
 export function registerBatchCommand(program: Command): void {
-  program
+  const batchCmd = program
     .command("batch")
     .description("Execute multiple commands from a JSON payload")
     .option("--file <path>", "Read commands from a JSON file")
@@ -44,7 +117,8 @@ Examples:
   $ kspec batch --commands '[{"command":"inbox add","args":{"content":"test"}}]'
   $ kspec batch --no-atomic --commands '[...]'
   $ kspec batch --continue --commands '[...]'
-  $ kspec batch --dry-run --commands '[...]'`,
+  $ kspec batch --dry-run --commands '[...]'
+  $ kspec batch commands           # list allowed commands`,
     )
     .action(async (options: {
       file?: string;
@@ -133,6 +207,47 @@ Examples:
 
       if (!result.success) {
         process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // Register the `batch commands` subcommand
+  batchCmd
+    .command("commands")
+    .description("List commands allowed in batch mode")
+    .action(() => {
+      const json = isJsonMode();
+      const tree = extractCommandTree(program);
+      const allCommands = flattenCommandTree(tree);
+      const commandFilter = createBatchCommandFilter();
+
+      // Filter to leaf commands (no subcommands) that pass the batch filter
+      const allowedCommands = allCommands.filter((cmd) => {
+        // Must be a leaf command (no subcommands)
+        if (cmd.subcommands.length > 0) return false;
+        // Must pass the batch filter (mutating only)
+        if (!commandFilter(cmd)) return false;
+        // Exclude batch itself
+        if (cmd.name === "batch" || cmd.fullPath.includes("batch")) return false;
+        return true;
+      });
+
+      if (json) {
+        const commandInfos = allowedCommands.map(buildCommandInfo);
+        output({ commands: commandInfos, total: commandInfos.length });
+      } else {
+        console.log(chalk.bold.cyan("Batch-Allowed Commands"));
+        console.log(chalk.gray("─".repeat(60)));
+        console.log(chalk.gray("Only mutating commands can be used in batch mode.\n"));
+
+        for (const cmd of allowedCommands) {
+          const signature = formatCommandSignature(cmd);
+          console.log(chalk.green(signature));
+          if (cmd.description) {
+            console.log(chalk.gray(`  ${cmd.description}`));
+          }
+        }
+
+        console.log(chalk.gray(`\n${allowedCommands.length} command(s) available`));
       }
     });
 }
