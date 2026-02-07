@@ -45711,7 +45711,7 @@
   type: task
   spec_ref: "@session-log-search"
   plan_ref: "@session-log-analysis-tooling"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-log-list"
@@ -45765,6 +45765,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T09:38:58.502Z
+  closed_reason: "Merged in PR #332. Implemented session log search command with case-insensitive
+    pattern matching across session events. Features: --type filter by event type, --since filter by
+    date, --agent filter by agent type, -n/--limit for max matches (default 50), 200-char content
+    excerpts. All 7 spec ACs covered by 31 tests plus trait ACs for JSON output and semantic exit
+    codes."
 - _ulid: 01KGTNT0HR1XZ5B44B4AJAKJDE
   slugs: []
   title: Document prompt-file pattern in codex skill
