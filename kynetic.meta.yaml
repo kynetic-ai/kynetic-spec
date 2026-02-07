@@ -5510,4 +5510,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGVCENXDGQ8QVSC7V21SDFQT
+    type: success
+    content: Tracing ACP bugs through the chain (framing.ts → client.ts → spawner.ts → ralph.ts) was
+      efficient because the codebase has clear layering and the override mechanism (methodTimeouts)
+      was already in place. Minimal change (18 lines, 3 files) for the fix.
+    created_at: 2026-02-07T06:25:59.725Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
