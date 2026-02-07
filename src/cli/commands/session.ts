@@ -26,12 +26,19 @@ import type { SessionContext as StoredSessionContext } from "../../schema/index.
 import {
   type SessionLogSummary,
   type SessionLogDetail,
+  type SessionLogStats,
+  type ToolUsageStats,
+  type TimePeriodStats,
   type IterationSummary,
   getAllSessionLogSummaries,
   getSessionLogDetail,
   resolveSessionId,
   readEvents,
   readSessionContext,
+  computeSessionLogStats,
+  computeToolUsageStats,
+  computeTimePeriodStats,
+  listSessions,
 } from "../../sessions/store.js";
 import type { SessionEvent, SessionStatus } from "../../sessions/types.js";
 import {
@@ -1646,6 +1653,193 @@ async function sessionLogShowAction(
   }
 }
 
+// ─── Session Log Stats ─────────────────────────────────────────────────────────
+
+interface SessionLogStatsOptions {
+  since?: string;
+  agent?: string;
+  toolUsage?: boolean;
+  byDay?: boolean;
+  byWeek?: boolean;
+}
+
+/**
+ * Full stats output including optional tool usage and time period data.
+ */
+interface SessionLogStatsOutput {
+  stats: SessionLogStats;
+  tool_usage?: ToolUsageStats[];
+  time_periods?: TimePeriodStats[];
+}
+
+/**
+ * Format a duration in milliseconds to human-readable format.
+ * Reuses formatDuration from session log list but handles hours/minutes/seconds.
+ */
+function formatDurationLong(ms: number): string {
+  if (ms < 0) return "—";
+  const totalSec = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  if (hours > 0 && minutes > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (hours > 0) {
+    return `${hours}h`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${seconds}s`;
+  }
+  return `${seconds}s`;
+}
+
+/**
+ * Format the session log stats output.
+ *
+ * AC: @session-log-stats ac-1, ac-2, ac-3
+ */
+function formatSessionLogStats(
+  stats: SessionLogStats,
+  toolUsage: ToolUsageStats[] | null,
+  timePeriods: TimePeriodStats[] | null,
+  groupBy: "day" | "week" | null,
+): void {
+  // AC: @session-log-stats ac-1 - Totals
+  console.log(chalk.bold("Session Statistics"));
+  console.log(chalk.gray("─".repeat(50)));
+  console.log(`  Total Sessions:     ${stats.total_sessions}`);
+  console.log(`  Total Events:       ${stats.total_events}`);
+  console.log(`  Total Iterations:   ${stats.total_iterations}`);
+  console.log(`  Tasks Completed:    ${stats.total_tasks_completed}`);
+  console.log(`  Total Duration:     ${formatDurationLong(stats.total_duration_ms)}`);
+
+  // AC: @session-log-stats ac-2 - Averages
+  console.log("\n" + chalk.bold("Averages"));
+  console.log(chalk.gray("─".repeat(50)));
+  console.log(`  Avg Duration/Session:     ${formatDurationLong(stats.avg_duration_ms)}`);
+  console.log(`  Avg Iterations/Session:   ${stats.avg_iterations_per_session}`);
+  console.log(`  Avg Tasks/Session:        ${stats.avg_tasks_per_session}`);
+
+  // AC: @session-log-stats ac-3 - Status breakdown
+  if (stats.status_breakdown.length > 0) {
+    console.log("\n" + chalk.bold("Status Breakdown"));
+    console.log(chalk.gray("─".repeat(50)));
+    for (const item of stats.status_breakdown) {
+      const statusColor =
+        item.status === "completed"
+          ? chalk.green
+          : item.status === "active"
+            ? chalk.blue
+            : chalk.yellow;
+      console.log(
+        `  ${statusColor(item.status.padEnd(12))} ${String(item.count).padEnd(6)} ${item.percentage}%`,
+      );
+    }
+  }
+
+  // AC: @session-log-stats ac-6 - Tool usage
+  if (toolUsage !== null && toolUsage.length > 0) {
+    console.log("\n" + chalk.bold("Top Tool Usage"));
+    console.log(chalk.gray("─".repeat(50)));
+    for (const tool of toolUsage) {
+      console.log(
+        `  ${tool.tool_name.padEnd(20)} ${String(tool.count).padEnd(8)} ${tool.percentage}%`,
+      );
+    }
+  }
+
+  // AC: @session-log-stats ac-7 - Time periods
+  if (timePeriods !== null && timePeriods.length > 0) {
+    const label = groupBy === "week" ? "By Week" : "By Day";
+    console.log("\n" + chalk.bold(label));
+    console.log(chalk.gray("─".repeat(50)));
+    console.log(
+      chalk.gray(
+        `  ${"Period".padEnd(14)} ${"Sessions".padEnd(10)} ${"Tasks".padEnd(8)} Duration`,
+      ),
+    );
+    for (const period of timePeriods) {
+      console.log(
+        `  ${period.period.padEnd(14)} ${String(period.sessions_count).padEnd(10)} ${String(period.tasks_completed).padEnd(8)} ${formatDurationLong(period.total_duration_ms)}`,
+      );
+    }
+  }
+}
+
+/**
+ * Session log stats action handler.
+ */
+async function sessionLogStatsAction(
+  options: SessionLogStatsOptions,
+): Promise<void> {
+  try {
+    const ctx = await initContext();
+    let sessions = await getAllSessionLogSummaries(ctx.specDir);
+
+    // AC: @session-log-stats ac-4 - Filter by since
+    if (options.since) {
+      const sinceDate = parseTimeSpec(options.since);
+      if (sinceDate) {
+        sessions = sessions.filter(
+          (s) => new Date(s.started_at) >= sinceDate,
+        );
+      }
+    }
+
+    // AC: @session-log-stats ac-5 - Filter by agent type
+    if (options.agent) {
+      const agentFilter = options.agent;
+      sessions = sessions.filter((s) => s.agent_type === agentFilter);
+    }
+
+    // AC: @session-log-stats ac-8 - No sessions match criteria
+    if (sessions.length === 0) {
+      output({ message: "No sessions match criteria" }, () => {
+        console.log("No sessions match criteria.");
+      });
+      return;
+    }
+
+    // Compute base stats
+    const stats = computeSessionLogStats(sessions);
+
+    // AC: @session-log-stats ac-6 - Tool usage (optional)
+    let toolUsage: ToolUsageStats[] | null = null;
+    if (options.toolUsage) {
+      const sessionIds = sessions.map((s) => s.id);
+      toolUsage = await computeToolUsageStats(ctx.specDir, sessionIds);
+    }
+
+    // AC: @session-log-stats ac-7 - Time periods (optional)
+    let timePeriods: TimePeriodStats[] | null = null;
+    let groupBy: "day" | "week" | null = null;
+    if (options.byDay) {
+      groupBy = "day";
+      timePeriods = computeTimePeriodStats(sessions, "day");
+    } else if (options.byWeek) {
+      groupBy = "week";
+      timePeriods = computeTimePeriodStats(sessions, "week");
+    }
+
+    // Build output structure
+    const jsonOutput: SessionLogStatsOutput = { stats };
+    if (toolUsage !== null) {
+      jsonOutput.tool_usage = toolUsage;
+    }
+    if (timePeriods !== null) {
+      jsonOutput.time_periods = timePeriods;
+    }
+
+    output(jsonOutput, () =>
+      formatSessionLogStats(stats, toolUsage, timePeriods, groupBy),
+    );
+  } catch (err) {
+    error("Failed to compute session log stats", err);
+    process.exit(EXIT_CODES.ERROR);
+  }
+}
+
 /**
  * Register the 'session' command group and aliases
  */
@@ -1702,6 +1896,19 @@ export function registerSessionCommands(program: Command): void {
     .option("-n, --limit <n>", "Show only the last N events")
     .option("-c, --context <n>", "Show context snapshot for iteration N")
     .action(sessionLogShowAction);
+
+  log
+    .command("stats")
+    .description("Aggregate analytics across sessions")
+    .option(
+      "--since <time>",
+      "Only include sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
+    )
+    .option("--agent <type>", "Only include sessions with this agent type")
+    .option("--tool-usage", "Display top 10 tool calls by frequency")
+    .option("--by-day", "Group stats by day")
+    .option("--by-week", "Group stats by week")
+    .action(sessionLogStatsAction);
 
   session
     .command("checkpoint")
