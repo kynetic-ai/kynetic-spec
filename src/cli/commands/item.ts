@@ -837,7 +837,8 @@ Examples:
         }
 
         // Helper to validate relationship refs (must exist and be a spec item, not a task)
-        const validateRelationshipRef = (refStr: string, flagName: string): void => {
+        // Returns { ulid, canonicalRef } for deduplication and user-friendly storage
+        const validateRelationshipRef = (refStr: string, flagName: string): { ulid: string; canonicalRef: string } => {
           const refResult = refIndex.resolve(refStr);
           if (!refResult.ok) {
             error(errors.reference.itemNotFound(refStr));
@@ -849,21 +850,41 @@ Examples:
             error(`${flagName} reference must be a spec item, not a task: ${refStr}`);
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
+          // Use primary slug if available for user-friendly storage, otherwise ULID
+          const item = refResult.item as LoadedSpecItem;
+          const canonicalRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${refResult.ulid}`;
+          return { ulid: refResult.ulid, canonicalRef };
+        };
+
+        // Helper to resolve existing refs to ULIDs for deduplication
+        const resolveRefsToUlids = (refs: string[]): Set<string> => {
+          const ulids = new Set<string>();
+          for (const ref of refs) {
+            const result = refIndex.resolve(ref);
+            if (result.ok) {
+              ulids.add(result.ulid);
+            }
+          }
+          return ulids;
         };
 
         // AC: @item-set ac-5 - --relates-to validation
+        // Store resolved ULID for deduplication and canonical ref for storage
+        let relatesToResolved: { ulid: string; canonicalRef: string } | undefined;
         if (options.relatesTo) {
-          validateRelationshipRef(options.relatesTo, "--relates-to");
+          relatesToResolved = validateRelationshipRef(options.relatesTo, "--relates-to");
         }
 
         // AC: @item-set ac-6 - --implements validation
+        let implementsResolved: { ulid: string; canonicalRef: string } | undefined;
         if (options.implements) {
-          validateRelationshipRef(options.implements, "--implements");
+          implementsResolved = validateRelationshipRef(options.implements, "--implements");
         }
 
         // AC: @item-set ac-7 - --depends-on validation
+        let dependsOnResolved: { ulid: string; canonicalRef: string } | undefined;
         if (options.dependsOn) {
-          validateRelationshipRef(options.dependsOn, "--depends-on");
+          dependsOnResolved = validateRelationshipRef(options.dependsOn, "--depends-on");
         }
 
         // Build updates object
@@ -909,10 +930,12 @@ Examples:
         }
 
         // AC: @item-set ac-5 - Handle relates_to (append semantics)
-        if (options.relatesTo) {
+        // Uses resolved ULIDs for deduplication and stores canonical slug format
+        if (relatesToResolved) {
           const current = foundItem.relates_to || [];
-          if (!current.includes(options.relatesTo)) {
-            updates.relates_to = [...current, options.relatesTo];
+          const existingUlids = resolveRefsToUlids(current);
+          if (!existingUlids.has(relatesToResolved.ulid)) {
+            updates.relates_to = [...current, relatesToResolved.canonicalRef];
           }
         }
         if (options.clearRelatesTo) {
@@ -920,10 +943,12 @@ Examples:
         }
 
         // AC: @item-set ac-6 - Handle implements (append semantics)
-        if (options.implements) {
+        // Uses resolved ULIDs for deduplication and stores canonical slug format
+        if (implementsResolved) {
           const current = foundItem.implements || [];
-          if (!current.includes(options.implements)) {
-            updates.implements = [...current, options.implements];
+          const existingUlids = resolveRefsToUlids(current);
+          if (!existingUlids.has(implementsResolved.ulid)) {
+            updates.implements = [...current, implementsResolved.canonicalRef];
           }
         }
         if (options.clearImplements) {
@@ -931,10 +956,12 @@ Examples:
         }
 
         // AC: @item-set ac-7 - Handle depends_on (append semantics)
-        if (options.dependsOn) {
+        // Uses resolved ULIDs for deduplication and stores canonical slug format
+        if (dependsOnResolved) {
           const current = foundItem.depends_on || [];
-          if (!current.includes(options.dependsOn)) {
-            updates.depends_on = [...current, options.dependsOn];
+          const existingUlids = resolveRefsToUlids(current);
+          if (!existingUlids.has(dependsOnResolved.ulid)) {
+            updates.depends_on = [...current, dependsOnResolved.canonicalRef];
           }
         }
         if (options.clearDependsOn) {

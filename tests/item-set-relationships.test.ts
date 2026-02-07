@@ -73,7 +73,27 @@ describe('Item Set Relationship Flags', () => {
 
       // Verify only one reference
       const item = kspecJson<{ relates_to: string[] }>('item get @item-a', tempDir);
-      expect(item.relates_to.filter(r => r === '@item-b')).toHaveLength(1);
+      // After fix: stores canonical @ULID format, so check count by resolved identity
+      expect(item.relates_to).toHaveLength(1);
+    });
+
+    it('should not add duplicate relates_to via mixed ref forms (slug then ULID)', () => {
+      // Create two items
+      kspec('item add --under @test-core --title "Item A" --type requirement --slug item-a', tempDir);
+      kspec('item add --under @test-core --title "Item B" --type requirement --slug item-b', tempDir);
+
+      // Get the ULID of item-b
+      const itemB = kspecJson<{ _ulid: string }>('item get @item-b', tempDir);
+      const itemBUlid = itemB._ulid;
+
+      // Add relationship via slug
+      kspec('item set @item-a --relates-to @item-b', tempDir);
+      // Try to add again via ULID
+      kspec(`item set @item-a --relates-to @${itemBUlid}`, tempDir);
+
+      // Verify only one reference (semantic deduplication)
+      const item = kspecJson<{ relates_to: string[] }>('item get @item-a', tempDir);
+      expect(item.relates_to).toHaveLength(1);
     });
 
     it('should error when relates_to reference does not exist', () => {
@@ -126,6 +146,24 @@ describe('Item Set Relationship Flags', () => {
       const result = kspec('item set @req --implements @nonexistent', tempDir, { expectFail: true });
       expect(result.exitCode).toBe(3); // NOT_FOUND
     });
+
+    it('should not add duplicate implements via mixed ref forms (slug then ULID)', () => {
+      kspec('item add --under @test-core --title "Feature X" --type feature --slug feature-x', tempDir);
+      kspec('item add --under @test-core --title "Requirement Y" --type requirement --slug req-y', tempDir);
+
+      // Get the ULID of feature-x
+      const featureX = kspecJson<{ _ulid: string }>('item get @feature-x', tempDir);
+      const featureXUlid = featureX._ulid;
+
+      // Add relationship via slug
+      kspec('item set @req-y --implements @feature-x', tempDir);
+      // Try to add again via ULID
+      kspec(`item set @req-y --implements @${featureXUlid}`, tempDir);
+
+      // Verify only one reference (semantic deduplication)
+      const item = kspecJson<{ implements: string[] }>('item get @req-y', tempDir);
+      expect(item.implements).toHaveLength(1);
+    });
   });
 
   describe('--depends-on flag', () => {
@@ -159,6 +197,24 @@ describe('Item Set Relationship Flags', () => {
 
       const result = kspec('item set @dependent --depends-on @nonexistent', tempDir, { expectFail: true });
       expect(result.exitCode).toBe(3); // NOT_FOUND
+    });
+
+    it('should not add duplicate depends_on via mixed ref forms (slug then ULID)', () => {
+      kspec('item add --under @test-core --title "Prereq" --type requirement --slug prereq', tempDir);
+      kspec('item add --under @test-core --title "Dependent" --type requirement --slug dependent', tempDir);
+
+      // Get the ULID of prereq
+      const prereq = kspecJson<{ _ulid: string }>('item get @prereq', tempDir);
+      const prereqUlid = prereq._ulid;
+
+      // Add relationship via slug
+      kspec('item set @dependent --depends-on @prereq', tempDir);
+      // Try to add again via ULID
+      kspec(`item set @dependent --depends-on @${prereqUlid}`, tempDir);
+
+      // Verify only one reference (semantic deduplication)
+      const item = kspecJson<{ depends_on: string[] }>('item get @dependent', tempDir);
+      expect(item.depends_on).toHaveLength(1);
     });
   });
 
