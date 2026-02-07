@@ -92,7 +92,7 @@ kspec meta observe friction "Description"
 
 # Multiple items — use batch
 echo '[
-  {"command":"inbox add","args":{"text":"Improvement idea","tags":["reflection","area"]}},
+  {"command":"inbox add","args":{"text":"Improvement idea","tag":["reflection","area"]}},
   {"command":"meta observe","args":{"type":"friction","content":"Friction pattern"}},
   {"command":"meta observe","args":{"type":"success","content":"Success pattern"}}
 ]' | kspec batch
