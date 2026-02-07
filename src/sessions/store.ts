@@ -382,6 +382,154 @@ export async function getLastEvent(
   return events[events.length - 1];
 }
 
+// ─── Session Log Summaries ───────────────────────────────────────────────────
+
+/**
+ * Summary data for a session, used by `session log list`.
+ */
+export interface SessionLogSummary {
+  /** Session ID */
+  id: string;
+  /** Session status */
+  status: SessionStatus;
+  /** Agent type */
+  agent_type: string;
+  /** When session started (ISO 8601) */
+  started_at: string;
+  /** When session ended (ISO 8601), if completed */
+  ended_at?: string;
+  /** Duration in milliseconds (computed from started_at/ended_at or now) */
+  duration_ms: number;
+  /** Number of events in events.jsonl */
+  event_count: number;
+  /** Number of context-iter-*.json files (iteration count) */
+  iteration_count: number;
+  /** Number of tasks completed during the session */
+  tasks_completed: number;
+}
+
+/**
+ * Count lines in events.jsonl without parsing JSON.
+ * Much faster than readEvents() for large files.
+ */
+async function countEventLines(
+  specDir: string,
+  sessionId: string,
+): Promise<number> {
+  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  try {
+    const content = await fsPromises.readFile(eventsPath, "utf-8");
+    if (!content.trim()) return 0;
+    return content.trim().split("\n").length;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Count context-iter-*.json files for a session (iteration count).
+ */
+async function countIterations(
+  specDir: string,
+  sessionId: string,
+): Promise<number> {
+  const sessionDir = getSessionDir(specDir, sessionId);
+  try {
+    const entries = await fsPromises.readdir(sessionDir);
+    return entries.filter(
+      (e) => e.startsWith("context-iter-") && e.endsWith(".json"),
+    ).length;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Count task completions by scanning events for task.complete or session.end
+ * with task data. Only parses the `type` field for performance.
+ */
+async function countTaskCompletions(
+  specDir: string,
+  sessionId: string,
+): Promise<number> {
+  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  try {
+    const content = await fsPromises.readFile(eventsPath, "utf-8");
+    if (!content.trim()) return 0;
+    const lines = content.trim().split("\n");
+    let count = 0;
+    for (const line of lines) {
+      // Quick string check before JSON parse for performance
+      if (
+        line.includes('"task.complete"') ||
+        line.includes('"task_completed"')
+      ) {
+        count++;
+      }
+    }
+    return count;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Get a summary of a single session for list display.
+ *
+ * Gathers metadata and computes metrics lazily (only parses what's needed).
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @returns Session summary or null if session doesn't exist
+ */
+export async function getSessionLogSummary(
+  specDir: string,
+  sessionId: string,
+): Promise<SessionLogSummary | null> {
+  const metadata = await getSession(specDir, sessionId);
+  if (!metadata) return null;
+
+  const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
+    countEventLines(specDir, sessionId),
+    countIterations(specDir, sessionId),
+    countTaskCompletions(specDir, sessionId),
+  ]);
+
+  const startMs = new Date(metadata.started_at).getTime();
+  const endMs = metadata.ended_at
+    ? new Date(metadata.ended_at).getTime()
+    : Date.now();
+  const durationMs = endMs - startMs;
+
+  return {
+    id: metadata.id,
+    status: metadata.status,
+    agent_type: metadata.agent_type,
+    started_at: metadata.started_at,
+    ended_at: metadata.ended_at,
+    duration_ms: durationMs,
+    event_count: eventCount,
+    iteration_count: iterationCount,
+    tasks_completed: tasksCompleted,
+  };
+}
+
+/**
+ * Get summaries for all sessions.
+ *
+ * @param specDir - The .kspec directory path
+ * @returns Array of session summaries
+ */
+export async function getAllSessionLogSummaries(
+  specDir: string,
+): Promise<SessionLogSummary[]> {
+  const sessionIds = await listSessions(specDir);
+  const summaries = await Promise.all(
+    sessionIds.map((id) => getSessionLogSummary(specDir, id)),
+  );
+  return summaries.filter((s): s is SessionLogSummary => s !== null);
+}
+
 // ─── Context Snapshots ───────────────────────────────────────────────────────
 
 /**
