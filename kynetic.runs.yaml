@@ -3081,7 +3081,7 @@ runs:
   - _ulid: 01KGWMQFTG4XGCJAT3F31Y4XHQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-07T18:09:51.440Z
     step_results:
@@ -3118,5 +3118,38 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-07T18:10:08.396Z
-        completed_at: 2026-02-07T18:10:08.396Z
+        completed_at: 2026-02-07T18:10:26.772Z
+        notes: >-
+          1. **No `kspec session log` in initial overview** - The user mentioned session log was
+          new, but the initial ralph session analysis subagent had to manually piece together PR
+          history from `gh pr list` and `git log` rather than using `kspec session log show`. This
+          is partly a documentation gap (agent didn't know about the command) and partly because the
+          command is new.
+
+
+          2. **Codex review output is noisy** - The Codex stderr output includes thinking tokens,
+          exec logs, and intermediate steps that make it hard to find the actual review. The review
+          file at `/tmp/codex-pr-*-review.md` is clean, but monitoring progress requires filtering
+          through noise.
+
+
+          3. **Shell quoting breaks test assertions for empty strings** - Couldn't reliably test
+          `--title ""` through the shell-based test helper. The shell eats empty strings, making it
+          impossible to test the empty title validation path through the normal CLI test pattern.
+          Had to settle for a weaker test (missing title).
+
+
+          4. **Codex review findings sometimes conflate pre-existing issues with PR-introduced
+          issues** - The PR #346 review flagged that task slug dedup doesn't check spec/plan
+          namespaces (MUST-FIX 3), but this is a pre-existing behavior, not introduced by the PR.
+          This requires manual triage of each finding.
+
+
+          5. **No way to re-review a merged PR's final state natively** - Had to manually construct
+          Codex prompts to review the final merged code of PRs #342 and #345 since they were already
+          merged. A `kspec review @task-ref --post-merge` or similar would streamline this.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-07T18:10:26.772Z
+        completed_at: 2026-02-07T18:10:26.772Z
     initiated_by: "@claude"
