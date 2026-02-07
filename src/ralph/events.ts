@@ -329,11 +329,14 @@ function wasOutputTruncated(
 /**
  * Noise patterns to strip from streaming content.
  * These match Claude Code hook warning messages that leak into agent output.
- * Pattern structure: message prefix + optional "for tool use ID: toolu_<id>" suffix.
+ * Pattern structure handles various noise forms:
+ * - "No on[Pre|Post]ToolUseHook found"
+ * - "No on[Pre|Post]ToolUseHook found for tool use"
+ * - "No on[Pre|Post]ToolUseHook found for tool use ID: toolu_<24 chars>"
  * Tool IDs are exactly 24 base62 characters after "toolu_".
  */
 const NOISE_PATTERNS = [
-  /No onPostToolUseHook found(?:\s+for\s+tool\s+use\s+ID:\s*toolu_[A-Za-z0-9]{24})?/gi,
+  /No onPostToolUseHook found(?:\s+for\s+tool\s+use(?:\s+ID:\s*toolu_[A-Za-z0-9]{24})?)?/gi,
   /No onPreToolUseHook found(?:\s+for\s+tool\s+use(?:\s+ID:\s*toolu_[A-Za-z0-9]{24})?)?/gi,
 ];
 
