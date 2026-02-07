@@ -46392,6 +46392,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-07T02:38:57.291Z
+  started_at: 2026-02-07T13:18:22.839Z
   notes:
     - _ulid: 01KGTZEYRBZWA11ESR8EJSDZ4G
       created_at: 2026-02-07T02:38:57.292Z
@@ -46402,9 +46403,26 @@
         per task for context. Purpose: session continuity — pick up where the last session left off,
         see what's in flight and what just finished. ~40 lines, output formatting changes."
       supersedes: null
+    - _ulid: 01KGW4ENAMYSKXMCC400RHD0D4
+      created_at: 2026-02-07T13:25:24.949Z
+      author: "@claude"
+      content: >-
+        Implemented session start notes enrichment:
+
+        - Added task_status field to NoteSummary interface
+
+        - Updated collectRecentNotes to include task status
+
+        - Modified gatherSessionContext to collect notes from in_progress, pending_review, and last
+        5 completed tasks
+
+        - Updated formatSessionContext to group notes by status (In Progress, Pending Review,
+        Recently Completed)
+
+        - Added 8 tests covering both ACs with proper AC annotations
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-07T13:18:22.839Z
 - _ulid: 01KGVARWDN5AHFD3YXG2W20EZG
   slugs: []
   title: "Fix ralph log: String() on array of objects produces [object Object]"
