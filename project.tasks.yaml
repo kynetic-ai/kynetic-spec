@@ -46309,6 +46309,14 @@
         plan.ts - plan add checks for collision when user provides manual slug. Added 4 new tests
         for the feature."
       supersedes: null
+    - _ulid: 01KGW2HY21NGT93F2A4ZMC6T1Y
+      created_at: 2026-02-07T12:52:15.041Z
+      author: "@claude"
+      content: "Fixed Codex review MUST-FIX issues: (1) Added uniqueness check for auto-generated plan
+        slugs in plan add/import, (2) Added collision check against existing plans for manual --slug
+        in plan add/set. Added 4 more tests. All 69 plan tests pass. Codex review confirmed all
+        issues resolved."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
