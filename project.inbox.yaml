@@ -248,3 +248,8 @@ inbox:
     created_at: 2026-02-07T18:50:54.677Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KGWQ2QQXM47EBBSW300MAPHE
+    text: "Document session-reflect as human-only, session-reflect-loop as autonomous default: this is already the de facto state (/reflect skill uses interactive, ralph uses loop variant). Interactive version is 5x slower (476s vs 94s avg) with extra steps for user discussion that are meaningless in autonomous mode. Just needs formal documentation."
+    created_at: 2026-02-07T18:50:57.149Z
+    tags: []
+    added_by: "@claude"
