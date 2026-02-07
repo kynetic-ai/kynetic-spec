@@ -702,3 +702,16 @@ plans:
           {"ts":number,"seq":number,"type":string,"session_id":string,"data":{...}}
 
           Each line is independent, making streaming/filtering straightforward.
+  - _ulid: 01KGW25VPYSC54W8RAH3FBWNAA
+    slugs:
+      - plan-my-feature
+    title: My Feature
+    content: A
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    source_path: null
+    created_at: 2026-02-07T12:45:39.422Z
+    approved_at: null
+    completed_at: null
+    notes: []
