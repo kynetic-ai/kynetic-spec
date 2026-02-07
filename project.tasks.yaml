@@ -45805,6 +45805,14 @@
         to /tmp/codex-prompt.txt then use $(cat file). Includes when-to-use table and explanation of
         why prompt-file is more reliable than heredocs for complex content."
       supersedes: null
+    - _ulid: 01KGVQTXC1PWSZP0ZW14RDVEMG
+      created_at: 2026-02-07T09:44:54.913Z
+      author: "@claude"
+      content: "Codex review found 2 issues: (1) MUST-FIX: heredoc explanation was technically inaccurate,
+        (2) SHOULD-FIX: use mktemp instead of fixed path. Fixed both: updated example to use mktemp
+        with cleanup, rewrote 'Why Prompt-File Over Heredocs?' section with accurate rationale.
+        Re-review confirmed LGTM."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KGTNV773RBWK67KFHFMTJ856
