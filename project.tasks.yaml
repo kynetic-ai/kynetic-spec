@@ -45956,22 +45956,22 @@
         shared the same slug."
       supersedes: null
   todos: []
-- title: Add inbox set and inbox note commands for editing items
+- _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
+  slugs: []
+  title: Add inbox set and inbox note commands for editing items
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - inbox
-    - dx
   description: Add update/note capability to inbox items - allow 'inbox update @ref --content' or
     'inbox note @ref' to modify/append to items without delete+re-add cycle
-  _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - inbox
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T02:38:10.875Z
   notes:
@@ -45983,5 +45983,33 @@
         @ref 'appended context' — appends text to existing content with separator. Follow task note
         pattern for append. Find item by ref, modify content field, save via existing YAML writer.
         ~25 lines + tests for both replace and append paths."
+      supersedes: null
+  todos: []
+- title: Enrich session start with pending_review and recently completed notes
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Recent notes should cover pending review notes and most recently closed task notes as
+    well, probably separated out with some more organization so it is clear what was being worked on
+    and if there is anything from prior work worth sharing forward (in case its a continuation of
+    the same type of work)
+  _ulid: 01KGTZEYRB1B81YREN5FKHSN38
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:38:57.291Z
+  notes:
+    - _ulid: 01KGTZEYRBZWA11ESR8EJSDZ4G
+      created_at: 2026-02-07T02:38:57.292Z
+      author: "@claude"
+      content: "Implementation: In src/cli/commands/session.ts, expand recent notes to include
+        pending_review tasks and last 3-5 completed tasks (by completed_at). Group output into
+        sections: 'In Progress', 'Pending Review', 'Recently Completed'. Show most recent 1-2 notes
+        per task for context. Purpose: session continuity — pick up where the last session left off,
+        see what's in flight and what just finished. ~40 lines, output formatting changes."
       supersedes: null
   todos: []
