@@ -1289,3 +1289,7 @@ acceptance_criteria:
     given: :colon at start
     when: x
     then: y
+  - id: ac-4
+    given: "#comment-like"
+    when: x
+    then: y
