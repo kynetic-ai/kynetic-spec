@@ -191,6 +191,38 @@ describe("Integration: plan commands", () => {
       );
       expect(plan2.slugs).toContain("plan-duplicate-title-1");
     });
+
+    it("should reject missing title", () => {
+      // --title is a required option in Commander
+      const result = kspec(
+        "plan add --content Content",
+        tempDir,
+        { expectFail: true },
+      );
+      // Commander itself rejects missing required options
+      expect(result.exitCode).not.toBe(0);
+    });
+
+    it("should auto-increment slug when auto-generated slug collides with existing spec", () => {
+      // Create a spec item with a slug that matches the auto-generated plan slug pattern
+      kspec(
+        'item add --under @test-core --title "Collision Test" --slug plan-collision-test',
+        tempDir,
+      );
+
+      // Create a plan whose auto-generated slug would be plan-collision-test
+      kspec(
+        'plan add --title "Collision Test" --content "Content"',
+        tempDir,
+      );
+
+      // Plan slug should have been incremented to avoid the spec collision
+      const plan = kspecJson<{ slugs: string[] }>(
+        "plan get @plan-collision-test-1 --json",
+        tempDir,
+      );
+      expect(plan.slugs).toContain("plan-collision-test-1");
+    });
   });
 
   describe("plan get", () => {
