@@ -46278,7 +46278,7 @@
     (e.g. 'plan-gallery-home') or detect collision and prompt for resolution. Related to 01KGGPSR
     but that covers item-to-item collision, not plan-to-item."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46319,6 +46319,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T12:57:05.176Z
+  closed_reason: "Merged in PR #342. Plan slugs are now auto-prefixed with 'plan-' to prevent
+    collision with spec slugs. Collision detection added for manual --slug in plan add/set commands.
+    Uniqueness check ensures auto-generated slugs don't collide with existing plans."
 - _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
   slugs: []
   title: Add inbox set and inbox note commands for editing items
