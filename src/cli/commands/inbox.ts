@@ -24,6 +24,7 @@ import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.j
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
+import { parseIntOption, validateSpecRef } from "../validators.js";
 
 /**
  * Format relative time for display (wrapper for utils function)
@@ -195,6 +196,34 @@ Examples:
         const inboxItems = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, inboxItems);
 
+        // Validate priority
+        const priorityResult = parseIntOption(options.priority, {
+          min: 1,
+          max: 5,
+          name: "Priority",
+        });
+        if (!priorityResult.ok) {
+          error(priorityResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // Validate spec_ref if provided — must point to a spec item
+        if (options.specRef) {
+          const allTasks = await loadAllTasks(ctx);
+          const allItems = await loadAllItems(ctx);
+          const refIndex = new ReferenceIndex(allTasks, allItems);
+          const specRefResult = validateSpecRef(
+            options.specRef,
+            refIndex,
+            allTasks,
+            allItems,
+          );
+          if (!specRefResult.ok) {
+            error(specRefResult.error);
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+        }
+
         // Determine task title
         let title = options.title;
         if (!title) {
@@ -212,7 +241,7 @@ Examples:
         const taskInput: TaskInput = {
           title,
           type: options.type,
-          priority: parseInt(options.priority, 10),
+          priority: priorityResult.value,
           spec_ref: options.specRef || null,
           tags: options.tag ? parseTagsArray(options.tag) : item.tags, // Inherit tags from inbox item if not specified
           description:

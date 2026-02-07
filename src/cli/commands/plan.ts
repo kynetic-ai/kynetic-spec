@@ -30,6 +30,7 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
+import { parseIntOption } from "../validators.js";
 
 /**
  * Format relative time for display
@@ -436,7 +437,7 @@ Examples:
   markMutating(plan.command("derive <ref>"))
     .description("Create a task from a plan")
     .option("--title <title>", "Override task title")
-    .option("--priority <n>", "Set task priority (1-5)", parseInt)
+    .option("--priority <n>", "Set task priority (1-5)")
     .addHelpText(
       "after",
       `
@@ -458,6 +459,21 @@ Examples:
             `Plan must be in 'approved' or 'active' status to derive tasks (current: ${foundPlan.status})`,
           );
           process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // Validate priority if provided
+        if (options.priority !== undefined) {
+          const priorityResult = parseIntOption(options.priority, {
+            min: 1,
+            max: 5,
+            name: "Priority",
+          });
+          if (!priorityResult.ok) {
+            error(priorityResult.error);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+          // Replace raw string with validated number for downstream use
+          options.priority = priorityResult.value;
         }
 
         // Generate task slug from plan title

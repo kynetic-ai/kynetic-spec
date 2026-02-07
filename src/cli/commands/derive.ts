@@ -19,6 +19,7 @@ import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, warn } from "../output.js";
+import { parseIntOption } from "../validators.js";
 
 /**
  * Fields that contain nested spec items (mirrors yaml.ts)
@@ -419,11 +420,7 @@ export function registerDeriveCommand(program: Command): void {
     )
     .option("--force", "Create task even if one already exists for the spec")
     .option("--dry-run", "Show what would be created without making changes")
-    .option(
-      "--priority <n>",
-      "Set priority for created task(s) (1-5)",
-      parseInt,
-    )
+    .option("--priority <n>", "Set priority for created task(s) (1-5)")
     .option("--title <title>", "Override task title (default: 'Implement: {spec title}')")
     .action(async (ref: string | undefined, options) => {
       try {
@@ -444,14 +441,17 @@ export function registerDeriveCommand(program: Command): void {
 
         // Validate priority if provided
         if (options.priority !== undefined) {
-          if (
-            Number.isNaN(options.priority) ||
-            options.priority < 1 ||
-            options.priority > 5
-          ) {
-            error("Priority must be a number between 1 and 5");
+          const priorityResult = parseIntOption(options.priority, {
+            min: 1,
+            max: 5,
+            name: "Priority",
+          });
+          if (!priorityResult.ok) {
+            error(priorityResult.error);
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
+          // Replace raw string with validated number for downstream use
+          options.priority = priorityResult.value;
         }
 
         const ctx = await initContext();
