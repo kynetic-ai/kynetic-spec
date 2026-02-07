@@ -144,6 +144,7 @@ export interface ActiveTaskSummary {
 export interface NoteSummary {
   task_ref: string;
   task_title: string;
+  task_status: "in_progress" | "pending_review" | "completed";
   note_ulid: string;
   created_at: string;
   author: string | null;
@@ -298,6 +299,12 @@ function collectRecentNotes(
   const allNotes: NoteSummary[] = [];
 
   for (const task of tasks) {
+    // Only include notes from in_progress, pending_review, or completed tasks
+    const taskStatus = task.status as "in_progress" | "pending_review" | "completed";
+    if (!["in_progress", "pending_review", "completed"].includes(taskStatus)) {
+      continue;
+    }
+
     for (const note of task.notes) {
       const noteDate = new Date(note.created_at);
 
@@ -309,6 +316,7 @@ function collectRecentNotes(
       allNotes.push({
         task_ref: index.shortUlid(task._ulid),
         task_title: task.title,
+        task_status: taskStatus,
         note_ulid: note._ulid.slice(0, 8),
         created_at: note.created_at,
         author: note.author || null,
@@ -402,12 +410,44 @@ export async function gatherSessionContext(
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
 
-  // Get recent notes from active tasks
-  const recentNotes = collectRecentNotes(
+  // Get recent notes from active, pending_review, and recently completed tasks
+  // AC: @cmd-session-start ac-1, ac-2
+  // Collect notes per-status first to prevent one status from starving others
+  const noteLimitPerStatus = options.full ? limit : Math.ceil(limit / 3);
+
+  const inProgressNotes = collectRecentNotes(
     allTasks.filter((t) => t.status === "in_progress"),
     index,
-    { limit: options.full ? limit * 2 : limit, since: sinceDate },
+    { limit: noteLimitPerStatus, since: sinceDate },
   );
+
+  const pendingReviewNotes = collectRecentNotes(
+    allTasks.filter((t) => t.status === "pending_review"),
+    index,
+    { limit: noteLimitPerStatus, since: sinceDate },
+  );
+
+  const recentlyCompletedForNotes = allTasks
+    .filter((t) => t.status === "completed" && t.completed_at)
+    .sort((a, b) => {
+      const aDate = new Date(a.completed_at || 0);
+      const bDate = new Date(b.completed_at || 0);
+      return bDate.getTime() - aDate.getTime();
+    })
+    .slice(0, 5); // Last 3-5 completed tasks per AC-2
+
+  const completedNotes = collectRecentNotes(
+    recentlyCompletedForNotes,
+    index,
+    { limit: noteLimitPerStatus, since: sinceDate },
+  );
+
+  // Combine notes from all statuses, preserving representation from each
+  const recentNotes = [...inProgressNotes, ...pendingReviewNotes, ...completedNotes]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
 
   // Get incomplete todos from active tasks
   const activeTodos = collectIncompleteTodos(
@@ -885,13 +925,27 @@ function formatSessionContext(
     }
   }
 
-  // Recent notes section
+  // Recent notes section - grouped by task status
+  // AC: @cmd-session-start ac-1, ac-2
   if (ctx.recent_notes.length > 0) {
     console.log(`\n${sessionHeaders.recentNotes}`);
-    for (const note of ctx.recent_notes) {
+
+    // Group notes by task status
+    const inProgressNotes = ctx.recent_notes.filter(
+      (n) => n.task_status === "in_progress",
+    );
+    const pendingReviewNotes = ctx.recent_notes.filter(
+      (n) => n.task_status === "pending_review",
+    );
+    const completedNotes = ctx.recent_notes.filter(
+      (n) => n.task_status === "completed",
+    );
+
+    // Helper to format a single note
+    const formatNote = (note: NoteSummary) => {
       const age = formatRelativeTime(new Date(note.created_at));
       const author = note.author ? chalk.gray(` by ${note.author}`) : "";
-      console.log(`  ${chalk.yellow(age)} on ${note.task_ref}${author}:`);
+      console.log(`    ${chalk.yellow(age)} on ${note.task_ref}${author}:`);
 
       // Truncate content in brief mode
       let content = note.content.trim();
@@ -903,12 +957,36 @@ function formatSessionContext(
       const lines = content.split("\n");
       const maxLines = isBrief ? 3 : lines.length;
       for (const line of lines.slice(0, maxLines)) {
-        console.log(`    ${chalk.white(line)}`);
+        console.log(`      ${chalk.white(line)}`);
       }
       if (isBrief && lines.length > maxLines) {
         console.log(
-          chalk.gray(`    ... (${lines.length - maxLines} more lines)`),
+          chalk.gray(`      ... (${lines.length - maxLines} more lines)`),
         );
+      }
+    };
+
+    // AC: @cmd-session-start ac-1 - In Progress notes
+    if (inProgressNotes.length > 0) {
+      console.log(`  ${chalk.blue("In Progress:")}`);
+      for (const note of inProgressNotes) {
+        formatNote(note);
+      }
+    }
+
+    // AC: @cmd-session-start ac-1 - Pending Review notes (grouped separately)
+    if (pendingReviewNotes.length > 0) {
+      console.log(`  ${chalk.yellow("Pending Review:")}`);
+      for (const note of pendingReviewNotes) {
+        formatNote(note);
+      }
+    }
+
+    // AC: @cmd-session-start ac-2 - Recently Completed notes
+    if (completedNotes.length > 0) {
+      console.log(`  ${chalk.green("Recently Completed:")}`);
+      for (const note of completedNotes) {
+        formatNote(note);
       }
     }
   }
