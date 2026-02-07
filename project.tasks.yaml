@@ -46170,7 +46170,7 @@
     kspec batch commands for reference.' CommandMeta already has the arg names. Note: --dry-run
     already catches this, but the error message doesn't suggest the fix."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46211,6 +46211,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T11:57:21.186Z
+  closed_reason: "Merged in PR #340. Added did-you-mean suggestions to batch validation errors:
+    suggestion field in BatchCommandResult, inline 'Did you mean: X?' display for typos, 'Run kspec
+    batch commands' hint for validation failures (human-readable output only). 6 new tests added."
 - _ulid: 01KGTY5YMF9F609QG7YGHA2NVV
   slugs: []
   title: Separate validate exit codes for errors vs warnings

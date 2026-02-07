@@ -1,0 +1,334 @@
+{
+  "generated_at": "2026-02-07T11:31:49.880Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KGTY1X",
+      "title": "Add batch commands subcommand for discoverability",
+      "started_at": "2026-02-07T11:21:13.923Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-02-07T11:23:58.256Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KGTY3D",
+      "title": "Add did-you-mean suggestions to batch validation errors",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "cli",
+        "batch",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KGTY5Y",
+      "title": "Separate validate exit codes for errors vs warnings",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "cli",
+        "validation",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KGTZB6",
+      "title": "Auto-namespace plan slugs to prevent collision with spec slugs",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "cli",
+        "plan",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KGTZDH",
+      "title": "Add inbox set and inbox note commands for editing items",
+      "priority": 3,
+      "spec_ref": "@inbox-set",
+      "tags": [
+        "cli",
+        "inbox",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KGTZEY",
+      "title": "Enrich session start with pending_review and recently completed notes",
+      "priority": 3,
+      "spec_ref": "@cmd-session-start",
+      "tags": []
+    },
+    {
+      "ref": "01KGVAZ6",
+      "title": "Fix: 'No onPostToolUseHook found' leaks past noise suppression",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KGTY0P",
+      "title": "Add AC count display and complexity warning to derive",
+      "completed_at": "2026-02-07T11:20:22.826Z",
+      "closed_reason": "Merged in PR #338. Added AC count display (N ACs) and complexity warning (>5 ACs suggests splitting) to derive command output. 7 tests covering all scenarios."
+    },
+    {
+      "ref": "01KGTXZ3",
+      "title": "Add --trait flag to item add command",
+      "completed_at": "2026-02-07T11:07:23.461Z",
+      "closed_reason": "Merged in PR #337. Added --trait flag to item add command with full validation: resolves refs, verifies trait type, deduplicates by ULID, stores canonical slug form. Includes 8 tests covering happy paths and error cases (invalid ref, non-trait ref, dedup, canonical storage)."
+    },
+    {
+      "ref": "01KGTVH6",
+      "title": "Add --relates-to, --implements, --depends-on flags to item set",
+      "completed_at": "2026-02-07T10:36:42.792Z",
+      "closed_reason": "Merged in PR #335. Added --relates-to, --implements, --depends-on flags to item set command with append semantics. Added --clear-* variants for clearing relationships. Validates refs exist and are spec items (rejects tasks). All ACs (ac-5, ac-6, ac-7) covered with tests. Added ac-4 test annotation for --status flag."
+    },
+    {
+      "ref": "01KGTVFN",
+      "title": "Auto-quote YAML AC fields containing special characters",
+      "completed_at": "2026-02-07T10:11:40.748Z",
+      "closed_reason": "Already implemented by YAML library. The yaml v2.x library handles auto-quoting of special characters (braces, brackets, colons, boolean-like values) automatically when serializing. Extensive testing confirmed all edge cases work correctly. No code changes required."
+    },
+    {
+      "ref": "01KGTNXP",
+      "title": "Document full trait slug requirement in spec-plan skill",
+      "completed_at": "2026-02-07T10:06:16.239Z",
+      "closed_reason": "Merged in PR #334. Updated spec-plan skill documentation with full trait slug requirement - changed examples to use trait-json-output instead of json-output, added explicit warning that plan import only auto-prefixes @ not @trait-, and provided good/bad examples."
+    },
+    {
+      "ref": "01KGTNV7",
+      "title": "Add YAML quoting guidance to spec-plan skill",
+      "completed_at": "2026-02-07T10:05:03.083Z",
+      "closed_reason": "Merged in PR #334. Added YAML Syntax Issues section to spec-plan skill covering mixed quoting and colons in values. Updated trait examples to use full slugs (trait-json-output) with warning about import prefixing behavior."
+    },
+    {
+      "ref": "01KGTNT0",
+      "title": "Document prompt-file pattern in codex skill",
+      "completed_at": "2026-02-07T09:50:53.981Z",
+      "closed_reason": "Merged in PR #333. Added 'Handling Complex Prompts' section to codex skill documenting the prompt-file pattern: use mktemp for temp file, write prompt with heredoc, inject with $(cat file), cleanup. Includes when-to-use table and accurate rationale comparing prompt-file to heredocs. Review feedback addressed (mktemp + cleanup, corrected heredoc explanation)."
+    },
+    {
+      "ref": "01KGTN2AK",
+      "title": "Implement Session Log Search",
+      "completed_at": "2026-02-07T09:38:58.502Z",
+      "closed_reason": "Merged in PR #332. Implemented session log search command with case-insensitive pattern matching across session events. Features: --type filter by event type, --since filter by date, --agent filter by agent type, -n/--limit for max matches (default 50), 200-char content excerpts. All 7 spec ACs covered by 31 tests plus trait ACs for JSON output and semantic exit codes."
+    },
+    {
+      "ref": "01KGTN2AC",
+      "title": "Implement Session Log Stats",
+      "completed_at": "2026-02-07T09:19:44.379Z",
+      "closed_reason": "Merged in PR #331. Implemented session log stats command with aggregate analytics: totals (sessions, events, iterations, tasks, duration), averages, status breakdown, date filtering (--since), agent filtering (--agent), tool usage stats (--tool-usage), and time period grouping (--by-day/--by-week). Includes proper ISO-8601 week calculation in UTC with boundary date tests. All 8 spec ACs covered with 31 tests."
+    },
+    {
+      "ref": "01KGTN2A4",
+      "title": "Implement Session Log Show",
+      "completed_at": "2026-02-07T08:55:07.802Z",
+      "closed_reason": "Merged in PR #330. Implemented session log show command with:\n- Session ID prefix resolution (exact match, unique prefix, ambiguous handling)\n- Per-iteration summaries with event counts and task transitions\n- Event timeline display with --events flag\n- Event filtering by --type and limiting with --limit\n- Context snapshot display with --context N flag\n- JSON output support\n- 28 tests covering all 9 spec ACs plus trait ACs\n- Fixed iteration drift issue where events before context snapshots were miscounted\n- Updated spec AC-9 to use semantic exit code 3 (NOT_FOUND)"
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "485bd51",
+      "full_hash": "485bd51b3c048bd42281a5e25400e34e2f1b7bba",
+      "date": "2026-02-07T11:24:14.000Z",
+      "message": "feat(cli): add batch commands subcommand for discoverability",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "058c658",
+      "full_hash": "058c658dbd7bdac1f5925f4dc95b1c02378200b5",
+      "date": "2026-02-07T11:07:10.000Z",
+      "message": "feat(cli): add --trait flag to item add command (#337)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "03d3e93",
+      "full_hash": "03d3e93ac7b26d871f6f21b24ae4ea8394235257",
+      "date": "2026-02-07T11:00:17.000Z",
+      "message": "fix: validate and canonicalize traits in item add --trait",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "cd4290e",
+      "full_hash": "cd4290eb543bd1471c48bb726cef184815302f6a",
+      "date": "2026-02-07T10:54:58.000Z",
+      "message": "feat(cli): add --trait flag to item add command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c25a5e9",
+      "full_hash": "c25a5e9e1270b9f822c1de34964dc718bd19ecf6",
+      "date": "2026-02-07T10:36:30.000Z",
+      "message": "Add relationship flags to item set command (#335)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "08a103a",
+      "full_hash": "08a103afba7c296d51995ecc1890fb724b0c8e97",
+      "date": "2026-02-07T10:27:45.000Z",
+      "message": "test: add AC annotation for @item-set ac-4",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0493ada",
+      "full_hash": "0493adaa69039599f35bce4364bb5e073050b9a2",
+      "date": "2026-02-07T10:25:22.000Z",
+      "message": "fix: address Codex review feedback",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6f89e70",
+      "full_hash": "6f89e70f28589e2e3d63aa474011239105336fa3",
+      "date": "2026-02-07T10:18:52.000Z",
+      "message": "feat(cli): add relationship flags to item set command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "dba9b49",
+      "full_hash": "dba9b49185ac7e594055b6b8c7548f4a9509342a",
+      "date": "2026-02-07T10:04:52.000Z",
+      "message": "docs(skill): add YAML quoting and trait slug guidance to spec-plan (#334)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "dea27d8",
+      "full_hash": "dea27d8c3342f3818d9c3c701e0db472bcd384d1",
+      "date": "2026-02-07T09:57:18.000Z",
+      "message": "fix: address Codex review feedback",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFE2XF",
+      "text": "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks @ref1,@ref2) to prevent scope creep beyond target work",
+      "created_at": "2026-01-20T16:13:29.715Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFE2XH",
+      "text": "Ralph loop: Add progress checkpoint output at each iteration showing completed/in-progress/remaining counts",
+      "created_at": "2026-01-20T16:13:31.843Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFNCZR",
+      "text": "Implement X-Request-Id header middleware for all API endpoints (@trait-api-endpoint ac-6). Should generate ULID if not provided, echo if present in request.",
+      "created_at": "2026-01-23T12:24:11.370Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFT2J3",
+      "text": "Add 'kspec merge-driver configure' command for existing repos that missed auto-config during init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful for repos initialized before PR #183 or where config was lost.",
+      "created_at": "2026-01-25T07:58:10.407Z",
+      "tags": [
+        "cli",
+        "dx",
+        "merge"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KG8RM7",
+      "text": "Ralph loop: When no eligible tasks remain, detect uncommitted working tree changes and ask agent to investigate and clean up. Could be orphaned work from interrupted sessions, debugging artifacts, or incomplete implementations. Agent could: (1) identify what the changes are for, (2) commit them with appropriate message, (3) stash for later, or (4) discard if truly stale. Prevents accumulation of mystery diffs.",
+      "created_at": "2026-01-31T00:53:10.084Z",
+      "tags": [
+        "ralph",
+        "dx"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 459,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 15,
+    "blocked": 0,
+    "completed": 427,
+    "inbox_items": 29
+  }
+}
