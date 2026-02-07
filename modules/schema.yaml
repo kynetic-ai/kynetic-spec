@@ -1276,8 +1276,4 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
-acceptance_criteria:
-  - id: ac-1
-    given: yes
-    when: no
-    then: "true"
+acceptance_criteria: []
