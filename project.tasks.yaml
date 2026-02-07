@@ -46170,7 +46170,7 @@
     kspec batch commands for reference.' CommandMeta already has the arg names. Note: --dry-run
     already catches this, but the error message doesn't suggest the fix."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
