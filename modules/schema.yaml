@@ -1285,3 +1285,7 @@ acceptance_criteria:
     given: array like [1, 2, 3] is passed
     when: parsed
     then: works
+  - id: ac-3
+    given: ": starts with colon"
+    when: something
+    then: works
