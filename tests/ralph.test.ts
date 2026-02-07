@@ -582,22 +582,157 @@ describe('ralph event translator', () => {
   });
 
   describe('noise suppression', () => {
-    it('suppresses onPostToolUseHook messages', () => {
+    it('suppresses standalone onPostToolUseHook messages', () => {
       const translator = createTranslator();
       const event = translator.translate(
-        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_123')
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
       );
 
       expect(event).toBeNull();
     });
 
-    it('suppresses onPreToolUseHook messages', () => {
+    it('suppresses standalone onPreToolUseHook messages', () => {
       const translator = createTranslator();
       const event = translator.translate(
         makeChunk('agent_message_chunk', 'No onPreToolUseHook found for tool use')
       );
 
       expect(event).toBeNull();
+    });
+
+    it('strips embedded hook noise while preserving surrounding content', () => {
+      const translator = createTranslator();
+      // Simulates the observed bug: noise concatenated with agent message
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'Excellent creative brief. Now launching Phase 2...No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
+      );
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('agent_message');
+      expect((event!.data as { content: string }).content).toBe('Excellent creative brief. Now launching Phase 2...');
+    });
+
+    it('strips multiple noise patterns from same chunk', () => {
+      const translator = createTranslator();
+      // Realistic pattern: two hook warnings with proper toolu_ format (24 chars after toolu_)
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'Start No onPreToolUseHook found for tool use ID: toolu_01ABC2345678901234567890 middle No onPostToolUseHook found for tool use ID: toolu_01XYZ2345678901234567890 end')
+      );
+
+      expect(event).not.toBeNull();
+      // Content between/around noise is preserved (with empty space where noise was)
+      expect((event!.data as { content: string }).content).toBe('Start  middle  end');
+    });
+
+    it('preserves content that directly follows noise without whitespace', () => {
+      const translator = createTranslator();
+      // Edge case: noise followed immediately by real content with no separator
+      // The tool ID pattern matches exactly 26 chars, so 'Hello' won't be consumed
+      const event = translator.translate(
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sWHello world')
+      );
+
+      expect(event).not.toBeNull();
+      // 'Hello world' should be preserved, not eaten by greedy matching
+      expect((event!.data as { content: string }).content).toBe('Hello world');
+    });
+
+    it('accumulates cleaned content across chunks', () => {
+      const translator = createTranslator();
+
+      // Chunk with noise concatenated directly at the end (no space before noise)
+      // Tool ID must be exactly 24 chars after toolu_
+      translator.translate(
+        makeChunk('agent_message_chunk', 'First part.No onPostToolUseHook found for tool use ID: toolu_01XYZ2345678901234567890')
+      );
+
+      // Clean chunk with leading space
+      translator.translate(
+        makeChunk('agent_message_chunk', ' Second part.')
+      );
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('First part. Second part.');
+    });
+
+    it('strips noise from accumulated content at finalization', () => {
+      const translator = createTranslator();
+
+      // Accumulate content that will contain noise when combined
+      translator.translate(
+        makeChunk('agent_message_chunk', 'Hello ')
+      );
+
+      // Noise arrives in its own chunk
+      translator.translate(
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
+      );
+
+      // More content
+      translator.translate(
+        makeChunk('agent_message_chunk', ' World')
+      );
+
+      // Finalize - accumulated content should be cleaned
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      // Noise stripped from accumulated content at finalization
+      expect((final!.data as { content: string }).content).toBe('Hello  World');
+    });
+
+    it('handles noise in thought chunks the same way', () => {
+      const translator = createTranslator();
+      const event = translator.translate(
+        makeChunk('agent_thought_chunk', 'Thinking about this...No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW')
+      );
+
+      expect(event).not.toBeNull();
+      expect(event!.type).toBe('agent_thought');
+      expect((event!.data as { content: string }).content).toBe('Thinking about this...');
+    });
+
+    it('preserves whitespace-only chunks that are not noise', () => {
+      const translator = createTranslator();
+
+      // Whitespace-only chunks can be legitimate streaming tokens (formatting, newlines)
+      const spaceEvent = translator.translate(makeChunk('agent_message_chunk', ' '));
+      expect(spaceEvent).not.toBeNull();
+      expect((spaceEvent!.data as { content: string }).content).toBe(' ');
+
+      // Reset translator for thought chunk test
+      const thoughtTranslator = createTranslator();
+      const newlineEvent = thoughtTranslator.translate(makeChunk('agent_thought_chunk', '\n'));
+      expect(newlineEvent).not.toBeNull();
+      expect((newlineEvent!.data as { content: string }).content).toBe('\n');
+    });
+
+    it('preserves whitespace in accumulated content with noise stripped', () => {
+      const translator = createTranslator();
+
+      // First chunk with noise embedded
+      translator.translate(
+        makeChunk('agent_message_chunk', 'Hello')
+      );
+
+      // Whitespace chunk
+      translator.translate(
+        makeChunk('agent_message_chunk', ' ')
+      );
+
+      // More content
+      translator.translate(
+        makeChunk('agent_message_chunk', 'World')
+      );
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('Hello World');
     });
   });
 

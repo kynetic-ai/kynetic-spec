@@ -326,16 +326,38 @@ function wasOutputTruncated(
 // Noise Suppression
 // ============================================================================
 
-const SUPPRESSED_PATTERNS = [
-  /No onPostToolUseHook found/i,
-  /No onPreToolUseHook found/i,
+/**
+ * Noise patterns to strip from streaming content.
+ * These match Claude Code hook warning messages that leak into agent output.
+ * Pattern structure handles various noise forms:
+ * - "No on[Pre|Post]ToolUseHook found"
+ * - "No on[Pre|Post]ToolUseHook found for tool use"
+ * - "No on[Pre|Post]ToolUseHook found for tool use ID: toolu_<24 chars>"
+ * Tool IDs are exactly 24 base62 characters after "toolu_".
+ */
+const NOISE_PATTERNS = [
+  /No onPostToolUseHook found(?:\s+for\s+tool\s+use(?:\s+ID:\s*toolu_[A-Za-z0-9]{24})?)?/gi,
+  /No onPreToolUseHook found(?:\s+for\s+tool\s+use(?:\s+ID:\s*toolu_[A-Za-z0-9]{24})?)?/gi,
 ];
 
 /**
- * Check if a message should be suppressed from display.
+ * Strip noise patterns from content.
+ * Returns the cleaned content, or null if nothing remains after stripping.
+ * Preserves whitespace-only chunks that aren't noise to maintain streaming formatting.
  */
-function shouldSuppress(content: string): boolean {
-  return SUPPRESSED_PATTERNS.some((pattern) => pattern.test(content));
+function stripNoise(content: string): string | null {
+  let cleaned = content;
+  for (const pattern of NOISE_PATTERNS) {
+    cleaned = cleaned.replace(pattern, "");
+  }
+
+  // If nothing was stripped, return original (preserves pure whitespace chunks)
+  if (cleaned === content) {
+    return content;
+  }
+
+  // Something was stripped - return cleaned if non-empty, null otherwise
+  return cleaned.length > 0 ? cleaned : null;
 }
 
 // ============================================================================
@@ -376,36 +398,41 @@ export function createTranslator(): RalphTranslator {
           update as { content?: { type: string; text?: string } }
         ).content;
         if (content?.type === "text" && typeof content.text === "string") {
-          // Check for noise
-          if (shouldSuppress(content.text)) {
-            return null;
-          }
-
           // Empty string signals finalization
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_message") {
-              const final: RalphEvent = {
+              // Strip noise from accumulated content to handle split-chunk noise
+              const finalContent = stripNoise(state.activeMessage.content);
+              state.activeMessage = null;
+              if (finalContent === null) {
+                return null;
+              }
+              return {
                 type: "agent_message",
                 timestamp,
                 data: {
                   kind: "agent_message",
-                  content: state.activeMessage.content,
+                  content: finalContent,
                   isStreaming: false,
                 },
               };
-              state.activeMessage = null;
-              return final;
             }
+            return null;
+          }
+
+          // Strip noise patterns from content
+          const cleanedText = stripNoise(content.text);
+          if (cleanedText === null) {
             return null;
           }
 
           // Accumulate content
           if (state.activeMessage?.type === "agent_message") {
-            state.activeMessage.content += content.text;
+            state.activeMessage.content += cleanedText;
           } else {
             state.activeMessage = {
               type: "agent_message",
-              content: content.text,
+              content: cleanedText,
             };
           }
 
@@ -414,7 +441,7 @@ export function createTranslator(): RalphTranslator {
             timestamp,
             data: {
               kind: "agent_message",
-              content: content.text,
+              content: cleanedText,
               isStreaming: true,
             },
           };
@@ -427,33 +454,39 @@ export function createTranslator(): RalphTranslator {
           update as { content?: { type: string; text?: string } }
         ).content;
         if (content?.type === "text" && typeof content.text === "string") {
-          if (shouldSuppress(content.text)) {
-            return null;
-          }
-
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_thought") {
-              const final: RalphEvent = {
+              // Strip noise from accumulated content to handle split-chunk noise
+              const finalContent = stripNoise(state.activeMessage.content);
+              state.activeMessage = null;
+              if (finalContent === null) {
+                return null;
+              }
+              return {
                 type: "agent_thought",
                 timestamp,
                 data: {
                   kind: "agent_thought",
-                  content: state.activeMessage.content,
+                  content: finalContent,
                   isStreaming: false,
                 },
               };
-              state.activeMessage = null;
-              return final;
             }
             return null;
           }
 
+          // Strip noise patterns from content
+          const cleanedText = stripNoise(content.text);
+          if (cleanedText === null) {
+            return null;
+          }
+
           if (state.activeMessage?.type === "agent_thought") {
-            state.activeMessage.content += content.text;
+            state.activeMessage.content += cleanedText;
           } else {
             state.activeMessage = {
               type: "agent_thought",
-              content: content.text,
+              content: cleanedText,
             };
           }
 
@@ -462,7 +495,7 @@ export function createTranslator(): RalphTranslator {
             timestamp,
             data: {
               kind: "agent_thought",
-              content: content.text,
+              content: cleanedText,
               isStreaming: true,
             },
           };
@@ -595,17 +628,22 @@ export function createTranslator(): RalphTranslator {
 
   function finalize(): RalphEvent | null {
     if (state.activeMessage) {
-      const final: RalphEvent = {
-        type: state.activeMessage.type,
+      // Strip noise from accumulated content to handle split-chunk noise
+      const finalContent = stripNoise(state.activeMessage.content);
+      const type = state.activeMessage.type;
+      state.activeMessage = null;
+      if (finalContent === null) {
+        return null;
+      }
+      return {
+        type,
         timestamp: getTimestamp(),
         data: {
-          kind: state.activeMessage.type,
-          content: state.activeMessage.content,
+          kind: type,
+          content: finalContent,
           isStreaming: false,
         } as AgentMessageData | AgentThoughtData,
       };
-      state.activeMessage = null;
-      return final;
     }
     return null;
   }
