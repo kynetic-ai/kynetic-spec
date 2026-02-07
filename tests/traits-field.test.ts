@@ -349,7 +349,7 @@ describe('Traits field E2E validation (CLI)', () => {
     const output = result.stderr || result.stdout;
     expect(output).toContain('@nonexistent-trait');
     expect(output).toContain('not found');
-    expect(result.exitCode).toBe(1);
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
   });
 
   // AC: @traits-field ac-3 (E2E)
@@ -390,7 +390,7 @@ describe('Traits field E2E validation (CLI)', () => {
     const output = result.stderr || result.stdout;
     expect(output).toContain('@my-feature');
     expect(output).toContain('non-trait');
-    expect(result.exitCode).toBe(1);
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
   });
 
   // AC: @traits-field ac-4 (E2E)

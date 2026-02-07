@@ -86,12 +86,19 @@ Output shows: ULID (short), slug, status, priority, and title.
     concept: `
 Validate spec files for schema conformance and reference integrity.
 
-Default runs all checks. Exit code 1 if errors found.
+Default runs all checks.
+
+Exit Codes:
+  0 - Success (no errors, no warnings)
+  4 - Errors found (VALIDATION_FAILED)
+  6 - Warnings only (VALIDATION_WARNINGS)
 
 What it checks:
   - Schema: All items conform to Zod schemas
   - References: All @refs resolve to existing items
   - Orphans: Items not referenced by any task (warning)
+
+Use --strict to treat orphan and staleness warnings as errors (exit 4).
 
 Alias: 'kspec lint' does the same thing.
 `,
@@ -101,7 +108,7 @@ Alias: 'kspec lint' does the same thing.
       "kspec validate --strict",
       "kspec validate --json",
     ],
-    seeAlso: ["refs"],
+    seeAlso: ["refs", "exit-codes"],
   },
 
   session: {
@@ -291,20 +298,22 @@ Validating changes:
 Kspec uses semantic exit codes for scripting and automation.
 
 Exit Codes:
-  0 - SUCCESS            Command completed successfully
-  1 - ERROR              General error (unexpected error, file system error, etc.)
-  2 - USAGE_ERROR        Usage error (invalid arguments, flags, or command syntax)
-  3 - NOT_FOUND          Resource not found (task, spec item, inbox item, etc.)
-  4 - VALIDATION_FAILED  Validation failed (invalid state, schema violation, business rule violation)
-  5 - CONFLICT           Conflict (resource already exists, duplicate slug, etc.)
+  0 - SUCCESS              Command completed successfully
+  1 - ERROR                General error (unexpected error, file system error, etc.)
+  2 - USAGE_ERROR          Usage error (invalid arguments, flags, or command syntax)
+  3 - NOT_FOUND            Resource not found (task, spec item, inbox item, etc.)
+  4 - VALIDATION_FAILED    Validation failed (errors present)
+  5 - CONFLICT             Conflict (resource already exists, duplicate slug, etc.)
+  6 - VALIDATION_WARNINGS  Validation passed with warnings (no errors)
 
 Commands Using Each Code:
-  SUCCESS (0)             - All commands on success
-  ERROR (1)               - All commands on unexpected errors
-  USAGE_ERROR (2)         - All commands when given invalid arguments
-  NOT_FOUND (3)           - task, item, inbox, derive, link, meta, tasks
-  VALIDATION_FAILED (4)   - validate, task (state transitions), item (schema validation)
-  CONFLICT (5)            - item, task, module (when creating duplicates)
+  SUCCESS (0)               - All commands on success
+  ERROR (1)                 - All commands on unexpected errors
+  USAGE_ERROR (2)           - All commands when given invalid arguments
+  NOT_FOUND (3)             - task, item, inbox, derive, link, meta, tasks
+  VALIDATION_FAILED (4)     - validate (errors), task (state transitions), item (schema)
+  CONFLICT (5)              - item, task, module (when creating duplicates)
+  VALIDATION_WARNINGS (6)   - validate (warnings only, no errors)
 
 Scripting Examples:
   # Check if task exists
@@ -314,22 +323,25 @@ Scripting Examples:
     echo "Task not found"
   fi
 
-  # Validate before proceeding
+  # Validate with warning awareness
+  kspec validate
+  code=$?
+  case $code in
+    0) echo "Clean - no errors or warnings" ;;
+    4) echo "Errors found - must fix" ;;
+    6) echo "Warnings only - review recommended" ;;
+    *) echo "Unexpected error" ;;
+  esac
+
+  # CI: Fail on errors, allow warnings
   if kspec validate; then
     echo "All valid"
+  elif [ $? -eq 6 ]; then
+    echo "Warnings present, but proceeding..."
   else
-    code=$?
-    [ $code -eq 4 ] && echo "Validation failed"
-    [ $code -eq 1 ] && echo "General error"
+    echo "Validation failed"
+    exit 1
   fi
-
-  # Handle not found gracefully
-  kspec task start @task || {
-    code=$?
-    [ $code -eq 3 ] && echo "Task not found"
-    [ $code -eq 4 ] && echo "Invalid state transition"
-    exit $code
-  }
 `,
     seeAlso: ["task", "validate", "item"],
   },

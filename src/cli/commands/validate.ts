@@ -751,6 +751,9 @@ export function registerValidateCommand(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
+        // Track warnings from all sources for exit code determination
+        let additionalWarningCount = 0;
+
         // Determine which checks to run
         const runAll =
           !options.schema &&
@@ -808,6 +811,7 @@ export function registerValidateCommand(program: Command): void {
 
           const alignmentWarnings = alignmentIndex.findAlignmentWarnings();
           formatAlignmentWarnings(alignmentWarnings, options.verbose);
+          additionalWarningCount += alignmentWarnings.length;
 
           // Show alignment stats
           const stats = alignmentIndex.getStats();
@@ -863,6 +867,7 @@ export function registerValidateCommand(program: Command): void {
 
         // Run staleness checks if requested
         // AC: @stale-status-detection ac-4, ac-5
+        let stalenessWarningCount = 0;
         if (options.staleness) {
           const tasks = await loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
@@ -870,11 +875,12 @@ export function registerValidateCommand(program: Command): void {
 
           const stalenessWarnings = checkStaleness(items, tasks, refIndex);
           formatStalenessWarnings(stalenessWarnings, options.verbose);
+          stalenessWarningCount = stalenessWarnings.length;
 
           // AC: @stale-status-detection ac-5 (staleness-exit-code)
           // With --strict, staleness warnings cause validation failure
           if (options.strict && stalenessWarnings.length > 0) {
-            process.exit(EXIT_CODES.VALIDATION_FAILED);
+            result.valid = false;
           }
         }
 
@@ -888,9 +894,23 @@ export function registerValidateCommand(program: Command): void {
           }
         }
 
-        if (!result.valid) {
-          process.exit(EXIT_CODES.ERROR);
+        // Determine exit code based on errors vs warnings
+        // Errors: schema, refs, trait cycles, conventions, skills (result.valid = false)
+        // Warnings: orphans, alignment, completeness, staleness, ref warnings
+        const hasErrors = !result.valid;
+        const hasWarnings =
+          result.orphans.length > 0 ||
+          result.refWarnings.length > 0 ||
+          result.completenessWarnings.length > 0 ||
+          additionalWarningCount > 0 ||
+          stalenessWarningCount > 0;
+
+        if (hasErrors) {
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        } else if (hasWarnings) {
+          process.exit(EXIT_CODES.VALIDATION_WARNINGS);
         }
+        // Otherwise exit 0 (success)
       } catch (err) {
         error(validationStrings.failed, err);
         process.exit(EXIT_CODES.ERROR);
@@ -962,9 +982,19 @@ export function registerValidateCommand(program: Command): void {
           }
         }
 
-        if (!result.valid) {
-          process.exit(EXIT_CODES.ERROR);
+        // Determine exit code based on errors vs warnings
+        const hasErrors = !result.valid;
+        const hasWarnings =
+          result.orphans.length > 0 ||
+          result.refWarnings.length > 0 ||
+          result.completenessWarnings.length > 0;
+
+        if (hasErrors) {
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        } else if (hasWarnings) {
+          process.exit(EXIT_CODES.VALIDATION_WARNINGS);
         }
+        // Otherwise exit 0 (success)
       } catch (err) {
         error(validationStrings.lintFailed, err);
         process.exit(EXIT_CODES.ERROR);

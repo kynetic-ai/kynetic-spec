@@ -24,6 +24,9 @@ export const EXIT_CODES = {
 
   /** Conflict (resource already exists, duplicate slug, etc.) */
   CONFLICT: 5,
+
+  /** Validation passed with warnings (warnings but no errors) */
+  VALIDATION_WARNINGS: 6,
 } as const;
 
 /**
@@ -72,5 +75,12 @@ export const EXIT_CODE_METADATA = [
     name: "CONFLICT",
     description: "Conflict (resource already exists, duplicate slug, etc.)",
     commands: "item, task, module (when creating duplicates)",
+  },
+  {
+    code: EXIT_CODES.VALIDATION_WARNINGS,
+    name: "VALIDATION_WARNINGS",
+    description:
+      "Validation passed with warnings (no errors but warnings present)",
+    commands: "validate (when only warnings, no errors)",
   },
 ] as const;
