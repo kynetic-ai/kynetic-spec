@@ -45526,7 +45526,7 @@
   type: task
   spec_ref: "@session-log-list"
   plan_ref: "@session-log-analysis-tooling"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -45588,6 +45588,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-07T05:09:14.549Z
+  closed_reason: "Merged in PR #327. Implemented session log list command with filtering, sorting,
+    JSON output, and 28 tests. Codex review caught task completion counting bug (wrong event shape)
+    — fixed before merge."
 - _ulid: 01KGTN2A484D5W7WHWWS4QHMRP
   slugs:
     - implement-session-log-show
