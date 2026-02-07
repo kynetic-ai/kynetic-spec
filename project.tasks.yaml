@@ -35871,5 +35871,36 @@
   context: []
   vcs_refs: []
   created_at: 2026-02-07T06:00:04.348Z
-  notes: []
+  notes:
+    - _ulid: 01KGVAZPBDYHGH6XKKK5BWB0WR
+      created_at: 2026-02-07T06:00:20.077Z
+      author: "@claude"
+      content: |-
+        ## Bug Report
+
+        `No onPostToolUseHook found for tool use ID: toolu_...` appears in ralph output despite existing suppression pattern.
+
+        ### What exists
+
+        `src/ralph/events.ts:304-307` has SUPPRESSED_PATTERNS including `/No onPostToolUseHook found/i`.
+        `shouldSuppress()` is called at lines 355 and 405 — but ONLY for `agent_message_chunk` and `agent_thought_chunk` update types.
+
+        ### Likely cause
+
+        The hook message is arriving through a code path that bypasses the suppression check. Possible scenarios:
+        1. It arrives as a different ACP update type (not message/thought chunk)
+        2. It arrives concatenated with normal agent text in the same chunk — suppressing the whole chunk would lose good content, so the check needs to strip the noise substring rather than suppress the entire chunk
+        3. It comes through stderr or a side channel that doesn't go through the translator
+
+        ### Observed output
+        ```
+        Excellent creative brief. Now launching Phase 2...No onPostToolUseHook found for tool use ID: toolu_01LCkxN6GwoWUfvy7wqwp3sW
+        ```
+
+        Note the concatenation with no newline — suggests it's in the same streaming content.
+
+        ### Suggested fix
+
+        Change suppression from 'skip entire chunk' to 'strip matching patterns from chunk content'. This handles both standalone noise chunks and noise embedded in real content.
+      supersedes: null
   todos: []
