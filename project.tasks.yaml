@@ -45924,25 +45924,25 @@
         CI usage on fresh projects where orphaned specs are expected."
       supersedes: null
   todos: []
-- title: Auto-namespace plan slugs to prevent collision with spec slugs
+- _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
+  slugs: []
+  title: Auto-namespace plan slugs to prevent collision with spec slugs
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - plan
-    - dx
   description: "Plan import slug namespacing: kspec plan import auto-assigns slug from plan title,
     which can collide with spec slugs created by the same import (e.g. plan 'Gallery Home' gets slug
     'gallery-home', colliding with spec slug 'gallery-home'). Plans should auto-namespace their slug
     (e.g. 'plan-gallery-home') or detect collision and prompt for resolution. Related to 01KGGPSR
     but that covers item-to-item collision, not plan-to-item."
-  _ulid: 01KGTZB6STGV3PWKGKNKTM1TPJ
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - plan
+    - dx
   vcs_refs: []
   created_at: 2026-02-07T02:36:54.458Z
   notes:
@@ -45954,5 +45954,34 @@
         prefix. If manual --slug is provided, check for collision against spec index and error if
         conflict detected. ~10 lines. Bug fix — hit during real plan imports where plan and spec
         shared the same slug."
+      supersedes: null
+  todos: []
+- title: Add inbox set and inbox note commands for editing items
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - inbox
+    - dx
+  description: Add update/note capability to inbox items - allow 'inbox update @ref --content' or
+    'inbox note @ref' to modify/append to items without delete+re-add cycle
+  _ulid: 01KGTZDHDVFT05M5DQHAZ6ZFQR
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-07T02:38:10.875Z
+  notes:
+    - _ulid: 01KGTZDHDVQBFJ0C52T43JTBVT
+      created_at: 2026-02-07T02:38:10.876Z
+      author: "@claude"
+      content: "Implementation: Add two subcommands in src/cli/commands/inbox.ts. (1) inbox set @ref
+        --content 'new text' — replaces item content, preserving ULID/timestamp/tags. (2) inbox note
+        @ref 'appended context' — appends text to existing content with separator. Follow task note
+        pattern for append. Find item by ref, modify content field, save via existing YAML writer.
+        ~25 lines + tests for both replace and append paths."
       supersedes: null
   todos: []
