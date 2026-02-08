@@ -140,8 +140,9 @@ pending → in_progress → pending_review → completed
 **State transitions:**
 - `kspec task start` → `in_progress`
 - `kspec task submit` → `pending_review` (code done, awaiting merge)
-- `kspec task complete` → `completed` (from in_progress, pending, or pending_review)
-- `kspec task complete --force` → `completed` (force from any state)
+- `kspec task complete` → `completed` (from `pending_review`)
+- `kspec task complete --skip-review --reason "..."` → `completed` (bypass review requirement)
+- `kspec task complete --force` → `completed` (even if blocked)
 - `kspec task block` → `blocked`
 - `kspec task unblock` → `pending`
 - `kspec task cancel` → `cancelled`
@@ -203,10 +204,15 @@ kspec item tags                        # Tags and counts
 kspec item get <ref>                   # Item details
 kspec item status <ref>                # Implementation status + linked tasks
 
-# Create items
-kspec item add --title "My Feature" --type feature --slug my-feature
+# Create items (--under is required)
+kspec item add --under @parent --title "My Feature" --type feature --slug my-feature
 kspec item add --under @parent --title "Sub-feature" --type requirement
-kspec item add --title "Auditable" --type constraint --trait @trait-ref
+kspec item add --under @parent --title "Auditable" --type constraint --trait @trait-ref
+
+# Trait lifecycle
+kspec trait list                       # Discover available traits
+kspec trait get <ref>                  # Trait details and ACs
+kspec trait add "Trait Name" --description "..." --slug my-trait
 
 # Update items
 kspec item set <ref> --title "New Title" --priority 1
