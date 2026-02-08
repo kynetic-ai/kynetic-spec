@@ -5597,4 +5597,32 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGXN2YYMYG5EEFQDM5CA6C2A
+    type: friction
+    content: Documentation tasks that update README/AGENTS.md should also check skill files
+      (.claude/skills/) for staleness on the same topics. Easy to miss because skills are a separate
+      concern. A validate --skills --docs check could catch this.
+    created_at: 2026-02-08T03:35:21.813Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KGXN2Z5DF52R8XHKHYFV9XE1
+    type: success
+    content: Running 4 parallel Explore/Bash subagents to research README structure, AGENTS.md
+      structure, full CLI catalog, and recent git features simultaneously saved significant time and
+      produced comprehensive input for the docs update.
+    created_at: 2026-02-08T03:35:22.029Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KGXN2ZATMXN5QJJQSMJVJZWC
+    type: friction
+    content: AGENTS.md task state transitions documented task complete as working from
+      in_progress/pending, but CLI actually requires pending_review (or --skip-review). Pre-existing
+      inaccuracy that propagated to README. Codex caught it via runtime spot-checks that I did not
+      do.
+    created_at: 2026-02-08T03:35:22.202Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
