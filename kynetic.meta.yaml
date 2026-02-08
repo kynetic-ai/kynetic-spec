@@ -5577,4 +5577,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGXHNDY3R4AC24TS1R4Q54CA
+    type: friction
+    content: "Commander's .option() parse function (e.g. parseInt) silently pre-coerces values before
+      the action handler runs. When replacing inline validation with shared helpers, the helper
+      never sees the raw string. This caused a bug in PR #347 where derive/plan-derive still
+      accepted '3abc' as priority 3. Fix: never use Commander parse functions for options validated
+      by shared helpers."
+    created_at: 2026-02-08T02:35:32.675Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
