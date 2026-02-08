@@ -210,12 +210,25 @@ List oldest first (encourages processing):
 
 ```bash
 kspec inbox list
+kspec inbox list --tag refactor     # Filter by tag
+kspec inbox list --newest           # Newest first
+kspec inbox list --count            # Count only
+```
 
-# Filter by tag
-kspec inbox list --tag refactor
+### Editing Items
 
-# Newest first
-kspec inbox list --newest
+Update inbox items in place:
+
+```bash
+# Update content
+kspec inbox set @ref --content "revised description of the idea"
+
+# Manage tags
+kspec inbox set @ref --tag new-tag
+kspec inbox set @ref --clear-tags
+
+# Add a note for context
+kspec inbox note @ref "Discussed in standup, worth exploring"
 ```
 
 ### Promotion
@@ -232,6 +245,9 @@ kspec inbox promote @ref \
   --priority 2 \
   --spec-ref @api-client \
   --tag reliability
+
+# With initial note
+kspec inbox promote @ref --title "Task title" --note "Context from triage"
 ```
 
 ### Deletion
@@ -305,12 +321,21 @@ kspec batch --dry-run --file commands.json
 
 **Continue mode** (`--continue`): Implies immediate. All commands are attempted regardless of failures. Failed commands are recorded; successful ones commit individually.
 
+### Discovery
+
+List all commands available in batch mode:
+
+```bash
+kspec batch commands
+```
+
 ### Constraints
 
 - Only **mutating** commands are allowed (e.g. `item add`, `task start`, `inbox promote`). Read-only commands (e.g. `item get`, `task list`) are rejected during validation.
 - Commands that normally require confirmation run without prompting (batch is implicitly non-interactive).
 - Batch cannot be nested — `batch` inside a batch is rejected.
 - Forward references work: command 2 can reference a slug created by command 1.
+- Typos in command names produce did-you-mean suggestions.
 
 ### Use Cases
 
@@ -343,6 +368,8 @@ kspec item get @spec-slug
 kspec item list --type feature
 kspec item list --tag cli
 kspec item list --status implemented
+kspec item list --tree              # Hierarchical view
+kspec item list --count             # Count only
 
 # Search
 kspec search "validation"
@@ -355,6 +382,12 @@ kspec search "validation"
 kspec item set @spec-slug --description "Updated description"
 kspec item set @spec-slug --status implemented
 kspec item set @spec-slug --tag new-tag
+
+# Relationships
+kspec item set @spec-slug --relates-to @other-item
+kspec item set @spec-slug --implements @parent-item
+kspec item set @spec-slug --depends-on @dependency
+kspec item set @spec-slug --clear-relates-to          # Clear all of a type
 
 # JSON patch for complex updates
 kspec item patch @spec-slug --data '{"priority": "high"}'
@@ -397,6 +430,13 @@ kspec item add \
   --under @new-feature \
   --title "Specific Requirement" \
   --type requirement
+
+# Add with traits applied at creation
+kspec item add \
+  --under @parent-slug \
+  --title "JSON Export" \
+  --type feature \
+  --trait @trait-json-output
 ```
 
 ### Deriving Tasks
@@ -477,21 +517,40 @@ kspec task add \
   --depends-on @prerequisite-task
 ```
 
+## Session Log
+
+View and analyze historical session data:
+
+```bash
+kspec session log list                     # List sessions with stats
+kspec session log list --since 7d          # Recent sessions
+kspec session log list --agent ralph       # Filter by agent type
+kspec session log show <session-id>        # Detailed session view
+kspec session log show <id> --events       # Include events
+kspec session log stats                    # Aggregate analytics
+kspec session log stats --by-day           # Daily breakdown
+kspec session log stats --tool-usage       # Tool usage stats
+kspec session log search "pattern"         # Search across events
+```
+
 ## Validation
 
 ```bash
 # Full validation
 kspec validate
 
-# References only
-kspec validate --refs
-
-# Schema only
-kspec validate --schema
+# Specific checks
+kspec validate --schema                    # Schema conformance
+kspec validate --refs                      # Reference resolution
+kspec validate --alignment                 # Spec-task alignment
+kspec validate --completeness              # Spec completeness
+kspec validate --strict                    # Treat warnings as errors
 
 # Auto-fix issues
 kspec validate --fix
 ```
+
+**Exit codes:** `0` = success, `4` = validation errors, `6` = warnings only.
 
 ## Key Principles
 

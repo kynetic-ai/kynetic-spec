@@ -52,9 +52,11 @@ Process inbox items using spec-first approach. See [docs/inbox.md](docs/inbox.md
 
 ```bash
 kspec inbox list
-# For each item: delete, promote, or create spec first
+# For each item: delete, update, promote, or create spec first
 kspec inbox delete @ref --force
-kspec inbox promote @ref --title "..." --spec-ref @spec
+kspec inbox set @ref --content "refined description" --tag reviewed
+kspec inbox note @ref "Discussed - needs spec first"
+kspec inbox promote @ref --title "..." --spec-ref @spec --note "Context from triage"
 ```
 
 ### `/triage observations`

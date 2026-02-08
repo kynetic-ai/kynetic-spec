@@ -94,11 +94,16 @@ kspec item types                     # List available types
 
 # Create items
 kspec item add --under <parent> --title "..." --type <type> [--slug <slug>]
+kspec item add --under <parent> --title "..." --type <type> --trait @trait-ref
 
 # Update items
 kspec item set <ref> --title "..."   # Update specific fields
 kspec item set <ref> --description "..."
 kspec item set <ref> --status <implementation-status>
+kspec item set <ref> --relates-to @other-item   # Add relationship
+kspec item set <ref> --implements @parent-item   # Add implements link
+kspec item set <ref> --depends-on @dependency    # Add dependency
+kspec item set <ref> --clear-relates-to          # Clear all of a type
 kspec item patch <ref> --data '{...}'  # Complex updates
 
 # Delete items
@@ -128,9 +133,9 @@ kspec item ac remove <ref> <ac-id> [--force]
 kspec trait list                     # All traits with AC counts
 kspec trait get <ref>                # Trait details including AC
 
-# Apply/remove traits from specs
-kspec item trait add <spec-ref> <trait-ref>
-kspec item trait remove <spec-ref> <trait-ref>
+# Apply/remove traits from specs (supports multiple traits at once)
+kspec item trait add <spec-ref> <trait-ref> [<trait-ref2> ...]
+kspec item trait remove <spec-ref> <trait-ref> [<trait-ref2> ...]
 
 # Create new traits (when needed)
 kspec trait add "Trait Name" --description "..." [--slug <slug>]
@@ -140,7 +145,12 @@ kspec trait add "Trait Name" --description "..." [--slug <slug>]
 
 ```bash
 kspec validate                       # Check spec quality
+kspec validate --completeness        # Spec completeness check
+kspec validate --alignment           # Spec-task alignment
+kspec validate --strict              # Treat warnings as errors
 ```
+
+**Exit codes:** `0` = success, `4` = errors, `6` = warnings only.
 
 Validation reports:
 - Missing acceptance criteria
