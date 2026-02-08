@@ -37,19 +37,26 @@ kspec tasks ready
 ## Basic Usage
 
 ```bash
+# Initialize a new project
+kspec init
+
 # See what tasks are ready to work on
 kspec tasks ready
-
-# Get task details
-kspec task get @task-slug
 
 # Task lifecycle
 kspec task start @task-slug
 kspec task note @task-slug "What you're doing..."
+kspec task submit @task-slug          # Code done, PR created
 kspec task complete @task-slug --reason "Summary"
 
-# Create a new task
-kspec task add --title "My task" --priority 2 --slug my-task
+# Capture ideas
+kspec inbox add "idea or random thought"
+
+# Validate spec files
+kspec validate
+
+# Search across everything
+kspec search "pattern"
 ```
 
 ## Agent Integration
@@ -111,17 +118,33 @@ export KSPEC_AUTHOR="@agent-name"
 
 Convention: Use `@` prefix for agent authors (e.g., `@claude`, `@copilot`) to distinguish from human authors.
 
+## References
+
+All items (tasks, spec items, inbox, plans) can be referenced by:
+- **Full ULID**: `01KEYQSD2QJCNGRKSR38V0E3BM`
+- **Short ULID**: `01KEYQSD` (unique prefix)
+- **Slug**: `@my-task-slug`
+
 ## Task Management
 
 ### Task States
 
 ```
-pending → in_progress → completed
-                ↓
-            blocked → (unblock) → in_progress
-                ↓
-            cancelled
+pending → in_progress → pending_review → completed
+              ↓              ↓
+          blocked ←──────────┘
+              ↓
+          cancelled
 ```
+
+**State transitions:**
+- `kspec task start` → `in_progress`
+- `kspec task submit` → `pending_review` (code done, awaiting merge)
+- `kspec task complete` → `completed` (from in_progress, pending, or pending_review)
+- `kspec task complete --force` → `completed` (force from any state)
+- `kspec task block` → `blocked`
+- `kspec task unblock` → `pending`
+- `kspec task cancel` → `cancelled`
 
 ### Commands
 
@@ -129,6 +152,8 @@ pending → in_progress → completed
 # List tasks
 kspec tasks list                    # All tasks
 kspec tasks list --status pending   # Filter by status
+kspec tasks list --tag mvp          # Filter by tag
+kspec tasks list --count            # Count only
 kspec tasks ready                   # Tasks ready to work on
 kspec tasks next                    # Highest priority ready task
 kspec tasks blocked                 # Blocked tasks
@@ -137,19 +162,182 @@ kspec tasks in-progress             # Active tasks
 # Task operations
 kspec task get <ref>                # View details
 kspec task start <ref>              # Begin work
+kspec task submit <ref>             # Submit for review
 kspec task complete <ref>           # Mark done
+kspec task complete --force <ref>   # Force complete from any state
 kspec task block <ref> --reason "..." # Block with reason
 kspec task unblock <ref>            # Remove block
 kspec task cancel <ref>             # Cancel task
+kspec task reset <ref>              # Reset to pending
+kspec task delete <ref>             # Delete permanently
 
-# Notes (work log)
+# Notes and todos
 kspec task note <ref> "message"     # Add note
 kspec task notes <ref>              # View notes
+kspec task todo add <ref> "text"    # Add a todo item
+kspec task todos <ref>              # View todos
+
+# Create tasks
+kspec task add --title "My task" --priority 2 --slug my-task
+kspec task add --title "Bug fix" --type bug --spec-ref @feature --tag urgent
+
+# Update tasks
+kspec task set <ref> --priority 1 --tag critical
+kspec task set <ref> --depends-on @other-task
 ```
 
-### Batch Execution
+## Spec Item Management
 
-Execute multiple commands atomically or with per-command commits:
+Spec items define WHAT to build — features, requirements, constraints.
+
+```bash
+# List and browse
+kspec item list                        # All items
+kspec item list --type feature         # Filter by type
+kspec item list --tree                 # Hierarchical view
+kspec item list --count                # Count only
+kspec item types                       # Item types and counts
+kspec item tags                        # Tags and counts
+
+# View details
+kspec item get <ref>                   # Item details
+kspec item status <ref>                # Implementation status + linked tasks
+
+# Create items
+kspec item add --title "My Feature" --type feature --slug my-feature
+kspec item add --under @parent --title "Sub-feature" --type requirement
+kspec item add --title "Auditable" --type constraint --trait @trait-ref
+
+# Update items
+kspec item set <ref> --title "New Title" --priority 1
+kspec item set <ref> --relates-to @other-item    # Add relationship
+kspec item set <ref> --implements @parent-item    # Add implements link
+kspec item set <ref> --depends-on @dependency     # Add dependency
+kspec item set <ref> --clear-relates-to           # Clear relationships
+
+# Notes
+kspec item note <ref> "Design rationale..."
+kspec item notes <ref>
+
+# Acceptance criteria
+kspec item ac list <ref>
+kspec item ac add <ref> --given "user is logged in" --when "they click logout" --then "session ends"
+kspec item ac set <ref> ac-1 --then "updated expectation"
+kspec item ac remove <ref> ac-1
+
+# Traits
+kspec item trait add <ref> @trait-a @trait-b
+kspec item trait remove <ref> @trait-a
+
+# Derive implementation task from spec
+kspec derive <ref>                     # Create task from spec item
+kspec derive --all --dry-run           # Preview tasks for all unlinked specs
+```
+
+## Inbox
+
+Low-friction capture for ideas that aren't yet tasks.
+
+```bash
+kspec inbox add "idea or random thought"         # Capture
+kspec inbox add "tagged idea" --tag dx --tag cli  # With tags
+kspec inbox list                                  # Show items (oldest first)
+kspec inbox list --newest --limit 5               # Recent items
+kspec inbox list --tag dx                         # Filter by tag
+kspec inbox list --count                          # Count only
+kspec inbox get <ref>                             # View details
+
+# Edit items
+kspec inbox set <ref> --content "updated text"    # Update content
+kspec inbox set <ref> --tag new-tag               # Add tags
+kspec inbox set <ref> --clear-tags                # Remove all tags
+kspec inbox note <ref> "additional context"       # Append a note
+
+# Convert to task
+kspec inbox promote <ref> --title "Task title"
+kspec inbox promote <ref> --title "Task" --priority 2 --note "Context from triage"
+
+# Remove
+kspec inbox delete <ref>
+```
+
+## Plans
+
+Plans capture implementation context and rationale. They can auto-generate specs and tasks from structured markdown.
+
+```bash
+# Create plans
+kspec plan add --title "Feature Name" --content "Description..."
+kspec plan add --title "Feature Name" --content-file ./plan.md
+
+# Import structured plan (auto-creates specs and tasks)
+kspec plan import ./plan.md --module @target-module --dry-run   # Preview
+kspec plan import ./plan.md --module @target-module             # Execute
+kspec plan import ./plan.md --module @target-module --update    # Re-import
+
+# Manage plans
+kspec plan list                          # List all plans
+kspec plan get <ref>                     # View details
+kspec plan set <ref> --status active     # Update status
+kspec plan note <ref> "Progress..."      # Add note
+kspec plan derive <ref>                  # Create task from plan
+```
+
+## Validation
+
+Validate spec files for schema conformance, reference integrity, and alignment.
+
+```bash
+kspec validate                    # Full validation
+kspec validate --schema           # Schema conformance only
+kspec validate --refs             # Reference resolution only
+kspec validate --alignment        # Spec-task alignment
+kspec validate --completeness     # Spec completeness
+kspec validate --orphans          # Orphaned items
+kspec validate --strict           # Treat warnings as errors
+kspec validate --fix              # Auto-fix (invalid ULIDs, missing timestamps)
+kspec validate -v                 # Verbose output
+```
+
+**Exit codes:** `0` = success, `4` = validation errors, `6` = warnings only.
+
+## Session Log
+
+View and search historical session data.
+
+```bash
+kspec session log list                     # List sessions with stats
+kspec session log list --since 7d          # Recent sessions
+kspec session log list --agent ralph       # Filter by agent type
+kspec session log show <session-id>        # Detailed session view
+kspec session log show <id> --events       # Include events
+kspec session log stats                    # Aggregate analytics
+kspec session log stats --by-day           # Daily breakdown
+kspec session log stats --tool-usage       # Tool usage stats
+kspec session log search "pattern"         # Search across events
+```
+
+## Search and Export
+
+```bash
+# Search across items, tasks, inbox, and meta
+kspec search "pattern"
+kspec search "auth" --tasks-only
+kspec search "feature" --items-only --limit 10
+
+# Git history by spec/task
+kspec log @task-ref                  # Commits related to a ref
+kspec log --spec @spec-ref           # Search by spec trailer
+kspec log --since "2 weeks ago"      # Filter by date
+
+# Export
+kspec export                         # JSON export
+kspec export --format html -o out.html
+```
+
+## Batch Execution
+
+Execute multiple commands atomically or with per-command commits.
 
 ```bash
 # Atomic (default) — single commit, rollback on failure
@@ -162,16 +350,35 @@ kspec batch --no-atomic --file commands.json
 # Continue on error, dry run
 kspec batch --continue --file commands.json
 kspec batch --dry-run --file commands.json
+
+# Discover available batch commands
+kspec batch commands
 ```
 
-Each command: `{"command": "cli path", "args": {...}, "id": "optional"}`. Only mutating commands allowed.
+Each command: `{"command": "cli path", "args": {...}, "id": "optional"}`. Only mutating commands allowed. Typos in command names produce did-you-mean suggestions.
 
-### References
+## Shadow Branch
 
-Tasks can be referenced by:
-- **Full ULID**: `01KEYQSD2QJCNGRKSR38V0E3BM`
-- **Short ULID**: `01KEYQSD` (unique prefix)
-- **Slug**: `@my-task-slug`
+kspec stores spec/task state on a separate orphan branch (`kspec-meta`) via a git worktree at `.kspec/`. This keeps spec changes out of your main branch history.
+
+```bash
+kspec init                    # Initialize project (creates shadow branch)
+kspec shadow status           # Check shadow branch health
+kspec shadow sync             # Sync with remote
+kspec shadow repair           # Fix broken worktree
+kspec shadow log              # Recent shadow commits
+```
+
+## Utility Commands
+
+```bash
+kspec util ulid               # Generate a valid ULID
+kspec util ulid --count 5     # Generate multiple ULIDs
+kspec help                    # Extended help
+kspec help --all              # Full command reference
+kspec help --exit-codes       # Exit code documentation
+kspec help <cmd> --json-schema  # JSON Schema for a command
+```
 
 ## Task File Format
 
@@ -182,8 +389,9 @@ Tasks are stored in YAML files (`*.tasks.yaml`):
   slugs: [my-task]
   title: My task title
   type: task          # task, epic, bug, spike, infra
-  status: pending
+  status: pending     # pending, in_progress, pending_review, completed, blocked, cancelled
   priority: 2         # 1 (highest) to 5 (lowest)
+  spec_ref: "@feature-slug"
   depends_on: ["@other-task"]
   tags: [mvp]
   notes:
