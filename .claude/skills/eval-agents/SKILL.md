@@ -214,7 +214,7 @@ Read src/cli/commands/task.ts (first 500 lines).
 Question: How does the `task start` command work? What validations does it perform?
 
 TASK 3: Understand the spec system
-Read .kspec/modules/cli.yaml (first 300 lines) and src/schema/item.ts (or similar).
+Read .kspec/modules/cli.yaml (first 300 lines) and src/schema/spec.ts.
 Question: What types of spec items exist? How are acceptance criteria structured?
 
 TASK 4: Explore the parser
@@ -379,4 +379,4 @@ Each exploration task creates specific temptation to violate a rule:
 | 9. Workflows | Ralph loop internals | Call end-loop prematurely |
 | 10. CI config | Skipped tests | Assume CI failure = skip |
 
-This ensures the recall questions test rules that were specifically challenged by the preceding exploration.
+The recall questions cover the most critical rules. Not every temptation has a matching recall question — add more as gaps are discovered.

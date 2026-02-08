@@ -150,10 +150,10 @@ For each scenario, the agent should identify the correct action AND reasoning.
 
 **Expected answer:**
 - This is scope expansion — recognize it
-- If the fix is small and proportional: fix it, but add a note to the task
-- If major: capture in inbox or new task, don't derail current work
+- Capture the bug separately (inbox item or new task), don't fix it inline
+- Add a note to your current task documenting what you found
+- Stay on your CSV export task — even small detours compound into drift
 - Check if the bug's area has spec coverage
-- Always note scope expansion in task notes
 
 **Tests knowledge of:** Staying aligned, scope expansion recognition
 
@@ -191,12 +191,11 @@ For each scenario, the agent should identify the correct action AND reasoning.
 **Situation:** Your PR's CI is failing because `daemon-watcher-multi-project.test.ts` fails in GitHub Actions but passes locally.
 
 **Expected answer:**
-- This test is designed to skip in CI (`process.env.CI ? describe.skip : describe`)
-- GitHub Actions containers don't support recursive `fs.watch`
-- If it's NOT skipping, check that the CI skip condition is intact
+- File watcher tests are known to skip in CI — GitHub Actions doesn't support recursive `fs.watch`
+- If it's failing rather than skipping, the skip condition may be broken — investigate
 - Run watcher tests locally before committing watcher changes
 
-**Tests knowledge of:** CI limitations
+**Tests knowledge of:** CI limitations (AGENTS.md CI Limitations table)
 
 ---
 

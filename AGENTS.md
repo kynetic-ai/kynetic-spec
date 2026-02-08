@@ -167,6 +167,8 @@ When a plan is approved, you MUST translate it to specs before implementing:
 
 ## PR Workflow
 
+Before creating a PR, mark the task: `kspec task submit @ref` (transitions to `pending_review`).
+
 The full PR lifecycle has three steps — **all required, in order:**
 
 1. **`/local-review`** — Quality gates: AC coverage, test quality, test isolation. Run this FIRST.
