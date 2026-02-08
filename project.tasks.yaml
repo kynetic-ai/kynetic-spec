@@ -46912,6 +46912,47 @@
     - readme
   vcs_refs: []
   created_at: 2026-02-07T16:07:14.005Z
-  notes: []
-  todos: []
   started_at: 2026-02-08T02:45:47.047Z
+  notes:
+    - _ulid: 01KGXJME92ZFFV0J3P961XGT4Z
+      created_at: 2026-02-08T02:52:28.836Z
+      author: "@claude"
+      content: >-
+        Updated README.md and AGENTS.md with comprehensive documentation for recent features:
+
+
+        README.md changes:
+
+        - Fixed task state diagram to include pending_review
+
+        - Added new sections: References, Spec Item Management, Inbox, Plans, Validation, Session
+        Log, Search and Export, Shadow Branch, Utility Commands
+
+        - Expanded Task Management with submit/complete --force/reset/delete, notes/todos,
+        create/update
+
+        - Added batch commands subcommand, did-you-mean mention
+
+        - Updated Basic Usage to include submit, validate, inbox, search
+
+        - Updated Task File Format to show pending_review status and spec_ref field
+
+        - Expanded CLI coverage from ~12 to ~93 commands
+
+
+        AGENTS.md changes (under Working on This Project):
+
+        - Added Inbox Management section with set/note/list/promote commands
+
+        - Added Session Log section with list/show/stats/search commands  
+
+        - Added Spec Item Management section with relationship flags (--relates-to, --implements,
+        --depends-on, --clear-*)
+
+        - Added Validation section with exit codes (0/4/6) and --strict/--fix
+
+        - Added Search and Export section
+
+        - Added Batch Commands section with batch commands subcommand
+      supersedes: null
+  todos: []
