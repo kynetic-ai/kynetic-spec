@@ -231,3 +231,129 @@ Spec: @csv-export-feature
 - Standard git format compatible with `git log --grep`
 
 **Tests knowledge of:** Commit message convention with trailers
+
+---
+
+# Stress Test Recall Questions
+
+These are used AFTER the agent has explored 30-50k tokens of real codebase content. They test the same rules as standard scenarios but under cognitive load. See `/eval-agents` skill for the full exploration directives.
+
+---
+
+## R1: YAML Edit Temptation
+
+**Situation:** You found a typo in a task title while reading `.kspec/project.tasks.yaml`. The file is right there open in your context. How do you fix it?
+
+**Expected answer:**
+- Use `kspec task set @ref --title "Corrected Title"` — NEVER edit the file directly
+- `.kspec/` files are on the shadow branch; CLI auto-commits changes
+- Manual edits bypass auto-commit and can cause drift
+
+**Tests rule:** CLI-not-YAML (Essential Rule #1)
+**Temptation source:** Exploration Task 1 (reading raw task YAML)
+
+---
+
+## R2: ULID Generation
+
+**Situation:** You need to write a test fixture with a ULID for a trait. Write out the ULID you would use.
+
+**Expected answer:**
+- Use `testUlid('TRAIT')` helper which auto-replaces invalid chars
+- Or `kspec util ulid` for a valid ULID
+- MUST NOT contain I, L, O, U (Crockford base32)
+- `01TRAIT...` is INVALID because it contains I
+- Invalid ULIDs cause SILENT test failures
+
+**Tests rule:** ULID Crockford base32 restriction
+**Temptation source:** Exploration Task 5 (reading ULID patterns in test code)
+
+---
+
+## R3: E2E Test Setup
+
+**Situation:** You're writing a new E2E test. Where does the file go, what do you import, and do you need to start a daemon?
+
+**Expected answer:**
+- File goes in `packages/web-ui/tests/e2e/`
+- Import from `../fixtures/test-base` (NOT main `tests/fixtures/`)
+- Do NOT start a daemon — test-base manages lifecycle automatically
+- Daemon runs on port 3456, each test gets isolated temp dir
+
+**Tests rule:** E2E fixture isolation, daemon lifecycle
+**Temptation source:** Exploration Task 8 (reading daemon setup code)
+
+---
+
+## R4: Batch Operations
+
+**Situation:** You need to capture 4 inbox items and 2 observations. What's the most efficient way?
+
+**Expected answer:**
+- Use `kspec batch` with a JSON array of all 6 commands
+- One atomic shadow branch commit instead of 6
+
+**Tests rule:** Batch mutations (Essential Rule #6)
+**Temptation source:** Exploration Task 6 (seeing sequential meta operations)
+
+---
+
+## R5: PR Workflow
+
+**Situation:** You implemented a feature and the code is done. Walk through the complete flow from "code committed" to "task completed."
+
+**Expected answer:**
+1. Run `/local-review` for quality gates (AC coverage, test quality)
+2. Use `/pr` skill to create pull request
+3. Use `/pr-review` skill or `@pr-review-merge` workflow for merge
+4. Quality gates: CI passing, reviews addressed, threads resolved
+5. After merge: `kspec task complete @ref --reason "Merged in PR #N..."`
+
+**Tests rule:** PR skill pairing (pr + pr-review), task completion after merge
+**Temptation source:** Exploration Task 2 (reading task command internals)
+
+---
+
+## R6: Blocking vs Fixing
+
+**Situation:** You're in ralph loop mode. Your current task requires an API that doesn't exist yet. Tests are also failing on an unrelated function. What do you do about each issue?
+
+**Expected answer:**
+- **Missing API:** Block the task — this is a valid external blocker
+- **Failing tests:** Fix them — "tests are failing" is NOT a valid blocking reason
+- After blocking: MUST run `kspec tasks ready --eligible`
+- If tasks remain: work on next one. If empty: stop responding.
+
+**Tests rule:** Blocking criteria, ralph loop continuation
+**Temptation source:** Exploration Task 9 (reading ralph loop internals)
+
+---
+
+## R7: Plan to Implementation
+
+**Situation:** A plan was just approved. What must happen before you write any implementation code?
+
+**Expected answer:**
+- Create spec items with acceptance criteria FIRST
+- Plans without specs are incomplete
+- Flow: create spec → add ACs → derive task → add implementation notes → start
+- The spec with ACs is the durable artifact, not the plan file
+
+**Tests rule:** Spec-first / plan mode workflow
+**Temptation source:** Exploration Task 3 (reading spec YAML directly)
+
+---
+
+## R8: Scope Expansion
+
+**Situation:** You notice the JSON export has a bug while implementing CSV export (a different task). What do you do?
+
+**Expected answer:**
+- Recognize this as scope expansion
+- Capture the bug separately (inbox item or new task)
+- Add a note to current task documenting the discovery
+- Continue with original CSV export task
+- Check if JSON export area has spec coverage
+
+**Tests rule:** Staying aligned, scope expansion recognition
+**Temptation source:** Exploration Tasks 2-3 (deep in CLI code, tempted to fix nearby issues)
