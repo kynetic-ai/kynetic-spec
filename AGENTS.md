@@ -242,8 +242,9 @@ pending → in_progress → pending_review → completed
 **State transitions:**
 - `kspec task start` → `in_progress`
 - `kspec task submit` → `pending_review` (code done, awaiting merge)
-- `kspec task complete` → `completed` (from in_progress, pending, or pending_review)
-- `kspec task complete --force` → `completed` (force from any state, for cleanup or stuck tasks)
+- `kspec task complete` → `completed` (from `pending_review`)
+- `kspec task complete --skip-review --reason "..."` → `completed` (bypass review requirement)
+- `kspec task complete --force` → `completed` (even if blocked)
 - `kspec task block` → `blocked`
 - `kspec task unblock` → `pending`
 - `kspec task cancel` → `cancelled`
@@ -378,6 +379,125 @@ echo '[
 - **Clear scope?** → Create task directly
 - **Unclear scope?** → Add to inbox, triage later
 - **Behavior change?** → Check/update spec first, then derive task
+
+### Inbox Management
+
+```bash
+# Capture ideas
+kspec inbox add "idea or random thought"
+kspec inbox add "tagged idea" --tag dx --tag cli
+
+# Browse and search
+kspec inbox list                                  # Oldest first
+kspec inbox list --newest --limit 5               # Recent items
+kspec inbox list --tag dx                         # Filter by tag
+kspec inbox list --count                          # Count only
+kspec inbox get <ref>                             # View details
+
+# Edit items
+kspec inbox set <ref> --content "updated text"    # Update content
+kspec inbox set <ref> --tag new-tag               # Add tags
+kspec inbox set <ref> --clear-tags                # Remove all tags
+kspec inbox note <ref> "additional context"       # Append a note
+
+# Convert to task
+kspec inbox promote <ref> --title "Task title"
+kspec inbox promote <ref> --title "Task" --note "Context from triage"
+
+# Remove
+kspec inbox delete <ref>
+```
+
+### Session Log
+
+View and search historical session data (ralph runs, agent sessions):
+
+```bash
+kspec session log list                     # List sessions with stats
+kspec session log list --since 7d          # Recent sessions
+kspec session log list --agent ralph       # Filter by agent type
+kspec session log show <session-id>        # Detailed session view
+kspec session log show <id> --events       # Include events
+kspec session log stats                    # Aggregate analytics
+kspec session log stats --by-day           # Daily breakdown
+kspec session log stats --tool-usage       # Tool usage stats
+kspec session log search "pattern"         # Search across events
+```
+
+### Spec Item Management
+
+```bash
+# Browse items
+kspec item list                        # All items
+kspec item list --type feature         # Filter by type
+kspec item list --tree                 # Hierarchical view
+kspec item list --count                # Count only
+kspec item types                       # Types and counts
+kspec item tags                        # Tags and counts
+
+# View details
+kspec item get <ref>                   # Full item details
+kspec item status <ref>                # Implementation status + linked tasks
+
+# Create items (--under is required)
+kspec item add --under @parent --title "Feature" --type feature --slug my-feature
+kspec item add --under @parent --title "Child" --type requirement --trait @trait-ref
+kspec item set <ref> --title "New Title" --priority 1
+
+# Relationships
+kspec item set <ref> --relates-to @other-item
+kspec item set <ref> --implements @parent-item
+kspec item set <ref> --depends-on @dependency
+kspec item set <ref> --clear-relates-to          # Clear all of a type
+
+# Acceptance criteria
+kspec item ac add <ref> --given "precondition" --when "action" --then "expected"
+kspec item ac set <ref> ac-1 --then "updated expectation"
+kspec item ac remove <ref> ac-1
+
+# Traits
+kspec item trait add <ref> @trait-a @trait-b      # Multiple at once
+kspec item trait remove <ref> @trait-a
+
+# Notes
+kspec item note <ref> "Design rationale..."
+
+# Derive task from spec
+kspec derive <ref>                     # Create implementation task
+kspec derive --all --dry-run           # Preview for all unlinked specs
+```
+
+### Validation
+
+```bash
+kspec validate                    # Full validation
+kspec validate --schema           # Schema conformance only
+kspec validate --refs             # Reference resolution only
+kspec validate --alignment        # Spec-task alignment
+kspec validate --completeness     # Spec completeness
+kspec validate --strict           # Treat warnings as errors
+kspec validate --fix              # Auto-fix issues
+kspec validate -v                 # Verbose output
+```
+
+**Exit codes:** `0` = success, `4` = errors, `6` = warnings only.
+
+### Search and Export
+
+```bash
+kspec search "pattern"                   # Search across everything
+kspec search "auth" --tasks-only         # Scope to tasks
+kspec log @task-ref                      # Git commits for a ref
+kspec export --format html -o out.html   # Export to HTML
+```
+
+### Batch Commands
+
+```bash
+kspec batch --file commands.json         # Execute from file
+kspec batch --dry-run --file commands.json  # Preview
+kspec batch commands                     # List available batch commands
+```
 
 ## Session Context
 
