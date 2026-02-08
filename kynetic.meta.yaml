@@ -5588,4 +5588,13 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KGXHNR4TWC7Z8V6FB5NR72XF
+    type: success
+    content: Using Codex (/codex pr) as an automated second reviewer caught a real bug (Commander
+      parseInt pre-parse bypass) that manual review missed. The review-fix-re-review cycle completed
+      in one session. Worth using for every non-trivial PR.
+    created_at: 2026-02-08T02:35:43.130Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
