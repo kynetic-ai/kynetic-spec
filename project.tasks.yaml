@@ -47076,6 +47076,16 @@
         only kynetic-spec-specific improvements (PR agent limitations note, Running Services
         gotchas, duplicate guidance check).
       supersedes: null
+    - _ulid: 01KH0W6S696YR5D1WDR8RNHEY0
+      created_at: 2026-02-09T09:37:30.313Z
+      author: "@claude"
+      content: "Fixed 4 factual errors in AGENTS.md Running Services section: (1) daemon commands npm run
+        daemon → kspec serve start, (2) default port 3000 → 3456, (3) health endpoint /health →
+        /api/health, (4) web-ui dev comment clarified as Vite-only (port 5173). Also removed stale
+        '(not 3000)' parenthetical from E2E architecture. Other findings from cross-pollinate: PR
+        agent limitations don't apply (kspec subagent has full ACP access), duplicate guidance is
+        minor/low-priority, dual defaults is a code issue captured for awareness."
+      supersedes: null
   todos: []
 - _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
   slugs:
