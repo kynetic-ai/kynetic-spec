@@ -46968,7 +46968,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47088,6 +47088,10 @@
         minor/low-priority, dual defaults is a code issue captured for awareness."
       supersedes: null
   todos: []
+  completed_at: 2026-02-09T20:16:58.413Z
+  closed_reason: "Fixed 4 factual errors in AGENTS.md Running Services (PR #351, merged). Dual
+    defaults captured as inbox item @01KH20S1. PR agent limitations finding not applicable.
+    Duplicate guidance is minor — no action taken."
 - _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
   slugs:
     - imgen-agents-restructure
