@@ -46968,7 +46968,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -46976,6 +46976,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-08T10:15:30.046Z
+  started_at: 2026-02-09T20:16:53.911Z
   notes:
     - _ulid: 01KGYC0EHBTS85BWHV7SRM5PCF
       created_at: 2026-02-08T10:15:56.715Z
@@ -47087,7 +47088,6 @@
         minor/low-priority, dual defaults is a code issue captured for awareness."
       supersedes: null
   todos: []
-  started_at: 2026-02-09T20:16:53.911Z
 - _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
   slugs:
     - imgen-agents-restructure
