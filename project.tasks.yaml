@@ -47069,6 +47069,13 @@
 
         - All review threads resolved, CI green, merged
       supersedes: null
+    - _ulid: 01KGZXJ0YCQSZQP2KA3XPX97ND
+      created_at: 2026-02-09T00:41:52.844Z
+      author: "@claude"
+      content: Imgen restructuring split to dedicated task @imgen-agents-restructure. This task now covers
+        only kynetic-spec-specific improvements (PR agent limitations note, Running Services
+        gotchas, duplicate guidance check).
+      supersedes: null
   todos: []
 - _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
   slugs:
