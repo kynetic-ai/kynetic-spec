@@ -256,11 +256,11 @@ kspec tasks ready --eligible
 ### Daemon
 
 ```bash
-npm run daemon                          # Foreground
-npm run daemon > /tmp/daemon.log 2>&1 & # Background
+kspec serve start                          # Foreground
+kspec serve start --daemon                 # Background (daemonized)
 ```
 
-Default port 3000. Health: `GET /health`.
+Default port 3456. Health: `GET /api/health`.
 
 ### E2E Tests
 
@@ -274,7 +274,7 @@ npm run test:e2e -w packages/web-ui -- tests/e2e/tasks.spec.ts  # Specific file
 **Architecture:**
 - Tests in `packages/web-ui/tests/e2e/`
 - Import from `../fixtures/test-base` (NOT main `tests/fixtures/`)
-- Daemon runs on port 3456 (not 3000)
+- Daemon runs on port 3456
 - Each test gets isolated temp dir
 - E2E fixtures are SEPARATE from unit test fixtures — never mix them
 
@@ -289,7 +289,7 @@ test('my test', async ({ daemon, page }) => {
 ### Web UI Development
 
 ```bash
-npm run dev -w packages/web-ui  # Daemon + UI together
+npm run dev -w packages/web-ui  # Vite dev server (port 5173, connects to daemon on 3456)
 ```
 
 ## Test Fixture Patterns
