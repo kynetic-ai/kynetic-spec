@@ -47070,21 +47070,136 @@
         - All review threads resolved, CI green, merged
       supersedes: null
   todos: []
-- title: Restructure imgen AGENTS.md & CLAUDE.md
+- _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
+  slugs:
+    - imgen-agents-restructure
+  title: Restructure imgen AGENTS.md & CLAUDE.md
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs:
-    - imgen-agents-restructure
-  tags: []
-  depends_on: []
-  _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-09T00:41:14.336Z
-  notes: []
+  notes:
+    - _ulid: 01KGZXHPGRK690BSKDEVFW6529
+      created_at: 2026-02-09T00:41:42.168Z
+      author: "@claude"
+      content: >-
+        ## Goal
+
+
+        Restructure imgen's AGENTS.md and CLAUDE.md to match the kynetic-spec/kynetic-bot standard:
+
+        lean doc with architecture/gotchas/decision frameworks, skills carry workflow detail, 
+
+        CLAUDE.md is just `@AGENTS.md`.
+
+
+        ## Reference: kynetic-bot#90
+
+
+        PR kynetic-ai/kynetic-bot#90 completed this same work for kynetic-bot. Key patterns:
+
+
+        ### Section structure (20 sections, adapt as needed for imgen)
+
+        1. What This Project Is — package overview with responsibilities
+
+        2. Finding Information — skill routing table
+
+        3. Quick Start — prerequisites, install, env vars
+
+        4. Essential Rules — 6 numbered rules (CLI not YAML, spec before code, etc.)
+
+        5. Project Structure — file tree
+
+        6. Shadow Branch Architecture — .kspec/ worktree explanation
+
+        7. Project-Specific Architecture — the core of what makes imgen unique
+
+        8. Key Concepts — IDs, spec vs tasks, task states, notes
+
+        9. Task Workflow — session start, working, creating work
+
+        10. Session Context & Observations — focus/observe/thread + types table
+
+        11. Spec-First Development — decision table, plan mode workflow, creating work
+
+        12. Staying Aligned — scope expansion guardrails
+
+        13. PR Workflow — 3-step lifecycle, quality gates, PR agent limitations note
+
+        14. Commit Convention — trailers
+
+        15. Code Annotations — AC test links
+
+        16. Ralph Loop Mode — loop, task inheritance, blocking rules
+
+        17. Running/Development — how to run the project, env vars, gotchas
+
+        18. Workflows — table of all defined workflows
+
+        19. Troubleshooting — expanded table
+
+        20. Environment — KSPEC_AUTHOR
+
+
+        ### Codex review findings that apply universally
+
+        - **Verify doc claims against source code** — don't document behavior that isn't implemented
+
+        - **Distinguish auto-commit mechanisms** if project has multiple shadow branches
+
+        - **Document dual defaults** when same env var has different defaults in different contexts
+
+        - **PR agent limitations** — "Review subagent can't run kspec/npm" applies to all projects
+
+        - **Consolidate duplicate guidance** — check for redundant "Creating Work" or similar
+        sections
+
+        - **Gotchas section in Running** — document things that silently fail or confuse
+
+
+        ### CLAUDE.md
+
+        Replace with single line: `@AGENTS.md`
+
+        Migrate any unique content into the appropriate AGENTS.md section first.
+
+
+        ## Process
+
+        1. Read imgen's current AGENTS.md and CLAUDE.md
+
+        2. Read imgen source code for project-specific architecture, gotchas, env vars
+
+        3. Write new AGENTS.md following the section template above
+
+        4. Replace CLAUDE.md with `@AGENTS.md`
+
+        5. Run /codex review on the PR for factual accuracy cross-check
+
+        6. Address findings, resolve threads, merge
+
+
+        ## Verification checklist
+
+        - wc -l AGENTS.md within ±20 of target (estimate after reading current state)
+
+        - wc -l CLAUDE.md = 1 line
+
+        - Kspec self-sufficiency: agent can start session, translate plans, follow ralph rules
+
+        - Project-specific: covers unique architecture, env vars, development gotchas
+
+        - No skill duplication: AGENTS has frameworks, skills have procedures
+
+        - Codex review passes with no MUST-FIX items
+      supersedes: null
   todos: []
