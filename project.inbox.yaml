@@ -401,3 +401,16 @@ inbox:
       - cli
       - plan-import
     added_by: "@claude"
+  - _ulid: 01KH8ATFVCD8Y7SBR6V8W0AEDN
+    text: "Bug: task set --depends-on and task add --depends-on store raw ID without @ prefix, breaking
+      dependency resolution. When running 'kspec task set @foo --depends-on 01KH7XA9' (no @), the
+      YAML stores 'depends_on: [01KH7XA9]' instead of '- @01KH7XA9'. This makes the task invisible
+      to task get/tasks list because the dependency resolver can't find the reference. All working
+      depends_on entries in the wild use @-prefixed slugs or ULIDs. Fix: either auto-prefix @ on
+      depends-on values, or validate/reject bare IDs with a helpful error. Discovered in imgen
+      project session 13."
+    created_at: 2026-02-12T07:07:37.196Z
+    tags:
+      - bug
+      - cli
+    added_by: "@claude"
