@@ -4157,7 +4157,8 @@ features:
           - id: ac-26
             given: A previously imported plan where @json-output has changed content
             when: kspec plan import <path> --update is run
-            then: Existing spec @json-output is updated to match plan, message Updated @json-output
+            then: Existing spec @json-output is updated to match plan content including description, type, tags,
+              traits, and acceptance_criteria; message shows Updated @json-output
           - id: ac-27
             given: A plan with additional tasks array in Tasks section (tasks without specs)
             when: kspec plan import <path> is run
