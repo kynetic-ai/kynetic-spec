@@ -47264,7 +47264,8 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-command-group-default-actions"
   context: []
   priority: 3
   tags: []
@@ -47380,15 +47381,21 @@
         full scan of all entities per query -- acceptable for current scale
         (hundreds of items), may need indexing later.
   todos: []
-- title: Implement Observation Content Search
+- _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
+  slugs:
+    - implement-observation-content-search
+  title: Implement Observation Content Search
   type: task
   spec_ref: "@observation-content-search"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  priority: 3
-  slugs:
-    - implement-observation-content-search
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:43.571Z
   notes:
     - _ulid: 01KHA83QZKZ9J1WA6F1PNBGMVF
       created_at: 2026-02-13T00:58:43.571Z
@@ -47402,10 +47409,4 @@
         search --observations-only flag, add a new filter option to search.ts
         alongside existing --items-only and --tasks-only flags. Make the scope-only
         flags mutually exclusive with a validation check before search execution.
-  _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-13T00:58:43.571Z
   todos: []
