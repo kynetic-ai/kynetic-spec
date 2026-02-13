@@ -3185,7 +3185,7 @@ runs:
   - _ulid: 01KHAA4VS52VJ7BWNG3FX9ZQYF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-13T01:34:17.381Z
     step_results:
@@ -3220,5 +3220,44 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-13T01:34:38.083Z
-        completed_at: 2026-02-13T01:34:38.083Z
+        completed_at: 2026-02-13T01:34:54.054Z
+        notes: >-
+          Friction points:
+
+
+          1. Plan import format discovery - The plan document had bare YAML in the Specs section but
+          plan import requires fenced code blocks. No error message told me this. The dry-run just
+          silently returned 0 specs 0 tasks. Had to spawn an agent to read the parser source code to
+          discover the fenced block requirement. A better error or doc would save this.
+
+
+          2. Plan import parent field ignored silently - Each spec has a parent field in the YAML
+          but --module is required. The parent fields DO work (specs land under correct parents) but
+          it is unclear from --help whether --module is the default or the override. Had to
+          experiment.
+
+
+          3. Session checkpoint hook noise - The session checkpoint hook fired repeatedly during
+          planning work with no active task. The message is correct but irrelevant during
+          research/planning sessions. No way to signal this is a planning session not a task
+          session.
+
+
+          4. Multiple active workflow runs - Had to specify run ID because an older workflow was
+          still active. Minor friction but the error message was clear.
+
+
+          5. YAML special characters in plan - Had to strip backticks and special chars from AC text
+          to avoid YAML parsing issues. Lost some specificity in the given/when/then clauses (e.g.,
+          exact command syntax with backticks).
+
+
+          6. Context window pressure from compaction - Session started from a compacted summary of a
+          prior session. Some details about the research artifacts were available but required
+          re-reading files to get specifics. The compact summary was good but naturally loses
+          nuance.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-13T01:34:54.054Z
+        completed_at: 2026-02-13T01:34:54.054Z
     initiated_by: "@claude"
