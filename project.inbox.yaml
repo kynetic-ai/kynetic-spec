@@ -426,3 +426,11 @@ inbox:
       - ux
       - cli
     added_by: "@claude"
+  - _ulid: 01KHA982WGBJHN6Q8EA6F3QSPD
+    text: "Formalize CLI usage analysis as a repeatable workflow. Tools exist in .claude-research/tools/
+      (parse-ralph-logs.mjs, parse-claude-logs.mjs, compile-data.mjs) plus interactive HTML report.
+      Consider: kspec skill, CLI command, or standalone workflow. Re-run after implementing the 6
+      CLI agent-UX improvements to measure impact."
+    created_at: 2026-02-13T01:18:34.385Z
+    tags: []
+    added_by: "@claude"
