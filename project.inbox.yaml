@@ -273,3 +273,13 @@ inbox:
     created_at: 2026-02-13T01:18:34.385Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHCK3K4B5YCCYYCMXJYERY09
+    text: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
+      dependencies on import. Currently plan import creates specs and tasks but dependencies must be
+      added manually post-import. Add a depends_on param per spec entry in the YAML (e.g.,
+      depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by on import."
+    created_at: 2026-02-13T22:49:21.803Z
+    tags:
+      - reflection
+      - plan-import
+    added_by: "@claude"
