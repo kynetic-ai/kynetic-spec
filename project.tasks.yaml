@@ -47737,25 +47737,25 @@
         parsing raw YAML to access. Blocks official CLI usage analysis tooling."
       supersedes: null
   todos: []
-- title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
+- _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
+  slugs: []
+  title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - ralph
-    - noise
-    - streaming
   description: "PR #345 ralph noise stripping: split-chunk noise leaks to streaming output before
     finalization. When noise phrase is split across chunk boundaries (e.g. 'No onPostToolUse' +
     'Hook found for tool use ID: toolu_...'), both chunks emit as streaming events. Need
     boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null.
     See /tmp/codex-pr-345-review.md for full analysis."
-  _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - ralph
+    - noise
+    - streaming
   vcs_refs: []
   created_at: 2026-02-13T06:07:01.514Z
   notes:
@@ -47766,5 +47766,33 @@
         for tool use ID: toolu_...') both emit as streaming events. Need boundary-aware buffering in
         createTranslator. Also: stripped-to-whitespace should return null. Analysis from PR #345
         Codex review."
+      supersedes: null
+  todos: []
+- title: Add kspec merge-driver configure command
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - cli
+    - dx
+    - merge
+  description: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config
+    during init. Would set git config merge.kspec.* and create .gitattributes in shadow branch.
+    Useful for repos initialized before PR #183 or where config was lost."
+  _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T06:07:04.837Z
+  notes:
+    - _ulid: 01KHASRBM5CQAQNWR1DPQA1FRD
+      created_at: 2026-02-13T06:07:04.837Z
+      author: "@claude"
+      content: "For repos that missed auto-config during init (pre-PR #183) or lost config. Sets git
+        config merge.kspec.* and creates .gitattributes in shadow branch. Relevant for multi-project
+        kspec usage."
       supersedes: null
   todos: []
