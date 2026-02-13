@@ -46970,6 +46970,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Fixed 4 factual errors in AGENTS.md Running Services (PR #351, merged). Dual
+    defaults captured as inbox item @01KH20S1. PR agent limitations finding not applicable.
+    Duplicate guidance is minor — no action taken."
   depends_on: []
   context: []
   priority: 3
@@ -46977,6 +46980,7 @@
   vcs_refs: []
   created_at: 2026-02-08T10:15:30.046Z
   started_at: 2026-02-09T20:16:53.911Z
+  completed_at: 2026-02-09T20:16:58.413Z
   notes:
     - _ulid: 01KGYC0EHBTS85BWHV7SRM5PCF
       created_at: 2026-02-08T10:15:56.715Z
@@ -47088,10 +47092,6 @@
         minor/low-priority, dual defaults is a code issue captured for awareness."
       supersedes: null
   todos: []
-  completed_at: 2026-02-09T20:16:58.413Z
-  closed_reason: "Fixed 4 factual errors in AGENTS.md Running Services (PR #351, merged). Dual
-    defaults captured as inbox item @01KH20S1. PR agent limitations finding not applicable.
-    Duplicate guidance is minor — no action taken."
 - _ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
   slugs:
     - imgen-agents-restructure
@@ -47224,4 +47224,188 @@
 
         - Codex review passes with no MUST-FIX items
       supersedes: null
+  todos: []
+- _ulid: 01KHA83P0VX36G2QWJ2FH10N4B
+  slugs:
+    - implement-command-group-default-actions
+  title: Implement Command Group Default Actions
+  type: task
+  spec_ref: "@command-group-default-actions"
+  plan_ref: "@plan-cli-agent-ux-improvements"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:41.563Z
+  notes:
+    - _ulid: 01KHA83P0VG0HFJBZ7NPA6ARAG
+      created_at: 2026-02-13T00:58:41.563Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Use Commander.js .action() on the parent command group to define default
+        behavior. Extract shared list logic from task.ts (lines 425-511) and
+        tasks.ts (lines 37-124) into a common function to eliminate the existing
+        code duplication. Both task list and tasks list should call the shared
+        function. The default action on tasks and task calls this same function.
+        Commander.js routes unknown subcommands to the error handler before the
+        default action, so ac-unknown-subcommand should work naturally.
+  todos: []
+- _ulid: 01KHA83PD9G7CW02FHQRYS5GQK
+  slugs:
+    - implement-multi-value-status-filter
+  title: Implement Multi-Value Status Filter
+  type: task
+  spec_ref: "@multi-value-status-filter"
+  plan_ref: "@plan-cli-agent-ux-improvements"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:41.961Z
+  notes:
+    - _ulid: 01KHA83PD9H3XDH77TQ9BN5DVG
+      created_at: 2026-02-13T00:58:41.961Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Parse --status value by splitting on comma, then flatten if Commander.js
+        provides an array from repeated flags. Trim whitespace and filter empty
+        strings. Route both tasks list and task list through the shared list
+        function (from spec 1 refactor) so the fix applies to both. Use
+        validateEnumOption to validate each status value individually against the
+        correct enum (TaskStatus for tasks, ImplementationStatus for items). Apply
+        same pattern to item list --status.
+  todos: []
+- _ulid: 01KHA83PTDMSSA5N4EX7KZ6QAP
+  slugs:
+    - implement-output-format-option
+  title: Implement Output Format Option
+  type: task
+  spec_ref: "@output-format-option"
+  plan_ref: "@plan-cli-agent-ux-improvements"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:42.381Z
+  notes:
+    - _ulid: 01KHA83PTEA3F4F1TWC7F342Z8
+      created_at: 2026-02-13T00:58:42.382Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Register --format <format> as a global option alongside --json in index.ts.
+        Register --raw and --yaml as boolean shorthands that set format. In the
+        preAction hook, resolve shorthands to --format value, detect conflicts
+        (multiple shorthands or shorthand + --format), then call setJsonMode() or
+        a new setYamlMode(). Add yamlOutput() in output.ts using the yaml library
+        stringify(). Update output() to check yaml mode. Update @trait-json-output
+        ac-6 to reference the --format system instead of the old json takes
+        precedence behavior.
+  todos: []
+- _ulid: 01KHA83Q69JANNJKXJPGVRFWXP
+  slugs:
+    - implement-module-scoped-item-listing
+  title: Implement Module-Scoped Item Listing
+  type: task
+  spec_ref: "@module-scoped-item-listing"
+  plan_ref: "@plan-cli-agent-ux-improvements"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:42.761Z
+  notes:
+    - _ulid: 01KHA83Q69VGE1B8PN321177M2
+      created_at: 2026-02-13T00:58:42.761Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Items do NOT have a parent field in the schema. Parent-child hierarchy is
+        determined by YAML nesting, encoded in the _path metadata field (e.g.
+        features[0].requirements[1]). The existing formatItemTree() in item.ts
+        (lines 121-177) builds parent-child maps by parsing _path. The existing
+        findChildItems() in parser/items.ts (lines 422-455) finds direct children
+        only -- extend it or build a new findDescendantItems() that collects all
+        items sharing the same _sourceFile whose _path starts with the target
+        _path prefix. Resolve --under ref via ReferenceIndex, find the target
+        _sourceFile and _path, then filter the item list. Apply other filters
+        after scoping.
+  todos: []
+- _ulid: 01KHA83QK1QJ07XQP3Z9ZAHS2K
+  slugs:
+    - implement-unified-cross-reference-lookup
+  title: Implement Unified Cross-Reference Lookup
+  type: task
+  spec_ref: "@unified-cross-reference-lookup"
+  plan_ref: "@plan-cli-agent-ux-improvements"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:43.169Z
+  notes:
+    - _ulid: 01KHA83QK12VVM6DPKTARDRWEJ
+      created_at: 2026-02-13T00:58:43.169Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        New command file src/cli/commands/refs.ts, registered in index.ts. Loads
+        all tasks, items, and meta items. Scans each entity reference fields:
+        spec_ref, depends_on, implements, relates_to, supersedes, superseded_by,
+        traits, meta_ref, plan_ref, blocked_by. Collects matches grouped by
+        (entity_type, field_name). Uses ReferenceIndex for target resolution.
+        Output via output() with grouped human-readable formatter. Performance:
+        full scan of all entities per query -- acceptable for current scale
+        (hundreds of items), may need indexing later.
+  todos: []
+- title: Implement Observation Content Search
+  type: task
+  spec_ref: "@observation-content-search"
+  plan_ref: "@plan-cli-agent-ux-improvements"
+  priority: 3
+  slugs:
+    - implement-observation-content-search
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KHA83QZKZ9J1WA6F1PNBGMVF
+      created_at: 2026-02-13T00:58:43.571Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Reuse the grep utility from src/utils/grep.ts that kspec search already
+        uses. Add --search option to the meta observations subcommand in meta.ts.
+        Apply search filter after type/workflow/status filters. For the global
+        search --observations-only flag, add a new filter option to search.ts
+        alongside existing --items-only and --tasks-only flags. Make the scope-only
+        flags mutually exclusive with a validation check before search execution.
+  _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T00:58:43.571Z
   todos: []

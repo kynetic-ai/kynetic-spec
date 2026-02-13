@@ -772,6 +772,64 @@ features:
           All queries support --json output.
         implements:
           - "@task-queries"
+        requirements:
+          - _ulid: 01KHA83NGHKRZ287PGZ8HH6N0X
+            slugs:
+              - multi-value-status-filter
+            title: Multi-Value Status Filter
+            type: requirement
+            tags: []
+            description: |
+              The --status filter on list commands should accept multiple values via
+              comma-separated syntax or repeated flags. The backend ItemIndex.query()
+              already supports TaskStatus[] -- this closes the gap in the CLI layer.
+              Agents currently pipe through grep to filter by multiple statuses.
+              tasks list uses TaskStatus values (pending, in_progress, pending_review,
+              blocked, completed, cancelled) while item list uses ImplementationStatus
+              values (not_started, in_progress, implemented, verified). Validation must
+              use the correct enum per command.
+            acceptance_criteria:
+              - id: ac-comma-separated
+                given: User runs kspec tasks list --status in_progress,pending_review
+                when: A comma-separated status value is provided
+                then: Tasks matching ANY of the listed statuses are returned
+              - id: ac-repeated-flag
+                given: User runs kspec tasks list --status in_progress --status pending_review
+                when: The --status flag is provided multiple times
+                then: Tasks matching ANY of the listed statuses are returned (same as comma-separated)
+              - id: ac-single-value-unchanged
+                given: User runs kspec tasks list --status pending
+                when: A single status value is provided
+                then: Behavior is unchanged from current -- only tasks with that status are returned
+              - id: ac-invalid-task-status
+                given: User runs kspec tasks list --status invalid_value
+                when: An invalid TaskStatus name is provided
+                then: Error message lists valid TaskStatus values and exits non-zero
+              - id: ac-invalid-item-status
+                given: User runs kspec item list --status invalid_value
+                when: An invalid ImplementationStatus name is provided
+                then: Error message lists valid ImplementationStatus values and exits non-zero
+              - id: ac-item-list-parity
+                given: User runs kspec item list --status implemented,verified
+                when: Multi-value status is used on item list with ImplementationStatus values
+                then: Same comma-separated and repeated-flag behavior works for spec item listing
+              - id: ac-json-output
+                given: User runs kspec tasks list --status in_progress,pending --json
+                when: Combined with --json flag
+                then: JSON output contains only tasks matching the specified statuses
+              - id: ac-trailing-comma
+                given: User runs kspec tasks list --status in_progress, (trailing comma)
+                when: A trailing or leading comma produces an empty string after split
+                then: Empty strings are silently ignored, only valid status values are used
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-filterable-list"
+              - "@trait-json-output"
+            notes: []
+            created: 2026-02-13T00:58:41.041Z
   - _ulid: 01KFEJW283E3ADMC1G6WGV7MGC
     slugs:
       - tasks-assess-automation

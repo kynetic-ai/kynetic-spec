@@ -1572,6 +1572,56 @@ features:
           complete, and creates traceable process improvement history.
         implements:
           - "@observations"
+      - _ulid: 01KHA83NQTFEPV80HS4JYZNEBZ
+        slugs:
+          - observation-content-search
+        title: Observation Content Search
+        type: requirement
+        tags: []
+        description: |
+          Add content search to observation listing and global search. Currently
+          kspec search includes observations but cannot filter to observations only,
+          and kspec meta observations has type/workflow/status filters but no content
+          search. Agents grep observation YAML when they need to find observations
+          by content.
+        acceptance_criteria:
+          - id: ac-search-flag
+            given: User runs kspec meta observations --search shadow branch
+            when: A search pattern is provided
+            then: Only observations whose text matches the pattern are returned
+          - id: ac-regex-support
+            given: User runs kspec meta observations --search fix or bug pattern
+            when: A regex pattern is provided
+            then: Pattern is treated as regex (consistent with kspec search behavior)
+          - id: ac-combined-filters
+            given: User runs kspec meta observations --search cli --type friction
+            when: --search is combined with --type filter
+            then: Both filters apply (AND logic) -- only friction observations matching cli
+          - id: ac-search-all-fields
+            given: An observation has matching text in its description but not title
+            when: User searches for that text
+            then: The observation is found (search covers all text fields)
+          - id: ac-search-json
+            given: User runs kspec meta observations --search pattern --json
+            when: Combined with --json
+            then: JSON output contains only matching observations
+          - id: ac-global-search-filter
+            given: User wants to search only observations via the global search command
+            when: User runs kspec search pattern --observations-only
+            then: Results are limited to observation matches only (excludes items, tasks, inbox)
+          - id: ac-only-flags-exclusive
+            given: User runs kspec search pattern --observations-only --items-only
+            when: Multiple scope-only flags are provided
+            then: Error message explains the flags are mutually exclusive and exits non-zero
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+        notes: []
+        created: 2026-02-13T00:58:41.274Z
   - _ulid: 01KF1XCTX00000000000000000
     slugs:
       - session-context

@@ -13,3 +13,471 @@ plans:
     approved_at: null
     completed_at: null
     notes: []
+  - _ulid: 01KHA83NE53EZTVPVZNT97R6GF
+    slugs:
+      - plan-cli-agent-ux-improvements
+    title: CLI Agent-UX Improvements
+    content: >
+      # CLI Agent-UX Improvements
+
+
+      Research-driven improvements to reduce CLI friction for AI agents. Based on analysis of 18,581
+      events across 4 projects (kynetic-spec, kynetic-bot, imgen, comfy-ecaj-nodes).
+
+
+      ## Context
+
+
+      Analysis showed agents hit friction from: bare command errors (15+), single-value --status
+      filters requiring grep pipes, unknown --json flag (5 uses / 14,463 commands), no module-scoped
+      views (dominant bypass reason in newer projects), no unified cross-reference lookup, and no
+      observation content search. After re-baselining against current code, 7 of the original 21
+      recommendations were already implemented. These 6 remain.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Command Group Default Actions
+        parent: "@cli"
+        type: requirement
+        traits:
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+        description: >
+          The tasks and task command groups should execute their most common
+          subcommand when invoked without a subcommand, instead of showing help text
+          and exiting with code 1. This eliminates the most frequent agent dead-end
+          (15+ bare kspec tasks errors in telemetry). Scope is limited to tasks
+          and task -- other groups (item, meta, inbox) can follow later if telemetry
+          supports it.
+        acceptance_criteria:
+          - id: ac-bare-tasks
+            given: User runs kspec tasks with no subcommand
+            when: The command is executed
+            then: Output is identical to kspec tasks list and exit code is 0
+          - id: ac-bare-task
+            given: User runs kspec task with no subcommand
+            when: The command is executed
+            then: Output is identical to kspec task list (which is aliased to kspec tasks list) and exit code is 0
+          - id: ac-bare-with-options
+            given: User runs kspec tasks --status pending --json
+            when: Options are provided but no subcommand name
+            then: Options are forwarded to the default list action
+          - id: ac-help-still-works
+            given: User runs kspec tasks --help
+            when: The --help flag is present
+            then: Full command group help is shown (all subcommands listed), not just list help
+          - id: ac-subcommands-unaffected
+            given: User runs kspec tasks ready or any explicit subcommand
+            when: A subcommand is specified
+            then: The explicit subcommand runs as before, default action is not triggered
+          - id: ac-unknown-subcommand
+            given: User runs kspec tasks foo where foo is not a valid subcommand
+            when: An unknown subcommand is provided
+            then: Error with suggestion is shown (existing fuzzy matching), not the default list action
+        implementation_notes: |
+          Use Commander.js .action() on the parent command group to define default
+          behavior. Extract shared list logic from task.ts (lines 425-511) and
+          tasks.ts (lines 37-124) into a common function to eliminate the existing
+          code duplication. Both task list and tasks list should call the shared
+          function. The default action on tasks and task calls this same function.
+          Commander.js routes unknown subcommands to the error handler before the
+          default action, so ac-unknown-subcommand should work naturally.
+
+      - title: Multi-Value Status Filter
+        parent: "@query-filters"
+        type: requirement
+        traits:
+          - "@trait-filterable-list"
+          - "@trait-json-output"
+        description: |
+          The --status filter on list commands should accept multiple values via
+          comma-separated syntax or repeated flags. The backend ItemIndex.query()
+          already supports TaskStatus[] -- this closes the gap in the CLI layer.
+          Agents currently pipe through grep to filter by multiple statuses.
+          tasks list uses TaskStatus values (pending, in_progress, pending_review,
+          blocked, completed, cancelled) while item list uses ImplementationStatus
+          values (not_started, in_progress, implemented, verified). Validation must
+          use the correct enum per command.
+        acceptance_criteria:
+          - id: ac-comma-separated
+            given: User runs kspec tasks list --status in_progress,pending_review
+            when: A comma-separated status value is provided
+            then: Tasks matching ANY of the listed statuses are returned
+          - id: ac-repeated-flag
+            given: User runs kspec tasks list --status in_progress --status pending_review
+            when: The --status flag is provided multiple times
+            then: Tasks matching ANY of the listed statuses are returned (same as comma-separated)
+          - id: ac-single-value-unchanged
+            given: User runs kspec tasks list --status pending
+            when: A single status value is provided
+            then: Behavior is unchanged from current -- only tasks with that status are returned
+          - id: ac-invalid-task-status
+            given: User runs kspec tasks list --status invalid_value
+            when: An invalid TaskStatus name is provided
+            then: Error message lists valid TaskStatus values and exits non-zero
+          - id: ac-invalid-item-status
+            given: User runs kspec item list --status invalid_value
+            when: An invalid ImplementationStatus name is provided
+            then: Error message lists valid ImplementationStatus values and exits non-zero
+          - id: ac-item-list-parity
+            given: User runs kspec item list --status implemented,verified
+            when: Multi-value status is used on item list with ImplementationStatus values
+            then: Same comma-separated and repeated-flag behavior works for spec item listing
+          - id: ac-json-output
+            given: User runs kspec tasks list --status in_progress,pending --json
+            when: Combined with --json flag
+            then: JSON output contains only tasks matching the specified statuses
+          - id: ac-trailing-comma
+            given: User runs kspec tasks list --status in_progress, (trailing comma)
+            when: A trailing or leading comma produces an empty string after split
+            then: Empty strings are silently ignored, only valid status values are used
+        implementation_notes: |
+          Parse --status value by splitting on comma, then flatten if Commander.js
+          provides an array from repeated flags. Trim whitespace and filter empty
+          strings. Route both tasks list and task list through the shared list
+          function (from spec 1 refactor) so the fix applies to both. Use
+          validateEnumOption to validate each status value individually against the
+          correct enum (TaskStatus for tasks, ImplementationStatus for items). Apply
+          same pattern to item list --status.
+
+      - title: Output Format Option
+        parent: "@cli-agent-features"
+        type: requirement
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+        description: |
+          Add a --format <json|yaml> global option with --json, --raw, and --yaml as
+          shorthands. Agents frequently try --raw and --yaml flags expecting structured
+          output. --raw is a shorthand for --format json (agents associate raw with
+          give me the data). --yaml is a shorthand for --format yaml. --json remains
+          as a shorthand for --format json. The --format option is extensible for
+          future formats. This replaces the precedence model in @trait-json-output
+          ac-6 with explicit format selection.
+        acceptance_criteria:
+          - id: ac-format-json
+            given: User runs any command with --format json
+            when: The format option is set to json
+            then: Output is identical to current --json behavior
+          - id: ac-format-yaml
+            given: User runs any command with --format yaml
+            when: The format option is set to yaml
+            then: Output contains the same data as --json but serialized as valid YAML
+          - id: ac-json-shorthand
+            given: User runs any command with --json
+            when: The --json shorthand is used
+            then: Equivalent to --format json (backward compatible, existing behavior preserved)
+          - id: ac-raw-shorthand
+            given: User runs any command with --raw
+            when: The --raw shorthand is used
+            then: Equivalent to --format json (same data, JSON serialization)
+          - id: ac-yaml-shorthand
+            given: User runs any command with --yaml
+            when: The --yaml shorthand is used
+            then: Equivalent to --format yaml
+          - id: ac-conflict-error
+            given: User runs a command with conflicting format options (e.g. --json --yaml)
+            when: Multiple format specifications are provided
+            then: Error message explains the conflict and exits non-zero
+          - id: ac-yaml-no-ansi
+            given: User runs any command with --format yaml
+            when: YAML output is generated
+            then: Output contains no ANSI escape codes (same contract as --json)
+          - id: ac-yaml-references
+            given: User runs kspec task get @ref --yaml
+            when: Output contains reference fields
+            then: References include @ prefix (same contract as --json)
+          - id: ac-global-scope
+            given: User runs any command that supports structured output with --format, --yaml, or --raw
+            when: The option is used on any command
+            then: The option works globally (same scope as --json)
+          - id: ac-unsupported-format
+            given: User runs --format csv or another unsupported format name
+            when: An invalid format value is provided
+            then: Error message lists valid formats (json, yaml) and exits non-zero
+        implementation_notes: |
+          Register --format <format> as a global option alongside --json in index.ts.
+          Register --raw and --yaml as boolean shorthands that set format. In the
+          preAction hook, resolve shorthands to --format value, detect conflicts
+          (multiple shorthands or shorthand + --format), then call setJsonMode() or
+          a new setYamlMode(). Add yamlOutput() in output.ts using the yaml library
+          stringify(). Update output() to check yaml mode. Update @trait-json-output
+          ac-6 to reference the --format system instead of the old json takes
+          precedence behavior.
+
+      - title: Module-Scoped Item Listing
+        parent: "@cli"
+        type: requirement
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+        description: |
+          Add --under filter to item list that scopes output to descendants of a
+          given module or parent item. This is the number one remaining reason agents
+          bypass the CLI to read .kspec/ YAML directly. Combines with existing --tree
+          flag for hierarchical display. Promotes inbox item @01KGVK8R. Ancestry is
+          determined by structural nesting in YAML source files (_path metadata),
+          not by relationship fields like implements.
+        acceptance_criteria:
+          - id: ac-under-filter
+            given: User runs kspec item list --under @cli
+            when: The --under flag specifies a module or parent item
+            then: Only items structurally nested under the specified item (same source file, descendant _path) are listed
+          - id: ac-under-with-tree
+            given: User runs kspec item list --under @cli --tree
+            when: Combined with --tree flag
+            then: Hierarchical tree display shows only the subtree rooted at the specified item
+          - id: ac-under-root-included
+            given: User runs kspec item list --under @cli
+            when: The specified item is a module
+            then: The module itself is included in the output as the root node
+          - id: ac-under-with-other-filters
+            given: User runs kspec item list --under @tasks --status implemented --type requirement
+            when: --under is combined with other filters
+            then: Filters are applied within the scoped subtree (AND logic)
+          - id: ac-under-json
+            given: User runs kspec item list --under @cli --json
+            when: Combined with --json flag
+            then: JSON array contains only items in the subtree, each with full item data
+          - id: ac-under-invalid-ref
+            given: User runs kspec item list --under @nonexistent
+            when: The specified reference does not resolve
+            then: Error message says reference not found, suggests checking with kspec item get
+          - id: ac-nested-descendants
+            given: A module contains nested items at multiple depth levels (module, feature, requirement)
+            when: User runs kspec item list --under @parent-module
+            then: All transitive descendants within the same source file are included
+          - id: ac-count-with-under
+            given: User runs kspec item list --under @cli --count
+            when: Combined with --count flag
+            then: Count reflects only items in the scoped subtree
+        implementation_notes: |
+          Items do NOT have a parent field in the schema. Parent-child hierarchy is
+          determined by YAML nesting, encoded in the _path metadata field (e.g.
+          features[0].requirements[1]). The existing formatItemTree() in item.ts
+          (lines 121-177) builds parent-child maps by parsing _path. The existing
+          findChildItems() in parser/items.ts (lines 422-455) finds direct children
+          only -- extend it or build a new findDescendantItems() that collects all
+          items sharing the same _sourceFile whose _path starts with the target
+          _path prefix. Resolve --under ref via ReferenceIndex, find the target
+          _sourceFile and _path, then filter the item list. Apply other filters
+          after scoping.
+
+      - title: Unified Cross-Reference Lookup
+        parent: "@cli"
+        type: feature
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+        description: |
+          New kspec refs command that shows all inbound references to a given entity
+          across all entity types. Currently link list --to only covers spec-to-spec
+          relationships. Agents grep YAML to find tasks implementing a spec, specs
+          depending on another spec, or meta items referencing an entity. Related to
+          inbox item @01KFHJNZ (reverse spec lookup).
+        acceptance_criteria:
+          - id: ac-task-spec-ref
+            given: Tasks T1 and T2 have spec_ref pointing to @my-spec
+            when: User runs kspec refs @my-spec
+            then: Output includes T1 and T2 under a Tasks (spec_ref) section
+          - id: ac-task-depends-on
+            given: Task T2 has depends_on including @task-1
+            when: User runs kspec refs @task-1
+            then: Output includes T2 under a Tasks (depends_on) section
+          - id: ac-spec-depends-on
+            given: Spec B has depends_on including @spec-a
+            when: User runs kspec refs @spec-a
+            then: Output includes B under a Specs (depends_on) section
+          - id: ac-spec-implements
+            given: Spec C has implements including @spec-a
+            when: User runs kspec refs @spec-a
+            then: Output includes C under a Specs (implements) section
+          - id: ac-spec-relates-to
+            given: Spec D has relates_to including @spec-a
+            when: User runs kspec refs @spec-a
+            then: Output includes D under a Specs (relates_to) section
+          - id: ac-trait-references
+            given: Specs X, Y, Z have traits including @my-trait
+            when: User runs kspec refs @my-trait
+            then: Output includes X, Y, Z under a Specs (traits) section
+          - id: ac-meta-ref
+            given: Task T has meta_ref pointing to @workflow-1
+            when: User runs kspec refs @workflow-1
+            then: Output includes T under a Tasks (meta_ref) section
+          - id: ac-supersedes
+            given: Spec E has supersedes including @old-spec
+            when: User runs kspec refs @old-spec
+            then: Output includes E under a Specs (supersedes) section
+          - id: ac-grouped-output
+            given: Multiple entity types reference the target
+            when: User runs kspec refs @ref
+            then: Output is grouped by relationship type with clear section headers
+          - id: ac-json-structured
+            given: User runs kspec refs @ref --json
+            when: JSON output is requested
+            then: JSON object contains keys per reference type, each an array of referencing entities with slug, title, and type
+          - id: ac-no-refs
+            given: Nothing references @isolated-item
+            when: User runs kspec refs @isolated-item
+            then: Output says No references found for @isolated-item and exit code is 0
+          - id: ac-ref-resolution
+            given: User provides a ULID, slug, or short ULID
+            when: The ref is resolved
+            then: All reference formats are supported via ReferenceIndex
+        implementation_notes: |
+          New command file src/cli/commands/refs.ts, registered in index.ts. Loads
+          all tasks, items, and meta items. Scans each entity reference fields:
+          spec_ref, depends_on, implements, relates_to, supersedes, superseded_by,
+          traits, meta_ref, plan_ref, blocked_by. Collects matches grouped by
+          (entity_type, field_name). Uses ReferenceIndex for target resolution.
+          Output via output() with grouped human-readable formatter. Performance:
+          full scan of all entities per query -- acceptable for current scale
+          (hundreds of items), may need indexing later.
+
+      - title: Observation Content Search
+        parent: "@observations"
+        type: requirement
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+        description: |
+          Add content search to observation listing and global search. Currently
+          kspec search includes observations but cannot filter to observations only,
+          and kspec meta observations has type/workflow/status filters but no content
+          search. Agents grep observation YAML when they need to find observations
+          by content.
+        acceptance_criteria:
+          - id: ac-search-flag
+            given: User runs kspec meta observations --search shadow branch
+            when: A search pattern is provided
+            then: Only observations whose text matches the pattern are returned
+          - id: ac-regex-support
+            given: User runs kspec meta observations --search fix or bug pattern
+            when: A regex pattern is provided
+            then: Pattern is treated as regex (consistent with kspec search behavior)
+          - id: ac-combined-filters
+            given: User runs kspec meta observations --search cli --type friction
+            when: --search is combined with --type filter
+            then: Both filters apply (AND logic) -- only friction observations matching cli
+          - id: ac-search-all-fields
+            given: An observation has matching text in its description but not title
+            when: User searches for that text
+            then: The observation is found (search covers all text fields)
+          - id: ac-search-json
+            given: User runs kspec meta observations --search pattern --json
+            when: Combined with --json
+            then: JSON output contains only matching observations
+          - id: ac-global-search-filter
+            given: User wants to search only observations via the global search command
+            when: User runs kspec search pattern --observations-only
+            then: Results are limited to observation matches only (excludes items, tasks, inbox)
+          - id: ac-only-flags-exclusive
+            given: User runs kspec search pattern --observations-only --items-only
+            when: Multiple scope-only flags are provided
+            then: Error message explains the flags are mutually exclusive and exits non-zero
+        implementation_notes: |
+          Reuse the grep utility from src/utils/grep.ts that kspec search already
+          uses. Add --search option to the meta observations subcommand in meta.ts.
+          Apply search filter after type/workflow/status filters. For the global
+          search --observations-only flag, add a new filter option to search.ts
+          alongside existing --items-only and --tasks-only flags. Make the scope-only
+          flags mutually exclusive with a validation check before search execution.
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ## Implementation Notes
+
+
+      ### Execution Order
+
+      1. Command Group Default Actions + Multi-Value Status Filter (share the list
+         handler refactor -- extract common function first, then add both features)
+      2. Output Format Option (independent, touches global output system)
+
+      3. Module-Scoped Item Listing (independent, extends item list)
+
+      4. Unified Cross-Reference Lookup (independent, new command)
+
+      5. Observation Content Search (independent, extends meta command)
+
+
+      ### Existing Spec Updates Needed
+
+      - @trait-json-output ac-6: Update from --json takes precedence to reference
+        the new --format system and conflict error behavior
+      - @trait-filterable-list: Note that --status supports multi-value
+
+      - @cli-agent-features description: Mention --format, --yaml, and --raw
+
+
+      ### Inbox Items to Promote
+
+      - @01KGVK8R -- Module-scoped item list (covered by spec 4)
+
+      - @01KFHJNZ -- Reverse spec lookup (partially covered by spec 5)
+
+
+      ### Separate Deliverables (Not In This Plan)
+
+      - Docs task: Update AGENTS.md and skill prompts for --json discoverability
+
+      - Inbox item: Observation count in session start output
+    status: active
+    derived_tasks:
+      - "@implement-command-group-default-actions"
+      - "@implement-multi-value-status-filter"
+      - "@implement-output-format-option"
+      - "@implement-module-scoped-item-listing"
+      - "@implement-unified-cross-reference-lookup"
+      - "@implement-observation-content-search"
+    derived_specs:
+      - "@command-group-default-actions"
+      - "@multi-value-status-filter"
+      - "@output-format-option"
+      - "@module-scoped-item-listing"
+      - "@unified-cross-reference-lookup"
+      - "@observation-content-search"
+    source_path: /home/chapel/Projects/kynetic-spec/plans/cli-agent-ux-improvements.md
+    created_at: 2026-02-13T00:58:40.965Z
+    approved_at: null
+    completed_at: null
+    notes:
+      - _ulid: 01KHA83NE52ADVDXW1593TPF16
+        created_at: 2026-02-13T00:58:40.965Z
+        author: "@claude"
+        content: |-
+          Implementation notes:
+
+          ### Execution Order
+          1. Command Group Default Actions + Multi-Value Status Filter (share the list
+             handler refactor -- extract common function first, then add both features)
+          2. Output Format Option (independent, touches global output system)
+          3. Module-Scoped Item Listing (independent, extends item list)
+          4. Unified Cross-Reference Lookup (independent, new command)
+          5. Observation Content Search (independent, extends meta command)
+
+          ### Existing Spec Updates Needed
+          - @trait-json-output ac-6: Update from --json takes precedence to reference
+            the new --format system and conflict error behavior
+          - @trait-filterable-list: Note that --status supports multi-value
+          - @cli-agent-features description: Mention --format, --yaml, and --raw
+
+          ### Inbox Items to Promote
+          - @01KGVK8R -- Module-scoped item list (covered by spec 4)
+          - @01KFHJNZ -- Reverse spec lookup (partially covered by spec 5)
+
+          ### Separate Deliverables (Not In This Plan)
+          - Docs task: Update AGENTS.md and skill prompts for --json discoverability
+          - Inbox item: Observation count in session start output
