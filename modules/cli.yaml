@@ -2973,6 +2973,11 @@ features:
         traits: []
         notes: []
         created: 2026-02-13T05:06:39.202Z
+        acceptance_criteria:
+          - id: ac-1
+            given: Ralph loop exits for any reason (no tasks, end-loop signal, max iterations, error)
+            when: exit sequence begins
+            then: a wrap-up subagent is spawned before the process terminates
     features:
       - _ulid: 01KG8N2T41X1F9EDRSYMC7P4M7
         slugs:
