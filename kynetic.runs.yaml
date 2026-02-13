@@ -3185,7 +3185,7 @@ runs:
   - _ulid: 01KHAA4VS52VJ7BWNG3FX9ZQYF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-13T01:34:17.381Z
     step_results:
@@ -3259,5 +3259,39 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-13T01:34:54.054Z
-        completed_at: 2026-02-13T01:34:54.054Z
+        completed_at: 2026-02-13T01:35:17.066Z
+        notes: >-
+          Coverage check results:
+
+
+          1. Plan import fenced YAML requirement - NOT TRACKED. The @plan-import spec has 20+ ACs
+          but none mention that specs must be in a fenced code block. The parser silently returns 0
+          specs if YAML is not fenced. This is a documentation/error-handling gap.
+
+
+          2. Plan import --module vs parent field - PARTIALLY COVERED. @plan-import spec exists but
+          the interaction between --module flag and per-spec parent field is not clearly documented.
+
+
+          3. Session checkpoint hook noise during planning - TRACKED as @cmd-session-checkpoint
+          spec. The hook works as designed. The friction is that there is no way to suppress it
+          during research/planning sessions. Not a bug, a workflow gap.
+
+
+          4. Multiple active workflow runs - NOT TRACKED in specs/tasks/inbox. Minor UX issue - the
+          error message is clear but could auto-select if only one run is for the current workflow
+          type.
+
+
+          5. YAML special chars in plan ACs - PARTIALLY COVERED by plan import spec. The parser
+          handles YAML but backticks in given/when/then text require escaping or removal. This is a
+          YAML limitation, not a kspec bug.
+
+
+          6. Context window compaction - NOT KSPEC ISSUE. This is a Claude Code limitation, not
+          actionable for kspec.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-13T01:35:17.066Z
+        completed_at: 2026-02-13T01:35:17.066Z
     initiated_by: "@claude"
