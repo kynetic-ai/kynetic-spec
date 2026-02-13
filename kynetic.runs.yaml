@@ -3185,7 +3185,7 @@ runs:
   - _ulid: 01KHAA4VS52VJ7BWNG3FX9ZQYF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-13T01:34:17.381Z
     step_results:
@@ -3293,5 +3293,27 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-13T01:35:17.066Z
-        completed_at: 2026-02-13T01:35:17.066Z
+        completed_at: 2026-02-13T01:35:28.637Z
+        notes: >-
+          Proposed improvements (untracked only):
+
+
+          1. Plan import: Better error when specs section has no fenced code block
+             - What: When plan import finds a Specs section but no fenced YAML block inside it, emit a warning like "Specs section found but no YAML code block detected. Wrap specs in triple-backtick yaml block."
+             - How it helps: Currently silently returns 0 specs which is confusing. Agents waste time debugging format.
+             - Scope: Small (add a check in plan-document parser)
+
+          2. Plan import: Document fenced YAML requirement in help and spec-plan skill
+             - What: Add a note to plan import --help and the spec-plan skill about the required format
+             - How it helps: Prevents the format discovery problem entirely
+             - Scope: Small (docs only)
+
+          3. Re-baselining as a standard practice before spec planning
+             - What: Success pattern - when translating research/analysis into specs, always verify recommendations against current code first
+             - How it helps: Prevented 7 unnecessary specs this session. Should be a documented practice.
+             - Scope: Observation capture only
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-13T01:35:28.637Z
+        completed_at: 2026-02-13T01:35:28.637Z
     initiated_by: "@claude"
