@@ -291,7 +291,8 @@ inbox:
       trend analysis capability without unbounded log growth. Could be a kspec session compact
       command or automatic post-loop step."
     created_at: 2026-02-07T18:51:00.259Z
-    tags: []
+    tags:
+      - deferred
     added_by: "@claude"
   - _ulid: 01KGWZF10MR6SS6G1W4N85QN78
     text: "Derive review focus areas from friction observations: mine resolved friction observations for
