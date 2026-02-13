@@ -3184,7 +3184,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KHAA4VS52VJ7BWNG3FX9ZQYF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-13T01:34:17.381Z
@@ -3321,5 +3321,7 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-13T01:43:21.169Z
-        completed_at: 2026-02-13T01:43:21.169Z
+        completed_at: 2026-02-13T01:43:26.496Z
+        notes: "Already captured in step 5 via batch: 2 inbox items + 1 success observation."
     initiated_by: "@claude"
+    completed_at: 2026-02-13T01:43:26.496Z
