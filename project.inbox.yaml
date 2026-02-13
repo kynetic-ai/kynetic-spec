@@ -67,17 +67,6 @@ inbox:
       - e2e
       - dx
     added_by: "@claude"
-  - _ulid: 01KG8RM7A4YFXDGF0C5ZDAHMKB
-    text: "Ralph loop: When no eligible tasks remain, detect uncommitted working tree changes and ask
-      agent to investigate and clean up. Could be orphaned work from interrupted sessions, debugging
-      artifacts, or incomplete implementations. Agent could: (1) identify what the changes are for,
-      (2) commit them with appropriate message, (3) stash for later, or (4) discard if truly stale.
-      Prevents accumulation of mystery diffs."
-    created_at: 2026-01-31T00:53:10.084Z
-    tags:
-      - ralph
-      - dx
-    added_by: "@claude"
   - _ulid: 01KGG6GYZAMZCTWRPZG2XM2YQ9
     text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting.
       Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to
