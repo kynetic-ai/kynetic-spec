@@ -27,6 +27,9 @@ coverage/
 .kspec/
 !tests/fixtures/**/.kspec/
 
+# Research artifacts
+.claude-research/
+
 # Session context
 .kspec-session
 bun.lock
