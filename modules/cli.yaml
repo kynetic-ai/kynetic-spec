@@ -4179,6 +4179,11 @@ features:
             given: Plan import encounters a missing parent reference
             when: Error is displayed
             then: "Message includes recovery hint: Check parent exists or define it earlier in plan"
+          - id: ac-34
+            given: "A plan file has a ## Specs section header but no fenced YAML code block inside it"
+            when: kspec plan import <path> is run
+            then: warns 'Specs section found but no YAML code block detected — wrap specs in triple-backtick
+              yaml block' and exits with 0 specs 0 tasks
         status:
           maturity: draft
           implementation: implemented
