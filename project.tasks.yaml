@@ -47544,25 +47544,25 @@
         normalize references in task set, task add, and derive. Implements ac-1 on @rel-depends-on."
       supersedes: null
   todos: []
-- title: "Fix: task get should work for blocked tasks"
+- _ulid: 01KHAPKY4FB4Z8JVEKPGDBF6EE
+  slugs: []
+  title: "Fix: task get should work for blocked tasks"
   type: task
-  priority: 3
-  spec_ref: "@rel-depends-on"
-  tags:
-    - ux
-    - cli
   description: "UX: tasks with depends_on pointing to incomplete tasks are invisible in 'kspec tasks
     list' and 'kspec task get'. No --include-blocked flag exists. These tasks exist in
     project.tasks.yaml but can't be accessed through any CLI command. Should either: (1) show
     blocked tasks in list with [blocked] marker, (2) add --include-blocked flag, or (3) at minimum
     make 'kspec task get' work for blocked tasks. Current behavior makes dependency bugs extremely
     hard to diagnose. Discovered in imgen session 13."
-  _ulid: 01KHAPKY4FB4Z8JVEKPGDBF6EE
-  slugs: []
+  spec_ref: "@rel-depends-on"
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - ux
+    - cli
   vcs_refs: []
   created_at: 2026-02-13T05:12:14.223Z
   notes:
@@ -47572,5 +47572,31 @@
       content: "Bug: task get @ref fails for blocked tasks — they're completely inaccessible via CLI.
         Implements ac-2 on @rel-depends-on. Part (b) of original item (--include-blocked on tasks
         list) is covered by task 01KHA83PD (multi-value status filter)."
+      supersedes: null
+  todos: []
+- title: "Fix: plan import --update should update acceptance criteria on existing specs"
+  type: task
+  priority: 3
+  spec_ref: "@plan-import"
+  tags:
+    - cli
+    - plan-import
+  description: kspec plan import --update does not update acceptance criteria on existing specs. Only
+    metadata seems to update. Should either update ACs or document what --update touches. Discovered
+    when restructuring @testing-infrastructure parent spec.
+  _ulid: 01KHAQC88CKNGW83KM20NWJ8BH
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:25:31.020Z
+  notes:
+    - _ulid: 01KHAQC88DKY4SCNNV6CSYCVVW
+      created_at: 2026-02-13T05:25:31.021Z
+      author: "@claude"
+      content: "Bug: --update only updates metadata, not ACs. ac-26 tightened to explicitly require AC
+        updates. Discovered restructuring @testing-infrastructure."
       supersedes: null
   todos: []
