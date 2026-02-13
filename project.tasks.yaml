@@ -47459,16 +47459,22 @@
         scope creep. Complements --focus (prompt instructions) with hard task filtering.
       supersedes: null
   todos: []
-- title: Implement ralph wrap-up agent on loop exit
+- _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
+  slugs:
+    - task-ralph-wrap-up-agent-on-loop-exit
+  title: Implement ralph wrap-up agent on loop exit
   type: task
   spec_ref: "@01KHAP9PZ2WEMV9PRV037MC5Y8"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-ralph-wrap-up-agent-on-loop-exit
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:06:58.331Z
   notes:
     - _ulid: 01KHAPA9MTAXSFZXGRC04G9E3P
       created_at: 2026-02-13T05:06:58.331Z
@@ -47507,10 +47513,34 @@
         agent is terminated and ralph exits without wrap-up; wrap-up must not block shutdown
         indefinitely
       supersedes: null
-  _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
+  todos: []
+- title: "Fix: auto-prefix @ on depends_on reference values"
+  type: task
+  priority: 3
+  spec_ref: "@rel-depends-on"
+  tags:
+    - bug
+    - cli
+  description: "Bug: task set --depends-on and task add --depends-on store raw ID without @ prefix,
+    breaking dependency resolution. When running 'kspec task set @foo --depends-on 01KH7XA9' (no @),
+    the YAML stores 'depends_on: [01KH7XA9]' instead of '- @01KH7XA9'. This makes the task invisible
+    to task get/tasks list because the dependency resolver can't find the reference. All working
+    depends_on entries in the wild use @-prefixed slugs or ULIDs. Fix: either auto-prefix @ on
+    depends-on values, or validate/reject bare IDs with a helpful error. Discovered in imgen project
+    session 13."
+  _ulid: 01KHAPKTPZHQ945MRMQ6V6265K
+  slugs: []
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-13T05:06:58.331Z
+  created_at: 2026-02-13T05:12:10.715Z
+  notes:
+    - _ulid: 01KHAPKTPZD285ZFYZMVKMT30J
+      created_at: 2026-02-13T05:12:10.720Z
+      author: "@claude"
+      content: "Bug: --depends-on stores bare IDs without @ prefix, breaking dependency resolution. Fix:
+        normalize references in task set, task add, and derive. Implements ac-1 on @rel-depends-on."
+      supersedes: null
   todos: []
