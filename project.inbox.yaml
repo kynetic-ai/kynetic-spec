@@ -84,12 +84,6 @@ inbox:
       - ralph
       - dx
     added_by: "@claude"
-  - _ulid: 01KFE2XHT2AJN680ST7ZXK4TAT
-    text: "Ralph loop: Add progress checkpoint output at each iteration showing
-      completed/in-progress/remaining counts"
-    created_at: 2026-01-20T16:13:31.843Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KGG6GYZAMZCTWRPZG2XM2YQ9
     text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting.
       Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to
