@@ -402,6 +402,12 @@ features:
           For tasks: Auto-blocks A until B is completed.
         implements:
           - "@relationship-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: User provides a depends_on reference without @ prefix (e.g., --depends-on 01KH7XA9)
+            when: the value is stored
+            then: the CLI auto-prefixes @ to normalize the reference (stores @01KH7XA9); applies to task set,
+              task add, and derive commands
       - _ulid: 01KEZCJPJ2MKTF1V4PCN9X6Y7K
         slugs:
           - rel-implements
