@@ -47627,23 +47627,23 @@
         Implements ac-34 on @plan-import."
       supersedes: null
   todos: []
-- title: Document fenced YAML requirement in plan import help and spec-plan skill
+- _ulid: 01KHAQCH3EQXA8GEWFV1FMVXGV
+  slugs: []
+  title: Document fenced YAML requirement in plan import help and spec-plan skill
   type: task
-  priority: 3
-  spec_ref: "@plan-import"
-  tags:
-    - reflection
-    - plan-import
-    - docs
   description: "Plan import: document fenced YAML requirement in plan import --help text and spec-plan
     skill. The format requirement is not mentioned anywhere user-facing, causing discovery
     friction."
-  _ulid: 01KHAQCH3EQXA8GEWFV1FMVXGV
-  slugs: []
+  spec_ref: "@plan-import"
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - reflection
+    - plan-import
+    - docs
   vcs_refs: []
   created_at: 2026-02-13T05:25:40.078Z
   notes:
@@ -47652,5 +47652,33 @@
       author: "@claude"
       content: "Docs: fenced YAML format requirement not mentioned in --help or /spec-plan skill. Needs
         updating across all projects in ~/Projects that use kspec."
+      supersedes: null
+  todos: []
+- title: Gate reflect phase on meaningful session work during ralph loop
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Gate /reflect skill on session introspection: before running the full reflect
+    workflow, check whether meaningful work was done during the session (tasks completed, PRs
+    created, code changes). Skip reflection if the session had no substantive work — avoids the 19%
+    workflow time spent on empty reflection chains (31 consecutive runs observed with no new
+    insights). Skill-level change to the reflect skill, not a workflow change."
+  _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:42:42.988Z
+  notes:
+    - _ulid: 01KHARBR1FJEF3R0E4P8QZ8DP5
+      created_at: 2026-02-13T05:42:42.991Z
+      author: "@claude"
+      content: "During ralph loop, skip reflection if no substantive work done (no tasks completed, no
+        PRs, no code changes). Data: 19% workflow time wasted on 31 consecutive empty reflection
+        runs. Gate at the skill level — check session introspection before running full reflect
+        workflow."
       supersedes: null
   todos: []
