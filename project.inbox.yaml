@@ -370,18 +370,6 @@ inbox:
       - cli
       - plan-import
     added_by: "@claude"
-  - _ulid: 01KH8BN3Y2MHYEX6HBNDD62RV2
-    text: "UX: tasks with depends_on pointing to incomplete tasks are invisible in 'kspec tasks list'
-      and 'kspec task get'. No --include-blocked flag exists. These tasks exist in
-      project.tasks.yaml but can't be accessed through any CLI command. Should either: (1) show
-      blocked tasks in list with [blocked] marker, (2) add --include-blocked flag, or (3) at minimum
-      make 'kspec task get' work for blocked tasks. Current behavior makes dependency bugs extremely
-      hard to diagnose. Discovered in imgen session 13."
-    created_at: 2026-02-12T07:22:09.730Z
-    tags:
-      - ux
-      - cli
-    added_by: "@claude"
   - _ulid: 01KHA982WGBJHN6Q8EA6F3QSPD
     text: "Formalize CLI usage analysis as a repeatable workflow. Tools exist in .claude-research/tools/
       (parse-ralph-logs.mjs, parse-claude-logs.mjs, compile-data.mjs) plus interactive HTML report.
