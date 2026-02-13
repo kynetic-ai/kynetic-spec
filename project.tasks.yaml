@@ -47436,19 +47436,19 @@
         no-work exits, inflating abort rate to 69%."
       supersedes: null
   todos: []
-- title: Add --tasks flag to ralph for explicit task scoping
+- _ulid: 01KHAP9ED64XM64EVD24PA78BV
+  slugs: []
+  title: Add --tasks flag to ralph for explicit task scoping
   type: task
-  priority: 3
-  spec_ref: "@cli-ralph"
-  tags: []
   description: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks
     @ref1,@ref2) to prevent scope creep beyond target work"
-  _ulid: 01KHAP9ED64XM64EVD24PA78BV
-  slugs: []
+  spec_ref: "@cli-ralph"
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-13T05:06:30.434Z
   notes:
@@ -47458,4 +47458,59 @@
       content: Implements ac-21. Add --tasks @ref1,@ref2 flag to scope ralph to explicit tasks, preventing
         scope creep. Complements --focus (prompt instructions) with hard task filtering.
       supersedes: null
+  todos: []
+- title: Implement ralph wrap-up agent on loop exit
+  type: task
+  spec_ref: "@01KHAP9PZ2WEMV9PRV037MC5Y8"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-ralph-wrap-up-agent-on-loop-exit
+  tags: []
+  depends_on:
+    - "@task-ralph-command-automated-task-loop"
+  notes:
+    - _ulid: 01KHAPA9MTAXSFZXGRC04G9E3P
+      created_at: 2026-02-13T05:06:58.331Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        When the ralph loop exits for any reason (no eligible tasks, agent signaled end-loop, max
+        iterations reached, error), spawn a final wrap-up subagent before terminating. The wrap-up
+        agent ensures the workspace is in a clean state: uncommitted changes are identified and
+        handled (committed, stashed, or flagged), stale markers are cleaned up, and a brief exit
+        summary is produced. Runs as a subagent like PR review, with a focused prompt and short
+        timeout.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given Ralph loop exits for any reason (no tasks, end-loop signal, max iterations,
+        error), when exit sequence begins, then a wrap-up subagent is spawned before the process
+        terminates
+
+        - ac-2: Given Wrap-up agent starts, when it inspects the working tree, then identifies
+        uncommitted changes (staged, unstaged, untracked) and reports what they appear to relate to
+        (task refs, file patterns)
+
+        - ac-3: Given Wrap-up agent finds uncommitted changes, when changes are present, then
+        commits with appropriate message, stashes, or flags for human review depending on context;
+        does not silently discard work
+
+        - ac-4: Given Wrap-up agent completes, when cleanup is done, then produces a brief exit
+        summary: what was cleaned up, final task states, any items flagged for human attention
+
+        - ac-5: Given Wrap-up agent is running, when timeout is reached (default 2 minutes), then
+        agent is terminated and ralph exits without wrap-up; wrap-up must not block shutdown
+        indefinitely
+      supersedes: null
+  _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:06:58.331Z
   todos: []
