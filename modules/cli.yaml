@@ -2983,6 +2983,11 @@ features:
             when: it inspects the working tree
             then: identifies uncommitted changes (staged, unstaged, untracked) and reports what they appear to
               relate to (task refs, file patterns)
+          - id: ac-3
+            given: Wrap-up agent finds uncommitted changes
+            when: changes are present
+            then: commits with appropriate message, stashes, or flags for human review depending on context;
+              does not silently discard work
     features:
       - _ulid: 01KG8N2T41X1F9EDRSYMC7P4M7
         slugs:
