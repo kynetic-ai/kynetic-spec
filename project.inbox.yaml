@@ -75,6 +75,7 @@ inbox:
     tags:
       - daemon
       - dx
+      - deferred
     added_by: "@claude"
   - _ulid: 01KGGF4YYFQSRX5SMSKRC9BFF0
     text: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable
@@ -86,6 +87,7 @@ inbox:
       - feature
       - config
       - dx
+      - deferred
     added_by: "@claude"
   - _ulid: 01KGGFB2MJKNJQ3ZPYCZHQRHQE
     text: "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC:
@@ -176,6 +178,7 @@ inbox:
       - cli
       - dx
       - skills
+      - deferred
     added_by: "@claude"
   - _ulid: 01KGQY6QYS94S2D9J983436MX6
     text: "Workflow lifecycle CLI design (from mining run 01KFS6MJ): kspec workflow complete @run-ref
