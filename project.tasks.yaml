@@ -47709,23 +47709,23 @@
         trivially-passing gates."
       supersedes: null
   todos: []
-- title: Include step_results content in workflow runs --json output
+- _ulid: 01KHAS00YX283G0BVHN8DMVZNS
+  slugs: []
+  title: Include step_results content in workflow runs --json output
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - workflow
-    - cli
-    - dx
   description: workflow runs --json should include step_results with notes and abort_reason content.
     Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most
     valuable data for mining/telemetry but require parsing raw YAML to access.
-  _ulid: 01KHAS00YX283G0BVHN8DMVZNS
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - workflow
+    - cli
+    - dx
   vcs_refs: []
   created_at: 2026-02-13T05:53:47.482Z
   notes:
@@ -47735,5 +47735,36 @@
       content: "Bug/gap: workflow runs --json only serializes metadata (ULID, status, timestamps). Step
         notes and abort_reason — the most valuable data for mining/telemetry — are missing. Requires
         parsing raw YAML to access. Blocks official CLI usage analysis tooling."
+      supersedes: null
+  todos: []
+- title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - ralph
+    - noise
+    - streaming
+  description: "PR #345 ralph noise stripping: split-chunk noise leaks to streaming output before
+    finalization. When noise phrase is split across chunk boundaries (e.g. 'No onPostToolUse' +
+    'Hook found for tool use ID: toolu_...'), both chunks emit as streaming events. Need
+    boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null.
+    See /tmp/codex-pr-345-review.md for full analysis."
+  _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T06:07:01.514Z
+  notes:
+    - _ulid: 01KHASR8CAMRSTZSBJ5537JF3W
+      created_at: 2026-02-13T06:07:01.514Z
+      author: "@claude"
+      content: "Bug: noise phrases split across chunk boundaries (e.g. 'No onPostToolUse' + 'Hook found
+        for tool use ID: toolu_...') both emit as streaming events. Need boundary-aware buffering in
+        createTranslator. Also: stripped-to-whitespace should return null. Analysis from PR #345
+        Codex review."
       supersedes: null
   todos: []
