@@ -413,6 +413,10 @@ features:
             when: the task is auto-blocked
             then: the task is excluded from tasks list and tasks ready by default, but is still accessible via
               task get @ref
+          - id: ac-3
+            given: A task has depends_on with a valid @-prefixed reference
+            when: the referenced task is completed
+            then: the dependent task is automatically unblocked and appears in tasks list and tasks ready
       - _ulid: 01KEZCJPJ2MKTF1V4PCN9X6Y7K
         slugs:
           - rel-implements
