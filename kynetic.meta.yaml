@@ -5694,4 +5694,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHAAN8DMG4HYPXCQY05R9QT9
+    type: success
+    content: Re-baseline research findings against current code before creating specs. In CLI agent-UX
+      session, 7 of 21 recommendations from telemetry analysis were already implemented. Verifying
+      each against the codebase with parallel explore agents before speccing saved significant
+      overhead (would have created 7 unnecessary specs and 7 unnecessary tasks).
+    created_at: 2026-02-13T01:43:14.612Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
