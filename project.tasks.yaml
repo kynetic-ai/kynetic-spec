@@ -47574,22 +47574,22 @@
         list) is covered by task 01KHA83PD (multi-value status filter)."
       supersedes: null
   todos: []
-- title: "Fix: plan import --update should update acceptance criteria on existing specs"
+- _ulid: 01KHAQC88CKNGW83KM20NWJ8BH
+  slugs: []
+  title: "Fix: plan import --update should update acceptance criteria on existing specs"
   type: task
-  priority: 3
-  spec_ref: "@plan-import"
-  tags:
-    - cli
-    - plan-import
   description: kspec plan import --update does not update acceptance criteria on existing specs. Only
     metadata seems to update. Should either update ACs or document what --update touches. Discovered
     when restructuring @testing-infrastructure parent spec.
-  _ulid: 01KHAQC88CKNGW83KM20NWJ8BH
-  slugs: []
+  spec_ref: "@plan-import"
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - plan-import
   vcs_refs: []
   created_at: 2026-02-13T05:25:31.020Z
   notes:
@@ -47598,5 +47598,32 @@
       author: "@claude"
       content: "Bug: --update only updates metadata, not ACs. ac-26 tightened to explicitly require AC
         updates. Discovered restructuring @testing-infrastructure."
+      supersedes: null
+  todos: []
+- title: "Fix: plan import should warn when Specs section has no fenced YAML block"
+  type: task
+  priority: 3
+  spec_ref: "@plan-import"
+  tags:
+    - reflection
+    - plan-import
+    - dx
+  description: "Plan import: warn when Specs section exists but contains no fenced YAML code block.
+    Currently silently returns 0 specs 0 tasks. Should emit: Specs section found but no YAML code
+    block detected. Wrap specs in triple-backtick yaml block."
+  _ulid: 01KHAQCCMSRGX4DF2G78MTEG98
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:25:35.513Z
+  notes:
+    - _ulid: 01KHAQCCMSAWS3BSCH35HMRAGC
+      created_at: 2026-02-13T05:25:35.513Z
+      author: "@claude"
+      content: "Bug: silently returns 0 specs 0 tasks when Specs section exists without code fence.
+        Implements ac-34 on @plan-import."
       supersedes: null
   todos: []
