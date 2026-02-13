@@ -197,6 +197,7 @@ inbox:
       - workflow
       - cli
       - dx
+      - deferred
     added_by: "@claude"
   - _ulid: 01KGR0N6QCNK3YS6K5H3VSXDFC
     text: "Workflow advance-to command: kspec workflow advance-to @run <step> --notes '...' to skip
