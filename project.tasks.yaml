@@ -47410,3 +47410,29 @@
         alongside existing --items-only and --tasks-only flags. Make the scope-only
         flags mutually exclusive with a validation check before search execution.
   todos: []
+- title: Distinguish graceful exit from abort in task-work-loop workflow
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Distinguish graceful exit from abort in task-work-loop: when the workflow exits
+    because no eligible tasks exist, record as status:completed with result:no_work_available
+    instead of status:aborted. Makes abort rate meaningful (actual failures) vs normal loop
+    termination. Data: 11 of 16 'aborts' were normal no-work exits, inflating abort rate to 69%."
+  _ulid: 01KHAP909YFZT8WAP78BKA1XGP
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:06:15.997Z
+  notes:
+    - _ulid: 01KHAP909Y3CX47EDE6FRJTWT6
+      created_at: 2026-02-13T05:06:15.998Z
+      author: "@claude"
+      content: "Infra fix: when loop exits because no eligible tasks exist, record status:completed with
+        result:no_work_available instead of status:aborted. Currently 11/16 aborts are normal
+        no-work exits, inflating abort rate to 69%."
+      supersedes: null
+  todos: []
