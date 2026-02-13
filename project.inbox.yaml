@@ -369,12 +369,3 @@ inbox:
     created_at: 2026-02-13T01:18:34.385Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHAAN8D1VQVCACP8DJXB70BS
-    text: "Plan import: document fenced YAML requirement in plan import --help text and spec-plan skill.
-      The format requirement is not mentioned anywhere user-facing, causing discovery friction."
-    created_at: 2026-02-13T01:43:14.593Z
-    tags:
-      - reflection
-      - plan-import
-      - docs
-    added_by: "@claude"
