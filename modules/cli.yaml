@@ -2672,6 +2672,11 @@ features:
         when: checking for loop continuation
         then: uses freshly gathered task context (not stale from iteration start) to detect tasks that
           became ready due to dependency unblocking
+      - id: ac-21
+        given: User runs kspec ralph with --tasks @ref1,@ref2
+        when: task selection runs each iteration
+        then: only the explicitly listed tasks are considered for work, regardless of automation eligibility
+          of other tasks; exits when all listed tasks are completed or blocked
     status:
       maturity: draft
       implementation: implemented
