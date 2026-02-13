@@ -2978,6 +2978,11 @@ features:
             given: Ralph loop exits for any reason (no tasks, end-loop signal, max iterations, error)
             when: exit sequence begins
             then: a wrap-up subagent is spawned before the process terminates
+          - id: ac-2
+            given: Wrap-up agent starts
+            when: it inspects the working tree
+            then: identifies uncommitted changes (staged, unstaged, untracked) and reports what they appear to
+              relate to (task refs, file patterns)
     features:
       - _ulid: 01KG8N2T41X1F9EDRSYMC7P4M7
         slugs:
