@@ -2988,6 +2988,11 @@ features:
             when: changes are present
             then: commits with appropriate message, stashes, or flags for human review depending on context;
               does not silently discard work
+          - id: ac-4
+            given: Wrap-up agent completes
+            when: cleanup is done
+            then: "produces a brief exit summary: what was cleaned up, final task states, any items flagged for
+              human attention"
     features:
       - _ulid: 01KG8N2T41X1F9EDRSYMC7P4M7
         slugs:
