@@ -47654,22 +47654,22 @@
         updating across all projects in ~/Projects that use kspec."
       supersedes: null
   todos: []
-- title: Gate reflect phase on meaningful session work during ralph loop
+- _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
+  slugs: []
+  title: Gate reflect phase on meaningful session work during ralph loop
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Gate /reflect skill on session introspection: before running the full reflect
     workflow, check whether meaningful work was done during the session (tasks completed, PRs
     created, code changes). Skip reflection if the session had no substantive work — avoids the 19%
     workflow time spent on empty reflection chains (31 consecutive runs observed with no new
     insights). Skill-level change to the reflect skill, not a workflow change."
-  _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-13T05:42:42.988Z
   notes:
@@ -47680,5 +47680,32 @@
         PRs, no code changes). Data: 19% workflow time wasted on 31 consecutive empty reflection
         runs. Gate at the skill level — check session introspection before running full reflect
         workflow."
+      supersedes: null
+  todos: []
+- title: PR-review-merge fast-path for clean merges
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "PR-review-merge fast-path for clean merges: when CI is already green, no review
+    comments exist, and no threads are open, collapse steps 3-7 into a single verification step.
+    Data shows p50 is 137s but most of that is stepping through gates that all pass trivially.
+    Condition: only when review is genuinely clean (all checks pass on first look)."
+  _ulid: 01KHARBW0W7K5KG5Z2M7W5GM5J
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-13T05:42:47.068Z
+  notes:
+    - _ulid: 01KHARBW126HCM7NBQH7SRGKF2
+      created_at: 2026-02-13T05:42:47.074Z
+      author: "@claude"
+      content: "When a PR has: (1) completed review by both agent and Claude, (2) CI green, (3) no open
+        review threads, (4) no unaddressed comments — collapse steps 3-7 into single verification.
+        Requires actual review completion, not just absence of comments. Data: p50 is 137s, mostly
+        trivially-passing gates."
       supersedes: null
   todos: []

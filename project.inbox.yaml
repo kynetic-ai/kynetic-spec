@@ -284,14 +284,6 @@ inbox:
       - cli
       - testing
     added_by: "@claude"
-  - _ulid: 01KGWQ2KH09844EJG2DCW6BD4K
-    text: "PR-review-merge fast-path for clean merges: when CI is already green, no review comments
-      exist, and no threads are open, collapse steps 3-7 into a single verification step. Data shows
-      p50 is 137s but most of that is stepping through gates that all pass trivially. Condition:
-      only when review is genuinely clean (all checks pass on first look)."
-    created_at: 2026-02-07T18:50:52.832Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KGWQ2QQXM47EBBSW300MAPHE
     text: "Document session-reflect as human-only, session-reflect-loop as autonomous default: this is
       already the de facto state (/reflect skill uses interactive, ralph uses loop variant).
