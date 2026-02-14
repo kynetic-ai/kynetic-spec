@@ -47234,6 +47234,10 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #354. kspec tasks and kspec task with no subcommand now default to list
+    (exit 0). Options like --status, --json, --count forward correctly. Unknown subcommands show
+    fuzzy suggestions. Shared listTasksAction() extracted to eliminate code duplication. All 6 ACs
+    covered by 11 tests."
   depends_on: []
   context: []
   priority: 3
@@ -47241,6 +47245,7 @@
   vcs_refs: []
   created_at: 2026-02-13T00:58:41.563Z
   started_at: 2026-02-14T01:47:50.259Z
+  completed_at: 2026-02-14T02:11:38.022Z
   notes:
     - _ulid: 01KHA83P0VG0HFJBZ7NPA6ARAG
       created_at: 2026-02-13T00:58:41.563Z
@@ -47264,11 +47269,6 @@
         covering all 6 ACs.
       supersedes: null
   todos: []
-  completed_at: 2026-02-14T02:11:38.022Z
-  closed_reason: "Merged in PR #354. kspec tasks and kspec task with no subcommand now default to list
-    (exit 0). Options like --status, --json, --count forward correctly. Unknown subcommands show
-    fuzzy suggestions. Shared listTasksAction() extracted to eliminate code duplication. All 6 ACs
-    covered by 11 tests."
 - _ulid: 01KHA83PD9G7CW02FHQRYS5GQK
   slugs:
     - implement-multi-value-status-filter
@@ -47276,7 +47276,7 @@
   type: task
   spec_ref: "@multi-value-status-filter"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-command-group-default-actions"
@@ -47309,6 +47309,12 @@
         ACs.
       supersedes: null
   todos: []
+  completed_at: 2026-02-14T02:11:45.446Z
+  closed_reason: "Merged in PR #354. --status filter on tasks list and item list now accepts
+    comma-separated values (e.g. --status pending,in_progress). Invalid values show correct enum.
+    Trailing/leading commas silently ignored. parseMultiStatus() utility handles both task and item
+    status validation. 7 of 8 ACs covered by 10 tests. ac-repeated-flag gap noted: Commander.js
+    option definition needs collect function for repeated flags -- can be addressed in follow-up."
 - _ulid: 01KHA83PTDMSSA5N4EX7KZ6QAP
   slugs:
     - implement-output-format-option
