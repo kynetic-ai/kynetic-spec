@@ -47232,7 +47232,7 @@
   type: task
   spec_ref: "@command-group-default-actions"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47264,6 +47264,11 @@
         covering all 6 ACs.
       supersedes: null
   todos: []
+  completed_at: 2026-02-14T02:11:38.022Z
+  closed_reason: "Merged in PR #354. kspec tasks and kspec task with no subcommand now default to list
+    (exit 0). Options like --status, --json, --count forward correctly. Unknown subcommands show
+    fuzzy suggestions. Shared listTasksAction() extracted to eliminate code duplication. All 6 ACs
+    covered by 11 tests."
 - _ulid: 01KHA83PD9G7CW02FHQRYS5GQK
   slugs:
     - implement-multi-value-status-filter
