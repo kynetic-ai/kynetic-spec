@@ -3328,8 +3328,30 @@ runs:
   - _ulid: 01KHCTPQZX2YG163CWDJWNGJ4G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-14T01:02:09.406Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-14T01:02:09.406Z
+        completed_at: 2026-02-14T01:02:24.965Z
+        notes: >-
+          What worked well:
+
+          1. Parallel investigation - spawned 3 Explore agents simultaneously for all 3 bugs,
+          results in ~2 min vs ~6 min sequential
+
+          2. Root cause discovery - bug #1 (@ prefix) was root cause of bug #2 (invisible tasks) via
+          loadTasksFromFile safeParse silently dropping invalid tasks. Saved implementing a separate
+          fix.
+
+          3. Existing test patterns - setupTempFixtures/kspecJson helpers made new tests fast and
+          consistent
+
+          4. Single PR for related fixes - 3 small bugs in one reviewable PR reduced overhead
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-14T01:02:24.965Z
+        completed_at: 2026-02-14T01:02:24.965Z
     initiated_by: "@claude"
