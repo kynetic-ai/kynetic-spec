@@ -11,6 +11,7 @@ import {
   createSpecItem,
   deleteSpecItem,
   findChildItems,
+  findDescendantItems,
   findTraitImplementors,
   initContext,
   type LoadedSpecItem,
@@ -300,12 +301,13 @@ export function registerItemCommands(program: Command): void {
     .option("-g, --grep <pattern>", "Search content with regex pattern")
     .option("-v, --verbose", "Show more details")
     .option("--tree", "Show parent/child hierarchy")
+    .option("--under <ref>", "Scope to descendants of a module or parent item")
     .option("--limit <n>", "Limit results", "50")
     .option("--count", "Show only the count of matching items")
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const { itemIndex, items } = await buildIndexes(ctx);
+        const { itemIndex, items, refIndex } = await buildIndexes(ctx);
 
         // Build filter from options
         const filter: ItemFilter = {
@@ -350,19 +352,63 @@ export function registerItemCommands(program: Command): void {
           filter.grepSearch = options.grep;
         }
 
+        // AC: @module-scoped-item-listing ac-under-filter, ac-under-invalid-ref
+        // Handle --under: scope to descendants of a module or parent item
+        let underRoot: LoadedSpecItem | undefined;
+        let underDescendantUlids: Set<string> | undefined;
+        if (options.under) {
+          const underResult = refIndex.resolve(options.under);
+          if (!underResult.ok) {
+            // AC: @module-scoped-item-listing ac-under-invalid-ref
+            error(`Reference not found: ${options.under}. Check with: kspec item get ${options.under}`);
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          underRoot = underResult.item as LoadedSpecItem;
+          // Check it's not a task
+          if ("status" in underRoot && typeof underRoot.status === "string") {
+            error(`Reference ${options.under} is a task, not a spec item`);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+          // AC: @module-scoped-item-listing ac-nested-descendants
+          // Find all descendants based on _path and _sourceFile
+          const descendants = findDescendantItems(underRoot, items);
+          underDescendantUlids = new Set([underRoot._ulid, ...descendants.map(d => d._ulid)]);
+        }
+
         const limit = parseInt(options.limit, 10) || 50;
-        const result = itemIndex.queryPaginated(filter, 0, limit);
 
-        // Filter to only LoadedSpecItem (not tasks)
-        const specItems = result.items.filter(
-          (item): item is LoadedSpecItem =>
-            !("status" in item && typeof item.status === "string"),
-        );
+        // When --under is used, we need to get all items first, then filter by scope,
+        // because pagination before scoping could miss items
+        let specItems: LoadedSpecItem[];
+        let effectiveTotal: number;
 
+        if (underDescendantUlids) {
+          // AC: @module-scoped-item-listing ac-under-filter, ac-under-with-other-filters
+          // Get all items matching filters, then scope to descendants
+          const allResults = itemIndex.query(filter);
+          const allSpecItems = allResults.filter(
+            (item): item is LoadedSpecItem =>
+              !("status" in item && typeof item.status === "string"),
+          );
+          // Apply --under filtering (AND logic with other filters)
+          const scopedItems = allSpecItems.filter(item => underDescendantUlids!.has(item._ulid));
+          effectiveTotal = scopedItems.length;
+          specItems = scopedItems.slice(0, limit);
+        } else {
+          const result = itemIndex.queryPaginated(filter, 0, limit);
+          // Filter to only LoadedSpecItem (not tasks)
+          specItems = result.items.filter(
+            (item): item is LoadedSpecItem =>
+              !("status" in item && typeof item.status === "string"),
+          );
+          effectiveTotal = result.total;
+        }
+
+        // AC: @module-scoped-item-listing ac-count-with-under
         // AC: @trait-filterable-list ac-8
         if (options.count) {
-          output({ count: result.total }, () => {
-            console.log(result.total);
+          output({ count: effectiveTotal }, () => {
+            console.log(effectiveTotal);
           });
           return;
         }
@@ -370,13 +416,15 @@ export function registerItemCommands(program: Command): void {
         output(
           {
             items: specItems,
-            total: result.total,
+            total: effectiveTotal,
             showing: specItems.length,
             grepPattern: options.grep,
             tree: options.tree,
+            under: options.under,
           },
           () => {
             if (options.tree) {
+              // AC: @module-scoped-item-listing ac-under-with-tree
               formatItemTree(specItems, options.verbose, options.grep);
             } else {
               formatItemList(specItems, options.verbose, options.grep);
