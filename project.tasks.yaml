@@ -46823,6 +46823,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-07T07:42:56.412Z
+  started_at: 2026-02-14T09:24:34.473Z
   notes:
     - _ulid: 01KGVGVJCX6RN0VBHEAVFR2QPS
       created_at: 2026-02-07T07:42:56.413Z
@@ -46840,9 +46841,29 @@
       content: "Automation status set to needs_review: Needs data model verification for note supersession
         tracking"
       supersedes: null
+    - _ulid: 01KHDQVQ4DNJEAP1T94SYM57FR
+      created_at: 2026-02-14T09:31:41.069Z
+      author: "@claude"
+      content: >-
+        Implemented note supersession filtering:
+
+        - Added isNoteSuperseded(), filterSupersededNotes(), and annotateNotesWithSuperseded()
+        helper functions in output.ts
+
+        - Updated formatTaskDetails() to filter superseded notes by default, show hidden count
+        message
+
+        - Added --all flag to task get command to show full note history
+
+        - JSON output always includes all notes with 'superseded' computed field
+
+        - Updated session start to filter superseded notes from recent_notes
+
+        - 7 tests covering: hiding superseded notes, --all flag, JSON output, multiple
+        supersessions, session start filtering
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T09:24:34.473Z
 - _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
   slugs: []
   title: Support ephemeral workflow runs without persistent state
