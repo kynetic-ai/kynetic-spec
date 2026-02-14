@@ -47709,7 +47709,7 @@
   type: task
   spec_ref: "@observation-content-search"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47759,6 +47759,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T10:55:07.757Z
+  closed_reason: "Merged in PR #367. Implemented observation content search with --search flag for
+    kspec meta observations command and --observations-only flag for kspec search command. Added
+    mutual exclusivity validation for scope-only flags. All 7 ACs covered with 14 tests."
 - _ulid: 01KHAP909YFZT8WAP78BKA1XGP
   slugs: []
   title: Distinguish graceful exit from abort in task-work-loop workflow
