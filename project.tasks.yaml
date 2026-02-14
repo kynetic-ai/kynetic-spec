@@ -48425,25 +48425,48 @@
   created_at: 2026-02-14T21:54:26.591Z
   notes: []
   todos: []
-- title: Extract drift detection field lists from Zod schemas at runtime
+- _ulid: 01KHF34FC1CG2NTAV26QE4VASM
+  slugs: []
+  title: Extract drift detection field lists from Zod schemas at runtime
+  type: task
   description: "PR #362 hardcodes SPEC_ITEM_FIELDS and TASK_FIELDS as manually maintained Sets. These
     will drift from the actual Zod schemas — the exact problem the feature claims to detect. Fix:
     derive field sets from SpecItemSchema.shape and TaskSchema.shape at runtime. Also adds a
     CONCEPTUAL_FIELDS set of common English words (modules, features, requirements) that triggers
     false positives on natural prose."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-14T22:07:56.801Z
+  notes: []
+  todos: []
+- title: Add code-level reflect gating in ralph based on iteration delta
+  description: "PR #357 added skill-file instructions to gate reflection on meaningful work, but this
+    has no enforcement. Instead: ralph should snapshot session state (task statuses, working tree,
+    commit count) before each iteration, compare at the end, and only issue the reflect prompt if
+    something measurably changed (task transitions, commits, file changes). The reflect prompt
+    itself was already efficient at avoiding noisy observations — the issue is invoking it at all
+    when nothing happened."
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
+  priority: 2
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHF34FC1CG2NTAV26QE4VASM
+  _ulid: 01KHF34K4JKJV2M81YAPCDNGPX
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-14T22:07:56.801Z
+  created_at: 2026-02-14T22:08:00.658Z
   notes: []
   todos: []
