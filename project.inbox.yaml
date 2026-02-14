@@ -308,3 +308,13 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KHF2AAHZBYTZAFTF5T5V45W2
+    text: "Revisit ralph wrap-up agent (#369) — intent is broader than cleanup: ensures all work is
+      completed, finds in-progress work where task state doesn't match, root-causes whether work is
+      still needed, does best-effort to get project into clean state (continue loop or branch+task
+      for user). Too many possible states to rely on code alone. Review AC coverage gaps
+      (runWrapUpAgent untested), but do NOT simplify to deterministic git stash — the agent approach
+      is intentional."
+    created_at: 2026-02-14T21:53:39.903Z
+    tags: []
+    added_by: "@claude"
