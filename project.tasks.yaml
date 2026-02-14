@@ -47240,6 +47240,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T00:58:41.563Z
+  started_at: 2026-02-14T01:47:50.259Z
   notes:
     - _ulid: 01KHA83P0VG0HFJBZ7NPA6ARAG
       created_at: 2026-02-13T00:58:41.563Z
@@ -47255,7 +47256,6 @@
         Commander.js routes unknown subcommands to the error handler before the
         default action, so ac-unknown-subcommand should work naturally.
   todos: []
-  started_at: 2026-02-14T01:47:50.259Z
 - _ulid: 01KHA83PD9G7CW02FHQRYS5GQK
   slugs:
     - implement-multi-value-status-filter
@@ -47263,7 +47263,7 @@
   type: task
   spec_ref: "@multi-value-status-filter"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-command-group-default-actions"
@@ -47287,6 +47287,7 @@
         correct enum (TaskStatus for tasks, ImplementationStatus for items). Apply
         same pattern to item list --status.
   todos: []
+  started_at: 2026-02-14T02:00:17.621Z
 - _ulid: 01KHA83PTDMSSA5N4EX7KZ6QAP
   slugs:
     - implement-output-format-option
