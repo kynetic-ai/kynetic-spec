@@ -832,7 +832,7 @@ features:
             created: 2026-02-13T00:58:41.041Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
   - _ulid: 01KFEJW283E3ADMC1G6WGV7MGC
     slugs:
       - tasks-assess-automation
