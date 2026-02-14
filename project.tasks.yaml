@@ -47680,7 +47680,7 @@
     metadata seems to update. Should either update ACs or document what --update touches. Discovered
     when restructuring @testing-infrastructure parent spec.
   spec_ref: "@plan-import"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47711,6 +47711,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T08:42:32.667Z
+  closed_reason: "Merged in PR #359. Implemented actual update logic for plan import --update flag.
+    Previously the code had a placeholder 'Update logic would go here - for now, skip' with no
+    implementation. Now updateSpecItem() is called with description, type, traits, and
+    acceptance_criteria from the plan. Added 2 new tests verifying AC updates and trait updates work
+    correctly. Addresses ac-26 of @plan-import spec."
 - _ulid: 01KHAQCCMSRGX4DF2G78MTEG98
   slugs: []
   title: "Fix: plan import should warn when Specs section has no fenced YAML block"
