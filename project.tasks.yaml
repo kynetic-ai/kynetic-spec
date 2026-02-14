@@ -47869,6 +47869,11 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #369. Implemented ralph wrap-up agent that spawns on loop exit (all
+    exit reasons: no_tasks, end_loop_signal, max_iterations, error, max_failures,
+    explicit_tasks_done). Gathers working tree state (staged/unstaged/untracked), tasks, and session
+    info. Builds focused prompt for subagent to handle cleanup (commit, stash, or flag for review).
+    Runs with 2-minute timeout. All 5 ACs covered by 35 tests."
   depends_on:
     - "@task-ralph-command-automated-task-loop"
   context: []
@@ -47877,6 +47882,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:06:58.331Z
   started_at: 2026-02-14T11:15:07.945Z
+  completed_at: 2026-02-14T11:37:36.006Z
   notes:
     - _ulid: 01KHAPA9MTAXSFZXGRC04G9E3P
       created_at: 2026-02-13T05:06:58.331Z
@@ -47959,12 +47965,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T11:37:36.006Z
-  closed_reason: "Merged in PR #369. Implemented ralph wrap-up agent that spawns on loop exit (all
-    exit reasons: no_tasks, end_loop_signal, max_iterations, error, max_failures,
-    explicit_tasks_done). Gathers working tree state (staged/unstaged/untracked), tasks, and session
-    info. Builds focused prompt for subagent to handle cleanup (commit, stash, or flag for review).
-    Runs with 2-minute timeout. All 5 ACs covered by 35 tests."
 - _ulid: 01KHAPKTPZHQ945MRMQ6V6265K
   slugs: []
   title: "Fix: auto-prefix @ on depends_on reference values"
@@ -48357,3 +48357,29 @@
       supersedes: null
   todos: []
   automation: needs_review
+- title: Revisit ralph wrap-up agent design and test coverage
+  description: "PR #369 added a wrap-up agent that runs on ralph loop exit. Retrospective flagged it
+    as over-engineered but the intent is broader than simple cleanup: it ensures all work is
+    completed, finds in-progress work where task state doesn't match reality, root-causes whether
+    work is still needed, and does best-effort to get the project into a clean state (either
+    continue the loop or put work on a branch with a task for the user). Too many possible states to
+    rely on code alone — the agent approach is intentional. However: runWrapUpAgent() has zero
+    integration tests (all 37 tests only check prompt strings and boolean helpers). Revisit AC
+    coverage, add integration tests for the actual agent spawn/timeout/cleanup paths, and verify the
+    prompt adequately covers the intended scenarios."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KHF2BKJKKGZCRRWRYPTDZWAA
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-14T21:54:21.907Z
+  notes: []
+  todos: []
