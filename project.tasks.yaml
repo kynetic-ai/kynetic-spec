@@ -47547,6 +47547,7 @@
         scope creep. Complements --focus (prompt instructions) with hard task filtering.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
   slugs:
     - task-ralph-wrap-up-agent-on-loop-exit
