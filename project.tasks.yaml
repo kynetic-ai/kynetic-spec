@@ -48383,24 +48383,45 @@
   created_at: 2026-02-14T21:54:21.907Z
   notes: []
   todos: []
-- title: Create spec for validate --drift feature
+- _ulid: 01KHF2BNVZSQV12C2DRK57C5P2
+  slugs: []
+  title: Create spec for validate --drift feature
+  type: task
   description: "PR #362 added kspec validate --drift, a user-facing CLI flag for AC schema field
     validation. This was shipped without a spec item or formal ACs, violating the spec-before-code
     rule. Create a spec item with acceptance criteria covering: field detection from prose,
     conceptual vs schema fields, strict mode, exit codes, and false positive handling."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-14T21:54:24.255Z
+  notes: []
+  todos: []
+- title: Fix trivial AC-6 test in multi-value status filter
+  description: "PR #354 test for AC-6 (item list parity) only asserts exit code 0 without verifying
+    filtered results actually match the requested statuses. The fixture may have zero matching
+    items, making the test pass vacuously. Update the test to create items with known statuses and
+    assert the filtered output contains exactly the expected items."
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
+  priority: 3
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHF2BNVZSQV12C2DRK57C5P2
+  _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-14T21:54:24.255Z
+  created_at: 2026-02-14T21:54:26.591Z
   notes: []
   todos: []
