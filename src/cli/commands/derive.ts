@@ -332,7 +332,9 @@ async function deriveTaskFromSpec(
     priority: options.priority ?? normalizePriority(specItem.priority),
     slugs: [slug],
     tags: [...(specItem.tags || [])],
-    depends_on: options.dependsOn || [],
+    depends_on: (options.dependsOn || []).map((ref: string) =>
+      ref.startsWith("@") ? ref : `@${ref}`,
+    ),
     notes: initialNotes,
   };
 

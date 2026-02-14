@@ -130,6 +130,11 @@ function extractSpecsSection(content: string, errors: ParseError[]): PlanSpec[] 
   const yamlMatch = specsContent.match(/```(?:yaml)?\s*\n([\s\S]*?)\n```/);
 
   if (!yamlMatch) {
+    errors.push({
+      type: "validation",
+      message:
+        "Specs section found but contains no YAML code block. Wrap specs in ```yaml ... ```",
+    });
     return [];
   }
 

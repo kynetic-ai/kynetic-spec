@@ -479,6 +479,70 @@ describe("Parent Reference Validation", () => {
   });
 });
 
+describe("Plan Document Parser - missing YAML block warning", () => {
+  // AC: @plan-import ac-34
+  it("should warn when Specs section exists but has no YAML code block", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+Here are the specs I want to create:
+- Feature A
+- Feature B
+
+## Implementation Notes
+
+Some notes here.
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(0);
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.errors.some(e =>
+      e.type === "validation" && e.message.includes("no YAML code block")
+    )).toBe(true);
+  });
+
+  it("should not warn when Specs section has a YAML code block", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+  slug: feature-a
+  type: feature
+  description: A feature
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.errors.filter(e =>
+      e.type === "validation" && e.message.includes("no YAML code block")
+    )).toHaveLength(0);
+  });
+
+  it("should not warn when there is no Specs section at all", () => {
+    const plan = `
+# Test Plan
+
+## Implementation Notes
+
+Just some notes, no specs section.
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.errors.filter(e =>
+      e.message.includes("no YAML code block")
+    )).toHaveLength(0);
+  });
+});
+
 describe("createSpecItem", () => {
   it("should preserve acceptance_criteria when provided", () => {
     const ac = [
