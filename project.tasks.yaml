@@ -47224,7 +47224,14 @@
 
         - Codex review passes with no MUST-FIX items
       supersedes: null
+    - _ulid: 01KHD0KJZ8QD0G8T9CG6D6ESWA
+      created_at: 2026-02-14T02:45:17.417Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Documentation restructuring for external project -
+        requires human judgment"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KHA83P0VX36G2QWJ2FH10N4B
   slugs:
     - implement-command-group-default-actions
@@ -47278,6 +47285,11 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #354. --status filter on tasks list and item list now accepts
+    comma-separated values (e.g. --status pending,in_progress). Invalid values show correct enum.
+    Trailing/leading commas silently ignored. parseMultiStatus() utility handles both task and item
+    status validation. 7 of 8 ACs covered by 10 tests. ac-repeated-flag gap noted: Commander.js
+    option definition needs collect function for repeated flags -- can be addressed in follow-up."
   depends_on:
     - "@implement-command-group-default-actions"
   context: []
@@ -47286,6 +47298,7 @@
   vcs_refs: []
   created_at: 2026-02-13T00:58:41.961Z
   started_at: 2026-02-14T02:00:17.621Z
+  completed_at: 2026-02-14T02:11:45.446Z
   notes:
     - _ulid: 01KHA83PD9H3XDH77TQ9BN5DVG
       created_at: 2026-02-13T00:58:41.961Z
@@ -47309,12 +47322,6 @@
         ACs.
       supersedes: null
   todos: []
-  completed_at: 2026-02-14T02:11:45.446Z
-  closed_reason: "Merged in PR #354. --status filter on tasks list and item list now accepts
-    comma-separated values (e.g. --status pending,in_progress). Invalid values show correct enum.
-    Trailing/leading commas silently ignored. parseMultiStatus() utility handles both task and item
-    status validation. 7 of 8 ACs covered by 10 tests. ac-repeated-flag gap noted: Commander.js
-    option definition needs collect function for repeated flags -- can be addressed in follow-up."
 - _ulid: 01KHA83PTDMSSA5N4EX7KZ6QAP
   slugs:
     - implement-output-format-option
@@ -47465,6 +47472,7 @@
         no-work exits, inflating abort rate to 69%."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHAP9ED64XM64EVD24PA78BV
   slugs: []
   title: Add --tasks flag to ralph for explicit task scoping
@@ -47724,6 +47732,7 @@
         workflow."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHARBW0W7K5KG5Z2M7W5GM5J
   slugs: []
   title: PR-review-merge fast-path for clean merges
@@ -47751,6 +47760,7 @@
         trivially-passing gates."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHAS00YX283G0BVHN8DMVZNS
   slugs: []
   title: Include step_results content in workflow runs --json output
@@ -47778,7 +47788,14 @@
         notes and abort_reason — the most valuable data for mining/telemetry — are missing. Requires
         parsing raw YAML to access. Blocks official CLI usage analysis tooling."
       supersedes: null
+    - _ulid: 01KHD0KP0E24X4YHSJXZQV8BMZ
+      created_at: 2026-02-14T02:45:20.526Z
+      author: "@claude"
+      content: "Automation status set to needs_review: CLI --json output schema is user-facing - may need
+        spec"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
   slugs: []
   title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
@@ -47810,6 +47827,7 @@
         Codex review."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
   slugs: []
   title: Add kspec merge-driver configure command
@@ -47837,4 +47855,11 @@
         config merge.kspec.* and creates .gitattributes in shadow branch. Relevant for multi-project
         kspec usage."
       supersedes: null
+    - _ulid: 01KHD0KQFWXGJN3XHFGD7RRPRM
+      created_at: 2026-02-14T02:45:22.044Z
+      author: "@claude"
+      content: "Automation status set to needs_review: New CLI command - may need spec per spec-first
+        principle"
+      supersedes: null
   todos: []
+  automation: needs_review
