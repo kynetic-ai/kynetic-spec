@@ -47526,8 +47526,10 @@
     depends-on values, or validate/reject bare IDs with a helpful error. Discovered in imgen project
     session 13."
   spec_ref: "@rel-depends-on"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #353. Auto-prefixes @ on bare depends_on refs in task add, task set,
+    and derive commands. 3 new tests confirm bare slugs and ULIDs are stored with @ prefix."
   depends_on: []
   context: []
   priority: 3
@@ -47537,6 +47539,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:12:10.715Z
   started_at: 2026-02-14T00:52:05.505Z
+  completed_at: 2026-02-14T00:52:25.990Z
   notes:
     - _ulid: 01KHAPKTPZD285ZFYZMVKMT30J
       created_at: 2026-02-13T05:12:10.720Z
@@ -47556,8 +47559,10 @@
     make 'kspec task get' work for blocked tasks. Current behavior makes dependency bugs extremely
     hard to diagnose. Discovered in imgen session 13."
   spec_ref: "@rel-depends-on"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #353. Root cause was bug 1 (bare refs failing RefSchema). With @
+    auto-prefix fix, tasks with depends_on are no longer silently dropped from CLI visibility."
   depends_on: []
   context: []
   priority: 3
@@ -47567,6 +47572,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:12:14.223Z
   started_at: 2026-02-14T00:52:06.244Z
+  completed_at: 2026-02-14T00:52:26.737Z
   notes:
     - _ulid: 01KHAPKY4FQ5GR2SE2N4QE8H1Z
       created_at: 2026-02-13T05:12:14.223Z
@@ -47610,7 +47616,7 @@
     Currently silently returns 0 specs 0 tasks. Should emit: Specs section found but no YAML code
     block detected. Wrap specs in triple-backtick yaml block."
   spec_ref: "@plan-import"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47630,6 +47636,10 @@
         Implements ac-34 on @plan-import."
       supersedes: null
   todos: []
+  completed_at: 2026-02-14T00:52:27.458Z
+  closed_reason: "Merged in PR #353. Plan import now pushes a validation warning when ## Specs section
+    exists but has no fenced YAML code block. 3 new tests cover the warning, no-warning, and
+    no-section cases."
 - _ulid: 01KHAQCH3EQXA8GEWFV1FMVXGV
   slugs: []
   title: Document fenced YAML requirement in plan import help and spec-plan skill
