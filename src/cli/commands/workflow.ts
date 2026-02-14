@@ -6,6 +6,7 @@
  * - kspec workflow runs [--active] [--completed] [--workflow @ref] [--json]
  * - kspec workflow show @run [--json]
  * - kspec workflow abort @run [--reason text] [--json]
+ * - kspec workflow complete @run [--result <result>] [--json]
  */
 
 import chalk from "chalk";
@@ -28,7 +29,8 @@ import {
   type Workflow,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { WorkflowRun } from "../../schema/index.js";
+import type { WorkflowRun, WorkflowRunResult } from "../../schema/index.js";
+import { WorkflowRunResultSchema } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
@@ -323,6 +325,69 @@ async function workflowAbort(
     if (options.reason) {
       console.log(`  Reason: ${options.reason}`);
     }
+  }
+}
+
+/**
+ * Command: kspec workflow complete @run-id [--result <result>] [--json]
+ * Marks a workflow run as completed with an optional result.
+ * Use this for graceful exits (e.g., no_work_available) instead of aborting.
+ */
+async function workflowComplete(
+  runRef: string,
+  options: { result?: string; json?: boolean },
+) {
+  const ctx = await initContext();
+
+  const run = await findWorkflowRunByRef(ctx, runRef);
+  if (!run) {
+    error(errors.workflowRun.runNotFound(runRef));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  // Cannot complete already finished runs
+  if (run.status === "completed") {
+    error(`Cannot complete run ${shortUlid(run._ulid)}: already completed`);
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  if (run.status === "aborted") {
+    error(`Cannot complete run ${shortUlid(run._ulid)}: already aborted`);
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  // Validate result if provided
+  let result: WorkflowRunResult | undefined;
+  if (options.result) {
+    const parseResult = WorkflowRunResultSchema.safeParse(options.result);
+    if (!parseResult.success) {
+      const validResults = WorkflowRunResultSchema.options.join(", ");
+      error(`Invalid result: ${options.result}. Must be one of: ${validResults}`);
+      process.exit(EXIT_CODES.VALIDATION_FAILED);
+    }
+    result = parseResult.data;
+  }
+
+  // Update run status
+  run.status = "completed";
+  run.completed_at = new Date().toISOString();
+  if (result) {
+    run.result = result;
+  }
+
+  await updateWorkflowRun(ctx, run);
+  await commitIfShadow(ctx.shadow, "workflow-complete");
+
+  if (isJsonMode()) {
+    output({
+      run_id: run._ulid,
+      status: run.status,
+      result: run.result,
+      completed_at: run.completed_at,
+    });
+  } else {
+    const resultInfo = run.result ? ` (${run.result})` : "";
+    success(`Completed workflow run: ${shortUlid(run._ulid)}${resultInfo}`);
   }
 }
 
@@ -955,6 +1020,16 @@ export function registerWorkflowCommand(program: Command): void {
     .option("--reason <text>", "Reason for aborting")
     .option("--json", "Output JSON")
     .action(workflowAbort);
+
+  markMutating(workflow.command("complete"))
+    .description("Mark workflow run as completed (graceful exit)")
+    .argument("<run-ref>", "Run reference (@ulid or ulid prefix)")
+    .option(
+      "--result <result>",
+      "Completion result (success, no_work_available, early_exit)",
+    )
+    .option("--json", "Output JSON")
+    .action(workflowComplete);
 
   markMutating(workflow.command("next"))
     .description("Advance workflow run to next step")

@@ -1516,3 +1516,147 @@ describe('workflow next with step inputs', () => {
     expect(nextResult.stderr).toContain('Expected format: key=value');
   });
 });
+
+/**
+ * Tests for workflow complete command
+ * Distinguishes graceful exit (no_work_available) from abort (actual failure)
+ */
+describe('workflow complete', () => {
+  let runId: string;
+
+  beforeEach(async () => {
+    const result = kspec('workflow start @test-workflow --json', tempDir);
+    const output = JSON.parse(result.stdout);
+    runId = output.run_id;
+  });
+
+  it('should complete an active run with no result', async () => {
+    const result = kspec(`workflow complete @${runId} --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.run_id).toBe(runId);
+    expect(output.status).toBe('completed');
+    expect(output.completed_at).toBeDefined();
+    expect(output.result).toBeUndefined();
+
+    // Verify in file
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.status).toBe('completed');
+    expect(run.completed_at).toBeDefined();
+    expect(run.result).toBeUndefined();
+  });
+
+  it('should complete with no_work_available result', async () => {
+    const result = kspec(`workflow complete @${runId} --result no_work_available --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.run_id).toBe(runId);
+    expect(output.status).toBe('completed');
+    expect(output.result).toBe('no_work_available');
+
+    // Verify in file
+    const runsPath = path.join(tempDir, 'kynetic.runs.yaml');
+    const runsContent = await fs.readFile(runsPath, 'utf-8');
+    const doc = parseDocument(runsContent);
+    const runsData = doc.toJS() as { runs: any[] };
+
+    const run = runsData.runs[0];
+    expect(run.status).toBe('completed');
+    expect(run.result).toBe('no_work_available');
+  });
+
+  it('should complete with success result', async () => {
+    const result = kspec(`workflow complete @${runId} --result success --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.result).toBe('success');
+  });
+
+  it('should complete with early_exit result', async () => {
+    const result = kspec(`workflow complete @${runId} --result early_exit --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.result).toBe('early_exit');
+  });
+
+  it('should display human-readable output without --json', async () => {
+    const result = kspec(`workflow complete @${runId} --result no_work_available`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Completed workflow run:');
+    expect(result.stdout).toContain('(no_work_available)');
+  });
+
+  it('should display human-readable output without result', async () => {
+    const result = kspec(`workflow complete @${runId}`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Completed workflow run:');
+    expect(result.stdout).not.toContain('(');
+  });
+
+  it('should error if result is invalid', async () => {
+    const result = kspec(`workflow complete @${runId} --result invalid_result`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(result.stderr).toContain('Invalid result: invalid_result');
+    expect(result.stderr).toContain('success');
+    expect(result.stderr).toContain('no_work_available');
+    expect(result.stderr).toContain('early_exit');
+  });
+
+  it('should error if run does not exist', async () => {
+    const result = kspec('workflow complete @nonexistent --result success', tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(3); // NOT_FOUND
+    expect(result.stderr).toContain('Workflow run not found');
+  });
+
+  it('should error when completing an already completed run', async () => {
+    // Complete the run first
+    kspec(`workflow complete @${runId} --result success`, tempDir);
+
+    // Try to complete again
+    const result = kspec(`workflow complete @${runId} --result success`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(result.stderr).toContain('already completed');
+  });
+
+  it('should error when completing an aborted run', async () => {
+    // Abort the run first
+    kspec(`workflow abort @${runId}`, tempDir);
+
+    // Try to complete
+    const result = kspec(`workflow complete @${runId} --result success`, tempDir, { expectFail: true });
+
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(result.stderr).toContain('already aborted');
+  });
+
+  it('should complete a paused run', async () => {
+    // Pause the run first
+    kspec(`workflow pause @${runId}`, tempDir);
+
+    // Complete should work
+    const result = kspec(`workflow complete @${runId} --result early_exit --json`, tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+    expect(output.status).toBe('completed');
+    expect(output.result).toBe('early_exit');
+  });
+});

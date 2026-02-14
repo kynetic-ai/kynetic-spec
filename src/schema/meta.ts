@@ -193,6 +193,15 @@ export const WorkflowRunStatusSchema = z.enum([
 ]);
 
 /**
+ * Workflow run result - distinguishes between different completion types
+ */
+export const WorkflowRunResultSchema = z.enum([
+  "success", // Normal completion through all steps
+  "no_work_available", // Graceful exit - no eligible work to process
+  "early_exit", // Intentional exit before all steps (not an error)
+]);
+
+/**
  * Workflow run schema - tracks execution of a workflow
  */
 export const WorkflowRunSchema = z.object({
@@ -208,6 +217,7 @@ export const WorkflowRunSchema = z.object({
   initiated_by: z.string().optional(),
   abort_reason: z.string().optional(),
   task_ref: RefSchema.optional(),
+  result: WorkflowRunResultSchema.optional(), // Only set for completed runs
 });
 
 /**
@@ -249,6 +259,7 @@ export type MetaManifest = z.infer<typeof MetaManifestSchema>;
 export type StepResultStatus = z.infer<typeof StepResultStatusSchema>;
 export type StepResult = z.infer<typeof StepResultSchema>;
 export type WorkflowRunStatus = z.infer<typeof WorkflowRunStatusSchema>;
+export type WorkflowRunResult = z.infer<typeof WorkflowRunResultSchema>;
 export type WorkflowRun = z.infer<typeof WorkflowRunSchema>;
 export type WorkflowRunsFile = z.infer<typeof WorkflowRunsFileSchema>;
 
