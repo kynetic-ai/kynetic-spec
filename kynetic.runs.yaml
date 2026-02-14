@@ -3440,6 +3440,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-14T08:57:23.433Z
+    completed_at: 2026-02-14T08:58:11.828Z
     step_results:
       - step_index: 0
         status: completed
@@ -3467,4 +3468,11 @@ runs:
         completed_at: 2026-02-14T08:58:11.828Z
         notes: Nothing to capture. Clean iteration with no actionable observations. Workflow complete.
     initiated_by: "@claude"
-    completed_at: 2026-02-14T08:58:11.828Z
+  - _ulid: 01KHDQXC5HXAATG5N4CME28QCK
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-14T09:32:35.377Z
+    step_results: []
+    initiated_by: "@claude"
