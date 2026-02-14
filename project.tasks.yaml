@@ -47698,6 +47698,7 @@
         updates. Discovered restructuring @testing-infrastructure."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHAQCCMSRGX4DF2G78MTEG98
   slugs: []
   title: "Fix: plan import should warn when Specs section has no fenced YAML block"
