@@ -39,13 +39,18 @@ import {
   ReferenceIndex,
 } from "../../parser/index.js";
 import {
+  buildWrapUpContext,
   createCliRenderer,
   createTranslator,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  DEFAULT_WRAPUP_TIMEOUT,
+  type ExitReason,
   RALPH_PROMPT_TIMEOUT,
   runSubagent,
+  runWrapUpAgent,
   type SubagentContext,
+  WRAPUP_AGENT_PREFIX,
 } from "../../ralph/index.js";
 import {
   appendEvent,
@@ -1233,6 +1238,12 @@ export function registerRalphCommand(program: Command): void {
         // AC: @ralph-end-loop ac-detect, ac-graceful
         let endLoopRequested = false;
 
+        // AC: @ralph-wrap-up-agent-on-loop-exit ac-1 - Track exit reason for wrap-up
+        let exitReason: ExitReason | null = null;
+        let lastIterationCtx: SessionContext | null = null;
+        let lastErrorMessage: string | undefined;
+        const recentTaskRefs: string[] = [];
+
         try {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
@@ -1286,6 +1297,8 @@ export function registerRalphCommand(program: Command): void {
             consecutiveFailures = failureTracker.count;
 
             if (!continueLoop) {
+              exitReason = "max_failures";
+              lastIterationCtx = sessionCtx;
               break;
             }
 
@@ -1311,6 +1324,8 @@ export function registerRalphCommand(program: Command): void {
                   .map(([ref, status]) => `${ref}: ${status}`)
                   .join(", ");
                 info(`All explicit tasks completed or blocked (${statusList}). Exiting loop.`);
+                exitReason = "explicit_tasks_done";
+                lastIterationCtx = currentCtx;
                 break;
               }
             }
@@ -1326,6 +1341,8 @@ export function registerRalphCommand(program: Command): void {
               } else {
                 info("No automation-eligible tasks (ready or in_progress). Exiting loop.");
               }
+              exitReason = "no_tasks";
+              lastIterationCtx = currentCtx;
               break;
             }
 
@@ -1616,9 +1633,18 @@ export function registerRalphCommand(program: Command): void {
               success(`Completed iteration ${iteration}`);
               consecutiveFailures = 0;
 
+              // Track task refs from this iteration for wrap-up context
+              for (const t of sessionCtx.active_tasks) {
+                if (!recentTaskRefs.includes(t.ref)) {
+                  recentTaskRefs.push(t.ref);
+                }
+              }
+              lastIterationCtx = sessionCtx;
+
               // AC: @ralph-end-loop ac-graceful - Check for end-loop signal
               if (endLoopRequested) {
                 info("Agent requested end of loop. Exiting gracefully.");
+                exitReason = "end_loop_signal";
                 break;
               }
 
@@ -1663,11 +1689,19 @@ export function registerRalphCommand(program: Command): void {
 
               if (consecutiveFailures >= maxFailures) {
                 error(errors.failures.reachedMaxFailures(maxFailures));
+                exitReason = "max_failures";
+                lastErrorMessage = lastError?.message;
+                lastIterationCtx = sessionCtx;
                 break;
               }
 
               info("Continuing to next iteration...");
             }
+          }
+
+          // If loop completed all iterations without breaking
+          if (exitReason === null) {
+            exitReason = "max_iterations";
           }
         } finally {
           // Remove signal handlers to avoid double cleanup
@@ -1677,6 +1711,7 @@ export function registerRalphCommand(program: Command): void {
           // Clean up agent
           if (agent) {
             agent.kill();
+            agent = null;
           }
 
           // AC: @ralph-task-limit ac-reset - Clear marker file when session ends
@@ -1684,6 +1719,72 @@ export function registerRalphCommand(program: Command): void {
 
           // AC: @ralph-end-loop ac-cleanup - Clear end-loop marker when session ends
           await clearEndLoopMarker(ctx.rootDir);
+
+          // AC: @ralph-wrap-up-agent-on-loop-exit ac-1, ac-2, ac-3, ac-4, ac-5
+          // Spawn wrap-up agent if not dry-run and we have an exit reason
+          if (!options.dryRun && exitReason) {
+            console.log("");
+            console.log(chalk.cyan(`${"═".repeat(60)}`));
+            console.log(chalk.cyan.bold(`${WRAPUP_AGENT_PREFIX} Starting Wrap-Up`));
+            console.log(chalk.cyan(`${"═".repeat(60)}`));
+            console.log("");
+
+            const inProgressTasks = lastIterationCtx?.active_tasks || [];
+            const pendingReviewTasks = lastIterationCtx?.pending_review_tasks || [];
+
+            const wrapUpCtx = buildWrapUpContext(
+              exitReason,
+              sessionId,
+              maxLoops, // Use maxLoops as iteration (we're at the end)
+              maxLoops,
+              inProgressTasks,
+              pendingReviewTasks,
+              recentTaskRefs,
+              process.cwd(),
+              lastErrorMessage,
+            );
+
+            info(`Exit reason: ${exitReason}`);
+            info(`Working tree: ${wrapUpCtx.workingTree.clean ? "clean" : "has uncommitted changes"}`);
+
+            const wrapUpResult = await runWrapUpAgent(
+              adapter,
+              wrapUpCtx,
+              {
+                yolo: options.yolo,
+                cwd: process.cwd(),
+                handleRequest: (client, reqId, method, params) =>
+                  handleRequest(client, reqId, method, params, options.yolo),
+              },
+              DEFAULT_WRAPUP_TIMEOUT,
+            );
+
+            // Log wrap-up result
+            await appendEvent(specDir, {
+              session_id: sessionId,
+              type: "session.wrapup",
+              data: {
+                exitReason,
+                result: wrapUpResult,
+              },
+            });
+
+            if (wrapUpResult.skipped) {
+              info(`${WRAPUP_AGENT_PREFIX} Skipped: ${wrapUpResult.skipReason}`);
+            } else if (wrapUpResult.timedOut) {
+              warn(`${WRAPUP_AGENT_PREFIX} Timed out after ${DEFAULT_WRAPUP_TIMEOUT / 1000}s`);
+            } else if (!wrapUpResult.success) {
+              warn(`${WRAPUP_AGENT_PREFIX} Failed: ${wrapUpResult.error}`);
+            } else {
+              success(`${WRAPUP_AGENT_PREFIX} Completed`);
+            }
+
+            console.log("");
+            console.log(chalk.cyan(`${"═".repeat(60)}`));
+            console.log(chalk.cyan.bold(`${WRAPUP_AGENT_PREFIX} Wrap-Up Complete`));
+            console.log(chalk.cyan(`${"═".repeat(60)}`));
+            console.log("");
+          }
 
           // Log session end
           const status =
@@ -1694,6 +1795,7 @@ export function registerRalphCommand(program: Command): void {
             data: {
               status,
               consecutiveFailures,
+              exitReason,
             },
           });
           await updateSessionStatus(specDir, sessionId, status);

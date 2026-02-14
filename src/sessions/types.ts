@@ -71,6 +71,7 @@ export const EventTypeSchema = z.enum([
   "session.start",
   "session.update",
   "session.end",
+  "session.wrapup",
   "prompt.sent",
   "tool.call",
   "tool.result",

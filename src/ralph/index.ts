@@ -47,3 +47,16 @@ export {
   shouldEscalate,
   type TaskFailureResult,
 } from "./loop-errors.js";
+// Wrap-up agent
+export {
+  buildWrapUpContext,
+  buildWrapUpPrompt,
+  DEFAULT_WRAPUP_TIMEOUT,
+  type ExitReason,
+  isWrapUpNeeded,
+  runWrapUpAgent,
+  WRAPUP_AGENT_PREFIX,
+  type WrapUpContext,
+  type WrapUpOptions,
+  type WrapUpResult,
+} from "./wrap-up.js";
