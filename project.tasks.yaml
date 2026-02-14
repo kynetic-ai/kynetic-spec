@@ -47690,6 +47690,7 @@
     - plan-import
   vcs_refs: []
   created_at: 2026-02-13T05:25:31.020Z
+  started_at: 2026-02-14T08:30:54.686Z
   notes:
     - _ulid: 01KHAQC88DKY4SCNNV6CSYCVVW
       created_at: 2026-02-13T05:25:31.021Z
@@ -47697,9 +47698,19 @@
       content: "Bug: --update only updates metadata, not ACs. ac-26 tightened to explicitly require AC
         updates. Discovered restructuring @testing-infrastructure."
       supersedes: null
+    - _ulid: 01KHDMCQ79N4FEYW1565VYWJG5
+      created_at: 2026-02-14T08:31:03.913Z
+      author: "@claude"
+      content: "Implemented actual update logic for plan import --update flag. Previously the code had a
+        placeholder comment 'Update logic would go here - for now, skip' with no actual
+        implementation. Now updateSpecItem() is called with description, type, traits, and
+        acceptance_criteria from the plan spec. Added 2 new tests: one verifying AC updates work
+        correctly (creates spec with AC, imports plan with different ACs, verifies ACs are
+        replaced), one verifying trait updates work (verifies traits and type are updated). All 29
+        plan import tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T08:30:54.686Z
 - _ulid: 01KHAQCCMSRGX4DF2G78MTEG98
   slugs: []
   title: "Fix: plan import should warn when Specs section has no fenced YAML block"
