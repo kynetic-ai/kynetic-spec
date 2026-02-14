@@ -13185,3 +13185,4 @@
 {"ts":1771068398672,"seq":13184,"type":"session.update","session_id":"01KHDM70255CFAQXK6E8A3QYVB","data":{"iteration":11,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" feature"}}}}
 {"ts":1771068398720,"seq":13185,"type":"session.update","session_id":"01KHDM70255CFAQXK6E8A3QYVB","data":{"iteration":11,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}}
 {"ts":1771068399194,"seq":13186,"type":"session.update","session_id":"01KHDM70255CFAQXK6E8A3QYVB","data":{"iteration":11,"phase":"reflect","stopReason":"end_turn","completed":true}}
+{"ts":1771069006283,"seq":13187,"type":"session.end","session_id":"01KHDM70255CFAQXK6E8A3QYVB","data":{"status":"completed","consecutiveFailures":1}}

@@ -47867,7 +47867,7 @@
   type: task
   spec_ref: "@01KHAP9PZ2WEMV9PRV037MC5Y8"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -47959,6 +47959,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T11:37:36.006Z
+  closed_reason: "Merged in PR #369. Implemented ralph wrap-up agent that spawns on loop exit (all
+    exit reasons: no_tasks, end_loop_signal, max_iterations, error, max_failures,
+    explicit_tasks_done). Gathers working tree state (staged/unstaged/untracked), tasks, and session
+    info. Builds focused prompt for subagent to handle cleanup (commit, stash, or flag for review).
+    Runs with 2-minute timeout. All 5 ACs covered by 35 tests."
 - _ulid: 01KHAPKTPZHQ945MRMQ6V6265K
   slugs: []
   title: "Fix: auto-prefix @ on depends_on reference values"
