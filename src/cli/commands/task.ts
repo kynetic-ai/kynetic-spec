@@ -30,6 +30,7 @@ import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { parseTagsArray } from "../parse-utils.js";
 import {
+  annotateNotesWithSuperseded,
   error,
   formatTaskDetails,
   info,
@@ -477,7 +478,8 @@ export function registerTaskCommands(program: Command): void {
   task
     .command("get <ref>")
     .description("Get task details")
-    .action(async (ref: string) => {
+    .option("--all", "Show all notes including superseded ones")
+    .action(async (ref: string, options: { all?: boolean }) => {
       try {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
@@ -535,8 +537,10 @@ export function registerTaskCommands(program: Command): void {
         }
 
         // Build JSON output with inherited traits (AC: @trait-display ac-2)
+        // Always include all notes in JSON output with superseded computed field
         const jsonOutput = {
           ...foundTask,
+          notes: annotateNotesWithSuperseded(foundTask.notes),
           ...(inheritedTraits.length > 0 && {
             inherited_traits: inheritedTraits.map(({ trait, acs }) => ({
               ref: `@${trait.slug}`,
@@ -547,7 +551,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         output(jsonOutput, () => {
-          formatTaskDetails(foundTask, index);
+          formatTaskDetails(foundTask, index, { showAllNotes: options.all });
 
           // AC: @trait-display ac-3, ac-4, ac-5 - Show inherited AC per trait in labeled sections
           if (inheritedTraits.length > 0) {

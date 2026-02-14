@@ -1,8 +1,37 @@
 import chalk from "chalk";
 import type { ReferenceIndex } from "../parser/index.js";
-import type { Task, TaskStatus } from "../schema/index.js";
+import type { Note, Task, TaskStatus } from "../schema/index.js";
 import { fieldLabels, sectionHeaders, summaries } from "../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../utils/grep.js";
+
+/**
+ * Check if a note has been superseded by another note.
+ * A note is superseded if its ULID appears in any other note's `supersedes` field.
+ */
+export function isNoteSuperseded(note: Note, allNotes: Note[]): boolean {
+  return allNotes.some((n) => n.supersedes === note._ulid);
+}
+
+/**
+ * Filter notes to exclude superseded ones.
+ * Returns only notes that have not been superseded.
+ */
+export function filterSupersededNotes(notes: Note[]): Note[] {
+  return notes.filter((note) => !isNoteSuperseded(note, notes));
+}
+
+/**
+ * Annotate notes with superseded status for JSON output.
+ * Adds a computed `superseded` field to each note.
+ */
+export function annotateNotesWithSuperseded(
+  notes: Note[],
+): Array<Note & { superseded: boolean }> {
+  return notes.map((note) => ({
+    ...note,
+    superseded: isNoteSuperseded(note, notes),
+  }));
+}
 
 /**
  * Output options
@@ -409,10 +438,19 @@ export function formatTaskList(
   console.log(summaries.taskCount(tasks.length));
 }
 
+export interface FormatTaskDetailsOptions {
+  /** Show all notes including superseded ones (default: false) */
+  showAllNotes?: boolean;
+}
+
 /**
  * Format task details
  */
-export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
+export function formatTaskDetails(
+  task: Task,
+  index?: ReferenceIndex,
+  options: FormatTaskDetailsOptions = {},
+): void {
   console.log(chalk.bold(task.title));
   console.log(chalk.gray("─".repeat(40)));
   console.log(`${fieldLabels.ulid}      ${task._ulid}`);
@@ -614,11 +652,24 @@ export function formatTaskDetails(task: Task, index?: ReferenceIndex): void {
   }
 
   if (task.notes.length > 0) {
+    // Filter superseded notes unless showAllNotes is true
+    const notesToShow = options.showAllNotes
+      ? task.notes
+      : filterSupersededNotes(task.notes);
+    const hiddenCount = task.notes.length - notesToShow.length;
+
     console.log(`\n${sectionHeaders.notes}`);
-    for (const note of task.notes) {
+    for (const note of notesToShow) {
       const author = note.author || "unknown";
-      console.log(chalk.gray(`[${note.created_at}] ${author}:`));
+      // Mark if this note supersedes another
+      const supersededLabel = note.supersedes ? chalk.gray(" (supersedes earlier note)") : "";
+      console.log(chalk.gray(`[${note.created_at}] ${author}:`) + supersededLabel);
       console.log(note.content);
+    }
+
+    // Show count of hidden notes if any
+    if (hiddenCount > 0) {
+      console.log(chalk.gray(`\n(${hiddenCount} superseded note${hiddenCount > 1 ? "s" : ""} hidden - use --all to show)`));
     }
   }
 
