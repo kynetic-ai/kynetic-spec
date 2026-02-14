@@ -47437,7 +47437,7 @@
   type: task
   spec_ref: "@output-format-option"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47513,6 +47513,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T10:02:05.615Z
+  closed_reason: "Merged in PR #364. Implemented output format shorthands (--json, --yaml, --raw) as
+    global CLI options. Added YAML output support using the yaml library. Conflict detection for
+    multiple format shorthands. 13 tests covering all ACs except ac-unsupported-format (not
+    applicable since --format is not global due to Commander.js limitations with child command
+    option shadowing)."
 - _ulid: 01KHA83Q69JANNJKXJPGVRFWXP
   slugs:
     - implement-module-scoped-item-listing
