@@ -32,19 +32,19 @@ import { parseTagsArray } from "../parse-utils.js";
 import {
   error,
   formatTaskDetails,
-  formatTaskList,
   info,
   isJsonMode,
   output,
   success,
   warn,
 } from "../output.js";
-import { grepItem } from "../../utils/grep.js";
 import {
   parseIntOption,
   validateEnumOption,
   validateSpecRef,
 } from "../validators.js";
+import { addListOptions, listTasksAction } from "./tasks.js";
+import { findClosestCommand } from "../suggest.js";
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -422,7 +422,40 @@ async function setTaskFields(
 export function registerTaskCommands(program: Command): void {
   const task = program
     .command("task")
-    .description("Operations on individual tasks");
+    .description("Operations on individual tasks")
+    .allowUnknownOption()
+    .allowExcessArguments();
+
+  // AC: @command-group-default-actions ac-bare-task, ac-unknown-subcommand
+  // Default action when no subcommand is given (e.g. `kspec task` or `kspec task --status pending`)
+  task.action(async (_options: Record<string, unknown>, cmd: Command) => {
+    const { Command: Cmd } = await import("commander");
+    const listCmd = addListOptions(new Cmd("_list"));
+    listCmd.exitOverride();
+    try {
+      listCmd.parse(cmd.args, { from: "user" });
+    } catch {
+      console.error(chalk.gray(`Run 'kspec task --help' to see available subcommands`));
+      process.exit(EXIT_CODES.ERROR);
+    }
+
+    // AC: @command-group-default-actions ac-unknown-subcommand
+    if (listCmd.args.length > 0) {
+      const unknownCmd = listCmd.args[0];
+      const subcommandNames = cmd.commands.map((c: Command) => c.name());
+      const suggestion = findClosestCommand(unknownCmd, subcommandNames);
+      console.error(chalk.red(`error: unknown command 'task ${unknownCmd}'`));
+      if (suggestion) {
+        console.error(chalk.yellow(`Did you mean: kspec task ${suggestion}?`));
+      } else {
+        console.error(chalk.gray(`Run 'kspec task --help' to see available subcommands`));
+      }
+      process.exit(EXIT_CODES.ERROR);
+    }
+
+    // AC: @command-group-default-actions ac-bare-with-options
+    await listTasksAction(listCmd.opts());
+  });
 
   // kspec task list - alias for 'kspec tasks list'
   task
@@ -437,79 +470,7 @@ export function registerTaskCommands(program: Command): void {
     .option("--full", "Show full details (notes, todos, timestamps)")
     .option("--count", "Show only the count of matching tasks")
     .action(async (options) => {
-      try {
-        const ctx = await initContext();
-        const allTasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-
-        // Load meta items if filtering by meta-ref
-        const { loadMetaContext } = await import("../../parser/meta.js");
-        const metaContext = await loadMetaContext(ctx);
-        const allMetaItems = [
-          ...metaContext.agents,
-          ...metaContext.workflows,
-          ...metaContext.conventions,
-          ...metaContext.observations,
-        ];
-
-        const index = new ReferenceIndex(allTasks, items, allMetaItems);
-
-        let taskList = allTasks;
-
-        // Apply filters
-        if (options.status) {
-          taskList = taskList.filter((t) => t.status === options.status);
-        }
-        if (options.type) {
-          taskList = taskList.filter((t) => t.type === options.type);
-        }
-        if (options.tag) {
-          taskList = taskList.filter((t) => t.tags.includes(options.tag));
-        }
-        if (options.metaRef) {
-          const metaRefResult = index.resolve(options.metaRef);
-          if (!metaRefResult.ok) {
-            error(errors.reference.metaRefNotFound(options.metaRef));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-          const targetRef = options.metaRef.startsWith("@")
-            ? options.metaRef
-            : `@${options.metaRef}`;
-          taskList = taskList.filter(
-            (t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef,
-          );
-        }
-        if (options.grep) {
-          taskList = taskList.filter((t) => {
-            const match = grepItem(
-              t as unknown as Record<string, unknown>,
-              options.grep,
-            );
-            return match !== null;
-          });
-        }
-
-        // AC: @trait-filterable-list ac-8
-        if (options.count) {
-          output({ count: taskList.length }, () => {
-            console.log(taskList.length);
-          });
-          return;
-        }
-
-        output(taskList, () =>
-          formatTaskList(
-            taskList,
-            options.verbose,
-            index,
-            options.grep,
-            options.full,
-          ),
-        );
-      } catch (err) {
-        error(errors.failures.listTasks, err);
-        process.exit(EXIT_CODES.ERROR);
-      }
+      await listTasksAction(options);
     });
 
   // kspec task get <ref>

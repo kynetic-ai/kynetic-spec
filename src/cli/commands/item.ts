@@ -316,8 +316,18 @@ export function registerItemCommands(program: Command): void {
           filter.type = options.type as ItemType;
         }
 
+        // AC: @multi-value-status-filter ac-item-list-parity, ac-invalid-item-status
         if (options.status) {
-          filter.implementation = options.status as ImplementationStatus;
+          const { parseMultiStatus } = await import("./tasks.js");
+          const { ImplementationStatusSchema } = await import("../../schema/common.js");
+          const statuses = parseMultiStatus(
+            options.status,
+            ImplementationStatusSchema.options,
+            "implementation status",
+          );
+          if (statuses) {
+            filter.implementation = statuses.length === 1 ? statuses[0] : statuses;
+          }
         }
 
         if (options.maturity) {
