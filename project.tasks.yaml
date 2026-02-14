@@ -47419,6 +47419,7 @@
         _sourceFile and _path, then filter the item list. Apply other filters
         after scoping.
   todos: []
+  automation: eligible
 - _ulid: 01KHA83QK1QJ07XQP3Z9ZAHS2K
   slugs:
     - implement-unified-cross-reference-lookup
