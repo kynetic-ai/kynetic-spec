@@ -47481,6 +47481,7 @@
         alongside existing --items-only and --tasks-only flags. Make the scope-only
         flags mutually exclusive with a validation check before search execution.
   todos: []
+  automation: eligible
 - _ulid: 01KHAP909YFZT8WAP78BKA1XGP
   slugs: []
   title: Distinguish graceful exit from abort in task-work-loop workflow
