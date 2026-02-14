@@ -47680,7 +47680,7 @@
     metadata seems to update. Should either update ACs or document what --update touches. Discovered
     when restructuring @testing-infrastructure parent spec.
   spec_ref: "@plan-import"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
