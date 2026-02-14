@@ -43582,7 +43582,7 @@
   description: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
     invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43615,6 +43615,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T09:05:53.346Z
+  closed_reason: "Merged in PR #361. Implemented TTL-based caching for scanTestCoverage() results with
+    60s expiration. Added coverage-cache.ts module with getCachedTestCoverage() and
+    invalidateTestCoverageCache() functions, per-project caching for multi-directory daemon support,
+    and parallel scan protection. Includes 11 tests covering caching, TTL expiration, invalidation,
+    and multi-project scenarios."
 - _ulid: 01KGGWAE59ENQWYH04CRDZBW3S
   slugs: []
   title: Support --tags x,y,z comma-separated syntax
