@@ -47768,6 +47768,7 @@
     - docs
   vcs_refs: []
   created_at: 2026-02-13T05:25:40.078Z
+  started_at: 2026-02-14T08:42:59.001Z
   notes:
     - _ulid: 01KHAQCH3FVP5YK3K683ZM6QRT
       created_at: 2026-02-13T05:25:40.079Z
@@ -47775,9 +47776,16 @@
       content: "Docs: fenced YAML format requirement not mentioned in --help or /spec-plan skill. Needs
         updating across all projects in ~/Projects that use kspec."
       supersedes: null
+    - _ulid: 01KHDN5MSV4E7XXBBXS7FJ4CZA
+      created_at: 2026-02-14T08:44:40.635Z
+      author: "@claude"
+      content: Updated plan import --help text to include Format section explaining the fenced YAML code
+        block requirement. Also updated spec-plan skill SKILL.md with an Important callout
+        explaining that the Specs section MUST contain a fenced YAML code block. All 29 plan import
+        tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T08:42:59.001Z
 - _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
   slugs: []
   title: Gate reflect phase on meaningful session work during ralph loop
