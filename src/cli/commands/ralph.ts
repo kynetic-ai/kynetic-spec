@@ -284,6 +284,110 @@ function extractBashCommand(update: SessionUpdate): string | null {
   return command;
 }
 
+// ─── Explicit Task Scope ─────────────────────────────────────────────────────
+
+/**
+ * Parsed explicit task scope for --tasks flag.
+ * AC: @cli-ralph ac-21
+ */
+interface ExplicitTaskScope {
+  /** Original refs as provided by user */
+  refs: string[];
+  /** Resolved ULIDs for the tasks */
+  ulids: string[];
+}
+
+/**
+ * Parse and validate --tasks flag value.
+ * Returns resolved ULIDs for the specified task refs.
+ * AC: @cli-ralph ac-21
+ *
+ * @throws Error if any ref cannot be resolved or is not a task
+ */
+async function parseExplicitTasks(
+  ctx: KspecContext,
+  tasksArg: string,
+): Promise<ExplicitTaskScope> {
+  const refs = tasksArg.split(",").map((r) => r.trim()).filter(Boolean);
+
+  if (refs.length === 0) {
+    throw new Error("--tasks requires at least one task reference");
+  }
+
+  // Load tasks and items for resolution
+  const tasks = await loadAllTasks(ctx);
+  const items = await loadAllItems(ctx);
+  const index = new ReferenceIndex(tasks, items);
+
+  const ulids: string[] = [];
+
+  for (const ref of refs) {
+    const result = index.resolve(ref);
+    if (!result.ok) {
+      throw new Error(`Cannot resolve task reference: ${ref}`);
+    }
+
+    // Verify it's a task (not a spec item)
+    const task = tasks.find((t) => t._ulid === result.ulid);
+    if (!task) {
+      throw new Error(`Reference ${ref} is not a task`);
+    }
+
+    ulids.push(result.ulid);
+  }
+
+  return { refs, ulids };
+}
+
+/**
+ * Filter session context to only include tasks from explicit scope.
+ * AC: @cli-ralph ac-21
+ */
+function filterByExplicitTasks(
+  ctx: SessionContext,
+  scope: ExplicitTaskScope,
+): SessionContext {
+  // Task refs in context are short ULIDs (variable length from shortUlid())
+  // Check if the context ref is a prefix of any explicit ULID
+  const matchesScope = (taskRef: string) => {
+    return scope.ulids.some((ulid) => ulid.startsWith(taskRef));
+  };
+
+  return {
+    ...ctx,
+    active_tasks: ctx.active_tasks.filter((t) => matchesScope(t.ref)),
+    pending_review_tasks: ctx.pending_review_tasks.filter((t) => matchesScope(t.ref)),
+    ready_tasks: ctx.ready_tasks.filter((t) => matchesScope(t.ref)),
+  };
+}
+
+/**
+ * Check if all explicit tasks are completed or blocked.
+ * AC: @cli-ralph ac-21
+ */
+async function allExplicitTasksDone(
+  ctx: KspecContext,
+  scope: ExplicitTaskScope,
+): Promise<{ done: boolean; statuses: Map<string, string> }> {
+  const tasks = await loadAllTasks(ctx);
+  const statuses = new Map<string, string>();
+
+  for (const ulid of scope.ulids) {
+    const task = tasks.find((t) => t._ulid === ulid);
+    if (task) {
+      statuses.set(ulid.slice(0, 8), task.status);
+    }
+  }
+
+  // Check if all are completed or blocked
+  const done = scope.ulids.every((ulid) => {
+    const status = statuses.get(ulid.slice(0, 8));
+    return status === "completed" || status === "blocked";
+  });
+
+  return { done, statuses };
+}
+
 // ─── Prompt Template ─────────────────────────────────────────────────────────
 
 // AC: @ralph-skill-delegation ac-1, ac-2, ac-3
@@ -293,6 +397,7 @@ function buildTaskWorkPrompt(
   maxLoops: number,
   sessionId: string,
   focus?: string,
+  explicitTaskScope?: ExplicitTaskScope,
 ): string {
   const focusSection = focus
     ? `
@@ -304,12 +409,27 @@ Keep this focus in mind throughout your work. It takes priority over default tas
 `
     : "";
 
+  // AC: @cli-ralph ac-21 - Explicit task scope indicator in prompt
+  const taskScopeSection = explicitTaskScope
+    ? `
+## Explicit Task Scope
+
+This session is scoped to specific tasks: ${explicitTaskScope.refs.join(", ")}
+
+**Only work on these tasks.** The loop will exit when all listed tasks are completed or blocked.
+`
+    : "";
+
+  const modeDescription = explicitTaskScope
+    ? "Loop mode means: no confirmations, auto-resolve decisions, explicit task scope (only the listed tasks)."
+    : "Loop mode means: no confirmations, auto-resolve decisions, automation-eligible tasks only.";
+
   return `# Kspec Automation Session - Task Work
 
 **Session ID:** \`${sessionId}\`
 **Iteration:** ${iteration} of ${maxLoops}
 **Mode:** Automated (no human in the loop)
-${focusSection}
+${focusSection}${taskScopeSection}
 
 ## Current State
 \`\`\`json
@@ -324,7 +444,7 @@ Run the task-work skill in loop mode:
 /task-work loop
 \`\`\`
 
-Loop mode means: no confirmations, auto-resolve decisions, automation-eligible tasks only.
+${modeDescription}
 
 **Normal flow:** Work on a task, create a PR, then stop responding. Ralph continues automatically —
 it checks for remaining eligible tasks at the start of each iteration and exits the loop itself when none remain.
@@ -926,6 +1046,10 @@ export function registerRalphCommand(program: Command): void {
       "Max tasks per iteration (0 = unlimited)",
       "1",
     )
+    .option(
+      "--tasks <refs>",
+      "Explicit task scope: only work on these tasks (comma-separated refs, e.g., @task1,@task2)",
+    )
     .action(async (args: string[], options) => {
       // Check for unknown subcommands that fell through to default
       // Only check args that look like subcommand names (alphanumeric with hyphens, no quotes)
@@ -1018,15 +1142,31 @@ export function registerRalphCommand(program: Command): void {
           restartEvery > 0 ? `, restart every ${restartEvery}` : "";
         const maxTasksInfo =
           maxTasks === 0 ? "unlimited" : `${maxTasks}`;
+
+        // Initialize kspec context early to validate --tasks
+        const ctx = await initContext();
+
+        // AC: @cli-ralph ac-21 - Parse explicit task scope
+        let explicitTaskScope: ExplicitTaskScope | undefined;
+        if (options.tasks) {
+          try {
+            explicitTaskScope = await parseExplicitTasks(ctx, options.tasks);
+            info(`Explicit task scope: ${explicitTaskScope.refs.join(", ")}`);
+          } catch (err) {
+            error(`Invalid --tasks argument: ${(err as Error).message}`);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+        }
+
+        const taskScopeInfo = explicitTaskScope
+          ? `, tasks=${explicitTaskScope.refs.join(",")}`
+          : "";
         info(
-          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo}, max-tasks=${maxTasksInfo})`,
+          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo}, max-tasks=${maxTasksInfo}${taskScopeInfo})`,
         );
         if (options.focus) {
           info(`Focus: ${options.focus}`);
         }
-
-        // Initialize kspec context
-        const ctx = await initContext();
         const specDir = ctx.specDir;
 
         // Create session for event tracking
@@ -1049,6 +1189,7 @@ export function registerRalphCommand(program: Command): void {
             maxTasks,
             yolo: options.yolo,
             focus: options.focus,
+            explicitTasks: explicitTaskScope?.refs,
           },
         });
 
@@ -1114,12 +1255,18 @@ export function registerRalphCommand(program: Command): void {
             }
             await clearEndLoopMarker(ctx.rootDir);
 
-            // Gather fresh context each iteration (only automation-eligible tasks)
-            // AC: @cli-ralph ac-16
-            const sessionCtx = await gatherSessionContext(ctx, {
+            // Gather fresh context each iteration
+            // AC: @cli-ralph ac-16 - Only automation-eligible tasks (unless explicit scope)
+            // AC: @cli-ralph ac-21 - With explicit task scope, ignore automation eligibility
+            let sessionCtx = await gatherSessionContext(ctx, {
               limit: "10",
-              eligible: true,
+              eligible: !explicitTaskScope, // Skip eligibility filter if explicit scope
             });
+
+            // AC: @cli-ralph ac-21 - Filter to explicit tasks if scope is set
+            if (explicitTaskScope) {
+              sessionCtx = filterByExplicitTasks(sessionCtx, explicitTaskScope);
+            }
 
             // AC: @ralph-subagent-spawning ac-8 - Process pending_review tasks BEFORE main iteration
             // This wraps consecutiveFailures in an object so it can be mutated by the helper
@@ -1149,8 +1296,23 @@ export function registerRalphCommand(program: Command): void {
             if (sessionCtx.pending_review_tasks.length > 0) {
               currentCtx = await gatherSessionContext(ctx, {
                 limit: "10",
-                eligible: true,
+                eligible: !explicitTaskScope,
               });
+              if (explicitTaskScope) {
+                currentCtx = filterByExplicitTasks(currentCtx, explicitTaskScope);
+              }
+            }
+
+            // AC: @cli-ralph ac-21 - Check explicit task completion
+            if (explicitTaskScope) {
+              const { done, statuses } = await allExplicitTasksDone(ctx, explicitTaskScope);
+              if (done) {
+                const statusList = Array.from(statuses.entries())
+                  .map(([ref, status]) => `${ref}: ${status}`)
+                  .join(", ");
+                info(`All explicit tasks completed or blocked (${statusList}). Exiting loop.`);
+                break;
+              }
             }
 
             // Check for automation-eligible tasks (ready or in_progress)
@@ -1159,7 +1321,11 @@ export function registerRalphCommand(program: Command): void {
             const hasReadyTasks = currentCtx.ready_tasks.length > 0;
 
             if (!hasActiveTasks && !hasReadyTasks) {
-              info("No automation-eligible tasks (ready or in_progress). Exiting loop.");
+              if (explicitTaskScope) {
+                info("No explicit tasks available (ready or in_progress). Exiting loop.");
+              } else {
+                info("No automation-eligible tasks (ready or in_progress). Exiting loop.");
+              }
               break;
             }
 
@@ -1168,12 +1334,14 @@ export function registerRalphCommand(program: Command): void {
             const iterationStartTime = new Date();
 
             // Build prompts - task-work first, then reflect
+            // AC: @cli-ralph ac-21 - Include explicit task scope in prompt
             const taskWorkPrompt = buildTaskWorkPrompt(
               currentCtx,
               iteration,
               maxLoops,
               sessionId,
               options.focus,
+              explicitTaskScope,
             );
             const reflectPrompt = buildReflectPrompt(
               iteration,
@@ -1181,7 +1349,7 @@ export function registerRalphCommand(program: Command): void {
               sessionId,
             );
 
-            // AC: @ralph-task-limit ac-dryrun
+            // AC: @ralph-task-limit ac-dryrun, @cli-ralph ac-21
             if (options.dryRun) {
               console.log(
                 chalk.yellow("=== DRY RUN - Configuration ===\n"),
@@ -1191,6 +1359,9 @@ export function registerRalphCommand(program: Command): void {
               console.log(`  max-retries: ${maxRetries}`);
               console.log(`  max-failures: ${maxFailures}`);
               console.log(`  restart-every: ${restartEvery === 0 ? "never" : restartEvery}`);
+              if (explicitTaskScope) {
+                console.log(`  explicit-tasks: ${explicitTaskScope.refs.join(", ")}`);
+              }
               console.log(
                 chalk.yellow("\n=== Task Work Prompt ===\n"),
               );

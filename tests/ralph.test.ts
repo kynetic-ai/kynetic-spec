@@ -1386,4 +1386,176 @@ describe('subagent module', () => {
       expect(typeof renderer.render).toBe('function');
     });
   });
+
+  // ─── Explicit Task Scope Tests ──────────────────────────────────────────────
+  // AC: @cli-ralph ac-21
+
+  describe('--tasks flag (explicit task scope)', () => {
+    let tempDir: string;
+
+    beforeEach(async () => {
+      tempDir = await setupTempFixtures();
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(tempDir);
+    });
+
+    // AC: @cli-ralph ac-21 - Basic explicit task scope
+    it('accepts --tasks flag with task references', async () => {
+      const result = runRalph('--dry-run --tasks @test-task-pending', tempDir);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('explicit-tasks: @test-task-pending');
+      expect(result.stdout).toContain('Explicit Task Scope');
+    });
+
+    // AC: @cli-ralph ac-21 - Multiple tasks
+    it('accepts comma-separated task refs', async () => {
+      const result = runRalph('--dry-run --tasks @test-task-pending,@test-task-secondary', tempDir);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('explicit-tasks: @test-task-pending, @test-task-secondary');
+    });
+
+    // AC: @cli-ralph ac-21 - ULID format
+    it('accepts ULID format task refs', async () => {
+      const result = runRalph('--dry-run --tasks @01KF1645CA45ZT43W2T6HJMVA1', tempDir);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Explicit Task Scope');
+    });
+
+    // AC: @cli-ralph ac-21 - Short ULID format
+    it('accepts short ULID format task refs', async () => {
+      // Use 01KF1645CA which uniquely identifies test-task-pending
+      const result = runRalph('--dry-run --tasks @01KF1645CA', tempDir);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Explicit Task Scope');
+    });
+
+    // AC: @cli-ralph ac-21 - Invalid task ref
+    it('errors on invalid task reference', async () => {
+      const result = runRalph('--dry-run --tasks @nonexistent-task', tempDir);
+
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain('Cannot resolve task reference');
+    });
+
+    // AC: @cli-ralph ac-21 - Prompt includes scope indicator
+    it('includes explicit task scope in prompt', async () => {
+      const result = runRalph('--dry-run --tasks @test-task-pending', tempDir);
+
+      expect(result.stdout).toContain('Explicit Task Scope');
+      expect(result.stdout).toContain('This session is scoped to specific tasks');
+      expect(result.stdout).toContain('@test-task-pending');
+    });
+
+    // AC: @cli-ralph ac-21 - Mode description updated
+    it('updates mode description for explicit scope', async () => {
+      const result = runRalph('--dry-run --tasks @test-task-pending', tempDir);
+
+      // Should mention explicit task scope, not automation-eligible
+      expect(result.stdout).toContain('explicit task scope');
+    });
+
+    // AC: @cli-ralph ac-21 - Session start event includes explicit tasks
+    it('logs explicit tasks in session start event', async () => {
+      const result = runRalph('--max-loops 1 --tasks @test-task-pending', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      // Check events file
+      const sessionsDir = path.join(tempDir, 'sessions');
+      const sessions = await fs.readdir(sessionsDir).catch(() => []);
+
+      if (sessions.length > 0) {
+        const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+        const events = await fs.readFile(eventsPath, 'utf-8');
+
+        expect(events).toContain('explicitTasks');
+        expect(events).toContain('@test-task-pending');
+      }
+    });
+
+    // AC: @cli-ralph ac-21 - Ignores automation eligibility with explicit scope
+    it('includes manual_only tasks when explicitly specified', async () => {
+      // test-task-secondary is automation: manual_only
+      const result = runRalph('--dry-run --tasks @test-task-secondary', tempDir);
+
+      expect(result.exitCode).toBe(0);
+      // Should not fail even though task is manual_only
+      expect(result.stdout).toContain('Explicit Task Scope');
+      expect(result.stdout).toContain('@test-task-secondary');
+    });
+
+    // AC: @cli-ralph ac-21 - Only shows explicitly listed tasks in context
+    it('filters context to only include explicit tasks', async () => {
+      const result = runRalph('--dry-run --tasks @test-task-pending', tempDir);
+
+      // Context should only show the explicitly listed task
+      // The ready_tasks should not include test-task-secondary (even though it's pending)
+      expect(result.stdout).toContain('test-task-pending');
+
+      // Parse the JSON context from output to verify filtering
+      const contextMatch = result.stdout.match(/## Current State\s+```json\s+([\s\S]*?)\s+```/);
+      if (contextMatch) {
+        const context = JSON.parse(contextMatch[1]);
+        // Ready tasks should only include the explicit task
+        const readyRefs = context.ready_tasks.map((t: { ref: string }) => t.ref);
+        expect(readyRefs.length).toBeLessThanOrEqual(1);
+        // Should not include test-task-secondary
+        expect(readyRefs).not.toContain('01KF1645C'); // Short ULID prefix for secondary
+      }
+    });
+
+    // AC: @cli-ralph ac-21 - Exit when all explicit tasks completed
+    it('exits when all explicit tasks are completed', async () => {
+      // test-task-completed is already completed
+      const result = runRalph('--max-loops 5 --tasks @test-task-completed', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.output).toContain('All explicit tasks completed or blocked');
+      // Should not run multiple iterations
+      expect(result.output).not.toContain('Iteration 2/5');
+    });
+
+    // AC: @cli-ralph ac-21 - Exit when all explicit tasks blocked
+    it('exits when all explicit tasks are blocked', async () => {
+      // Modify test-task-pending to be blocked
+      const tasksPath = path.join(tempDir, 'project.tasks.yaml');
+      const content = await fs.readFile(tasksPath, 'utf-8');
+      const modified = content.replace(
+        /title: Test pending task\n    type: task\n    status: pending/,
+        'title: Test pending task\n    type: task\n    status: blocked'
+      );
+      await fs.writeFile(tasksPath, modified);
+
+      const result = runRalph('--max-loops 5 --tasks @test-task-pending', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.output).toContain('All explicit tasks completed or blocked');
+    });
+
+    // AC: @cli-ralph ac-21 - Empty --tasks value
+    it('errors on empty --tasks value', async () => {
+      const result = runRalph('--dry-run --tasks ""', tempDir);
+
+      // Should error or show warning
+      expect(result.exitCode).not.toBe(0);
+    });
+
+    // AC: @cli-ralph ac-21 - Reference to spec item (not task) should error
+    it('errors when --tasks references a spec item instead of task', async () => {
+      // Try to use a spec item ref (if any exist in fixtures)
+      const result = runRalph('--dry-run --tasks @some-spec-item', tempDir);
+
+      expect(result.exitCode).not.toBe(0);
+      // Should mention it's not a task or cannot be resolved
+      expect(result.output).toMatch(/cannot resolve|not a task/i);
+    });
+  });
 });
