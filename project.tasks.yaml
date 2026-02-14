@@ -47455,7 +47455,7 @@
     instead of status:aborted. Makes abort rate meaningful (actual failures) vs normal loop
     termination. Data: 11 of 16 'aborts' were normal no-work exits, inflating abort rate to 69%."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47473,6 +47473,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T02:47:44.638Z
 - _ulid: 01KHAP9ED64XM64EVD24PA78BV
   slugs: []
   title: Add --tasks flag to ralph for explicit task scoping
