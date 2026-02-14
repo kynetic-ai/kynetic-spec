@@ -47814,6 +47814,10 @@
   spec_ref: "@cli-ralph"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #368. Implemented --tasks flag for explicit task scoping in ralph:
+    parseExplicitTasks() validates and resolves refs, filterByExplicitTasks() filters session
+    context, allExplicitTasksDone() checks completion for loop exit. Bypasses automation eligibility
+    for explicitly listed tasks. 14 tests covering ac-21 and all edge cases."
   depends_on: []
   context: []
   priority: 3
@@ -47821,6 +47825,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:06:30.434Z
   started_at: 2026-02-14T10:55:40.812Z
+  completed_at: 2026-02-14T11:14:35.280Z
   notes:
     - _ulid: 01KHAP9ED6MDS0ANH3ZN71TG48
       created_at: 2026-02-13T05:06:30.438Z
@@ -47855,11 +47860,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T11:14:35.280Z
-  closed_reason: "Merged in PR #368. Implemented --tasks flag for explicit task scoping in ralph:
-    parseExplicitTasks() validates and resolves refs, filterByExplicitTasks() filters session
-    context, allExplicitTasksDone() checks completion for loop exit. Bypasses automation eligibility
-    for explicitly listed tasks. 14 tests covering ac-21 and all edge cases."
 - _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
   slugs:
     - task-ralph-wrap-up-agent-on-loop-exit
@@ -47867,7 +47867,7 @@
   type: task
   spec_ref: "@01KHAP9PZ2WEMV9PRV037MC5Y8"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ralph-command-automated-task-loop"
@@ -47916,6 +47916,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T11:15:07.945Z
 - _ulid: 01KHAPKTPZHQ945MRMQ6V6265K
   slugs: []
   title: "Fix: auto-prefix @ on depends_on reference values"
