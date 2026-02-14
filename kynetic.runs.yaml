@@ -3328,7 +3328,7 @@ runs:
   - _ulid: 01KHCTPQZX2YG163CWDJWNGJ4G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-14T01:02:09.406Z
     step_results:
@@ -3372,5 +3372,21 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-14T01:02:34.662Z
-        completed_at: 2026-02-14T01:02:34.662Z
+        completed_at: 2026-02-14T01:02:50.465Z
+        notes: >-
+          Coverage check results:
+
+          1. Silent safeParse failures - ALREADY TRACKED as observation @01KG0N4V (friction). Exact
+          same issue. Today's bug confirmed it affects tasks too, not just items. Still unresolved.
+
+          2. Ref normalization layer - PARTIALLY COVERED. @merge-ref-normalization exists for
+          merges, but no input-boundary normalization. The 3-location fix today is a symptom of this
+          gap.
+
+          3. Task completion by subagent - NOT TRACKED, but minor friction, not systemic enough to
+          capture.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-14T01:02:50.465Z
+        completed_at: 2026-02-14T01:02:50.465Z
     initiated_by: "@claude"
