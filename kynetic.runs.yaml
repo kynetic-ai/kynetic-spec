@@ -3328,7 +3328,7 @@ runs:
   - _ulid: 01KHCTPQZX2YG163CWDJWNGJ4G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-14T01:02:09.406Z
     step_results:
@@ -3353,5 +3353,24 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-14T01:02:24.965Z
-        completed_at: 2026-02-14T01:02:24.965Z
+        completed_at: 2026-02-14T01:02:34.662Z
+        notes: >-
+          Friction points:
+
+          1. Silent data loss on schema validation failure - loadTasksFromFile silently skips tasks
+          that fail safeParse. This is the root cause pattern: invalid data → silent drop → user
+          sees "not found". Should at minimum log a warning. This affects ALL entity types, not just
+          tasks.
+
+          2. No ref normalization layer - the @ prefix fix had to be applied in 3 separate locations
+          (task add, task set, derive). A shared normalizeRefs() at the schema/input boundary would
+          prevent this class of bug entirely.
+
+          3. kspec task complete requires manual --reason even for tasks completed via subagent PR
+          review - the subagent completed the tasks but I had to think about whether they were
+          already marked complete.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-14T01:02:34.662Z
+        completed_at: 2026-02-14T01:02:34.662Z
     initiated_by: "@claude"
