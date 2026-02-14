@@ -47232,7 +47232,7 @@
   type: task
   spec_ref: "@command-group-default-actions"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47255,6 +47255,7 @@
         Commander.js routes unknown subcommands to the error handler before the
         default action, so ac-unknown-subcommand should work naturally.
   todos: []
+  started_at: 2026-02-14T01:47:50.259Z
 - _ulid: 01KHA83PD9G7CW02FHQRYS5GQK
   slugs:
     - implement-multi-value-status-filter
@@ -47618,6 +47619,9 @@
   spec_ref: "@plan-import"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #353. Plan import now pushes a validation warning when ## Specs section
+    exists but has no fenced YAML code block. 3 new tests cover the warning, no-warning, and
+    no-section cases."
   depends_on: []
   context: []
   priority: 3
@@ -47628,6 +47632,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:25:35.513Z
   started_at: 2026-02-14T00:52:06.950Z
+  completed_at: 2026-02-14T00:52:27.458Z
   notes:
     - _ulid: 01KHAQCCMSAWS3BSCH35HMRAGC
       created_at: 2026-02-13T05:25:35.513Z
@@ -47636,10 +47641,6 @@
         Implements ac-34 on @plan-import."
       supersedes: null
   todos: []
-  completed_at: 2026-02-14T00:52:27.458Z
-  closed_reason: "Merged in PR #353. Plan import now pushes a validation warning when ## Specs section
-    exists but has no fenced YAML code block. 3 new tests cover the warning, no-warning, and
-    no-section cases."
 - _ulid: 01KHAQCH3EQXA8GEWFV1FMVXGV
   slugs: []
   title: Document fenced YAML requirement in plan import help and spec-plan skill
