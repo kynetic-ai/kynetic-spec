@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import type { Command } from "commander";
+import { Command } from "commander";
 import {
   type AssessmentSummary,
   assessTask,
@@ -27,17 +27,153 @@ import {
   output,
   success,
 } from "../output.js";
+import { findClosestCommand } from "../suggest.js";
+import {
+  TaskStatusSchema,
+} from "../../schema/common.js";
+
+/** List options shared between tasks list subcommand and default action */
+interface ListTasksOptions {
+  status?: string | string[];
+  type?: string;
+  tag?: string;
+  metaRef?: string;
+  grep?: string;
+  verbose?: boolean;
+  full?: boolean;
+  count?: boolean;
+}
 
 /**
- * Register the 'tasks' command group
+ * Parse multi-value status filter: supports comma-separated and repeated flags.
+ * AC: @multi-value-status-filter ac-comma-separated, ac-repeated-flag, ac-trailing-comma
  */
-export function registerTasksCommands(program: Command): void {
-  const tasks = program.command("tasks").description("Query and list tasks");
+export function parseMultiStatus<T extends string>(
+  input: string | string[] | undefined,
+  validValues: readonly T[],
+  typeName: string,
+): T[] | null {
+  if (!input) return null;
 
-  // kspec tasks list
-  tasks
-    .command("list")
-    .description("List all tasks")
+  // Normalize: repeated flags produce string[], single flag produces string
+  const raw = Array.isArray(input) ? input : [input];
+
+  // Split on commas, trim whitespace, filter empty strings
+  // AC: @multi-value-status-filter ac-trailing-comma
+  const values = raw
+    .flatMap((v) => v.split(","))
+    .map((v) => v.trim())
+    .filter((v) => v.length > 0);
+
+  if (values.length === 0) return null;
+
+  // Validate each value
+  // AC: @multi-value-status-filter ac-invalid-task-status, ac-invalid-item-status
+  for (const v of values) {
+    if (!(validValues as readonly string[]).includes(v)) {
+      error(`Invalid ${typeName}: ${v}. Must be one of: ${validValues.join(", ")}`);
+      process.exit(EXIT_CODES.ERROR);
+    }
+  }
+
+  return values as T[];
+}
+
+/**
+ * Shared task list logic used by both 'tasks list' and 'task list' subcommands,
+ * and as the default action when no subcommand is given.
+ * AC: @command-group-default-actions ac-bare-tasks, ac-bare-task, ac-bare-with-options
+ */
+export async function listTasksAction(options: ListTasksOptions): Promise<void> {
+  try {
+    const ctx = await initContext();
+    const allTasks = await loadAllTasks(ctx);
+    const items = await loadAllItems(ctx);
+
+    // Load meta items if filtering by meta-ref
+    const { loadMetaContext } = await import("../../parser/meta.js");
+    const metaContext = await loadMetaContext(ctx);
+    const allMetaItems = [
+      ...metaContext.agents,
+      ...metaContext.workflows,
+      ...metaContext.conventions,
+      ...metaContext.observations,
+    ];
+
+    const index = new ReferenceIndex(allTasks, items, allMetaItems);
+
+    let taskList = allTasks;
+
+    // Apply filters
+    // AC: @multi-value-status-filter ac-comma-separated, ac-repeated-flag, ac-single-value-unchanged
+    if (options.status) {
+      const statuses = parseMultiStatus(
+        options.status,
+        TaskStatusSchema.options,
+        "task status",
+      );
+      if (statuses) {
+        taskList = taskList.filter((t) => statuses.includes(t.status as any));
+      }
+    }
+    if (options.type) {
+      taskList = taskList.filter((t) => t.type === options.type);
+    }
+    if (options.tag) {
+      const tag = options.tag;
+      taskList = taskList.filter((t) => t.tags.includes(tag));
+    }
+    if (options.metaRef) {
+      // AC-meta-ref-2: Filter tasks by meta_ref
+      const metaRefResult = index.resolve(options.metaRef);
+      if (!metaRefResult.ok) {
+        error(errors.reference.metaRefNotFound(options.metaRef));
+        process.exit(EXIT_CODES.NOT_FOUND);
+      }
+      const targetRef = options.metaRef.startsWith("@")
+        ? options.metaRef
+        : `@${options.metaRef}`;
+      taskList = taskList.filter(
+        (t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef,
+      );
+    }
+    if (options.grep) {
+      const pattern = options.grep;
+      taskList = taskList.filter((t) => {
+        const match = grepItem(
+          t as unknown as Record<string, unknown>,
+          pattern,
+        );
+        return match !== null;
+      });
+    }
+
+    // AC: @trait-filterable-list ac-8
+    if (options.count) {
+      output({ count: taskList.length }, () => {
+        console.log(taskList.length);
+      });
+      return;
+    }
+
+    output(taskList, () =>
+      formatTaskList(
+        taskList,
+        options.verbose,
+        index,
+        options.grep,
+        options.full,
+      ),
+    );
+  } catch (err) {
+    error(errors.failures.listTasks, err);
+    process.exit(EXIT_CODES.ERROR);
+  }
+}
+
+/** Add list filter options to a command */
+export function addListOptions(cmd: Command): Command {
+  return cmd
     .option("-s, --status <status>", "Filter by status")
     .option("-t, --type <type>", "Filter by type")
     .option("--tag <tag>", "Filter by tag")
@@ -45,82 +181,55 @@ export function registerTasksCommands(program: Command): void {
     .option("-g, --grep <pattern>", "Search content with regex pattern")
     .option("-v, --verbose", "Show more details")
     .option("--full", "Show full details (notes, todos, timestamps)")
-    .option("--count", "Show only the count of matching tasks")
-    .action(async (options) => {
-      try {
-        const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
+    .option("--count", "Show only the count of matching tasks");
+}
 
-        // Load meta items if filtering by meta-ref
-        const { loadMetaContext } = await import("../../parser/meta.js");
-        const metaContext = await loadMetaContext(ctx);
-        const allMetaItems = [
-          ...metaContext.agents,
-          ...metaContext.workflows,
-          ...metaContext.conventions,
-          ...metaContext.observations,
-        ];
+/**
+ * Register the 'tasks' command group
+ */
+export function registerTasksCommands(program: Command): void {
+  const tasks = program.command("tasks").description("Query and list tasks")
+    .allowUnknownOption()
+    .allowExcessArguments();
 
-        const index = new ReferenceIndex(tasks, items, allMetaItems);
+  // AC: @command-group-default-actions ac-bare-tasks, ac-bare-with-options, ac-unknown-subcommand
+  // Default action when no subcommand is given (e.g. `kspec tasks` or `kspec tasks --status pending`)
+  tasks.action(async (_options: Record<string, unknown>, cmd: Command) => {
+    // Re-parse remaining args to extract list options.
+    // Commander passes all unrecognized tokens (options + excess args) via cmd.args.
+    const listCmd = addListOptions(new Command("_list"));
+    listCmd.exitOverride();
+    try {
+      listCmd.parse(cmd.args, { from: "user" });
+    } catch {
+      // Parse error — likely unknown option. Show help.
+      console.error(chalk.gray(`Run 'kspec tasks --help' to see available subcommands`));
+      process.exit(EXIT_CODES.ERROR);
+    }
 
-        let taskList = tasks;
-
-        // Apply filters
-        if (options.status) {
-          taskList = taskList.filter((t) => t.status === options.status);
-        }
-        if (options.type) {
-          taskList = taskList.filter((t) => t.type === options.type);
-        }
-        if (options.tag) {
-          taskList = taskList.filter((t) => t.tags.includes(options.tag));
-        }
-        if (options.metaRef) {
-          // AC-meta-ref-2: Filter tasks by meta_ref
-          const metaRefResult = index.resolve(options.metaRef);
-          if (!metaRefResult.ok) {
-            error(errors.reference.metaRefNotFound(options.metaRef));
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-          const targetRef = options.metaRef.startsWith("@")
-            ? options.metaRef
-            : `@${options.metaRef}`;
-          taskList = taskList.filter(
-            (t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef,
-          );
-        }
-        if (options.grep) {
-          taskList = taskList.filter((t) => {
-            const match = grepItem(
-              t as unknown as Record<string, unknown>,
-              options.grep,
-            );
-            return match !== null;
-          });
-        }
-
-        // AC: @trait-filterable-list ac-8
-        if (options.count) {
-          output({ count: taskList.length }, () => {
-            console.log(taskList.length);
-          });
-          return;
-        }
-
-        output(taskList, () =>
-          formatTaskList(
-            taskList,
-            options.verbose,
-            index,
-            options.grep,
-            options.full,
-          ),
-        );
-      } catch (err) {
-        error(errors.failures.listTasks, err);
-        process.exit(EXIT_CODES.ERROR);
+    // AC: @command-group-default-actions ac-unknown-subcommand
+    // After parsing known options, any remaining positional args are unknown subcommands.
+    if (listCmd.args.length > 0) {
+      const unknownCmd = listCmd.args[0];
+      const subcommandNames = cmd.commands.map((c: Command) => c.name());
+      const suggestion = findClosestCommand(unknownCmd, subcommandNames);
+      console.error(chalk.red(`error: unknown command 'tasks ${unknownCmd}'`));
+      if (suggestion) {
+        console.error(chalk.yellow(`Did you mean: kspec tasks ${suggestion}?`));
+      } else {
+        console.error(chalk.gray(`Run 'kspec tasks --help' to see available subcommands`));
       }
+      process.exit(EXIT_CODES.ERROR);
+    }
+
+    // AC: @command-group-default-actions ac-bare-with-options
+    await listTasksAction(listCmd.opts() as ListTasksOptions);
+  });
+
+  // kspec tasks list
+  addListOptions(tasks.command("list").description("List all tasks"))
+    .action(async (options: ListTasksOptions) => {
+      await listTasksAction(options);
     });
 
   // kspec tasks ready
