@@ -47773,7 +47773,7 @@
     Data shows p50 is 137s but most of that is stepping through gates that all pass trivially.
     Condition: only when review is genuinely clean (all checks pass on first look)."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
