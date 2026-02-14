@@ -47737,6 +47737,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T05:42:42.988Z
+  started_at: 2026-02-14T03:18:13.462Z
   notes:
     - _ulid: 01KHARBR1FJEF3R0E4P8QZ8DP5
       created_at: 2026-02-13T05:42:42.991Z
@@ -47746,9 +47747,18 @@
         runs. Gate at the skill level — check session introspection before running full reflect
         workflow."
       supersedes: null
+    - _ulid: 01KHD2KA3DMW2CSDFX4FMYYRVC
+      created_at: 2026-02-14T03:20:05.485Z
+      author: "@claude"
+      content: Added gating logic to reflect skill's Loop Mode section. The skill now instructs the agent
+        to check session introspection data (recently_completed tasks, working_tree status,
+        recent_commits) BEFORE starting the reflection workflow. If no meaningful session work is
+        detected (no tasks completed, no code changes, no commits), the agent outputs a skip message
+        and exits immediately without starting the workflow. This prevents wasted time on empty
+        reflection runs during ralph loops.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T03:18:13.462Z
 - _ulid: 01KHARBW0W7K5KG5Z2M7W5GM5J
   slugs: []
   title: PR-review-merge fast-path for clean merges
