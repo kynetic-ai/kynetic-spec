@@ -47445,6 +47445,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T00:58:42.381Z
+  started_at: 2026-02-14T09:40:20.956Z
   notes:
     - _ulid: 01KHA83PTEA3F4F1TWC7F342Z8
       created_at: 2026-02-13T00:58:42.382Z
@@ -47460,9 +47461,58 @@
         stringify(). Update output() to check yaml mode. Update @trait-json-output
         ac-6 to reference the --format system instead of the old json takes
         precedence behavior.
+    - _ulid: 01KHDS2WSABSAXDMX7G3ZQ16Y9
+      created_at: 2026-02-14T09:53:04.810Z
+      author: "@claude"
+      content: >-
+        Implemented output format shorthands (--json, --yaml, --raw) as global options.
+
+
+        Note: The --format <format> option cannot be global due to Commander.js limitations - when a
+        parent command defines an option, it shadows child command options with the same name. The
+        export command has its own --format option for different purposes (json, html), so global
+        --format would conflict.
+
+
+        Implementation:
+
+        - Added setYamlMode(), isYamlMode(), isStructuredMode() to output.ts
+
+        - Added YAML output support using the yaml library's stringify()
+
+        - Updated output(), success(), error(), warn(), info() to support YAML format
+
+        - Added --json, --yaml, --raw as global shorthands in index.ts preAction hook
+
+        - Conflict detection for multiple format shorthands
+
+        - 13 tests covering: JSON/YAML output, shorthands equivalence, conflict errors, global scope
+
+
+        ACs covered:
+
+        - ac-format-json: --json produces valid JSON ✓
+
+        - ac-format-yaml: --yaml produces valid YAML ✓
+
+        - ac-json-shorthand: --json works globally ✓
+
+        - ac-raw-shorthand: --raw = --json ✓
+
+        - ac-yaml-shorthand: --yaml works globally ✓
+
+        - ac-conflict-error: Multiple format shorthands error ✓
+
+        - ac-yaml-no-ansi: YAML output has no ANSI codes ✓
+
+        - ac-yaml-references: @ prefix preserved in YAML ✓
+
+        - ac-global-scope: Works on item list, tasks ready, session start ✓
+
+        - ac-unsupported-format: Not applicable (--format not global)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T09:40:20.956Z
 - _ulid: 01KHA83Q69JANNJKXJPGVRFWXP
   slugs:
     - implement-module-scoped-item-listing
