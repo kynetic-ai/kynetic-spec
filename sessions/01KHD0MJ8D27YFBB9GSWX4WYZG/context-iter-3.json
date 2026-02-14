@@ -1,0 +1,355 @@
+{
+  "generated_at": "2026-02-14T03:09:01.741Z",
+  "branch": "fix/ralph-noise-split-chunk",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHASR8",
+      "title": "Fix: ralph noise stripping leaks on split-chunk boundaries",
+      "started_at": "2026-02-14T02:59:51.802Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-02-14T03:07:30.625Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHASR8",
+      "task_title": "Fix: ralph noise stripping leaks on split-chunk boundaries",
+      "task_status": "pending_review",
+      "note_ulid": "01KHD1W8",
+      "created_at": "2026-02-14T03:07:30.625Z",
+      "author": "@claude",
+      "content": "Implemented boundary-aware buffering in createTranslator to handle noise patterns split across chunk boundaries. Key changes: (1) Added noiseBuffer to TranslatorState, (2) Created processChunkWithBuffer() that checks for partial noise patterns BEFORE stripping complete patterns, (3) Added getPartialNoiseLength() to detect when content ends with a potential partial noise pattern. 7 new tests covering split-chunk scenarios including partial at 'No onPostToolUse', partial tool IDs, multi-split patterns, and false-positive detection."
+    },
+    {
+      "task_ref": "01KHAP90",
+      "task_title": "Distinguish graceful exit from abort in task-work-loop workflow",
+      "task_status": "completed",
+      "note_ulid": "01KHD0XP",
+      "created_at": "2026-02-14T02:50:48.595Z",
+      "author": "@claude",
+      "content": "Added kspec workflow complete command with --result option. Supports success, no_work_available, early_exit results. Added result field to WorkflowRunSchema. 14 tests cover: completing runs with/without result, validation of invalid results, error handling for already-completed/aborted runs, completing paused runs."
+    },
+    {
+      "task_ref": "01KHA83PD",
+      "task_title": "Implement Multi-Value Status Filter",
+      "task_status": "completed",
+      "note_ulid": "01KHCY64",
+      "created_at": "2026-02-14T02:02:58.989Z",
+      "author": "@claude",
+      "content": "Added parseMultiStatus() utility that handles comma-separated values, repeated flags, trailing/leading commas, and enum validation. Applied to both tasks list (TaskStatus) and item list (ImplementationStatus). Backend already supported arrays. 10 tests covering all 8 ACs."
+    },
+    {
+      "task_ref": "01KHA83P0",
+      "task_title": "Implement Command Group Default Actions",
+      "task_status": "completed",
+      "note_ulid": "01KHCY63",
+      "created_at": "2026-02-14T02:02:57.979Z",
+      "author": "@claude",
+      "content": "Implemented default list action for tasks/task command groups using allowUnknownOption + re-parse approach. Extracted shared listTasksAction() and addListOptions() from duplicated code. Unknown subcommands detected after option parsing and show fuzzy suggestions. 11 tests covering all 6 ACs."
+    },
+    {
+      "task_ref": "01KHASR8",
+      "task_title": "Fix: ralph noise stripping leaks on split-chunk boundaries",
+      "task_status": "pending_review",
+      "note_ulid": "01KHASR8",
+      "created_at": "2026-02-13T06:07:01.514Z",
+      "author": "@claude",
+      "content": "Bug: noise phrases split across chunk boundaries (e.g. 'No onPostToolUse' + 'Hook found for tool use ID: toolu_...') both emit as streaming events. Need boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null. Analysis from PR #345 Codex review."
+    },
+    {
+      "task_ref": "01KHAQCC",
+      "task_title": "Fix: plan import should warn when Specs section has no fenced YAML block",
+      "task_status": "completed",
+      "note_ulid": "01KHAQCC",
+      "created_at": "2026-02-13T05:25:35.513Z",
+      "author": "@claude",
+      "content": "Bug: silently returns 0 specs 0 tasks when Specs section exists without code fence. Implements ac-34 on @plan-import."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHARBR",
+      "title": "Gate reflect phase on meaningful session work during ralph loop",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHARBW",
+      "title": "PR-review-merge fast-path for clean merges",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHAP90",
+      "title": "Distinguish graceful exit from abort in task-work-loop workflow",
+      "completed_at": "2026-02-14T02:59:22.050Z",
+      "closed_reason": "Merged in PR #355. Added 'kspec workflow complete' command with --result option supporting success, no_work_available, and early_exit results. This allows distinguishing graceful loop termination (no_work_available) from actual failures (abort), making abort rate metrics meaningful. Added WorkflowRunResultSchema to schema and 14 tests covering all scenarios."
+    },
+    {
+      "ref": "01KHA83PD",
+      "title": "Implement Multi-Value Status Filter",
+      "completed_at": "2026-02-14T02:11:45.446Z",
+      "closed_reason": "Merged in PR #354. --status filter on tasks list and item list now accepts comma-separated values (e.g. --status pending,in_progress). Invalid values show correct enum. Trailing/leading commas silently ignored. parseMultiStatus() utility handles both task and item status validation. 7 of 8 ACs covered by 10 tests. ac-repeated-flag gap noted: Commander.js option definition needs collect function for repeated flags -- can be addressed in follow-up."
+    },
+    {
+      "ref": "01KHA83P0",
+      "title": "Implement Command Group Default Actions",
+      "completed_at": "2026-02-14T02:11:38.022Z",
+      "closed_reason": "Merged in PR #354. kspec tasks and kspec task with no subcommand now default to list (exit 0). Options like --status, --json, --count forward correctly. Unknown subcommands show fuzzy suggestions. Shared listTasksAction() extracted to eliminate code duplication. All 6 ACs covered by 11 tests."
+    },
+    {
+      "ref": "01KHAQCC",
+      "title": "Fix: plan import should warn when Specs section has no fenced YAML block",
+      "completed_at": "2026-02-14T00:52:27.458Z",
+      "closed_reason": "Merged in PR #353. Plan import now pushes a validation warning when ## Specs section exists but has no fenced YAML code block. 3 new tests cover the warning, no-warning, and no-section cases."
+    },
+    {
+      "ref": "01KHAPKY",
+      "title": "Fix: task get should work for blocked tasks",
+      "completed_at": "2026-02-14T00:52:26.737Z",
+      "closed_reason": "Merged in PR #353. Root cause was bug 1 (bare refs failing RefSchema). With @ auto-prefix fix, tasks with depends_on are no longer silently dropped from CLI visibility."
+    },
+    {
+      "ref": "01KHAPKT",
+      "title": "Fix: auto-prefix @ on depends_on reference values",
+      "completed_at": "2026-02-14T00:52:25.990Z",
+      "closed_reason": "Merged in PR #353. Auto-prefixes @ on bare depends_on refs in task add, task set, and derive commands. 3 new tests confirm bare slugs and ULIDs are stored with @ prefix."
+    },
+    {
+      "ref": "01KGYBZM",
+      "title": "Apply kynetic-bot AGENTS.md learnings to kynetic-spec",
+      "completed_at": "2026-02-09T20:16:58.413Z",
+      "closed_reason": "Fixed 4 factual errors in AGENTS.md Running Services (PR #351, merged). Dual defaults captured as inbox item @01KH20S1. PR agent limitations finding not applicable. Duplicate guidance is minor — no action taken."
+    },
+    {
+      "ref": "01KGWDPY",
+      "title": "Update README and AGENTS.md with documentation for recent features",
+      "completed_at": "2026-02-08T03:25:58.270Z",
+      "closed_reason": "Merged in PR #349. Updated README.md (~12 to ~93 commands), AGENTS.md (+124 lines), and 3 skills (/kspec, /spec, /triage) with comprehensive documentation for recent features. Codex review caught and fixed 3 inaccuracies before merge."
+    },
+    {
+      "ref": "01KGWDPV",
+      "title": "Create shared CLI validation helpers (parseIntOption, validateRefExists, validateEnumOption)",
+      "completed_at": "2026-02-07T18:08:42.821Z",
+      "closed_reason": "Merged in PR #347"
+    },
+    {
+      "ref": "01KGVAZ6",
+      "title": "Fix: 'No onPostToolUseHook found' leaks past noise suppression",
+      "completed_at": "2026-02-07T14:14:15.729Z",
+      "closed_reason": "Merged in PR #345. Fixed noise suppression for hook warnings by changing from skip-entire-chunk to strip-patterns strategy. The stripNoise function now removes noise patterns from content while preserving surrounding text, handling both standalone noise and embedded noise concatenated with agent messages. Added comprehensive tests covering whitespace preservation, greedy matching prevention, and cross-chunk accumulation."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "032cfd4",
+      "full_hash": "032cfd4368d5502e68d1f060f6881ed2ecb3b711",
+      "date": "2026-02-14T03:07:52.000Z",
+      "message": "fix: ralph noise stripping handles split-chunk boundaries",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f220003",
+      "full_hash": "f2200039a22af9eb581be3d631afc6ab6be3848c",
+      "date": "2026-02-14T02:59:12.000Z",
+      "message": "feat: add workflow complete command for graceful exit distinction (#355)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4b8fec6",
+      "full_hash": "4b8fec68eb60873e7730a0e39fa6deeef948f47f",
+      "date": "2026-02-14T02:51:03.000Z",
+      "message": "feat: add workflow complete command for graceful exit distinction",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b14256d",
+      "full_hash": "b14256d54cc9951f0946f4235c98af4ffb2957b3",
+      "date": "2026-02-14T02:11:30.000Z",
+      "message": "feat: command group default actions and multi-value status filter (#354)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ba13857",
+      "full_hash": "ba138576eec426923b94cdaf554df9007d1ccb50",
+      "date": "2026-02-14T02:03:34.000Z",
+      "message": "feat: command group default actions and multi-value status filter",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "93124c6",
+      "full_hash": "93124c632dcc9fe070f430e07403c97bd932dc66",
+      "date": "2026-02-14T00:51:51.000Z",
+      "message": "fix: auto-prefix @ on depends_on refs and warn on missing plan YAML block (#353)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b938016",
+      "full_hash": "b938016694e3e0cceeccedea406dd2fbaa67e94b",
+      "date": "2026-02-14T00:38:01.000Z",
+      "message": "fix: auto-prefix @ on depends_on refs and warn on missing plan YAML block",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "60975be",
+      "full_hash": "60975be7c1202f193855b7e472a664576f5100cf",
+      "date": "2026-02-13T01:32:13.000Z",
+      "message": "chore: gitignore .claude-research/ analysis artifacts (#352)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ccbc383",
+      "full_hash": "ccbc383ce852193caa097d69486e9cb3107a6bda",
+      "date": "2026-02-13T01:24:33.000Z",
+      "message": "chore: gitignore .claude-research/ analysis artifacts",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1468d45",
+      "full_hash": "1468d4572417699ae7ea4c131242f94f72c6a5a6",
+      "date": "2026-02-09T10:39:22.000Z",
+      "message": "fix: correct factual errors in AGENTS.md Running Services (#351)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 482,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 22,
+    "blocked": 0,
+    "completed": 443,
+    "inbox_items": 30
+  }
+}

@@ -47729,7 +47729,7 @@
     workflow time spent on empty reflection chains (31 consecutive runs observed with no new
     insights). Skill-level change to the reflect skill, not a workflow change."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47759,6 +47759,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T03:28:21.762Z
+  closed_reason: "Merged in PR #357. Added gating logic to the reflect skill's Loop Mode section -
+    agent now checks session introspection data (recently_completed tasks, working_tree status,
+    recent_commits) before starting reflection. If no meaningful session work detected, reflection
+    is skipped to prevent wasted time on empty reflection runs."
 - _ulid: 01KHARBW0W7K5KG5Z2M7W5GM5J
   slugs: []
   title: PR-review-merge fast-path for clean merges
