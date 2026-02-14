@@ -235,6 +235,9 @@ features:
               - "@trait-semantic-exit-codes"
             notes: []
             created: 2026-02-13T00:58:41.064Z
+            status:
+              maturity: draft
+              implementation: in_progress
       - _ulid: 01KFHZSJVGEX3KTM5CHM8J1XAN
         slugs:
           - cli-version
