@@ -47232,7 +47232,7 @@
   type: task
   spec_ref: "@command-group-default-actions"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -47271,7 +47271,7 @@
   type: task
   spec_ref: "@multi-value-status-filter"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-command-group-default-actions"
