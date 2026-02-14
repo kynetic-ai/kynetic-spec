@@ -3003,7 +3003,7 @@ features:
               indefinitely
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     features:
       - _ulid: 01KG8N2T41X1F9EDRSYMC7P4M7
         slugs:
