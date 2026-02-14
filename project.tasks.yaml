@@ -47385,6 +47385,7 @@
         ac-6 to reference the --format system instead of the old json takes
         precedence behavior.
   todos: []
+  automation: eligible
 - _ulid: 01KHA83Q69JANNJKXJPGVRFWXP
   slugs:
     - implement-module-scoped-item-listing
