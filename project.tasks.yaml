@@ -43782,6 +43782,11 @@
   meta_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #362. Added AC schema drift detection with checkACSchemaReferences()
+    function that extracts field patterns from AC clauses and validates against SpecItem/Task
+    schemas. Detects conceptual fields (children, parent) and ref strings incorrectly treated as
+    objects. Added --drift flag to validate command. Includes 8 tests covering various drift
+    scenarios."
   depends_on: []
   context: []
   priority: 3
@@ -43789,6 +43794,7 @@
   vcs_refs: []
   created_at: 2026-02-03T05:29:09.292Z
   started_at: 2026-02-14T09:06:44.208Z
+  completed_at: 2026-02-14T09:23:44.756Z
   notes:
     - _ulid: 01KGKCQ9WVQVT7BTW1TB3Y0J6R
       created_at: 2026-02-04T03:56:46.875Z
@@ -43821,12 +43827,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T09:23:44.756Z
-  closed_reason: "Merged in PR #362. Added AC schema drift detection with checkACSchemaReferences()
-    function that extracts field patterns from AC clauses and validates against SpecItem/Task
-    schemas. Detects conceptual fields (children, parent) and ref strings incorrectly treated as
-    objects. Added --drift flag to validate command. Includes 8 tests covering various drift
-    scenarios."
 - _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
   slugs: []
   title: Create zero-dependency bootstrap script for agent sessions
@@ -46815,7 +46815,7 @@
     show full history including superseded notes. This matters because notes are used as
     instructions for agents, and superseded notes should be ignored in favor of newer ones.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46842,6 +46842,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T09:24:34.473Z
 - _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
   slugs: []
   title: Support ephemeral workflow runs without persistent state
