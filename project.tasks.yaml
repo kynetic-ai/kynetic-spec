@@ -47611,6 +47611,22 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Merged in PR #366. Implemented kspec refs command for unified cross-reference lookup:
+
+
+    - New command file src/cli/commands/refs.ts
+
+    - Scans tasks and spec items for all reference fields: spec_ref, depends_on, meta_ref, plan_ref,
+    blocked_by, implements, relates_to, supersedes, traits, tests
+
+    - Groups output by relationship type (e.g., 'Tasks (spec_ref)', 'Specs (depends_on)')
+
+    - Supports --json flag with structured output
+
+    - Uses ReferenceIndex for ULID, slug, and short ULID resolution
+
+    - All 12 acceptance criteria covered by 14 tests
   depends_on: []
   context: []
   priority: 3
@@ -47618,6 +47634,7 @@
   vcs_refs: []
   created_at: 2026-02-13T00:58:43.169Z
   started_at: 2026-02-14T10:19:41.615Z
+  completed_at: 2026-02-14T10:39:56.612Z
   notes:
     - _ulid: 01KHA83QK12VVM6DPKTARDRWEJ
       created_at: 2026-02-13T00:58:43.169Z
@@ -47685,23 +47702,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T10:39:56.612Z
-  closed_reason: >-
-    Merged in PR #366. Implemented kspec refs command for unified cross-reference lookup:
-
-
-    - New command file src/cli/commands/refs.ts
-
-    - Scans tasks and spec items for all reference fields: spec_ref, depends_on, meta_ref, plan_ref,
-    blocked_by, implements, relates_to, supersedes, traits, tests
-
-    - Groups output by relationship type (e.g., 'Tasks (spec_ref)', 'Specs (depends_on)')
-
-    - Supports --json flag with structured output
-
-    - Uses ReferenceIndex for ULID, slug, and short ULID resolution
-
-    - All 12 acceptance criteria covered by 14 tests
 - _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
   slugs:
     - implement-observation-content-search
@@ -47709,7 +47709,7 @@
   type: task
   spec_ref: "@observation-content-search"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47732,6 +47732,7 @@
         flags mutually exclusive with a validation check before search execution.
   todos: []
   automation: eligible
+  started_at: 2026-02-14T10:40:23.850Z
 - _ulid: 01KHAP909YFZT8WAP78BKA1XGP
   slugs: []
   title: Distinguish graceful exit from abort in task-work-loop workflow
