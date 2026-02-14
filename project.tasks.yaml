@@ -47781,6 +47781,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T05:42:47.068Z
+  started_at: 2026-02-14T03:29:40.320Z
   notes:
     - _ulid: 01KHARBW126HCM7NBQH7SRGKF2
       created_at: 2026-02-13T05:42:47.074Z
@@ -47790,9 +47791,17 @@
         Requires actual review completion, not just absence of comments. Data: p50 is 137s, mostly
         trivially-passing gates."
       supersedes: null
+    - _ulid: 01KHD372PT3VK49SCH7FSS577X
+      created_at: 2026-02-14T03:30:53.275Z
+      author: "@claude"
+      content: Added fast-path section to pr-review skill. When subagent detects clean PR state (CI green,
+        no comments, no threads, no changes requested), it skips the full workflow and proceeds
+        directly to merge. Updated examples to show both fast-path and full workflow flows. This is
+        skill-level guidance change - no code implementation needed since it directs subagent
+        behavior.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T03:29:40.320Z
 - _ulid: 01KHAS00YX283G0BVHN8DMVZNS
   slugs: []
   title: Include step_results content in workflow runs --json output
