@@ -324,3 +324,9 @@ inbox:
     created_at: 2026-02-14T21:53:41.329Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHF2AD864S0F8YP0WZJ8SXFH
+    text: Fix AC-6 test in multi-value status filter (#354) — test only checks exit code 0, doesn't
+      verify filtered results actually match. Needs assertion on returned items.
+    created_at: 2026-02-14T21:53:42.663Z
+    tags: []
+    added_by: "@claude"
