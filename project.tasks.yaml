@@ -48357,7 +48357,10 @@
       supersedes: null
   todos: []
   automation: needs_review
-- title: Revisit ralph wrap-up agent design and test coverage
+- _ulid: 01KHF2BKJKKGZCRRWRYPTDZWAA
+  slugs: []
+  title: Revisit ralph wrap-up agent design and test coverage
+  type: task
   description: "PR #369 added a wrap-up agent that runs on ralph loop exit. Retrospective flagged it
     as over-engineered but the intent is broader than simple cleanup: it ensures all work is
     completed, finds in-progress work where task state doesn't match reality, root-causes whether
@@ -48367,6 +48370,24 @@
     integration tests (all 37 tests only check prompt strings and boolean helpers). Revisit AC
     coverage, add integration tests for the actual agent spawn/timeout/cleanup paths, and verify the
     prompt adequately covers the intended scenarios."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-14T21:54:21.907Z
+  notes: []
+  todos: []
+- title: Create spec for validate --drift feature
+  description: "PR #362 added kspec validate --drift, a user-facing CLI flag for AC schema field
+    validation. This was shipped without a spec item or formal ACs, violating the spec-before-code
+    rule. Create a spec item with acceptance criteria covering: field detection from prose,
+    conceptual vs schema fields, strict mode, exit codes, and false positive handling."
   type: task
   spec_ref: null
   meta_ref: null
@@ -48375,11 +48396,11 @@
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHF2BKJKKGZCRRWRYPTDZWAA
+  _ulid: 01KHF2BNVZSQV12C2DRK57C5P2
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-14T21:54:21.907Z
+  created_at: 2026-02-14T21:54:24.255Z
   notes: []
   todos: []
