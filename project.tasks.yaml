@@ -47821,7 +47821,7 @@
     boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null.
     See /tmp/codex-pr-345-review.md for full analysis."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47854,6 +47854,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T03:17:31.790Z
+  closed_reason: "Merged in PR #356. Implemented boundary-aware buffering in createTranslator to
+    handle noise patterns split across streaming chunk boundaries. Added noiseBuffer to
+    TranslatorState, processChunkWithBuffer() for partial pattern detection before stripping, and
+    getPartialNoiseLength() for detecting incomplete patterns. 7 new tests cover split scenarios at
+    various pattern boundaries and false-positive detection."
 - _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
   slugs: []
   title: Add kspec merge-driver configure command
