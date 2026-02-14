@@ -52,6 +52,18 @@ export function registerPlanImportCommand(planCommand: Command): void {
     .addHelpText(
       "after",
       `
+Format:
+  Plan documents use markdown with a ## Specs section containing a fenced
+  YAML code block. The YAML must be wrapped in triple-backtick yaml markers:
+
+    ## Specs
+    \`\`\`yaml
+    - title: My Feature
+      type: feature
+    \`\`\`
+
+  Without the fenced code block, specs will not be detected.
+
 Examples:
   $ kspec plan import ./plan.md --module @core
   $ kspec plan import ./plan.md --module @api --dry-run
