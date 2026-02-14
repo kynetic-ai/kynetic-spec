@@ -47757,7 +47757,7 @@
     skill. The format requirement is not mentioned anywhere user-facing, causing discovery
     friction."
   spec_ref: "@plan-import"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
