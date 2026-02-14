@@ -47455,7 +47455,7 @@
     instead of status:aborted. Makes abort rate meaningful (actual failures) vs normal loop
     termination. Data: 11 of 16 'aborts' were normal no-work exits, inflating abort rate to 69%."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47482,6 +47482,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T02:59:22.050Z
+  closed_reason: "Merged in PR #355. Added 'kspec workflow complete' command with --result option
+    supporting success, no_work_available, and early_exit results. This allows distinguishing
+    graceful loop termination (no_work_available) from actual failures (abort), making abort rate
+    metrics meaningful. Added WorkflowRunResultSchema to schema and 14 tests covering all
+    scenarios."
 - _ulid: 01KHAP9ED64XM64EVD24PA78BV
   slugs: []
   title: Add --tasks flag to ralph for explicit task scoping
