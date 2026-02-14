@@ -61,7 +61,7 @@ import {
   parseTimeSpec,
 } from "../../utils/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, isJsonMode, output } from "../output.js";
+import { error, isJsonMode, isNoteSuperseded, output } from "../output.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -310,6 +310,11 @@ function collectRecentNotes(
 
       // Filter by since date if provided
       if (options.since && noteDate < options.since) {
+        continue;
+      }
+
+      // Filter out superseded notes
+      if (isNoteSuperseded(note, task.notes)) {
         continue;
       }
 
