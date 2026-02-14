@@ -4657,3 +4657,4 @@
 {"ts":1771039928892,"seq":4656,"type":"session.update","session_id":"01KHD0MJ8D27YFBB9GSWX4WYZG","data":{"iteration":1,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"emic friction encountered"}}}}
 {"ts":1771039928924,"seq":4657,"type":"session.update","session_id":"01KHD0MJ8D27YFBB9GSWX4WYZG","data":{"iteration":1,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}}
 {"ts":1771039929296,"seq":4658,"type":"session.update","session_id":"01KHD0MJ8D27YFBB9GSWX4WYZG","data":{"iteration":4,"phase":"reflect","stopReason":"end_turn","completed":true}}
+{"ts":1771040407103,"seq":4659,"type":"session.end","session_id":"01KHD0MJ8D27YFBB9GSWX4WYZG","data":{"status":"completed","consecutiveFailures":0}}

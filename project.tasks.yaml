@@ -14677,8 +14677,13 @@
       content: "Automation status set to manual_only: Needs spec first - define permission prompt UX,
         interaction model, timeout behavior"
       supersedes: null
+    - _ulid: 01KHD9FVAHHZJ3M0NQ7PZ62803
+      created_at: 2026-02-14T05:20:32.081Z
+      author: "@claude"
+      content: "Automation status set to needs_review: New feature - needs spec"
+      supersedes: null
   todos: []
-  automation: manual_only
+  automation: needs_review
 - _ulid: 01KFBM8EMBQWHDTRN8CGCRFYK4
   slugs:
     - consolidate-short-ulid
@@ -18701,8 +18706,13 @@
       content: "Automation status set to manual_only: Parent feature task - children have ACs and are
         eligible"
       supersedes: null
+    - _ulid: 01KHD9FW377BHV198PS6A21TGN
+      created_at: 2026-02-14T05:20:32.871Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Spec exists but has no acceptance criteria"
+      supersedes: null
   todos: []
-  automation: manual_only
+  automation: needs_review
 - _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
   slugs:
     - task-workflow-run-foundation
@@ -43591,7 +43601,7 @@
         daemon is spec'd"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KGGWAE59ENQWYH04CRDZBW3S
   slugs: []
   title: Support --tags x,y,z comma-separated syntax
@@ -43713,8 +43723,13 @@
       content: "Automation status set to manual_only: Task creates a spec/trait - output is specification,
         not code"
       supersedes: null
+    - _ulid: 01KHD9FXMD397FS2AA4P2DZ3AC
+      created_at: 2026-02-14T05:20:34.445Z
+      author: "@claude"
+      content: "Automation status set to needs_review: New spec construct - needs spec definition"
+      supersedes: null
   todos: []
-  automation: manual_only
+  automation: needs_review
 - _ulid: 01KGGZKQDSPMJ2242BCMJX48K6
   slugs: []
   title: Add AC schema field validation to detect drift
@@ -43762,7 +43777,7 @@
         refers to; needs clarification before spec'ing"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
   slugs: []
   title: Create zero-dependency bootstrap script for agent sessions
@@ -46735,6 +46750,11 @@
       content: "Automation status set to needs_review: Needs design decisions on transitive deps and
         missing dependency handling"
       supersedes: null
+    - _ulid: 01KHD9FZ447DQM05C5A7R2QBB6
+      created_at: 2026-02-14T05:20:35.972Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Feature - needs spec for dependency derivation rules"
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
@@ -46772,7 +46792,7 @@
         tracking"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
   slugs: []
   title: Support ephemeral workflow runs without persistent state
@@ -46811,6 +46831,12 @@
       content: "Automation status set to needs_review: Fundamental workflow execution model change needs
         design"
       supersedes: null
+    - _ulid: 01KHD9G0KEHAV8GARY598JX6GW
+      created_at: 2026-02-14T05:20:37.486Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Feature - needs spec for ephemeral workflow
+        semantics"
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KGVGZHRPK2782D02FF83XC6K
@@ -46844,6 +46870,12 @@
       author: "@claude"
       content: "Automation status set to needs_review: Major new feature needs design for lifecycle,
         shadow branch interaction, cleanup"
+      supersedes: null
+    - _ulid: 01KHD9G1B3K0VR6ZX6FQMN0TZP
+      created_at: 2026-02-14T05:20:38.243Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Feature - needs spec for worktree lifecycle and
+        isolation model"
       supersedes: null
   todos: []
   automation: needs_review
@@ -47775,6 +47807,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #358. Added fast-path section to pr-review skill that skips the full
+    workflow when PR is clean (CI green, no comments, no threads, no changes requested). This is a
+    skill-level guidance change directing subagent behavior - no code implementation needed."
   depends_on: []
   context: []
   priority: 3
@@ -47782,6 +47817,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:42:47.068Z
   started_at: 2026-02-14T03:29:40.320Z
+  completed_at: 2026-02-14T03:39:59.852Z
   notes:
     - _ulid: 01KHARBW126HCM7NBQH7SRGKF2
       created_at: 2026-02-13T05:42:47.074Z
@@ -47802,10 +47838,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T03:39:59.852Z
-  closed_reason: "Merged in PR #358. Added fast-path section to pr-review skill that skips the full
-    workflow when PR is clean (CI green, no comments, no threads, no changes requested). This is a
-    skill-level guidance change directing subagent behavior - no code implementation needed."
 - _ulid: 01KHAS00YX283G0BVHN8DMVZNS
   slugs: []
   title: Include step_results content in workflow runs --json output
