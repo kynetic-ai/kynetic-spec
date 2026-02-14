@@ -3514,6 +3514,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-14T10:32:45.889Z
+    completed_at: 2026-02-14T10:34:07.138Z
     step_results:
       - step_index: 0
         status: completed
@@ -3546,4 +3547,11 @@ runs:
           complete with zero captures - this is the correct outcome for a routine implementation
           session."
     initiated_by: "@claude"
-    completed_at: 2026-02-14T10:34:07.138Z
+  - _ulid: 01KHDYCH8DVCSX4DBVJ1FEAVX9
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-14T11:25:43.565Z
+    step_results: []
+    initiated_by: "@claude"
