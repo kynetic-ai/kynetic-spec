@@ -47451,6 +47451,7 @@
         full scan of all entities per query -- acceptable for current scale
         (hundreds of items), may need indexing later.
   todos: []
+  automation: eligible
 - _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
   slugs:
     - implement-observation-content-search
