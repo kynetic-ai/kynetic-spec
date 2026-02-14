@@ -19,6 +19,7 @@ import {
   loadPlans,
   savePlan,
   saveTask,
+  updateSpecItem,
   type LoadedSpecItem,
 } from "../../parser/index.js";
 import {
@@ -256,11 +257,30 @@ async function importPlan(
 
       if (exists.ok && options.update) {
         // AC: @plan-import ac-26 - Update existing spec
+        // Updates: description, type, tags, traits, and acceptance_criteria
+        const existingSpec = exists.item as LoadedSpecItem;
+
         if (options.dryRun) {
           info(`Would update spec: ${specRef}`);
           result.updatedSpecs.push(specRef);
         } else {
-          // Update logic would go here - for now, skip
+          // Build updates from plan spec
+          const updates: Partial<SpecItemInput> = {};
+
+          if (spec.description !== undefined) {
+            updates.description = spec.description;
+          }
+          if (spec.type !== undefined) {
+            updates.type = spec.type as SpecItemInput["type"];
+          }
+          if (spec.traits !== undefined) {
+            updates.traits = spec.traits.map(t => t.startsWith('@') ? t : `@${t}`);
+          }
+          if (spec.acceptance_criteria !== undefined) {
+            updates.acceptance_criteria = spec.acceptance_criteria;
+          }
+
+          await updateSpecItem(ctx, existingSpec, updates);
           info(`Updated spec: ${specRef}`);
           result.updatedSpecs.push(specRef);
         }

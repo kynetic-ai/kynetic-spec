@@ -631,6 +631,103 @@ derive_from_specs: true
     expect(output).toContain("Updated spec: @my-feature");
   });
 
+  // AC: @plan-import ac-26 - Verify acceptance criteria are updated
+  it("should update acceptance criteria on existing specs with --update flag", async () => {
+    // Create initial spec with ACs
+    kspec('item add --under @test-core --title "Feature" --slug ac-feature', tempDir);
+    kspec('item ac add @ac-feature --given "initial" --when "test" --then "pass"', tempDir);
+
+    // Verify initial AC exists
+    const beforeSpec = kspecJson<{
+      acceptance_criteria: Array<{ id: string; given: string; when: string; then: string }>;
+    }>("item get @ac-feature --json", tempDir);
+    expect(beforeSpec.acceptance_criteria).toHaveLength(1);
+    expect(beforeSpec.acceptance_criteria[0].given).toBe("initial");
+
+    const planPath = path.join(tempDir, "update-ac-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Update AC Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature
+  slug: ac-feature
+  description: Updated with new ACs
+  acceptance_criteria:
+    - id: ac-new-1
+      given: A user is logged in
+      when: They click logout
+      then: Session ends
+    - id: ac-new-2
+      given: A user is on the dashboard
+      when: They view stats
+      then: Current data is shown
+\`\`\`
+`,
+    );
+
+    const output = kspec(
+      `plan import "${planPath}" --module @test-core --update`,
+      tempDir,
+    );
+    expect(output).toContain("Updated spec: @ac-feature");
+
+    // Verify ACs were updated
+    const afterSpec = kspecJson<{
+      description: string;
+      acceptance_criteria: Array<{ id: string; given: string; when: string; then: string }>;
+    }>("item get @ac-feature --json", tempDir);
+
+    expect(afterSpec.description).toBe("Updated with new ACs");
+    expect(afterSpec.acceptance_criteria).toHaveLength(2);
+    expect(afterSpec.acceptance_criteria[0].id).toBe("ac-new-1");
+    expect(afterSpec.acceptance_criteria[0].given).toBe("A user is logged in");
+    expect(afterSpec.acceptance_criteria[1].id).toBe("ac-new-2");
+    expect(afterSpec.acceptance_criteria[1].given).toBe("A user is on the dashboard");
+  });
+
+  // AC: @plan-import ac-26 - Verify traits are updated
+  it("should update traits on existing specs with --update flag", async () => {
+    // Create initial spec
+    kspec('item add --under @test-core --title "Feature" --slug trait-feature', tempDir);
+
+    const planPath = path.join(tempDir, "update-traits-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Update Traits Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature
+  slug: trait-feature
+  type: requirement
+  traits:
+    - json-output
+    - cli-command
+\`\`\`
+`,
+    );
+
+    const output = kspec(
+      `plan import "${planPath}" --module @test-core --update`,
+      tempDir,
+    );
+    expect(output).toContain("Updated spec: @trait-feature");
+
+    // Verify traits were updated
+    const afterSpec = kspecJson<{
+      type: string;
+      traits: string[];
+    }>("item get @trait-feature --json", tempDir);
+
+    expect(afterSpec.type).toBe("requirement");
+    expect(afterSpec.traits).toContain("@json-output");
+    expect(afterSpec.traits).toContain("@cli-command");
+  });
+
   // AC: @plan-import ac-27
   it("should create manual tasks from additional_tasks array", async () => {
     const planPath = path.join(tempDir, "test-plan.md");
