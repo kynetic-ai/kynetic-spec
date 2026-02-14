@@ -47711,6 +47711,9 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #367. Implemented observation content search with --search flag for
+    kspec meta observations command and --observations-only flag for kspec search command. Added
+    mutual exclusivity validation for scope-only flags. All 7 ACs covered with 14 tests."
   depends_on: []
   context: []
   priority: 3
@@ -47718,6 +47721,7 @@
   vcs_refs: []
   created_at: 2026-02-13T00:58:43.571Z
   started_at: 2026-02-14T10:40:23.850Z
+  completed_at: 2026-02-14T10:55:07.757Z
   notes:
     - _ulid: 01KHA83QZKZ9J1WA6F1PNBGMVF
       created_at: 2026-02-13T00:58:43.571Z
@@ -47759,10 +47763,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T10:55:07.757Z
-  closed_reason: "Merged in PR #367. Implemented observation content search with --search flag for
-    kspec meta observations command and --observations-only flag for kspec search command. Added
-    mutual exclusivity validation for scope-only flags. All 7 ACs covered with 14 tests."
 - _ulid: 01KHAP909YFZT8WAP78BKA1XGP
   slugs: []
   title: Distinguish graceful exit from abort in task-work-loop workflow
@@ -47812,7 +47812,7 @@
   description: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks
     @ref1,@ref2) to prevent scope creep beyond target work"
   spec_ref: "@cli-ralph"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47829,6 +47829,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T10:55:40.812Z
 - _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
   slugs:
     - task-ralph-wrap-up-agent-on-loop-exit
