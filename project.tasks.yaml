@@ -47439,6 +47439,11 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #364. Implemented output format shorthands (--json, --yaml, --raw) as
+    global CLI options. Added YAML output support using the yaml library. Conflict detection for
+    multiple format shorthands. 13 tests covering all ACs except ac-unsupported-format (not
+    applicable since --format is not global due to Commander.js limitations with child command
+    option shadowing)."
   depends_on: []
   context: []
   priority: 3
@@ -47446,6 +47451,7 @@
   vcs_refs: []
   created_at: 2026-02-13T00:58:42.381Z
   started_at: 2026-02-14T09:40:20.956Z
+  completed_at: 2026-02-14T10:02:05.615Z
   notes:
     - _ulid: 01KHA83PTEA3F4F1TWC7F342Z8
       created_at: 2026-02-13T00:58:42.382Z
@@ -47513,12 +47519,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T10:02:05.615Z
-  closed_reason: "Merged in PR #364. Implemented output format shorthands (--json, --yaml, --raw) as
-    global CLI options. Added YAML output support using the yaml library. Conflict detection for
-    multiple format shorthands. 13 tests covering all ACs except ac-unsupported-format (not
-    applicable since --format is not global due to Commander.js limitations with child command
-    option shadowing)."
 - _ulid: 01KHA83Q69JANNJKXJPGVRFWXP
   slugs:
     - implement-module-scoped-item-listing
@@ -47526,7 +47526,7 @@
   type: task
   spec_ref: "@module-scoped-item-listing"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47553,6 +47553,7 @@
         after scoping.
   todos: []
   automation: eligible
+  started_at: 2026-02-14T10:02:32.785Z
 - _ulid: 01KHA83QK1QJ07XQP3Z9ZAHS2K
   slugs:
     - implement-unified-cross-reference-lookup
