@@ -47603,6 +47603,7 @@
         indefinitely
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHAPKTPZHQ945MRMQ6V6265K
   slugs: []
   title: "Fix: auto-prefix @ on depends_on reference values"
