@@ -43584,6 +43584,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #361. Implemented TTL-based caching for scanTestCoverage() results with
+    60s expiration. Added coverage-cache.ts module with getCachedTestCoverage() and
+    invalidateTestCoverageCache() functions, per-project caching for multi-directory daemon support,
+    and parallel scan protection. Includes 11 tests covering caching, TTL expiration, invalidation,
+    and multi-project scenarios."
   depends_on: []
   context: []
   priority: 3
@@ -43594,6 +43599,7 @@
   vcs_refs: []
   created_at: 2026-02-03T04:07:47.271Z
   started_at: 2026-02-14T08:54:04.266Z
+  completed_at: 2026-02-14T09:05:53.346Z
   notes:
     - _ulid: 01KGK9SQC40GN2T3FE8K575H7W
       created_at: 2026-02-04T03:05:40.484Z
@@ -43615,12 +43621,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T09:05:53.346Z
-  closed_reason: "Merged in PR #361. Implemented TTL-based caching for scanTestCoverage() results with
-    60s expiration. Added coverage-cache.ts module with getCachedTestCoverage() and
-    invalidateTestCoverageCache() functions, per-project caching for multi-directory daemon support,
-    and parallel scan protection. Includes 11 tests covering caching, TTL expiration, invalidation,
-    and multi-project scenarios."
 - _ulid: 01KGGWAE59ENQWYH04CRDZBW3S
   slugs: []
   title: Support --tags x,y,z comma-separated syntax
@@ -43780,7 +43780,7 @@
     - Report CompletenessWarning with type 'ac_schema_field_mismatch'
   spec_ref: null
   meta_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43797,6 +43797,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T09:06:44.208Z
 - _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
   slugs: []
   title: Create zero-dependency bootstrap script for agent sessions
