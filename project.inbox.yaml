@@ -283,3 +283,16 @@ inbox:
       - reflection
       - plan-import
     added_by: "@claude"
+  - _ulid: 01KHCVWQ5Q83FACF6TSQDQWT6F
+    text: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
+      prefix on ref-like strings. Apply at CLI input boundary (TaskInput construction) instead of
+      per-command handler. Prevents class of bugs where bare refs bypass RefSchema validation and
+      cause silent data loss. Today's depends_on fix (PR #353) patched 3 locations — a shared
+      boundary would prevent recurrence. Related: @merge-ref-normalization (merge layer), @01KG0N4V
+      (silent safeParse drops)."
+    created_at: 2026-02-14T01:22:53.751Z
+    tags:
+      - reflection
+      - schema
+      - dx
+    added_by: "@claude"
