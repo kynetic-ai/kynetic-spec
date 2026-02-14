@@ -77,7 +77,9 @@ Batch runs all commands against an isolated state copy and commits once on succe
 
 ## Plan Document Format
 
-The import path uses structured markdown documents. The parser (`parsePlanDocument()`) extracts specs, tasks, and notes from this format:
+The import path uses structured markdown documents. The parser (`parsePlanDocument()`) extracts specs, tasks, and notes from this format.
+
+**Important:** The `## Specs` section MUST contain a fenced YAML code block (wrapped in triple-backtick yaml markers). Without the fenced block, no specs will be detected and you'll see a warning: "Specs section found but no YAML code block detected — wrap specs in triple-backtick yaml block".
 
 ```markdown
 # Auth Redesign
