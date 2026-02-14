@@ -43,7 +43,12 @@ import {
   registerWorkflowCommand,
 } from "./commands/index.js";
 import { EXIT_CODES } from "./exit-codes.js";
-import { getVerboseMode, setJsonMode, setVerboseMode } from "./output.js";
+import {
+  getVerboseMode,
+  setJsonMode,
+  setVerboseMode,
+  setYamlMode,
+} from "./output.js";
 import {
   COMMAND_ALIASES,
   findClosestCommand,
@@ -117,27 +122,56 @@ program
   .name("kspec")
   .description("Kynetic Spec - Structured specification format CLI")
   .version(version)
+  // AC: @output-format-option ac-format-json, ac-format-yaml, ac-global-scope
+  // Note: We use shorthands --json, --yaml, --raw as global options
+  // --format is NOT global because it conflicts with command-specific --format options (e.g., export)
+  // Commands can still use --format locally; the global behavior uses shorthands only
   .option("--json", "Output in JSON format")
+  .option("--yaml", "Output in YAML format")
+  .option("--raw", "Output in raw JSON format (same as --json)")
   .option("--debug-shadow", "Enable debug output for shadow operations")
-  .hook("preAction", async (thisCommand) => {
+  .hook("preAction", async (thisCommand, actionCommand) => {
     // Skip all hooks during batch dispatch — the batch handler manages modes itself
     if (isBatchMode()) return;
 
-    // Check for --json and --debug-shadow flags at top level or on subcommand
+    // The actionCommand is the actual command being executed (e.g., 'export')
+    const executingCommandName = actionCommand.name();
+
+    // Check format options at top level
     const opts = thisCommand.opts();
-    if (opts.json) {
-      setJsonMode(true);
+
+    // AC: @output-format-option ac-conflict-error
+    // Detect conflicting format shorthand specifications
+    const formatFlags = [];
+    if (opts.json) formatFlags.push("--json");
+    if (opts.yaml) formatFlags.push("--yaml");
+    if (opts.raw) formatFlags.push("--raw");
+
+    if (formatFlags.length > 1) {
+      console.error(
+        chalk.red(`error: Conflicting format options: ${formatFlags.join(", ")}`)
+      );
+      console.error(chalk.gray("Use only one of: --json, --yaml, --raw"));
+      process.exit(EXIT_CODES.ERROR);
     }
+
+    // AC: @output-format-option ac-json-shorthand, ac-raw-shorthand, ac-yaml-shorthand
+    // Set output format based on shorthand flags
+    if (opts.json || opts.raw) {
+      setJsonMode(true);
+    } else if (opts.yaml) {
+      setYamlMode(true);
+    }
+
     if (opts.debugShadow) {
       setVerboseMode(true);
     }
 
     // Auto-start daemon if configured and not running
     // Skip for init, serve, and help commands
-    const commandName = thisCommand.name();
     const skipCommands = ['init', 'serve', 'help', 'kspec'];
 
-    if (!skipCommands.includes(commandName)) {
+    if (!skipCommands.includes(executingCommandName)) {
       await maybeAutoStartDaemon();
     }
   });

@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { stringify as yamlStringify } from "yaml";
 import type { ReferenceIndex } from "../parser/index.js";
 import type { Note, Task, TaskStatus } from "../schema/index.js";
 import { fieldLabels, sectionHeaders, summaries } from "../strings/labels.js";
@@ -41,16 +42,76 @@ export interface OutputOptions {
 }
 
 /**
- * Global output format (set by --json flag)
+ * Output format types
+ * AC: @output-format-option
  */
-let globalJsonMode = false;
+export type OutputFormat = "text" | "json" | "yaml";
 
-export function setJsonMode(enabled: boolean): void {
-  globalJsonMode = enabled;
+/**
+ * Valid format values for --format option
+ */
+export const VALID_FORMATS = ["json", "yaml"] as const;
+
+/**
+ * Global output format (set by --json, --yaml, --raw, or --format flags)
+ * AC: @output-format-option ac-format-json, ac-format-yaml
+ */
+let globalOutputFormat: OutputFormat = "text";
+
+export function setOutputFormat(format: OutputFormat): void {
+  globalOutputFormat = format;
 }
 
+export function getOutputFormat(): OutputFormat {
+  return globalOutputFormat;
+}
+
+/**
+ * Set JSON mode (for backward compatibility)
+ * AC: @output-format-option ac-json-shorthand
+ */
+export function setJsonMode(enabled: boolean): void {
+  if (enabled) {
+    globalOutputFormat = "json";
+  } else if (globalOutputFormat === "json") {
+    globalOutputFormat = "text";
+  }
+}
+
+/**
+ * Check if JSON mode is active
+ * AC: @output-format-option ac-json-shorthand
+ */
 export function isJsonMode(): boolean {
-  return globalJsonMode;
+  return globalOutputFormat === "json";
+}
+
+/**
+ * Set YAML mode
+ * AC: @output-format-option ac-format-yaml, ac-yaml-shorthand
+ */
+export function setYamlMode(enabled: boolean): void {
+  if (enabled) {
+    globalOutputFormat = "yaml";
+  } else if (globalOutputFormat === "yaml") {
+    globalOutputFormat = "text";
+  }
+}
+
+/**
+ * Check if YAML mode is active
+ * AC: @output-format-option ac-format-yaml
+ */
+export function isYamlMode(): boolean {
+  return globalOutputFormat === "yaml";
+}
+
+/**
+ * Check if any structured output mode is active (JSON or YAML)
+ * AC: @output-format-option ac-yaml-no-ansi, ac-yaml-references
+ */
+export function isStructuredMode(): boolean {
+  return globalOutputFormat === "json" || globalOutputFormat === "yaml";
 }
 
 /**
@@ -67,11 +128,14 @@ export function getVerboseMode(): boolean {
 }
 
 /**
- * Output data - JSON if --json flag, otherwise formatted
+ * Output data - JSON/YAML if structured mode, otherwise formatted
+ * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 export function output(data: unknown, formatter?: () => void): void {
-  if (globalJsonMode) {
+  if (globalOutputFormat === "json") {
     console.log(JSON.stringify(data, null, 2));
+  } else if (globalOutputFormat === "yaml") {
+    console.log(yamlStringify(data, { indent: 2 }));
   } else if (formatter) {
     formatter();
   } else {
@@ -81,10 +145,13 @@ export function output(data: unknown, formatter?: () => void): void {
 
 /**
  * Output success message
+ * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 export function success(message: string, data?: Record<string, unknown>): void {
-  if (globalJsonMode) {
+  if (globalOutputFormat === "json") {
     console.log(JSON.stringify({ success: true, message, ...data }));
+  } else if (globalOutputFormat === "yaml") {
+    console.log(yamlStringify({ success: true, message, ...data }, { indent: 2 }));
   } else {
     console.log(chalk.green("OK"), message);
   }
@@ -92,10 +159,13 @@ export function success(message: string, data?: Record<string, unknown>): void {
 
 /**
  * Output error message
+ * AC: @output-format-option ac-format-json, ac-format-yaml
  */
 export function error(message: string, details?: unknown): void {
-  if (globalJsonMode) {
+  if (globalOutputFormat === "json") {
     console.error(JSON.stringify({ success: false, error: message, details }));
+  } else if (globalOutputFormat === "yaml") {
+    console.error(yamlStringify({ success: false, error: message, details }, { indent: 2 }));
   } else {
     console.error(chalk.red("✗"), message);
     if (details) {
@@ -113,10 +183,11 @@ export function error(message: string, details?: unknown): void {
 
 /**
  * Output warning message
+ * AC: @output-format-option ac-yaml-no-ansi
  */
 export function warn(message: string): void {
-  if (globalJsonMode) {
-    // Warnings are suppressed in JSON mode
+  if (isStructuredMode()) {
+    // Warnings are suppressed in structured output modes
   } else {
     console.warn(chalk.yellow("⚠"), message);
   }
@@ -124,10 +195,11 @@ export function warn(message: string): void {
 
 /**
  * Output info message
+ * AC: @output-format-option ac-yaml-no-ansi
  */
 export function info(message: string): void {
-  if (globalJsonMode) {
-    // Info messages suppressed in JSON mode
+  if (isStructuredMode()) {
+    // Info messages suppressed in structured output modes
   } else {
     console.log(chalk.blue("ℹ"), message);
   }
