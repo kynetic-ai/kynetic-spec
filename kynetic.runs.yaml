@@ -3084,6 +3084,7 @@ runs:
     current_step: 3
     total_steps: 6
     started_at: 2026-02-07T18:09:51.440Z
+    completed_at: 2026-02-14T02:49:15.426Z
     step_results:
       - step_index: 0
         status: completed
@@ -3182,7 +3183,6 @@ runs:
         started_at: 2026-02-07T18:10:58.955Z
         completed_at: 2026-02-07T18:10:58.955Z
     initiated_by: "@claude"
-    completed_at: 2026-02-14T02:49:15.426Z
     result: no_work_available
   - _ulid: 01KHAA4VS52VJ7BWNG3FX9ZQYF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
@@ -3413,4 +3413,12 @@ runs:
         completed_at: 2026-02-14T01:22:58.741Z
         notes: Captured inbox item @01KHCVWQ for input ref normalization layer. Existing observation
           @01KG0N4V already covers silent safeParse drops.
+    initiated_by: "@claude"
+  - _ulid: 01KHD0V8MZM6DCF9JYFEGGB3HK
+    workflow_ref: "@01KFRG7TY446JN3M1XFHAFB981"
+    status: active
+    current_step: 0
+    total_steps: 9
+    started_at: 2026-02-14T02:49:28.992Z
+    step_results: []
     initiated_by: "@claude"
