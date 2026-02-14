@@ -47758,6 +47758,7 @@
         updating across all projects in ~/Projects that use kspec."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
   slugs: []
   title: Gate reflect phase on meaningful session work during ralph loop
