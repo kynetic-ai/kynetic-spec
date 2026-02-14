@@ -151,7 +151,37 @@ After reflection, observations can be:
 
 ## Loop Mode
 
-You are running in autonomous loop mode. Start the workflow:
+You are running in autonomous loop mode.
+
+### Gate: Check for Meaningful Session Work
+
+**BEFORE starting reflection, check if there's anything worth reflecting on.**
+
+Use the session introspection data (provided in your prompt context or via `kspec session start --json`) to check:
+
+1. **Tasks completed recently** - Check `recently_completed` array. Are any `completed_at` timestamps from the current session (within the last ~1 hour)?
+
+2. **Code changes** - Check `working_tree`:
+   - Is `clean` false?
+   - Are there any `staged`, `unstaged`, or `untracked` files?
+
+3. **Recent commits** - Check `recent_commits` array. Are any commit timestamps from the current session?
+
+**Skip reflection if ALL of these are true:**
+- No tasks completed in the current session
+- Working tree is clean (no staged/unstaged/untracked files)
+- No commits made in the current session
+
+If skipping, output:
+```
+Reflection skipped: no meaningful session work detected (no tasks completed, no code changes, no commits).
+```
+
+Then **exit immediately** without starting the workflow.
+
+### If There IS Meaningful Work
+
+Start the workflow:
 
 ```bash
 kspec workflow start @session-reflect-loop
