@@ -47812,7 +47812,7 @@
   description: "Ralph loop: Add --tasks flag to specify explicit task scope (e.g., --tasks
     @ref1,@ref2) to prevent scope creep beyond target work"
   spec_ref: "@cli-ralph"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47855,6 +47855,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T11:14:35.280Z
+  closed_reason: "Merged in PR #368. Implemented --tasks flag for explicit task scoping in ralph:
+    parseExplicitTasks() validates and resolves refs, filterByExplicitTasks() filters session
+    context, allExplicitTasksDone() checks completion for loop exit. Bypasses automation eligibility
+    for explicitly listed tasks. 14 tests covering ac-21 and all edge cases."
 - _ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
   slugs:
     - task-ralph-wrap-up-agent-on-loop-exit
