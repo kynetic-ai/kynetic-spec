@@ -47455,7 +47455,7 @@
     instead of status:aborted. Makes abort rate meaningful (actual failures) vs normal loop
     termination. Data: 11 of 16 'aborts' were normal no-work exits, inflating abort rate to 69%."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
