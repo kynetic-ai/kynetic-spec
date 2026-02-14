@@ -47729,7 +47729,7 @@
     workflow time spent on empty reflection chains (31 consecutive runs observed with no new
     insights). Skill-level change to the reflect skill, not a workflow change."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47748,6 +47748,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T03:18:13.462Z
 - _ulid: 01KHARBW0W7K5KG5Z2M7W5GM5J
   slugs: []
   title: PR-review-merge fast-path for clean merges
@@ -47823,6 +47824,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #356. Implemented boundary-aware buffering in createTranslator to
+    handle noise patterns split across streaming chunk boundaries. Added noiseBuffer to
+    TranslatorState, processChunkWithBuffer() for partial pattern detection before stripping, and
+    getPartialNoiseLength() for detecting incomplete patterns. 7 new tests cover split scenarios at
+    various pattern boundaries and false-positive detection."
   depends_on: []
   context: []
   priority: 3
@@ -47833,6 +47839,7 @@
   vcs_refs: []
   created_at: 2026-02-13T06:07:01.514Z
   started_at: 2026-02-14T02:59:51.802Z
+  completed_at: 2026-02-14T03:17:31.790Z
   notes:
     - _ulid: 01KHASR8CAMRSTZSBJ5537JF3W
       created_at: 2026-02-13T06:07:01.514Z
@@ -47854,12 +47861,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T03:17:31.790Z
-  closed_reason: "Merged in PR #356. Implemented boundary-aware buffering in createTranslator to
-    handle noise patterns split across streaming chunk boundaries. Added noiseBuffer to
-    TranslatorState, processChunkWithBuffer() for partial pattern detection before stripping, and
-    getPartialNoiseLength() for detecting incomplete patterns. 7 new tests cover split scenarios at
-    various pattern boundaries and false-positive detection."
 - _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
   slugs: []
   title: Add kspec merge-driver configure command
