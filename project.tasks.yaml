@@ -43582,7 +43582,7 @@
   description: "Cache scanTestCoverage() results to avoid re-scanning on every API request. Consider
     invalidating cache when test files change (file watcher). Related to PR #274 review feedback."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -43602,6 +43602,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T08:54:04.266Z
 - _ulid: 01KGGWAE59ENQWYH04CRDZBW3S
   slugs: []
   title: Support --tags x,y,z comma-separated syntax
@@ -47759,6 +47760,9 @@
   spec_ref: "@plan-import"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #360. Added fenced YAML requirement documentation to plan import --help
+    text (new Format section) and spec-plan skill SKILL.md (Important callout). This improves
+    discoverability of the required format for plan files."
   depends_on: []
   context: []
   priority: 3
@@ -47769,6 +47773,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:25:40.078Z
   started_at: 2026-02-14T08:42:59.001Z
+  completed_at: 2026-02-14T08:53:09.925Z
   notes:
     - _ulid: 01KHAQCH3FVP5YK3K683ZM6QRT
       created_at: 2026-02-13T05:25:40.079Z
@@ -47786,10 +47791,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T08:53:09.925Z
-  closed_reason: "Merged in PR #360. Added fenced YAML requirement documentation to plan import --help
-    text (new Format section) and spec-plan skill SKILL.md (Important callout). This improves
-    discoverability of the required format for plan files."
 - _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
   slugs: []
   title: Gate reflect phase on meaningful session work during ralph loop
