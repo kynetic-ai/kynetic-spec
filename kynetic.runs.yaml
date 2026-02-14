@@ -3436,7 +3436,7 @@ runs:
     abort_reason: Testing, cleaning up
   - _ulid: 01KHDNWXQ9SCMM07WMK0R82DA1
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
-    status: active
+    status: completed
     current_step: 3
     total_steps: 4
     started_at: 2026-02-14T08:57:23.433Z
@@ -3464,5 +3464,7 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-14T08:58:07.408Z
-        completed_at: 2026-02-14T08:58:07.408Z
+        completed_at: 2026-02-14T08:58:11.828Z
+        notes: Nothing to capture. Clean iteration with no actionable observations. Workflow complete.
     initiated_by: "@claude"
+    completed_at: 2026-02-14T08:58:11.828Z
