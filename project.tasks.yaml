@@ -47457,6 +47457,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #355. Added 'kspec workflow complete' command with --result option
+    supporting success, no_work_available, and early_exit results. This allows distinguishing
+    graceful loop termination (no_work_available) from actual failures (abort), making abort rate
+    metrics meaningful. Added WorkflowRunResultSchema to schema and 14 tests covering all
+    scenarios."
   depends_on: []
   context: []
   priority: 3
@@ -47464,6 +47469,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:06:15.997Z
   started_at: 2026-02-14T02:47:44.638Z
+  completed_at: 2026-02-14T02:59:22.050Z
   notes:
     - _ulid: 01KHAP909Y3CX47EDE6FRJTWT6
       created_at: 2026-02-13T05:06:15.998Z
@@ -47482,12 +47488,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T02:59:22.050Z
-  closed_reason: "Merged in PR #355. Added 'kspec workflow complete' command with --result option
-    supporting success, no_work_available, and early_exit results. This allows distinguishing
-    graceful loop termination (no_work_available) from actual failures (abort), making abort rate
-    metrics meaningful. Added WorkflowRunResultSchema to schema and 14 tests covering all
-    scenarios."
 - _ulid: 01KHAP9ED64XM64EVD24PA78BV
   slugs: []
   title: Add --tasks flag to ralph for explicit task scoping
@@ -47821,7 +47821,7 @@
     boundary-aware buffering in createTranslator. Also: stripped-to-whitespace should return null.
     See /tmp/codex-pr-345-review.md for full analysis."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47843,6 +47843,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T02:59:51.802Z
 - _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
   slugs: []
   title: Add kspec merge-driver configure command
