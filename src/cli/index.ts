@@ -30,6 +30,7 @@ import {
   registerModuleCommands,
   registerPlanCommands,
   registerRalphCommand,
+  registerRefsCommand,
   registerSearchCommand,
   registerServeCommands,
   registerSessionCommands,
@@ -198,6 +199,7 @@ registerInboxCommands(program);
 registerShadowCommands(program);
 registerLogCommand(program);
 registerSearchCommand(program);
+registerRefsCommand(program);
 registerServeCommands(program);
 registerRalphCommand(program);
 registerMetaCommands(program);
