@@ -43788,6 +43788,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-03T05:29:09.292Z
+  started_at: 2026-02-14T09:06:44.208Z
   notes:
     - _ulid: 01KGKCQ9WVQVT7BTW1TB3Y0J6R
       created_at: 2026-02-04T03:56:46.875Z
@@ -43795,9 +43796,31 @@
       content: "Automation status set to needs_review: Task lacks description/notes - unclear what 'drift'
         refers to; needs clarification before spec'ing"
       supersedes: null
+    - _ulid: 01KHDPW293AV70B36GWSHH36GY
+      created_at: 2026-02-14T09:14:23.907Z
+      author: "@claude"
+      content: >-
+        Implemented AC schema drift detection with:
+
+        - checkACSchemaReferences() function that extracts field patterns from AC given/when/then
+        clauses
+
+        - Validates against actual SpecItem and Task schema fields
+
+        - Detects conceptual fields like 'children' and 'parent' that exist at parse-time but aren't
+        queryable
+
+        - Detects refs like 'spec_ref.field' where spec_ref is actually a string, not an object
+
+        - Added --drift flag to validate command
+
+        - File extension filtering to avoid false positives (spec.yaml, task.json, etc.)
+
+        - 8 tests covering: invalid fields, ref strings, valid fields, status fields, flag presence,
+        exit codes, multiple drift issues
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T09:06:44.208Z
 - _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
   slugs: []
   title: Create zero-dependency bootstrap script for agent sessions
