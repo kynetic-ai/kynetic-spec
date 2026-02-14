@@ -47528,6 +47528,10 @@
   plan_ref: "@plan-cli-agent-ux-improvements"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #365. Implemented --under flag for module-scoped item listing. Added
+    findDescendantItems() function to find items by _path prefix within same source file. All 8
+    acceptance criteria have test coverage in tests/item-list-under.test.ts. Flag works with --tree,
+    --count, --json, and combines with other filters using AND logic."
   depends_on: []
   context: []
   priority: 3
@@ -47535,6 +47539,7 @@
   vcs_refs: []
   created_at: 2026-02-13T00:58:42.761Z
   started_at: 2026-02-14T10:02:32.785Z
+  completed_at: 2026-02-14T10:19:09.277Z
   notes:
     - _ulid: 01KHA83Q69VGE1B8PN321177M2
       created_at: 2026-02-13T00:58:42.761Z
@@ -47597,11 +47602,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T10:19:09.277Z
-  closed_reason: "Merged in PR #365. Implemented --under flag for module-scoped item listing. Added
-    findDescendantItems() function to find items by _path prefix within same source file. All 8
-    acceptance criteria have test coverage in tests/item-list-under.test.ts. Flag works with --tree,
-    --count, --json, and combines with other filters using AND logic."
 - _ulid: 01KHA83QK1QJ07XQP3Z9ZAHS2K
   slugs:
     - implement-unified-cross-reference-lookup
@@ -47609,7 +47609,7 @@
   type: task
   spec_ref: "@unified-cross-reference-lookup"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47634,6 +47634,7 @@
         (hundreds of items), may need indexing later.
   todos: []
   automation: eligible
+  started_at: 2026-02-14T10:19:41.615Z
 - _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
   slugs:
     - implement-observation-content-search
