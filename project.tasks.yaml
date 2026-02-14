@@ -46815,7 +46815,7 @@
     show full history including superseded notes. This matters because notes are used as
     instructions for agents, and superseded notes should be ignored in favor of newer ones.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
