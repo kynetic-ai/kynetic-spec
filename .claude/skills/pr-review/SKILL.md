@@ -88,9 +88,49 @@ Implementation must match spec intent, not just pass tests:
 
 **This is NOT just "do tests pass"** - it's verifying the implementation actually does what the spec says.
 
-## Workflow
+## Fast-Path for Clean PRs
 
-This skill delegates all behavior to `@pr-review-loop` workflow:
+Before running the full workflow, check if the PR is already in a "clean" state. A clean PR meets ALL of these criteria:
+
+1. **CI is green** - All status checks passing on current HEAD
+2. **No review comments** - No unresolved review comments
+3. **No open threads** - No open review threads (conversations)
+4. **No requested changes** - No "changes requested" reviews
+
+```bash
+# Check PR status
+gh pr view <PR_NUMBER> --json statusCheckRollup,reviews,comments,reviewDecision
+
+# Parse the response:
+# - statusCheckRollup: all items should have conclusion "SUCCESS" or "SKIPPED"
+# - reviews: no reviews with state "CHANGES_REQUESTED"
+# - comments: empty or all resolved (no pending review comments)
+# - reviewDecision: should be null, "APPROVED", or empty (not "CHANGES_REQUESTED")
+```
+
+### If PR is Clean: Fast-Path Merge
+
+When all clean criteria are met, skip the full workflow and proceed directly to merge:
+
+```
+[FAST-PATH] PR #N is clean (CI green, no comments, no threads)
+[FAST-PATH] Skipping detailed review workflow
+[FAST-PATH] Proceeding directly to merge
+```
+
+1. **Quick verification** - Confirm CI is green on current HEAD (not stale)
+2. **Merge** - `gh pr merge <PR_NUMBER> --squash --delete-branch`
+3. **Complete task** - `kspec task complete @task-ref --reason "..."`
+
+This fast-path reduces p50 review time from ~137s to ~10s for clean PRs.
+
+### If PR is Not Clean: Full Workflow
+
+If any clean criteria are NOT met, proceed with the full workflow below.
+
+## Full Workflow
+
+This skill delegates behavior to `@pr-review-loop` workflow when fast-path doesn't apply:
 
 ```bash
 kspec workflow start @pr-review-loop
@@ -128,13 +168,34 @@ This skill runs in **ACP subagent context**:
 - **CI failed** - Tests don't pass after fixes
 - **PR not found** - Validation failed, no PR for task
 
-## Example
+## Examples
+
+### Fast-Path (Clean PR)
+
+```
+/pr-review @task-add-feature
+
+[Validates task exists]
+[Finds PR #234 linked to task]
+[Checking PR status for fast-path eligibility...]
+[FAST-PATH] PR #234 is clean (CI green, no comments, no threads)
+[FAST-PATH] Skipping detailed review workflow
+[FAST-PATH] Verifying CI is current HEAD
+[FAST-PATH] Merging PR #234
+
+PR #234 merged successfully.
+Task @task-add-feature ready for completion.
+```
+
+### Full Workflow (PR Has Issues)
 
 ```
 /pr-review @task-reflect-loop-skill
 
 [Validates task exists]
 [Finds PR #234 linked to task]
+[Checking PR status for fast-path eligibility...]
+[PR has 2 unresolved review comments - using full workflow]
 [Starts @pr-review-loop workflow]
 [Runs local review - checks AC coverage]
 [Verifies spec alignment]
