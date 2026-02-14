@@ -47773,7 +47773,7 @@
     Data shows p50 is 137s but most of that is stepping through gates that all pass trivially.
     Condition: only when review is genuinely clean (all checks pass on first look)."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47802,6 +47802,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T03:39:59.852Z
+  closed_reason: "Merged in PR #358. Added fast-path section to pr-review skill that skips the full
+    workflow when PR is clean (CI green, no comments, no threads, no changes requested). This is a
+    skill-level guidance change directing subagent behavior - no code implementation needed."
 - _ulid: 01KHAS00YX283G0BVHN8DMVZNS
   slugs: []
   title: Include step_results content in workflow runs --json output
