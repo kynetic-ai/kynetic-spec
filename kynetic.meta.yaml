@@ -5704,4 +5704,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHCYW7KKRGN2MV594S8YZMXH
+    type: friction
+    content: "Commander.js parent-action option routing: when parent and subcommands define the same
+      options, Commander doesn't cleanly route them. Tried passThroughOptions (requires global
+      enablePositionalOptions, breaks --json global option), ended up using allowUnknownOption +
+      temporary Command re-parse. Pattern works but is non-idiomatic. If more command groups need
+      default actions, consider extracting this into a shared utility."
+    created_at: 2026-02-14T02:15:03.539Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
