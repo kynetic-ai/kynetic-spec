@@ -47682,6 +47682,11 @@
   spec_ref: "@plan-import"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #359. Implemented actual update logic for plan import --update flag.
+    Previously the code had a placeholder 'Update logic would go here - for now, skip' with no
+    implementation. Now updateSpecItem() is called with description, type, traits, and
+    acceptance_criteria from the plan. Added 2 new tests verifying AC updates and trait updates work
+    correctly. Addresses ac-26 of @plan-import spec."
   depends_on: []
   context: []
   priority: 3
@@ -47691,6 +47696,7 @@
   vcs_refs: []
   created_at: 2026-02-13T05:25:31.020Z
   started_at: 2026-02-14T08:30:54.686Z
+  completed_at: 2026-02-14T08:42:32.667Z
   notes:
     - _ulid: 01KHAQC88DKY4SCNNV6CSYCVVW
       created_at: 2026-02-13T05:25:31.021Z
@@ -47711,12 +47717,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T08:42:32.667Z
-  closed_reason: "Merged in PR #359. Implemented actual update logic for plan import --update flag.
-    Previously the code had a placeholder 'Update logic would go here - for now, skip' with no
-    implementation. Now updateSpecItem() is called with description, type, traits, and
-    acceptance_criteria from the plan. Added 2 new tests verifying AC updates and trait updates work
-    correctly. Addresses ac-26 of @plan-import spec."
 - _ulid: 01KHAQCCMSRGX4DF2G78MTEG98
   slugs: []
   title: "Fix: plan import should warn when Specs section has no fenced YAML block"
@@ -47757,7 +47757,7 @@
     skill. The format requirement is not mentioned anywhere user-facing, causing discovery
     friction."
   spec_ref: "@plan-import"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47777,6 +47777,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-14T08:42:59.001Z
 - _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
   slugs: []
   title: Gate reflect phase on meaningful session work during ralph loop
