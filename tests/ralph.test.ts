@@ -255,6 +255,7 @@ describe('ralph command', () => {
   });
 
   // AC: @cli-ralph ac-8 - Consecutive failure guard
+  // Timeout increased because wrap-up agent runs on max_failures exit
   it('exits after max consecutive failures', async () => {
     // Always fail
     const result = runRalph('--max-loops 10 --max-retries 0 --max-failures 2', tempDir, {
@@ -266,7 +267,7 @@ describe('ralph command', () => {
     expect(result.output).toContain('Reached 2 consecutive failures');
     // Should not continue to iteration 3
     expect(result.output).not.toContain('Iteration 3/10');
-  });
+  }, 30000);
 
   it('resets failure count on success', async () => {
     // For simplicity, just verify a success resets the pattern
