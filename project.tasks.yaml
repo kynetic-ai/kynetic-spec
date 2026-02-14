@@ -47617,6 +47617,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T00:58:43.169Z
+  started_at: 2026-02-14T10:19:41.615Z
   notes:
     - _ulid: 01KHA83QK12VVM6DPKTARDRWEJ
       created_at: 2026-02-13T00:58:43.169Z
@@ -47632,9 +47633,58 @@
         Output via output() with grouped human-readable formatter. Performance:
         full scan of all entities per query -- acceptable for current scale
         (hundreds of items), may need indexing later.
+    - _ulid: 01KHDV98H8ZNJX1SGSAV6HV6Z0
+      created_at: 2026-02-14T10:31:30.600Z
+      author: "@claude"
+      content: >-
+        Implemented kspec refs command for unified cross-reference lookup:
+
+
+        - New command file src/cli/commands/refs.ts
+
+        - Scans tasks and spec items for all reference fields: spec_ref, depends_on, meta_ref,
+        plan_ref, blocked_by, implements, relates_to, supersedes, traits, tests
+
+        - Groups output by relationship type (e.g., 'Tasks (spec_ref)', 'Specs (depends_on)')
+
+        - Supports --json flag with structured output containing keys per reference type
+
+        - Uses ReferenceIndex that includes meta items (workflows, agents, etc.) for full reference
+        resolution
+
+        - Supports ULID, slug, and short ULID reference formats
+
+        - Shows 'No references found' message for isolated items (exit code 0)
+
+
+        14 tests covering all 12 ACs:
+
+        - ac-task-spec-ref: Tasks with spec_ref pointing to target
+
+        - ac-task-depends-on: Tasks with depends_on including target
+
+        - ac-spec-depends-on: Specs with depends_on including target
+
+        - ac-spec-implements: Specs with implements including target
+
+        - ac-spec-relates-to: Specs with relates_to including target
+
+        - ac-trait-references: Specs with traits including target
+
+        - ac-meta-ref: Tasks with meta_ref pointing to target
+
+        - ac-supersedes: Specs with supersedes pointing to target
+
+        - ac-grouped-output: Section headers like 'Specs (depends on)'
+
+        - ac-json-structured: JSON keys per reference type with proper structure
+
+        - ac-no-refs: No references found message
+
+        - ac-ref-resolution: ULID, slug, and short ULID formats
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T10:19:41.615Z
 - _ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
   slugs:
     - implement-observation-content-search
