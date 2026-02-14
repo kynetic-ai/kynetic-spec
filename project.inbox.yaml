@@ -318,3 +318,9 @@ inbox:
     created_at: 2026-02-14T21:53:39.903Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHF2ABYGFJ351RV4M48ZNFTG
+    text: Create spec for validate --drift feature (#362) — user-facing CLI flag without formal
+      spec/ACs. Needs spec item with acceptance criteria per project rules.
+    created_at: 2026-02-14T21:53:41.329Z
+    tags: []
+    added_by: "@claude"
