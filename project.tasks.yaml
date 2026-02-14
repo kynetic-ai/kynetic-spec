@@ -46815,7 +46815,7 @@
     show full history including superseded notes. This matters because notes are used as
     instructions for agents, and superseded notes should be ignored in favor of newer ones.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46864,6 +46864,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T09:39:48.173Z
+  closed_reason: "Merged in PR #363. Implemented note supersession filtering: superseded notes are
+    hidden by default in task get output, added --all flag to show full history, JSON output
+    includes 'superseded' computed field, session start also filters superseded notes. 7 tests added
+    covering all scenarios."
 - _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
   slugs: []
   title: Support ephemeral workflow runs without persistent state
