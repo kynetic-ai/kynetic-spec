@@ -4536,7 +4536,7 @@ requirements:
     created: 2026-02-13T00:58:40.965Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KHA83NKHKP9WG1YZB4AHZJC7
     slugs:
       - module-scoped-item-listing
