@@ -47534,6 +47534,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T00:58:42.761Z
+  started_at: 2026-02-14T10:02:32.785Z
   notes:
     - _ulid: 01KHA83Q69VGE1B8PN321177M2
       created_at: 2026-02-13T00:58:42.761Z
@@ -47551,9 +47552,51 @@
         _path prefix. Resolve --under ref via ReferenceIndex, find the target
         _sourceFile and _path, then filter the item list. Apply other filters
         after scoping.
+    - _ulid: 01KHDT1HNMPEYHBCP0P429467T
+      created_at: 2026-02-14T10:09:49.237Z
+      author: "@claude"
+      content: >-
+        Implemented --under flag for module-scoped item listing:
+
+
+        - Added findDescendantItems() function in parser/items.ts that finds all items sharing the
+        same _sourceFile with a _path prefix matching the parent
+
+        - Updated item list command to accept --under <ref> option
+
+        - Reference resolution with error handling for invalid/task references
+
+        - Proper pagination handling (queries all items, then filters by scope, then applies limit)
+
+        - Works with --tree flag for hierarchical display
+
+        - Works with --count flag to show scoped subtree count
+
+        - Combines with other filters using AND logic
+
+        - JSON output includes all items in subtree
+
+
+        12 tests covering all 8 ACs:
+
+        - ac-under-filter: Only descendants shown
+
+        - ac-under-root-included: Root item included
+
+        - ac-nested-descendants: Multi-level nesting works
+
+        - ac-under-with-tree: Tree display scoped correctly
+
+        - ac-under-with-other-filters: AND logic with type/status filters
+
+        - ac-under-json: Full item data in JSON
+
+        - ac-under-invalid-ref: Error with suggestion message
+
+        - ac-count-with-under: Count reflects scoped subtree
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T10:02:32.785Z
 - _ulid: 01KHA83QK1QJ07XQP3Z9ZAHS2K
   slugs:
     - implement-unified-cross-reference-lookup
