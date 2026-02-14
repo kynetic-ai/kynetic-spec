@@ -47757,7 +47757,7 @@
     skill. The format requirement is not mentioned anywhere user-facing, causing discovery
     friction."
   spec_ref: "@plan-import"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -47786,6 +47786,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T08:53:09.925Z
+  closed_reason: "Merged in PR #360. Added fenced YAML requirement documentation to plan import --help
+    text (new Format section) and spec-plan skill SKILL.md (Important callout). This improves
+    discoverability of the required format for plan files."
 - _ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
   slugs: []
   title: Gate reflect phase on meaningful session work during ralph loop
