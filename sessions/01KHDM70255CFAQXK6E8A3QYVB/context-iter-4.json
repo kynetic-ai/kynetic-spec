@@ -1,0 +1,397 @@
+{
+  "generated_at": "2026-02-14T08:58:16.810Z",
+  "branch": "feat/cache-test-coverage",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KGGTYQ",
+      "title": "Cache scanTestCoverage() results for daemon performance",
+      "started_at": "2026-02-14T08:54:04.266Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-02-14T08:56:34.461Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KGGTYQ",
+      "task_title": "Cache scanTestCoverage() results for daemon performance",
+      "task_status": "pending_review",
+      "note_ulid": "01KHDNVD",
+      "created_at": "2026-02-14T08:56:34.461Z",
+      "author": "@claude",
+      "content": "Implemented test coverage caching with:\n- New coverage-cache.ts module with getCachedTestCoverage(), invalidateTestCoverageCache()\n- TTL-based expiration (60 seconds default) for automatic cache refresh\n- Per-project caching for multi-directory daemon support\n- Parallel scan protection (prevents duplicate scans on concurrent requests)\n- Updated daemon items route to use cached coverage\n- 11 tests covering caching, TTL expiration, invalidation, and multi-project scenarios"
+    },
+    {
+      "task_ref": "01KHAQCH",
+      "task_title": "Document fenced YAML requirement in plan import help and spec-plan skill",
+      "task_status": "completed",
+      "note_ulid": "01KHDN5M",
+      "created_at": "2026-02-14T08:44:40.635Z",
+      "author": "@claude",
+      "content": "Updated plan import --help text to include Format section explaining the fenced YAML code block requirement. Also updated spec-plan skill SKILL.md with an Important callout explaining that the Specs section MUST contain a fenced YAML code block. All 29 plan import tests pass."
+    },
+    {
+      "task_ref": "01KHAQC8",
+      "task_title": "Fix: plan import --update should update acceptance criteria on existing specs",
+      "task_status": "completed",
+      "note_ulid": "01KHDMCQ",
+      "created_at": "2026-02-14T08:31:03.913Z",
+      "author": "@claude",
+      "content": "Implemented actual update logic for plan import --update flag. Previously the code had a placeholder comment 'Update logic would go here - for now, skip' with no actual implementation. Now updateSpecItem() is called with description, type, traits, and acceptance_criteria from the plan spec. Added 2 new tests: one verifying AC updates work correctly (creates spec with AC, imports plan with different ACs, verifies ACs are replaced), one verifying trait updates work (verifies traits and type are updated). All 29 plan import tests pass."
+    },
+    {
+      "task_ref": "01KHARBW",
+      "task_title": "PR-review-merge fast-path for clean merges",
+      "task_status": "completed",
+      "note_ulid": "01KHD372",
+      "created_at": "2026-02-14T03:30:53.275Z",
+      "author": "@claude",
+      "content": "Added fast-path section to pr-review skill. When subagent detects clean PR state (CI green, no comments, no threads, no changes requested), it skips the full workflow and proceeds directly to merge. Updated examples to show both fast-path and full workflow flows. This is skill-level guidance change - no code implementation needed since it directs subagent behavior."
+    },
+    {
+      "task_ref": "01KHARBR",
+      "task_title": "Gate reflect phase on meaningful session work during ralph loop",
+      "task_status": "completed",
+      "note_ulid": "01KHD2KA",
+      "created_at": "2026-02-14T03:20:05.485Z",
+      "author": "@claude",
+      "content": "Added gating logic to reflect skill's Loop Mode section. The skill now instructs the agent to check session introspection data (recently_completed tasks, working_tree status, recent_commits) BEFORE starting the reflection workflow. If no meaningful session work is detected (no tasks completed, no code changes, no commits), the agent outputs a skip message and exits immediately without starting the workflow. This prevents wasted time on empty reflection runs during ralph loops."
+    },
+    {
+      "task_ref": "01KGGTYQ",
+      "task_title": "Cache scanTestCoverage() results for daemon performance",
+      "task_status": "pending_review",
+      "note_ulid": "01KGK9SQ",
+      "created_at": "2026-02-04T03:05:40.484Z",
+      "author": "@claude",
+      "content": "Automation status set to needs_review: Daemon subsystem lacks spec coverage - defer until daemon is spec'd"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KGGZKQ",
+      "title": "Add AC schema field validation to detect drift",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KGVGVJ",
+      "title": "Filter superseded notes from default task display",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHA83PT",
+      "title": "Implement Output Format Option",
+      "priority": 3,
+      "spec_ref": "@output-format-option",
+      "tags": []
+    },
+    {
+      "ref": "01KHA83Q6",
+      "title": "Implement Module-Scoped Item Listing",
+      "priority": 3,
+      "spec_ref": "@module-scoped-item-listing",
+      "tags": []
+    },
+    {
+      "ref": "01KHA83QK",
+      "title": "Implement Unified Cross-Reference Lookup",
+      "priority": 3,
+      "spec_ref": "@unified-cross-reference-lookup",
+      "tags": []
+    },
+    {
+      "ref": "01KHA83QZ",
+      "title": "Implement Observation Content Search",
+      "priority": 3,
+      "spec_ref": "@observation-content-search",
+      "tags": []
+    },
+    {
+      "ref": "01KHAP9E",
+      "title": "Add --tasks flag to ralph for explicit task scoping",
+      "priority": 3,
+      "spec_ref": "@cli-ralph",
+      "tags": []
+    },
+    {
+      "ref": "01KHAPA9",
+      "title": "Implement ralph wrap-up agent on loop exit",
+      "priority": 3,
+      "spec_ref": "@01KHAP9PZ2WEMV9PRV037MC5Y8",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHAQCH",
+      "title": "Document fenced YAML requirement in plan import help and spec-plan skill",
+      "completed_at": "2026-02-14T08:53:09.925Z",
+      "closed_reason": "Merged in PR #360. Added fenced YAML requirement documentation to plan import --help text (new Format section) and spec-plan skill SKILL.md (Important callout). This improves discoverability of the required format for plan files."
+    },
+    {
+      "ref": "01KHAQC8",
+      "title": "Fix: plan import --update should update acceptance criteria on existing specs",
+      "completed_at": "2026-02-14T08:42:32.667Z",
+      "closed_reason": "Merged in PR #359. Implemented actual update logic for plan import --update flag. Previously the code had a placeholder 'Update logic would go here - for now, skip' with no implementation. Now updateSpecItem() is called with description, type, traits, and acceptance_criteria from the plan. Added 2 new tests verifying AC updates and trait updates work correctly. Addresses ac-26 of @plan-import spec."
+    },
+    {
+      "ref": "01KHARBW",
+      "title": "PR-review-merge fast-path for clean merges",
+      "completed_at": "2026-02-14T03:39:59.852Z",
+      "closed_reason": "Merged in PR #358. Added fast-path section to pr-review skill that skips the full workflow when PR is clean (CI green, no comments, no threads, no changes requested). This is a skill-level guidance change directing subagent behavior - no code implementation needed."
+    },
+    {
+      "ref": "01KHARBR",
+      "title": "Gate reflect phase on meaningful session work during ralph loop",
+      "completed_at": "2026-02-14T03:28:21.762Z",
+      "closed_reason": "Merged in PR #357. Added gating logic to the reflect skill's Loop Mode section - agent now checks session introspection data (recently_completed tasks, working_tree status, recent_commits) before starting reflection. If no meaningful session work detected, reflection is skipped to prevent wasted time on empty reflection runs."
+    },
+    {
+      "ref": "01KHASR8",
+      "title": "Fix: ralph noise stripping leaks on split-chunk boundaries",
+      "completed_at": "2026-02-14T03:17:31.790Z",
+      "closed_reason": "Merged in PR #356. Implemented boundary-aware buffering in createTranslator to handle noise patterns split across streaming chunk boundaries. Added noiseBuffer to TranslatorState, processChunkWithBuffer() for partial pattern detection before stripping, and getPartialNoiseLength() for detecting incomplete patterns. 7 new tests cover split scenarios at various pattern boundaries and false-positive detection."
+    },
+    {
+      "ref": "01KHAP90",
+      "title": "Distinguish graceful exit from abort in task-work-loop workflow",
+      "completed_at": "2026-02-14T02:59:22.050Z",
+      "closed_reason": "Merged in PR #355. Added 'kspec workflow complete' command with --result option supporting success, no_work_available, and early_exit results. This allows distinguishing graceful loop termination (no_work_available) from actual failures (abort), making abort rate metrics meaningful. Added WorkflowRunResultSchema to schema and 14 tests covering all scenarios."
+    },
+    {
+      "ref": "01KHA83PD",
+      "title": "Implement Multi-Value Status Filter",
+      "completed_at": "2026-02-14T02:11:45.446Z",
+      "closed_reason": "Merged in PR #354. --status filter on tasks list and item list now accepts comma-separated values (e.g. --status pending,in_progress). Invalid values show correct enum. Trailing/leading commas silently ignored. parseMultiStatus() utility handles both task and item status validation. 7 of 8 ACs covered by 10 tests. ac-repeated-flag gap noted: Commander.js option definition needs collect function for repeated flags -- can be addressed in follow-up."
+    },
+    {
+      "ref": "01KHA83P0",
+      "title": "Implement Command Group Default Actions",
+      "completed_at": "2026-02-14T02:11:38.022Z",
+      "closed_reason": "Merged in PR #354. kspec tasks and kspec task with no subcommand now default to list (exit 0). Options like --status, --json, --count forward correctly. Unknown subcommands show fuzzy suggestions. Shared listTasksAction() extracted to eliminate code duplication. All 6 ACs covered by 11 tests."
+    },
+    {
+      "ref": "01KHAQCC",
+      "title": "Fix: plan import should warn when Specs section has no fenced YAML block",
+      "completed_at": "2026-02-14T00:52:27.458Z",
+      "closed_reason": "Merged in PR #353. Plan import now pushes a validation warning when ## Specs section exists but has no fenced YAML code block. 3 new tests cover the warning, no-warning, and no-section cases."
+    },
+    {
+      "ref": "01KHAPKY",
+      "title": "Fix: task get should work for blocked tasks",
+      "completed_at": "2026-02-14T00:52:26.737Z",
+      "closed_reason": "Merged in PR #353. Root cause was bug 1 (bare refs failing RefSchema). With @ auto-prefix fix, tasks with depends_on are no longer silently dropped from CLI visibility."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "6dfe72b",
+      "full_hash": "6dfe72b8ec6c8c405123e7c38e274dc23c119146",
+      "date": "2026-02-14T08:56:52.000Z",
+      "message": "feat: cache scanTestCoverage() results for daemon performance",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "06bf0f2",
+      "full_hash": "06bf0f2007128663c123a84de8bbe59aba3657a2",
+      "date": "2026-02-14T08:53:01.000Z",
+      "message": "docs: document fenced YAML requirement for plan import (#360)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2f7b7b3",
+      "full_hash": "2f7b7b355218afb490735d7a9090216bc327b1f3",
+      "date": "2026-02-14T08:44:59.000Z",
+      "message": "docs: document fenced YAML requirement for plan import",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2dc9bd7",
+      "full_hash": "2dc9bd76e173c241a58c9af201feb76c02f4db51",
+      "date": "2026-02-14T08:42:21.000Z",
+      "message": "fix: plan import --update now updates acceptance criteria on existing specs (#359)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fbda8c7",
+      "full_hash": "fbda8c7fb105e0597a72e5ee27528c2e929900ff",
+      "date": "2026-02-14T08:34:21.000Z",
+      "message": "fix: plan import --update now updates acceptance criteria on existing specs",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "782d292",
+      "full_hash": "782d292f290baa9988c821aa44118eb46156ae97",
+      "date": "2026-02-14T03:39:51.000Z",
+      "message": "feat: add fast-path for clean PR merges in pr-review skill (#358)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "357748e",
+      "full_hash": "357748e6ed0dce35d2425c64dc77370ef4ac63bd",
+      "date": "2026-02-14T03:31:07.000Z",
+      "message": "feat: add fast-path for clean PR merges in pr-review skill",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "5362929",
+      "full_hash": "5362929c0a319af4759258ba1b8427751b66121b",
+      "date": "2026-02-14T03:28:13.000Z",
+      "message": "feat: gate reflect phase on meaningful session work during ralph loop (#357)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4d2c58f",
+      "full_hash": "4d2c58fcba0cbb7e86dfa5f8f2d4e6d61a1871f6",
+      "date": "2026-02-14T03:20:28.000Z",
+      "message": "feat: gate reflect phase on meaningful session work during ralph loop",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3ddeb3b",
+      "full_hash": "3ddeb3b901fe923c25857901a2d2fd6d96b9dae4",
+      "date": "2026-02-14T03:17:21.000Z",
+      "message": "fix: ralph noise stripping handles split-chunk boundaries (#356)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 482,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 17,
+    "blocked": 0,
+    "completed": 448,
+    "inbox_items": 30
+  }
+}

@@ -43780,7 +43780,7 @@
     - Report CompletenessWarning with type 'ac_schema_field_mismatch'
   spec_ref: null
   meta_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -43821,6 +43821,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-14T09:23:44.756Z
+  closed_reason: "Merged in PR #362. Added AC schema drift detection with checkACSchemaReferences()
+    function that extracts field patterns from AC clauses and validates against SpecItem/Task
+    schemas. Detects conceptual fields (children, parent) and ref strings incorrectly treated as
+    objects. Added --drift flag to validate command. Includes 8 tests covering various drift
+    scenarios."
 - _ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
   slugs: []
   title: Create zero-dependency bootstrap script for agent sessions
