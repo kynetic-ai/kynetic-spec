@@ -46817,6 +46817,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #363. Implemented note supersession filtering: superseded notes are
+    hidden by default in task get output, added --all flag to show full history, JSON output
+    includes 'superseded' computed field, session start also filters superseded notes. 7 tests added
+    covering all scenarios."
   depends_on: []
   context: []
   priority: 3
@@ -46824,6 +46828,7 @@
   vcs_refs: []
   created_at: 2026-02-07T07:42:56.412Z
   started_at: 2026-02-14T09:24:34.473Z
+  completed_at: 2026-02-14T09:39:48.173Z
   notes:
     - _ulid: 01KGVGVJCX6RN0VBHEAVFR2QPS
       created_at: 2026-02-07T07:42:56.413Z
@@ -46864,11 +46869,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-14T09:39:48.173Z
-  closed_reason: "Merged in PR #363. Implemented note supersession filtering: superseded notes are
-    hidden by default in task get output, added --all flag to show full history, JSON output
-    includes 'superseded' computed field, session start also filters superseded notes. 7 tests added
-    covering all scenarios."
 - _ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
   slugs: []
   title: Support ephemeral workflow runs without persistent state
@@ -47437,7 +47437,7 @@
   type: task
   spec_ref: "@output-format-option"
   plan_ref: "@plan-cli-agent-ux-improvements"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47462,6 +47462,7 @@
         precedence behavior.
   todos: []
   automation: eligible
+  started_at: 2026-02-14T09:40:20.956Z
 - _ulid: 01KHA83Q69JANNJKXJPGVRFWXP
   slugs:
     - implement-module-scoped-item-listing
