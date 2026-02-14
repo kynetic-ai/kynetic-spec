@@ -308,3 +308,11 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KHF37MC1Z94J4SV66CY7Q9PG
+    text: Shadow branch diff/changelog — since .kspec/ is git-tracked, we could show changes to stored
+      artifacts (workflows, tasks, specs, inbox) over time. Something like kspec history @ref or
+      kspec diff --since '1 week ago' that leverages the git history on kspec-meta branch. Could
+      show task state transitions, spec evolution, workflow modifications, etc.
+    created_at: 2026-02-14T22:09:40.225Z
+    tags: []
+    added_by: "@claude"
