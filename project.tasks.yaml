@@ -47832,6 +47832,7 @@
     - streaming
   vcs_refs: []
   created_at: 2026-02-13T06:07:01.514Z
+  started_at: 2026-02-14T02:59:51.802Z
   notes:
     - _ulid: 01KHASR8CAMRSTZSBJ5537JF3W
       created_at: 2026-02-13T06:07:01.514Z
@@ -47841,9 +47842,18 @@
         createTranslator. Also: stripped-to-whitespace should return null. Analysis from PR #345
         Codex review."
       supersedes: null
+    - _ulid: 01KHD1W8Y1WM63K2FH6YTRDTXJ
+      created_at: 2026-02-14T03:07:30.625Z
+      author: "@claude"
+      content: "Implemented boundary-aware buffering in createTranslator to handle noise patterns split
+        across chunk boundaries. Key changes: (1) Added noiseBuffer to TranslatorState, (2) Created
+        processChunkWithBuffer() that checks for partial noise patterns BEFORE stripping complete
+        patterns, (3) Added getPartialNoiseLength() to detect when content ends with a potential
+        partial noise pattern. 7 new tests covering split-chunk scenarios including partial at 'No
+        onPostToolUse', partial tool IDs, multi-split patterns, and false-positive detection."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T02:59:51.802Z
 - _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
   slugs: []
   title: Add kspec merge-driver configure command
