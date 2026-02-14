@@ -152,9 +152,23 @@ export function registerSearchCommand(program: Command): void {
     .option("-s, --status <status>", "Filter by task status")
     .option("--items-only", "Search only spec items")
     .option("--tasks-only", "Search only tasks")
+    .option("--observations-only", "Search only observations")
     .option("--limit <n>", "Limit results", "50")
     .action(async (pattern, options) => {
       try {
+        // AC: @observation-content-search ac-only-flags-exclusive
+        // Check mutual exclusivity of scope-only flags
+        const scopeFlags = [
+          options.itemsOnly && "--items-only",
+          options.tasksOnly && "--tasks-only",
+          options.observationsOnly && "--observations-only",
+        ].filter(Boolean);
+
+        if (scopeFlags.length > 1) {
+          error(`Flags ${scopeFlags.join(", ")} are mutually exclusive. Use only one at a time.`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
         const ctx = await initContext();
         const { itemIndex, tasks, items, refIndex } = await buildIndexes(ctx);
 
@@ -162,7 +176,8 @@ export function registerSearchCommand(program: Command): void {
         const limit = parseInt(options.limit, 10) || 50;
 
         // Search spec items
-        if (!options.tasksOnly) {
+        // AC: @observation-content-search ac-global-search-filter - skip items when --observations-only
+        if (!options.tasksOnly && !options.observationsOnly) {
           for (const item of items) {
             // Apply type filter
             if (options.type && item.type !== options.type) continue;
@@ -182,7 +197,8 @@ export function registerSearchCommand(program: Command): void {
         }
 
         // Search tasks
-        if (!options.itemsOnly) {
+        // AC: @observation-content-search ac-global-search-filter - skip tasks when --observations-only
+        if (!options.itemsOnly && !options.observationsOnly) {
           for (const task of tasks) {
             // Apply status filter
             if (options.status && task.status !== options.status) continue;
@@ -202,7 +218,8 @@ export function registerSearchCommand(program: Command): void {
         }
 
         // Search inbox items (AC-7)
-        if (!options.itemsOnly && !options.tasksOnly) {
+        // AC: @observation-content-search ac-global-search-filter - skip inbox when --observations-only
+        if (!options.itemsOnly && !options.tasksOnly && !options.observationsOnly) {
           const inboxItems = await loadInboxItems(ctx);
           for (const inboxItem of inboxItems) {
             const match = grepItem(
@@ -220,10 +237,11 @@ export function registerSearchCommand(program: Command): void {
         }
 
         // Search meta entities (AC-7)
+        // AC: @observation-content-search ac-global-search-filter - handle --observations-only
         if (!options.itemsOnly && !options.tasksOnly) {
           const metaCtx = await loadMetaContext(ctx);
 
-          // Search observations
+          // Search observations (always when not --items-only or --tasks-only)
           for (const observation of metaCtx.observations) {
             const match = grepItem(
               observation as unknown as Record<string, unknown>,
@@ -238,48 +256,51 @@ export function registerSearchCommand(program: Command): void {
             }
           }
 
-          // Search agents
-          for (const agent of metaCtx.agents) {
-            const match = grepItem(
-              agent as unknown as Record<string, unknown>,
-              pattern,
-            );
-            if (match) {
-              results.push({
-                type: "agent",
-                item: agent,
-                matchedFields: match.matchedFields,
-              });
+          // Skip other meta entities when --observations-only
+          if (!options.observationsOnly) {
+            // Search agents
+            for (const agent of metaCtx.agents) {
+              const match = grepItem(
+                agent as unknown as Record<string, unknown>,
+                pattern,
+              );
+              if (match) {
+                results.push({
+                  type: "agent",
+                  item: agent,
+                  matchedFields: match.matchedFields,
+                });
+              }
             }
-          }
 
-          // Search workflows
-          for (const workflow of metaCtx.workflows) {
-            const match = grepItem(
-              workflow as unknown as Record<string, unknown>,
-              pattern,
-            );
-            if (match) {
-              results.push({
-                type: "workflow",
-                item: workflow,
-                matchedFields: match.matchedFields,
-              });
+            // Search workflows
+            for (const workflow of metaCtx.workflows) {
+              const match = grepItem(
+                workflow as unknown as Record<string, unknown>,
+                pattern,
+              );
+              if (match) {
+                results.push({
+                  type: "workflow",
+                  item: workflow,
+                  matchedFields: match.matchedFields,
+                });
+              }
             }
-          }
 
-          // Search conventions
-          for (const convention of metaCtx.conventions) {
-            const match = grepItem(
-              convention as unknown as Record<string, unknown>,
-              pattern,
-            );
-            if (match) {
-              results.push({
-                type: "convention",
-                item: convention,
-                matchedFields: match.matchedFields,
-              });
+            // Search conventions
+            for (const convention of metaCtx.conventions) {
+              const match = grepItem(
+                convention as unknown as Record<string, unknown>,
+                pattern,
+              );
+              if (match) {
+                results.push({
+                  type: "convention",
+                  item: convention,
+                  matchedFields: match.matchedFields,
+                });
+              }
             }
           }
         }

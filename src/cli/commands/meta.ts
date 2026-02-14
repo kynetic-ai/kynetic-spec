@@ -918,6 +918,7 @@ export function registerMetaCommands(program: Command): void {
     );
 
   // AC-obs-2, AC-obs-5: kspec meta observations
+  // AC: @observation-content-search ac-search-flag, ac-regex-support, ac-combined-filters
   meta
     .command("observations")
     .description("List observations (shows unresolved by default)")
@@ -931,6 +932,10 @@ export function registerMetaCommands(program: Command): void {
     .option(
       "--pending-resolution",
       "Show observations with completed tasks awaiting resolution",
+    )
+    .option(
+      "--search <pattern>",
+      "Search observations by regex pattern (matches content)",
     )
     .action(async (options) => {
       try {
@@ -980,6 +985,19 @@ export function registerMetaCommands(program: Command): void {
               "depends_on" in item &&
               item.status === "completed"
             );
+          });
+        }
+
+        // AC: @observation-content-search ac-search-flag, ac-regex-support, ac-combined-filters, ac-search-all-fields
+        // Apply --search filter using regex pattern (consistent with kspec search behavior)
+        if (options.search) {
+          const { grepItem } = await import("../../utils/grep.js");
+          observations = observations.filter((obs) => {
+            const match = grepItem(
+              obs as unknown as Record<string, unknown>,
+              options.search,
+            );
+            return match !== null;
           });
         }
 
