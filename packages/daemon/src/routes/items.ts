@@ -20,7 +20,7 @@ import {
   loadAllTasks,
   ReferenceIndex,
   AlignmentIndex,
-  scanTestCoverage,
+  getCachedTestCoverage,
   computeACCoverage,
   type LoadedSpecItem,
 } from '../../parser/index.js';
@@ -220,10 +220,11 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         }
 
         // AC: @web-dashboard ac-15 - Compute test coverage for acceptance criteria
+        // Uses cached coverage scan for performance (avoids re-scanning on every request)
         let acceptanceCriteriaWithCoverage = item.acceptance_criteria;
         if (item.acceptance_criteria && item.acceptance_criteria.length > 0) {
           try {
-            const coveredACs = await scanTestCoverage(projectContext.path);
+            const coveredACs = await getCachedTestCoverage(projectContext.path);
             acceptanceCriteriaWithCoverage = computeACCoverage(item, coveredACs);
           } catch (err) {
             // Coverage scan failed - leave as undefined
