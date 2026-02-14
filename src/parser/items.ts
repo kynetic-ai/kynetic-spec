@@ -419,6 +419,34 @@ function getNestedField(obj: Record<string, unknown>, path: string): unknown {
 }
 
 /**
+ * Find all descendant items of a parent item based on _path and _sourceFile.
+ * Descendants are items in the same source file whose _path starts with the parent's _path.
+ * AC: @module-scoped-item-listing ac-nested-descendants
+ */
+export function findDescendantItems(
+  parent: LoadedSpecItem,
+  allItems: LoadedSpecItem[],
+): LoadedSpecItem[] {
+  const parentPath = parent._path || "";
+  const parentSourceFile = parent._sourceFile;
+
+  return allItems.filter((item) => {
+    if (item._ulid === parent._ulid) return false; // Skip self
+    if (item._sourceFile !== parentSourceFile) return false; // Must be same source file
+
+    // If parent is at root (empty path), all items from same source file are descendants
+    if (parentPath === "") {
+      return true;
+    }
+
+    // Item's path must start with parent's path followed by a dot
+    // e.g., parent "features[0]" matches child "features[0].requirements[1]"
+    if (!item._path) return false;
+    return item._path.startsWith(`${parentPath}.`);
+  });
+}
+
+/**
  * Find direct child items of a parent item based on _path
  * Children have paths like "parent_path.field[N]"
  */
