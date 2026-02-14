@@ -341,6 +341,63 @@ const NOISE_PATTERNS = [
 ];
 
 /**
+ * Full noise pattern strings (without tool ID suffix).
+ * Used to check if a suffix could be a prefix of a noise pattern.
+ */
+const NOISE_PATTERN_STRINGS = [
+  "No onPostToolUseHook found for tool use ID: toolu_",
+  "No onPreToolUseHook found for tool use ID: toolu_",
+  "No onPostToolUseHook found for tool use",
+  "No onPreToolUseHook found for tool use",
+  "No onPostToolUseHook found",
+  "No onPreToolUseHook found",
+];
+
+// Maximum length to check for potential partial match
+const MAX_NOISE_PATTERN_LEN =
+  Math.max(...NOISE_PATTERN_STRINGS.map((p) => p.length)) + 24; // +24 for tool ID
+
+/**
+ * Check if the content ends with a potential partial noise pattern.
+ * Returns the partial match length if found, 0 otherwise.
+ *
+ * A partial match occurs when:
+ * 1. The content ends with something that is a PREFIX of a noise pattern
+ *    (e.g., "No on" or "No onPostToolUseHook found"), OR
+ * 2. The content ends with a complete noise pattern prefix followed by
+ *    a partial tool ID (< 24 chars)
+ */
+function getPartialNoiseLength(content: string): number {
+  // Check suffixes of decreasing length (longer matches first)
+  const maxCheck = Math.min(content.length, MAX_NOISE_PATTERN_LEN);
+
+  for (let len = maxCheck; len > 0; len--) {
+    const suffix = content.slice(-len);
+
+    for (const pattern of NOISE_PATTERN_STRINGS) {
+      // Case 1: suffix is a prefix of a pattern (suffix is shorter than pattern)
+      // e.g., suffix="No onPost" is a prefix of pattern="No onPostToolUseHook found..."
+      if (suffix.length <= pattern.length && pattern.startsWith(suffix)) {
+        return len;
+      }
+
+      // Case 2: suffix starts with a complete toolu_ pattern and has partial tool ID
+      // e.g., suffix="No onPostToolUseHook found for tool use ID: toolu_ABC123"
+      // where the tool ID is < 24 chars
+      if (pattern.endsWith("toolu_") && suffix.startsWith(pattern)) {
+        const afterToolu = suffix.slice(pattern.length);
+        // If tool ID is incomplete (< 24 chars) and valid chars, it's a partial match
+        if (afterToolu.length < 24 && /^[A-Za-z0-9]*$/.test(afterToolu)) {
+          return len;
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
+/**
  * Strip noise patterns from content.
  * Returns the cleaned content, or null if nothing remains after stripping.
  * Preserves whitespace-only chunks that aren't noise to maintain streaming formatting.
@@ -374,6 +431,12 @@ interface TranslatorState {
     string,
     { tool: string; input: unknown; startTime: number }
   >;
+  /**
+   * Buffer for potential partial noise at chunk boundaries.
+   * When a chunk ends with what might be the start of a noise pattern,
+   * we hold it here until the next chunk arrives.
+   */
+  noiseBuffer: string;
 }
 
 export function createTranslator(): RalphTranslator {
@@ -381,10 +444,63 @@ export function createTranslator(): RalphTranslator {
     sessionStart: Date.now(),
     activeMessage: null,
     pendingTools: new Map(),
+    noiseBuffer: "",
   };
 
   function getTimestamp(): number {
     return Date.now() - state.sessionStart;
+  }
+
+  /**
+   * Process a text chunk with boundary-aware noise stripping.
+   * Returns the safe content to emit, and updates the noise buffer.
+   * Returns null if the entire chunk should be suppressed.
+   *
+   * The key insight is that we need to check for partial noise patterns
+   * BEFORE stripping, because partial patterns won't match the full regex
+   * and could leave fragments behind.
+   */
+  function processChunkWithBuffer(text: string): string | null {
+    // Combine buffer with new text
+    const combined = state.noiseBuffer + text;
+    state.noiseBuffer = "";
+
+    // First, check if the combined content ends with a partial noise pattern
+    // This must happen BEFORE stripping, because partial patterns at the end
+    // won't match the regex and could leave fragments
+    const partialLen = getPartialNoiseLength(combined);
+    if (partialLen > 0) {
+      // Buffer the potential partial match
+      state.noiseBuffer = combined.slice(-partialLen);
+      const safeContent = combined.slice(0, -partialLen);
+
+      // Strip complete noise patterns from the safe content
+      const cleaned = stripNoise(safeContent);
+      if (cleaned === null || cleaned.length === 0) {
+        return null;
+      }
+      return cleaned;
+    }
+
+    // No partial match at the end - strip complete patterns
+    const cleaned = stripNoise(combined);
+    if (cleaned === null) {
+      return null;
+    }
+
+    return cleaned;
+  }
+
+  /**
+   * Flush any remaining buffer content at finalization.
+   * Strips any complete noise patterns from the buffer.
+   */
+  function flushBuffer(): string {
+    const buffered = state.noiseBuffer;
+    state.noiseBuffer = "";
+    // Strip any complete noise from the buffer
+    const cleaned = stripNoise(buffered);
+    return cleaned ?? "";
   }
 
   function translate(update: SessionUpdate): RalphEvent | null {
@@ -401,10 +517,12 @@ export function createTranslator(): RalphTranslator {
           // Empty string signals finalization
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_message") {
-              // Strip noise from accumulated content to handle split-chunk noise
-              const finalContent = stripNoise(state.activeMessage.content);
+              // Flush buffer and strip noise from accumulated content
+              const buffered = flushBuffer();
+              const combined = state.activeMessage.content + buffered;
+              const finalContent = stripNoise(combined);
               state.activeMessage = null;
-              if (finalContent === null) {
+              if (finalContent === null || finalContent.trim() === "") {
                 return null;
               }
               return {
@@ -420,8 +538,8 @@ export function createTranslator(): RalphTranslator {
             return null;
           }
 
-          // Strip noise patterns from content
-          const cleanedText = stripNoise(content.text);
+          // Process chunk with boundary-aware noise stripping
+          const cleanedText = processChunkWithBuffer(content.text);
           if (cleanedText === null) {
             return null;
           }
@@ -456,10 +574,12 @@ export function createTranslator(): RalphTranslator {
         if (content?.type === "text" && typeof content.text === "string") {
           if (content.text === "") {
             if (state.activeMessage?.type === "agent_thought") {
-              // Strip noise from accumulated content to handle split-chunk noise
-              const finalContent = stripNoise(state.activeMessage.content);
+              // Flush buffer and strip noise from accumulated content
+              const buffered = flushBuffer();
+              const combined = state.activeMessage.content + buffered;
+              const finalContent = stripNoise(combined);
               state.activeMessage = null;
-              if (finalContent === null) {
+              if (finalContent === null || finalContent.trim() === "") {
                 return null;
               }
               return {
@@ -475,8 +595,8 @@ export function createTranslator(): RalphTranslator {
             return null;
           }
 
-          // Strip noise patterns from content
-          const cleanedText = stripNoise(content.text);
+          // Process chunk with boundary-aware noise stripping
+          const cleanedText = processChunkWithBuffer(content.text);
           if (cleanedText === null) {
             return null;
           }
@@ -628,11 +748,13 @@ export function createTranslator(): RalphTranslator {
 
   function finalize(): RalphEvent | null {
     if (state.activeMessage) {
-      // Strip noise from accumulated content to handle split-chunk noise
-      const finalContent = stripNoise(state.activeMessage.content);
+      // Flush buffer and strip noise from accumulated content
+      const buffered = flushBuffer();
+      const combined = state.activeMessage.content + buffered;
+      const finalContent = stripNoise(combined);
       const type = state.activeMessage.type;
       state.activeMessage = null;
-      if (finalContent === null) {
+      if (finalContent === null || finalContent.trim() === "") {
         return null;
       }
       return {

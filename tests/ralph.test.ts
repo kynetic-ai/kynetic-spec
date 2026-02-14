@@ -734,6 +734,167 @@ describe('ralph event translator', () => {
       expect(final).not.toBeNull();
       expect((final!.data as { content: string }).content).toBe('Hello World');
     });
+
+    // ─── Split-Chunk Boundary Tests ─────────────────────────────────────────────
+    // AC: @01KHASR8 - noise patterns split across chunk boundaries
+
+    it('buffers and suppresses noise split at "No onPostToolUse" / "Hook found..."', () => {
+      const translator = createTranslator();
+
+      // First chunk: real content followed by partial noise
+      const event1 = translator.translate(
+        makeChunk('agent_message_chunk', 'Real content. No onPostToolUse')
+      );
+
+      // Should emit real content, buffer the partial noise
+      expect(event1).not.toBeNull();
+      expect((event1!.data as { content: string }).content).toBe('Real content. ');
+
+      // Second chunk: rest of noise pattern
+      const event2 = translator.translate(
+        makeChunk('agent_message_chunk', 'Hook found for tool use ID: toolu_01ABC2345678901234567890')
+      );
+
+      // Should suppress - the combined content matches full noise pattern
+      expect(event2).toBeNull();
+
+      // Finalize - should return accumulated content without noise
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('Real content. ');
+    });
+
+    it('buffers and suppresses noise split at "No on" / "PostToolUseHook found..."', () => {
+      const translator = createTranslator();
+
+      // First chunk: partial noise start
+      const event1 = translator.translate(
+        makeChunk('agent_message_chunk', 'No on')
+      );
+
+      // Should buffer, not emit (could be noise)
+      expect(event1).toBeNull();
+
+      // Second chunk: rest of noise
+      const event2 = translator.translate(
+        makeChunk('agent_message_chunk', 'PostToolUseHook found')
+      );
+
+      // Should suppress
+      expect(event2).toBeNull();
+
+      // Finalize - nothing should remain
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+      expect(final).toBeNull();
+    });
+
+    it('buffers and suppresses noise split at tool ID boundary', () => {
+      const translator = createTranslator();
+
+      // Full noise up to partial tool ID
+      const event1 = translator.translate(
+        makeChunk('agent_message_chunk', 'No onPostToolUseHook found for tool use ID: toolu_01ABC234567890')
+      );
+
+      // Should buffer - tool ID is incomplete (only 14 chars, need 24)
+      expect(event1).toBeNull();
+
+      // Rest of tool ID
+      const event2 = translator.translate(
+        makeChunk('agent_message_chunk', '1234567890')
+      );
+
+      // Should suppress
+      expect(event2).toBeNull();
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+      expect(final).toBeNull();
+    });
+
+    it('emits buffered content when next chunk proves it is not noise', () => {
+      const translator = createTranslator();
+
+      // Chunk that could be noise start but isn't
+      const event1 = translator.translate(
+        makeChunk('agent_message_chunk', 'No on')
+      );
+
+      // Should buffer
+      expect(event1).toBeNull();
+
+      // Next chunk proves it's not noise (doesn't continue pattern)
+      const event2 = translator.translate(
+        makeChunk('agent_message_chunk', 'e can deny this.')
+      );
+
+      // Should emit combined content
+      expect(event2).not.toBeNull();
+      expect((event2!.data as { content: string }).content).toBe('No one can deny this.');
+    });
+
+    it('handles split noise in thought chunks', () => {
+      const translator = createTranslator();
+
+      // First chunk: partial noise
+      const event1 = translator.translate(
+        makeChunk('agent_thought_chunk', 'Thinking... No onPreToolUseHook')
+      );
+
+      expect(event1).not.toBeNull();
+      expect((event1!.data as { content: string }).content).toBe('Thinking... ');
+
+      // Second chunk: rest of noise
+      const event2 = translator.translate(
+        makeChunk('agent_thought_chunk', ' found')
+      );
+
+      expect(event2).toBeNull();
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_thought_chunk', ''));
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('Thinking... ');
+    });
+
+    it('handles multiple split noise patterns in sequence', () => {
+      const translator = createTranslator();
+
+      // Real content
+      translator.translate(makeChunk('agent_message_chunk', 'Start. '));
+
+      // First noise split
+      translator.translate(makeChunk('agent_message_chunk', 'No onPostToolUseHook'));
+      translator.translate(makeChunk('agent_message_chunk', ' found'));
+
+      // More content
+      translator.translate(makeChunk('agent_message_chunk', ' Middle. '));
+
+      // Second noise split
+      translator.translate(makeChunk('agent_message_chunk', 'No onPreToolUseHook found for tool use ID: toolu_'));
+      translator.translate(makeChunk('agent_message_chunk', '01ABC2345678901234567890'));
+
+      // End content
+      translator.translate(makeChunk('agent_message_chunk', ' End.'));
+
+      // Finalize
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+
+      expect(final).not.toBeNull();
+      expect((final!.data as { content: string }).content).toBe('Start.  Middle.  End.');
+    });
+
+    it('returns null for finalization when only whitespace remains after stripping split noise', () => {
+      const translator = createTranslator();
+
+      // Only noise content, split across chunks
+      translator.translate(makeChunk('agent_message_chunk', '  No onPostToolUseHook'));
+      translator.translate(makeChunk('agent_message_chunk', ' found  '));
+
+      // Finalize - should return null since only whitespace remains
+      const final = translator.translate(makeChunk('agent_message_chunk', ''));
+      expect(final).toBeNull();
+    });
   });
 
   describe('tool_call events', () => {
