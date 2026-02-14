@@ -154,4 +154,16 @@ describe('Integration: task set --clear-deps', () => {
       expect(r.data.task.depends_on).toEqual([]);
     }
   });
+
+  // AC: @rel-depends-on ac-1 - Auto-prefix @ on bare references in task set
+  it('should auto-prefix @ on bare slug references in task set --depends-on', () => {
+    kspec('task add --title "Dep Task" --slug set-dep', tempDir);
+    kspec('task add --title "Main Task" --slug set-main', tempDir);
+
+    // Pass bare slug without @ prefix
+    kspec('task set @set-main --depends-on set-dep', tempDir);
+
+    const task = kspecJson<{ depends_on: string[] }>('task get @set-main', tempDir);
+    expect(task.depends_on).toEqual(['@set-dep']);
+  });
 });

@@ -121,4 +121,48 @@ describe('Integration: task add --depends-on', () => {
     expect(task.depends_on).toHaveLength(1);
     expect(task.depends_on[0]).toContain(depUlid.slice(0, 8));
   });
+
+  // AC: @rel-depends-on ac-1 - Auto-prefix @ on bare references
+  it('should auto-prefix @ on bare slug references in task add', () => {
+    kspec('task add --title "Dep Task" --slug dep-bare', tempDir);
+
+    // Pass bare slug without @ prefix
+    const output = kspec(
+      'task add --title "Main Task" --depends-on dep-bare --slug main-bare',
+      tempDir
+    );
+    expect(output).toContain('Created task');
+
+    const task = kspecJson<{ depends_on: string[] }>(
+      'task get @main-bare',
+      tempDir
+    );
+
+    // Should be stored with @ prefix
+    expect(task.depends_on).toEqual(['@dep-bare']);
+  });
+
+  // AC: @rel-depends-on ac-1 - Auto-prefix @ on bare ULID references
+  it('should auto-prefix @ on bare ULID references in task add', () => {
+    const dep = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "Dep ULID Bare" --json',
+      tempDir
+    );
+    const shortUlid = dep.task._ulid.slice(0, 8);
+
+    const output = kspec(
+      `task add --title "Main ULID Bare" --depends-on ${shortUlid} --slug main-ulid-bare`,
+      tempDir
+    );
+    expect(output).toContain('Created task');
+
+    const task = kspecJson<{ depends_on: string[] }>(
+      'task get @main-ulid-bare',
+      tempDir
+    );
+
+    // Should be stored with @ prefix
+    expect(task.depends_on).toHaveLength(1);
+    expect(task.depends_on[0]).toBe(`@${shortUlid}`);
+  });
 });

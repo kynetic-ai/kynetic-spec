@@ -318,7 +318,9 @@ async function setTaskFields(
           };
         }
       }
-      updatedTask.depends_on = options.dependsOn;
+      updatedTask.depends_on = options.dependsOn.map((ref: string) =>
+        ref.startsWith("@") ? ref : `@${ref}`,
+      );
       changes.push("depends_on");
     }
 
@@ -803,7 +805,9 @@ Examples:
           priority: priorityResult.value,
           slugs: options.slug ? [options.slug] : [],
           tags: parseTagsArray(options.tag),
-          depends_on: options.dependsOn || [],
+          depends_on: (options.dependsOn || []).map((ref: string) =>
+            ref.startsWith("@") ? ref : `@${ref}`,
+          ),
           automation: automationValue,
         };
 
