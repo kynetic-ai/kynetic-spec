@@ -47526,7 +47526,7 @@
     depends-on values, or validate/reject bare IDs with a helpful error. Discovered in imgen project
     session 13."
   spec_ref: "@rel-depends-on"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47536,6 +47536,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-02-13T05:12:10.715Z
+  started_at: 2026-02-14T00:52:05.505Z
   notes:
     - _ulid: 01KHAPKTPZD285ZFYZMVKMT30J
       created_at: 2026-02-13T05:12:10.720Z
@@ -47555,7 +47556,7 @@
     make 'kspec task get' work for blocked tasks. Current behavior makes dependency bugs extremely
     hard to diagnose. Discovered in imgen session 13."
   spec_ref: "@rel-depends-on"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47565,6 +47566,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-02-13T05:12:14.223Z
+  started_at: 2026-02-14T00:52:06.244Z
   notes:
     - _ulid: 01KHAPKY4FQ5GR2SE2N4QE8H1Z
       created_at: 2026-02-13T05:12:14.223Z
@@ -47608,7 +47610,7 @@
     Currently silently returns 0 specs 0 tasks. Should emit: Specs section found but no YAML code
     block detected. Wrap specs in triple-backtick yaml block."
   spec_ref: "@plan-import"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -47627,6 +47629,7 @@
         Implements ac-34 on @plan-import."
       supersedes: null
   todos: []
+  started_at: 2026-02-14T00:52:06.950Z
 - _ulid: 01KHAQCH3EQXA8GEWFV1FMVXGV
   slugs: []
   title: Document fenced YAML requirement in plan import help and spec-plan skill
@@ -47768,23 +47771,23 @@
         Codex review."
       supersedes: null
   todos: []
-- title: Add kspec merge-driver configure command
+- _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
+  slugs: []
+  title: Add kspec merge-driver configure command
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - cli
-    - dx
-    - merge
   description: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config
     during init. Would set git config merge.kspec.* and create .gitattributes in shadow branch.
     Useful for repos initialized before PR #183 or where config was lost."
-  _ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - cli
+    - dx
+    - merge
   vcs_refs: []
   created_at: 2026-02-13T06:07:04.837Z
   notes:
