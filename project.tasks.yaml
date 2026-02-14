@@ -47876,6 +47876,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-13T05:06:58.331Z
+  started_at: 2026-02-14T11:15:07.945Z
   notes:
     - _ulid: 01KHAPA9MTAXSFZXGRC04G9E3P
       created_at: 2026-02-13T05:06:58.331Z
@@ -47914,9 +47915,45 @@
         agent is terminated and ralph exits without wrap-up; wrap-up must not block shutdown
         indefinitely
       supersedes: null
+    - _ulid: 01KHDY205J26300Y54TAA9NB2W
+      created_at: 2026-02-14T11:19:58.386Z
+      author: "@claude"
+      content: >-
+        Implemented ralph wrap-up agent on loop exit:
+
+
+        - Added wrap-up.ts module with WrapUpContext, ExitReason types
+
+        - buildWrapUpContext() gathers exit state (working tree, tasks, session info)
+
+        - buildWrapUpPrompt() generates focused prompt for wrap-up agent
+
+        - isWrapUpNeeded() determines if wrap-up should run (dirty tree, error, in-progress tasks)
+
+        - runWrapUpAgent() spawns subagent with 2-minute timeout
+
+        - Integrated into ralph.ts finally block - runs on all exits except dry-run
+
+        - Added session.wrapup event type for audit logging
+
+        - Tracks exit reason throughout loop (no_tasks, end_loop_signal, max_iterations, error,
+        max_failures, explicit_tasks_done)
+
+
+        35 tests covering:
+
+        - ac-1: Wrap-up spawned on exit (all exit reasons handled)
+
+        - ac-2: Working tree inspection (staged, unstaged, untracked reported)
+
+        - ac-3: Prompt instructions for commit/stash/flag handling
+
+        - ac-4: Exit summary instructions in prompt
+
+        - ac-5: 2-minute timeout constant, timeout warning in prompt
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-14T11:15:07.945Z
 - _ulid: 01KHAPKTPZHQ945MRMQ6V6265K
   slugs: []
   title: "Fix: auto-prefix @ on depends_on reference values"
