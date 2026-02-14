@@ -68,7 +68,8 @@ export type CompletenessWarningType =
   | "missing_description"
   | "status_inconsistency"
   | "missing_test_coverage"
-  | "automation_eligible_no_spec";
+  | "automation_eligible_no_spec"
+  | "ac_schema_field_mismatch";
 
 /**
  * Trait cycle error
@@ -994,6 +995,235 @@ async function checkCompleteness(
           details:
             "Retrospective specs with verified_at/verified_by should have implementation status set to 'implemented' or 'verified'",
         });
+      }
+    }
+  }
+
+  return warnings;
+}
+
+// ============================================================
+// AC SCHEMA DRIFT DETECTION
+// ============================================================
+
+/**
+ * Known schema fields for SpecItem
+ * These are the actual fields defined in SpecItemSchema
+ */
+const SPEC_ITEM_FIELDS = new Set([
+  "_ulid",
+  "slugs",
+  "title",
+  "type",
+  "status",
+  "maturity",
+  "implementation",
+  "priority",
+  "tags",
+  "description",
+  "acceptance_criteria",
+  "depends_on",
+  "implements",
+  "relates_to",
+  "tests",
+  "traits",
+  "supersedes",
+  "traceability",
+  "created",
+  "created_by",
+  "deprecated_in",
+  "superseded_by",
+  "verified_at",
+  "verified_by",
+  "notes",
+]);
+
+/**
+ * Known schema fields for Task
+ * These are the actual fields defined in TaskSchema
+ */
+const TASK_FIELDS = new Set([
+  "_ulid",
+  "slugs",
+  "title",
+  "type",
+  "description",
+  "spec_ref",
+  "derivation",
+  "meta_ref",
+  "plan_ref",
+  "origin",
+  "status",
+  "blocked_by",
+  "closed_reason",
+  "depends_on",
+  "context",
+  "priority",
+  "complexity",
+  "tags",
+  "assignee",
+  "vcs_refs",
+  "created_at",
+  "started_at",
+  "completed_at",
+  "notes",
+  "todos",
+  "automation",
+]);
+
+/**
+ * Known fields that are referenced but are parse-time or conceptual only
+ * These are common pseudo-fields that ACs reference but don't exist in schema
+ */
+const CONCEPTUAL_FIELDS = new Set([
+  "children", // Hierarchy is parse-time only
+  "parent", // Parent references are derived, not stored
+  "modules", // These are container structures in YAML, not item fields
+  "features",
+  "requirements",
+  "constraints",
+  "decisions",
+  "epics",
+  "themes",
+  "capabilities",
+]);
+
+/**
+ * Extract field reference patterns from AC text
+ * Looks for patterns like:
+ * - item.field
+ * - spec.field
+ * - task.field
+ * - status.field
+ * - spec_ref.field
+ * - the field
+ * - their field
+ * - item's field
+ */
+/**
+ * File extensions to exclude from field matching
+ * These are common file extensions that would otherwise match our patterns
+ */
+const FILE_EXTENSIONS = new Set([
+  "yaml",
+  "yml",
+  "json",
+  "js",
+  "ts",
+  "md",
+  "txt",
+  "html",
+  "css",
+  "log",
+]);
+
+function extractFieldReferences(text: string): Array<{ context: string; field: string }> {
+  const references: Array<{ context: string; field: string }> = [];
+
+  // Pattern: context.field (e.g., item.status, spec_ref.children)
+  // This matches entity.property patterns in prose
+  const dotPattern = /\b(item|spec|task|status|spec_ref|task_ref|meta_ref|plan_ref)\.(\w+)/gi;
+  let match: RegExpExecArray | null;
+  while ((match = dotPattern.exec(text)) !== null) {
+    const field = match[2].toLowerCase();
+    // Skip file extensions (e.g., spec.yaml, task.json)
+    if (FILE_EXTENSIONS.has(field)) {
+      continue;
+    }
+    references.push({ context: match[1].toLowerCase(), field });
+  }
+
+  // Pattern: "the <field>" when discussing items/tasks (common in ACs)
+  // Only match known schema-like words to avoid false positives
+  const thePattern = /\bthe\s+(status|children|parent|spec_ref|depends_on|traits|tags|notes|todos|acceptance_criteria)\b/gi;
+  while ((match = thePattern.exec(text)) !== null) {
+    references.push({ context: "item", field: match[1].toLowerCase() });
+  }
+
+  return references;
+}
+
+/**
+ * Check if a field exists in the appropriate schema
+ */
+function isValidSchemaField(context: string, field: string): { valid: boolean; reason?: string } {
+  // If it's a known conceptual field, it's technically invalid but we can give a specific message
+  if (CONCEPTUAL_FIELDS.has(field)) {
+    return { valid: false, reason: `'${field}' is a parse-time/conceptual field, not stored in schema` };
+  }
+
+  // Check based on context
+  switch (context) {
+    case "spec":
+    case "item":
+      if (SPEC_ITEM_FIELDS.has(field)) {
+        return { valid: true };
+      }
+      break;
+
+    case "task":
+      if (TASK_FIELDS.has(field)) {
+        return { valid: true };
+      }
+      break;
+
+    case "status":
+      // status.maturity, status.implementation are valid for specs
+      if (field === "maturity" || field === "implementation") {
+        return { valid: true };
+      }
+      break;
+
+    case "spec_ref":
+    case "task_ref":
+    case "meta_ref":
+    case "plan_ref":
+      // These are string references, not objects with fields
+      return { valid: false, reason: `'${context}' is a reference string, not an object with fields` };
+  }
+
+  // Check if field exists in either schema (might be ambiguous context)
+  if (SPEC_ITEM_FIELDS.has(field) || TASK_FIELDS.has(field)) {
+    return { valid: true };
+  }
+
+  return { valid: false, reason: `'${field}' is not a known schema field` };
+}
+
+/**
+ * Check acceptance criteria for field references that don't exist in schema
+ * Catches drift between spec prose and implementation reality.
+ */
+export function checkACSchemaReferences(
+  items: LoadedSpecItem[],
+): CompletenessWarning[] {
+  const warnings: CompletenessWarning[] = [];
+
+  for (const item of items) {
+    if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
+      continue;
+    }
+
+    const itemRef = item.slugs?.[0]
+      ? `@${item.slugs[0]}`
+      : `@${item._ulid.slice(0, 8)}`;
+
+    for (const ac of item.acceptance_criteria) {
+      // Check all three parts of the AC for field references
+      const textToCheck = `${ac.given} ${ac.when} ${ac.then}`;
+      const fieldRefs = extractFieldReferences(textToCheck);
+
+      for (const { context, field } of fieldRefs) {
+        const result = isValidSchemaField(context, field);
+        if (!result.valid) {
+          warnings.push({
+            type: "ac_schema_field_mismatch",
+            itemRef,
+            itemTitle: item.title,
+            message: `AC ${ac.id} references '${context}.${field}' which doesn't exist in schema`,
+            details: result.reason,
+          });
+        }
       }
     }
   }

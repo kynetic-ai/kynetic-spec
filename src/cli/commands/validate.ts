@@ -5,6 +5,7 @@ import type { LoadedSpecItem, LoadedTask } from "../../parser/index.js";
 import {
   AlignmentIndex,
   type AlignmentWarning,
+  checkACSchemaReferences,
   type CompletenessWarning,
   type ConventionValidationResult,
   expandIncludePattern,
@@ -263,6 +264,65 @@ function formatStalenessWarnings(
         chalk.gray(`    ... and ${automationBlocking.length - 3} more`),
       );
     }
+  }
+}
+
+/**
+ * AC schema drift warning type
+ */
+interface ACDriftWarning {
+  type: "ac_schema_field_mismatch";
+  itemRef: string;
+  itemTitle: string;
+  message: string;
+  details?: string;
+}
+
+/**
+ * Format AC schema drift warnings for display
+ */
+function formatDriftWarnings(
+  warnings: CompletenessWarning[],
+  verbose: boolean,
+): void {
+  // Filter to only drift warnings
+  const driftWarnings = warnings.filter(
+    (w) => w.type === "ac_schema_field_mismatch",
+  ) as ACDriftWarning[];
+
+  if (driftWarnings.length === 0) {
+    console.log(chalk.green("AC Schema Drift: OK"));
+    return;
+  }
+
+  console.log(chalk.yellow(`\nAC Schema Drift warnings: ${driftWarnings.length}`));
+
+  // Group by item
+  const byItem = new Map<string, ACDriftWarning[]>();
+  for (const w of driftWarnings) {
+    const existing = byItem.get(w.itemRef) || [];
+    existing.push(w);
+    byItem.set(w.itemRef, existing);
+  }
+
+  const itemEntries = [...byItem.entries()];
+  const shown = verbose ? itemEntries : itemEntries.slice(0, 5);
+
+  for (const [itemRef, itemWarnings] of shown) {
+    const firstWarning = itemWarnings[0];
+    console.log(chalk.yellow(`  ${itemRef} - ${firstWarning.itemTitle}`));
+    for (const w of itemWarnings) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+  }
+
+  if (!verbose && itemEntries.length > 5) {
+    console.log(
+      chalk.gray(`  ... and ${itemEntries.length - 5} more items with drift`),
+    );
   }
 }
 
@@ -736,6 +796,10 @@ export function registerValidateCommand(program: Command): void {
     )
     .option("--skills", "Validate skill files (.claude/skills/*/SKILL.md)")
     .option(
+      "--drift",
+      "Check AC field references against actual schema (catches spec prose drift)",
+    )
+    .option(
       "--fix",
       "Auto-fix issues where possible (invalid ULIDs, missing timestamps)",
     )
@@ -894,16 +958,31 @@ export function registerValidateCommand(program: Command): void {
           }
         }
 
+        // Run AC schema drift checks if requested
+        let driftWarningCount = 0;
+        if (options.drift) {
+          const items = await loadAllItems(ctx);
+          const driftWarnings = checkACSchemaReferences(items);
+          formatDriftWarnings(driftWarnings, options.verbose);
+          driftWarningCount = driftWarnings.length;
+
+          // With --strict, drift warnings cause validation failure
+          if (options.strict && driftWarnings.length > 0) {
+            result.valid = false;
+          }
+        }
+
         // Determine exit code based on errors vs warnings
         // Errors: schema, refs, trait cycles, conventions, skills (result.valid = false)
-        // Warnings: orphans, alignment, completeness, staleness, ref warnings
+        // Warnings: orphans, alignment, completeness, staleness, drift, ref warnings
         const hasErrors = !result.valid;
         const hasWarnings =
           result.orphans.length > 0 ||
           result.refWarnings.length > 0 ||
           result.completenessWarnings.length > 0 ||
           additionalWarningCount > 0 ||
-          stalenessWarningCount > 0;
+          stalenessWarningCount > 0 ||
+          driftWarningCount > 0;
 
         if (hasErrors) {
           process.exit(EXIT_CODES.VALIDATION_FAILED);
