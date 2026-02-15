@@ -15,6 +15,10 @@
  * AC: @core-skill-install ac-3 - custom skills skipped with message
  * AC: @core-skill-install ac-4 - --force overwrites custom forks
  * AC: @core-skill-install ac-5 - version matches kspec package version
+ *
+ * AC: @core-skill-update ac-1 - skill content and version updated when version differs
+ * AC: @core-skill-update ac-2 - skill skipped when already at current version
+ * AC: @core-skill-update ac-3 - skills with origin custom/project not touched
  */
 
 import * as crypto from "node:crypto";
@@ -1315,6 +1319,174 @@ export function registerSkillCommands(program: Command): void {
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // AC: @core-skill-update - kspec skill update
+  markMutating(skill.command("update"))
+    .description(
+      "Update core skills to match the installed kspec package version"
+    )
+    .option("--dry-run", "Show what would be updated without making changes")
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          console.log(
+            chalk.gray("Try: kspec init to initialize a kspec project")
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const dryRun = options.dryRun || false;
+        const results: CoreSkillUpdateResult[] = [];
+
+        // Get kspec package version
+        const kspecVersion = getKspecPackageVersion();
+
+        // Load core skills manifest to get current content
+        const coreSkillsManifest = loadCoreSkillsManifest();
+        const coreSkillsMap = new Map(
+          coreSkillsManifest.map((s) => [s.id, s])
+        );
+
+        // AC: @core-skill-update ac-3 - Only process skills with origin core
+        const coreSkills = metaCtx.skills.filter((s) => s.origin === "core");
+
+        for (const skill of coreSkills) {
+          // AC: @core-skill-update ac-2 - Skip if already at current version
+          if (skill.version === kspecVersion) {
+            results.push({
+              id: skill.id,
+              action: "skipped",
+              reason: "already at current version",
+              currentVersion: skill.version,
+            });
+            continue;
+          }
+
+          // Check if skill exists in core manifest
+          const coreSkill = coreSkillsMap.get(skill.id);
+          if (!coreSkill) {
+            results.push({
+              id: skill.id,
+              action: "skipped",
+              reason: "not found in core skills manifest",
+              currentVersion: skill.version,
+            });
+            continue;
+          }
+
+          // AC: @core-skill-update ac-1 - Update content and version
+          const oldVersion = skill.version;
+
+          if (!dryRun) {
+            // Update skill metadata with new version
+            skill.version = kspecVersion;
+            skill.name = coreSkill.name;
+            if (coreSkill.description) {
+              skill.description = coreSkill.description;
+            }
+            if (coreSkill.platforms) {
+              skill.platforms = coreSkill.platforms;
+            }
+
+            // Save updated metadata
+            await saveMetaItem(ctx, skill, "skill");
+
+            // Update SKILL.md content from templates
+            const sourceContent = loadCoreSkillContent(skill.id);
+            if (sourceContent) {
+              const targetPath = getSkillContentPath(ctx, skill.id);
+              await fs.writeFile(targetPath, sourceContent, "utf-8");
+            }
+          }
+
+          results.push({
+            id: skill.id,
+            action: "updated",
+            previousVersion: oldVersion,
+            newVersion: kspecVersion,
+          });
+        }
+
+        // Commit changes if not dry run and there are updates
+        if (!dryRun && results.some((r) => r.action === "updated")) {
+          await commitIfShadow(
+            ctx.shadow,
+            "skill-update",
+            `${results.filter((r) => r.action === "updated").length} core skills`
+          );
+        }
+
+        // Output results
+        output(
+          {
+            dry_run: dryRun,
+            kspec_version: kspecVersion,
+            results,
+          },
+          () => {
+            if (dryRun) {
+              console.log(chalk.yellow("DRY RUN - No changes made"));
+              console.log();
+            }
+
+            console.log(`kspec version: ${kspecVersion}`);
+            console.log();
+
+            const updated = results.filter((r) => r.action === "updated");
+            const skipped = results.filter((r) => r.action === "skipped");
+
+            if (updated.length > 0) {
+              console.log(chalk.green(`Updated: ${updated.length} skill(s)`));
+              for (const r of updated) {
+                console.log(
+                  `  ${chalk.green("~")} ${r.id}: ${r.previousVersion || "unknown"} → ${r.newVersion}`
+                );
+              }
+            }
+
+            if (skipped.length > 0) {
+              console.log(chalk.gray(`Skipped: ${skipped.length} skill(s)`));
+              for (const r of skipped) {
+                console.log(
+                  `  ${chalk.gray("-")} ${r.id}: ${r.reason}${r.currentVersion ? ` (v${r.currentVersion})` : ""}`
+                );
+              }
+            }
+
+            console.log();
+            if (dryRun) {
+              console.log(
+                chalk.yellow("No changes were made. Run without --dry-run to apply.")
+              );
+            } else if (updated.length > 0) {
+              success(`Updated ${updated.length} core skill(s)`);
+            } else {
+              console.log(chalk.gray("No skills needed updating"));
+            }
+          }
+        );
+      } catch (err) {
+        error("Failed to update core skills", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Result of updating a single core skill
+ * AC: @core-skill-update
+ */
+interface CoreSkillUpdateResult {
+  id: string;
+  action: "updated" | "skipped";
+  previousVersion?: string;
+  newVersion?: string;
+  currentVersion?: string;
+  reason?: string;
 }
 
 /**
