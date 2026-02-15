@@ -3859,7 +3859,7 @@ runs:
   - _ulid: 01KHHEADP5487JP40A7DJYX2CF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-15T20:01:54.885Z
     step_results:
@@ -3888,5 +3888,16 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-15T20:02:14.010Z
-        completed_at: 2026-02-15T20:02:14.010Z
+        completed_at: 2026-02-15T20:02:37.547Z
+        notes: "Coverage check: (1) Batch JSON escaping - NOT tracked. The batch command chokes on embedded
+          quotes in text fields when piped via shell echo. This is systemic - any inbox text with
+          quotes or special chars will hit this. (2) CI environment-dependent tests - partially
+          covered by existing CI limitations doc in AGENTS.md but no spec/task for making tests
+          environment-agnostic. The fix was one-off in this session. (3) Test anti-patterns -
+          ALREADY tracked as inbox 01KHG6F1 and observation 01KFST52. (4) Subagent output extraction
+          - not tracked but likely too niche to capture."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-15T20:02:37.547Z
+        completed_at: 2026-02-15T20:02:37.547Z
     initiated_by: "@claude"
