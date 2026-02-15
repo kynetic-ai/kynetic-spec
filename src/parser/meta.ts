@@ -619,12 +619,14 @@ export type { Agent, Workflow, Convention, Observation, Skill, MetaItem };
 // ============================================================
 
 /**
- * Save any meta item (agent, workflow, convention) to the manifest
+ * Save any meta item (agent, workflow, convention, skill) to the manifest
+ * AC: @skill-parser ac-1 - skill is appended to manifest.skills and written to disk
+ * AC: @skill-parser ac-2 - .kspec/skills/<id>/ directory is created for skills
  */
 export async function saveMetaItem(
   ctx: KspecContext,
   item: LoadedMetaItem,
-  itemType: "agent" | "workflow" | "convention",
+  itemType: "agent" | "workflow" | "convention" | "skill",
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
@@ -665,6 +667,8 @@ export async function saveMetaItem(
         return manifest.workflows;
       case "convention":
         return manifest.conventions;
+      case "skill":
+        return manifest.skills;
     }
   };
 
@@ -679,15 +683,23 @@ export async function saveMetaItem(
   }
 
   await saveMetaManifest(manifestPath, manifest);
+
+  // AC: @skill-parser ac-2 - Create skill content directory
+  if (itemType === "skill" && "id" in item) {
+    const skillDir = path.join(ctx.specDir, "skills", item.id);
+    await fs.mkdir(skillDir, { recursive: true });
+  }
 }
 
 /**
  * Delete any meta item from the manifest
+ * AC: @skill-parser ac-3 - skill is removed from manifest.skills
+ * AC: @skill-parser ac-4 - .kspec/skills/<id>/ directory is deleted for skills
  */
 export async function deleteMetaItem(
   ctx: KspecContext,
   itemUlid: string,
-  itemType: "agent" | "workflow" | "convention" | "observation",
+  itemType: "agent" | "workflow" | "convention" | "observation" | "skill",
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
@@ -710,6 +722,8 @@ export async function deleteMetaItem(
           return manifest.conventions;
         case "observation":
           return manifest.observations;
+        case "skill":
+          return manifest.skills;
       }
     };
 
@@ -717,6 +731,19 @@ export async function deleteMetaItem(
     const index = array.findIndex((i) => i._ulid === itemUlid);
     if (index < 0) {
       return false;
+    }
+
+    // AC: @skill-parser ac-4 - Delete skill directory before removing from manifest
+    if (itemType === "skill") {
+      const skill = array[index] as Skill;
+      if (skill.id) {
+        const skillDir = path.join(ctx.specDir, "skills", skill.id);
+        try {
+          await fs.rm(skillDir, { recursive: true, force: true });
+        } catch {
+          // Directory might not exist, that's fine
+        }
+      }
     }
 
     array.splice(index, 1);
