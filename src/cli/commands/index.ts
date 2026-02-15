@@ -1,5 +1,6 @@
 // Re-export command registration functions
 
+export { registerAgentsCommands } from "./agents.js";
 export { registerBatchCommand } from "./batch.js";
 export { registerCloneForTestingCommand } from "./clone-for-testing.js";
 export { registerDeriveCommand } from "./derive.js";
