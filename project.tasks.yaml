@@ -48834,6 +48834,10 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #377. Implemented --content-file option for skill add command with full
+    AC coverage: ac-1 (meta entry created), ac-2 (shadow branch auto-commit), ac-3 (--content-file
+    copies to SKILL.md), ac-4/ac-5 (origin and version set correctly), ac-6 (duplicate ID error).
+    Added 4 tests specific to @skill-add spec."
   depends_on:
     - "@implement-skill-cli-commands"
   context: []
@@ -48842,6 +48846,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:31.163Z
   started_at: 2026-02-15T02:41:08.157Z
+  completed_at: 2026-02-15T02:55:22.012Z
   notes:
     - _ulid: 01KHFBT0JVYMM3WFQYMBKS32DN
       created_at: 2026-02-15T00:39:31.163Z
@@ -48883,11 +48888,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T02:55:22.012Z
-  closed_reason: "Merged in PR #377. Implemented --content-file option for skill add command with full
-    AC coverage: ac-1 (meta entry created), ac-2 (shadow branch auto-commit), ac-3 (--content-file
-    copies to SKILL.md), ac-4/ac-5 (origin and version set correctly), ac-6 (duplicate ID error).
-    Added 4 tests specific to @skill-add spec."
 - _ulid: 01KHFBT0TWW3AEQ3KKJB0RQCE3
   slugs:
     - implement-skill-set-command
@@ -48895,7 +48895,7 @@
   type: task
   spec_ref: "@skill-set"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-cli-commands"
@@ -48911,6 +48911,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T02:55:45.779Z
 - _ulid: 01KHFBT12P9VGPJ8RQ90117QJV
   slugs:
     - implement-skill-import-command
