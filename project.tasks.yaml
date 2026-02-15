@@ -48612,6 +48612,14 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: |-
+    Merged in PR #373. Implemented Skill File-Based Content Model:
+
+    - ac-1: loadSkillContent returns markdown content from .kspec/skills/<id>/SKILL.md
+    - ac-2: loadSkillDocs returns array of SkillDoc objects from .kspec/skills/<id>/docs/*.md 
+    - ac-3: validateSkillContentFiles reports validation errors for skills missing SKILL.md
+
+    All 3 acceptance criteria have test coverage (12 tests total).
   depends_on:
     - "@implement-skill-meta-type"
   context: []
@@ -48620,6 +48628,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:30.175Z
   started_at: 2026-02-15T01:31:58.952Z
+  completed_at: 2026-02-15T01:48:24.622Z
   notes:
     - _ulid: 01KHFBSZKZD2EZSQNC4QS2M1SV
       created_at: 2026-02-15T00:39:30.175Z
@@ -48645,15 +48654,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T01:48:24.622Z
-  closed_reason: |-
-    Merged in PR #373. Implemented Skill File-Based Content Model:
-
-    - ac-1: loadSkillContent returns markdown content from .kspec/skills/<id>/SKILL.md
-    - ac-2: loadSkillDocs returns array of SkillDoc objects from .kspec/skills/<id>/docs/*.md 
-    - ac-3: validateSkillContentFiles reports validation errors for skills missing SKILL.md
-
-    All 3 acceptance criteria have test coverage (12 tests total).
 - _ulid: 01KHFBSZWNZE7HG2N735T2R5QF
   slugs:
     - implement-skill-parser-integration
@@ -48661,7 +48661,7 @@
   type: task
   spec_ref: "@skill-parser"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48677,6 +48677,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T01:48:43.273Z
 - _ulid: 01KHFBT047WE8N3AJAGK24PPJJ
   slugs:
     - implement-skill-validation
