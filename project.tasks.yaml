@@ -49750,7 +49750,7 @@
   type: task
   spec_ref: "@consolidate-skill-render"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
