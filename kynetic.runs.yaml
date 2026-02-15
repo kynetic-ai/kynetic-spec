@@ -3956,7 +3956,7 @@ runs:
   - _ulid: 01KHHV238NRCYRZHKJ6BK513B4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-15T23:44:33.557Z
     step_results:
@@ -3972,5 +3972,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-15T23:45:06.031Z
-        completed_at: 2026-02-15T23:45:06.031Z
+        completed_at: 2026-02-15T23:45:19.570Z
+        notes: Searched observations and inbox. Session was straightforward - Extended Skill Schema
+          implementation followed established patterns. No high-confidence friction points
+          identified. The minor TypeScript/Zod default behavior friction is expected language
+          behavior, not a kspec issue. Success patterns (schema-first approach, clear spec notes)
+          already documented in existing observations.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-15T23:45:19.570Z
+        completed_at: 2026-02-15T23:45:19.570Z
     initiated_by: "@claude"
