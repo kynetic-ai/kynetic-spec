@@ -1,5 +1,6 @@
 // Re-export parser utilities
 
+export * from "./agent-data-sections.js";
 export * from "./alignment.js";
 export * from "./assess.js";
 export * from "./convention-validation.js";
