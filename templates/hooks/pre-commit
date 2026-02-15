@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# kspec-meta branch protection hook
+#
+# This hook prevents direct commits to the kspec-meta shadow branch.
+# All modifications to spec/task files should go through the kspec CLI,
+# which will set KSPEC_SHADOW_COMMIT=1 to authorize commits.
+#
+# Installation: This hook is automatically installed during 'kspec init'
+# into .git/hooks/pre-commit
+
+# Get current branch name
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+# Check if we're on kspec-meta branch
+if [ "$BRANCH" = "kspec-meta" ]; then
+  # Allow if KSPEC_SHADOW_COMMIT is set (authorized by CLI)
+  if [ "$KSPEC_SHADOW_COMMIT" != "1" ]; then
+    echo "ERROR: Direct commits to kspec-meta branch are not allowed."
+    echo ""
+    echo "The kspec-meta branch is managed by the kspec CLI."
+    echo "Use kspec commands to modify specs and tasks:"
+    echo ""
+    echo "  kspec task start @ref"
+    echo "  kspec task note @ref \"description\""
+    echo "  kspec task complete @ref --reason \"done\""
+    echo "  kspec item add --title \"New item\""
+    echo ""
+    echo "All kspec operations automatically commit to the shadow branch."
+    exit 1
+  fi
+fi
+
+exit 0
