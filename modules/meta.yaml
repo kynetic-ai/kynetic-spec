@@ -2341,3 +2341,19 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+modules:
+  - _ulid: 01KHFBSP8ABF1QSGXRW86P323E
+    slugs:
+      - agent-integration
+    title: Agent Integration
+    type: module
+    tags: []
+    description: "Portable agent integration infrastructure: skill meta type, rendering pipeline, agent
+      instruction generation, and setup automation."
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-15T00:39:20.586Z
