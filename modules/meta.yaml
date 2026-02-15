@@ -3292,7 +3292,7 @@ modules:
             created: 2026-02-15T00:39:29.448Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KHFBSYY7VZZPTCWPBNY8A9EB
             slugs:
               - init-setup-integration
