@@ -25,6 +25,8 @@ import {
   type ObservationType,
   type SessionContext,
   SessionContextSchema,
+  type Skill,
+  SkillSchema,
   type Workflow,
   type WorkflowRun,
   type WorkflowRunsFile,
@@ -68,13 +70,21 @@ export interface LoadedObservation extends Observation {
 }
 
 /**
+ * Loaded skill with runtime metadata
+ */
+export interface LoadedSkill extends Skill {
+  _sourceFile?: string;
+}
+
+/**
  * Any loaded meta item
  */
 export type LoadedMetaItem =
   | LoadedAgent
   | LoadedWorkflow
   | LoadedConvention
-  | LoadedObservation;
+  | LoadedObservation
+  | LoadedSkill;
 
 /**
  * Meta context containing all loaded meta items
@@ -86,6 +96,7 @@ export interface MetaContext {
   workflows: LoadedWorkflow[];
   conventions: LoadedConvention[];
   observations: LoadedObservation[];
+  skills: LoadedSkill[];
 }
 
 /**
@@ -170,17 +181,20 @@ async function loadMetaFile(filePath: string): Promise<{
   workflows: LoadedWorkflow[];
   conventions: LoadedConvention[];
   observations: LoadedObservation[];
+  skills: LoadedSkill[];
 }> {
   const result: {
     agents: LoadedAgent[];
     workflows: LoadedWorkflow[];
     conventions: LoadedConvention[];
     observations: LoadedObservation[];
+    skills: LoadedSkill[];
   } = {
     agents: [],
     workflows: [],
     conventions: [],
     observations: [],
+    skills: [],
   };
 
   try {
@@ -230,6 +244,17 @@ async function loadMetaFile(filePath: string): Promise<{
         }
       }
     }
+
+    // Parse skills
+    // AC: @skill-meta-type ac-4 - skills loaded with _sourceFile set
+    if (Array.isArray(obj.skills)) {
+      for (const skill of obj.skills) {
+        const parsed = SkillSchema.safeParse(skill);
+        if (parsed.success) {
+          result.skills.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
   } catch {
     // File doesn't exist or parse error
   }
@@ -240,6 +265,7 @@ async function loadMetaFile(filePath: string): Promise<{
 /**
  * Load the meta context from a kspec context.
  * Loads meta manifest and follows includes.
+ * AC: @skill-meta-type ac-4 - MetaContext.skills contains LoadedSkill objects with _sourceFile set
  */
 export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
   const result: MetaContext = {
@@ -249,6 +275,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     workflows: [],
     conventions: [],
     observations: [],
+    skills: [],
   };
 
   const manifestPath = await findMetaManifest(ctx.specDir);
@@ -268,6 +295,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
       result.workflows.push(...items.workflows);
       result.conventions.push(...items.conventions);
       result.observations.push(...items.observations);
+      result.skills.push(...items.skills);
       return result;
     }
 
@@ -279,6 +307,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     result.workflows.push(...manifestItems.workflows);
     result.conventions.push(...manifestItems.conventions);
     result.observations.push(...manifestItems.observations);
+    result.skills.push(...manifestItems.skills);
 
     // Process includes
     const includes = parsed.data.includes || [];
@@ -293,6 +322,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
         result.workflows.push(...items.workflows);
         result.conventions.push(...items.conventions);
         result.observations.push(...items.observations);
+        result.skills.push(...items.skills);
       }
     }
   } catch {
@@ -311,6 +341,7 @@ export function getMetaStats(meta: MetaContext): {
   conventions: number;
   observations: number;
   unresolvedObservations: number;
+  skills: number;
 } {
   return {
     agents: meta.agents.length,
@@ -318,11 +349,14 @@ export function getMetaStats(meta: MetaContext): {
     conventions: meta.conventions.length,
     observations: meta.observations.length,
     unresolvedObservations: meta.observations.filter((o) => !o.resolved).length,
+    skills: meta.skills.length,
   };
 }
 
 /**
  * Find a meta item by reference (ULID, short ULID, or id)
+ * AC: @skill-meta-type ac-5 - skills returned by semantic id lookup
+ * AC: @skill-meta-type ac-6 - skills returned by ULID prefix lookup
  */
 export function findMetaItemByRef(
   meta: MetaContext,
@@ -336,6 +370,7 @@ export function findMetaItemByRef(
     ...meta.workflows,
     ...meta.conventions,
     ...meta.observations,
+    ...meta.skills,
   ];
 
   for (const item of allItems) {
@@ -346,7 +381,7 @@ export function findMetaItemByRef(
     if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
       return item;
 
-    // Match by id (for agents and workflows)
+    // Match by id (for agents, workflows, and skills)
     if ("id" in item && item.id === cleanRef) return item;
 
     // Match by domain (for conventions)
@@ -360,7 +395,9 @@ export function findMetaItemByRef(
  * Determine if an item is a meta item type
  */
 export function isMetaItemType(type: string): boolean {
-  return ["agent", "workflow", "convention", "observation"].includes(type);
+  return ["agent", "workflow", "convention", "observation", "skill"].includes(
+    type,
+  );
 }
 
 // ============================================================
@@ -430,6 +467,7 @@ export async function saveObservation(
     workflows: [],
     conventions: [],
     observations: [],
+    skills: [],
     includes: [],
   };
 
@@ -489,9 +527,34 @@ export async function deleteObservation(
   }
 }
 
+/**
+ * Get the path for skill content file.
+ * Skills are stored in .kspec/skills/<id>/SKILL.md
+ */
+export function getSkillContentPath(ctx: KspecContext, skillId: string): string {
+  return path.join(ctx.specDir, "skills", skillId, "SKILL.md");
+}
+
+/**
+ * Load skill content from the SKILL.md file.
+ * AC: @skill-meta-type ac-3 - loadSkillContent returns full markdown content
+ */
+export async function loadSkillContent(
+  ctx: KspecContext,
+  skill: LoadedSkill,
+): Promise<string | null> {
+  const contentPath = getSkillContentPath(ctx, skill.id);
+  try {
+    const content = await fs.readFile(contentPath, "utf-8");
+    return content;
+  } catch {
+    return null;
+  }
+}
+
 // Re-export the getMetaItemType function
 export { getMetaItemType };
-export type { Agent, Workflow, Convention, Observation, MetaItem };
+export type { Agent, Workflow, Convention, Observation, Skill, MetaItem };
 
 // ============================================================
 // GENERIC META ITEM CRUD
@@ -518,6 +581,7 @@ export async function saveMetaItem(
     workflows: [],
     conventions: [],
     observations: [],
+    skills: [],
     includes: [],
   };
 
