@@ -49141,7 +49141,7 @@
   type: task
   spec_ref: "@claude-code-renderer"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-rendering-pipeline"
@@ -49188,6 +49188,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T04:32:40.289Z
+  closed_reason: "Merged in PR #383. Implemented renderClaudeCodeSkill library function that reads
+    from .kspec/skills/<id>/SKILL.md and writes to .claude/skills/<id>/SKILL.md with YAML
+    frontmatter (name, description). All 4 ACs covered: (1) creates .claude/skills/<id>/SKILL.md
+    with frontmatter, (2) frontmatter has name/description fields, (3) source content appears
+    verbatim below frontmatter, (4) files left as unstaged changes. Additional features: dry run
+    support, idempotent rendering, kspec-managed marker."
 - _ulid: 01KHFBT28RGKFXDAERP9F47FZT
   slugs:
     - implement-skill-drift-detection
