@@ -48711,7 +48711,7 @@
   type: task
   spec_ref: "@skill-validation"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-skill-parser-integration"
