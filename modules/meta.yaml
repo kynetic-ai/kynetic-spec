@@ -3263,8 +3263,7 @@ modules:
             implements: []
             relates_to: []
             tests: []
-            traits:
-              - "@platform-renderer-trait"
+            traits: []
             notes: []
             created: 2026-02-15T22:40:42.066Z
           - _ulid: 01KHHQD5N98VDEJFQWXTE4QZC1
