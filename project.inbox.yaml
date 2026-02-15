@@ -364,3 +364,13 @@ inbox:
     created_at: 2026-02-15T21:07:20.590Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHHJMABXY8TC0PDX1SF781CZ
+    text: kspec tasks assess automation --all should display stored automation status
+      (eligible/needs_review/manual_only) alongside criteria recommendation. Currently only shows
+      criteria-based recommendation even for already-assessed tasks, making it impossible to verify
+      batch operations.
+    created_at: 2026-02-15T21:17:13.469Z
+    tags:
+      - kspec-cli
+      - reflection
+    added_by: "@claude"
