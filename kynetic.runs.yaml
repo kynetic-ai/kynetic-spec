@@ -3858,7 +3858,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KHHEADP5487JP40A7DJYX2CF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-15T20:01:54.885Z
@@ -3911,7 +3911,9 @@ runs:
         completed_at: 2026-02-15T20:03:59.816Z
         notes: User confirmed nothing worth capturing - batch file flag already works, no new items needed.
       - step_index: 5
-        status: completed
+        status: skipped
         started_at: 2026-02-15T20:03:59.816Z
-        completed_at: 2026-02-15T20:03:59.816Z
+        completed_at: 2026-02-15T20:04:01.314Z
+        notes: Nothing to capture this session.
     initiated_by: "@claude"
+    completed_at: 2026-02-15T20:04:01.315Z
