@@ -49507,14 +49507,23 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:34.357Z
+  started_at: 2026-02-15T06:21:26.339Z
   notes:
     - _ulid: 01KHFBT3PNMAFQH6WM9Q2FGCS1
       created_at: 2026-02-15T00:39:34.357Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFZCDS4CPSN3CEYG4WNV26M
+      created_at: 2026-02-15T06:21:37.444Z
+      author: "@claude"
+      content: Verified that all 5 ACs are already implemented in src/cli/commands/setup.ts
+        (installClaudeCodeHooks function and GUARD_SCRIPTS constant). Added @full-hook-install AC
+        annotations to existing tests in tests/enhanced-setup.test.ts. Added new test for ac-4
+        (dynamic path detection) that verifies the worktree guard script uses CWD from hook input
+        rather than hardcoded absolute paths. All 20 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T06:21:26.339Z
 - _ulid: 01KHFBT3Y0MBQ6YX7MT9524X23
   slugs:
     - implement-core-skill-installation
