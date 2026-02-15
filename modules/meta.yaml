@@ -3048,6 +3048,9 @@ modules:
               - "@trait-error-guidance"
             notes: []
             created: 2026-02-15T00:39:29.303Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYSDM2AXHTRQQXN6MX5M
             slugs:
               - agent-data-sections
