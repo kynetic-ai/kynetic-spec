@@ -2438,6 +2438,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.014Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYG76EVZ7003W5B0KF62
             slugs:
               - skill-content-model
