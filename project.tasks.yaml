@@ -49143,6 +49143,12 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #383. Implemented renderClaudeCodeSkill library function that reads
+    from .kspec/skills/<id>/SKILL.md and writes to .claude/skills/<id>/SKILL.md with YAML
+    frontmatter (name, description). All 4 ACs covered: (1) creates .claude/skills/<id>/SKILL.md
+    with frontmatter, (2) frontmatter has name/description fields, (3) source content appears
+    verbatim below frontmatter, (4) files left as unstaged changes. Additional features: dry run
+    support, idempotent rendering, kspec-managed marker."
   depends_on:
     - "@implement-skill-rendering-pipeline"
   context: []
@@ -49151,6 +49157,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:32.655Z
   started_at: 2026-02-15T04:17:26.293Z
+  completed_at: 2026-02-15T04:32:40.289Z
   notes:
     - _ulid: 01KHFBT21F5C4FBQFBX6QVAZSB
       created_at: 2026-02-15T00:39:32.656Z
@@ -49188,13 +49195,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T04:32:40.289Z
-  closed_reason: "Merged in PR #383. Implemented renderClaudeCodeSkill library function that reads
-    from .kspec/skills/<id>/SKILL.md and writes to .claude/skills/<id>/SKILL.md with YAML
-    frontmatter (name, description). All 4 ACs covered: (1) creates .claude/skills/<id>/SKILL.md
-    with frontmatter, (2) frontmatter has name/description fields, (3) source content appears
-    verbatim below frontmatter, (4) files left as unstaged changes. Additional features: dry run
-    support, idempotent rendering, kspec-managed marker."
 - _ulid: 01KHFBT28RGKFXDAERP9F47FZT
   slugs:
     - implement-skill-drift-detection
@@ -49202,7 +49202,7 @@
   type: task
   spec_ref: "@skill-drift-detection"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-rendering-pipeline"
@@ -49218,6 +49218,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T04:33:43.086Z
 - _ulid: 01KHFBT2G2RN6SAET6BC1JBJ0W
   slugs:
     - implement-agent-instruction-generation
