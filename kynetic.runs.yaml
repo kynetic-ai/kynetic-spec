@@ -3553,6 +3553,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-14T11:25:43.565Z
+    completed_at: 2026-02-14T11:26:32.609Z
     step_results:
       - step_index: 0
         status: completed
@@ -3581,4 +3582,11 @@ runs:
         completed_at: 2026-02-14T11:26:32.609Z
         notes: No items to capture - session went smoothly with established patterns.
     initiated_by: "@claude"
-    completed_at: 2026-02-14T11:26:32.609Z
+  - _ulid: 01KHFH8XJFZ0H022JVZC0PG1GS
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-15T02:15:02.479Z
+    step_results: []
+    initiated_by: "@claude"
