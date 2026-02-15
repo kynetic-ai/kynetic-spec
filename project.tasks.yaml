@@ -49783,6 +49783,7 @@
 
         Tests: npm test -- tests/skill-rendering.test.ts tests/skill-cli.test.ts --run
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD64NTFBWFNCC2MDNHA4B
   slugs:
     - implement-platform-renderer-contract
@@ -49839,6 +49840,7 @@
 
         Depends on @consolidate-skill-render being done first so there's a single render module.
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD6CKSYBVR0511V09817C
   slugs:
     - implement-extended-skill-schema
@@ -49894,6 +49896,7 @@
 
         Tests: tests/skill-schema.test.ts
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD6N46R44E8QEVNGP5JPV
   slugs:
     - implement-claude-code-renderer-extended-frontmatte
@@ -49957,6 +49960,7 @@
 
         Existing test patterns in that file show setupTempFixtures usage — follow same pattern.
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD6WX70EV795MY735S163
   slugs:
     - implement-codex-skill-renderer
@@ -50010,6 +50014,7 @@
 
         Tests: tests/skill-rendering.test.ts (new describe block for Codex)
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD74SRA7R1ZNRCN32YECZ
   slugs:
     - implement-multi-platform-render-cli
@@ -50057,6 +50062,7 @@
         Consider extracting render logic to src/cli/commands/skill-render.ts if skill.ts
         exceeds ~2500 lines after changes.
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD7CVF171SQ1A7K2E6R02
   slugs:
     - implement-import-frontmatter-stripping-and-full-fi
@@ -50094,6 +50100,7 @@
 
         Tests: tests/skill-cli.test.ts (import describe block)
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
   slugs:
     - implement-supporting-files-convention
@@ -50128,6 +50135,7 @@
         1. Update copyDirectory calls to handle all directory types
         2. directoriesEqual() already works recursively — reuse as-is
   todos: []
+  automation: eligible
 - _ulid: 01KHHQD7WW8PA69841EB3TJAYD
   slugs:
     - implement-skill-platform-config-cli
@@ -50162,3 +50170,4 @@
         Skill get command (lines ~308-362):
         1. Include platform_config in table and JSON output
   todos: []
+  automation: eligible
