@@ -2516,6 +2516,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.051Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYHCM5HDE8GAQYCDV300
             slugs:
               - skill-validation
