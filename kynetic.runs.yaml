@@ -3859,7 +3859,7 @@ runs:
   - _ulid: 01KHHEADP5487JP40A7DJYX2CF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-15T20:01:54.885Z
     step_results:
@@ -3876,5 +3876,17 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-15T20:02:04.067Z
-        completed_at: 2026-02-15T20:02:04.067Z
+        completed_at: 2026-02-15T20:02:14.010Z
+        notes: "Friction: (1) CI test job took ~9 minutes and the first run failed due to
+          environment-dependent test assertions - the ac-3 test assumed .claude/ state that only
+          exists in real Claude Code sessions, not CI. Had to iterate twice on the fix. (2) gh pr
+          checks --watch timed out waiting, had to manually poll. No good way to fire-and-forget a
+          merge after CI passes. (3) kspec batch JSON escaping is fragile - the escaped quotes in
+          the inbox text caused a parse error. Had to fall back to sequential kspec inbox add calls.
+          (4) Subagent output extraction was cumbersome - the output files are huge JSON
+          transcripts, needed another subagent just to extract the summary text."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-15T20:02:14.010Z
+        completed_at: 2026-02-15T20:02:14.010Z
     initiated_by: "@claude"
