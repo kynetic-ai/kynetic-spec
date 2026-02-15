@@ -48777,14 +48777,50 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:30.927Z
+  started_at: 2026-02-15T02:23:18.452Z
   notes:
     - _ulid: 01KHFBT0BFMYV8SD3XQ6T29Y6N
       created_at: 2026-02-15T00:39:30.927Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFJ5WME7FZV5FTPXNT0VG0K
+      created_at: 2026-02-15T02:30:51.790Z
+      author: "@claude"
+      content: >-
+        Implemented Skill CLI Commands:
+
+
+        - ac-1: kspec skill list displays table with ID, Name, Origin, Version, Platforms columns
+
+        - ac-2: kspec skill list --json returns JSON array with full skill metadata
+
+        - ac-3: kspec skill add creates meta entry with origin (default: project)
+
+        - ac-4: kspec skill add creates .kspec/skills/<id>/SKILL.md file
+
+        - ac-5: kspec skill get displays metadata including id, name, origin, platforms
+
+        - ac-6: kspec skill get displays SKILL.md content
+
+        - ac-7: kspec skill delete --confirm removes meta entry from manifest
+
+        - ac-8: kspec skill delete removes .kspec/skills/<id>/ directory
+
+
+        Also:
+
+        - Changed --version to --skill-version to avoid conflict with CLI global --version flag
+
+        - Added origin/tag filtering for skill list
+
+        - Added dependency checking for skill delete (prevents deletion if other skills depend on
+        it)
+
+
+        29 tests covering all 8 ACs in tests/skill-cli.test.ts
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T02:23:18.452Z
 - _ulid: 01KHFBT0JVM5TJ9NG3X9RRRJSN
   slugs:
     - implement-skill-add-command
