@@ -702,17 +702,18 @@ export function registerSkillCommands(program: Command): void {
     });
 
   // AC: @skill-rendering ac-1 through ac-5 - kspec skill render
+  // AC: @skill-render-cli ac-1, ac-2 - kspec skill render / kspec skill render @skill-id
   // AC: @trait-dry-run - supports --dry-run
   // AC: @trait-error-guidance - provides error guidance
   skill
-    .command("render")
+    .command("render [ref]")
     .description(
       "Render skills from shadow branch to platform-specific files on main branch"
     )
     .option("--clean", "Remove orphaned managed skill directories")
     .option("--dry-run", "Show what would be changed without applying")
-    .option("--skill <id>", "Render only a specific skill")
-    .action(async (options) => {
+    .option("--skill <id>", "Render only a specific skill (deprecated, use positional arg)")
+    .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
 
@@ -736,15 +737,22 @@ export function registerSkillCommands(program: Command): void {
           s.platforms.includes("claude-code")
         );
 
-        // Filter to specific skill if requested
-        if (options.skill) {
-          skillsToRender = skillsToRender.filter(
-            (s) => s.id === options.skill
-          );
-          if (skillsToRender.length === 0) {
-            error(`Skill not found: ${options.skill}`);
+        // AC: @skill-render-cli ac-2 - Filter to specific skill if requested
+        // Support both positional ref argument and --skill option
+        const skillRef = ref || options.skill;
+        if (skillRef) {
+          // Resolve the ref to a skill
+          const item = findMetaItemByRef(metaCtx, skillRef);
+          if (!item || !("origin" in item)) {
+            error(`Skill not found: ${skillRef}`);
             console.log(chalk.gray("Try: kspec skill list"));
             process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          const skill = item as LoadedSkill;
+          skillsToRender = skillsToRender.filter((s) => s.id === skill.id);
+          if (skillsToRender.length === 0) {
+            error(`Skill '${skill.id}' does not have claude-code platform`);
+            process.exit(EXIT_CODES.ERROR);
           }
         }
 
@@ -888,6 +896,200 @@ export function registerSkillCommands(program: Command): void {
         );
       } catch (err) {
         error("Failed to render skills", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // AC: @skill-render-cli ac-3 - kspec skill status
+  skill
+    .command("status")
+    .description("Show sync status of rendered skills")
+    .action(async () => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          console.log(
+            chalk.gray("Try: kspec init to initialize a kspec project")
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const projectRoot = ctx.rootDir;
+
+        // Filter skills by platform (only claude-code for now)
+        const skillsToCheck = metaCtx.skills.filter((s) =>
+          s.platforms.includes("claude-code")
+        );
+
+        if (skillsToCheck.length === 0) {
+          console.log(chalk.yellow("No skills found"));
+          return;
+        }
+
+        const statusResults: SkillStatusResult[] = [];
+
+        for (const skill of skillsToCheck) {
+          const status = await getSkillSyncStatus(ctx, projectRoot, skill);
+          statusResults.push(status);
+        }
+
+        // Output results
+        output(
+          statusResults,
+          () => {
+            const table = new Table({
+              head: [
+                chalk.bold("ID"),
+                chalk.bold("Status"),
+                chalk.bold("Docs"),
+              ],
+              style: {
+                head: [],
+                border: [],
+              },
+            });
+
+            for (const result of statusResults) {
+              const statusColor =
+                result.status === "in-sync"
+                  ? chalk.green
+                  : result.status === "drifted"
+                    ? chalk.yellow
+                    : chalk.gray;
+
+              const docsStatusColor =
+                result.docsStatus === "in-sync"
+                  ? chalk.green
+                  : result.docsStatus === "drifted"
+                    ? chalk.yellow
+                    : chalk.gray;
+
+              table.push([
+                result.id,
+                statusColor(result.status),
+                docsStatusColor(result.docsStatus || "-"),
+              ]);
+            }
+
+            console.log(table.toString());
+
+            // Summary
+            const inSync = statusResults.filter((r) => r.status === "in-sync").length;
+            const drifted = statusResults.filter((r) => r.status === "drifted").length;
+            const notRendered = statusResults.filter((r) => r.status === "not-rendered").length;
+
+            console.log();
+            if (drifted > 0) {
+              console.log(chalk.yellow(`${drifted} skill(s) drifted - run 'kspec skill render' to sync`));
+            }
+            if (notRendered > 0) {
+              console.log(chalk.gray(`${notRendered} skill(s) not rendered`));
+            }
+            if (inSync === statusResults.length) {
+              console.log(chalk.green("All skills in sync"));
+            }
+          }
+        );
+      } catch (err) {
+        error("Failed to check skill status", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // AC: @skill-render-cli ac-4 - kspec skill diff
+  skill
+    .command("diff <ref>")
+    .description("Show diff between source and rendered skill")
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          console.log(
+            chalk.gray("Try: kspec init to initialize a kspec project")
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const item = findMetaItemByRef(metaCtx, ref);
+
+        if (!item) {
+          error(`Skill not found: ${ref}`);
+          console.log(chalk.gray("Try: kspec skill list"));
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
+        // Check it's a skill
+        if (!("origin" in item)) {
+          error(`Item ${ref} is not a skill`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const skill = item as LoadedSkill;
+        const projectRoot = ctx.rootDir;
+
+        // Get expected rendered content
+        const expectedContent = await getExpectedRenderedContent(ctx, skill);
+
+        // Get actual rendered content
+        const renderedPath = path.join(
+          projectRoot,
+          ".claude",
+          "skills",
+          skill.id,
+          "SKILL.md"
+        );
+
+        let actualContent = "";
+        try {
+          actualContent = await fs.readFile(renderedPath, "utf-8");
+        } catch {
+          // File doesn't exist
+        }
+
+        // Generate diff
+        const diff = generateUnifiedDiff(
+          actualContent,
+          expectedContent,
+          `a/${skill.id}/SKILL.md`,
+          `b/${skill.id}/SKILL.md`
+        );
+
+        // Output
+        output(
+          {
+            id: skill.id,
+            hasDiff: diff.length > 0,
+            diff,
+          },
+          () => {
+            if (diff.length === 0) {
+              console.log(chalk.green(`${skill.id}: in sync`));
+            } else {
+              console.log(chalk.yellow(`${skill.id}: drifted`));
+              console.log();
+              // Print colored diff
+              for (const line of diff) {
+                if (line.startsWith("+") && !line.startsWith("+++")) {
+                  console.log(chalk.green(line));
+                } else if (line.startsWith("-") && !line.startsWith("---")) {
+                  console.log(chalk.red(line));
+                } else if (line.startsWith("@@")) {
+                  console.log(chalk.cyan(line));
+                } else {
+                  console.log(line);
+                }
+              }
+            }
+          }
+        );
+      } catch (err) {
+        error("Failed to generate diff", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -1190,5 +1392,222 @@ async function renderSkill(
   };
 }
 
+/**
+ * Result of checking a skill's sync status
+ * AC: @skill-render-cli ac-3
+ */
+interface SkillStatusResult {
+  id: string;
+  status: "in-sync" | "drifted" | "not-rendered";
+  docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
+}
+
+/**
+ * Get the sync status of a skill
+ * AC: @skill-render-cli ac-3
+ */
+async function getSkillSyncStatus(
+  ctx: KspecContext,
+  projectRoot: string,
+  skill: LoadedSkill
+): Promise<SkillStatusResult> {
+  const expectedContent = await getExpectedRenderedContent(ctx, skill);
+  const renderedPath = path.join(
+    projectRoot,
+    ".claude",
+    "skills",
+    skill.id,
+    "SKILL.md"
+  );
+
+  let actualContent = "";
+  let status: "in-sync" | "drifted" | "not-rendered" = "not-rendered";
+
+  try {
+    actualContent = await fs.readFile(renderedPath, "utf-8");
+    status = contentsEqual(expectedContent, actualContent) ? "in-sync" : "drifted";
+  } catch {
+    // File doesn't exist
+    status = "not-rendered";
+  }
+
+  // Check docs status
+  const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
+  const targetDocsDir = path.join(projectRoot, ".claude", "skills", skill.id, "docs");
+  let docsStatus: "in-sync" | "drifted" | "not-rendered" | "no-docs" = "no-docs";
+
+  try {
+    await fs.stat(sourceDocsDir);
+    // Source docs exist, check target
+    try {
+      await fs.stat(targetDocsDir);
+      // Both exist, compare
+      const equal = await directoriesEqual(sourceDocsDir, targetDocsDir);
+      docsStatus = equal ? "in-sync" : "drifted";
+    } catch {
+      docsStatus = "not-rendered";
+    }
+  } catch {
+    // No source docs
+    docsStatus = "no-docs";
+  }
+
+  return {
+    id: skill.id,
+    status,
+    docsStatus,
+  };
+}
+
+/**
+ * Get the expected rendered content for a skill
+ */
+async function getExpectedRenderedContent(
+  ctx: KspecContext,
+  skill: LoadedSkill
+): Promise<string> {
+  const sourceContent = await loadSkillContent(ctx, skill);
+
+  if (!sourceContent) {
+    // No source content, generate placeholder
+    const frontmatter = generateFrontmatter(skill);
+    return `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
+  }
+
+  // Generate rendered content with frontmatter and marker
+  const frontmatter = generateFrontmatter(skill);
+
+  // Check if source already has frontmatter - if so, strip it
+  const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
+  const contentWithoutFrontmatter = frontmatterMatch
+    ? sourceContent.slice(frontmatterMatch[0].length)
+    : sourceContent;
+
+  return `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+}
+
+/**
+ * Generate unified diff between two strings
+ * AC: @skill-render-cli ac-4
+ */
+function generateUnifiedDiff(
+  actual: string,
+  expected: string,
+  actualPath: string,
+  expectedPath: string
+): string[] {
+  if (contentsEqual(actual, expected)) {
+    return [];
+  }
+
+  const actualLines = actual.split("\n");
+  const expectedLines = expected.split("\n");
+  const diffLines: string[] = [];
+
+  // Simple line-by-line diff (unified format)
+  diffLines.push(`--- ${actualPath}`);
+  diffLines.push(`+++ ${expectedPath}`);
+
+  // Find differing sections and create hunks
+  let i = 0;
+  let j = 0;
+
+  while (i < actualLines.length || j < expectedLines.length) {
+    // Find start of difference
+    const contextStart = i;
+    const contextStartExpected = j;
+
+    // Skip matching lines
+    while (
+      i < actualLines.length &&
+      j < expectedLines.length &&
+      actualLines[i] === expectedLines[j]
+    ) {
+      i++;
+      j++;
+    }
+
+    // If we've reached the end, we're done
+    if (i >= actualLines.length && j >= expectedLines.length) {
+      break;
+    }
+
+    // Find end of difference
+    let diffEndActual = i;
+    let diffEndExpected = j;
+
+    // Collect differing lines
+    while (
+      diffEndActual < actualLines.length &&
+      diffEndExpected < expectedLines.length &&
+      actualLines[diffEndActual] !== expectedLines[diffEndExpected]
+    ) {
+      diffEndActual++;
+      diffEndExpected++;
+    }
+
+    // Also handle case where one side has more lines
+    while (diffEndActual < actualLines.length && diffEndExpected >= expectedLines.length) {
+      diffEndActual++;
+    }
+    while (diffEndExpected < expectedLines.length && diffEndActual >= actualLines.length) {
+      diffEndExpected++;
+    }
+
+    // Create hunk header (show 3 lines of context)
+    const hunkStartActual = Math.max(0, contextStart - 3);
+    const hunkStartExpected = Math.max(0, contextStartExpected - 3);
+
+    // Include context after diff too
+    const hunkEndActual = Math.min(actualLines.length, diffEndActual + 3);
+    const hunkEndExpected = Math.min(expectedLines.length, diffEndExpected + 3);
+
+    const actualCount = hunkEndActual - hunkStartActual;
+    const expectedCount = hunkEndExpected - hunkStartExpected;
+
+    diffLines.push(
+      `@@ -${hunkStartActual + 1},${actualCount} +${hunkStartExpected + 1},${expectedCount} @@`
+    );
+
+    // Leading context
+    for (let k = hunkStartActual; k < contextStart; k++) {
+      diffLines.push(` ${actualLines[k]}`);
+    }
+
+    // Removed lines (from actual)
+    for (let k = contextStart; k < diffEndActual; k++) {
+      if (k < actualLines.length) {
+        diffLines.push(`-${actualLines[k]}`);
+      }
+    }
+
+    // Added lines (from expected)
+    for (let k = contextStartExpected; k < diffEndExpected; k++) {
+      if (k < expectedLines.length) {
+        diffLines.push(`+${expectedLines[k]}`);
+      }
+    }
+
+    // Trailing context
+    for (let k = diffEndActual; k < hunkEndActual; k++) {
+      if (k < actualLines.length) {
+        diffLines.push(` ${actualLines[k]}`);
+      }
+    }
+
+    i = hunkEndActual;
+    j = hunkEndExpected;
+  }
+
+  return diffLines;
+}
+
 // Re-export for testing
-export { renderSkill, isKspecManaged, KSPEC_MANAGED_MARKER };
+export {
+  renderSkill,
+  isKspecManaged,
+  KSPEC_MANAGED_MARKER,
+  getSkillSyncStatus,
+  getExpectedRenderedContent,
+  generateUnifiedDiff,
+};
