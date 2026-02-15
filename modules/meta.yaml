@@ -2690,6 +2690,9 @@ modules:
               - "@trait-shadow-commit"
             notes: []
             created: 2026-02-15T00:39:29.130Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYKWK01EM2G5FJ0Z09C9
             slugs:
               - skill-import
