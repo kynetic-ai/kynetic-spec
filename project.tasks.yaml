@@ -49953,7 +49953,7 @@
   type: task
   spec_ref: "@extended-skill-schema"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-consolidate-skill-render-implementations"
@@ -50053,6 +50053,18 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T23:54:51.141Z
+  closed_reason: >-
+    Merged in PR #396. Extended SkillSchema with portable Agent Skills fields:
+
+    - Added license, compatibility, allowed_tools, metadata fields
+
+    - Added platform_config with ClaudeCodeConfigSchema and CodexConfigSchema (strict)
+
+    - PlatformConfigSchema uses passthrough for future extensibility
+
+    - All 7 ACs verified with 27 tests covering schema validation, strict mode, passthrough, and
+    backward compatibility
 - _ulid: 01KHHQD6N46R44E8QEVNGP5JPV
   slugs:
     - implement-claude-code-renderer-extended-frontmatte
