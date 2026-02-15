@@ -49439,6 +49439,10 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #388. Implemented enhanced setup command with agent detection, hook
+    installation (UserPromptSubmit, Stop, PreToolUse with guard scripts), skill rendering, and
+    kspec-agents.md generation. All 9 ACs covered: --status for current state reporting, --dry-run
+    for planned actions, --skip-skills to skip skill rendering. 19 tests added."
   depends_on:
     - "@implement-skill-rendering-pipeline"
     - "@implement-agent-instruction-generation"
@@ -49448,6 +49452,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:34.114Z
   started_at: 2026-02-15T05:57:14.312Z
+  completed_at: 2026-02-15T06:19:03.216Z
   notes:
     - _ulid: 01KHFBT3F2971RMRN5YM828VT5
       created_at: 2026-02-15T00:39:34.114Z
@@ -49486,11 +49491,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T06:19:03.216Z
-  closed_reason: "Merged in PR #388. Implemented enhanced setup command with agent detection, hook
-    installation (UserPromptSubmit, Stop, PreToolUse with guard scripts), skill rendering, and
-    kspec-agents.md generation. All 9 ACs covered: --status for current state reporting, --dry-run
-    for planned actions, --skip-skills to skip skill rendering. 19 tests added."
 - _ulid: 01KHFBT3PNP2VFYNNCSEPXMJ7S
   slugs:
     - implement-full-hook-installation
@@ -49498,7 +49498,7 @@
   type: task
   spec_ref: "@full-hook-install"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49514,6 +49514,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T06:21:26.339Z
 - _ulid: 01KHFBT3Y0MBQ6YX7MT9524X23
   slugs:
     - implement-core-skill-installation
