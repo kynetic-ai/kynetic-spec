@@ -2658,6 +2658,9 @@ modules:
               - "@trait-error-guidance"
             notes: []
             created: 2026-02-15T00:39:29.110Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYKAXN0VR0KKRN8298JT
             slugs:
               - skill-set
