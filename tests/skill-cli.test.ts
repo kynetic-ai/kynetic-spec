@@ -733,3 +733,307 @@ describe('Skill CLI - skill set', () => {
     expect(result.description).toBe('JSON test');
   });
 });
+
+describe('Skill CLI - skill import', () => {
+  let tempDir: string;
+  let externalSkillDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    // Create an external skill directory (simulating .claude/skills/task-work/)
+    externalSkillDir = await createTempDir();
+    await fs.mkdir(path.join(externalSkillDir, 'task-work'), { recursive: true });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+    await cleanupTempDir(externalSkillDir);
+  });
+
+  // AC: @skill-import ac-1
+  it('should extract name and description from YAML frontmatter', async () => {
+    // Create SKILL.md with frontmatter
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on kspec tasks with proper lifecycle
+---
+
+# Task Work
+
+This skill helps you work on tasks.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{ id: string; name: string; description: string }>('skill get @task-work', tempDir);
+    expect(result.name).toBe('Task Work');
+    expect(result.description).toBe('Work on kspec tasks with proper lifecycle');
+  });
+
+  // AC: @skill-import ac-2
+  it('should copy content to .kspec/skills/<id>/SKILL.md', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    const originalContent = `---
+name: Task Work
+description: Work on tasks
+---
+
+# Task Work
+
+Use this skill when working on tasks.
+
+## Commands
+
+\`\`\`bash
+kspec task start @ref
+\`\`\`
+`;
+    await fs.writeFile(skillPath, originalContent);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify content was copied
+    const copiedPath = path.join(tempDir, 'skills', 'task-work', 'SKILL.md');
+    const copiedContent = await fs.readFile(copiedPath, 'utf-8');
+    expect(copiedContent).toContain('# Task Work');
+    expect(copiedContent).toContain('Use this skill when working on tasks');
+    expect(copiedContent).toContain('kspec task start @ref');
+  });
+
+  // AC: @skill-import ac-3
+  it('should copy docs/ subdirectory if present', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+
+# Task Work
+`);
+
+    // Create docs subdirectory with files
+    const docsDir = path.join(externalSkillDir, 'task-work', 'docs');
+    await fs.mkdir(docsDir, { recursive: true });
+    await fs.writeFile(path.join(docsDir, 'quickref.md'), '# Quick Reference\n\nShortcuts...');
+    await fs.writeFile(path.join(docsDir, 'advanced.md'), '# Advanced Usage\n\nTips...');
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify docs were copied
+    const copiedDocsDir = path.join(tempDir, 'skills', 'task-work', 'docs');
+    const quickref = await fs.readFile(path.join(copiedDocsDir, 'quickref.md'), 'utf-8');
+    const advanced = await fs.readFile(path.join(copiedDocsDir, 'advanced.md'), 'utf-8');
+    expect(quickref).toContain('Quick Reference');
+    expect(advanced).toContain('Advanced Usage');
+  });
+
+  // AC: @skill-import ac-4
+  it('should set origin to core when --origin core specified', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    kspec(`skill import "${skillPath}" --origin core`, tempDir);
+
+    const result = kspecJson<{ origin: string }>('skill get @task-work', tempDir);
+    expect(result.origin).toBe('core');
+  });
+
+  // AC: @skill-import ac-5
+  it('should use custom ID when --id specified', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    kspec(`skill import "${skillPath}" --id custom-task-work`, tempDir);
+
+    const result = kspecJson<{ id: string; name: string }>('skill get @custom-task-work', tempDir);
+    expect(result.id).toBe('custom-task-work');
+    expect(result.name).toBe('Task Work');
+  });
+
+  // AC: @skill-import ac-6
+  it('should error when no frontmatter and no --name/--description flags', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `# Task Work
+
+Just some content without frontmatter.
+`);
+
+    const result = kspecFull(`skill import "${skillPath}"`, tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Name is required');
+  });
+
+  // AC: @skill-import ac-6 - description required
+  it('should error when no description in frontmatter and no --description flag', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+---
+
+# Task Work
+`);
+
+    const result = kspecFull(`skill import "${skillPath}"`, tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Description is required');
+  });
+
+  // AC: @skill-import ac-6 - allow override with flags
+  it('should allow --name and --description flags to override missing frontmatter', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `# Task Work
+
+Just content without frontmatter.
+`);
+
+    kspec(`skill import "${skillPath}" --name "Task Work" --description "Work on tasks"`, tempDir);
+
+    const result = kspecJson<{ name: string; description: string }>('skill get @task-work', tempDir);
+    expect(result.name).toBe('Task Work');
+    expect(result.description).toBe('Work on tasks');
+  });
+
+  // AC: @skill-import ac-7
+  it('should strip base-directory lines from imported content', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+
+Base directory for this skill: /home/user/project/.claude/skills/task-work
+
+# Task Work
+
+Use this skill when working on tasks.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify base-directory line was stripped
+    const copiedPath = path.join(tempDir, 'skills', 'task-work', 'SKILL.md');
+    const copiedContent = await fs.readFile(copiedPath, 'utf-8');
+    expect(copiedContent).not.toContain('Base directory for this skill:');
+    expect(copiedContent).toContain('# Task Work');
+    expect(copiedContent).toContain('Use this skill when working on tasks');
+  });
+
+  it('should derive ID from directory name by default', async () => {
+    // Create a skill in a directory with a specific name
+    await fs.mkdir(path.join(externalSkillDir, 'pr-review'), { recursive: true });
+    const skillPath = path.join(externalSkillDir, 'pr-review', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: PR Review
+description: Review pull requests
+---
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // ID should be derived from directory name
+    const result = kspecJson<{ id: string }>('skill get @pr-review', tempDir);
+    expect(result.id).toBe('pr-review');
+  });
+
+  it('should error when skill with same ID already exists', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    // First import succeeds
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Second import should fail
+    const result = kspecFull(`skill import "${skillPath}"`, tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('already exists');
+    expect(result.stderr).toContain('--id');
+  });
+
+  it('should error when file does not exist', () => {
+    const result = kspecFull('skill import /nonexistent/path/SKILL.md', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('File not found');
+  });
+
+  it('should set default origin to project', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{ origin: string }>('skill get @task-work', tempDir);
+    expect(result.origin).toBe('project');
+  });
+
+  it('should set version when --skill-version provided', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    kspec(`skill import "${skillPath}" --skill-version 1.0.0`, tempDir);
+
+    const result = kspecJson<{ version: string }>('skill get @task-work', tempDir);
+    expect(result.version).toBe('1.0.0');
+  });
+
+  it('should output imported skill in JSON mode', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    const result = kspecJson<{ id: string; name: string; origin: string }>(
+      `skill import "${skillPath}"`,
+      tempDir
+    );
+
+    expect(result.id).toBe('task-work');
+    expect(result.name).toBe('Task Work');
+    expect(result.origin).toBe('project');
+  });
+
+  it('should handle nested docs directory', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+`);
+
+    // Create nested docs structure
+    const docsDir = path.join(externalSkillDir, 'task-work', 'docs');
+    await fs.mkdir(path.join(docsDir, 'examples'), { recursive: true });
+    await fs.writeFile(path.join(docsDir, 'examples', 'usage.md'), '# Example Usage');
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify nested structure was copied
+    const copiedPath = path.join(tempDir, 'skills', 'task-work', 'docs', 'examples', 'usage.md');
+    const content = await fs.readFile(copiedPath, 'utf-8');
+    expect(content).toContain('Example Usage');
+  });
+});
