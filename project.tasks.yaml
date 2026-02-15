@@ -49252,7 +49252,7 @@
   type: task
   spec_ref: "@agent-instruction-gen"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -49285,6 +49285,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T05:09:46.036Z
+  closed_reason: "Merged in PR #385. Implemented agent instruction generation with kspec agents
+    generate and kspec agents status commands. All 5 ACs covered: creates kspec-agents.md with
+    Finding Information table (skills), conventions by domain, freshness comment with
+    version/timestamp, and status command that detects stale via SHA256 hash. Also implemented
+    @trait-dry-run support. 22 tests added covering all acceptance criteria."
 - _ulid: 01KHFBT2QCG2K52WNXF7AM6329
   slugs:
     - implement-agents-cli-commands
