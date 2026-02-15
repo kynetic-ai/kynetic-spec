@@ -49261,14 +49261,30 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:33.122Z
+  started_at: 2026-02-15T04:51:47.294Z
   notes:
     - _ulid: 01KHFBT2G2F0E2BR2Q8P5YH32D
       created_at: 2026-02-15T00:39:33.122Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFTKRJJ6XS155JF00VA29D1
+      created_at: 2026-02-15T04:58:14.994Z
+      author: "@claude"
+      content: |-
+        Implemented agent instruction generation with all 5 acceptance criteria:
+
+        - ac-1: kspec agents generate creates kspec-agents.md in project root
+        - ac-2: Output includes Finding Information table with row per skill
+        - ac-3: Output includes conventions section listing rules by domain
+        - ac-4: Output contains freshness comment with kspec version and timestamp
+        - ac-5: kspec agents status reports stale when meta has changed since generation
+
+        Also implemented @trait-dry-run support (ac-1 through ac-6).
+
+        Added 22 tests covering all acceptance criteria and edge cases.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T04:51:47.294Z
 - _ulid: 01KHFBT2QCG2K52WNXF7AM6329
   slugs:
     - implement-agents-cli-commands
