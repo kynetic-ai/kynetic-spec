@@ -36,6 +36,7 @@ import {
   registerSessionCommands,
   registerSetupCommand,
   registerShadowCommands,
+  registerSkillCommands,
   registerTaskCommands,
   registerTasksCommands,
   registerTraitCommands,
@@ -212,6 +213,7 @@ registerMergeDriverCommand(program);
 registerExportCommand(program);
 registerUtilCommands(program);
 registerBatchCommand(program);
+registerSkillCommands(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {
