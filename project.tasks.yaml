@@ -49792,7 +49792,8 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-consolidate-skill-render-implementations"
   context: []
   priority: 3
   tags: []
@@ -49847,7 +49848,8 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-consolidate-skill-render-implementations"
   context: []
   priority: 3
   tags: []
@@ -49901,7 +49903,10 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-extended-skill-schema"
+    - "@implement-platform-renderer-contract"
+    - "@implement-supporting-files-convention"
   context: []
   priority: 3
   tags: []
@@ -49961,7 +49966,8 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-claude-code-renderer-extended-frontmatte"
   context: []
   priority: 3
   tags: []
@@ -50013,7 +50019,9 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-claude-code-renderer-extended-frontmatte"
+    - "@implement-codex-skill-renderer"
   context: []
   priority: 3
   tags: []
@@ -50058,7 +50066,8 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-extended-skill-schema"
   context: []
   priority: 3
   tags: []
@@ -50094,7 +50103,8 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-extended-skill-schema"
   context: []
   priority: 3
   tags: []
@@ -50118,15 +50128,22 @@
         1. Update copyDirectory calls to handle all directory types
         2. directoriesEqual() already works recursively — reuse as-is
   todos: []
-- title: Implement Skill Platform Config CLI
+- _ulid: 01KHHQD7WW8PA69841EB3TJAYD
+  slugs:
+    - implement-skill-platform-config-cli
+  title: Implement Skill Platform Config CLI
   type: task
   spec_ref: "@skill-platform-config-cli"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-extended-skill-schema"
+  context: []
   priority: 3
-  slugs:
-    - implement-skill-platform-config-cli
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:44.444Z
   notes:
     - _ulid: 01KHHQD7WW6VVSZ7YX8P2RXC1Y
       created_at: 2026-02-15T22:40:44.444Z
@@ -50144,10 +50161,4 @@
 
         Skill get command (lines ~308-362):
         1. Include platform_config in table and JSON output
-  _ulid: 01KHHQD7WW8PA69841EB3TJAYD
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-15T22:40:44.444Z
   todos: []
