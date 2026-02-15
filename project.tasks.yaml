@@ -49001,14 +49001,33 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:31.912Z
+  started_at: 2026-02-15T03:24:15.500Z
   notes:
     - _ulid: 01KHFBT1A86QNZVR3TSWNVTDWR
       created_at: 2026-02-15T00:39:31.912Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFNHMGHDV7YYBR2PRWZH6R1
+      created_at: 2026-02-15T03:29:42.418Z
+      author: "@claude"
+      content: |-
+        Implemented skill meta integration with all acceptance criteria:
+
+        - ac-1: kspec meta get @skill-id returns skill metadata (by id or ULID prefix)
+        - ac-2: kspec meta list --type skill shows only skills
+        - ac-3: kspec meta show includes skill count in summary
+        - ac-4: resolveMetaRefToUlid includes skills in resolution
+
+        Changes:
+        - Updated resolveMetaRefToUlid() to check skills array (by id or ULID prefix)
+        - Updated meta get command to find skills
+        - Updated meta list command to filter/include skills
+        - Updated formatMetaShow() to display skill count
+
+        Added 12 tests covering all acceptance criteria in skill-meta-integration.test.ts
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T03:24:15.500Z
 - _ulid: 01KHFBT1JZSSV1SAVVQJTZE3E5
   slugs:
     - implement-skill-rendering-pipeline
