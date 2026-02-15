@@ -61,7 +61,8 @@ describe('kspec setup', () => {
     // Should succeed without prompting for worktree creation
     expect(result.status).toBe(0);
     expect(result.stdout).not.toContain('Create it?');
-    expect(result.stdout).toContain('Would configure:');
+    // Enhanced setup shows summary instead of "Would configure"
+    expect(result.stdout).toContain('DRY RUN');
   });
 
   // AC: auto-worktree-flag
