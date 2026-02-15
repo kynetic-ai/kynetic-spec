@@ -9,10 +9,17 @@
  * AC: @skill-cli ac-6 - kspec skill get outputs SKILL.md content
  * AC: @skill-cli ac-7 - kspec skill delete --confirm removes meta entry
  * AC: @skill-cli ac-8 - kspec skill delete removes .kspec/skills/<id>/ directory
+ *
+ * AC: @core-skill-install ac-1 - meta entries created with origin core
+ * AC: @core-skill-install ac-2 - content files copied from templates to .kspec/skills/<id>/
+ * AC: @core-skill-install ac-3 - custom skills skipped with message
+ * AC: @core-skill-install ac-4 - --force overwrites custom forks
+ * AC: @core-skill-install ac-5 - version matches kspec package version
  */
 
 import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import chalk from "chalk";
 import Table from "cli-table3";
@@ -1133,6 +1140,270 @@ export function registerSkillCommands(program: Command): void {
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // AC: @core-skill-install - kspec skill install-core
+  markMutating(skill.command("install-core"))
+    .description(
+      "Install core skills from kspec package templates"
+    )
+    .option("--force", "Overwrite custom forks with core versions")
+    .option("--dry-run", "Show what would be installed without making changes")
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          console.log(
+            chalk.gray("Try: kspec init to initialize a kspec project")
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const dryRun = options.dryRun || false;
+        const force = options.force || false;
+        const results: CoreSkillInstallResult[] = [];
+
+        // Load core skills manifest
+        const coreSkills = loadCoreSkillsManifest();
+        if (coreSkills.length === 0) {
+          console.log(chalk.yellow("No core skills found in kspec package templates"));
+          return;
+        }
+
+        // Get kspec package version
+        const kspecVersion = getKspecPackageVersion();
+
+        // Process each core skill
+        for (const coreSkill of coreSkills) {
+          // AC: @core-skill-install ac-3 - Check if skill exists with custom origin
+          const existingSkill = metaCtx.skills.find((s) => s.id === coreSkill.id);
+
+          if (existingSkill) {
+            // Check origin - if "custom" or "project" and not forcing, skip
+            if (existingSkill.origin !== "core" && !force) {
+              results.push({
+                id: coreSkill.id,
+                action: "skipped",
+                reason: `existing ${existingSkill.origin} skill (use --force to overwrite)`,
+              });
+              continue;
+            }
+          }
+
+          // AC: @core-skill-install ac-1 - Create/update meta entry with origin core
+          // AC: @core-skill-install ac-5 - Version matches kspec package version
+          const skillData: Skill = {
+            _ulid: existingSkill?._ulid || ulid(),
+            id: coreSkill.id,
+            name: coreSkill.name,
+            description: coreSkill.description,
+            origin: "core",
+            version: kspecVersion,
+            platforms: coreSkill.platforms || ["claude-code"],
+            depends_on: [],
+            tags: ["core"],
+          };
+
+          // Validate with schema
+          const parsed = SkillSchema.safeParse(skillData);
+          if (!parsed.success) {
+            const issues = parsed.error.issues
+              .map((i) => `${i.path.join(".")}: ${i.message}`)
+              .join("; ");
+            results.push({
+              id: coreSkill.id,
+              action: "failed",
+              reason: `validation error: ${issues}`,
+            });
+            continue;
+          }
+
+          const skill: LoadedSkill = { ...parsed.data };
+
+          // Save meta entry (if not dry run)
+          if (!dryRun) {
+            await saveMetaItem(ctx, skill, "skill");
+
+            // AC: @core-skill-install ac-2 - Copy SKILL.md content
+            const sourceContent = loadCoreSkillContent(coreSkill.id);
+            if (sourceContent) {
+              const targetPath = getSkillContentPath(ctx, skill.id);
+              await fs.writeFile(targetPath, sourceContent, "utf-8");
+            }
+          }
+
+          results.push({
+            id: coreSkill.id,
+            action: existingSkill ? "updated" : "created",
+            version: kspecVersion,
+          });
+        }
+
+        // Commit changes if not dry run
+        if (!dryRun && results.some((r) => r.action === "created" || r.action === "updated")) {
+          await commitIfShadow(
+            ctx.shadow,
+            "skill-install-core",
+            `${results.filter((r) => r.action !== "skipped" && r.action !== "failed").length} core skills`
+          );
+        }
+
+        // Output results
+        output(
+          {
+            dry_run: dryRun,
+            results,
+          },
+          () => {
+            if (dryRun) {
+              console.log(chalk.yellow("DRY RUN - No changes made"));
+              console.log();
+            }
+
+            const created = results.filter((r) => r.action === "created");
+            const updated = results.filter((r) => r.action === "updated");
+            const skipped = results.filter((r) => r.action === "skipped");
+            const failed = results.filter((r) => r.action === "failed");
+
+            if (created.length > 0) {
+              console.log(chalk.green(`Created: ${created.length} skill(s)`));
+              for (const r of created) {
+                console.log(`  ${chalk.green("+")} ${r.id} (v${r.version})`);
+              }
+            }
+
+            if (updated.length > 0) {
+              console.log(chalk.blue(`Updated: ${updated.length} skill(s)`));
+              for (const r of updated) {
+                console.log(`  ${chalk.blue("~")} ${r.id} (v${r.version})`);
+              }
+            }
+
+            if (skipped.length > 0) {
+              console.log(chalk.yellow(`Skipped: ${skipped.length} skill(s)`));
+              for (const r of skipped) {
+                console.log(`  ${chalk.yellow("!")} ${r.id}: ${r.reason}`);
+              }
+            }
+
+            if (failed.length > 0) {
+              console.log(chalk.red(`Failed: ${failed.length} skill(s)`));
+              for (const r of failed) {
+                console.log(`  ${chalk.red("x")} ${r.id}: ${r.reason}`);
+              }
+            }
+
+            console.log();
+            if (dryRun) {
+              console.log(
+                chalk.yellow("No changes were made. Run without --dry-run to apply.")
+              );
+            } else {
+              const changedCount = created.length + updated.length;
+              if (changedCount > 0) {
+                success(`Installed ${changedCount} core skill(s)`);
+              } else if (skipped.length > 0) {
+                console.log(chalk.gray("No skills installed (all skipped or failed)"));
+              }
+            }
+          }
+        );
+      } catch (err) {
+        error("Failed to install core skills", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Result of installing a single core skill
+ */
+interface CoreSkillInstallResult {
+  id: string;
+  action: "created" | "updated" | "skipped" | "failed";
+  version?: string;
+  reason?: string;
+}
+
+/**
+ * Core skill definition from manifest
+ */
+interface CoreSkillDefinition {
+  id: string;
+  name: string;
+  description?: string;
+  platforms?: string[];
+}
+
+/**
+ * Get the kspec package version from package.json
+ * AC: @core-skill-install ac-5
+ */
+function getKspecPackageVersion(): string {
+  try {
+    // Try to find package.json relative to this module
+    const packagePath = path.resolve(
+      import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
+      "../../../package.json"
+    );
+    const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"));
+    return packageJson.version || "unknown";
+  } catch {
+    return "unknown";
+  }
+}
+
+/**
+ * Get the templates directory path
+ */
+function getTemplatesDir(): string {
+  // Templates are at <package-root>/templates/skills/
+  return path.resolve(
+    import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
+    "../../../templates/skills"
+  );
+}
+
+/**
+ * Load core skills manifest from templates/skills/manifest.yaml
+ * AC: @core-skill-install ac-1, ac-2
+ */
+function loadCoreSkillsManifest(): CoreSkillDefinition[] {
+  try {
+    const templatesDir = getTemplatesDir();
+    const manifestPath = path.join(templatesDir, "manifest.yaml");
+    const content = readFileSync(manifestPath, "utf-8");
+    const parsed = yaml.parse(content);
+
+    if (!parsed || !Array.isArray(parsed.skills)) {
+      return [];
+    }
+
+    return parsed.skills.map((s: Record<string, unknown>) => ({
+      id: String(s.id || ""),
+      name: String(s.name || s.id || ""),
+      description: s.description ? String(s.description) : undefined,
+      platforms: Array.isArray(s.platforms) ? s.platforms.map(String) : undefined,
+    })).filter((s: CoreSkillDefinition) => s.id);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Load SKILL.md content for a core skill from templates
+ * AC: @core-skill-install ac-2
+ */
+function loadCoreSkillContent(skillId: string): string | null {
+  try {
+    const templatesDir = getTemplatesDir();
+    const skillMdPath = path.join(templatesDir, skillId, "SKILL.md");
+    return readFileSync(skillMdPath, "utf-8");
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -1751,4 +2022,7 @@ export {
   getSkillSyncStatus,
   getExpectedRenderedContent,
   generateUnifiedDiff,
+  loadCoreSkillsManifest,
+  loadCoreSkillContent,
+  getKspecPackageVersion,
 };
