@@ -49750,7 +49750,7 @@
   type: task
   spec_ref: "@consolidate-skill-render"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -49810,6 +49810,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T23:18:40.337Z
+  closed_reason: "Merged in PR #394. Consolidated skill render implementations by moving hash/drift
+    functions to skill-render.ts, extending renderClaudeCodeSkill with storeHash option, and
+    removing duplicate renderSkill from skill.ts. All 5 ACs verified: CLI delegates to
+    skill-render.ts (AC-1), no private renderSkill (AC-2), hash functions exported from
+    skill-render.ts (AC-3), setup.ts unchanged and working (AC-4), all 116 skill tests pass (AC-5)."
 - _ulid: 01KHHQD64NTFBWFNCC2MDNHA4B
   slugs:
     - implement-platform-renderer-contract

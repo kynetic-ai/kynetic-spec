@@ -1,0 +1,318 @@
+{
+  "generated_at": "2026-02-15T23:00:26.996Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [
+    {
+      "task_ref": "01KHFBT4M",
+      "task_title": "Implement Init Setup Integration",
+      "task_status": "completed",
+      "note_ulid": "01KHG3S7",
+      "created_at": "2026-02-15T07:38:30.976Z",
+      "author": "@claude",
+      "content": "Implemented kspec init --setup flag:\n\n- Added --setup option to init command in init.ts\n- Created runSetupPipeline function in setup.ts to orchestrate the full setup flow\n- When --setup is passed after successful shadow branch init:\n  1. Core skills are installed (via installCoreSkillsForSetup)\n  2. Hooks are installed (Claude Code only)\n  3. Skills are rendered to .claude/skills/\n  4. kspec-agents.md is generated\n\n- Without --setup, behavior is unchanged (shows next steps + tip about --setup)\n- Added 9 tests covering all 4 ACs in tests/init-setup-integration.test.ts"
+    },
+    {
+      "task_ref": "01KHFBT4D",
+      "task_title": "Implement Package Distribution",
+      "task_status": "completed",
+      "note_ulid": "01KHG2TB",
+      "created_at": "2026-02-15T07:21:39.453Z",
+      "author": "@claude",
+      "content": "Implemented package distribution:\\n\\n- Created templates/hooks/ directory containing pre-commit hook source\\n- Updated installShadowHook in shadow.ts to load hook from package templates directory\\n- Added 13 tests in tests/package-distribution.test.ts covering all 4 ACs\\n- Fixed shadow.test.ts to work with new hook installation from package templates\\n\\nAll ACs covered:\\n- ac-1: templates/ included in npm pack via files field in package.json\\n- ac-2: templates/ contains skills/, agents-sections/, hooks/ subdirectories\\n- ac-3: kspec skill install-core finds templates (verified by existing tests)\\n- ac-4: pre-commit hook source file included in templates/hooks/"
+    },
+    {
+      "task_ref": "01KHFBT45",
+      "task_title": "Implement Core Skill Update",
+      "task_status": "completed",
+      "note_ulid": "01KHG256",
+      "created_at": "2026-02-15T07:10:06.608Z",
+      "author": "Jacob Chapel",
+      "content": "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    },
+    {
+      "task_ref": "01KHFBT45",
+      "task_title": "Implement Core Skill Update",
+      "task_status": "completed",
+      "note_ulid": "01KHG1G0",
+      "created_at": "2026-02-15T06:58:32.096Z",
+      "author": "@claude",
+      "content": "Implemented kspec skill update command with all 3 ACs:\n\n- ac-1: When core skill version differs from kspec package version, content and version are updated\n- ac-2: Core skills already at current package version are skipped\n- ac-3: Skills with origin custom/project are not touched (only origin 'core' processed)\n\nAdded 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output, and edge cases."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHHQD5W",
+      "title": "Implement Consolidate Skill Render Implementations",
+      "priority": 3,
+      "spec_ref": "@consolidate-skill-render",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHFBT4M",
+      "title": "Implement Init Setup Integration",
+      "completed_at": "2026-02-15T08:47:21.035Z",
+      "closed_reason": "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions and CI compatibility."
+    },
+    {
+      "ref": "01KHFBT4D",
+      "title": "Implement Package Distribution",
+      "completed_at": "2026-02-15T07:32:26.395Z",
+      "closed_reason": "Merged in PR #392. Implemented package distribution for templates directory: created templates/hooks/ with pre-commit hook source, updated installShadowHook to load from package templates, added 13 tests covering all 4 ACs. Package now ships with templates/ containing skills/, agents-sections/, and hooks/ subdirectories."
+    },
+    {
+      "ref": "01KHFBT45",
+      "title": "Implement Core Skill Update",
+      "completed_at": "2026-02-15T07:10:13.336Z",
+      "closed_reason": "Merged in PR #391. Implemented kspec skill update command with all 3 ACs:\n- ac-1: Updates skill content and version when package version differs\n- ac-2: Skips skills already at current version\n- ac-3: Only processes skills with origin 'core' (ignores project/local)\n\nAdded 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output, and edge cases."
+    },
+    {
+      "ref": "01KHFBT3Y",
+      "title": "Implement Core Skill Installation",
+      "completed_at": "2026-02-15T06:53:00.840Z",
+      "closed_reason": "Merged in PR #390. Implemented kspec skill install-core command to copy core skill definitions from the kspec npm package templates/ directory into projects. All 5 ACs implemented: meta entries created with origin 'core' and 'core' tag (ac-1), SKILL.md content copied from templates to .kspec/skills/<id>/ (ac-2), custom/project skills skipped with message (ac-3), --force flag overwrites custom forks (ac-4), version matches kspec package version (ac-5). 18 tests added covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBT3P",
+      "title": "Implement Full Hook Installation",
+      "completed_at": "2026-02-15T06:34:00.400Z",
+      "closed_reason": "Merged in PR #389. All 5 ACs verified with test annotations: ac-1 (UserPromptSubmit hook), ac-2 (Stop hook), ac-3 (PreToolUse Bash hooks for worktree guard), ac-4 (dynamic path detection via CWD), ac-5 (ralph task-limit guard). Added 27 lines of test coverage with AC annotations."
+    },
+    {
+      "ref": "01KHFBT3F",
+      "title": "Implement Enhanced Setup Command",
+      "completed_at": "2026-02-15T06:19:03.216Z",
+      "closed_reason": "Merged in PR #388. Implemented enhanced setup command with agent detection, hook installation (UserPromptSubmit, Stop, PreToolUse with guard scripts), skill rendering, and kspec-agents.md generation. All 9 ACs covered: --status for current state reporting, --dry-run for planned actions, --skip-skills to skip skill rendering. 19 tests added."
+    },
+    {
+      "ref": "01KHFBT37",
+      "title": "Implement Auto-Generated Data Sections",
+      "completed_at": "2026-02-15T05:56:23.167Z",
+      "closed_reason": "Merged in PR #387. Implemented auto-generated data sections as library functions in src/parser/agent-data-sections.ts: generateSkillsTable (ac-1), generateConventionsSummary (ac-2), generateWorkflowsSummary (ac-3). All 18 tests pass with AC annotations. CLI updated to use library functions."
+    },
+    {
+      "ref": "01KHFBT2Z",
+      "title": "Implement Agent Template System",
+      "completed_at": "2026-02-15T05:41:22.679Z",
+      "closed_reason": "Merged in PR #386. Implemented Agent Template System with static markdown templates in templates/agents-sections/ for kspec boilerplate documentation. All 3 ACs covered: (ac-1) template sections included in defined order, (ac-2) all section types appear in output, (ac-3) error if templates directory missing. Added 10 tests with AC annotations."
+    },
+    {
+      "ref": "01KHFBT2Q",
+      "title": "Implement Agents CLI Commands",
+      "completed_at": "2026-02-15T05:23:35.888Z",
+      "closed_reason": "Already fully implemented in PR #385. All 4 ACs verified: ac-1 (generate creates kspec-agents.md), ac-2 (--dry-run prints without writing), ac-3 (status reports current), ac-4 (status reports stale). 22 tests pass covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBT2G",
+      "title": "Implement Agent Instruction Generation",
+      "completed_at": "2026-02-15T05:09:46.036Z",
+      "closed_reason": "Merged in PR #385. Implemented agent instruction generation with kspec agents generate and kspec agents status commands. All 5 ACs covered: creates kspec-agents.md with Finding Information table (skills), conventions by domain, freshness comment with version/timestamp, and status command that detects stale via SHA256 hash. Also implemented @trait-dry-run support. 22 tests added covering all acceptance criteria."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "9565104",
+      "full_hash": "9565104567cd639003fb15cf564254a8d4bdead6",
+      "date": "2026-02-15T08:47:13.000Z",
+      "message": "feat: implement init --setup integration (#393)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3cae791",
+      "full_hash": "3cae7915be53574cee1f924b212dd9ead5724720",
+      "date": "2026-02-15T08:34:46.000Z",
+      "message": "fix: make ac-3 test environment-agnostic",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "19ca070",
+      "full_hash": "19ca07087569c529ac5c257949d92fd4e668cd6c",
+      "date": "2026-02-15T08:22:06.000Z",
+      "message": "fix: strengthen weak test assertions for init --setup",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "38da209",
+      "full_hash": "38da2095cbc802feacdf16f9b7f86300e0a5e42d",
+      "date": "2026-02-15T07:39:05.000Z",
+      "message": "feat: implement init --setup integration",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "93649ff",
+      "full_hash": "93649ff35466c9fd403d6a276c476da71e97e1f7",
+      "date": "2026-02-15T07:32:17.000Z",
+      "message": "feat: implement package distribution for templates (#392)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "5028334",
+      "full_hash": "5028334d04838515ce699b966bf9adfef8e804d4",
+      "date": "2026-02-15T07:22:15.000Z",
+      "message": "feat: implement package distribution for templates",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "17c118d",
+      "full_hash": "17c118d2fc8044e4dcead4ff6327dd6f0eb84fa8",
+      "date": "2026-02-15T07:10:02.000Z",
+      "message": "feat: implement core skill update command (#391)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "73b561b",
+      "full_hash": "73b561b5f9ede705fcb6bd31923811116a52a51c",
+      "date": "2026-02-15T06:58:52.000Z",
+      "message": "feat: implement core skill update command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0e0500c",
+      "full_hash": "0e0500cf474b8f355971246a3dea1a127edcd974",
+      "date": "2026-02-15T06:52:50.000Z",
+      "message": "feat: implement core skill installation (#390)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b6e2ef3",
+      "full_hash": "b6e2ef34434b7aec0600c265d7adf788b75aa945",
+      "date": "2026-02-15T06:41:53.000Z",
+      "message": "feat: implement core skill installation",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 520,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 15,
+    "blocked": 0,
+    "completed": 481,
+    "inbox_items": 42
+  }
+}
