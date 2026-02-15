@@ -48992,7 +48992,7 @@
   type: task
   spec_ref: "@skill-meta-integration"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-cli-commands"
@@ -49028,6 +49028,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T03:38:48.238Z
+  closed_reason: "Merged in PR #380. Implemented skill meta integration - kspec meta get/list/show now
+    include skills. All 4 acceptance criteria covered with 12 tests."
 - _ulid: 01KHFBT1JZSSV1SAVVQJTZE3E5
   slugs:
     - implement-skill-rendering-pipeline
