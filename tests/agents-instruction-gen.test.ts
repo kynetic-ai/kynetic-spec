@@ -3,6 +3,7 @@
  * AC: @agent-instruction-gen ac-1 through ac-5
  * AC: @agents-cli ac-1 through ac-4
  * AC: @trait-dry-run (dry run support)
+ * AC: @agent-templates ac-1 through ac-3
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -365,6 +366,7 @@ describe('Agent Instruction Generation', () => {
         skills: number;
         conventions: number;
         workflows: number;
+        templates: number;
         generatedAt: string;
       }>('agents generate', tempDir);
 
@@ -372,7 +374,151 @@ describe('Agent Instruction Generation', () => {
       expect(result.skills).toBe(1);
       expect(typeof result.conventions).toBe('number');
       expect(typeof result.workflows).toBe('number');
+      expect(result.templates).toBeGreaterThan(0);
       expect(result.generatedAt).toBeTruthy();
     });
+  });
+
+  // AC: @agent-templates ac-1 through ac-3
+  describe('Agent Template System', () => {
+    // AC: @agent-templates ac-1
+    describe('ac-1: template sections included in defined order', () => {
+      it('should include all template sections in the generated output', async () => {
+        const result = kspecFull('agents generate', tempDir);
+        expect(result.exitCode).toBe(0);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify template sections are present
+        expect(content).toContain('## Quick Start');
+        expect(content).toContain('## Shadow Branch Architecture');
+        expect(content).toContain('## Task Lifecycle');
+        expect(content).toContain('## PR Workflow');
+        expect(content).toContain('## Commit Convention');
+        expect(content).toContain('## Ralph Loop Mode');
+      });
+
+      it('should include templates in file order (sorted by prefix)', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify order: Quick Start before Shadow Branch before Task Lifecycle
+        const quickStartPos = content.indexOf('## Quick Start');
+        const shadowBranchPos = content.indexOf('## Shadow Branch Architecture');
+        const taskLifecyclePos = content.indexOf('## Task Lifecycle');
+        const prWorkflowPos = content.indexOf('## PR Workflow');
+        const commitConventionPos = content.indexOf('## Commit Convention');
+        const ralphLoopPos = content.indexOf('## Ralph Loop Mode');
+
+        expect(quickStartPos).toBeLessThan(shadowBranchPos);
+        expect(shadowBranchPos).toBeLessThan(taskLifecyclePos);
+        expect(taskLifecyclePos).toBeLessThan(prWorkflowPos);
+        expect(prWorkflowPos).toBeLessThan(commitConventionPos);
+        expect(commitConventionPos).toBeLessThan(ralphLoopPos);
+      });
+    });
+
+    // AC: @agent-templates ac-2
+    describe('ac-2: each template section appears in generated output', () => {
+      it('should include quick-start template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify quick-start specific content
+        expect(content).toContain('node scripts/bootstrap.cjs');
+        expect(content).toContain('kspec session start');
+        expect(content).toContain('Essential Rules');
+      });
+
+      it('should include shadow-branch template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify shadow-branch specific content
+        expect(content).toContain('git worktree');
+        expect(content).toContain('kspec-meta');
+        expect(content).toContain('kspec shadow status');
+      });
+
+      it('should include task-lifecycle template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify task-lifecycle specific content
+        expect(content).toContain('pending → in_progress → pending_review → completed');
+        expect(content).toContain('spec_ref');
+      });
+
+      it('should include pr-workflow template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify pr-workflow specific content
+        expect(content).toContain('kspec task submit');
+        expect(content).toContain('/local-review');
+        expect(content).toContain('/pr');
+      });
+
+      it('should include commit-convention template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify commit-convention specific content
+        expect(content).toContain('Task: @task-slug');
+        expect(content).toContain('Spec: @spec-ref');
+        expect(content).toContain('// AC: @spec-item ac-N');
+      });
+
+      it('should include ralph-loop template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify ralph-loop specific content
+        expect(content).toContain('Ralph Loop Mode');
+        expect(content).toContain('pending_review');
+        expect(content).toContain('kspec task block');
+      });
+    });
+
+    // AC: @agent-templates ac-2 (JSON output verification)
+    it('should include templates count in JSON output', async () => {
+      const result = kspecJson<{
+        templates: number;
+      }>('agents generate', tempDir);
+
+      // Verify templates count is returned (currently 6 templates)
+      expect(result.templates).toBe(6);
+    });
+
+    it('should include templates count in dry-run JSON output', async () => {
+      const result = kspecJson<{
+        dry_run: boolean;
+        templates: number;
+      }>('agents generate --dry-run', tempDir);
+
+      expect(result.dry_run).toBe(true);
+      expect(result.templates).toBe(6);
+    });
+
+    // Note: AC: @agent-templates ac-3 (error if templates directory missing/empty)
+    // Testing this would require modifying the installed kspec package, which is
+    // outside the scope of standard CLI tests. The error handling is implemented
+    // in src/cli/commands/agents.ts:loadTemplateSections() with appropriate
+    // error messages when templates directory is missing or empty.
   });
 });

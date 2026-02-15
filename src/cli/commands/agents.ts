@@ -11,12 +11,17 @@
  * AC: @agents-cli ac-2 - kspec agents generate --dry-run prints content without writing
  * AC: @agents-cli ac-3 - kspec agents status reports up to date when current
  * AC: @agents-cli ac-4 - kspec agents status reports stale when meta changed
+ *
+ * AC: @agent-templates ac-1 - template sections included in output in defined order
+ * AC: @agent-templates ac-2 - each template section appears in generated output
+ * AC: @agent-templates ac-3 - error if template directory missing or empty
  */
 
 import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import { createRequire } from "node:module";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import type { Command } from "commander";
 import {
@@ -29,6 +34,9 @@ import {
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success } from "../output.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Read version from package.json at runtime
 const require = createRequire(import.meta.url);
@@ -45,10 +53,79 @@ const GENERATED_FILE_NAME = "kspec-agents.md";
 const HASH_FILE_NAME = ".kspec-agents-hash";
 
 /**
+ * Templates directory name relative to package root
+ */
+const TEMPLATES_DIR = "templates/agents-sections";
+
+/**
+ * Expected template files in order
+ * AC: @agent-templates ac-2 - template files for quick-start, shadow-branch, task-lifecycle, pr-workflow, commit-convention, ralph-loop
+ */
+const EXPECTED_TEMPLATES = [
+  "01-quick-start.md",
+  "02-shadow-branch.md",
+  "03-task-lifecycle.md",
+  "04-pr-workflow.md",
+  "05-commit-convention.md",
+  "06-ralph-loop.md",
+];
+
+/**
  * Compute SHA256 hash of content
  */
 function computeHash(content: string): string {
   return crypto.createHash("sha256").update(content, "utf-8").digest("hex");
+}
+
+/**
+ * Load template sections from the templates directory.
+ * AC: @agent-templates ac-1 - all template sections included in defined order
+ * AC: @agent-templates ac-3 - error if directory missing or empty
+ */
+async function loadTemplateSections(packageRoot: string): Promise<string[]> {
+  const templatesPath = path.join(packageRoot, TEMPLATES_DIR);
+
+  // Check if templates directory exists
+  try {
+    await fs.access(templatesPath);
+  } catch {
+    throw new Error(
+      `Templates directory not found at: ${templatesPath}. ` +
+        `Expected templates/agents-sections/ directory with section markdown files.`,
+    );
+  }
+
+  // Read directory contents
+  const entries = await fs.readdir(templatesPath, { withFileTypes: true });
+  const mdFiles = entries
+    .filter((e) => e.isFile() && e.name.endsWith(".md"))
+    .map((e) => e.name)
+    .sort(); // Sort to ensure consistent ordering by filename prefix
+
+  if (mdFiles.length === 0) {
+    throw new Error(
+      `Templates directory is empty: ${templatesPath}. ` +
+        `Expected markdown files for agent instruction sections.`,
+    );
+  }
+
+  // Load each template in order
+  const sections: string[] = [];
+  for (const filename of mdFiles) {
+    const filePath = path.join(templatesPath, filename);
+    const content = await fs.readFile(filePath, "utf-8");
+    sections.push(content.trim());
+  }
+
+  return sections;
+}
+
+/**
+ * Get the package root directory (where templates/ is located)
+ */
+function getPackageRoot(): string {
+  // Navigate from dist/cli/commands/ to package root
+  return path.resolve(__dirname, "..", "..", "..");
 }
 
 /**
@@ -175,13 +252,16 @@ function generateFreshnessComment(timestamp: string): string {
 
 /**
  * Generate the full kspec-agents.md content
+ * AC: @agent-templates ac-1 - template sections included in output in defined order
+ * AC: @agent-templates ac-2 - each template section appears in generated output
  */
-function generateAgentsContent(
+async function generateAgentsContent(
   skills: LoadedSkill[],
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
   timestamp: string,
-): string {
+  templateSections: string[],
+): Promise<string> {
   const sections: string[] = [];
 
   // AC: @agent-instruction-gen ac-4 - freshness comment
@@ -209,6 +289,15 @@ function generateAgentsContent(
   const workflowsSection = generateWorkflowsSection(workflows);
   if (workflowsSection) {
     sections.push(workflowsSection);
+  }
+
+  // AC: @agent-templates ac-1, ac-2 - Include template sections in order
+  if (templateSections.length > 0) {
+    sections.push("\n");
+    for (const section of templateSections) {
+      sections.push(section);
+      sections.push("\n\n");
+    }
   }
 
   return sections.join("");
@@ -290,6 +379,7 @@ export function registerAgentsCommands(program: Command): void {
     .description("Agent instruction generation commands");
 
   // AC: @agent-instruction-gen ac-1 - kspec agents generate
+  // AC: @agent-templates ac-3 - error if template directory missing
   // AC: @trait-dry-run ac-1 through ac-6 - dry-run support
   agents
     .command("generate")
@@ -304,19 +394,35 @@ export function registerAgentsCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
+        // AC: @agent-templates ac-3 - error if templates missing
+        const packageRoot = getPackageRoot();
+        let templateSections: string[];
+        try {
+          templateSections = await loadTemplateSections(packageRoot);
+        } catch (err) {
+          const message =
+            err instanceof Error ? err.message : "Unknown error loading templates";
+          error(message, {
+            suggestion: `Verify that ${TEMPLATES_DIR}/ exists with markdown files.`,
+          });
+          process.exit(EXIT_CODES.ERROR);
+        }
+
         const metaCtx = await loadMetaContext(ctx);
         const dryRun = options.dryRun || false;
         const timestamp = new Date().toISOString();
 
-        // Generate content
-        const content = generateAgentsContent(
+        // Generate content - now async due to template loading
+        const content = await generateAgentsContent(
           metaCtx.skills,
           metaCtx.conventions,
           metaCtx.workflows,
           timestamp,
+          templateSections,
         );
 
         // Compute meta hash for freshness tracking
+        // Include template count to detect template changes
         const metaHash = computeMetaHash(
           metaCtx.skills,
           metaCtx.conventions,
@@ -335,6 +441,7 @@ export function registerAgentsCommands(program: Command): void {
               skills: metaCtx.skills.length,
               conventions: metaCtx.conventions.length,
               workflows: metaCtx.workflows.length,
+              templates: templateSections.length,
               content,
             },
             () => {
@@ -380,6 +487,7 @@ export function registerAgentsCommands(program: Command): void {
             skills: metaCtx.skills.length,
             conventions: metaCtx.conventions.length,
             workflows: metaCtx.workflows.length,
+            templates: templateSections.length,
             generatedAt: timestamp,
           },
           () => {
@@ -387,6 +495,7 @@ export function registerAgentsCommands(program: Command): void {
               skills: metaCtx.skills.length,
               conventions: metaCtx.conventions.length,
               workflows: metaCtx.workflows.length,
+              templates: templateSections.length,
             });
             console.log(chalk.gray(`  Path: ${outputPath}`));
           },

@@ -65,7 +65,8 @@
     "vitest": "^4.0.17"
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "keywords": [
     "specification",
