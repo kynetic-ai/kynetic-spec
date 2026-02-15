@@ -48381,8 +48381,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-14T21:54:21.907Z
-  notes: []
+  notes:
+    - _ulid: 01KHFCPHHVMEPFHTNNR891EMSC
+      created_at: 2026-02-15T00:55:06.044Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHF2BNVZSQV12C2DRK57C5P2
   slugs: []
   title: Create spec for validate --drift feature
@@ -48402,8 +48408,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-14T21:54:24.255Z
-  notes: []
+  notes:
+    - _ulid: 01KHFCPHTHP924E82BBE9HDH25
+      created_at: 2026-02-15T00:55:06.321Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
   slugs: []
   title: Fix trivial AC-6 test in multi-value status filter
@@ -48423,8 +48435,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-14T21:54:26.591Z
-  notes: []
+  notes:
+    - _ulid: 01KHFCPJ2XPNJ7DZH4D9V6Z5KH
+      created_at: 2026-02-15T00:55:06.589Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHF34FC1CG2NTAV26QE4VASM
   slugs: []
   title: Extract drift detection field lists from Zod schemas at runtime
@@ -48445,8 +48463,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-14T22:07:56.801Z
-  notes: []
+  notes:
+    - _ulid: 01KHFCPJAKH17FY3JY4622K1F7
+      created_at: 2026-02-15T00:55:06.836Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHF34K4JKJV2M81YAPCDNGPX
   slugs: []
   title: Add code-level reflect gating in ralph based on iteration delta
@@ -48468,8 +48492,14 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-14T22:08:00.658Z
-  notes: []
+  notes:
+    - _ulid: 01KHFCPJKJEJKJMKT5TNTFSC6R
+      created_at: 2026-02-15T00:55:07.122Z
+      author: "@automation-assess"
+      content: "Automation assessment: set to needs_review. missing spec_ref"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHFBSZ4A4M52HPYKZS0ZVY09
   slugs:
     - implement-skill-meta-type
