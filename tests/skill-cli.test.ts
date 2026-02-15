@@ -147,6 +147,7 @@ describe('Skill CLI - skill add', () => {
   });
 
   // AC: @skill-cli ac-3
+  // AC: @skill-add ac-1 - meta entry created
   it('should create meta entry with correct origin', () => {
     const result = kspecJson<{
       _ulid: string;
@@ -168,6 +169,19 @@ describe('Skill CLI - skill add', () => {
     );
 
     expect(result.origin).toBe('local');
+  });
+
+  // AC: @skill-add ac-4, ac-5 - origin and version set correctly
+  it('should set origin and version when --origin core --skill-version provided', () => {
+    const result = kspecJson<{ id: string; origin: string; version: string }>(
+      'skill add --id core-skill --name "Core Skill" --origin core --skill-version 0.2.0',
+      tempDir
+    );
+
+    // AC: @skill-add ac-4 - origin is core
+    expect(result.origin).toBe('core');
+    // AC: @skill-add ac-5 - version is 0.2.0
+    expect(result.version).toBe('0.2.0');
   });
 
   // AC: @skill-cli ac-4
@@ -246,6 +260,7 @@ describe('Skill CLI - skill add', () => {
     expect(result.depends_on).toContain('@base-skill');
   });
 
+  // AC: @skill-add ac-6 - duplicate ID error
   it('should reject duplicate skill ID', () => {
     kspec('skill add --id my-skill --name "My Skill"', tempDir);
 
@@ -264,6 +279,59 @@ describe('Skill CLI - skill add', () => {
     const result = kspecFull('skill add --id MySkill --name "My Skill"', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("kebab-case");
+  });
+
+  // AC: @skill-add ac-3 - --content-file copies file to SKILL.md
+  it('should copy content from --content-file to SKILL.md', async () => {
+    // Create a source file with custom content
+    const sourceContent = `# Custom Skill Content
+
+This content comes from an existing file.
+
+## Usage
+
+Use this skill for custom tasks.
+`;
+    const sourceFile = path.join(tempDir, 'custom-skill.md');
+    await fs.writeFile(sourceFile, sourceContent);
+
+    // Create skill with --content-file
+    kspec(`skill add --id custom-skill --name "Custom Skill" --content-file ${sourceFile}`, tempDir);
+
+    // Verify SKILL.md has the content from the source file
+    const skillMdPath = path.join(tempDir, 'skills', 'custom-skill', 'SKILL.md');
+    const content = await fs.readFile(skillMdPath, 'utf-8');
+    expect(content).toBe(sourceContent);
+    expect(content).toContain('Custom Skill Content');
+    expect(content).toContain('This content comes from an existing file');
+  });
+
+  // AC: @skill-add ac-3 - --content-file with relative path
+  it('should handle relative path for --content-file', async () => {
+    // Create a source file with custom content
+    const sourceContent = '# Relative Path Skill\n\nContent from relative path.\n';
+    const sourceFile = path.join(tempDir, 'relative-source.md');
+    await fs.writeFile(sourceFile, sourceContent);
+
+    // Run kspec from tempDir so relative path works
+    // Note: kspec already runs from tempDir
+    kspec('skill add --id rel-skill --name "Relative Skill" --content-file relative-source.md', tempDir);
+
+    // Verify SKILL.md has the content
+    const skillMdPath = path.join(tempDir, 'skills', 'rel-skill', 'SKILL.md');
+    const content = await fs.readFile(skillMdPath, 'utf-8');
+    expect(content).toBe(sourceContent);
+  });
+
+  // AC: @skill-add ac-3 - error when content file doesn't exist
+  it('should error when --content-file does not exist', () => {
+    const result = kspecFull(
+      'skill add --id bad-skill --name "Bad Skill" --content-file /nonexistent/file.md',
+      tempDir,
+      { expectFail: true }
+    );
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Failed to read content file');
   });
 });
 
