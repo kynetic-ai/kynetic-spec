@@ -316,3 +316,22 @@ inbox:
     created_at: 2026-02-14T22:09:40.225Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHFCDS3R9FPCA284CEN51PY4
+    text: "Permission bootstrapping: settings.local.json grows to 25KB of per-machine accumulated
+      permissions with no way to bootstrap or transfer. Consider a permissions template or seed
+      mechanism for kspec setup."
+    created_at: 2026-02-15T00:50:18.872Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHFCDS47KQRGMEAM90S9NWD9
+    text: "Version pinning: all projects use whatever global kspec version is installed. No lock file or
+      constraint resolution. Consider adding version constraints to kynetic.yaml manifest."
+    created_at: 2026-02-15T00:50:18.887Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHFCDS4K3GHYWVMAG2PRT2MZ
+    text: "Memory seeding: seed MEMORY.md with project-relevant starting notes during kspec setup. Could
+      bootstrap agent effectiveness in new projects."
+    created_at: 2026-02-15T00:50:18.899Z
+    tags: []
+    added_by: "@claude"
