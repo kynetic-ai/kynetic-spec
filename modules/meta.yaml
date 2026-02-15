@@ -2741,6 +2741,9 @@ modules:
               - "@trait-error-guidance"
             notes: []
             created: 2026-02-15T00:39:29.148Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYMF3BPY2QXKMMG5D04J
             slugs:
               - skill-meta-integration
