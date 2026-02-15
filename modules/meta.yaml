@@ -2767,6 +2767,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.167Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KHFBSYN1165J66QP3H4ZPHA5
         slugs:
           - skill-rendering
