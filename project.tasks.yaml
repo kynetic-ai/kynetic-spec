@@ -49202,7 +49202,7 @@
   type: task
   spec_ref: "@skill-drift-detection"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-rendering-pipeline"
@@ -49240,6 +49240,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T04:51:05.170Z
+  closed_reason: "Merged in PR #384. Implemented skill drift detection with SHA256 hash-based
+    comparison. All 5 ACs covered: ac-1 (in-sync detection), ac-2 (drift detection), ac-3 (skip
+    drifted without --force), ac-4 (overwrite with --force), ac-5 (hash storage in
+    .kspec/skills/<id>/.render-hash). 16 new tests added."
 - _ulid: 01KHFBT2G2RN6SAET6BC1JBJ0W
   slugs:
     - implement-agent-instruction-generation
