@@ -49040,6 +49040,10 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #381. Implemented skill rendering pipeline with full AC coverage:
+    SKILL.md creation with YAML frontmatter (ac-1), docs directory copying (ac-2), idempotent
+    rendering (ac-3), kspec-managed marker detection (ac-4), and orphan cleanup (ac-5). Added 21
+    tests covering all acceptance criteria."
   depends_on:
     - "@implement-skill-cli-commands"
   context: []
@@ -49048,6 +49052,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:32.191Z
   started_at: 2026-02-15T03:39:35.219Z
+  completed_at: 2026-02-15T04:01:17.867Z
   notes:
     - _ulid: 01KHFBT1JZW4AR8V2197HVTV7R
       created_at: 2026-02-15T00:39:32.191Z
@@ -49076,11 +49081,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T04:01:17.867Z
-  closed_reason: "Merged in PR #381. Implemented skill rendering pipeline with full AC coverage:
-    SKILL.md creation with YAML frontmatter (ac-1), docs directory copying (ac-2), idempotent
-    rendering (ac-3), kspec-managed marker detection (ac-4), and orphan cleanup (ac-5). Added 21
-    tests covering all acceptance criteria."
 - _ulid: 01KHFBT1T269EZJ20K34FWBSSJ
   slugs:
     - implement-skill-render-cli
@@ -49088,7 +49088,7 @@
   type: task
   spec_ref: "@skill-render-cli"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-rendering-pipeline"
@@ -49104,6 +49104,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T04:02:01.511Z
 - _ulid: 01KHFBT21F2S7QF8CSDNC9FDXV
   slugs:
     - implement-claude-code-skill-renderer
