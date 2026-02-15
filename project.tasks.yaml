@@ -49674,14 +49674,26 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:35.077Z
+  started_at: 2026-02-15T07:12:35.576Z
   notes:
     - _ulid: 01KHFBT4D5BCYT14EGKJJDPDNF
       created_at: 2026-02-15T00:39:35.077Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHG2TBBXDBSFMAKZ8RAMCEMF
+      created_at: 2026-02-15T07:21:39.453Z
+      author: "@claude"
+      content: "Implemented package distribution:\\n\\n- Created templates/hooks/ directory containing
+        pre-commit hook source\\n- Updated installShadowHook in shadow.ts to load hook from package
+        templates directory\\n- Added 13 tests in tests/package-distribution.test.ts covering all 4
+        ACs\\n- Fixed shadow.test.ts to work with new hook installation from package
+        templates\\n\\nAll ACs covered:\\n- ac-1: templates/ included in npm pack via files field in
+        package.json\\n- ac-2: templates/ contains skills/, agents-sections/, hooks/
+        subdirectories\\n- ac-3: kspec skill install-core finds templates (verified by existing
+        tests)\\n- ac-4: pre-commit hook source file included in templates/hooks/"
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T07:12:35.576Z
 - _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
   slugs:
     - implement-init-setup-integration
