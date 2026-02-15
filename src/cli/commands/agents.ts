@@ -25,6 +25,9 @@ import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import type { Command } from "commander";
 import {
+  generateConventionsSummary,
+  generateSkillsTable,
+  generateWorkflowsSummary,
   initContext,
   loadMetaContext,
   type LoadedConvention,
@@ -158,91 +161,6 @@ function computeMetaHash(
 }
 
 /**
- * Generate the Finding Information table for skills.
- * AC: @agent-instruction-gen ac-2 - Finding Information table with row per skill
- */
-function generateSkillsTable(skills: LoadedSkill[]): string {
-  if (skills.length === 0) {
-    return "";
-  }
-
-  const lines: string[] = [
-    "## Finding Information",
-    "",
-    "Use skills and CLI help for detailed documentation:",
-    "",
-    "| Need | Where to look |",
-    "|------|---------------|",
-  ];
-
-  for (const skill of skills) {
-    const description = skill.description || skill.name;
-    // Use the skill ID as the reference (prefixed with /)
-    lines.push(`| ${description} | \`/${skill.id}\` skill |`);
-  }
-
-  lines.push("");
-  lines.push(
-    "Skills inject their full documentation when invoked — you don't need to memorize their contents.",
-  );
-  lines.push("");
-
-  return lines.join("\n");
-}
-
-/**
- * Generate the conventions section.
- * AC: @agent-instruction-gen ac-3 - conventions section listing rules by domain
- */
-function generateConventionsSection(conventions: LoadedConvention[]): string {
-  if (conventions.length === 0) {
-    return "";
-  }
-
-  const lines: string[] = ["## Conventions", ""];
-
-  for (const convention of conventions) {
-    lines.push(`### ${convention.domain}`);
-    lines.push("");
-
-    for (const rule of convention.rules) {
-      lines.push(`- ${rule}`);
-    }
-
-    lines.push("");
-  }
-
-  return lines.join("\n");
-}
-
-/**
- * Generate the workflows summary section.
- */
-function generateWorkflowsSection(workflows: LoadedWorkflow[]): string {
-  if (workflows.length === 0) {
-    return "";
-  }
-
-  const lines: string[] = [
-    "## Workflows",
-    "",
-    "Available workflows:",
-    "",
-  ];
-
-  for (const workflow of workflows) {
-    const description = workflow.description || workflow.trigger;
-    lines.push(`- **${workflow.id}**: ${description}`);
-  }
-
-  lines.push("");
-  lines.push("Use `kspec workflow start @workflow-id` to start a workflow.");
-  lines.push("");
-
-  return lines.join("\n");
-}
-
-/**
  * Generate the freshness comment.
  * AC: @agent-instruction-gen ac-4 - freshness comment with kspec version and timestamp
  */
@@ -280,13 +198,13 @@ async function generateAgentsContent(
   }
 
   // AC: @agent-instruction-gen ac-3 - Conventions section
-  const conventionsSection = generateConventionsSection(conventions);
+  const conventionsSection = generateConventionsSummary(conventions);
   if (conventionsSection) {
     sections.push(conventionsSection);
   }
 
   // Workflows summary
-  const workflowsSection = generateWorkflowsSection(workflows);
+  const workflowsSection = generateWorkflowsSummary(workflows);
   if (workflowsSection) {
     sections.push(workflowsSection);
   }
