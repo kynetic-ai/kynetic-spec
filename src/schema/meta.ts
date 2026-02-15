@@ -155,16 +155,29 @@ export const ObservationSchema = z.object({
 export const SkillOriginSchema = z.enum(["core", "project", "local"]);
 
 /**
+ * Kebab-case regex for skill IDs - lowercase letters, numbers, and hyphens only
+ * Must start with a letter and not end with a hyphen
+ */
+const KEBAB_CASE_REGEX = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+
+/**
  * Skill definition - reusable agent capabilities stored in files
  * Content is stored in .kspec/skills/<id>/SKILL.md
  */
 export const SkillSchema = z.object({
   _ulid: MetaUlidSchema,
-  id: z.string().min(1, "Skill ID is required"),
+  id: z
+    .string({ required_error: "Skill ID is required" })
+    .regex(
+      KEBAB_CASE_REGEX,
+      "Skill ID must be in kebab-case format (lowercase letters, numbers, and hyphens)",
+    ),
   name: z.string().min(1, "Skill name is required"),
   description: z.string().optional(),
   origin: SkillOriginSchema,
   version: z.string().optional(),
+  platforms: z.array(z.string()).default(["claude-code"]),
+  depends_on: z.array(RefSchema).default([]),
   tags: z.array(z.string()).default([]),
 });
 
