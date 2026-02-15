@@ -49211,14 +49211,35 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:32.888Z
+  started_at: 2026-02-15T04:33:43.086Z
   notes:
     - _ulid: 01KHFBT28RP5HYPE4P8KQAEENY
       created_at: 2026-02-15T00:39:32.888Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFSKJQDYYRAZVMFJ3BN65CH
+      created_at: 2026-02-15T04:40:40.430Z
+      author: "@claude"
+      content: >-
+        Implemented skill drift detection with all 5 acceptance criteria:
+
+
+        - ac-1: Skills show as in-sync when rendered file matches stored hash
+
+        - ac-2: Skills show as drifted when rendered file has been manually edited (hash mismatch)
+
+        - ac-3: Drifted skills are skipped with warning when rendering without --force
+
+        - ac-4: --force option overwrites drifted files and updates the hash
+
+        - ac-5: Hash of rendered output is stored in .kspec/skills/<id>/.render-hash
+
+
+        Implementation uses SHA256 hash for change detection. Added 16 new tests covering all ACs
+        plus edge cases (legacy renders without hash, mixed drift states, etc).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T04:33:43.086Z
 - _ulid: 01KHFBT2G2RN6SAET6BC1JBJ0W
   slugs:
     - implement-agent-instruction-generation
