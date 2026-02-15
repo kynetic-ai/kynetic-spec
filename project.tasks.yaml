@@ -49706,7 +49706,7 @@
   type: task
   spec_ref: "@init-setup-integration"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49740,3 +49740,6 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T08:47:21.035Z
+  closed_reason: "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions
+    and CI compatibility."
