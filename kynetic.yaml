@@ -456,12 +456,11 @@ traits:
     title: Platform Renderer Contract
     type: trait
     tags: []
-    description: >-
-      Defines the contract all platform-specific skill renderers must implement.
-      Each renderer writes platform-specific output (SKILL.md with frontmatter,
-      sidecar config files, supporting directories) to a configurable output directory.
-      Renderers support dry-run mode, drift detection via per-platform hashes, and
-      idempotent output (no file modification when content unchanged).
+    description: Defines the contract all platform-specific skill renderers must implement. Each
+      renderer writes platform-specific output (SKILL.md with frontmatter, sidecar config files,
+      supporting directories) to a configurable output directory. Renderers support dry-run mode,
+      drift detection via per-platform hashes, and idempotent output (no file modification when
+      content unchanged).
     depends_on: []
     implements: []
     relates_to: []
@@ -477,7 +476,8 @@ traits:
       - id: ac-2
         given: a renderer
         when: render completes
-        then: a PlatformRenderResult is returned with id, platform, action (created/updated/unchanged/skipped), and output paths
+        then: a PlatformRenderResult is returned with id, platform, action
+          (created/updated/unchanged/skipped), and output paths
       - id: ac-3
         given: a skill with supporting directories (references/, scripts/, assets/)
         when: rendered for any platform
@@ -496,7 +496,7 @@ traits:
         then: a per-platform render hash is written to .kspec/skills/<id>/.render-hash-<platform>
     status:
       maturity: draft
-      implementation: not_started
+      implementation: in_progress
 includes:
   - modules/core.yaml
   - modules/schema.yaml
