@@ -49638,6 +49638,11 @@
         Added 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON
         output, and edge cases.
       supersedes: null
+    - _ulid: 01KHG256RFV4SR756JQFCEJ996
+      created_at: 2026-02-15T07:10:06.608Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHFBT4D5NHPNKKWH9H1Z37G9
