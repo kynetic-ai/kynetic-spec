@@ -48447,26 +48447,530 @@
   created_at: 2026-02-14T22:07:56.801Z
   notes: []
   todos: []
-- title: Add code-level reflect gating in ralph based on iteration delta
+- _ulid: 01KHF34K4JKJV2M81YAPCDNGPX
+  slugs: []
+  title: Add code-level reflect gating in ralph based on iteration delta
+  type: task
   description: "PR #357 added skill-file instructions to gate reflection on meaningful work, but this
     has no enforcement. Instead: ralph should snapshot session state (task statuses, working tree,
     commit count) before each iteration, compare at the end, and only issue the reflect prompt if
     something measurably changed (task transitions, commits, file changes). The reflect prompt
     itself was already efficient at avoiding noisy observations — the issue is invoking it at all
     when nothing happened."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-14T22:08:00.658Z
+  notes: []
+  todos: []
+- _ulid: 01KHFBSZ4A4M52HPYKZS0ZVY09
+  slugs:
+    - implement-skill-meta-type
+  title: Implement Skill Meta Type
+  type: task
+  spec_ref: "@skill-meta-type"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:29.674Z
+  notes:
+    - _ulid: 01KHFBSZ4AM2XFGZEDFN5F7CA9
+      created_at: 2026-02-15T00:39:29.674Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBSZCD7BAVSXRKQMNMEVQX
+  slugs:
+    - implement-skill-schema-definition
+  title: Implement Skill Schema Definition
+  type: task
+  spec_ref: "@skill-schema"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:29.933Z
+  notes:
+    - _ulid: 01KHFBSZCDNFYQ47VVF2D51NW3
+      created_at: 2026-02-15T00:39:29.933Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBSZKZ74MJB2EA8H00KMQ1
+  slugs:
+    - implement-skill-file-based-content-model
+  title: Implement Skill File-Based Content Model
+  type: task
+  spec_ref: "@skill-content-model"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:30.175Z
+  notes:
+    - _ulid: 01KHFBSZKZD2EZSQNC4QS2M1SV
+      created_at: 2026-02-15T00:39:30.175Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBSZWNZE7HG2N735T2R5QF
+  slugs:
+    - implement-skill-parser-integration
+  title: Implement Skill Parser Integration
+  type: task
+  spec_ref: "@skill-parser"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:30.453Z
+  notes:
+    - _ulid: 01KHFBSZWNX8QTAY36V0MEPJDB
+      created_at: 2026-02-15T00:39:30.453Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT047WE8N3AJAGK24PPJJ
+  slugs:
+    - implement-skill-validation
+  title: Implement Skill Validation
+  type: task
+  spec_ref: "@skill-validation"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:30.695Z
+  notes:
+    - _ulid: 01KHFBT047TVR3EJWXFZFQ9DK2
+      created_at: 2026-02-15T00:39:30.695Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT0BFQMH8RGEYYVX931TF
+  slugs:
+    - implement-skill-cli-commands
+  title: Implement Skill CLI Commands
+  type: task
+  spec_ref: "@skill-cli"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:30.927Z
+  notes:
+    - _ulid: 01KHFBT0BFMYV8SD3XQ6T29Y6N
+      created_at: 2026-02-15T00:39:30.927Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT0JVM5TJ9NG3X9RRRJSN
+  slugs:
+    - implement-skill-add-command
+  title: Implement Skill Add Command
+  type: task
+  spec_ref: "@skill-add"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:31.163Z
+  notes:
+    - _ulid: 01KHFBT0JVYMM3WFQYMBKS32DN
+      created_at: 2026-02-15T00:39:31.163Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT0TWW3AEQ3KKJB0RQCE3
+  slugs:
+    - implement-skill-set-command
+  title: Implement Skill Set Command
+  type: task
+  spec_ref: "@skill-set"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:31.420Z
+  notes:
+    - _ulid: 01KHFBT0TWZGF1QJC1GG7DDK20
+      created_at: 2026-02-15T00:39:31.420Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT12P9VGPJ8RQ90117QJV
+  slugs:
+    - implement-skill-import-command
+  title: Implement Skill Import Command
+  type: task
+  spec_ref: "@skill-import"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:31.670Z
+  notes:
+    - _ulid: 01KHFBT12PGD87XTZ21712D10M
+      created_at: 2026-02-15T00:39:31.670Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT1A8E3KEWDZTPH8GBPBE
+  slugs:
+    - implement-skill-meta-integration
+  title: Implement Skill Meta Integration
+  type: task
+  spec_ref: "@skill-meta-integration"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:31.912Z
+  notes:
+    - _ulid: 01KHFBT1A86QNZVR3TSWNVTDWR
+      created_at: 2026-02-15T00:39:31.912Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT1JZSSV1SAVVQJTZE3E5
+  slugs:
+    - implement-skill-rendering-pipeline
+  title: Implement Skill Rendering Pipeline
+  type: task
+  spec_ref: "@skill-rendering"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:32.191Z
+  notes:
+    - _ulid: 01KHFBT1JZW4AR8V2197HVTV7R
+      created_at: 2026-02-15T00:39:32.191Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT1T269EZJ20K34FWBSSJ
+  slugs:
+    - implement-skill-render-cli
+  title: Implement Skill Render CLI
+  type: task
+  spec_ref: "@skill-render-cli"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:32.418Z
+  notes:
+    - _ulid: 01KHFBT1T2SSE9P5QAMY85V5GW
+      created_at: 2026-02-15T00:39:32.418Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT21F2S7QF8CSDNC9FDXV
+  slugs:
+    - implement-claude-code-skill-renderer
+  title: Implement Claude Code Skill Renderer
+  type: task
+  spec_ref: "@claude-code-renderer"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:32.655Z
+  notes:
+    - _ulid: 01KHFBT21F5C4FBQFBX6QVAZSB
+      created_at: 2026-02-15T00:39:32.656Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT28RGKFXDAERP9F47FZT
+  slugs:
+    - implement-skill-drift-detection
+  title: Implement Skill Drift Detection
+  type: task
+  spec_ref: "@skill-drift-detection"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:32.888Z
+  notes:
+    - _ulid: 01KHFBT28RP5HYPE4P8KQAEENY
+      created_at: 2026-02-15T00:39:32.888Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT2G2RN6SAET6BC1JBJ0W
+  slugs:
+    - implement-agent-instruction-generation
+  title: Implement Agent Instruction Generation
+  type: task
+  spec_ref: "@agent-instruction-gen"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:33.122Z
+  notes:
+    - _ulid: 01KHFBT2G2F0E2BR2Q8P5YH32D
+      created_at: 2026-02-15T00:39:33.122Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT2QCG2K52WNXF7AM6329
+  slugs:
+    - implement-agents-cli-commands
+  title: Implement Agents CLI Commands
+  type: task
+  spec_ref: "@agents-cli"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:33.356Z
+  notes:
+    - _ulid: 01KHFBT2QCJBRHZ14N0X8VPZ4R
+      created_at: 2026-02-15T00:39:33.356Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT2Z4P78QGWV6B19K138P
+  slugs:
+    - implement-agent-template-system
+  title: Implement Agent Template System
+  type: task
+  spec_ref: "@agent-templates"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:33.604Z
+  notes:
+    - _ulid: 01KHFBT2Z4YC0NX6XM3C5ZSPPE
+      created_at: 2026-02-15T00:39:33.604Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT37JBJ7D1FQ80FFNY7PD
+  slugs:
+    - implement-auto-generated-data-sections
+  title: Implement Auto-Generated Data Sections
+  type: task
+  spec_ref: "@agent-data-sections"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:33.874Z
+  notes:
+    - _ulid: 01KHFBT37JTQWXN31EG6C62CZ3
+      created_at: 2026-02-15T00:39:33.875Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT3F2YAV61SZDY2ASVS6M
+  slugs:
+    - implement-enhanced-setup-command
+  title: Implement Enhanced Setup Command
+  type: task
+  spec_ref: "@enhanced-setup"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:34.114Z
+  notes:
+    - _ulid: 01KHFBT3F2971RMRN5YM828VT5
+      created_at: 2026-02-15T00:39:34.114Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT3PNP2VFYNNCSEPXMJ7S
+  slugs:
+    - implement-full-hook-installation
+  title: Implement Full Hook Installation
+  type: task
+  spec_ref: "@full-hook-install"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:34.357Z
+  notes:
+    - _ulid: 01KHFBT3PNMAFQH6WM9Q2FGCS1
+      created_at: 2026-02-15T00:39:34.357Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT3Y0MBQ6YX7MT9524X23
+  slugs:
+    - implement-core-skill-installation
+  title: Implement Core Skill Installation
+  type: task
+  spec_ref: "@core-skill-install"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:34.592Z
+  notes:
+    - _ulid: 01KHFBT3Y11WF8QYJ441NVXM12
+      created_at: 2026-02-15T00:39:34.593Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT45N5HA4AYTQK9490HCV
+  slugs:
+    - implement-core-skill-update
+  title: Implement Core Skill Update
+  type: task
+  spec_ref: "@core-skill-update"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:34.837Z
+  notes:
+    - _ulid: 01KHFBT45NR8Z7ZTK4KZ595CF0
+      created_at: 2026-02-15T00:39:34.837Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- _ulid: 01KHFBT4D5NHPNKKWH9H1Z37G9
+  slugs:
+    - implement-package-distribution
+  title: Implement Package Distribution
+  type: task
+  spec_ref: "@package-distribution"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:35.077Z
+  notes:
+    - _ulid: 01KHFBT4D5BCYT14EGKJJDPDNF
+      created_at: 2026-02-15T00:39:35.077Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  todos: []
+- title: Implement Init Setup Integration
+  type: task
+  spec_ref: "@init-setup-integration"
+  plan_ref: "@plan-portable-agent-integration-infrastructure"
+  priority: 3
+  slugs:
+    - implement-init-setup-integration
   tags: []
   depends_on: []
-  _ulid: 01KHF34K4JKJV2M81YAPCDNGPX
+  notes:
+    - _ulid: 01KHFBT4MF7NNSW7TCHBS01HTQ
+      created_at: 2026-02-15T00:39:35.311Z
+      author: "@claude"
+      content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+  _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-14T22:08:00.658Z
-  notes: []
+  created_at: 2026-02-15T00:39:35.311Z
   todos: []

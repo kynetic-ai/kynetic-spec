@@ -2357,3 +2357,894 @@ modules:
     traits: []
     notes: []
     created: 2026-02-15T00:39:20.586Z
+    features:
+      - _ulid: 01KHFBSYF0Q3D0WWB956JXXKNC
+        slugs:
+          - skill-meta-type
+        title: Skill Meta Type
+        type: feature
+        tags: []
+        description: |
+          Add Skill as the 5th meta item type in the kspec data model.
+          Metadata stored in kynetic.meta.yaml, content in .kspec/skills/<id>/ files.
+          Eliminates 90% skill drift across 4 projects by making skills first-class
+          data managed by kspec.
+        acceptance_criteria:
+          - id: ac-1
+            given: a kynetic.meta.yaml with a skills array containing valid skill entries
+            when: the file is parsed via MetaManifestSchema
+            then: each skill entry validates against SkillSchema
+          - id: ac-2
+            given: a skill with origin core and version 0.2.0
+            when: validated by SkillSchema
+            then: it passes validation with origin set to core
+          - id: ac-3
+            given: a skill meta entry exists and .kspec/skills/my-skill/SKILL.md exists
+            when: loadSkillContent(ctx, skill) is called
+            then: the full markdown content of SKILL.md is returned
+          - id: ac-4
+            given: loadMetaContext() is called on a manifest with 3 skills
+            when: parsing completes
+            then: MetaContext.skills contains 3 LoadedSkill objects with _sourceFile set
+          - id: ac-5
+            given: a skill with id task-work exists in meta
+            when: findMetaItemByRef(meta, task-work) is called
+            then: the skill is returned by semantic id lookup
+          - id: ac-6
+            given: a skill ULID prefix is provided to findMetaItemByRef
+            when: the prefix matches exactly one skill
+            then: the skill is returned by ULID prefix lookup
+          - id: ac-7
+            given: getMetaItemType is called with a skill object
+            when: the discriminator evaluates the object
+            then: it returns skill (discriminated by the origin field unique to skills)
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-15T00:39:28.992Z
+        requirements:
+          - _ulid: 01KHFBSYFPEEPWMQV097YHJD96
+            slugs:
+              - skill-schema
+            title: Skill Schema Definition
+            type: requirement
+            tags: []
+            description: |
+              Zod schema for skill metadata. Lean schema — content lives in files.
+              Fields: _ulid, id (kebab-case regex), name, description, origin (core|custom),
+              version (optional semver), platforms array, depends_on refs, tags.
+            acceptance_criteria:
+              - id: ac-1
+                given: a skill object with id containing uppercase or special characters
+                when: validated by SkillSchema
+                then: validation fails with a message about kebab-case format
+              - id: ac-2
+                given: a skill object missing the id field
+                when: validated by SkillSchema
+                then: validation fails with required field error
+              - id: ac-3
+                given: a skill with no platforms specified
+                when: validated by SkillSchema
+                then: platforms defaults to an array containing claude-code
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.014Z
+          - _ulid: 01KHFBSYG76EVZ7003W5B0KF62
+            slugs:
+              - skill-content-model
+            title: Skill File-Based Content Model
+            type: requirement
+            tags: []
+            description: |
+              Skill content lives in .kspec/skills/<id>/SKILL.md on the shadow branch.
+              Supporting docs in .kspec/skills/<id>/docs/. Meta YAML holds only metadata.
+              This avoids YAML escaping issues with large markdown documents.
+            acceptance_criteria:
+              - id: ac-1
+                given: a skill with id task-work and a file at .kspec/skills/task-work/SKILL.md
+                when: loadSkillContent is called
+                then: the markdown content is returned as a string
+              - id: ac-2
+                given: a skill with docs at .kspec/skills/task-work/docs/quickref.md
+                when: loadSkillDocs is called
+                then: an array of doc objects is returned with matching file names
+              - id: ac-3
+                given: a skill meta entry with no corresponding SKILL.md file
+                when: kspec validate is run
+                then: a validation error reports the missing content file
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.031Z
+          - _ulid: 01KHFBSYGVZYZPQ6MM7YKYHTS9
+            slugs:
+              - skill-parser
+            title: Skill Parser Integration
+            type: requirement
+            tags: []
+            description: |
+              Integrate skills into the meta parser: LoadedSkill type, MetaContext.skills array,
+              CRUD via saveMetaItem/deleteMetaItem, reference resolution, stats.
+              Delete also removes the .kspec/skills/<id>/ directory.
+            acceptance_criteria:
+              - id: ac-1
+                given: a new skill object
+                when: saveMetaItem(ctx, skill, skill) is called
+                then: the skill is appended to manifest.skills and written to disk
+              - id: ac-2
+                given: saveMetaItem is called for a skill
+                when: the save completes
+                then: the .kspec/skills/<id>/ directory is created
+              - id: ac-3
+                given: an existing skill ULID
+                when: deleteMetaItem(ctx, ulid, skill) is called
+                then: the skill is removed from manifest.skills
+              - id: ac-4
+                given: deleteMetaItem completes for a skill
+                when: the filesystem is checked
+                then: the .kspec/skills/<id>/ directory is also deleted
+              - id: ac-5
+                given: a manifest with skills
+                when: getMetaStats() is called
+                then: the returned stats include a skills count
+              - id: ac-6
+                given: isMetaItemType is called with skill
+                when: the type is evaluated
+                then: it returns true
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.051Z
+          - _ulid: 01KHFBSYHCM5HDE8GAQYCDV300
+            slugs:
+              - skill-validation
+            title: Skill Validation
+            type: requirement
+            tags: []
+            description: |
+              Add skill-aware validation to src/parser/validate.ts.
+              Validate content file existence, depends_on ref integrity, orphan detection,
+              and schema validation parity with existing agent/workflow/convention loops.
+            acceptance_criteria:
+              - id: ac-1
+                given: a skill entry in meta with no .kspec/skills/<id>/SKILL.md file
+                when: kspec validate is run
+                then: an error is reported for the missing content file
+              - id: ac-2
+                given: a skill with depends_on referencing a non-existent skill
+                when: kspec validate is run
+                then: a warning is reported for the broken reference
+              - id: ac-3
+                given: a .kspec/skills/<id>/ directory with no corresponding meta entry
+                when: kspec validate is run
+                then: a warning is reported for the orphaned skill directory
+              - id: ac-4
+                given: a skill entry with invalid schema fields
+                when: kspec validate is run
+                then: schema validation errors are reported matching existing meta type validation patterns
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.068Z
+      - _ulid: 01KHFBSYJ21BHEY5ZYP7B47NPR
+        slugs:
+          - skill-cli
+        title: Skill CLI Commands
+        type: feature
+        tags: []
+        description: |
+          Dedicated kspec skill namespace for CRUD, import, and management.
+          Consistent with kspec task and kspec item patterns.
+          Includes import command critical for migrating existing 4 projects.
+        acceptance_criteria:
+          - id: ac-1
+            given: skills exist in the meta manifest
+            when: kspec skill list is run
+            then: a table displays ID, Name, Origin, Version, and Platforms columns
+          - id: ac-2
+            given: kspec skill list --json is run
+            when: skills exist
+            then: a JSON array with full skill metadata is returned
+          - id: ac-3
+            given: kspec skill add --id my-skill --name My Skill --description A test skill is run
+            when: the command completes
+            then: a meta entry is created with origin custom
+          - id: ac-4
+            given: kspec skill add completes successfully
+            when: the filesystem is checked
+            then: .kspec/skills/my-skill/SKILL.md exists
+          - id: ac-5
+            given: kspec skill get @my-skill is run
+            when: the skill exists
+            then: metadata is displayed including id, name, origin, and platforms
+          - id: ac-6
+            given: kspec skill get @my-skill is run
+            when: the skill has content in SKILL.md
+            then: the full SKILL.md content is also displayed
+          - id: ac-7
+            given: kspec skill delete @my-skill --confirm is run
+            when: the skill exists
+            then: the meta entry is removed from the manifest
+          - id: ac-8
+            given: kspec skill delete completes for a skill
+            when: the filesystem is checked
+            then: .kspec/skills/my-skill/ directory is deleted
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-confirmation-prompt"
+          - "@trait-error-guidance"
+          - "@trait-filterable-list"
+          - "@trait-shadow-commit"
+        notes: []
+        created: 2026-02-15T00:39:29.090Z
+        requirements:
+          - _ulid: 01KHFBSYJPV8H0KS3VE9JDH2T5
+            slugs:
+              - skill-add
+            title: Skill Add Command
+            type: requirement
+            tags: []
+            description: |
+              Create new skill with meta entry + content directory.
+              Supports --content-file to initialize from existing file.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec skill add --id X --name Y --description Z is run
+                when: the command completes
+                then: a meta entry is created in the manifest skills array
+              - id: ac-2
+                given: kspec skill add completes
+                when: the shadow branch is checked
+                then: the changes are auto-committed to the shadow branch
+              - id: ac-3
+                given: --content-file ./existing-skill.md is provided
+                when: the command completes
+                then: file contents are copied to .kspec/skills/X/SKILL.md
+              - id: ac-4
+                given: --origin core --version 0.2.0 is provided
+                when: the command completes
+                then: meta entry has origin core
+              - id: ac-5
+                given: --origin core --version 0.2.0 is provided
+                when: the meta entry is inspected
+                then: version is set to 0.2.0
+              - id: ac-6
+                given: a skill with the same id already exists
+                when: kspec skill add is run with that id
+                then: an error is returned indicating duplicate id
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-shadow-commit"
+              - "@trait-error-guidance"
+            notes: []
+            created: 2026-02-15T00:39:29.110Z
+          - _ulid: 01KHFBSYKAXN0VR0KKRN8298JT
+            slugs:
+              - skill-set
+            title: Skill Set Command
+            type: requirement
+            tags: []
+            description: |
+              Update skill metadata fields. Content updates are done by editing files directly.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec skill set @my-skill --description new description is run
+                when: the skill exists
+                then: the description field is updated in meta
+              - id: ac-2
+                given: --add-platform codex is provided
+                when: the command completes
+                then: codex is added to the platforms array
+              - id: ac-3
+                given: --add-tag automation is provided
+                when: the command completes
+                then: automation is added to the tags array
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-shadow-commit"
+            notes: []
+            created: 2026-02-15T00:39:29.130Z
+          - _ulid: 01KHFBSYKWK01EM2G5FJ0Z09C9
+            slugs:
+              - skill-import
+            title: Skill Import Command
+            type: requirement
+            tags: []
+            description: |
+              Import existing .claude/skills/<name>/SKILL.md files into the kspec meta system.
+              Critical for migrating the 4 existing kspec-using projects.
+              Parses SKILL.md frontmatter for name/description, copies content and docs.
+            acceptance_criteria:
+              - id: ac-1
+                given: an existing .claude/skills/task-work/SKILL.md with YAML frontmatter
+                when: kspec skill import .claude/skills/task-work/SKILL.md is run
+                then: a meta entry is created with name and description extracted from frontmatter
+              - id: ac-2
+                given: skill import completes
+                when: the .kspec/skills/ directory is checked
+                then: content is copied to .kspec/skills/task-work/SKILL.md
+              - id: ac-3
+                given: the skill directory contains a docs/ subdirectory with files
+                when: import is run
+                then: docs are copied to .kspec/skills/<id>/docs/
+              - id: ac-4
+                given: --origin core is specified
+                when: import completes
+                then: the meta entry has origin core
+              - id: ac-5
+                given: --id custom-name is specified
+                when: import completes
+                then: the meta entry uses custom-name as the id instead of deriving from directory name
+              - id: ac-6
+                given: a SKILL.md without YAML frontmatter
+                when: import is run without --name and --description flags
+                then: an error is shown indicating name and description are required
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-shadow-commit"
+              - "@trait-error-guidance"
+            notes: []
+            created: 2026-02-15T00:39:29.148Z
+          - _ulid: 01KHFBSYMF3BPY2QXKMMG5D04J
+            slugs:
+              - skill-meta-integration
+            title: Skill Meta Integration
+            type: requirement
+            tags: []
+            description: |
+              Update existing kspec meta commands to include skills in search and listing.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec meta get @skill-id is run
+                when: a skill with that id exists
+                then: the skill metadata is returned
+              - id: ac-2
+                given: kspec meta list --type skill is run
+                when: skills exist
+                then: only skills are shown in the list
+              - id: ac-3
+                given: kspec meta show is run
+                when: skills exist
+                then: the summary includes skill count
+              - id: ac-4
+                given: resolveMetaRefToUlid is called with a skill id
+                when: the skill exists
+                then: the skill ULID is returned
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.167Z
+      - _ulid: 01KHFBSYN1165J66QP3H4ZPHA5
+        slugs:
+          - skill-rendering
+        title: Skill Rendering Pipeline
+        type: feature
+        tags: []
+        description: |
+          Render skill meta items from shadow branch (.kspec/skills/) to platform-specific
+          files on the main branch (.claude/skills/). Includes drift detection and orphan cleanup.
+          Designed for cross-platform extensibility but builds Claude Code renderer first.
+        acceptance_criteria:
+          - id: ac-1
+            given: a skill with platforms including claude-code
+            when: kspec skill render is run
+            then: .claude/skills/<id>/SKILL.md is created with YAML frontmatter
+          - id: ac-2
+            given: a skill with docs in .kspec/skills/<id>/docs/
+            when: rendering completes
+            then: docs are copied to .claude/skills/<id>/docs/
+          - id: ac-3
+            given: kspec skill render is called twice with no content changes
+            when: rendering completes the second time
+            then: no files are modified (idempotent)
+          - id: ac-4
+            given: a previously rendered skill that no longer exists in meta
+            when: kspec skill render --clean is run
+            then: only skill directories that were rendered by kspec are considered for removal
+          - id: ac-5
+            given: kspec skill render --clean identifies an orphaned managed skill
+            when: clean completes
+            then: the orphaned .claude/skills/<id>/ directory is removed
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-dry-run"
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-15T00:39:29.185Z
+        requirements:
+          - _ulid: 01KHFBSYNPCP7AET8D8JA4K3GR
+            slugs:
+              - skill-render-cli
+            title: Skill Render CLI
+            type: requirement
+            tags: []
+            description: |
+              CLI commands for skill rendering, status checking, and diffing.
+              Registered under kspec skill namespace.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec skill render is run
+                when: skills exist in meta
+                then: all skills are rendered with a summary of created/updated/skipped files
+              - id: ac-2
+                given: kspec skill render @task-work is run
+                when: the skill exists
+                then: only that single skill is rendered
+              - id: ac-3
+                given: kspec skill status is run
+                when: rendered skills exist
+                then: a table shows each skill with its sync status (in-sync or drifted)
+              - id: ac-4
+                given: kspec skill diff @task-work is run
+                when: the rendered file differs from meta content
+                then: a unified diff is displayed
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.206Z
+          - _ulid: 01KHFBSYP9JAQTRZZYRWJW2RZJ
+            slugs:
+              - claude-code-renderer
+            title: Claude Code Skill Renderer
+            type: requirement
+            tags: []
+            description: |
+              Platform-specific renderer for Claude Code. Reads from .kspec/skills/<id>/SKILL.md,
+              writes to .claude/skills/<id>/SKILL.md with YAML frontmatter (name, description).
+              Does NOT auto-commit to main branch — leaves files unstaged.
+            acceptance_criteria:
+              - id: ac-1
+                given: a skill with id task-work and content in .kspec/skills/task-work/SKILL.md
+                when: renderClaudeCodeSkill is called
+                then: .claude/skills/task-work/SKILL.md is created with YAML frontmatter
+              - id: ac-2
+                given: rendered output
+                when: the file is inspected
+                then: it has YAML frontmatter delimiters with name and description fields
+              - id: ac-3
+                given: rendered output
+                when: the file is inspected below the frontmatter
+                then: the skill body content from .kspec/skills/<id>/SKILL.md appears verbatim
+              - id: ac-4
+                given: rendering completes
+                when: git status is checked
+                then: rendered files appear as unstaged changes on the main branch
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.225Z
+          - _ulid: 01KHFBSYPVNXKJWKBPDVHDAR0F
+            slugs:
+              - skill-drift-detection
+            title: Skill Drift Detection
+            type: requirement
+            tags: []
+            description: |
+              Detect when rendered skill files have been manually edited.
+              Hash-based comparison stored in .kspec/skills/<id>/.render-hash.
+              Warn before overwriting, require --force to overwrite drifted files.
+            acceptance_criteria:
+              - id: ac-1
+                given: a rendered skill file that has not been manually edited
+                when: kspec skill status is run
+                then: the skill shows as in sync
+              - id: ac-2
+                given: a rendered skill file that has been manually edited
+                when: kspec skill status is run
+                then: the skill shows as drifted with the file path
+              - id: ac-3
+                given: a drifted skill
+                when: kspec skill render is run without --force
+                then: the drifted skill is skipped with a warning message
+              - id: ac-4
+                given: a drifted skill
+                when: kspec skill render --force is run
+                then: the rendered file is overwritten with meta content
+              - id: ac-5
+                given: a skill is rendered successfully
+                when: the render hash is checked
+                then: a hash of the rendered output is stored in .kspec/skills/<id>/.render-hash
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.244Z
+      - _ulid: 01KHFBSYQEHW19496JPTP3XC70
+        slugs:
+          - agent-instruction-gen
+        title: Agent Instruction Generation
+        type: feature
+        tags: []
+        description: |
+          Generate kspec-agents.md from static templates plus auto-generated data sections.
+          Templates ship with the npm package. Data sections derive from meta (skills table,
+          conventions summary, workflow summary). Users AGENTS.md includes the generated file.
+        acceptance_criteria:
+          - id: ac-1
+            given: meta with skills, conventions, and workflows plus templates directory
+            when: kspec agents generate is run
+            then: kspec-agents.md is created in the project root
+          - id: ac-2
+            given: 3 skills exist in meta
+            when: kspec-agents.md is generated
+            then: the output includes a Finding Information table with a row per skill
+          - id: ac-3
+            given: conventions exist in meta
+            when: kspec-agents.md is generated
+            then: the output includes a conventions section listing rules by domain
+          - id: ac-4
+            given: the generated file
+            when: inspected
+            then: it contains a freshness comment with kspec version and generation timestamp
+          - id: ac-5
+            given: kspec agents status is run after meta changes
+            when: kspec-agents.md has not been regenerated
+            then: it reports stale with a recommendation to regenerate
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-dry-run"
+        notes: []
+        created: 2026-02-15T00:39:29.262Z
+        requirements:
+          - _ulid: 01KHFBSYR2KWJJ9W16YK4VRVRR
+            slugs:
+              - agents-cli
+            title: Agents CLI Commands
+            type: requirement
+            tags: []
+            description: |
+              CLI commands registered under kspec agents namespace for generating
+              and checking freshness of kspec-agents.md.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec agents generate is run
+                when: meta and templates are available
+                then: kspec-agents.md is written to the project root
+              - id: ac-2
+                given: kspec agents generate --dry-run is run
+                when: meta and templates are available
+                then: generated content is printed to stdout without writing a file
+              - id: ac-3
+                given: kspec agents status is run
+                when: kspec-agents.md exists and is current
+                then: it reports the file is up to date
+              - id: ac-4
+                given: kspec agents status is run
+                when: meta has changed since last generation
+                then: it reports the file is stale
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.282Z
+          - _ulid: 01KHFBSYRQ6EMFFS6E21KFSG9P
+            slugs:
+              - agent-templates
+            title: Agent Template System
+            type: requirement
+            tags: []
+            description: |
+              Static markdown templates that ship with kspec in templates/agents-sections/.
+              Cover kspec boilerplate: shadow branch architecture, task lifecycle, PR workflow,
+              commit conventions, ralph loop rules, etc. NOT derived from conventions.
+            acceptance_criteria:
+              - id: ac-1
+                given: a templates/agents-sections/ directory with section markdown files
+                when: generateAgentsMd is called
+                then: all template sections are included in the output in their defined order
+              - id: ac-2
+                given: template files for quick-start, shadow-branch, task-lifecycle, pr-workflow,
+                  commit-convention, ralph-loop exist
+                when: assembled into kspec-agents.md
+                then: each template section appears in the generated output
+              - id: ac-3
+                given: the template directory is missing or empty
+                when: kspec agents generate is run
+                then: an error is returned with a message indicating templates were not found at the expected path
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-error-guidance"
+            notes: []
+            created: 2026-02-15T00:39:29.303Z
+          - _ulid: 01KHFBSYSDM2AXHTRQQXN6MX5M
+            slugs:
+              - agent-data-sections
+            title: Auto-Generated Data Sections
+            type: requirement
+            tags: []
+            description: |
+              Sections generated dynamically from meta data: skills table, conventions summary,
+              workflows summary. These update automatically when meta changes.
+            acceptance_criteria:
+              - id: ac-1
+                given: skills in meta with varying names and descriptions
+                when: generateSkillsTable is called
+                then: a markdown table is returned with columns for skill name, description, and invocation
+              - id: ac-2
+                given: conventions in meta with rules arrays
+                when: generateConventionsSummary is called
+                then: a markdown section is returned listing each domain with its rules
+              - id: ac-3
+                given: workflows in meta with triggers and descriptions
+                when: generateWorkflowsSummary is called
+                then: a markdown section is returned listing each workflow with its trigger
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.325Z
+      - _ulid: 01KHFBSYT3AQTGDQXE7QSTR7QX
+        slugs:
+          - enhanced-setup
+        title: Enhanced Setup Command
+        type: feature
+        tags: []
+        description: |
+          Orchestrate full onboarding pipeline in kspec setup: detect agent, install hooks
+          (including all PreToolUse guards), render skills, generate agent instructions,
+          scaffold AGENTS.md. Also ship templates in npm package.
+        acceptance_criteria:
+          - id: ac-1
+            given: a project with kspec initialized and skills in meta
+            when: kspec setup is run
+            then: a summary is displayed listing each step performed
+          - id: ac-2
+            given: kspec setup completes
+            when: .claude/settings.json is inspected
+            then: all hook entries (UserPromptSubmit, Stop, PreToolUse) are present
+          - id: ac-3
+            given: kspec setup completes with skills in meta
+            when: .claude/skills/ is inspected
+            then: rendered skill files exist for each skill targeting claude-code
+          - id: ac-4
+            given: kspec setup completes
+            when: the project root is inspected
+            then: kspec-agents.md exists
+          - id: ac-5
+            given: --skip-skills flag is provided
+            when: kspec setup is run
+            then: skill rendering is skipped
+          - id: ac-6
+            given: --dry-run flag is provided
+            when: kspec setup is run
+            then: planned actions are displayed without making any changes
+          - id: ac-7
+            given: --status flag is provided
+            when: kspec setup is run
+            then: current state is reported including agent detected
+          - id: ac-8
+            given: --status flag is provided
+            when: output is inspected
+            then: hooks status, skills rendered count, and agents.md freshness are shown
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-dry-run"
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-15T00:39:29.347Z
+        requirements:
+          - _ulid: 01KHFBSYTV3VX8XTY4WSAVDX4W
+            slugs:
+              - full-hook-install
+            title: Full Hook Installation
+            type: requirement
+            tags: []
+            description: |
+              Install ALL hooks including PreToolUse guards currently missing from setup.
+              Generate worktree guard with dynamic path detection (no hardcoded paths).
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec setup is run on a Claude Code project
+                when: hook installation completes
+                then: UserPromptSubmit hook entry is written to .claude/settings.json
+              - id: ac-2
+                given: kspec setup completes
+                when: .claude/settings.json is inspected
+                then: Stop hook entry is present
+              - id: ac-3
+                given: kspec setup completes
+                when: .claude/settings.json is inspected
+                then: PreToolUse Bash hook entries are present for worktree guard
+              - id: ac-4
+                given: the worktree guard hook is generated
+                when: the script is inspected
+                then: it uses dynamic path detection via environment variables, not hardcoded absolute paths
+              - id: ac-5
+                given: the ralph task-limit guard is generated
+                when: kspec setup completes
+                then: the guard script is installed and referenced in settings.json
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.371Z
+          - _ulid: 01KHFBSYVHX9QTTD7E508HM9C0
+            slugs:
+              - core-skill-install
+            title: Core Skill Installation
+            type: requirement
+            tags: []
+            description: |
+              kspec skill install-core copies core skill definitions from the kspec npm package
+              templates/ directory into the project. Creates meta entries with origin core
+              and version matching kspec version.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec skill install-core is run
+                when: the kspec package has templates/skills/ with core skill files
+                then: meta entries are created with origin core
+              - id: ac-2
+                given: install-core completes
+                when: .kspec/skills/ is inspected
+                then: content files are copied from templates to .kspec/skills/<id>/
+              - id: ac-3
+                given: a skill already exists with origin custom (forked)
+                when: install-core is run
+                then: the custom skill is skipped with a message (not overwritten)
+              - id: ac-4
+                given: --force flag is provided
+                when: a custom fork exists
+                then: the fork is overwritten with the core version
+              - id: ac-5
+                given: install-core completes
+                when: the installed skills are checked
+                then: each has version matching the installed kspec package version
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-shadow-commit"
+            notes: []
+            created: 2026-02-15T00:39:29.393Z
+          - _ulid: 01KHFBSYWE2E0F2DH7X5ABNW30
+            slugs:
+              - core-skill-update
+            title: Core Skill Update
+            type: requirement
+            tags: []
+            description: |
+              kspec skill update refreshes core skills from the installed kspec package version.
+              Only updates skills with origin core whose version differs from the package version.
+            acceptance_criteria:
+              - id: ac-1
+                given: a core skill with version 0.1.0 and kspec package at version 0.2.0
+                when: kspec skill update is run
+                then: the skill content and version are updated to match the package
+              - id: ac-2
+                given: a core skill already at the current kspec version
+                when: kspec skill update is run
+                then: the skill is skipped (no changes)
+              - id: ac-3
+                given: a skill with origin custom
+                when: kspec skill update is run
+                then: the skill is not touched
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.422Z
+          - _ulid: 01KHFBSYX8DAV4C60N2J8VNY8H
+            slugs:
+              - package-distribution
+            title: Package Distribution
+            type: requirement
+            tags: []
+            description: |
+              Ship templates/ directory with the npm package. Contains core skill content,
+              agents-md template sections, and hook scripts.
+            acceptance_criteria:
+              - id: ac-1
+                given: npm pack is run
+                when: the package contents are inspected
+                then: templates/ directory is included
+              - id: ac-2
+                given: the templates/ directory in the package
+                when: its contents are listed
+                then: it contains skills/, agents-sections/, and hooks/ subdirectories
+              - id: ac-3
+                given: a consumer installs @kynetic-ai/spec globally
+                when: kspec skill install-core is run in their project
+                then: core skills are found in the package templates directory and installed successfully
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.448Z
+          - _ulid: 01KHFBSYY7VZZPTCWPBNY8A9EB
+            slugs:
+              - init-setup-integration
+            title: Init Setup Integration
+            type: requirement
+            tags: []
+            description: |
+              kspec init --setup chains into the full setup flow after initialization.
+              One command to go from fresh project to fully configured.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec init --setup is run in a fresh project
+                when: initialization completes
+                then: shadow branch is created and manifest exists
+              - id: ac-2
+                given: kspec init --setup continues after initialization
+                when: setup phase completes
+                then: core skills are installed in .kspec/skills/
+              - id: ac-3
+                given: kspec init --setup finishes
+                when: the project is inspected
+                then: rendered skill files, hooks, and kspec-agents.md are all present
+              - id: ac-4
+                given: kspec init is run without --setup
+                when: initialization completes
+                then: behavior is unchanged from current (shadow branch + manifest only)
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T00:39:29.479Z
