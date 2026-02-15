@@ -11,6 +11,7 @@
  * AC: @skill-cli ac-8 - kspec skill delete removes .kspec/skills/<id>/ directory
  */
 
+import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import chalk from "chalk";
@@ -703,6 +704,7 @@ export function registerSkillCommands(program: Command): void {
 
   // AC: @skill-rendering ac-1 through ac-5 - kspec skill render
   // AC: @skill-render-cli ac-1, ac-2 - kspec skill render / kspec skill render @skill-id
+  // AC: @skill-drift-detection ac-3, ac-4 - drift handling with --force
   // AC: @trait-dry-run - supports --dry-run
   // AC: @trait-error-guidance - provides error guidance
   skill
@@ -712,6 +714,7 @@ export function registerSkillCommands(program: Command): void {
     )
     .option("--clean", "Remove orphaned managed skill directories")
     .option("--dry-run", "Show what would be changed without applying")
+    .option("--force", "Overwrite drifted skill files (manually edited)")
     .option("--skill <id>", "Render only a specific skill (deprecated, use positional arg)")
     .action(async (ref: string | undefined, options) => {
       try {
@@ -729,6 +732,7 @@ export function registerSkillCommands(program: Command): void {
         // Use rootDir (project root), not specDir (which is .kspec/ in shadow mode)
         const projectRoot = ctx.rootDir;
         const dryRun = options.dryRun || false;
+        const force = options.force || false;
         const results: SkillRenderResult[] = [];
         const cleanResults: CleanResult[] = [];
 
@@ -763,7 +767,30 @@ export function registerSkillCommands(program: Command): void {
         }
 
         // Render each skill
+        // AC: @skill-drift-detection ac-3, ac-4 - Check drift and skip without --force
         for (const skill of skillsToRender) {
+          // Check for drift before rendering
+          const driftStatus = await checkSkillDrift(ctx.specDir, projectRoot, skill.id);
+
+          // AC: @skill-drift-detection ac-3 - Skip drifted skills without --force
+          if (driftStatus === "drifted" && !force) {
+            const renderedPath = path.join(
+              projectRoot,
+              ".claude",
+              "skills",
+              skill.id,
+              "SKILL.md"
+            );
+            results.push({
+              id: skill.id,
+              action: "skipped",
+              path: renderedPath,
+              skipReason: "drifted (use --force to overwrite)",
+            });
+            continue;
+          }
+
+          // AC: @skill-drift-detection ac-4 - Render (overwrite) when --force is used
           const result = await renderSkill(ctx, projectRoot, skill, dryRun);
           results.push(result);
         }
@@ -834,6 +861,8 @@ export function registerSkillCommands(program: Command): void {
             const created = results.filter((r) => r.action === "created");
             const updated = results.filter((r) => r.action === "updated");
             const unchanged = results.filter((r) => r.action === "unchanged");
+            // AC: @skill-drift-detection ac-3 - Track skipped drifted skills
+            const skippedDrifted = results.filter((r) => r.action === "skipped");
 
             if (created.length > 0) {
               console.log(chalk.green(`Created: ${created.length} skill(s)`));
@@ -851,6 +880,17 @@ export function registerSkillCommands(program: Command): void {
 
             if (unchanged.length > 0 && results.length <= 10) {
               console.log(chalk.gray(`Unchanged: ${unchanged.length} skill(s)`));
+            }
+
+            // AC: @skill-drift-detection ac-3 - Show warning for skipped drifted skills
+            if (skippedDrifted.length > 0) {
+              console.log();
+              console.log(chalk.yellow(`Skipped: ${skippedDrifted.length} drifted skill(s)`));
+              for (const r of skippedDrifted) {
+                console.log(`  ${chalk.yellow("!")} ${r.id}: ${r.skipReason || "drifted"}`);
+              }
+              console.log();
+              console.log(chalk.yellow("Use --force to overwrite drifted skills"));
             }
 
             // Clean results
@@ -1166,12 +1206,15 @@ const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
 
 /**
  * Result of rendering a single skill
+ * AC: @skill-drift-detection ac-3 - Includes "skipped" action for drifted skills
  */
 interface SkillRenderResult {
   id: string;
-  action: "created" | "updated" | "unchanged";
+  action: "created" | "updated" | "unchanged" | "skipped";
   path: string;
   docsAction?: "created" | "updated" | "unchanged" | "skipped";
+  /** Reason why skill was skipped */
+  skipReason?: string;
 }
 
 /**
@@ -1214,6 +1257,82 @@ async function isKspecManaged(skillMdPath: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Compute SHA256 hash of content
+ * AC: @skill-drift-detection ac-5 - Hash computation for render tracking
+ */
+function computeContentHash(content: string): string {
+  return crypto.createHash("sha256").update(content, "utf-8").digest("hex");
+}
+
+/**
+ * Get the path to the render hash file for a skill
+ * AC: @skill-drift-detection ac-5 - Hash stored in .kspec/skills/<id>/.render-hash
+ */
+function getRenderHashPath(specDir: string, skillId: string): string {
+  return path.join(specDir, "skills", skillId, ".render-hash");
+}
+
+/**
+ * Read the stored render hash for a skill
+ * AC: @skill-drift-detection ac-5 - Read hash from .kspec/skills/<id>/.render-hash
+ */
+async function readRenderHash(specDir: string, skillId: string): Promise<string | null> {
+  try {
+    const hashPath = getRenderHashPath(specDir, skillId);
+    const content = await fs.readFile(hashPath, "utf-8");
+    return content.trim();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Write the render hash for a skill
+ * AC: @skill-drift-detection ac-5 - Store hash in .kspec/skills/<id>/.render-hash
+ */
+async function writeRenderHash(specDir: string, skillId: string, hash: string): Promise<void> {
+  const hashPath = getRenderHashPath(specDir, skillId);
+  await fs.mkdir(path.dirname(hashPath), { recursive: true });
+  await fs.writeFile(hashPath, hash + "\n", "utf-8");
+}
+
+/**
+ * Check if a rendered skill has drifted from its last render
+ * AC: @skill-drift-detection ac-1, ac-2 - Drift detection via hash comparison
+ *
+ * Returns:
+ * - "not-rendered": Rendered file doesn't exist
+ * - "in-sync": Rendered file matches stored hash
+ * - "drifted": Rendered file differs from stored hash (manually edited)
+ * - "no-hash": Rendered file exists but no stored hash (first render or hash deleted)
+ */
+async function checkSkillDrift(
+  specDir: string,
+  projectRoot: string,
+  skillId: string
+): Promise<"not-rendered" | "in-sync" | "drifted" | "no-hash"> {
+  const renderedPath = path.join(projectRoot, ".claude", "skills", skillId, "SKILL.md");
+
+  // Check if rendered file exists
+  let renderedContent: string;
+  try {
+    renderedContent = await fs.readFile(renderedPath, "utf-8");
+  } catch {
+    return "not-rendered";
+  }
+
+  // Get stored hash
+  const storedHash = await readRenderHash(specDir, skillId);
+  if (!storedHash) {
+    return "no-hash";
+  }
+
+  // Compare hashes
+  const currentHash = computeContentHash(renderedContent);
+  return currentHash === storedHash ? "in-sync" : "drifted";
 }
 
 /**
@@ -1295,6 +1414,9 @@ async function renderSkill(
     if (!dryRun) {
       await fs.mkdir(targetDir, { recursive: true });
       await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+      // AC: @skill-drift-detection ac-5 - Store hash of rendered output
+      const hash = computeContentHash(renderedContent);
+      await writeRenderHash(ctx.specDir, skill.id, hash);
     }
 
     return {
@@ -1342,6 +1464,9 @@ async function renderSkill(
   if (!dryRun && action !== "unchanged") {
     await fs.mkdir(targetDir, { recursive: true });
     await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+    // AC: @skill-drift-detection ac-5 - Store hash of rendered output
+    const hash = computeContentHash(renderedContent);
+    await writeRenderHash(ctx.specDir, skill.id, hash);
   }
 
   // Handle docs directory
@@ -1405,30 +1530,46 @@ interface SkillStatusResult {
 /**
  * Get the sync status of a skill
  * AC: @skill-render-cli ac-3
+ * AC: @skill-drift-detection ac-1, ac-2 - Uses hash-based drift detection
  */
 async function getSkillSyncStatus(
   ctx: KspecContext,
   projectRoot: string,
   skill: LoadedSkill
 ): Promise<SkillStatusResult> {
-  const expectedContent = await getExpectedRenderedContent(ctx, skill);
-  const renderedPath = path.join(
-    projectRoot,
-    ".claude",
-    "skills",
-    skill.id,
-    "SKILL.md"
-  );
+  // AC: @skill-drift-detection ac-1, ac-2 - Use hash-based drift detection
+  const driftStatus = await checkSkillDrift(ctx.specDir, projectRoot, skill.id);
 
-  let actualContent = "";
-  let status: "in-sync" | "drifted" | "not-rendered" = "not-rendered";
-
-  try {
-    actualContent = await fs.readFile(renderedPath, "utf-8");
-    status = contentsEqual(expectedContent, actualContent) ? "in-sync" : "drifted";
-  } catch {
-    // File doesn't exist
-    status = "not-rendered";
+  // Map drift status to sync status
+  let status: "in-sync" | "drifted" | "not-rendered";
+  switch (driftStatus) {
+    case "in-sync":
+      status = "in-sync";
+      break;
+    case "drifted":
+      status = "drifted";
+      break;
+    case "not-rendered":
+      status = "not-rendered";
+      break;
+    case "no-hash":
+      // No hash stored - need to check if content matches expected
+      // (handles edge case where skill was rendered before hash tracking was added)
+      const expectedContent = await getExpectedRenderedContent(ctx, skill);
+      const renderedPath = path.join(
+        projectRoot,
+        ".claude",
+        "skills",
+        skill.id,
+        "SKILL.md"
+      );
+      try {
+        const actualContent = await fs.readFile(renderedPath, "utf-8");
+        status = contentsEqual(expectedContent, actualContent) ? "in-sync" : "drifted";
+      } catch {
+        status = "not-rendered";
+      }
+      break;
   }
 
   // Check docs status
