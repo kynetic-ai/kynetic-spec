@@ -48663,6 +48663,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #374. Implemented skill parser integration: saveMetaItem/deleteMetaItem
+    now support 'skill' type with directory creation/deletion. All 6 ACs covered with 14 tests."
   depends_on:
     - "@implement-skill-meta-type"
   context: []
@@ -48671,6 +48673,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:30.453Z
   started_at: 2026-02-15T01:48:43.273Z
+  completed_at: 2026-02-15T02:03:22.850Z
   notes:
     - _ulid: 01KHFBSZWNX8QTAY36V0MEPJDB
       created_at: 2026-02-15T00:39:30.453Z
@@ -48701,9 +48704,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T02:03:22.850Z
-  closed_reason: "Merged in PR #374. Implemented skill parser integration: saveMetaItem/deleteMetaItem
-    now support 'skill' type with directory creation/deletion. All 6 ACs covered with 14 tests."
 - _ulid: 01KHFBT047WE8N3AJAGK24PPJJ
   slugs:
     - implement-skill-validation
@@ -48711,7 +48711,7 @@
   type: task
   spec_ref: "@skill-validation"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-parser-integration"
@@ -48727,6 +48727,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T02:04:07.048Z
 - _ulid: 01KHFBT0BFQMH8RGEYYVX931TF
   slugs:
     - implement-skill-cli-commands
