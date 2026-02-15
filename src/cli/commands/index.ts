@@ -21,6 +21,7 @@ export { registerServeCommands } from "./serve.js";
 export { registerSessionCommands } from "./session.js";
 export { registerSetupCommand } from "./setup.js";
 export { registerShadowCommands } from "./shadow.js";
+export { registerSkillCommands } from "./skill.js";
 export { registerTaskCommands } from "./task.js";
 export { registerTasksCommands } from "./tasks.js";
 export { registerItemTraitCommands, registerTraitCommands } from "./trait.js";
