@@ -2471,6 +2471,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.031Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYGVZYZPQ6MM7YKYHTS9
             slugs:
               - skill-parser
