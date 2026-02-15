@@ -49605,7 +49605,7 @@
   type: task
   spec_ref: "@core-skill-update"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-core-skill-installation"
@@ -49645,6 +49645,19 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T07:10:13.336Z
+  closed_reason: >-
+    Merged in PR #391. Implemented kspec skill update command with all 3 ACs:
+
+    - ac-1: Updates skill content and version when package version differs
+
+    - ac-2: Skips skills already at current version
+
+    - ac-3: Only processes skills with origin 'core' (ignores project/local)
+
+
+    Added 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output,
+    and edge cases.
 - _ulid: 01KHFBT4D5NHPNKKWH9H1Z37G9
   slugs:
     - implement-package-distribution
