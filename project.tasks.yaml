@@ -49715,11 +49715,28 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:35.311Z
+  started_at: 2026-02-15T07:33:14.361Z
   notes:
     - _ulid: 01KHFBT4MF7NNSW7TCHBS01HTQ
       created_at: 2026-02-15T00:39:35.311Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHG3S7608E3XY04Z19NH4EEV
+      created_at: 2026-02-15T07:38:30.976Z
+      author: "@claude"
+      content: |-
+        Implemented kspec init --setup flag:
+
+        - Added --setup option to init command in init.ts
+        - Created runSetupPipeline function in setup.ts to orchestrate the full setup flow
+        - When --setup is passed after successful shadow branch init:
+          1. Core skills are installed (via installCoreSkillsForSetup)
+          2. Hooks are installed (Claude Code only)
+          3. Skills are rendered to .claude/skills/
+          4. kspec-agents.md is generated
+
+        - Without --setup, behavior is unchanged (shows next steps + tip about --setup)
+        - Added 9 tests covering all 4 ACs in tests/init-setup-integration.test.ts
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T07:33:14.361Z
