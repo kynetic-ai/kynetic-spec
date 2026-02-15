@@ -48770,6 +48770,9 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #376. Implemented skill CLI commands (kspec skill list/add/get/delete)
+    with full CRUD operations. All 8 acceptance criteria covered by 29 tests. Includes origin/tag
+    filtering, dependency checking, and JSON output support."
   depends_on:
     - "@implement-skill-meta-type"
   context: []
@@ -48778,6 +48781,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:30.927Z
   started_at: 2026-02-15T02:23:18.452Z
+  completed_at: 2026-02-15T02:40:31.036Z
   notes:
     - _ulid: 01KHFBT0BFMYV8SD3XQ6T29Y6N
       created_at: 2026-02-15T00:39:30.927Z
@@ -48821,10 +48825,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T02:40:31.036Z
-  closed_reason: "Merged in PR #376. Implemented skill CLI commands (kspec skill list/add/get/delete)
-    with full CRUD operations. All 8 acceptance criteria covered by 29 tests. Includes origin/tag
-    filtering, dependency checking, and JSON output support."
 - _ulid: 01KHFBT0JVM5TJ9NG3X9RRRJSN
   slugs:
     - implement-skill-add-command
@@ -48832,7 +48832,7 @@
   type: task
   spec_ref: "@skill-add"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-cli-commands"
@@ -48848,6 +48848,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T02:41:08.157Z
 - _ulid: 01KHFBT0TWW3AEQ3KKJB0RQCE3
   slugs:
     - implement-skill-set-command
