@@ -49752,6 +49752,11 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #394. Consolidated skill render implementations by moving hash/drift
+    functions to skill-render.ts, extending renderClaudeCodeSkill with storeHash option, and
+    removing duplicate renderSkill from skill.ts. All 5 ACs verified: CLI delegates to
+    skill-render.ts (AC-1), no private renderSkill (AC-2), hash functions exported from
+    skill-render.ts (AC-3), setup.ts unchanged and working (AC-4), all 116 skill tests pass (AC-5)."
   depends_on: []
   context: []
   priority: 3
@@ -49759,6 +49764,7 @@
   vcs_refs: []
   created_at: 2026-02-15T22:40:42.375Z
   started_at: 2026-02-15T23:01:29.660Z
+  completed_at: 2026-02-15T23:18:40.337Z
   notes:
     - _ulid: 01KHHQD5W78QFJG065NFV2NPZJ
       created_at: 2026-02-15T22:40:42.375Z
@@ -49810,12 +49816,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T23:18:40.337Z
-  closed_reason: "Merged in PR #394. Consolidated skill render implementations by moving hash/drift
-    functions to skill-render.ts, extending renderClaudeCodeSkill with storeHash option, and
-    removing duplicate renderSkill from skill.ts. All 5 ACs verified: CLI delegates to
-    skill-render.ts (AC-1), no private renderSkill (AC-2), hash functions exported from
-    skill-render.ts (AC-3), setup.ts unchanged and working (AC-4), all 116 skill tests pass (AC-5)."
 - _ulid: 01KHHQD64NTFBWFNCC2MDNHA4B
   slugs:
     - implement-platform-renderer-contract
@@ -49823,7 +49823,7 @@
   type: task
   spec_ref: "@platform-renderer-trait"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-consolidate-skill-render-implementations"
@@ -49873,6 +49873,7 @@
         Depends on @consolidate-skill-render being done first so there's a single render module.
   todos: []
   automation: eligible
+  started_at: 2026-02-15T23:19:27.197Z
 - _ulid: 01KHHQD6CKSYBVR0511V09817C
   slugs:
     - implement-extended-skill-schema
