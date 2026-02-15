@@ -49254,6 +49254,11 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #385. Implemented agent instruction generation with kspec agents
+    generate and kspec agents status commands. All 5 ACs covered: creates kspec-agents.md with
+    Finding Information table (skills), conventions by domain, freshness comment with
+    version/timestamp, and status command that detects stale via SHA256 hash. Also implemented
+    @trait-dry-run support. 22 tests added covering all acceptance criteria."
   depends_on:
     - "@implement-skill-meta-type"
   context: []
@@ -49262,6 +49267,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:33.122Z
   started_at: 2026-02-15T04:51:47.294Z
+  completed_at: 2026-02-15T05:09:46.036Z
   notes:
     - _ulid: 01KHFBT2G2F0E2BR2Q8P5YH32D
       created_at: 2026-02-15T00:39:33.122Z
@@ -49285,12 +49291,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T05:09:46.036Z
-  closed_reason: "Merged in PR #385. Implemented agent instruction generation with kspec agents
-    generate and kspec agents status commands. All 5 ACs covered: creates kspec-agents.md with
-    Finding Information table (skills), conventions by domain, freshness comment with
-    version/timestamp, and status command that detects stale via SHA256 hash. Also implemented
-    @trait-dry-run support. 22 tests added covering all acceptance criteria."
 - _ulid: 01KHFBT2QCG2K52WNXF7AM6329
   slugs:
     - implement-agents-cli-commands
@@ -49298,7 +49298,7 @@
   type: task
   spec_ref: "@agents-cli"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-agent-instruction-generation"
@@ -49314,6 +49314,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T05:23:29.349Z
 - _ulid: 01KHFBT2Z4P78QGWV6B19K138P
   slugs:
     - implement-agent-template-system
