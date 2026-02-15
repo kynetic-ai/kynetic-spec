@@ -49607,6 +49607,18 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Merged in PR #391. Implemented kspec skill update command with all 3 ACs:
+
+    - ac-1: Updates skill content and version when package version differs
+
+    - ac-2: Skips skills already at current version
+
+    - ac-3: Only processes skills with origin 'core' (ignores project/local)
+
+
+    Added 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output,
+    and edge cases.
   depends_on:
     - "@implement-core-skill-installation"
   context: []
@@ -49615,6 +49627,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:34.837Z
   started_at: 2026-02-15T06:53:36.432Z
+  completed_at: 2026-02-15T07:10:13.336Z
   notes:
     - _ulid: 01KHFBT45NR8Z7ZTK4KZ595CF0
       created_at: 2026-02-15T00:39:34.837Z
@@ -49645,19 +49658,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T07:10:13.336Z
-  closed_reason: >-
-    Merged in PR #391. Implemented kspec skill update command with all 3 ACs:
-
-    - ac-1: Updates skill content and version when package version differs
-
-    - ac-2: Skips skills already at current version
-
-    - ac-3: Only processes skills with origin 'core' (ignores project/local)
-
-
-    Added 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output,
-    and edge cases.
 - _ulid: 01KHFBT4D5NHPNKKWH9H1Z37G9
   slugs:
     - implement-package-distribution
@@ -49665,7 +49665,7 @@
   type: task
   spec_ref: "@package-distribution"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49681,6 +49681,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T07:12:35.576Z
 - _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
   slugs:
     - implement-init-setup-integration
