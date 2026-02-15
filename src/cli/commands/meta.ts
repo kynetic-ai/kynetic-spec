@@ -54,14 +54,15 @@ import { parseIntOption } from "../validators.js";
 
 /**
  * Resolve a meta reference to its ULID
- * Handles semantic IDs (agent.id, workflow.id, convention.domain) and ULID prefixes
+ * Handles semantic IDs (agent.id, workflow.id, skill.id, convention.domain) and ULID prefixes
+ * AC: @skill-meta-integration ac-4 - skills included in resolution
  */
 function resolveMetaRefToUlid(
   ref: string,
   metaCtx: MetaContext,
 ): {
   ulid: string;
-  type: "agent" | "workflow" | "convention" | "observation";
+  type: "agent" | "workflow" | "convention" | "observation" | "skill";
 } | null {
   const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
 
@@ -89,6 +90,12 @@ function resolveMetaRefToUlid(
   );
   if (observation) return { ulid: observation._ulid, type: "observation" };
 
+  // AC: @skill-meta-integration ac-4 - Check skills
+  const skill = (metaCtx.skills || []).find(
+    (s) => s.id === normalizedRef || s._ulid.startsWith(normalizedRef),
+  );
+  if (skill) return { ulid: skill._ulid, type: "skill" };
+
   return null;
 }
 
@@ -115,6 +122,7 @@ function resolveObservationRefForBatch(
 
 /**
  * Format meta show output
+ * AC: @skill-meta-integration ac-3 - skill count included in summary
  */
 function formatMetaShow(meta: MetaContext): void {
   const stats = getMetaStats(meta);
@@ -123,7 +131,7 @@ function formatMetaShow(meta: MetaContext): void {
     console.log(chalk.yellow("No meta manifest found (kynetic.meta.yaml)"));
     console.log(
       chalk.gray(
-        "Create one to define agents, workflows, conventions, and observations",
+        "Create one to define agents, workflows, conventions, observations, and skills",
       ),
     );
     return;
@@ -137,6 +145,8 @@ function formatMetaShow(meta: MetaContext): void {
   console.log(
     `Observations: ${stats.observations} (${stats.unresolvedObservations} unresolved)`,
   );
+  // AC: @skill-meta-integration ac-3 - include skill count
+  console.log(`Skills:       ${stats.skills}`);
 }
 
 /**
@@ -570,10 +580,11 @@ export function registerMetaCommands(program: Command): void {
     });
 
   // meta-get-cmd: kspec meta get <ref>
+  // AC: @skill-meta-integration ac-1 - skills can be retrieved by id
   meta
     .command("get <ref>")
     .description(
-      "Get a meta item by reference (agent, workflow, convention, or observation)",
+      "Get a meta item by reference (agent, workflow, convention, observation, or skill)",
     )
     .action(async (ref: string) => {
       try {
@@ -594,6 +605,7 @@ export function registerMetaCommands(program: Command): void {
         const workflows = metaCtx.workflows || [];
         const conventions = metaCtx.conventions || [];
         const observations = metaCtx.observations || [];
+        const skills = metaCtx.skills || [];
 
         // Try to find by ID or ULID prefix
         let found: any = null;
@@ -642,6 +654,17 @@ export function registerMetaCommands(program: Command): void {
           }
         }
 
+        // AC: @skill-meta-integration ac-1 - Check skills (by id or ULID)
+        if (!found) {
+          const skill = skills.find(
+            (s) => s.id === normalizedRef || s._ulid.startsWith(normalizedRef),
+          );
+          if (skill) {
+            found = skill;
+            itemType = "skill";
+          }
+        }
+
         if (!found) {
           error(errors.reference.metaNotFound(ref));
           process.exit(EXIT_CODES.ERROR);
@@ -664,12 +687,13 @@ export function registerMetaCommands(program: Command): void {
     });
 
   // meta-list-cmd: kspec meta list
+  // AC: @skill-meta-integration ac-2 - skills can be filtered with --type skill
   meta
     .command("list")
     .description("List all meta items")
     .option(
       "--type <type>",
-      "Filter by type (agent, workflow, convention, observation)",
+      "Filter by type (agent, workflow, convention, observation, skill)",
     )
     .action(async (options) => {
       try {
@@ -737,6 +761,18 @@ export function registerMetaCommands(program: Command): void {
               type: "observation",
               context: `${observation.type} ${observation.resolved ? "(resolved)" : ""}`,
               ulid: observation._ulid,
+            });
+          }
+        }
+
+        // AC: @skill-meta-integration ac-2 - Add skills
+        if (!options.type || options.type === "skill") {
+          for (const skill of metaCtx.skills || []) {
+            items.push({
+              id: skill.id,
+              type: "skill",
+              context: skill.name || skill.description || skill.origin,
+              ulid: skill._ulid,
             });
           }
         }
