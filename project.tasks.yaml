@@ -49500,6 +49500,10 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #389. All 5 ACs verified with test annotations: ac-1 (UserPromptSubmit
+    hook), ac-2 (Stop hook), ac-3 (PreToolUse Bash hooks for worktree guard), ac-4 (dynamic path
+    detection via CWD), ac-5 (ralph task-limit guard). Added 27 lines of test coverage with AC
+    annotations."
   depends_on:
     - "@implement-enhanced-setup-command"
   context: []
@@ -49508,6 +49512,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:34.357Z
   started_at: 2026-02-15T06:21:26.339Z
+  completed_at: 2026-02-15T06:34:00.400Z
   notes:
     - _ulid: 01KHFBT3PNMAFQH6WM9Q2FGCS1
       created_at: 2026-02-15T00:39:34.357Z
@@ -49529,11 +49534,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T06:34:00.400Z
-  closed_reason: "Merged in PR #389. All 5 ACs verified with test annotations: ac-1 (UserPromptSubmit
-    hook), ac-2 (Stop hook), ac-3 (PreToolUse Bash hooks for worktree guard), ac-4 (dynamic path
-    detection via CWD), ac-5 (ralph task-limit guard). Added 27 lines of test coverage with AC
-    annotations."
 - _ulid: 01KHFBT3Y0MBQ6YX7MT9524X23
   slugs:
     - implement-core-skill-installation
@@ -49541,7 +49541,7 @@
   type: task
   spec_ref: "@core-skill-install"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49557,6 +49557,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T06:35:28.948Z
 - _ulid: 01KHFBT45N5HA4AYTQK9490HCV
   slugs:
     - implement-core-skill-update
