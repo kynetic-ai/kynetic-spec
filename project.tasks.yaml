@@ -49498,7 +49498,7 @@
   type: task
   spec_ref: "@full-hook-install"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49529,6 +49529,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T06:34:00.400Z
+  closed_reason: "Merged in PR #389. All 5 ACs verified with test annotations: ac-1 (UserPromptSubmit
+    hook), ac-2 (Stop hook), ac-3 (PreToolUse Bash hooks for worktree guard), ac-4 (dynamic path
+    detection via CWD), ac-5 (ralph task-limit guard). Added 27 lines of test coverage with AC
+    annotations."
 - _ulid: 01KHFBT3Y0MBQ6YX7MT9524X23
   slugs:
     - implement-core-skill-installation
