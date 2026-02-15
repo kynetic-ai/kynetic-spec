@@ -273,7 +273,8 @@ describe('Skill Rendering Pipeline', () => {
     });
   });
 
-  describe('Filtering by skill', () => {
+  // AC: @skill-render-cli ac-2
+  describe('ac-2: Filtering by skill (positional ref)', () => {
     beforeEach(async () => {
       // Add another skill
       kspecFull(
@@ -284,7 +285,21 @@ describe('Skill Rendering Pipeline', () => {
       await fs.writeFile(anotherSkillMd, '# Another Skill\n\nAnother content.\n', 'utf-8');
     });
 
-    it('should render only specified skill with --skill', async () => {
+    it('should render only specified skill with positional ref', async () => {
+      // AC: @skill-render-cli ac-2 - kspec skill render @task-work renders only that skill
+      kspecFull('skill render @test-skill', tempDir);
+
+      // test-skill should be rendered
+      const testSkillPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md');
+      await fs.access(testSkillPath);
+
+      // another-skill should NOT be rendered
+      await expect(
+        fs.access(path.join(tempDir, '.claude', 'skills', 'another-skill'))
+      ).rejects.toThrow();
+    });
+
+    it('should render only specified skill with --skill option (deprecated)', async () => {
       kspecFull('skill render --skill test-skill', tempDir);
 
       // test-skill should be rendered
@@ -297,8 +312,8 @@ describe('Skill Rendering Pipeline', () => {
       ).rejects.toThrow();
     });
 
-    it('should error when specified skill not found', async () => {
-      const result = kspecFull('skill render --skill nonexistent', tempDir);
+    it('should error when specified skill ref not found', async () => {
+      const result = kspecFull('skill render @nonexistent', tempDir);
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain('Skill not found');
     });
@@ -391,6 +406,190 @@ describe('Skill Rendering Pipeline', () => {
       const result = kspecFull('skill render', tempDir);
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('No changes needed');
+    });
+  });
+});
+
+/**
+ * Tests for Skill Render CLI commands
+ * AC: @skill-render-cli ac-3, ac-4
+ */
+describe('Skill Render CLI', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    // Create a test skill
+    const result = kspecFull(
+      'skill add --id test-skill --name "Test Skill" --description "A test skill" --platform claude-code',
+      tempDir
+    );
+    if (result.exitCode !== 0) {
+      throw new Error(`skill add failed: ${result.stderr || result.stdout}`);
+    }
+
+    // Write custom content to the skill's SKILL.md
+    const skillMdPath = path.join(tempDir, 'skills', 'test-skill', 'SKILL.md');
+    await fs.writeFile(skillMdPath, '# Test Skill\n\nThis is test content.\n', 'utf-8');
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @skill-render-cli ac-3
+  describe('ac-3: kspec skill status shows sync status table', () => {
+    it('should show "not-rendered" for skills not yet rendered', async () => {
+      const result = kspecFull('skill status', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('test-skill');
+      expect(result.stdout).toContain('not-rendered');
+    });
+
+    it('should show "in-sync" for skills that are in sync', async () => {
+      // Render the skill first
+      kspecFull('skill render', tempDir);
+
+      const result = kspecFull('skill status', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('test-skill');
+      expect(result.stdout).toContain('in-sync');
+      expect(result.stdout).toContain('All skills in sync');
+    });
+
+    it('should show "drifted" when rendered file differs from source', async () => {
+      // Render the skill
+      kspecFull('skill render', tempDir);
+
+      // Modify the rendered file directly
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      await fs.writeFile(renderedPath, content + '\n\n# Added Section\n', 'utf-8');
+
+      const result = kspecFull('skill status', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('test-skill');
+      expect(result.stdout).toContain('drifted');
+      expect(result.stdout).toContain("run 'kspec skill render' to sync");
+    });
+
+    it('should output JSON with status fields', async () => {
+      kspecFull('skill render', tempDir);
+
+      const result = kspecJson<Array<{ id: string; status: string; docsStatus: string }>>(
+        'skill status',
+        tempDir
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('test-skill');
+      expect(result[0].status).toBe('in-sync');
+      expect(result[0].docsStatus).toBe('no-docs');
+    });
+
+    it('should track docs status separately', async () => {
+      // Add docs directory
+      const docsDir = path.join(tempDir, 'skills', 'test-skill', 'docs');
+      await fs.mkdir(docsDir, { recursive: true });
+      await fs.writeFile(path.join(docsDir, 'guide.md'), '# Guide\n', 'utf-8');
+
+      // Render
+      kspecFull('skill render', tempDir);
+
+      // Check status (should be in-sync)
+      let result = kspecJson<Array<{ id: string; status: string; docsStatus: string }>>(
+        'skill status',
+        tempDir
+      );
+      expect(result[0].docsStatus).toBe('in-sync');
+
+      // Modify source docs
+      await fs.writeFile(path.join(docsDir, 'guide.md'), '# Guide\n\nUpdated content.\n', 'utf-8');
+
+      // Check status again (docs should be drifted)
+      result = kspecJson<Array<{ id: string; status: string; docsStatus: string }>>(
+        'skill status',
+        tempDir
+      );
+      expect(result[0].docsStatus).toBe('drifted');
+    });
+  });
+
+  // AC: @skill-render-cli ac-4
+  describe('ac-4: kspec skill diff shows unified diff', () => {
+    it('should show "in sync" message when no diff', async () => {
+      // Render the skill
+      kspecFull('skill render', tempDir);
+
+      const result = kspecFull('skill diff test-skill', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('in sync');
+    });
+
+    it('should show unified diff when rendered file differs', async () => {
+      // Render the skill
+      kspecFull('skill render', tempDir);
+
+      // Modify the rendered file
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      await fs.writeFile(renderedPath, content.replace('test content', 'modified content'), 'utf-8');
+
+      const result = kspecFull('skill diff test-skill', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('drifted');
+      expect(result.stdout).toContain('---'); // Diff header
+      expect(result.stdout).toContain('+++'); // Diff header
+      expect(result.stdout).toContain('@@'); // Hunk header
+    });
+
+    it('should show full diff when rendered file does not exist', async () => {
+      // Don't render, so rendered file doesn't exist
+      const result = kspecFull('skill diff test-skill', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('drifted');
+      expect(result.stdout).toContain('+'); // All lines are additions
+    });
+
+    it('should error when skill not found', async () => {
+      const result = kspecFull('skill diff nonexistent', tempDir);
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain('Skill not found');
+    });
+
+    it('should output JSON with diff lines', async () => {
+      kspecFull('skill render', tempDir);
+
+      // Modify rendered file
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      await fs.writeFile(renderedPath, content.replace('test content', 'changed'), 'utf-8');
+
+      const result = kspecJson<{ id: string; hasDiff: boolean; diff: string[] }>(
+        'skill diff test-skill',
+        tempDir
+      );
+
+      expect(result.id).toBe('test-skill');
+      expect(result.hasDiff).toBe(true);
+      expect(result.diff).toBeInstanceOf(Array);
+      expect(result.diff.length).toBeGreaterThan(0);
+      expect(result.diff.some((line) => line.startsWith('---'))).toBe(true);
+      expect(result.diff.some((line) => line.startsWith('+++'))).toBe(true);
+    });
+
+    it('should return empty diff array when in sync', async () => {
+      kspecFull('skill render', tempDir);
+
+      const result = kspecJson<{ id: string; hasDiff: boolean; diff: string[] }>(
+        'skill diff test-skill',
+        tempDir
+      );
+
+      expect(result.hasDiff).toBe(false);
+      expect(result.diff).toEqual([]);
     });
   });
 });
