@@ -11,6 +11,7 @@ import {
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, success, warn } from "../output.js";
+import { runSetupPipeline, type SetupPipelineResult } from "./setup.js";
 
 /**
  * Default manifest template
@@ -125,6 +126,10 @@ function toSlug(projectName: string): string {
 
 /**
  * Register the 'init' command
+ * AC: @init-setup-integration ac-1 - shadow branch created and manifest exists
+ * AC: @init-setup-integration ac-2 - core skills installed in .kspec/skills/
+ * AC: @init-setup-integration ac-3 - rendered skill files, hooks, and kspec-agents.md present
+ * AC: @init-setup-integration ac-4 - without --setup, behavior unchanged
  */
 export function registerInitCommand(program: Command): void {
   program
@@ -137,6 +142,10 @@ export function registerInitCommand(program: Command): void {
     .option(
       "--no-shadow",
       "Skip shadow branch setup (create spec/ in main branch)",
+    )
+    .option(
+      "--setup",
+      "Run full setup after initialization (install core skills, hooks, render skills, generate agents.md)",
     )
     .action(async (directory, options) => {
       try {
@@ -220,17 +229,41 @@ export function registerInitCommand(program: Command): void {
             branch: "kspec-meta",
           });
 
-          console.log("\nNext steps:");
-          console.log(
-            `  1. Edit ${SHADOW_WORKTREE_DIR}/${slug}.yaml to customize your project`,
-          );
-          console.log(
-            `  2. Add spec items to ${SHADOW_WORKTREE_DIR}/modules/main.yaml`,
-          );
-          console.log("  3. Run `kspec tasks ready` to see available tasks");
-          console.log(
-            "\nNote: Spec files live in .kspec/ (gitignored) and commit to kspec-meta branch",
-          );
+          // AC: @init-setup-integration ac-2, ac-3 - Run full setup if --setup flag is passed
+          if (options.setup) {
+            console.log("\nRunning setup...\n");
+
+            const setupResult = await runSetupPipeline(gitRoot, {
+              dryRun: false,
+              skipSkills: false,
+              installHooks: true,
+            });
+
+            if (setupResult.success) {
+              console.log();
+              success("Setup complete. Your project is ready for use.");
+            } else {
+              warn(
+                "Setup encountered issues. Run 'kspec setup --status' for details.",
+              );
+            }
+          } else {
+            // AC: @init-setup-integration ac-4 - Without --setup, behavior unchanged
+            console.log("\nNext steps:");
+            console.log(
+              `  1. Edit ${SHADOW_WORKTREE_DIR}/${slug}.yaml to customize your project`,
+            );
+            console.log(
+              `  2. Add spec items to ${SHADOW_WORKTREE_DIR}/modules/main.yaml`,
+            );
+            console.log("  3. Run `kspec tasks ready` to see available tasks");
+            console.log(
+              "\nNote: Spec files live in .kspec/ (gitignored) and commit to kspec-meta branch",
+            );
+            console.log(
+              "\nTip: Run `kspec init --setup` or `kspec setup` for full agent integration.",
+            );
+          }
         } else {
           // Non-shadow mode (legacy)
           await initNonShadow(targetDir, projectName, options);

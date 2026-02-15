@@ -887,6 +887,30 @@ interface SetupStepResult {
 }
 
 /**
+ * Result of running the setup pipeline
+ * Used by both the setup command and init --setup
+ * AC: @init-setup-integration ac-2, ac-3
+ */
+export interface SetupPipelineResult {
+  success: boolean;
+  steps: SetupStepResult[];
+  coreSkillsInstalled: number;
+  skillsRendered: number;
+  hooksInstalled: boolean;
+  agentsMdGenerated: boolean;
+}
+
+/**
+ * Options for running the setup pipeline
+ */
+export interface SetupPipelineOptions {
+  dryRun?: boolean;
+  skipSkills?: boolean;
+  installHooks?: boolean;
+  force?: boolean;
+}
+
+/**
  * Status of the setup state
  * AC: @enhanced-setup ac-7, ac-8 - status reporting
  */
@@ -1218,6 +1242,281 @@ async function generateAgentInstructions(
     return { success: true, path: outputPath };
   } catch {
     return { success: false, path: outputPath };
+  }
+}
+
+/**
+ * Install core skills for the setup pipeline
+ * AC: @init-setup-integration ac-2 - core skills installed
+ */
+async function installCoreSkillsForSetup(
+  projectDir: string,
+  dryRun: boolean
+): Promise<{ installed: number; skipped: number }> {
+  // Dynamically import to avoid circular dependencies
+  const {
+    initContext,
+    loadMetaContext,
+    saveMetaItem,
+    getSkillContentPath,
+  } = await import("../../parser/index.js");
+  const { commitIfShadow } = await import("../../parser/shadow.js");
+  const { SkillSchema } = await import("../../schema/index.js");
+  const {
+    loadCoreSkillsManifest,
+    loadCoreSkillContent,
+    getKspecPackageVersion,
+  } = await import("./skill.js");
+  const { ulid } = await import("ulid");
+
+  let installed = 0;
+  let skipped = 0;
+
+  try {
+    const ctx = await initContext();
+
+    if (!ctx.manifestPath) {
+      return { installed: 0, skipped: 0 };
+    }
+
+    const metaCtx = await loadMetaContext(ctx);
+    const coreSkills = loadCoreSkillsManifest();
+    const kspecVersion = getKspecPackageVersion();
+
+    for (const coreSkill of coreSkills) {
+      // Check if skill exists
+      const existingSkill = metaCtx.skills.find((s) => s.id === coreSkill.id);
+
+      if (existingSkill && existingSkill.origin !== "core") {
+        // Custom/project skill exists, skip
+        skipped++;
+        continue;
+      }
+
+      // Build skill data
+      const skillData = {
+        _ulid: existingSkill?._ulid || ulid(),
+        id: coreSkill.id,
+        name: coreSkill.name,
+        description: coreSkill.description,
+        origin: "core" as const,
+        version: kspecVersion,
+        platforms: coreSkill.platforms || ["claude-code"],
+        depends_on: [],
+        tags: ["core"],
+      };
+
+      const parsed = SkillSchema.safeParse(skillData);
+      if (!parsed.success) {
+        skipped++;
+        continue;
+      }
+
+      if (!dryRun) {
+        await saveMetaItem(ctx, parsed.data, "skill");
+
+        // Copy SKILL.md content
+        const sourceContent = loadCoreSkillContent(coreSkill.id);
+        if (sourceContent) {
+          const targetPath = getSkillContentPath(ctx, parsed.data.id);
+          await fs.writeFile(targetPath, sourceContent, "utf-8");
+        }
+      }
+
+      installed++;
+    }
+
+    // Commit changes
+    if (!dryRun && installed > 0) {
+      const ctx2 = await initContext();
+      await commitIfShadow(
+        ctx2.shadow,
+        "skill-install-core",
+        `${installed} core skills`
+      );
+    }
+
+    return { installed, skipped };
+  } catch {
+    return { installed: 0, skipped: 0 };
+  }
+}
+
+/**
+ * Run the full setup pipeline programmatically.
+ * Used by both 'kspec setup' command and 'kspec init --setup'.
+ * AC: @init-setup-integration ac-2, ac-3
+ */
+export async function runSetupPipeline(
+  projectDir: string,
+  options: SetupPipelineOptions
+): Promise<SetupPipelineResult> {
+  const dryRun = options.dryRun ?? false;
+  const skipSkills = options.skipSkills ?? false;
+  const installHooksFlag = options.installHooks ?? true;
+
+  const steps: SetupStepResult[] = [];
+  let coreSkillsInstalled = 0;
+  let skillsRendered = 0;
+  let hooksInstalled = false;
+  let agentsMdGenerated = false;
+
+  try {
+    const detected = detectAgent();
+
+    // Step 1: Agent detection
+    steps.push({
+      name: "Agent detection",
+      status: "done",
+      message: `${detected.type} (${detected.confidence} confidence)`,
+    });
+
+    // Step 2: Install core skills
+    // AC: @init-setup-integration ac-2 - core skills installed in .kspec/skills/
+    const coreResult = await installCoreSkillsForSetup(projectDir, dryRun);
+    coreSkillsInstalled = coreResult.installed;
+
+    if (coreResult.installed > 0 || coreResult.skipped > 0) {
+      steps.push({
+        name: "Install core skills",
+        status: "done",
+        message: `${coreResult.installed} installed, ${coreResult.skipped} skipped`,
+      });
+    } else {
+      steps.push({
+        name: "Install core skills",
+        status: "skipped",
+        message: "No core skills found in package",
+      });
+    }
+
+    // Step 3: Install hooks (Claude Code only)
+    // AC: @init-setup-integration ac-3 - hooks present
+    if (detected.type === "claude-code" && installHooksFlag) {
+      const hooksResult = await installClaudeCodeHooks(projectDir, dryRun);
+      const installedHooks: string[] = [];
+      if (hooksResult.promptCheck) installedHooks.push("UserPromptSubmit");
+      if (hooksResult.stop) installedHooks.push("Stop");
+      if (hooksResult.preToolUse) installedHooks.push("PreToolUse");
+
+      hooksInstalled =
+        hooksResult.promptCheck || hooksResult.stop || hooksResult.preToolUse;
+
+      steps.push({
+        name: "Install hooks",
+        status: "done",
+        message: installedHooks.join(", "),
+        details: {
+          guards: hooksResult.guardsCreated,
+        },
+      });
+    } else if (!installHooksFlag) {
+      steps.push({
+        name: "Install hooks",
+        status: "skipped",
+        message: "hooks disabled",
+      });
+    } else {
+      steps.push({
+        name: "Install hooks",
+        status: "skipped",
+        message: `not applicable for ${detected.type}`,
+      });
+    }
+
+    // Step 4: Render skills
+    // AC: @init-setup-integration ac-3 - rendered skill files present
+    if (!skipSkills) {
+      const skillsResult = await renderSkillsForSetup(projectDir, dryRun);
+      skillsRendered = skillsResult.rendered;
+
+      if (skillsResult.rendered > 0 || skillsResult.skipped > 0) {
+        steps.push({
+          name: "Render skills",
+          status: "done",
+          message: `${skillsResult.rendered} rendered, ${skillsResult.skipped} unchanged`,
+          details: {
+            skillIds: skillsResult.skillIds,
+          },
+        });
+      } else {
+        steps.push({
+          name: "Render skills",
+          status: "skipped",
+          message: "No claude-code skills in meta",
+        });
+      }
+    } else {
+      steps.push({
+        name: "Render skills",
+        status: "skipped",
+        message: "skills rendering disabled",
+      });
+    }
+
+    // Step 5: Generate kspec-agents.md
+    // AC: @init-setup-integration ac-3 - kspec-agents.md present
+    const agentsResult = await generateAgentInstructions(projectDir, dryRun);
+    agentsMdGenerated = agentsResult.success;
+
+    if (agentsResult.success) {
+      steps.push({
+        name: "Generate kspec-agents.md",
+        status: "done",
+        message: agentsResult.path,
+      });
+    } else {
+      steps.push({
+        name: "Generate kspec-agents.md",
+        status: "failed",
+        message: "No kspec project found",
+      });
+    }
+
+    // Output summary
+    if (!dryRun) {
+      console.log(chalk.bold("kspec Setup Summary\n"));
+
+      for (const step of steps) {
+        const icon =
+          step.status === "done"
+            ? chalk.green("✓")
+            : step.status === "skipped"
+              ? chalk.gray("○")
+              : chalk.red("✗");
+        const statusText =
+          step.status === "done"
+            ? ""
+            : step.status === "skipped"
+              ? chalk.gray(" (skipped)")
+              : chalk.red(" (failed)");
+
+        console.log(`${icon} ${step.name}${statusText}`);
+        if (step.message) {
+          console.log(chalk.gray(`  ${step.message}`));
+        }
+      }
+    }
+
+    const success = steps.every((s) => s.status !== "failed");
+
+    return {
+      success,
+      steps,
+      coreSkillsInstalled,
+      skillsRendered,
+      hooksInstalled,
+      agentsMdGenerated,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      steps,
+      coreSkillsInstalled,
+      skillsRendered,
+      hooksInstalled,
+      agentsMdGenerated,
+    };
   }
 }
 
