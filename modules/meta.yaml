@@ -3219,6 +3219,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T22:40:41.930Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHHQD5JJM5X4CTGHJ0646AZK
             slugs:
               - codex-renderer
