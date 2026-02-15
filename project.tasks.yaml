@@ -48569,6 +48569,10 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #372. Implemented Skill Schema Definition with all 3 ACs: kebab-case
+    validation for skill ID (ac-1), required_error for missing ID (ac-2), and platforms default to
+    ['claude-code'] (ac-3). Added depends_on field for skill dependencies. 10 tests covering all
+    acceptance criteria."
   depends_on:
     - "@implement-skill-meta-type"
   context: []
@@ -48577,6 +48581,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:29.933Z
   started_at: 2026-02-15T01:17:03.965Z
+  completed_at: 2026-02-15T01:31:23.721Z
   notes:
     - _ulid: 01KHFBSZCDNFYQ47VVF2D51NW3
       created_at: 2026-02-15T00:39:29.933Z
@@ -48598,11 +48603,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T01:31:23.721Z
-  closed_reason: "Merged in PR #372. Implemented Skill Schema Definition with all 3 ACs: kebab-case
-    validation for skill ID (ac-1), required_error for missing ID (ac-2), and platforms default to
-    ['claude-code'] (ac-3). Added depends_on field for skill dependencies. 10 tests covering all
-    acceptance criteria."
 - _ulid: 01KHFBSZKZ74MJB2EA8H00KMQ1
   slugs:
     - implement-skill-file-based-content-model
@@ -48610,7 +48610,7 @@
   type: task
   spec_ref: "@skill-content-model"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48626,6 +48626,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T01:31:58.952Z
 - _ulid: 01KHFBSZWNZE7HG2N735T2R5QF
   slugs:
     - implement-skill-parser-integration
