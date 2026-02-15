@@ -496,7 +496,7 @@ traits:
         then: a per-platform render hash is written to .kspec/skills/<id>/.render-hash-<platform>
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 includes:
   - modules/core.yaml
   - modules/schema.yaml
