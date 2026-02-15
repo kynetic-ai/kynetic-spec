@@ -1,0 +1,10 @@
+# Core Skills Manifest
+# This file defines the metadata for core skills shipped with kspec.
+# The skill content is in ./<skill-id>/SKILL.md
+
+skills:
+  - id: kspec-help
+    name: Kspec Help
+    description: Get help with kspec commands and workflows
+    platforms:
+      - claude-code
