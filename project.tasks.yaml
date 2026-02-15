@@ -48584,7 +48584,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-meta-type"
   context: []
   priority: 3
   tags: []
@@ -48605,7 +48606,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-cli-commands"
   context: []
   priority: 3
   tags: []
@@ -48626,7 +48628,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-cli-commands"
   context: []
   priority: 3
   tags: []
@@ -48647,7 +48650,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-cli-commands"
   context: []
   priority: 3
   tags: []
@@ -48668,7 +48672,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-cli-commands"
   context: []
   priority: 3
   tags: []
@@ -48689,7 +48694,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-cli-commands"
   context: []
   priority: 3
   tags: []
@@ -48710,7 +48716,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-rendering-pipeline"
   context: []
   priority: 3
   tags: []
@@ -48731,7 +48738,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-rendering-pipeline"
   context: []
   priority: 3
   tags: []
@@ -48752,7 +48760,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-rendering-pipeline"
   context: []
   priority: 3
   tags: []
@@ -48773,7 +48782,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-meta-type"
   context: []
   priority: 3
   tags: []
@@ -48794,7 +48804,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-instruction-generation"
   context: []
   priority: 3
   tags: []
@@ -48815,7 +48826,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-instruction-generation"
   context: []
   priority: 3
   tags: []
@@ -48836,7 +48848,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-instruction-generation"
   context: []
   priority: 3
   tags: []
@@ -48857,7 +48870,9 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-rendering-pipeline"
+    - "@implement-agent-instruction-generation"
   context: []
   priority: 3
   tags: []
@@ -48878,7 +48893,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-enhanced-setup-command"
   context: []
   priority: 3
   tags: []
@@ -48899,7 +48915,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-enhanced-setup-command"
   context: []
   priority: 3
   tags: []
@@ -48920,7 +48937,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-core-skill-installation"
   context: []
   priority: 3
   tags: []
@@ -48941,7 +48959,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-enhanced-setup-command"
   context: []
   priority: 3
   tags: []
@@ -48953,24 +48972,25 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
-- title: Implement Init Setup Integration
+- _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
+  slugs:
+    - implement-init-setup-integration
+  title: Implement Init Setup Integration
   type: task
   spec_ref: "@init-setup-integration"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-enhanced-setup-command"
+  context: []
   priority: 3
-  slugs:
-    - implement-init-setup-integration
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-15T00:39:35.311Z
   notes:
     - _ulid: 01KHFBT4MF7NNSW7TCHBS01HTQ
       created_at: 2026-02-15T00:39:35.311Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
-  _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-15T00:39:35.311Z
   todos: []
