@@ -255,6 +255,7 @@ export function registerSkillCommands(program: Command): void {
             options.dependsOn && options.dependsOn.length > 0
               ? options.dependsOn
               : [],
+          allowed_tools: [],
           tags:
             options.tag && options.tag.length > 0
               ? parseTagsArray(options.tag)
@@ -672,6 +673,7 @@ export function registerSkillCommands(program: Command): void {
           version: options.skillVersion,
           platforms: ["claude-code"],
           depends_on: [],
+          allowed_tools: [],
           tags: [],
         };
 
@@ -1221,6 +1223,7 @@ export function registerSkillCommands(program: Command): void {
             version: kspecVersion,
             platforms: coreSkill.platforms || ["claude-code"],
             depends_on: [],
+            allowed_tools: [],
             tags: ["core"],
           };
 

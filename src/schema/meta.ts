@@ -155,6 +155,46 @@ export const ObservationSchema = z.object({
 export const SkillOriginSchema = z.enum(["core", "project", "local"]);
 
 /**
+ * Claude Code platform config - settings specific to Claude Code
+ */
+export const ClaudeCodeConfigSchema = z
+  .object({
+    disable_model_invocation: z.boolean().optional(),
+    user_invocable: z.boolean().optional(),
+    context: z.string().optional(),
+    agent: z.string().optional(),
+    model: z.string().optional(),
+    argument_hint: z.string().optional(),
+  })
+  .strict();
+
+/**
+ * Codex platform config - settings specific to OpenAI Codex CLI
+ */
+export const CodexConfigSchema = z
+  .object({
+    allow_implicit_invocation: z.boolean().optional(),
+    display_name: z.string().optional(),
+    short_description: z.string().optional(),
+    icon_small: z.string().optional(),
+    icon_large: z.string().optional(),
+    brand_color: z.string().optional(),
+    default_prompt: z.string().optional(),
+  })
+  .strict();
+
+/**
+ * Platform config - container for platform-specific settings
+ * Uses passthrough for unknown platforms to support future extensibility
+ */
+export const PlatformConfigSchema = z
+  .object({
+    claude_code: ClaudeCodeConfigSchema.optional(),
+    codex: CodexConfigSchema.optional(),
+  })
+  .passthrough();
+
+/**
  * Kebab-case regex for skill IDs - lowercase letters, numbers, and hyphens only
  * Must start with a letter and not end with a hyphen
  */
@@ -163,6 +203,11 @@ const KEBAB_CASE_REGEX = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 /**
  * Skill definition - reusable agent capabilities stored in files
  * Content is stored in .kspec/skills/<id>/SKILL.md
+ *
+ * Extended with portable Agent Skills fields for multi-platform support:
+ * - license, compatibility, allowed_tools for portability
+ * - metadata for arbitrary key-value pairs
+ * - platform_config for platform-specific settings
  */
 export const SkillSchema = z.object({
   _ulid: MetaUlidSchema,
@@ -179,6 +224,12 @@ export const SkillSchema = z.object({
   platforms: z.array(z.string()).default(["claude-code"]),
   depends_on: z.array(RefSchema).default([]),
   tags: z.array(z.string()).default([]),
+  // Portable Agent Skills fields
+  license: z.string().optional(),
+  compatibility: z.string().optional(),
+  allowed_tools: z.array(z.string()).default([]),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  platform_config: PlatformConfigSchema.optional(),
 });
 
 /**
@@ -288,6 +339,9 @@ export type Convention = z.infer<typeof ConventionSchema>;
 export type ObservationType = z.infer<typeof ObservationTypeSchema>;
 export type Observation = z.infer<typeof ObservationSchema>;
 export type SkillOrigin = z.infer<typeof SkillOriginSchema>;
+export type ClaudeCodeConfig = z.infer<typeof ClaudeCodeConfigSchema>;
+export type CodexConfig = z.infer<typeof CodexConfigSchema>;
+export type PlatformConfig = z.infer<typeof PlatformConfigSchema>;
 export type Skill = z.infer<typeof SkillSchema>;
 export type SessionContext = z.infer<typeof SessionContextSchema>;
 export type MetaManifest = z.infer<typeof MetaManifestSchema>;
