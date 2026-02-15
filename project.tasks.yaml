@@ -48500,7 +48500,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-meta-type"
   context: []
   priority: 3
   tags: []
@@ -48521,7 +48522,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-meta-type"
   context: []
   priority: 3
   tags: []
@@ -48542,7 +48544,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-meta-type"
   context: []
   priority: 3
   tags: []
@@ -48563,7 +48566,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-skill-parser-integration"
   context: []
   priority: 3
   tags: []
