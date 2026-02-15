@@ -3859,7 +3859,7 @@ runs:
   - _ulid: 01KHHEADP5487JP40A7DJYX2CF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-15T20:01:54.885Z
     step_results:
@@ -3899,5 +3899,14 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-15T20:02:37.547Z
-        completed_at: 2026-02-15T20:02:37.547Z
+        completed_at: 2026-02-15T20:02:49.906Z
+        notes: "Proposal: (1) kspec batch should handle shell-piped JSON more robustly - either support a
+          --file flag for complex inputs (it may already?) or handle common escaping issues. Scope:
+          small. Would prevent falling back to sequential calls when text contains quotes. (2) No
+          other untracked friction worth proposing - the CI and subagent issues are either one-off
+          or outside kspec scope."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-15T20:02:49.906Z
+        completed_at: 2026-02-15T20:02:49.906Z
     initiated_by: "@claude"
