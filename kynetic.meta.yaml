@@ -5757,5 +5757,30 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHHR77A38WS28NJSMWG2FN0R
+    type: success
+    content: Structured interview (one question at a time with pro/con analysis) before planning leads
+      to well-reasoned architecture decisions. User engagement is higher when they see trade-offs
+      laid out clearly.
+    created_at: 2026-02-15T22:54:55.811Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHHR77CK3KME4QHCS62H0JFH
+    type: success
+    content: Running both internal Plan agent review AND Codex review-plan on the same plan catches
+      complementary issues. Internal review finds code-level gaps; Codex finds spec quality issues.
+    created_at: 2026-02-15T22:54:55.891Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHHR77EW34VT6EEW1NZHK6YF
+    type: friction
+    content: kspec batch uses kebab-case args (depends-on) but schema fields use snake_case
+      (depends_on). Inconsistency causes trial-and-error on first batch use.
+    created_at: 2026-02-15T22:54:55.964Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills: []
 includes: []

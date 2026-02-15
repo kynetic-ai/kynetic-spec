@@ -374,3 +374,32 @@ inbox:
       - kspec-cli
       - reflection
     added_by: "@claude"
+  - _ulid: 01KHHR778VGPE2VWEFT7P7FC51
+    text: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
+      --under. Currently impossible via CLI, requiring manual YAML edits that violate the
+      never-edit-manually rule.
+    created_at: 2026-02-15T22:54:55.772Z
+    tags:
+      - reflection
+      - cli
+      - trait
+    added_by: "@claude"
+  - _ulid: 01KHHR779DJC9QBVJKSBDFMBMW
+    text: kspec plan import should place type:trait items with no parent in the project-level traits
+      array (kynetic.yaml), not the module-level traits array. Currently causes schema validation
+      error.
+    created_at: 2026-02-15T22:54:55.789Z
+    tags:
+      - reflection
+      - plan-import
+      - bug
+    added_by: "@claude"
+  - _ulid: 01KHHR779RG1QG6DGK99P5NAXY
+    text: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
+      values) before attempting parse, rather than failing with cryptic nested mapping error."
+    created_at: 2026-02-15T22:54:55.800Z
+    tags:
+      - reflection
+      - plan-import
+      - dx
+    added_by: "@claude"
