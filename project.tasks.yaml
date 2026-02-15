@@ -49962,6 +49962,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T22:40:42.899Z
+  started_at: 2026-02-15T23:38:11.212Z
   notes:
     - _ulid: 01KHHQD6CM3Y09M88W5DGRCGR2
       created_at: 2026-02-15T22:40:42.900Z
@@ -50000,9 +50001,58 @@
         All fields optional booleans/strings. Export types.
 
         Tests: tests/skill-schema.test.ts
+    - _ulid: 01KHHV07K1144GSTZ9Y552EN4M
+      created_at: 2026-02-15T23:43:32.449Z
+      author: "@claude"
+      content: >-
+        Implemented Extended Skill Schema:
+
+
+        1. Defined ClaudeCodeConfigSchema (strict):
+           - disable_model_invocation, user_invocable, context, agent, model, argument_hint
+           - All fields optional booleans/strings
+
+        2. Defined CodexConfigSchema (strict):
+           - allow_implicit_invocation, display_name, short_description, icon_small, icon_large, brand_color, default_prompt
+           - All fields optional booleans/strings
+
+        3. Defined PlatformConfigSchema with passthrough:
+           - claude_code: ClaudeCodeConfigSchema.optional()
+           - codex: CodexConfigSchema.optional()
+           - .passthrough() allows unknown platforms for future extensibility
+
+        4. Extended SkillSchema with new optional fields:
+           - license: z.string().optional()
+           - compatibility: z.string().optional()
+           - allowed_tools: z.array(z.string()).default([])
+           - metadata: z.record(z.string(), z.unknown()).optional()
+           - platform_config: PlatformConfigSchema.optional()
+
+        5. Exported new types: ClaudeCodeConfig, CodexConfig, PlatformConfig
+
+
+        6. Updated skill.ts to include allowed_tools: [] in 3 places where Skill objects are
+        constructed
+
+
+        27 new tests in tests/skill-schema.test.ts covering all 7 ACs:
+
+        - ac-1: license, compatibility, allowed_tools validation
+
+        - ac-2: claude_code config validation
+
+        - ac-3: codex config validation
+
+        - ac-4: unknown platform passthrough
+
+        - ac-5: strict validation fails for invalid fields
+
+        - ac-6: backward compatibility (no new fields)
+
+        - ac-7: metadata as Record<string, unknown>
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T23:38:11.212Z
 - _ulid: 01KHHQD6N46R44E8QEVNGP5JPV
   slugs:
     - implement-claude-code-renderer-extended-frontmatte
