@@ -1,0 +1,355 @@
+{
+  "generated_at": "2026-02-15T05:32:48.250Z",
+  "branch": "feat/agent-template-system",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHFBT2Z",
+      "title": "Implement Agent Template System",
+      "started_at": "2026-02-15T05:23:56.613Z",
+      "priority": 3,
+      "spec_ref": "@agent-templates",
+      "note_count": 2,
+      "last_note_at": "2026-02-15T05:31:04.372Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHFBT2Z",
+      "task_title": "Implement Agent Template System",
+      "task_status": "pending_review",
+      "note_ulid": "01KHFWFV",
+      "created_at": "2026-02-15T05:31:04.372Z",
+      "author": "@claude",
+      "content": "Implemented Agent Template System with all 3 acceptance criteria:\n\n- ac-1: All template sections included in output in their defined order (sorted by filename prefix 01-, 02-, etc.)\n- ac-2: Each template section (quick-start, shadow-branch, task-lifecycle, pr-workflow, commit-convention, ralph-loop) appears in generated output\n- ac-3: Error returned with helpful message when templates directory is missing or empty\n\nImplementation details:\n- Created templates/agents-sections/ directory with 6 markdown template files\n- Modified generateAgentsContent to be async and include template sections after dynamic meta content\n- Added loadTemplateSections function with error handling\n- Updated package.json to include templates directory in published package\n- Added 10 new tests covering all acceptance criteria"
+    },
+    {
+      "task_ref": "01KHFBT2G",
+      "task_title": "Implement Agent Instruction Generation",
+      "task_status": "completed",
+      "note_ulid": "01KHFTKR",
+      "created_at": "2026-02-15T04:58:14.994Z",
+      "author": "@claude",
+      "content": "Implemented agent instruction generation with all 5 acceptance criteria:\n\n- ac-1: kspec agents generate creates kspec-agents.md in project root\n- ac-2: Output includes Finding Information table with row per skill\n- ac-3: Output includes conventions section listing rules by domain\n- ac-4: Output contains freshness comment with kspec version and timestamp\n- ac-5: kspec agents status reports stale when meta has changed since generation\n\nAlso implemented @trait-dry-run support (ac-1 through ac-6).\n\nAdded 22 tests covering all acceptance criteria and edge cases."
+    },
+    {
+      "task_ref": "01KHFBT28",
+      "task_title": "Implement Skill Drift Detection",
+      "task_status": "completed",
+      "note_ulid": "01KHFSKJ",
+      "created_at": "2026-02-15T04:40:40.430Z",
+      "author": "@claude",
+      "content": "Implemented skill drift detection with all 5 acceptance criteria:\n\n- ac-1: Skills show as in-sync when rendered file matches stored hash\n- ac-2: Skills show as drifted when rendered file has been manually edited (hash mismatch)\n- ac-3: Drifted skills are skipped with warning when rendering without --force\n- ac-4: --force option overwrites drifted files and updates the hash\n- ac-5: Hash of rendered output is stored in .kspec/skills/<id>/.render-hash\n\nImplementation uses SHA256 hash for change detection. Added 16 new tests covering all ACs plus edge cases (legacy renders without hash, mixed drift states, etc)."
+    },
+    {
+      "task_ref": "01KHFBT21",
+      "task_title": "Implement Claude Code Skill Renderer",
+      "task_status": "completed",
+      "note_ulid": "01KHFRJX",
+      "created_at": "2026-02-15T04:22:50.065Z",
+      "author": "@claude",
+      "content": "Implemented renderClaudeCodeSkill library function in src/parser/skill-render.ts:\n\n- ac-1: renderClaudeCodeSkill creates .claude/skills/<id>/SKILL.md with YAML frontmatter\n- ac-2: Generated YAML frontmatter has name and description fields with proper delimiters\n- ac-3: Skill body content from source appears verbatim below frontmatter (strips source frontmatter)\n- ac-4: Rendered files written to disk as unstaged changes (no git commit)\n\nAdditional features:\n- Dry run support via options.dryRun\n- Idempotent rendering (returns unchanged when content matches)\n- kspec-managed marker for identifying managed skills\n- Docs directory copying\n\nAdded 15 tests covering all 4 acceptance criteria plus library behavior tests."
+    },
+    {
+      "task_ref": "01KHFBT1T",
+      "task_title": "Implement Skill Render CLI",
+      "task_status": "completed",
+      "note_ulid": "01KHFQMQ",
+      "created_at": "2026-02-15T04:06:20.680Z",
+      "author": "@claude",
+      "content": "Implemented skill render CLI commands with all acceptance criteria:\n\n- ac-1: kspec skill render shows summary of created/updated/skipped files (existing)\n- ac-2: kspec skill render @task-work renders only that skill (added positional ref support)\n- ac-3: kspec skill status shows table with sync status (in-sync, drifted, not-rendered)\n- ac-4: kspec skill diff @task-work shows unified diff when content differs\n\nAdded 11 new tests covering all ACs. Updated existing render command to support positional ref argument for single-skill rendering per spec."
+    },
+    {
+      "task_ref": "01KHFBT2Z",
+      "task_title": "Implement Agent Template System",
+      "task_status": "pending_review",
+      "note_ulid": "01KHFBT2",
+      "created_at": "2026-02-15T00:39:33.604Z",
+      "author": "@claude",
+      "content": "See plan @plan-portable-agent-integration-infrastructure for implementation notes"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHFBT37",
+      "title": "Implement Auto-Generated Data Sections",
+      "priority": 3,
+      "spec_ref": "@agent-data-sections",
+      "tags": []
+    },
+    {
+      "ref": "01KHFBT3F",
+      "title": "Implement Enhanced Setup Command",
+      "priority": 3,
+      "spec_ref": "@enhanced-setup",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHFBT2Q",
+      "title": "Implement Agents CLI Commands",
+      "completed_at": "2026-02-15T05:23:35.888Z",
+      "closed_reason": "Already fully implemented in PR #385. All 4 ACs verified: ac-1 (generate creates kspec-agents.md), ac-2 (--dry-run prints without writing), ac-3 (status reports current), ac-4 (status reports stale). 22 tests pass covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBT2G",
+      "title": "Implement Agent Instruction Generation",
+      "completed_at": "2026-02-15T05:09:46.036Z",
+      "closed_reason": "Merged in PR #385. Implemented agent instruction generation with kspec agents generate and kspec agents status commands. All 5 ACs covered: creates kspec-agents.md with Finding Information table (skills), conventions by domain, freshness comment with version/timestamp, and status command that detects stale via SHA256 hash. Also implemented @trait-dry-run support. 22 tests added covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBT28",
+      "title": "Implement Skill Drift Detection",
+      "completed_at": "2026-02-15T04:51:05.170Z",
+      "closed_reason": "Merged in PR #384. Implemented skill drift detection with SHA256 hash-based comparison. All 5 ACs covered: ac-1 (in-sync detection), ac-2 (drift detection), ac-3 (skip drifted without --force), ac-4 (overwrite with --force), ac-5 (hash storage in .kspec/skills/<id>/.render-hash). 16 new tests added."
+    },
+    {
+      "ref": "01KHFBT21",
+      "title": "Implement Claude Code Skill Renderer",
+      "completed_at": "2026-02-15T04:32:40.289Z",
+      "closed_reason": "Merged in PR #383. Implemented renderClaudeCodeSkill library function that reads from .kspec/skills/<id>/SKILL.md and writes to .claude/skills/<id>/SKILL.md with YAML frontmatter (name, description). All 4 ACs covered: (1) creates .claude/skills/<id>/SKILL.md with frontmatter, (2) frontmatter has name/description fields, (3) source content appears verbatim below frontmatter, (4) files left as unstaged changes. Additional features: dry run support, idempotent rendering, kspec-managed marker."
+    },
+    {
+      "ref": "01KHFBT1T",
+      "title": "Implement Skill Render CLI",
+      "completed_at": "2026-02-15T04:16:37.104Z",
+      "closed_reason": "Merged in PR #382. Implemented skill render CLI commands:\n\n- ac-1: kspec skill render shows summary of created/updated/skipped files\n- ac-2: kspec skill render @ref renders only that specific skill  \n- ac-3: kspec skill status shows table with sync status (in-sync, drifted, not-rendered)\n- ac-4: kspec skill diff @ref shows unified diff when content differs\n\nAll 4 acceptance criteria covered with 11 new tests added."
+    },
+    {
+      "ref": "01KHFBT1J",
+      "title": "Implement Skill Rendering Pipeline",
+      "completed_at": "2026-02-15T04:01:17.867Z",
+      "closed_reason": "Merged in PR #381. Implemented skill rendering pipeline with full AC coverage: SKILL.md creation with YAML frontmatter (ac-1), docs directory copying (ac-2), idempotent rendering (ac-3), kspec-managed marker detection (ac-4), and orphan cleanup (ac-5). Added 21 tests covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBT1A",
+      "title": "Implement Skill Meta Integration",
+      "completed_at": "2026-02-15T03:38:48.238Z",
+      "closed_reason": "Merged in PR #380. Implemented skill meta integration - kspec meta get/list/show now include skills. All 4 acceptance criteria covered with 12 tests."
+    },
+    {
+      "ref": "01KHFBT12",
+      "title": "Implement Skill Import Command",
+      "completed_at": "2026-02-15T03:23:28.607Z",
+      "closed_reason": "Merged in PR #379. Implemented skill import command with all 7 ACs covered: YAML frontmatter parsing, content/docs copying, --origin/--id/--name/--description options, error guidance for missing metadata, and base-directory path stripping. Added 17 tests."
+    },
+    {
+      "ref": "01KHFBT0T",
+      "title": "Implement Skill Set Command",
+      "completed_at": "2026-02-15T03:09:47.055Z",
+      "closed_reason": "Merged in PR #378. Implemented skill set command with --description (ac-1), --add-platform (ac-2), and --add-tag (ac-3) options. All 3 ACs have test coverage verified. Additional options include --name, --origin, --skill-version, --remove-platform, --remove-tag, and dependency management."
+    },
+    {
+      "ref": "01KHFBT0J",
+      "title": "Implement Skill Add Command",
+      "completed_at": "2026-02-15T02:55:22.012Z",
+      "closed_reason": "Merged in PR #377. Implemented --content-file option for skill add command with full AC coverage: ac-1 (meta entry created), ac-2 (shadow branch auto-commit), ac-3 (--content-file copies to SKILL.md), ac-4/ac-5 (origin and version set correctly), ac-6 (duplicate ID error). Added 4 tests specific to @skill-add spec."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "612ecbe",
+      "full_hash": "612ecbeec9739b499dd6b012fdeeebb738531a35",
+      "date": "2026-02-15T05:31:25.000Z",
+      "message": "feat: implement agent template system",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d8d8ab2",
+      "full_hash": "d8d8ab2f92819ec870996f0c35684679a61229c1",
+      "date": "2026-02-15T05:12:26.000Z",
+      "message": "chore: add @agents-cli AC annotations to agents commands",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "983a895",
+      "full_hash": "983a895b04f30c59a069e7ed83cacec607513903",
+      "date": "2026-02-15T05:09:37.000Z",
+      "message": "feat: implement agent instruction generation (#385)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7b51c8e",
+      "full_hash": "7b51c8e0f62ff5cfcb34b1ff77b320ccba713786",
+      "date": "2026-02-15T04:58:33.000Z",
+      "message": "feat: implement agent instruction generation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "002a2c1",
+      "full_hash": "002a2c14eda8aeba629221976abfafd15bda1c24",
+      "date": "2026-02-15T04:50:56.000Z",
+      "message": "feat: implement skill drift detection with hash-based comparison (#384)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c71dc7d",
+      "full_hash": "c71dc7d430a2dd0948a95c118f6a493e298a97d3",
+      "date": "2026-02-15T04:41:00.000Z",
+      "message": "feat: implement skill drift detection with hash-based comparison",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b62f6bc",
+      "full_hash": "b62f6bce8f1ae4d418fb287267ff6d6a5b322ecf",
+      "date": "2026-02-15T04:32:28.000Z",
+      "message": "feat: implement Claude Code skill renderer library function (#383)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e9e187d",
+      "full_hash": "e9e187d25a8e4280948cfb3a73ddbaa5cf735c15",
+      "date": "2026-02-15T04:23:09.000Z",
+      "message": "feat: implement Claude Code skill renderer library function",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2857c7d",
+      "full_hash": "2857c7d34ee3f09a24fc49bcad87e3b6ad622003",
+      "date": "2026-02-15T04:16:28.000Z",
+      "message": "feat: implement skill render CLI commands (status and diff) (#382)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b27e581",
+      "full_hash": "b27e5817dfbd0244bc6607f4af549f129cc5ec6f",
+      "date": "2026-02-15T04:06:44.000Z",
+      "message": "feat: implement skill render CLI commands (status and diff)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 511,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 16,
+    "blocked": 0,
+    "completed": 473,
+    "inbox_items": 34
+  }
+}

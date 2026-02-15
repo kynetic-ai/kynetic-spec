@@ -49384,7 +49384,7 @@
   type: task
   spec_ref: "@agent-data-sections"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-agent-instruction-generation"
@@ -49425,6 +49425,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T05:56:23.167Z
+  closed_reason: "Merged in PR #387. Implemented auto-generated data sections as library functions in
+    src/parser/agent-data-sections.ts: generateSkillsTable (ac-1), generateConventionsSummary
+    (ac-2), generateWorkflowsSummary (ac-3). All 18 tests pass with AC annotations. CLI updated to
+    use library functions."
 - _ulid: 01KHFBT3F2YAV61SZDY2ASVS6M
   slugs:
     - implement-enhanced-setup-command
