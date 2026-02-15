@@ -49665,7 +49665,7 @@
   type: task
   spec_ref: "@package-distribution"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49694,6 +49694,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T07:32:26.395Z
+  closed_reason: "Merged in PR #392. Implemented package distribution for templates directory: created
+    templates/hooks/ with pre-commit hook source, updated installShadowHook to load from package
+    templates, added 13 tests covering all 4 ACs. Package now ships with templates/ containing
+    skills/, agents-sections/, and hooks/ subdirectories."
 - _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
   slugs:
     - implement-init-setup-integration
