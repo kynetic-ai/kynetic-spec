@@ -49038,7 +49038,7 @@
   type: task
   spec_ref: "@skill-rendering"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-cli-commands"
@@ -49076,6 +49076,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T04:01:17.867Z
+  closed_reason: "Merged in PR #381. Implemented skill rendering pipeline with full AC coverage:
+    SKILL.md creation with YAML frontmatter (ac-1), docs directory copying (ac-2), idempotent
+    rendering (ac-3), kspec-managed marker detection (ac-4), and orphan cleanup (ac-5). Added 21
+    tests covering all acceptance criteria."
 - _ulid: 01KHFBT1T269EZJ20K34FWBSSJ
   slugs:
     - implement-skill-render-cli
