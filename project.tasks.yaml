@@ -48994,6 +48994,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #380. Implemented skill meta integration - kspec meta get/list/show now
+    include skills. All 4 acceptance criteria covered with 12 tests."
   depends_on:
     - "@implement-skill-cli-commands"
   context: []
@@ -49002,6 +49004,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:31.912Z
   started_at: 2026-02-15T03:24:15.500Z
+  completed_at: 2026-02-15T03:38:48.238Z
   notes:
     - _ulid: 01KHFBT1A86QNZVR3TSWNVTDWR
       created_at: 2026-02-15T00:39:31.912Z
@@ -49028,9 +49031,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T03:38:48.238Z
-  closed_reason: "Merged in PR #380. Implemented skill meta integration - kspec meta get/list/show now
-    include skills. All 4 acceptance criteria covered with 12 tests."
 - _ulid: 01KHFBT1JZSSV1SAVVQJTZE3E5
   slugs:
     - implement-skill-rendering-pipeline
@@ -49038,7 +49038,7 @@
   type: task
   spec_ref: "@skill-rendering"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-cli-commands"
@@ -49054,6 +49054,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T03:39:35.219Z
 - _ulid: 01KHFBT1T269EZJ20K34FWBSSJ
   slugs:
     - implement-skill-render-cli
