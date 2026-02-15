@@ -67,20 +67,14 @@ describe('Init Setup Integration', () => {
 
       expect(result.exitCode).toBe(0);
 
-      // Check if core skills are mentioned in output
-      // OR verify that .kspec/skills/ directory exists with content
+      // Core skills directory must exist after --setup
       const skillsDir = path.join(testDir, '.kspec', 'skills');
-
-      // The directory should exist if there are core skills
-      // (It may not exist if no core skills are packaged)
       const skillsDirExists = await fs.access(skillsDir).then(() => true).catch(() => false);
+      expect(skillsDirExists).toBe(true);
 
-      if (skillsDirExists) {
-        const skills = await fs.readdir(skillsDir);
-        // If skills directory exists, it should have at least one skill directory
-        // This assumes core skills are available in the package
-        expect(skills.length).toBeGreaterThanOrEqual(0);
-      }
+      // Must have at least one skill installed
+      const skills = await fs.readdir(skillsDir);
+      expect(skills.length).toBeGreaterThan(0);
 
       // Output should mention setup was run
       expect(result.stdout).toContain('Setup');
@@ -92,31 +86,25 @@ describe('Init Setup Integration', () => {
 
       expect(result.exitCode).toBe(0);
 
-      // Check for .claude directory (hooks are installed here)
-      const claudeDir = path.join(testDir, '.claude');
-      const claudeExists = await fs.access(claudeDir).then(() => true).catch(() => false);
-
-      // For Claude Code environment, hooks should be installed
-      // The test may run outside Claude Code context, so hooks may not always be present
-      if (claudeExists) {
-        // Check for hooks directory
-        const hooksDir = path.join(claudeDir, 'hooks');
-        const hooksExists = await fs.access(hooksDir).then(() => true).catch(() => false);
-
-        // Check for settings.json
-        const settingsPath = path.join(claudeDir, 'settings.json');
-        const settingsExists = await fs.access(settingsPath).then(() => true).catch(() => false);
-
-        // At least one of these should exist if setup ran for claude-code
-        if (hooksExists || settingsExists) {
-          expect(true).toBe(true);
-        }
-      }
-
-      // Check for kspec-agents.md
+      // kspec-agents.md must be generated
       const agentsMdPath = path.join(testDir, 'kspec-agents.md');
       const agentsMdExists = await fs.access(agentsMdPath).then(() => true).catch(() => false);
       expect(agentsMdExists).toBe(true);
+
+      // Rendered skills should exist in .claude/skills/ (if claude-code detected)
+      // Agent detection runs in setup - in test environment it may detect claude-code
+      // since we're running inside a Claude Code session
+      const claudeDir = path.join(testDir, '.claude');
+      const claudeExists = await fs.access(claudeDir).then(() => true).catch(() => false);
+
+      if (claudeExists) {
+        // If .claude was created, hooks or settings must be present
+        const hooksDir = path.join(claudeDir, 'hooks');
+        const settingsPath = path.join(claudeDir, 'settings.json');
+        const hooksExists = await fs.access(hooksDir).then(() => true).catch(() => false);
+        const settingsExists = await fs.access(settingsPath).then(() => true).catch(() => false);
+        expect(hooksExists || settingsExists).toBe(true);
+      }
     });
 
     it('shows setup summary in output when --setup is passed', async () => {
