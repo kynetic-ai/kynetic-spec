@@ -182,6 +182,9 @@ describe('kspec setup (enhanced)', () => {
     });
 
     // AC: @enhanced-setup ac-2 - all hook entries present
+    // AC: @full-hook-install ac-1 - UserPromptSubmit hook entry is written
+    // AC: @full-hook-install ac-2 - Stop hook entry is present
+    // AC: @full-hook-install ac-3 - PreToolUse Bash hook entries are present
     it('should install all required hooks', async () => {
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },
@@ -193,17 +196,21 @@ describe('kspec setup (enhanced)', () => {
       const settings = JSON.parse(settingsContent);
 
       expect(settings.hooks).toBeDefined();
+      // AC: @full-hook-install ac-1
       expect(settings.hooks.UserPromptSubmit).toBeDefined();
+      // AC: @full-hook-install ac-2
       expect(settings.hooks.Stop).toBeDefined();
+      // AC: @full-hook-install ac-3
       expect(settings.hooks.PreToolUse).toBeDefined();
 
-      // Verify PreToolUse has Bash matcher
+      // Verify PreToolUse has Bash matcher for worktree guard
       const preToolUse = settings.hooks.PreToolUse;
       const bashEntry = preToolUse.find((entry: { matcher: string }) => entry.matcher === 'Bash');
       expect(bashEntry).toBeDefined();
     });
 
     // AC: @enhanced-setup ac-2 - PreToolUse guards installed
+    // AC: @full-hook-install ac-5 - ralph task-limit guard is generated
     it('should create guard scripts in .claude/hooks/', async () => {
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },
@@ -214,12 +221,31 @@ describe('kspec setup (enhanced)', () => {
       const guards = await fs.readdir(hooksDir);
 
       expect(guards).toContain('kspec-worktree-guard.sh');
+      // AC: @full-hook-install ac-5
       expect(guards).toContain('ralph-task-limit-guard.sh');
 
       // Check scripts are executable
       const guardPath = path.join(hooksDir, 'kspec-worktree-guard.sh');
       const stats = await fs.stat(guardPath);
       expect((stats.mode & 0o111) !== 0).toBe(true); // Has execute permission
+    });
+
+    // AC: @full-hook-install ac-4 - worktree guard uses dynamic path detection
+    it('should use dynamic path detection in worktree guard', async () => {
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      // Read the worktree guard script
+      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
+      const content = await fs.readFile(guardPath, 'utf-8');
+
+      // Should use dynamic CWD from hook input, not hardcoded paths
+      expect(content).toContain('CWD=$(echo "$INPUT" | jq -r');
+      expect(content).toContain('.cwd');
+      // Should not contain hardcoded absolute paths like /home/user/project
+      expect(content).not.toMatch(/\/home\/[a-zA-Z]+\/[^\s"']*/);
+      expect(content).not.toMatch(/\/Users\/[a-zA-Z]+\/[^\s"']*/);
     });
 
     // AC: @enhanced-setup ac-4 - kspec-agents.md exists
