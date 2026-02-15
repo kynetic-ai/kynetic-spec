@@ -49326,7 +49326,7 @@
   type: task
   spec_ref: "@agent-templates"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-agent-instruction-generation"
@@ -49372,6 +49372,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T05:41:22.679Z
+  closed_reason: "Merged in PR #386. Implemented Agent Template System with static markdown templates
+    in templates/agents-sections/ for kspec boilerplate documentation. All 3 ACs covered: (ac-1)
+    template sections included in defined order, (ac-2) all section types appear in output, (ac-3)
+    error if templates directory missing. Added 10 tests with AC annotations."
 - _ulid: 01KHFBT37JBJ7D1FQ80FFNY7PD
   slugs:
     - implement-auto-generated-data-sections
