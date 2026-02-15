@@ -5746,4 +5746,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHFPVSVMKQTR0DZCVVZ2QS6J
+    type: friction
+    content: CLI commands targeting main project files (like .claude/skills/) must use ctx.rootDir, not
+      ctx.specDir or path.dirname(ctx.specDir). The specDir is the spec content location (.kspec/ in
+      shadow mode), while rootDir is always the project root. Using dirname(specDir) fails in shadow
+      mode because .kspec/ is a worktree at the project root level. Encountered in skill render
+      command where files were written to /tmp/ instead of project root.
+    created_at: 2026-02-15T03:52:44.148Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+skills: []
 includes: []
