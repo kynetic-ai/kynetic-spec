@@ -3074,6 +3074,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.325Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KHFBSYT3AQTGDQXE7QSTR7QX
         slugs:
           - enhanced-setup
