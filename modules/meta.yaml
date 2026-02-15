@@ -3224,7 +3224,7 @@ modules:
             created: 2026-02-15T00:39:29.393Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KHFBSYWE2E0F2DH7X5ABNW30
             slugs:
               - core-skill-update
