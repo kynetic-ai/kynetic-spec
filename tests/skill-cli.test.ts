@@ -532,3 +532,204 @@ describe('Skill CLI - skill delete', () => {
     expect(list.some(s => s.id === 'temp-skill')).toBe(false);
   });
 });
+
+describe('Skill CLI - skill set', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    // Create a skill to update
+    const result = kspecFull(
+      'skill add --id my-skill --name "My Skill" --description "Original description" --origin project --skill-version 0.1.0',
+      tempDir
+    );
+    if (result.exitCode !== 0) throw new Error(`skill add failed: ${result.stderr}`);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @skill-set ac-1
+  it('should update description field in meta', () => {
+    kspec('skill set @my-skill --description "New description"', tempDir);
+
+    const result = kspecJson<{ id: string; description: string }>('skill get @my-skill', tempDir);
+    expect(result.description).toBe('New description');
+  });
+
+  // AC: @skill-set ac-1 - verify original description replaced
+  it('should replace original description completely', async () => {
+    kspec('skill set @my-skill --description "Completely new"', tempDir);
+
+    // Also verify in manifest
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const metaContent = await fs.readFile(metaPath, 'utf-8');
+    const meta = yamlParse(metaContent);
+
+    const skill = meta.skills.find((s: { id: string }) => s.id === 'my-skill');
+    expect(skill.description).toBe('Completely new');
+    expect(skill.description).not.toContain('Original');
+  });
+
+  // AC: @skill-set ac-2
+  it('should add platform to platforms array', () => {
+    kspec('skill set @my-skill --add-platform codex', tempDir);
+
+    const result = kspecJson<{ platforms: string[] }>('skill get @my-skill', tempDir);
+    expect(result.platforms).toContain('codex');
+    expect(result.platforms).toContain('claude-code'); // Original still there
+  });
+
+  // AC: @skill-set ac-2 - multiple platforms
+  it('should allow adding multiple platforms sequentially', () => {
+    kspec('skill set @my-skill --add-platform codex', tempDir);
+    kspec('skill set @my-skill --add-platform cursor', tempDir);
+
+    const result = kspecJson<{ platforms: string[] }>('skill get @my-skill', tempDir);
+    expect(result.platforms).toContain('claude-code');
+    expect(result.platforms).toContain('codex');
+    expect(result.platforms).toContain('cursor');
+  });
+
+  // AC: @skill-set ac-2 - no duplicates
+  it('should not add duplicate platform', () => {
+    // Default platform is claude-code
+    kspec('skill set @my-skill --add-platform claude-code', tempDir);
+
+    const result = kspecJson<{ platforms: string[] }>('skill get @my-skill', tempDir);
+    const claudeCodeCount = result.platforms.filter(p => p === 'claude-code').length;
+    expect(claudeCodeCount).toBe(1);
+  });
+
+  // AC: @skill-set ac-3
+  it('should add tag to tags array', () => {
+    kspec('skill set @my-skill --add-tag automation', tempDir);
+
+    const result = kspecJson<{ tags: string[] }>('skill get @my-skill', tempDir);
+    expect(result.tags).toContain('automation');
+  });
+
+  // AC: @skill-set ac-3 - multiple tags
+  it('should allow adding multiple tags sequentially', () => {
+    kspec('skill set @my-skill --add-tag automation', tempDir);
+    kspec('skill set @my-skill --add-tag workflow', tempDir);
+
+    const result = kspecJson<{ tags: string[] }>('skill get @my-skill', tempDir);
+    expect(result.tags).toContain('automation');
+    expect(result.tags).toContain('workflow');
+  });
+
+  // AC: @skill-set ac-3 - no duplicates
+  it('should not add duplicate tag', () => {
+    kspec('skill set @my-skill --add-tag test', tempDir);
+    kspec('skill set @my-skill --add-tag test', tempDir);
+
+    const result = kspecJson<{ tags: string[] }>('skill get @my-skill', tempDir);
+    const testCount = result.tags.filter(t => t === 'test').length;
+    expect(testCount).toBe(1);
+  });
+
+  it('should update name field', () => {
+    kspec('skill set @my-skill --name "Updated Name"', tempDir);
+
+    const result = kspecJson<{ name: string }>('skill get @my-skill', tempDir);
+    expect(result.name).toBe('Updated Name');
+  });
+
+  it('should update origin field', () => {
+    kspec('skill set @my-skill --origin core', tempDir);
+
+    const result = kspecJson<{ origin: string }>('skill get @my-skill', tempDir);
+    expect(result.origin).toBe('core');
+  });
+
+  it('should reject invalid origin', () => {
+    const result = kspecFull('skill set @my-skill --origin invalid', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid origin');
+  });
+
+  it('should update version field', () => {
+    kspec('skill set @my-skill --skill-version 0.2.0', tempDir);
+
+    const result = kspecJson<{ version: string }>('skill get @my-skill', tempDir);
+    expect(result.version).toBe('0.2.0');
+  });
+
+  it('should remove platform from array', () => {
+    // Add another platform first
+    kspec('skill set @my-skill --add-platform codex', tempDir);
+
+    // Now remove it
+    kspec('skill set @my-skill --remove-platform codex', tempDir);
+
+    const result = kspecJson<{ platforms: string[] }>('skill get @my-skill', tempDir);
+    expect(result.platforms).not.toContain('codex');
+    expect(result.platforms).toContain('claude-code'); // Original still there
+  });
+
+  it('should remove tag from array', () => {
+    // Add a tag first
+    kspec('skill set @my-skill --add-tag workflow', tempDir);
+
+    // Now remove it
+    kspec('skill set @my-skill --remove-tag workflow', tempDir);
+
+    const result = kspecJson<{ tags: string[] }>('skill get @my-skill', tempDir);
+    expect(result.tags).not.toContain('workflow');
+  });
+
+  it('should add dependency reference', () => {
+    // Create another skill
+    kspec('skill add --id base-skill --name "Base Skill"', tempDir);
+
+    // Add dependency
+    kspec('skill set @my-skill --add-depends-on @base-skill', tempDir);
+
+    const result = kspecJson<{ depends_on: string[] }>('skill get @my-skill', tempDir);
+    expect(result.depends_on).toContain('@base-skill');
+  });
+
+  it('should remove dependency reference', () => {
+    // Create another skill
+    kspec('skill add --id base-skill --name "Base Skill"', tempDir);
+
+    // Add and then remove dependency
+    kspec('skill set @my-skill --add-depends-on @base-skill', tempDir);
+    kspec('skill set @my-skill --remove-depends-on @base-skill', tempDir);
+
+    const result = kspecJson<{ depends_on: string[] }>('skill get @my-skill', tempDir);
+    expect(result.depends_on).not.toContain('@base-skill');
+  });
+
+  it('should find skill by ULID prefix', () => {
+    // Get the skill's ULID first
+    const list = kspecJson<Array<{ _ulid: string; id: string }>>('skill list', tempDir);
+    const skill = list.find(s => s.id === 'my-skill');
+    const ulidPrefix = skill?._ulid.slice(0, 8);
+
+    kspec(`skill set @${ulidPrefix} --description "Updated via ULID"`, tempDir);
+
+    const result = kspecJson<{ description: string }>('skill get @my-skill', tempDir);
+    expect(result.description).toBe('Updated via ULID');
+  });
+
+  it('should return error when skill not found', () => {
+    const result = kspecFull('skill set @nonexistent --description "Test"', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('not found');
+  });
+
+  it('should output updated skill in JSON mode', () => {
+    const result = kspecJson<{ id: string; description: string }>(
+      'skill set @my-skill --description "JSON test"',
+      tempDir
+    );
+
+    expect(result.id).toBe('my-skill');
+    expect(result.description).toBe('JSON test');
+  });
+});
