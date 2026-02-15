@@ -49832,6 +49832,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T22:40:42.645Z
+  started_at: 2026-02-15T23:19:27.197Z
   notes:
     - _ulid: 01KHHQD64NK1J45WJTKNA8EE7G
       created_at: 2026-02-15T22:40:42.645Z
@@ -49871,9 +49872,55 @@
 
 
         Depends on @consolidate-skill-render being done first so there's a single render module.
+    - _ulid: 01KHHT0Y94FVRR554GENAV57JX
+      created_at: 2026-02-15T23:26:27.108Z
+      author: "@claude"
+      content: |-
+        Implemented Platform Renderer Contract:
+
+        1. Defined PlatformRenderer interface in skill-render.ts:
+           - platform: string identifier
+           - defaultOutputDir: string for default output path
+           - render(): creates platform-specific output files (AC-1)
+           - checkDrift(): detects drift using per-platform hashes (AC-6)
+
+        2. Defined PlatformRenderResult interface (AC-2):
+           - id, platform, action, paths fields
+           - supportingDirsAction for tracking supporting directory actions
+           - skipReason for skipped renders
+
+        3. Defined DriftStatus type: 'not-rendered' | 'in-sync' | 'drifted' | 'no-hash'
+
+        4. Implemented supporting directories support (AC-3):
+           - references/, scripts/, assets/, docs/ all copied to output
+           - Action tracked per directory in supportingDirsAction
+
+        5. Implemented dryRun mode (AC-4):
+           - No files written when dryRun: true
+           - Result still reflects what would happen
+
+        6. Implemented custom outputDir support (AC-5):
+           - Overrides platform default when specified
+           - Works for both SKILL.md and supporting directories
+
+        7. Implemented per-platform hash storage (AC-6):
+           - Writes to .render-hash-<platform> for platform-specific drift detection
+           - Also writes legacy .render-hash for backward compatibility
+
+        8. Created renderer registry:
+           - getRenderer(platform): get renderer by name
+           - getAllRenderers(): get all registered renderers
+           - registerRenderer(renderer): add custom renderers
+
+        9. Maintained backward compatibility:
+           - ClaudeCodeRenderResult still works (marked deprecated)
+           - RenderSkillOptions extended with outputDir
+           - Legacy hash fallback in readPlatformRenderHash
+
+        33 new tests added in tests/platform-renderer.test.ts covering all 6 ACs.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T23:19:27.197Z
 - _ulid: 01KHHQD6CKSYBVR0511V09817C
   slugs:
     - implement-extended-skill-schema
