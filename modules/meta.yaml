@@ -2441,6 +2441,55 @@ modules:
             status:
               maturity: draft
               implementation: implemented
+            requirements:
+              - _ulid: 01KHHQD5GFPBVP4AMFXN96RF44
+                slugs:
+                  - extended-skill-schema
+                title: Extended Skill Schema
+                type: requirement
+                tags: []
+                description: |
+                  Extends the SkillSchema in src/schema/meta.ts with portable Agent Skills fields
+                  (license, compatibility, allowed_tools, metadata) and a nested platform_config
+                  object for platform-specific settings. All new fields are optional for backward
+                  compatibility. Platform config uses strict validation per known platform but
+                  passthrough for unknown platforms to support future extensibility.
+                acceptance_criteria:
+                  - id: ac-1
+                    given: a skill entry in meta.yaml with license, compatibility, or allowed_tools
+                    when: schema validation runs
+                    then: the fields are accepted as valid optional strings/arrays
+                  - id: ac-2
+                    given: a skill with platform_config.claude_code containing valid fields
+                    when: schema validation runs
+                    then: nested config validates against ClaudeCodeConfigSchema
+                  - id: ac-3
+                    given: a skill with platform_config.codex containing valid fields
+                    when: schema validation runs
+                    then: nested config validates against CodexConfigSchema
+                  - id: ac-4
+                    given: a skill with platform_config containing an unknown platform key
+                    when: schema validation runs
+                    then: validation passes (passthrough for future platforms)
+                  - id: ac-5
+                    given: a skill with invalid nested fields in a known platform config
+                    when: schema validation runs
+                    then: validation fails with a descriptive error (strict mode per known platform)
+                  - id: ac-6
+                    given: a skill entry with no new fields (existing format)
+                    when: schema validation runs
+                    then: validation passes (full backward compatibility)
+                  - id: ac-7
+                    given: a skill with metadata as a Record of key-value pairs
+                    when: schema validation runs
+                    then: the metadata field is accepted as a valid optional record
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits: []
+                notes: []
+                created: 2026-02-15T22:40:41.999Z
           - _ulid: 01KHFBSYG76EVZ7003W5B0KF62
             slugs:
               - skill-content-model
@@ -2744,6 +2793,57 @@ modules:
             status:
               maturity: draft
               implementation: implemented
+            requirements:
+              - _ulid: 01KHHQD5M8V912SE4APZJVQ5ZX
+                slugs:
+                  - import-frontmatter-strip
+                title: Import Frontmatter Stripping and Full Field Parsing
+                type: requirement
+                tags: []
+                description: >
+                  Updates kspec skill import to parse all Agent Skills frontmatter fields (not just
+
+                  name/description), store body-only content in .kspec/skills/ (strip frontmatter
+                  from
+
+                  source), and map platform-specific fields to platform_config in meta.yaml. Also
+                  handles
+
+                  all supporting directory types (references/, scripts/, assets/ in addition to
+                  docs/).
+                acceptance_criteria:
+                  - id: ac-1
+                    given: a SKILL.md with Agent Skills frontmatter (name, description, license, compatibility,
+                      allowed_tools)
+                    when: imported
+                    then: all recognized fields populate corresponding meta.yaml fields
+                  - id: ac-2
+                    given: a SKILL.md with frontmatter
+                    when: imported
+                    then: the source stored in .kspec/skills/<id>/SKILL.md has NO frontmatter (body-only)
+                  - id: ac-3
+                    given: a SKILL.md with Claude Code platform frontmatter (user-invocable, context, agent, etc.)
+                    when: imported
+                    then: those fields populate platform_config.claude_code in meta.yaml
+                  - id: ac-4
+                    given: a skill directory with references/ and scripts/ subdirectories
+                    when: imported
+                    then: both directories are copied to .kspec/skills/<id>/
+                  - id: ac-5
+                    given: a skill directory with docs/ subdirectory (legacy convention)
+                    when: imported
+                    then: docs/ is copied for backward compatibility
+                  - id: ac-6
+                    given: a SKILL.md with no frontmatter
+                    when: imported with --name and --description flags
+                    then: import succeeds using CLI flags for metadata
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits: []
+                notes: []
+                created: 2026-02-15T22:40:42.120Z
           - _ulid: 01KHFBSYMF3BPY2QXKMMG5D04J
             slugs:
               - skill-meta-integration
@@ -2779,6 +2879,40 @@ modules:
             status:
               maturity: draft
               implementation: implemented
+          - _ulid: 01KHHQD5P5V3NEGC8MWCNVKP35
+            slugs:
+              - skill-platform-config-cli
+            title: Skill Platform Config CLI
+            type: requirement
+            tags: []
+            description: |
+              Adds CLI options to kspec skill set for managing platform_config fields.
+              Enables setting platform-specific values like disable_model_invocation,
+              user_invocable, context, agent, etc. per platform.
+            acceptance_criteria:
+              - id: ac-1
+                given: kspec skill set @ref --platform-config claude_code.user_invocable=false
+                when: the command runs
+                then: meta.yaml is updated with platform_config.claude_code.user_invocable set to false
+              - id: ac-2
+                given: kspec skill set @ref --platform-config codex.allow_implicit_invocation=true
+                when: the command runs
+                then: meta.yaml is updated with platform_config.codex.allow_implicit_invocation set to true
+              - id: ac-3
+                given: kspec skill get @ref --json
+                when: the skill has platform_config
+                then: platform_config is included in the JSON output
+              - id: ac-4
+                given: an invalid platform config key
+                when: kspec skill set is run
+                then: validation error is shown with guidance on valid keys
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T22:40:42.181Z
         status:
           maturity: draft
           implementation: implemented
@@ -2859,6 +2993,58 @@ modules:
             status:
               maturity: draft
               implementation: implemented
+            requirements:
+              - _ulid: 01KHHQD5KCPVCQV5SQR2KXN61B
+                slugs:
+                  - multi-platform-render-cli
+                title: Multi-Platform Render CLI
+                type: requirement
+                tags: []
+                description: >
+                  Updates the kspec skill render CLI command to dispatch to multiple platform
+                  renderers
+
+                  based on each skill's platforms array. Replaces the current hardcoded
+
+                  platforms.includes("claude-code") filter with a loop over registered renderers.
+
+                  Adds per-platform status, diff, and output directory configuration.
+                acceptance_criteria:
+                  - id: ac-1
+                    given: a skill with platforms [claude-code, codex]
+                    when: kspec skill render is run
+                    then: both Claude Code and Codex renderers are invoked and results reported
+                  - id: ac-2
+                    given: a skill with platforms [codex] only
+                    when: kspec skill render is run
+                    then: only the Codex renderer is invoked
+                  - id: ac-3
+                    given: kspec skill status is run
+                    when: skills target multiple platforms
+                    then: status table shows a row per skill-platform combination
+                  - id: ac-4
+                    given: kspec skill render --output-dir <path> is run
+                    when: rendering
+                    then: output goes to the specified directory instead of the platform default
+                  - id: ac-5
+                    given: kspec skill render --clean is run
+                    when: multiple platform output directories exist
+                    then: orphan cleanup operates per-platform in each output directory
+                  - id: ac-6
+                    given: render table output
+                    when: displayed
+                    then: includes a Platform column showing which platform each result is for
+                  - id: ac-7
+                    given: a skill with platforms containing an unregistered platform name
+                    when: kspec skill render is run
+                    then: a warning is shown for the unregistered platform and the skill is skipped for that platform
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits: []
+                notes: []
+                created: 2026-02-15T22:40:42.092Z
           - _ulid: 01KHFBSYP9JAQTRZZYRWJW2RZJ
             slugs:
               - claude-code-renderer
@@ -2896,6 +3082,61 @@ modules:
             status:
               maturity: draft
               implementation: implemented
+            requirements:
+              - _ulid: 01KHHQD5HJ6TDNTW4B2458AFNT
+                slugs:
+                  - claude-code-renderer-extended
+                title: Claude Code Renderer - Extended Frontmatter
+                type: requirement
+                tags: []
+                description: |
+                  Extends the Claude Code renderer to emit portable Agent Skills fields and
+                  platform-specific fields from platform_config.claude_code in the YAML frontmatter.
+                  Refactors renderClaudeCodeSkill to implement the PlatformRenderer interface.
+                  Hash files change from .render-hash to .render-hash-claude-code with fallback
+                  migration from the old format.
+                acceptance_criteria:
+                  - id: ac-1
+                    given: a skill with license and allowed_tools in meta.yaml
+                    when: rendered for Claude Code
+                    then: YAML frontmatter includes license and allowed-tools fields
+                  - id: ac-2
+                    given: a skill with platform_config.claude_code.user_invocable set to false
+                    when: rendered for Claude Code
+                    then: "frontmatter includes user-invocable: false"
+                  - id: ac-3
+                    given: a skill with platform_config.claude_code.context set to fork
+                    when: rendered for Claude Code
+                    then: "frontmatter includes context: fork and agent field if present"
+                  - id: ac-4
+                    given: a skill with platform_config.claude_code.disable_model_invocation set to true
+                    when: rendered for Claude Code
+                    then: "frontmatter includes disable-model-invocation: true"
+                  - id: ac-5
+                    given: a skill with no platform_config.claude_code
+                    when: rendered for Claude Code
+                    then: only portable fields (name, description, license, etc.) appear in frontmatter
+                  - id: ac-6
+                    given: a skill previously rendered with old .render-hash file
+                    when: drift check runs for claude-code platform
+                    then: the old .render-hash is read as fallback and migrated to .render-hash-claude-code
+                  - id: ac-7
+                    given: a skill with references/, scripts/, or assets/ directories
+                    when: rendered for Claude Code
+                    then: all supporting directories are copied to .claude/skills/<id>/
+                  - id: ac-8
+                    given: a skill with platform_config.claude_code fields using snake_case (e.g.
+                      disable_model_invocation)
+                    when: rendered for Claude Code
+                    then: frontmatter keys are converted to kebab-case (e.g. disable-model-invocation)
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits:
+                  - "@platform-renderer-trait"
+                notes: []
+                created: 2026-02-15T22:40:42.034Z
           - _ulid: 01KHFBSYPVNXKJWKBPDVHDAR0F
             slugs:
               - skill-drift-detection
@@ -2937,6 +3178,131 @@ modules:
             status:
               maturity: draft
               implementation: implemented
+          - _ulid: 01KHHQD5EAEP965SMDSH2E4GRE
+            slugs:
+              - consolidate-skill-render
+            title: Consolidate Skill Render Implementations
+            type: requirement
+            tags: []
+            description: |
+              There are currently TWO independent render implementations: renderClaudeCodeSkill()
+              in src/parser/skill-render.ts (used by setup.ts) and a private renderSkill() in
+              src/cli/commands/skill.ts (lines ~1835-1961, used by the CLI). Hash/drift logic also
+              lives entirely in skill.ts. These must be consolidated into a single implementation
+              in skill-render.ts before extending for multi-platform support. The CLI must import
+              and delegate to skill-render.ts rather than maintaining its own copy.
+            acceptance_criteria:
+              - id: ac-1
+                given: the kspec skill render CLI command
+                when: it renders a skill
+                then: it delegates to renderClaudeCodeSkill() from src/parser/skill-render.ts (not a private copy)
+              - id: ac-2
+                given: src/cli/commands/skill.ts
+                when: inspected for render logic
+                then: there is no private renderSkill() function duplicating skill-render.ts
+              - id: ac-3
+                given: hash/drift functions (getRenderHashPath, readRenderHash, writeRenderHash, checkSkillDrift)
+                when: inspected
+                then: they are exported from src/parser/skill-render.ts and imported by skill.ts
+              - id: ac-4
+                given: src/cli/commands/setup.ts
+                when: it renders skills
+                then: it still works correctly using the consolidated renderClaudeCodeSkill()
+              - id: ac-5
+                given: all existing skill rendering tests
+                when: run after consolidation
+                then: they pass without modification
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T22:40:41.930Z
+          - _ulid: 01KHHQD5JJM5X4CTGHJ0646AZK
+            slugs:
+              - codex-renderer
+            title: Codex Skill Renderer
+            type: requirement
+            tags: []
+            description: >
+              Platform-specific renderer for OpenAI Codex. Reads from .kspec/skills/<id>/SKILL.md
+
+              (body-only source) and metadata from meta.yaml. Writes to .agents/skills/<id>/SKILL.md
+
+              with minimal frontmatter (name + description only per Codex convention).
+              Platform-specific
+
+              config from platform_config.codex is rendered as a sidecar agents/openai.yaml file.
+            acceptance_criteria:
+              - id: ac-1
+                given: a skill with platforms including codex
+                when: render is called
+                then: .agents/skills/<id>/SKILL.md is created with YAML frontmatter containing only name and
+                  description
+              - id: ac-2
+                given: a skill with platform_config.codex fields (display_name, allow_implicit_invocation, etc.)
+                when: rendered for Codex
+                then: .agents/skills/<id>/agents/openai.yaml sidecar is created with those fields
+              - id: ac-3
+                given: a skill without platform_config.codex
+                when: rendered for Codex
+                then: only SKILL.md is created (no agents/openai.yaml sidecar)
+              - id: ac-4
+                given: a rendered Codex skill file
+                when: inspected
+                then: it contains the <!-- kspec-managed --> marker
+              - id: ac-5
+                given: a skill with supporting directories
+                when: rendered for Codex
+                then: references/, scripts/, and assets/ directories are copied to .agents/skills/<id>/
+              - id: ac-6
+                given: a Codex render completes
+                when: hash is stored
+                then: hash is written to .kspec/skills/<id>/.render-hash-codex
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@platform-renderer-trait"
+            notes: []
+            created: 2026-02-15T22:40:42.066Z
+          - _ulid: 01KHHQD5N98VDEJFQWXTE4QZC1
+            slugs:
+              - supporting-files-convention
+            title: Supporting Files Convention
+            type: requirement
+            tags: []
+            description: |
+              Updates skill content loading and rendering to handle Agent Skills directory
+              convention (references/, scripts/, assets/) in addition to the existing docs/
+              directory for backward compatibility. Renderers copy all present supporting
+              directories to their output.
+            acceptance_criteria:
+              - id: ac-1
+                given: a skill with references/ directory in .kspec/skills/<id>/
+                when: loaded via skill content functions
+                then: references files are accessible
+              - id: ac-2
+                given: a skill with scripts/ and assets/ directories
+                when: rendered for any platform
+                then: both directories are copied to the platform output
+              - id: ac-3
+                given: a skill with docs/ directory (legacy)
+                when: rendered
+                then: docs/ is copied for backward compatibility
+              - id: ac-4
+                given: a skill with no supporting directories
+                when: rendered
+                then: render succeeds with no supporting directory actions
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-15T22:40:42.154Z
         status:
           maturity: draft
           implementation: implemented
@@ -3332,3 +3698,49 @@ modules:
         status:
           maturity: draft
           implementation: implemented
+traits:
+  - _ulid: 01KHHQD5FHEC53CVAA6C1FS69P
+    slugs:
+      - platform-renderer-trait
+    title: Platform Renderer Contract
+    type: trait
+    tags: []
+    description: |
+      Defines the contract all platform-specific skill renderers must implement.
+      Each renderer writes platform-specific output (SKILL.md with frontmatter,
+      sidecar config files, supporting directories) to a configurable output directory.
+      Renderers support dry-run mode, drift detection via per-platform hashes, and
+      idempotent output (no file modification when content unchanged).
+    acceptance_criteria:
+      - id: ac-1
+        given: a renderer implementation for platform X
+        when: render is called with a skill and project context
+        then: platform-specific output files are written to the configured output directory
+      - id: ac-2
+        given: a renderer
+        when: render completes
+        then: a PlatformRenderResult is returned with id, platform, action
+          (created/updated/unchanged/skipped), and output paths
+      - id: ac-3
+        given: a skill with supporting directories (references/, scripts/, assets/)
+        when: rendered for any platform
+        then: supporting directories are copied to the platform output directory
+      - id: ac-4
+        given: dryRun option is true
+        when: render is called
+        then: no files are written to disk and result action reflects what would happen
+      - id: ac-5
+        given: a custom outputDir is provided
+        when: render is called
+        then: output goes to the custom path instead of the platform default
+      - id: ac-6
+        given: a render completes successfully
+        when: the hash is stored
+        then: a per-platform render hash is written to .kspec/skills/<id>/.render-hash-<platform>
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-15T22:40:41.969Z

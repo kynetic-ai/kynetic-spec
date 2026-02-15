@@ -49708,6 +49708,8 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions
+    and CI compatibility."
   depends_on:
     - "@implement-enhanced-setup-command"
   context: []
@@ -49716,6 +49718,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:35.311Z
   started_at: 2026-02-15T07:33:14.361Z
+  completed_at: 2026-02-15T08:47:21.035Z
   notes:
     - _ulid: 01KHFBT4MF7NNSW7TCHBS01HTQ
       created_at: 2026-02-15T00:39:35.311Z
@@ -49740,6 +49743,411 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T08:47:21.035Z
-  closed_reason: "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions
-    and CI compatibility."
+- _ulid: 01KHHQD5W7EFBCPXHNMCPS54QB
+  slugs:
+    - implement-consolidate-skill-render-implementations
+  title: Implement Consolidate Skill Render Implementations
+  type: task
+  spec_ref: "@consolidate-skill-render"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:42.375Z
+  notes:
+    - _ulid: 01KHHQD5W78QFJG065NFV2NPZJ
+      created_at: 2026-02-15T22:40:42.375Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        This is a PREREQUISITE for all other renderer work. Must be done first.
+
+        File: src/cli/commands/skill.ts
+        1. Find private renderSkill() (~lines 1835-1961) and remove it
+        2. Find hash functions (~lines 1717-1779): getRenderHashPath, readRenderHash,
+           writeRenderHash, checkSkillDrift — move to src/parser/skill-render.ts
+        3. Update render command (~lines 716-952) to import and use renderClaudeCodeSkill
+        4. Update all drift/hash callers to use imported functions
+
+        File: src/parser/skill-render.ts
+        1. Add exports for hash/drift functions
+        2. Ensure renderClaudeCodeSkill handles all cases the CLI's private renderSkill did
+
+        File: src/cli/commands/setup.ts
+        1. Verify it still imports from skill-render.ts correctly (should be unchanged)
+
+        Tests: npm test -- tests/skill-rendering.test.ts tests/skill-cli.test.ts --run
+  todos: []
+- _ulid: 01KHHQD64NTFBWFNCC2MDNHA4B
+  slugs:
+    - implement-platform-renderer-contract
+  title: Implement Platform Renderer Contract
+  type: task
+  spec_ref: "@platform-renderer-trait"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:42.645Z
+  notes:
+    - _ulid: 01KHHQD64NK1J45WJTKNA8EE7G
+      created_at: 2026-02-15T22:40:42.645Z
+      author: "@claude"
+      content: >
+        Implementation notes:
+
+
+        This trait defines the contract — it does NOT contain implementation code.
+
+        The TypeScript interface lives in src/parser/skill-render.ts:
+
+
+        interface PlatformRenderer {
+          platform: string;              // e.g. "claude-code", "codex"
+          defaultOutputDir: string;      // e.g. ".claude/skills", ".agents/skills"
+          render(ctx, projectRoot, skill, options): Promise<PlatformRenderResult>;
+          checkDrift(specDir, projectRoot, skillId, options): Promise<DriftStatus>;
+        }
+
+
+        interface PlatformRenderResult {
+          id: string;
+          platform: string;
+          action: "created" | "updated" | "unchanged" | "skipped";
+          paths: string[];
+          supportingDirsAction?: Record<string, "created" | "updated" | "unchanged" | "skipped">;
+          skipReason?: string;
+        }
+
+
+        type DriftStatus = "not-rendered" | "in-sync" | "drifted" | "no-hash";
+
+
+        Renderer registry: Record<string, PlatformRenderer> with getRenderer(platform) and
+        getAllRenderers().
+
+
+        Depends on @consolidate-skill-render being done first so there's a single render module.
+  todos: []
+- _ulid: 01KHHQD6CKSYBVR0511V09817C
+  slugs:
+    - implement-extended-skill-schema
+  title: Implement Extended Skill Schema
+  type: task
+  spec_ref: "@extended-skill-schema"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:42.899Z
+  notes:
+    - _ulid: 01KHHQD6CM3Y09M88W5DGRCGR2
+      created_at: 2026-02-15T22:40:42.900Z
+      author: "@claude"
+      content: >
+        Implementation notes:
+
+
+        File: src/schema/meta.ts
+
+
+        Add after existing SkillSchema fields (line ~182):
+
+        - license: z.string().optional()
+
+        - compatibility: z.string().optional()
+
+        - allowed_tools: z.array(z.string()).default([])
+
+        - metadata: z.record(z.string(), z.unknown()).optional()
+
+        - platform_config: PlatformConfigSchema.optional()
+
+
+        Define new schemas:
+
+        - ClaudeCodeConfigSchema: z.object({ disable_model_invocation, user_invocable, context,
+        agent, model, argument_hint }).strict()
+
+        - CodexConfigSchema: z.object({ allow_implicit_invocation, display_name, short_description,
+        icon_small, icon_large, brand_color, default_prompt }).strict()
+
+        - PlatformConfigSchema: z.object({ claude_code: ..., codex: ... }).passthrough()
+
+
+        All fields optional booleans/strings. Export types.
+
+        Tests: tests/skill-schema.test.ts
+  todos: []
+- _ulid: 01KHHQD6N46R44E8QEVNGP5JPV
+  slugs:
+    - implement-claude-code-renderer-extended-frontmatte
+  title: Implement Claude Code Renderer - Extended Frontmatter
+  type: task
+  spec_ref: "@claude-code-renderer-extended"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:43.172Z
+  notes:
+    - _ulid: 01KHHQD6N4M3SZH0WNC2GH5XGZ
+      created_at: 2026-02-15T22:40:43.172Z
+      author: "@claude"
+      content: >
+        Implementation notes:
+
+
+        File: src/parser/skill-render.ts
+
+
+        CRITICAL: Before this work, complete @consolidate-skill-render first. The CLI
+
+        currently has a DUPLICATE private renderSkill() in skill.ts that does NOT use
+
+        skill-render.ts. After consolidation, all render logic lives here.
+
+
+        1. Define PlatformRenderer interface (platform, defaultOutputDir, render, checkDrift
+        methods)
+
+        2. Define PlatformRenderResult type (extends current ClaudeCodeRenderResult with platform
+        field)
+
+        3. Refactor generateFrontmatter(skill) to:
+           - Always include name, description
+           - Include portable fields if present: license, compatibility, allowed-tools
+           - Include Claude Code platform fields from skill.platform_config?.claude_code
+           - Use kebab-case for Claude Code frontmatter keys (disable-model-invocation not disable_model_invocation)
+        4. Refactor renderClaudeCodeSkill to implement PlatformRenderer
+
+        5. Hash file: .render-hash-claude-code (check old .render-hash as fallback, rename on first
+        use)
+
+        6. Supporting dirs: references/, scripts/, assets/ in addition to docs/ (backward compat)
+
+
+        Create renderer registry: Map<string, PlatformRenderer> with getRenderer() and
+        getAllRenderers()
+
+
+        Tests: tests/skill-rendering.test.ts
+
+        Existing test patterns in that file show setupTempFixtures usage — follow same pattern.
+  todos: []
+- _ulid: 01KHHQD6WX70EV795MY735S163
+  slugs:
+    - implement-codex-skill-renderer
+  title: Implement Codex Skill Renderer
+  type: task
+  spec_ref: "@codex-renderer"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:43.421Z
+  notes:
+    - _ulid: 01KHHQD6WX867D9G1M0KMP1QAA
+      created_at: 2026-02-15T22:40:43.421Z
+      author: "@claude"
+      content: >
+        Implementation notes:
+
+
+        File: src/parser/skill-render.ts (add to same file as Claude Code renderer)
+
+
+        Implement PlatformRenderer interface for Codex:
+
+        - platform: "codex"
+
+        - defaultOutputDir: ".agents/skills"
+
+        - Frontmatter: minimal — only name + description (Codex docs say "do not include any other
+        fields")
+
+        - Sidecar openai.yaml structure:
+          ```yaml
+          interface:
+            display_name: "..."
+            short_description: "..."
+          policy:
+            allow_implicit_invocation: true/false
+          ```
+        - Map platform_config.codex fields to the sidecar YAML structure
+
+        - Register in renderer registry
+
+
+        Reference the Codex skill docs: https://developers.openai.com/codex/skills
+
+        Tests: tests/skill-rendering.test.ts (new describe block for Codex)
+  todos: []
+- _ulid: 01KHHQD74SRA7R1ZNRCN32YECZ
+  slugs:
+    - implement-multi-platform-render-cli
+  title: Implement Multi-Platform Render CLI
+  type: task
+  spec_ref: "@multi-platform-render-cli"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:43.673Z
+  notes:
+    - _ulid: 01KHHQD74S55C3KZKG04TDQ2XQ
+      created_at: 2026-02-15T22:40:43.673Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        File: src/cli/commands/skill.ts
+
+        CRITICAL: Depends on @consolidate-skill-render being done first.
+
+        Render command (lines ~716-952):
+        1. Replace `skills.filter(s => s.platforms.includes("claude-code"))` with:
+           For each skill, iterate skill.platforms, look up renderer via getRenderer(platform)
+        2. Collect results across all platforms, flatten into results array
+        3. Table output: add Platform column
+        4. --clean: iterate all registered renderers, clean each renderer's output directory
+        5. --output-dir flag: pass to renderer options (overrides defaultOutputDir)
+
+        Status command (lines ~955-1051):
+        1. Per-platform drift checking using renderer.checkDrift()
+        2. Table: add Platform column
+
+        Diff command (lines ~1054-1146):
+        1. Add --platform flag to scope diff to one platform
+        2. Default: show diff for all platforms
+
+        Consider extracting render logic to src/cli/commands/skill-render.ts if skill.ts
+        exceeds ~2500 lines after changes.
+  todos: []
+- _ulid: 01KHHQD7CVF171SQ1A7K2E6R02
+  slugs:
+    - implement-import-frontmatter-stripping-and-full-fi
+  title: Implement Import Frontmatter Stripping and Full Field Parsing
+  type: task
+  spec_ref: "@import-frontmatter-strip"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:43.931Z
+  notes:
+    - _ulid: 01KHHQD7CVWNP5632BP2R4KTRA
+      created_at: 2026-02-15T22:40:43.931Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        File: src/cli/commands/skill.ts
+
+        Import command (lines ~577-714):
+        1. Expand parseFrontmatter() (lines ~1585-1607) to return all Agent Skills fields:
+           { name?, description?, license?, compatibility?, allowed_tools?, metadata?,
+             disable_model_invocation?, user_invocable?, context?, agent?, model?, argument_hint? }
+        2. Map Claude Code fields → platform_config.claude_code object
+        3. Strip frontmatter from content before writing to .kspec/skills/<id>/SKILL.md:
+           content.replace(/^---\n[\s\S]*?\n---\n?/, '')
+        4. Handle directories: check for references/, scripts/, assets/, docs/ in source
+        5. Set platforms based on what platform fields were found (or default to ["claude-code"])
+
+        Tests: tests/skill-cli.test.ts (import describe block)
+  todos: []
+- _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
+  slugs:
+    - implement-supporting-files-convention
+  title: Implement Supporting Files Convention
+  type: task
+  spec_ref: "@supporting-files-convention"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:44.190Z
+  notes:
+    - _ulid: 01KHHQD7MY6B3PMPYCSG0VED8B
+      created_at: 2026-02-15T22:40:44.190Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        File: src/parser/meta.ts
+
+        1. Update loadSkillDocs() (lines ~581-611) or create loadSkillSupportingDirs():
+           Check for references/, scripts/, assets/, docs/ in .kspec/skills/<id>/
+           Return array of { name, path, type } for each found directory
+        2. Both renderers use this to know which dirs to copy
+
+        File: src/parser/skill-render.ts
+        1. Update copyDirectory calls to handle all directory types
+        2. directoriesEqual() already works recursively — reuse as-is
+  todos: []
+- title: Implement Skill Platform Config CLI
+  type: task
+  spec_ref: "@skill-platform-config-cli"
+  plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+  priority: 3
+  slugs:
+    - implement-skill-platform-config-cli
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KHHQD7WW6VVSZ7YX8P2RXC1Y
+      created_at: 2026-02-15T22:40:44.444Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        File: src/cli/commands/skill.ts
+
+        Skill set command (lines ~365-501):
+        1. Add --platform-config option (repeatable): parses "platform.key=value" format
+        2. Parse value types: "true"/"false" → boolean, quoted strings → string
+        3. Deep merge into existing platform_config (don't replace entire object)
+        4. Schema validation catches invalid keys per platform (strict schemas)
+
+        Skill get command (lines ~308-362):
+        1. Include platform_config in table and JSON output
+  _ulid: 01KHHQD7WW8PA69841EB3TJAYD
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-15T22:40:44.444Z
+  todos: []
