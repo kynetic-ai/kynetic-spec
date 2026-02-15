@@ -48567,7 +48567,7 @@
   type: task
   spec_ref: "@skill-schema"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48598,6 +48598,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T01:31:23.721Z
+  closed_reason: "Merged in PR #372. Implemented Skill Schema Definition with all 3 ACs: kebab-case
+    validation for skill ID (ac-1), required_error for missing ID (ac-2), and platforms default to
+    ['claude-code'] (ac-3). Added depends_on field for skill dependencies. 10 tests covering all
+    acceptance criteria."
 - _ulid: 01KHFBSZKZ74MJB2EA8H00KMQ1
   slugs:
     - implement-skill-file-based-content-model
