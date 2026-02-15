@@ -6,6 +6,11 @@
  * AC: @agent-instruction-gen ac-3 - output includes conventions section listing rules by domain
  * AC: @agent-instruction-gen ac-4 - output contains freshness comment with kspec version and timestamp
  * AC: @agent-instruction-gen ac-5 - kspec agents status reports stale when not regenerated after meta changes
+ *
+ * AC: @agents-cli ac-1 - kspec agents generate writes kspec-agents.md to project root
+ * AC: @agents-cli ac-2 - kspec agents generate --dry-run prints content without writing
+ * AC: @agents-cli ac-3 - kspec agents status reports up to date when current
+ * AC: @agents-cli ac-4 - kspec agents status reports stale when meta changed
  */
 
 import * as crypto from "node:crypto";

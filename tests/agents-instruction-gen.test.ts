@@ -1,6 +1,7 @@
 /**
  * Tests for Agent Instruction Generation
  * AC: @agent-instruction-gen ac-1 through ac-5
+ * AC: @agents-cli ac-1 through ac-4
  * AC: @trait-dry-run (dry run support)
  */
 
@@ -27,7 +28,7 @@ describe('Agent Instruction Generation', () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @agent-instruction-gen ac-1
+  // AC: @agent-instruction-gen ac-1, @agents-cli ac-1
   describe('ac-1: kspec agents generate creates kspec-agents.md in project root', () => {
     it('should create kspec-agents.md when generate is run', async () => {
       const result = kspecFull('agents generate', tempDir);
@@ -197,7 +198,7 @@ describe('Agent Instruction Generation', () => {
     });
   });
 
-  // AC: @agent-instruction-gen ac-5
+  // AC: @agent-instruction-gen ac-5, @agents-cli ac-3, @agents-cli ac-4
   describe('ac-5: kspec agents status reports stale when not regenerated after meta changes', () => {
     it('should report missing when file does not exist', async () => {
       const result = kspecFull('agents status', tempDir);
@@ -206,6 +207,7 @@ describe('Agent Instruction Generation', () => {
       expect(result.stdout).toContain("'kspec agents generate'");
     });
 
+    // AC: @agents-cli ac-3
     it('should report current when file is up to date', async () => {
       kspecFull('agents generate', tempDir);
 
@@ -214,6 +216,7 @@ describe('Agent Instruction Generation', () => {
       expect(result.stdout).toContain('up to date');
     });
 
+    // AC: @agents-cli ac-4
     it('should report stale when meta has changed since generation', async () => {
       kspecFull('agents generate', tempDir);
 
@@ -279,9 +282,9 @@ describe('Agent Instruction Generation', () => {
     });
   });
 
-  // AC: @trait-dry-run
+  // AC: @trait-dry-run, @agents-cli ac-2
   describe('Dry run mode (trait)', () => {
-    // AC: @trait-dry-run ac-1
+    // AC: @trait-dry-run ac-1, @agents-cli ac-2
     it('should show what would be changed without applying (ac-1)', async () => {
       const result = kspecFull('agents generate --dry-run', tempDir);
       expect(result.exitCode).toBe(0);
@@ -289,7 +292,7 @@ describe('Agent Instruction Generation', () => {
       expect(result.stdout).toContain('kspec-agents.md');
     });
 
-    // AC: @trait-dry-run ac-2
+    // AC: @trait-dry-run ac-2, @agents-cli ac-2
     it('should not modify files when --dry-run is provided (ac-2)', async () => {
       kspecFull('agents generate --dry-run', tempDir);
 
