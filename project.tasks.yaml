@@ -48509,6 +48509,16 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: |-
+    Merged in PR #371. Implemented Skill as the 5th meta item type:
+
+    - Added SkillSchema with id, name, description, origin (core|project|local), version, tags
+    - Added skills array to MetaManifestSchema
+    - Implemented loadSkillContent() to read .kspec/skills/<id>/SKILL.md
+    - Added LoadedSkill interface with _sourceFile runtime metadata
+    - Updated findMetaItemByRef() to include skills in search
+    - Updated getMetaItemType() to discriminate skills by origin field
+    - All 7 acceptance criteria have test coverage (17 tests)
   depends_on: []
   context: []
   priority: 3
@@ -48516,6 +48526,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:29.674Z
   started_at: 2026-02-15T00:59:29.218Z
+  completed_at: 2026-02-15T01:16:20.782Z
   notes:
     - _ulid: 01KHFBSZ4AM2XFGZEDFN5F7CA9
       created_at: 2026-02-15T00:39:29.674Z
@@ -48549,17 +48560,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T01:16:20.782Z
-  closed_reason: |-
-    Merged in PR #371. Implemented Skill as the 5th meta item type:
-
-    - Added SkillSchema with id, name, description, origin (core|project|local), version, tags
-    - Added skills array to MetaManifestSchema
-    - Implemented loadSkillContent() to read .kspec/skills/<id>/SKILL.md
-    - Added LoadedSkill interface with _sourceFile runtime metadata
-    - Updated findMetaItemByRef() to include skills in search
-    - Updated getMetaItemType() to discriminate skills by origin field
-    - All 7 acceptance criteria have test coverage (17 tests)
 - _ulid: 01KHFBSZCD7BAVSXRKQMNMEVQX
   slugs:
     - implement-skill-schema-definition
@@ -48567,7 +48567,7 @@
   type: task
   spec_ref: "@skill-schema"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48583,6 +48583,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T01:17:03.965Z
 - _ulid: 01KHFBSZKZ74MJB2EA8H00KMQ1
   slugs:
     - implement-skill-file-based-content-model
