@@ -3743,7 +3743,7 @@ runs:
   - _ulid: 01KHFYNKZMZJRQXEDYM6NKRYSM
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-15T06:09:10.132Z
     step_results:
@@ -3758,5 +3758,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-15T06:09:37.317Z
-        completed_at: 2026-02-15T06:09:37.317Z
+        completed_at: 2026-02-15T06:09:44.836Z
+        notes: "Friction points reviewed against existing state. No high-confidence items identified - all
+          friction was either one-off (daemon test failure) or minor (shell script embedding).
+          Success patterns: spec-first approach with clear ACs, library reuse, test-driven
+          implementation. These are already documented practices in AGENTS.md, no need to capture."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-15T06:09:44.836Z
+        completed_at: 2026-02-15T06:09:44.836Z
     initiated_by: "@claude"
