@@ -49090,6 +49090,15 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: |-
+    Merged in PR #382. Implemented skill render CLI commands:
+
+    - ac-1: kspec skill render shows summary of created/updated/skipped files
+    - ac-2: kspec skill render @ref renders only that specific skill  
+    - ac-3: kspec skill status shows table with sync status (in-sync, drifted, not-rendered)
+    - ac-4: kspec skill diff @ref shows unified diff when content differs
+
+    All 4 acceptance criteria covered with 11 new tests added.
   depends_on:
     - "@implement-skill-rendering-pipeline"
   context: []
@@ -49098,6 +49107,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:32.418Z
   started_at: 2026-02-15T04:02:01.511Z
+  completed_at: 2026-02-15T04:16:37.104Z
   notes:
     - _ulid: 01KHFBT1T2SSE9P5QAMY85V5GW
       created_at: 2026-02-15T00:39:32.418Z
@@ -49124,16 +49134,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T04:16:37.104Z
-  closed_reason: |-
-    Merged in PR #382. Implemented skill render CLI commands:
-
-    - ac-1: kspec skill render shows summary of created/updated/skipped files
-    - ac-2: kspec skill render @ref renders only that specific skill  
-    - ac-3: kspec skill status shows table with sync status (in-sync, drifted, not-rendered)
-    - ac-4: kspec skill diff @ref shows unified diff when content differs
-
-    All 4 acceptance criteria covered with 11 new tests added.
 - _ulid: 01KHFBT21F2S7QF8CSDNC9FDXV
   slugs:
     - implement-claude-code-skill-renderer
@@ -49141,7 +49141,7 @@
   type: task
   spec_ref: "@claude-code-renderer"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-rendering-pipeline"
@@ -49157,6 +49157,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T04:17:26.293Z
 - _ulid: 01KHFBT28RGKFXDAERP9F47FZT
   slugs:
     - implement-skill-drift-detection
