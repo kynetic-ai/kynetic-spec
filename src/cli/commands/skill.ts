@@ -347,6 +347,145 @@ export function registerSkillCommands(program: Command): void {
       }
     });
 
+  // AC: @skill-set ac-1, ac-2, ac-3 - kspec skill set
+  markMutating(skill.command("set <ref>"))
+    .description("Update skill metadata fields")
+    .option("--name <name>", "Update skill name")
+    .option("--description <desc>", "Update skill description")
+    .option("--origin <origin>", "Update skill origin (core, project, local)")
+    .option("--skill-version <version>", "Update skill version")
+    .option("--add-platform <platform>", "Add a platform to the platforms array")
+    .option("--remove-platform <platform>", "Remove a platform from the platforms array")
+    .option("--add-tag <tag>", "Add a tag to the tags array")
+    .option("--remove-tag <tag>", "Remove a tag from the tags array")
+    .option("--add-depends-on <ref>", "Add a dependency reference")
+    .option("--remove-depends-on <ref>", "Remove a dependency reference")
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const item = findMetaItemByRef(metaCtx, ref);
+
+        if (!item) {
+          error(`Skill not found: ${ref}`);
+          console.log(chalk.gray("Try: kspec skill list"));
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
+        // Check it's a skill
+        if (!("origin" in item)) {
+          error(`Item ${ref} is not a skill`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const skill = item as LoadedSkill;
+
+        // AC: @skill-set ac-1 - update description field
+        if (options.name !== undefined) {
+          skill.name = options.name;
+        }
+
+        if (options.description !== undefined) {
+          skill.description = options.description;
+        }
+
+        // Update origin
+        if (options.origin !== undefined) {
+          const validOrigins: SkillOrigin[] = ["core", "project", "local"];
+          if (!validOrigins.includes(options.origin as SkillOrigin)) {
+            error(
+              `Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`,
+            );
+            process.exit(EXIT_CODES.ERROR);
+          }
+          skill.origin = options.origin as SkillOrigin;
+        }
+
+        // Update version
+        if (options.skillVersion !== undefined) {
+          skill.version = options.skillVersion;
+        }
+
+        // AC: @skill-set ac-2 - add platform to array
+        if (options.addPlatform) {
+          if (!skill.platforms.includes(options.addPlatform)) {
+            skill.platforms.push(options.addPlatform);
+          }
+        }
+
+        // Remove platform
+        if (options.removePlatform) {
+          const idx = skill.platforms.indexOf(options.removePlatform);
+          if (idx >= 0) {
+            skill.platforms.splice(idx, 1);
+          }
+        }
+
+        // AC: @skill-set ac-3 - add tag to array
+        if (options.addTag) {
+          if (!skill.tags) {
+            skill.tags = [];
+          }
+          if (!skill.tags.includes(options.addTag)) {
+            skill.tags.push(options.addTag);
+          }
+        }
+
+        // Remove tag
+        if (options.removeTag && skill.tags) {
+          const idx = skill.tags.indexOf(options.removeTag);
+          if (idx >= 0) {
+            skill.tags.splice(idx, 1);
+          }
+        }
+
+        // Add dependency
+        if (options.addDependsOn) {
+          if (!skill.depends_on) {
+            skill.depends_on = [];
+          }
+          if (!skill.depends_on.includes(options.addDependsOn)) {
+            skill.depends_on.push(options.addDependsOn);
+          }
+        }
+
+        // Remove dependency
+        if (options.removeDependsOn && skill.depends_on) {
+          const idx = skill.depends_on.indexOf(options.removeDependsOn);
+          if (idx >= 0) {
+            skill.depends_on.splice(idx, 1);
+          }
+        }
+
+        // Validate updated skill
+        const parsed = SkillSchema.safeParse(skill);
+        if (!parsed.success) {
+          const issues = parsed.error.issues
+            .map((i) => `${i.path.join(".")}: ${i.message}`)
+            .join("; ");
+          error(`Invalid skill data: ${issues}`);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // Save the updated skill
+        await saveMetaItem(ctx, skill, "skill");
+
+        // Commit changes
+        await commitIfShadow(ctx.shadow, "skill-set", skill.id, skill.name);
+
+        output(skill, () => success(`Updated skill: ${skill.id}`));
+      } catch (err) {
+        error("Failed to update skill", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
   // AC: @skill-cli ac-7, ac-8 - kspec skill delete
   markMutating(skill.command("delete <ref>"))
     .description("Delete a skill")
