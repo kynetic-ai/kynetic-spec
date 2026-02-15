@@ -24,6 +24,7 @@ import {
   findMetaItemByRef,
   getSkillContentPath,
   initContext,
+  type KspecContext,
   loadMetaContext,
   loadSkillContent,
   loadSkillDocs,
@@ -699,6 +700,197 @@ export function registerSkillCommands(program: Command): void {
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // AC: @skill-rendering ac-1 through ac-5 - kspec skill render
+  // AC: @trait-dry-run - supports --dry-run
+  // AC: @trait-error-guidance - provides error guidance
+  skill
+    .command("render")
+    .description(
+      "Render skills from shadow branch to platform-specific files on main branch"
+    )
+    .option("--clean", "Remove orphaned managed skill directories")
+    .option("--dry-run", "Show what would be changed without applying")
+    .option("--skill <id>", "Render only a specific skill")
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          console.log(
+            chalk.gray("Try: kspec init to initialize a kspec project")
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        // Use rootDir (project root), not specDir (which is .kspec/ in shadow mode)
+        const projectRoot = ctx.rootDir;
+        const dryRun = options.dryRun || false;
+        const results: SkillRenderResult[] = [];
+        const cleanResults: CleanResult[] = [];
+
+        // Filter skills by platform (only claude-code for now)
+        let skillsToRender = metaCtx.skills.filter((s) =>
+          s.platforms.includes("claude-code")
+        );
+
+        // Filter to specific skill if requested
+        if (options.skill) {
+          skillsToRender = skillsToRender.filter(
+            (s) => s.id === options.skill
+          );
+          if (skillsToRender.length === 0) {
+            error(`Skill not found: ${options.skill}`);
+            console.log(chalk.gray("Try: kspec skill list"));
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+        }
+
+        // Ensure .claude/skills directory exists
+        const targetSkillsDir = path.join(projectRoot, ".claude", "skills");
+        if (!dryRun) {
+          await fs.mkdir(targetSkillsDir, { recursive: true });
+        }
+
+        // Render each skill
+        for (const skill of skillsToRender) {
+          const result = await renderSkill(ctx, projectRoot, skill, dryRun);
+          results.push(result);
+        }
+
+        // Handle --clean: remove orphaned managed skills
+        // AC: @skill-rendering ac-4, ac-5
+        if (options.clean) {
+          const activeSkillIds = new Set(metaCtx.skills.map((s) => s.id));
+
+          try {
+            const entries = await fs.readdir(targetSkillsDir, {
+              withFileTypes: true,
+            });
+
+            for (const entry of entries) {
+              if (!entry.isDirectory()) continue;
+
+              const skillId = entry.name;
+              const skillDir = path.join(targetSkillsDir, skillId);
+              const skillMdPath = path.join(skillDir, "SKILL.md");
+
+              // Skip if skill still exists in meta
+              if (activeSkillIds.has(skillId)) continue;
+
+              // AC: @skill-rendering ac-4 - Only consider kspec-managed skills
+              const isManaged = await isKspecManaged(skillMdPath);
+
+              if (isManaged) {
+                // AC: @skill-rendering ac-5 - Remove orphaned directory
+                if (!dryRun) {
+                  await fs.rm(skillDir, { recursive: true, force: true });
+                }
+                cleanResults.push({
+                  id: skillId,
+                  path: skillDir,
+                  action: "removed",
+                });
+              } else {
+                cleanResults.push({
+                  id: skillId,
+                  path: skillDir,
+                  action: "skipped",
+                  reason: "Not managed by kspec",
+                });
+              }
+            }
+          } catch {
+            // No .claude/skills directory, nothing to clean
+          }
+        }
+
+        // Output results
+        // AC: @trait-dry-run ac-6 - JSON output includes dry_run field
+        output(
+          {
+            dry_run: dryRun,
+            rendered: results,
+            cleaned: cleanResults,
+          },
+          () => {
+            // AC: @trait-dry-run ac-3 - Clear indication this is a preview
+            if (dryRun) {
+              console.log(chalk.yellow("DRY RUN - No changes made"));
+              console.log();
+            }
+
+            // Render results
+            const created = results.filter((r) => r.action === "created");
+            const updated = results.filter((r) => r.action === "updated");
+            const unchanged = results.filter((r) => r.action === "unchanged");
+
+            if (created.length > 0) {
+              console.log(chalk.green(`Created: ${created.length} skill(s)`));
+              for (const r of created) {
+                console.log(`  ${chalk.green("+")} ${r.id}`);
+              }
+            }
+
+            if (updated.length > 0) {
+              console.log(chalk.blue(`Updated: ${updated.length} skill(s)`));
+              for (const r of updated) {
+                console.log(`  ${chalk.blue("~")} ${r.id}`);
+              }
+            }
+
+            if (unchanged.length > 0 && results.length <= 10) {
+              console.log(chalk.gray(`Unchanged: ${unchanged.length} skill(s)`));
+            }
+
+            // Clean results
+            if (cleanResults.length > 0) {
+              const removed = cleanResults.filter((r) => r.action === "removed");
+              const skipped = cleanResults.filter((r) => r.action === "skipped");
+
+              if (removed.length > 0) {
+                console.log();
+                console.log(chalk.red(`Removed: ${removed.length} orphaned skill(s)`));
+                for (const r of removed) {
+                  console.log(`  ${chalk.red("-")} ${r.id}`);
+                }
+              }
+
+              if (skipped.length > 0) {
+                console.log(
+                  chalk.gray(`Skipped: ${skipped.length} unmanaged skill(s)`)
+                );
+              }
+            }
+
+            // Summary
+            console.log();
+            if (dryRun) {
+              console.log(
+                chalk.yellow("No changes were made. Run without --dry-run to apply.")
+              );
+            } else {
+              const changedCount = created.length + updated.length;
+              const cleanedCount = cleanResults.filter(
+                (r) => r.action === "removed"
+              ).length;
+              if (changedCount > 0 || cleanedCount > 0) {
+                success(
+                  `Rendered ${changedCount} skill(s)${cleanedCount > 0 ? `, cleaned ${cleanedCount}` : ""}`
+                );
+              } else {
+                console.log(chalk.gray("No changes needed"));
+              }
+            }
+          }
+        );
+      } catch (err) {
+        error("Failed to render skills", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
 }
 
 /**
@@ -763,3 +955,240 @@ async function copyDirectory(src: string, dest: string): Promise<void> {
     }
   }
 }
+
+/**
+ * Marker comment that identifies skill directories managed by kspec
+ * AC: @skill-rendering ac-4 - Only skill directories that were rendered by kspec are considered
+ */
+const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
+
+/**
+ * Result of rendering a single skill
+ */
+interface SkillRenderResult {
+  id: string;
+  action: "created" | "updated" | "unchanged";
+  path: string;
+  docsAction?: "created" | "updated" | "unchanged" | "skipped";
+}
+
+/**
+ * Result of a clean operation
+ */
+interface CleanResult {
+  id: string;
+  path: string;
+  action: "removed" | "skipped";
+  reason?: string;
+}
+
+/**
+ * Generate YAML frontmatter for a skill
+ * AC: @skill-rendering ac-1 - .claude/skills/<id>/SKILL.md is created with YAML frontmatter
+ */
+function generateFrontmatter(skill: LoadedSkill): string {
+  const frontmatter: Record<string, unknown> = {
+    name: skill.id,
+    description: skill.description || skill.name,
+  };
+  return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
+}
+
+/**
+ * Check if two contents are equal (for idempotency check)
+ */
+function contentsEqual(a: string, b: string): boolean {
+  return a.trim() === b.trim();
+}
+
+/**
+ * Check if a directory is managed by kspec
+ * AC: @skill-rendering ac-4 - Only skill directories rendered by kspec are considered
+ */
+async function isKspecManaged(skillMdPath: string): Promise<boolean> {
+  try {
+    const content = await fs.readFile(skillMdPath, "utf-8");
+    return content.includes(KSPEC_MANAGED_MARKER);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Recursively check if two directories have the same contents
+ */
+async function directoriesEqual(src: string, dest: string): Promise<boolean> {
+  try {
+    const srcEntries = await fs.readdir(src, { withFileTypes: true });
+    const destEntries = await fs.readdir(dest, { withFileTypes: true });
+
+    // Different number of entries = not equal
+    if (srcEntries.length !== destEntries.length) {
+      return false;
+    }
+
+    // Create a map of dest entries for quick lookup
+    const destMap = new Map(destEntries.map((e) => [e.name, e]));
+
+    for (const srcEntry of srcEntries) {
+      const destEntry = destMap.get(srcEntry.name);
+      if (!destEntry) {
+        return false;
+      }
+
+      const srcPath = path.join(src, srcEntry.name);
+      const destPath = path.join(dest, srcEntry.name);
+
+      if (srcEntry.isDirectory() && destEntry.isDirectory()) {
+        if (!(await directoriesEqual(srcPath, destPath))) {
+          return false;
+        }
+      } else if (srcEntry.isFile() && destEntry.isFile()) {
+        const srcContent = await fs.readFile(srcPath, "utf-8");
+        const destContent = await fs.readFile(destPath, "utf-8");
+        if (!contentsEqual(srcContent, destContent)) {
+          return false;
+        }
+      } else {
+        // Type mismatch
+        return false;
+      }
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get the target path for rendered skills (main branch .claude/skills/)
+ */
+function getRenderedSkillPath(projectRoot: string, skillId: string): string {
+  return path.join(projectRoot, ".claude", "skills", skillId);
+}
+
+/**
+ * Render a single skill from shadow branch to main branch.
+ * AC: @skill-rendering ac-1 - Creates .claude/skills/<id>/SKILL.md with YAML frontmatter
+ * AC: @skill-rendering ac-2 - Copies docs to .claude/skills/<id>/docs/
+ * AC: @skill-rendering ac-3 - Idempotent (no changes if content unchanged)
+ */
+async function renderSkill(
+  ctx: KspecContext,
+  projectRoot: string,
+  skill: LoadedSkill,
+  dryRun: boolean
+): Promise<SkillRenderResult> {
+  const targetDir = getRenderedSkillPath(projectRoot, skill.id);
+  const targetSkillMd = path.join(targetDir, "SKILL.md");
+
+  // Load source content
+  const sourceContent = await loadSkillContent(ctx, skill);
+  if (!sourceContent) {
+    // No source content, but skill exists in meta - create placeholder
+    const frontmatter = generateFrontmatter(skill);
+    const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
+
+    if (!dryRun) {
+      await fs.mkdir(targetDir, { recursive: true });
+      await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+    }
+
+    return {
+      id: skill.id,
+      action: "created",
+      path: targetSkillMd,
+    };
+  }
+
+  // Generate rendered content with frontmatter and marker
+  const frontmatter = generateFrontmatter(skill);
+
+  // Check if source already has frontmatter - if so, strip it
+  const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
+  const contentWithoutFrontmatter = frontmatterMatch
+    ? sourceContent.slice(frontmatterMatch[0].length)
+    : sourceContent;
+
+  // Build the rendered content
+  const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+
+  // Check if target exists and compare for idempotency
+  // AC: @skill-rendering ac-3 - No changes if content unchanged
+  let targetExists = false;
+  let targetContent = "";
+  try {
+    targetContent = await fs.readFile(targetSkillMd, "utf-8");
+    targetExists = true;
+  } catch {
+    // Target doesn't exist
+  }
+
+  // Determine action based on comparison
+  let action: "created" | "updated" | "unchanged";
+
+  if (!targetExists) {
+    action = "created";
+  } else if (contentsEqual(renderedContent, targetContent)) {
+    action = "unchanged";
+  } else {
+    action = "updated";
+  }
+
+  // Apply changes if not dry run and there are changes
+  if (!dryRun && action !== "unchanged") {
+    await fs.mkdir(targetDir, { recursive: true });
+    await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+  }
+
+  // Handle docs directory
+  // AC: @skill-rendering ac-2 - Copy docs to target
+  const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
+  const targetDocsDir = path.join(targetDir, "docs");
+  let docsAction: "created" | "updated" | "unchanged" | "skipped" = "skipped";
+
+  try {
+    const stats = await fs.stat(sourceDocsDir);
+    if (stats.isDirectory()) {
+      // Check if target docs exist and compare
+      let targetDocsExist = false;
+      try {
+        await fs.stat(targetDocsDir);
+        targetDocsExist = true;
+      } catch {
+        // Target docs don't exist
+      }
+
+      if (!targetDocsExist) {
+        docsAction = "created";
+      } else {
+        // Compare directories
+        const equal = await directoriesEqual(sourceDocsDir, targetDocsDir);
+        docsAction = equal ? "unchanged" : "updated";
+      }
+
+      // Apply changes
+      if (!dryRun && docsAction !== "unchanged") {
+        // Remove existing docs and copy fresh
+        if (targetDocsExist) {
+          await fs.rm(targetDocsDir, { recursive: true, force: true });
+        }
+        await fs.mkdir(targetDocsDir, { recursive: true });
+        await copyDirectory(sourceDocsDir, targetDocsDir);
+      }
+    }
+  } catch {
+    // No source docs directory
+  }
+
+  return {
+    id: skill.id,
+    action,
+    path: targetSkillMd,
+    docsAction,
+  };
+}
+
+// Re-export for testing
+export { renderSkill, isKspecManaged, KSPEC_MANAGED_MARKER };
