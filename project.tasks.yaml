@@ -48768,7 +48768,7 @@
   type: task
   spec_ref: "@skill-cli"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48821,6 +48821,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T02:40:31.036Z
+  closed_reason: "Merged in PR #376. Implemented skill CLI commands (kspec skill list/add/get/delete)
+    with full CRUD operations. All 8 acceptance criteria covered by 29 tests. Includes origin/tag
+    filtering, dependency checking, and JSON output support."
 - _ulid: 01KHFBT0JVM5TJ9NG3X9RRRJSN
   slugs:
     - implement-skill-add-command
