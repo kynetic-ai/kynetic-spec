@@ -17,6 +17,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
+import yaml from "yaml";
 import { markMutating } from "../command-annotations.js";
 import {
   deleteMetaItem,
@@ -559,4 +560,206 @@ export function registerSkillCommands(program: Command): void {
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // AC: @skill-import ac-1 through ac-7 - kspec skill import
+  markMutating(skill.command("import <file>"))
+    .description("Import an existing SKILL.md file into kspec")
+    .option("--id <id>", "Custom skill ID (defaults to directory name)")
+    .option("--name <name>", "Skill name (required if no frontmatter)")
+    .option("--description <desc>", "Skill description (required if no frontmatter)")
+    .option(
+      "--origin <origin>",
+      "Skill origin (core, project, local)",
+      "project",
+    )
+    .option("--skill-version <version>", "Skill version")
+    .action(async (file: string, options) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        // Resolve file path
+        const filePath = path.isAbsolute(file)
+          ? file
+          : path.resolve(process.cwd(), file);
+
+        // Check file exists
+        try {
+          await fs.access(filePath);
+        } catch {
+          error(`File not found: ${filePath}`);
+          process.exit(EXIT_CODES.NOT_FOUND);
+        }
+
+        // Read file content
+        const content = await fs.readFile(filePath, "utf-8");
+
+        // AC: @skill-import ac-1, ac-6 - Parse YAML frontmatter
+        const frontmatter = parseFrontmatter(content);
+
+        // Determine name and description from frontmatter or options
+        const skillName = options.name || frontmatter?.name;
+        const skillDescription = options.description || frontmatter?.description;
+
+        // AC: @skill-import ac-6 - Error if no name/description and no frontmatter
+        if (!skillName) {
+          error("Name is required. Either add YAML frontmatter with 'name' field or use --name option.");
+          console.log(chalk.gray("Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---"));
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        if (!skillDescription) {
+          error("Description is required. Either add YAML frontmatter with 'description' field or use --description option.");
+          console.log(chalk.gray("Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---"));
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // AC: @skill-import ac-5 - Derive ID from directory name or use custom
+        const sourceDir = path.dirname(filePath);
+        const derivedId = path.basename(sourceDir);
+        const skillId = options.id || derivedId;
+
+        // Validate origin
+        const validOrigins: SkillOrigin[] = ["core", "project", "local"];
+        if (!validOrigins.includes(options.origin as SkillOrigin)) {
+          error(
+            `Invalid origin: ${options.origin}. Valid origins: ${validOrigins.join(", ")}`,
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        // Check if skill with this ID already exists
+        const metaCtx = await loadMetaContext(ctx);
+        const existingSkill = metaCtx.skills.find((s) => s.id === skillId);
+        if (existingSkill) {
+          error(`Skill with ID '${skillId}' already exists. Use --id to specify a different ID.`);
+          process.exit(EXIT_CODES.CONFLICT);
+        }
+
+        // Build skill object
+        const skillData: Skill = {
+          _ulid: ulid(),
+          id: skillId,
+          name: skillName,
+          description: skillDescription,
+          origin: options.origin as SkillOrigin,
+          version: options.skillVersion,
+          platforms: ["claude-code"],
+          depends_on: [],
+          tags: [],
+        };
+
+        // Validate with schema
+        const parsed = SkillSchema.safeParse(skillData);
+        if (!parsed.success) {
+          const issues = parsed.error.issues
+            .map((i) => `${i.path.join(".")}: ${i.message}`)
+            .join("; ");
+          error(`Invalid skill data: ${issues}`);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        const skill: LoadedSkill = { ...parsed.data };
+
+        // Save meta entry (also creates directory)
+        await saveMetaItem(ctx, skill, "skill");
+
+        // AC: @skill-import ac-7 - Strip/normalize base-directory paths
+        const normalizedContent = normalizeBaseDirectory(content);
+
+        // AC: @skill-import ac-2 - Copy content to .kspec/skills/<id>/SKILL.md
+        const skillMdPath = getSkillContentPath(ctx, skill.id);
+        await fs.writeFile(skillMdPath, normalizedContent, "utf-8");
+
+        // AC: @skill-import ac-3 - Copy docs/ subdirectory if present
+        const sourceDocsDir = path.join(sourceDir, "docs");
+        try {
+          const docsStats = await fs.stat(sourceDocsDir);
+          if (docsStats.isDirectory()) {
+            const targetDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
+            await fs.mkdir(targetDocsDir, { recursive: true });
+            await copyDirectory(sourceDocsDir, targetDocsDir);
+          }
+        } catch {
+          // No docs directory, that's fine
+        }
+
+        // Commit changes
+        await commitIfShadow(ctx.shadow, "skill-import", skill.id, skill.name);
+
+        output(skill, () =>
+          success(`Imported skill: ${skill.id}`, { skill }),
+        );
+      } catch (err) {
+        error("Failed to import skill", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Parse YAML frontmatter from markdown content.
+ * Returns null if no valid frontmatter found.
+ */
+function parseFrontmatter(content: string): { name?: string; description?: string } | null {
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+  const match = content.match(frontmatterRegex);
+
+  if (!match) {
+    return null;
+  }
+
+  try {
+    const parsed = yaml.parse(match[1]);
+
+    if (typeof parsed === "object" && parsed !== null) {
+      return {
+        name: typeof parsed.name === "string" ? parsed.name : undefined,
+        description: typeof parsed.description === "string" ? parsed.description : undefined,
+      };
+    }
+  } catch {
+    // Invalid YAML in frontmatter
+  }
+
+  return null;
+}
+
+/**
+ * Normalize base-directory paths in skill content.
+ * AC: @skill-import ac-7 - Strip or convert absolute paths to relative.
+ *
+ * Matches patterns like:
+ * - "Base directory for this skill: /absolute/path/to/skill"
+ * - Lines starting with hardcoded paths
+ */
+function normalizeBaseDirectory(content: string): string {
+  // Remove or normalize "Base directory for this skill:" lines with absolute paths
+  // Common pattern in Claude-generated skill files
+  const baseDirLineRegex = /^Base directory for this skill:.*$/gm;
+
+  return content.replace(baseDirLineRegex, "");
+}
+
+/**
+ * Recursively copy a directory
+ */
+async function copyDirectory(src: string, dest: string): Promise<void> {
+  const entries = await fs.readdir(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+
+    if (entry.isDirectory()) {
+      await fs.mkdir(destPath, { recursive: true });
+      await copyDirectory(srcPath, destPath);
+    } else {
+      await fs.copyFile(srcPath, destPath);
+    }
+  }
 }
