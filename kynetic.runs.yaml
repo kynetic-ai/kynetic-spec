@@ -3828,6 +3828,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-15T07:39:37.404Z
+    completed_at: 2026-02-15T07:40:29.060Z
     step_results:
       - step_index: 0
         status: completed
@@ -3855,4 +3856,11 @@ runs:
         completed_at: 2026-02-15T07:40:29.060Z
         notes: Nothing to capture. Session completed cleanly without friction.
     initiated_by: "@claude"
-    completed_at: 2026-02-15T07:40:29.060Z
+  - _ulid: 01KHHEADP5487JP40A7DJYX2CF
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-15T20:01:54.885Z
+    step_results: []
+    initiated_by: "@claude"
