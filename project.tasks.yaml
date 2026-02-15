@@ -49204,6 +49204,10 @@
   plan_ref: "@plan-portable-agent-integration-infrastructure"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #384. Implemented skill drift detection with SHA256 hash-based
+    comparison. All 5 ACs covered: ac-1 (in-sync detection), ac-2 (drift detection), ac-3 (skip
+    drifted without --force), ac-4 (overwrite with --force), ac-5 (hash storage in
+    .kspec/skills/<id>/.render-hash). 16 new tests added."
   depends_on:
     - "@implement-skill-rendering-pipeline"
   context: []
@@ -49212,6 +49216,7 @@
   vcs_refs: []
   created_at: 2026-02-15T00:39:32.888Z
   started_at: 2026-02-15T04:33:43.086Z
+  completed_at: 2026-02-15T04:51:05.170Z
   notes:
     - _ulid: 01KHFBT28RP5HYPE4P8KQAEENY
       created_at: 2026-02-15T00:39:32.888Z
@@ -49240,11 +49245,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T04:51:05.170Z
-  closed_reason: "Merged in PR #384. Implemented skill drift detection with SHA256 hash-based
-    comparison. All 5 ACs covered: ac-1 (in-sync detection), ac-2 (drift detection), ac-3 (skip
-    drifted without --force), ac-4 (overwrite with --force), ac-5 (hash storage in
-    .kspec/skills/<id>/.render-hash). 16 new tests added."
 - _ulid: 01KHFBT2G2RN6SAET6BC1JBJ0W
   slugs:
     - implement-agent-instruction-generation
@@ -49252,7 +49252,7 @@
   type: task
   spec_ref: "@agent-instruction-gen"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -49268,6 +49268,7 @@
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-15T04:51:47.294Z
 - _ulid: 01KHFBT2QCG2K52WNXF7AM6329
   slugs:
     - implement-agents-cli-commands
