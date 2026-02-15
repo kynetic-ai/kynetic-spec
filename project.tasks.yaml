@@ -48841,14 +48841,48 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:31.163Z
+  started_at: 2026-02-15T02:41:08.157Z
   notes:
     - _ulid: 01KHFBT0JVYMM3WFQYMBKS32DN
       created_at: 2026-02-15T00:39:31.163Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFK1QQHBHRCM7V9FSV401MS
+      created_at: 2026-02-15T02:46:04.273Z
+      author: "@claude"
+      content: >-
+        Implemented --content-file option for skill add command:
+
+
+        - ac-1: Meta entry created in manifest skills array (existing behavior)
+
+        - ac-2: Auto-committed to shadow branch via commitIfShadow (existing behavior)
+
+        - ac-3: Added --content-file option - reads file and copies contents to
+        .kspec/skills/<id>/SKILL.md
+
+        - ac-4: Origin set correctly (existing behavior)
+
+        - ac-5: Version set correctly (existing behavior)
+
+        - ac-6: Duplicate ID error (existing behavior)
+
+
+        Added 4 tests specific to @skill-add spec:
+
+        - should copy content from --content-file to SKILL.md
+
+        - should handle relative path for --content-file
+
+        - should error when --content-file does not exist
+
+        - should set origin and version when --origin core --skill-version provided
+
+
+        Note: daemon-executable.test.ts has a pre-existing failure unrelated to this change.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T02:41:08.157Z
 - _ulid: 01KHFBT0TWW3AEQ3KKJB0RQCE3
   slugs:
     - implement-skill-set-command
