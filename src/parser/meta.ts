@@ -538,6 +538,7 @@ export function getSkillContentPath(ctx: KspecContext, skillId: string): string 
 /**
  * Load skill content from the SKILL.md file.
  * AC: @skill-meta-type ac-3 - loadSkillContent returns full markdown content
+ * AC: @skill-content-model ac-1 - loadSkillContent returns markdown content as a string
  */
 export async function loadSkillContent(
   ctx: KspecContext,
@@ -550,6 +551,63 @@ export async function loadSkillContent(
   } catch {
     return null;
   }
+}
+
+/**
+ * Skill doc object returned by loadSkillDocs.
+ * AC: @skill-content-model ac-2
+ */
+export interface SkillDoc {
+  /** File name (e.g., "quickref.md") */
+  name: string;
+  /** Full file path */
+  path: string;
+  /** File content */
+  content: string;
+}
+
+/**
+ * Get the docs directory path for a skill.
+ * Skills can have supporting docs at .kspec/skills/<id>/docs/
+ */
+export function getSkillDocsPath(ctx: KspecContext, skillId: string): string {
+  return path.join(ctx.specDir, "skills", skillId, "docs");
+}
+
+/**
+ * Load skill documentation files from the docs/ subdirectory.
+ * AC: @skill-content-model ac-2 - loadSkillDocs returns array of doc objects
+ */
+export async function loadSkillDocs(
+  ctx: KspecContext,
+  skill: LoadedSkill,
+): Promise<SkillDoc[]> {
+  const docsPath = getSkillDocsPath(ctx, skill.id);
+  const docs: SkillDoc[] = [];
+
+  try {
+    const entries = await fs.readdir(docsPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.endsWith(".md")) {
+        const filePath = path.join(docsPath, entry.name);
+        try {
+          const content = await fs.readFile(filePath, "utf-8");
+          docs.push({
+            name: entry.name,
+            path: filePath,
+            content,
+          });
+        } catch {
+          // Skip files that can't be read
+        }
+      }
+    }
+  } catch {
+    // docs directory doesn't exist or can't be read
+  }
+
+  return docs;
 }
 
 // Re-export the getMetaItemType function

@@ -18,7 +18,7 @@ import {
   UlidSchema,
   WorkflowSchema,
 } from "../schema/index.js";
-import { findMetaManifest, loadMetaContext } from "./meta.js";
+import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedSkill } from "./meta.js";
 import { loadPlans } from "./plans.js";
 import {
   ReferenceIndex,
@@ -1232,6 +1232,38 @@ export function checkACSchemaReferences(
 }
 
 // ============================================================
+// SKILL CONTENT VALIDATION
+// ============================================================
+
+/**
+ * Validate that skill meta entries have corresponding SKILL.md files.
+ * AC: @skill-content-model ac-3 - missing content file reports validation error
+ */
+async function validateSkillContentFiles(
+  ctx: KspecContext,
+  skills: LoadedSkill[],
+): Promise<SchemaValidationError[]> {
+  const errors: SchemaValidationError[] = [];
+
+  for (const skill of skills) {
+    const contentPath = getSkillContentPath(ctx, skill.id);
+
+    try {
+      await fs.access(contentPath);
+    } catch {
+      // File doesn't exist - report validation error
+      errors.push({
+        file: skill._sourceFile || "kynetic.meta.yaml",
+        path: `skills.${skill.id}`,
+        message: `Skill '${skill.id}' is missing content file at ${contentPath}`,
+      });
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================
 // AUTOMATION VALIDATION
 // ============================================================
 
@@ -1471,6 +1503,12 @@ export async function validate(
       }
       result.schemaErrors.push(...metaErrors);
       result.stats.filesChecked++;
+
+      // AC: @skill-content-model ac-3 - validate skill content files exist
+      if (metaCtx.skills.length > 0) {
+        const skillContentErrors = await validateSkillContentFiles(ctx, metaCtx.skills);
+        result.schemaErrors.push(...skillContentErrors);
+      }
     }
   }
 
