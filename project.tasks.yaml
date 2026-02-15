@@ -48515,14 +48515,40 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:29.674Z
+  started_at: 2026-02-15T00:59:29.218Z
   notes:
     - _ulid: 01KHFBSZ4AM2XFGZEDFN5F7CA9
       created_at: 2026-02-15T00:39:29.674Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFDD1ARNZBZQ2WA1FCNR7ZC
+      created_at: 2026-02-15T01:07:23.096Z
+      author: "@claude"
+      content: |-
+        Implemented Skill as the 5th meta item type:
+
+        - Added SkillSchema with id, name, description, origin (core|project|local), version, tags
+        - Added skills array to MetaManifestSchema  
+        - Updated MetaContext to include skills array
+        - Added LoadedSkill interface with _sourceFile runtime metadata
+        - Implemented loadSkillContent() to read .kspec/skills/<id>/SKILL.md
+        - Implemented getSkillContentPath() helper
+        - Updated findMetaItemByRef() to include skills in search (by id, ULID, ULID prefix)
+        - Updated getMetaItemType() to discriminate skills by origin field
+        - Updated isMetaItemType() and getMetaStats() to include skills
+        - Added default skills: [] to manifest creation functions
+
+        17 tests covering all 7 ACs:
+        - ac-1: MetaManifestSchema validates skill entries
+        - ac-2: SkillSchema validates origin and version
+        - ac-3: loadSkillContent returns full SKILL.md content  
+        - ac-4: loadMetaContext populates skills with _sourceFile
+        - ac-5: findMetaItemByRef returns skill by semantic id
+        - ac-6: findMetaItemByRef returns skill by ULID prefix
+        - ac-7: getMetaItemType discriminates by origin field
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T00:59:29.218Z
 - _ulid: 01KHFBSZCD7BAVSXRKQMNMEVQX
   slugs:
     - implement-skill-schema-definition
