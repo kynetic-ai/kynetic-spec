@@ -2707,6 +2707,10 @@ modules:
                 given: a SKILL.md without YAML frontmatter
                 when: import is run without --name and --description flags
                 then: an error is shown indicating name and description are required
+              - id: ac-7
+                given: an imported SKILL.md contains a hardcoded base-directory path in its content
+                when: import completes
+                then: the base-directory line is stripped or normalized to a relative path
             depends_on: []
             implements: []
             relates_to: []
@@ -3071,6 +3075,10 @@ modules:
             given: --status flag is provided
             when: output is inspected
             then: hooks status, skills rendered count, and agents.md freshness are shown
+          - id: ac-9
+            given: kspec setup completes in a project configured for ralph loop mode
+            when: the installed skills are checked
+            then: skills referenced by ralph prompts (task-work, reflect) are present
         depends_on: []
         implements: []
         relates_to: []
@@ -3208,6 +3216,10 @@ modules:
                 given: a consumer installs @kynetic-ai/spec globally
                 when: kspec skill install-core is run in their project
                 then: core skills are found in the package templates directory and installed successfully
+              - id: ac-4
+                given: npm pack is run
+                when: the package hooks/ contents are inspected
+                then: the pre-commit hook source file is included in the package
             depends_on: []
             implements: []
             relates_to: []
