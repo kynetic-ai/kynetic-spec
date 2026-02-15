@@ -3013,6 +3013,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.282Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHFBSYRQ6EMFFS6E21KFSG9P
             slugs:
               - agent-templates
