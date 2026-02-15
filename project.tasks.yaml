@@ -49955,6 +49955,17 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Merged in PR #396. Extended SkillSchema with portable Agent Skills fields:
+
+    - Added license, compatibility, allowed_tools, metadata fields
+
+    - Added platform_config with ClaudeCodeConfigSchema and CodexConfigSchema (strict)
+
+    - PlatformConfigSchema uses passthrough for future extensibility
+
+    - All 7 ACs verified with 27 tests covering schema validation, strict mode, passthrough, and
+    backward compatibility
   depends_on:
     - "@implement-consolidate-skill-render-implementations"
   context: []
@@ -49963,6 +49974,7 @@
   vcs_refs: []
   created_at: 2026-02-15T22:40:42.899Z
   started_at: 2026-02-15T23:38:11.212Z
+  completed_at: 2026-02-15T23:54:51.141Z
   notes:
     - _ulid: 01KHHQD6CM3Y09M88W5DGRCGR2
       created_at: 2026-02-15T22:40:42.900Z
@@ -50053,18 +50065,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-15T23:54:51.141Z
-  closed_reason: >-
-    Merged in PR #396. Extended SkillSchema with portable Agent Skills fields:
-
-    - Added license, compatibility, allowed_tools, metadata fields
-
-    - Added platform_config with ClaudeCodeConfigSchema and CodexConfigSchema (strict)
-
-    - PlatformConfigSchema uses passthrough for future extensibility
-
-    - All 7 ACs verified with 27 tests covering schema validation, strict mode, passthrough, and
-    backward compatibility
 - _ulid: 01KHHQD6N46R44E8QEVNGP5JPV
   slugs:
     - implement-claude-code-renderer-extended-frontmatte
@@ -50238,7 +50238,7 @@
   type: task
   spec_ref: "@import-frontmatter-strip"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50269,6 +50269,7 @@
         Tests: tests/skill-cli.test.ts (import describe block)
   todos: []
   automation: eligible
+  started_at: 2026-02-15T23:55:18.785Z
 - _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
   slugs:
     - implement-supporting-files-convention
