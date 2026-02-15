@@ -5715,4 +5715,35 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHFCMD893TQMFJWQY84RR59C
+    type: success
+    content: "Parallel subagent research pattern: launching 4+ research agents simultaneously on
+      different aspects of the same question (cross-project audit, usage patterns, external
+      ecosystem, install story) produced comprehensive non-overlapping findings in ~6 minutes. Much
+      more effective than sequential investigation."
+    created_at: 2026-02-15T00:53:56.105Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHFCMDBFRWBZ1P7NFFH8J7RA
+    type: success
+    content: "Dual-reviewer pattern for plans: having both an internal holistic reviewer (Claude) and an
+      external reviewer (Codex) independently review the same plan catches complementary issues.
+      Internal finds code-level integration problems, external finds architectural concerns. Both
+      agreed on the same critical issues (compound ACs, inline YAML). Three revision cycles (v1
+      reviewed v2 reviewed v3) produced significantly stronger output."
+    created_at: 2026-02-15T00:53:56.207Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHFCMDEATQ0R2Q4WW4979DQA
+    type: success
+    content: "Iterative clarifying questions with ask tool: asking one question at a time with 3-4
+      concrete options (each with descriptions) before synthesizing research into a plan led to
+      well-informed decisions. User could respond quickly because each question had enough context
+      from the research. Better than presenting a full plan and asking for feedback."
+    created_at: 2026-02-15T00:53:56.298Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 includes: []
