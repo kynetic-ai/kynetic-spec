@@ -48610,7 +48610,7 @@
   type: task
   spec_ref: "@skill-content-model"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48645,6 +48645,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T01:48:24.622Z
+  closed_reason: |-
+    Merged in PR #373. Implemented Skill File-Based Content Model:
+
+    - ac-1: loadSkillContent returns markdown content from .kspec/skills/<id>/SKILL.md
+    - ac-2: loadSkillDocs returns array of SkillDoc objects from .kspec/skills/<id>/docs/*.md 
+    - ac-3: validateSkillContentFiles reports validation errors for skills missing SKILL.md
+
+    All 3 acceptance criteria have test coverage (12 tests total).
 - _ulid: 01KHFBSZWNZE7HG2N735T2R5QF
   slugs:
     - implement-skill-parser-integration
