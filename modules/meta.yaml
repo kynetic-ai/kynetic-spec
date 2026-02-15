@@ -2928,6 +2928,9 @@ modules:
             traits: []
             notes: []
             created: 2026-02-15T00:39:29.244Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KHFBSYQEHW19496JPTP3XC70
         slugs:
           - agent-instruction-gen
