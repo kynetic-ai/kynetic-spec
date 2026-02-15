@@ -49393,14 +49393,38 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T00:39:33.874Z
+  started_at: 2026-02-15T05:42:37.780Z
   notes:
     - _ulid: 01KHFBT37JTQWXN31EG6C62CZ3
       created_at: 2026-02-15T00:39:33.875Z
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    - _ulid: 01KHFX93RMKGWHDYH90K6RDDB6
+      created_at: 2026-02-15T05:44:51.732Z
+      author: "@claude"
+      content: >-
+        Implemented auto-generated data sections as library functions:
+
+
+        - ac-1: generateSkillsTable returns markdown table with skill name, description, and
+        invocation
+
+        - ac-2: generateConventionsSummary returns markdown section listing each domain with its
+        rules  
+
+        - ac-3: generateWorkflowsSummary returns markdown section listing each workflow with its
+        trigger
+
+
+        Created src/parser/agent-data-sections.ts with exported library functions.
+
+        Added 18 tests in tests/agent-data-sections.test.ts with @agent-data-sections AC
+        annotations.
+
+        Updated CLI (agents.ts) to use library functions instead of local implementations.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T05:42:37.780Z
 - _ulid: 01KHFBT3F2YAV61SZDY2ASVS6M
   slugs:
     - implement-enhanced-setup-command
