@@ -48943,7 +48943,7 @@
   type: task
   spec_ref: "@skill-import"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-cli-commands"
@@ -48981,6 +48981,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T03:23:28.607Z
+  closed_reason: "Merged in PR #379. Implemented skill import command with all 7 ACs covered: YAML
+    frontmatter parsing, content/docs copying, --origin/--id/--name/--description options, error
+    guidance for missing metadata, and base-directory path stripping. Added 17 tests."
 - _ulid: 01KHFBT1A8E3KEWDZTPH8GBPBE
   slugs:
     - implement-skill-meta-integration
