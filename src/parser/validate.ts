@@ -12,6 +12,7 @@ import {
   ManifestSchema,
   MetaManifestSchema,
   ObservationSchema,
+  SkillSchema,
   SpecItemSchema,
   TaskSchema,
   TasksFileSchema,
@@ -113,6 +114,7 @@ export interface ValidationResult {
     workflows: number;
     conventions: number;
     observations: number;
+    skills: number;
   };
 }
 
@@ -431,6 +433,44 @@ async function validateMetaManifestFile(
             errors.push({
               file: filePath,
               path: `observations[${i}]._ulid`,
+              message: "Invalid ULID format (expected 26 characters)",
+            });
+          }
+        }
+      }
+    }
+
+    // AC: @skill-validation ac-4 - validate each skill with strict ULID validation
+    if (
+      raw &&
+      typeof raw === "object" &&
+      "skills" in raw &&
+      Array.isArray((raw as Record<string, unknown>).skills)
+    ) {
+      const skills = (raw as Record<string, unknown>).skills as unknown[];
+      for (let i = 0; i < skills.length; i++) {
+        const skill = skills[i];
+        const skillResult = SkillSchema.safeParse(skill);
+        if (!skillResult.success) {
+          for (const issue of skillResult.error.issues) {
+            errors.push({
+              file: filePath,
+              path: `skills[${i}].${issue.path.join(".")}`,
+              message: issue.message,
+              details: issue,
+            });
+          }
+        }
+
+        // Strict ULID validation
+        if (skill && typeof skill === "object" && "_ulid" in skill) {
+          const ulidResult = UlidSchema.safeParse(
+            (skill as Record<string, unknown>)._ulid,
+          );
+          if (!ulidResult.success) {
+            errors.push({
+              file: filePath,
+              path: `skills[${i}]._ulid`,
               message: "Invalid ULID format (expected 26 characters)",
             });
           }
@@ -1312,6 +1352,97 @@ function checkAutomationEligibility(
 }
 
 // ============================================================
+// SKILL VALIDATION
+// ============================================================
+
+/**
+ * Validate skill depends_on references
+ * AC: @skill-validation ac-2 - broken depends_on ref reports warning
+ */
+function validateSkillDependsOn(
+  skills: LoadedSkill[],
+  index: ReferenceIndex,
+): RefValidationWarning[] {
+  const warnings: RefValidationWarning[] = [];
+
+  for (const skill of skills) {
+    if (!skill.depends_on || skill.depends_on.length === 0) {
+      continue;
+    }
+
+    for (const depRef of skill.depends_on) {
+      const result = index.resolve(depRef);
+      if (!result.ok) {
+        warnings.push({
+          ref: depRef,
+          sourceFile: skill._sourceFile,
+          sourceUlid: skill._ulid,
+          field: "depends_on",
+          warning: "deprecated_target", // Reuse warning type for broken refs
+          message: `Skill '${skill.id}' depends_on reference '${depRef}' cannot be resolved`,
+        });
+      } else {
+        // Check that the resolved item is actually a skill (has origin field)
+        const resolvedItem = result.item as { origin?: string };
+        if (!("origin" in resolvedItem)) {
+          warnings.push({
+            ref: depRef,
+            sourceFile: skill._sourceFile,
+            sourceUlid: skill._ulid,
+            field: "depends_on",
+            warning: "deprecated_target",
+            message: `Skill '${skill.id}' depends_on reference '${depRef}' points to non-skill item`,
+          });
+        }
+      }
+    }
+  }
+
+  return warnings;
+}
+
+/**
+ * Find orphaned skill directories (directories with no corresponding meta entry)
+ * AC: @skill-validation ac-3 - orphaned directory reports warning
+ */
+async function findOrphanedSkillDirectories(
+  ctx: KspecContext,
+  skills: LoadedSkill[],
+): Promise<RefValidationWarning[]> {
+  const warnings: RefValidationWarning[] = [];
+  const skillsDir = path.join(ctx.specDir, "skills");
+
+  try {
+    // Check if skills directory exists
+    await fs.access(skillsDir);
+
+    // Read all directories in skills/
+    const entries = await fs.readdir(skillsDir, { withFileTypes: true });
+    const directories = entries.filter(entry => entry.isDirectory());
+
+    // Build set of skill IDs from meta
+    const skillIds = new Set(skills.map(s => s.id));
+
+    // Find orphaned directories
+    for (const dir of directories) {
+      if (!skillIds.has(dir.name)) {
+        warnings.push({
+          ref: `@${dir.name}`,
+          sourceFile: path.join(skillsDir, dir.name),
+          field: "directory",
+          warning: "deprecated_target", // Reuse warning type
+          message: `Orphaned skill directory '${dir.name}' has no corresponding meta entry`,
+        });
+      }
+    }
+  } catch {
+    // Skills directory doesn't exist - that's fine
+  }
+
+  return warnings;
+}
+
+// ============================================================
 // MAIN VALIDATION
 // ============================================================
 
@@ -1430,6 +1561,7 @@ export async function validate(
     ...metaCtx.workflows,
     ...metaCtx.conventions,
     ...metaCtx.observations,
+    ...metaCtx.skills, // Include skills for reference indexing
   ];
 
   // Load plans for reference validation
@@ -1453,6 +1585,10 @@ export async function validate(
     const refResult = validateRefs(index, allTasks, allItems);
     result.refErrors = refResult.errors;
     result.refWarnings = refResult.warnings;
+
+    // AC: @skill-validation ac-2 - validate skill depends_on references
+    const skillDependsOnWarnings = validateSkillDependsOn(metaCtx.skills, index);
+    result.refWarnings.push(...skillDependsOnWarnings);
 
     // AC: @trait-edge-cases ac-2
     // Detect circular trait references
@@ -1492,6 +1628,7 @@ export async function validate(
       workflows: metaCtx.workflows.length,
       conventions: metaCtx.conventions.length,
       observations: metaCtx.observations.length,
+      skills: metaCtx.skills.length,
     };
 
     // Validate meta manifest schema with strict ULID validation
@@ -1509,6 +1646,10 @@ export async function validate(
         const skillContentErrors = await validateSkillContentFiles(ctx, metaCtx.skills);
         result.schemaErrors.push(...skillContentErrors);
       }
+
+      // AC: @skill-validation ac-3 - detect orphaned skill directories
+      const orphanedSkillWarnings = await findOrphanedSkillDirectories(ctx, metaCtx.skills);
+      result.refWarnings.push(...orphanedSkillWarnings);
     }
   }
 
