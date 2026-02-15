@@ -2930,7 +2930,7 @@ modules:
             created: 2026-02-15T00:39:29.244Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KHFBSYQEHW19496JPTP3XC70
         slugs:
           - agent-instruction-gen
