@@ -9,8 +9,15 @@
  * AC: @claude-code-renderer ac-2 - rendered output has YAML frontmatter delimiters with name and description fields
  * AC: @claude-code-renderer ac-3 - skill body content appears verbatim below frontmatter
  * AC: @claude-code-renderer ac-4 - rendered files appear as unstaged changes on main branch
+ *
+ * AC: @skill-drift-detection ac-1 - Skill shows as in-sync when not manually edited
+ * AC: @skill-drift-detection ac-2 - Skill shows as drifted when manually edited
+ * AC: @skill-drift-detection ac-5 - Render hash stored in .kspec/skills/<id>/.render-hash
+ *
+ * AC: @consolidate-skill-render ac-3 - hash/drift functions exported from this module
  */
 
+import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "yaml";
@@ -37,6 +44,8 @@ export interface ClaudeCodeRenderResult {
 export interface RenderSkillOptions {
   /** If true, don't write files, just return what would be done */
   dryRun?: boolean;
+  /** If true, store a hash of the rendered content for drift detection */
+  storeHash?: boolean;
 }
 
 /**
@@ -48,7 +57,7 @@ export const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
  * Generate YAML frontmatter for a skill.
  * AC: @claude-code-renderer ac-2 - YAML frontmatter with name and description fields
  */
-function generateFrontmatter(skill: LoadedSkill): string {
+export function generateFrontmatter(skill: LoadedSkill): string {
   const frontmatter: Record<string, unknown> = {
     name: skill.id,
     description: skill.description || skill.name,
@@ -88,6 +97,86 @@ async function copyDirectory(src: string, dest: string): Promise<void> {
       await fs.copyFile(srcPath, destPath);
     }
   }
+}
+
+/**
+ * Compute SHA256 hash of content
+ * AC: @skill-drift-detection ac-5 - Hash computation for render tracking
+ */
+export function computeContentHash(content: string): string {
+  return crypto.createHash("sha256").update(content, "utf-8").digest("hex");
+}
+
+/**
+ * Get the path to the render hash file for a skill
+ * AC: @skill-drift-detection ac-5 - Hash stored in .kspec/skills/<id>/.render-hash
+ * AC: @consolidate-skill-render ac-3 - exported from skill-render.ts
+ */
+export function getRenderHashPath(specDir: string, skillId: string): string {
+  return path.join(specDir, "skills", skillId, ".render-hash");
+}
+
+/**
+ * Read the stored render hash for a skill
+ * AC: @skill-drift-detection ac-5 - Read hash from .kspec/skills/<id>/.render-hash
+ * AC: @consolidate-skill-render ac-3 - exported from skill-render.ts
+ */
+export async function readRenderHash(specDir: string, skillId: string): Promise<string | null> {
+  try {
+    const hashPath = getRenderHashPath(specDir, skillId);
+    const content = await fs.readFile(hashPath, "utf-8");
+    return content.trim();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Write the render hash for a skill
+ * AC: @skill-drift-detection ac-5 - Store hash in .kspec/skills/<id>/.render-hash
+ * AC: @consolidate-skill-render ac-3 - exported from skill-render.ts
+ */
+export async function writeRenderHash(specDir: string, skillId: string, hash: string): Promise<void> {
+  const hashPath = getRenderHashPath(specDir, skillId);
+  await fs.mkdir(path.dirname(hashPath), { recursive: true });
+  await fs.writeFile(hashPath, hash + "\n", "utf-8");
+}
+
+/**
+ * Check if a rendered skill has drifted from its last render
+ * AC: @skill-drift-detection ac-1, ac-2 - Drift detection via hash comparison
+ * AC: @consolidate-skill-render ac-3 - exported from skill-render.ts
+ *
+ * Returns:
+ * - "not-rendered": Rendered file doesn't exist
+ * - "in-sync": Rendered file matches stored hash
+ * - "drifted": Rendered file differs from stored hash (manually edited)
+ * - "no-hash": Rendered file exists but no stored hash (first render or hash deleted)
+ */
+export async function checkSkillDrift(
+  specDir: string,
+  projectRoot: string,
+  skillId: string
+): Promise<"not-rendered" | "in-sync" | "drifted" | "no-hash"> {
+  const renderedPath = path.join(projectRoot, ".claude", "skills", skillId, "SKILL.md");
+
+  // Check if rendered file exists
+  let renderedContent: string;
+  try {
+    renderedContent = await fs.readFile(renderedPath, "utf-8");
+  } catch {
+    return "not-rendered";
+  }
+
+  // Get stored hash
+  const storedHash = await readRenderHash(specDir, skillId);
+  if (!storedHash) {
+    return "no-hash";
+  }
+
+  // Compare hashes
+  const currentHash = computeContentHash(renderedContent);
+  return currentHash === storedHash ? "in-sync" : "drifted";
 }
 
 /**
@@ -161,6 +250,7 @@ export async function renderClaudeCodeSkill(
   options: RenderSkillOptions = {},
 ): Promise<ClaudeCodeRenderResult> {
   const dryRun = options.dryRun ?? false;
+  const storeHash = options.storeHash ?? false;
   const targetDir = getRenderedSkillPath(projectRoot, skill.id);
   const targetSkillMd = path.join(targetDir, "SKILL.md");
 
@@ -176,6 +266,11 @@ export async function renderClaudeCodeSkill(
     if (!dryRun) {
       await fs.mkdir(targetDir, { recursive: true });
       await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+      // AC: @skill-drift-detection ac-5 - Store hash of rendered output
+      if (storeHash) {
+        const hash = computeContentHash(renderedContent);
+        await writeRenderHash(ctx.specDir, skill.id, hash);
+      }
     }
 
     return {
@@ -222,6 +317,11 @@ export async function renderClaudeCodeSkill(
   if (!dryRun && action !== "unchanged") {
     await fs.mkdir(targetDir, { recursive: true });
     await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+    // AC: @skill-drift-detection ac-5 - Store hash of rendered output
+    if (storeHash) {
+      const hash = computeContentHash(renderedContent);
+      await writeRenderHash(ctx.specDir, skill.id, hash);
+    }
   }
 
   // Handle docs directory

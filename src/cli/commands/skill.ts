@@ -21,7 +21,6 @@
  * AC: @core-skill-update ac-3 - skills with origin custom/project not touched
  */
 
-import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
@@ -45,6 +44,16 @@ import {
   type Skill,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import {
+  checkSkillDrift,
+  computeContentHash,
+  generateFrontmatter,
+  isKspecManagedSkill as isKspecManaged,
+  KSPEC_MANAGED_MARKER,
+  readRenderHash,
+  renderClaudeCodeSkill,
+  type ClaudeCodeRenderResult,
+} from "../../parser/skill-render.js";
 import { SkillSchema, type SkillOrigin } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -779,6 +788,7 @@ export function registerSkillCommands(program: Command): void {
 
         // Render each skill
         // AC: @skill-drift-detection ac-3, ac-4 - Check drift and skip without --force
+        // AC: @consolidate-skill-render ac-1 - delegates to renderClaudeCodeSkill from skill-render.ts
         for (const skill of skillsToRender) {
           // Check for drift before rendering
           const driftStatus = await checkSkillDrift(ctx.specDir, projectRoot, skill.id);
@@ -802,7 +812,11 @@ export function registerSkillCommands(program: Command): void {
           }
 
           // AC: @skill-drift-detection ac-4 - Render (overwrite) when --force is used
-          const result = await renderSkill(ctx, projectRoot, skill, dryRun);
+          // AC: @consolidate-skill-render ac-1 - use renderClaudeCodeSkill with storeHash
+          const result = await renderClaudeCodeSkill(ctx, projectRoot, skill, {
+            dryRun,
+            storeHash: true,
+          });
           results.push(result);
         }
 
@@ -1642,14 +1656,9 @@ async function copyDirectory(src: string, dest: string): Promise<void> {
 }
 
 /**
- * Marker comment that identifies skill directories managed by kspec
- * AC: @skill-rendering ac-4 - Only skill directories that were rendered by kspec are considered
- */
-const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
-
-/**
  * Result of rendering a single skill
  * AC: @skill-drift-detection ac-3 - Includes "skipped" action for drifted skills
+ * AC: @consolidate-skill-render ac-2 - No private renderSkill function, uses imported renderClaudeCodeSkill
  */
 interface SkillRenderResult {
   id: string;
@@ -1671,111 +1680,10 @@ interface CleanResult {
 }
 
 /**
- * Generate YAML frontmatter for a skill
- * AC: @skill-rendering ac-1 - .claude/skills/<id>/SKILL.md is created with YAML frontmatter
- */
-function generateFrontmatter(skill: LoadedSkill): string {
-  const frontmatter: Record<string, unknown> = {
-    name: skill.id,
-    description: skill.description || skill.name,
-  };
-  return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
-}
-
-/**
  * Check if two contents are equal (for idempotency check)
  */
 function contentsEqual(a: string, b: string): boolean {
   return a.trim() === b.trim();
-}
-
-/**
- * Check if a directory is managed by kspec
- * AC: @skill-rendering ac-4 - Only skill directories rendered by kspec are considered
- */
-async function isKspecManaged(skillMdPath: string): Promise<boolean> {
-  try {
-    const content = await fs.readFile(skillMdPath, "utf-8");
-    return content.includes(KSPEC_MANAGED_MARKER);
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Compute SHA256 hash of content
- * AC: @skill-drift-detection ac-5 - Hash computation for render tracking
- */
-function computeContentHash(content: string): string {
-  return crypto.createHash("sha256").update(content, "utf-8").digest("hex");
-}
-
-/**
- * Get the path to the render hash file for a skill
- * AC: @skill-drift-detection ac-5 - Hash stored in .kspec/skills/<id>/.render-hash
- */
-function getRenderHashPath(specDir: string, skillId: string): string {
-  return path.join(specDir, "skills", skillId, ".render-hash");
-}
-
-/**
- * Read the stored render hash for a skill
- * AC: @skill-drift-detection ac-5 - Read hash from .kspec/skills/<id>/.render-hash
- */
-async function readRenderHash(specDir: string, skillId: string): Promise<string | null> {
-  try {
-    const hashPath = getRenderHashPath(specDir, skillId);
-    const content = await fs.readFile(hashPath, "utf-8");
-    return content.trim();
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Write the render hash for a skill
- * AC: @skill-drift-detection ac-5 - Store hash in .kspec/skills/<id>/.render-hash
- */
-async function writeRenderHash(specDir: string, skillId: string, hash: string): Promise<void> {
-  const hashPath = getRenderHashPath(specDir, skillId);
-  await fs.mkdir(path.dirname(hashPath), { recursive: true });
-  await fs.writeFile(hashPath, hash + "\n", "utf-8");
-}
-
-/**
- * Check if a rendered skill has drifted from its last render
- * AC: @skill-drift-detection ac-1, ac-2 - Drift detection via hash comparison
- *
- * Returns:
- * - "not-rendered": Rendered file doesn't exist
- * - "in-sync": Rendered file matches stored hash
- * - "drifted": Rendered file differs from stored hash (manually edited)
- * - "no-hash": Rendered file exists but no stored hash (first render or hash deleted)
- */
-async function checkSkillDrift(
-  specDir: string,
-  projectRoot: string,
-  skillId: string
-): Promise<"not-rendered" | "in-sync" | "drifted" | "no-hash"> {
-  const renderedPath = path.join(projectRoot, ".claude", "skills", skillId, "SKILL.md");
-
-  // Check if rendered file exists
-  let renderedContent: string;
-  try {
-    renderedContent = await fs.readFile(renderedPath, "utf-8");
-  } catch {
-    return "not-rendered";
-  }
-
-  // Get stored hash
-  const storedHash = await readRenderHash(specDir, skillId);
-  if (!storedHash) {
-    return "no-hash";
-  }
-
-  // Compare hashes
-  const currentHash = computeContentHash(renderedContent);
-  return currentHash === storedHash ? "in-sync" : "drifted";
 }
 
 /**
@@ -1823,141 +1731,6 @@ async function directoriesEqual(src: string, dest: string): Promise<boolean> {
   } catch {
     return false;
   }
-}
-
-/**
- * Get the target path for rendered skills (main branch .claude/skills/)
- */
-function getRenderedSkillPath(projectRoot: string, skillId: string): string {
-  return path.join(projectRoot, ".claude", "skills", skillId);
-}
-
-/**
- * Render a single skill from shadow branch to main branch.
- * AC: @skill-rendering ac-1 - Creates .claude/skills/<id>/SKILL.md with YAML frontmatter
- * AC: @skill-rendering ac-2 - Copies docs to .claude/skills/<id>/docs/
- * AC: @skill-rendering ac-3 - Idempotent (no changes if content unchanged)
- */
-async function renderSkill(
-  ctx: KspecContext,
-  projectRoot: string,
-  skill: LoadedSkill,
-  dryRun: boolean
-): Promise<SkillRenderResult> {
-  const targetDir = getRenderedSkillPath(projectRoot, skill.id);
-  const targetSkillMd = path.join(targetDir, "SKILL.md");
-
-  // Load source content
-  const sourceContent = await loadSkillContent(ctx, skill);
-  if (!sourceContent) {
-    // No source content, but skill exists in meta - create placeholder
-    const frontmatter = generateFrontmatter(skill);
-    const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
-
-    if (!dryRun) {
-      await fs.mkdir(targetDir, { recursive: true });
-      await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
-      // AC: @skill-drift-detection ac-5 - Store hash of rendered output
-      const hash = computeContentHash(renderedContent);
-      await writeRenderHash(ctx.specDir, skill.id, hash);
-    }
-
-    return {
-      id: skill.id,
-      action: "created",
-      path: targetSkillMd,
-    };
-  }
-
-  // Generate rendered content with frontmatter and marker
-  const frontmatter = generateFrontmatter(skill);
-
-  // Check if source already has frontmatter - if so, strip it
-  const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
-  const contentWithoutFrontmatter = frontmatterMatch
-    ? sourceContent.slice(frontmatterMatch[0].length)
-    : sourceContent;
-
-  // Build the rendered content
-  const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
-
-  // Check if target exists and compare for idempotency
-  // AC: @skill-rendering ac-3 - No changes if content unchanged
-  let targetExists = false;
-  let targetContent = "";
-  try {
-    targetContent = await fs.readFile(targetSkillMd, "utf-8");
-    targetExists = true;
-  } catch {
-    // Target doesn't exist
-  }
-
-  // Determine action based on comparison
-  let action: "created" | "updated" | "unchanged";
-
-  if (!targetExists) {
-    action = "created";
-  } else if (contentsEqual(renderedContent, targetContent)) {
-    action = "unchanged";
-  } else {
-    action = "updated";
-  }
-
-  // Apply changes if not dry run and there are changes
-  if (!dryRun && action !== "unchanged") {
-    await fs.mkdir(targetDir, { recursive: true });
-    await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
-    // AC: @skill-drift-detection ac-5 - Store hash of rendered output
-    const hash = computeContentHash(renderedContent);
-    await writeRenderHash(ctx.specDir, skill.id, hash);
-  }
-
-  // Handle docs directory
-  // AC: @skill-rendering ac-2 - Copy docs to target
-  const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
-  const targetDocsDir = path.join(targetDir, "docs");
-  let docsAction: "created" | "updated" | "unchanged" | "skipped" = "skipped";
-
-  try {
-    const stats = await fs.stat(sourceDocsDir);
-    if (stats.isDirectory()) {
-      // Check if target docs exist and compare
-      let targetDocsExist = false;
-      try {
-        await fs.stat(targetDocsDir);
-        targetDocsExist = true;
-      } catch {
-        // Target docs don't exist
-      }
-
-      if (!targetDocsExist) {
-        docsAction = "created";
-      } else {
-        // Compare directories
-        const equal = await directoriesEqual(sourceDocsDir, targetDocsDir);
-        docsAction = equal ? "unchanged" : "updated";
-      }
-
-      // Apply changes
-      if (!dryRun && docsAction !== "unchanged") {
-        // Remove existing docs and copy fresh
-        if (targetDocsExist) {
-          await fs.rm(targetDocsDir, { recursive: true, force: true });
-        }
-        await fs.mkdir(targetDocsDir, { recursive: true });
-        await copyDirectory(sourceDocsDir, targetDocsDir);
-      }
-    }
-  } catch {
-    // No source docs directory
-  }
-
-  return {
-    id: skill.id,
-    action,
-    path: targetSkillMd,
-    docsAction,
-  };
 }
 
 /**
@@ -2187,10 +1960,13 @@ function generateUnifiedDiff(
 }
 
 // Re-export for testing
+// Re-export for testing
+// AC: @consolidate-skill-render ac-1, ac-2, ac-3 - renderClaudeCodeSkill, isKspecManaged, KSPEC_MANAGED_MARKER
+// are now imported from skill-render.ts and re-exported here for API compatibility
 export {
-  renderSkill,
   isKspecManaged,
   KSPEC_MANAGED_MARKER,
+  renderClaudeCodeSkill,
   getSkillSyncStatus,
   getExpectedRenderedContent,
   generateUnifiedDiff,
