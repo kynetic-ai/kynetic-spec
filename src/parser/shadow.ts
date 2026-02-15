@@ -13,7 +13,11 @@ import { exec, execSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
 import { isBatchMode } from "../cli/batch-context.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const execAsync = promisify(exec);
 
@@ -1055,11 +1059,21 @@ items: []
 }
 
 /**
+ * Get the kspec package root directory.
+ * Navigates from dist/parser/ to package root.
+ */
+function getPackageRoot(): string {
+  return path.resolve(__dirname, "..", "..");
+}
+
+/**
  * Install pre-commit hook to protect kspec-meta branch.
  * Hook prevents direct commits to shadow branch unless KSPEC_SHADOW_COMMIT=1.
  *
  * Note: Git worktrees use hooks from the main .git/hooks directory (via commondir),
  * not from .git/worktrees/-kspec/hooks. So we install to main hooks directory.
+ *
+ * The hook source is located in the kspec package's templates/hooks/ directory.
  *
  * @param projectRoot Git repository root
  * @returns true if hook was installed, false if already exists
@@ -1067,10 +1081,13 @@ items: []
 async function installShadowHook(projectRoot: string): Promise<boolean> {
   const hooksDir = path.join(projectRoot, ".git", "hooks");
   const hookPath = path.join(hooksDir, "pre-commit");
-  const sourceHookPath = path.join(projectRoot, "hooks", "pre-commit");
+
+  // Look for hook in package templates directory
+  const packageRoot = getPackageRoot();
+  const sourceHookPath = path.join(packageRoot, "templates", "hooks", "pre-commit");
 
   try {
-    // Check if source hook exists
+    // Check if source hook exists in package templates
     try {
       await fs.access(sourceHookPath);
     } catch {
@@ -1087,7 +1104,7 @@ async function installShadowHook(projectRoot: string): Promise<boolean> {
       // Hook doesn't exist - install it
     }
 
-    // Copy hook from source
+    // Copy hook from package templates
     const hookContent = await fs.readFile(sourceHookPath, "utf-8");
     await fs.writeFile(hookPath, hookContent, { mode: 0o755 });
     return true;

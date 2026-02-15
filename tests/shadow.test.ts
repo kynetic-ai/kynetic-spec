@@ -764,9 +764,11 @@ describe('Shadow Branch', () => {
           path.join(worktreeDir, tasksFile),
           '\n# Local change\n'
         );
+        // Must set KSPEC_SHADOW_COMMIT=1 to authorize commit to shadow branch
         execSync('git add -A && git commit -m "Local change"', {
           cwd: worktreeDir,
           stdio: 'pipe',
+          env: { ...process.env, KSPEC_SHADOW_COMMIT: '1' },
         });
       }
 
@@ -1157,13 +1159,12 @@ describe('Shadow Branch', () => {
   });
 
   // Shadow hook installation and authorization tests
+  // AC: @package-distribution ac-4 - pre-commit hook source included in package
   describe('installShadowHook', () => {
     it('installs pre-commit hook during shadow initialization', async () => {
-      // Setup: Create source hook file
-      const hooksSourceDir = path.join(testDir, 'hooks');
-      const sourceHookPath = path.join(hooksSourceDir, 'pre-commit');
-      await fs.mkdir(hooksSourceDir, { recursive: true });
-      await fs.writeFile(sourceHookPath, '#!/bin/sh\necho "test hook"\nexit 0\n', { mode: 0o755 });
+      // The pre-commit hook is now loaded from the package templates directory
+      // (templates/hooks/pre-commit), not from the project root.
+      // This test verifies that the hook from the package gets installed.
 
       // Initialize git repo with initial commit
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
@@ -1172,7 +1173,7 @@ describe('Shadow Branch', () => {
       await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
       execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
 
-      // Initialize shadow - should install hook
+      // Initialize shadow - should install hook from package templates
       const result = await initializeShadow(testDir);
       expect(result.success).toBe(true);
 
@@ -1180,7 +1181,9 @@ describe('Shadow Branch', () => {
       const installedHookPath = path.join(testDir, '.git', 'hooks', 'pre-commit');
       try {
         const hookContent = await fs.readFile(installedHookPath, 'utf-8');
-        expect(hookContent).toBe('#!/bin/sh\necho "test hook"\nexit 0\n');
+        // Hook should contain the kspec-meta branch protection logic
+        expect(hookContent).toContain('kspec-meta branch protection');
+        expect(hookContent).toContain('KSPEC_SHADOW_COMMIT');
 
         // Verify hook is executable
         const stats = await fs.stat(installedHookPath);
@@ -1191,15 +1194,8 @@ describe('Shadow Branch', () => {
     });
 
     it('blocks unauthorized commits to shadow branch', async () => {
-      // Setup with real kspec pre-commit hook
-      const realHookPath = path.resolve(__dirname, '../hooks/pre-commit');
-      const hooksSourceDir = path.join(testDir, 'hooks');
-      const sourceHookPath = path.join(hooksSourceDir, 'pre-commit');
-
-      await fs.mkdir(hooksSourceDir, { recursive: true });
-      // Copy the real hook
-      const realHookContent = await fs.readFile(realHookPath, 'utf-8');
-      await fs.writeFile(sourceHookPath, realHookContent, { mode: 0o755 });
+      // The pre-commit hook is now loaded from the package templates directory.
+      // This test verifies the hook blocks unauthorized commits to the shadow branch.
 
       // Initialize git repo
       execSync('git init', { cwd: testDir, stdio: 'pipe' });
