@@ -49758,6 +49758,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T22:40:42.375Z
+  started_at: 2026-02-15T23:01:29.660Z
   notes:
     - _ulid: 01KHHQD5W78QFJG065NFV2NPZJ
       created_at: 2026-02-15T22:40:42.375Z
@@ -49782,9 +49783,33 @@
         1. Verify it still imports from skill-render.ts correctly (should be unchanged)
 
         Tests: npm test -- tests/skill-rendering.test.ts tests/skill-cli.test.ts --run
+    - _ulid: 01KHHRZD2WQ23F8THT38113MWQ
+      created_at: 2026-02-15T23:08:08.157Z
+      author: "@claude"
+      content: >-
+        Implemented consolidation of skill render implementations:
+
+
+        1. Moved hash/drift functions to skill-render.ts:
+           - computeContentHash, getRenderHashPath, readRenderHash, writeRenderHash, checkSkillDrift
+           - All exported from skill-render.ts (AC-3)
+
+        2. Extended renderClaudeCodeSkill with storeHash option:
+           - When storeHash: true, renders and stores hash for drift detection
+           - CLI uses storeHash: true, setup.ts uses default (false) - maintains backward compatibility
+
+        3. Updated CLI skill render command:
+           - Now imports and delegates to renderClaudeCodeSkill from skill-render.ts (AC-1)
+           - Removed private renderSkill function (AC-2)
+           - Removed ~200 lines of duplicate code
+
+        4. Verified setup.ts still works correctly (AC-4)
+
+
+        5. All 206 existing tests pass without modification (AC-5)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-15T23:01:29.660Z
 - _ulid: 01KHHQD64NTFBWFNCC2MDNHA4B
   slugs:
     - implement-platform-renderer-contract
