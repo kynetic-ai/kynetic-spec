@@ -49541,7 +49541,7 @@
   type: task
   spec_ref: "@core-skill-install"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-enhanced-setup-command"
@@ -49591,6 +49591,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T06:53:00.840Z
+  closed_reason: "Merged in PR #390. Implemented kspec skill install-core command to copy core skill
+    definitions from the kspec npm package templates/ directory into projects. All 5 ACs
+    implemented: meta entries created with origin 'core' and 'core' tag (ac-1), SKILL.md content
+    copied from templates to .kspec/skills/<id>/ (ac-2), custom/project skills skipped with message
+    (ac-3), --force flag overwrites custom forks (ac-4), version matches kspec package version
+    (ac-5). 18 tests added covering all acceptance criteria."
 - _ulid: 01KHFBT45N5HA4AYTQK9490HCV
   slugs:
     - implement-core-skill-update
