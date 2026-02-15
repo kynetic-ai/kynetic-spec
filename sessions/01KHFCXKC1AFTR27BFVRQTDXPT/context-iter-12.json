@@ -1,0 +1,348 @@
+{
+  "generated_at": "2026-02-15T03:52:51.215Z",
+  "branch": "feat/skill-rendering-pipeline",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHFBT1J",
+      "title": "Implement Skill Rendering Pipeline",
+      "started_at": "2026-02-15T03:39:35.219Z",
+      "priority": 3,
+      "spec_ref": "@skill-rendering",
+      "note_count": 2,
+      "last_note_at": "2026-02-15T03:51:07.975Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHFBT1J",
+      "task_title": "Implement Skill Rendering Pipeline",
+      "task_status": "pending_review",
+      "note_ulid": "01KHFPRV",
+      "created_at": "2026-02-15T03:51:07.975Z",
+      "author": "@claude",
+      "content": "Implemented skill rendering pipeline with all acceptance criteria:\n\n- ac-1: kspec skill render creates .claude/skills/<id>/SKILL.md with YAML frontmatter\n- ac-2: docs copied from .kspec/skills/<id>/docs/ to .claude/skills/<id>/docs/\n- ac-3: Idempotent rendering - no changes if content unchanged\n- ac-4: --clean only considers kspec-managed skills (identified by marker)\n- ac-5: --clean removes orphaned managed skill directories\n\nAdditional features:\n- --dry-run support (from @trait-dry-run)\n- --skill <id> to render specific skill\n- Platform filtering (only claude-code skills rendered)\n- Handles missing source SKILL.md with placeholder\n- Strips existing frontmatter and replaces with generated\n\nAdded 21 tests covering all acceptance criteria and edge cases."
+    },
+    {
+      "task_ref": "01KHFBT1A",
+      "task_title": "Implement Skill Meta Integration",
+      "task_status": "completed",
+      "note_ulid": "01KHFNHM",
+      "created_at": "2026-02-15T03:29:42.418Z",
+      "author": "@claude",
+      "content": "Implemented skill meta integration with all acceptance criteria:\n\n- ac-1: kspec meta get @skill-id returns skill metadata (by id or ULID prefix)\n- ac-2: kspec meta list --type skill shows only skills\n- ac-3: kspec meta show includes skill count in summary\n- ac-4: resolveMetaRefToUlid includes skills in resolution\n\nChanges:\n- Updated resolveMetaRefToUlid() to check skills array (by id or ULID prefix)\n- Updated meta get command to find skills\n- Updated meta list command to filter/include skills\n- Updated formatMetaShow() to display skill count\n\nAdded 12 tests covering all acceptance criteria in skill-meta-integration.test.ts"
+    },
+    {
+      "task_ref": "01KHFBT12",
+      "task_title": "Implement Skill Import Command",
+      "task_status": "completed",
+      "note_ulid": "01KHFMK9",
+      "created_at": "2026-02-15T03:13:08.511Z",
+      "author": "@claude",
+      "content": "Implemented skill import command with all acceptance criteria:\n\n- ac-1: YAML frontmatter parsing for name/description extraction\n- ac-2: Content copied to .kspec/skills/<id>/SKILL.md\n- ac-3: docs/ subdirectory copied recursively if present\n- ac-4: --origin option sets origin field (default: project)\n- ac-5: --id option allows custom ID (default: directory name)\n- ac-6: Error with guidance when no frontmatter and no --name/--description\n- ac-7: Base-directory lines stripped from imported content\n\nHelper functions:\n- parseFrontmatter(): extracts name/description from YAML frontmatter\n- normalizeBaseDirectory(): strips absolute path lines\n- copyDirectory(): recursive directory copy\n\nAdded 17 tests covering all 7 acceptance criteria in skill import section."
+    },
+    {
+      "task_ref": "01KHFBT0T",
+      "task_title": "Implement Skill Set Command",
+      "task_status": "completed",
+      "note_ulid": "01KHFKWB",
+      "created_at": "2026-02-15T03:00:36.044Z",
+      "author": "@claude",
+      "content": "Implemented skill set command with all acceptance criteria:\n\n- ac-1: --description option updates description field in meta\n- ac-2: --add-platform adds platform to platforms array (no duplicates)\n- ac-3: --add-tag adds tag to tags array (no duplicates)\n\nAdditional features beyond AC requirements:\n- --name, --origin, --skill-version for updating other fields\n- --remove-platform, --remove-tag for removing items from arrays\n- --add-depends-on, --remove-depends-on for managing dependencies\n- Schema validation on save\n- ULID prefix lookup support\n\nAdded 19 tests specific to skill set command covering all ACs."
+    },
+    {
+      "task_ref": "01KHFBT0J",
+      "task_title": "Implement Skill Add Command",
+      "task_status": "completed",
+      "note_ulid": "01KHFK1Q",
+      "created_at": "2026-02-15T02:46:04.273Z",
+      "author": "@claude",
+      "content": "Implemented --content-file option for skill add command:\n\n- ac-1: Meta entry created in manifest skills array (existing behavior)\n- ac-2: Auto-committed to shadow branch via commitIfShadow (existing behavior)\n- ac-3: Added --content-file option - reads file and copies contents to .kspec/skills/<id>/SKILL.md\n- ac-4: Origin set correctly (existing behavior)\n- ac-5: Version set correctly (existing behavior)\n- ac-6: Duplicate ID error (existing behavior)\n\nAdded 4 tests specific to @skill-add spec:\n- should copy content from --content-file to SKILL.md\n- should handle relative path for --content-file\n- should error when --content-file does not exist\n- should set origin and version when --origin core --skill-version provided\n\nNote: daemon-executable.test.ts has a pre-existing failure unrelated to this change."
+    },
+    {
+      "task_ref": "01KHFBT1J",
+      "task_title": "Implement Skill Rendering Pipeline",
+      "task_status": "pending_review",
+      "note_ulid": "01KHFBT1",
+      "created_at": "2026-02-15T00:39:32.191Z",
+      "author": "@claude",
+      "content": "See plan @plan-portable-agent-integration-infrastructure for implementation notes"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHFBT2G",
+      "title": "Implement Agent Instruction Generation",
+      "priority": 3,
+      "spec_ref": "@agent-instruction-gen",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHFBT1A",
+      "title": "Implement Skill Meta Integration",
+      "completed_at": "2026-02-15T03:38:48.238Z",
+      "closed_reason": "Merged in PR #380. Implemented skill meta integration - kspec meta get/list/show now include skills. All 4 acceptance criteria covered with 12 tests."
+    },
+    {
+      "ref": "01KHFBT12",
+      "title": "Implement Skill Import Command",
+      "completed_at": "2026-02-15T03:23:28.607Z",
+      "closed_reason": "Merged in PR #379. Implemented skill import command with all 7 ACs covered: YAML frontmatter parsing, content/docs copying, --origin/--id/--name/--description options, error guidance for missing metadata, and base-directory path stripping. Added 17 tests."
+    },
+    {
+      "ref": "01KHFBT0T",
+      "title": "Implement Skill Set Command",
+      "completed_at": "2026-02-15T03:09:47.055Z",
+      "closed_reason": "Merged in PR #378. Implemented skill set command with --description (ac-1), --add-platform (ac-2), and --add-tag (ac-3) options. All 3 ACs have test coverage verified. Additional options include --name, --origin, --skill-version, --remove-platform, --remove-tag, and dependency management."
+    },
+    {
+      "ref": "01KHFBT0J",
+      "title": "Implement Skill Add Command",
+      "completed_at": "2026-02-15T02:55:22.012Z",
+      "closed_reason": "Merged in PR #377. Implemented --content-file option for skill add command with full AC coverage: ac-1 (meta entry created), ac-2 (shadow branch auto-commit), ac-3 (--content-file copies to SKILL.md), ac-4/ac-5 (origin and version set correctly), ac-6 (duplicate ID error). Added 4 tests specific to @skill-add spec."
+    },
+    {
+      "ref": "01KHFBT0B",
+      "title": "Implement Skill CLI Commands",
+      "completed_at": "2026-02-15T02:40:31.036Z",
+      "closed_reason": "Merged in PR #376. Implemented skill CLI commands (kspec skill list/add/get/delete) with full CRUD operations. All 8 acceptance criteria covered by 29 tests. Includes origin/tag filtering, dependency checking, and JSON output support."
+    },
+    {
+      "ref": "01KHFBT04",
+      "title": "Implement Skill Validation",
+      "completed_at": "2026-02-15T02:22:43.280Z",
+      "closed_reason": "Merged in PR #375. Implemented skill validation with 4 ACs: missing content file validation (ac-1), depends_on reference validation (ac-2), orphaned skill directory detection (ac-3), and schema validation (ac-4). Added 14 tests covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBSZW",
+      "title": "Implement Skill Parser Integration",
+      "completed_at": "2026-02-15T02:03:22.850Z",
+      "closed_reason": "Merged in PR #374. Implemented skill parser integration: saveMetaItem/deleteMetaItem now support 'skill' type with directory creation/deletion. All 6 ACs covered with 14 tests."
+    },
+    {
+      "ref": "01KHFBSZK",
+      "title": "Implement Skill File-Based Content Model",
+      "completed_at": "2026-02-15T01:48:24.622Z",
+      "closed_reason": "Merged in PR #373. Implemented Skill File-Based Content Model:\n\n- ac-1: loadSkillContent returns markdown content from .kspec/skills/<id>/SKILL.md\n- ac-2: loadSkillDocs returns array of SkillDoc objects from .kspec/skills/<id>/docs/*.md \n- ac-3: validateSkillContentFiles reports validation errors for skills missing SKILL.md\n\nAll 3 acceptance criteria have test coverage (12 tests total)."
+    },
+    {
+      "ref": "01KHFBSZC",
+      "title": "Implement Skill Schema Definition",
+      "completed_at": "2026-02-15T01:31:23.721Z",
+      "closed_reason": "Merged in PR #372. Implemented Skill Schema Definition with all 3 ACs: kebab-case validation for skill ID (ac-1), required_error for missing ID (ac-2), and platforms default to ['claude-code'] (ac-3). Added depends_on field for skill dependencies. 10 tests covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBSZ4",
+      "title": "Implement Skill Meta Type",
+      "completed_at": "2026-02-15T01:16:20.782Z",
+      "closed_reason": "Merged in PR #371. Implemented Skill as the 5th meta item type:\n\n- Added SkillSchema with id, name, description, origin (core|project|local), version, tags\n- Added skills array to MetaManifestSchema\n- Implemented loadSkillContent() to read .kspec/skills/<id>/SKILL.md\n- Added LoadedSkill interface with _sourceFile runtime metadata\n- Updated findMetaItemByRef() to include skills in search\n- Updated getMetaItemType() to discriminate skills by origin field\n- All 7 acceptance criteria have test coverage (17 tests)"
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "ca138ef",
+      "full_hash": "ca138efbb6093d1cb4c99a3ae4ebe87bf6c96985",
+      "date": "2026-02-15T03:51:40.000Z",
+      "message": "feat: implement skill rendering pipeline for kspec",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "14c5f0d",
+      "full_hash": "14c5f0d68a489a9c2f2107fa7d0047abbaf20e5f",
+      "date": "2026-02-15T03:38:40.000Z",
+      "message": "feat: integrate skills into kspec meta commands (#380)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c089221",
+      "full_hash": "c08922177be0df728871223575cd1555aff7025c",
+      "date": "2026-02-15T03:30:03.000Z",
+      "message": "feat: integrate skills into kspec meta commands",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "821bc16",
+      "full_hash": "821bc1662b450128acfa612ca263e443134bba91",
+      "date": "2026-02-15T03:23:18.000Z",
+      "message": "feat: implement skill import command for kspec (#379)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "44f656c",
+      "full_hash": "44f656c3587ef852c8eacb8cf6097f24a0761a11",
+      "date": "2026-02-15T03:13:55.000Z",
+      "message": "feat: implement skill import command for kspec",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "02b3d5f",
+      "full_hash": "02b3d5fb7025d88d081ced43efbf2332d02a50c5",
+      "date": "2026-02-15T03:09:34.000Z",
+      "message": "feat: implement skill set command for metadata updates (#378)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "66dfda7",
+      "full_hash": "66dfda7804ba8e96a37e73b49f1fe8fdd5ae8950",
+      "date": "2026-02-15T03:00:53.000Z",
+      "message": "feat: implement skill set command for metadata updates",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9b13eea",
+      "full_hash": "9b13eea8f516a2cca66d066530341ff68ed26115",
+      "date": "2026-02-15T02:55:13.000Z",
+      "message": "feat: add --content-file option to skill add command (#377)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ea2527e",
+      "full_hash": "ea2527e6cdc8539faad5388fc5c1b37950ca4776",
+      "date": "2026-02-15T02:46:21.000Z",
+      "message": "feat: add --content-file option to skill add command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1e8bf24",
+      "full_hash": "1e8bf24349cd3d50af6f681f0deab5651c8111cd",
+      "date": "2026-02-15T02:40:23.000Z",
+      "message": "feat: implement skill CLI commands for kspec (#376)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 511,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 15,
+    "blocked": 0,
+    "completed": 467,
+    "inbox_items": 34
+  }
+}
