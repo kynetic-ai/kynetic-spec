@@ -335,3 +335,11 @@ inbox:
     created_at: 2026-02-15T00:50:18.899Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHG6EPY1DS89DZYY818JAV89
+    text: "Tech debt: setup.ts has duplicated step logic between runSetupPipeline() and
+      registerSetupCommand() handler. Command handler should call runSetupPipeline(). Also 13 bare
+      catch blocks (4 wrapping entire operations), dead deprecated _installClaudeCodeStopHook(), 168
+      lines inline bash. From ralph loop audit."
+    created_at: 2026-02-15T08:25:12.385Z
+    tags: []
+    added_by: "@claude"
