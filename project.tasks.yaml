@@ -48521,6 +48521,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBSZCD7BAVSXRKQMNMEVQX
   slugs:
     - implement-skill-schema-definition
@@ -48543,6 +48544,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBSZKZ74MJB2EA8H00KMQ1
   slugs:
     - implement-skill-file-based-content-model
@@ -48565,6 +48567,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBSZWNZE7HG2N735T2R5QF
   slugs:
     - implement-skill-parser-integration
@@ -48587,6 +48590,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT047WE8N3AJAGK24PPJJ
   slugs:
     - implement-skill-validation
@@ -48609,6 +48613,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT0BFQMH8RGEYYVX931TF
   slugs:
     - implement-skill-cli-commands
@@ -48631,6 +48636,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT0JVM5TJ9NG3X9RRRJSN
   slugs:
     - implement-skill-add-command
@@ -48653,6 +48659,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT0TWW3AEQ3KKJB0RQCE3
   slugs:
     - implement-skill-set-command
@@ -48675,6 +48682,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT12P9VGPJ8RQ90117QJV
   slugs:
     - implement-skill-import-command
@@ -48697,6 +48705,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT1A8E3KEWDZTPH8GBPBE
   slugs:
     - implement-skill-meta-integration
@@ -48719,6 +48728,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT1JZSSV1SAVVQJTZE3E5
   slugs:
     - implement-skill-rendering-pipeline
@@ -48741,6 +48751,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT1T269EZJ20K34FWBSSJ
   slugs:
     - implement-skill-render-cli
@@ -48763,6 +48774,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT21F2S7QF8CSDNC9FDXV
   slugs:
     - implement-claude-code-skill-renderer
@@ -48785,6 +48797,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT28RGKFXDAERP9F47FZT
   slugs:
     - implement-skill-drift-detection
@@ -48807,6 +48820,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT2G2RN6SAET6BC1JBJ0W
   slugs:
     - implement-agent-instruction-generation
@@ -48829,6 +48843,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT2QCG2K52WNXF7AM6329
   slugs:
     - implement-agents-cli-commands
@@ -48851,6 +48866,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT2Z4P78QGWV6B19K138P
   slugs:
     - implement-agent-template-system
@@ -48873,6 +48889,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT37JBJ7D1FQ80FFNY7PD
   slugs:
     - implement-auto-generated-data-sections
@@ -48895,6 +48912,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT3F2YAV61SZDY2ASVS6M
   slugs:
     - implement-enhanced-setup-command
@@ -48918,6 +48936,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT3PNP2VFYNNCSEPXMJ7S
   slugs:
     - implement-full-hook-installation
@@ -48940,6 +48959,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT3Y0MBQ6YX7MT9524X23
   slugs:
     - implement-core-skill-installation
@@ -48962,6 +48982,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT45N5HA4AYTQK9490HCV
   slugs:
     - implement-core-skill-update
@@ -48984,6 +49005,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT4D5NHPNKKWH9H1Z37G9
   slugs:
     - implement-package-distribution
@@ -49006,6 +49028,7 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KHFBT4MF5PXSDE74AVCDK40B
   slugs:
     - implement-init-setup-integration
@@ -49028,3 +49051,4 @@
       author: "@claude"
       content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
   todos: []
+  automation: eligible
