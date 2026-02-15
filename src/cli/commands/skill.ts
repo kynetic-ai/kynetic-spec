@@ -174,6 +174,7 @@ export function registerSkillCommands(program: Command): void {
     });
 
   // AC: @skill-cli ac-3, ac-4 - kspec skill add
+  // AC: @skill-add ac-3 - --content-file copies existing file to SKILL.md
   markMutating(skill.command("add"))
     .description("Create a new skill")
     .requiredOption("--id <id>", "Skill ID (kebab-case)")
@@ -188,6 +189,7 @@ export function registerSkillCommands(program: Command): void {
     .option("--platform <platform...>", "Target platforms")
     .option("--tag <tag...>", "Tags for the skill")
     .option("--depends-on <ref...>", "Skill dependencies")
+    .option("--content-file <path>", "Path to existing file to use as SKILL.md content")
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -252,8 +254,28 @@ export function registerSkillCommands(program: Command): void {
         await saveMetaItem(ctx, skill, "skill");
 
         // AC: @skill-cli ac-4 - create SKILL.md with placeholder content
+        // AC: @skill-add ac-3 - if --content-file provided, copy its contents
         const skillMdPath = getSkillContentPath(ctx, skill.id);
-        const initialContent = `# ${skill.name}\n\n${skill.description || "Add skill content here."}\n`;
+        let initialContent: string;
+
+        if (options.contentFile) {
+          // Read content from the specified file
+          const contentFilePath = path.isAbsolute(options.contentFile)
+            ? options.contentFile
+            : path.resolve(process.cwd(), options.contentFile);
+
+          try {
+            initialContent = await fs.readFile(contentFilePath, "utf-8");
+          } catch (err) {
+            // Clean up: remove the skill we just created
+            await deleteMetaItem(ctx, skill._ulid, "skill");
+            error(`Failed to read content file: ${contentFilePath}`);
+            process.exit(EXIT_CODES.ERROR);
+          }
+        } else {
+          initialContent = `# ${skill.name}\n\n${skill.description || "Add skill content here."}\n`;
+        }
+
         await fs.writeFile(skillMdPath, initialContent, "utf-8");
 
         // Commit changes
