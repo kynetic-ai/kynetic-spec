@@ -3182,7 +3182,7 @@ modules:
             created: 2026-02-15T00:39:29.371Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KHFBSYVHX9QTTD7E508HM9C0
             slugs:
               - core-skill-install
