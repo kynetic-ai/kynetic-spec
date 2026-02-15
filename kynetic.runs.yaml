@@ -3862,6 +3862,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-15T20:01:54.885Z
+    completed_at: 2026-02-15T20:04:01.315Z
     step_results:
       - step_index: 0
         status: completed
@@ -3916,4 +3917,11 @@ runs:
         completed_at: 2026-02-15T20:04:01.314Z
         notes: Nothing to capture this session.
     initiated_by: "@claude"
-    completed_at: 2026-02-15T20:04:01.315Z
+  - _ulid: 01KHHS1EQ7F19MMWWERRDC6G8G
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-15T23:09:15.368Z
+    step_results: []
+    initiated_by: "@claude"
