@@ -2895,7 +2895,7 @@ modules:
             created: 2026-02-15T00:39:29.225Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KHFBSYPVNXKJWKBPDVHDAR0F
             slugs:
               - skill-drift-detection
