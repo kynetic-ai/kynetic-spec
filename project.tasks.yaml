@@ -49437,7 +49437,7 @@
   type: task
   spec_ref: "@enhanced-setup"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-rendering-pipeline"
@@ -49486,6 +49486,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T06:19:03.216Z
+  closed_reason: "Merged in PR #388. Implemented enhanced setup command with agent detection, hook
+    installation (UserPromptSubmit, Stop, PreToolUse with guard scripts), skill rendering, and
+    kspec-agents.md generation. All 9 ACs covered: --status for current state reporting, --dry-run
+    for planned actions, --skip-skills to skip skill rendering. 19 tests added."
 - _ulid: 01KHFBT3PNP2VFYNNCSEPXMJ7S
   slugs:
     - implement-full-hook-installation
