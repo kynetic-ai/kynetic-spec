@@ -150,6 +150,25 @@ export const ObservationSchema = z.object({
 });
 
 /**
+ * Skill origin - where the skill comes from
+ */
+export const SkillOriginSchema = z.enum(["core", "project", "local"]);
+
+/**
+ * Skill definition - reusable agent capabilities stored in files
+ * Content is stored in .kspec/skills/<id>/SKILL.md
+ */
+export const SkillSchema = z.object({
+  _ulid: MetaUlidSchema,
+  id: z.string().min(1, "Skill ID is required"),
+  name: z.string().min(1, "Skill name is required"),
+  description: z.string().optional(),
+  origin: SkillOriginSchema,
+  version: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+});
+
+/**
  * Session context schema - ephemeral session state
  */
 export const SessionContextSchema = z.object({
@@ -237,6 +256,7 @@ export const MetaManifestSchema = z.object({
   workflows: z.array(WorkflowSchema).default([]),
   conventions: z.array(ConventionSchema).default([]),
   observations: z.array(ObservationSchema).default([]),
+  skills: z.array(SkillSchema).default([]),
   includes: z.array(z.string()).default([]),
 });
 
@@ -254,6 +274,8 @@ export type ConventionValidation = z.infer<typeof ConventionValidationSchema>;
 export type Convention = z.infer<typeof ConventionSchema>;
 export type ObservationType = z.infer<typeof ObservationTypeSchema>;
 export type Observation = z.infer<typeof ObservationSchema>;
+export type SkillOrigin = z.infer<typeof SkillOriginSchema>;
+export type Skill = z.infer<typeof SkillSchema>;
 export type SessionContext = z.infer<typeof SessionContextSchema>;
 export type MetaManifest = z.infer<typeof MetaManifestSchema>;
 export type StepResultStatus = z.infer<typeof StepResultStatusSchema>;
@@ -266,14 +288,16 @@ export type WorkflowRunsFile = z.infer<typeof WorkflowRunsFileSchema>;
 /**
  * Meta item type - union of all meta item types
  */
-export type MetaItem = Agent | Workflow | Convention | Observation;
+export type MetaItem = Agent | Workflow | Convention | Observation | Skill;
 
 /**
  * Determine the type of a meta item
+ * AC: @skill-meta-type ac-7 - skills discriminated by the origin field (unique to skills)
  */
 export function getMetaItemType(
   item: MetaItem,
-): "agent" | "workflow" | "convention" | "observation" {
+): "agent" | "workflow" | "convention" | "observation" | "skill" {
+  if ("origin" in item) return "skill";
   if ("capabilities" in item) return "agent";
   if ("trigger" in item) return "workflow";
   if ("domain" in item) return "convention";
