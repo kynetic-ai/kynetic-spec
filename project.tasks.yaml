@@ -48661,7 +48661,7 @@
   type: task
   spec_ref: "@skill-parser"
   plan_ref: "@plan-portable-agent-integration-infrastructure"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-skill-meta-type"
@@ -48701,6 +48701,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-15T02:03:22.850Z
+  closed_reason: "Merged in PR #374. Implemented skill parser integration: saveMetaItem/deleteMetaItem
+    now support 'skill' type with directory creation/deletion. All 6 ACs covered with 14 tests."
 - _ulid: 01KHFBT047WE8N3AJAGK24PPJJ
   slugs:
     - implement-skill-validation
