@@ -50337,7 +50337,7 @@
   type: task
   spec_ref: "@supporting-files-convention"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50390,6 +50390,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-16T00:34:02.090Z
+  closed_reason: "Merged in PR #398. Implemented supporting files convention with functions for
+    loading skill supporting files (references/, scripts/, assets/, docs/) and proper test coverage
+    for all 4 acceptance criteria."
 - _ulid: 01KHHQD7WW8PA69841EB3TJAYD
   slugs:
     - implement-skill-platform-config-cli

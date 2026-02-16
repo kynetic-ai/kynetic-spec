@@ -1,0 +1,325 @@
+{
+  "generated_at": "2026-02-16T00:17:40.698Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [
+    {
+      "task_ref": "01KHHQD7C",
+      "task_title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "task_status": "completed",
+      "note_ulid": "01KHHWR7",
+      "created_at": "2026-02-16T00:14:07.560Z",
+      "author": "Jacob Chapel",
+      "content": "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    },
+    {
+      "task_ref": "01KHHQD7C",
+      "task_title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "task_status": "completed",
+      "note_ulid": "01KHHW3A",
+      "created_at": "2026-02-16T00:02:42.759Z",
+      "author": "@claude",
+      "content": "Implemented Import Frontmatter Stripping and Full Field Parsing:\n\n1. Expanded parseFrontmatter() to return all Agent Skills fields:\n   - Core: name, description\n   - Portable: license, compatibility, allowed_tools\n   - Claude Code: user_invocable, disable_model_invocation, context, agent, model, argument_hint\n   - Supports both underscore and hyphen naming (user-invocable, user_invocable)\n\n2. Added stripFrontmatter() function to remove frontmatter from content before storing\n\n3. Updated import command to:\n   - Build platform_config.claude_code from frontmatter (AC-3)\n   - Populate license, compatibility, allowed_tools in meta.yaml (AC-1)\n   - Store body-only content without frontmatter (AC-2)\n   - Copy references/, scripts/, assets/ directories (AC-4)\n   - Copy docs/ for backward compatibility (AC-5)\n   - Accept --name and --description flags when no frontmatter (AC-6)\n\n4. Extended skill get command to include new fields in JSON output\n\n11 new tests in tests/skill-cli.test.ts covering all 6 ACs"
+    },
+    {
+      "task_ref": "01KHHQD7C",
+      "task_title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "task_status": "completed",
+      "note_ulid": "01KHHVNY",
+      "created_at": "2026-02-15T23:55:24.257Z",
+      "author": "@claude",
+      "content": "Starting implementation. Reading existing skill import code to understand current state."
+    },
+    {
+      "task_ref": "01KHHQD6C",
+      "task_title": "Implement Extended Skill Schema",
+      "task_status": "completed",
+      "note_ulid": "01KHHV07",
+      "created_at": "2026-02-15T23:43:32.449Z",
+      "author": "@claude",
+      "content": "Implemented Extended Skill Schema:\n\n1. Defined ClaudeCodeConfigSchema (strict):\n   - disable_model_invocation, user_invocable, context, agent, model, argument_hint\n   - All fields optional booleans/strings\n\n2. Defined CodexConfigSchema (strict):\n   - allow_implicit_invocation, display_name, short_description, icon_small, icon_large, brand_color, default_prompt\n   - All fields optional booleans/strings\n\n3. Defined PlatformConfigSchema with passthrough:\n   - claude_code: ClaudeCodeConfigSchema.optional()\n   - codex: CodexConfigSchema.optional()\n   - .passthrough() allows unknown platforms for future extensibility\n\n4. Extended SkillSchema with new optional fields:\n   - license: z.string().optional()\n   - compatibility: z.string().optional()\n   - allowed_tools: z.array(z.string()).default([])\n   - metadata: z.record(z.string(), z.unknown()).optional()\n   - platform_config: PlatformConfigSchema.optional()\n\n5. Exported new types: ClaudeCodeConfig, CodexConfig, PlatformConfig\n\n6. Updated skill.ts to include allowed_tools: [] in 3 places where Skill objects are constructed\n\n27 new tests in tests/skill-schema.test.ts covering all 7 ACs:\n- ac-1: license, compatibility, allowed_tools validation\n- ac-2: claude_code config validation\n- ac-3: codex config validation\n- ac-4: unknown platform passthrough\n- ac-5: strict validation fails for invalid fields\n- ac-6: backward compatibility (no new fields)\n- ac-7: metadata as Record<string, unknown>"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHHQD7M",
+      "title": "Implement Supporting Files Convention",
+      "priority": 3,
+      "spec_ref": "@supporting-files-convention",
+      "tags": []
+    },
+    {
+      "ref": "01KHHQD7W",
+      "title": "Implement Skill Platform Config CLI",
+      "priority": 3,
+      "spec_ref": "@skill-platform-config-cli",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHHQD7C",
+      "title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "completed_at": "2026-02-16T00:15:05.604Z",
+      "closed_reason": "Merged in PR #397. Implemented Import Frontmatter Stripping and Full Field Parsing:\n\n1. Extended parseFrontmatter() to extract all Agent Skills fields (name, description, license, compatibility, allowed_tools)\n2. Added stripFrontmatter() to store body-only content in .kspec/skills/<id>/SKILL.md  \n3. Claude Code platform fields (user_invocable, context, agent, model, argument_hint) populate platform_config.claude_code in meta.yaml\n4. Copies references/, scripts/, assets/ subdirectories during import\n5. Copies docs/ for backward compatibility\n6. --name and --description CLI flags work when no frontmatter present\n\nAll 6 acceptance criteria have test coverage (11 new tests in tests/skill-cli.test.ts)."
+    },
+    {
+      "ref": "01KHHQD6C",
+      "title": "Implement Extended Skill Schema",
+      "completed_at": "2026-02-15T23:54:51.141Z",
+      "closed_reason": "Merged in PR #396. Extended SkillSchema with portable Agent Skills fields:\n- Added license, compatibility, allowed_tools, metadata fields\n- Added platform_config with ClaudeCodeConfigSchema and CodexConfigSchema (strict)\n- PlatformConfigSchema uses passthrough for future extensibility\n- All 7 ACs verified with 27 tests covering schema validation, strict mode, passthrough, and backward compatibility"
+    },
+    {
+      "ref": "01KHHQD64",
+      "title": "Implement Platform Renderer Contract",
+      "completed_at": "2026-02-15T23:37:24.584Z",
+      "closed_reason": "Merged in PR #395. Implemented Platform Renderer Contract:\n\n1. Defined PlatformRenderer interface with platform, defaultOutputDir, render(), and checkDrift() methods\n2. Defined PlatformRenderResult interface with id, platform, action, paths, supportingDirsAction, skipReason\n3. Defined DriftStatus type for drift detection\n4. Implemented supporting directories support (references/, scripts/, assets/, docs/)\n5. Implemented dryRun mode for preview without file writes\n6. Implemented custom outputDir support\n7. Implemented per-platform hash storage (.render-hash-<platform>)\n8. Created renderer registry with getRenderer(), getAllRenderers(), registerRenderer()\n\nAll 6 acceptance criteria covered by 33 tests in tests/platform-renderer.test.ts."
+    },
+    {
+      "ref": "01KHHQD5W",
+      "title": "Implement Consolidate Skill Render Implementations",
+      "completed_at": "2026-02-15T23:18:40.337Z",
+      "closed_reason": "Merged in PR #394. Consolidated skill render implementations by moving hash/drift functions to skill-render.ts, extending renderClaudeCodeSkill with storeHash option, and removing duplicate renderSkill from skill.ts. All 5 ACs verified: CLI delegates to skill-render.ts (AC-1), no private renderSkill (AC-2), hash functions exported from skill-render.ts (AC-3), setup.ts unchanged and working (AC-4), all 116 skill tests pass (AC-5)."
+    },
+    {
+      "ref": "01KHFBT4M",
+      "title": "Implement Init Setup Integration",
+      "completed_at": "2026-02-15T08:47:21.035Z",
+      "closed_reason": "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions and CI compatibility."
+    },
+    {
+      "ref": "01KHFBT4D",
+      "title": "Implement Package Distribution",
+      "completed_at": "2026-02-15T07:32:26.395Z",
+      "closed_reason": "Merged in PR #392. Implemented package distribution for templates directory: created templates/hooks/ with pre-commit hook source, updated installShadowHook to load from package templates, added 13 tests covering all 4 ACs. Package now ships with templates/ containing skills/, agents-sections/, and hooks/ subdirectories."
+    },
+    {
+      "ref": "01KHFBT45",
+      "title": "Implement Core Skill Update",
+      "completed_at": "2026-02-15T07:10:13.336Z",
+      "closed_reason": "Merged in PR #391. Implemented kspec skill update command with all 3 ACs:\n- ac-1: Updates skill content and version when package version differs\n- ac-2: Skips skills already at current version\n- ac-3: Only processes skills with origin 'core' (ignores project/local)\n\nAdded 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output, and edge cases."
+    },
+    {
+      "ref": "01KHFBT3Y",
+      "title": "Implement Core Skill Installation",
+      "completed_at": "2026-02-15T06:53:00.840Z",
+      "closed_reason": "Merged in PR #390. Implemented kspec skill install-core command to copy core skill definitions from the kspec npm package templates/ directory into projects. All 5 ACs implemented: meta entries created with origin 'core' and 'core' tag (ac-1), SKILL.md content copied from templates to .kspec/skills/<id>/ (ac-2), custom/project skills skipped with message (ac-3), --force flag overwrites custom forks (ac-4), version matches kspec package version (ac-5). 18 tests added covering all acceptance criteria."
+    },
+    {
+      "ref": "01KHFBT3P",
+      "title": "Implement Full Hook Installation",
+      "completed_at": "2026-02-15T06:34:00.400Z",
+      "closed_reason": "Merged in PR #389. All 5 ACs verified with test annotations: ac-1 (UserPromptSubmit hook), ac-2 (Stop hook), ac-3 (PreToolUse Bash hooks for worktree guard), ac-4 (dynamic path detection via CWD), ac-5 (ralph task-limit guard). Added 27 lines of test coverage with AC annotations."
+    },
+    {
+      "ref": "01KHFBT3F",
+      "title": "Implement Enhanced Setup Command",
+      "completed_at": "2026-02-15T06:19:03.216Z",
+      "closed_reason": "Merged in PR #388. Implemented enhanced setup command with agent detection, hook installation (UserPromptSubmit, Stop, PreToolUse with guard scripts), skill rendering, and kspec-agents.md generation. All 9 ACs covered: --status for current state reporting, --dry-run for planned actions, --skip-skills to skip skill rendering. 19 tests added."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "c5ce72c",
+      "full_hash": "c5ce72c81f6c999f6ce7073b55a2e1278d85f158",
+      "date": "2026-02-16T00:14:53.000Z",
+      "message": "feat: implement import frontmatter stripping and full field parsing (#397)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8ad3635",
+      "full_hash": "8ad3635fb12c65c72d162f0169fa83d794a289e8",
+      "date": "2026-02-16T00:02:59.000Z",
+      "message": "feat: implement import frontmatter stripping and full field parsing",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "25406c3",
+      "full_hash": "25406c384532d3d7c7fc394fc0a5e287c09b2d97",
+      "date": "2026-02-15T23:54:41.000Z",
+      "message": "feat: implement extended skill schema (#396)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "dc22d1b",
+      "full_hash": "dc22d1bd248a013d698bc1ded30b5336dd3d2dbb",
+      "date": "2026-02-15T23:43:53.000Z",
+      "message": "feat: implement extended skill schema",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f6b8820",
+      "full_hash": "f6b882043ffa339caae689e3c4add468b30cd477",
+      "date": "2026-02-15T23:37:11.000Z",
+      "message": "feat: implement platform renderer contract (#395)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8f8bf09",
+      "full_hash": "8f8bf09618fb82939814c41c8fe7da27917084ba",
+      "date": "2026-02-15T23:26:48.000Z",
+      "message": "feat: implement platform renderer contract",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fa69ecf",
+      "full_hash": "fa69ecf2e73f4f6e282e06da4a6f8a4d68ba1a0b",
+      "date": "2026-02-15T23:18:25.000Z",
+      "message": "feat: consolidate skill render implementations (#394)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bc190a8",
+      "full_hash": "bc190a8525b73be68dd6c8978a68471756e7b802",
+      "date": "2026-02-15T23:08:30.000Z",
+      "message": "feat: consolidate skill render implementations",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9565104",
+      "full_hash": "9565104567cd639003fb15cf564254a8d4bdead6",
+      "date": "2026-02-15T08:47:13.000Z",
+      "message": "feat: implement init --setup integration (#393)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3cae791",
+      "full_hash": "3cae7915be53574cee1f924b212dd9ead5724720",
+      "date": "2026-02-15T08:34:46.000Z",
+      "message": "fix: make ac-3 test environment-agnostic",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 520,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 16,
+    "blocked": 0,
+    "completed": 485,
+    "inbox_items": 42
+  }
+}
