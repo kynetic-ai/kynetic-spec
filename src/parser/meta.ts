@@ -567,6 +567,27 @@ export interface SkillDoc {
 }
 
 /**
+ * Supported skill supporting directory types.
+ * AC: @supporting-files-convention ac-1
+ */
+export type SupportingDirType = "references" | "scripts" | "assets" | "docs";
+
+/**
+ * A file from a skill's supporting directory.
+ * AC: @supporting-files-convention ac-1
+ */
+export interface SupportingFile {
+  /** File name (e.g., "api.md", "helper.sh") */
+  name: string;
+  /** Full file path */
+  path: string;
+  /** File content (for text files) */
+  content: string;
+  /** Supporting directory type */
+  dirType: SupportingDirType;
+}
+
+/**
  * Get the docs directory path for a skill.
  * Skills can have supporting docs at .kspec/skills/<id>/docs/
  */
@@ -608,6 +629,89 @@ export async function loadSkillDocs(
   }
 
   return docs;
+}
+
+/**
+ * Get the path to a supporting directory for a skill.
+ * AC: @supporting-files-convention ac-1
+ */
+export function getSkillSupportingDirPath(
+  ctx: KspecContext,
+  skillId: string,
+  dirType: SupportingDirType
+): string {
+  return path.join(ctx.specDir, "skills", skillId, dirType);
+}
+
+/**
+ * Load files from a skill's supporting directory.
+ * AC: @supporting-files-convention ac-1 - references files are accessible
+ *
+ * @param ctx - Kspec context
+ * @param skill - The skill to load files from
+ * @param dirType - The supporting directory type (references, scripts, assets, docs)
+ * @returns Array of files found in the directory
+ */
+export async function loadSkillSupportingFiles(
+  ctx: KspecContext,
+  skill: LoadedSkill,
+  dirType: SupportingDirType
+): Promise<SupportingFile[]> {
+  const dirPath = getSkillSupportingDirPath(ctx, skill.id, dirType);
+  const files: SupportingFile[] = [];
+
+  try {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (entry.isFile()) {
+        const filePath = path.join(dirPath, entry.name);
+        try {
+          const content = await fs.readFile(filePath, "utf-8");
+          files.push({
+            name: entry.name,
+            path: filePath,
+            content,
+            dirType,
+          });
+        } catch {
+          // Skip files that can't be read (e.g., binary files)
+        }
+      }
+    }
+  } catch {
+    // Directory doesn't exist or can't be read - return empty array
+  }
+
+  return files;
+}
+
+/**
+ * List which supporting directories exist for a skill.
+ * AC: @supporting-files-convention ac-1
+ *
+ * @returns Array of directory types that exist for the skill
+ */
+export async function listSkillSupportingDirs(
+  ctx: KspecContext,
+  skillId: string
+): Promise<SupportingDirType[]> {
+  const dirs: SupportingDirType[] = [];
+  const allDirs: SupportingDirType[] = ["references", "scripts", "assets", "docs"];
+
+  for (const dirType of allDirs) {
+    const dirPath = getSkillSupportingDirPath(ctx, skillId, dirType);
+    try {
+      const stat = await fs.stat(dirPath);
+      if (stat.isDirectory()) {
+        dirs.push(dirType);
+      }
+    } catch {
+      // Directory doesn't exist
+    }
+  }
+
+  return dirs;
 }
 
 // Re-export the getMetaItemType function
