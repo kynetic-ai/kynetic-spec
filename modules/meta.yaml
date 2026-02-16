@@ -2849,7 +2849,7 @@ modules:
                 created: 2026-02-15T22:40:42.120Z
                 status:
                   maturity: draft
-                  implementation: in_progress
+                  implementation: implemented
           - _ulid: 01KHFBSYMF3BPY2QXKMMG5D04J
             slugs:
               - skill-meta-integration
