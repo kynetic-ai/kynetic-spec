@@ -50302,6 +50302,11 @@
 
         11 new tests in tests/skill-cli.test.ts covering all 6 ACs
       supersedes: null
+    - _ulid: 01KHHWR7P804JED97GT5ABPWQW
+      created_at: 2026-02-16T00:14:07.560Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
