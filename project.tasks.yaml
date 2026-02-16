@@ -50072,7 +50072,7 @@
   type: task
   spec_ref: "@claude-code-renderer-extended"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50171,6 +50171,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-16T00:59:58.802Z
+  closed_reason: "Merged in PR #399. Implemented Claude Code renderer extended frontmatter with all 8
+    ACs covered: portable fields (license, allowed-tools), platform_config.claude_code fields
+    (user-invocable, disable-model-invocation, context, agent), snake_case to kebab-case conversion,
+    hash migration from .render-hash to .render-hash-claude-code, and supporting directories
+    (references/, scripts/, assets/) copying. All 61 skill rendering tests pass."
 - _ulid: 01KHHQD6WX70EV795MY735S163
   slugs:
     - implement-codex-skill-renderer
