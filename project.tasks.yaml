@@ -50083,6 +50083,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T22:40:43.172Z
+  started_at: 2026-02-16T00:34:48.263Z
   notes:
     - _ulid: 01KHHQD6N4M3SZH0WNC2GH5XGZ
       created_at: 2026-02-15T22:40:43.172Z
@@ -50127,9 +50128,49 @@
         Tests: tests/skill-rendering.test.ts
 
         Existing test patterns in that file show setupTempFixtures usage — follow same pattern.
+    - _ulid: 01KHHYQCVRKQAS9ZZK8ZR8QZCK
+      created_at: 2026-02-16T00:48:37.240Z
+      author: "@claude"
+      content: >-
+        Implemented Claude Code Renderer - Extended Frontmatter:
+
+
+        1. Extended generateFrontmatter() to include:
+           - Portable fields: license, allowed-tools, compatibility (AC-1, AC-5)
+           - Claude Code platform fields: user-invocable, disable-model-invocation, context, agent, model, argument-hint (AC-2, AC-3, AC-4)
+           - All snake_case fields converted to kebab-case for Claude Code frontmatter (AC-8)
+
+        2. Updated renderClaudeCodeSkill() to copy ALL supporting directories (references/,
+        scripts/, assets/, docs/) instead of just docs/ (AC-7)
+
+
+        3. Implemented hash migration in checkPlatformSkillDrift():
+           - migrateLegacyRenderHash() function migrates .render-hash to .render-hash-claude-code (AC-6)
+           - readPlatformRenderHash() falls back to legacy hash when platform-specific doesn't exist
+
+        Added 13 new tests covering all 8 ACs in tests/skill-rendering.test.ts:
+
+        - ac-1: Portable fields (license, allowed-tools) in frontmatter (2 tests)
+
+        - ac-2: user-invocable from platform_config (1 test)
+
+        - ac-3: context and agent from platform_config (1 test)
+
+        - ac-4: disable-model-invocation from platform_config (1 test)
+
+        - ac-5: Only portable fields when no platform_config (1 test)
+
+        - ac-6: Hash migration from .render-hash to .render-hash-claude-code (2 tests)
+
+        - ac-7: Supporting directories (references/, scripts/, assets/) copied (3 tests)
+
+        - ac-8: snake_case to kebab-case conversion in frontmatter (2 tests)
+
+
+        All 61 skill rendering tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-16T00:34:48.263Z
 - _ulid: 01KHHQD6WX70EV795MY735S163
   slugs:
     - implement-codex-skill-renderer
