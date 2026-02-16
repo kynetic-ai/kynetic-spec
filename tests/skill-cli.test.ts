@@ -734,6 +734,194 @@ describe('Skill CLI - skill set', () => {
   });
 });
 
+describe('Skill CLI - skill set --platform-config', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    // Create a test skill
+    const result = kspecFull(
+      'skill add --id my-skill --name "My Skill" --description "Test skill"',
+      tempDir
+    );
+    if (result.exitCode !== 0) throw new Error(`skill add failed: ${result.stderr}`);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @skill-platform-config-cli ac-1
+  it('should set claude_code platform config', async () => {
+    kspec('skill set @my-skill --platform-config claude_code.user_invocable=false', tempDir);
+
+    const result = kspecJson<{ platform_config?: { claude_code?: { user_invocable?: boolean } } }>(
+      'skill get @my-skill',
+      tempDir
+    );
+
+    expect(result.platform_config).toBeDefined();
+    expect(result.platform_config?.claude_code).toBeDefined();
+    expect(result.platform_config?.claude_code?.user_invocable).toBe(false);
+  });
+
+  // AC: @skill-platform-config-cli ac-1 - true value
+  it('should set claude_code.user_invocable to true', async () => {
+    kspec('skill set @my-skill --platform-config claude_code.user_invocable=true', tempDir);
+
+    const result = kspecJson<{ platform_config?: { claude_code?: { user_invocable?: boolean } } }>(
+      'skill get @my-skill',
+      tempDir
+    );
+
+    expect(result.platform_config?.claude_code?.user_invocable).toBe(true);
+  });
+
+  // AC: @skill-platform-config-cli ac-2
+  it('should set codex platform config', async () => {
+    kspec('skill set @my-skill --platform-config codex.allow_implicit_invocation=true', tempDir);
+
+    const result = kspecJson<{ platform_config?: { codex?: { allow_implicit_invocation?: boolean } } }>(
+      'skill get @my-skill',
+      tempDir
+    );
+
+    expect(result.platform_config).toBeDefined();
+    expect(result.platform_config?.codex).toBeDefined();
+    expect(result.platform_config?.codex?.allow_implicit_invocation).toBe(true);
+  });
+
+  // AC: @skill-platform-config-cli ac-1, ac-2 - multiple platform configs
+  it('should set multiple platform configs at once', async () => {
+    kspec(
+      'skill set @my-skill --platform-config claude_code.disable_model_invocation=true --platform-config codex.allow_implicit_invocation=false',
+      tempDir
+    );
+
+    const result = kspecJson<{
+      platform_config?: {
+        claude_code?: { disable_model_invocation?: boolean };
+        codex?: { allow_implicit_invocation?: boolean };
+      };
+    }>('skill get @my-skill', tempDir);
+
+    expect(result.platform_config?.claude_code?.disable_model_invocation).toBe(true);
+    expect(result.platform_config?.codex?.allow_implicit_invocation).toBe(false);
+  });
+
+  // AC: @skill-platform-config-cli ac-1 - string values
+  it('should set string platform config values', async () => {
+    kspec('skill set @my-skill --platform-config claude_code.context=full', tempDir);
+
+    const result = kspecJson<{ platform_config?: { claude_code?: { context?: string } } }>(
+      'skill get @my-skill',
+      tempDir
+    );
+
+    expect(result.platform_config?.claude_code?.context).toBe('full');
+  });
+
+  // AC: @skill-platform-config-cli ac-2 - codex string values
+  it('should set codex display_name string value', async () => {
+    kspec('skill set @my-skill --platform-config codex.display_name="My Custom Name"', tempDir);
+
+    const result = kspecJson<{ platform_config?: { codex?: { display_name?: string } } }>(
+      'skill get @my-skill',
+      tempDir
+    );
+
+    expect(result.platform_config?.codex?.display_name).toBe('My Custom Name');
+  });
+
+  // AC: @skill-platform-config-cli ac-3
+  it('should include platform_config in JSON output', async () => {
+    kspec('skill set @my-skill --platform-config claude_code.user_invocable=false', tempDir);
+
+    const result = kspecJson<{ platform_config?: object }>('skill get @my-skill', tempDir);
+
+    expect(result.platform_config).toBeDefined();
+    expect(typeof result.platform_config).toBe('object');
+  });
+
+  // AC: @skill-platform-config-cli ac-4
+  it('should show validation error with guidance for invalid key', async () => {
+    const result = kspecFull(
+      'skill set @my-skill --platform-config claude_code.invalid_key=value',
+      tempDir,
+      { expectFail: true }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('invalid_key');
+    // Should include guidance on valid keys
+    expect(result.stderr).toContain('Valid platform config keys');
+    expect(result.stderr).toContain('claude_code');
+    expect(result.stderr).toContain('user_invocable');
+  });
+
+  // AC: @skill-platform-config-cli ac-4 - invalid codex key
+  it('should show validation error for invalid codex key', async () => {
+    const result = kspecFull(
+      'skill set @my-skill --platform-config codex.bad_key=true',
+      tempDir,
+      { expectFail: true }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('bad_key');
+    expect(result.stderr).toContain('Valid platform config keys');
+    expect(result.stderr).toContain('codex');
+    expect(result.stderr).toContain('allow_implicit_invocation');
+  });
+
+  it('should show error for invalid format (missing platform)', async () => {
+    const result = kspecFull(
+      'skill set @my-skill --platform-config user_invocable=false',
+      tempDir,
+      { expectFail: true }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid platform config format');
+    expect(result.stderr).toContain('platform.key=value');
+  });
+
+  it('should deep merge platform_config without replacing existing keys', async () => {
+    // Set first key
+    kspec('skill set @my-skill --platform-config claude_code.user_invocable=false', tempDir);
+
+    // Set second key (should not remove first)
+    kspec('skill set @my-skill --platform-config claude_code.context=full', tempDir);
+
+    const result = kspecJson<{
+      platform_config?: { claude_code?: { user_invocable?: boolean; context?: string } };
+    }>('skill get @my-skill', tempDir);
+
+    expect(result.platform_config?.claude_code?.user_invocable).toBe(false);
+    expect(result.platform_config?.claude_code?.context).toBe('full');
+  });
+
+  it('should preserve existing platform_config when setting new platform', async () => {
+    // Set claude_code config
+    kspec('skill set @my-skill --platform-config claude_code.user_invocable=false', tempDir);
+
+    // Set codex config (should not remove claude_code)
+    kspec('skill set @my-skill --platform-config codex.allow_implicit_invocation=true', tempDir);
+
+    const result = kspecJson<{
+      platform_config?: {
+        claude_code?: { user_invocable?: boolean };
+        codex?: { allow_implicit_invocation?: boolean };
+      };
+    }>('skill get @my-skill', tempDir);
+
+    expect(result.platform_config?.claude_code?.user_invocable).toBe(false);
+    expect(result.platform_config?.codex?.allow_implicit_invocation).toBe(true);
+  });
+});
+
 describe('Skill CLI - skill import', () => {
   let tempDir: string;
   let externalSkillDir: string;

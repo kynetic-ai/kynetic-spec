@@ -60,7 +60,13 @@ import {
   type PlatformRenderResult,
   type DriftStatus,
 } from "../../parser/skill-render.js";
-import { SkillSchema, type SkillOrigin } from "../../schema/index.js";
+import {
+  SkillSchema,
+  ClaudeCodeConfigSchema,
+  CodexConfigSchema,
+  type SkillOrigin,
+  type PlatformConfig,
+} from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success } from "../output.js";
@@ -397,6 +403,15 @@ export function registerSkillCommands(program: Command): void {
     .option("--remove-tag <tag>", "Remove a tag from the tags array")
     .option("--add-depends-on <ref>", "Add a dependency reference")
     .option("--remove-depends-on <ref>", "Remove a dependency reference")
+    .option(
+      "--platform-config <config>",
+      "Set platform config (format: platform.key=value, e.g., claude_code.user_invocable=false)",
+      (value: string, previous: string[]) => {
+        // Collect multiple --platform-config options
+        return previous.concat([value]);
+      },
+      [] as string[],
+    )
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -500,13 +515,78 @@ export function registerSkillCommands(program: Command): void {
           }
         }
 
+        // AC: @skill-platform-config-cli ac-1, ac-2 - Handle platform config updates
+        if (options.platformConfig && options.platformConfig.length > 0) {
+          // Initialize platform_config if not present
+          if (!skill.platform_config) {
+            skill.platform_config = {};
+          }
+
+          for (const configStr of options.platformConfig as string[]) {
+            // Parse "platform.key=value" format
+            const match = configStr.match(/^([^.]+)\.([^=]+)=(.*)$/);
+            if (!match) {
+              error(
+                `Invalid platform config format: ${configStr}\n` +
+                  `Expected format: platform.key=value (e.g., claude_code.user_invocable=false)`,
+              );
+              process.exit(EXIT_CODES.VALIDATION_FAILED);
+            }
+
+            const [, platform, key, rawValue] = match;
+
+            // Parse value type: "true"/"false" → boolean, otherwise string
+            let value: boolean | string;
+            if (rawValue === "true") {
+              value = true;
+            } else if (rawValue === "false") {
+              value = false;
+            } else {
+              // Remove surrounding quotes if present
+              value = rawValue.replace(/^["']|["']$/g, "");
+            }
+
+            // Deep merge: initialize platform object if needed
+            if (!(platform in skill.platform_config)) {
+              (skill.platform_config as Record<string, Record<string, unknown>>)[
+                platform
+              ] = {};
+            }
+
+            // Set the value
+            (
+              skill.platform_config as Record<string, Record<string, unknown>>
+            )[platform][key] = value;
+          }
+        }
+
         // Validate updated skill
+        // AC: @skill-platform-config-cli ac-4 - validation error with guidance on valid keys
         const parsed = SkillSchema.safeParse(skill);
         if (!parsed.success) {
           const issues = parsed.error.issues
             .map((i) => `${i.path.join(".")}: ${i.message}`)
             .join("; ");
-          error(`Invalid skill data: ${issues}`);
+
+          // Check if any errors are related to platform_config and provide guidance
+          const hasPlatformConfigError = parsed.error.issues.some(
+            (i) => i.path[0] === "platform_config",
+          );
+
+          let errorMsg = `Invalid skill data: ${issues}`;
+          if (hasPlatformConfigError) {
+            // Get valid keys from schemas
+            const claudeCodeKeys = Object.keys(ClaudeCodeConfigSchema.shape).join(
+              ", ",
+            );
+            const codexKeys = Object.keys(CodexConfigSchema.shape).join(", ");
+            errorMsg +=
+              `\n\nValid platform config keys:` +
+              `\n  claude_code: ${claudeCodeKeys}` +
+              `\n  codex: ${codexKeys}`;
+          }
+
+          error(errorMsg);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
