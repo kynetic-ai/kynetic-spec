@@ -349,6 +349,7 @@ export function registerSkillCommands(program: Command): void {
         const docs = await loadSkillDocs(ctx, skill);
 
         // AC: @skill-cli ac-5, ac-6 - output metadata and content
+        // Include extended skill schema fields (license, compatibility, allowed_tools, metadata, platform_config)
         output(
           {
             _ulid: skill._ulid,
@@ -360,6 +361,12 @@ export function registerSkillCommands(program: Command): void {
             platforms: skill.platforms,
             depends_on: skill.depends_on,
             tags: skill.tags,
+            // Extended fields from @extended-skill-schema
+            license: skill.license,
+            compatibility: skill.compatibility,
+            allowed_tools: skill.allowed_tools,
+            metadata: skill.metadata,
+            platform_config: skill.platform_config,
             content,
             docs: docs.map((d) => ({ name: d.name, path: d.path })),
           },
@@ -585,6 +592,7 @@ export function registerSkillCommands(program: Command): void {
     });
 
   // AC: @skill-import ac-1 through ac-7 - kspec skill import
+  // AC: @import-frontmatter-strip ac-1 through ac-6 - Extended frontmatter parsing
   markMutating(skill.command("import <file>"))
     .description("Import an existing SKILL.md file into kspec")
     .option("--id <id>", "Custom skill ID (defaults to directory name)")
@@ -622,13 +630,15 @@ export function registerSkillCommands(program: Command): void {
         const content = await fs.readFile(filePath, "utf-8");
 
         // AC: @skill-import ac-1, ac-6 - Parse YAML frontmatter
+        // AC: @import-frontmatter-strip ac-1, ac-3 - Parse all Agent Skills fields
         const frontmatter = parseFrontmatter(content);
 
         // Determine name and description from frontmatter or options
+        // AC: @import-frontmatter-strip ac-6 - CLI flags work when no frontmatter
         const skillName = options.name || frontmatter?.name;
         const skillDescription = options.description || frontmatter?.description;
 
-        // AC: @skill-import ac-6 - Error if no name/description and no frontmatter
+        // AC: @skill-import ac-6, @import-frontmatter-strip ac-6 - Error if no name/description and no frontmatter
         if (!skillName) {
           error("Name is required. Either add YAML frontmatter with 'name' field or use --name option.");
           console.log(chalk.gray("Example frontmatter:\n---\nname: my-skill\ndescription: My skill description\n---"));
@@ -663,7 +673,37 @@ export function registerSkillCommands(program: Command): void {
           process.exit(EXIT_CODES.CONFLICT);
         }
 
+        // AC: @import-frontmatter-strip ac-3 - Build platform_config.claude_code from frontmatter
+        let platformConfig: import("../../schema/index.js").PlatformConfig | undefined;
+        if (frontmatter) {
+          const claudeCodeConfig: import("../../schema/index.js").ClaudeCodeConfig = {};
+          if (frontmatter.user_invocable !== undefined) {
+            claudeCodeConfig.user_invocable = frontmatter.user_invocable;
+          }
+          if (frontmatter.disable_model_invocation !== undefined) {
+            claudeCodeConfig.disable_model_invocation = frontmatter.disable_model_invocation;
+          }
+          if (frontmatter.context !== undefined) {
+            claudeCodeConfig.context = frontmatter.context;
+          }
+          if (frontmatter.agent !== undefined) {
+            claudeCodeConfig.agent = frontmatter.agent;
+          }
+          if (frontmatter.model !== undefined) {
+            claudeCodeConfig.model = frontmatter.model;
+          }
+          if (frontmatter.argument_hint !== undefined) {
+            claudeCodeConfig.argument_hint = frontmatter.argument_hint;
+          }
+
+          // Only set platform_config if we have Claude Code config fields
+          if (Object.keys(claudeCodeConfig).length > 0) {
+            platformConfig = { claude_code: claudeCodeConfig };
+          }
+        }
+
         // Build skill object
+        // AC: @import-frontmatter-strip ac-1 - All recognized fields populate meta.yaml
         const skillData: Skill = {
           _ulid: ulid(),
           id: skillId,
@@ -673,8 +713,13 @@ export function registerSkillCommands(program: Command): void {
           version: options.skillVersion,
           platforms: ["claude-code"],
           depends_on: [],
-          allowed_tools: [],
+          // AC: @import-frontmatter-strip ac-1 - license, compatibility, allowed_tools from frontmatter
+          license: frontmatter?.license,
+          compatibility: frontmatter?.compatibility,
+          allowed_tools: frontmatter?.allowed_tools || [],
           tags: [],
+          // AC: @import-frontmatter-strip ac-3 - platform_config.claude_code from frontmatter
+          platform_config: platformConfig,
         };
 
         // Validate with schema
@@ -693,23 +738,28 @@ export function registerSkillCommands(program: Command): void {
         await saveMetaItem(ctx, skill, "skill");
 
         // AC: @skill-import ac-7 - Strip/normalize base-directory paths
+        // AC: @import-frontmatter-strip ac-2 - Store body-only content (strip frontmatter)
         const normalizedContent = normalizeBaseDirectory(content);
+        const bodyOnlyContent = stripFrontmatter(normalizedContent);
 
         // AC: @skill-import ac-2 - Copy content to .kspec/skills/<id>/SKILL.md
         const skillMdPath = getSkillContentPath(ctx, skill.id);
-        await fs.writeFile(skillMdPath, normalizedContent, "utf-8");
+        await fs.writeFile(skillMdPath, bodyOnlyContent, "utf-8");
 
-        // AC: @skill-import ac-3 - Copy docs/ subdirectory if present
-        const sourceDocsDir = path.join(sourceDir, "docs");
-        try {
-          const docsStats = await fs.stat(sourceDocsDir);
-          if (docsStats.isDirectory()) {
-            const targetDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
-            await fs.mkdir(targetDocsDir, { recursive: true });
-            await copyDirectory(sourceDocsDir, targetDocsDir);
+        // AC: @import-frontmatter-strip ac-4, ac-5 - Copy all supporting directories
+        const supportingDirs = ["references", "scripts", "assets", "docs"];
+        for (const dirName of supportingDirs) {
+          const sourceSubDir = path.join(sourceDir, dirName);
+          try {
+            const stats = await fs.stat(sourceSubDir);
+            if (stats.isDirectory()) {
+              const targetSubDir = path.join(ctx.specDir, "skills", skill.id, dirName);
+              await fs.mkdir(targetSubDir, { recursive: true });
+              await copyDirectory(sourceSubDir, targetSubDir);
+            }
+          } catch {
+            // Directory doesn't exist, that's fine
           }
-        } catch {
-          // No docs directory, that's fine
         }
 
         // Commit changes
@@ -1596,10 +1646,35 @@ function loadCoreSkillContent(skillId: string): string | null {
 }
 
 /**
+ * Parsed frontmatter from Agent Skills SKILL.md
+ * AC: @import-frontmatter-strip ac-1 - All recognized Agent Skills fields
+ * AC: @import-frontmatter-strip ac-3 - Claude Code platform-specific fields
+ */
+interface ParsedFrontmatter {
+  // Core metadata
+  name?: string;
+  description?: string;
+  // Portable Agent Skills fields (AC: ac-1)
+  license?: string;
+  compatibility?: string;
+  allowed_tools?: string[];
+  // Claude Code platform fields (AC: ac-3)
+  user_invocable?: boolean;
+  disable_model_invocation?: boolean;
+  context?: string;
+  agent?: string;
+  model?: string;
+  argument_hint?: string;
+}
+
+/**
  * Parse YAML frontmatter from markdown content.
  * Returns null if no valid frontmatter found.
+ *
+ * AC: @import-frontmatter-strip ac-1 - Parse all Agent Skills frontmatter fields
+ * AC: @import-frontmatter-strip ac-3 - Parse Claude Code platform frontmatter
  */
-function parseFrontmatter(content: string): { name?: string; description?: string } | null {
+function parseFrontmatter(content: string): ParsedFrontmatter | null {
   const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
   const match = content.match(frontmatterRegex);
 
@@ -1611,16 +1686,46 @@ function parseFrontmatter(content: string): { name?: string; description?: strin
     const parsed = yaml.parse(match[1]);
 
     if (typeof parsed === "object" && parsed !== null) {
-      return {
-        name: typeof parsed.name === "string" ? parsed.name : undefined,
-        description: typeof parsed.description === "string" ? parsed.description : undefined,
-      };
+      const result: ParsedFrontmatter = {};
+
+      // Core metadata
+      if (typeof parsed.name === "string") result.name = parsed.name;
+      if (typeof parsed.description === "string") result.description = parsed.description;
+
+      // Portable Agent Skills fields (AC: ac-1)
+      if (typeof parsed.license === "string") result.license = parsed.license;
+      if (typeof parsed.compatibility === "string") result.compatibility = parsed.compatibility;
+      if (Array.isArray(parsed.allowed_tools)) {
+        result.allowed_tools = parsed.allowed_tools.filter((t: unknown) => typeof t === "string");
+      }
+
+      // Claude Code platform fields (AC: ac-3)
+      // Support both underscore and hyphen naming for user-invocable
+      if (typeof parsed.user_invocable === "boolean") result.user_invocable = parsed.user_invocable;
+      if (typeof parsed["user-invocable"] === "boolean") result.user_invocable = parsed["user-invocable"];
+      if (typeof parsed.disable_model_invocation === "boolean") result.disable_model_invocation = parsed.disable_model_invocation;
+      if (typeof parsed["disable-model-invocation"] === "boolean") result.disable_model_invocation = parsed["disable-model-invocation"];
+      if (typeof parsed.context === "string") result.context = parsed.context;
+      if (typeof parsed.agent === "string") result.agent = parsed.agent;
+      if (typeof parsed.model === "string") result.model = parsed.model;
+      if (typeof parsed.argument_hint === "string") result.argument_hint = parsed.argument_hint;
+      if (typeof parsed["argument-hint"] === "string") result.argument_hint = parsed["argument-hint"];
+
+      return result;
     }
   } catch {
     // Invalid YAML in frontmatter
   }
 
   return null;
+}
+
+/**
+ * Strip YAML frontmatter from markdown content.
+ * AC: @import-frontmatter-strip ac-2 - Remove frontmatter for body-only storage
+ */
+function stripFrontmatter(content: string): string {
+  return content.replace(/^---\n[\s\S]*?\n---\n?/, "");
 }
 
 /**

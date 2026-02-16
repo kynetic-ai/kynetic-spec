@@ -1036,4 +1036,294 @@ description: Work on tasks
     const content = await fs.readFile(copiedPath, 'utf-8');
     expect(content).toContain('Example Usage');
   });
+
+  // AC: @import-frontmatter-strip ac-1 - all Agent Skills frontmatter fields populate meta.yaml
+  it('should populate license, compatibility, allowed_tools from frontmatter', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+license: MIT
+compatibility: ">=1.0.0"
+allowed_tools:
+  - Bash
+  - Read
+  - Write
+---
+
+# Task Work
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      license: string;
+      compatibility: string;
+      allowed_tools: string[];
+    }>('skill get @task-work', tempDir);
+    expect(result.license).toBe('MIT');
+    expect(result.compatibility).toBe('>=1.0.0');
+    expect(result.allowed_tools).toEqual(['Bash', 'Read', 'Write']);
+  });
+
+  // AC: @import-frontmatter-strip ac-2 - stored content has NO frontmatter (body-only)
+  it('should store body-only content without frontmatter', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+license: MIT
+user-invocable: true
+---
+
+# Task Work
+
+This is the body content.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify stored content has no frontmatter
+    const copiedPath = path.join(tempDir, 'skills', 'task-work', 'SKILL.md');
+    const copiedContent = await fs.readFile(copiedPath, 'utf-8');
+    expect(copiedContent).not.toContain('---');
+    expect(copiedContent).not.toContain('name: Task Work');
+    expect(copiedContent).not.toContain('license: MIT');
+    expect(copiedContent).toContain('# Task Work');
+    expect(copiedContent).toContain('This is the body content.');
+  });
+
+  // AC: @import-frontmatter-strip ac-3 - Claude Code platform frontmatter populates platform_config.claude_code
+  it('should populate platform_config.claude_code from Claude Code frontmatter fields', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+user-invocable: true
+context: task
+agent: task-worker
+model: haiku
+argument-hint: "@task-ref"
+---
+
+# Task Work
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      platform_config: {
+        claude_code: {
+          user_invocable: boolean;
+          context: string;
+          agent: string;
+          model: string;
+          argument_hint: string;
+        };
+      };
+    }>('skill get @task-work', tempDir);
+
+    expect(result.platform_config).toBeDefined();
+    expect(result.platform_config.claude_code).toBeDefined();
+    expect(result.platform_config.claude_code.user_invocable).toBe(true);
+    expect(result.platform_config.claude_code.context).toBe('task');
+    expect(result.platform_config.claude_code.agent).toBe('task-worker');
+    expect(result.platform_config.claude_code.model).toBe('haiku');
+    expect(result.platform_config.claude_code.argument_hint).toBe('@task-ref');
+  });
+
+  // AC: @import-frontmatter-strip ac-3 - underscore naming also works
+  it('should handle underscore naming for Claude Code fields', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+user_invocable: false
+disable_model_invocation: true
+argument_hint: "--flag"
+---
+
+# Task Work
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      platform_config: {
+        claude_code: {
+          user_invocable: boolean;
+          disable_model_invocation: boolean;
+          argument_hint: string;
+        };
+      };
+    }>('skill get @task-work', tempDir);
+
+    expect(result.platform_config.claude_code.user_invocable).toBe(false);
+    expect(result.platform_config.claude_code.disable_model_invocation).toBe(true);
+    expect(result.platform_config.claude_code.argument_hint).toBe('--flag');
+  });
+
+  // AC: @import-frontmatter-strip ac-4 - references/ and scripts/ subdirectories copied
+  it('should copy references/ and scripts/ subdirectories', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+
+# Task Work
+`);
+
+    // Create references/ and scripts/ directories
+    const referencesDir = path.join(externalSkillDir, 'task-work', 'references');
+    const scriptsDir = path.join(externalSkillDir, 'task-work', 'scripts');
+    await fs.mkdir(referencesDir, { recursive: true });
+    await fs.mkdir(scriptsDir, { recursive: true });
+    await fs.writeFile(path.join(referencesDir, 'api.md'), '# API Reference');
+    await fs.writeFile(path.join(scriptsDir, 'setup.sh'), '#!/bin/bash\necho "setup"');
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify both directories were copied
+    const copiedReferencesPath = path.join(tempDir, 'skills', 'task-work', 'references', 'api.md');
+    const copiedScriptsPath = path.join(tempDir, 'skills', 'task-work', 'scripts', 'setup.sh');
+    const referencesContent = await fs.readFile(copiedReferencesPath, 'utf-8');
+    const scriptsContent = await fs.readFile(copiedScriptsPath, 'utf-8');
+    expect(referencesContent).toContain('API Reference');
+    expect(scriptsContent).toContain('echo "setup"');
+  });
+
+  // AC: @import-frontmatter-strip ac-4 - assets/ subdirectory copied
+  it('should copy assets/ subdirectory', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+
+# Task Work
+`);
+
+    // Create assets/ directory
+    const assetsDir = path.join(externalSkillDir, 'task-work', 'assets');
+    await fs.mkdir(assetsDir, { recursive: true });
+    await fs.writeFile(path.join(assetsDir, 'config.json'), '{"key": "value"}');
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify assets directory was copied
+    const copiedAssetsPath = path.join(tempDir, 'skills', 'task-work', 'assets', 'config.json');
+    const assetsContent = await fs.readFile(copiedAssetsPath, 'utf-8');
+    expect(assetsContent).toContain('"key": "value"');
+  });
+
+  // AC: @import-frontmatter-strip ac-5 - docs/ copied for backward compatibility
+  // (already tested in ac-3 of @skill-import, but confirm it still works with new code)
+  it('should still copy docs/ subdirectory for backward compatibility', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Task Work
+description: Work on tasks
+---
+
+# Task Work
+`);
+
+    // Create docs/ directory (legacy convention)
+    const docsDir = path.join(externalSkillDir, 'task-work', 'docs');
+    await fs.mkdir(docsDir, { recursive: true });
+    await fs.writeFile(path.join(docsDir, 'guide.md'), '# User Guide');
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    // Verify docs directory was copied
+    const copiedDocsPath = path.join(tempDir, 'skills', 'task-work', 'docs', 'guide.md');
+    const docsContent = await fs.readFile(copiedDocsPath, 'utf-8');
+    expect(docsContent).toContain('User Guide');
+  });
+
+  // AC: @import-frontmatter-strip ac-6 - import succeeds with CLI flags when no frontmatter
+  it('should import successfully with --name and --description flags when no frontmatter', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `# Task Work
+
+This skill has no frontmatter at all.
+
+## Usage
+
+Use it like this.
+`);
+
+    kspec(`skill import "${skillPath}" --name "Task Work" --description "Work on tasks"`, tempDir);
+
+    const result = kspecJson<{ name: string; description: string; id: string }>('skill get @task-work', tempDir);
+    expect(result.name).toBe('Task Work');
+    expect(result.description).toBe('Work on tasks');
+    expect(result.id).toBe('task-work');
+
+    // Verify content was stored as-is (no frontmatter to strip)
+    const copiedPath = path.join(tempDir, 'skills', 'task-work', 'SKILL.md');
+    const copiedContent = await fs.readFile(copiedPath, 'utf-8');
+    expect(copiedContent).toContain('# Task Work');
+    expect(copiedContent).toContain('This skill has no frontmatter at all.');
+  });
+
+  // AC: @import-frontmatter-strip ac-1, ac-3 - comprehensive test with all fields
+  it('should handle all frontmatter fields together', async () => {
+    const skillPath = path.join(externalSkillDir, 'task-work', 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Complete Skill
+description: A skill with all frontmatter fields
+license: Apache-2.0
+compatibility: ">=0.5.0"
+allowed_tools:
+  - Bash
+  - Read
+user-invocable: true
+context: general
+model: sonnet
+---
+
+# Complete Skill
+
+This has every field.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      name: string;
+      description: string;
+      license: string;
+      compatibility: string;
+      allowed_tools: string[];
+      platform_config: {
+        claude_code: {
+          user_invocable: boolean;
+          context: string;
+          model: string;
+        };
+      };
+    }>('skill get @task-work', tempDir);
+
+    // Core metadata
+    expect(result.name).toBe('Complete Skill');
+    expect(result.description).toBe('A skill with all frontmatter fields');
+
+    // Portable Agent Skills fields
+    expect(result.license).toBe('Apache-2.0');
+    expect(result.compatibility).toBe('>=0.5.0');
+    expect(result.allowed_tools).toEqual(['Bash', 'Read']);
+
+    // Platform config
+    expect(result.platform_config.claude_code.user_invocable).toBe(true);
+    expect(result.platform_config.claude_code.context).toBe('general');
+    expect(result.platform_config.claude_code.model).toBe('sonnet');
+
+    // Stored content has no frontmatter
+    const copiedPath = path.join(tempDir, 'skills', 'task-work', 'SKILL.md');
+    const copiedContent = await fs.readFile(copiedPath, 'utf-8');
+    expect(copiedContent).not.toContain('---');
+    expect(copiedContent).toContain('# Complete Skill');
+  });
 });
