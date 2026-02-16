@@ -10374,3 +10374,5 @@
 {"ts":1771206359604,"seq":10373,"type":"session.update","session_id":"01KHHRHAAEK58MHFTJGWC0EFM3","data":{"iteration":1,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" awa"}}}}
 {"ts":1771206359629,"seq":10374,"type":"session.update","session_id":"01KHHRHAAEK58MHFTJGWC0EFM3","data":{"iteration":1,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"iting review."}}}}
 {"ts":1771206360063,"seq":10375,"type":"session.update","session_id":"01KHHRHAAEK58MHFTJGWC0EFM3","data":{"iteration":10,"phase":"reflect","stopReason":"end_turn","completed":true}}
+{"ts":1771206928748,"seq":10376,"type":"session.wrapup","session_id":"01KHHRHAAEK58MHFTJGWC0EFM3","data":{"exitReason":"no_tasks","result":{"success":true,"timedOut":false,"skipped":true,"skipReason":"Working tree is clean and no tasks in progress"}}}
+{"ts":1771206928779,"seq":10377,"type":"session.end","session_id":"01KHHRHAAEK58MHFTJGWC0EFM3","data":{"status":"completed","consecutiveFailures":0,"exitReason":"no_tasks"}}
