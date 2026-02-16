@@ -896,3 +896,392 @@ describe('Skill Drift Detection', () => {
     });
   });
 });
+
+/**
+ * Tests for Extended Frontmatter in Claude Code Renderer
+ * AC: @claude-code-renderer-extended ac-1 through ac-8
+ */
+describe('Claude Code Renderer - Extended Frontmatter', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @claude-code-renderer-extended ac-1
+  describe('ac-1: Portable fields (license, allowed-tools) in frontmatter', () => {
+    it('should include license field when skill has license', async () => {
+      // Create skill with license
+      const result = kspecFull(
+        'skill add --id licensed-skill --name "Licensed Skill" --description "A skill with license" --platform claude-code',
+        tempDir
+      );
+      expect(result.exitCode).toBe(0);
+
+      // Manually update meta.yaml to add license field (proper indentation with 4 spaces)
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: licensed-skill\n/,
+        'id: licensed-skill\n    license: MIT\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      // Write content
+      const skillMdPath = path.join(tempDir, 'skills', 'licensed-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Licensed Skill\n\nContent.\n', 'utf-8');
+
+      // Render
+      kspecFull('skill render', tempDir);
+
+      // Check frontmatter
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'licensed-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+      expect(renderedContent).toContain('license: MIT');
+    });
+
+    it('should include allowed-tools when skill has allowed_tools', async () => {
+      // Create skill
+      kspecFull(
+        'skill add --id tools-skill --name "Tools Skill" --description "A skill with tools" --platform claude-code',
+        tempDir
+      );
+
+      // Replace the empty allowed_tools array with actual tools
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      // The skill add command creates: allowed_tools: []
+      // Replace that with our array
+      metaContent = metaContent.replace(
+        /    allowed_tools: \[\]/,
+        '    allowed_tools:\n      - Bash\n      - Read'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      // Write content
+      const skillMdPath = path.join(tempDir, 'skills', 'tools-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Tools Skill\n\nContent.\n', 'utf-8');
+
+      // Render
+      kspecFull('skill render', tempDir);
+
+      // Check frontmatter
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'tools-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+      expect(renderedContent).toContain('allowed-tools:');
+      expect(renderedContent).toContain('- Bash');
+      expect(renderedContent).toContain('- Read');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-2
+  describe('ac-2: user-invocable from platform_config.claude_code', () => {
+    it('should include user-invocable: false when configured', async () => {
+      kspecFull(
+        'skill add --id ui-skill --name "UI Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      // Update meta.yaml with platform_config (proper indentation)
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: ui-skill\n/,
+        'id: ui-skill\n    platform_config:\n      claude_code:\n        user_invocable: false\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'ui-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# UI Skill\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'ui-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+      expect(renderedContent).toContain('user-invocable: false');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-3
+  describe('ac-3: context and agent from platform_config.claude_code', () => {
+    it('should include context: fork and agent when configured', async () => {
+      kspecFull(
+        'skill add --id ctx-skill --name "Context Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: ctx-skill\n/,
+        'id: ctx-skill\n    platform_config:\n      claude_code:\n        context: fork\n        agent: test-agent\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'ctx-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Context Skill\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'ctx-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+      expect(renderedContent).toContain('context: fork');
+      expect(renderedContent).toContain('agent: test-agent');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-4
+  describe('ac-4: disable-model-invocation from platform_config', () => {
+    it('should include disable-model-invocation: true when configured', async () => {
+      kspecFull(
+        'skill add --id dmi-skill --name "DMI Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: dmi-skill\n/,
+        'id: dmi-skill\n    platform_config:\n      claude_code:\n        disable_model_invocation: true\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'dmi-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# DMI Skill\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'dmi-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+      expect(renderedContent).toContain('disable-model-invocation: true');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-5
+  describe('ac-5: Only portable fields when no platform_config.claude_code', () => {
+    it('should only include name, description, and portable fields when no platform_config', async () => {
+      kspecFull(
+        'skill add --id simple-skill --name "Simple Skill" --description "A simple skill" --platform claude-code',
+        tempDir
+      );
+
+      // Add license but no platform_config (proper indentation)
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: simple-skill\n/,
+        'id: simple-skill\n    license: Apache-2.0\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'simple-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Simple Skill\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'simple-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+
+      // Should have name, description, and license
+      expect(renderedContent).toContain('name: simple-skill');
+      expect(renderedContent).toContain('description: A simple skill');
+      expect(renderedContent).toContain('license: Apache-2.0');
+
+      // Should NOT have platform-specific fields
+      expect(renderedContent).not.toContain('user-invocable');
+      expect(renderedContent).not.toContain('disable-model-invocation');
+      expect(renderedContent).not.toContain('context:');
+      expect(renderedContent).not.toContain('agent:');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-6
+  describe('ac-6: Hash migration from .render-hash to .render-hash-claude-code', () => {
+    it('should migrate legacy .render-hash to .render-hash-claude-code on platform drift check', async () => {
+      kspecFull(
+        'skill add --id migrate-skill --name "Migrate Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'migrate-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Migrate Skill\n', 'utf-8');
+
+      // Render to create the file with legacy hash
+      kspecFull('skill render', tempDir);
+
+      // The CLI render creates .render-hash (legacy)
+      const legacyHashPath = path.join(tempDir, 'skills', 'migrate-skill', '.render-hash');
+      const platformHashPath = path.join(tempDir, 'skills', 'migrate-skill', '.render-hash-claude-code');
+
+      // Verify legacy hash exists
+      const hash = await fs.readFile(legacyHashPath, 'utf-8');
+      expect(hash.trim()).toBeTruthy();
+
+      // Import the platform drift check function and run it directly
+      // This simulates when the new platform renderer is used
+      const { checkPlatformSkillDrift } = await import('../src/parser/skill-render');
+      await checkPlatformSkillDrift(
+        path.join(tempDir, 'skills', '..'), // specDir
+        tempDir,                             // projectRoot
+        'migrate-skill',
+        'claude-code'
+      );
+
+      // After platform drift check, the platform-specific hash should be created from migration
+      const migratedHash = await fs.readFile(platformHashPath, 'utf-8');
+      expect(migratedHash.trim()).toBe(hash.trim());
+    });
+
+    it('should read legacy hash as fallback when platform-specific hash does not exist', async () => {
+      kspecFull(
+        'skill add --id fallback-skill --name "Fallback Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'fallback-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Fallback Skill\n', 'utf-8');
+
+      // Render
+      kspecFull('skill render', tempDir);
+
+      // The CLI render only creates .render-hash (legacy)
+      // Status should show in-sync because it reads the legacy hash
+      const status = kspecFull('skill status', tempDir);
+      expect(status.stdout).toContain('in-sync');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-7
+  describe('ac-7: Supporting directories (references/, scripts/, assets/) copied', () => {
+    it('should copy references/ directory to rendered output', async () => {
+      kspecFull(
+        'skill add --id ref-skill --name "Ref Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const skillDir = path.join(tempDir, 'skills', 'ref-skill');
+      await fs.writeFile(path.join(skillDir, 'SKILL.md'), '# Ref Skill\n', 'utf-8');
+
+      // Create references directory
+      const refsDir = path.join(skillDir, 'references');
+      await fs.mkdir(refsDir, { recursive: true });
+      await fs.writeFile(path.join(refsDir, 'api.md'), '# API Reference\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      // Check references copied
+      const renderedRefsDir = path.join(tempDir, '.claude', 'skills', 'ref-skill', 'references');
+      const refContent = await fs.readFile(path.join(renderedRefsDir, 'api.md'), 'utf-8');
+      expect(refContent).toContain('# API Reference');
+    });
+
+    it('should copy scripts/ directory to rendered output', async () => {
+      kspecFull(
+        'skill add --id scripts-skill --name "Scripts Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const skillDir = path.join(tempDir, 'skills', 'scripts-skill');
+      await fs.writeFile(path.join(skillDir, 'SKILL.md'), '# Scripts Skill\n', 'utf-8');
+
+      // Create scripts directory
+      const scriptsDir = path.join(skillDir, 'scripts');
+      await fs.mkdir(scriptsDir, { recursive: true });
+      await fs.writeFile(path.join(scriptsDir, 'helper.sh'), '#!/bin/bash\necho "Hello"\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      // Check scripts copied
+      const renderedScriptsDir = path.join(tempDir, '.claude', 'skills', 'scripts-skill', 'scripts');
+      const scriptContent = await fs.readFile(path.join(renderedScriptsDir, 'helper.sh'), 'utf-8');
+      expect(scriptContent).toContain('#!/bin/bash');
+    });
+
+    it('should copy assets/ directory to rendered output', async () => {
+      kspecFull(
+        'skill add --id assets-skill --name "Assets Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const skillDir = path.join(tempDir, 'skills', 'assets-skill');
+      await fs.writeFile(path.join(skillDir, 'SKILL.md'), '# Assets Skill\n', 'utf-8');
+
+      // Create assets directory
+      const assetsDir = path.join(skillDir, 'assets');
+      await fs.mkdir(assetsDir, { recursive: true });
+      await fs.writeFile(path.join(assetsDir, 'data.json'), '{"key": "value"}', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      // Check assets copied
+      const renderedAssetsDir = path.join(tempDir, '.claude', 'skills', 'assets-skill', 'assets');
+      const assetContent = await fs.readFile(path.join(renderedAssetsDir, 'data.json'), 'utf-8');
+      expect(assetContent).toContain('"key": "value"');
+    });
+  });
+
+  // AC: @claude-code-renderer-extended ac-8
+  describe('ac-8: snake_case to kebab-case conversion in frontmatter', () => {
+    it('should convert disable_model_invocation to disable-model-invocation', async () => {
+      kspecFull(
+        'skill add --id case-skill --name "Case Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: case-skill\n/,
+        'id: case-skill\n    platform_config:\n      claude_code:\n        disable_model_invocation: true\n        user_invocable: false\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'case-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Case Skill\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'case-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+
+      // Should use kebab-case in frontmatter
+      expect(renderedContent).toContain('disable-model-invocation: true');
+      expect(renderedContent).toContain('user-invocable: false');
+
+      // Should NOT have snake_case
+      expect(renderedContent).not.toContain('disable_model_invocation');
+      expect(renderedContent).not.toContain('user_invocable');
+    });
+
+    it('should convert argument_hint to argument-hint', async () => {
+      kspecFull(
+        'skill add --id hint-skill --name "Hint Skill" --description "A skill" --platform claude-code',
+        tempDir
+      );
+
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: hint-skill\n/,
+        'id: hint-skill\n    platform_config:\n      claude_code:\n        argument_hint: "<task-ref>"\n'
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'hint-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Hint Skill\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'hint-skill', 'SKILL.md');
+      const renderedContent = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(renderedContent).toContain('argument-hint:');
+      expect(renderedContent).not.toContain('argument_hint');
+    });
+  });
+});

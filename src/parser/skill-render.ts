@@ -143,14 +143,67 @@ export interface RenderSkillOptions {
 export const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
 
 /**
+ * Convert snake_case to kebab-case for Claude Code frontmatter keys
+ * AC: @claude-code-renderer-extended ac-8 - snake_case to kebab-case conversion
+ */
+function toKebabCase(str: string): string {
+  return str.replace(/_/g, "-");
+}
+
+/**
  * Generate YAML frontmatter for a skill.
  * AC: @claude-code-renderer ac-2 - YAML frontmatter with name and description fields
+ * AC: @claude-code-renderer-extended ac-1 - portable fields (license, allowed-tools)
+ * AC: @claude-code-renderer-extended ac-2 - user-invocable from platform_config
+ * AC: @claude-code-renderer-extended ac-3 - context and agent from platform_config
+ * AC: @claude-code-renderer-extended ac-4 - disable-model-invocation from platform_config
+ * AC: @claude-code-renderer-extended ac-5 - only portable fields when no platform_config
+ * AC: @claude-code-renderer-extended ac-8 - snake_case to kebab-case conversion
  */
 export function generateFrontmatter(skill: LoadedSkill): string {
   const frontmatter: Record<string, unknown> = {
     name: skill.id,
     description: skill.description || skill.name,
   };
+
+  // AC: @claude-code-renderer-extended ac-1 - Add portable fields
+  if (skill.license) {
+    frontmatter.license = skill.license;
+  }
+  if (skill.allowed_tools && skill.allowed_tools.length > 0) {
+    frontmatter["allowed-tools"] = skill.allowed_tools;
+  }
+  if (skill.compatibility) {
+    frontmatter.compatibility = skill.compatibility;
+  }
+
+  // AC: @claude-code-renderer-extended ac-2, ac-3, ac-4 - Add Claude Code platform fields
+  const claudeCodeConfig = skill.platform_config?.claude_code;
+  if (claudeCodeConfig) {
+    // AC: @claude-code-renderer-extended ac-2 - user_invocable
+    if (claudeCodeConfig.user_invocable !== undefined) {
+      frontmatter["user-invocable"] = claudeCodeConfig.user_invocable;
+    }
+    // AC: @claude-code-renderer-extended ac-4 - disable_model_invocation
+    if (claudeCodeConfig.disable_model_invocation !== undefined) {
+      frontmatter["disable-model-invocation"] = claudeCodeConfig.disable_model_invocation;
+    }
+    // AC: @claude-code-renderer-extended ac-3 - context and agent
+    if (claudeCodeConfig.context) {
+      frontmatter.context = claudeCodeConfig.context;
+    }
+    if (claudeCodeConfig.agent) {
+      frontmatter.agent = claudeCodeConfig.agent;
+    }
+    // Other Claude Code fields
+    if (claudeCodeConfig.model) {
+      frontmatter.model = claudeCodeConfig.model;
+    }
+    if (claudeCodeConfig.argument_hint) {
+      frontmatter["argument-hint"] = claudeCodeConfig.argument_hint;
+    }
+  }
+
   return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
 }
 
@@ -315,6 +368,70 @@ async function directoriesEqual(src: string, dest: string): Promise<boolean> {
   }
 }
 
+// ============================================================================
+// Supporting Directories (AC: @platform-renderer-trait ac-3, @claude-code-renderer-extended ac-7)
+// ============================================================================
+
+/** Known supporting directory names */
+const SUPPORTING_DIRS = ["references", "scripts", "assets", "docs"] as const;
+
+/**
+ * Copy supporting directories from source skill to rendered output
+ * AC: @platform-renderer-trait ac-3 - Supporting directories copied to platform output
+ * AC: @claude-code-renderer-extended ac-7 - references/, scripts/, assets/ copied
+ */
+async function copySupportingDirectories(
+  sourceSkillDir: string,
+  targetSkillDir: string,
+  dryRun: boolean
+): Promise<Record<string, "created" | "updated" | "unchanged" | "skipped">> {
+  const results: Record<string, "created" | "updated" | "unchanged" | "skipped"> = {};
+
+  for (const dirName of SUPPORTING_DIRS) {
+    const sourceDir = path.join(sourceSkillDir, dirName);
+    const targetDir = path.join(targetSkillDir, dirName);
+
+    try {
+      const stats = await fs.stat(sourceDir);
+      if (!stats.isDirectory()) {
+        results[dirName] = "skipped";
+        continue;
+      }
+
+      // Check if target exists
+      let targetExists = false;
+      try {
+        await fs.stat(targetDir);
+        targetExists = true;
+      } catch {
+        // Target doesn't exist
+      }
+
+      if (!targetExists) {
+        results[dirName] = "created";
+      } else {
+        // Compare directories
+        const equal = await directoriesEqual(sourceDir, targetDir);
+        results[dirName] = equal ? "unchanged" : "updated";
+      }
+
+      // Apply changes
+      if (!dryRun && results[dirName] !== "unchanged") {
+        if (targetExists) {
+          await fs.rm(targetDir, { recursive: true, force: true });
+        }
+        await fs.mkdir(targetDir, { recursive: true });
+        await copyDirectory(sourceDir, targetDir);
+      }
+    } catch {
+      // Source directory doesn't exist
+      results[dirName] = "skipped";
+    }
+  }
+
+  return results;
+}
+
 /**
  * Render a skill to Claude Code format.
  *
@@ -413,44 +530,16 @@ export async function renderClaudeCodeSkill(
     }
   }
 
-  // Handle docs directory
-  const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
-  const targetDocsDir = path.join(targetDir, "docs");
-  let docsAction: "created" | "updated" | "unchanged" | "skipped" = "skipped";
+  // AC: @claude-code-renderer-extended ac-7 - Copy supporting directories (references/, scripts/, assets/, docs/)
+  const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
+  const supportingDirsAction = await copySupportingDirectories(
+    sourceSkillDir,
+    targetDir,
+    dryRun
+  );
 
-  try {
-    const stats = await fs.stat(sourceDocsDir);
-    if (stats.isDirectory()) {
-      // Check if target docs exist and compare
-      let targetDocsExist = false;
-      try {
-        await fs.stat(targetDocsDir);
-        targetDocsExist = true;
-      } catch {
-        // Target docs don't exist
-      }
-
-      if (!targetDocsExist) {
-        docsAction = "created";
-      } else {
-        // Compare directories
-        const equal = await directoriesEqual(sourceDocsDir, targetDocsDir);
-        docsAction = equal ? "unchanged" : "updated";
-      }
-
-      // Apply changes
-      if (!dryRun && docsAction !== "unchanged") {
-        // Remove existing docs and copy fresh
-        if (targetDocsExist) {
-          await fs.rm(targetDocsDir, { recursive: true, force: true });
-        }
-        await fs.mkdir(targetDocsDir, { recursive: true });
-        await copyDirectory(sourceDocsDir, targetDocsDir);
-      }
-    }
-  } catch {
-    // No source docs directory
-  }
+  // For backward compatibility, also expose docsAction
+  const docsAction = supportingDirsAction.docs || "skipped";
 
   return {
     id: skill.id,
@@ -488,6 +577,7 @@ export function getPlatformRenderHashPath(specDir: string, skillId: string, plat
 /**
  * Read the stored render hash for a skill on a specific platform
  * AC: @platform-renderer-trait ac-6 - Read per-platform hash
+ * AC: @claude-code-renderer-extended ac-6 - fallback to legacy hash
  */
 export async function readPlatformRenderHash(
   specDir: string,
@@ -501,6 +591,36 @@ export async function readPlatformRenderHash(
   } catch {
     // Fall back to legacy hash (non-platform-specific)
     return readRenderHash(specDir, skillId);
+  }
+}
+
+/**
+ * Migrate legacy .render-hash to platform-specific .render-hash-<platform>
+ * AC: @claude-code-renderer-extended ac-6 - hash migration
+ */
+export async function migrateLegacyRenderHash(
+  specDir: string,
+  skillId: string,
+  platform: string
+): Promise<boolean> {
+  const legacyHashPath = getRenderHashPath(specDir, skillId);
+  const platformHashPath = getPlatformRenderHashPath(specDir, skillId, platform);
+
+  try {
+    // Check if platform-specific hash already exists
+    await fs.access(platformHashPath);
+    return false; // Already migrated
+  } catch {
+    // Platform-specific doesn't exist, check for legacy
+  }
+
+  try {
+    const legacyHash = await fs.readFile(legacyHashPath, "utf-8");
+    // Write to platform-specific location
+    await writePlatformRenderHash(specDir, skillId, platform, legacyHash.trim());
+    return true; // Migrated successfully
+  } catch {
+    return false; // No legacy hash to migrate
   }
 }
 
@@ -542,6 +662,9 @@ export async function checkPlatformSkillDrift(
     return "not-rendered";
   }
 
+  // AC: @claude-code-renderer-extended ac-6 - Migrate legacy hash if needed
+  await migrateLegacyRenderHash(specDir, skillId, platform);
+
   // Get stored hash (try platform-specific first, then fall back to legacy)
   const storedHash = await readPlatformRenderHash(specDir, skillId, platform);
   if (!storedHash) {
@@ -565,69 +688,6 @@ function getPlatformDefaultOutputDir(platform: string): string {
     default:
       return `.${platform}/skills`;
   }
-}
-
-// ============================================================================
-// Supporting Directories (AC: @platform-renderer-trait ac-3)
-// ============================================================================
-
-/** Known supporting directory names */
-const SUPPORTING_DIRS = ["references", "scripts", "assets", "docs"] as const;
-
-/**
- * Copy supporting directories from source skill to rendered output
- * AC: @platform-renderer-trait ac-3 - Supporting directories copied to platform output
- */
-async function copySupportingDirectories(
-  sourceSkillDir: string,
-  targetSkillDir: string,
-  dryRun: boolean
-): Promise<Record<string, "created" | "updated" | "unchanged" | "skipped">> {
-  const results: Record<string, "created" | "updated" | "unchanged" | "skipped"> = {};
-
-  for (const dirName of SUPPORTING_DIRS) {
-    const sourceDir = path.join(sourceSkillDir, dirName);
-    const targetDir = path.join(targetSkillDir, dirName);
-
-    try {
-      const stats = await fs.stat(sourceDir);
-      if (!stats.isDirectory()) {
-        results[dirName] = "skipped";
-        continue;
-      }
-
-      // Check if target exists
-      let targetExists = false;
-      try {
-        await fs.stat(targetDir);
-        targetExists = true;
-      } catch {
-        // Target doesn't exist
-      }
-
-      if (!targetExists) {
-        results[dirName] = "created";
-      } else {
-        // Compare directories
-        const equal = await directoriesEqual(sourceDir, targetDir);
-        results[dirName] = equal ? "unchanged" : "updated";
-      }
-
-      // Apply changes
-      if (!dryRun && results[dirName] !== "unchanged") {
-        if (targetExists) {
-          await fs.rm(targetDir, { recursive: true, force: true });
-        }
-        await fs.mkdir(targetDir, { recursive: true });
-        await copyDirectory(sourceDir, targetDir);
-      }
-    } catch {
-      // Source directory doesn't exist
-      results[dirName] = "skipped";
-    }
-  }
-
-  return results;
 }
 
 // ============================================================================
