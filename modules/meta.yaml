@@ -3143,6 +3143,9 @@ modules:
                   - "@platform-renderer-trait"
                 notes: []
                 created: 2026-02-15T22:40:42.034Z
+                status:
+                  maturity: draft
+                  implementation: in_progress
           - _ulid: 01KHFBSYPVNXKJWKBPDVHDAR0F
             slugs:
               - skill-drift-detection
