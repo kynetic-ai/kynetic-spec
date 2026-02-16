@@ -50193,6 +50193,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T22:40:43.421Z
+  started_at: 2026-02-16T01:00:38.320Z
   notes:
     - _ulid: 01KHHQD6WX867D9G1M0KMP1QAA
       created_at: 2026-02-15T22:40:43.421Z
@@ -50229,9 +50230,35 @@
         Reference the Codex skill docs: https://developers.openai.com/codex/skills
 
         Tests: tests/skill-rendering.test.ts (new describe block for Codex)
+    - _ulid: 01KHHZYFQE12NE8DRPF5HB9JW6
+      created_at: 2026-02-16T01:09:58.127Z
+      author: "@claude"
+      content: >-
+        Implemented Codex Skill Renderer (PlatformRenderer interface):
+
+
+        1. Added generateCodexFrontmatter() - minimal frontmatter with only name + description
+        (AC-1)
+
+        2. Added generateCodexSidecarYaml() - creates agents/openai.yaml sidecar with:
+           - interface section: display_name, short_description, icons, colors, default_prompt
+           - policy section: allow_implicit_invocation
+           (AC-2, AC-3)
+        3. Implemented codexRenderer with PlatformRenderer interface:
+           - platform: 'codex'
+           - defaultOutputDir: '.agents/skills'
+           - render(): Creates SKILL.md with minimal frontmatter + kspec-managed marker (AC-4)
+           - checkDrift(): Uses platform-specific hash .render-hash-codex (AC-6)
+        4. Copies supporting directories (references/, scripts/, assets/) (AC-5)
+
+        5. Registered codexRenderer in renderer registry
+
+
+        Added 13 new tests in tests/skill-rendering.test.ts covering all 6 ACs plus platform
+        renderer trait compliance.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-16T01:00:38.320Z
 - _ulid: 01KHHQD74SRA7R1ZNRCN32YECZ
   slugs:
     - implement-multi-platform-render-cli
