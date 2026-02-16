@@ -50273,6 +50273,10 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #401. Implemented multi-platform render CLI with all 7 ACs: skills
+    render to all platforms in their platforms array, per-platform status rows, --output-dir
+    override, per-platform --clean, Platform column in output, and unregistered platform warnings.
+    Added 18 tests with full AC coverage."
   depends_on:
     - "@implement-claude-code-renderer-extended-frontmatte"
     - "@implement-codex-skill-renderer"
@@ -50282,6 +50286,7 @@
   vcs_refs: []
   created_at: 2026-02-15T22:40:43.673Z
   started_at: 2026-02-16T01:21:52.526Z
+  completed_at: 2026-02-16T01:40:23.293Z
   notes:
     - _ulid: 01KHHQD74S55C3KZKG04TDQ2XQ
       created_at: 2026-02-15T22:40:43.673Z
@@ -50341,11 +50346,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-16T01:40:23.293Z
-  closed_reason: "Merged in PR #401. Implemented multi-platform render CLI with all 7 ACs: skills
-    render to all platforms in their platforms array, per-platform status rows, --output-dir
-    override, per-platform --clean, Platform column in output, and unregistered platform warnings.
-    Added 18 tests with full AC coverage."
 - _ulid: 01KHHQD7CVF171SQ1A7K2E6R02
   slugs:
     - implement-import-frontmatter-stripping-and-full-fi
@@ -50516,7 +50516,7 @@
   type: task
   spec_ref: "@skill-platform-config-cli"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50544,3 +50544,4 @@
         1. Include platform_config in table and JSON output
   todos: []
   automation: eligible
+  started_at: 2026-02-16T01:41:09.797Z
