@@ -50186,6 +50186,10 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #400. Implemented Codex Skill Renderer with PlatformRenderer interface:
+    minimal frontmatter (name+description), sidecar agents/openai.yaml for platform_config.codex,
+    kspec-managed marker, supporting directory copying, and platform-specific render hash. All 6 ACs
+    verified with test coverage."
   depends_on:
     - "@implement-claude-code-renderer-extended-frontmatte"
   context: []
@@ -50194,6 +50198,7 @@
   vcs_refs: []
   created_at: 2026-02-15T22:40:43.421Z
   started_at: 2026-02-16T01:00:38.320Z
+  completed_at: 2026-02-16T01:21:22.731Z
   notes:
     - _ulid: 01KHHQD6WX867D9G1M0KMP1QAA
       created_at: 2026-02-15T22:40:43.421Z
@@ -50259,11 +50264,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-16T01:21:22.731Z
-  closed_reason: "Merged in PR #400. Implemented Codex Skill Renderer with PlatformRenderer interface:
-    minimal frontmatter (name+description), sidecar agents/openai.yaml for platform_config.codex,
-    kspec-managed marker, supporting directory copying, and platform-specific render hash. All 6 ACs
-    verified with test coverage."
 - _ulid: 01KHHQD74SRA7R1ZNRCN32YECZ
   slugs:
     - implement-multi-platform-render-cli
@@ -50271,7 +50271,7 @@
   type: task
   spec_ref: "@multi-platform-render-cli"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-claude-code-renderer-extended-frontmatte"
@@ -50312,6 +50312,7 @@
         exceeds ~2500 lines after changes.
   todos: []
   automation: eligible
+  started_at: 2026-02-16T01:21:52.526Z
 - _ulid: 01KHHQD7CVF171SQ1A7K2E6R02
   slugs:
     - implement-import-frontmatter-stripping-and-full-fi
