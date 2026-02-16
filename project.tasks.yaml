@@ -50240,6 +50240,26 @@
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Merged in PR #397. Implemented Import Frontmatter Stripping and Full Field Parsing:
+
+
+    1. Extended parseFrontmatter() to extract all Agent Skills fields (name, description, license,
+    compatibility, allowed_tools)
+
+    2. Added stripFrontmatter() to store body-only content in .kspec/skills/<id>/SKILL.md  
+
+    3. Claude Code platform fields (user_invocable, context, agent, model, argument_hint) populate
+    platform_config.claude_code in meta.yaml
+
+    4. Copies references/, scripts/, assets/ subdirectories during import
+
+    5. Copies docs/ for backward compatibility
+
+    6. --name and --description CLI flags work when no frontmatter present
+
+
+    All 6 acceptance criteria have test coverage (11 new tests in tests/skill-cli.test.ts).
   depends_on:
     - "@implement-extended-skill-schema"
   context: []
@@ -50248,6 +50268,7 @@
   vcs_refs: []
   created_at: 2026-02-15T22:40:43.931Z
   started_at: 2026-02-15T23:55:18.785Z
+  completed_at: 2026-02-16T00:15:05.604Z
   notes:
     - _ulid: 01KHHQD7CVWNP5632BP2R4KTRA
       created_at: 2026-02-15T22:40:43.931Z
@@ -50309,27 +50330,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-16T00:15:05.604Z
-  closed_reason: >-
-    Merged in PR #397. Implemented Import Frontmatter Stripping and Full Field Parsing:
-
-
-    1. Extended parseFrontmatter() to extract all Agent Skills fields (name, description, license,
-    compatibility, allowed_tools)
-
-    2. Added stripFrontmatter() to store body-only content in .kspec/skills/<id>/SKILL.md  
-
-    3. Claude Code platform fields (user_invocable, context, agent, model, argument_hint) populate
-    platform_config.claude_code in meta.yaml
-
-    4. Copies references/, scripts/, assets/ subdirectories during import
-
-    5. Copies docs/ for backward compatibility
-
-    6. --name and --description CLI flags work when no frontmatter present
-
-
-    All 6 acceptance criteria have test coverage (11 new tests in tests/skill-cli.test.ts).
 - _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
   slugs:
     - implement-supporting-files-convention
@@ -50337,7 +50337,7 @@
   type: task
   spec_ref: "@supporting-files-convention"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50365,6 +50365,7 @@
         2. directoriesEqual() already works recursively — reuse as-is
   todos: []
   automation: eligible
+  started_at: 2026-02-16T00:18:47.267Z
 - _ulid: 01KHHQD7WW8PA69841EB3TJAYD
   slugs:
     - implement-skill-platform-config-cli
