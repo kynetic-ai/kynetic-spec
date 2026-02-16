@@ -50238,7 +50238,7 @@
   type: task
   spec_ref: "@import-frontmatter-strip"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50309,6 +50309,27 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-16T00:15:05.604Z
+  closed_reason: >-
+    Merged in PR #397. Implemented Import Frontmatter Stripping and Full Field Parsing:
+
+
+    1. Extended parseFrontmatter() to extract all Agent Skills fields (name, description, license,
+    compatibility, allowed_tools)
+
+    2. Added stripFrontmatter() to store body-only content in .kspec/skills/<id>/SKILL.md  
+
+    3. Claude Code platform fields (user_invocable, context, agent, model, argument_hint) populate
+    platform_config.claude_code in meta.yaml
+
+    4. Copies references/, scripts/, assets/ subdirectories during import
+
+    5. Copies docs/ for backward compatibility
+
+    6. --name and --description CLI flags work when no frontmatter present
+
+
+    All 6 acceptance criteria have test coverage (11 new tests in tests/skill-cli.test.ts).
 - _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
   slugs:
     - implement-supporting-files-convention
