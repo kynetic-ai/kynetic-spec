@@ -5782,5 +5782,26 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHKTQNHA07MZXGVJQHQAW7CA
+    type: success
+    content: "Parallel subagent review of ralph loop: 5 agents reviewing different PR ranges (371-376,
+      377-384, 385-393, 394-402, test suite) completed in ~3min wall clock. Independent agents
+      finding the same duplication issues confirms real problems vs noise. Effective pattern for
+      post-loop quality review."
+    created_at: 2026-02-16T18:17:20.683Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHKTQNN38FSK8SAEJ34G0P6F
+    type: friction
+    content: "Ralph loop PR-by-PR review process misses cross-PR duplication accumulation. PR #381 added
+      rendering utils, #383 duplicated them in a new file, #394 consolidated render functions but
+      missed the utilities, #401 added more dead code. Each PR passes review individually but the
+      aggregate drift is significant (24 inbox items from one loop). Consider adding a
+      consolidation/cleanup iteration every N PRs or at loop end."
+    created_at: 2026-02-16T18:17:20.803Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills: []
 includes: []
