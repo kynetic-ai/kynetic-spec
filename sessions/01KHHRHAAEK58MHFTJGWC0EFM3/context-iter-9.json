@@ -1,0 +1,348 @@
+{
+  "generated_at": "2026-02-16T01:11:34.255Z",
+  "branch": "feat/claude-code-renderer-extended-frontmatter",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHHQD6W",
+      "title": "Implement Codex Skill Renderer",
+      "started_at": "2026-02-16T01:00:38.320Z",
+      "priority": 3,
+      "spec_ref": "@codex-renderer",
+      "note_count": 2,
+      "last_note_at": "2026-02-16T01:09:58.127Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHHQD6W",
+      "task_title": "Implement Codex Skill Renderer",
+      "task_status": "pending_review",
+      "note_ulid": "01KHHZYF",
+      "created_at": "2026-02-16T01:09:58.127Z",
+      "author": "@claude",
+      "content": "Implemented Codex Skill Renderer (PlatformRenderer interface):\n\n1. Added generateCodexFrontmatter() - minimal frontmatter with only name + description (AC-1)\n2. Added generateCodexSidecarYaml() - creates agents/openai.yaml sidecar with:\n   - interface section: display_name, short_description, icons, colors, default_prompt\n   - policy section: allow_implicit_invocation\n   (AC-2, AC-3)\n3. Implemented codexRenderer with PlatformRenderer interface:\n   - platform: 'codex'\n   - defaultOutputDir: '.agents/skills'\n   - render(): Creates SKILL.md with minimal frontmatter + kspec-managed marker (AC-4)\n   - checkDrift(): Uses platform-specific hash .render-hash-codex (AC-6)\n4. Copies supporting directories (references/, scripts/, assets/) (AC-5)\n5. Registered codexRenderer in renderer registry\n\nAdded 13 new tests in tests/skill-rendering.test.ts covering all 6 ACs plus platform renderer trait compliance."
+    },
+    {
+      "task_ref": "01KHHQD6N",
+      "task_title": "Implement Claude Code Renderer - Extended Frontmatter",
+      "task_status": "completed",
+      "note_ulid": "01KHHYQC",
+      "created_at": "2026-02-16T00:48:37.240Z",
+      "author": "@claude",
+      "content": "Implemented Claude Code Renderer - Extended Frontmatter:\n\n1. Extended generateFrontmatter() to include:\n   - Portable fields: license, allowed-tools, compatibility (AC-1, AC-5)\n   - Claude Code platform fields: user-invocable, disable-model-invocation, context, agent, model, argument-hint (AC-2, AC-3, AC-4)\n   - All snake_case fields converted to kebab-case for Claude Code frontmatter (AC-8)\n\n2. Updated renderClaudeCodeSkill() to copy ALL supporting directories (references/, scripts/, assets/, docs/) instead of just docs/ (AC-7)\n\n3. Implemented hash migration in checkPlatformSkillDrift():\n   - migrateLegacyRenderHash() function migrates .render-hash to .render-hash-claude-code (AC-6)\n   - readPlatformRenderHash() falls back to legacy hash when platform-specific doesn't exist\n\nAdded 13 new tests covering all 8 ACs in tests/skill-rendering.test.ts:\n- ac-1: Portable fields (license, allowed-tools) in frontmatter (2 tests)\n- ac-2: user-invocable from platform_config (1 test)\n- ac-3: context and agent from platform_config (1 test)\n- ac-4: disable-model-invocation from platform_config (1 test)\n- ac-5: Only portable fields when no platform_config (1 test)\n- ac-6: Hash migration from .render-hash to .render-hash-claude-code (2 tests)\n- ac-7: Supporting directories (references/, scripts/, assets/) copied (3 tests)\n- ac-8: snake_case to kebab-case conversion in frontmatter (2 tests)\n\nAll 61 skill rendering tests pass."
+    },
+    {
+      "task_ref": "01KHHQD7M",
+      "task_title": "Implement Supporting Files Convention",
+      "task_status": "completed",
+      "note_ulid": "01KHHX9T",
+      "created_at": "2026-02-16T00:23:43.483Z",
+      "author": "@claude",
+      "content": "Implemented Supporting Files Convention:\n\n1. Added SupportingDirType and SupportingFile types to meta.ts\n2. Added getSkillSupportingDirPath() for path construction\n3. Added loadSkillSupportingFiles() to load files from any supporting directory (references, scripts, assets, docs)\n4. Added listSkillSupportingDirs() to discover which supporting directories exist for a skill\n\nNote: AC-2, AC-3, AC-4 were already implemented in skill-render.ts (copySupportingDirectories function). AC-1 required the loading functions.\n\n12 new tests in tests/supporting-files-convention.test.ts covering all 4 ACs."
+    },
+    {
+      "task_ref": "01KHHQD7C",
+      "task_title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "task_status": "completed",
+      "note_ulid": "01KHHWR7",
+      "created_at": "2026-02-16T00:14:07.560Z",
+      "author": "Jacob Chapel",
+      "content": "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    },
+    {
+      "task_ref": "01KHHQD7C",
+      "task_title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "task_status": "completed",
+      "note_ulid": "01KHHW3A",
+      "created_at": "2026-02-16T00:02:42.759Z",
+      "author": "@claude",
+      "content": "Implemented Import Frontmatter Stripping and Full Field Parsing:\n\n1. Expanded parseFrontmatter() to return all Agent Skills fields:\n   - Core: name, description\n   - Portable: license, compatibility, allowed_tools\n   - Claude Code: user_invocable, disable_model_invocation, context, agent, model, argument_hint\n   - Supports both underscore and hyphen naming (user-invocable, user_invocable)\n\n2. Added stripFrontmatter() function to remove frontmatter from content before storing\n\n3. Updated import command to:\n   - Build platform_config.claude_code from frontmatter (AC-3)\n   - Populate license, compatibility, allowed_tools in meta.yaml (AC-1)\n   - Store body-only content without frontmatter (AC-2)\n   - Copy references/, scripts/, assets/ directories (AC-4)\n   - Copy docs/ for backward compatibility (AC-5)\n   - Accept --name and --description flags when no frontmatter (AC-6)\n\n4. Extended skill get command to include new fields in JSON output\n\n11 new tests in tests/skill-cli.test.ts covering all 6 ACs"
+    },
+    {
+      "task_ref": "01KHHQD6W",
+      "task_title": "Implement Codex Skill Renderer",
+      "task_status": "pending_review",
+      "note_ulid": "01KHHQD6",
+      "created_at": "2026-02-15T22:40:43.421Z",
+      "author": "@claude",
+      "content": "Implementation notes:\n\nFile: src/parser/skill-render.ts (add to same file as Claude Code renderer)\n\nImplement PlatformRenderer interface for Codex:\n- platform: \"codex\"\n- defaultOutputDir: \".agents/skills\"\n- Frontmatter: minimal — only name + description (Codex docs say \"do not include any other fields\")\n- Sidecar openai.yaml structure:\n  ```yaml\n  interface:\n    display_name: \"...\"\n    short_description: \"...\"\n  policy:\n    allow_implicit_invocation: true/false\n  ```\n- Map platform_config.codex fields to the sidecar YAML structure\n- Register in renderer registry\n\nReference the Codex skill docs: https://developers.openai.com/codex/skills\nTests: tests/skill-rendering.test.ts (new describe block for Codex)\n"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHHQD7W",
+      "title": "Implement Skill Platform Config CLI",
+      "priority": 3,
+      "spec_ref": "@skill-platform-config-cli",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHHQD6N",
+      "title": "Implement Claude Code Renderer - Extended Frontmatter",
+      "completed_at": "2026-02-16T00:59:58.802Z",
+      "closed_reason": "Merged in PR #399. Implemented Claude Code renderer extended frontmatter with all 8 ACs covered: portable fields (license, allowed-tools), platform_config.claude_code fields (user-invocable, disable-model-invocation, context, agent), snake_case to kebab-case conversion, hash migration from .render-hash to .render-hash-claude-code, and supporting directories (references/, scripts/, assets/) copying. All 61 skill rendering tests pass."
+    },
+    {
+      "ref": "01KHHQD7M",
+      "title": "Implement Supporting Files Convention",
+      "completed_at": "2026-02-16T00:34:02.090Z",
+      "closed_reason": "Merged in PR #398. Implemented supporting files convention with functions for loading skill supporting files (references/, scripts/, assets/, docs/) and proper test coverage for all 4 acceptance criteria."
+    },
+    {
+      "ref": "01KHHQD7C",
+      "title": "Implement Import Frontmatter Stripping and Full Field Parsing",
+      "completed_at": "2026-02-16T00:15:05.604Z",
+      "closed_reason": "Merged in PR #397. Implemented Import Frontmatter Stripping and Full Field Parsing:\n\n1. Extended parseFrontmatter() to extract all Agent Skills fields (name, description, license, compatibility, allowed_tools)\n2. Added stripFrontmatter() to store body-only content in .kspec/skills/<id>/SKILL.md  \n3. Claude Code platform fields (user_invocable, context, agent, model, argument_hint) populate platform_config.claude_code in meta.yaml\n4. Copies references/, scripts/, assets/ subdirectories during import\n5. Copies docs/ for backward compatibility\n6. --name and --description CLI flags work when no frontmatter present\n\nAll 6 acceptance criteria have test coverage (11 new tests in tests/skill-cli.test.ts)."
+    },
+    {
+      "ref": "01KHHQD6C",
+      "title": "Implement Extended Skill Schema",
+      "completed_at": "2026-02-15T23:54:51.141Z",
+      "closed_reason": "Merged in PR #396. Extended SkillSchema with portable Agent Skills fields:\n- Added license, compatibility, allowed_tools, metadata fields\n- Added platform_config with ClaudeCodeConfigSchema and CodexConfigSchema (strict)\n- PlatformConfigSchema uses passthrough for future extensibility\n- All 7 ACs verified with 27 tests covering schema validation, strict mode, passthrough, and backward compatibility"
+    },
+    {
+      "ref": "01KHHQD64",
+      "title": "Implement Platform Renderer Contract",
+      "completed_at": "2026-02-15T23:37:24.584Z",
+      "closed_reason": "Merged in PR #395. Implemented Platform Renderer Contract:\n\n1. Defined PlatformRenderer interface with platform, defaultOutputDir, render(), and checkDrift() methods\n2. Defined PlatformRenderResult interface with id, platform, action, paths, supportingDirsAction, skipReason\n3. Defined DriftStatus type for drift detection\n4. Implemented supporting directories support (references/, scripts/, assets/, docs/)\n5. Implemented dryRun mode for preview without file writes\n6. Implemented custom outputDir support\n7. Implemented per-platform hash storage (.render-hash-<platform>)\n8. Created renderer registry with getRenderer(), getAllRenderers(), registerRenderer()\n\nAll 6 acceptance criteria covered by 33 tests in tests/platform-renderer.test.ts."
+    },
+    {
+      "ref": "01KHHQD5W",
+      "title": "Implement Consolidate Skill Render Implementations",
+      "completed_at": "2026-02-15T23:18:40.337Z",
+      "closed_reason": "Merged in PR #394. Consolidated skill render implementations by moving hash/drift functions to skill-render.ts, extending renderClaudeCodeSkill with storeHash option, and removing duplicate renderSkill from skill.ts. All 5 ACs verified: CLI delegates to skill-render.ts (AC-1), no private renderSkill (AC-2), hash functions exported from skill-render.ts (AC-3), setup.ts unchanged and working (AC-4), all 116 skill tests pass (AC-5)."
+    },
+    {
+      "ref": "01KHFBT4M",
+      "title": "Implement Init Setup Integration",
+      "completed_at": "2026-02-15T08:47:21.035Z",
+      "closed_reason": "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions and CI compatibility."
+    },
+    {
+      "ref": "01KHFBT4D",
+      "title": "Implement Package Distribution",
+      "completed_at": "2026-02-15T07:32:26.395Z",
+      "closed_reason": "Merged in PR #392. Implemented package distribution for templates directory: created templates/hooks/ with pre-commit hook source, updated installShadowHook to load from package templates, added 13 tests covering all 4 ACs. Package now ships with templates/ containing skills/, agents-sections/, and hooks/ subdirectories."
+    },
+    {
+      "ref": "01KHFBT45",
+      "title": "Implement Core Skill Update",
+      "completed_at": "2026-02-15T07:10:13.336Z",
+      "closed_reason": "Merged in PR #391. Implemented kspec skill update command with all 3 ACs:\n- ac-1: Updates skill content and version when package version differs\n- ac-2: Skips skills already at current version\n- ac-3: Only processes skills with origin 'core' (ignores project/local)\n\nAdded 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output, and edge cases."
+    },
+    {
+      "ref": "01KHFBT3Y",
+      "title": "Implement Core Skill Installation",
+      "completed_at": "2026-02-15T06:53:00.840Z",
+      "closed_reason": "Merged in PR #390. Implemented kspec skill install-core command to copy core skill definitions from the kspec npm package templates/ directory into projects. All 5 ACs implemented: meta entries created with origin 'core' and 'core' tag (ac-1), SKILL.md content copied from templates to .kspec/skills/<id>/ (ac-2), custom/project skills skipped with message (ac-3), --force flag overwrites custom forks (ac-4), version matches kspec package version (ac-5). 18 tests added covering all acceptance criteria."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "efe54fb",
+      "full_hash": "efe54fb3091f02be592066134cc49fbc82b4fb08",
+      "date": "2026-02-16T01:10:11.000Z",
+      "message": "feat: implement codex skill renderer",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4300e79",
+      "full_hash": "4300e7991d5b95d4c5a72c3520e8477fa1ef6acc",
+      "date": "2026-02-16T00:49:04.000Z",
+      "message": "feat: implement claude code renderer extended frontmatter",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2c0765c",
+      "full_hash": "2c0765cbe6ea737753a8229b0ba75be0d4cea5f0",
+      "date": "2026-02-16T00:33:52.000Z",
+      "message": "feat: implement supporting files convention (#398)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "93dada8",
+      "full_hash": "93dada806f12c9edead7a52b3730f2b3ccbbc594",
+      "date": "2026-02-16T00:23:52.000Z",
+      "message": "feat: implement supporting files convention",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c5ce72c",
+      "full_hash": "c5ce72c81f6c999f6ce7073b55a2e1278d85f158",
+      "date": "2026-02-16T00:14:53.000Z",
+      "message": "feat: implement import frontmatter stripping and full field parsing (#397)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8ad3635",
+      "full_hash": "8ad3635fb12c65c72d162f0169fa83d794a289e8",
+      "date": "2026-02-16T00:02:59.000Z",
+      "message": "feat: implement import frontmatter stripping and full field parsing",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "25406c3",
+      "full_hash": "25406c384532d3d7c7fc394fc0a5e287c09b2d97",
+      "date": "2026-02-15T23:54:41.000Z",
+      "message": "feat: implement extended skill schema (#396)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "dc22d1b",
+      "full_hash": "dc22d1bd248a013d698bc1ded30b5336dd3d2dbb",
+      "date": "2026-02-15T23:43:53.000Z",
+      "message": "feat: implement extended skill schema",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f6b8820",
+      "full_hash": "f6b882043ffa339caae689e3c4add468b30cd477",
+      "date": "2026-02-15T23:37:11.000Z",
+      "message": "feat: implement platform renderer contract (#395)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8f8bf09",
+      "full_hash": "8f8bf09618fb82939814c41c8fe7da27917084ba",
+      "date": "2026-02-15T23:26:48.000Z",
+      "message": "feat: implement platform renderer contract",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 520,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 15,
+    "blocked": 0,
+    "completed": 487,
+    "inbox_items": 42
+  }
+}
