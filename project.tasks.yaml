@@ -50184,7 +50184,7 @@
   type: task
   spec_ref: "@codex-renderer"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-claude-code-renderer-extended-frontmatte"
@@ -50259,6 +50259,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-16T01:21:22.731Z
+  closed_reason: "Merged in PR #400. Implemented Codex Skill Renderer with PlatformRenderer interface:
+    minimal frontmatter (name+description), sidecar agents/openai.yaml for platform_config.codex,
+    kspec-managed marker, supporting directory copying, and platform-specific render hash. All 6 ACs
+    verified with test coverage."
 - _ulid: 01KHHQD74SRA7R1ZNRCN32YECZ
   slugs:
     - implement-multi-platform-render-cli
