@@ -46,13 +46,19 @@ import {
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   checkSkillDrift,
+  checkPlatformSkillDrift,
   computeContentHash,
   generateFrontmatter,
   isKspecManagedSkill as isKspecManaged,
   KSPEC_MANAGED_MARKER,
   readRenderHash,
   renderClaudeCodeSkill,
+  getRenderer,
+  getAllRenderers,
   type ClaudeCodeRenderResult,
+  type PlatformRenderer,
+  type PlatformRenderResult,
+  type DriftStatus,
 } from "../../parser/skill-render.js";
 import { SkillSchema, type SkillOrigin } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
@@ -777,6 +783,7 @@ export function registerSkillCommands(program: Command): void {
   // AC: @skill-rendering ac-1 through ac-5 - kspec skill render
   // AC: @skill-render-cli ac-1, ac-2 - kspec skill render / kspec skill render @skill-id
   // AC: @skill-drift-detection ac-3, ac-4 - drift handling with --force
+  // AC: @multi-platform-render-cli ac-1 through ac-7 - multi-platform rendering
   // AC: @trait-dry-run - supports --dry-run
   // AC: @trait-error-guidance - provides error guidance
   skill
@@ -787,6 +794,7 @@ export function registerSkillCommands(program: Command): void {
     .option("--clean", "Remove orphaned managed skill directories")
     .option("--dry-run", "Show what would be changed without applying")
     .option("--force", "Overwrite drifted skill files (manually edited)")
+    .option("--output-dir <path>", "Custom output directory (overrides platform default)")
     .option("--skill <id>", "Render only a specific skill (deprecated, use positional arg)")
     .action(async (ref: string | undefined, options) => {
       try {
@@ -805,13 +813,13 @@ export function registerSkillCommands(program: Command): void {
         const projectRoot = ctx.rootDir;
         const dryRun = options.dryRun || false;
         const force = options.force || false;
-        const results: SkillRenderResult[] = [];
+        const customOutputDir = options.outputDir;
+        const results: MultiPlatformRenderResult[] = [];
         const cleanResults: CleanResult[] = [];
+        const warnings: string[] = [];
 
-        // Filter skills by platform (only claude-code for now)
-        let skillsToRender = metaCtx.skills.filter((s) =>
-          s.platforms.includes("claude-code")
-        );
+        // Get all skills (no platform filtering - we'll check per-platform)
+        let skillsToRender = metaCtx.skills;
 
         // AC: @skill-render-cli ac-2 - Filter to specific skill if requested
         // Support both positional ref argument and --skill option
@@ -826,96 +834,150 @@ export function registerSkillCommands(program: Command): void {
           }
           const skill = item as LoadedSkill;
           skillsToRender = skillsToRender.filter((s) => s.id === skill.id);
-          if (skillsToRender.length === 0) {
-            error(`Skill '${skill.id}' does not have claude-code platform`);
-            process.exit(EXIT_CODES.ERROR);
-          }
         }
 
-        // Ensure .claude/skills directory exists
-        const targetSkillsDir = path.join(projectRoot, ".claude", "skills");
-        if (!dryRun) {
-          await fs.mkdir(targetSkillsDir, { recursive: true });
-        }
+        // Track which platforms we're using to create output directories and for clean
+        const usedPlatforms = new Set<string>();
 
-        // Render each skill
-        // AC: @skill-drift-detection ac-3, ac-4 - Check drift and skip without --force
-        // AC: @consolidate-skill-render ac-1 - delegates to renderClaudeCodeSkill from skill-render.ts
+        // AC: @multi-platform-render-cli ac-1, ac-2 - Render each skill to each of its platforms
         for (const skill of skillsToRender) {
-          // Check for drift before rendering
-          const driftStatus = await checkSkillDrift(ctx.specDir, projectRoot, skill.id);
+          for (const platform of skill.platforms) {
+            // Get the renderer for this platform
+            const renderer = getRenderer(platform);
 
-          // AC: @skill-drift-detection ac-3 - Skip drifted skills without --force
-          if (driftStatus === "drifted" && !force) {
-            const renderedPath = path.join(
+            // AC: @multi-platform-render-cli ac-7 - Warn for unregistered platforms
+            if (!renderer) {
+              warnings.push(`${skill.id}: unregistered platform '${platform}' (skipped)`);
+              results.push({
+                id: skill.id,
+                platform,
+                action: "skipped",
+                path: "",
+                skipReason: `unregistered platform '${platform}'`,
+              });
+              continue;
+            }
+
+            usedPlatforms.add(platform);
+
+            // Determine output directory
+            const outputDir = customOutputDir || renderer.defaultOutputDir;
+
+            // Ensure output directory exists
+            const targetSkillsDir = path.join(projectRoot, outputDir);
+            if (!dryRun) {
+              await fs.mkdir(targetSkillsDir, { recursive: true });
+            }
+
+            // Check for drift before rendering
+            // AC: @skill-drift-detection ac-3, ac-4 - Check drift and skip without --force
+            const driftStatus = await renderer.checkDrift(
+              ctx.specDir,
               projectRoot,
-              ".claude",
-              "skills",
               skill.id,
-              "SKILL.md"
+              { outputDir: customOutputDir }
             );
-            results.push({
-              id: skill.id,
-              action: "skipped",
-              path: renderedPath,
-              skipReason: "drifted (use --force to overwrite)",
-            });
-            continue;
-          }
 
-          // AC: @skill-drift-detection ac-4 - Render (overwrite) when --force is used
-          // AC: @consolidate-skill-render ac-1 - use renderClaudeCodeSkill with storeHash
-          const result = await renderClaudeCodeSkill(ctx, projectRoot, skill, {
-            dryRun,
-            storeHash: true,
-          });
-          results.push(result);
+            // AC: @skill-drift-detection ac-3 - Skip drifted skills without --force
+            if (driftStatus === "drifted" && !force) {
+              const renderedPath = path.join(
+                projectRoot,
+                outputDir,
+                skill.id,
+                "SKILL.md"
+              );
+              results.push({
+                id: skill.id,
+                platform,
+                action: "skipped",
+                path: renderedPath,
+                skipReason: "drifted (use --force to overwrite)",
+              });
+              continue;
+            }
+
+            // AC: @skill-drift-detection ac-4 - Render (overwrite) when --force is used
+            // AC: @multi-platform-render-cli ac-4 - Pass custom outputDir to renderer
+            const result = await renderer.render(ctx, projectRoot, skill, {
+              dryRun,
+              storeHash: true,
+              outputDir: customOutputDir,
+            });
+
+            results.push({
+              id: result.id,
+              platform: result.platform,
+              action: result.action,
+              path: result.paths[0] || "",
+              skipReason: result.skipReason,
+            });
+          }
         }
 
-        // Handle --clean: remove orphaned managed skills
+        // Handle --clean: remove orphaned managed skills per platform
         // AC: @skill-rendering ac-4, ac-5
+        // AC: @multi-platform-render-cli ac-5 - Per-platform cleanup
         if (options.clean) {
-          const activeSkillIds = new Set(metaCtx.skills.map((s) => s.id));
-
-          try {
-            const entries = await fs.readdir(targetSkillsDir, {
-              withFileTypes: true,
-            });
-
-            for (const entry of entries) {
-              if (!entry.isDirectory()) continue;
-
-              const skillId = entry.name;
-              const skillDir = path.join(targetSkillsDir, skillId);
-              const skillMdPath = path.join(skillDir, "SKILL.md");
-
-              // Skip if skill still exists in meta
-              if (activeSkillIds.has(skillId)) continue;
-
-              // AC: @skill-rendering ac-4 - Only consider kspec-managed skills
-              const isManaged = await isKspecManaged(skillMdPath);
-
-              if (isManaged) {
-                // AC: @skill-rendering ac-5 - Remove orphaned directory
-                if (!dryRun) {
-                  await fs.rm(skillDir, { recursive: true, force: true });
-                }
-                cleanResults.push({
-                  id: skillId,
-                  path: skillDir,
-                  action: "removed",
-                });
-              } else {
-                cleanResults.push({
-                  id: skillId,
-                  path: skillDir,
-                  action: "skipped",
-                  reason: "Not managed by kspec",
-                });
+          // Build set of active skill IDs per platform
+          const activeSkillIdsByPlatform = new Map<string, Set<string>>();
+          for (const skill of metaCtx.skills) {
+            for (const platform of skill.platforms) {
+              if (!activeSkillIdsByPlatform.has(platform)) {
+                activeSkillIdsByPlatform.set(platform, new Set());
               }
+              activeSkillIdsByPlatform.get(platform)!.add(skill.id);
             }
-          } catch {
-            // No .claude/skills directory, nothing to clean
+          }
+
+          // Clean each platform's output directory
+          const renderers = getAllRenderers();
+          for (const renderer of renderers) {
+            const outputDir = customOutputDir || renderer.defaultOutputDir;
+            const targetSkillsDir = path.join(projectRoot, outputDir);
+            const activeIds = activeSkillIdsByPlatform.get(renderer.platform) || new Set();
+
+            try {
+              const entries = await fs.readdir(targetSkillsDir, {
+                withFileTypes: true,
+              });
+
+              for (const entry of entries) {
+                if (!entry.isDirectory()) continue;
+
+                const skillId = entry.name;
+                const skillDir = path.join(targetSkillsDir, skillId);
+                const skillMdPath = path.join(skillDir, "SKILL.md");
+
+                // Skip if skill still exists in meta for this platform
+                if (activeIds.has(skillId)) continue;
+
+                // AC: @skill-rendering ac-4 - Only consider kspec-managed skills
+                const isManaged = await isKspecManaged(skillMdPath);
+
+                if (isManaged) {
+                  // AC: @skill-rendering ac-5 - Remove orphaned directory
+                  if (!dryRun) {
+                    await fs.rm(skillDir, { recursive: true, force: true });
+                  }
+                  cleanResults.push({
+                    id: skillId,
+                    path: skillDir,
+                    action: "removed",
+                    platform: renderer.platform,
+                  });
+                } else {
+                  cleanResults.push({
+                    id: skillId,
+                    path: skillDir,
+                    action: "skipped",
+                    reason: "Not managed by kspec",
+                    platform: renderer.platform,
+                  });
+                }
+              }
+            } catch {
+              // Output directory doesn't exist, nothing to clean
+            }
           }
         }
 
@@ -926,6 +988,7 @@ export function registerSkillCommands(program: Command): void {
             dry_run: dryRun,
             rendered: results,
             cleaned: cleanResults,
+            warnings,
           },
           () => {
             // AC: @trait-dry-run ac-3 - Clear indication this is a preview
@@ -934,24 +997,39 @@ export function registerSkillCommands(program: Command): void {
               console.log();
             }
 
+            // AC: @multi-platform-render-cli ac-7 - Show warnings for unregistered platforms
+            if (warnings.length > 0) {
+              console.log(chalk.yellow("Warnings:"));
+              for (const warning of warnings) {
+                console.log(`  ${chalk.yellow("!")} ${warning}`);
+              }
+              console.log();
+            }
+
             // Render results
             const created = results.filter((r) => r.action === "created");
             const updated = results.filter((r) => r.action === "updated");
             const unchanged = results.filter((r) => r.action === "unchanged");
             // AC: @skill-drift-detection ac-3 - Track skipped drifted skills
-            const skippedDrifted = results.filter((r) => r.action === "skipped");
+            const skippedDrifted = results.filter(
+              (r) => r.action === "skipped" && r.skipReason?.includes("drifted")
+            );
+            const skippedUnregistered = results.filter(
+              (r) => r.action === "skipped" && r.skipReason?.includes("unregistered")
+            );
 
+            // AC: @multi-platform-render-cli ac-6 - Include Platform column in output
             if (created.length > 0) {
               console.log(chalk.green(`Created: ${created.length} skill(s)`));
               for (const r of created) {
-                console.log(`  ${chalk.green("+")} ${r.id}`);
+                console.log(`  ${chalk.green("+")} ${r.id} ${chalk.gray(`[${r.platform}]`)}`);
               }
             }
 
             if (updated.length > 0) {
               console.log(chalk.blue(`Updated: ${updated.length} skill(s)`));
               for (const r of updated) {
-                console.log(`  ${chalk.blue("~")} ${r.id}`);
+                console.log(`  ${chalk.blue("~")} ${r.id} ${chalk.gray(`[${r.platform}]`)}`);
               }
             }
 
@@ -964,7 +1042,7 @@ export function registerSkillCommands(program: Command): void {
               console.log();
               console.log(chalk.yellow(`Skipped: ${skippedDrifted.length} drifted skill(s)`));
               for (const r of skippedDrifted) {
-                console.log(`  ${chalk.yellow("!")} ${r.id}: ${r.skipReason || "drifted"}`);
+                console.log(`  ${chalk.yellow("!")} ${r.id} ${chalk.gray(`[${r.platform}]`)}: ${r.skipReason || "drifted"}`);
               }
               console.log();
               console.log(chalk.yellow("Use --force to overwrite drifted skills"));
@@ -979,7 +1057,8 @@ export function registerSkillCommands(program: Command): void {
                 console.log();
                 console.log(chalk.red(`Removed: ${removed.length} orphaned skill(s)`));
                 for (const r of removed) {
-                  console.log(`  ${chalk.red("-")} ${r.id}`);
+                  // AC: @multi-platform-render-cli ac-6 - Platform column in clean output
+                  console.log(`  ${chalk.red("-")} ${r.id} ${chalk.gray(`[${r.platform}]`)}`);
                 }
               }
 
@@ -1018,6 +1097,7 @@ export function registerSkillCommands(program: Command): void {
     });
 
   // AC: @skill-render-cli ac-3 - kspec skill status
+  // AC: @multi-platform-render-cli ac-3 - Per-platform status rows
   skill
     .command("status")
     .description("Show sync status of rendered skills")
@@ -1036,30 +1116,46 @@ export function registerSkillCommands(program: Command): void {
         const metaCtx = await loadMetaContext(ctx);
         const projectRoot = ctx.rootDir;
 
-        // Filter skills by platform (only claude-code for now)
-        const skillsToCheck = metaCtx.skills.filter((s) =>
-          s.platforms.includes("claude-code")
-        );
+        // Check all skills (not just claude-code)
+        const skillsToCheck = metaCtx.skills;
 
         if (skillsToCheck.length === 0) {
           console.log(chalk.yellow("No skills found"));
           return;
         }
 
-        const statusResults: SkillStatusResult[] = [];
+        // AC: @multi-platform-render-cli ac-3 - Build status per skill-platform pair
+        const statusResults: MultiPlatformStatusResult[] = [];
 
         for (const skill of skillsToCheck) {
-          const status = await getSkillSyncStatus(ctx, projectRoot, skill);
-          statusResults.push(status);
+          for (const platform of skill.platforms) {
+            const renderer = getRenderer(platform);
+            if (!renderer) {
+              // Unregistered platform - show as not-rendered
+              statusResults.push({
+                id: skill.id,
+                platform,
+                status: "not-rendered",
+                docsStatus: "no-docs",
+                warning: `unregistered platform '${platform}'`,
+              });
+              continue;
+            }
+
+            const status = await getMultiPlatformSyncStatus(ctx, projectRoot, skill, renderer);
+            statusResults.push(status);
+          }
         }
 
         // Output results
         output(
           statusResults,
           () => {
+            // AC: @multi-platform-render-cli ac-3 - Table shows Platform column
             const table = new Table({
               head: [
                 chalk.bold("ID"),
+                chalk.bold("Platform"),
                 chalk.bold("Status"),
                 chalk.bold("Docs"),
               ],
@@ -1086,7 +1182,8 @@ export function registerSkillCommands(program: Command): void {
 
               table.push([
                 result.id,
-                statusColor(result.status),
+                result.platform,
+                statusColor(result.status + (result.warning ? " (!)" : "")),
                 docsStatusColor(result.docsStatus || "-"),
               ]);
             }
@@ -1097,6 +1194,7 @@ export function registerSkillCommands(program: Command): void {
             const inSync = statusResults.filter((r) => r.status === "in-sync").length;
             const drifted = statusResults.filter((r) => r.status === "drifted").length;
             const notRendered = statusResults.filter((r) => r.status === "not-rendered").length;
+            const warnings = statusResults.filter((r) => r.warning).length;
 
             console.log();
             if (drifted > 0) {
@@ -1104,6 +1202,9 @@ export function registerSkillCommands(program: Command): void {
             }
             if (notRendered > 0) {
               console.log(chalk.gray(`${notRendered} skill(s) not rendered`));
+            }
+            if (warnings > 0) {
+              console.log(chalk.yellow(`${warnings} skill(s) with warnings`));
             }
             if (inSync === statusResults.length) {
               console.log(chalk.green("All skills in sync"));
@@ -1778,13 +1879,29 @@ interface SkillRenderResult {
 }
 
 /**
+ * Result of rendering a single skill to a platform
+ * AC: @multi-platform-render-cli ac-6 - Includes platform field
+ */
+interface MultiPlatformRenderResult {
+  id: string;
+  platform: string;
+  action: "created" | "updated" | "unchanged" | "skipped";
+  path: string;
+  /** Reason why skill was skipped */
+  skipReason?: string;
+}
+
+/**
  * Result of a clean operation
+ * AC: @multi-platform-render-cli ac-5 - Includes platform field
  */
 interface CleanResult {
   id: string;
   path: string;
   action: "removed" | "skipped";
   reason?: string;
+  /** Platform this clean result is for */
+  platform?: string;
 }
 
 /**
@@ -1849,6 +1966,18 @@ interface SkillStatusResult {
   id: string;
   status: "in-sync" | "drifted" | "not-rendered";
   docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
+}
+
+/**
+ * Result of checking a skill's sync status for a specific platform
+ * AC: @multi-platform-render-cli ac-3
+ */
+interface MultiPlatformStatusResult {
+  id: string;
+  platform: string;
+  status: "in-sync" | "drifted" | "not-rendered";
+  docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
+  warning?: string;
 }
 
 /**
@@ -1919,6 +2048,78 @@ async function getSkillSyncStatus(
 
   return {
     id: skill.id,
+    status,
+    docsStatus,
+  };
+}
+
+/**
+ * Get the sync status of a skill for a specific platform
+ * AC: @multi-platform-render-cli ac-3 - Per-platform status checking
+ */
+async function getMultiPlatformSyncStatus(
+  ctx: KspecContext,
+  projectRoot: string,
+  skill: LoadedSkill,
+  renderer: PlatformRenderer
+): Promise<MultiPlatformStatusResult> {
+  // Use the renderer's drift check
+  const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id);
+
+  // Map drift status to sync status
+  let status: "in-sync" | "drifted" | "not-rendered";
+  switch (driftStatus) {
+    case "in-sync":
+      status = "in-sync";
+      break;
+    case "drifted":
+      status = "drifted";
+      break;
+    case "not-rendered":
+      status = "not-rendered";
+      break;
+    case "no-hash":
+      // No hash stored - need to check if content matches expected
+      const renderedPath = path.join(
+        projectRoot,
+        renderer.defaultOutputDir,
+        skill.id,
+        "SKILL.md"
+      );
+      try {
+        await fs.readFile(renderedPath, "utf-8");
+        // File exists but no hash - treat as needing sync
+        status = "drifted";
+      } catch {
+        status = "not-rendered";
+      }
+      break;
+  }
+
+  // Check docs status for this platform
+  const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
+  const targetDocsDir = path.join(projectRoot, renderer.defaultOutputDir, skill.id, "docs");
+  let docsStatus: "in-sync" | "drifted" | "not-rendered" | "no-docs" = "no-docs";
+
+  try {
+    await fs.stat(sourceDocsDir);
+    // Source docs exist, check target
+    try {
+      await fs.stat(targetDocsDir);
+      // Both exist, compare
+      const equal = await directoriesEqual(sourceDocsDir, targetDocsDir);
+      docsStatus = equal ? "in-sync" : "drifted";
+    } catch {
+      docsStatus = "not-rendered";
+    }
+  } catch {
+    // No source docs
+    docsStatus = "no-docs";
+  }
+
+  return {
+    id: skill.id,
+    platform: renderer.platform,
     status,
     docsStatus,
   };
