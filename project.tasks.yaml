@@ -50281,6 +50281,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-15T22:40:43.673Z
+  started_at: 2026-02-16T01:21:52.526Z
   notes:
     - _ulid: 01KHHQD74S55C3KZKG04TDQ2XQ
       created_at: 2026-02-15T22:40:43.673Z
@@ -50310,9 +50311,36 @@
 
         Consider extracting render logic to src/cli/commands/skill-render.ts if skill.ts
         exceeds ~2500 lines after changes.
+    - _ulid: 01KHJ13EHA9S9BJTFWS3GEP41A
+      created_at: 2026-02-16T01:30:09.322Z
+      author: "@claude"
+      content: >-
+        Implemented Multi-Platform Render CLI with all 7 ACs:
+
+
+        1. AC-1: Skills with platforms [claude-code, codex] now render to both platforms
+
+        2. AC-2: Skills with only codex platform render only to codex (not hardcoded to claude-code)
+
+        3. AC-3: kspec skill status shows per-platform rows with Platform column
+
+        4. AC-4: --output-dir flag overrides platform default output directory
+
+        5. AC-5: --clean operates per-platform in each output directory
+
+        6. AC-6: Render table output includes Platform column ([claude-code], [codex])
+
+        7. AC-7: Unregistered platforms show warning and skip that platform
+
+
+        Added 18 tests in tests/multi-platform-render-cli.test.ts covering all ACs plus edge cases
+        (empty platforms, dry-run with multi-platform, force with drift on multi-platform).
+
+
+        All 74 skill-rendering tests + 77 skill-cli tests continue to pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-16T01:21:52.526Z
 - _ulid: 01KHHQD7CVF171SQ1A7K2E6R02
   slugs:
     - implement-import-frontmatter-stripping-and-full-fi
