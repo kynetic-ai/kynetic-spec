@@ -546,3 +546,17 @@ inbox:
     created_at: 2026-02-16T18:16:11.692Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHKTNTKM18F30Y0VV0P5TKEC
+    text: "Duplicated lookup logic in meta get command: inline skill search instead of calling
+      resolveMetaRefToUlid. Same pattern inherited by agents/workflows/conventions. Consolidate all
+      meta get lookups."
+    created_at: 2026-02-16T18:16:20.341Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNTMCYP0S7Y1CNE7P2EZW
+    text: 'Weak AC-3 test for conventions in agents-instruction-gen.test.ts: conditional if
+      (content.includes("## Conventions")) means assertion silently passes when fixtures lack
+      conventions. Should assert unconditionally.'
+    created_at: 2026-02-16T18:16:20.364Z
+    tags: []
+    added_by: "@claude"
