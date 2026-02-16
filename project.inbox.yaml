@@ -560,3 +560,11 @@ inbox:
     created_at: 2026-02-16T18:16:20.364Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHKVQGQJKNV5QAKNFC2XJG0T
+    text: "Ralph loop consolidation pass: add a cleanup/consolidation iteration every N PRs or at loop
+      end. The PR-by-PR review process misses cross-PR duplication accumulation — 32 PRs in last
+      loop produced 24 inbox items of tech debt. A periodic consolidation step would catch dead
+      code, duplicated utilities, and superseded implementations before they compound."
+    created_at: 2026-02-16T18:34:44.339Z
+    tags: []
+    added_by: "@claude"
