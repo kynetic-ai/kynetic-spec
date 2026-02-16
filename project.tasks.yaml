@@ -50273,6 +50273,35 @@
       author: "@claude"
       content: Starting implementation. Reading existing skill import code to understand current state.
       supersedes: null
+    - _ulid: 01KHHW3AY7PS153N90AGP590E3
+      created_at: 2026-02-16T00:02:42.759Z
+      author: "@claude"
+      content: >-
+        Implemented Import Frontmatter Stripping and Full Field Parsing:
+
+
+        1. Expanded parseFrontmatter() to return all Agent Skills fields:
+           - Core: name, description
+           - Portable: license, compatibility, allowed_tools
+           - Claude Code: user_invocable, disable_model_invocation, context, agent, model, argument_hint
+           - Supports both underscore and hyphen naming (user-invocable, user_invocable)
+
+        2. Added stripFrontmatter() function to remove frontmatter from content before storing
+
+
+        3. Updated import command to:
+           - Build platform_config.claude_code from frontmatter (AC-3)
+           - Populate license, compatibility, allowed_tools in meta.yaml (AC-1)
+           - Store body-only content without frontmatter (AC-2)
+           - Copy references/, scripts/, assets/ directories (AC-4)
+           - Copy docs/ for backward compatibility (AC-5)
+           - Accept --name and --description flags when no frontmatter (AC-6)
+
+        4. Extended skill get command to include new fields in JSON output
+
+
+        11 new tests in tests/skill-cli.test.ts covering all 6 ACs
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHHQD7MYZR6VN62R8G90JAE3
