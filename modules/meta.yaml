@@ -3280,6 +3280,9 @@ modules:
               - "@platform-renderer-trait"
             notes: []
             created: 2026-02-15T22:40:42.066Z
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KHHQD5N98VDEJFQWXTE4QZC1
             slugs:
               - supporting-files-convention
