@@ -3053,7 +3053,7 @@ modules:
                 created: 2026-02-15T22:40:42.092Z
                 status:
                   maturity: draft
-                  implementation: in_progress
+                  implementation: implemented
           - _ulid: 01KHFBSYP9JAQTRZZYRWJW2RZJ
             slugs:
               - claude-code-renderer
