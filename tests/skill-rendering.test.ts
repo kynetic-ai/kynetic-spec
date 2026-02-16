@@ -1285,3 +1285,413 @@ describe('Claude Code Renderer - Extended Frontmatter', () => {
     });
   });
 });
+
+/**
+ * Tests for Codex Skill Renderer
+ * AC: @codex-renderer ac-1 through ac-6
+ */
+describe('Codex Skill Renderer', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // Helper to load context, meta, and find skill
+  async function loadSkillForTest(skillId: string) {
+    const { codexRenderer } = await import('../src/parser/skill-render');
+    const { initContext } = await import('../src/parser/yaml');
+    const { loadMetaContext } = await import('../src/parser/meta');
+
+    const ctx = await initContext(tempDir);
+    const meta = await loadMetaContext(ctx);
+    const skill = meta.skills.find((s) => s.id === skillId);
+    return { codexRenderer, ctx, skill };
+  }
+
+  // AC: @codex-renderer ac-1
+  describe('ac-1: SKILL.md with only name and description in frontmatter', () => {
+    it('should create .agents/skills/<id>/SKILL.md with minimal frontmatter', async () => {
+      // Create a skill
+      kspecFull(
+        'skill add --id codex-skill --name "Codex Skill" --description "A skill for Codex" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'codex-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Codex Skill\n\nThis is content.\n', 'utf-8');
+
+      // Load context and render
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('codex-skill');
+      expect(skill).toBeDefined();
+
+      const result = await codexRenderer.render(ctx, tempDir, skill!, { storeHash: true });
+
+      expect(result.action).toBe('created');
+      expect(result.platform).toBe('codex');
+
+      // Check rendered file
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'codex-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      // Frontmatter should ONLY have name and description
+      expect(content).toMatch(/^---\n/);
+      expect(content).toContain('name: codex-skill');
+      expect(content).toContain('description: A skill for Codex');
+      expect(content).toContain('---');
+
+      // Should NOT have other fields even if they exist on skill
+      expect(content).not.toContain('license:');
+      expect(content).not.toContain('allowed-tools:');
+      expect(content).not.toContain('platform_config:');
+    });
+
+    it('should include kspec-managed marker', async () => {
+      kspecFull(
+        'skill add --id marker-skill --name "Marker Skill" --description "Test marker" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'marker-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Marker Skill\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('marker-skill');
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'marker-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      // AC: @codex-renderer ac-4
+      expect(content).toContain('<!-- kspec-managed -->');
+    });
+  });
+
+  // AC: @codex-renderer ac-2
+  describe('ac-2: Sidecar agents/openai.yaml with platform_config.codex fields', () => {
+    it('should create sidecar when platform_config.codex has fields', async () => {
+      kspecFull(
+        'skill add --id sidecar-skill --name "Sidecar Skill" --description "Test sidecar" --platform codex',
+        tempDir
+      );
+
+      // Add platform_config.codex to meta
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: sidecar-skill\n/,
+        `id: sidecar-skill
+    platform_config:
+      codex:
+        display_name: "My Sidecar Skill"
+        short_description: "A brief description"
+        allow_implicit_invocation: true
+`
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'sidecar-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Sidecar Skill\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('sidecar-skill');
+      const result = await codexRenderer.render(ctx, tempDir, skill!);
+
+      // Check sidecar file was created
+      const sidecarPath = path.join(tempDir, '.agents', 'skills', 'sidecar-skill', 'agents', 'openai.yaml');
+      const sidecarContent = await fs.readFile(sidecarPath, 'utf-8');
+
+      expect(sidecarContent).toContain('interface:');
+      expect(sidecarContent).toContain('display_name: My Sidecar Skill');
+      expect(sidecarContent).toContain('short_description: A brief description');
+      expect(sidecarContent).toContain('policy:');
+      expect(sidecarContent).toContain('allow_implicit_invocation: true');
+
+      // Check path is included in result
+      expect(result.paths).toContain(sidecarPath);
+    });
+
+    it('should include all Codex config fields in sidecar', async () => {
+      kspecFull(
+        'skill add --id full-sidecar --name "Full Sidecar" --description "All fields" --platform codex',
+        tempDir
+      );
+
+      // Add all platform_config.codex fields
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: full-sidecar\n/,
+        `id: full-sidecar
+    platform_config:
+      codex:
+        display_name: "Display Name"
+        short_description: "Short desc"
+        icon_small: "/icons/small.png"
+        icon_large: "/icons/large.png"
+        brand_color: "#FF5733"
+        default_prompt: "Default prompt text"
+        allow_implicit_invocation: false
+`
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'full-sidecar', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Full Sidecar\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('full-sidecar');
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const sidecarPath = path.join(tempDir, '.agents', 'skills', 'full-sidecar', 'agents', 'openai.yaml');
+      const sidecarContent = await fs.readFile(sidecarPath, 'utf-8');
+
+      expect(sidecarContent).toContain('display_name: Display Name');
+      expect(sidecarContent).toContain('short_description: Short desc');
+      expect(sidecarContent).toContain('icon_small: /icons/small.png');
+      expect(sidecarContent).toContain('icon_large: /icons/large.png');
+      expect(sidecarContent).toContain('brand_color: "#FF5733"');
+      expect(sidecarContent).toContain('default_prompt: Default prompt text');
+      expect(sidecarContent).toContain('allow_implicit_invocation: false');
+    });
+  });
+
+  // AC: @codex-renderer ac-3
+  describe('ac-3: No sidecar when no platform_config.codex', () => {
+    it('should not create agents/openai.yaml when no platform_config.codex', async () => {
+      kspecFull(
+        'skill add --id no-sidecar --name "No Sidecar" --description "No config" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'no-sidecar', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# No Sidecar\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('no-sidecar');
+      const result = await codexRenderer.render(ctx, tempDir, skill!);
+
+      // Sidecar should NOT exist
+      const sidecarPath = path.join(tempDir, '.agents', 'skills', 'no-sidecar', 'agents', 'openai.yaml');
+      await expect(fs.access(sidecarPath)).rejects.toThrow();
+
+      // SKILL.md should exist
+      const skillPath = path.join(tempDir, '.agents', 'skills', 'no-sidecar', 'SKILL.md');
+      await fs.access(skillPath);
+
+      // Sidecar path should not be in paths
+      expect(result.paths).not.toContain(sidecarPath);
+    });
+  });
+
+  // AC: @codex-renderer ac-4 (tested in ac-1 above)
+  describe('ac-4: kspec-managed marker', () => {
+    it('should include <!-- kspec-managed --> marker in rendered file', async () => {
+      kspecFull(
+        'skill add --id managed-skill --name "Managed" --description "Check marker" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'managed-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Managed Skill\n\nContent here.\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('managed-skill');
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'managed-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(content).toContain('<!-- kspec-managed -->');
+      // Marker should be after frontmatter
+      expect(content).toMatch(/---\n<!-- kspec-managed -->/);
+    });
+  });
+
+  // AC: @codex-renderer ac-5
+  describe('ac-5: Supporting directories copied', () => {
+    it('should copy references/ to .agents/skills/<id>/', async () => {
+      kspecFull(
+        'skill add --id refs-skill --name "Refs Skill" --description "With refs" --platform codex',
+        tempDir
+      );
+
+      const skillDir = path.join(tempDir, 'skills', 'refs-skill');
+      await fs.writeFile(path.join(skillDir, 'SKILL.md'), '# Refs Skill\n', 'utf-8');
+
+      // Create references directory
+      const refsDir = path.join(skillDir, 'references');
+      await fs.mkdir(refsDir, { recursive: true });
+      await fs.writeFile(path.join(refsDir, 'api.md'), '# API Reference\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('refs-skill');
+      const result = await codexRenderer.render(ctx, tempDir, skill!);
+
+      // Check references copied
+      const renderedRefsDir = path.join(tempDir, '.agents', 'skills', 'refs-skill', 'references');
+      const refContent = await fs.readFile(path.join(renderedRefsDir, 'api.md'), 'utf-8');
+      expect(refContent).toContain('# API Reference');
+
+      expect(result.supportingDirsAction?.references).toBe('created');
+    });
+
+    it('should copy scripts/ and assets/ directories', async () => {
+      kspecFull(
+        'skill add --id assets-skill --name "Assets Skill" --description "With assets" --platform codex',
+        tempDir
+      );
+
+      const skillDir = path.join(tempDir, 'skills', 'assets-skill');
+      await fs.writeFile(path.join(skillDir, 'SKILL.md'), '# Assets Skill\n', 'utf-8');
+
+      // Create scripts and assets directories
+      const scriptsDir = path.join(skillDir, 'scripts');
+      await fs.mkdir(scriptsDir, { recursive: true });
+      await fs.writeFile(path.join(scriptsDir, 'run.sh'), '#!/bin/bash\necho "hello"\n', 'utf-8');
+
+      const assetsDir = path.join(skillDir, 'assets');
+      await fs.mkdir(assetsDir, { recursive: true });
+      await fs.writeFile(path.join(assetsDir, 'config.json'), '{"key": "value"}', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('assets-skill');
+      const result = await codexRenderer.render(ctx, tempDir, skill!);
+
+      // Check scripts copied
+      const renderedScriptsDir = path.join(tempDir, '.agents', 'skills', 'assets-skill', 'scripts');
+      const scriptContent = await fs.readFile(path.join(renderedScriptsDir, 'run.sh'), 'utf-8');
+      expect(scriptContent).toContain('#!/bin/bash');
+
+      // Check assets copied
+      const renderedAssetsDir = path.join(tempDir, '.agents', 'skills', 'assets-skill', 'assets');
+      const assetContent = await fs.readFile(path.join(renderedAssetsDir, 'config.json'), 'utf-8');
+      expect(assetContent).toContain('"key": "value"');
+
+      expect(result.supportingDirsAction?.scripts).toBe('created');
+      expect(result.supportingDirsAction?.assets).toBe('created');
+    });
+  });
+
+  // AC: @codex-renderer ac-6
+  describe('ac-6: Hash written to .render-hash-codex', () => {
+    it('should write hash to .render-hash-codex on successful render', async () => {
+      kspecFull(
+        'skill add --id hash-skill --name "Hash Skill" --description "Check hash" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'hash-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Hash Skill\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('hash-skill');
+      await codexRenderer.render(ctx, tempDir, skill!, { storeHash: true });
+
+      // Check platform-specific hash file
+      const hashPath = path.join(tempDir, 'skills', 'hash-skill', '.render-hash-codex');
+      const hashContent = await fs.readFile(hashPath, 'utf-8');
+
+      expect(hashContent.trim()).toBeTruthy();
+      expect(hashContent.trim()).toMatch(/^[a-f0-9]{64}$/); // SHA256
+    });
+
+    it('should use checkDrift to detect drift using platform-specific hash', async () => {
+      kspecFull(
+        'skill add --id drift-skill --name "Drift Skill" --description "Check drift" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'drift-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Drift Skill\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('drift-skill');
+
+      // Render with hash
+      await codexRenderer.render(ctx, tempDir, skill!, { storeHash: true });
+
+      // Check drift - should be in-sync
+      let driftStatus = await codexRenderer.checkDrift(
+        path.join(tempDir, 'skills', '..'),
+        tempDir,
+        'drift-skill'
+      );
+      expect(driftStatus).toBe('in-sync');
+
+      // Modify rendered file
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'drift-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      await fs.writeFile(renderedPath, content + '\n# Added\n', 'utf-8');
+
+      // Check drift - should be drifted
+      driftStatus = await codexRenderer.checkDrift(
+        path.join(tempDir, 'skills', '..'),
+        tempDir,
+        'drift-skill'
+      );
+      expect(driftStatus).toBe('drifted');
+    });
+  });
+
+  // Platform renderer trait tests
+  describe('Platform renderer trait compliance', () => {
+    it('should respect dryRun option and not write files', async () => {
+      kspecFull(
+        'skill add --id dryrun-skill --name "DryRun Skill" --description "Test dryrun" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'dryrun-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# DryRun Skill\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('dryrun-skill');
+      const result = await codexRenderer.render(ctx, tempDir, skill!, { dryRun: true });
+
+      expect(result.action).toBe('created');
+
+      // File should NOT exist
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'dryrun-skill', 'SKILL.md');
+      await expect(fs.access(renderedPath)).rejects.toThrow();
+    });
+
+    it('should respect custom outputDir', async () => {
+      kspecFull(
+        'skill add --id custom-dir --name "Custom Dir" --description "Test custom dir" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'custom-dir', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Custom Dir\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('custom-dir');
+      await codexRenderer.render(ctx, tempDir, skill!, { outputDir: 'custom/output' });
+
+      // File should be in custom location
+      const renderedPath = path.join(tempDir, 'custom', 'output', 'custom-dir', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      expect(content).toContain('name: custom-dir');
+
+      // Default location should NOT exist
+      await expect(
+        fs.access(path.join(tempDir, '.agents', 'skills', 'custom-dir'))
+      ).rejects.toThrow();
+    });
+
+    it('should be idempotent - return unchanged on repeated render', async () => {
+      kspecFull(
+        'skill add --id idempotent --name "Idempotent" --description "Test idempotent" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'idempotent', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Idempotent\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('idempotent');
+
+      // First render
+      const result1 = await codexRenderer.render(ctx, tempDir, skill!);
+      expect(result1.action).toBe('created');
+
+      // Second render - should be unchanged
+      const result2 = await codexRenderer.render(ctx, tempDir, skill!);
+      expect(result2.action).toBe('unchanged');
+    });
+  });
+});

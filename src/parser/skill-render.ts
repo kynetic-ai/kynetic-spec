@@ -23,6 +23,13 @@
  * AC: @platform-renderer-trait ac-4 - dryRun mode: no files written, result reflects what would happen
  * AC: @platform-renderer-trait ac-5 - custom outputDir goes to custom path instead of platform default
  * AC: @platform-renderer-trait ac-6 - per-platform render hash written to .render-hash-<platform>
+ *
+ * AC: @codex-renderer ac-1 - .agents/skills/<id>/SKILL.md with only name and description in frontmatter
+ * AC: @codex-renderer ac-2 - .agents/skills/<id>/agents/openai.yaml sidecar with platform_config.codex fields
+ * AC: @codex-renderer ac-3 - no sidecar created when no platform_config.codex
+ * AC: @codex-renderer ac-4 - rendered file contains <!-- kspec-managed --> marker
+ * AC: @codex-renderer ac-5 - supporting directories (references/, scripts/, assets/) copied
+ * AC: @codex-renderer ac-6 - hash written to .render-hash-codex
  */
 
 import * as crypto from "node:crypto";
@@ -813,12 +820,238 @@ export const claudeCodeRenderer: PlatformRenderer = {
 };
 
 // ============================================================================
+// Codex Renderer (implements PlatformRenderer)
+// AC: @codex-renderer ac-1 through ac-6
+// ============================================================================
+
+/**
+ * Generate minimal YAML frontmatter for Codex (name + description only)
+ * AC: @codex-renderer ac-1 - Codex frontmatter contains only name and description
+ */
+function generateCodexFrontmatter(skill: LoadedSkill): string {
+  const frontmatter: Record<string, unknown> = {
+    name: skill.id,
+    description: skill.description || skill.name,
+  };
+  return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
+}
+
+/**
+ * Generate Codex sidecar openai.yaml content from platform_config.codex
+ * AC: @codex-renderer ac-2 - sidecar agents/openai.yaml with Codex config fields
+ */
+function generateCodexSidecarYaml(skill: LoadedSkill): string | null {
+  const codexConfig = skill.platform_config?.codex;
+  if (!codexConfig) {
+    return null;
+  }
+
+  // Build the sidecar structure per Codex docs
+  const sidecar: Record<string, unknown> = {};
+
+  // Interface section (display_name, short_description, icons, colors)
+  const interfaceSection: Record<string, unknown> = {};
+  if (codexConfig.display_name) {
+    interfaceSection.display_name = codexConfig.display_name;
+  }
+  if (codexConfig.short_description) {
+    interfaceSection.short_description = codexConfig.short_description;
+  }
+  if (codexConfig.icon_small) {
+    interfaceSection.icon_small = codexConfig.icon_small;
+  }
+  if (codexConfig.icon_large) {
+    interfaceSection.icon_large = codexConfig.icon_large;
+  }
+  if (codexConfig.brand_color) {
+    interfaceSection.brand_color = codexConfig.brand_color;
+  }
+  if (codexConfig.default_prompt) {
+    interfaceSection.default_prompt = codexConfig.default_prompt;
+  }
+  if (Object.keys(interfaceSection).length > 0) {
+    sidecar.interface = interfaceSection;
+  }
+
+  // Policy section (allow_implicit_invocation)
+  if (codexConfig.allow_implicit_invocation !== undefined) {
+    sidecar.policy = {
+      allow_implicit_invocation: codexConfig.allow_implicit_invocation,
+    };
+  }
+
+  // Only return content if there's something to write
+  if (Object.keys(sidecar).length === 0) {
+    return null;
+  }
+
+  return yaml.stringify(sidecar);
+}
+
+/**
+ * Codex platform renderer implementation
+ * AC: @codex-renderer ac-1 - Creates .agents/skills/<id>/SKILL.md with minimal frontmatter
+ * AC: @codex-renderer ac-2 - Creates sidecar agents/openai.yaml when platform_config.codex exists
+ * AC: @codex-renderer ac-3 - No sidecar created when no platform_config.codex
+ * AC: @codex-renderer ac-4 - Rendered file contains <!-- kspec-managed --> marker
+ * AC: @codex-renderer ac-5 - Supporting directories copied to output
+ * AC: @codex-renderer ac-6 - Hash written to .render-hash-codex
+ */
+export const codexRenderer: PlatformRenderer = {
+  platform: "codex",
+  defaultOutputDir: ".agents/skills",
+
+  async render(
+    ctx: KspecContext,
+    projectRoot: string,
+    skill: LoadedSkill,
+    options: PlatformRenderOptions = {}
+  ): Promise<PlatformRenderResult> {
+    const dryRun = options.dryRun ?? false;
+    const storeHash = options.storeHash ?? false;
+    // AC: @platform-renderer-trait ac-5 - Custom outputDir support
+    const outputDir = options.outputDir || this.defaultOutputDir;
+
+    const targetDir = path.join(projectRoot, outputDir, skill.id);
+    const targetSkillMd = path.join(targetDir, "SKILL.md");
+    const paths: string[] = [];
+
+    // Load source content
+    const sourceContent = await loadSkillContent(ctx, skill);
+
+    // AC: @codex-renderer ac-1 - Generate minimal frontmatter (name + description only)
+    const frontmatter = generateCodexFrontmatter(skill);
+
+    let renderedContent: string;
+    if (!sourceContent) {
+      // No source content - create placeholder
+      // AC: @codex-renderer ac-4 - Include kspec-managed marker
+      renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
+    } else {
+      // Strip any existing frontmatter and combine with generated
+      const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
+      const contentWithoutFrontmatter = frontmatterMatch
+        ? sourceContent.slice(frontmatterMatch[0].length)
+        : sourceContent;
+      // AC: @codex-renderer ac-4 - Include kspec-managed marker
+      renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+    }
+
+    // Check if target exists and compare for idempotency
+    let targetExists = false;
+    let targetContent = "";
+    try {
+      targetContent = await fs.readFile(targetSkillMd, "utf-8");
+      targetExists = true;
+    } catch {
+      // Target doesn't exist
+    }
+
+    // Determine action based on comparison
+    let action: "created" | "updated" | "unchanged" | "skipped";
+    if (!targetExists) {
+      action = "created";
+    } else if (contentsEqual(renderedContent, targetContent)) {
+      action = "unchanged";
+    } else {
+      action = "updated";
+    }
+
+    // AC: @platform-renderer-trait ac-4 - dryRun: no files written
+    // AC: @platform-renderer-trait ac-1 - Write platform-specific output
+    if (!dryRun && action !== "unchanged") {
+      await fs.mkdir(targetDir, { recursive: true });
+      await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+    }
+
+    paths.push(targetSkillMd);
+
+    // AC: @codex-renderer ac-2, ac-3 - Handle sidecar agents/openai.yaml
+    const sidecarContent = generateCodexSidecarYaml(skill);
+    const sidecarDir = path.join(targetDir, "agents");
+    const sidecarPath = path.join(sidecarDir, "openai.yaml");
+
+    if (sidecarContent) {
+      // Check existing sidecar
+      let sidecarExists = false;
+      let existingSidecar = "";
+      try {
+        existingSidecar = await fs.readFile(sidecarPath, "utf-8");
+        sidecarExists = true;
+      } catch {
+        // Doesn't exist
+      }
+
+      const sidecarAction = !sidecarExists
+        ? "created"
+        : contentsEqual(sidecarContent, existingSidecar)
+          ? "unchanged"
+          : "updated";
+
+      if (!dryRun && sidecarAction !== "unchanged") {
+        await fs.mkdir(sidecarDir, { recursive: true });
+        await fs.writeFile(sidecarPath, sidecarContent, "utf-8");
+      }
+
+      paths.push(sidecarPath);
+    }
+
+    // AC: @platform-renderer-trait ac-6 - Store per-platform hash
+    // AC: @codex-renderer ac-6 - Hash written to .render-hash-codex
+    if (!dryRun && storeHash && action !== "unchanged") {
+      const hash = computeContentHash(renderedContent);
+      await writePlatformRenderHash(ctx.specDir, skill.id, this.platform, hash);
+    }
+
+    // AC: @platform-renderer-trait ac-3 - Copy supporting directories
+    // AC: @codex-renderer ac-5 - Supporting directories copied
+    const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
+    const supportingDirsAction = await copySupportingDirectories(
+      sourceSkillDir,
+      targetDir,
+      dryRun
+    );
+
+    // Add supporting directory paths to output
+    for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
+      if (dirAction !== "skipped") {
+        paths.push(path.join(targetDir, dirName));
+      }
+    }
+
+    return {
+      id: skill.id,
+      platform: this.platform,
+      action,
+      paths,
+      supportingDirsAction,
+    };
+  },
+
+  async checkDrift(
+    specDir: string,
+    projectRoot: string,
+    skillId: string,
+    options?: { outputDir?: string }
+  ): Promise<DriftStatus> {
+    return checkPlatformSkillDrift(
+      specDir,
+      projectRoot,
+      skillId,
+      this.platform,
+      options?.outputDir
+    );
+  },
+};
+
+// ============================================================================
 // Renderer Registry
 // ============================================================================
 
 /** Map of platform name to renderer implementation */
 const rendererRegistry: Map<string, PlatformRenderer> = new Map([
   ["claude-code", claudeCodeRenderer],
+  ["codex", codexRenderer],
 ]);
 
 /**
