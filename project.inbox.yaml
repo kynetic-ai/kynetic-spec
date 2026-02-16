@@ -451,3 +451,98 @@ inbox:
     created_at: 2026-02-16T02:34:16.835Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHKTNHZ8GV5MK1E1KK62N2G7
+    text: 'Fragile type guard: "origin" in item used 5+ times to discriminate skills from other meta
+      types. If another type gets an origin field, silent misclassification. Add discriminant field
+      or findSkillByRef helper.'
+    created_at: 2026-02-16T18:16:11.496Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ0186X72FYWQZJ9KFDN
+    text: "skill.ts monolith at 2,365 lines: CRUD, rendering, drift detection, install all in one file.
+      Split into focused modules (skill-crud.ts, skill-render-cli.ts, skill-install.ts)."
+    created_at: 2026-02-16T18:16:11.521Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ0MR0F4NWMWKJAQN0N9
+    text: Codex and Claude Code renderers share ~70% duplicated render logic (content loading,
+      frontmatter stripping, idempotency check, file writing, hash storage, dir copying). Extract
+      shared base render function with hooks for platform-specific steps.
+    created_at: 2026-02-16T18:16:11.540Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ156YKJ74RN1J0EH40Q
+    text: generateUnifiedDiff is hand-rolled 80-line diff that only handles substitutions, not
+      insertions/deletions. Replace with diff npm package for correctness.
+    created_at: 2026-02-16T18:16:11.557Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ1MM6G3QC3KDYB52W9K
+    text: "parseFrontmatter regex /^---
+
+      / fails silently on Windows CRLF line endings. Should handle \r
+
+      \ for cross-platform correctness."
+    created_at: 2026-02-16T18:16:11.572Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ20S0TR3PB3BGDF678H
+    text: normalizeBaseDirectory only matches exact pattern "Base directory for this skill:". Any
+      variation (caps, hyphens, rewording) is silently missed. Make more robust.
+    created_at: 2026-02-16T18:16:11.584Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ2C5M049ER00C5AEZYT
+    text: 'Guard script substring matching is brittle: echo "git reset" would be blocked. Should check
+      word boundaries or command position rather than simple substring contains.'
+    created_at: 2026-02-16T18:16:11.596Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ2NTJ1C037GHF573AHR
+    text: getSetupStatus always reports "current" if hash file exists, cannot detect staleness. Should
+      load meta context and compare hash to detect when agents.md needs regeneration.
+    created_at: 2026-02-16T18:16:11.605Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ37P06E4SRQ3HBQ9PC3
+    text: skill update mutates loaded skill objects in-place before saveMetaItem. If save fails partway,
+      in-memory state diverges from disk. Should copy before mutation.
+    created_at: 2026-02-16T18:16:11.623Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ3HE5YVRH82GWRCN2XF
+    text: "EXPECTED_TEMPLATES constant in agents.ts is defined but never referenced. Dead code from PR
+      #386 template system."
+    created_at: 2026-02-16T18:16:11.633Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ3WV66HWCJ76QXCRM3P
+    text: "Naming inconsistency: isKspecManagedSkill (skill-render.ts) vs isKspecManaged (skill.ts) for
+      same logic. Standardize to one name."
+    created_at: 2026-02-16T18:16:11.644Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ4A656881SF7K8XPZZV
+    text: readFileSync in loadCoreSkillsManifest and loadCoreSkillContent inconsistent with async
+      codebase. Should use fs.readFile for consistency.
+    created_at: 2026-02-16T18:16:11.658Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ4MRPJ5851FJFJZ7TK6
+    text: getKspecPackageVersion returns "unknown" on failure, silently preventing skill update
+      detection ("unknown" === "unknown" = skip). Should warn or error instead.
+    created_at: 2026-02-16T18:16:11.668Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ4YJEM1WJ0AWE8GHKXF
+    text: Redundant platform/tags/depends_on defaults in skill CLI — manually set before
+      SkillSchema.safeParse which already applies them. Remove manual defaults.
+    created_at: 2026-02-16T18:16:11.678Z
+    tags: []
+    added_by: "@claude"
+  - _ulid: 01KHKTNJ5CA819VJE5D2HK00KD
+    text: deprecated_target warning type reused for skill-specific warnings (depends_on validation,
+      orphaned dirs). Add proper skill warning types for better filtering.
+    created_at: 2026-02-16T18:16:11.692Z
+    tags: []
+    added_by: "@claude"
