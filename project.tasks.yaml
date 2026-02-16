@@ -50516,7 +50516,7 @@
   type: task
   spec_ref: "@skill-platform-config-cli"
   plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-extended-skill-schema"
@@ -50579,3 +50579,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-16T01:55:18.359Z
+  closed_reason: "Merged in PR #402. Implemented --platform-config CLI option for kspec skill set,
+    supporting format platform.key=value (e.g., claude_code.user_invocable=false). Features: parses
+    true/false as booleans, deep merges into existing platform_config, validation errors show
+    guidance on valid keys. All 4 ACs covered with 12 tests."
