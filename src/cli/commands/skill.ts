@@ -1414,7 +1414,11 @@ export function registerSkillCommands(program: Command): void {
         }
 
         // Get kspec package version
+        // AC: @cross-platform-and-version-robustness ac-3
         const kspecVersion = getKspecPackageVersion();
+        if (!kspecVersion) {
+          console.log(chalk.yellow("Warning: Could not determine kspec version — skills installed without version tracking"));
+        }
 
         // Process each core skill
         for (const coreSkill of coreSkills) {
@@ -1442,7 +1446,7 @@ export function registerSkillCommands(program: Command): void {
             name: coreSkill.name,
             description: coreSkill.description,
             origin: "core",
-            version: kspecVersion,
+            ...(kspecVersion && { version: kspecVersion }),
             ...(coreSkill.platforms && { platforms: coreSkill.platforms }),
             allowed_tools: [],
             tags: ["core"],
@@ -1479,7 +1483,7 @@ export function registerSkillCommands(program: Command): void {
           results.push({
             id: coreSkill.id,
             action: existingSkill ? "updated" : "created",
-            version: kspecVersion,
+            version: kspecVersion ?? undefined,
           });
         }
 
@@ -1581,7 +1585,11 @@ export function registerSkillCommands(program: Command): void {
         const results: CoreSkillUpdateResult[] = [];
 
         // Get kspec package version
+        // AC: @cross-platform-and-version-robustness ac-3
         const kspecVersion = getKspecPackageVersion();
+        if (!kspecVersion) {
+          console.log(chalk.yellow("Warning: Could not determine kspec version — updating based on content changes only"));
+        }
 
         // Load core skills manifest to get current content
         const coreSkillsManifest = loadCoreSkillsManifest();
@@ -1594,7 +1602,8 @@ export function registerSkillCommands(program: Command): void {
 
         for (const skill of coreSkills) {
           // AC: @core-skill-update ac-2 - Skip if already at current version
-          if (skill.version === kspecVersion) {
+          // If kspecVersion is null or skill has no version, always update
+          if (kspecVersion && skill.version === kspecVersion) {
             results.push({
               id: skill.id,
               action: "skipped",
@@ -1621,7 +1630,9 @@ export function registerSkillCommands(program: Command): void {
 
           if (!dryRun) {
             // Update skill metadata with new version
-            skill.version = kspecVersion;
+            if (kspecVersion) {
+              skill.version = kspecVersion;
+            }
             skill.name = coreSkill.name;
             if (coreSkill.description) {
               skill.description = coreSkill.description;
@@ -1645,7 +1656,7 @@ export function registerSkillCommands(program: Command): void {
             id: skill.id,
             action: "updated",
             previousVersion: oldVersion,
-            newVersion: kspecVersion,
+            newVersion: kspecVersion ?? undefined,
           });
         }
 
@@ -1751,7 +1762,7 @@ interface CoreSkillDefinition {
  * Get the kspec package version from package.json
  * AC: @core-skill-install ac-5
  */
-function getKspecPackageVersion(): string {
+function getKspecPackageVersion(): string | null {
   try {
     // Try to find package.json relative to this module
     const packagePath = path.resolve(
@@ -1759,9 +1770,9 @@ function getKspecPackageVersion(): string {
       "../../../package.json"
     );
     const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"));
-    return packageJson.version || "unknown";
+    return packageJson.version || null;
   } catch {
-    return "unknown";
+    return null;
   }
 }
 
@@ -1846,7 +1857,7 @@ interface ParsedFrontmatter {
  * AC: @import-frontmatter-strip ac-3 - Parse Claude Code platform frontmatter
  */
 function parseFrontmatter(content: string): ParsedFrontmatter | null {
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+  const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---/;
   const match = content.match(frontmatterRegex);
 
   if (!match) {
@@ -1896,7 +1907,7 @@ function parseFrontmatter(content: string): ParsedFrontmatter | null {
  * AC: @import-frontmatter-strip ac-2 - Remove frontmatter for body-only storage
  */
 function stripFrontmatter(content: string): string {
-  return content.replace(/^---\n[\s\S]*?\n---\n?/, "");
+  return content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "");
 }
 
 /**
@@ -1908,9 +1919,10 @@ function stripFrontmatter(content: string): string {
  * - Lines starting with hardcoded paths
  */
 function normalizeBaseDirectory(content: string): string {
-  // Remove or normalize "Base directory for this skill:" lines with absolute paths
+  // Remove or normalize "Base directory for/of [this] skill:" lines with absolute paths
   // Common pattern in Claude-generated skill files
-  const baseDirLineRegex = /^Base directory for this skill:.*$/gm;
+  // AC: @cross-platform-and-version-robustness ac-5 - case-insensitive with wording variations
+  const baseDirLineRegex = /^base\s+directory\s+(?:for|of)\s+(?:this\s+)?skill:.*$/gim;
 
   return content.replace(baseDirLineRegex, "");
 }
