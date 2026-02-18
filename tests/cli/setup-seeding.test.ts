@@ -41,6 +41,20 @@ async function setupKspecProject(tempDir: string): Promise<void> {
   expect(initResult.exitCode).toBe(0);
 }
 
+/**
+ * Helper: Clean up memory files created in home directory by tests.
+ */
+async function cleanupMemoryDir(tempDir: string): Promise<void> {
+  try {
+    const memoryPath = claudeCodeMemoryWriter.getMemoryPath(tempDir);
+    // Remove the project-specific directory under ~/.claude/projects/
+    const projectDir = path.dirname(path.dirname(memoryPath)); // up from memory/MEMORY.md
+    await fs.rm(projectDir, { recursive: true, force: true });
+  } catch (_err) {
+    // Ignore cleanup errors
+  }
+}
+
 // --- Path Encoding Tests ---
 
 describe("encodeProjectPath", () => {
@@ -54,9 +68,9 @@ describe("encodeProjectPath", () => {
     expect(result).toBe("home-user-my-cool-project");
   });
 
-  it("should handle trailing slashes", () => {
+  it("should normalize trailing slashes", () => {
     const result = encodeProjectPath("/home/user/project/");
-    expect(result).toBe("home-user-project-");
+    expect(result).toBe("home-user-project");
   });
 
   it("should handle root path", () => {
@@ -67,6 +81,22 @@ describe("encodeProjectPath", () => {
   it("should handle deeply nested paths", () => {
     const result = encodeProjectPath("/a/b/c/d/e");
     expect(result).toBe("a-b-c-d-e");
+  });
+
+  it("should handle Windows-style backslash paths", () => {
+    const result = encodeProjectPath("C:\\Users\\user\\project");
+    expect(result).toBe("C:-Users-user-project");
+  });
+
+  it("should handle mixed separators", () => {
+    const result = encodeProjectPath("C:\\Users/user\\project/");
+    expect(result).toBe("C:-Users-user-project");
+  });
+
+  it("should produce consistent results with and without trailing separator", () => {
+    const withSlash = encodeProjectPath("/home/user/project/");
+    const withoutSlash = encodeProjectPath("/home/user/project");
+    expect(withSlash).toBe(withoutSlash);
   });
 });
 
@@ -159,7 +189,7 @@ describe("seedPermissions", () => {
     expect(config.permissions.allow).toEqual(["Bash(custom:*)"]);
   });
 
-  it("should overwrite when force flag is set", async () => {
+  it("should merge kspec patterns with existing permissions when force is set", async () => {
     await fs.mkdir(path.join(tempDir, ".claude"), { recursive: true });
     const existing = {
       permissions: { allow: ["Bash(custom:*)"] },
@@ -181,8 +211,9 @@ describe("seedPermissions", () => {
         "utf-8",
       ),
     );
+    // Should contain BOTH custom and kspec patterns (additive merge)
     expect(config.permissions.allow).toContain("Bash(kspec:*)");
-    expect(config.permissions.allow).not.toContain("Bash(custom:*)");
+    expect(config.permissions.allow).toContain("Bash(custom:*)");
   });
 
   it("should only run for claude-code agent type", async () => {
@@ -203,6 +234,27 @@ describe("seedPermissions", () => {
       fs.access(path.join(tempDir, ".claude", "settings.json")),
     ).rejects.toThrow();
   });
+
+  it("should fail safely when settings.json contains malformed JSON", async () => {
+    await fs.mkdir(path.join(tempDir, ".claude"), { recursive: true });
+    await fs.writeFile(
+      path.join(tempDir, ".claude", "settings.json"),
+      "{ invalid json content",
+      "utf-8",
+    );
+
+    const result = await seedPermissions(tempDir, "claude-code");
+
+    expect(result.seeded).toBe(false);
+    expect(result.message).toContain("invalid JSON");
+
+    // Original file should be untouched
+    const content = await fs.readFile(
+      path.join(tempDir, ".claude", "settings.json"),
+      "utf-8",
+    );
+    expect(content).toBe("{ invalid json content");
+  });
 });
 
 // --- Memory Seeding Tests ---
@@ -215,6 +267,7 @@ describe("seedMemory", () => {
   });
 
   afterEach(async () => {
+    await cleanupMemoryDir(tempDir);
     await cleanupTempDir(tempDir);
   });
 
@@ -242,6 +295,18 @@ describe("seedMemory", () => {
 
     expect(memoryPath).toContain(".claude/projects/");
     expect(memoryPath).toContain("memory/MEMORY.md");
+  });
+
+  // AC: @new-project-bootstrapping ac-2
+  it("should seed memory with project content when setup runs", async () => {
+    const result = await seedMemory(tempDir, "claude-code");
+
+    expect(result.seeded).toBe(true);
+    const memoryPath = claudeCodeMemoryWriter.getMemoryPath(tempDir);
+    const content = await fs.readFile(memoryPath, "utf-8");
+    expect(content).toContain("Project Memory");
+    expect(content).toContain("kspec");
+    expect(content).toContain("<!-- kspec-seeded:");
   });
 
   it("should create parent directories if needed", async () => {
@@ -308,9 +373,11 @@ describe("setup pipeline integration", () => {
   });
 
   afterEach(async () => {
+    await cleanupMemoryDir(tempDir);
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @new-project-bootstrapping ac-1, ac-2
   it("should include seeding steps in setup output", async () => {
     await setupKspecProject(tempDir);
 

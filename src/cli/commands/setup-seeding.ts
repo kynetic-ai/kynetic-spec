@@ -9,6 +9,7 @@
  */
 
 import * as fs from "node:fs/promises";
+import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentType } from "./setup.js";
 
@@ -53,8 +54,9 @@ export interface SeedResult {
  *
  * AC: @new-project-bootstrapping ac-1
  * - Only for claude-code agent type
- * - Merges into existing settings.json (doesn't clobber hooks)
+ * - Merges into existing settings.json (doesn't clobber hooks or existing permissions)
  * - Skips if permissions key already exists (unless force)
+ * - Force merges kspec patterns into existing permissions (additive)
  * - Dry-run support
  */
 export async function seedPermissions(
@@ -75,13 +77,22 @@ export async function seedPermissions(
   const configPath = path.join(projectDir, ".claude", "settings.json");
 
   try {
-    // Read existing config
+    // Read existing config — distinguish file-not-found from parse errors
     let config: Record<string, unknown> = {};
     try {
       const existing = await fs.readFile(configPath, "utf-8");
       config = JSON.parse(existing);
     } catch (err) {
-      debugLog("No existing settings.json, starting fresh", err);
+      if (isNodeError(err) && err.code === "ENOENT") {
+        debugLog("No existing settings.json, starting fresh");
+      } else {
+        // File exists but is malformed JSON — fail safely, don't overwrite
+        return {
+          seeded: false,
+          path: configPath,
+          message: `failed: settings.json exists but contains invalid JSON`,
+        };
+      }
     }
 
     // Skip if permissions already configured (unless force)
@@ -93,12 +104,19 @@ export async function seedPermissions(
       };
     }
 
-    // Build permissions object
-    const permissions = {
-      allow: [...KSPEC_PERMISSION_PATTERNS],
+    // Merge kspec patterns into existing permissions (additive, never destructive)
+    const existingAllow = Array.isArray(
+      (config.permissions as Record<string, unknown>)?.allow,
+    )
+      ? ((config.permissions as Record<string, unknown>).allow as string[])
+      : [];
+    const merged = [
+      ...new Set([...existingAllow, ...KSPEC_PERMISSION_PATTERNS]),
+    ];
+    config.permissions = {
+      ...(config.permissions as Record<string, unknown>),
+      allow: merged,
     };
-
-    config.permissions = permissions;
 
     if (!dryRun) {
       await fs.mkdir(path.dirname(configPath), { recursive: true });
@@ -124,6 +142,13 @@ export async function seedPermissions(
   }
 }
 
+/**
+ * Type guard for Node.js errors with a `code` property.
+ */
+function isNodeError(err: unknown): err is NodeJS.ErrnoException {
+  return err instanceof Error && "code" in err;
+}
+
 // --- Memory Seeding (AC-2) ---
 
 /**
@@ -145,17 +170,37 @@ export interface MemorySeedWriter {
  * Encode a project path for Claude Code's project memory directory.
  *
  * Claude Code uses: ~/.claude/projects/{encoded-path}/memory/MEMORY.md
- * Encoding: absolute path with / replaced by - and leading - stripped.
+ * Encoding: absolute path with separators replaced by - and leading - stripped.
+ * Trailing separators are normalized (stripped) to avoid inconsistent paths.
  *
  * Known fragility: This convention is undocumented by Claude Code.
  * If it changes, only this function needs updating.
  */
 export function encodeProjectPath(projectPath: string): string {
-  // Replace all / with -
-  let encoded = projectPath.replace(/\//g, "-");
+  // Normalize trailing slashes/backslashes
+  let normalized = projectPath.replace(/[\\/]+$/, "");
+  // Replace all path separators (both / and \) with -
+  let encoded = normalized.replace(/[\\/]/g, "-");
   // Strip leading -
   encoded = encoded.replace(/^-+/, "");
   return encoded;
+}
+
+/**
+ * Get the Claude Code memory path for a project directory.
+ * Standalone function to avoid `this` binding issues with object literal methods.
+ */
+function getClaudeCodeMemoryPath(projectDir: string): string {
+  const homedir = os.homedir();
+  const encoded = encodeProjectPath(projectDir);
+  return path.join(
+    homedir,
+    ".claude",
+    "projects",
+    encoded,
+    "memory",
+    "MEMORY.md",
+  );
 }
 
 /**
@@ -165,14 +210,12 @@ export const claudeCodeMemoryWriter: MemorySeedWriter = {
   platform: "claude-code",
 
   getMemoryPath(projectDir: string): string {
-    const homedir = process.env.HOME || process.env.USERPROFILE || "";
-    const encoded = encodeProjectPath(projectDir);
-    return path.join(homedir, ".claude", "projects", encoded, "memory", "MEMORY.md");
+    return getClaudeCodeMemoryPath(projectDir);
   },
 
   async exists(projectDir: string): Promise<boolean> {
     try {
-      await fs.access(this.getMemoryPath(projectDir));
+      await fs.access(getClaudeCodeMemoryPath(projectDir));
       return true;
     } catch (_err) {
       return false;
@@ -184,7 +227,7 @@ export const claudeCodeMemoryWriter: MemorySeedWriter = {
     content: string,
     dryRun: boolean,
   ): Promise<{ created: boolean; path: string }> {
-    const memoryPath = this.getMemoryPath(projectDir);
+    const memoryPath = getClaudeCodeMemoryPath(projectDir);
     if (!dryRun) {
       await fs.mkdir(path.dirname(memoryPath), { recursive: true });
       await fs.writeFile(memoryPath, content, "utf-8");
@@ -288,6 +331,7 @@ async function getModuleNames(projectDir: string): Promise<string[]> {
  *
  * AC: @new-project-bootstrapping ac-2
  * - Generates platform-agnostic content, delegates to platform writer
+ * - Currently supports Claude Code; other platforms return no-op
  * - Skips if memory file already exists (unless force)
  * - Creates parent directories
  * - Dry-run support
