@@ -1055,8 +1055,38 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     try {
       const hashContent = await fs.readFile(hashPath, "utf-8");
       const hashData = JSON.parse(hashContent);
-      agentsMd.status = "current"; // We can't verify staleness without meta context
       agentsMd.generatedAt = hashData.generatedAt;
+
+      // AC: @cross-platform-and-version-robustness ac-4
+      // Compare stored hash against current meta to detect staleness
+      try {
+        const { initContext, loadMetaContext } = await import(
+          "../../parser/index.js"
+        );
+        const { computeMetaHash, loadTemplateSections, getPackageRoot } = await import("./agents.js");
+        const ctx = await initContext();
+        if (ctx.manifestPath) {
+          const metaCtx = await loadMetaContext(ctx);
+          let templateSections: string[] = [];
+          try {
+            templateSections = await loadTemplateSections(getPackageRoot());
+          } catch (err) {
+            debugLog("Templates not available for staleness check", err);
+          }
+          const currentHash = computeMetaHash(
+            metaCtx.skills,
+            metaCtx.conventions,
+            metaCtx.workflows,
+            templateSections,
+          );
+          agentsMd.status = hashData.metaHash === currentHash ? "current" : "stale";
+        } else {
+          agentsMd.status = "current"; // No kspec project, can't compare
+        }
+      } catch (err) {
+        debugLog("Could not compute meta hash for staleness check, assuming current", err);
+        agentsMd.status = "current";
+      }
     } catch (err) {
       debugLog("Hash file missing or invalid, marking stale", err);
       agentsMd.status = "stale";
@@ -1204,6 +1234,7 @@ async function generateAgentInstructions(
         metaCtx.skills,
         metaCtx.conventions,
         metaCtx.workflows,
+        templateSections,
       );
 
       await fs.mkdir(path.dirname(hashPath), { recursive: true });
@@ -1270,7 +1301,11 @@ async function installCoreSkillsForSetup(
 
     const metaCtx = await loadMetaContext(ctx);
     const coreSkills = loadCoreSkillsManifest();
+    // AC: @cross-platform-and-version-robustness ac-3
     const kspecVersion = getKspecPackageVersion();
+    if (!kspecVersion) {
+      debugLog("Could not determine kspec version — skills installed without version tracking");
+    }
 
     for (const coreSkill of coreSkills) {
       // Check if skill exists
@@ -1289,7 +1324,7 @@ async function installCoreSkillsForSetup(
         name: coreSkill.name,
         description: coreSkill.description,
         origin: "core" as const,
-        version: kspecVersion,
+        ...(kspecVersion && { version: kspecVersion }),
         platforms: coreSkill.platforms || ["claude-code"],
         depends_on: [],
         tags: ["core"],

@@ -126,9 +126,11 @@ export function computeMetaHash(
   skills: LoadedSkill[],
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
+  templateSections?: string[],
 ): string {
   // Create a stable representation of the meta content
-  const data = {
+  // AC: @cross-platform-and-version-robustness ac-4 - includes templates for staleness detection
+  const data: Record<string, unknown> = {
     skills: skills.map((s) => ({
       id: s.id,
       name: s.name,
@@ -144,6 +146,9 @@ export function computeMetaHash(
       description: w.description,
     })),
   };
+  if (templateSections && templateSections.length > 0) {
+    data.templates = templateSections;
+  }
   return computeHash(JSON.stringify(data));
 }
 
@@ -326,12 +331,12 @@ export function registerAgentsCommands(program: Command): void {
           templateSections,
         );
 
-        // Compute meta hash for freshness tracking
-        // Include template count to detect template changes
+        // Compute meta hash for freshness tracking (includes templates)
         const metaHash = computeMetaHash(
           metaCtx.skills,
           metaCtx.conventions,
           metaCtx.workflows,
+          templateSections,
         );
 
         const outputPath = path.join(ctx.rootDir, GENERATED_FILE_NAME);
@@ -426,11 +431,20 @@ export function registerAgentsCommands(program: Command): void {
 
         const metaCtx = await loadMetaContext(ctx);
 
-        // Compute current meta hash
+        // Load templates for hash computation
+        let templateSections: string[] = [];
+        try {
+          templateSections = await loadTemplateSections(getPackageRoot());
+        } catch (_err) {
+          // Templates may not exist in all environments
+        }
+
+        // Compute current meta hash (includes templates)
         const metaHash = computeMetaHash(
           metaCtx.skills,
           metaCtx.conventions,
           metaCtx.workflows,
+          templateSections,
         );
 
         const status = await checkAgentStatus(ctx.rootDir, metaHash);

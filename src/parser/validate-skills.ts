@@ -70,20 +70,17 @@ function parseFrontmatter(content: string): {
 } {
   const errors: SkillValidationError[] = [];
 
-  // Check for frontmatter delimiters
-  if (!content.startsWith("---\n")) {
+  // Check for frontmatter delimiters (supports both LF and CRLF)
+  // AC: @cross-platform-and-version-robustness ac-1
+  const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---/;
+  const match = content.match(frontmatterRegex);
+
+  if (!match) {
     return { frontmatter: null, errors };
   }
-
-  const endDelimiter = content.indexOf("\n---\n", 4);
-  if (endDelimiter === -1) {
-    return { frontmatter: null, errors };
-  }
-
-  const frontmatterContent = content.slice(4, endDelimiter);
 
   try {
-    const parsed = yaml.parse(frontmatterContent);
+    const parsed = yaml.parse(match[1]);
     return { frontmatter: parsed as SkillFrontmatter, errors };
   } catch (err) {
     return { frontmatter: null, errors };
@@ -105,7 +102,7 @@ function checkTablePipes(
   file: string,
 ): SkillValidationError[] {
   const errors: SkillValidationError[] = [];
-  const lines = content.split("\n");
+  const lines = content.split(/\r?\n/);
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -179,7 +176,7 @@ export async function validateSkillFile(
     errors.push(...fmErrors.map((e) => ({ ...e, file: relativePath })));
 
     // Check if frontmatter exists at all
-    const hasFrontmatterDelimiters = content.startsWith("---\n");
+    const hasFrontmatterDelimiters = content.startsWith("---\n") || content.startsWith("---\r\n");
 
     if (!hasFrontmatterDelimiters) {
       errors.push({
