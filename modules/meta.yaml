@@ -3853,10 +3853,6 @@ modules:
             given: two files where one has a single line inserted
             when: generateUnifiedDiff compares them
             then: the diff shows only the insertion, not a cascade of all subsequent lines as changed
-          - id: ac-3
-            given: async skill operations
-            when: loading package version, manifest, or skill content
-            then: async fs.readFile is used instead of readFileSync
         depends_on: []
         implements: []
         relates_to: []
