@@ -50631,15 +50631,21 @@
         provides them)
       supersedes: null
   todos: []
-- title: "Implement: Setup Pipeline Unification"
+- _ulid: 01KHQQTVDWCXWTZC3FWP664TC4
+  slugs:
+    - task-setup-pipeline-unification
+  title: "Implement: Setup Pipeline Unification"
   type: task
   spec_ref: "@setup-pipeline-unification"
   derivation: auto
-  priority: 2
-  slugs:
-    - task-setup-pipeline-unification
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-18T06:43:37.020Z
   notes:
     - _ulid: 01KHQQTVDVQ3V8P5414ZHXKZ97
       created_at: 2026-02-18T06:43:37.019Z
@@ -50673,10 +50679,53 @@
         - ac-5: Given a new project runs kspec init --setup, when setup completes, then the output
         is identical to running kspec setup separately (same code path)
       supersedes: null
-  _ulid: 01KHQQTVDWCXWTZC3FWP664TC4
+  todos: []
+- title: "Implement: Cross-Platform and Version Robustness"
+  type: task
+  spec_ref: "@cross-platform-and-version-robustness"
+  derivation: auto
+  priority: 2
+  slugs:
+    - task-cross-platform-and-version-robustness
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KHQQTYBW5VGW4RY9NJ9XMMGC
+      created_at: 2026-02-18T06:43:40.028Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Fix cross-platform parsing issues and version detection reliability so kspec works correctly
+        on Windows and reliably detects when updates are needed.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given a SKILL.md file with CRLF line endings, when parseFrontmatter is called (in
+        validate-skills.ts or skill.ts), then frontmatter is correctly parsed (handles both LF and
+        CRLF)
+
+        - ac-2: Given a SKILL.md file with CRLF line endings, when stripFrontmatter is called, then
+        frontmatter is correctly stripped
+
+        - ac-3: Given getKspecPackageVersion cannot resolve the package version, when skill install
+        or update runs, then the version is reported as null or an error, not silently treated as a
+        valid version string
+
+        - ac-4: Given kspec-agents.md exists with a hash file, when kspec setup --status is run
+        after skills or templates changed, then agents.md status is reported as stale (content hash
+        comparison, not just hash file existence)
+
+        - ac-5: Given a skill file with a base directory line, when normalizeBaseDirectory is
+        called, then the line is matched case-insensitively and with common wording variations
+      supersedes: null
+  _ulid: 01KHQQTYBXE0VQAAK4YG8S6RRY
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-18T06:43:37.020Z
+  created_at: 2026-02-18T06:43:40.029Z
   todos: []
