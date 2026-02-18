@@ -907,6 +907,8 @@ export interface SetupPipelineResult {
   skillsRendered: number;
   hooksInstalled: boolean;
   agentsMdGenerated: boolean;
+  permissionsSeeded: boolean;
+  memorySeeded: boolean;
 }
 
 /**
@@ -947,6 +949,11 @@ interface SetupStatus {
     exists: boolean;
     status: "current" | "stale" | "missing";
     generatedAt?: string;
+  };
+  seeding: {
+    permissionsSeeded: boolean;
+    memorySeeded: boolean;
+    memoryPath?: string;
   };
 }
 
@@ -1095,6 +1102,36 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     debugLog("kspec-agents.md doesn't exist", err);
   }
 
+  // Check seeding state
+  const seeding: SetupStatus["seeding"] = {
+    permissionsSeeded: false,
+    memorySeeded: false,
+  };
+
+  try {
+    const configContent = await fs.readFile(
+      path.join(projectDir, ".claude", "settings.json"),
+      "utf-8",
+    );
+    const config = JSON.parse(configContent);
+    seeding.permissionsSeeded = !!config.permissions;
+  } catch (err) {
+    debugLog("Could not check permissions seeding state", err);
+  }
+
+  if (detected.type === "claude-code") {
+    try {
+      const { claudeCodeMemoryWriter } = await import("./setup-seeding.js");
+      const memoryExists = await claudeCodeMemoryWriter.exists(projectDir);
+      seeding.memorySeeded = memoryExists;
+      if (memoryExists) {
+        seeding.memoryPath = claudeCodeMemoryWriter.getMemoryPath(projectDir);
+      }
+    } catch (err) {
+      debugLog("Could not check memory seeding state", err);
+    }
+  }
+
   return {
     agent: {
       detected: detected.type,
@@ -1103,6 +1140,7 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     hooks,
     skills,
     agentsMd,
+    seeding,
   };
 }
 
@@ -1385,6 +1423,8 @@ export async function runSetupPipeline(
   let skillsRendered = 0;
   let hooksInstalled = false;
   let agentsMdGenerated = false;
+  let permissionsSeeded = false;
+  let memorySeeded = false;
 
   try {
     const detected = detectAgent();
@@ -1446,6 +1486,40 @@ export async function runSetupPipeline(
         name: "Install hooks",
         status: "skipped",
         message: `not applicable for ${detected.type}`,
+      });
+    }
+
+    // Step 3a: Seed permissions (Claude Code only)
+    // AC: @new-project-bootstrapping ac-1
+    {
+      const { seedPermissions } = await import("./setup-seeding.js");
+      const permResult = await seedPermissions(projectDir, detected.type, {
+        dryRun,
+        force: options.force,
+      });
+      permissionsSeeded = permResult.seeded;
+
+      steps.push({
+        name: "Seed permissions",
+        status: permResult.seeded ? "done" : "skipped",
+        message: permResult.message,
+      });
+    }
+
+    // Step 3b: Seed memory (platform-extensible)
+    // AC: @new-project-bootstrapping ac-2
+    {
+      const { seedMemory } = await import("./setup-seeding.js");
+      const memResult = await seedMemory(projectDir, detected.type, {
+        dryRun,
+        force: options.force,
+      });
+      memorySeeded = memResult.seeded;
+
+      steps.push({
+        name: "Seed memory",
+        status: memResult.seeded ? "done" : "skipped",
+        message: memResult.seeded ? memResult.path : memResult.message,
       });
     }
 
@@ -1572,6 +1646,8 @@ export async function runSetupPipeline(
       skillsRendered,
       hooksInstalled,
       agentsMdGenerated,
+      permissionsSeeded,
+      memorySeeded,
     };
   } catch (err) {
     debugLog("runSetupPipeline failed", err);
@@ -1582,6 +1658,8 @@ export async function runSetupPipeline(
       skillsRendered,
       hooksInstalled,
       agentsMdGenerated,
+      permissionsSeeded,
+      memorySeeded,
     };
   }
 }
@@ -1668,6 +1746,21 @@ export function registerSetupCommand(program: Command): void {
               console.log(`  Status: ${chalk.red("missing")}`);
               console.log(
                 chalk.gray("  Run 'kspec setup' to generate"),
+              );
+            }
+            console.log();
+
+            // Seeding status
+            console.log(chalk.gray("Seeding:"));
+            console.log(
+              `  Permissions: ${status.seeding.permissionsSeeded ? chalk.green("✓") : chalk.gray("○")}`,
+            );
+            console.log(
+              `  Memory:      ${status.seeding.memorySeeded ? chalk.green("✓") : chalk.gray("○")}`,
+            );
+            if (status.seeding.memoryPath) {
+              console.log(
+                chalk.gray(`  Path: ${status.seeding.memoryPath}`),
               );
             }
           });
