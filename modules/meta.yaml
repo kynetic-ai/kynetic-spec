@@ -3871,7 +3871,8 @@ modules:
             supersedes: null
         created: 2026-02-18T06:43:25.145Z
       - _ulid: 01KHSC3WGTCB2TDTFFA4TFTHC8
-        slugs: []
+        slugs:
+          - skill-drift-detection-improvements
         title: Skill Drift Detection Improvements
         type: feature
         tags: []
