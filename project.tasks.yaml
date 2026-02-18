@@ -50751,6 +50751,9 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #408. All 5 ACs implemented: CRLF-safe frontmatter parsing/stripping,
+    null version detection, setup staleness with template hash comparison, case-insensitive base
+    directory matching. 16 tests, all review findings addressed."
   depends_on:
     - "@task-dead-code-and-deduplication-sweep"
   context: []
@@ -50759,6 +50762,7 @@
   vcs_refs: []
   created_at: 2026-02-18T06:43:40.029Z
   started_at: 2026-02-18T16:52:55.236Z
+  completed_at: 2026-02-18T17:57:07.893Z
   notes:
     - _ulid: 01KHQQTYBW5VGW4RY9NJ9XMMGC
       created_at: 2026-02-18T06:43:40.028Z
@@ -50817,10 +50821,6 @@
         - Added inbox note for skill-render.ts LF-only regex hardening follow-up
       supersedes: null
   todos: []
-  completed_at: 2026-02-18T17:57:07.893Z
-  closed_reason: "Merged in PR #408. All 5 ACs implemented: CRLF-safe frontmatter parsing/stripping,
-    null version detection, setup staleness with template hash comparison, case-insensitive base
-    directory matching. 16 tests, all review findings addressed."
 - _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
   slugs:
     - task-new-project-bootstrapping
@@ -50828,7 +50828,7 @@
   type: task
   spec_ref: "@new-project-bootstrapping"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-setup-pipeline-unification"
@@ -50867,6 +50867,7 @@
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
   todos: []
+  started_at: 2026-02-18T21:56:01.434Z
 - _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
   slugs:
     - task-skill-module-split
