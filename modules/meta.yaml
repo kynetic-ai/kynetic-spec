@@ -3835,37 +3835,6 @@ modules:
         traits: []
         notes: []
         created: 2026-02-18T06:43:25.078Z
-      - _ulid: 01KHQQTFSREEX3JH01Y41F8GX1
-        slugs:
-          - skill-module-split
-        title: Skill Module Split
-        type: feature
-        tags: []
-        description: >
-          Split the 2365-line skill.ts monolith into focused modules and extract shared renderer
-          logic to reduce duplication between platform renderers.
-        acceptance_criteria:
-          - id: ac-1
-            given: the skill command implementation
-            when: reviewing the file structure
-            then: skill.ts is split into focused modules (skill-crud.ts, skill-install.ts, skill-diff.ts or
-              similar)
-          - id: ac-2
-            given: the Claude Code and Codex renderers
-            when: reviewing skill-render.ts
-            then: shared render logic (content loading, hash check, idempotency, file write) is extracted into a
-              base function
-          - id: ac-3
-            given: external code importing from skill.ts
-            when: building the project
-            then: re-exports maintain backward API compatibility
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-02-18T06:43:25.113Z
       - _ulid: 01KHQQTFTSP9RXA13YEZTCYW5N
         slugs:
           - guard-script-and-diff-quality
