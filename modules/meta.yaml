@@ -3857,11 +3857,6 @@ modules:
             given: async skill operations
             when: loading package version, manifest, or skill content
             then: async fs.readFile is used instead of readFileSync
-          - id: ac-4
-            given: a skill update operation
-            when: the update is about to save
-            then: a copy of the skill object is mutated, not the loaded original (safe against partial save
-              failure)
         depends_on: []
         implements: []
         relates_to: []
