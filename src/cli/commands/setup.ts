@@ -1539,6 +1539,7 @@ export async function runSetupPipeline(
       agentsMdGenerated,
     };
   } catch (err) {
+    debugLog("runSetupPipeline failed", err);
     return {
       success: false,
       steps,
