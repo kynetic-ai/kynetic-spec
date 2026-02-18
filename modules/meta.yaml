@@ -3819,8 +3819,8 @@ modules:
             when: setup completes and .claude/settings.json has no permissions key
             then: common kspec permission patterns are added to .claude/settings.json
           - id: ac-2
-            given: kspec setup runs in a new project
-            when: setup completes
+            given: kspec setup runs in a new project with Claude Code
+            when: setup completes and no project memory file exists
             then: MEMORY.md is seeded with project-relevant starting notes (project name, key paths,
               conventions)
         depends_on: []
