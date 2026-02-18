@@ -3894,4 +3894,7 @@ modules:
             given: a rendered skill file has been manually edited
             when: kspec skill verify runs
             then: it reports which skills have drifted from their source with actionable guidance
+        status:
+          maturity: draft
+          implementation: in_progress
 traits: []
