@@ -587,3 +587,10 @@ inbox:
     created_at: 2026-02-18T16:48:43.957Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHRX2P7YDCA743JDR9ZVEYPX
+    text: skill-render.ts lines 492, 730, 924 have LF-only frontmatter regexes. Low risk in render path
+      (kspec generates these files with LF) but should be hardened for consistency with the CRLF
+      fixes in skill.ts/validate-skills.ts.
+    created_at: 2026-02-18T17:34:31.166Z
+    tags: []
+    added_by: "@claude"
