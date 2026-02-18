@@ -50900,6 +50900,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-18T06:43:46.685Z
+  started_at: 2026-02-18T23:35:03.968Z
   notes:
     - _ulid: 01KHQQV4VWGHQ1Z2RPE9K4858M
       created_at: 2026-02-18T06:43:46.685Z
@@ -50941,8 +50942,14 @@
         - AC-3: Re-exports maintain backward API compatibility for external code importing from
         skill.ts
       supersedes: null
+    - _ulid: 01KHSHRMN41QHQHJ1XMT6PV77D
+      created_at: 2026-02-18T23:36:01.956Z
+      author: "@claude"
+      content: "Starting implementation. Plan: (1) Split skill.ts into skill-crud.ts, skill-install.ts,
+        skill-diff.ts; (2) Extract shared render base function in skill-render.ts; (3) Keep skill.ts
+        as thin orchestrator with re-exports for backward compat."
+      supersedes: null
   todos: []
-  started_at: 2026-02-18T23:35:03.968Z
 - _ulid: 01KHQQV7W6FAM0NMZ6XVERS9MX
   slugs:
     - task-guard-script-and-diff-quality
