@@ -1694,4 +1694,213 @@ describe('Codex Skill Renderer', () => {
       expect(result2.action).toBe('unchanged');
     });
   });
+
+  // AC: @skill-drift-detection-improvements ac-1 - Sidecar content included in drift hash
+  describe('ac-1: Sidecar content included in drift hash', () => {
+    it('should detect drift when sidecar file is modified', async () => {
+      kspecFull(
+        'skill add --id sidecar-drift --name "Sidecar Drift" --description "Test sidecar drift" --platform codex',
+        tempDir
+      );
+
+      // Add platform_config.codex to meta
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: sidecar-drift\n/,
+        `id: sidecar-drift
+    platform_config:
+      codex:
+        display_name: "Sidecar Drift Test"
+        allow_implicit_invocation: true
+`
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'sidecar-drift', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Sidecar Drift\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('sidecar-drift');
+
+      // Render with hash storage
+      await codexRenderer.render(ctx, tempDir, skill!, { storeHash: true });
+
+      // Verify initially in-sync
+      const specDir = path.join(tempDir, 'skills', '..');
+      let driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'sidecar-drift');
+      expect(driftStatus).toBe('in-sync');
+
+      // Modify the sidecar file (not SKILL.md)
+      const sidecarPath = path.join(tempDir, '.agents', 'skills', 'sidecar-drift', 'agents', 'openai.yaml');
+      const sidecarContent = await fs.readFile(sidecarPath, 'utf-8');
+      await fs.writeFile(sidecarPath, sidecarContent + '\n# manually edited\n', 'utf-8');
+
+      // Should now detect drift
+      driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'sidecar-drift');
+      expect(driftStatus).toBe('drifted');
+    });
+
+    it('should remain in-sync when sidecar is unchanged', async () => {
+      kspecFull(
+        'skill add --id sidecar-stable --name "Sidecar Stable" --description "Test stable" --platform codex',
+        tempDir
+      );
+
+      // Add platform_config.codex
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: sidecar-stable\n/,
+        `id: sidecar-stable
+    platform_config:
+      codex:
+        display_name: "Stable Test"
+`
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'sidecar-stable', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Sidecar Stable\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('sidecar-stable');
+
+      // Render with hash
+      await codexRenderer.render(ctx, tempDir, skill!, { storeHash: true });
+
+      // Should be in-sync
+      const specDir = path.join(tempDir, 'skills', '..');
+      const driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'sidecar-stable');
+      expect(driftStatus).toBe('in-sync');
+    });
+
+    it('should still detect SKILL.md drift when sidecar exists', async () => {
+      kspecFull(
+        'skill add --id both-drift --name "Both Drift" --description "Test both" --platform codex',
+        tempDir
+      );
+
+      // Add platform_config.codex
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: both-drift\n/,
+        `id: both-drift
+    platform_config:
+      codex:
+        display_name: "Both Drift Test"
+`
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'both-drift', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Both Drift\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('both-drift');
+      await codexRenderer.render(ctx, tempDir, skill!, { storeHash: true });
+
+      // Modify SKILL.md only (sidecar unchanged)
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'both-drift', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      await fs.writeFile(renderedPath, content + '\n# Added\n', 'utf-8');
+
+      const specDir = path.join(tempDir, 'skills', '..');
+      const driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'both-drift');
+      expect(driftStatus).toBe('drifted');
+    });
+  });
+});
+
+/**
+ * Tests for kspec skill verify command
+ * AC: @skill-drift-detection-improvements ac-2
+ */
+describe('Skill Verify Command', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @skill-drift-detection-improvements ac-2
+  it('should report drifted skills with actionable guidance', async () => {
+    // Add a skill and render it
+    kspecFull(
+      'skill add --id verify-test --name "Verify Test" --description "Test verify"',
+      tempDir
+    );
+
+    const skillMdPath = path.join(tempDir, 'skills', 'verify-test', 'SKILL.md');
+    await fs.writeFile(skillMdPath, '# Verify Test\n', 'utf-8');
+
+    kspecFull('skill render verify-test', tempDir);
+
+    // Manually edit the rendered file
+    const renderedPath = path.join(tempDir, '.claude', 'skills', 'verify-test', 'SKILL.md');
+    const content = await fs.readFile(renderedPath, 'utf-8');
+    await fs.writeFile(renderedPath, content + '\n# Manual edit\n', 'utf-8');
+
+    // Run verify and check it reports drift
+    const result = kspecJson<Array<{ id: string; platform: string; status: string; guidance?: string }>>(
+      'skill verify',
+      tempDir
+    );
+
+    const drifted = result.filter((r) => r.status === 'drifted');
+    expect(drifted.length).toBeGreaterThan(0);
+    expect(drifted[0].id).toBe('verify-test');
+    expect(drifted[0].guidance).toContain('kspec skill render');
+    expect(drifted[0].guidance).toContain('--force');
+  });
+
+  it('should report all OK when no skills have drifted', async () => {
+    // Add a skill and render it
+    kspecFull(
+      'skill add --id verify-ok --name "Verify OK" --description "Test OK"',
+      tempDir
+    );
+
+    const skillMdPath = path.join(tempDir, 'skills', 'verify-ok', 'SKILL.md');
+    await fs.writeFile(skillMdPath, '# Verify OK\n', 'utf-8');
+
+    kspecFull('skill render verify-ok', tempDir);
+
+    // Run verify - should be all OK
+    const result = kspecJson<Array<{ id: string; status: string }>>(
+      'skill verify',
+      tempDir
+    );
+
+    const ok = result.filter((r) => r.status === 'ok');
+    expect(ok.length).toBeGreaterThan(0);
+    expect(ok[0].id).toBe('verify-ok');
+
+    const drifted = result.filter((r) => r.status === 'drifted');
+    expect(drifted.length).toBe(0);
+  });
+
+  it('should exit with non-zero code when skills have drifted', async () => {
+    kspecFull(
+      'skill add --id verify-exit --name "Verify Exit" --description "Test exit code"',
+      tempDir
+    );
+
+    const skillMdPath = path.join(tempDir, 'skills', 'verify-exit', 'SKILL.md');
+    await fs.writeFile(skillMdPath, '# Verify Exit\n', 'utf-8');
+
+    kspecFull('skill render verify-exit', tempDir);
+
+    // Edit the rendered file
+    const renderedPath = path.join(tempDir, '.claude', 'skills', 'verify-exit', 'SKILL.md');
+    const content = await fs.readFile(renderedPath, 'utf-8');
+    await fs.writeFile(renderedPath, content + '\n# Manual edit\n', 'utf-8');
+
+    // kspecFull returns KspecResult with exitCode
+    const result = kspecFull('skill verify --json', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+  });
 });

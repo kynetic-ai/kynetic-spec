@@ -990,8 +990,12 @@ export const codexRenderer: PlatformRenderer = {
 
     // AC: @platform-renderer-trait ac-6 - Store per-platform hash
     // AC: @codex-renderer ac-6 - Hash written to .render-hash-codex
+    // AC: @skill-drift-detection-improvements ac-1 - Include sidecar content in drift hash
     if (!dryRun && storeHash && action !== "unchanged") {
-      const hash = computeContentHash(renderedContent);
+      const combinedContent = sidecarContent
+        ? renderedContent + "\n" + sidecarContent
+        : renderedContent;
+      const hash = computeContentHash(combinedContent);
       await writePlatformRenderHash(ctx.specDir, skill.id, this.platform, hash);
     }
 
@@ -1020,19 +1024,49 @@ export const codexRenderer: PlatformRenderer = {
     };
   },
 
+  // AC: @skill-drift-detection-improvements ac-1 - Include sidecar content in drift hash
   async checkDrift(
     specDir: string,
     projectRoot: string,
     skillId: string,
     options?: { outputDir?: string }
   ): Promise<DriftStatus> {
-    return checkPlatformSkillDrift(
-      specDir,
-      projectRoot,
-      skillId,
-      this.platform,
-      options?.outputDir
-    );
+    const platformOutputDir = options?.outputDir || this.defaultOutputDir;
+    const skillDir = path.join(projectRoot, platformOutputDir, skillId);
+    const renderedPath = path.join(skillDir, "SKILL.md");
+
+    // Check if rendered file exists
+    let renderedContent: string;
+    try {
+      renderedContent = await fs.readFile(renderedPath, "utf-8");
+    } catch {
+      return "not-rendered";
+    }
+
+    // Migrate legacy hash if needed
+    await migrateLegacyRenderHash(specDir, skillId, this.platform);
+
+    // Get stored hash
+    const storedHash = await readPlatformRenderHash(specDir, skillId, this.platform);
+    if (!storedHash) {
+      return "no-hash";
+    }
+
+    // Read sidecar content if it exists
+    const sidecarPath = path.join(skillDir, "agents", "openai.yaml");
+    let sidecarContent: string | null = null;
+    try {
+      sidecarContent = await fs.readFile(sidecarPath, "utf-8");
+    } catch {
+      // No sidecar file
+    }
+
+    // Combine content for hash (must match render-time computation)
+    const combinedContent = sidecarContent
+      ? renderedContent + "\n" + sidecarContent
+      : renderedContent;
+    const currentHash = computeContentHash(combinedContent);
+    return currentHash === storedHash ? "in-sync" : "drifted";
   },
 };
 
