@@ -3810,27 +3810,19 @@ modules:
         title: New Project Bootstrapping
         type: feature
         tags: []
-        description: >
-          Improve the experience of installing kspec on a new project by seeding agent configuration
-          with useful starting context and handling platform drift detection comprehensively.
+        description: Improve the experience of installing kspec on a new project by seeding agent
+          configuration with useful starting context — permissions for common operations and project
+          memory with key paths and conventions.
         acceptance_criteria:
           - id: ac-1
             given: kspec setup runs in a new project with Claude Code
-            when: setup completes
-            then: a permissions template or seed for common kspec operations is offered to the user
+            when: setup completes and .claude/settings.json has no permissions key
+            then: common kspec permission patterns are added to .claude/settings.json
           - id: ac-2
             given: kspec setup runs in a new project
             when: setup completes
             then: MEMORY.md is seeded with project-relevant starting notes (project name, key paths,
               conventions)
-          - id: ac-3
-            given: a codex skill has platform_config.codex with custom settings
-            when: checkPlatformSkillDrift runs for codex
-            then: the sidecar YAML file (agents/openai.yaml) content is included in the drift hash
-          - id: ac-4
-            given: a rendered skill file has been manually edited
-            when: kspec skill verify runs
-            then: it reports which skills have drifted from their source with actionable guidance
         depends_on: []
         implements: []
         relates_to: []
@@ -3878,4 +3870,18 @@ modules:
               guard against partial save failure
             supersedes: null
         created: 2026-02-18T06:43:25.145Z
+      - _ulid: 01KHSC3WGTCB2TDTFFA4TFTHC8
+        slugs: []
+        title: Skill Drift Detection Improvements
+        type: feature
+        tags: []
+        description: Make drift detection more comprehensive by including sidecar files in hash computation
+          and adding a verify command for rendered skill integrity.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-18T21:57:19.002Z
 traits: []

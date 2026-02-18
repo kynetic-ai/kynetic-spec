@@ -50838,6 +50838,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-18T06:43:43.644Z
+  started_at: 2026-02-18T21:56:01.434Z
   notes:
     - _ulid: 01KHQQV1WV6WQ7Q9H6PDXCPF87
       created_at: 2026-02-18T06:43:43.644Z
@@ -50866,8 +50867,13 @@
         - ac-4: Given a rendered skill file has been manually edited, when kspec skill verify runs,
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
+    - _ulid: 01KHSC3X17NECYDW5E952R8BA3
+      created_at: 2026-02-18T21:57:19.527Z
+      author: "@claude"
+      content: "Spec restructured: AC-3 and AC-4 moved to new @skill-drift-detection-improvements spec.
+        This task now covers only AC-1 (permission seeding) and AC-2 (memory seeding)."
+      supersedes: null
   todos: []
-  started_at: 2026-02-18T21:56:01.434Z
 - _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
   slugs:
     - task-skill-module-split
