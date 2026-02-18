@@ -50729,15 +50729,21 @@
         called, then the line is matched case-insensitively and with common wording variations
       supersedes: null
   todos: []
-- title: "Implement: New Project Bootstrapping"
+- _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
+  slugs:
+    - task-new-project-bootstrapping
+  title: "Implement: New Project Bootstrapping"
   type: task
   spec_ref: "@new-project-bootstrapping"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-new-project-bootstrapping
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-18T06:43:43.644Z
   notes:
     - _ulid: 01KHQQV1WV6WQ7Q9H6PDXCPF87
       created_at: 2026-02-18T06:43:43.644Z
@@ -50766,10 +50772,46 @@
         - ac-4: Given a rendered skill file has been manually edited, when kspec skill verify runs,
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
-  _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
+  todos: []
+- title: "Implement: Skill Module Split"
+  type: task
+  spec_ref: "@skill-module-split"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-skill-module-split
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KHQQV4VWGHQ1Z2RPE9K4858M
+      created_at: 2026-02-18T06:43:46.685Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Split the 2365-line skill.ts monolith into focused modules and extract shared renderer logic
+        to reduce duplication between platform renderers.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given the skill command implementation, when reviewing the file structure, then
+        skill.ts is split into focused modules (skill-crud.ts, skill-install.ts, skill-diff.ts or
+        similar)
+
+        - ac-2: Given the Claude Code and Codex renderers, when reviewing skill-render.ts, then
+        shared render logic (content loading, hash check, idempotency, file write) is extracted into
+        a base function
+
+        - ac-3: Given external code importing from skill.ts, when building the project, then
+        re-exports maintain backward API compatibility
+      supersedes: null
+  _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-18T06:43:43.644Z
+  created_at: 2026-02-18T06:43:46.685Z
   todos: []
