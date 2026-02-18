@@ -50758,6 +50758,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-18T06:43:40.029Z
+  started_at: 2026-02-18T16:52:55.236Z
   notes:
     - _ulid: 01KHQQTYBW5VGW4RY9NJ9XMMGC
       created_at: 2026-02-18T06:43:40.028Z
@@ -50791,8 +50792,31 @@
         - ac-5: Given a skill file with a base directory line, when normalizeBaseDirectory is
         called, then the line is matched case-insensitively and with common wording variations
       supersedes: null
+    - _ulid: 01KHRX2Z627RN2X4879M74KD0M
+      created_at: 2026-02-18T17:34:40.322Z
+      author: "@claude"
+      content: >-
+        Implemented all 5 ACs:
+
+        - AC-1/2: CRLF-safe frontmatter parsing/stripping in skill.ts and validate-skills.ts (regex
+        updated to /^---\r?\n/)
+
+        - AC-3: getKspecPackageVersion returns null instead of 'unknown', all 3 callers updated with
+        conditional spread
+
+        - AC-4: getSetupStatus now loads meta context and compares computeMetaHash against stored
+        hash
+
+        - AC-5: normalizeBaseDirectory regex now case-insensitive with for/of + optional 'this'
+        wording
+
+        - 14 new tests in cross-platform-robustness.test.ts, all passing
+
+        - Full suite: 128/129 test files pass (1 pre-existing bun compile failure)
+
+        - Added inbox note for skill-render.ts LF-only regex hardening follow-up
+      supersedes: null
   todos: []
-  started_at: 2026-02-18T16:52:55.236Z
 - _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
   slugs:
     - task-new-project-bootstrapping
