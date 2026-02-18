@@ -50749,7 +50749,7 @@
   type: task
   spec_ref: "@cross-platform-and-version-robustness"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-dead-code-and-deduplication-sweep"
@@ -50792,6 +50792,7 @@
         called, then the line is matched case-insensitively and with common wording variations
       supersedes: null
   todos: []
+  started_at: 2026-02-18T16:52:55.236Z
 - _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
   slugs:
     - task-new-project-bootstrapping
