@@ -50589,7 +50589,7 @@
     - task-dead-code-and-deduplication-sweep
   title: "Implement: Dead Code and Deduplication Sweep"
   type: task
-  spec_ref: "@dead-code-and-deduplication-sweep"
+  spec_ref: null
   derivation: auto
   status: pending_review
   blocked_by: []
