@@ -3803,7 +3803,7 @@ modules:
         created: 2026-02-18T06:43:25.044Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KHQQTFRPDAKNBXJC4QWEXE2G
         slugs:
           - new-project-bootstrapping
