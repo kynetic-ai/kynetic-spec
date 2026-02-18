@@ -50749,7 +50749,7 @@
   type: task
   spec_ref: "@cross-platform-and-version-robustness"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-dead-code-and-deduplication-sweep"
@@ -50817,6 +50817,10 @@
         - Added inbox note for skill-render.ts LF-only regex hardening follow-up
       supersedes: null
   todos: []
+  completed_at: 2026-02-18T17:57:07.893Z
+  closed_reason: "Merged in PR #408. All 5 ACs implemented: CRLF-safe frontmatter parsing/stripping,
+    null version detection, setup staleness with template hash comparison, case-insensitive base
+    directory matching. 16 tests, all review findings addressed."
 - _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
   slugs:
     - task-new-project-bootstrapping
