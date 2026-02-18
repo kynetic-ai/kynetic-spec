@@ -18,13 +18,10 @@
  * AC: @enhanced-setup ac-9 - skills referenced by ralph (task-work, reflect) are present
  */
 
-import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as readline from "node:readline/promises";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import type { Command } from "commander";
 import {
@@ -37,12 +34,19 @@ import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Read version from package.json at runtime
-const require = createRequire(import.meta.url);
-const { version } = require("../../../package.json");
+/**
+ * Log a message at debug level (only when KSPEC_DEBUG=1)
+ * AC: @setup-pipeline-unification ac-4
+ */
+function debugLog(message: string, detail?: unknown): void {
+  if (process.env.KSPEC_DEBUG === "1") {
+    if (detail) {
+      console.error(`[DEBUG] setup: ${message}`, detail);
+    } else {
+      console.error(`[DEBUG] setup: ${message}`);
+    }
+  }
+}
 
 /**
  * Supported agent types for auto-configuration
@@ -192,8 +196,8 @@ async function installClaudeCodeConfig(author: string): Promise<boolean> {
     try {
       const existing = await fs.readFile(configPath, "utf-8");
       config = JSON.parse(existing);
-    } catch {
-      // File doesn't exist or invalid JSON, start fresh
+    } catch (err) {
+      debugLog("No existing Claude Code config, starting fresh", err);
     }
 
     // Merge env settings
@@ -208,7 +212,8 @@ async function installClaudeCodeConfig(author: string): Promise<boolean> {
       "utf-8",
     );
     return true;
-  } catch (_err) {
+  } catch (err) {
+    debugLog("Failed to install Claude Code config", err);
     return false;
   }
 }
@@ -430,8 +435,8 @@ async function installClaudeCodeHooks(
     try {
       const existing = await fs.readFile(configPath, "utf-8");
       config = JSON.parse(existing);
-    } catch {
-      // File doesn't exist or invalid JSON, start fresh
+    } catch (err) {
+      debugLog("No existing hooks config, starting fresh", err);
     }
 
     // Get or create hooks object
@@ -544,7 +549,8 @@ async function installClaudeCodeHooks(
       );
     }
     return result;
-  } catch {
+  } catch (err) {
+    debugLog("installClaudeCodeHooks failed", err);
     return result;
   }
 }
@@ -568,8 +574,8 @@ async function _installClaudeCodeStopHook(
     try {
       const existing = await fs.readFile(configPath, "utf-8");
       config = JSON.parse(existing);
-    } catch {
-      // File doesn't exist or invalid JSON, start fresh
+    } catch (err) {
+      debugLog("No existing config for stop hook, starting fresh", err);
     }
 
     // Build the stop hook command
@@ -613,7 +619,8 @@ async function _installClaudeCodeStopHook(
       "utf-8",
     );
     return true;
-  } catch {
+  } catch (err) {
+    debugLog("_installClaudeCodeStopHook failed", err);
     return false;
   }
 }
@@ -629,8 +636,8 @@ async function installAiderConfig(author: string): Promise<boolean> {
     let content = "";
     try {
       content = await fs.readFile(configPath, "utf-8");
-    } catch {
-      // File doesn't exist, start fresh
+    } catch (err) {
+      debugLog("No existing Aider config, starting fresh", err);
     }
 
     // Check if KSPEC_AUTHOR is already set
@@ -656,7 +663,8 @@ async function installAiderConfig(author: string): Promise<boolean> {
 
     await fs.writeFile(configPath, content, "utf-8");
     return true;
-  } catch {
+  } catch (err) {
+    debugLog("installAiderConfig failed", err);
     return false;
   }
 }
@@ -676,8 +684,8 @@ async function installGenericJsonConfig(
     try {
       const existing = await fs.readFile(configPath, "utf-8");
       config = JSON.parse(existing);
-    } catch {
-      // Start fresh
+    } catch (err) {
+      debugLog(`No existing config at ${configPath}, starting fresh`, err);
     }
 
     const env = (config.env as Record<string, string>) || {};
@@ -690,7 +698,8 @@ async function installGenericJsonConfig(
       "utf-8",
     );
     return true;
-  } catch {
+  } catch (err) {
+    debugLog(`installGenericJsonConfig failed for ${configPath}`, err);
     return false;
   }
 }
@@ -908,6 +917,10 @@ export interface SetupPipelineOptions {
   skipSkills?: boolean;
   installHooks?: boolean;
   force?: boolean;
+  /** Custom author string (overrides auto-detected default) */
+  author?: string;
+  /** Whether to configure author (only in command handler, not init) */
+  configureAuthor?: boolean;
 }
 
 /**
@@ -985,8 +998,8 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     hooks.preToolUse = preToolUseHooks?.some((entry) =>
       entry.hooks?.some((h) => h.command?.includes(".claude/hooks/")),
     ) ?? false;
-  } catch {
-    // Config doesn't exist or is invalid
+  } catch (err) {
+    debugLog("Failed to read hooks config for status", err);
   }
 
   // Check guard scripts
@@ -997,8 +1010,8 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
         hooks.guardsPresent.push(name);
       }
     }
-  } catch {
-    // Hooks dir doesn't exist
+  } catch (err) {
+    debugLog("Hooks dir doesn't exist", err);
   }
 
   // Check skills
@@ -1020,13 +1033,13 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
             skills.rendered++;
             // TODO: check drift status
           }
-        } catch {
-          // SKILL.md doesn't exist
+        } catch (err) {
+          debugLog(`SKILL.md doesn't exist in ${dir.name}`, err);
         }
       }
     }
-  } catch {
-    // Skills dir doesn't exist
+  } catch (err) {
+    debugLog("Skills dir doesn't exist", err);
   }
 
   // Check agents.md
@@ -1044,11 +1057,12 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
       const hashData = JSON.parse(hashContent);
       agentsMd.status = "current"; // We can't verify staleness without meta context
       agentsMd.generatedAt = hashData.generatedAt;
-    } catch {
+    } catch (err) {
+      debugLog("Hash file missing or invalid, marking stale", err);
       agentsMd.status = "stale";
     }
-  } catch {
-    // File doesn't exist
+  } catch (err) {
+    debugLog("kspec-agents.md doesn't exist", err);
   }
 
   return {
@@ -1063,18 +1077,19 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
 }
 
 /**
- * Render skills using the skill rendering library
- * AC: @enhanced-setup ac-3
+ * Render skills using the platform renderer registry
+ * AC: @setup-pipeline-unification ac-2 - uses getRenderer/getAllRenderers, not legacy renderClaudeCodeSkill
+ * AC: @setup-pipeline-unification ac-4 - errors logged at debug level
  */
 async function renderSkillsForSetup(
   projectDir: string,
   dryRun: boolean,
 ): Promise<{ rendered: number; skipped: number; skillIds: string[] }> {
   // Dynamically import to avoid circular dependencies
-  const { initContext, loadMetaContext, loadSkillContent } = await import(
+  const { initContext, loadMetaContext } = await import(
     "../../parser/index.js"
   );
-  const { renderClaudeCodeSkill } = await import("../../parser/skill-render.js");
+  const { getRenderer } = await import("../../parser/skill-render.js");
 
   try {
     const ctx = await initContext();
@@ -1084,9 +1099,17 @@ async function renderSkillsForSetup(
     }
 
     const metaCtx = await loadMetaContext(ctx);
-    const skillsToRender = metaCtx.skills.filter((s) =>
-      s.platforms.includes("claude-code"),
-    );
+
+    // Collect all skills that have a registered renderer for their platform
+    const skillsToRender: Array<{ skill: typeof metaCtx.skills[0]; platform: string }> = [];
+    for (const skill of metaCtx.skills) {
+      for (const platform of skill.platforms) {
+        const renderer = getRenderer(platform);
+        if (renderer) {
+          skillsToRender.push({ skill, platform });
+        }
+      }
+    }
 
     if (skillsToRender.length === 0) {
       return { rendered: 0, skipped: 0, skillIds: [] };
@@ -1096,27 +1119,37 @@ async function renderSkillsForSetup(
     let skipped = 0;
     const skillIds: string[] = [];
 
-    for (const skill of skillsToRender) {
-      const result = await renderClaudeCodeSkill(ctx, projectDir, skill, {
-        dryRun,
-      });
-      if (result.action === "created" || result.action === "updated") {
-        rendered++;
-        skillIds.push(skill.id);
-      } else {
+    for (const { skill, platform } of skillsToRender) {
+      const renderer = getRenderer(platform)!;
+      try {
+        const result = await renderer.render(ctx, projectDir, skill, {
+          dryRun,
+        });
+        if (result.action === "created" || result.action === "updated") {
+          rendered++;
+          if (!skillIds.includes(skill.id)) {
+            skillIds.push(skill.id);
+          }
+        } else {
+          skipped++;
+        }
+      } catch (err) {
+        debugLog(`Failed to render skill ${skill.id} for ${platform}`, err);
         skipped++;
       }
     }
 
     return { rendered, skipped, skillIds };
-  } catch {
+  } catch (err) {
+    debugLog("renderSkillsForSetup failed", err);
     return { rendered: 0, skipped: 0, skillIds: [] };
   }
 }
 
 /**
- * Generate kspec-agents.md
- * AC: @enhanced-setup ac-4
+ * Generate kspec-agents.md using the canonical implementation from agents.ts
+ * AC: @setup-pipeline-unification ac-1 - calls generateAgentsContent() from agents.ts
+ * AC: @setup-pipeline-unification ac-4 - errors logged at debug level
  */
 async function generateAgentInstructions(
   projectDir: string,
@@ -1126,13 +1159,15 @@ async function generateAgentInstructions(
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
 
   // Dynamically import to avoid circular dependencies
+  const { initContext, loadMetaContext } = await import(
+    "../../parser/index.js"
+  );
   const {
-    initContext,
-    loadMetaContext,
-    generateSkillsTable,
-    generateConventionsSummary,
-    generateWorkflowsSummary,
-  } = await import("../../parser/index.js");
+    generateAgentsContent,
+    loadTemplateSections,
+    getPackageRoot,
+    computeMetaHash,
+  } = await import("./agents.js");
 
   try {
     const ctx = await initContext();
@@ -1144,86 +1179,39 @@ async function generateAgentInstructions(
     const metaCtx = await loadMetaContext(ctx);
     const timestamp = new Date().toISOString();
 
-    // Load template sections
-    const packageRoot = path.resolve(__dirname, "..", "..", "..");
-    const templatesPath = path.join(packageRoot, "templates", "agents-sections");
-    const templateSections: string[] = [];
-
+    // Load templates using the canonical implementation
+    let templateSections: string[] = [];
     try {
-      const entries = await fs.readdir(templatesPath, { withFileTypes: true });
-      const mdFiles = entries
-        .filter((e) => e.isFile() && e.name.endsWith(".md"))
-        .map((e) => e.name)
-        .sort();
-
-      for (const filename of mdFiles) {
-        const filePath = path.join(templatesPath, filename);
-        const content = await fs.readFile(filePath, "utf-8");
-        templateSections.push(content.trim());
-      }
-    } catch {
-      // Templates not available
+      templateSections = await loadTemplateSections(getPackageRoot());
+    } catch (err) {
+      debugLog("Failed to load template sections", err);
     }
 
-    // Generate content
-    const sections: string[] = [];
-    sections.push(
-      `<!-- Generated by kspec v${version} at ${timestamp} -->\n`,
+    // Generate content using the canonical implementation from agents.ts
+    const content = await generateAgentsContent(
+      metaCtx.skills,
+      metaCtx.conventions,
+      metaCtx.workflows,
+      timestamp,
+      templateSections,
     );
-    sections.push(
-      "<!-- Do not edit manually - regenerate with: kspec agents generate -->\n\n",
-    );
-    sections.push("# kspec Agent Instructions\n\n");
-    sections.push(
-      "This file is auto-generated from kspec meta. Include it in your AGENTS.md or similar agent instruction file.\n\n",
-    );
-
-    const skillsTable = generateSkillsTable(metaCtx.skills);
-    if (skillsTable) sections.push(skillsTable);
-
-    const conventionsSection = generateConventionsSummary(metaCtx.conventions);
-    if (conventionsSection) sections.push(conventionsSection);
-
-    const workflowsSection = generateWorkflowsSummary(metaCtx.workflows);
-    if (workflowsSection) sections.push(workflowsSection);
-
-    if (templateSections.length > 0) {
-      sections.push("\n");
-      for (const section of templateSections) {
-        sections.push(section);
-        sections.push("\n\n");
-      }
-    }
-
-    const content = sections.join("");
 
     if (!dryRun) {
       await fs.writeFile(outputPath, content, "utf-8");
 
-      // Write hash for freshness tracking
-      const metaHash = crypto
-        .createHash("sha256")
-        .update(
-          JSON.stringify({
-            skills: metaCtx.skills.map((s) => ({
-              id: s.id,
-              name: s.name,
-              description: s.description,
-            })),
-            conventions: metaCtx.conventions.map((c) => ({
-              domain: c.domain,
-              rules: c.rules,
-            })),
-            workflows: metaCtx.workflows.map((w) => ({
-              id: w.id,
-              trigger: w.trigger,
-              description: w.description,
-            })),
-          }),
-        )
-        .digest("hex");
+      // Write hash for freshness tracking using the canonical hash function
+      const metaHash = computeMetaHash(
+        metaCtx.skills,
+        metaCtx.conventions,
+        metaCtx.workflows,
+      );
 
       await fs.mkdir(path.dirname(hashPath), { recursive: true });
+      // Dynamically import version to avoid top-level require
+      const { createRequire } = await import("node:module");
+      const req = createRequire(import.meta.url);
+      const { version } = req("../../../package.json");
+
       await fs.writeFile(
         hashPath,
         JSON.stringify(
@@ -1240,7 +1228,8 @@ async function generateAgentInstructions(
     }
 
     return { success: true, path: outputPath };
-  } catch {
+  } catch (err) {
+    debugLog("generateAgentInstructions failed", err);
     return { success: false, path: outputPath };
   }
 }
@@ -1337,7 +1326,8 @@ async function installCoreSkillsForSetup(
     }
 
     return { installed, skipped };
-  } catch {
+  } catch (err) {
+    debugLog("installCoreSkillsForSetup failed", err);
     return { installed: 0, skipped: 0 };
   }
 }
@@ -1414,7 +1404,7 @@ export async function runSetupPipeline(
       steps.push({
         name: "Install hooks",
         status: "skipped",
-        message: "hooks disabled",
+        message: "--no-hooks flag",
       });
     } else {
       steps.push({
@@ -1450,7 +1440,7 @@ export async function runSetupPipeline(
       steps.push({
         name: "Render skills",
         status: "skipped",
-        message: "skills rendering disabled",
+        message: "--skip-skills flag",
       });
     }
 
@@ -1471,6 +1461,46 @@ export async function runSetupPipeline(
         status: "failed",
         message: "No kspec project found",
       });
+    }
+
+    // Step 6: Configure author (optional, used by setup command)
+    if (options.configureAuthor) {
+      const author = options.author || getDefaultAuthor(detected.type);
+      if (!options.force && process.env.KSPEC_AUTHOR) {
+        steps.push({
+          name: "Configure author",
+          status: "skipped",
+          message: `KSPEC_AUTHOR already set to "${process.env.KSPEC_AUTHOR}"`,
+        });
+      } else {
+        let authorInstalled = false;
+        switch (detected.type) {
+          case "claude-code":
+            if (!dryRun) {
+              authorInstalled = await installClaudeCodeConfig(author);
+            } else {
+              authorInstalled = true;
+            }
+            break;
+          case "aider":
+            if (!dryRun) {
+              authorInstalled = await installAiderConfig(author);
+            } else {
+              authorInstalled = true;
+            }
+            break;
+          default:
+            break;
+        }
+
+        if (authorInstalled) {
+          steps.push({
+            name: "Configure author",
+            status: "done",
+            message: `KSPEC_AUTHOR="${author}"`,
+          });
+        }
+      }
     }
 
     // Output summary
@@ -1619,19 +1649,6 @@ export function registerSetupCommand(program: Command): void {
 
         const detected = detectAgent();
         const dryRun = options.dryRun || false;
-        const skipSkills = options.skipSkills || false;
-        const installHooksFlag = options.hooks !== false;
-
-        // Track setup steps for summary
-        // AC: @enhanced-setup ac-1 - summary listing each step
-        const steps: SetupStepResult[] = [];
-
-        // Step 1: Agent detection
-        steps.push({
-          name: "Agent detection",
-          status: "done",
-          message: `${detected.type} (${detected.confidence} confidence)`,
-        });
 
         if (detected.type === "unknown") {
           warn("Could not auto-detect agent environment");
@@ -1639,121 +1656,23 @@ export function registerSetupCommand(program: Command): void {
           return;
         }
 
-        // Step 2: Install hooks (Claude Code only)
-        // AC: @enhanced-setup ac-2 - all hook entries present
-        if (detected.type === "claude-code" && installHooksFlag) {
-          const hooksResult = await installClaudeCodeHooks(projectDir, dryRun);
-          const installedHooks: string[] = [];
-          if (hooksResult.promptCheck) installedHooks.push("UserPromptSubmit");
-          if (hooksResult.stop) installedHooks.push("Stop");
-          if (hooksResult.preToolUse) installedHooks.push("PreToolUse");
-
-          steps.push({
-            name: "Install hooks",
-            status: "done",
-            message: installedHooks.join(", "),
-            details: {
-              guards: hooksResult.guardsCreated,
-            },
-          });
-        } else if (!installHooksFlag) {
-          steps.push({
-            name: "Install hooks",
-            status: "skipped",
-            message: "--no-hooks flag",
-          });
-        }
-
-        // Step 3: Render skills
-        // AC: @enhanced-setup ac-3 - rendered skill files exist
-        // AC: @enhanced-setup ac-5 - --skip-skills flag
-        if (!skipSkills) {
-          const skillsResult = await renderSkillsForSetup(projectDir, dryRun);
-          if (skillsResult.rendered > 0 || skillsResult.skipped > 0) {
-            steps.push({
-              name: "Render skills",
-              status: "done",
-              message: `${skillsResult.rendered} rendered, ${skillsResult.skipped} unchanged`,
-              details: {
-                skillIds: skillsResult.skillIds,
-              },
-            });
-          } else {
-            steps.push({
-              name: "Render skills",
-              status: "skipped",
-              message: "No claude-code skills in meta",
-            });
-          }
-        } else {
-          steps.push({
-            name: "Render skills",
-            status: "skipped",
-            message: "--skip-skills flag",
-          });
-        }
-
-        // Step 4: Generate kspec-agents.md
-        // AC: @enhanced-setup ac-4 - kspec-agents.md exists
-        const agentsResult = await generateAgentInstructions(projectDir, dryRun);
-        if (agentsResult.success) {
-          steps.push({
-            name: "Generate kspec-agents.md",
-            status: "done",
-            message: agentsResult.path,
-          });
-        } else {
-          steps.push({
-            name: "Generate kspec-agents.md",
-            status: "failed",
-            message: "No kspec project found",
-          });
-        }
-
-        // Step 5: Install author config
-        const author = options.author || getDefaultAuthor(detected.type);
-        if (!options.force && process.env.KSPEC_AUTHOR) {
-          steps.push({
-            name: "Configure author",
-            status: "skipped",
-            message: `KSPEC_AUTHOR already set to "${process.env.KSPEC_AUTHOR}"`,
-          });
-        } else {
-          let authorInstalled = false;
-          switch (detected.type) {
-            case "claude-code":
-              if (!dryRun) {
-                authorInstalled = await installClaudeCodeConfig(author);
-              } else {
-                authorInstalled = true;
-              }
-              break;
-            case "aider":
-              if (!dryRun) {
-                authorInstalled = await installAiderConfig(author);
-              } else {
-                authorInstalled = true;
-              }
-              break;
-            default:
-              break;
-          }
-
-          if (authorInstalled) {
-            steps.push({
-              name: "Configure author",
-              status: "done",
-              message: `KSPEC_AUTHOR="${author}"`,
-            });
-          }
-        }
+        // AC: @setup-pipeline-unification ac-3 - delegate to runSetupPipeline()
+        // One code path for both 'kspec setup' and 'kspec init --setup'
+        const result = await runSetupPipeline(projectDir, {
+          dryRun,
+          skipSkills: options.skipSkills || false,
+          installHooks: options.hooks !== false,
+          force: options.force || false,
+          author: options.author,
+          configureAuthor: true,
+        });
 
         // AC: @enhanced-setup ac-1 - Display summary
         // AC: @enhanced-setup ac-6 - dry-run displays planned actions
         output(
           {
             dry_run: dryRun,
-            steps: steps.map((s) => ({
+            steps: result.steps.map((s) => ({
               name: s.name,
               status: s.status,
               message: s.message,
@@ -1765,25 +1684,29 @@ export function registerSetupCommand(program: Command): void {
               console.log(chalk.yellow("DRY RUN - No changes made\n"));
             }
 
-            console.log(chalk.bold("kspec Setup Summary\n"));
+            // Pipeline already prints the summary when not dry-run
+            // For dry-run, print it here since the pipeline skips output
+            if (dryRun) {
+              console.log(chalk.bold("kspec Setup Summary\n"));
 
-            for (const step of steps) {
-              const icon =
-                step.status === "done"
-                  ? chalk.green("✓")
-                  : step.status === "skipped"
-                    ? chalk.gray("○")
-                    : chalk.red("✗");
-              const statusText =
-                step.status === "done"
-                  ? ""
-                  : step.status === "skipped"
-                    ? chalk.gray(" (skipped)")
-                    : chalk.red(" (failed)");
+              for (const step of result.steps) {
+                const icon =
+                  step.status === "done"
+                    ? chalk.green("✓")
+                    : step.status === "skipped"
+                      ? chalk.gray("○")
+                      : chalk.red("✗");
+                const statusText =
+                  step.status === "done"
+                    ? ""
+                    : step.status === "skipped"
+                      ? chalk.gray(" (skipped)")
+                      : chalk.red(" (failed)");
 
-              console.log(`${icon} ${step.name}${statusText}`);
-              if (step.message) {
-                console.log(chalk.gray(`  ${step.message}`));
+                console.log(`${icon} ${step.name}${statusText}`);
+                if (step.message) {
+                  console.log(chalk.gray(`  ${step.message}`));
+                }
               }
             }
 
