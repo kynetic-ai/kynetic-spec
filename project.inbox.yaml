@@ -594,3 +594,11 @@ inbox:
     created_at: 2026-02-18T17:34:31.166Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHSJJREJ657W37GKYQG4EY5Q
+    text: "Feature request: ralph loop boundary tracking in session logs. Currently no easy way to see
+      what happened in a ralph loop iteration without cross-referencing PR timestamps, git log, and
+      task states. A session log showing PR-to-task mapping per loop iteration would help audit and
+      review. Originated from imgen project observation."
+    created_at: 2026-02-18T23:50:17.810Z
+    tags: []
+    added_by: "@claude"
