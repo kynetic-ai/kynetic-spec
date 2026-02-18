@@ -50640,7 +50640,8 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-dead-code-and-deduplication-sweep"
   context: []
   priority: 2
   tags: []
@@ -50689,7 +50690,8 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-dead-code-and-deduplication-sweep"
   context: []
   priority: 2
   tags: []
@@ -50738,7 +50740,9 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-setup-pipeline-unification"
+    - "@task-cross-platform-and-version-robustness"
   context: []
   priority: 3
   tags: []
@@ -50782,7 +50786,8 @@
   derivation: auto
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-setup-pipeline-unification"
   context: []
   priority: 3
   tags: []
@@ -50815,15 +50820,22 @@
         re-exports maintain backward API compatibility
       supersedes: null
   todos: []
-- title: "Implement: Guard Script and Diff Quality"
+- _ulid: 01KHQQV7W6FAM0NMZ6XVERS9MX
+  slugs:
+    - task-guard-script-and-diff-quality
+  title: "Implement: Guard Script and Diff Quality"
   type: task
   spec_ref: "@guard-script-and-diff-quality"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-skill-module-split"
+  context: []
   priority: 3
-  slugs:
-    - task-guard-script-and-diff-quality
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-18T06:43:49.766Z
   notes:
     - _ulid: 01KHQQV7W5279WQ20S9ZB32C9N
       created_at: 2026-02-18T06:43:49.765Z
@@ -50853,10 +50865,4 @@
         - ac-4: Given a skill update operation, when the update is about to save, then a copy of the
         skill object is mutated, not the loaded original (safe against partial save failure)
       supersedes: null
-  _ulid: 01KHQQV7W6FAM0NMZ6XVERS9MX
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-18T06:43:49.766Z
   todos: []
