@@ -50680,15 +50680,21 @@
         is identical to running kspec setup separately (same code path)
       supersedes: null
   todos: []
-- title: "Implement: Cross-Platform and Version Robustness"
+- _ulid: 01KHQQTYBXE0VQAAK4YG8S6RRY
+  slugs:
+    - task-cross-platform-and-version-robustness
+  title: "Implement: Cross-Platform and Version Robustness"
   type: task
   spec_ref: "@cross-platform-and-version-robustness"
   derivation: auto
-  priority: 2
-  slugs:
-    - task-cross-platform-and-version-robustness
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-18T06:43:40.029Z
   notes:
     - _ulid: 01KHQQTYBW5VGW4RY9NJ9XMMGC
       created_at: 2026-02-18T06:43:40.028Z
@@ -50722,10 +50728,48 @@
         - ac-5: Given a skill file with a base directory line, when normalizeBaseDirectory is
         called, then the line is matched case-insensitively and with common wording variations
       supersedes: null
-  _ulid: 01KHQQTYBXE0VQAAK4YG8S6RRY
+  todos: []
+- title: "Implement: New Project Bootstrapping"
+  type: task
+  spec_ref: "@new-project-bootstrapping"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-new-project-bootstrapping
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KHQQV1WV6WQ7Q9H6PDXCPF87
+      created_at: 2026-02-18T06:43:43.644Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Improve the experience of installing kspec on a new project by seeding agent configuration
+        with useful starting context and handling platform drift detection comprehensively.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given kspec setup runs in a new project with Claude Code, when setup completes, then
+        a permissions template or seed for common kspec operations is offered to the user
+
+        - ac-2: Given kspec setup runs in a new project, when setup completes, then MEMORY.md is
+        seeded with project-relevant starting notes (project name, key paths, conventions)
+
+        - ac-3: Given a codex skill has platform_config.codex with custom settings, when
+        checkPlatformSkillDrift runs for codex, then the sidecar YAML file (agents/openai.yaml)
+        content is included in the drift hash
+
+        - ac-4: Given a rendered skill file has been manually edited, when kspec skill verify runs,
+        then it reports which skills have drifted from their source with actionable guidance
+      supersedes: null
+  _ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-18T06:43:40.029Z
+  created_at: 2026-02-18T06:43:43.644Z
   todos: []
