@@ -1723,6 +1723,159 @@ export function registerSkillCommands(program: Command): void {
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // AC: @skill-drift-detection-improvements ac-2 - kspec skill verify
+  skill
+    .command("verify")
+    .description("Verify rendered skills match their source (reports drift with guidance)")
+    .option("--json", "Output as JSON")
+    .action(async (options: { json?: boolean }) => {
+      try {
+        const ctx = await initContext();
+
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          console.log(
+            chalk.gray("Try: kspec init to initialize a kspec project")
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const metaCtx = await loadMetaContext(ctx);
+        const projectRoot = ctx.rootDir;
+        const skillsToCheck = metaCtx.skills;
+
+        if (skillsToCheck.length === 0) {
+          output([], () => {
+            console.log(chalk.yellow("No skills found"));
+          });
+          return;
+        }
+
+        // Build verification results for each skill-platform pair
+        interface VerifyResult {
+          id: string;
+          platform: string;
+          status: "ok" | "drifted" | "not-rendered" | "no-hash";
+          guidance?: string;
+        }
+
+        const results: VerifyResult[] = [];
+
+        for (const skill of skillsToCheck) {
+          for (const platform of skill.platforms) {
+            const renderer = getRenderer(platform);
+            if (!renderer) {
+              results.push({
+                id: skill.id,
+                platform,
+                status: "not-rendered",
+                guidance: `Unregistered platform '${platform}'. No renderer available.`,
+              });
+              continue;
+            }
+
+            const driftStatus = await renderer.checkDrift(
+              ctx.specDir,
+              projectRoot,
+              skill.id
+            );
+
+            switch (driftStatus) {
+              case "in-sync":
+                results.push({ id: skill.id, platform, status: "ok" });
+                break;
+              case "drifted":
+                results.push({
+                  id: skill.id,
+                  platform,
+                  status: "drifted",
+                  guidance: `Rendered file has been modified. Run 'kspec skill render ${skill.id} --force' to overwrite with source, or 'kspec skill diff ${skill.id}' to review changes.`,
+                });
+                break;
+              case "not-rendered":
+                results.push({
+                  id: skill.id,
+                  platform,
+                  status: "not-rendered",
+                  guidance: `Not yet rendered. Run 'kspec skill render ${skill.id}' to generate.`,
+                });
+                break;
+              case "no-hash":
+                results.push({
+                  id: skill.id,
+                  platform,
+                  status: "no-hash",
+                  guidance: `No render hash stored. Run 'kspec skill render ${skill.id}' to render and store hash.`,
+                });
+                break;
+            }
+          }
+        }
+
+        const driftedResults = results.filter((r) => r.status === "drifted");
+        const okResults = results.filter((r) => r.status === "ok");
+        const notRenderedResults = results.filter((r) => r.status === "not-rendered");
+        const noHashResults = results.filter((r) => r.status === "no-hash");
+
+        output(
+          results,
+          () => {
+            if (driftedResults.length === 0 && notRenderedResults.length === 0 && noHashResults.length === 0) {
+              console.log(chalk.green(`All ${okResults.length} rendered skill(s) verified — no drift detected.`));
+              return;
+            }
+
+            // Show drifted skills with guidance
+            if (driftedResults.length > 0) {
+              console.log(chalk.yellow.bold(`\nDrifted (${driftedResults.length}):`));
+              for (const r of driftedResults) {
+                console.log(`  ${chalk.yellow("●")} ${r.id} [${r.platform}]`);
+                console.log(`    ${chalk.gray(r.guidance!)}`);
+              }
+            }
+
+            // Show not-rendered
+            if (notRenderedResults.length > 0) {
+              console.log(chalk.gray.bold(`\nNot rendered (${notRenderedResults.length}):`));
+              for (const r of notRenderedResults) {
+                console.log(`  ${chalk.gray("○")} ${r.id} [${r.platform}]`);
+                console.log(`    ${chalk.gray(r.guidance!)}`);
+              }
+            }
+
+            // Show no-hash
+            if (noHashResults.length > 0) {
+              console.log(chalk.gray.bold(`\nNo hash (${noHashResults.length}):`));
+              for (const r of noHashResults) {
+                console.log(`  ${chalk.gray("○")} ${r.id} [${r.platform}]`);
+                console.log(`    ${chalk.gray(r.guidance!)}`);
+              }
+            }
+
+            // Summary line
+            if (okResults.length > 0) {
+              console.log(chalk.green(`\n${okResults.length} skill(s) verified OK.`));
+            }
+
+            // Actionable summary
+            if (driftedResults.length > 0) {
+              console.log(
+                chalk.yellow(`\nTo sync all drifted skills: kspec skill render --force`)
+              );
+            }
+          }
+        );
+
+        // Exit with non-zero if any skills drifted
+        if (driftedResults.length > 0) {
+          process.exit(EXIT_CODES.ERROR);
+        }
+      } catch (err) {
+        error("Failed to verify skills", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
 }
 
 /**
