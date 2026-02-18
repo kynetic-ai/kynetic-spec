@@ -50591,7 +50591,7 @@
   type: task
   spec_ref: null
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -50655,6 +50655,11 @@
         Build passes. All 2718 tests pass (1 pre-existing daemon-executable failure unrelated).
       supersedes: null
   todos: []
+  completed_at: 2026-02-18T07:35:14.175Z
+  closed_reason: "Merged in PR #403. Removed dead code (SkillRenderResult, SkillStatusResult,
+    getSkillSyncStatus, toKebabCase, EXPECTED_TEMPLATES), deduplicated utilities (contentsEqual,
+    directoriesEqual, copyDirectory now imported from skill-render.ts), and removed redundant manual
+    defaults in skill add/import/install. Net -218 lines. All 5 ACs covered with annotated tests."
 - _ulid: 01KHQQTVDWCXWTZC3FWP664TC4
   slugs:
     - task-setup-pipeline-unification
