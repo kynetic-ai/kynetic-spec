@@ -50873,6 +50873,13 @@
       content: "Spec restructured: AC-3 and AC-4 moved to new @skill-drift-detection-improvements spec.
         This task now covers only AC-1 (permission seeding) and AC-2 (memory seeding)."
       supersedes: null
+    - _ulid: 01KHSCDY6CEQF5813FJ1DP5P34
+      created_at: 2026-02-18T22:02:48.397Z
+      author: "@claude"
+      content: "Implementation complete: setup-seeding.ts with seedPermissions() and seedMemory(),
+        integrated into runSetupPipeline() and getSetupStatus(). 23 new tests in
+        tests/cli/setup-seeding.test.ts, all passing. Existing tests also pass."
+      supersedes: null
   todos: []
 - _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
   slugs:
@@ -50978,15 +50985,21 @@
         skill object is mutated, not the loaded original (safe against partial save failure)
       supersedes: null
   todos: []
-- title: "Implement: Skill Drift Detection Improvements"
+- _ulid: 01KHSC4WBZK3VSKCD6XT5E26Q3
+  slugs:
+    - task-skill-drift-detection-improvements
+  title: "Implement: Skill Drift Detection Improvements"
   type: task
   spec_ref: "@skill-drift-detection-improvements"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-skill-drift-detection-improvements
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-18T21:57:51.615Z
   notes:
     - _ulid: 01KHSC4WBRKJAGV9M0GD334RW8
       created_at: 2026-02-18T21:57:51.609Z
@@ -51009,10 +51022,4 @@
         - ac-2: Given a rendered skill file has been manually edited, when kspec skill verify runs,
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
-  _ulid: 01KHSC4WBZK3VSKCD6XT5E26Q3
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-18T21:57:51.615Z
   todos: []
