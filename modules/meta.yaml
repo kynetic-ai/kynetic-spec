@@ -3858,6 +3858,18 @@ modules:
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        notes:
+          - _ulid: 01KHRTEM4NDMWT5A371JGF9947
+            created_at: 2026-02-18T16:48:36.501Z
+            author: "@claude"
+            content: >-
+              Implementation requirements (removed from ACs — task-level, not behavioral):
+
+              - Use async fs.readFile instead of readFileSync for loading package version, manifest,
+              or skill content
+
+              - Mutate a copy of the skill object (structuredClone), not the loaded original, to
+              guard against partial save failure
+            supersedes: null
         created: 2026-02-18T06:43:25.145Z
 traits: []
