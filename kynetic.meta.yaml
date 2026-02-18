@@ -5803,5 +5803,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHQXGWG6BEEQBJ0VZ32NX2T1
+    type: friction
+    content: "Background PR review agent can act on stale context: agent added 172-line test file for a
+      spec that was deleted during review. When running review agents in background while making
+      spec/task changes in foreground, the agent does not see those changes. Required a follow-up
+      cleanup PR."
+    created_at: 2026-02-18T08:23:01.894Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHQXGWQJGKKY7H3KKRDXT5HQ
+    type: friction
+    content: "Codex PR review skill always demands // AC: @spec-ref ac-N annotations, even for
+      infrastructure/cleanup tasks where ACs describe absence of code. Should skip AC annotation
+      checks when task has no spec_ref or when spec type is not user-facing behavior."
+    created_at: 2026-02-18T08:23:02.130Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills: []
 includes: []
