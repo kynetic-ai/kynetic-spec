@@ -72,7 +72,7 @@ function computeHash(content: string): string {
  * AC: @agent-templates ac-1 - all template sections included in defined order
  * AC: @agent-templates ac-3 - error if directory missing or empty
  */
-async function loadTemplateSections(packageRoot: string): Promise<string[]> {
+export async function loadTemplateSections(packageRoot: string): Promise<string[]> {
   const templatesPath = path.join(packageRoot, TEMPLATES_DIR);
 
   // Check if templates directory exists
@@ -113,7 +113,7 @@ async function loadTemplateSections(packageRoot: string): Promise<string[]> {
 /**
  * Get the package root directory (where templates/ is located)
  */
-function getPackageRoot(): string {
+export function getPackageRoot(): string {
   // Navigate from dist/cli/commands/ to package root
   return path.resolve(__dirname, "..", "..", "..");
 }
@@ -122,7 +122,7 @@ function getPackageRoot(): string {
  * Generate a hash of the meta content that affects the generated file.
  * This is used to detect if the generated file is stale.
  */
-function computeMetaHash(
+export function computeMetaHash(
   skills: LoadedSkill[],
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
@@ -160,7 +160,7 @@ function generateFreshnessComment(timestamp: string): string {
  * AC: @agent-templates ac-1 - template sections included in output in defined order
  * AC: @agent-templates ac-2 - each template section appears in generated output
  */
-async function generateAgentsContent(
+export async function generateAgentsContent(
   skills: LoadedSkill[],
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
