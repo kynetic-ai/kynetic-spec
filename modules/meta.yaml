@@ -3896,5 +3896,5 @@ modules:
             then: it reports which skills have drifted from their source with actionable guidance
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
 traits: []
