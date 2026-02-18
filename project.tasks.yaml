@@ -50995,7 +50995,7 @@
   type: task
   spec_ref: "@skill-drift-detection-improvements"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -51047,3 +51047,7 @@
         daemon-executable unrelated to this work).
       supersedes: null
   todos: []
+  completed_at: 2026-02-18T23:02:40.326Z
+  closed_reason: "Merged in PR #410. AC-1: sidecar YAML included in codex drift hash. AC-2: kspec
+    skill verify command with actionable guidance. Codex review feedback addressed (hash gating fix,
+    JSON output fix). 7 new tests."
