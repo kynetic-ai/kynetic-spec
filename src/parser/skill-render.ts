@@ -150,14 +150,6 @@ export interface RenderSkillOptions {
 export const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
 
 /**
- * Convert snake_case to kebab-case for Claude Code frontmatter keys
- * AC: @claude-code-renderer-extended ac-8 - snake_case to kebab-case conversion
- */
-function toKebabCase(str: string): string {
-  return str.replace(/_/g, "-");
-}
-
-/**
  * Generate YAML frontmatter for a skill.
  * AC: @claude-code-renderer ac-2 - YAML frontmatter with name and description fields
  * AC: @claude-code-renderer-extended ac-1 - portable fields (license, allowed-tools)
@@ -225,14 +217,14 @@ function getRenderedSkillPath(projectRoot: string, skillId: string): string {
 /**
  * Check if two contents are equal (for idempotency check)
  */
-function contentsEqual(a: string, b: string): boolean {
+export function contentsEqual(a: string, b: string): boolean {
   return a.trim() === b.trim();
 }
 
 /**
  * Recursively copy a directory
  */
-async function copyDirectory(src: string, dest: string): Promise<void> {
+export async function copyDirectory(src: string, dest: string): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
 
   for (const entry of entries) {
@@ -331,7 +323,7 @@ export async function checkSkillDrift(
 /**
  * Recursively check if two directories have the same contents
  */
-async function directoriesEqual(src: string, dest: string): Promise<boolean> {
+export async function directoriesEqual(src: string, dest: string): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src, { withFileTypes: true });
     const destEntries = await fs.readdir(dest, { withFileTypes: true });
