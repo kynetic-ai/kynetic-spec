@@ -61,19 +61,6 @@ const HASH_FILE_NAME = ".kspec-agents-hash";
 const TEMPLATES_DIR = "templates/agents-sections";
 
 /**
- * Expected template files in order
- * AC: @agent-templates ac-2 - template files for quick-start, shadow-branch, task-lifecycle, pr-workflow, commit-convention, ralph-loop
- */
-const EXPECTED_TEMPLATES = [
-  "01-quick-start.md",
-  "02-shadow-branch.md",
-  "03-task-lifecycle.md",
-  "04-pr-workflow.md",
-  "05-commit-convention.md",
-  "06-ralph-loop.md",
-];
-
-/**
  * Compute SHA256 hash of content
  */
 function computeHash(content: string): string {

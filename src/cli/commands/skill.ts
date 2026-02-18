@@ -41,11 +41,9 @@ import {
   loadSkillDocs,
   type LoadedSkill,
   saveMetaItem,
-  type Skill,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
-  checkSkillDrift,
   checkPlatformSkillDrift,
   computeContentHash,
   generateFrontmatter,
@@ -55,6 +53,9 @@ import {
   renderClaudeCodeSkill,
   getRenderer,
   getAllRenderers,
+  contentsEqual,
+  copyDirectory,
+  directoriesEqual,
   type ClaudeCodeRenderResult,
   type PlatformRenderer,
   type PlatformRenderResult,
@@ -251,27 +252,18 @@ export function registerSkillCommands(program: Command): void {
           process.exit(EXIT_CODES.CONFLICT);
         }
 
-        // Build skill object
-        const skillData: Skill = {
+        // Build skill object (schema provides defaults for platforms, depends_on, tags)
+        const skillData = {
           _ulid: ulid(),
           id: options.id,
           name: options.name,
           description: options.description,
           origin: options.origin as SkillOrigin,
           version: options.skillVersion,
-          platforms:
-            options.platform && options.platform.length > 0
-              ? options.platform
-              : ["claude-code"],
-          depends_on:
-            options.dependsOn && options.dependsOn.length > 0
-              ? options.dependsOn
-              : [],
+          ...(options.platform && options.platform.length > 0 && { platforms: options.platform }),
+          ...(options.dependsOn && options.dependsOn.length > 0 && { depends_on: options.dependsOn }),
           allowed_tools: [],
-          tags:
-            options.tag && options.tag.length > 0
-              ? parseTagsArray(options.tag)
-              : [],
+          ...(options.tag && options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
         };
 
         // Validate with schema
@@ -790,20 +782,18 @@ export function registerSkillCommands(program: Command): void {
 
         // Build skill object
         // AC: @import-frontmatter-strip ac-1 - All recognized fields populate meta.yaml
-        const skillData: Skill = {
+        // Schema provides defaults for platforms, depends_on, tags
+        const skillData = {
           _ulid: ulid(),
           id: skillId,
           name: skillName,
           description: skillDescription,
           origin: options.origin as SkillOrigin,
           version: options.skillVersion,
-          platforms: ["claude-code"],
-          depends_on: [],
           // AC: @import-frontmatter-strip ac-1 - license, compatibility, allowed_tools from frontmatter
           license: frontmatter?.license,
           compatibility: frontmatter?.compatibility,
           allowed_tools: frontmatter?.allowed_tools || [],
-          tags: [],
           // AC: @import-frontmatter-strip ac-3 - platform_config.claude_code from frontmatter
           platform_config: platformConfig,
         };
@@ -1445,15 +1435,15 @@ export function registerSkillCommands(program: Command): void {
 
           // AC: @core-skill-install ac-1 - Create/update meta entry with origin core
           // AC: @core-skill-install ac-5 - Version matches kspec package version
-          const skillData: Skill = {
+          // Schema provides defaults for platforms, depends_on
+          const skillData = {
             _ulid: existingSkill?._ulid || ulid(),
             id: coreSkill.id,
             name: coreSkill.name,
             description: coreSkill.description,
             origin: "core",
             version: kspecVersion,
-            platforms: coreSkill.platforms || ["claude-code"],
-            depends_on: [],
+            ...(coreSkill.platforms && { platforms: coreSkill.platforms }),
             allowed_tools: [],
             tags: ["core"],
           };
@@ -1926,39 +1916,6 @@ function normalizeBaseDirectory(content: string): string {
 }
 
 /**
- * Recursively copy a directory
- */
-async function copyDirectory(src: string, dest: string): Promise<void> {
-  const entries = await fs.readdir(src, { withFileTypes: true });
-
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-
-    if (entry.isDirectory()) {
-      await fs.mkdir(destPath, { recursive: true });
-      await copyDirectory(srcPath, destPath);
-    } else {
-      await fs.copyFile(srcPath, destPath);
-    }
-  }
-}
-
-/**
- * Result of rendering a single skill
- * AC: @skill-drift-detection ac-3 - Includes "skipped" action for drifted skills
- * AC: @consolidate-skill-render ac-2 - No private renderSkill function, uses imported renderClaudeCodeSkill
- */
-interface SkillRenderResult {
-  id: string;
-  action: "created" | "updated" | "unchanged" | "skipped";
-  path: string;
-  docsAction?: "created" | "updated" | "unchanged" | "skipped";
-  /** Reason why skill was skipped */
-  skipReason?: string;
-}
-
-/**
  * Result of rendering a single skill to a platform
  * AC: @multi-platform-render-cli ac-6 - Includes platform field
  */
@@ -1985,70 +1942,6 @@ interface CleanResult {
 }
 
 /**
- * Check if two contents are equal (for idempotency check)
- */
-function contentsEqual(a: string, b: string): boolean {
-  return a.trim() === b.trim();
-}
-
-/**
- * Recursively check if two directories have the same contents
- */
-async function directoriesEqual(src: string, dest: string): Promise<boolean> {
-  try {
-    const srcEntries = await fs.readdir(src, { withFileTypes: true });
-    const destEntries = await fs.readdir(dest, { withFileTypes: true });
-
-    // Different number of entries = not equal
-    if (srcEntries.length !== destEntries.length) {
-      return false;
-    }
-
-    // Create a map of dest entries for quick lookup
-    const destMap = new Map(destEntries.map((e) => [e.name, e]));
-
-    for (const srcEntry of srcEntries) {
-      const destEntry = destMap.get(srcEntry.name);
-      if (!destEntry) {
-        return false;
-      }
-
-      const srcPath = path.join(src, srcEntry.name);
-      const destPath = path.join(dest, srcEntry.name);
-
-      if (srcEntry.isDirectory() && destEntry.isDirectory()) {
-        if (!(await directoriesEqual(srcPath, destPath))) {
-          return false;
-        }
-      } else if (srcEntry.isFile() && destEntry.isFile()) {
-        const srcContent = await fs.readFile(srcPath, "utf-8");
-        const destContent = await fs.readFile(destPath, "utf-8");
-        if (!contentsEqual(srcContent, destContent)) {
-          return false;
-        }
-      } else {
-        // Type mismatch
-        return false;
-      }
-    }
-
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Result of checking a skill's sync status
- * AC: @skill-render-cli ac-3
- */
-interface SkillStatusResult {
-  id: string;
-  status: "in-sync" | "drifted" | "not-rendered";
-  docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
-}
-
-/**
  * Result of checking a skill's sync status for a specific platform
  * AC: @multi-platform-render-cli ac-3
  */
@@ -2058,79 +1951,6 @@ interface MultiPlatformStatusResult {
   status: "in-sync" | "drifted" | "not-rendered";
   docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
   warning?: string;
-}
-
-/**
- * Get the sync status of a skill
- * AC: @skill-render-cli ac-3
- * AC: @skill-drift-detection ac-1, ac-2 - Uses hash-based drift detection
- */
-async function getSkillSyncStatus(
-  ctx: KspecContext,
-  projectRoot: string,
-  skill: LoadedSkill
-): Promise<SkillStatusResult> {
-  // AC: @skill-drift-detection ac-1, ac-2 - Use hash-based drift detection
-  const driftStatus = await checkSkillDrift(ctx.specDir, projectRoot, skill.id);
-
-  // Map drift status to sync status
-  let status: "in-sync" | "drifted" | "not-rendered";
-  switch (driftStatus) {
-    case "in-sync":
-      status = "in-sync";
-      break;
-    case "drifted":
-      status = "drifted";
-      break;
-    case "not-rendered":
-      status = "not-rendered";
-      break;
-    case "no-hash":
-      // No hash stored - need to check if content matches expected
-      // (handles edge case where skill was rendered before hash tracking was added)
-      const expectedContent = await getExpectedRenderedContent(ctx, skill);
-      const renderedPath = path.join(
-        projectRoot,
-        ".claude",
-        "skills",
-        skill.id,
-        "SKILL.md"
-      );
-      try {
-        const actualContent = await fs.readFile(renderedPath, "utf-8");
-        status = contentsEqual(expectedContent, actualContent) ? "in-sync" : "drifted";
-      } catch {
-        status = "not-rendered";
-      }
-      break;
-  }
-
-  // Check docs status
-  const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
-  const targetDocsDir = path.join(projectRoot, ".claude", "skills", skill.id, "docs");
-  let docsStatus: "in-sync" | "drifted" | "not-rendered" | "no-docs" = "no-docs";
-
-  try {
-    await fs.stat(sourceDocsDir);
-    // Source docs exist, check target
-    try {
-      await fs.stat(targetDocsDir);
-      // Both exist, compare
-      const equal = await directoriesEqual(sourceDocsDir, targetDocsDir);
-      docsStatus = equal ? "in-sync" : "drifted";
-    } catch {
-      docsStatus = "not-rendered";
-    }
-  } catch {
-    // No source docs
-    docsStatus = "no-docs";
-  }
-
-  return {
-    id: skill.id,
-    status,
-    docsStatus,
-  };
 }
 
 /**
@@ -2356,7 +2176,6 @@ export {
   isKspecManaged,
   KSPEC_MANAGED_MARKER,
   renderClaudeCodeSkill,
-  getSkillSyncStatus,
   getExpectedRenderedContent,
   generateUnifiedDiff,
   loadCoreSkillsManifest,
