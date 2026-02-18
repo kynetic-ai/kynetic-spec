@@ -50669,6 +50669,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #405. Follow-up fixes for Codex review in PR #406. All 5 ACs
+    implemented: setup uses generateAgentsContent from agents.ts, platform renderer registry, single
+    runSetupPipeline code path, debug logging on all catch blocks, init --setup and setup use same
+    pipeline."
   depends_on:
     - "@task-dead-code-and-deduplication-sweep"
   context: []
@@ -50677,6 +50681,7 @@
   vcs_refs: []
   created_at: 2026-02-18T06:43:37.020Z
   started_at: 2026-02-18T09:17:38.241Z
+  completed_at: 2026-02-18T14:44:43.592Z
   notes:
     - _ulid: 01KHQQTVDVQ3V8P5414ZHXKZ97
       created_at: 2026-02-18T06:43:37.019Z
@@ -50737,11 +50742,6 @@
         options, producing identical artifacts.
       supersedes: null
   todos: []
-  completed_at: 2026-02-18T14:44:43.592Z
-  closed_reason: "Merged in PR #405. Follow-up fixes for Codex review in PR #406. All 5 ACs
-    implemented: setup uses generateAgentsContent from agents.ts, platform renderer registry, single
-    runSetupPipeline code path, debug logging on all catch blocks, init --setup and setup use same
-    pipeline."
 - _ulid: 01KHQQTYBXE0VQAAK4YG8S6RRY
   slugs:
     - task-cross-platform-and-version-robustness
@@ -50879,6 +50879,21 @@
 
         - ac-3: Given external code importing from skill.ts, when building the project, then
         re-exports maintain backward API compatibility
+      supersedes: null
+    - _ulid: 01KHRTDCCTSVQXNVH8Y9JEMRNB
+      created_at: 2026-02-18T16:47:55.802Z
+      author: "@claude"
+      content: >-
+        Requirements (moved from spec — these are task-level, not behavioral):
+
+        - AC-1: skill.ts split into focused modules (skill-crud.ts, skill-install.ts, skill-diff.ts
+        or similar)
+
+        - AC-2: Shared render logic (content loading, hash check, idempotency, file write) extracted
+        into a base function in skill-render.ts
+
+        - AC-3: Re-exports maintain backward API compatibility for external code importing from
+        skill.ts
       supersedes: null
   todos: []
 - _ulid: 01KHQQV7W6FAM0NMZ6XVERS9MX
