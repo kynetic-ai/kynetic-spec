@@ -50773,15 +50773,21 @@
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
   todos: []
-- title: "Implement: Skill Module Split"
+- _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
+  slugs:
+    - task-skill-module-split
+  title: "Implement: Skill Module Split"
   type: task
   spec_ref: "@skill-module-split"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-skill-module-split
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-18T06:43:46.685Z
   notes:
     - _ulid: 01KHQQV4VWGHQ1Z2RPE9K4858M
       created_at: 2026-02-18T06:43:46.685Z
@@ -50808,10 +50814,49 @@
         - ac-3: Given external code importing from skill.ts, when building the project, then
         re-exports maintain backward API compatibility
       supersedes: null
-  _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
+  todos: []
+- title: "Implement: Guard Script and Diff Quality"
+  type: task
+  spec_ref: "@guard-script-and-diff-quality"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-guard-script-and-diff-quality
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KHQQV7W5279WQ20S9ZB32C9N
+      created_at: 2026-02-18T06:43:49.765Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Improve guard script matching robustness and replace the hand-rolled unified diff with a
+        proper implementation.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given a command like echo "git reset" or grep "git stash" README.md, when the
+        worktree guard script evaluates it, then it is NOT blocked (guard checks command position or
+        word boundaries, not substring)
+
+        - ac-2: Given two files where one has a single line inserted, when generateUnifiedDiff
+        compares them, then the diff shows only the insertion, not a cascade of all subsequent lines
+        as changed
+
+        - ac-3: Given async skill operations, when loading package version, manifest, or skill
+        content, then async fs.readFile is used instead of readFileSync
+
+        - ac-4: Given a skill update operation, when the update is about to save, then a copy of the
+        skill object is mutated, not the loaded original (safe against partial save failure)
+      supersedes: null
+  _ulid: 01KHQQV7W6FAM0NMZ6XVERS9MX
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-18T06:43:46.685Z
+  created_at: 2026-02-18T06:43:49.766Z
   todos: []
