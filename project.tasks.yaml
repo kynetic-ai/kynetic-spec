@@ -51003,6 +51003,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-18T21:57:51.615Z
+  started_at: 2026-02-18T22:30:00.162Z
   notes:
     - _ulid: 01KHSC4WBRKJAGV9M0GD334RW8
       created_at: 2026-02-18T21:57:51.609Z
@@ -51025,5 +51026,24 @@
         - ac-2: Given a rendered skill file has been manually edited, when kspec skill verify runs,
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
+    - _ulid: 01KHSEF7Z1DXVC4D2P1R0H9GCJ
+      created_at: 2026-02-18T22:38:28.321Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        AC-1: Modified codex renderer in skill-render.ts to combine SKILL.md + sidecar content when
+        computing drift hash. Updated both hash storage (during render) and hash checking
+        (checkDrift). 3 new tests verify sidecar drift detection.
+
+
+        AC-2: Added 'kspec skill verify' CLI command in skill.ts. Reports drifted skills with
+        actionable guidance (render --force, diff commands). Exits non-zero when drift detected.
+        JSON output supported. 3 new tests verify the command.
+
+
+        Total: 6 new tests, all passing. Full suite: 2780/2780 tests pass (1 pre-existing failure in
+        daemon-executable unrelated to this work).
+      supersedes: null
   todos: []
-  started_at: 2026-02-18T22:30:00.162Z
