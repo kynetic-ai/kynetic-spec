@@ -4132,8 +4132,20 @@ runs:
   - _ulid: 01KHSDQ6CJ4ZSTJGW35KWA40GP
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-18T22:25:20.274Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-18T22:25:20.274Z
+        completed_at: 2026-02-18T22:25:48.848Z
+        notes: "Session reviewed. Friction: (1) batch arg naming convention (camelCase vs snake_case) caught
+          by did-you-mean but not documented in plan templates. Already partially tracked — batch
+          error hints exist. (2) Parent ref not shown in item get output. Both low-confidence /
+          borderline."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-18T22:25:48.848Z
+        completed_at: 2026-02-18T22:25:48.848Z
     initiated_by: "@claude"
