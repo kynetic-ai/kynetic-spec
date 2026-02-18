@@ -50830,6 +50830,8 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #409. Permission and memory seeding added to setup pipeline with
+    cross-platform support, safe JSON handling, and 28 tests."
   depends_on:
     - "@task-setup-pipeline-unification"
     - "@task-cross-platform-and-version-robustness"
@@ -50839,6 +50841,7 @@
   vcs_refs: []
   created_at: 2026-02-18T06:43:43.644Z
   started_at: 2026-02-18T21:56:01.434Z
+  completed_at: 2026-02-18T22:24:55.304Z
   notes:
     - _ulid: 01KHQQV1WV6WQ7Q9H6PDXCPF87
       created_at: 2026-02-18T06:43:43.644Z
@@ -50881,9 +50884,6 @@
         tests/cli/setup-seeding.test.ts, all passing. Existing tests also pass."
       supersedes: null
   todos: []
-  completed_at: 2026-02-18T22:24:55.304Z
-  closed_reason: "Merged in PR #409. Permission and memory seeding added to setup pipeline with
-    cross-platform support, safe JSON handling, and 28 tests."
 - _ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
   slugs:
     - task-skill-module-split
@@ -50995,7 +50995,7 @@
   type: task
   spec_ref: "@skill-drift-detection-improvements"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -51026,3 +51026,4 @@
         then it reports which skills have drifted from their source with actionable guidance
       supersedes: null
   todos: []
+  started_at: 2026-02-18T22:30:00.162Z
