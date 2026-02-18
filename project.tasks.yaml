@@ -50843,7 +50843,7 @@
     - task-skill-module-split
   title: "Implement: Skill Module Split"
   type: task
-  spec_ref: "@skill-module-split"
+  spec_ref: null
   derivation: auto
   status: pending
   blocked_by: []
