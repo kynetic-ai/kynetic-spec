@@ -5822,6 +5822,26 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHRP78K7727DMKA224B3ZZ9Y
+    type: friction
+    content: "Running kspec setup during development creates kspec-agents.md and .claude/skills/ in
+      project root. These are test artifacts for the kspec project itself (which uses AGENTS.md, not
+      kspec-agents.md). They trigger repeated stop hook warnings about uncommitted changes. Need
+      either: (a) test isolation so setup tests dont leak into project root, or (b) cleanup step in
+      bootstrap/dev workflow."
+    created_at: 2026-02-18T15:34:40.999Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHRP78PDNPQAKZCPHR5XZV86
+    type: success
+    content: Multi-model PR review (Claude + Codex in parallel) caught issues that single-model review
+      missed. Codex found missing debugLog in outer catch and weak test assertions. Worth continuing
+      this pattern for non-trivial PRs.
+    created_at: 2026-02-18T15:34:41.101Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     id: kspec-help
