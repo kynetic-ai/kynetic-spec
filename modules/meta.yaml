@@ -3890,4 +3890,8 @@ modules:
             given: a codex skill has platform_config.codex with custom settings
             when: checkPlatformSkillDrift runs for codex
             then: the sidecar YAML file (agents/openai.yaml) content is included in the drift hash
+          - id: ac-2
+            given: a rendered skill file has been manually edited
+            when: kspec skill verify runs
+            then: it reports which skills have drifted from their source with actionable guidance
 traits: []
