@@ -3801,6 +3801,9 @@ modules:
         traits: []
         notes: []
         created: 2026-02-18T06:43:25.044Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KHQQTFRPDAKNBXJC4QWEXE2G
         slugs:
           - new-project-bootstrapping
