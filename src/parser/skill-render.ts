@@ -690,6 +690,148 @@ function getPlatformDefaultOutputDir(platform: string): string {
 }
 
 // ============================================================================
+// Base Render Function
+// AC: @skill-module-split ac-2 - Shared render logic extracted into base function
+// ============================================================================
+
+/**
+ * Options for the base render function
+ */
+interface BaseRenderConfig {
+  /** Platform name (e.g., "claude-code", "codex") */
+  platform: string;
+  /** Generate the YAML frontmatter for this skill */
+  generateFrontmatter: (skill: LoadedSkill) => string;
+  /** Optional: generate additional hash content (e.g., sidecar files) */
+  getAdditionalHashContent?: (renderedContent: string) => string | null;
+  /** Optional: write additional files after SKILL.md (e.g., sidecar) */
+  writeAdditionalFiles?: (
+    ctx: KspecContext,
+    skill: LoadedSkill,
+    targetDir: string,
+    dryRun: boolean
+  ) => Promise<{ paths: string[]; contentChanged: boolean }>;
+  /** Optional: additional hash computation for drift check */
+  getAdditionalDriftContent?: (skillDir: string) => Promise<string | null>;
+  /** If true, also write legacy .render-hash for backward compatibility */
+  writeLegacyHash?: boolean;
+}
+
+/**
+ * Base render function that handles shared logic across all platform renderers:
+ * content loading, frontmatter stripping, idempotency check, file write,
+ * hash storage, and supporting directory copy.
+ *
+ * AC: @skill-module-split ac-2 - Shared render logic in base function
+ * AC: @platform-renderer-trait ac-1 through ac-6
+ */
+export async function renderSkillBase(
+  ctx: KspecContext,
+  projectRoot: string,
+  skill: LoadedSkill,
+  options: PlatformRenderOptions,
+  config: BaseRenderConfig,
+  defaultOutputDir: string
+): Promise<PlatformRenderResult> {
+  const dryRun = options.dryRun ?? false;
+  const storeHash = options.storeHash ?? false;
+  const outputDir = options.outputDir || defaultOutputDir;
+
+  const targetDir = path.join(projectRoot, outputDir, skill.id);
+  const targetSkillMd = path.join(targetDir, "SKILL.md");
+  const paths: string[] = [];
+
+  // Load source content
+  const sourceContent = await loadSkillContent(ctx, skill);
+
+  // Generate platform-specific frontmatter
+  const frontmatter = config.generateFrontmatter(skill);
+
+  // Build rendered content: frontmatter + marker + body
+  let renderedContent: string;
+  if (!sourceContent) {
+    renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
+  } else {
+    const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
+    const contentWithoutFrontmatter = frontmatterMatch
+      ? sourceContent.slice(frontmatterMatch[0].length)
+      : sourceContent;
+    renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+  }
+
+  // Idempotency check
+  let targetExists = false;
+  let targetContent = "";
+  try {
+    targetContent = await fs.readFile(targetSkillMd, "utf-8");
+    targetExists = true;
+  } catch {
+    // Target doesn't exist
+  }
+
+  let action: "created" | "updated" | "unchanged" | "skipped";
+  if (!targetExists) {
+    action = "created";
+  } else if (contentsEqual(renderedContent, targetContent)) {
+    action = "unchanged";
+  } else {
+    action = "updated";
+  }
+
+  // Write SKILL.md
+  if (!dryRun && action !== "unchanged") {
+    await fs.mkdir(targetDir, { recursive: true });
+    await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
+  }
+  paths.push(targetSkillMd);
+
+  // Write additional files (e.g., sidecar for codex)
+  let additionalContentChanged = false;
+  if (config.writeAdditionalFiles) {
+    const additional = await config.writeAdditionalFiles(ctx, skill, targetDir, dryRun);
+    paths.push(...additional.paths);
+    additionalContentChanged = additional.contentChanged;
+  }
+
+  // Store per-platform hash
+  const contentChanged = action !== "unchanged" || additionalContentChanged;
+  if (!dryRun && storeHash && contentChanged) {
+    // Get additional content for hash (e.g., sidecar content)
+    const additionalHashContent = config.getAdditionalHashContent?.(renderedContent);
+    const hashContent = additionalHashContent
+      ? renderedContent + "\n" + additionalHashContent
+      : renderedContent;
+    const hash = computeContentHash(hashContent);
+    await writePlatformRenderHash(ctx.specDir, skill.id, config.platform, hash);
+    if (config.writeLegacyHash) {
+      await writeRenderHash(ctx.specDir, skill.id, hash);
+    }
+  }
+
+  // Copy supporting directories
+  const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
+  const supportingDirsAction = await copySupportingDirectories(
+    sourceSkillDir,
+    targetDir,
+    dryRun
+  );
+
+  for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
+    if (dirAction !== "skipped") {
+      paths.push(path.join(targetDir, dirName));
+    }
+  }
+
+  return {
+    id: skill.id,
+    platform: config.platform,
+    action,
+    paths,
+    supportingDirsAction,
+  };
+}
+
+// ============================================================================
 // Claude Code Renderer (implements PlatformRenderer)
 // ============================================================================
 
@@ -707,92 +849,11 @@ export const claudeCodeRenderer: PlatformRenderer = {
     skill: LoadedSkill,
     options: PlatformRenderOptions = {}
   ): Promise<PlatformRenderResult> {
-    const dryRun = options.dryRun ?? false;
-    const storeHash = options.storeHash ?? false;
-    // AC: @platform-renderer-trait ac-5 - Custom outputDir support
-    const outputDir = options.outputDir || this.defaultOutputDir;
-
-    const targetDir = path.join(projectRoot, outputDir, skill.id);
-    const targetSkillMd = path.join(targetDir, "SKILL.md");
-    const paths: string[] = [];
-
-    // Load source content
-    const sourceContent = await loadSkillContent(ctx, skill);
-
-    let renderedContent: string;
-    if (!sourceContent) {
-      // No source content - create placeholder
-      const frontmatter = generateFrontmatter(skill);
-      renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
-    } else {
-      // Generate frontmatter and combine with content
-      const frontmatter = generateFrontmatter(skill);
-      const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
-      const contentWithoutFrontmatter = frontmatterMatch
-        ? sourceContent.slice(frontmatterMatch[0].length)
-        : sourceContent;
-      renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
-    }
-
-    // Check if target exists and compare for idempotency
-    let targetExists = false;
-    let targetContent = "";
-    try {
-      targetContent = await fs.readFile(targetSkillMd, "utf-8");
-      targetExists = true;
-    } catch {
-      // Target doesn't exist
-    }
-
-    // Determine action based on comparison
-    let action: "created" | "updated" | "unchanged" | "skipped";
-    if (!targetExists) {
-      action = "created";
-    } else if (contentsEqual(renderedContent, targetContent)) {
-      action = "unchanged";
-    } else {
-      action = "updated";
-    }
-
-    // AC: @platform-renderer-trait ac-4 - dryRun: no files written
-    // AC: @platform-renderer-trait ac-1 - Write platform-specific output
-    if (!dryRun && action !== "unchanged") {
-      await fs.mkdir(targetDir, { recursive: true });
-      await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
-    }
-
-    paths.push(targetSkillMd);
-
-    // AC: @platform-renderer-trait ac-6 - Store per-platform hash
-    if (!dryRun && storeHash && action !== "unchanged") {
-      const hash = computeContentHash(renderedContent);
-      await writePlatformRenderHash(ctx.specDir, skill.id, this.platform, hash);
-      // Also write legacy hash for backward compatibility
-      await writeRenderHash(ctx.specDir, skill.id, hash);
-    }
-
-    // AC: @platform-renderer-trait ac-3 - Copy supporting directories
-    const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
-    const supportingDirsAction = await copySupportingDirectories(
-      sourceSkillDir,
-      targetDir,
-      dryRun
-    );
-
-    // Add supporting directory paths to output
-    for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
-      if (dirAction !== "skipped") {
-        paths.push(path.join(targetDir, dirName));
-      }
-    }
-
-    return {
-      id: skill.id,
+    return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
-      action,
-      paths,
-      supportingDirsAction,
-    };
+      generateFrontmatter,
+      writeLegacyHash: true,
+    }, this.defaultOutputDir);
   },
 
   async checkDrift(
@@ -899,132 +960,53 @@ export const codexRenderer: PlatformRenderer = {
     skill: LoadedSkill,
     options: PlatformRenderOptions = {}
   ): Promise<PlatformRenderResult> {
-    const dryRun = options.dryRun ?? false;
-    const storeHash = options.storeHash ?? false;
-    // AC: @platform-renderer-trait ac-5 - Custom outputDir support
-    const outputDir = options.outputDir || this.defaultOutputDir;
-
-    const targetDir = path.join(projectRoot, outputDir, skill.id);
-    const targetSkillMd = path.join(targetDir, "SKILL.md");
-    const paths: string[] = [];
-
-    // Load source content
-    const sourceContent = await loadSkillContent(ctx, skill);
-
-    // AC: @codex-renderer ac-1 - Generate minimal frontmatter (name + description only)
-    const frontmatter = generateCodexFrontmatter(skill);
-
-    let renderedContent: string;
-    if (!sourceContent) {
-      // No source content - create placeholder
-      // AC: @codex-renderer ac-4 - Include kspec-managed marker
-      renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n\n# ${skill.name}\n\n${skill.description || ""}\n`;
-    } else {
-      // Strip any existing frontmatter and combine with generated
-      const frontmatterMatch = sourceContent.match(/^---\n[\s\S]*?\n---\n?/);
-      const contentWithoutFrontmatter = frontmatterMatch
-        ? sourceContent.slice(frontmatterMatch[0].length)
-        : sourceContent;
-      // AC: @codex-renderer ac-4 - Include kspec-managed marker
-      renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
-    }
-
-    // Check if target exists and compare for idempotency
-    let targetExists = false;
-    let targetContent = "";
-    try {
-      targetContent = await fs.readFile(targetSkillMd, "utf-8");
-      targetExists = true;
-    } catch {
-      // Target doesn't exist
-    }
-
-    // Determine action based on comparison
-    let action: "created" | "updated" | "unchanged" | "skipped";
-    if (!targetExists) {
-      action = "created";
-    } else if (contentsEqual(renderedContent, targetContent)) {
-      action = "unchanged";
-    } else {
-      action = "updated";
-    }
-
-    // AC: @platform-renderer-trait ac-4 - dryRun: no files written
-    // AC: @platform-renderer-trait ac-1 - Write platform-specific output
-    if (!dryRun && action !== "unchanged") {
-      await fs.mkdir(targetDir, { recursive: true });
-      await fs.writeFile(targetSkillMd, renderedContent, "utf-8");
-    }
-
-    paths.push(targetSkillMd);
-
-    // AC: @codex-renderer ac-2, ac-3 - Handle sidecar agents/openai.yaml
+    // Pre-compute sidecar content so it's available for both hash and write
     const sidecarContent = generateCodexSidecarYaml(skill);
-    const sidecarDir = path.join(targetDir, "agents");
-    const sidecarPath = path.join(sidecarDir, "openai.yaml");
-    let sidecarAction: "created" | "updated" | "unchanged" | "skipped" = "skipped";
 
-    if (sidecarContent) {
-      // Check existing sidecar
-      let sidecarExists = false;
-      let existingSidecar = "";
-      try {
-        existingSidecar = await fs.readFile(sidecarPath, "utf-8");
-        sidecarExists = true;
-      } catch {
-        // Doesn't exist
-      }
-
-      sidecarAction = !sidecarExists
-        ? "created"
-        : contentsEqual(sidecarContent, existingSidecar)
-          ? "unchanged"
-          : "updated";
-
-      if (!dryRun && sidecarAction !== "unchanged") {
-        await fs.mkdir(sidecarDir, { recursive: true });
-        await fs.writeFile(sidecarPath, sidecarContent, "utf-8");
-      }
-
-      paths.push(sidecarPath);
-    }
-
-    // AC: @platform-renderer-trait ac-6 - Store per-platform hash
-    // AC: @codex-renderer ac-6 - Hash written to .render-hash-codex
-    // AC: @skill-drift-detection-improvements ac-1 - Include sidecar content in drift hash
-    // Gate on SKILL.md action OR sidecar action to avoid stale hashes when only sidecar changes
-    const contentChanged = action !== "unchanged" || (sidecarAction !== "unchanged" && sidecarAction !== "skipped");
-    if (!dryRun && storeHash && contentChanged) {
-      const combinedContent = sidecarContent
-        ? renderedContent + "\n" + sidecarContent
-        : renderedContent;
-      const hash = computeContentHash(combinedContent);
-      await writePlatformRenderHash(ctx.specDir, skill.id, this.platform, hash);
-    }
-
-    // AC: @platform-renderer-trait ac-3 - Copy supporting directories
-    // AC: @codex-renderer ac-5 - Supporting directories copied
-    const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
-    const supportingDirsAction = await copySupportingDirectories(
-      sourceSkillDir,
-      targetDir,
-      dryRun
-    );
-
-    // Add supporting directory paths to output
-    for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
-      if (dirAction !== "skipped") {
-        paths.push(path.join(targetDir, dirName));
-      }
-    }
-
-    return {
-      id: skill.id,
+    return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
-      action,
-      paths,
-      supportingDirsAction,
-    };
+      generateFrontmatter: generateCodexFrontmatter,
+
+      // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
+      getAdditionalHashContent: () => sidecarContent,
+
+      // AC: @codex-renderer ac-2, ac-3 - Write sidecar agents/openai.yaml
+      writeAdditionalFiles: async (_ctx, _skill, targetDir, dryRun) => {
+        const paths: string[] = [];
+        let contentChanged = false;
+
+        if (sidecarContent) {
+          const sidecarDir = path.join(targetDir, "agents");
+          const sidecarPath = path.join(sidecarDir, "openai.yaml");
+
+          // Check existing sidecar
+          let sidecarExists = false;
+          let existingSidecar = "";
+          try {
+            existingSidecar = await fs.readFile(sidecarPath, "utf-8");
+            sidecarExists = true;
+          } catch {
+            // Doesn't exist
+          }
+
+          const sidecarAction = !sidecarExists
+            ? "created"
+            : contentsEqual(sidecarContent, existingSidecar)
+              ? "unchanged"
+              : "updated";
+
+          if (!dryRun && sidecarAction !== "unchanged") {
+            await fs.mkdir(sidecarDir, { recursive: true });
+            await fs.writeFile(sidecarPath, sidecarContent, "utf-8");
+          }
+
+          paths.push(sidecarPath);
+          contentChanged = sidecarAction !== "unchanged";
+        }
+
+        return { paths, contentChanged };
+      },
+    }, this.defaultOutputDir);
   },
 
   // AC: @skill-drift-detection-improvements ac-1 - Include sidecar content in drift hash
