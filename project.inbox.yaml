@@ -578,3 +578,12 @@ inbox:
       - codex
       - skills
     added_by: "@claude"
+  - _ulid: 01KHRTEVDN8R7Q2ET8BSRQFG0B
+    text: "Task-specific ephemeral AC: Support acceptance criteria directly on tasks (not just via
+      spec_ref). Useful for implementation requirements, refactoring criteria, and one-off work that
+      doesn't warrant a spec item. Task ACs would be checked during review but wouldn't live in the
+      spec hierarchy. Addresses the gap where plan-imported ACs are behavioral specs vs task-level
+      implementation requirements."
+    created_at: 2026-02-18T16:48:43.957Z
+    tags: []
+    added_by: "@claude"
