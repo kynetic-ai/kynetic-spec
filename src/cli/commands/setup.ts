@@ -1063,14 +1063,21 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
         const { initContext, loadMetaContext } = await import(
           "../../parser/index.js"
         );
-        const { computeMetaHash } = await import("./agents.js");
+        const { computeMetaHash, loadTemplateSections, getPackageRoot } = await import("./agents.js");
         const ctx = await initContext();
         if (ctx.manifestPath) {
           const metaCtx = await loadMetaContext(ctx);
+          let templateSections: string[] = [];
+          try {
+            templateSections = await loadTemplateSections(getPackageRoot());
+          } catch (err) {
+            debugLog("Templates not available for staleness check", err);
+          }
           const currentHash = computeMetaHash(
             metaCtx.skills,
             metaCtx.conventions,
             metaCtx.workflows,
+            templateSections,
           );
           agentsMd.status = hashData.metaHash === currentHash ? "current" : "stale";
         } else {
@@ -1227,6 +1234,7 @@ async function generateAgentInstructions(
         metaCtx.skills,
         metaCtx.conventions,
         metaCtx.workflows,
+        templateSections,
       );
 
       await fs.mkdir(path.dirname(hashPath), { recursive: true });

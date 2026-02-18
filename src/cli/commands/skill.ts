@@ -1516,14 +1516,14 @@ export function registerSkillCommands(program: Command): void {
             if (created.length > 0) {
               console.log(chalk.green(`Created: ${created.length} skill(s)`));
               for (const r of created) {
-                console.log(`  ${chalk.green("+")} ${r.id} (v${r.version})`);
+                console.log(`  ${chalk.green("+")} ${r.id}${r.version ? ` (v${r.version})` : ""}`);
               }
             }
 
             if (updated.length > 0) {
               console.log(chalk.blue(`Updated: ${updated.length} skill(s)`));
               for (const r of updated) {
-                console.log(`  ${chalk.blue("~")} ${r.id} (v${r.version})`);
+                console.log(`  ${chalk.blue("~")} ${r.id}${r.version ? ` (v${r.version})` : ""}`);
               }
             }
 
@@ -1682,7 +1682,7 @@ export function registerSkillCommands(program: Command): void {
               console.log();
             }
 
-            console.log(`kspec version: ${kspecVersion}`);
+            console.log(`kspec version: ${kspecVersion ?? "unavailable"}`);
             console.log();
 
             const updated = results.filter((r) => r.action === "updated");
@@ -1692,7 +1692,7 @@ export function registerSkillCommands(program: Command): void {
               console.log(chalk.green(`Updated: ${updated.length} skill(s)`));
               for (const r of updated) {
                 console.log(
-                  `  ${chalk.green("~")} ${r.id}: ${r.previousVersion || "unknown"} → ${r.newVersion}`
+                  `  ${chalk.green("~")} ${r.id}: ${r.previousVersion || "unknown"} → ${r.newVersion || "unavailable"}`
                 );
               }
             }
