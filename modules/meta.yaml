@@ -3722,48 +3722,6 @@ modules:
         status:
           maturity: draft
           implementation: implemented
-      - _ulid: 01KHQQTFN4BNBSZJA5H64AVAT2
-        slugs:
-          - dead-code-and-deduplication-sweep
-        title: Dead Code and Deduplication Sweep
-        type: feature
-        tags: []
-        description: >
-          Remove dead code and deduplicate utilities across skill.ts, skill-render.ts, and
-          agents.ts. Clears noise before larger refactors.
-        acceptance_criteria:
-          - id: ac-1
-            given: the codebase
-            when: building the project
-            then: SkillRenderResult, SkillStatusResult types, and getSkillSyncStatus function are removed from
-              skill.ts
-          - id: ac-2
-            given: skill-render.ts
-            when: reviewing dead code
-            then: toKebabCase function is removed (zero callers)
-          - id: ac-3
-            given: agents.ts
-            when: reviewing dead code
-            then: EXPECTED_TEMPLATES constant is removed (never referenced)
-          - id: ac-4
-            given: skill.ts needs contentsEqual, directoriesEqual, or copyDirectory
-            when: these functions are called
-            then: they are imported from skill-render.ts, not duplicated locally
-          - id: ac-5
-            given: the skill CLI add/set commands
-            when: constructing input before schema parse
-            then: redundant manual defaults for platform, tags, and depends_on are removed (schema provides
-              them)
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-02-18T06:43:24.964Z
-        status:
-          maturity: draft
-          implementation: in_progress
       - _ulid: 01KHQQTFPHKFKA87RWR2EYTZHK
         slugs:
           - setup-pipeline-unification
