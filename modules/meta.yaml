@@ -3838,6 +3838,9 @@ modules:
         traits: []
         notes: []
         created: 2026-02-18T06:43:25.078Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KHQQTFTSP9RXA13YEZTCYW5N
         slugs:
           - guard-script-and-diff-quality
