@@ -50593,6 +50593,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #403. Removed dead code (SkillRenderResult, SkillStatusResult,
+    getSkillSyncStatus, toKebabCase, EXPECTED_TEMPLATES), deduplicated utilities (contentsEqual,
+    directoriesEqual, copyDirectory now imported from skill-render.ts), and removed redundant manual
+    defaults in skill add/import/install. Net -218 lines. All 5 ACs covered with annotated tests."
   depends_on: []
   context: []
   priority: 2
@@ -50600,6 +50604,7 @@
   vcs_refs: []
   created_at: 2026-02-18T06:43:33.589Z
   started_at: 2026-02-18T07:02:15.937Z
+  completed_at: 2026-02-18T07:35:14.175Z
   notes:
     - _ulid: 01KHQQTR2MB4MMJ2T5PBZDAKD2
       created_at: 2026-02-18T06:43:33.588Z
@@ -50655,11 +50660,6 @@
         Build passes. All 2718 tests pass (1 pre-existing daemon-executable failure unrelated).
       supersedes: null
   todos: []
-  completed_at: 2026-02-18T07:35:14.175Z
-  closed_reason: "Merged in PR #403. Removed dead code (SkillRenderResult, SkillStatusResult,
-    getSkillSyncStatus, toKebabCase, EXPECTED_TEMPLATES), deduplicated utilities (contentsEqual,
-    directoriesEqual, copyDirectory now imported from skill-render.ts), and removed redundant manual
-    defaults in skill add/import/install. Net -218 lines. All 5 ACs covered with annotated tests."
 - _ulid: 01KHQQTVDWCXWTZC3FWP664TC4
   slugs:
     - task-setup-pipeline-unification
@@ -50667,7 +50667,7 @@
   type: task
   spec_ref: "@setup-pipeline-unification"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-dead-code-and-deduplication-sweep"
@@ -50710,6 +50710,7 @@
         is identical to running kspec setup separately (same code path)
       supersedes: null
   todos: []
+  started_at: 2026-02-18T09:17:38.241Z
 - _ulid: 01KHQQTYBXE0VQAAK4YG8S6RRY
   slugs:
     - task-cross-platform-and-version-robustness
