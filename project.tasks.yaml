@@ -50599,6 +50599,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-18T06:43:33.589Z
+  started_at: 2026-02-18T07:02:15.937Z
   notes:
     - _ulid: 01KHQQTR2MB4MMJ2T5PBZDAKD2
       created_at: 2026-02-18T06:43:33.588Z
@@ -50630,8 +50631,30 @@
         then redundant manual defaults for platform, tags, and depends_on are removed (schema
         provides them)
       supersedes: null
+    - _ulid: 01KHQSDNNQEAETSM38BBJQADMW
+      created_at: 2026-02-18T07:11:22.295Z
+      author: "@claude"
+      content: >-
+        All 5 ACs implemented:
+
+        - AC-1: Removed SkillRenderResult, SkillStatusResult types, getSkillSyncStatus function from
+        skill.ts. Also removed unused checkSkillDrift import.
+
+        - AC-2: Removed toKebabCase function from skill-render.ts (zero callers, frontmatter uses
+        hardcoded kebab strings).
+
+        - AC-3: Removed EXPECTED_TEMPLATES constant from agents.ts (never referenced).
+
+        - AC-4: Exported contentsEqual, directoriesEqual, copyDirectory from skill-render.ts.
+        Imported them in skill.ts instead of duplicating locally. Removed ~100 lines of duplicate
+        code.
+
+        - AC-5: Removed redundant manual defaults for platforms, depends_on, tags from skill add,
+        import, and core install commands. Schema safeParse provides these defaults.
+
+        Build passes. All 2718 tests pass (1 pre-existing daemon-executable failure unrelated).
+      supersedes: null
   todos: []
-  started_at: 2026-02-18T07:02:15.937Z
 - _ulid: 01KHQQTVDWCXWTZC3FWP664TC4
   slugs:
     - task-setup-pipeline-unification
