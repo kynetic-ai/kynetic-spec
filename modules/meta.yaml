@@ -3885,4 +3885,9 @@ modules:
         traits: []
         notes: []
         created: 2026-02-18T21:57:19.002Z
+        acceptance_criteria:
+          - id: ac-1
+            given: a codex skill has platform_config.codex with custom settings
+            when: checkPlatformSkillDrift runs for codex
+            then: the sidecar YAML file (agents/openai.yaml) content is included in the drift hash
 traits: []
