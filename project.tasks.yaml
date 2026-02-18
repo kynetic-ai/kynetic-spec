@@ -50591,7 +50591,7 @@
   type: task
   spec_ref: "@dead-code-and-deduplication-sweep"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -50631,6 +50631,7 @@
         provides them)
       supersedes: null
   todos: []
+  started_at: 2026-02-18T07:02:15.937Z
 - _ulid: 01KHQQTVDWCXWTZC3FWP664TC4
   slugs:
     - task-setup-pipeline-unification
