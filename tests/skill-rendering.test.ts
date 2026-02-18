@@ -1807,6 +1807,54 @@ describe('Codex Skill Renderer', () => {
       const driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'both-drift');
       expect(driftStatus).toBe('drifted');
     });
+
+    it('should stay in-sync after re-render when sidecar source config changes', async () => {
+      // Regression test: sidecar source change must update hash, not leave stale hash
+      kspecFull(
+        'skill add --id sidecar-rerender --name "Sidecar Rerender" --description "Test rerender" --platform codex',
+        tempDir
+      );
+
+      // Initial config
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      let metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace(
+        /id: sidecar-rerender\n/,
+        `id: sidecar-rerender
+    platform_config:
+      codex:
+        display_name: "V1"
+`
+      );
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      const skillMdPath = path.join(tempDir, 'skills', 'sidecar-rerender', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Sidecar Rerender\n', 'utf-8');
+
+      const { codexRenderer, ctx } = await loadSkillForTest('sidecar-rerender');
+      const skill1 = (await import('../src/parser/meta')).loadMetaContext(ctx).then(m => m.skills.find(s => s.id === 'sidecar-rerender'));
+      await codexRenderer.render(ctx, tempDir, (await skill1)!, { storeHash: true });
+
+      // Verify in-sync after first render
+      const specDir = path.join(tempDir, 'skills', '..');
+      let driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'sidecar-rerender');
+      expect(driftStatus).toBe('in-sync');
+
+      // Change only sidecar source config (SKILL.md unchanged)
+      metaContent = await fs.readFile(metaPath, 'utf-8');
+      metaContent = metaContent.replace('display_name: "V1"', 'display_name: "V2"');
+      await fs.writeFile(metaPath, metaContent, 'utf-8');
+
+      // Re-render (should update sidecar and hash)
+      const { loadMetaContext: loadMeta } = await import('../src/parser/meta');
+      const meta2 = await loadMeta(ctx);
+      const skill2 = meta2.skills.find(s => s.id === 'sidecar-rerender');
+      await codexRenderer.render(ctx, tempDir, skill2!, { storeHash: true });
+
+      // Should still be in-sync (hash updated to match new sidecar content)
+      driftStatus = await codexRenderer.checkDrift(specDir, tempDir, 'sidecar-rerender');
+      expect(driftStatus).toBe('in-sync');
+    });
   });
 });
 

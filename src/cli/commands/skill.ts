@@ -1746,7 +1746,9 @@ export function registerSkillCommands(program: Command): void {
         const skillsToCheck = metaCtx.skills;
 
         if (skillsToCheck.length === 0) {
-          console.log(chalk.yellow("No skills found"));
+          output([], () => {
+            console.log(chalk.yellow("No skills found"));
+          });
           return;
         }
 

@@ -962,6 +962,7 @@ export const codexRenderer: PlatformRenderer = {
     const sidecarContent = generateCodexSidecarYaml(skill);
     const sidecarDir = path.join(targetDir, "agents");
     const sidecarPath = path.join(sidecarDir, "openai.yaml");
+    let sidecarAction: "created" | "updated" | "unchanged" | "skipped" = "skipped";
 
     if (sidecarContent) {
       // Check existing sidecar
@@ -974,7 +975,7 @@ export const codexRenderer: PlatformRenderer = {
         // Doesn't exist
       }
 
-      const sidecarAction = !sidecarExists
+      sidecarAction = !sidecarExists
         ? "created"
         : contentsEqual(sidecarContent, existingSidecar)
           ? "unchanged"
@@ -991,7 +992,9 @@ export const codexRenderer: PlatformRenderer = {
     // AC: @platform-renderer-trait ac-6 - Store per-platform hash
     // AC: @codex-renderer ac-6 - Hash written to .render-hash-codex
     // AC: @skill-drift-detection-improvements ac-1 - Include sidecar content in drift hash
-    if (!dryRun && storeHash && action !== "unchanged") {
+    // Gate on SKILL.md action OR sidecar action to avoid stale hashes when only sidecar changes
+    const contentChanged = action !== "unchanged" || (sidecarAction !== "unchanged" && sidecarAction !== "skipped");
+    if (!dryRun && storeHash && contentChanged) {
       const combinedContent = sidecarContent
         ? renderedContent + "\n" + sidecarContent
         : renderedContent;
