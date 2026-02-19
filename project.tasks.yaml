@@ -50987,7 +50987,7 @@
   type: task
   spec_ref: "@guard-script-and-diff-quality"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-skill-module-split"
