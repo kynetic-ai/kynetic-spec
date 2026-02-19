@@ -4293,6 +4293,148 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KHW2GZ2JR7E0GHCX39C0YBJM
+    slugs:
+      - doctor-command
+    title: Unified Health Check Command
+    type: feature
+    tags: []
+    description: |
+      The `kspec doctor` command aggregates all health checks — shadow branch,
+      agent setup, and daemon status — into a single unified report. Each check
+      reports a severity (ok, warning, error). The overall verdict is healthy
+      only when no errors exist. Warnings (e.g. daemon not running) do not
+      cause a non-zero exit.
+
+      Architecture: library function in src/parser/doctor.ts returns DoctorReport,
+      CLI command in src/cli/commands/doctor.ts formats and outputs it. Daemon
+      status logic extracted from serve.ts into a shared getDaemonStatus()
+      to avoid duplication.
+    acceptance_criteria:
+      - id: ac-no-git-repo
+        given: |
+          the current directory is not inside a git repository
+        when: |
+          the user runs kspec doctor
+        then: |
+          prints a message that no git repository was found and
+          exits with code 1
+      - id: ac-not-initialized
+        given: |
+          kspec has not been initialized (no shadow branch, no .kspec/ directory)
+        when: |
+          the user runs kspec doctor
+        then: |
+          prints a clear message that kspec is not initialized, guides
+          the user to run kspec init, and exits with code 1
+      - id: ac-shadow-healthy
+        given: |
+          kspec is initialized and the shadow branch is healthy
+        when: |
+          the user runs kspec doctor
+        then: |
+          the shadow section shows branch exists, worktree exists,
+          and worktree linked — each as a separate line with severity ok
+      - id: ac-setup-agent-hooks
+        given: |
+          kspec is initialized
+        when: |
+          the user runs kspec doctor
+        then: |
+          the setup section shows detected agent type and hooks status
+      - id: ac-setup-skills-agents-md
+        given: |
+          kspec is initialized
+        when: |
+          the user runs kspec doctor
+        then: |
+          the setup section shows skills rendered count, drift count,
+          and kspec-agents.md freshness
+      - id: ac-daemon-running
+        given: |
+          kspec is initialized
+        when: |
+          the user runs kspec doctor
+        then: |
+          the daemon section shows whether it is running, and if so
+          its PID, port, and uptime
+      - id: ac-daemon-unreachable
+        given: |
+          the daemon process is running (PID alive) but the health
+          endpoint is unreachable (starting up, port conflict)
+        when: |
+          the user runs kspec doctor
+        then: |
+          daemon section shows running with PID but marks health
+          endpoint as unreachable with warning severity
+      - id: ac-daemon-not-running
+        given: |
+          the daemon is not running
+        when: |
+          the user runs kspec doctor
+        then: |
+          daemon section shows not running with severity warning
+          (not error), since the daemon is optional
+      - id: ac-overall-verdict
+        given: |
+          all health checks have completed
+        when: |
+          results are rendered
+        then: |
+          the output ends with an overall verdict — healthy if no
+          errors exist, or issues found with counts of errors and
+          warnings
+      - id: ac-partial-init
+        given: |
+          the shadow branch exists but setup has not been run
+          (no hooks, no skills rendered, no kspec-agents.md)
+        when: |
+          the user runs kspec doctor
+        then: |
+          shadow shows ok, setup shows missing items with error
+          severity and guidance to run kspec setup, daemon shows
+          its independent status
+      - id: ac-staleness-unknown
+        given: |
+          kspec-agents.md staleness cannot be determined (no manifest,
+          hash computation fails)
+        when: |
+          the user runs kspec doctor
+        then: |
+          setup section reports kspec-agents.md status as unknown
+          with warning severity, not falsely as current
+      - id: ac-json-output
+        given: |
+          the user runs kspec doctor --json
+        when: |
+          the command completes
+        then: |
+          output is a JSON object with shadow, setup, daemon, and
+          overall keys including severity per check and healthy boolean
+      - id: ac-exit-zero
+        given: |
+          the doctor command completes with zero errors (warnings ok)
+        when: |
+          the process exits
+        then: |
+          exit code is 0
+      - id: ac-exit-one
+        given: |
+          the doctor command completes with one or more error-severity checks
+        when: |
+          the process exits
+        then: |
+          exit code is 1
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-semantic-exit-codes"
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-02-19T23:07:25.138Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:

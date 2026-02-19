@@ -51699,3 +51699,21 @@
         all config reads go through ctx.config (from kspec.config.yaml).
   todos: []
   automation: eligible
+- title: Implement kspec doctor command
+  type: task
+  plan_ref: "@plan-unified-health-check-command-kspec-doctor"
+  priority: 3
+  slugs:
+    - impl-doctor-command
+  tags:
+    - cli
+    - dx
+  depends_on: []
+  notes: []
+  _ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-19T23:07:25.407Z
+  todos: []
