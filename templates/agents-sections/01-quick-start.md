@@ -1,14 +1,15 @@
 ## Quick Start
 
 ```bash
-# First time or any session — handles install, build, link, init if needed
-node scripts/bootstrap.cjs
+# First time setup
+kspec init            # Initialize kspec in the project
+kspec setup           # Configure agent environment
 
-# If already set up, just get session context
-kspec session start
+# Returning to work
+kspec session start   # Get session context
 ```
 
-Use `kspec` for all commands. Only use `npm run dev --` when testing uncommitted code changes.
+Verify shadow branch health with `kspec shadow status` if you encounter issues.
 
 ## Essential Rules
 
