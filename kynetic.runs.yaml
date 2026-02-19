@@ -4255,7 +4255,7 @@ runs:
   - _ulid: 01KHW2W4G9366Q8QV1W3SWW9HP
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-19T23:13:31.146Z
     step_results:
@@ -4328,5 +4328,34 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-19T23:14:00.572Z
-        completed_at: 2026-02-19T23:14:00.572Z
+        completed_at: 2026-02-19T23:14:24.703Z
+        notes: >-
+          Coverage check results:
+
+
+          1. **Task description not shown in `task get`** — NOT TRACKED. No existing spec/task/inbox
+          item about this. The `task get` display shows title, status, spec context, notes — but not
+          the task's own description field.
+
+
+          2. **Session start --json stdout pollution** — NOT TRACKED. Info lines (ℹ Synced shadow
+          branch) go to stdout mixed with JSON. No existing item.
+
+
+          3. **Shadow repair ENOENT** — PARTIALLY TRACKED. Observations @01KFA1T7 and @01KFAGYE
+          document worktree repair issues. Spec @shadow-repair-cmd exists. But the specific `/bin/sh
+          ENOENT` failure mode is not covered.
+
+
+          4. **Plan import format discovery** — PARTIALLY TRACKED. @plan-import spec has extensive
+          ACs. The missing AC `id` requirement is in the schema but not clearly documented in help
+          output. Error messages could be more descriptive.
+
+
+          5. **Plan import creates task with null spec_ref** — NOT TRACKED. This is a bug — the task
+          YAML specifies spec_ref but it's not persisted during import.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-19T23:14:24.703Z
+        completed_at: 2026-02-19T23:14:24.703Z
     initiated_by: "@claude"
