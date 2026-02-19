@@ -5,6 +5,7 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
+import { writeFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
 import {
@@ -256,14 +257,17 @@ describe('kspec setup (enhanced)', () => {
 
       const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
 
-      // Helper to run guard script with a command, simulating being inside .kspec
+      // Helper to run guard script with a command, simulating being inside .kspec.
+      // Uses a temp file to avoid shell quoting issues with single/double quotes.
+      const inputFile = path.join(tempDir, '.guard-test-input.json');
       const runGuard = (command: string) => {
         const input = JSON.stringify({
           tool_input: { command },
           cwd: path.join(tempDir, '.kspec'),
         });
+        writeFileSync(inputFile, input, 'utf-8');
         const result = execSync(
-          `echo '${input.replace(/'/g, "'\\''")}' | bash "${guardPath}"`,
+          `bash "${guardPath}" < "${inputFile}"`,
           { encoding: 'utf-8', cwd: tempDir }
         );
         return JSON.parse(result);
