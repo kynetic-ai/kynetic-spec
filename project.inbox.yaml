@@ -614,3 +614,16 @@ inbox:
       - external
       - adoption
     added_by: "@claude"
+  - _ulid: 01KHVR5K9XCYYRDH0VB2FNE4GW
+    text: "Per-module task files and task archiving: Original design intent was project.tasks.yaml for
+      non-spec tasks, <module>.tasks.yaml for module-scoped tasks. Never fully implemented —
+      everything goes to project.tasks.yaml. Tradeoffs: splitting reduces file size
+      (comfy-ecaj-nodes has 97 tasks in one file) but requires reading more files. Related: need
+      task archiving to move completed tasks out of the active file. Both address the same scaling
+      problem (task files growing unbounded) from different angles."
+    created_at: 2026-02-19T20:06:26.877Z
+    tags:
+      - design
+      - tasks
+      - scaling
+    added_by: "@claude"
