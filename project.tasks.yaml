@@ -50987,7 +50987,7 @@
   type: task
   spec_ref: "@guard-script-and-diff-quality"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-skill-module-split"
@@ -51050,6 +51050,11 @@
         enhanced-setup.test.ts for ac-1.
       supersedes: null
   todos: []
+  completed_at: 2026-02-19T04:51:17.064Z
+  closed_reason: "Merged in PR #412. Guard script now uses dual-view matching (UNQUOTED + STRIPPED +
+    FIRST_CMD) to prevent false positives on quoted patterns while blocking split-quote bypass
+    attempts. Hand-rolled diff replaced with 'diff' library. readFileSync converted to async.
+    structuredClone added before skill mutation. All spec ACs covered with annotated tests."
 - _ulid: 01KHSC4WBZK3VSKCD6XT5E26Q3
   slugs:
     - task-skill-drift-detection-improvements
