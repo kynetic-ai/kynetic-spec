@@ -583,3 +583,10 @@ inbox:
       - workflow
       - dx
     added_by: "@claude"
+  - _ulid: 01KHVE47MW4BDDK1417YMM6BF6
+    text: When spawning parallel review agents (e.g. Codex + /pr-review), instruct the /pr-review agent
+      not to merge — only review. The parent agent should control the merge decision after all
+      reviews complete. Update /pr-review skill or add a --no-merge flag.
+    created_at: 2026-02-19T17:10:56.412Z
+    tags: []
+    added_by: "@claude"
