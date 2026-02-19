@@ -4172,6 +4172,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-19T17:11:52.120Z
+    completed_at: 2026-02-19T17:12:39.551Z
     step_results:
       - step_index: 0
         status: completed
@@ -4198,4 +4199,11 @@ runs:
         completed_at: 2026-02-19T17:12:39.551Z
         notes: Already captured in step 3 via batch. 2 observations recorded. Reflection complete.
     initiated_by: "@claude"
-    completed_at: 2026-02-19T17:12:39.551Z
+  - _ulid: 01KHVYCA5HHTWH6Z6VDJD92T4E
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-19T21:54:58.353Z
+    step_results: []
+    initiated_by: "@claude"
