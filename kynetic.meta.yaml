@@ -5907,6 +5907,37 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHVYHKAVN1G54X8C2BJYMK3X
+    type: friction
+    content: "Invoked /spec-plan skill but wrote implementation guide instead of plan-import-format
+      document. User had explicitly said /spec-plan. Lesson: invoking a skill is not enough — must
+      follow its output format from the FIRST write. When /spec-plan is invoked for plan mode, write
+      the plan file in kspec plan import format (# Title, ## Specs with YAML code block, ## Tasks,
+      ## Implementation Notes) from the start."
+    created_at: 2026-02-19T21:57:51.579Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHVYHKEBF6AHDDXVQZJAZV5H
+    type: success
+    content: "Dual review pattern before plan import: running both an internal plan review agent and
+      Codex in parallel caught YAML quoting failures and substantive spec gaps (batch mode, worktree
+      detection, remote type algorithm). Reviews converged on same must-fixes, giving high
+      confidence. Always dual-review complex plan documents before importing."
+    created_at: 2026-02-19T21:57:51.691Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHVYHKH7J728F29ZS1SGF2PM
+    type: success
+    content: "Parallel consumer project exploration: launching 3 agents to explore kynetic-bot, imgen,
+      comfy-ecaj-nodes simultaneously produced convergent findings (same Quick Start pattern, same
+      hooks, same skill drift) that were far more convincing than exploring one project. Use
+      parallel exploration when researching cross-project patterns."
+    created_at: 2026-02-19T21:57:51.783Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     id: kspec-help
