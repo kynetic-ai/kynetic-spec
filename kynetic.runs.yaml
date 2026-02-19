@@ -4255,7 +4255,7 @@ runs:
   - _ulid: 01KHW2W4G9366Q8QV1W3SWW9HP
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-19T23:13:31.146Z
     step_results:
@@ -4294,5 +4294,39 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-19T23:13:45.612Z
-        completed_at: 2026-02-19T23:13:45.612Z
+        completed_at: 2026-02-19T23:14:00.572Z
+        notes: >-
+          Friction points:
+
+
+          1. **`kspec task get` didn't show task descriptions** — For 7 tasks, `kspec task get @ref`
+          showed title but no description. Had to dig through shadow branch git history (`git -C
+          .kspec show <commit>`) to find the actual descriptions from the creation commits. This is
+          either a display bug or the descriptions weren't stored. Major friction — descriptions are
+          critical for triage.
+
+
+          2. **`kspec session start --json` pollutes stdout with info lines** — Lines like `ℹ Synced
+          shadow branch from remote` go to stdout mixed with JSON, breaking JSON parsing. Had to use
+          `grep -v "^ℹ"` to filter. This is a bug — info lines should go to stderr.
+
+
+          3. **`kspec shadow repair` failed with `spawn /bin/sh ENOENT`** — Even though `/bin/sh`
+          exists (symlink to bash). Had to manually run `git worktree add .kspec kspec-meta`
+          instead. The repair command should handle this case.
+
+
+          4. **Plan import YAML format discovery was trial-and-error** — Didn't know ACs need `id`
+          fields or that the YAML must be a bare array (not nested under `specs:`). The `--dry-run`
+          caught these, but the error messages could be more helpful (e.g., "ACs require id field,
+          add `id: ac-name` to each criterion").
+
+
+          5. **`kspec plan import` created task with null `spec_ref` despite YAML having it** — The
+          task YAML specified `spec_ref: "@doctor-command"` but the created task had `spec_ref:
+          null`. Required manual fix with `kspec task set --spec-ref`. This is a bug in plan import.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-19T23:14:00.572Z
+        completed_at: 2026-02-19T23:14:00.572Z
     initiated_by: "@claude"
