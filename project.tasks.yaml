@@ -51284,7 +51284,10 @@
         what the file is and how to include it."
       supersedes: null
   todos: []
-- title: Unified health check combining shadow status and setup status
+- _ulid: 01KHVMJ5202R7VB7FQ68D127N8
+  slugs: []
+  title: Unified health check combining shadow status and setup status
+  type: task
   description: >-
     Building blocks exist separately: 'kspec shadow status' checks worktree health, 'kspec setup
     --status' checks hooks/skills/agents.md/seeding. Consumer projects need a single command to
@@ -51307,19 +51310,92 @@
     Reference: kynetic-bot, imgen, comfy-ecaj-nodes all lack any health verification in their Quick
     Start. A single 'run this to check everything' command would improve onboarding for all
     consumers.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T19:03:23.968Z
+  notes: []
+  todos: []
+- title: Write getting-started tutorial and README for external users
+  description: >-
+    kspec has no end-to-end tutorial for new users. INSTALL.md covers setup mechanics but doesn't
+    show the workflow. README.md is either missing or developer-focused on the kspec project itself,
+    not on using kspec as a tool.
+
+
+    ## What's needed
+
+
+    **README.md** — Public-facing, explains:
+
+    - What kspec is (spec-first task management for AI-assisted development)
+
+    - Why (shadow branch, spec-driven workflow, agent integration)
+
+    - Quick install and init
+
+    - Link to getting-started tutorial
+
+
+    **Getting-started tutorial** (docs/getting-started.md or similar):
+
+    - Walk through from 'npm install -g' to first completed task
+
+    - Create a spec item with acceptance criteria
+
+    - Derive a task from the spec
+
+    - Work the task (start, implement, note, submit)
+
+    - Create a PR with kspec trailers
+
+    - Complete the task
+
+    - Show the spec-first loop in action
+
+
+    **Reference points:**
+
+    - kynetic-bot, imgen, comfy-ecaj-nodes are real consumer projects showing actual usage patterns
+
+    - All three independently converged on the same Quick Start: kspec init → kspec setup → kspec
+    session start
+
+    - The workflow skills (task-work, pr, spec) contain detailed command references that the
+    tutorial can link to rather than duplicate
+
+    - INSTALL.md already covers setup mechanics — tutorial should reference it, not repeat it
+
+
+    ## Scope boundaries
+
+    - README is for the npm package / GitHub repo landing page
+
+    - Tutorial is for humans AND agents onboarding to a new kspec project
+
+    - Don't duplicate skill content — link to skills for detailed command syntax
+
+    - Keep it practical with real examples, not abstract descriptions
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
+  priority: 2
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHVMJ5202R7VB7FQ68D127N8
+  _ulid: 01KHVMWP243H58MRG55WFHZN1T
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-19T19:03:23.968Z
+  created_at: 2026-02-19T19:09:09.058Z
   notes: []
   todos: []
