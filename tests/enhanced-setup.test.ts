@@ -278,6 +278,10 @@ describe('kspec setup (enhanced)', () => {
       expect(runGuard('git reset --hard')).toHaveProperty('decision', 'block');
       expect(runGuard('git stash')).toHaveProperty('decision', 'block');
       expect(runGuard('git rebase main')).toHaveProperty('decision', 'block');
+
+      // These should be BLOCKED — split-quote bypass attempts
+      expect(runGuard('git "reset" --hard')).toHaveProperty('decision', 'block');
+      expect(runGuard("git st'ash'")).toHaveProperty('decision', 'block');
     });
 
     // AC: @enhanced-setup ac-4 - kspec-agents.md exists
