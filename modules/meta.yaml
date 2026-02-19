@@ -3872,7 +3872,7 @@ modules:
         created: 2026-02-18T06:43:25.145Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KHSC3WGTCB2TDTFFA4TFTHC8
         slugs:
           - skill-drift-detection-improvements
