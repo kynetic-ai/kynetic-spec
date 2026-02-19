@@ -2712,7 +2712,7 @@ plans:
           Mutation safety - structuredClone before modification.
           Depends on skill-module-split.
       ```
-    status: active
+    status: completed
     derived_tasks: []
     derived_specs:
       - "@dead-code-and-deduplication-sweep"
