@@ -2099,9 +2099,15 @@ describe('Integration: conventions', () => {
   });
 
   it('should list conventions with domain, rules, and validation', async () => {
-    // Add test conventions to meta manifest
+    // Replace conventions in meta manifest with test-specific ones
     const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
     const metaContent = await fs.readFile(metaPath, 'utf-8');
+
+    // Remove any existing conventions block to avoid duplicate YAML keys
+    const withoutConventions = metaContent.replace(
+      /^conventions:\n(?:[ \t]+.*\n|[ \t]*\n)*/m,
+      '',
+    );
 
     const conventions = `
 conventions:
@@ -2128,7 +2134,7 @@ conventions:
         bad: "done"
 `;
 
-    await fs.writeFile(metaPath, metaContent + conventions);
+    await fs.writeFile(metaPath, withoutConventions + conventions);
 
     // List conventions in JSON format
     const result = kspecJson<Array<{

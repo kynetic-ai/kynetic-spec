@@ -76,6 +76,24 @@ agents:
     conventions:
       - Always check tests
 
+conventions:
+  - _ulid: 01KF7B0000C0NV3NT10N000001
+    domain: commits
+    rules:
+      - "Use conventional commits format (type: description)"
+      - "Include Task and Spec trailers"
+    examples:
+      - good: "feat: add user login flow"
+        bad: "Added login"
+      - good: "fix(auth): handle expired tokens"
+        bad: "fixed bug"
+
+  - _ulid: 01KF7B0000C0NV3NT10N000002
+    domain: naming
+    rules:
+      - "Use camelCase for variables and functions"
+      - "Use PascalCase for types and classes"
+
 workflows:
   - _ulid: 01KF7A1S00WF1XVCPD9YQXH8ZN
     id: task-start

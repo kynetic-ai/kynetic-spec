@@ -139,6 +139,7 @@ export function computeMetaHash(
     conventions: conventions.map((c) => ({
       domain: c.domain,
       rules: c.rules,
+      examples: (c.examples ?? []).map((e) => ({ good: e.good, bad: e.bad })),
     })),
     workflows: workflows.map((w) => ({
       id: w.id,
