@@ -51399,7 +51399,10 @@
   created_at: 2026-02-19T19:09:09.058Z
   notes: []
   todos: []
-- title: Clean up setup.ts tech debt — dedup, legacy render, error handling
+- _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
+  slugs: []
+  title: Clean up setup.ts tech debt — dedup, legacy render, error handling
+  type: task
   description: >-
     setup.ts has accumulated tech debt that will cause drift as the render pipeline evolves. Three
     clusters of issues from inbox items:
@@ -51450,19 +51453,213 @@
 
     - Utility dedup: contentsEqual/directoriesEqual/copyDirectory duplicated between skill.ts and
     skill-render.ts (@01KHJ4RV)
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T19:22:54.536Z
+  notes: []
+  todos: []
+- _ulid: 01KHVXK2CPXY1PSFS975MZY6QC
+  slugs:
+    - implement-project-config-file
+  title: Implement Project Config File
+  type: task
+  spec_ref: "@project-config"
+  plan_ref: "@plan-project-level-configuration-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T21:41:11.190Z
+  notes:
+    - _ulid: 01KHVXK2CPBR3BD8BVHTBPV3AA
+      created_at: 2026-02-19T21:41:11.190Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        New file src/parser/config.ts with KspecConfigSchema (Zod), ResolvedKspecConfig type,
+        and loadProjectConfig(gitRoot) function. Config.ts is a leaf module with no imports
+        from yaml.ts or shadow.ts (circular dependency avoidance). Use fs.readFile + yaml
+        library directly, or extract readYamlFile into src/parser/yaml-utils.ts.
+
+        Central resolver function resolveConfig(fileConfig, envOverrides, cliOverrides) with
+        typed ResolvedKspecConfig output. All commands call this once via ctx.config rather
+        than doing ad-hoc resolution.
+
+        For ac-7 (batch mode), loadProjectConfig must resolve gitRoot independently of
+        KSPEC_SPEC_DIR. The batch executor in batch-exec.ts should pass the real project
+        root to config loading before redirecting spec dir.
+  todos: []
+- _ulid: 01KHVXK2PHRWMC9J3BQVRGZTM9
+  slugs:
+    - implement-configurable-shadow-branch
+  title: Implement Configurable Shadow Branch
+  type: task
+  spec_ref: "@config-shadow"
+  plan_ref: "@plan-project-level-configuration-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T21:41:11.505Z
+  notes:
+    - _ulid: 01KHVXK2PH27DV19BTJNAKR6RD
+      created_at: 2026-02-19T21:41:11.505Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Thread config through shadow.ts functions via optional parameters that default to
+        SHADOW_BRANCH_NAME / SHADOW_WORKTREE_DIR constants. ShadowConfig already carries
+        branchName — extend it.
+
+        Key functions needing config threading: detectShadow(), initializeShadow(),
+        hasRemoteTracking(), ensureRemoteTracking(), pushShadowBranch(), shadowPull(),
+        shadowSync(), ensureGitignore(), getShadowStatus(), repairShadow(),
+        resolveShadowPath().
+
+        Remote type detection algorithm for shadow.remote:
+        - Starts with /, ./, or ~ -> local filesystem path
+        - Contains :// or starts with git@ -> git URL
+        - Otherwise -> git remote name
+        For path/URL types, git remote add with configured value. For remote name,
+        verify it exists before push/pull. Authentication for URLs delegated to git
+        credential helpers — do not store tokens in config. Add guidance in error
+        messages recommending remote names over inline URLs with credentials.
+
+        For ac-8, detectRunningFromShadowWorktree() currently checks cwdBase === ".kspec".
+        Two options: (1) read config first with a lightweight non-throwing load, or
+        (2) make detection generic by checking if cwd is ANY git worktree via the .git
+        file being a worktree pointer, regardless of directory name. Option 2 preferred.
+
+        For ac-9, kspec shadow status should compare detected branch/directory against
+        config and warn on mismatch rather than silently using stale settings.
+  todos: []
+- _ulid: 01KHVXK2ZK5HEG1DSJ9VCAE0BK
+  slugs:
+    - implement-configurable-author-identity
+  title: Implement Configurable Author Identity
+  type: task
+  spec_ref: "@config-author"
+  plan_ref: "@plan-project-level-configuration-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T21:41:11.795Z
+  notes:
+    - _ulid: 01KHVXK2ZKY0NJFT6VJHVSH0DQ
+      created_at: 2026-02-19T21:41:11.795Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Modify getAuthor() in src/parser/yaml.ts to accept optional config parameter.
+        Insert config.author check between env var and git fallback. Command handlers
+        that have ctx available pass ctx.config to getAuthor(). Consider a central
+        getResolvedAuthor(ctx) helper that wraps getAuthor(ctx.config) to avoid
+        inconsistent call sites.
+  todos: []
+- _ulid: 01KHVXK39RHF5J1NQ79AE0BRQF
+  slugs:
+    - implement-configurable-validation-defaults
+  title: Implement Configurable Validation Defaults
+  type: task
+  spec_ref: "@config-validation"
+  plan_ref: "@plan-project-level-configuration-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T21:41:12.120Z
+  notes:
+    - _ulid: 01KHVXK39RNBWJ4C1YJKXGNASB
+      created_at: 2026-02-19T21:41:12.121Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Wire ctx.config.validation into ValidateOptions in src/parser/validate.ts.
+        The validate command handler in src/cli/commands/validate.ts merges CLI flags
+        over config values before calling validate(). Current ValidateOptions has boolean
+        toggles — map strict_refs to the existing strictness behavior and add
+        require_acceptance as a new check that promotes completeness warnings to errors.
+  todos: []
+- _ulid: 01KHVXK3JFEDFG9P3SCJS3J2W8
+  slugs:
+    - implement-configurable-daemon-settings
+  title: Implement Configurable Daemon Settings
+  type: task
+  spec_ref: "@config-daemon"
+  plan_ref: "@plan-project-level-configuration-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T21:41:12.399Z
+  notes:
+    - _ulid: 01KHVXK3JFPHQ1TNAX38EM74YN
+      created_at: 2026-02-19T21:41:12.399Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Update maybeAutoStartDaemon() in src/cli/index.ts to read ctx.config.daemon
+        instead of ctx.manifest?.daemon. Update serve.ts to remove hardcoded '3456'
+        default — use ctx.config.daemon.port with CLI flag override. Add deprecation
+        comment to ManifestSchema daemon field. New manifests should no longer include
+        daemon block. E2E test infrastructure (port 3456 in packages/web-ui/tests/e2e/)
+        manages its own daemon and must NOT be changed.
+  todos: []
+- title: Implement Clean Up Dead Manifest Config
+  type: task
+  spec_ref: "@config-manifest-cleanup"
+  plan_ref: "@plan-project-level-configuration-system"
+  priority: 3
+  slugs:
+    - implement-clean-up-dead-manifest-config
   tags: []
   depends_on: []
-  _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
+  notes:
+    - _ulid: 01KHVXK3VTZ1YBQP6TAS3C122X
+      created_at: 2026-02-19T21:41:12.698Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Update generateManifest() in init.ts and generateShadowManifest() in shadow.ts
+        to remove the config template. Keep daemon in ManifestSchema as explicit optional
+        field with deprecation comment (do NOT use .passthrough() as it weakens validation).
+        Add config as z.any().optional() to ManifestSchema for backward compat with
+        existing manifests that have it. Neither field should be consumed at runtime —
+        all config reads go through ctx.config (from kspec.config.yaml).
+  _ulid: 01KHVXK3VTPG17V59JV1QZBAVP
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-19T19:22:54.536Z
-  notes: []
+  created_at: 2026-02-19T21:41:12.698Z
   todos: []

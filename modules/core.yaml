@@ -514,6 +514,265 @@ features:
           The old item's ULID remains stable; the relationship links them.
         implements:
           - "@relationship-types"
+  - _ulid: 01KHVXK254VHT2WXKK073TB5ZT
+    slugs:
+      - project-config
+    title: Project Config File
+    type: feature
+    tags: []
+    description: |
+      A kspec.config.yaml file in the project root (main branch) that provides
+      project-level configuration for shadow branch setup, identity, validation,
+      and daemon settings. Loaded before shadow branch detection. All fields
+      optional with backward-compatible defaults.
+    acceptance_criteria:
+      - id: ac-1
+        given: a project with no kspec.config.yaml
+        when: kspec commands are run
+        then: all settings resolve to current defaults with no behavior change
+      - id: ac-2
+        given: a kspec.config.yaml exists in the project root
+        when: initContext() is called
+        then: config is parsed, validated, and available on KspecContext.config before shadow detection
+      - id: ac-3
+        given: a kspec.config.yaml with invalid YAML syntax
+        when: config is loaded
+        then: parsing falls back to defaults and emits a warning to stderr with the parse error
+      - id: ac-4
+        given: a kspec.config.yaml with unknown fields
+        when: config is loaded
+        then: unknown fields are ignored and valid fields are applied normally
+      - id: ac-5
+        given: an env var override exists (e.g. KSPEC_AUTHOR)
+        when: config is resolved
+        then: env var takes precedence over the config file value
+      - id: ac-6
+        given: kspec is invoked from a subdirectory of the project
+        when: initContext() resolves config
+        then: config is loaded from the git root, not the current working directory
+      - id: ac-7
+        given: KSPEC_SPEC_DIR env var is set (batch atomic mode)
+        when: initContext() runs
+        then: config is still loaded from the real project root, not the temp spec dir
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-02-19T21:41:10.948Z
+    features:
+      - _ulid: 01KHVXK25H4Y67SNE1VR7M9H52
+        slugs:
+          - config-shadow
+        title: Configurable Shadow Branch
+        type: feature
+        tags: []
+        description: |
+          Shadow branch name, worktree directory, and remote target are configurable
+          via kspec.config.yaml instead of hardcoded constants. The remote can be any
+          eligible git target — the current repo's remote name, a different remote name,
+          a local directory path to a bare repo, or a remote git server URL. This enables
+          multi-project machines with distinct branch names, and spec storage in separate
+          repositories.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec.config.yaml sets shadow.branch to a custom name
+            when: kspec init is run
+            then: the orphan branch is created with the configured name instead of kspec-meta
+          - id: ac-2
+            given: |
+              kspec.config.yaml sets shadow.directory to a custom path
+            when: kspec init is run
+            then: the worktree is created at the configured directory and .gitignore is updated accordingly
+          - id: ac-3
+            given: |
+              shadow.remote is set to a named remote (e.g. specs-origin)
+            when: remote tracking is configured
+            then: push/pull operations use the named remote instead of origin
+          - id: ac-4
+            given: |
+              shadow.remote is set to a local filesystem path (starts with / or ./ or ~)
+            when: remote tracking is configured
+            then: a git remote is added using the local path as target
+          - id: ac-5
+            given: |
+              shadow.remote is set to a git URL (contains :// or starts with git@)
+            when: remote tracking is configured
+            then: a git remote is added using the URL as target
+          - id: ac-6
+            given: |
+              shadow.remote references a named remote that does not exist
+            when: push or pull is attempted
+            then: an error is reported with guidance to add the remote or fix the config
+          - id: ac-7
+            given: existing shadow branch functions (detectShadow, hasRemoteTracking, pushShadowBranch, etc.)
+            when: called without config parameter
+            then: they fall back to current constants (backward compat for direct callers)
+          - id: ac-8
+            given: |
+              shadow.directory is set to a custom name (not .kspec)
+            when: detectRunningFromShadowWorktree() is called
+            then: it correctly detects the custom worktree directory using git worktree metadata
+          - id: ac-9
+            given: |
+              a shadow branch already exists with default settings (kspec-meta, .kspec)
+            when: config is changed to different shadow.branch or shadow.directory
+            then: kspec reports the mismatch and guides the user to migrate or repair
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-19T21:41:10.961Z
+      - _ulid: 01KHVXK25SDYTAEKZN28S2X66K
+        slugs:
+          - config-author
+        title: Configurable Author Identity
+        type: feature
+        tags: []
+        description: |
+          Project-level default author via kspec.config.yaml author field. Sits between
+          env var (highest priority) and git/OS user fallbacks (lowest).
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec.config.yaml sets author to a value like @bot-agent
+            when: a note or inbox item is created without KSPEC_AUTHOR env var set
+            then: the author is recorded as the configured value
+          - id: ac-2
+            given: both KSPEC_AUTHOR env var and config author are set
+            when: a note is created
+            then: the env var value wins
+          - id: ac-3
+            given: no config author and no KSPEC_AUTHOR env var
+            when: a note is created
+            then: author falls back to git user.name then OS user (current behavior)
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-19T21:41:10.969Z
+      - _ulid: 01KHVXK2626BBA62818AE84663
+        slugs:
+          - config-validation
+        title: Configurable Validation Defaults
+        type: feature
+        tags: []
+        description: |
+          Validation strictness settings (strict_refs, require_acceptance) configurable
+          in kspec.config.yaml. CLI flags override config values. Replaces the dead
+          config block that init currently writes into manifests.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec.config.yaml sets validation.require_acceptance to true
+            when: kspec validate is run without CLI flags
+            then: specs missing acceptance criteria are reported as errors not warnings
+          - id: ac-2
+            given: |
+              kspec.config.yaml sets validation.strict_refs to true
+            when: kspec validate is run without --strict flag
+            then: dangling references are treated as errors
+          - id: ac-3
+            given: |
+              kspec.config.yaml sets validation.strict_refs to false
+            when: kspec validate is run without --strict flag
+            then: dangling references are reported as warnings not errors
+          - id: ac-4
+            given: CLI flag --strict is passed
+            when: |
+              config has validation.strict_refs set to false
+            then: CLI flag wins and dangling refs are treated as errors
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-19T21:41:10.978Z
+      - _ulid: 01KHVXK26A6DMJ6NY1610Z40TV
+        slugs:
+          - config-daemon
+        title: Configurable Daemon Settings
+        type: feature
+        tags: []
+        description: |
+          Daemon port and auto-start configurable in kspec.config.yaml. Replaces the
+          manifest daemon block (which exists in the schema but is never read by
+          serve start). Resolves the chicken-and-egg problem where daemon config was
+          inside the shadow branch.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec.config.yaml sets daemon.port to 4000
+            when: kspec serve start is run without --port flag
+            then: daemon starts on port 4000
+          - id: ac-2
+            given: --port 5000 CLI flag is passed
+            when: |
+              config sets daemon.port to 4000
+            then: daemon starts on port 5000 (CLI flag wins)
+          - id: ac-3
+            given: |
+              kspec.config.yaml sets daemon.auto_start to false
+            when: a kspec command triggers maybeAutoStartDaemon()
+            then: the daemon is not auto-started
+          - id: ac-4
+            given: an existing manifest has a daemon block with port set
+            when: kspec commands are run
+            then: |
+              the manifest daemon block is ignored and a deprecation warning is emitted
+              recommending migration to kspec.config.yaml
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-19T21:41:10.986Z
+    requirements:
+      - _ulid: 01KHVXK26MF758N8ZPPSYY9ZKD
+        slugs:
+          - config-manifest-cleanup
+        title: Clean Up Dead Manifest Config
+        type: requirement
+        tags: []
+        description: |
+          Remove the dead config block from generated manifests and handle the existing
+          daemon field in ManifestSchema now that config lives in kspec.config.yaml.
+        acceptance_criteria:
+          - id: ac-1
+            given: kspec init is run on a new project
+            when: the manifest is generated
+            then: no config block is written to the manifest YAML
+          - id: ac-2
+            given: an existing manifest contains a config block
+            when: the manifest is parsed
+            then: parsing succeeds without errors via explicit optional field in schema
+          - id: ac-3
+            given: kspec init is run on a new project
+            when: the manifest is generated
+            then: no daemon block is written to the manifest
+          - id: ac-4
+            given: an existing manifest contains a daemon block
+            when: the manifest is parsed
+            then: parsing succeeds and a debug-level deprecation note is logged
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-19T21:41:10.996Z
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z
