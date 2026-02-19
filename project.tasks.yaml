@@ -51331,8 +51331,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T19:03:23.968Z
-  notes: []
+  notes:
+    - _ulid: 01KHW17Q8BTNKFRZ81FNPEQ56A
+      created_at: 2026-02-19T22:44:53.643Z
+      author: "@claude"
+      content: "Automation status set to needs_review: New CLI command — needs spec with ACs before
+        automation. UX decision (doctor/status/extend setup) unresolved."
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KHVMWP243H58MRG55WFHZN1T
   slugs: []
   title: Write getting-started tutorial and README for external users
