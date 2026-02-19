@@ -507,7 +507,8 @@ export function registerSkillCrudCommands(skill: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const skill = item as LoadedSkill;
+        // Clone before mutating to protect against partial save failure
+        const skill = structuredClone(item) as LoadedSkill;
 
         // AC: @skill-set ac-1 - update description field
         if (options.name !== undefined) {

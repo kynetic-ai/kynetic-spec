@@ -248,6 +248,38 @@ describe('kspec setup (enhanced)', () => {
       expect(content).not.toMatch(/\/Users\/[a-zA-Z]+\/[^\s"']*/);
     });
 
+    // AC: @guard-script-and-diff-quality ac-1
+    it('should not block commands where dangerous patterns appear only inside quotes', async () => {
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
+
+      // Helper to run guard script with a command, simulating being inside .kspec
+      const runGuard = (command: string) => {
+        const input = JSON.stringify({
+          tool_input: { command },
+          cwd: path.join(tempDir, '.kspec'),
+        });
+        const result = execSync(
+          `echo '${input.replace(/'/g, "'\\''")}' | bash "${guardPath}"`,
+          { encoding: 'utf-8', cwd: tempDir }
+        );
+        return JSON.parse(result);
+      };
+
+      // These should be ALLOWED — dangerous patterns are inside quotes
+      expect(runGuard('echo "git reset"')).toEqual({ decision: 'allow' });
+      expect(runGuard("grep 'git stash' README.md")).toEqual({ decision: 'allow' });
+      expect(runGuard('echo "testing git rebase command"')).toEqual({ decision: 'allow' });
+
+      // These should still be BLOCKED — actual dangerous commands
+      expect(runGuard('git reset --hard')).toHaveProperty('decision', 'block');
+      expect(runGuard('git stash')).toHaveProperty('decision', 'block');
+      expect(runGuard('git rebase main')).toHaveProperty('decision', 'block');
+    });
+
     // AC: @enhanced-setup ac-4 - kspec-agents.md exists
     it('should generate kspec-agents.md', async () => {
       kspec('setup', tempDir, {

@@ -252,8 +252,12 @@ if [ -z "$COMMAND" ]; then
   exit 0
 fi
 
+# Strip quoted strings so patterns inside quotes don't trigger false positives.
+# e.g. echo "git reset" or grep "git stash" README.md should NOT be blocked.
+STRIPPED=$(echo "$COMMAND" | sed -e "s/'[^']*'//g" -e 's/"[^"]*"//g')
+
 # Block deleting kspec-meta from anywhere
-if [[ "$COMMAND" == *"git branch -d kspec-meta"* || "$COMMAND" == *"git branch -D kspec-meta"* ]]; then
+if [[ "$STRIPPED" == *"git branch -d kspec-meta"* || "$STRIPPED" == *"git branch -D kspec-meta"* ]]; then
   cat <<EOF
 {
   "decision": "block",
@@ -310,7 +314,7 @@ DANGEROUS_PATTERNS=(
 )
 
 for pattern in "\${DANGEROUS_PATTERNS[@]}"; do
-  if [[ "$COMMAND" == *"$pattern"* ]]; then
+  if [[ "$STRIPPED" == *"$pattern"* ]]; then
     cat <<EOF
 {
   "decision": "block",
@@ -1338,9 +1342,9 @@ async function installCoreSkillsForSetup(
     }
 
     const metaCtx = await loadMetaContext(ctx);
-    const coreSkills = loadCoreSkillsManifest();
+    const coreSkills = await loadCoreSkillsManifest();
     // AC: @cross-platform-and-version-robustness ac-3
-    const kspecVersion = getKspecPackageVersion();
+    const kspecVersion = await getKspecPackageVersion();
     if (!kspecVersion) {
       debugLog("Could not determine kspec version — skills installed without version tracking");
     }
@@ -1378,7 +1382,7 @@ async function installCoreSkillsForSetup(
         await saveMetaItem(ctx, parsed.data, "skill");
 
         // Copy SKILL.md content
-        const sourceContent = loadCoreSkillContent(coreSkill.id);
+        const sourceContent = await loadCoreSkillContent(coreSkill.id);
         if (sourceContent) {
           const targetPath = getSkillContentPath(ctx, parsed.data.id);
           await fs.writeFile(targetPath, sourceContent, "utf-8");

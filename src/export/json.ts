@@ -7,7 +7,7 @@
  * AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
  */
 
-import { readFileSync } from "node:fs";
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { AcceptanceCriterion, InboxItem } from "../schema/index.js";
 import {
@@ -38,14 +38,14 @@ import type {
 /**
  * Get the kspec version from package.json
  */
-function getKspecVersion(): string {
+async function getKspecVersion(): Promise<string> {
   try {
     // Try to find package.json relative to this module
     const packagePath = path.resolve(
       import.meta.dirname || __dirname,
       "../../package.json"
     );
-    const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"));
+    const packageJson = JSON.parse(await fs.readFile(packagePath, "utf-8"));
     return packageJson.version || "unknown";
   } catch {
     return "unknown";
@@ -206,7 +206,7 @@ export async function generateJsonSnapshot(
 
   // Build the snapshot
   const snapshot: KspecSnapshot = {
-    version: getKspecVersion(),
+    version: await getKspecVersion(),
     exported_at: new Date().toISOString(),
     project: {
       name: ctx.manifest?.project?.name || "Unknown Project",

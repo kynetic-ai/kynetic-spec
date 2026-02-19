@@ -12,6 +12,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import chalk from "chalk";
 import Table from "cli-table3";
+import { createTwoFilesPatch } from "diff";
 import type { Command } from "commander";
 import {
   findMetaItemByRef,
@@ -182,8 +183,10 @@ export async function getExpectedRenderedContent(
 }
 
 /**
- * Generate unified diff between two strings
+ * Generate unified diff between two strings.
+ * Uses the 'diff' library for correct LCS-based diffing.
  * AC: @skill-render-cli ac-4
+ * AC: @guard-script-and-diff-quality ac-2
  */
 export function generateUnifiedDiff(
   actual: string,
@@ -195,106 +198,24 @@ export function generateUnifiedDiff(
     return [];
   }
 
-  const actualLines = actual.split("\n");
-  const expectedLines = expected.split("\n");
-  const diffLines: string[] = [];
+  const patch = createTwoFilesPatch(actualPath, expectedPath, actual, expected, "", "", {
+    context: 3,
+  });
 
-  // Simple line-by-line diff (unified format)
-  diffLines.push(`--- ${actualPath}`);
-  diffLines.push(`+++ ${expectedPath}`);
+  // Split into lines and remove the first line (Index: ...) which createTwoFilesPatch adds
+  const lines = patch.split("\n");
+  // createTwoFilesPatch outputs: "Index: ...\n===...\n--- ...\n+++ ...\n@@ ... @@\n..."
+  // Skip the "Index:" and "===" header lines to match our expected format
+  const startIdx = lines.findIndex((l) => l.startsWith("---"));
+  if (startIdx === -1) return [];
 
-  // Find differing sections and create hunks
-  let i = 0;
-  let j = 0;
-
-  while (i < actualLines.length || j < expectedLines.length) {
-    // Find start of difference
-    const contextStart = i;
-    const contextStartExpected = j;
-
-    // Skip matching lines
-    while (
-      i < actualLines.length &&
-      j < expectedLines.length &&
-      actualLines[i] === expectedLines[j]
-    ) {
-      i++;
-      j++;
-    }
-
-    // If we've reached the end, we're done
-    if (i >= actualLines.length && j >= expectedLines.length) {
-      break;
-    }
-
-    // Find end of difference
-    let diffEndActual = i;
-    let diffEndExpected = j;
-
-    // Collect differing lines
-    while (
-      diffEndActual < actualLines.length &&
-      diffEndExpected < expectedLines.length &&
-      actualLines[diffEndActual] !== expectedLines[diffEndExpected]
-    ) {
-      diffEndActual++;
-      diffEndExpected++;
-    }
-
-    // Also handle case where one side has more lines
-    while (diffEndActual < actualLines.length && diffEndExpected >= expectedLines.length) {
-      diffEndActual++;
-    }
-    while (diffEndExpected < expectedLines.length && diffEndActual >= actualLines.length) {
-      diffEndExpected++;
-    }
-
-    // Create hunk header (show 3 lines of context)
-    const hunkStartActual = Math.max(0, contextStart - 3);
-    const hunkStartExpected = Math.max(0, contextStartExpected - 3);
-
-    // Include context after diff too
-    const hunkEndActual = Math.min(actualLines.length, diffEndActual + 3);
-    const hunkEndExpected = Math.min(expectedLines.length, diffEndExpected + 3);
-
-    const actualCount = hunkEndActual - hunkStartActual;
-    const expectedCount = hunkEndExpected - hunkStartExpected;
-
-    diffLines.push(
-      `@@ -${hunkStartActual + 1},${actualCount} +${hunkStartExpected + 1},${expectedCount} @@`
-    );
-
-    // Leading context
-    for (let k = hunkStartActual; k < contextStart; k++) {
-      diffLines.push(` ${actualLines[k]}`);
-    }
-
-    // Removed lines (from actual)
-    for (let k = contextStart; k < diffEndActual; k++) {
-      if (k < actualLines.length) {
-        diffLines.push(`-${actualLines[k]}`);
-      }
-    }
-
-    // Added lines (from expected)
-    for (let k = contextStartExpected; k < diffEndExpected; k++) {
-      if (k < expectedLines.length) {
-        diffLines.push(`+${expectedLines[k]}`);
-      }
-    }
-
-    // Trailing context
-    for (let k = diffEndActual; k < hunkEndActual; k++) {
-      if (k < actualLines.length) {
-        diffLines.push(` ${actualLines[k]}`);
-      }
-    }
-
-    i = hunkEndActual;
-    j = hunkEndExpected;
+  // Remove trailing empty line that createTwoFilesPatch adds
+  const result = lines.slice(startIdx);
+  if (result.length > 0 && result[result.length - 1] === "") {
+    result.pop();
   }
 
-  return diffLines;
+  return result;
 }
 
 // ============================================================================

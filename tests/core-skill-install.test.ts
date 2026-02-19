@@ -226,7 +226,7 @@ describe('Core Skills Manifest Loading', () => {
     // Import the function for direct testing
     const { loadCoreSkillsManifest } = await import('../src/cli/commands/skill.js');
 
-    const skills = loadCoreSkillsManifest();
+    const skills = await loadCoreSkillsManifest();
 
     expect(skills.length).toBeGreaterThan(0);
 
@@ -240,7 +240,7 @@ describe('Core Skills Manifest Loading', () => {
   it('should load SKILL.md content for core skills', async () => {
     const { loadCoreSkillContent } = await import('../src/cli/commands/skill.js');
 
-    const content = loadCoreSkillContent('kspec-help');
+    const content = await loadCoreSkillContent('kspec-help');
 
     expect(content).not.toBeNull();
     expect(content).toContain('# kspec Help');
@@ -249,7 +249,7 @@ describe('Core Skills Manifest Loading', () => {
   it('should return null for non-existent skill content', async () => {
     const { loadCoreSkillContent } = await import('../src/cli/commands/skill.js');
 
-    const content = loadCoreSkillContent('non-existent-skill');
+    const content = await loadCoreSkillContent('non-existent-skill');
 
     expect(content).toBeNull();
   });
@@ -257,7 +257,7 @@ describe('Core Skills Manifest Loading', () => {
   it('should return kspec package version', async () => {
     const { getKspecPackageVersion } = await import('../src/cli/commands/skill.js');
 
-    const version = getKspecPackageVersion();
+    const version = await getKspecPackageVersion();
 
     expect(version).toBeDefined();
     expect(version).not.toBe('unknown');
