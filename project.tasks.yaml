@@ -50996,6 +50996,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-18T06:43:49.766Z
+  started_at: 2026-02-19T02:35:42.516Z
   notes:
     - _ulid: 01KHQQV7W5279WQ20S9ZB32C9N
       created_at: 2026-02-18T06:43:49.765Z
@@ -51025,8 +51026,30 @@
         - ac-4: Given a skill update operation, when the update is about to save, then a copy of the
         skill object is mutated, not the loaded original (safe against partial save failure)
       supersedes: null
+    - _ulid: 01KHSWRNB7H27FFE2ZKRMQ8YKN
+      created_at: 2026-02-19T02:48:16.999Z
+      author: "@claude"
+      content: >-
+        Completed all 4 items:
+
+        1. ac-1: Guard script now strips quoted strings before matching dangerous patterns — echo
+        "git reset" no longer blocked
+
+        2. ac-2: Replaced hand-rolled generateUnifiedDiff with diff library's createTwoFilesPatch —
+        fixes cascade bug on insertions
+
+        3. ac-3 (task note): Converted getKspecPackageVersion, loadCoreSkillsManifest,
+        loadCoreSkillContent from readFileSync to async readFile. Updated all callers in setup.ts,
+        skill-install.ts. Also converted getKspecVersion in export/json.ts.
+
+        4. ac-4 (task note): Added structuredClone before mutation in skill-crud.ts (skill set) and
+        skill-install.ts (skill update) to prevent partial-save corruption.
+
+
+        New test added: tests/skill-diff.test.ts for ac-2, plus guard execution test in
+        enhanced-setup.test.ts for ac-1.
+      supersedes: null
   todos: []
-  started_at: 2026-02-19T02:35:42.516Z
 - _ulid: 01KHSC4WBZK3VSKCD6XT5E26Q3
   slugs:
     - task-skill-drift-detection-improvements
