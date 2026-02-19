@@ -51501,6 +51501,7 @@
         KSPEC_SPEC_DIR. The batch executor in batch-exec.ts should pass the real project
         root to config loading before redirecting spec dir.
   todos: []
+  automation: eligible
 - _ulid: 01KHVXK2PHRWMC9J3BQVRGZTM9
   slugs:
     - implement-configurable-shadow-branch
@@ -51550,6 +51551,7 @@
         For ac-9, kspec shadow status should compare detected branch/directory against
         config and warn on mismatch rather than silently using stale settings.
   todos: []
+  automation: eligible
 - _ulid: 01KHVXK2ZK5HEG1DSJ9VCAE0BK
   slugs:
     - implement-configurable-author-identity
@@ -51579,6 +51581,7 @@
         getResolvedAuthor(ctx) helper that wraps getAuthor(ctx.config) to avoid
         inconsistent call sites.
   todos: []
+  automation: eligible
 - _ulid: 01KHVXK39RHF5J1NQ79AE0BRQF
   slugs:
     - implement-configurable-validation-defaults
@@ -51608,6 +51611,7 @@
         toggles — map strict_refs to the existing strictness behavior and add
         require_acceptance as a new check that promotes completeness warnings to errors.
   todos: []
+  automation: eligible
 - _ulid: 01KHVXK3JFEDFG9P3SCJS3J2W8
   slugs:
     - implement-configurable-daemon-settings
@@ -51638,6 +51642,7 @@
         daemon block. E2E test infrastructure (port 3456 in packages/web-ui/tests/e2e/)
         manages its own daemon and must NOT be changed.
   todos: []
+  automation: eligible
 - _ulid: 01KHVXK3VTPG17V59JV1QZBAVP
   slugs:
     - implement-clean-up-dead-manifest-config
@@ -51668,3 +51673,4 @@
         existing manifests that have it. Neither field should be consumed at runtime —
         all config reads go through ctx.config (from kspec.config.yaml).
   todos: []
+  automation: eligible
