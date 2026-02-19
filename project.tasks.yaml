@@ -51273,7 +51273,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -51294,6 +51294,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-19T23:47:16.448Z
 - _ulid: 01KHVMJ5202R7VB7FQ68D127N8
   slugs: []
   title: Unified health check combining shadow status and setup status
