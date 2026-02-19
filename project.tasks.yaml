@@ -51183,7 +51183,10 @@
   created_at: 2026-02-19T18:21:25.437Z
   notes: []
   todos: []
-- title: Generalize agent template sections for consumer projects
+- _ulid: 01KHVK28M6TAWG0YV55XYMM33D
+  slugs: []
+  title: Generalize agent template sections for consumer projects
+  type: task
   description: >-
     The 6 template files in templates/agents-sections/ are used by 'kspec agents generate' to
     produce kspec-agents.md for any project. Currently they contain kspec-repo-specific references
@@ -51258,19 +51261,26 @@
     - All consumers have project-specific sections (architecture, tech stack, testing patterns) that
     live OUTSIDE the generated sections — the template output should compose well with custom
     content
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KHVK28M6TAWG0YV55XYMM33D
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 2
+  tags: []
   vcs_refs: []
   created_at: 2026-02-19T18:37:14.758Z
-  notes: []
+  notes:
+    - _ulid: 01KHVMED69PGHF3E49DNHWHSV0
+      created_at: 2026-02-19T19:01:21.225Z
+      author: "@claude"
+      content: "Additional scope: after 'kspec agents generate' produces kspec-agents.md, the setup
+        pipeline should provide clear instructions for the user/agent to reference it from their
+        platform's config file (e.g. '@kspec-agents.md' in CLAUDE.md). kspec should NOT create
+        CLAUDE.md or AGENTS.md itself — just its own file plus guidance on how to wire it in. If the
+        reference isn't auto-loaded (non-Claude Code platforms), include a short blurb explaining
+        what the file is and how to include it."
+      supersedes: null
   todos: []
