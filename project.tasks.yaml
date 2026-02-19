@@ -51281,6 +51281,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T18:37:14.758Z
+  started_at: 2026-02-19T23:47:16.448Z
   notes:
     - _ulid: 01KHVMED69PGHF3E49DNHWHSV0
       created_at: 2026-02-19T19:01:21.225Z
@@ -51292,9 +51293,16 @@
         reference isn't auto-loaded (non-Claude Code platforms), include a short blurb explaining
         what the file is and how to include it."
       supersedes: null
+    - _ulid: 01KHW4T56MMYVJ9RT1WPR0DEY4
+      created_at: 2026-02-19T23:47:23.476Z
+      author: "@claude"
+      content: "Starting implementation. Based on task description: (1) 01-quick-start.md needs
+        kspec-repo-specific commands replaced with generic kspec init/setup pattern, (2)
+        05-commit-convention.md needs language-agnostic AC annotation examples. Other 4 templates
+        are already generic."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-19T23:47:16.448Z
 - _ulid: 01KHVMJ5202R7VB7FQ68D127N8
   slugs: []
   title: Unified health check combining shadow status and setup status
