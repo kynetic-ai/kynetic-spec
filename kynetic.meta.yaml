@@ -5870,6 +5870,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHT79F7K2QV2HKNRTD0JQTJ1
+    type: friction
+    content: Guard script bash code embedded in JS template literal makes quote escaping painful —
+      single quotes inside tr/sed cause parse errors. Consider extracting guard scripts to
+      standalone .sh files loaded at setup time instead of inline template literals.
+    created_at: 2026-02-19T05:52:13.555Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHT79FAZJZ43QN3BZA28KQYM
+    type: success
+    content: Running codex review in parallel with PR review agent caught a real security bypass
+      (split-quote git "reset" --hard). The dual-reviewer pattern (code-level + quality-gate)
+      provides meaningful coverage overlap.
+    created_at: 2026-02-19T05:52:13.663Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     id: kspec-help
