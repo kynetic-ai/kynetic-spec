@@ -4254,7 +4254,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KHW2W4G9366Q8QV1W3SWW9HP
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-19T23:13:31.146Z
@@ -4399,5 +4399,10 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-19T23:21:44.018Z
-        completed_at: 2026-02-19T23:21:44.018Z
+        completed_at: 2026-02-19T23:22:31.274Z
+        notes: |-
+          Captured 5 items in one atomic batch:
+          - 3 inbox items (bugs: task get description, JSON stdout pollution, plan import spec_ref)
+          - 2 success observations (dual review pattern, post-import verification)
     initiated_by: "@claude"
+    completed_at: 2026-02-19T23:22:31.274Z
