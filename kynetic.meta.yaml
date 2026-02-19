@@ -5888,6 +5888,25 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHVE714TTNEME761Y1783EYC
+    type: friction
+    content: "Shared test fixture fragility: tests/fixtures/kynetic.meta.yaml is used by multiple test
+      files. Tests that append YAML keys (like meta.test.ts appending conventions:) collide when the
+      fixture gains new top-level keys. Caused real regression in PR #413. Consider per-test fixture
+      isolation or fixture composition helpers."
+    created_at: 2026-02-19T17:12:28.058Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHVE7189BCM4HWW9PXWAFP37
+    type: success
+    content: "Parallel agent reviews (Codex + /pr-review) found complementary issues: Codex caught test
+      annotation gaps, review agent caught shared fixture regression. Multi-reviewer pattern is
+      high-value for quality."
+    created_at: 2026-02-19T17:12:28.169Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     id: kspec-help
