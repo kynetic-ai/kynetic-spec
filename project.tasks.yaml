@@ -51510,7 +51510,8 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-project-config-file"
   context: []
   priority: 3
   tags: []
@@ -51558,7 +51559,8 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-project-config-file"
   context: []
   priority: 3
   tags: []
@@ -51586,7 +51588,8 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-project-config-file"
   context: []
   priority: 3
   tags: []
@@ -51614,7 +51617,8 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-project-config-file"
   context: []
   priority: 3
   tags: []
@@ -51634,15 +51638,22 @@
         daemon block. E2E test infrastructure (port 3456 in packages/web-ui/tests/e2e/)
         manages its own daemon and must NOT be changed.
   todos: []
-- title: Implement Clean Up Dead Manifest Config
+- _ulid: 01KHVXK3VTPG17V59JV1QZBAVP
+  slugs:
+    - implement-clean-up-dead-manifest-config
+  title: Implement Clean Up Dead Manifest Config
   type: task
   spec_ref: "@config-manifest-cleanup"
   plan_ref: "@plan-project-level-configuration-system"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-project-config-file"
+  context: []
   priority: 3
-  slugs:
-    - implement-clean-up-dead-manifest-config
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-19T21:41:12.698Z
   notes:
     - _ulid: 01KHVXK3VTZ1YBQP6TAS3C122X
       created_at: 2026-02-19T21:41:12.698Z
@@ -51656,10 +51667,4 @@
         Add config as z.any().optional() to ManifestSchema for backward compat with
         existing manifests that have it. Neither field should be consumed at runtime —
         all config reads go through ctx.config (from kspec.config.yaml).
-  _ulid: 01KHVXK3VTPG17V59JV1QZBAVP
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-19T21:41:12.698Z
   todos: []
