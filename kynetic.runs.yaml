@@ -4202,7 +4202,7 @@ runs:
   - _ulid: 01KHVYCA5HHTWH6Z6VDJD92T4E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-19T21:54:58.353Z
     step_results:
@@ -4240,5 +4240,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-19T21:55:53.034Z
-        completed_at: 2026-02-19T21:55:53.034Z
+        completed_at: 2026-02-19T21:57:40.332Z
+        notes: "User confirmed: they explicitly said /spec-plan but agent wrote implementation guide anyway.
+          Learning: invoking the skill isn't enough, must follow its document format from first
+          write. Saving both process learnings to memory."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-19T21:57:40.332Z
+        completed_at: 2026-02-19T21:57:40.332Z
     initiated_by: "@claude"
