@@ -4201,7 +4201,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KHVYCA5HHTWH6Z6VDJD92T4E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-19T21:54:58.353Z
@@ -4247,5 +4247,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-19T21:57:40.332Z
-        completed_at: 2026-02-19T21:57:40.332Z
+        completed_at: 2026-02-19T21:57:58.979Z
+        notes: "Captured 3 observations: 1 friction (skill invocation without following format), 2 success
+          patterns (dual review before import, parallel consumer exploration)."
     initiated_by: "@claude"
+    completed_at: 2026-02-19T21:57:58.979Z
