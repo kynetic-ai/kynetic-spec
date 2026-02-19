@@ -4255,7 +4255,7 @@ runs:
   - _ulid: 01KHW2W4G9366Q8QV1W3SWW9HP
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-19T23:13:31.146Z
     step_results:
@@ -4379,5 +4379,25 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-19T23:14:36.170Z
-        completed_at: 2026-02-19T23:14:36.170Z
+        completed_at: 2026-02-19T23:21:44.018Z
+        notes: >-
+          Discussion results:
+
+
+          1. Bug: task get omits description — USER APPROVED for capture
+
+          2. Bug: info lines pollute JSON stdout — USER APPROVED for capture
+
+          3. Bug: plan import ignores spec_ref on manual tasks — USER WANTS INVESTIGATION
+
+
+          Investigation result for #3: Confirmed real behavior gap. Plan import code
+          (plan-import.ts:513-523) creates manual tasks with plan_ref only. AC @plan-import ac-27
+          says "Manual tasks without specs → no spec_ref". But when a manual task explicitly
+          provides spec_ref (like our doctor task), it should be honored. The spec_ref field from
+          taskDef is simply never read. This is a spec gap, not a formatting error.
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-19T23:21:44.018Z
+        completed_at: 2026-02-19T23:21:44.018Z
     initiated_by: "@claude"
