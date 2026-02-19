@@ -51705,6 +51705,7 @@
     - impl-doctor-command
   title: Implement kspec doctor command
   type: task
+  spec_ref: "@doctor-command"
   plan_ref: "@plan-unified-health-check-command-kspec-doctor"
   status: pending
   blocked_by: []
@@ -51716,7 +51717,99 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-19T23:07:25.407Z
-  notes: []
+  notes:
+    - _ulid: 01KHW2Q8H6Z8BXN6X1V4F9G6EE
+      created_at: 2026-02-19T23:10:51.430Z
+      author: "@claude"
+      content: >-
+        Implementation notes from plan @plan-unified-health-check-command-kspec-doctor:
+
+
+        **Severity model:** Each check gets ok | warning | error. Shadow broken = error. Setup
+        missing = error. Daemon not running = warning. Staleness unknown = warning. Exit 0 when no
+        errors (warnings are fine). Exit 1 when any error exists.
+
+
+        **Library layer: src/parser/doctor.ts (new)**
+
+        Place alongside existing parser modules (src/parser/shadow.ts, src/parser/yaml.ts). Returns
+        DoctorReport with CheckResult per subsystem.
+
+
+        Flow:
+
+        1. getShadowStatus(projectRoot) — if !exists, return early with not-initialized report
+
+        2. If shadow exists, run setup + daemon in parallel via Promise.allSettled
+
+        3. For setup: call getSetupStatus(projectRoot) — fix staleness bug (unknown, not
+        false-current)
+
+        4. For daemon: call new getDaemonStatus() extracted from serve.ts
+
+        5. Compute overall: healthy = (errors === 0)
+
+
+        **Extract getDaemonStatus() from serve.ts**
+
+        Currently statusServer() in serve.ts mixes data-gathering with output. Extract into shared
+        function in pid-utils.ts or new daemon-status.ts. Include projects array to avoid regressing
+        serve status output. readPort() throws on missing/invalid port file — wrap in try/catch
+        returning null.
+
+
+        **Fix getSetupStatus staleness false-positive**
+
+        In setup.ts lines 1106 and 1109, status falls back to "current" when hash can't be checked.
+        Change to "unknown". Update SetupStatus.agentsMd.status type to include "unknown" (line
+        965). Update text renderer in setup.ts.
+
+
+        **Extract setup status logic to avoid CLI coupling**
+
+        Extract pure status-gathering logic into src/parser/setup-status.ts. CLI command keeps
+        formatter, calls extracted function. Avoids doctor.ts depending on CLI command module.
+
+
+        **CLI layer: src/cli/commands/doctor.ts (new)**
+
+        Thin wrapper: getGitRoot() -> getDoctorReport(gitRoot) -> output(report, formatDoctorReport)
+        -> exit based on report.overall.healthy.
+
+        Registration: Add to src/cli/commands/index.ts and wire in src/cli/index.ts.
+
+
+        **Files to create/modify:**
+
+        - src/parser/doctor.ts — NEW getDoctorReport() library function
+
+        - src/cli/commands/doctor.ts — NEW CLI command wrapper
+
+        - src/parser/setup-status.ts — NEW extracted getSetupStatus()/SetupStatus
+
+        - src/cli/commands/setup.ts — Refactor to call extracted getSetupStatus(); fix staleness
+        type
+
+        - src/cli/commands/serve.ts — Extract getDaemonStatus() from statusServer()
+
+        - src/cli/pid-utils.ts — Or put getDaemonStatus() here alongside PidFileManager
+
+        - src/cli/commands/index.ts — Add export
+
+        - src/cli/index.ts — Wire registration
+
+
+        **Existing code to reuse:**
+
+        - getShadowStatus() — src/parser/shadow.ts:267
+
+        - PidFileManager — src/cli/pid-utils.ts:18
+
+        - output() — src/cli/output.ts
+
+        - EXIT_CODES — src/cli/exit-codes.ts
+
+        - getGitRoot() — src/parser/shadow.ts
+      supersedes: null
   todos: []
   automation: eligible
-  spec_ref: "@doctor-command"
