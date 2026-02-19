@@ -5,6 +5,7 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
+import { writeFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
 import {
@@ -246,6 +247,45 @@ describe('kspec setup (enhanced)', () => {
       // Should not contain hardcoded absolute paths like /home/user/project
       expect(content).not.toMatch(/\/home\/[a-zA-Z]+\/[^\s"']*/);
       expect(content).not.toMatch(/\/Users\/[a-zA-Z]+\/[^\s"']*/);
+    });
+
+    // AC: @guard-script-and-diff-quality ac-1
+    it('should not block commands where dangerous patterns appear only inside quotes', async () => {
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
+
+      // Helper to run guard script with a command, simulating being inside .kspec.
+      // Uses a temp file to avoid shell quoting issues with single/double quotes.
+      const inputFile = path.join(tempDir, '.guard-test-input.json');
+      const runGuard = (command: string) => {
+        const input = JSON.stringify({
+          tool_input: { command },
+          cwd: path.join(tempDir, '.kspec'),
+        });
+        writeFileSync(inputFile, input, 'utf-8');
+        const result = execSync(
+          `bash "${guardPath}" < "${inputFile}"`,
+          { encoding: 'utf-8', cwd: tempDir }
+        );
+        return JSON.parse(result);
+      };
+
+      // These should be ALLOWED — dangerous patterns are inside quotes
+      expect(runGuard('echo "git reset"')).toEqual({ decision: 'allow' });
+      expect(runGuard("grep 'git stash' README.md")).toEqual({ decision: 'allow' });
+      expect(runGuard('echo "testing git rebase command"')).toEqual({ decision: 'allow' });
+
+      // These should still be BLOCKED — actual dangerous commands
+      expect(runGuard('git reset --hard')).toHaveProperty('decision', 'block');
+      expect(runGuard('git stash')).toHaveProperty('decision', 'block');
+      expect(runGuard('git rebase main')).toHaveProperty('decision', 'block');
+
+      // These should be BLOCKED — split-quote bypass attempts
+      expect(runGuard('git "reset" --hard')).toHaveProperty('decision', 'block');
+      expect(runGuard("git st'ash'")).toHaveProperty('decision', 'block');
     });
 
     // AC: @enhanced-setup ac-4 - kspec-agents.md exists

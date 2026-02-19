@@ -13,7 +13,6 @@
  */
 
 import * as fs from "node:fs/promises";
-import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import chalk from "chalk";
 import type { Command } from "commander";
@@ -78,14 +77,14 @@ interface CoreSkillDefinition {
  * Get the kspec package version from package.json
  * AC: @core-skill-install ac-5
  */
-export function getKspecPackageVersion(): string | null {
+export async function getKspecPackageVersion(): Promise<string | null> {
   try {
     // Try to find package.json relative to this module
     const packagePath = path.resolve(
       import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
       "../../../package.json"
     );
-    const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"));
+    const packageJson = JSON.parse(await fs.readFile(packagePath, "utf-8"));
     return packageJson.version || null;
   } catch {
     return null;
@@ -107,11 +106,11 @@ function getTemplatesDir(): string {
  * Load core skills manifest from templates/skills/manifest.yaml
  * AC: @core-skill-install ac-1, ac-2
  */
-export function loadCoreSkillsManifest(): CoreSkillDefinition[] {
+export async function loadCoreSkillsManifest(): Promise<CoreSkillDefinition[]> {
   try {
     const templatesDir = getTemplatesDir();
     const manifestPath = path.join(templatesDir, "manifest.yaml");
-    const content = readFileSync(manifestPath, "utf-8");
+    const content = await fs.readFile(manifestPath, "utf-8");
     const parsed = yaml.parse(content);
 
     if (!parsed || !Array.isArray(parsed.skills)) {
@@ -133,11 +132,11 @@ export function loadCoreSkillsManifest(): CoreSkillDefinition[] {
  * Load SKILL.md content for a core skill from templates
  * AC: @core-skill-install ac-2
  */
-export function loadCoreSkillContent(skillId: string): string | null {
+export async function loadCoreSkillContent(skillId: string): Promise<string | null> {
   try {
     const templatesDir = getTemplatesDir();
     const skillMdPath = path.join(templatesDir, skillId, "SKILL.md");
-    return readFileSync(skillMdPath, "utf-8");
+    return await fs.readFile(skillMdPath, "utf-8");
   } catch {
     return null;
   }
@@ -176,7 +175,7 @@ export function registerSkillInstallCommands(skill: Command): void {
         const results: CoreSkillInstallResult[] = [];
 
         // Load core skills manifest
-        const coreSkills = loadCoreSkillsManifest();
+        const coreSkills = await loadCoreSkillsManifest();
         if (coreSkills.length === 0) {
           console.log(chalk.yellow("No core skills found in kspec package templates"));
           return;
@@ -184,7 +183,7 @@ export function registerSkillInstallCommands(skill: Command): void {
 
         // Get kspec package version
         // AC: @cross-platform-and-version-robustness ac-3
-        const kspecVersion = getKspecPackageVersion();
+        const kspecVersion = await getKspecPackageVersion();
         if (!kspecVersion) {
           console.log(chalk.yellow("Warning: Could not determine kspec version — skills installed without version tracking"));
         }
@@ -242,7 +241,7 @@ export function registerSkillInstallCommands(skill: Command): void {
             await saveMetaItem(ctx, skill, "skill");
 
             // AC: @core-skill-install ac-2 - Copy SKILL.md content
-            const sourceContent = loadCoreSkillContent(coreSkill.id);
+            const sourceContent = await loadCoreSkillContent(coreSkill.id);
             if (sourceContent) {
               const targetPath = getSkillContentPath(ctx, skill.id);
               await fs.writeFile(targetPath, sourceContent, "utf-8");
@@ -355,13 +354,13 @@ export function registerSkillInstallCommands(skill: Command): void {
 
         // Get kspec package version
         // AC: @cross-platform-and-version-robustness ac-3
-        const kspecVersion = getKspecPackageVersion();
+        const kspecVersion = await getKspecPackageVersion();
         if (!kspecVersion) {
           console.log(chalk.yellow("Warning: Could not determine kspec version — updating based on content changes only"));
         }
 
         // Load core skills manifest to get current content
-        const coreSkillsManifest = loadCoreSkillsManifest();
+        const coreSkillsManifest = await loadCoreSkillsManifest();
         const coreSkillsMap = new Map(
           coreSkillsManifest.map((s) => [s.id, s])
         );
@@ -398,23 +397,24 @@ export function registerSkillInstallCommands(skill: Command): void {
           const oldVersion = skill.version;
 
           if (!dryRun) {
-            // Update skill metadata with new version
+            // Clone before mutating to protect against partial save failure
+            const updated = structuredClone(skill);
             if (kspecVersion) {
-              skill.version = kspecVersion;
+              updated.version = kspecVersion;
             }
-            skill.name = coreSkill.name;
+            updated.name = coreSkill.name;
             if (coreSkill.description) {
-              skill.description = coreSkill.description;
+              updated.description = coreSkill.description;
             }
             if (coreSkill.platforms) {
-              skill.platforms = coreSkill.platforms;
+              updated.platforms = coreSkill.platforms;
             }
 
             // Save updated metadata
-            await saveMetaItem(ctx, skill, "skill");
+            await saveMetaItem(ctx, updated, "skill");
 
             // Update SKILL.md content from templates
-            const sourceContent = loadCoreSkillContent(skill.id);
+            const sourceContent = await loadCoreSkillContent(skill.id);
             if (sourceContent) {
               const targetPath = getSkillContentPath(ctx, skill.id);
               await fs.writeFile(targetPath, sourceContent, "utf-8");

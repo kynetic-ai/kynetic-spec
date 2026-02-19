@@ -252,8 +252,18 @@ if [ -z "$COMMAND" ]; then
   exit 0
 fi
 
-# Block deleting kspec-meta from anywhere
-if [[ "$COMMAND" == *"git branch -d kspec-meta"* || "$COMMAND" == *"git branch -D kspec-meta"* ]]; then
+# Two views of the command for safe matching:
+# 1. UNQUOTED: remove quote chars (keeps content) to catch split-quote
+#    bypasses like: git "reset" --hard → git reset --hard
+# 2. STRIPPED: remove entire quoted strings to ignore patterns in args
+#    like: echo "git reset" → echo
+UNQUOTED=$(echo "$COMMAND" | sed 's/["\\x27]//g')
+STRIPPED=$(echo "$COMMAND" | sed -e "s/\\x27[^\\x27]*\\x27//g" -e 's/"[^"]*"//g')
+# First command word (handles leading whitespace)
+FIRST_CMD=$(echo "$COMMAND" | sed 's/^[[:space:]]*//' | cut -d' ' -f1)
+
+# Block deleting kspec-meta from anywhere (check unquoted to catch bypasses)
+if [[ "$UNQUOTED" == *"git branch -d kspec-meta"* || "$UNQUOTED" == *"git branch -D kspec-meta"* ]]; then
   cat <<EOF
 {
   "decision": "block",
@@ -310,7 +320,12 @@ DANGEROUS_PATTERNS=(
 )
 
 for pattern in "\${DANGEROUS_PATTERNS[@]}"; do
-  if [[ "$COMMAND" == *"$pattern"* ]]; then
+  # Block if:
+  # - Pattern matches UNQUOTED AND first command is "git" (catches split-quote bypasses), OR
+  # - Pattern matches STRIPPED (actual command outside any quotes)
+  # This allows: echo "git reset", grep "git stash" (first cmd is echo/grep, pattern not in STRIPPED)
+  # This blocks: git reset, git "reset" --hard, git st'ash' (first cmd is git OR pattern in STRIPPED)
+  if [[ "$STRIPPED" == *"$pattern"* ]] || { [[ "$UNQUOTED" == *"$pattern"* ]] && [[ "$FIRST_CMD" == "git" ]]; }; then
     cat <<EOF
 {
   "decision": "block",
@@ -1338,9 +1353,9 @@ async function installCoreSkillsForSetup(
     }
 
     const metaCtx = await loadMetaContext(ctx);
-    const coreSkills = loadCoreSkillsManifest();
+    const coreSkills = await loadCoreSkillsManifest();
     // AC: @cross-platform-and-version-robustness ac-3
-    const kspecVersion = getKspecPackageVersion();
+    const kspecVersion = await getKspecPackageVersion();
     if (!kspecVersion) {
       debugLog("Could not determine kspec version — skills installed without version tracking");
     }
@@ -1378,7 +1393,7 @@ async function installCoreSkillsForSetup(
         await saveMetaItem(ctx, parsed.data, "skill");
 
         // Copy SKILL.md content
-        const sourceContent = loadCoreSkillContent(coreSkill.id);
+        const sourceContent = await loadCoreSkillContent(coreSkill.id);
         if (sourceContent) {
           const targetPath = getSkillContentPath(ctx, parsed.data.id);
           await fs.writeFile(targetPath, sourceContent, "utf-8");

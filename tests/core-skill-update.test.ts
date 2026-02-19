@@ -34,7 +34,7 @@ describe('Core Skill Update', () => {
 
       // Get current version
       const { getKspecPackageVersion } = await import('../src/cli/commands/skill.js');
-      const packageVersion = getKspecPackageVersion();
+      const packageVersion = await getKspecPackageVersion();
 
       // Manually set skill to an older version
       kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);

@@ -141,7 +141,7 @@ describe('AC-3: Version detection returns null on failure', () => {
       '../src/cli/commands/skill.js'
     );
 
-    const version = getKspecPackageVersion();
+    const version = await getKspecPackageVersion();
 
     // In normal operation, version should be a valid semver string
     expect(version).not.toBeNull();
@@ -154,7 +154,7 @@ describe('AC-3: Version detection returns null on failure', () => {
       '../src/cli/commands/skill.js'
     );
 
-    const version = getKspecPackageVersion();
+    const version = await getKspecPackageVersion();
     expect(version).not.toBe('unknown');
   });
 
