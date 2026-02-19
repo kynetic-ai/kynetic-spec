@@ -547,3 +547,39 @@ inbox:
     created_at: 2026-02-19T14:04:31.825Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHVCPEVTKV48MV2WFCYRSNYB
+    text: "Plan import should support task priority: plan document specs can specify priority, and
+      derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
+      content. Workaround: manually batch-set priorities after import."
+    created_at: 2026-02-19T16:45:56.474Z
+    tags:
+      - plan-import
+      - dx
+    added_by: "@claude"
+  - _ulid: 01KHVCPEWG9XDW4NH17850SFJR
+    text: "Inbox tag management: no way to add/remove tags on existing inbox items. Only settable at
+      creation via inbox add --tag. Need: kspec inbox tag add @ref <tag> and kspec inbox tag remove
+      @ref <tag>."
+    created_at: 2026-02-19T16:45:56.496Z
+    tags:
+      - inbox
+      - dx
+    added_by: "@claude"
+  - _ulid: 01KHVCPEX1NTKSB3ABTTCD5CE5
+    text: "Batch command arg naming inconsistency: inbox add accepts tag (singular) not tags. No
+      documentation of which args each batch command accepts. Consider: consistent plural naming or
+      better error messages with valid arg list."
+    created_at: 2026-02-19T16:45:56.513Z
+    tags:
+      - batch
+      - dx
+    added_by: "@claude"
+  - _ulid: 01KHVCPEXGQ1E2WGE0FRS11R72
+    text: "Stale workflow runs accumulate: no way to prune or auto-expire old runs. After many sessions,
+      every workflow next command requires specifying a run ID because 7+ active runs exist. Need:
+      kspec workflow prune (expire runs older than N days) or kspec workflow cancel @run-id."
+    created_at: 2026-02-19T16:45:56.528Z
+    tags:
+      - workflow
+      - dx
+    added_by: "@claude"
