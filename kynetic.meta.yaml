@@ -5859,6 +5859,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHSKZDW60J9YF6XTJ2WZDDE5
+    type: friction
+    content: "Refactoring tasks without spec_ref have AC traceability gap — task-level ACs in notes
+      aren't discoverable by standard // AC: @spec-ref ac-N annotation pattern. Codex review flagged
+      this on PR #411. Options: (1) allow // AC: @task-ref ac-N, (2) require spec items even for
+      refactoring, (3) teach reviewers to check task notes. Related: @task-skill-module-split had no
+      spec_ref but defined 3 ACs in notes."
+    created_at: 2026-02-19T00:14:41.542Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     id: kspec-help
