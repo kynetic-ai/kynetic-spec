@@ -52,6 +52,13 @@ export function generateSkillsTable(skills: LoadedSkill[]): string {
 }
 
 /**
+ * Intro paragraph for the conventions section.
+ * Extracted as a constant for future configurability.
+ */
+export const CONVENTIONS_INTRO =
+  "These are the project's agreed-upon conventions. Follow them in all contributions to maintain consistency.";
+
+/**
  * Generate a markdown section summarizing conventions by domain.
  *
  * AC: @agent-data-sections ac-2
@@ -60,7 +67,7 @@ export function generateSkillsTable(skills: LoadedSkill[]): string {
  * Then: a markdown section is returned listing each domain with its rules
  *
  * @param conventions - Array of loaded conventions from meta
- * @returns Markdown section string with domain headers and rules as list items
+ * @returns Markdown section string with domain headers, rules as list items, and examples
  */
 export function generateConventionsSummary(
   conventions: LoadedConvention[],
@@ -69,7 +76,7 @@ export function generateConventionsSummary(
     return "";
   }
 
-  const lines: string[] = ["## Conventions", ""];
+  const lines: string[] = ["## Conventions", "", CONVENTIONS_INTRO, ""];
 
   for (const convention of conventions) {
     lines.push(`### ${convention.domain}`);
@@ -77,6 +84,25 @@ export function generateConventionsSummary(
 
     for (const rule of convention.rules) {
       lines.push(`- ${rule}`);
+    }
+
+    // Render examples when present
+    if (convention.examples && convention.examples.length > 0) {
+      lines.push("");
+      lines.push("**Examples:**");
+      for (const example of convention.examples) {
+        const combinedLength = example.good.length + example.bad.length;
+        if (combinedLength > 80) {
+          // Long format: quoted, separate lines
+          lines.push(`- Good: "${example.good}"`);
+          lines.push(`- Bad: "${example.bad}"`);
+        } else {
+          // Short format: inline code with em-dash
+          lines.push(
+            `- Good: \`${example.good}\` — Bad: \`${example.bad}\``,
+          );
+        }
+      }
     }
 
     lines.push("");

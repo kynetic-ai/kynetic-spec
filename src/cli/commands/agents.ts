@@ -139,6 +139,7 @@ export function computeMetaHash(
     conventions: conventions.map((c) => ({
       domain: c.domain,
       rules: c.rules,
+      examples: c.examples,
     })),
     workflows: workflows.map((w) => ({
       id: w.id,

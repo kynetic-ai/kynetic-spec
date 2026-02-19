@@ -129,28 +129,53 @@ describe('Agent Instruction Generation', () => {
   // AC: @agent-instruction-gen ac-3
   describe('ac-3: output includes conventions section listing rules by domain', () => {
     it('should include conventions section with rules by domain', async () => {
-      // The test fixtures include conventions in the meta manifest
-      // We need to check if they appear in the generated file
       kspecFull('agents generate', tempDir);
 
       const filePath = path.join(tempDir, 'kspec-agents.md');
       const content = await fs.readFile(filePath, 'utf-8');
 
-      // Check for conventions section
-      // Note: The fixtures may or may not have conventions
-      // We check the structure is correct when conventions exist
-      if (content.includes('## Conventions')) {
-        expect(content).toMatch(/### \w+/); // Domain headers
-        expect(content).toMatch(/^- /m); // Rules as list items
+      // Fixture has commits and naming conventions
+      expect(content).toContain('## Conventions');
+      expect(content).toContain('### commits');
+      expect(content).toContain('### naming');
+      expect(content).toContain('- Use conventional commits format');
+      expect(content).toContain('- Use camelCase for variables and functions');
+    });
+
+    it('should render examples for conventions that have them', async () => {
+      kspecFull('agents generate', tempDir);
+
+      const filePath = path.join(tempDir, 'kspec-agents.md');
+      const content = await fs.readFile(filePath, 'utf-8');
+
+      // commits convention has examples
+      expect(content).toContain('**Examples:**');
+      expect(content).toContain('Good: `feat: add user login flow`');
+      expect(content).toContain('Bad: `Added login`');
+    });
+
+    it('should not render examples for conventions without them', async () => {
+      kspecFull('agents generate', tempDir);
+
+      const filePath = path.join(tempDir, 'kspec-agents.md');
+      const content = await fs.readFile(filePath, 'utf-8');
+
+      // naming convention has no examples — verify no Examples block after it
+      const namingPos = content.indexOf('### naming');
+      const afterNaming = content.slice(namingPos);
+      // The next section header or end-of-conventions should come before any **Examples:**
+      const nextHeader = afterNaming.indexOf('##', 3); // skip the ### naming itself
+      const examplesInNaming = afterNaming.indexOf('**Examples:**');
+      if (examplesInNaming !== -1) {
+        // If found, it must be after the next section header (i.e. belongs to another section)
+        expect(examplesInNaming).toBeGreaterThan(nextHeader);
       }
     });
 
     it('should not include conventions section when no conventions exist', async () => {
-      // Fresh dir without conventions
       const freshDir = await setupTempFixtures();
       await initGitRepo(freshDir);
 
-      // Remove any conventions from meta (write empty meta file)
       const metaPath = path.join(freshDir, 'kynetic.meta.yaml');
       await fs.writeFile(
         metaPath,
@@ -339,17 +364,14 @@ describe('Agent Instruction Generation', () => {
 
   describe('Workflows section', () => {
     it('should include workflows summary when workflows exist', async () => {
-      // The test fixtures include workflows
       kspecFull('agents generate', tempDir);
 
       const filePath = path.join(tempDir, 'kspec-agents.md');
       const content = await fs.readFile(filePath, 'utf-8');
 
-      // Check for workflows section if workflows exist in fixtures
-      if (content.includes('## Workflows')) {
-        expect(content).toContain('Available workflows:');
-        expect(content).toContain('kspec workflow start');
-      }
+      expect(content).toContain('## Workflows');
+      expect(content).toContain('Available workflows:');
+      expect(content).toContain('kspec workflow start');
     });
   });
 
