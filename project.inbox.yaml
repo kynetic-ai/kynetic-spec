@@ -627,3 +627,34 @@ inbox:
       - tasks
       - scaling
     added_by: "@claude"
+  - _ulid: 01KHW3CC6Z4VY9DYC84M0YXQVR
+    text: "Bug: `kspec task get` omits the task description field from output. Shows title, status, spec
+      context, and notes — but not the description. Critical for triage and automation where
+      descriptions carry context that specs/notes do not."
+    created_at: 2026-02-19T23:22:23.327Z
+    tags:
+      - reflection
+      - bug
+      - cli
+    added_by: "@claude"
+  - _ulid: 01KHW3CC7QPTKBZEHSR8Z55XQF
+    text: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced shadow
+      branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when --json
+      mode is active."
+    created_at: 2026-02-19T23:22:23.351Z
+    tags:
+      - reflection
+      - bug
+      - cli
+    added_by: "@claude"
+  - _ulid: 01KHW3CC8AM42PG3SVH10XKXJK
+    text: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
+      tasks get no spec_ref, but when a task YAML explicitly provides spec_ref pointing to a valid
+      spec, it should be honored. Currently taskDef.spec_ref is never read in the manual task
+      creation path (plan-import.ts:513-523)."
+    created_at: 2026-02-19T23:22:23.370Z
+    tags:
+      - reflection
+      - bug
+      - plan-import
+    added_by: "@claude"

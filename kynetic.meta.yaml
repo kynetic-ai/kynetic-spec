@@ -5938,6 +5938,23 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHW3CC8V4PDG1R22S5229TA4
+    type: success
+    content: Dual review pattern (internal Plan agent + Codex review-plan) catches complementary issues.
+      Internal agent finds architectural concerns, Codex finds format/structure issues. Convergent
+      findings give high confidence. Worth standardizing for all plan imports.
+    created_at: 2026-02-19T23:22:23.387Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHW3CCBSNYH48BKQX2Q2CNAC
+    type: success
+    content: Post-import verification agent catches data integrity issues that dry-run misses (null
+      spec_ref, missing implementation notes). Should be part of standard plan import workflow.
+    created_at: 2026-02-19T23:22:23.481Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     id: kspec-help
