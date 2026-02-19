@@ -4202,7 +4202,7 @@ runs:
   - _ulid: 01KHVYCA5HHTWH6Z6VDJD92T4E
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-19T21:54:58.353Z
     step_results:
@@ -4225,5 +4225,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-19T21:55:25.998Z
-        completed_at: 2026-02-19T21:55:25.998Z
+        completed_at: 2026-02-19T21:55:44.640Z
+        notes: All friction points either already tracked or one-off mistakes with clear error messages. (1)
+          Plan format - skill exists, process learning not feature gap. (2) YAML quoting - task
+          @01KGTNV7 completed, skill has guidance. (3) Batch kebab - one-off, good error msg. (4)
+          Config location - captured in spec design.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-19T21:55:44.640Z
+        completed_at: 2026-02-19T21:55:44.640Z
     initiated_by: "@claude"
