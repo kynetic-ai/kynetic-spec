@@ -4255,7 +4255,7 @@ runs:
   - _ulid: 01KHW2W4G9366Q8QV1W3SWW9HP
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-19T23:13:31.146Z
     step_results:
@@ -4357,5 +4357,27 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-19T23:14:24.703Z
-        completed_at: 2026-02-19T23:14:24.703Z
+        completed_at: 2026-02-19T23:14:36.170Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. **Bug: `task get` should display task description**
+             - What: Show the task's own `description` field in `task get` output, between title and spec context
+             - How it helps: Descriptions contain critical context (especially for specless tasks). Without them, agents and humans must dig through git history.
+             - Scope: Small — modify the task display formatter in the CLI
+
+          2. **Bug: Info/sync messages should go to stderr, not stdout**
+             - What: Route all `ℹ` info lines (shadow sync, etc.) to stderr so `--json` output is clean
+             - How it helps: `kspec session start --json | jq` currently breaks. Any pipe with JSON parsing breaks.
+             - Scope: Small — audit all console.log info lines and route to stderr when --json is active
+
+          3. **Bug: Plan import drops spec_ref from task YAML**
+             - What: When plan import creates a task with `spec_ref: "@slug"`, persist that ref on the created task
+             - How it helps: Without this, every plan import requires a manual `kspec task set --spec-ref` follow-up
+             - Scope: Small — fix the task creation path in plan import to pass spec_ref through
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-19T23:14:36.170Z
+        completed_at: 2026-02-19T23:14:36.170Z
     initiated_by: "@claude"
