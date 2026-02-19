@@ -51323,7 +51323,10 @@
   created_at: 2026-02-19T19:03:23.968Z
   notes: []
   todos: []
-- title: Write getting-started tutorial and README for external users
+- _ulid: 01KHVMWP243H58MRG55WFHZN1T
+  slugs: []
+  title: Write getting-started tutorial and README for external users
+  type: task
   description: >-
     kspec has no end-to-end tutorial for new users. INSTALL.md covers setup mechanics but doesn't
     show the workflow. README.md is either missing or developer-focused on the kspec project itself,
@@ -51383,19 +51386,83 @@
     - Don't duplicate skill content — link to skills for detailed command syntax
 
     - Keep it practical with real examples, not abstract descriptions
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T19:09:09.058Z
+  notes: []
+  todos: []
+- title: Clean up setup.ts tech debt — dedup, legacy render, error handling
+  description: >-
+    setup.ts has accumulated tech debt that will cause drift as the render pipeline evolves. Three
+    clusters of issues from inbox items:
+
+
+    ## 1. Code duplication in setup pipeline
+
+    - setup.ts reimplements agent instruction generation instead of calling agents.ts
+    generateAgentsContent()
+
+    - Duplicates core skill installation logic from skill.ts
+
+    - Two code paths that will drift over time
+
+    (Inbox: @01KHJ4RV)
+
+
+    ## 2. Legacy render path
+
+    - renderClaudeCodeSkill diverges from claudeCodeRenderer: uses old writeRenderHash (not
+    platform-specific), lacks outputDir support, returns old type
+
+    - setup.ts still calls the legacy function instead of routing through registry
+
+    - Should deprecate standalone function and route through registry
+
+    (Inbox: @01KHJ4RV, @01KHKTNJ)
+
+
+    ## 3. Error handling and staleness
+
+    - Multiple bare catch {} blocks in setup.ts lose diagnostic info — should log at debug/verbose
+    level
+
+    - getSetupStatus always reports 'current' if hash file exists, cannot detect staleness — should
+    compare hash against current meta context
+
+    (Inbox: @01KHJ4RV, @01KHKTNJ)
+
+
+    ## Related items (can address opportunistically)
+
+    - Naming inconsistency: isKspecManagedSkill vs isKspecManaged for same logic (@01KHKTNJ)
+
+    - Dead code: toKebabCase in skill-render.ts never called (@01KHJ4RV)
+
+    - Renderer duplication: Codex and Claude Code renderers share ~70% logic (@01KHKTNJ)
+
+    - Utility dedup: contentsEqual/directoriesEqual/copyDirectory duplicated between skill.ts and
+    skill-render.ts (@01KHJ4RV)
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
+  priority: 3
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHVMWP243H58MRG55WFHZN1T
+  _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-19T19:09:09.058Z
+  created_at: 2026-02-19T19:22:54.536Z
   notes: []
   todos: []
