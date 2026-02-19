@@ -51301,6 +51301,21 @@
         05-commit-convention.md needs language-agnostic AC annotation examples. Other 4 templates
         are already generic."
       supersedes: null
+    - _ulid: 01KHW57EK5B45SRBXVW0NNEZZG
+      created_at: 2026-02-19T23:54:39.077Z
+      author: "@claude"
+      content: >-
+        Completed changes:
+
+        1. 01-quick-start.md: Replaced kspec-repo-specific 'bootstrap.cjs' with generic 'kspec init
+        && kspec setup' pattern, added 'kspec shadow status' tip
+
+        2. 05-commit-convention.md: Added Python example alongside JavaScript for language-agnostic
+        AC annotations
+
+        3. Updated tests in agents-instruction-gen.test.ts to verify new content and ensure no
+        kspec-repo-specific commands in generated output
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHVMJ5202R7VB7FQ68D127N8
