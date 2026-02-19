@@ -51158,7 +51158,10 @@
   created_at: 2026-02-19T06:50:54.191Z
   notes: []
   todos: []
-- title: Triage skills for core portability
+- _ulid: 01KHVJ59J39YXKFWAFTJY10YER
+  slugs: []
+  title: Triage skills for core portability
+  type: task
   description: "Review all 24+ skills in .claude/skills/ and categorize each into: (1) Core — ships in
     templates/skills/ for any kspec project (e.g. task-work, pr, spec, meta, triage, reflect,
     local-review, spec-plan, kspec), (2) Project-specific but portable — useful pattern but contains
@@ -51167,6 +51170,94 @@
     workarounds). For each skill, document: current category, what would need to change to make it
     core, and any dependencies on other skills. Output should be a clear manifest of what ships as
     core vs stays project-local."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T18:21:25.437Z
+  notes: []
+  todos: []
+- title: Generalize agent template sections for consumer projects
+  description: >-
+    The 6 template files in templates/agents-sections/ are used by 'kspec agents generate' to
+    produce kspec-agents.md for any project. Currently they contain kspec-repo-specific references
+    that break on consumer projects.
+
+
+    ## Evidence from consumer projects (kynetic-bot, imgen, comfy-ecaj-nodes)
+
+
+    All three consumers copy-paste these sections verbatim into their AGENTS.md because the
+    generated output isn't right. They all independently converged on the same Quick Start pattern:
+
+    ```bash
+
+    kspec init          # first time
+
+    kspec setup         # configure agent environment  
+
+    kspec session start # get context
+
+    ```
+
+
+    None use bootstrap.cjs or npm run dev. All three have the same hooks pattern (prompt-check,
+    checkpoint, worktree-guard). All suffer from stale copies when upstream templates change.
+
+
+    ## Specific fixes needed per file
+
+
+    **01-quick-start.md** (CRITICAL):
+
+    - Replace 'node scripts/bootstrap.cjs' with generic 'kspec init && kspec setup' 
+
+    - Remove 'npm run dev --' reference (kspec-repo-only)
+
+    - Add 'kspec session start' as the returning-session command
+
+    - Consider mentioning 'kspec shadow status' for health verification
+
+
+    **02-shadow-branch.md**: Already generic. No changes needed.
+
+
+    **03-task-lifecycle.md**: Already generic. No changes needed.
+
+
+    **04-pr-workflow.md**: Already generic. No changes needed.
+
+
+    **05-commit-convention.md**:
+
+    - Code annotation example is TypeScript-only (`// AC: @spec-item ac-N`)
+
+    - Should be language-agnostic or show both styles (// for TS/JS, # for Python/Ruby/Shell)
+
+    - comfy-ecaj-nodes uses '# AC:' pattern already
+
+
+    **06-ralph-loop.md**: Already generic. No changes needed.
+
+
+    ## Additional considerations
+
+
+    - Consumer AGENTS.md files range from 358 (kspec) to 710 lines (imgen) — the generated output
+    should be lean since projects add their own domain content on top
+
+    - The 'Finding Information' skill table in kspec's AGENTS.md is duplicated by all consumers with
+    project-specific skills added — consider generating this table dynamically from installed skills
+
+    - All consumers have project-specific sections (architecture, tech stack, testing patterns) that
+    live OUTSIDE the generated sections — the template output should compose well with custom
+    content
   type: task
   spec_ref: null
   meta_ref: null
@@ -51175,11 +51266,11 @@
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHVJ59J39YXKFWAFTJY10YER
+  _ulid: 01KHVK28M6TAWG0YV55XYMM33D
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-19T18:21:25.437Z
+  created_at: 2026-02-19T18:37:14.758Z
   notes: []
   todos: []
