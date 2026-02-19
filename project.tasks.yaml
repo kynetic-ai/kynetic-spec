@@ -51414,8 +51414,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T19:09:09.058Z
-  notes: []
+  notes:
+    - _ulid: 01KHW19B512JKJ09DNKPQMXEC9
+      created_at: 2026-02-19T22:45:46.785Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Editorial content — voice, positioning, emphasis
+        need human direction"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
   slugs: []
   title: Clean up setup.ts tech debt — dedup, legacy render, error handling
