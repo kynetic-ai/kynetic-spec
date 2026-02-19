@@ -51138,23 +51138,48 @@
   created_at: 2026-02-19T06:50:51.314Z
   notes: []
   todos: []
-- title: Consolidate meta ref lookup patterns
+- _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
+  slugs: []
+  title: Consolidate meta ref lookup patterns
+  type: task
   description: Consolidate 12+ call sites across 5 files that use different ref-to-item resolution
     patterns (findMetaItemByRef, resolveMetaRefToUlid, inline .find()) into a single shared
     resolver. Improves consistency and reduces duplication.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-19T06:50:54.191Z
+  notes: []
+  todos: []
+- title: Triage skills for core portability
+  description: "Review all 24+ skills in .claude/skills/ and categorize each into: (1) Core — ships in
+    templates/skills/ for any kspec project (e.g. task-work, pr, spec, meta, triage, reflect,
+    local-review, spec-plan, kspec), (2) Project-specific but portable — useful pattern but contains
+    kspec-project-specific content that would need generalization (e.g. e2e, svelte-5, eval-agents),
+    (3) Not portable — only makes sense for this project (e.g. codex with shadow-branch
+    workarounds). For each skill, document: current category, what would need to change to make it
+    core, and any dependencies on other skills. Output should be a clear manifest of what ships as
+    core vs stays project-local."
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
+  priority: 2
   slugs: []
   tags: []
   depends_on: []
-  _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
+  _ulid: 01KHVJ59J39YXKFWAFTJY10YER
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-19T06:50:54.191Z
+  created_at: 2026-02-19T18:21:25.437Z
   notes: []
   todos: []
