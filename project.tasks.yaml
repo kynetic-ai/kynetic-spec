@@ -50891,7 +50891,7 @@
   type: task
   spec_ref: null
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-setup-pipeline-unification"
@@ -50974,6 +50974,12 @@
         setup.ts imports still work.
       supersedes: null
   todos: []
+  completed_at: 2026-02-19T00:11:22.366Z
+  closed_reason: "Merged in PR #411. Split 2349-line skill.ts into skill-crud.ts (931 lines),
+    skill-install.ts (495 lines), skill-diff.ts (992 lines) with thin orchestrator. Extracted
+    renderSkillBase() in skill-render.ts eliminating ~100 lines of renderer duplication. All 236
+    tests pass with full AC coverage (15 dedicated tests for ac-1/ac-2/ac-3). Backward API
+    compatibility verified via re-exports."
 - _ulid: 01KHQQV7W6FAM0NMZ6XVERS9MX
   slugs:
     - task-guard-script-and-diff-quality
