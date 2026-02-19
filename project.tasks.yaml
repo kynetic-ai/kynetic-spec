@@ -51293,6 +51293,7 @@
         what the file is and how to include it."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KHVMJ5202R7VB7FQ68D127N8
   slugs: []
   title: Unified health check combining shadow status and setup status
