@@ -51138,6 +51138,7 @@
   created_at: 2026-02-19T06:50:51.314Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
   slugs: []
   title: Consolidate meta ref lookup patterns
