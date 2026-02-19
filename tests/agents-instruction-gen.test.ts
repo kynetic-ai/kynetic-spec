@@ -258,6 +258,31 @@ describe('Agent Instruction Generation', () => {
       expect(result.stdout).toContain("'kspec agents generate'");
     });
 
+    it('should report stale when only convention examples change', async () => {
+      kspecFull('agents generate', tempDir);
+
+      // Verify current first
+      let status = kspecFull('agents status', tempDir);
+      expect(status.stdout).toContain('up to date');
+
+      // Modify meta to add an example to the naming convention (which has none)
+      const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+      const metaContent = await fs.readFile(metaPath, 'utf-8');
+      const updatedContent = metaContent.replace(
+        '    - "Use PascalCase for types and classes"\n',
+        '    - "Use PascalCase for types and classes"\n' +
+        '    examples:\n' +
+        '      - good: "getUserName"\n' +
+        '        bad: "get_user_name"\n',
+      );
+      await fs.writeFile(metaPath, updatedContent, 'utf-8');
+
+      // Status should now be stale
+      status = kspecFull('agents status', tempDir);
+      expect(status.exitCode).toBe(0);
+      expect(status.stdout).toContain('stale');
+    });
+
     it('should report stale when hash file is missing', async () => {
       kspecFull('agents generate', tempDir);
 

@@ -492,6 +492,7 @@ describe("generateWorkflowsSummary", () => {
   });
 });
 
+// AC: @cross-platform-and-version-robustness ac-4
 describe("computeMetaHash", () => {
   it("should produce different hashes when conventions differ only in examples", () => {
     const skills: LoadedSkill[] = [];
