@@ -51323,8 +51323,9 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
+  closed_reason: Superseded by @doctor-command spec and @impl-doctor-command task
   depends_on: []
   context: []
   priority: 3
@@ -51699,21 +51700,22 @@
         all config reads go through ctx.config (from kspec.config.yaml).
   todos: []
   automation: eligible
-- title: Implement kspec doctor command
-  type: task
-  plan_ref: "@plan-unified-health-check-command-kspec-doctor"
-  priority: 3
+- _ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
   slugs:
     - impl-doctor-command
+  title: Implement kspec doctor command
+  type: task
+  plan_ref: "@plan-unified-health-check-command-kspec-doctor"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
   tags:
     - cli
     - dx
-  depends_on: []
-  notes: []
-  _ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-19T23:07:25.407Z
+  notes: []
   todos: []
+  automation: eligible
