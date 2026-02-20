@@ -483,6 +483,8 @@ export function createObservation(
   options: {
     workflow_ref?: string;
     author?: string;
+    /** Config author from kspec.config.yaml identity.author */
+    configAuthor?: string | null;
   } = {},
 ): Observation {
   return {
@@ -491,7 +493,7 @@ export function createObservation(
     content,
     workflow_ref: options.workflow_ref,
     created_at: new Date().toISOString(),
-    author: options.author ?? getAuthor(),
+    author: options.author ?? getAuthor(options.configAuthor),
     resolved: false,
     resolution: null,
   };

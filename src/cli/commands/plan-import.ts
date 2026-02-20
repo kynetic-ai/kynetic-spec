@@ -102,7 +102,7 @@ async function importPlan(
   // JSON mode is set by global preAction hook
 
   const ctx = await initContext();
-  const author = getAuthor();
+  const author = getAuthor(ctx.config?.identity?.author);
 
   // Read plan file
   // AC: @plan-import ac-21 - Handle file read errors

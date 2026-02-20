@@ -341,7 +341,7 @@ async function setTaskFields(
       // AC: @task-set ac-author
       const note = createNote(
         `Dependencies cleared (was: ${foundTask.depends_on.join(", ")})`,
-        getAuthor(),
+        getAuthor(ctx.config?.identity?.author),
       );
       updatedTask.notes = [...updatedTask.notes, note];
     }
@@ -380,7 +380,7 @@ async function setTaskFields(
       if (options.reason) {
         const note = createNote(
           `Automation status set to ${automationResult.value}: ${options.reason}`,
-          getAuthor(),
+          getAuthor(ctx.config?.identity?.author),
         );
         updatedTask.notes = [...updatedTask.notes, note];
         changes.push("note");
@@ -1288,7 +1288,7 @@ Examples:
               if (options.skipReview && options.reason) {
                 const skipNote = createNote(
                   `Completed with --skip-review: ${options.reason}`,
-                  getAuthor(),
+                  getAuthor(ctx.config?.identity?.author),
                 );
                 taskNotes = [...taskNotes, skipNote];
               }
@@ -1298,7 +1298,7 @@ Examples:
                 const blockedBy = foundTask.blocked_by.join("; ");
                 const forceNote = createNote(
                   `Completed with --force despite blocked state. Was blocked by: ${blockedBy || "(dependency-blocked)"}${options.reason ? `. Reason: ${options.reason}` : ""}`,
-                  getAuthor(),
+                  getAuthor(ctx.config?.identity?.author),
                 );
                 taskNotes = [...taskNotes, forceNote];
               }
@@ -1671,7 +1671,7 @@ Examples:
         // AC: @spec-task-reset ac-4 - Add note documenting the reset
         // AC: @spec-task-reset ac-author
         const noteContent = `Reset from ${previousStatus} to pending${cancelReasonText}`;
-        const note = createNote(noteContent, getAuthor());
+        const note = createNote(noteContent, getAuthor(ctx.config?.identity?.author));
         updatedTask.notes = [...updatedTask.notes, note];
 
         await saveTask(ctx, updatedTask);

@@ -778,20 +778,30 @@ export function createTask(input: TaskInput): Task {
  * Get author from environment with fallback chain.
  * Priority:
  *   1. KSPEC_AUTHOR env var (explicit config, agent-agnostic)
- *   2. git user.name (developer identity)
- *   3. USER/USERNAME env var (system user)
- *   4. undefined (will show as 'unknown' in output)
+ *   2. kspec.config.yaml identity.author (project-level default)
+ *   3. git user.name (developer identity)
+ *   4. USER/USERNAME env var (system user)
+ *   5. undefined (will show as 'unknown' in output)
  *
  * For Claude Code integration, add to ~/.claude/settings.json:
  *   { "env": { "KSPEC_AUTHOR": "@claude" } }
+ *
+ * AC: @config-author ac-1 ac-2 ac-3 — author priority chain
+ *
+ * @param configAuthor Optional author from kspec.config.yaml identity.author
  */
-export function getAuthor(): string | undefined {
-  // 1. Explicit config (works for any agent)
+export function getAuthor(configAuthor?: string | null): string | undefined {
+  // 1. Explicit env var (works for any agent) — AC: ac-2
   if (process.env.KSPEC_AUTHOR) {
     return process.env.KSPEC_AUTHOR;
   }
 
-  // 2. Git user.name
+  // 2. Project config author — AC: ac-1
+  if (configAuthor) {
+    return configAuthor;
+  }
+
+  // 3. Git user.name — AC: ac-3
   try {
     const gitUser = execSync("git config user.name", {
       encoding: "utf-8",
@@ -804,13 +814,13 @@ export function getAuthor(): string | undefined {
     // git not available or not in a repo
   }
 
-  // 3. System user
+  // 4. System user — AC: ac-3
   const systemUser = process.env.USER || process.env.USERNAME;
   if (systemUser) {
     return systemUser;
   }
 
-  // 4. No author available
+  // 5. No author available
   return undefined;
 }
 
@@ -1670,14 +1680,22 @@ export async function loadInboxItems(
 
 /**
  * Create a new inbox item with auto-generated fields.
+ *
+ * AC: @config-author — supports config author in fallback chain
+ *
+ * @param input Inbox item input
+ * @param configAuthor Optional author from kspec.config.yaml identity.author
  */
-export function createInboxItem(input: InboxItemInput): InboxItem {
+export function createInboxItem(
+  input: InboxItemInput,
+  configAuthor?: string | null,
+): InboxItem {
   return {
     _ulid: input._ulid || ulid(),
     text: input.text,
     created_at: input.created_at || new Date().toISOString(),
     tags: input.tags || [],
-    added_by: input.added_by ?? getAuthor(),
+    added_by: input.added_by ?? getAuthor(configAuthor),
   };
 }
 

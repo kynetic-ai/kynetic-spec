@@ -317,7 +317,7 @@ async function deriveTaskFromSpec(
     ? [
         createNote(
           `Implementation notes (auto-generated from spec):\n\n${noteContent}`,
-          getAuthor(),
+          getAuthor(ctx.config?.identity?.author),
         ),
       ]
     : [];

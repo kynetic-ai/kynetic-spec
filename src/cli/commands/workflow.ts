@@ -123,7 +123,7 @@ async function workflowStart(
     total_steps: workflow.steps.length,
     started_at: new Date().toISOString(),
     step_results: [],
-    initiated_by: getAuthor(),
+    initiated_by: getAuthor(ctx.config?.identity?.author),
     task_ref: taskRef,
   };
 
