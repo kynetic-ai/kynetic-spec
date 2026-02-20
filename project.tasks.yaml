@@ -53387,4 +53387,13 @@
         on @ralph-subagent-spawning, added ac-13. Added ac-10 thru ac-13 on
         @task-work-loop-workflow. kspec validate passes."
       supersedes: null
+    - _ulid: 01KHYPJDK6E394KTTJTD9596HR
+      created_at: 2026-02-20T23:36:13.158Z
+      author: "@claude"
+      content: "Step 3: Workflow updates — all 4 workflows (task-work-loop, pr-review-merge,
+        task-work-session, local-review) were already updated in a prior session. Verified:
+        task-work-loop has local-review subagent step and fix cycle handling. pr-review-merge has
+        needs-work kickback in on_fail and decision options. task-work-session has fix cycle and
+        local-review steps."
+      supersedes: null
   todos: []

@@ -301,12 +301,13 @@ workflows:
     steps:
       - type: check
         content: |
-          Check for existing in_progress or pending_review tasks.
+          Check for existing needs_work, in_progress, or pending_review tasks.
           Use: kspec session start (shows active work first)
-          Priority: pending_review > in_progress > ready
+          Priority: needs_work > in_progress > ready
+          Note: pending_review tasks are handled by review subagent, not worker.
         on_fail: |
           Inherit existing work instead of starting new.
-          Pick up in_progress task and continue, or check PR status for pending_review.
+          Pick up needs_work task (fix review feedback) or in_progress task and continue.
           Only start new work if user explicitly says to ignore existing work.
       - type: action
         content: |
@@ -340,14 +341,26 @@ workflows:
           Example: git commit -m "feat: description\n\nTask: @task-slug"
       - type: action
         content: |
-          Submit task for review.
-          Use: kspec task submit @task
-          This marks the task pending_review (code done, awaiting merge).
+          Run local review before submitting.
+          Spawn a subagent using Task tool with prompt:
+          "Run /local-review for @spec-ref. Report all findings with severity."
+
+          If MUST-FIX findings: fix them, re-commit, re-run local review.
+          If SHOULD-FIX or SUGGESTION only: note findings, proceed to submit.
+          If actionable items not worth fixing now: kspec inbox add "..."
       - type: action
         content: |
-          Create PR.
-          Use: /pr skill or gh pr create
-          Then follow @pr-review-merge workflow for merge.
+          If this is a fix cycle (needs_work task):
+            1. Read PR review comments: gh api repos/{owner}/{repo}/pulls/{number}/reviews
+            2. Fix MUST-FIX and SHOULD-FIX issues identified in comments
+            3. Commit and push fixes to PR branch
+            4. Submit task: kspec task submit @task
+            5. Stop responding — reviewer re-reviews in next iteration
+
+          Otherwise (new work):
+            1. Submit task: kspec task submit @task
+            2. Create PR: /pr skill
+            3. Stop responding — ralph handles PR review via separate subagent
       - type: check
         content: PR merged to main
         on_fail: Wait for PR review and merge before completing task.
@@ -421,14 +434,17 @@ workflows:
           List all MUST-FIX issues that block PR creation.
           MUST-FIX findings first, each with file:line.
           Non-blocking suggestions noted separately.
+          When invoked as subagent, return findings to caller.
+          MUST-FIX items block PR creation.
   - _ulid: 01KFRG7TY446JN3M1XFHAFB981
     id: task-work-loop
     trigger: manual
     description: "Loop variant of task-work-session for autonomous agents. Auto-filters to
-      automation-eligible tasks, auto-resolves decisions. Task selection: in_progress > unblocking >
-      priority. Verifies work needed including trait AC coverage. Implementation quality: search for
-      existing utilities, match code style, run full test suite. PR review handled externally by
-      ralph."
+      automation-eligible tasks, auto-resolves decisions. Task selection: needs_work > in_progress >
+      unblocking > priority. Includes local-review subagent step and fix cycle handling for
+      needs_work tasks. Verifies work needed including trait AC coverage. Implementation quality:
+      search for existing utilities, match code style, run full test suite. PR review handled
+      externally by ralph."
     steps:
       - type: action
         content: |
@@ -446,15 +462,18 @@ workflows:
 
           Check in order:
 
-          1. in_progress tasks (continue existing work)
+          1. needs_work tasks (fix cycle — address review feedback, highest priority)
 
-          2. Ready tasks that unblock others (high impact)
+          2. in_progress tasks (continue existing work)
 
-          3. Highest priority ready task (lowest number = higher priority)
+          3. Ready tasks that unblock others (high impact)
+
+          4. Highest priority ready task (lowest number = higher priority)
 
 
           Note: pending_review tasks are handled externally by ralph spawning PR review subagents.
         options:
+          - needs_work task exists -> fix review feedback (fix cycle)
           - in_progress task exists -> continue that task
           - Ready task unblocks others -> select that task
           - Only isolated ready tasks -> select highest priority (lowest number)
@@ -544,16 +563,28 @@ workflows:
           mode: silent
       - type: action
         content: |
-          Submit task for review.
-          Use: kspec task submit @task
-          This marks the task pending_review.
+          Run local review via subagent before submitting.
+          Spawn a subagent using Task tool with prompt:
+          "Run /local-review for @spec-ref. Report all findings with severity."
+
+          If MUST-FIX findings: fix them, re-commit, re-run local review.
+          If SHOULD-FIX or SUGGESTION only: note findings, proceed to submit.
+          If actionable items not worth fixing now: kspec inbox add "..."
         execution:
           mode: silent
       - type: action
         content: |
-          Create PR.
-          Use: /pr skill
-          After PR created, EXIT - ralph handles PR review via separate subagent.
+          If this is a fix cycle (needs_work task):
+            1. Read PR review comments: gh api repos/{owner}/{repo}/pulls/{number}/reviews
+            2. Fix MUST-FIX and SHOULD-FIX issues identified in comments
+            3. Commit and push fixes to PR branch
+            4. Submit task: kspec task submit @task
+            5. Stop responding — reviewer re-reviews in next iteration
+
+          Otherwise (new work):
+            1. Submit task: kspec task submit @task
+            2. Create PR: /pr skill
+            3. Stop responding — ralph handles PR review via separate subagent
         execution:
           mode: silent
   - _ulid: 01KFRPSFFH357GG0EP0JJZ2NA7
