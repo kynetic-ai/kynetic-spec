@@ -51713,7 +51713,7 @@
   type: task
   spec_ref: "@config-shadow"
   plan_ref: "@plan-project-level-configuration-system"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
