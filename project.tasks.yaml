@@ -51722,6 +51722,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T21:41:11.505Z
+  started_at: 2026-02-20T01:27:46.585Z
   notes:
     - _ulid: 01KHVXK2PH27DV19BTJNAKR6RD
       created_at: 2026-02-19T21:41:11.505Z
@@ -51754,9 +51755,62 @@
 
         For ac-9, kspec shadow status should compare detected branch/directory against
         config and warn on mismatch rather than silently using stale settings.
+    - _ulid: 01KHWB9WXAKFXA4WPKGCJ6EM0V
+      created_at: 2026-02-20T01:40:50.730Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. **Config schema updated** (src/parser/config.ts):
+           - Added shadow.directory field (worktree path, default: .kspec)
+           - Changed shadow.remote_url to shadow.remote with flexible detection
+           - Added detectRemoteType() for named/path/URL classification
+           - Added ResolvedShadowRemote type with value and type fields
+
+        2. **Shadow functions updated** (src/parser/shadow.ts):
+           - Added ShadowOptions interface for passing config to functions
+           - Added getBranchName() and getDirectoryName() helper functions
+           - Updated detectShadow, getShadowStatus, initializeShadow, repairShadow
+           - Updated hasRemoteTracking, ensureRemoteTracking, pushShadowBranch
+           - Updated shadowPull, shadowSync, shadowPushAsync
+           - Updated ensureGitignore and resolveShadowPath
+           - All functions default to constants when options not provided (AC-7)
+
+        3. **detectRunningFromShadowWorktree enhanced** (AC-8):
+           - Now accepts optional configuredDirectory parameter
+           - Detects custom directories using git worktree metadata
+           - Falls back to detecting kspec file structure (manifest + modules)
+
+        4. **Config mismatch detection** (AC-9):
+           - Added checkConfigMismatch() function
+           - Returns ShadowConfigMismatch with detected vs configured values
+           - Provides migration guidance when mismatch found
+
+        5. **Init command updated** (src/cli/commands/init.ts):
+           - Loads project config before initialization
+           - Passes shadow options from config to initializeShadow
+           - Checks for config mismatch and guides user (with --force override)
+           - Uses configured branch/directory names in output messages
+
+        6. **Context initialization updated** (src/parser/yaml.ts):
+           - Passes config shadow settings to detectShadow
+           - Passes configured directory to detectRunningFromShadowWorktree
+
+        7. **15 new tests added** covering all 9 ACs:
+           - Backward compat tests (ac-7)
+           - Custom branch name tests (ac-1)
+           - Custom directory tests (ac-2)
+           - Remote type detection tests (ac-3, ac-4, ac-5)
+           - Custom directory detection tests (ac-8)
+           - Config mismatch detection tests (ac-9)
+           - Combined custom branch+directory test
+
+        All 2863 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this
+        change).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T01:27:46.585Z
 - _ulid: 01KHVXK2ZK5HEG1DSJ9VCAE0BK
   slugs:
     - implement-configurable-author-identity
