@@ -52496,10 +52496,17 @@
     - code-quality
   vcs_refs: []
   created_at: 2026-02-20T05:13:07.666Z
-  notes: []
+  started_at: 2026-02-20T10:17:53.482Z
+  notes:
+    - _ulid: 01KHX93QBF2FH0A0ZZ28VAEHY4
+      created_at: 2026-02-20T10:21:45.711Z
+      author: "@claude"
+      content: Fixed sync require('fs').statSync() by converting detectAgent() to async and using the
+        already-imported fs.stat() from node:fs/promises. Updated the call site in getSetupStatus()
+        to use await. All 27 doctor tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T10:17:53.482Z
 - _ulid: 01KHWQEM8AP4RGZHQCESHGB2E9
   slugs: []
   title: Fix detectRemoteType() for relative paths
