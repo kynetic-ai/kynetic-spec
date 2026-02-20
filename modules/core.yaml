@@ -775,7 +775,7 @@ features:
         created: 2026-02-19T21:41:10.996Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z
