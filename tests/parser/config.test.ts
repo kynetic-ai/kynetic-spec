@@ -9,6 +9,9 @@
  * - @project-config ac-5: env vars take precedence
  * - @project-config ac-6: loads from git root, not cwd
  * - @project-config ac-7: batch mode uses real project root
+ * - @config-author ac-1: config author used when no env var
+ * - @config-author ac-2: env var wins over config author
+ * - @config-author ac-3: fallback to git/OS when no config author
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -21,7 +24,7 @@ import {
   KspecConfigSchema,
   type ResolvedKspecConfig,
 } from "../../src/parser/config.js";
-import { initContext } from "../../src/parser/yaml.js";
+import { getAuthor, initContext } from "../../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, initGitRepo } from "../helpers/cli.js";
 
 describe("Project Config", () => {
@@ -62,7 +65,8 @@ describe("Project Config", () => {
       const defaults = getDefaultConfig();
 
       expect(result.config.shadow.branch).toBe(defaults.shadow.branch);
-      expect(result.config.shadow.remote_url).toBe(defaults.shadow.remote_url);
+      expect(result.config.shadow.directory).toBe(defaults.shadow.directory);
+      expect(result.config.shadow.remote).toBe(defaults.shadow.remote);
       expect(result.config.daemon.port).toBe(defaults.daemon.port);
       expect(result.config.daemon.host).toBe(defaults.daemon.host);
       expect(result.config.validation.strictness).toBe(
@@ -77,7 +81,8 @@ describe("Project Config", () => {
         `
 shadow:
   branch: custom-branch
-  remote_url: https://example.com/specs.git
+  directory: .specs
+  remote: https://example.com/specs.git
 daemon:
   port: 4000
   host: 0.0.0.0
@@ -94,9 +99,11 @@ validation:
       expect(result.configPath).toBe(path.join(tempDir, "kspec.config.yaml"));
       expect(result.warning).toBeNull();
       expect(result.config.shadow.branch).toBe("custom-branch");
-      expect(result.config.shadow.remote_url).toBe(
-        "https://example.com/specs.git"
-      );
+      expect(result.config.shadow.directory).toBe(".specs");
+      expect(result.config.shadow.remote).toEqual({
+        value: "https://example.com/specs.git",
+        type: "url",
+      });
       expect(result.config.daemon.port).toBe(4000);
       expect(result.config.daemon.host).toBe("0.0.0.0");
       expect(result.config.identity.author).toBe("@custom-author");
@@ -286,7 +293,8 @@ daemon:
       const result = KspecConfigSchema.safeParse({
         shadow: {
           branch: "my-branch",
-          remote_url: "https://github.com/org/repo.git",
+          directory: ".specs",
+          remote: "https://github.com/org/repo.git",
         },
         daemon: {
           port: 3000,
@@ -395,7 +403,8 @@ title: Test Project
       const defaults = getDefaultConfig();
 
       expect(defaults.shadow.branch).toBe("kspec-meta");
-      expect(defaults.shadow.remote_url).toBeNull();
+      expect(defaults.shadow.directory).toBe(".kspec");
+      expect(defaults.shadow.remote).toBeNull();
       expect(defaults.identity.author).toBeNull();
       expect(defaults.validation.strictness).toBe("normal");
       expect(defaults.validation.warn_unknown_fields).toBe(true);
@@ -410,6 +419,113 @@ title: Test Project
       defaults1.daemon.port = 9999;
 
       expect(defaults2.daemon.port).toBe(3456); // Should not be affected
+    });
+  });
+
+  // AC: @config-author — config author in priority chain
+  describe("config author", () => {
+    // AC: @config-author ac-1 — config author is used when no env var
+    it("config author is used when no env var set", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+identity:
+  author: "@bot-agent"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.identity.author).toBe("@bot-agent");
+    });
+
+    // AC: @config-author ac-2 — env var wins over config
+    it("env var takes precedence over config author", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+identity:
+  author: "@config-author"
+`
+      );
+
+      process.env.KSPEC_AUTHOR = "@env-author";
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.identity.author).toBe("@env-author");
+    });
+
+    // AC: @config-author ac-3 — fallback to git/OS when no config
+    it("author is null when no config and no env var", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      // Config author should be null, fallback to git/OS happens in getAuthor()
+      expect(result.config.identity.author).toBeNull();
+    });
+  });
+
+  // AC: @config-author — getAuthor function with config parameter
+  describe("getAuthor with config", () => {
+    // AC: @config-author ac-1 — config author is used when no env var
+    it("returns config author when no env var set", () => {
+      delete process.env.KSPEC_AUTHOR;
+
+      const author = getAuthor("@config-bot");
+
+      expect(author).toBe("@config-bot");
+    });
+
+    // AC: @config-author ac-2 — env var wins over config
+    it("env var takes precedence over config author", () => {
+      process.env.KSPEC_AUTHOR = "@env-author";
+
+      const author = getAuthor("@config-author");
+
+      expect(author).toBe("@env-author");
+    });
+
+    // AC: @config-author ac-3 — fallback to git/OS when no config author
+    it("falls back to git/OS when config author is null", () => {
+      delete process.env.KSPEC_AUTHOR;
+
+      // Pass null to simulate no config author
+      const author = getAuthor(null);
+
+      // Should get git user.name or system user
+      // In test env, should get git user since we called initGitRepo
+      expect(author).toBeDefined();
+      expect(typeof author).toBe("string");
+    });
+
+    // AC: @config-author ac-3 — fallback works when no parameter passed
+    it("falls back to git/OS when no config author parameter passed", () => {
+      delete process.env.KSPEC_AUTHOR;
+
+      // No parameter = undefined, should use fallback chain
+      const author = getAuthor();
+
+      // Should get git user.name or system user
+      expect(author).toBeDefined();
+      expect(typeof author).toBe("string");
+    });
+
+    // AC: @config-author ac-1 — config author works with @-prefix
+    it("preserves @-prefix in config author", () => {
+      delete process.env.KSPEC_AUTHOR;
+
+      const author = getAuthor("@bot-agent");
+
+      expect(author).toBe("@bot-agent");
+    });
+
+    // AC: @config-author ac-1 — config author works without @-prefix
+    it("works with config author without @-prefix", () => {
+      delete process.env.KSPEC_AUTHOR;
+
+      const author = getAuthor("project-bot");
+
+      expect(author).toBe("project-bot");
     });
   });
 });

@@ -778,6 +778,7 @@ export function registerMetaCommands(program: Command): void {
               {
                 workflow_ref: options.workflow,
                 author: options.author,
+                configAuthor: ctx.config?.identity?.author,
               },
             );
 
@@ -833,6 +834,7 @@ export function registerMetaCommands(program: Command): void {
             {
               workflow_ref: options.workflow,
               author: options.author,
+              configAuthor: ctx.config?.identity?.author,
             },
           );
 

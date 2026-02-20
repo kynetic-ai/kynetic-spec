@@ -81,7 +81,7 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         };
 
         // AC: @api-contract ac-13 - Generate ULID and create item
-        const item = createInboxItem(input);
+        const item = createInboxItem(input, ctx.config?.identity?.author);
 
         // Save and commit
         await saveInboxItem(ctx, item);

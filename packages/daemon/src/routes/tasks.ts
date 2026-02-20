@@ -288,7 +288,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         }
 
         // AC: @api-contract ac-7 - Append note
-        const author = getAuthor();
+        const author = getAuthor(ctx.config?.identity?.author);
         const note = createNote(body.content, author);
 
         const updatedTask: LoadedTask = {

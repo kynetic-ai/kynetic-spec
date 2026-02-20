@@ -85,6 +85,45 @@ export const SHADOW_BRANCH_NAME = "kspec-meta";
 export const SHADOW_WORKTREE_DIR = ".kspec";
 
 /**
+ * Options for shadow branch operations.
+ *
+ * AC: @config-shadow ac-7 — all fields optional for backward compatibility
+ *
+ * When not provided, functions use SHADOW_BRANCH_NAME and SHADOW_WORKTREE_DIR constants.
+ */
+export interface ShadowOptions {
+  /** Branch name (default: kspec-meta) */
+  branchName?: string;
+  /** Worktree directory name (default: .kspec) */
+  directory?: string;
+  /**
+   * Remote target for push/pull. Can be:
+   * - Named remote (e.g., "origin", "specs-origin")
+   * - Local filesystem path (starts with /, ./, or ~)
+   * - Git URL (contains :// or starts with git@)
+   */
+  remote?: string;
+  /** Type of remote (detected from remote string) */
+  remoteType?: "named" | "path" | "url";
+}
+
+/**
+ * Get effective branch name from options or default.
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ */
+function getBranchName(options?: ShadowOptions): string {
+  return options?.branchName ?? SHADOW_BRANCH_NAME;
+}
+
+/**
+ * Get effective directory name from options or default.
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ */
+function getDirectoryName(options?: ShadowOptions): string {
+  return options?.directory ?? SHADOW_WORKTREE_DIR;
+}
+
+/**
  * Check if debug mode is enabled.
  * Debug mode can be enabled via:
  * - KSPEC_DEBUG=1 environment variable
@@ -181,13 +220,23 @@ export async function isValidWorktree(worktreeDir: string): Promise<boolean> {
  * Detect if running from inside the shadow worktree directory.
  * Returns the main project root if detected, null otherwise.
  *
+ * AC: @config-shadow ac-8 — detects custom worktree directories using git metadata
+ *
  * Detection logic:
  * 1. Check if .git is a file (worktrees have .git files, not directories)
  * 2. Read the gitdir reference from the .git file
- * 3. Check if it points to a worktree for .kspec (pattern: <project>/.git/worktrees/-kspec)
+ * 3. Check if it points to a worktree for kspec (pattern: <project>/.git/worktrees/...)
+ *
+ * For custom directories, we detect ANY worktree that:
+ * - Has a kspec manifest in it (indicating it's a kspec shadow worktree)
+ * - Or has a worktree name containing "kspec" or the configured directory name
+ *
+ * @param cwd Current working directory
+ * @param configuredDirectory Optional configured directory name for matching
  */
 export async function detectRunningFromShadowWorktree(
   cwd: string,
+  configuredDirectory?: string,
 ): Promise<string | null> {
   try {
     const gitPath = path.join(cwd, ".git");
@@ -206,7 +255,7 @@ export async function detectRunningFromShadowWorktree(
 
     const gitdir = match[1];
 
-    // Check if this is a shadow worktree (pattern: <project>/.git/worktrees/-kspec)
+    // Check if this is a worktree (pattern: <project>/.git/worktrees/<name>)
     if (gitdir.includes(".git/worktrees/")) {
       const worktreesMatch = gitdir.match(/^(.+)\/\.git\/worktrees\//);
       if (worktreesMatch) {
@@ -214,8 +263,37 @@ export async function detectRunningFromShadowWorktree(
         const cwdBase = path.basename(cwd);
         const worktreeName = path.basename(gitdir);
 
-        if (cwdBase === SHADOW_WORKTREE_DIR || worktreeName.includes("kspec")) {
+        // AC: ac-8 — check multiple patterns for shadow worktree detection
+        const directoryToCheck = configuredDirectory || SHADOW_WORKTREE_DIR;
+
+        // Check if directory name matches default, configured, or worktree contains "kspec"
+        if (
+          cwdBase === SHADOW_WORKTREE_DIR ||
+          cwdBase === directoryToCheck ||
+          worktreeName.includes("kspec")
+        ) {
           return mainProjectRoot;
+        }
+
+        // Additional check: see if this directory has a kspec manifest
+        // This catches custom directories that don't have "kspec" in the name
+        try {
+          const files = await fs.readdir(cwd);
+          const hasKspecManifest = files.some(
+            (f) =>
+              (f.endsWith(".yaml") || f.endsWith(".yml")) &&
+              !f.includes(".tasks.") &&
+              !f.includes(".inbox."),
+          );
+          // Check for modules directory or tasks file as additional signals
+          const hasModules = files.includes("modules");
+          const hasTasksFile = files.some((f) => f.includes(".tasks."));
+
+          if (hasKspecManifest && (hasModules || hasTasksFile)) {
+            return mainProjectRoot;
+          }
+        } catch {
+          // Ignore read errors
         }
       }
     }
@@ -228,17 +306,26 @@ export async function detectRunningFromShadowWorktree(
 
 /**
  * Detect shadow branch configuration from a directory.
- * Returns shadow config if .kspec/ exists and is valid.
+ * Returns shadow config if worktree directory exists and is valid.
+ *
+ * AC: @config-shadow ac-1 ac-2 — uses configured branch/directory names
+ * AC: @config-shadow ac-7 — defaults to constants when options not provided
+ *
+ * @param startDir Directory to start detection from
+ * @param options Optional shadow configuration (branch name, directory)
  */
 export async function detectShadow(
   startDir: string,
+  options?: ShadowOptions,
 ): Promise<ShadowConfig | null> {
   const gitRoot = getGitRoot(startDir);
   if (!gitRoot) {
     return null;
   }
 
-  const worktreeDir = path.join(gitRoot, SHADOW_WORKTREE_DIR);
+  const directoryName = getDirectoryName(options);
+  const branchName = getBranchName(options);
+  const worktreeDir = path.join(gitRoot, directoryName);
 
   try {
     await fs.access(worktreeDir);
@@ -248,7 +335,7 @@ export async function detectShadow(
       return {
         enabled: true,
         worktreeDir,
-        branchName: SHADOW_BRANCH_NAME,
+        branchName,
         projectRoot: gitRoot,
       };
     }
@@ -256,18 +343,27 @@ export async function detectShadow(
     // Directory exists but not a valid worktree
     return null;
   } catch {
-    // .kspec/ doesn't exist
+    // Worktree directory doesn't exist
     return null;
   }
 }
 
 /**
- * Get detailed shadow branch status
+ * Get detailed shadow branch status.
+ *
+ * AC: @config-shadow ac-1 ac-2 — uses configured branch/directory names
+ * AC: @config-shadow ac-7 — defaults to constants when options not provided
+ *
+ * @param projectRoot Git repository root
+ * @param options Optional shadow configuration
  */
 export async function getShadowStatus(
   projectRoot: string,
+  options?: ShadowOptions,
 ): Promise<ShadowStatus> {
-  const worktreeDir = path.join(projectRoot, SHADOW_WORKTREE_DIR);
+  const directoryName = getDirectoryName(options);
+  const branchName = getBranchName(options);
+  const worktreeDir = path.join(projectRoot, directoryName);
 
   const status: ShadowStatus = {
     exists: false,
@@ -284,7 +380,7 @@ export async function getShadowStatus(
   }
 
   // Check if branch exists
-  status.branchExists = await branchExists(projectRoot, SHADOW_BRANCH_NAME);
+  status.branchExists = await branchExists(projectRoot, branchName);
 
   // Check if worktree directory exists
   try {
@@ -315,6 +411,105 @@ export async function getShadowStatus(
   }
 
   return status;
+}
+
+/**
+ * Result from checking config mismatch.
+ */
+export interface ShadowConfigMismatch {
+  /** Whether there is a mismatch */
+  hasMismatch: boolean;
+  /** Mismatched branch name (detected vs configured) */
+  branchMismatch?: { detected: string; configured: string };
+  /** Mismatched directory (detected vs configured) */
+  directoryMismatch?: { detected: string; configured: string };
+  /** Guidance message for the user */
+  guidance?: string;
+}
+
+/**
+ * Check if detected shadow branch settings match the configuration.
+ *
+ * AC: @config-shadow ac-9 — detect mismatch and guide user to migrate
+ *
+ * This function detects when:
+ * - A shadow branch exists with default settings (kspec-meta, .kspec)
+ * - But config specifies different settings
+ *
+ * @param projectRoot Git repository root
+ * @param configuredBranch Configured branch name
+ * @param configuredDirectory Configured directory name
+ */
+export async function checkConfigMismatch(
+  projectRoot: string,
+  configuredBranch: string,
+  configuredDirectory: string,
+): Promise<ShadowConfigMismatch> {
+  const result: ShadowConfigMismatch = { hasMismatch: false };
+
+  // First check if default shadow exists
+  const defaultStatus = await getShadowStatus(projectRoot, {
+    branchName: SHADOW_BRANCH_NAME,
+    directory: SHADOW_WORKTREE_DIR,
+  });
+
+  if (!defaultStatus.healthy) {
+    // No existing shadow with defaults - no mismatch possible
+    return result;
+  }
+
+  // Check if configured settings differ from defaults
+  const branchDiffers = configuredBranch !== SHADOW_BRANCH_NAME;
+  const directoryDiffers = configuredDirectory !== SHADOW_WORKTREE_DIR;
+
+  if (!branchDiffers && !directoryDiffers) {
+    // Config matches defaults - no mismatch
+    return result;
+  }
+
+  // There's a mismatch - existing shadow uses defaults but config specifies different values
+  result.hasMismatch = true;
+
+  if (branchDiffers) {
+    result.branchMismatch = {
+      detected: SHADOW_BRANCH_NAME,
+      configured: configuredBranch,
+    };
+  }
+
+  if (directoryDiffers) {
+    result.directoryMismatch = {
+      detected: SHADOW_WORKTREE_DIR,
+      configured: configuredDirectory,
+    };
+  }
+
+  // Build guidance message
+  const parts: string[] = [];
+  if (result.branchMismatch) {
+    parts.push(
+      `branch "${SHADOW_BRANCH_NAME}" (config wants "${configuredBranch}")`,
+    );
+  }
+  if (result.directoryMismatch) {
+    parts.push(
+      `directory "${SHADOW_WORKTREE_DIR}" (config wants "${configuredDirectory}")`,
+    );
+  }
+
+  result.guidance = [
+    `Shadow branch exists with ${parts.join(" and ")}.`,
+    "",
+    "To migrate to configured settings:",
+    "  1. Export your specs: kspec export --all > backup.yaml",
+    "  2. Remove existing shadow: rm -rf .kspec && git branch -D kspec-meta",
+    "  3. Re-initialize: kspec init",
+    "  4. Import specs: kspec import backup.yaml",
+    "",
+    "Or update kspec.config.yaml to match existing settings.",
+  ].join("\n");
+
+  return result;
 }
 
 /**
@@ -481,6 +676,8 @@ export function generateCommitMessage(
 /**
  * Resolve a path relative to shadow worktree if enabled.
  * Falls back to original path if shadow is not enabled.
+ *
+ * Uses the worktreeDir from shadowConfig for custom directory support.
  */
 export function resolveShadowPath(
   originalPath: string,
@@ -494,21 +691,24 @@ export function resolveShadowPath(
   // If the path is within the project root, rewrite to shadow worktree
   const relativePath = path.relative(projectRoot, originalPath);
 
-  // Skip if path is outside project or already in .kspec
+  // Get the directory name from the worktree path (supports custom directories)
+  const worktreeDirName = path.basename(shadowConfig.worktreeDir);
+
+  // Skip if path is outside project or already in shadow worktree
   if (
     relativePath.startsWith("..") ||
-    relativePath.startsWith(SHADOW_WORKTREE_DIR)
+    relativePath.startsWith(worktreeDirName)
   ) {
     return originalPath;
   }
 
-  // Handle spec/ -> .kspec/ mapping
+  // Handle spec/ -> shadow worktree mapping
   if (relativePath.startsWith("spec/") || relativePath.startsWith("spec\\")) {
     const specRelative = relativePath.slice(5); // Remove 'spec/'
     return path.join(shadowConfig.worktreeDir, specRelative);
   }
 
-  // For task/inbox files at root, move to .kspec
+  // For task/inbox files at root, move to shadow worktree
   if (
     relativePath.endsWith(".tasks.yaml") ||
     relativePath.endsWith(".inbox.yaml")
@@ -607,13 +807,17 @@ export interface ShadowInitResult {
 }
 
 /**
- * Options for shadow initialization
+ * Options for shadow initialization.
+ *
+ * AC: @config-shadow ac-1 ac-2 — branch and directory configurable
  */
 export interface ShadowInitOptions {
   /** Project name for manifest */
   projectName?: string;
   /** Force reinitialize even if exists */
   force?: boolean;
+  /** Shadow branch/directory/remote configuration */
+  shadow?: ShadowOptions;
 }
 
 /**
@@ -676,13 +880,22 @@ export async function fetchRemote(
 /**
  * Push shadow branch to remote with tracking.
  * Returns true if push succeeded, false otherwise.
+ *
+ * AC: @config-shadow ac-3 — uses configured remote name
+ * AC: @config-shadow ac-7 — defaults to origin when not provided
+ *
+ * @param worktreeDir Path to shadow worktree
+ * @param remoteName Remote name (default: origin)
+ * @param options Optional shadow configuration
  */
 export async function pushShadowBranch(
   worktreeDir: string,
   remoteName = "origin",
+  options?: ShadowOptions,
 ): Promise<boolean> {
+  const branchName = getBranchName(options);
   try {
-    await execAsync(`git push -u ${remoteName} ${SHADOW_BRANCH_NAME}`, {
+    await execAsync(`git push -u ${remoteName} ${branchName}`, {
       cwd: worktreeDir,
     });
     return true;
@@ -694,11 +907,20 @@ export async function pushShadowBranch(
 /**
  * Check if shadow branch has remote tracking configured.
  * AC-4: Used to determine whether sync should be attempted.
+ *
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ *
+ * @param worktreeDir Path to shadow worktree
+ * @param options Optional shadow configuration
  */
-export async function hasRemoteTracking(worktreeDir: string): Promise<boolean> {
+export async function hasRemoteTracking(
+  worktreeDir: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const branchName = getBranchName(options);
   try {
     const { stdout } = await execAsync(
-      `git config branch.${SHADOW_BRANCH_NAME}.remote`,
+      `git config branch.${branchName}.remote`,
       { cwd: worktreeDir },
     );
     return stdout.trim().length > 0;
@@ -712,37 +934,108 @@ export async function hasRemoteTracking(worktreeDir: string): Promise<boolean> {
  * AC-8: If shadow has no tracking but main branch has origin remote,
  * automatically configure tracking to origin/kspec-meta.
  *
- * @param worktreeDir Path to .kspec/ worktree
+ * AC: @config-shadow ac-3 ac-4 ac-5 — handles different remote types
+ * AC: @config-shadow ac-6 — error with guidance if named remote doesn't exist
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ *
+ * @param worktreeDir Path to shadow worktree
  * @param projectRoot Git repository root
- * @returns true if tracking is now configured (was already or just set up)
+ * @param options Optional shadow configuration
+ * @returns Result with success status and error details if applicable
  */
 export async function ensureRemoteTracking(
   worktreeDir: string,
   projectRoot: string,
-): Promise<boolean> {
+  options?: ShadowOptions,
+): Promise<EnsureRemoteTrackingResult> {
+  const branchName = getBranchName(options);
+
   // Check if already has tracking
-  if (await hasRemoteTracking(worktreeDir)) {
-    return true;
+  if (await hasRemoteTracking(worktreeDir, options)) {
+    return { success: true };
   }
 
-  // Check if main branch has origin remote
-  if (!(await hasRemote(projectRoot))) {
-    return false;
+  // Determine remote name to use
+  let remoteName = "origin";
+
+  if (options?.remote) {
+    const remoteType = options.remoteType ?? "named";
+
+    if (remoteType === "named") {
+      // AC: ac-3 — use the named remote directly
+      remoteName = options.remote;
+
+      // AC: ac-6 — verify the named remote exists with guidance
+      if (!(await hasRemote(projectRoot, remoteName))) {
+        // Named remote doesn't exist - provide helpful guidance
+        return {
+          success: false,
+          missingRemote: remoteName,
+          guidance: `Remote '${remoteName}' does not exist. To fix this:\n` +
+            `  1. Add the remote: git remote add ${remoteName} <url>\n` +
+            `  2. Or update kspec.config.yaml to use an existing remote\n` +
+            `  3. Or remove shadow.remote to use the default 'origin' remote`,
+        };
+      }
+    } else if (remoteType === "path" || remoteType === "url") {
+      // AC: ac-4 ac-5 — add a git remote for path/URL if not already present
+      const specRemoteName = "kspec-specs";
+      const hasSpecsRemote = await hasRemote(projectRoot, specRemoteName);
+
+      if (!hasSpecsRemote) {
+        try {
+          // Expand tilde for paths if needed
+          let remoteTarget = options.remote;
+          if (remoteType === "path" && remoteTarget.startsWith("~")) {
+            remoteTarget = remoteTarget.replace(
+              /^~/,
+              process.env.HOME || process.env.USERPROFILE || "~",
+            );
+          }
+
+          await execAsync(`git remote add ${specRemoteName} "${remoteTarget}"`, {
+            cwd: projectRoot,
+          });
+        } catch {
+          // Remote add failed - may already exist with different URL
+          return { success: false };
+        }
+      }
+
+      remoteName = specRemoteName;
+    }
+  } else {
+    // No remote configured - check if main branch has origin
+    if (!(await hasRemote(projectRoot))) {
+      return { success: false };
+    }
   }
 
-  // Set up tracking for shadow branch to origin/kspec-meta
+  // Set up tracking for shadow branch
   try {
-    await execAsync(`git config branch.${SHADOW_BRANCH_NAME}.remote origin`, {
+    await execAsync(`git config branch.${branchName}.remote ${remoteName}`, {
       cwd: worktreeDir,
     });
     await execAsync(
-      `git config branch.${SHADOW_BRANCH_NAME}.merge refs/heads/${SHADOW_BRANCH_NAME}`,
+      `git config branch.${branchName}.merge refs/heads/${branchName}`,
       { cwd: worktreeDir },
     );
-    return true;
+    return { success: true };
   } catch {
-    return false;
+    return { success: false };
   }
+}
+
+/**
+ * Result from ensuring remote tracking
+ * AC: @config-shadow ac-6 — includes error details when named remote doesn't exist
+ */
+export interface EnsureRemoteTrackingResult {
+  success: boolean;
+  /** Error when remote doesn't exist (AC-6) */
+  missingRemote?: string;
+  /** Guidance message for user */
+  guidance?: string;
 }
 
 /**
@@ -762,21 +1055,33 @@ export interface ShadowSyncResult {
  * AC-8: Automatically sets up tracking if main branch has remote.
  * Silently ignores errors - the local commit succeeded regardless.
  *
- * @param worktreeDir Path to .kspec/ worktree
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ *
+ * @param worktreeDir Path to shadow worktree
  * @param verbose Enable debug output
+ * @param options Optional shadow configuration
  */
 export async function shadowPushAsync(
   worktreeDir: string,
   verbose?: boolean,
+  options?: ShadowOptions,
 ): Promise<void> {
   const debug = isDebugMode(verbose);
 
   // AC: @shadow-sync ac-8 - Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
-  await ensureRemoteTracking(worktreeDir, projectRoot);
+  const trackingResult = await ensureRemoteTracking(worktreeDir, projectRoot, options);
+
+  // AC: @config-shadow ac-6 — log guidance if named remote doesn't exist
+  if (!trackingResult.success && trackingResult.missingRemote) {
+    if (debug) {
+      console.error(`[DEBUG] Shadow push: ${trackingResult.guidance}`);
+    }
+    return;
+  }
 
   // Check if tracking is configured before attempting push
-  if (!(await hasRemoteTracking(worktreeDir))) {
+  if (!(await hasRemoteTracking(worktreeDir, options))) {
     if (debug) {
       console.error(
         "[DEBUG] Shadow push: No remote tracking configured, skipping",
@@ -810,10 +1115,17 @@ export async function shadowPushAsync(
  * AC-6: Uses --ff-only first, falls back to --rebase.
  * AC-3: On conflict, returns failure with suggestion.
  * AC-8: Automatically sets up tracking if main branch has remote.
+ *
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ *
+ * @param worktreeDir Path to shadow worktree
+ * @param options Optional shadow configuration
  */
 export async function shadowPull(
   worktreeDir: string,
+  options?: ShadowOptions,
 ): Promise<ShadowSyncResult> {
+  const branchName = getBranchName(options);
   const result: ShadowSyncResult = {
     success: false,
     pulled: false,
@@ -823,10 +1135,16 @@ export async function shadowPull(
 
   // AC: @shadow-sync ac-8 - Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
-  await ensureRemoteTracking(worktreeDir, projectRoot);
+  const trackingResult = await ensureRemoteTracking(worktreeDir, projectRoot, options);
+
+  // AC: @config-shadow ac-6 — error with guidance if named remote doesn't exist
+  if (!trackingResult.success && trackingResult.missingRemote) {
+    result.error = trackingResult.guidance;
+    return result;
+  }
 
   // AC: @shadow-sync ac-4 - Skip if no remote tracking
-  if (!(await hasRemoteTracking(worktreeDir))) {
+  if (!(await hasRemoteTracking(worktreeDir, options))) {
     result.success = true;
     return result;
   }
@@ -834,10 +1152,7 @@ export async function shadowPull(
   // Check if remote branch exists before attempting pull
   // Fetch first to ensure refs are up to date
   await fetchRemote(projectRoot);
-  const remoteHasBranch = await remoteBranchExists(
-    projectRoot,
-    SHADOW_BRANCH_NAME,
-  );
+  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName);
   if (!remoteHasBranch) {
     // Remote branch doesn't exist yet - nothing to pull, but success
     result.success = true;
@@ -879,18 +1194,24 @@ export async function shadowPull(
 /**
  * Full sync operation: pull then push.
  * Used by session start and explicit sync commands.
+ *
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ *
+ * @param worktreeDir Path to shadow worktree
+ * @param options Optional shadow configuration
  */
 export async function shadowSync(
   worktreeDir: string,
+  options?: ShadowOptions,
 ): Promise<ShadowSyncResult> {
   // First pull
-  const pullResult = await shadowPull(worktreeDir);
+  const pullResult = await shadowPull(worktreeDir, options);
   if (!pullResult.success) {
     return pullResult;
   }
 
   // Then push (only if tracking configured, checked inside)
-  if (await hasRemoteTracking(worktreeDir)) {
+  if (await hasRemoteTracking(worktreeDir, options)) {
     try {
       await execAsync("git push", { cwd: worktreeDir });
       pullResult.pushed = true;
@@ -919,12 +1240,18 @@ async function hasUncommittedGitignore(projectRoot: string): Promise<boolean> {
 }
 
 /**
- * Commit only .gitignore with a message
+ * Commit only .gitignore with a message.
+ *
+ * @param projectRoot Git repository root
+ * @param directoryName Shadow directory name (for commit message)
  */
-async function commitGitignore(projectRoot: string): Promise<void> {
+async function commitGitignore(
+  projectRoot: string,
+  directoryName: string,
+): Promise<void> {
   await execAsync("git add .gitignore", { cwd: projectRoot });
   await execAsync(
-    'git commit -m "chore: add .kspec/ to .gitignore for shadow branch"',
+    `git commit -m "chore: add ${directoryName}/ to .gitignore for shadow branch"`,
     {
       cwd: projectRoot,
     },
@@ -932,13 +1259,23 @@ async function commitGitignore(projectRoot: string): Promise<void> {
 }
 
 /**
- * Add .kspec/ to .gitignore if not already present.
+ * Add shadow directory to .gitignore if not already present.
  * Fails if .gitignore has uncommitted changes.
  * Commits the change after adding.
+ *
+ * AC: @config-shadow ac-2 — uses configured directory name
+ * AC: @config-shadow ac-7 — defaults to .kspec when not provided
+ *
+ * @param projectRoot Git repository root
+ * @param options Optional shadow configuration
  */
-async function ensureGitignore(projectRoot: string): Promise<boolean> {
+async function ensureGitignore(
+  projectRoot: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const directoryName = getDirectoryName(options);
   const gitignorePath = path.join(projectRoot, ".gitignore");
-  const entry = `${SHADOW_WORKTREE_DIR}/`;
+  const entry = `${directoryName}/`;
 
   // Fail fast if .gitignore has uncommitted changes
   if (await hasUncommittedGitignore(projectRoot)) {
@@ -960,10 +1297,10 @@ async function ensureGitignore(projectRoot: string): Promise<boolean> {
     // Check if already present (handle various formats)
     const lines = content.split("\n");
     const patterns = [
-      SHADOW_WORKTREE_DIR,
-      `${SHADOW_WORKTREE_DIR}/`,
-      `/${SHADOW_WORKTREE_DIR}`,
-      `/${SHADOW_WORKTREE_DIR}/`,
+      directoryName,
+      `${directoryName}/`,
+      `/${directoryName}`,
+      `/${directoryName}/`,
     ];
 
     for (const line of lines) {
@@ -982,7 +1319,7 @@ async function ensureGitignore(projectRoot: string): Promise<boolean> {
     await fs.writeFile(gitignorePath, newContent, "utf-8");
 
     // Commit the change
-    await commitGitignore(projectRoot);
+    await commitGitignore(projectRoot, directoryName);
 
     return true;
   } catch (error) {
@@ -1216,6 +1553,10 @@ async function configureMergeDriver(
  * Initialize shadow branch and worktree.
  * Creates orphan branch, worktree, updates gitignore, and creates initial structure.
  *
+ * AC: @config-shadow ac-1 — creates orphan branch with configured name
+ * AC: @config-shadow ac-2 — creates worktree at configured directory
+ * AC: @config-shadow ac-7 — defaults to constants when options not provided
+ *
  * @param projectRoot Git repository root
  * @param options Initialization options
  * @returns Result indicating what was created
@@ -1241,10 +1582,13 @@ export async function initializeShadow(
     return result;
   }
 
-  const worktreeDir = path.join(projectRoot, SHADOW_WORKTREE_DIR);
+  // AC: ac-1 ac-2 — use configured branch/directory or defaults
+  const branchName = getBranchName(options.shadow);
+  const directoryName = getDirectoryName(options.shadow);
+  const worktreeDir = path.join(projectRoot, directoryName);
 
-  // Check current status
-  const status = await getShadowStatus(projectRoot);
+  // Check current status with configured options
+  const status = await getShadowStatus(projectRoot, options.shadow);
 
   // Handle existing shadow branch
   if (status.healthy && !options.force) {
@@ -1263,17 +1607,23 @@ export async function initializeShadow(
 
   const slug = toSlug(projectName);
 
+  // Determine remote name to use
+  let remoteName = "origin";
+  if (options.shadow?.remote && options.shadow.remoteType === "named") {
+    remoteName = options.shadow.remote;
+  }
+
   // Check for remote shadow branch (AC-4: fetch to ensure refs are up to date)
-  const remoteExists = await hasRemote(projectRoot);
+  const remoteExists = await hasRemote(projectRoot, remoteName);
   let remoteHasShadow = false;
   if (remoteExists) {
-    await fetchRemote(projectRoot); // Best effort, ignore failures
-    remoteHasShadow = await remoteBranchExists(projectRoot, SHADOW_BRANCH_NAME);
+    await fetchRemote(projectRoot, remoteName); // Best effort, ignore failures
+    remoteHasShadow = await remoteBranchExists(projectRoot, branchName, remoteName);
   }
 
   try {
-    // Step 1: Update .gitignore first (before creating .kspec/)
-    result.gitignoreUpdated = await ensureGitignore(projectRoot);
+    // Step 1: Update .gitignore first (before creating worktree)
+    result.gitignoreUpdated = await ensureGitignore(projectRoot, options.shadow);
 
     // Step 2: Create worktree with orphan branch (or attach to existing branch)
     if (!status.worktreeExists || !status.worktreeLinked) {
@@ -1284,7 +1634,7 @@ export async function initializeShadow(
 
       // Remove stale worktree reference if any
       try {
-        await execAsync(`git worktree remove ${SHADOW_WORKTREE_DIR} --force`, {
+        await execAsync(`git worktree remove "${directoryName}" --force`, {
           cwd: projectRoot,
         });
       } catch {
@@ -1294,26 +1644,27 @@ export async function initializeShadow(
       if (remoteHasShadow) {
         // AC: @shadow-init-remote ac-1 - Remote has shadow branch - create worktree from it with tracking
         await execAsync(
-          `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
+          `git worktree add "${directoryName}" ${branchName}`,
           { cwd: projectRoot },
         );
         // Set up tracking for the branch
         await execAsync(
-          `git branch --set-upstream-to=origin/${SHADOW_BRANCH_NAME} ${SHADOW_BRANCH_NAME}`,
+          `git branch --set-upstream-to=${remoteName}/${branchName} ${branchName}`,
           { cwd: projectRoot },
         );
         result.createdFromRemote = true;
       } else if (!status.branchExists) {
         // AC: @shadow-init-remote ac-2 ac-3 - No remote branch or no remote - create orphan branch
+        // AC: @config-shadow ac-1 — use configured branch name
         await execAsync(
-          `git worktree add --orphan -b ${SHADOW_BRANCH_NAME} ${SHADOW_WORKTREE_DIR}`,
+          `git worktree add --orphan -b ${branchName} "${directoryName}"`,
           { cwd: projectRoot },
         );
         result.branchCreated = true;
       } else {
         // Attach to existing local branch
         await execAsync(
-          `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
+          `git worktree add "${directoryName}" ${branchName}`,
           { cwd: projectRoot },
         );
       }
@@ -1371,7 +1722,7 @@ export async function initializeShadow(
 
     // Step 5: AC-2: Push new branch to remote to establish tracking
     if (result.branchCreated && remoteExists && !remoteHasShadow) {
-      result.pushedToRemote = await pushShadowBranch(worktreeDir);
+      result.pushedToRemote = await pushShadowBranch(worktreeDir, remoteName, options.shadow);
     }
 
     // Step 6: Install pre-commit hook to protect shadow branch
@@ -1393,13 +1744,19 @@ export async function initializeShadow(
  * Repair a broken shadow branch setup.
  * Handles cases where worktree is disconnected or directory is missing.
  *
+ * AC: @config-shadow ac-7 — backward compat when called without config
+ *
  * @param projectRoot Git repository root
+ * @param options Optional shadow configuration
  * @returns Result indicating what was repaired
  */
 export async function repairShadow(
   projectRoot: string,
+  options?: ShadowOptions,
 ): Promise<ShadowInitResult> {
-  const status = await getShadowStatus(projectRoot);
+  const branchName = getBranchName(options);
+  const directoryName = getDirectoryName(options);
+  const status = await getShadowStatus(projectRoot, options);
 
   if (status.healthy) {
     return {
@@ -1430,12 +1787,12 @@ export async function repairShadow(
   }
 
   // Branch exists but worktree is broken - repair it
-  const worktreeDir = path.join(projectRoot, SHADOW_WORKTREE_DIR);
+  const worktreeDir = path.join(projectRoot, directoryName);
 
   try {
     // Remove stale worktree reference
     try {
-      await execAsync(`git worktree remove ${SHADOW_WORKTREE_DIR} --force`, {
+      await execAsync(`git worktree remove "${directoryName}" --force`, {
         cwd: projectRoot,
       });
     } catch {
@@ -1454,7 +1811,7 @@ export async function repairShadow(
 
     // Recreate worktree
     await execAsync(
-      `git worktree add ${SHADOW_WORKTREE_DIR} ${SHADOW_BRANCH_NAME}`,
+      `git worktree add "${directoryName}" ${branchName}`,
       { cwd: projectRoot },
     );
 

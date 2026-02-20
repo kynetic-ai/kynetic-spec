@@ -395,7 +395,7 @@ Examples:
     .action(async (ref: string, text: string) => {
       try {
         const ctx = await initContext();
-        const author = getAuthor();
+        const author = getAuthor(ctx.config?.identity?.author);
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
 

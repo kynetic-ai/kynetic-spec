@@ -7,6 +7,7 @@ import {
   createTask,
   deleteInboxItem,
   findInboxItemByRef,
+  getAuthor,
   initContext,
   type LoadedInboxItem,
   loadAllItems,
@@ -93,7 +94,7 @@ Examples:
           tags: parseTagsArray(options.tag),
         };
 
-        const item = createInboxItem(input);
+        const item = createInboxItem(input, ctx.config?.identity?.author);
         await saveInboxItem(ctx, item);
         await commitIfShadow(ctx.shadow, "inbox-add", undefined, text);
 
@@ -252,7 +253,7 @@ Examples:
 
         // AC: @cmd-inbox-promote ac-2
         if (options.note) {
-          const note = createNote(options.note);
+          const note = createNote(options.note, getAuthor(ctx.config?.identity?.author));
           task.notes = [...(task.notes || []), note];
         }
 

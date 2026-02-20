@@ -19,13 +19,22 @@ import { getGitRoot } from "./shadow.js";
 
 /**
  * Schema for shadow branch configuration.
+ *
+ * AC: @config-shadow — shadow.branch, shadow.directory, shadow.remote configurable
  */
 const ShadowConfigSchema = z
   .object({
-    /** Remote URL for shadow branch (enables separate repo for specs) */
-    remote_url: z.string().optional(),
     /** Branch name for shadow branch (default: kspec-meta) */
     branch: z.string().optional(),
+    /** Worktree directory name (default: .kspec) */
+    directory: z.string().optional(),
+    /**
+     * Remote target for shadow branch. Can be:
+     * - Named remote (e.g., "origin", "specs-origin")
+     * - Local filesystem path (starts with /, ./, or ~)
+     * - Git URL (contains :// or starts with git@)
+     */
+    remote: z.string().optional(),
   })
   .strict()
   .optional();
@@ -91,12 +100,55 @@ export const KspecConfigSchema = z
 export type KspecConfig = z.infer<typeof KspecConfigSchema>;
 
 /**
+ * Remote type for shadow branch configuration.
+ * - "named": Git remote name (e.g., "origin", "specs-origin")
+ * - "path": Local filesystem path
+ * - "url": Git URL (https://, git@, etc.)
+ */
+export type ShadowRemoteType = "named" | "path" | "url";
+
+/**
+ * Resolved shadow remote configuration.
+ */
+export interface ResolvedShadowRemote {
+  /** The remote value from config */
+  value: string;
+  /** Detected type of the remote */
+  type: ShadowRemoteType;
+}
+
+/**
+ * Detect the type of a shadow remote string.
+ *
+ * AC: @config-shadow ac-3 ac-4 ac-5 — remote type detection
+ *
+ * @param remote Remote string from config
+ * @returns Detected type: "path" for filesystem, "url" for git URLs, "named" for git remote names
+ */
+export function detectRemoteType(remote: string): ShadowRemoteType {
+  // AC: ac-4 — Local filesystem path (starts with /, ./, or ~)
+  if (remote.startsWith("/") || remote.startsWith("./") || remote.startsWith("~")) {
+    return "path";
+  }
+  // AC: ac-5 — Git URL (contains :// or starts with git@)
+  if (remote.includes("://") || remote.startsWith("git@")) {
+    return "url";
+  }
+  // AC: ac-3 — Otherwise it's a named remote
+  return "named";
+}
+
+/**
  * Resolved config with all values finalized (env vars applied, defaults filled).
  */
 export interface ResolvedKspecConfig {
   shadow: {
-    remote_url: string | null;
+    /** Branch name (default: kspec-meta) */
     branch: string;
+    /** Worktree directory name (default: .kspec) */
+    directory: string;
+    /** Remote configuration, null if not specified */
+    remote: ResolvedShadowRemote | null;
   };
   identity: {
     author: string | null;
@@ -120,8 +172,9 @@ export interface ResolvedKspecConfig {
  */
 const DEFAULT_CONFIG: ResolvedKspecConfig = {
   shadow: {
-    remote_url: null,
     branch: "kspec-meta",
+    directory: ".kspec",
+    remote: null,
   },
   identity: {
     author: null,
@@ -278,10 +331,17 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     : undefined;
   const envHost = process.env.KSPEC_DAEMON_HOST;
 
+  // Resolve shadow remote if specified
+  const remoteValue = file.shadow?.remote;
+  const resolvedRemote: ResolvedShadowRemote | null = remoteValue
+    ? { value: remoteValue, type: detectRemoteType(remoteValue) }
+    : DEFAULT_CONFIG.shadow.remote;
+
   return {
     shadow: {
-      remote_url: file.shadow?.remote_url ?? DEFAULT_CONFIG.shadow.remote_url,
       branch: file.shadow?.branch ?? DEFAULT_CONFIG.shadow.branch,
+      directory: file.shadow?.directory ?? DEFAULT_CONFIG.shadow.directory,
+      remote: resolvedRemote,
     },
     identity: {
       // AC: ac-5 — env var takes precedence
@@ -312,7 +372,11 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
  */
 export function getDefaultConfig(): ResolvedKspecConfig {
   return {
-    shadow: { ...DEFAULT_CONFIG.shadow },
+    shadow: {
+      branch: DEFAULT_CONFIG.shadow.branch,
+      directory: DEFAULT_CONFIG.shadow.directory,
+      remote: DEFAULT_CONFIG.shadow.remote,
+    },
     identity: { ...DEFAULT_CONFIG.identity },
     validation: { ...DEFAULT_CONFIG.validation },
     daemon: { ...DEFAULT_CONFIG.daemon },
