@@ -51832,6 +51832,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T21:41:11.795Z
+  started_at: 2026-02-20T01:54:41.524Z
   notes:
     - _ulid: 01KHVXK2ZKY0NJFT6VJHVSH0DQ
       created_at: 2026-02-19T21:41:11.795Z
@@ -51844,9 +51845,48 @@
         that have ctx available pass ctx.config to getAuthor(). Consider a central
         getResolvedAuthor(ctx) helper that wraps getAuthor(ctx.config) to avoid
         inconsistent call sites.
+    - _ulid: 01KHWCKFVY5AD3VC7KVGHS2EY6
+      created_at: 2026-02-20T02:03:33.630Z
+      author: "@claude"
+      content: |-
+        Implementation complete. Changes:
+
+        1. **getAuthor() updated** (src/parser/yaml.ts):
+           - Added optional configAuthor parameter
+           - Priority chain: env var > config author > git user > OS user
+           - AC-1/AC-2/AC-3 annotated in code
+
+        2. **createInboxItem() updated** (src/parser/yaml.ts):
+           - Added optional configAuthor parameter
+           - Passes to getAuthor() for fallback chain
+
+        3. **createObservation() updated** (src/parser/meta.ts):
+           - Added configAuthor option
+           - Passes to getAuthor() for fallback chain
+
+        4. **CLI call sites updated**:
+           - task.ts: 5 locations pass ctx.config.identity.author
+           - derive.ts: passes ctx.config.identity.author
+           - plan.ts: passes ctx.config.identity.author
+           - plan-import.ts: passes ctx.config.identity.author
+           - workflow.ts: passes ctx.config.identity.author
+           - inbox.ts: 2 locations pass ctx.config.identity.author
+           - meta.ts: 2 locations pass ctx.config.identity.author
+
+        5. **Daemon routes updated**:
+           - packages/daemon/src/routes/tasks.ts: passes ctx.config.identity.author
+           - packages/daemon/src/routes/inbox.ts: passes ctx.config.identity.author
+
+        6. **9 new tests added** (tests/parser/config.test.ts):
+           - Config author loading from file
+           - Env var precedence over config
+           - Null fallback behavior
+           - getAuthor() with config parameter tests
+
+        All 2874 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T01:54:41.524Z
 - _ulid: 01KHVXK39RHF5J1NQ79AE0BRQF
   slugs:
     - implement-configurable-validation-defaults
