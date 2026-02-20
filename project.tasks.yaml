@@ -52536,10 +52536,16 @@
     - bugfix
   vcs_refs: []
   created_at: 2026-02-20T05:13:08.618Z
-  notes: []
+  started_at: 2026-02-20T10:35:12.162Z
+  notes:
+    - _ulid: 01KHXA4S40RYN1MA7D11G2V231
+      created_at: 2026-02-20T10:39:48.864Z
+      author: "@claude"
+      content: Fixed detectRemoteType() to recognize '../' prefix as a path. Added '../relative/path' test
+        case. Pre-existing daemon-executable.test.ts failure is unrelated (bun compile).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T10:35:12.162Z
 - _ulid: 01KHWQEN6093VQFZHQXEY9NVRQ
   slugs: []
   title: Reconcile doctor command exit code with spec
