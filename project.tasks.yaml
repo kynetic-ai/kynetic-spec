@@ -52785,10 +52785,19 @@
     - test-gap
   vcs_refs: []
   created_at: 2026-02-20T05:13:14.210Z
-  notes: []
+  started_at: 2026-02-20T11:31:56.149Z
+  notes:
+    - _ulid: 01KHXDC6TAYCTDWBG3CYNVZRVR
+      created_at: 2026-02-20T11:36:17.994Z
+      author: "@claude"
+      content: "Fixed weak ac-exit-zero test by adding proper assertions: (1)
+        expect(result.exitCode).toBe(0), (2) expect(report.overall.healthy).toBe(true), (3)
+        expect(report.overall.errorCount).toBe(0). Removed misleading comment that suggested the
+        test might not be healthy. The existing test fixtures are sufficient to produce a healthy
+        report (warnings are acceptable). All 27 doctor tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T11:31:56.149Z
 - _ulid: 01KHWTXE0XPV2EW6X1BR1Y87SK
   slugs: []
   title: Review task-work and pr-review skills for trait AC coverage enforcement
