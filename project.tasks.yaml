@@ -52584,10 +52584,17 @@
     - bugfix
   vcs_refs: []
   created_at: 2026-02-20T05:13:09.568Z
-  notes: []
+  started_at: 2026-02-20T10:53:26.118Z
+  notes:
+    - _ulid: 01KHXB506E098C46BW7C43DCH8
+      created_at: 2026-02-20T10:57:24.686Z
+      author: "@claude"
+      content: Changed doctor command to exit 1 (EXIT_CODES.ERROR) instead of 4
+        (EXIT_CODES.VALIDATION_FAILED) when health checks fail. This aligns with spec ac-exit-one
+        and trait-semantic-exit-codes ac-2. Added trait AC annotations to exit code tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T10:53:26.118Z
 - _ulid: 01KHWQEP30P7WWVAEZMRJPY12M
   slugs: []
   title: Add deprecation warning tests for config-daemon and manifest-cleanup
