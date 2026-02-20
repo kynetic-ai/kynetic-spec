@@ -131,6 +131,16 @@ export interface ValidateOptions {
   orphans?: boolean;
   /** Check spec completeness (missing AC, descriptions, status inconsistencies) */
   completeness?: boolean;
+  /**
+   * When true, dangling references are treated as errors instead of warnings.
+   * AC: @config-validation ac-2 ac-3 ac-4
+   */
+  strictRefs?: boolean;
+  /**
+   * When true, missing acceptance criteria are treated as errors instead of warnings.
+   * AC: @config-validation ac-1
+   */
+  requireAcceptance?: boolean;
 }
 
 // ============================================================
@@ -1583,8 +1593,31 @@ export async function validate(
       allPlans,
     );
     const refResult = validateRefs(index, allTasks, allItems);
-    result.refErrors = refResult.errors;
-    result.refWarnings = refResult.warnings;
+
+    // AC: @config-validation ac-2 ac-3 — strict_refs controls error vs warning
+    // When strictRefs is false, demote "not_found" ref errors to warnings
+    if (options.strictRefs === false) {
+      // Move not_found errors to warnings
+      const notFoundErrors = refResult.errors.filter((e) => e.error === "not_found");
+      const otherErrors = refResult.errors.filter((e) => e.error !== "not_found");
+
+      result.refErrors = otherErrors;
+      result.refWarnings = [
+        ...refResult.warnings,
+        ...notFoundErrors.map((e) => ({
+          ref: e.ref,
+          sourceFile: e.sourceFile,
+          sourceUlid: e.sourceUlid,
+          field: e.field,
+          warning: "deprecated_target" as const, // Reuse existing warning type
+          message: e.message,
+        })),
+      ];
+    } else {
+      // Default/strict behavior: not_found refs are errors
+      result.refErrors = refResult.errors;
+      result.refWarnings = refResult.warnings;
+    }
 
     // AC: @skill-validation ac-2 - validate skill depends_on references
     const skillDependsOnWarnings = validateSkillDependsOn(metaCtx.skills, index);
@@ -1605,7 +1638,7 @@ export async function validate(
     if (runCompleteness) {
       // Build trait index for trait AC coverage validation
       const traitIndex = new TraitIndex(allItems, index);
-      result.completenessWarnings = await checkCompleteness(
+      const completenessWarnings = await checkCompleteness(
         allItems,
         index,
         ctx.rootDir,
@@ -1615,7 +1648,30 @@ export async function validate(
       // AC: @task-automation-eligibility ac-21, ac-23
       // Check automation eligibility warnings for tasks
       const automationWarnings = checkAutomationEligibility(allTasks, index);
-      result.completenessWarnings.push(...automationWarnings);
+      completenessWarnings.push(...automationWarnings);
+
+      // AC: @config-validation ac-1 — require_acceptance promotes missing AC to errors
+      if (options.requireAcceptance) {
+        const missingAC = completenessWarnings.filter(
+          (w) => w.type === "missing_acceptance_criteria",
+        );
+        const otherWarnings = completenessWarnings.filter(
+          (w) => w.type !== "missing_acceptance_criteria",
+        );
+
+        // Promote missing AC warnings to schema errors
+        for (const w of missingAC) {
+          result.schemaErrors.push({
+            file: "completeness",
+            path: w.itemRef,
+            message: w.message,
+          });
+        }
+
+        result.completenessWarnings = otherWarnings;
+      } else {
+        result.completenessWarnings = completenessWarnings;
+      }
     }
   }
 
