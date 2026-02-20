@@ -680,3 +680,10 @@ inbox:
       - dx
       - cli
     added_by: "@claude"
+  - _ulid: 01KHWWMC2P592NMM8N63TDGZ0Q
+    text: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
+    created_at: 2026-02-20T06:43:39.734Z
+    tags:
+      - dx
+      - cli
+    added_by: "@claude"
