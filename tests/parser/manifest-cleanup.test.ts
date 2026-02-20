@@ -5,7 +5,7 @@
  * - @config-manifest-cleanup ac-1: kspec init generates manifest without config block
  * - @config-manifest-cleanup ac-2: existing manifests with config block parse successfully
  * - @config-manifest-cleanup ac-3: kspec init generates manifest without daemon block
- * - @config-manifest-cleanup ac-4: existing manifests with daemon block parse successfully
+ * - @config-manifest-cleanup ac-4: existing manifests with daemon block parse and log deprecation
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -235,6 +235,83 @@ describe("Manifest Cleanup", () => {
         expect(result.data.config).toBeUndefined();
         expect(result.data.daemon).toBeUndefined();
       }
+    });
+  });
+
+  describe("deprecation logging", () => {
+    // AC: @config-manifest-cleanup ac-4 — debug-level deprecation note for daemon block
+    it("emits debug log when parsing manifest with daemon block", async () => {
+      // Write manifest with deprecated daemon block
+      await fs.writeFile(
+        path.join(tempDir, "kynetic.yaml"),
+        `kynetic: "1.0"
+project:
+  name: Test Project
+daemon:
+  port: 5000
+  auto_start: false
+`
+      );
+
+      // Run CLI command with KSPEC_DEBUG=1 to see debug output
+      const result = kspec("validate", tempDir, {
+        expectFail: true,
+        env: { KSPEC_DEBUG: "1" },
+      });
+
+      // Should contain the debug-level deprecation note
+      expect(result.stderr).toContain("[DEBUG] manifest:");
+      expect(result.stderr).toContain('Deprecated "daemon" block found');
+      expect(result.stderr).toContain("Use kspec.config.yaml instead");
+    });
+
+    // AC: @config-manifest-cleanup ac-2 — debug-level deprecation note for config block
+    it("emits debug log when parsing manifest with config block", async () => {
+      // Write manifest with deprecated config block
+      await fs.writeFile(
+        path.join(tempDir, "kynetic.yaml"),
+        `kynetic: "1.0"
+project:
+  name: Test Project
+config:
+  validation:
+    strict_refs: true
+`
+      );
+
+      // Run CLI command with KSPEC_DEBUG=1 to see debug output
+      const result = kspec("validate", tempDir, {
+        expectFail: true,
+        env: { KSPEC_DEBUG: "1" },
+      });
+
+      // Should contain the debug-level deprecation note
+      expect(result.stderr).toContain("[DEBUG] manifest:");
+      expect(result.stderr).toContain('Deprecated "config" block found');
+      expect(result.stderr).toContain("Use kspec.config.yaml instead");
+    });
+
+    // Verify no debug logs when KSPEC_DEBUG is not set
+    it("does not emit debug logs when KSPEC_DEBUG is not set", async () => {
+      // Write manifest with deprecated blocks
+      await fs.writeFile(
+        path.join(tempDir, "kynetic.yaml"),
+        `kynetic: "1.0"
+project:
+  name: Test Project
+daemon:
+  port: 5000
+config:
+  validation:
+    strict_refs: true
+`
+      );
+
+      // Run CLI command without KSPEC_DEBUG
+      const result = kspec("validate", tempDir, { expectFail: true });
+
+      // Should NOT contain debug logs
+      expect(result.stderr).not.toContain("[DEBUG] manifest:");
     });
   });
 });

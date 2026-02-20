@@ -37,6 +37,42 @@ import {
 import { TraitIndex } from "./traits.js";
 
 /**
+ * Log a debug message (only when KSPEC_DEBUG=1)
+ */
+function debugLog(prefix: string, message: string): void {
+  if (process.env.KSPEC_DEBUG === "1") {
+    console.error(`[DEBUG] ${prefix}: ${message}`);
+  }
+}
+
+/**
+ * Parse a manifest and emit deprecation warnings for deprecated fields.
+ *
+ * AC: @config-manifest-cleanup ac-4 — debug-level deprecation note for daemon block
+ */
+function parseManifestWithWarnings(rawManifest: unknown): Manifest {
+  const manifest = ManifestSchema.parse(rawManifest);
+
+  // AC: @config-manifest-cleanup ac-4 — log debug-level deprecation note for daemon block
+  if (manifest.daemon) {
+    debugLog(
+      "manifest",
+      'Deprecated "daemon" block found in manifest. Use kspec.config.yaml instead.',
+    );
+  }
+
+  // Also warn for deprecated config block
+  if (manifest.config) {
+    debugLog(
+      "manifest",
+      'Deprecated "config" block found in manifest. Use kspec.config.yaml instead.',
+    );
+  }
+
+  return manifest;
+}
+
+/**
  * Spec item with runtime metadata for source tracking.
  * _sourceFile is not serialized - it's used to know where to write updates.
  * _path tracks location within the file for nested items (e.g., "features[0].requirements[2]")
@@ -260,7 +296,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     if (manifestPath) {
       try {
         const rawManifest = await readYamlFile<unknown>(manifestPath);
-        manifest = ManifestSchema.parse(rawManifest);
+        manifest = parseManifestWithWarnings(rawManifest);
       } catch {
         // Manifest exists but may be invalid
       }
@@ -306,7 +342,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     if (manifestPath) {
       try {
         const rawManifest = await readYamlFile<unknown>(manifestPath);
-        manifest = ManifestSchema.parse(rawManifest);
+        manifest = parseManifestWithWarnings(rawManifest);
       } catch {
         // Manifest exists but may be invalid
       }
@@ -342,7 +378,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
 
     try {
       const rawManifest = await readYamlFile<unknown>(manifestPath);
-      manifest = ManifestSchema.parse(rawManifest);
+      manifest = parseManifestWithWarnings(rawManifest);
     } catch {
       // Manifest exists but may be invalid
     }
