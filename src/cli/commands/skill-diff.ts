@@ -17,6 +17,7 @@ import type { Command } from "commander";
 import {
   findMetaItemByRef,
   initContext,
+  isSkill,
   loadMetaContext,
   loadSkillContent,
   type LoadedSkill,
@@ -271,9 +272,9 @@ export function registerSkillDiffCommands(skill: Command): void {
         // Support both positional ref argument and --skill option
         const skillRef = ref || options.skill;
         if (skillRef) {
-          // Resolve the ref to a skill
+          // Resolve the ref to a skill (uses _type discriminant)
           const item = findMetaItemByRef(metaCtx, skillRef);
-          if (!item || !("origin" in item)) {
+          if (!item || !isSkill(item)) {
             error(`Skill not found: ${skillRef}`);
             console.log(chalk.gray("Try: kspec skill list"));
             process.exit(EXIT_CODES.NOT_FOUND);
@@ -688,8 +689,8 @@ export function registerSkillDiffCommands(skill: Command): void {
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        // Check it's a skill
-        if (!("origin" in item)) {
+        // Check it's a skill (uses _type discriminant)
+        if (!isSkill(item)) {
           error(`Item ${ref} is not a skill`);
           process.exit(EXIT_CODES.ERROR);
         }

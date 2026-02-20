@@ -211,6 +211,7 @@ const KEBAB_CASE_REGEX = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
  */
 export const SkillSchema = z.object({
   _ulid: MetaUlidSchema,
+  _type: z.literal("skill").default("skill"),
   id: z
     .string({ required_error: "Skill ID is required" })
     .regex(
@@ -358,13 +359,26 @@ export type WorkflowRunsFile = z.infer<typeof WorkflowRunsFileSchema>;
 export type MetaItem = Agent | Workflow | Convention | Observation | Skill;
 
 /**
+ * Type guard for skill items
+ * Uses _type discriminant field for reliable discrimination
+ */
+export function isSkill(item: MetaItem | unknown): item is Skill {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    "_type" in item &&
+    (item as { _type: unknown })._type === "skill"
+  );
+}
+
+/**
  * Determine the type of a meta item
- * AC: @skill-meta-type ac-7 - skills discriminated by the origin field (unique to skills)
+ * AC: @skill-meta-type ac-7 - skills discriminated by _type field
  */
 export function getMetaItemType(
   item: MetaItem,
 ): "agent" | "workflow" | "convention" | "observation" | "skill" {
-  if ("origin" in item) return "skill";
+  if (isSkill(item)) return "skill";
   if ("capabilities" in item) return "agent";
   if ("trigger" in item) return "workflow";
   if ("domain" in item) return "convention";

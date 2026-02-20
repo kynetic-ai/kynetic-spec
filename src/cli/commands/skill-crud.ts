@@ -24,6 +24,7 @@ import {
   findMetaItemByRef,
   getSkillContentPath,
   initContext,
+  isSkill,
   loadMetaContext,
   loadSkillContent,
   loadSkillDocs,
@@ -419,8 +420,8 @@ export function registerSkillCrudCommands(skill: Command): void {
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        // Check it's a skill
-        if (!("origin" in item)) {
+        // Check it's a skill (uses _type discriminant)
+        if (!isSkill(item)) {
           error(`Item ${ref} is not a skill`);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -501,8 +502,8 @@ export function registerSkillCrudCommands(skill: Command): void {
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        // Check it's a skill
-        if (!("origin" in item)) {
+        // Check it's a skill (uses _type discriminant)
+        if (!isSkill(item)) {
           error(`Item ${ref} is not a skill`);
           process.exit(EXIT_CODES.ERROR);
         }
@@ -697,8 +698,8 @@ export function registerSkillCrudCommands(skill: Command): void {
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        // Check it's a skill
-        if (!("origin" in item)) {
+        // Check it's a skill (uses _type discriminant)
+        if (!isSkill(item)) {
           error(`Item ${ref} is not a skill`);
           process.exit(EXIT_CODES.ERROR);
         }
