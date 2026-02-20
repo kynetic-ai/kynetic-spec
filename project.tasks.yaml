@@ -52450,10 +52450,19 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-20T05:13:06.741Z
-  notes: []
+  started_at: 2026-02-20T05:41:03.436Z
+  notes:
+    - _ulid: 01KHWS7SH5X3PJW1F31ETQHCZF
+      created_at: 2026-02-20T05:44:21.797Z
+      author: "@claude"
+      content: Simplified subagent prompt to be data-only — provides task ref, branch, task details, and
+        spec context, then delegates entirely to /pr-review skill. Removed all hardcoded workflow
+        instructions from the prompt. Updated pr-review skill (SKILL.md) to include explicit
+        requirement to post a structured GitHub review (APPROVE or REQUEST_CHANGES) via gh api
+        before merging, with AC coverage checklist template.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T05:41:03.436Z
 - _ulid: 01KHWQEKAJ87YAK4SP17Q3XMFM
   slugs: []
   title: Fix sync require('fs').statSync() in setup-status.ts
