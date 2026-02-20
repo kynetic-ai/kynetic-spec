@@ -61,7 +61,10 @@ const GUARD_SCRIPTS: Record<string, boolean> = {
 /**
  * Detect the agent type in use.
  */
-export function detectAgent(): { type: AgentType; confidence: "high" | "medium" | "low" } {
+export async function detectAgent(): Promise<{
+  type: AgentType;
+  confidence: "high" | "medium" | "low";
+}> {
   // Check environment variables for agent hints
   const envHints = {
     CLAUDE_CODE: "claude-code",
@@ -81,7 +84,7 @@ export function detectAgent(): { type: AgentType; confidence: "high" | "medium" 
     // Global Claude Code config at ~/.claude
     const globalClaudeDir = path.join(process.env.HOME, ".claude");
     try {
-      const stats = require("fs").statSync(globalClaudeDir);
+      const stats = await fs.stat(globalClaudeDir);
       if (stats.isDirectory()) {
         return { type: "claude-code", confidence: "medium" };
       }
@@ -113,7 +116,7 @@ function debugLog(message: string, _error?: unknown): void {
  * @param projectDir Project root directory
  */
 export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
-  const detected = detectAgent();
+  const detected = await detectAgent();
   const configPath = path.join(projectDir, ".claude", "settings.json");
   const hooksDir = path.join(projectDir, ".claude", "hooks");
   const agentsMdPath = path.join(projectDir, "kspec-agents.md");
