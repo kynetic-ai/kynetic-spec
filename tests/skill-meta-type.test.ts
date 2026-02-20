@@ -11,6 +11,7 @@ import {
   loadMetaContext,
   loadSkillContent,
   findMetaItemByRef,
+  resolveMetaRef,
   getSkillContentPath,
 } from '../src/parser/meta';
 import { getMetaItemType, isSkill, MetaManifestSchema, SkillSchema } from '../src/schema/meta';
@@ -436,6 +437,217 @@ Some usage instructions.
       expect(getMetaItemType(convention)).toBe('convention');
       expect(getMetaItemType(observation)).toBe('observation');
       expect(getMetaItemType(skill)).toBe('skill');
+    });
+  });
+
+  describe('resolveMetaRef', () => {
+    it('should resolve skill by semantic id and return item, type, and ulid', async () => {
+      const skillUlid = testUlid('SKRESL');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        skills: [
+          {
+            _ulid: skillUlid,
+            id: 'resolve-test',
+            name: 'Resolve Test',
+            origin: 'core',
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, 'resolve-test');
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('skill');
+      expect(resolved?.ulid).toBe(skillUlid);
+      expect('id' in resolved!.item && resolved!.item.id).toBe('resolve-test');
+    });
+
+    it('should resolve agent and return correct type', async () => {
+      const agentUlid = testUlid('AGRES1');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        agents: [
+          {
+            _ulid: agentUlid,
+            id: 'test-agent',
+            name: 'Test Agent',
+            capabilities: ['search'],
+            tools: [],
+            conventions: [],
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, 'test-agent');
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('agent');
+      expect(resolved?.ulid).toBe(agentUlid);
+    });
+
+    it('should resolve workflow by id', async () => {
+      const workflowUlid = testUlid('WFRES1');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        workflows: [
+          {
+            _ulid: workflowUlid,
+            id: 'test-workflow',
+            trigger: 'manual',
+            steps: [],
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, 'test-workflow');
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('workflow');
+      expect(resolved?.ulid).toBe(workflowUlid);
+    });
+
+    it('should resolve convention by domain', async () => {
+      const convUlid = testUlid('CVRES1');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        conventions: [
+          {
+            _ulid: convUlid,
+            domain: 'testing',
+            rules: ['Always test'],
+            examples: [],
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, 'testing');
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('convention');
+      expect(resolved?.ulid).toBe(convUlid);
+    });
+
+    it('should resolve observation by ULID prefix', async () => {
+      const obsUlid = testUlid('OBSRES');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        observations: [
+          {
+            _ulid: obsUlid,
+            type: 'friction',
+            content: 'Test observation',
+            created_at: new Date().toISOString(),
+            resolved: false,
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, obsUlid.slice(0, 8));
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('observation');
+      expect(resolved?.ulid).toBe(obsUlid);
+    });
+
+    it('should return null for non-existent ref', async () => {
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        skills: [],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, 'nonexistent');
+
+      expect(resolved).toBeNull();
+    });
+
+    it('should strip @ prefix from ref', async () => {
+      const skillUlid = testUlid('SKPREFIX');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        skills: [
+          {
+            _ulid: skillUlid,
+            id: 'prefix-test',
+            name: 'Prefix Test',
+            origin: 'project',
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      const resolved = resolveMetaRef(meta, '@prefix-test');
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('skill');
+    });
+
+    it('should be case-insensitive for ULID prefix matching', async () => {
+      const skillUlid = testUlid('SKCASE');
+      const metaManifest = {
+        kynetic_meta: '1.0',
+        skills: [
+          {
+            _ulid: skillUlid,
+            id: 'case-test',
+            name: 'Case Test',
+            origin: 'local',
+          },
+        ],
+      };
+
+      await fs.writeFile(
+        path.join(tempDir, 'kynetic.meta.yaml'),
+        yamlStringify(metaManifest),
+      );
+
+      const meta = await loadMetaContext(ctx);
+      // Test with lowercase prefix
+      const resolved = resolveMetaRef(meta, skillUlid.slice(0, 8).toLowerCase());
+
+      expect(resolved).not.toBeNull();
+      expect(resolved?.type).toBe('skill');
     });
   });
 

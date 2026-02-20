@@ -32,6 +32,7 @@ import {
   type MetaContext,
   type Observation,
   ReferenceIndex,
+  resolveMetaRef,
   saveMetaItem,
   saveObservation,
   saveSessionContext,
@@ -53,8 +54,8 @@ import { parseTagsArray } from "../parse-utils.js";
 import { parseIntOption } from "../validators.js";
 
 /**
- * Resolve a meta reference to its ULID
- * Handles semantic IDs (agent.id, workflow.id, skill.id, convention.domain) and ULID prefixes
+ * Resolve a meta reference to its ULID and type.
+ * Wrapper around resolveMetaRef for backward compatibility with existing call sites.
  * AC: @skill-meta-integration ac-4 - skills included in resolution
  */
 function resolveMetaRefToUlid(
@@ -64,39 +65,9 @@ function resolveMetaRefToUlid(
   ulid: string;
   type: "agent" | "workflow" | "convention" | "observation" | "skill";
 } | null {
-  const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
-
-  // Check agents
-  const agent = (metaCtx.agents || []).find(
-    (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
-  );
-  if (agent) return { ulid: agent._ulid, type: "agent" };
-
-  // Check workflows
-  const workflow = (metaCtx.workflows || []).find(
-    (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
-  );
-  if (workflow) return { ulid: workflow._ulid, type: "workflow" };
-
-  // Check conventions
-  const convention = (metaCtx.conventions || []).find(
-    (c) => c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
-  );
-  if (convention) return { ulid: convention._ulid, type: "convention" };
-
-  // Check observations
-  const observation = (metaCtx.observations || []).find((o) =>
-    o._ulid.startsWith(normalizedRef),
-  );
-  if (observation) return { ulid: observation._ulid, type: "observation" };
-
-  // AC: @skill-meta-integration ac-4 - Check skills
-  const skill = (metaCtx.skills || []).find(
-    (s) => s.id === normalizedRef || s._ulid.startsWith(normalizedRef),
-  );
-  if (skill) return { ulid: skill._ulid, type: "skill" };
-
-  return null;
+  const result = resolveMetaRef(metaCtx, ref);
+  if (!result) return null;
+  return { ulid: result.ulid, type: result.type };
 }
 
 /**
@@ -597,78 +568,15 @@ export function registerMetaCommands(program: Command): void {
 
         const metaCtx = await loadMetaContext(ctx);
 
-        // Normalize reference
-        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
+        // AC: @skill-meta-integration ac-1 - Use unified resolver
+        const resolved = resolveMetaRef(metaCtx, ref);
 
-        // Search in all meta item types
-        const agents = metaCtx.agents || [];
-        const workflows = metaCtx.workflows || [];
-        const conventions = metaCtx.conventions || [];
-        const observations = metaCtx.observations || [];
-        const skills = metaCtx.skills || [];
-
-        // Try to find by ID or ULID prefix
-        let found: any = null;
-        let itemType: string = "";
-
-        // Check agents (by id or ULID)
-        const agent = agents.find(
-          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
-        );
-        if (agent) {
-          found = agent;
-          itemType = "agent";
-        }
-
-        // Check workflows (by id or ULID)
-        if (!found) {
-          const workflow = workflows.find(
-            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
-          );
-          if (workflow) {
-            found = workflow;
-            itemType = "workflow";
-          }
-        }
-
-        // Check conventions (by domain or ULID)
-        if (!found) {
-          const convention = conventions.find(
-            (c) =>
-              c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
-          );
-          if (convention) {
-            found = convention;
-            itemType = "convention";
-          }
-        }
-
-        // Check observations (by ULID)
-        if (!found) {
-          const observation = observations.find((o) =>
-            o._ulid.startsWith(normalizedRef),
-          );
-          if (observation) {
-            found = observation;
-            itemType = "observation";
-          }
-        }
-
-        // AC: @skill-meta-integration ac-1 - Check skills (by id or ULID)
-        if (!found) {
-          const skill = skills.find(
-            (s) => s.id === normalizedRef || s._ulid.startsWith(normalizedRef),
-          );
-          if (skill) {
-            found = skill;
-            itemType = "skill";
-          }
-        }
-
-        if (!found) {
+        if (!resolved) {
           error(errors.reference.metaNotFound(ref));
           process.exit(EXIT_CODES.ERROR);
         }
+
+        const { item: found, type: itemType } = resolved;
 
         // Output the item
         output(found, () => {
@@ -1077,18 +985,21 @@ export function registerMetaCommands(program: Command): void {
         }
 
         const metaCtx = await loadMetaContext(ctx);
-        const observations = metaCtx.observations || [];
 
-        // Find observation
-        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
-        const observation = observations.find((o) =>
-          o._ulid.startsWith(normalizedRef),
-        );
+        // Use unified resolver - promotes only observations
+        const resolved = resolveMetaRef(metaCtx, ref);
 
-        if (!observation) {
+        if (!resolved) {
           error(errors.reference.observationNotFound(ref));
           process.exit(EXIT_CODES.ERROR);
         }
+
+        if (resolved.type !== "observation") {
+          error(`Cannot promote ${resolved.type}. Only observations can be promoted to tasks.`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const observation = resolved.item as Observation;
 
         // AC-obs-6: Check if already promoted
         if (observation.promoted_to) {
@@ -1492,50 +1403,23 @@ Examples:
         const ctx = await initContext();
         const metaCtx = await loadMetaContext(ctx);
 
-        // Find the item using unified lookup
-        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
-        let found: Agent | Workflow | Convention | null = null;
-        let itemType: "agent" | "workflow" | "convention" | null = null;
+        // Use unified resolver
+        const resolved = resolveMetaRef(metaCtx, ref);
 
-        // Search in agents
-        const agents = metaCtx.manifest?.agents || [];
-        const agent = agents.find(
-          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
-        );
-        if (agent) {
-          found = agent;
-          itemType = "agent";
-        }
-
-        // Search in workflows
-        if (!found) {
-          const workflows = metaCtx.manifest?.workflows || [];
-          const workflow = workflows.find(
-            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
-          );
-          if (workflow) {
-            found = workflow;
-            itemType = "workflow";
-          }
-        }
-
-        // Search in conventions
-        if (!found) {
-          const conventions = metaCtx.manifest?.conventions || [];
-          const convention = conventions.find(
-            (c) =>
-              c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
-          );
-          if (convention) {
-            found = convention;
-            itemType = "convention";
-          }
-        }
-
-        if (!found || !itemType) {
+        if (!resolved) {
           error(errors.reference.metaNotFound(ref));
           process.exit(EXIT_CODES.ERROR);
         }
+
+        // meta set only supports agent, workflow, convention
+        // Skills have their own `kspec skill set` command
+        const { item, type: itemType } = resolved;
+        if (itemType !== "agent" && itemType !== "workflow" && itemType !== "convention") {
+          error(`Cannot use 'meta set' with ${itemType}. Use 'kspec ${itemType === "skill" ? "skill" : "meta"} ${itemType === "observation" ? "resolve" : "set"} ${ref}' instead.`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const found = item as Agent | Workflow | Convention;
 
         // Update fields based on type
         if (itemType === "agent") {
@@ -1610,71 +1494,34 @@ Examples:
         const ctx = await initContext();
         const metaCtx = await loadMetaContext(ctx);
 
-        // Find the item to determine type
-        const normalizedRef = ref.startsWith("@") ? ref.substring(1) : ref;
-        let itemType:
-          | "agent"
-          | "workflow"
-          | "convention"
-          | "observation"
-          | null = null;
-        let itemUlid: string | null = null;
-        let itemLabel: string | null = null;
+        // Use unified resolver
+        const resolved = resolveMetaRef(metaCtx, ref);
 
-        // Search in agents
-        const agents = metaCtx.manifest?.agents || [];
-        const agent = agents.find(
-          (a) => a.id === normalizedRef || a._ulid.startsWith(normalizedRef),
-        );
-        if (agent) {
-          itemType = "agent";
-          itemUlid = agent._ulid;
-          itemLabel = `agent ${agent.id}`;
-        }
-
-        // Search in workflows
-        if (!itemType) {
-          const workflows = metaCtx.manifest?.workflows || [];
-          const workflow = workflows.find(
-            (w) => w.id === normalizedRef || w._ulid.startsWith(normalizedRef),
-          );
-          if (workflow) {
-            itemType = "workflow";
-            itemUlid = workflow._ulid;
-            itemLabel = `workflow ${workflow.id}`;
-          }
-        }
-
-        // Search in conventions
-        if (!itemType) {
-          const conventions = metaCtx.manifest?.conventions || [];
-          const convention = conventions.find(
-            (c) =>
-              c.domain === normalizedRef || c._ulid.startsWith(normalizedRef),
-          );
-          if (convention) {
-            itemType = "convention";
-            itemUlid = convention._ulid;
-            itemLabel = `convention ${convention.domain}`;
-          }
-        }
-
-        // Search in observations
-        if (!itemType) {
-          const observations = metaCtx.observations || [];
-          const observation = observations.find((o) =>
-            o._ulid.startsWith(normalizedRef),
-          );
-          if (observation) {
-            itemType = "observation";
-            itemUlid = observation._ulid;
-            itemLabel = `observation ${observation._ulid.substring(0, 8)}`;
-          }
-        }
-
-        if (!itemType || !itemUlid || !itemLabel) {
+        if (!resolved) {
           error(errors.reference.metaNotFound(ref));
           process.exit(EXIT_CODES.ERROR);
+        }
+
+        // meta delete does not support skills - they use `kspec skill delete`
+        if (resolved.type === "skill") {
+          error(`Cannot use 'meta delete' with skills. Use 'kspec skill delete ${ref}' instead.`);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const itemType = resolved.type as "agent" | "workflow" | "convention" | "observation";
+        const itemUlid = resolved.ulid;
+
+        // Build human-readable label for the item
+        let itemLabel: string;
+        const item = resolved.item;
+        if (itemType === "agent" && "id" in item) {
+          itemLabel = `agent ${item.id}`;
+        } else if (itemType === "workflow" && "id" in item) {
+          itemLabel = `workflow ${item.id}`;
+        } else if (itemType === "convention" && "domain" in item) {
+          itemLabel = `convention ${item.domain}`;
+        } else {
+          itemLabel = `observation ${itemUlid.substring(0, 8)}`;
         }
 
         // Check for dangling references (unless --confirm is used to override)

@@ -355,14 +355,39 @@ export function getMetaStats(meta: MetaContext): {
 }
 
 /**
- * Find a meta item by reference (ULID, short ULID, or id)
+ * Meta item type string literal
+ */
+export type MetaItemTypeName =
+  | "agent"
+  | "workflow"
+  | "convention"
+  | "observation"
+  | "skill";
+
+/**
+ * Result of resolving a meta reference
+ */
+export interface ResolvedMetaRef {
+  item: LoadedMetaItem;
+  type: MetaItemTypeName;
+  ulid: string;
+}
+
+/**
+ * Resolve a meta reference to its item, type, and ULID.
+ *
+ * This is the unified resolver for meta items that consolidates various
+ * ref-to-item resolution patterns. Handles ULID prefixes, full ULIDs,
+ * semantic IDs (id field for agents/workflows/skills), and domains (conventions).
+ *
  * AC: @skill-meta-type ac-5 - skills returned by semantic id lookup
  * AC: @skill-meta-type ac-6 - skills returned by ULID prefix lookup
+ * AC: @skill-meta-integration ac-4 - skills included in resolution
  */
-export function findMetaItemByRef(
+export function resolveMetaRef(
   meta: MetaContext,
   ref: string,
-): LoadedMetaItem | undefined {
+): ResolvedMetaRef | null {
   const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
 
   // Search all item types
@@ -376,20 +401,44 @@ export function findMetaItemByRef(
 
   for (const item of allItems) {
     // Match full ULID
-    if (item._ulid === cleanRef) return item;
+    if (item._ulid === cleanRef) {
+      return { item, type: getMetaItemType(item), ulid: item._ulid };
+    }
 
     // Match short ULID (prefix)
-    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
-      return item;
+    if (item._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) {
+      return { item, type: getMetaItemType(item), ulid: item._ulid };
+    }
 
     // Match by id (for agents, workflows, and skills)
-    if ("id" in item && item.id === cleanRef) return item;
+    if ("id" in item && item.id === cleanRef) {
+      return { item, type: getMetaItemType(item), ulid: item._ulid };
+    }
 
     // Match by domain (for conventions)
-    if ("domain" in item && item.domain === cleanRef) return item;
+    if ("domain" in item && item.domain === cleanRef) {
+      return { item, type: getMetaItemType(item), ulid: item._ulid };
+    }
   }
 
-  return undefined;
+  return null;
+}
+
+/**
+ * Find a meta item by reference (ULID, short ULID, or id)
+ *
+ * This is a convenience wrapper around resolveMetaRef that returns just the item.
+ * Use resolveMetaRef when you also need the type and ULID.
+ *
+ * AC: @skill-meta-type ac-5 - skills returned by semantic id lookup
+ * AC: @skill-meta-type ac-6 - skills returned by ULID prefix lookup
+ */
+export function findMetaItemByRef(
+  meta: MetaContext,
+  ref: string,
+): LoadedMetaItem | undefined {
+  const result = resolveMetaRef(meta, ref);
+  return result?.item;
 }
 
 /**
