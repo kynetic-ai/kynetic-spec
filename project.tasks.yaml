@@ -52688,10 +52688,17 @@
     - spec-gap
   vcs_refs: []
   created_at: 2026-02-20T05:13:11.422Z
-  notes: []
+  started_at: 2026-02-20T12:29:52.599Z
+  notes:
+    - _ulid: 01KHXGQFSE040TE9W6CNRPE7RK
+      created_at: 2026-02-20T12:34:53.358Z
+      author: "@claude"
+      content: Added ac-5 (host from config) and ac-6 (env var override) to @config-daemon spec. Added AC
+        annotations to existing tests in config.test.ts and implementation in config.ts. All tests
+        pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T12:29:52.599Z
 - _ulid: 01KHWQEQWT7YM5KM6DZ0A431NF
   slugs: []
   title: Make /local-review mandatory in task-work skill
