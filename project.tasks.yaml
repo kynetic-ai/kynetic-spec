@@ -52944,7 +52944,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Rename adapter from claude-code-acp to claude-agent-acp
+- _ulid: 01KHY9VV3M13QKK27GMADSHMAV
+  slugs: []
+  title: Rename adapter from claude-code-acp to claude-agent-acp
+  type: task
   description: >-
     Zed rebranded @zed-industries/claude-code-acp to @zed-industries/claude-agent-acp (GitHub repo
     renamed, npm package deprecated at 0.16.2, new package starts at 0.17.0). Update all references.
@@ -53001,20 +53004,73 @@
     - kspec ralph --adapter claude-agent-acp --dry-run works
 
     - Existing session logs with old agent_type are historical — no migration needed
-  type: task
   spec_ref: "@cli-ralph"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
+  tags:
+    - acp-migration
+  vcs_refs: []
+  created_at: 2026-02-20T19:54:10.420Z
+  notes: []
+  todos: []
+- title: Bump @agentclientprotocol/sdk to ^0.14.0
+  description: >-
+    Bump the ACP SDK version to match what claude-agent-acp@0.18.0 depends on (0.14.1).
+
+
+    ## Current state
+
+
+    - kynetic-spec pins @agentclientprotocol/sdk at ^0.13.0 (devDependency, types-only)
+
+    - claude-agent-acp@0.18.0 depends on @agentclientprotocol/sdk@0.14.1
+
+
+    ## Risk: Very Low
+
+
+    The SDK is types-only (devDependency, erased at runtime). All 21 imported types in
+    src/acp/types.ts still exist in 0.14.1 with compatible shapes. Changes between versions are
+    strictly additive:
+
+    - SessionUpdate union gets new "usage_update" variant (ignored by our code)
+
+    - PromptResponse gets optional usage field (we only read stopReason)
+
+    - RequestId changes bigint->number (we don't import this type)
+
+    - No types removed
+
+
+    ## Steps
+
+
+    1. Update package.json: "@agentclientprotocol/sdk": "^0.14.0"
+
+    2. npm install
+
+    3. tsc --noEmit to verify compilation
+
+    4. Run test suite
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
   slugs: []
   tags:
     - acp-migration
   depends_on: []
-  _ulid: 01KHY9VV3M13QKK27GMADSHMAV
+  _ulid: 01KHY9W8TKBKB13B7X0JMY0D3P
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-20T19:54:10.420Z
+  created_at: 2026-02-20T19:54:24.467Z
   notes: []
   todos: []
