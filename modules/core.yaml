@@ -750,7 +750,7 @@ features:
         created: 2026-02-19T21:41:10.986Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     requirements:
       - _ulid: 01KHVXK26MF758N8ZPPSYY9ZKD
         slugs:
