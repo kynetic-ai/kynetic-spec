@@ -892,7 +892,8 @@ interface SetupStatus {
   };
   agentsMd: {
     exists: boolean;
-    status: "current" | "stale" | "missing";
+    // AC: @doctor-command ac-staleness-unknown — includes "unknown" for indeterminate cases
+    status: "current" | "stale" | "missing" | "unknown";
     generatedAt?: string;
   };
   seeding: {
@@ -1033,11 +1034,13 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
           );
           agentsMd.status = hashData.metaHash === currentHash ? "current" : "stale";
         } else {
-          agentsMd.status = "current"; // No kspec project, can't compare
+          // AC: @doctor-command ac-staleness-unknown — no manifest means we can't determine staleness
+          agentsMd.status = "unknown";
         }
       } catch (err) {
-        debugLog("Could not compute meta hash for staleness check, assuming current", err);
-        agentsMd.status = "current";
+        // AC: @doctor-command ac-staleness-unknown — hash computation failed
+        debugLog("Could not compute meta hash for staleness check", err);
+        agentsMd.status = "unknown";
       }
     } catch (err) {
       debugLog("Hash file missing or invalid, marking stale", err);
@@ -1679,11 +1682,17 @@ export function registerSetupCommand(program: Command): void {
             // Agents.md status
             console.log(chalk.gray("kspec-agents.md:"));
             if (status.agentsMd.exists) {
+              // AC: @doctor-command ac-staleness-unknown — show appropriate color for unknown status
               const statusColor =
                 status.agentsMd.status === "current"
                   ? chalk.green
-                  : chalk.yellow;
+                  : status.agentsMd.status === "unknown"
+                    ? chalk.yellow
+                    : chalk.yellow;
               console.log(`  Status: ${statusColor(status.agentsMd.status)}`);
+              if (status.agentsMd.status === "unknown") {
+                console.log(chalk.gray("  Could not determine staleness (no manifest or hash unavailable)"));
+              }
               if (status.agentsMd.generatedAt) {
                 console.log(`  Generated: ${status.agentsMd.generatedAt}`);
               }
