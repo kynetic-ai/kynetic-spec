@@ -724,10 +724,21 @@ inbox:
     tags: []
     added_by: "@claude"
   - _ulid: 01KHYAV7WNK1PC8WC3AQCJV69X
-    text: Surface ACP usage/cost data in ralph session stats — after SDK bump to 0.14.x, new
+    text: >-
+      Surface ACP usage/cost data in ralph session stats — after SDK bump to 0.14.x, new
       Usage/UsageUpdate/Cost types are available. Could add token usage per iteration and cumulative
       cost to session log stats and web UI. The usage_update SessionUpdate variant fires during
       sessions with context window utilization data.
+
+
+      ---
+
+
+      IMPORTANT FINDING: Neither claude-agent-acp nor codex-acp actually emit usage_update events or
+      populate PromptResponse.usage. Both have raw token data available but discard it. kynetic-bot
+      works around this by scraping /context stderr (fragile regex). Upstream PR to claude-agent-acp
+      is highest-value path — Anthropic API stream events contain usage data, just needs wiring to
+      ACP protocol.
     created_at: 2026-02-20T20:11:19.317Z
     tags: []
     added_by: "@claude"
