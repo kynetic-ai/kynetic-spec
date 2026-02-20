@@ -11,6 +11,8 @@ import { fileURLToPath } from 'url';
 import { error, info, output, success, warn, isJsonMode } from '../output.js';
 import { EXIT_CODES } from '../exit-codes.js';
 import { PidFileManager } from '../pid-utils.js';
+import { loadProjectConfig } from '../../parser/config.js';
+import { initContext } from '../../parser/yaml.js';
 
 /**
  * Check if Bun runtime is available.
@@ -74,11 +76,12 @@ export function registerServeCommands(program: Command): void {
     .description('Manage the kspec daemon server');
 
   // AC: @cli-serve-commands ac-1, ac-2, ac-3
+  // AC: @config-daemon ac-1, ac-2 — port from config, CLI flag overrides
   serve
     .command('start', { isDefault: true })
     .description('Start the daemon server')
     .option('-d, --daemon', 'Run in background (detached mode)')
-    .option('-p, --port <port>', 'Server port (default: 3456)', '3456')
+    .option('-p, --port <port>', 'Server port (uses config daemon.port if not specified)')
     .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
     .option('--json', 'Output as JSON')
     .action(async (opts) => {
@@ -155,14 +158,21 @@ export function registerServeCommands(program: Command): void {
 /**
  * Start the daemon server
  * AC: @cli-serve-commands ac-1 (foreground), ac-2 (daemon), ac-3 (port), ac-10 (port error)
+ * AC: @config-daemon ac-1 — port from config, ac-2 — CLI flag overrides config
  */
 async function startServer(opts: {
   daemon?: boolean;
-  port: string;
+  port?: string;
   kspecDir: string;
 }): Promise<void> {
-  const port = parseInt(opts.port, 10);
   const jsonMode = isJsonMode();
+
+  // AC: @config-daemon ac-1, ac-2 — load config for default port, CLI flag overrides
+  const { config } = await loadProjectConfig();
+  const configPort = config.daemon.port;
+
+  // AC: @config-daemon ac-2 — CLI flag takes precedence over config
+  const port = opts.port ? parseInt(opts.port, 10) : configPort;
 
   // AC: @cli-serve-commands ac-10
   if (isNaN(port) || port < 1 || port > 65535) {
@@ -232,7 +242,7 @@ async function startServer(opts: {
     // Spawn detached process
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
     // which can cause asset hash mismatches in the web UI
-    const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
+    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', opts.kspecDir], {
       detached: true,
       stdio: 'ignore', // TODO: redirect to log file when logging implemented
       cwd: process.cwd(),
@@ -280,7 +290,7 @@ async function startServer(opts: {
     const runtime = 'bun';
 
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
-    const child = spawn(runtime, [daemonBinary, '--port', opts.port, '--kspec-dir', opts.kspecDir], {
+    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', opts.kspecDir], {
       stdio: 'inherit',
       cwd: process.cwd(),
       env: { ...process.env, BUN_ENV: 'production' },
@@ -483,17 +493,15 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
  * AC: @cli-serve-commands ac-7
  */
 async function restartServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
-  if (isJsonMode()) {
-  }
-
   const pidManager = new PidFileManager();
 
   // AC: @cli-serve-commands ac-7 - preserve port across restarts
-  let port = '3456'; // default port
+  // Try to read port from existing daemon, otherwise startServer will use config default
+  let port: string | undefined;
   try {
     port = pidManager.readPort().toString();
   } catch {
-    // Port file doesn't exist or is invalid, use default
+    // Port file doesn't exist or is invalid, let startServer use config
   }
 
   if (pidManager.isDaemonRunning()) {

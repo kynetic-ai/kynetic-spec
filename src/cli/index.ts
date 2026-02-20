@@ -67,24 +67,48 @@ const program = new Command();
 // Initialize verbose mode getter for shadow operations
 setVerboseModeGetter(getVerboseMode);
 
+// Track if we've already shown the manifest daemon deprecation warning this session
+let manifestDaemonWarningShown = false;
+
 /**
  * Auto-start daemon if configured and not already running
  * AC: @daemon-server (implicit auto-start behavior)
+ * AC: @config-daemon ac-3 — uses config.daemon.auto_start
+ * AC: @config-daemon ac-4 — deprecation warning for manifest daemon block
  */
 async function maybeAutoStartDaemon(): Promise<void> {
   try {
-    // Load context to get daemon config
+    // Load context to get daemon config from kspec.config.yaml
     const context = await initContext();
-    const daemonConfig = context.manifest?.daemon;
+    const daemonConfig = context.config.daemon;
 
-    // If daemon section missing entirely, auto_start defaults to true via schema
-    // Only skip if explicitly disabled
-    if (daemonConfig && daemonConfig.auto_start === false) {
+    // AC: @config-daemon ac-4 — emit deprecation warning if manifest has daemon block
+    if (context.manifest?.daemon && !manifestDaemonWarningShown) {
+      manifestDaemonWarningShown = true;
+      console.error(
+        chalk.yellow('Warning: Manifest "daemon" block is deprecated.')
+      );
+      console.error(
+        chalk.yellow('  Migrate to kspec.config.yaml:')
+      );
+      console.error(
+        chalk.gray('    daemon:')
+      );
+      console.error(
+        chalk.gray(`      port: ${context.manifest.daemon.port ?? 3456}`)
+      );
+      console.error(
+        chalk.gray(`      auto_start: ${context.manifest.daemon.auto_start ?? true}`)
+      );
+    }
+
+    // AC: @config-daemon ac-3 — auto_start from config (defaults to true)
+    if (!daemonConfig.auto_start) {
       return;
     }
 
-    // Get port from config (schema defaults to 3456 if daemon section exists)
-    const port = daemonConfig?.port ?? 3456;
+    // AC: @config-daemon ac-1 — port from config (defaults to 3456)
+    const port = daemonConfig.port;
 
     // Check if daemon is already running
     const kspecDir = context.specDir;
