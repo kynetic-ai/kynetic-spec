@@ -51924,7 +51924,7 @@
   type: task
   spec_ref: "@config-validation"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -51989,6 +51989,29 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T02:50:02.772Z
+  closed_reason: >-
+    Merged in PR #420. Implemented configurable validation defaults via kspec.config.yaml:
+
+
+    - validation.strict_refs: When false, dangling refs are warnings instead of errors (default:
+    true)
+
+    - validation.require_acceptance: When true, missing AC is an error instead of warning (default:
+    false)
+
+    - CLI --strict flag continues to override config for orphans/staleness
+
+
+    All 4 ACs covered with annotated tests (7 tests in validate-config.test.ts):
+
+    - ac-1: require_acceptance promotes missing AC to errors
+
+    - ac-2: strict_refs treats dangling refs as errors
+
+    - ac-3: strict_refs: false treats dangling refs as warnings  
+
+    - ac-4: CLI --strict overrides config strict_refs: false
 - _ulid: 01KHVXK3JFEDFG9P3SCJS3J2W8
   slugs:
     - implement-configurable-daemon-settings
