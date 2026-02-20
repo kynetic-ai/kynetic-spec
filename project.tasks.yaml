@@ -51646,7 +51646,7 @@
   type: task
   spec_ref: "@project-config"
   plan_ref: "@plan-project-level-configuration-system"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
