@@ -714,3 +714,12 @@ inbox:
     created_at: 2026-02-20T19:55:32.246Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHYAGZM7KG19YH11G2SE44QD
+    text: Bash code fence language change in claude-agent-acp v0.18.0 — formatted Bash output changed
+      from ```sh to ```console. Check if ralph's noise suppression patterns, session log rendering,
+      or any regex patterns in cli-renderer.ts or events.ts match on the code fence language. Low
+      risk since ralph primarily reads from _meta.claudeCode.toolResponse not content blocks, but
+      worth a grep.
+    created_at: 2026-02-20T20:05:43.175Z
+    tags: []
+    added_by: "@claude"
