@@ -51146,6 +51146,30 @@
         call sites to use isSkill(), (5) Update skill creation code to set _type, (6) Add
         backward-compat parse logic for skills without _type, (7) Write tests."
       supersedes: null
+    - _ulid: 01KHW6JZ7KJGY87ZP1DDK1TQN3
+      created_at: 2026-02-20T00:18:25.139Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+        1. Added _type: z.literal('skill').default('skill') to SkillSchema
+
+        2. Created isSkill() type guard function in src/schema/meta.ts
+
+        3. Updated getMetaItemType() to use isSkill() instead of 'origin' in item check
+
+        4. Updated 6 call sites: validate.ts (1), skill-diff.ts (2), skill-crud.ts (3) to use
+        isSkill()
+
+        5. Backward compatibility via .default('skill') - existing YAML without _type gets it added
+        during parse
+
+        6. Added 5 new tests for isSkill() type guard with edge cases
+
+        7. Updated 2 existing tests to include _type in skill test objects
+
+        All 2814 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
