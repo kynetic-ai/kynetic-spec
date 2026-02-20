@@ -45589,7 +45589,7 @@
   title: Implement Session Log List
   type: task
   spec_ref: "@session-log-list"
-  plan_ref: "@session-log-analysis-tooling"
+  plan_ref: null
   status: completed
   blocked_by: []
   closed_reason: "Merged in PR #327. Implemented session log list command with filtering, sorting,
