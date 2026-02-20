@@ -935,24 +935,24 @@ export async function hasRemoteTracking(
  * automatically configure tracking to origin/kspec-meta.
  *
  * AC: @config-shadow ac-3 ac-4 ac-5 — handles different remote types
- * AC: @config-shadow ac-6 — error if named remote doesn't exist
+ * AC: @config-shadow ac-6 — error with guidance if named remote doesn't exist
  * AC: @config-shadow ac-7 — backward compat when called without config
  *
  * @param worktreeDir Path to shadow worktree
  * @param projectRoot Git repository root
  * @param options Optional shadow configuration
- * @returns true if tracking is now configured (was already or just set up)
+ * @returns Result with success status and error details if applicable
  */
 export async function ensureRemoteTracking(
   worktreeDir: string,
   projectRoot: string,
   options?: ShadowOptions,
-): Promise<boolean> {
+): Promise<EnsureRemoteTrackingResult> {
   const branchName = getBranchName(options);
 
   // Check if already has tracking
   if (await hasRemoteTracking(worktreeDir, options)) {
-    return true;
+    return { success: true };
   }
 
   // Determine remote name to use
@@ -965,11 +965,17 @@ export async function ensureRemoteTracking(
       // AC: ac-3 — use the named remote directly
       remoteName = options.remote;
 
-      // AC: ac-6 — verify the named remote exists
+      // AC: ac-6 — verify the named remote exists with guidance
       if (!(await hasRemote(projectRoot, remoteName))) {
-        // Named remote doesn't exist - tracking cannot be configured
-        // Caller should handle this (e.g., shadowPushAsync logs it)
-        return false;
+        // Named remote doesn't exist - provide helpful guidance
+        return {
+          success: false,
+          missingRemote: remoteName,
+          guidance: `Remote '${remoteName}' does not exist. To fix this:\n` +
+            `  1. Add the remote: git remote add ${remoteName} <url>\n` +
+            `  2. Or update kspec.config.yaml to use an existing remote\n` +
+            `  3. Or remove shadow.remote to use the default 'origin' remote`,
+        };
       }
     } else if (remoteType === "path" || remoteType === "url") {
       // AC: ac-4 ac-5 — add a git remote for path/URL if not already present
@@ -992,7 +998,7 @@ export async function ensureRemoteTracking(
           });
         } catch {
           // Remote add failed - may already exist with different URL
-          return false;
+          return { success: false };
         }
       }
 
@@ -1001,7 +1007,7 @@ export async function ensureRemoteTracking(
   } else {
     // No remote configured - check if main branch has origin
     if (!(await hasRemote(projectRoot))) {
-      return false;
+      return { success: false };
     }
   }
 
@@ -1014,10 +1020,22 @@ export async function ensureRemoteTracking(
       `git config branch.${branchName}.merge refs/heads/${branchName}`,
       { cwd: worktreeDir },
     );
-    return true;
+    return { success: true };
   } catch {
-    return false;
+    return { success: false };
   }
+}
+
+/**
+ * Result from ensuring remote tracking
+ * AC: @config-shadow ac-6 — includes error details when named remote doesn't exist
+ */
+export interface EnsureRemoteTrackingResult {
+  success: boolean;
+  /** Error when remote doesn't exist (AC-6) */
+  missingRemote?: string;
+  /** Guidance message for user */
+  guidance?: string;
 }
 
 /**
@@ -1052,7 +1070,15 @@ export async function shadowPushAsync(
 
   // AC: @shadow-sync ac-8 - Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
-  await ensureRemoteTracking(worktreeDir, projectRoot, options);
+  const trackingResult = await ensureRemoteTracking(worktreeDir, projectRoot, options);
+
+  // AC: @config-shadow ac-6 — log guidance if named remote doesn't exist
+  if (!trackingResult.success && trackingResult.missingRemote) {
+    if (debug) {
+      console.error(`[DEBUG] Shadow push: ${trackingResult.guidance}`);
+    }
+    return;
+  }
 
   // Check if tracking is configured before attempting push
   if (!(await hasRemoteTracking(worktreeDir, options))) {
@@ -1109,7 +1135,13 @@ export async function shadowPull(
 
   // AC: @shadow-sync ac-8 - Auto-configure tracking if main has remote but shadow doesn't
   const projectRoot = path.dirname(worktreeDir);
-  await ensureRemoteTracking(worktreeDir, projectRoot, options);
+  const trackingResult = await ensureRemoteTracking(worktreeDir, projectRoot, options);
+
+  // AC: @config-shadow ac-6 — error with guidance if named remote doesn't exist
+  if (!trackingResult.success && trackingResult.missingRemote) {
+    result.error = trackingResult.guidance;
+    return result;
+  }
 
   // AC: @shadow-sync ac-4 - Skip if no remote tracking
   if (!(await hasRemoteTracking(worktreeDir, options))) {

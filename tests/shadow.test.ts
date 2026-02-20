@@ -827,7 +827,7 @@ describe('Shadow Branch', () => {
       // Call ensureRemoteTracking
       const result = await ensureRemoteTracking(worktreeDir, testDir);
 
-      expect(result).toBe(true);
+      expect(result.success).toBe(true);
       expect(await hasRemoteTracking(worktreeDir)).toBe(true);
 
       // Verify tracking config
@@ -1448,6 +1448,57 @@ describe('Shadow Branch', () => {
         expect(detectRemoteType('https://github.com/org/repo.git')).toBe('url');
         expect(detectRemoteType('git@github.com:org/repo.git')).toBe('url');
         expect(detectRemoteType('ssh://git@host/repo.git')).toBe('url');
+      });
+    });
+
+    // AC: @config-shadow ac-6 — error with guidance when named remote doesn't exist
+    describe('missing named remote error guidance (ac-6)', () => {
+      it('ensureRemoteTracking returns error with guidance when named remote does not exist', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with default settings
+        await initializeShadow(testDir);
+
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+        // Try to configure tracking with non-existent remote
+        const result = await ensureRemoteTracking(worktreeDir, testDir, {
+          remote: 'nonexistent-remote',
+          remoteType: 'named',
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.missingRemote).toBe('nonexistent-remote');
+        expect(result.guidance).toContain('nonexistent-remote');
+        expect(result.guidance).toContain('git remote add');
+        expect(result.guidance).toContain('kspec.config.yaml');
+      });
+
+      it('shadowPull returns error with guidance when named remote does not exist', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with default settings (no remote configured)
+        await initializeShadow(testDir);
+
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+        // Try to pull with non-existent remote configured
+        const result = await shadowPull(worktreeDir, {
+          remote: 'specs-origin',
+          remoteType: 'named',
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error).toContain('specs-origin');
+        expect(result.error).toContain('git remote add');
       });
     });
 
