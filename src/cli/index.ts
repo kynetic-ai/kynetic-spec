@@ -18,6 +18,7 @@ import {
   registerBatchCommand,
   registerCloneForTestingCommand,
   registerDeriveCommand,
+  registerDoctorCommand,
   registerExportCommand,
   registerHelpCommand,
   registerInboxCommands,
@@ -220,6 +221,7 @@ if (itemCmd) {
 registerTraitCommands(program);
 registerValidateCommand(program);
 registerHelpCommand(program);
+registerDoctorCommand(program);
 registerDeriveCommand(program);
 registerInboxCommands(program);
 registerShadowCommands(program);
