@@ -30,6 +30,10 @@ import {
   type ShadowConfig,
   ShadowError,
 } from "./shadow.js";
+import {
+  loadProjectConfig,
+  type ResolvedKspecConfig,
+} from "./config.js";
 import { TraitIndex } from "./traits.js";
 
 /**
@@ -211,18 +215,41 @@ export interface KspecContext {
   manifest: Manifest | null;
   /** Shadow branch configuration (null if not using shadow) */
   shadow: ShadowConfig | null;
+  /**
+   * Project configuration from kspec.config.yaml.
+   * Loaded before shadow detection. Always present (defaults if no config file).
+   *
+   * AC: @project-config ac-2 — config available on KspecContext.config
+   */
+  config: ResolvedKspecConfig;
 }
 
 /**
  * Initialize context by finding manifest.
  *
  * Detection order:
- * 1. Check for shadow branch (.kspec/ directory)
- * 2. Fall back to traditional spec/ directory
+ * 1. Load project config from git root (before shadow detection)
+ * 2. Check for shadow branch (.kspec/ directory)
+ * 3. Fall back to traditional spec/ directory
  *
  * When shadow is detected, all operations use .kspec/ as specDir.
+ *
+ * AC: @project-config ac-2 — config loaded before shadow detection
  */
 export async function initContext(startDir?: string): Promise<KspecContext> {
+  const cwd = startDir || process.cwd();
+
+  // AC: @project-config ac-2, ac-6, ac-7 — load config before shadow detection
+  // Config is loaded from git root, not cwd or KSPEC_SPEC_DIR temp dir
+  const configResult = await loadProjectConfig(cwd);
+
+  // AC: @project-config ac-3 — emit warning to stderr if config had issues
+  if (configResult.warning) {
+    console.error(`Warning: ${configResult.warning}`);
+  }
+
+  const { config } = configResult;
+
   // KSPEC_SPEC_DIR override: used by batch atomic mode to redirect to temp copy
   const specDirOverride = process.env.KSPEC_SPEC_DIR;
   if (specDirOverride) {
@@ -245,10 +272,9 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
       manifestPath,
       manifest,
       shadow: null, // No shadow in overridden context
+      config,
     };
   }
-
-  const cwd = startDir || process.cwd();
 
   // Check if running from inside the shadow worktree
   const mainProjectRoot = await detectRunningFromShadowWorktree(cwd);
@@ -284,6 +310,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
       manifestPath,
       manifest,
       shadow,
+      config,
     };
   }
 
@@ -313,7 +340,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     }
   }
 
-  return { rootDir, specDir, manifestPath, manifest, shadow: null };
+  return { rootDir, specDir, manifestPath, manifest, shadow: null, config };
 }
 
 /**
