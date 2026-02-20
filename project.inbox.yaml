@@ -687,3 +687,10 @@ inbox:
       - dx
       - cli
     added_by: "@claude"
+  - _ulid: 01KHWWMDCV6NBYK8D8EMYBZEPV
+    text: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+    created_at: 2026-02-20T06:43:41.083Z
+    tags:
+      - dx
+      - cli
+    added_by: "@claude"
