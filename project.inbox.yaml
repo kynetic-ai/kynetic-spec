@@ -704,3 +704,13 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KHY9YB0NKASBKAEMRKKC7C0Y
+    text: "Terminal exit code display in ralph CLI renderer — claude-agent-acp PR #316 adds
+      _meta.terminal_exit.exit_code on Bash tool completions (opt-in via
+      clientCapabilities._meta.terminal_output). Low priority, ~40 lines across events.ts +
+      cli-renderer.ts. Only concrete gain from the terminal streaming protocol — the output data
+      itself is identical to existing _meta.claudeCode.toolResponse path. Worth adopting if Bash
+      failure debugging becomes a pain point."
+    created_at: 2026-02-20T19:55:32.246Z
+    tags: []
+    added_by: "@claude"
