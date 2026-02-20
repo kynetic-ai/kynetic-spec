@@ -402,7 +402,9 @@ workflows:
     trigger: manual
     description: "Loop variant of task-work-session for autonomous agents. Auto-filters to
       automation-eligible tasks, auto-resolves decisions. Task selection: in_progress > unblocking >
-      priority. Still verifies work needed. PR review handled externally by ralph."
+      priority. Verifies work needed including trait AC coverage. Implementation quality: search for
+      existing utilities, match code style, run full test suite. PR review handled externally by
+      ralph."
     steps:
       - type: action
         content: |
