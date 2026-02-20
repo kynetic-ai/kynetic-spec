@@ -102,7 +102,37 @@ The workflow handles:
 3. Verify spec alignment (implementation matches spec)
 4. Fix issues if found
 5. Wait for CI to pass
-6. Merge with quality gates
+6. **Post a structured GitHub review** (see below)
+7. Merge with quality gates
+
+### REQUIRED: Post a GitHub Review
+
+Before merging, you MUST post a GitHub review using `gh api`. This creates an audit trail and makes the `check-unresolved-comments` CI gate meaningful.
+
+```bash
+gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews \
+  -f event=APPROVE \
+  -f body="## Review Summary
+
+**Task:** @task-ref
+**Spec:** @spec-ref
+
+### AC Coverage
+- [x] ac-1: <description> — test at <file:line>
+- [x] ac-2: <description> — test at <file:line>
+
+### Spec Alignment
+Implementation matches spec intent. <any notes>
+
+### Quality Gates
+- [x] All tests pass
+- [x] AC coverage verified
+- [x] Spec alignment verified"
+```
+
+If issues are found that can't be fixed, post a `REQUEST_CHANGES` review instead of `APPROVE`.
+
+**Never merge without posting a review.** Even a brief APPROVE review is better than no review.
 
 ### CRITICAL: CI Re-verification
 

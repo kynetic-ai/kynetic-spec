@@ -1301,8 +1301,8 @@ describe('subagent module', () => {
 
   describe('constants', () => {
     // AC: @ralph-subagent-spawning ac-9
-    it('DEFAULT_SUBAGENT_TIMEOUT is 10 minutes', () => {
-      expect(DEFAULT_SUBAGENT_TIMEOUT).toBe(10 * 60 * 1000);
+    it('DEFAULT_SUBAGENT_TIMEOUT is 20 minutes', () => {
+      expect(DEFAULT_SUBAGENT_TIMEOUT).toBe(20 * 60 * 1000);
     });
 
     // AC: @ralph-subagent-spawning ac-11
