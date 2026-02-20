@@ -52622,7 +52622,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -52651,6 +52651,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T11:31:07.212Z
+  closed_reason: "Merged in PR #429. Added test coverage for deprecation warnings: (1) @config-daemon
+    ac-4 CLI stderr warning test in daemon-config.test.ts, (2) @config-manifest-cleanup ac-4
+    debug-level logging tests in manifest-cleanup.test.ts with KSPEC_DEBUG=1 verification. Also
+    implemented missing parseManifestWithWarnings() helper in yaml.ts for debug-level deprecation
+    notes. All ACs verified."
 - _ulid: 01KHWQEPZYTAMJ5AK43ET5PFVJ
   slugs: []
   title: Add spec AC for daemon.host configuration
