@@ -398,6 +398,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         (envPort && !isNaN(envPort) ? envPort : undefined) ??
         file.daemon?.port ??
         DEFAULT_CONFIG.daemon.port,
+      // AC: @config-daemon ac-5 ac-6 — host from config/env
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
