@@ -4653,9 +4653,10 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KHWJ7F8284KSP2NSVXXK2BR6
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
+    status: completed
     current_step: 0
     total_steps: 10
     started_at: 2026-02-20T03:41:51.234Z
     step_results: []
     initiated_by: "@claude"
+    completed_at: 2026-02-20T03:54:40.885Z
