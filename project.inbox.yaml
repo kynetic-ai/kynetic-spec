@@ -752,3 +752,15 @@ inbox:
     created_at: 2026-02-20T21:04:14.935Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHYFD9Q9Y4D3DHC61MJ506P3
+    text: "Ralph worktree isolation for task work — spawn each agent in a git worktree under a
+      gitignored .worktrees/ dir for branch isolation. Pattern proven in kynetic-internal with jj
+      workspaces. Key insight: kspec resolves .kspec/ via git root, but worktrees return their own
+      root from rev-parse --show-toplevel. Solution: ralph sets KSPEC_SPEC_DIR to point to main
+      tree's .kspec/ when spawning agents (env var already exists for batch mode). Benefits:
+      isolated branches per task, parallel agent work, trivial cleanup of failed work, clean main
+      branch. Unknowns: shadow branch commands from worktree context, git config inheritance,
+      worktree lifecycle management in ralph."
+    created_at: 2026-02-20T21:31:05.321Z
+    tags: []
+    added_by: "@claude"
