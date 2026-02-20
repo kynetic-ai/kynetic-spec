@@ -45729,7 +45729,7 @@
   title: Implement Session Log Stats
   type: task
   spec_ref: "@session-log-stats"
-  plan_ref: "@session-log-analysis-tooling"
+  plan_ref: null
   status: completed
   blocked_by: []
   closed_reason: "Merged in PR #331. Implemented session log stats command with aggregate analytics:
