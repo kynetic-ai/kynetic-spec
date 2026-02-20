@@ -73,8 +73,8 @@ export interface SubagentOptions {
 // Default Configuration
 // ============================================================================
 
-/** Default subagent timeout: 10 minutes */
-export const DEFAULT_SUBAGENT_TIMEOUT = 10 * 60 * 1000;
+/** Default subagent timeout: 20 minutes */
+export const DEFAULT_SUBAGENT_TIMEOUT = 20 * 60 * 1000;
 
 /** Default output prefix for subagent */
 export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
@@ -112,13 +112,12 @@ ${JSON.stringify(context.specWithACs, null, 2)}
 
 You are a subagent spawned by ralph to review and merge a PR.
 
-## Task Reference
-\`${context.taskRef}\`
+## Context
 
-## Git Branch
-\`${context.gitBranch}\`
+- **Task:** \`${context.taskRef}\`
+- **Branch:** \`${context.gitBranch}\`
 
-## Task Details
+### Task Details
 
 \`\`\`json
 ${JSON.stringify(context.taskDetails, null, 2)}
@@ -126,28 +125,15 @@ ${JSON.stringify(context.taskDetails, null, 2)}
 ${specSection}
 ## Instructions
 
-Run the PR review skill to review and merge the PR for this task:
+Run the PR review skill:
 
 \`\`\`
 /pr-review ${context.taskRef}
 \`\`\`
 
-This will:
-1. Run local review (AC coverage verification)
-2. Check spec alignment
-3. Wait for CI to pass
-4. Merge the PR if all gates pass
-5. Complete the task with PR reference
+The skill defines all review steps, quality gates, and merge criteria. Follow it completely.
 
-**CRITICAL: You MUST complete the task after merging the PR.**
-Use: \`kspec task complete ${context.taskRef} --reason "Merged in PR #N. <summary>"\`
-
-**Exit when:**
-- PR is merged AND task is completed successfully
-- PR cannot be merged (quality gates failed, needs human review)
-- No PR found for this task
-
-Do NOT start new work. Your only job is to get this specific PR merged and task completed.
+Do NOT start new work. Your only job is reviewing and merging this task's PR.
 `;
 }
 

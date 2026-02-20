@@ -43,7 +43,6 @@ import {
   createCliRenderer,
   createTranslator,
   DEFAULT_SUBAGENT_PREFIX,
-  DEFAULT_SUBAGENT_TIMEOUT,
   DEFAULT_WRAPUP_TIMEOUT,
   type ExitReason,
   RALPH_PROMPT_TIMEOUT,
@@ -758,6 +757,37 @@ async function markTaskNeedsReview(
 }
 
 /**
+ * Post a comment on the open PR for a task branch, noting incomplete review.
+ * Uses `gh pr comment` to find the PR on the current branch and add a warning.
+ */
+async function commentOnPRReviewIncomplete(reason: string): Promise<void> {
+  const prListResult = spawnSync(
+    "gh",
+    ["pr", "list", "--state", "open", "--head", getCurrentBranch(process.cwd()) || "", "--json", "number", "--jq", ".[0].number"],
+    { encoding: "utf-8", stdio: "pipe" },
+  );
+
+  const prNumber = prListResult.stdout?.trim();
+  if (!prNumber || prListResult.status !== 0) {
+    // No open PR found — may already be merged or on wrong branch
+    return;
+  }
+
+  const body = `⚠️ **Review incomplete**: ${reason}\n\nThis PR was not fully reviewed by the ralph review subagent. Manual review recommended before merging.`;
+  const commentResult = spawnSync(
+    "gh",
+    ["pr", "comment", prNumber, "--body", body],
+    { encoding: "utf-8", stdio: "pipe" },
+  );
+
+  if (commentResult.status !== 0) {
+    warn(`Failed to comment on PR #${prNumber}: ${commentResult.stderr}`);
+  } else {
+    info(`${DEFAULT_SUBAGENT_PREFIX} Posted review-incomplete comment on PR #${prNumber}`);
+  }
+}
+
+/**
  * Handle failed iteration by tracking per-task failures and escalating at threshold.
  * AC: @loop-mode-error-handling ac-1, ac-2, ac-3, ac-4, ac-5, ac-8
  */
@@ -868,6 +898,7 @@ async function processPendingReviewTasks(
     maxRetries: number;
     maxFailures: number;
     cwd: string;
+    subagentTimeout: number;
   },
   consecutiveFailures: { count: number },
 ): Promise<boolean> {
@@ -899,7 +930,7 @@ async function processPendingReviewTasks(
         adapter,
         subagentCtx,
         {
-          timeout: DEFAULT_SUBAGENT_TIMEOUT,
+          timeout: options.subagentTimeout,
           outputPrefix: DEFAULT_SUBAGENT_PREFIX,
         },
         {
@@ -915,16 +946,19 @@ async function processPendingReviewTasks(
         warn(
           `${DEFAULT_SUBAGENT_PREFIX} Subagent timed out for ${task.ref}`,
         );
+        const timeoutMinutes = Math.round(options.subagentTimeout / 60000);
         await markTaskNeedsReview(
           task.ref,
-          "Subagent timed out after 10 minutes",
+          `Subagent timed out after ${timeoutMinutes} minutes`,
         );
+        await commentOnPRReviewIncomplete(`Review subagent timed out after ${timeoutMinutes} minutes for task ${task.ref}.`);
         consecutiveFailures.count++;
       } else if (!result.success) {
         // AC: @ralph-subagent-spawning ac-7
         error(
           `${DEFAULT_SUBAGENT_PREFIX} Subagent failed for ${task.ref}: ${result.error}`,
         );
+        await commentOnPRReviewIncomplete(`Review subagent failed for task ${task.ref}: ${result.error}`);
         consecutiveFailures.count++;
       } else {
         // AC: @ralph-subagent-spawning ac-12 - Verify task was completed
@@ -1035,6 +1069,7 @@ export function registerRalphCommand(program: Command): void {
     .option("--dry-run", "Show prompt without executing")
     .option("--yolo", "Use dangerously-skip-permissions (default)", true)
     .option("--no-yolo", "Require normal permission prompts")
+    .option("--subagent-timeout <minutes>", "Review subagent timeout in minutes", "20")
     .option("--adapter <id>", "Agent adapter to use", "claude-code-acp")
     .option("--adapter-cmd <cmd>", "Custom adapter command (for testing)")
     .option(
@@ -1291,6 +1326,7 @@ export function registerRalphCommand(program: Command): void {
                 maxRetries,
                 maxFailures,
                 cwd: process.cwd(),
+                subagentTimeout: parseInt(options.subagentTimeout || "20", 10) * 60 * 1000,
               },
               failureTracker,
             );
