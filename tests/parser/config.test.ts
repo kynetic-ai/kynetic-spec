@@ -69,12 +69,17 @@ describe("Project Config", () => {
       expect(result.config.shadow.remote).toBe(defaults.shadow.remote);
       expect(result.config.daemon.port).toBe(defaults.daemon.port);
       expect(result.config.daemon.host).toBe(defaults.daemon.host);
-      expect(result.config.validation.strictness).toBe(
-        defaults.validation.strictness
+      // AC: @config-validation — validation defaults
+      expect(result.config.validation.strict_refs).toBe(
+        defaults.validation.strict_refs
+      );
+      expect(result.config.validation.require_acceptance).toBe(
+        defaults.validation.require_acceptance
       );
     });
 
     // AC: @project-config ac-2 (partial - config file parsing)
+    // AC: @config-validation ac-1 ac-2 — validation config fields
     it("parses valid config file", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -89,8 +94,8 @@ daemon:
 identity:
   author: "@custom-author"
 validation:
-  strictness: strict
-  warn_unknown_fields: false
+  strict_refs: true
+  require_acceptance: true
 `
       );
 
@@ -107,8 +112,9 @@ validation:
       expect(result.config.daemon.port).toBe(4000);
       expect(result.config.daemon.host).toBe("0.0.0.0");
       expect(result.config.identity.author).toBe("@custom-author");
-      expect(result.config.validation.strictness).toBe("strict");
-      expect(result.config.validation.warn_unknown_fields).toBe(false);
+      // AC: @config-validation ac-1 ac-2
+      expect(result.config.validation.strict_refs).toBe(true);
+      expect(result.config.validation.require_acceptance).toBe(true);
     });
 
     // AC: @project-config ac-3
@@ -304,8 +310,8 @@ daemon:
           author: "@me",
         },
         validation: {
-          strictness: "strict",
-          warn_unknown_fields: true,
+          strict_refs: true,
+          require_acceptance: true,
         },
       });
 
@@ -344,9 +350,10 @@ daemon:
       expect(result.success).toBe(false);
     });
 
-    it("rejects invalid strictness value", () => {
+    // AC: @config-validation ac-1 ac-2 — validation fields are boolean
+    it("rejects non-boolean validation fields", () => {
       const result = KspecConfigSchema.safeParse({
-        validation: { strictness: "invalid" },
+        validation: { strict_refs: "invalid" },
       });
 
       expect(result.success).toBe(false);
@@ -406,8 +413,11 @@ title: Test Project
       expect(defaults.shadow.directory).toBe(".kspec");
       expect(defaults.shadow.remote).toBeNull();
       expect(defaults.identity.author).toBeNull();
-      expect(defaults.validation.strictness).toBe("normal");
-      expect(defaults.validation.warn_unknown_fields).toBe(true);
+      // AC: @config-validation — defaults preserve existing behavior
+      // strict_refs: true = dangling refs are errors (existing behavior)
+      // require_acceptance: false = missing AC is warning (existing behavior)
+      expect(defaults.validation.strict_refs).toBe(true);
+      expect(defaults.validation.require_acceptance).toBe(false);
       expect(defaults.daemon.port).toBe(3456);
       expect(defaults.daemon.host).toBe("localhost");
     });
@@ -526,6 +536,63 @@ identity:
       const author = getAuthor("project-bot");
 
       expect(author).toBe("project-bot");
+    });
+  });
+
+  // AC: @config-validation — validation config fields
+  describe("validation config", () => {
+    // AC: @config-validation ac-1 — require_acceptance config
+    it("loads require_acceptance from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+validation:
+  require_acceptance: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.validation.require_acceptance).toBe(true);
+    });
+
+    // AC: @config-validation ac-2 — strict_refs config
+    it("loads strict_refs from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+validation:
+  strict_refs: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.validation.strict_refs).toBe(true);
+    });
+
+    // AC: @config-validation — strict_refs defaults to true (preserve existing behavior)
+    it("defaults strict_refs to true", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.validation.strict_refs).toBe(true);
+    });
+
+    // Both can be set independently
+    it("allows independent setting of strict_refs and require_acceptance", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+validation:
+  strict_refs: false
+  require_acceptance: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.validation.strict_refs).toBe(false);
+      expect(result.config.validation.require_acceptance).toBe(true);
     });
   });
 });

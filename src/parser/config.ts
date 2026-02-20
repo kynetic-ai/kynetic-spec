@@ -52,13 +52,21 @@ const IdentityConfigSchema = z
 
 /**
  * Schema for validation configuration.
+ *
+ * AC: @config-validation — validation settings configurable in kspec.config.yaml
  */
 const ValidationConfigSchema = z
   .object({
-    /** Validation strictness level */
-    strictness: z.enum(["strict", "normal", "relaxed"]).optional(),
-    /** Whether to warn on unknown fields */
-    warn_unknown_fields: z.boolean().optional(),
+    /**
+     * When true, dangling references are treated as errors instead of warnings.
+     * AC: @config-validation ac-2 ac-3 — strict_refs configurable
+     */
+    strict_refs: z.boolean().optional(),
+    /**
+     * When true, specs missing acceptance criteria are reported as errors not warnings.
+     * AC: @config-validation ac-1 — require_acceptance configurable
+     */
+    require_acceptance: z.boolean().optional(),
   })
   .strict()
   .optional();
@@ -154,8 +162,16 @@ export interface ResolvedKspecConfig {
     author: string | null;
   };
   validation: {
-    strictness: "strict" | "normal" | "relaxed";
-    warn_unknown_fields: boolean;
+    /**
+     * When true, dangling references are treated as errors instead of warnings.
+     * AC: @config-validation ac-2 ac-3
+     */
+    strict_refs: boolean;
+    /**
+     * When true, specs missing acceptance criteria are reported as errors not warnings.
+     * AC: @config-validation ac-1
+     */
+    require_acceptance: boolean;
   };
   daemon: {
     port: number;
@@ -180,8 +196,11 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     author: null,
   },
   validation: {
-    strictness: "normal",
-    warn_unknown_fields: true,
+    // AC: @config-validation — defaults preserve existing behavior
+    // strict_refs: true = dangling refs are errors (existing behavior)
+    // require_acceptance: false = missing AC is warning (existing behavior)
+    strict_refs: true,
+    require_acceptance: false,
   },
   daemon: {
     port: 3456,
@@ -348,11 +367,12 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       author: envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
     },
     validation: {
-      strictness:
-        file.validation?.strictness ?? DEFAULT_CONFIG.validation.strictness,
-      warn_unknown_fields:
-        file.validation?.warn_unknown_fields ??
-        DEFAULT_CONFIG.validation.warn_unknown_fields,
+      // AC: @config-validation ac-2 ac-3 — strict_refs from config
+      strict_refs:
+        file.validation?.strict_refs ?? DEFAULT_CONFIG.validation.strict_refs,
+      // AC: @config-validation ac-1 — require_acceptance from config
+      require_acceptance:
+        file.validation?.require_acceptance ?? DEFAULT_CONFIG.validation.require_acceptance,
     },
     daemon: {
       // AC: ac-5 — env vars take precedence
@@ -378,7 +398,10 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       remote: DEFAULT_CONFIG.shadow.remote,
     },
     identity: { ...DEFAULT_CONFIG.identity },
-    validation: { ...DEFAULT_CONFIG.validation },
+    validation: {
+      strict_refs: DEFAULT_CONFIG.validation.strict_refs,
+      require_acceptance: DEFAULT_CONFIG.validation.require_acceptance,
+    },
     daemon: { ...DEFAULT_CONFIG.daemon },
   };
 }

@@ -827,11 +827,21 @@ export function registerValidateCommand(program: Command): void {
           !options.completeness &&
           !options.conventions &&
           !options.skills;
+
+        // AC: @config-validation ac-4 — CLI --strict overrides config strict_refs
+        // If --strict is passed, use strict behavior regardless of config
+        // Otherwise, use config value (which defaults to false)
+        const strictRefs = options.strict ? true : ctx.config.validation.strict_refs;
+        const requireAcceptance = ctx.config.validation.require_acceptance;
+
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
           orphans: runAll || options.orphans,
           completeness: runAll || options.completeness,
+          // AC: @config-validation ac-2 ac-3 ac-4 — wire config into validation
+          strictRefs,
+          requireAcceptance,
         };
 
         const result = await validate(ctx, validateOptions);
@@ -1027,11 +1037,18 @@ export function registerValidateCommand(program: Command): void {
           !options.refs &&
           !options.orphans &&
           !options.completeness;
+
+        // AC: @config-validation ac-4 — CLI --strict overrides config strict_refs
+        const strictRefs = options.strict ? true : ctx.config.validation.strict_refs;
+        const requireAcceptance = ctx.config.validation.require_acceptance;
+
         const validateOptions = {
           schema: runAll || options.schema,
           refs: runAll || options.refs,
           orphans: runAll || options.orphans,
           completeness: runAll || options.completeness,
+          strictRefs,
+          requireAcceptance,
         };
 
         const result = await validate(ctx, validateOptions);
