@@ -51593,10 +51593,35 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T19:22:54.536Z
-  notes: []
+  started_at: 2026-02-20T00:52:22.747Z
+  notes:
+    - _ulid: 01KHW8HHSZX9VS4173J9ZGESAC
+      created_at: 2026-02-20T00:52:35.775Z
+      author: "@claude"
+      content: >-
+        Audit findings: Task description mentions 3 clusters of tech debt. Checking each:
+
+
+        1. **Code duplication in setup pipeline** — ALREADY FIXED in PR #405 (Setup Pipeline
+        Unification):
+           - setup.ts now uses generateAgentsContent() from agents.ts (lines 1273-1280)
+           - Core skill installation imports from skill.ts (lines 1324-1421)
+           - Uses getRenderer() registry, not legacy renderClaudeCodeSkill
+
+        2. **Legacy render path** — ALREADY FIXED in PR #405:
+           - renderSkillsForSetup uses getRenderer() (lines 1162-1229)
+           - AC comment at line 1164 confirms: 'uses getRenderer/getAllRenderers, not legacy renderClaudeCodeSkill'
+
+        3. **Error handling and staleness** — ALREADY FIXED in PRs #405 and #408:
+           - All 27 catch blocks have debugLog() calls
+           - getSetupStatus properly computes currentHash and compares with stored hash (lines 1079-1115)
+
+        **Remaining dead code:**
+
+        - _installClaudeCodeStopHook (lines 573-641) marked @deprecated, never called — will remove
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T00:52:22.747Z
 - _ulid: 01KHVXK2CPXY1PSFS975MZY6QC
   slugs:
     - implement-project-config-file
