@@ -52362,10 +52362,18 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-20T05:13:04.633Z
-  notes: []
+  started_at: 2026-02-20T05:34:41.397Z
+  notes:
+    - _ulid: 01KHWRYHVMP6K5TEWGQCGRP9F9
+      created_at: 2026-02-20T05:39:19.028Z
+      author: "@claude"
+      content: "Increased DEFAULT_SUBAGENT_TIMEOUT from 10 to 20 minutes. Added --subagent-timeout
+        <minutes> CLI option to ralph command (default: 20). Threaded configurable timeout through
+        processPendingReviewTasks to runSubagent. Updated hardcoded '10 minutes' timeout message to
+        use actual timeout value. Updated test assertion."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T05:34:41.397Z
 - _ulid: 01KHWQEHECGPFNSCHEWF6AQ5Y3
   slugs: []
   title: Add merge blocker when review subagent times out
