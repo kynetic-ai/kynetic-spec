@@ -748,6 +748,9 @@ features:
           - "@trait-error-guidance"
         notes: []
         created: 2026-02-19T21:41:10.986Z
+        status:
+          maturity: draft
+          implementation: in_progress
     requirements:
       - _ulid: 01KHVXK26MF758N8ZPPSYY9ZKD
         slugs:
